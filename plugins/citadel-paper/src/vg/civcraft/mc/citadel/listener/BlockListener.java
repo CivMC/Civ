@@ -52,6 +52,7 @@ import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
@@ -110,6 +111,12 @@ public class BlockListener implements Listener {
 		Group groupToReinforceTo = null;
 		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 			type = state.getReinforcementType();
+			if (type == null) {
+				sendAndLog(p, ChatColor.RED, "Something went wrong, you dont seem to have a reinforcement material selected?");
+				state.reset();
+				event.setCancelled(true);
+				return;
+			}
 			groupToReinforceTo = state.getGroup();
 		}else if(state.getMode() == ReinforcementMode.NORMAL) {	
 			if (!state.getEasyMode()) {
@@ -121,7 +128,7 @@ public class BlockListener implements Listener {
 				}
 				String gName = gm.getDefaultGroup(p.getUniqueId());
 				if (gName != null) {
-					groupToReinforceTo = gm.getGroup(gName);
+					groupToReinforceTo = GroupManager.getGroup(gName);
 				}
 				if (groupToReinforceTo == null) {
 					return;
@@ -477,7 +484,7 @@ public class BlockListener implements Listener {
 							String gName = gm.getDefaultGroup(player.getUniqueId());
 							Group g = null;
 							if (gName != null) {
-								g = gm.getGroup(gName);
+								g = GroupManager.getGroup(gName);
 							}
 							if (g != null) {
 								try {
@@ -607,7 +614,7 @@ public class BlockListener implements Listener {
 				if (reinforcement == null) {
 					// set the reinforcemet material to what the player is
 					// holding
-					ItemStack stack = player.getItemInHand();
+					ItemStack stack = player.getInventory().getItemInMainHand();
 					ReinforcementType type = ReinforcementType
 							.getReinforcementType(stack);
 					if (type == null) {
@@ -663,8 +670,35 @@ public class BlockListener implements Listener {
 							message = "Group has been changed to: "
 									+ group.getName() + ".";
 							sendAndLog(player, ChatColor.GREEN, message);
-						} else
+						} else {
 							reinforcement.setGroup(old_group);
+						}
+					}
+					ItemStack stack = player.getInventory().getItemInMainHand();
+					ReinforcementType type = ReinforcementType.getReinforcementType(stack);
+					if (type != null && !reinforcement.getStackRepresentation().isSimilar(type.getItemStack())) {
+						//hit with different rein material, so switch material
+						if (!ExclusiveReinforcementType.canReinforce(type.getMaterial(), block.getType())) {
+							sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+						}
+						else {
+							ReinforcementChangeTypeEvent e = new ReinforcementChangeTypeEvent(reinforcement, type, player);
+							Bukkit.getPluginManager().callEvent(e);
+							if (!e.isCancelled()) {
+								reinforcementBroken(player, reinforcement);
+								ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
+								Bukkit.getPluginManager().callEvent(event);
+								if (!event.isCancelled()) {
+									try {
+										createPlayerReinforcement(player, state.getGroup(),	block, type, null);
+										sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
+									} catch (ReinforcemnetFortificationCancelException ex) {
+										Citadel.getInstance().getLogger().log(Level.WARNING,
+												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ", ex);
+									}
+								}
+							}
+						}
 					}
 				} else {
 					sendAndLog(player, ChatColor.RED,

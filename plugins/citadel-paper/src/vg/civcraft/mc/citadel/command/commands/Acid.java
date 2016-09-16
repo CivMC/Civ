@@ -109,7 +109,7 @@ public class Acid extends PlayerCommandMiddle {
 				return true;
 			}
 			
-			if (CitadelConfigManager.shouldLogBreaks()) {
+			if (CitadelConfigManager.shouldLogHostileBreaks()) {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}",
 						new Object[] {block.getLocation(), topFace.getType(), topFace.getLocation()});
 			}

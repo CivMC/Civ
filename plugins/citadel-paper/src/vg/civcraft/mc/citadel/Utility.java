@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Bed;
-import org.bukkit.material.Door;
 import org.bukkit.util.Vector;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -35,10 +34,10 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 /**
@@ -196,7 +195,9 @@ public class Utility {
 					requirements, type.getRequiredAmount()));
         }
         player.updateInventory();
+        
         rm.saveInitialReinforcement(rein);
+        playReinforcementEffect(rein);
         return rein;
     }
     
@@ -239,6 +240,7 @@ public class Utility {
             throw new ReinforcemnetFortificationCancelException();
         }
         rm.saveInitialReinforcement(rein);
+        playReinforcementEffect(rein);
         return rein;        
     }
     
@@ -416,10 +418,22 @@ public class Utility {
         reinforcement.setDurability(durability);
         boolean cancelled = durability > 0;
         if (durability <= 0) {
-            cancelled = reinforcementBroken(null, reinforcement);
+			if (CitadelConfigManager.shouldLogHostileBreaks()) {
+				StringBuffer slb = new StringBuffer();
+				if (player != null) {
+					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+								.append("] ");
+				} else {
+					slb.append("Something ");
+				}
+				slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+						.append(reinforcement.getLocation());
+				Citadel.Log(slb.toString());
+			}
+	        cancelled = reinforcementBroken(null, reinforcement);
         } else {
 			/* TODO: Move to ReinforcementEvent listener*/
-			if (CitadelConfigManager.shouldLogBreaks()) {
+			if (CitadelConfigManager.shouldLogDamage()) {
 				StringBuffer slb = new StringBuffer();
 				if (player != null) {
 					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -454,11 +468,15 @@ public class Utility {
 					slb.append("excellent (");
 				}
 				slb.append(durability).append(") at ").append(reinforcement.getLocation());
+				Citadel.Log(slb.toString());
 			}
             if (reinforcement instanceof PlayerReinforcement) {
                 // leave message
             }
             rm.saveReinforcement(reinforcement);
+            if(reinforcement instanceof PlayerReinforcement){
+    			playReinforcementEffect((PlayerReinforcement)reinforcement);
+            }
         }
         return cancelled;
     }
@@ -534,22 +552,19 @@ public class Utility {
 			return false;
 		}
     	StringBuffer slb = null;
-		if (CitadelConfigManager.shouldLogBreaks()) {
+		boolean logIt = CitadelConfigManager.shouldLogFriendlyBreaks() && player != null;
+		if (logIt) {
 			slb = new StringBuffer();
-			if (player != null) {
-				slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
-						.append("]");
-			} else {
-				slb.append("Something ");
-			}
-			slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
+			slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
+					.append("] bypassed a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
 					.append(reinforcement.getLocation());
 		}
         Citadel.getReinforcementManager().deleteReinforcement(reinforcement);
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
-            if (rng.nextDouble() <= pr.getHealth() * material.getPercentReturn()) {
+			// RNG is [0,1) so <= would give chance of return if health is 0. Replaced with < alone to fix.
+            if (rng.nextDouble() < pr.getHealth() * material.getPercentReturn()) {
                 Location location = pr.getLocation();
                 if (player != null){
                     Inventory inv = player.getInventory();
@@ -574,17 +589,17 @@ public class Utility {
                 	dropItemAtLocation(location, new ItemStack(material.getMaterial()
                             , material.getReturnValue()));
 				}
-                if (CitadelConfigManager.shouldLogBreaks()) {
+				if (logIt) {
                     slb.append(" - reinf mat refunded");
 					Citadel.Log(slb.toString());
                 }
-            } else if (CitadelConfigManager.shouldLogBreaks()) { 
+            } else if (logIt) {
                 slb.append(" - reinf mat lost");
 				Citadel.Log(slb.toString());
             }
             return (pr.isDoor() || pr.isContainer());
         }
-        if (CitadelConfigManager.shouldLogBreaks()) {
+        if (logIt) {
             Citadel.Log(slb.toString());
         }
         return false;  // implicit isSecureable() == false
@@ -878,6 +893,21 @@ public class Utility {
         return rein;
     }
     
+    /**
+     * Display an effect defined in the config around a reinforcement.
+     * @param reinforcement The reinforcement to spawn the effect around. 
+     * @return Whether an effect was displayed or not. 
+     */
+	public static boolean playReinforcementEffect(PlayerReinforcement reinforcement) {
+		ReinforcementEffect reinforcementEffect = ReinforcementType.getReinforcementType(reinforcement.getStackRepresentation()).getReinforcementEffect();
+		if(reinforcementEffect == null){
+			return false;
+		}
+		Location centerLocation = reinforcement.getLocation().clone().add(0.5, 0.5, 0.5);
+		reinforcementEffect.playEffect(centerLocation);
+		return true;
+	}
+
     public static Block getAttachedChest(Block block) {
     	if (block == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING,

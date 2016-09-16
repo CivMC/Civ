@@ -4,6 +4,7 @@ import static vg.civcraft.mc.citadel.Utility.canPlace;
 import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
 import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
 import static vg.civcraft.mc.citadel.Utility.explodeReinforcement;
+import static vg.civcraft.mc.citadel.Utility.getRealBlock;
 import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
 import static vg.civcraft.mc.citadel.Utility.reinforcementBroken;
 import static vg.civcraft.mc.citadel.Utility.reinforcementDamaged;
@@ -33,7 +34,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingBreakEvent;
@@ -58,12 +58,9 @@ import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
-import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 
@@ -106,7 +103,7 @@ public class EntityListener implements Listener{
 
 	@EventHandler(ignoreCancelled = true)
 	public void breakDoor(EntityBreakDoorEvent ebde) {
-		ebde.setCancelled(maybeReinforcementDamaged(ebde.getBlock()));
+		ebde.setCancelled(maybeReinforcementDamaged(getRealBlock(ebde.getBlock())));
 	}
 
 	@EventHandler(ignoreCancelled = true)
@@ -154,10 +151,17 @@ public class EntityListener implements Listener{
 	}
 
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	//@EventHandler(priority = EventPriority.HIGHEST)
 	public void hangingPlaceEvent(HangingPlaceEvent event){
 		Player p = event.getPlayer();
 		Block b = event.getBlock().getRelative(event.getBlockFace());
+		if (rm.getReinforcement(b) != null) {
+			//reinforcement already exists in this location from an actual physical block, so we dont want to allow entity reinforcements here.
+			//We even dont want to allow placement here as otherwise we would have no way to tell whether the actual underlying block or the entitiy
+			//"owns" the reinforcement
+			event.setCancelled(true);
+			return;
+		}
 		Inventory inv = p.getInventory();
 		PlayerState state = PlayerState.get(p);
 		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION != state.getMode()) {
@@ -176,12 +180,12 @@ public class EntityListener implements Listener{
 			return;
 		}
 		int required = type.getRequiredAmount();
-		if (type.getItemStack().isSimilar(p.getItemInHand())){
+		if (type.getItemStack().isSimilar(p.getInventory().getItemInMainHand())){
 			required++;
 		}
 		if (inv.containsAtLeast(type.getItemStack(), required)) {
 			try {
-				if (createPlayerReinforcement(p, state.getGroup(), b, type, p.getItemInHand()) == null) {
+				if (createPlayerReinforcement(p, state.getGroup(), b, type, p.getInventory().getItemInMainHand()) == null) {
 					sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
@@ -197,7 +201,7 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	//@EventHandler(priority = EventPriority.HIGHEST)
 	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event){
 		Reinforcement rein = rm.getReinforcement(event.getEntity().getLocation()); if (rein == null){return;}
 		if (RemoveCause.PHYSICS.equals(event.getCause())){
@@ -220,7 +224,7 @@ public class EntityListener implements Listener{
 			PlayerReinforcement pr = (PlayerReinforcement) rein;
 			PlayerState state = PlayerState.get(player);
 			ReinforcementMode mode = state.getMode();
-			if (ReinforcementMode.REINFORCEMENT_INFORMATION.equals(mode)){
+			if (ReinforcementMode.REINFORCEMENT_INFORMATION == mode){
 				Group group = pr.getGroup();
 				StringBuilder sb;
 				if (player.hasPermission("citadel.admin.ctinfodetails")) {
@@ -307,22 +311,7 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void hangingBreakEvent(HangingBreakEvent event){
-		Reinforcement rein = rm.getReinforcement(event.getEntity().getLocation()); if (rein == null){return;}
-		if (RemoveCause.PHYSICS.equals(event.getCause())){
-			//Checks if block entity was attached to was broken
-			if (event.getEntity().getLocation().getBlock().getRelative(
-					event.getEntity().getAttachedFace()).getType().equals(Material.AIR)){
-				//Comment out these next two lines to keep floating hanging entities if they are reinforced
-				rm.deleteReinforcement(rein);
-				return;
-			}
-		}
-		event.setCancelled(true);
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST)
+	//@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerEntityInteractEvent(PlayerInteractEntityEvent event){
 		Entity entity = event.getRightClicked();
 		if (entity instanceof ItemFrame){
@@ -339,7 +328,7 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	//@EventHandler(priority = EventPriority.HIGHEST)
 	public void entityDamageEvent(EntityDamageByEntityEvent event){
 		Entity entity = event.getEntity();
 		if (entity instanceof ItemFrame){

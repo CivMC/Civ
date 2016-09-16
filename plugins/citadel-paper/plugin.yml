@@ -34,6 +34,8 @@ commands:
   aliases: [ctsetlogging]
  cte:
   aliases: [cteasy,toggleeasymode]
+ ctdl:
+  aliases: [reinforcements,rein]
 permissions:
  citadel.admin:
   default: op

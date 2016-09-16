@@ -2,9 +2,13 @@ package vg.civcraft.mc.citadel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
 
 public class CitadelConfigManager {
 
@@ -83,6 +87,28 @@ public class CitadelConfigManager {
 		return config.getStringList("reinforcements." + type + ".lore");
 	}
 	
+	public static ReinforcementEffect getReinforcementEffect(String type){
+		Effect effect = null;
+		if (config.getString("reinforcements." + type + ".effect.type") != null) {
+			try {
+				effect = Effect.valueOf(config.getString("reinforcements." + type + ".effect.type"));
+			} catch (IllegalArgumentException e) {
+				Citadel.getInstance().getLogger().log(Level.WARNING, "Invalid effect at: " + config.getCurrentPath());
+				return null;
+			}
+			int id = config.getInt("reinforcements." + type + ".effect.id", 0);
+			int data = config.getInt("reinforcements." + type + ".effect.data", 0);
+			float offsetX = (float) config.getDouble("reinforcements." + type + ".effect.offsetX", 0);
+			float offsetY = (float) config.getDouble("reinforcements." + type + ".effect.offsetY", 0);
+			float offsetZ = (float) config.getDouble("reinforcements." + type + ".effect.offsetZ", 0);
+			float speed = (float) config.getDouble("reinforcements." + type + ".effect.speed", 1);
+			int amount = config.getInt("reinforcements." + type + ".effect.particleCount", 1);
+			int viewDistance = config.getInt("reinforcements." + type + ".effect.view_distance", 16);
+			return new ReinforcementEffect(effect, id, data, offsetX, offsetY, offsetZ, speed, amount, viewDistance);
+		}
+		return null;
+	}
+
 	public static Material getNaturalReinforcementMaterial(String type){
 		return Material.valueOf(config.getString("natural_reinforcements." +
 				type + ".material"));
@@ -156,8 +182,16 @@ public class CitadelConfigManager {
 		return config.getBoolean("command_logging", false);
 	}
 
-	public static boolean shouldLogBreaks() {
+	public static boolean shouldLogFriendlyBreaks() {
 		return config.getBoolean("break_logging", false);
+	}
+
+	public static boolean shouldLogHostileBreaks() {
+		return config.getBoolean("hostile_logging", false);
+	}
+
+	public static boolean shouldLogDamage() {
+		return config.getBoolean("damage_logging", false);
 	}
 
 	public static boolean shouldLogReinforcement() {

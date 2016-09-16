@@ -1,6 +1,7 @@
 package vg.civcraft.mc.citadel.reinforcement;
 
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.logging.Level;
 
 import org.bukkit.Location;
@@ -145,7 +146,8 @@ public class PlayerReinforcement extends Reinforcement{
     public String getHealthText() {
         double health = getHealth();
         if (CitadelConfigManager.showHealthAsPercent()) {
-        	return health * 100 + "%";
+        	DecimalFormat df = new DecimalFormat("#.##");
+        	return df.format(health * 100) + "%";
         } else {
           if (health > 0.75) {
               return "excellently";
@@ -223,7 +225,7 @@ public class PlayerReinforcement extends Reinforcement{
     		return;
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
+    		g = GroupManager.getGroup(g.getGroupId());
     		if (g == null) {
     			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
     		}
