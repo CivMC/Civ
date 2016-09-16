@@ -1574,12 +1574,30 @@ recipes:
     name: Placeholder
     production_time: 5s
     input:
-      stone:
-        material: STONE
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
         amount: 1
+        lore:
+        - Recipe coming soon!
     output:
       stone:
         material: STONE
+        amount: 1
+  Return Factory Materials:
+    type: COSTRETURN
+    production_time: 2d
+    name: Destroy Factory
+    factor: 0.75
+    input:
+      furnace:
+        material: FURNACE
+        amount: 1
+      craftingbench:
+        material: WORKBENCH
+        amount: 1
+      chest:
+        material: CHEST
         amount: 1
   Upgrade to Smelter:
     name: Upgrade to Smelter
