@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +22,7 @@ import org.bukkit.ChatColor;
 import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 
 /**
@@ -252,5 +254,8 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		
 		return true;
 	}
+	
+	public static NewfriendAssistConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new NewfriendAssistConfig(plugin, config);
+	}
 }
-

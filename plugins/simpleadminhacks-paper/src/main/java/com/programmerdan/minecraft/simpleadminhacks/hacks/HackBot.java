@@ -26,6 +26,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.bots.Bot;
+import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 
 import de.inventivegames.npc.NPC;
@@ -395,5 +396,9 @@ public class HackBot extends SimpleHack<HackBotConfig> implements Listener, Comm
 			sb.append(ChatColor.RESET).append("; details: ").append(abot.status());
 		}
 		return sb.toString();
-	}	
+	}
+	
+	public static HackBotConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new HackBotConfig(plugin, config);
+	}
 }

@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_10_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftInventoryPlayer;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InvControlConfig;
 
 public class InvControl extends SimpleHack<InvControlConfig> implements CommandExecutor, Listener {
@@ -222,4 +224,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 		}
 	}
 
+	public static InvControlConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new InvControlConfig(plugin, config);
+	}
 }

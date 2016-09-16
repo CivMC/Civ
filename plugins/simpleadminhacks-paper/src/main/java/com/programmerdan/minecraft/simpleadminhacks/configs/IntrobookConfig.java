@@ -7,6 +7,7 @@ import net.md_5.bungee.api.ChatColor;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -82,12 +83,25 @@ public class IntrobookConfig extends SimpleHackConfig {
 	 * 
 	 * @return ItemStack containing the book.
 	 */
-	public ItemStack getIntroBook() {
+	public ItemStack getIntroBook(Player p) {
 		ItemStack is = new ItemStack(Material.WRITTEN_BOOK);
 		BookMeta bm = (BookMeta) is.getItemMeta();
-		bm.setTitle(this.title);
+		if (p == null) {
+			bm.setTitle(this.title.replaceAll("\\$\\{player\\}", ""));
+		} else {
+			bm.setTitle(this.title.replaceAll("\\$\\{player\\}", p.getName()));
+		}
 		bm.setAuthor(this.author);
-		bm.setPages(this.pages);
+		ArrayList<String> alist = null;
+		if (p == null) {
+			alist = new ArrayList<String>(this.pages);
+		} else {
+			alist = new ArrayList<String>();
+			for (String page : this.pages) {
+				alist.add(page.replaceAll("\\$\\{player\\}", p.getName()));
+			}
+		}
+		bm.setPages(alist);
 		is.setItemMeta(bm);
 		return is;
 	}
@@ -99,7 +113,9 @@ public class IntrobookConfig extends SimpleHackConfig {
 		if (!(meta instanceof BookMeta)) return false;
 		
 		BookMeta book = (BookMeta) meta;
-		if (!(getTitle().equals(book.getTitle()))) return false;
+		if (!(getTitle().contains(
+				book.getTitle().replaceAll("\\$\\{player\\}", "")
+			))) return false;
 		if (!(getAuthor().equals(book.getAuthor()))) return false;
 		
 		return true;

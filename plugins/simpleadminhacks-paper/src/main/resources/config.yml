@@ -1,4 +1,4 @@
-# Effectively Modern Humbug. For 1.9 ground up.
+# Effectively Modern Humbug. For 1.10 ground up.
 
 configuration_file_version: 1
 
@@ -6,36 +6,30 @@ debug: true
 broadcast_permission: simpleadmin.broadcast
 
 hacks:
-  experimental:
-    name: Experimental
+  Experimental:
     enabled: true
     combatspy: true
     teleportspy: true
     postteleport:
       spy: true
       count: 10
-  game_features:
-    name: GameFeatures
+  GameFeatures:
     enabled: false
     elytra: off
     chorus_fruit: off
-  game_fixes:
-    name: GameFixes
+  GameFixes:
     enabled: false
     nether_bed_placement: off
-  game_tuning:
-    name: GameTuning
+  GameTuning:
     enabled: false
     str2: replace_str1ext
     pearl_gravity: 0.3
-  combattag_announce:
-    name: CombatTagAnnounce
+  CTAnnounce:
     enabled: false
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
-  newfriend:
-    name: NewfriendAssist
+  NewfriendAssist:
     enabled: true
     announce:
       message: '%Player% is brand new!'
@@ -65,17 +59,17 @@ hacks:
             - "This world is unforgiving."
             - "Be sure to get a good night's"
             - "rest soon."
-  introbook:
-    name: Introbook
+  Introbook:
     enabled: true
     follow: true
     contents:
-      title: Welcome to Devoted
+      title: Welcome, ${player}
       author: Bonkill
       pages:
+       - "   &oWelcome to Devoted, ${player}!"
        - "    &oWhat is Devoted?\n\"A new type of Minecraft server built towards providing a competitive, high stakes, immersive experience controlled by the players.\"&r\n-ShadedJon, server owner"
        - "    &oWhat is Devoted?&r\n&lNOT just survival&r\nAdmins are hands-off and only handle glitches and hackers\n&lNOT just chaos&r\nPlugins allow players and towns to enforce their own rules\n&lNOT just roleplay&r\nNobody pretends -- conflict is genuine and heated"
-       - "    &oBasic Mechanics&r\n-The world has many continents\n-They're separated by ocean.\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and vanilla ore spawning."
+       - "    &oBasic Mechanics&r\n-The world is custom generated\n-Many custom biomes\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and custom ore spawning."
        - "   &oDevoted Mods&r\n   &lCitadel&r:\n Reinforces things so it takes numerous breaks to destroy them. Locks some things too.\n&lMore Info:&r &oVisual Guide:&r imgur.com/BnlL2 &oWiki Page:&r tinyurl.com/citadelmod\n&oType \"/help citadel\" in chat to get commands"
        - "   &lPrison Pearl&r:\n Ender Pearls trap players in the end. Others can steal back your pearl and free you -- you always know where it is so they cannot hide it\n&lMore Info:&r &oVisual Guide:&r imgur.com/XbhkK &oWiki Page:&r tinyurl.com/prisperl"
        - "   &lJuke Alert&r:\n Creates 'Juke' blocks that record player activity in radius. If you steal, grief, or trespass -- people will know about it & put a bounty for you to be pearled.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/snitchblock"
@@ -87,8 +81,7 @@ hacks:
        - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
        - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
        - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
-  hackbot:
-    name: HackBot
+  HackBot:
     enabled: true
     bots:
       Rando:
@@ -111,6 +104,5 @@ hacks:
           y: 40.0
           world: world
           x: 50.0
-  invctrl:
-    name: InvControl
+  InvControl:
     enabled: true

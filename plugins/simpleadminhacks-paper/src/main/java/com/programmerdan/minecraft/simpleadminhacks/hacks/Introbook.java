@@ -10,6 +10,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,6 +25,7 @@ import org.bukkit.inventory.meta.BookMeta;
 import com.programmerdan.minecraft.simpleadminhacks.CommandListener;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 
 /**
@@ -114,7 +116,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 		
 		if (this.hasBook.remove(puid)) {
 		    Inventory inv = dead.getInventory();
-		    inv.addItem(config.getIntroBook());
+		    inv.addItem(config.getIntroBook(dead));
 		}
 	}
 	
@@ -131,7 +133,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 		if (!alive.hasPlayedBefore() || this.hasBook.contains(puid)) {
 			this.hasBook.remove(puid);
 		    Inventory inv = alive.getInventory();
-		    inv.addItem(config.getIntroBook());
+		    inv.addItem(config.getIntroBook(alive));
 		    Introbook.bookGiftCount ++;
 		    plugin().debug("Gave {0} an introbook", alive.getName());
 		}
@@ -149,7 +151,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 			sb.append(ChatColor.WHITE).append("\n  Introbooks given out: ");
 			sb.append(ChatColor.GREEN).append(Introbook.bookGiftCount);
 			sb.append("\n  Current Introbook:");
-			ItemStack book = config.getIntroBook();
+			ItemStack book = config.getIntroBook(null);
 			if (book != null) {
 				BookMeta meta = (BookMeta) book.getItemMeta();
 				if (meta != null) {
@@ -194,9 +196,13 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 			plugin().log(Level.INFO, "Sent introbook to {0}", args[0]);
 			p.sendMessage(ChatColor.GREEN + "You've been given an introductory book!");
 			Inventory inv = p.getInventory();
-			inv.addItem(config.getIntroBook());
+			inv.addItem(config.getIntroBook(p));
 		}
 		
 		return true;
+	}
+	
+	public static IntrobookConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new IntrobookConfig(plugin, config);
 	}
 }

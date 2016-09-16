@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -122,5 +123,9 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 		} else {
 			return "CombatTagPlus.PlayerCombatTagEvent monitoring not active";
 		}
+	}
+	
+	public static CTAnnounceConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new CTAnnounceConfig(plugin, config);
 	}
 }

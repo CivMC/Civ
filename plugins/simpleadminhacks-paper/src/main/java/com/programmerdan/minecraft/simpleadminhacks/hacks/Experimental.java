@@ -15,12 +15,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Player;
 import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.util.UUID;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
 
 public class Experimental extends SimpleHack<ExperimentalConfig> implements Listener, CommandExecutor {
@@ -220,6 +222,10 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		if (!config.isCombatSpy()) return;
 		StringBuffer sb = new StringBuffer("[HI]: ");
 		logCombat(event, sb);
+	}
+	
+	public static ExperimentalConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new ExperimentalConfig(plugin, config);
 	}
 }
 

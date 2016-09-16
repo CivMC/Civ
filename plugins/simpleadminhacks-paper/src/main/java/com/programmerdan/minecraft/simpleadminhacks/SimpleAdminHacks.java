@@ -1,5 +1,8 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.Collection;
 import java.util.List;
@@ -8,16 +11,18 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.CommandExecutor;
+
+import com.google.common.reflect.ClassPath;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.
@@ -50,14 +55,71 @@ public class SimpleAdminHacks extends JavaPlugin {
 		try {
 			this.config = new SimpleAdminHacksConfig(this, conf);
 		} catch(InvalidConfigException e) {
-			this.log(Level.SEVERE, "Failed to load config. Disabling plugin.", e);
+			log(Level.SEVERE, "Failed to load config. Disabling plugin.", e);
 			this.setEnabled(false);
 			return;
 		}
+		
+		
+		// Now load all the Hacks and register.
+		ConfigurationSection hackConfigs = this.getConfig().getConfigurationSection("hacks");
+		try {
+			ClassPath getSamplersPath = ClassPath.from(this.getClassLoader());
+
+			for (ClassPath.ClassInfo clsInfo : getSamplersPath.getTopLevelClasses("com.programmerdan.minecraft.simpleadminhacks.hacks")) {
+				try {
+					Class<?> clazz = clsInfo.load();
+					if (clazz != null && SimpleHack.class.isAssignableFrom(clazz)) {
+						log(Level.INFO, "Found a hack class {0}, attempting to find a generating method and constructor", clazz.getName());
+						ConfigurationSection hackConfig = hackConfigs.getConfigurationSection(clazz.getSimpleName());
+						SimpleHackConfig hackingConfig = null;
+						if (hackConfig != null) {
+							try {
+								Method genBasic = clazz.getMethod("generate", SimpleAdminHacks.class, ConfigurationSection.class);
+								hackingConfig = (SimpleHackConfig) genBasic.invoke(null, this, hackConfig);
+							} catch (IllegalAccessException failure) {
+							} catch (IllegalArgumentException failure) {
+							} catch (InvocationTargetException failure) {
+							}
+						} else {
+							log(Level.INFO, "Hack for {0} found but no configuration, skipping.", clazz.getSimpleName());
+						}
+						
+						if (hackingConfig != null) {
+							log(Level.INFO, "Configuration for Hack {0} found.", clazz.getSimpleName());
+							SimpleHack<?> hack = null;
+							try {
+								Constructor<?> constructBasic = clazz.getConstructor(SimpleAdminHacks.class, hackingConfig.getClass());
+								hack = (SimpleHack<?>) constructBasic.newInstance(this, hackingConfig);
+								log(Level.INFO, "Created a new Hack of type {0}", clazz.getSimpleName());
+							} catch (InvalidConfigException ice) {
+								log(Level.WARNING, "Failed to activate {0} hack, configuration failed", clazz.getSimpleName());
+							} catch (Exception e) {}
+							
+							if (hack == null) {
+								log(Level.WARNING, "Failed to create a Hack of type {0}", clazz.getSimpleName());
+							} else {
+								register(hack);
+								log(Level.INFO, "Registered a new hack: {0}", clazz.getSimpleName());
+							}
+						} else {
+							log(Level.INFO, "Configuration generation for Hack {0} failed, skipping.", clazz.getSimpleName());
+						}
+					}
+				} catch (NoClassDefFoundError e) {
+					log(Level.INFO, "Unable to load discovered class {0} due to dependency failure", clsInfo.getName());
+				} catch (Exception e) {
+					log(Level.WARNING, "Failed to complete hack discovery {0}", clsInfo.getName());
+				}
+			}
+		} catch (Exception e) {
+			log(Level.WARNING, "Failed to complete hack registration");
+		}
+
 
 		// Warning if no hacks.
 		if (hacks == null || hacks.size() == 0) {
-			this.log("No hacks enabled.");
+			log(Level.WARNING, "No hacks enabled.");
 			return;
 		}
 
