@@ -30,7 +30,7 @@ public class Database {
 			"  chunk_x INT DEFAULT NULL," +
 			"  chunk_z INT DEFAULT NULL," + 
 			"  uuid VARCHAR(36) DEFAULT NULL," +
-			"  numeric_value NUMERIC DEFAULT NULL," +
+			"  numeric_value DOUBLE DEFAULT NULL," +
 			"  string_value TEXT DEFAULT NULL," +
 			"  CONSTRAINT pk_spy_stats PRIMARY KEY (id)," +
 			"  INDEX idx_spy_stats_time_key USING BTREE (stat_time, stat_key)," +

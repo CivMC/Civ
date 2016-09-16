@@ -94,7 +94,7 @@
 <!--   -->
 </a><code>public&nbsp;static&nbsp;final&nbsp;<a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html?is-external=true" title="class or interface in java.lang">String</a></code></td>
 <td><code><a href="com/programmerdan/minecraft/civspy/database/Database.html#INIT_DATABASE">INIT_DATABASE</a></code></td>
-<td class="colLast"><code>"CREATE TABLE IF NOT EXISTS spy_stats (  id BIGINT NOT NULL AUTO_INCREMENT,  stat_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  stat_key VARCHAR(64) NOT NULL,  server VARCHAR(64) DEFAULT NULL,  world VARCHAR(100) DEFAULT NULL,  chunk_x INT DEFAULT NULL,  chunk_z INT DEFAULT NULL,  uuid VARCHAR(36) DEFAULT NULL,  numeric_value NUMERIC DEFAULT NULL,  string_value TEXT DEFAULT NULL,  CONSTRAINT pk_spy_stats PRIMARY KEY (id),  INDEX idx_spy_stats_time_key USING BTREE (stat_time, stat_key),  INDEX idx_spy_ext_key USING BTREE (server, world, chunk_x, chunk_z, uuid));"</code></td>
+<td class="colLast"><code>"CREATE TABLE IF NOT EXISTS spy_stats (  id BIGINT NOT NULL AUTO_INCREMENT,  stat_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,  stat_key VARCHAR(64) NOT NULL,  server VARCHAR(64) DEFAULT NULL,  world VARCHAR(100) DEFAULT NULL,  chunk_x INT DEFAULT NULL,  chunk_z INT DEFAULT NULL,  uuid VARCHAR(36) DEFAULT NULL,  numeric_value DOUBLE DEFAULT NULL,  string_value TEXT DEFAULT NULL,  CONSTRAINT pk_spy_stats PRIMARY KEY (id),  INDEX idx_spy_stats_time_key USING BTREE (stat_time, stat_key),  INDEX idx_spy_ext_key USING BTREE (server, world, chunk_x, chunk_z, uuid));"</code></td>
 </tr>
 <tr class="rowColor">
 <td class="colFirst"><a name="com.programmerdan.minecraft.civspy.database.Database.INSERT_COMBINED">
