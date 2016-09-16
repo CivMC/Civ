@@ -11,21 +11,21 @@ public final class DurationUtils {
 
     public static String format(int seconds) {
         List<String> parts = new ArrayList<>();
-        long days = seconds / MILLISECONDS.convert(1, DAYS);
+        long days = seconds / SECONDS.convert(1, DAYS);
         if (days > 0) {
-            seconds -= MILLISECONDS.convert(days, DAYS);
+            seconds -= SECONDS.convert(days, DAYS);
             parts.add(days + (days > 1 ? " days" : " day"));
         }
 
-        long hours = seconds / MILLISECONDS.convert(1, HOURS);
+        long hours = seconds / SECONDS.convert(1, HOURS);
         if (hours > 0) {
-            seconds -= MILLISECONDS.convert(hours, HOURS);
+            seconds -= SECONDS.convert(hours, HOURS);
             parts.add(hours + (hours > 1 ? " hours" : " hour"));
         }
 
-        long minutes = seconds / MILLISECONDS.convert(1, MINUTES);
+        long minutes = seconds / SECONDS.convert(1, MINUTES);
         if (minutes > 0) {
-            seconds -= MILLISECONDS.convert(minutes, MINUTES);
+            seconds -= SECONDS.convert(minutes, MINUTES);
             parts.add(minutes + (minutes > 1 ? " minutes" : " minute"));
         }
 
