@@ -126,7 +126,9 @@ factories:
     type: FCCUPGRADE
     name: Potion Factory
     recipes:
-    - Placeholder
+    - Brew Strength II Extra Ext
+    - Brew Speed II Extra Ext
+    - Brew Regen Extra Ext
     - Accident Repair
   Lottery_Factory:
     type: FCCUPGRADE
@@ -1569,6 +1571,69 @@ recipes:
             enchant: DIG_SPEED
             level: 8
             ~~
+  Brew Strength II Extra Ext:
+    type: PRODUCTION
+    name: Brew Strength II Extra Ext
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      strengthIIext:
+        material: POTION
+        type: STRENGTH
+        upgraded: true
+        custom_effects:
+          strengthIIext:
+            type: STRENGTH
+            duration: 8m
+            amplifier: 2
+  Brew Speed II Extra Ext:
+    type: PRODUCTION
+    name: Brew Speed II Extra Ext
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      speedIIext:
+        material: POTION
+        type: SPEED
+        upgraded: true
+        custom_effects:
+          speedIIext:
+            type: SPEED
+            duration: 8m
+            amplifier: 2
+  Brew Regen Extra Ext:
+    type: PRODUCTION
+    name: Brew Regen Extra Ext
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      regenext:
+        material: POTION
+        type: REGEN
+        upgraded: true
+        custom_effects:
+          regenext:
+            type: REGEN
+            duration: 8m
+            amplifier: 2
   Placeholder:
     type: PRODUCTION
     name: Placeholder
@@ -1588,7 +1653,7 @@ recipes:
     type: COSTRETURN
     production_time: 2d
     name: Destroy Factory
-    factor: 0.75
+    factor: 1.0
     input:
       furnace:
         material: FURNACE
