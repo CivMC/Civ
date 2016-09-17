@@ -1,12 +1,16 @@
 package com.untamedears.JukeAlert.chat;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+
+import com.untamedears.JukeAlert.JukeAlert;
 
 
 public class SendSnitchInfo implements Runnable {
@@ -51,6 +55,22 @@ public class SendSnitchInfo implements Runnable {
             } else {
 			    output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
             }
+            
+            try {            
+                TimeZone timeZone = Calendar.getInstance().getTimeZone();
+                Date now = Calendar.getInstance().getTime();
+                boolean daylightTime = timeZone.inDaylightTime(now);
+                int offsetMinutes = timeZone.getOffset(now.getTime()) / 60000;
+                int offsetHours = offsetMinutes/60;
+                offsetMinutes %= 60;                        
+                output += ChatColor.DARK_AQUA + " All times are " + timeZone.getDisplayName(daylightTime, TimeZone.SHORT) +
+                            String.format(" (UTC%s%02d:%02d)", offsetHours>0?"+":"-", Math.abs(offsetHours), offsetMinutes) + "\n";
+            }
+            catch (IllegalArgumentException iae){
+                JukeAlert.getInstance().getLogger().log(Level.WARNING, "Illegal Argument Exception while crafting " + 
+                                                        "timezone header in SendSnitchInfo", iae);
+            }
+            
 			output += id;
 			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
 			
