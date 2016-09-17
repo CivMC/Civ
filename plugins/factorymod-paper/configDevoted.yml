@@ -1500,6 +1500,7 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 6
+            ~~
   Efficiency VII Pickaxe:
     type: PRODUCTION
     name: Efficiency VII Pickaxe
@@ -1557,6 +1558,7 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 7
+            ~~
   Efficiency VIII Pickaxe:
     type: PRODUCTION
     name: Efficiency VIII Pickaxe
@@ -1658,6 +1660,7 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
+            ~~
   Efficiency VI Axe:
     type: PRODUCTION
     name: Efficiency VIII Axe
@@ -1759,6 +1762,7 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
+            ~~
   Brew Strength II Extra Ext:
     type: PRODUCTION
     name: Brew Strength II Extra Ext
