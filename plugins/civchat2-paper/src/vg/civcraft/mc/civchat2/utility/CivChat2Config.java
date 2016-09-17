@@ -28,14 +28,6 @@ public class CivChat2Config {
 		return config.getBoolean("info.loginAnnounce", false);
 	}
 
-	public int getFilesToZip() {
-		return config.getInt("file.filesToZip");
-	}
-
-	public int getMaxNumberofZips() {
-		return config.getInt("file.maxNumberofZips");
-	}
-
 	public int getChatRange() {
 		return config.getInt("chat.globalChatRange");
 	}

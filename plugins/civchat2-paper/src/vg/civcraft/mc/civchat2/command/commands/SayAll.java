@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.mercury.MercuryAPI;
@@ -14,22 +13,17 @@ import vg.civcraft.mc.mercury.MercuryAPI;
 public class SayAll extends PlayerCommand {
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	
 	public SayAll(String name) {
 		super(name);
 		setIdentifier("sayall");
 		setDescription("This command is used to broadcast a message to all shards");
 		setUsage("/sayall (message)");
-		setArguments(0,100);
+		setArguments(1,100);
 	}
 	
 	@Override
 	public boolean execute(CommandSender sender, String[] args){
-		if (args.length == 0) {
-			handler.helpPlayer(this, sender);
-			return true;
-		}
 		StringBuilder sb = new StringBuilder();
 		for(String add: args) {
 			sb.append(add);

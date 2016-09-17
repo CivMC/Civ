@@ -8,15 +8,11 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
-import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class Exit extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
-	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	
 	public Exit(String name) {
 		super(name);
@@ -38,17 +34,10 @@ public class Exit extends PlayerCommand{
 		Player player = (Player) sender;
 		String name = player.getName();
 		
-		if(args.length == 0){
-			//right number of args
-			chatMan.removeChannel(name);
-			chatMan.removeGroupChat(name);
-			sender.sendMessage(ChatColor.YELLOW + "You have been moved to global chat.");
-			return true;
-		}
-		handler.helpPlayer(this, sender);
-		
-		return true;
-		
+		chatMan.removeChannel(name);
+		chatMan.removeGroupChat(name);
+		sender.sendMessage(ChatColor.YELLOW + "You have been moved to global chat.");
+		return true;	
 	}
 
 	@Override

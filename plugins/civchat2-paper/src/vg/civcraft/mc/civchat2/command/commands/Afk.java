@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -17,7 +16,6 @@ public class Afk extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	
 	public Afk(String name) {
 		super(name);
@@ -36,13 +34,7 @@ public class Afk extends PlayerCommand{
 			return true;
 		}
 		
-		Player player = (Player) sender;
-		
-		if(!(args.length == 0)){
-			handler.helpPlayer(this, sender); 
-			return true;
-		}
-		
+		Player player = (Player) sender;		
 		String name = NameAPI.getCurrentName(player.getUniqueId());
 		chatMan.toggleAfk(name);
 		String debugMessage = "Player toggled AFK state, Player: " + name + " Current State: " + chatMan.isAfk(name);

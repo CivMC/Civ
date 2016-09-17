@@ -2,6 +2,7 @@ package vg.civcraft.mc.civchat2;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -14,7 +15,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
-import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
+import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -53,7 +54,6 @@ public class CivChat2Manager {
 		instance = pluginInstance;
 		config = instance.getPluginConfig();
 		chatLog = instance.getCivChat2FileLogger();
-		chatLog.test();
 		DBM = instance.getDatabaseManager();
 		defaultColor = config.getDefaultColor();
 		chatChannels = new HashMap<String, String>();
@@ -123,14 +123,14 @@ public class CivChat2Manager {
 	/**
 	 * Method to Send private message between to players
 	 * @param sender Player sending the message
-	 * @param receive Player Receiving the message
+	 * @param receiver Player Receiving the message
 	 * @param chatMessage Message to send from sender to receive
 	 */
-	public void sendPrivateMsg(Player sender, Player receive, String chatMessage) {		
+	public void sendPrivateMsg(Player sender, Player receiver, String chatMessage) {		
 		StringBuilder sb = new StringBuilder();
 	
 		String senderName = sender.getName();
-		String receiverName = receive.getName();
+		String receiverName = receiver.getName();
 		
 		String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
 								.append("To ")
@@ -157,8 +157,8 @@ public class CivChat2Manager {
 								.toString());
 		sb.delete(0, sb.length());
 		
-		if(isAfk(receive.getName())){
-			receive.sendMessage(receiverMessage);
+		if(isAfk(receiver.getName())){
+			receiver.sendMessage(receiverMessage);
 			sender.sendMessage(AFKMSG);
 			return;
 		}
@@ -171,11 +171,11 @@ public class CivChat2Manager {
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
-		chatLog.writeToChatLog(senderName, chatMessage, "P MSG");
+		chatLog.logPrivateMessage(sender, chatMessage, receiver.getName());
 		replyList.put(receiverName, senderName);
 		replyList.put(senderName, receiverName);
 		sender.sendMessage(senderMessage);
-		receive.sendMessage(receiverMessage);
+		receiver.sendMessage(receiverMessage);
 	}
 	
 	/**
@@ -218,7 +218,7 @@ public class CivChat2Manager {
                 .append(chatMessage)
                 .toString());
         CivChat2.debugmessage("Sending private chat message");
-        chatLog.writeToChatLog(sender.getName(), chatMessage, "P MSG");
+        chatLog.logPrivateMessage(sender, chatMessage, receiver);
        
         replyList.put(sender.getName(), receiver);
         MercuryAPI.sendMessage(receiverServer, "pm" + sep + sender.getName() + sep + receiver.trim()+sep + chatMessage.replace(sep, ""), "civchat2");
@@ -269,7 +269,6 @@ public class CivChat2Manager {
 		
 		UUID uuid = NameAPI.getUUID(sender.getName());
 		StringBuilder sb = new StringBuilder();
-		chatLog.writeToChatLog(sender.getName(), chatMessage, "GLOBAL");
 
 		//do height check
 		if(y > height){
@@ -289,6 +288,8 @@ public class CivChat2Manager {
 		if(event.getFormat().equals("<%1$s> %2$s")) {
 			event.setFormat("%1$s: %2$s");
 		}
+
+		Set<String> recivers = new HashSet<String>();
 		for (Player receiver : recipients){
 			if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
 				//loop through players and send to those that are close enough
@@ -309,9 +310,11 @@ public class CivChat2Manager {
 								newColor + chatMessage));
 					}
 				}
+				recivers.add(receiver.getName());
 			}
 		}
-	
+		recivers.remove(sender.getName()); //remove the sender from the list
+		chatLog.logGlobalMessage(sender, chatMessage, recivers);
 	}
 
 	/**
@@ -487,7 +490,14 @@ public class CivChat2Manager {
 			}
 		}
 		
-		chatLog.writeToChatLog(name, groupMsg, "GROUP MSG");
+		Set<String> players = new HashSet<String>();
+		for(UUID uuid : membersUUID){
+			if(MercuryAPI.getAllAccounts().contains(uuid)){
+				players.add(NameAPI.getCurrentName(uuid));
+			}
+		}
+		players.remove(name); //remove the sender from the list
+		chatLog.logGroupMessage(msgSender, groupMsg, group.getName(), players);
 	}
 	
 	public void sendGroupMsgFromOtherShard(String name, String groupName, String groupMsg) {
@@ -526,7 +536,6 @@ public class CivChat2Manager {
 				sb.delete(0, sb.length());
 			}
 		}
-		chatLog.writeToChatLog(name, groupMsg, "GROUP MSG");
 	}
 	
 	/**

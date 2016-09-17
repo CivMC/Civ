@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -22,7 +21,6 @@ public class GroupChat extends PlayerCommand{
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private CivChat2CommandHandler handler = (CivChat2CommandHandler) plugin.getCivChat2CommandHandler();
 	
 	public GroupChat(String name) {
 		super(name);
@@ -62,12 +60,11 @@ public class GroupChat extends PlayerCommand{
 			else {
 				String grpName = gm.getDefaultGroup(uuid);
 				if (grpName != null) {
-					group = gm.getGroup(grpName);
+					group = GroupManager.getGroup(grpName);
 					defGroup = true;
 				}
 				else {
-					handler.helpPlayer(this, sender);
-					return true;
+					return false;
 				}
 			}
 		}
@@ -143,10 +140,7 @@ public class GroupChat extends PlayerCommand{
 				return true;
 			}
 		}
-		
-		handler.helpPlayer(this, sender);
-		
-		return true;
+		return false;
 		
 	}
 

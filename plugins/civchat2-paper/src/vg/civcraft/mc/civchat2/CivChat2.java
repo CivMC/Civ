@@ -13,8 +13,8 @@ import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.listeners.MercuryMessageListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
+import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.civchat2.zipper.CivChat2FileLogger;
 import vg.civcraft.mc.bettershards.listeners.BetterShardsListener;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -58,7 +58,6 @@ public class CivChat2 extends ACivMod{
 		fileLog = new CivChat2FileLogger();
 		DBM = new DatabaseManager();
 		chatMan = new CivChat2Manager(instance);
-		fileLog.Init();
 		groupsEnabled = config_.getGroupsEnabled();
 		log_.info(sb.append("groupsEnabled is set to: ")
 					.append(groupsEnabled)
@@ -81,7 +80,6 @@ public class CivChat2 extends ACivMod{
 	
 	public void onDisable(){
 		//onDisable stuff
-		fileLog.serverShutdown();
 	}
 	
 	public CivChat2Manager getCivChat2Manager(){
