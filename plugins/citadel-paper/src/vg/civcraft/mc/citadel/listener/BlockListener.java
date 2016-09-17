@@ -58,7 +58,6 @@ import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.citadel.reinforcementtypes.ExclusiveReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -150,7 +149,7 @@ public class BlockListener implements Listener {
             return;
         }
         // Don't allow incorrect reinforcement with exclusive reinforcement types
-        if (!ExclusiveReinforcementType.canReinforce(type.getMaterial(), b.getType())) {
+        if (!type.canBeReinforced(b.getType())) {
             sendAndLog(p, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
             event.setCancelled(true);
             return;
@@ -626,7 +625,7 @@ public class BlockListener implements Listener {
 						return;
 					}
 					// Don't allow incorrect reinforcement with exclusive reinforcement types
-					if (!ExclusiveReinforcementType.canReinforce(type.getMaterial(), block.getType())) {
+					if (!type.canBeReinforced(block.getType())) {
 						sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
 						sendAndLog(player, ChatColor.RED,"Left Reinforcement mode.");
 						state.reset();
@@ -678,7 +677,7 @@ public class BlockListener implements Listener {
 					ReinforcementType type = ReinforcementType.getReinforcementType(stack);
 					if (type != null && !reinforcement.getStackRepresentation().isSimilar(type.getItemStack())) {
 						//hit with different rein material, so switch material
-						if (!ExclusiveReinforcementType.canReinforce(type.getMaterial(), block.getType())) {
+						if (!type.canBeReinforced(block.getType())) {
 							sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
 						}
 						else {

@@ -2,8 +2,10 @@ package vg.civcraft.mc.citadel.reinforcementtypes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Material;
@@ -25,13 +27,14 @@ public class ReinforcementType {
 	private int scale;
 	private ItemStack stack;
 	private ReinforcementEffect effect;
+	private Set <Material> allowedReinforceables;
 	
 	private static Map<ItemStack, ReinforcementType> types = 
 			new HashMap<ItemStack, ReinforcementType>();
 	
 	public ReinforcementType(Material mat, int amount, double percentReturn,
 			int returnValue, int hitpoints, int maturationTime, int acidTime,
-			int scale, List<String> lore, ReinforcementEffect effect) {
+			int scale, List<String> lore, ReinforcementEffect effect, Set <Material> allowsReinforceables) {
 		this.mat = mat;
 		this.amount = amount;
 		this.percentReturn = percentReturn/100;
@@ -47,6 +50,7 @@ public class ReinforcementType {
 		stack.setItemMeta(meta);
 		this.stack = stack;
 		types.put(stack, this);
+		this.allowedReinforceables = allowsReinforceables;
 	}
 	
 	public static void initializeReinforcementTypes(){
@@ -62,8 +66,25 @@ public class ReinforcementType {
 			int maturation_scale = CitadelConfigManager.getMaturationScale(type);
 			List<String> lore = CitadelConfigManager.getLoreValues(type);
 			ReinforcementEffect effect = CitadelConfigManager.getReinforcementEffect(type);
+			List <String> reinforceableMatString = CitadelConfigManager.getReinforceableMaterials(type);
+			Set <Material> reinforceableMats;
+			if (reinforceableMatString.size() == 0) {
+				reinforceableMats = null;
+			}
+			else {
+				reinforceableMats = new HashSet<Material>();
+				for(String s : reinforceableMatString) {
+					try {
+						Material reinmat = Material.valueOf(s);
+						reinforceableMats.add(reinmat);
+					}
+					catch (IllegalArgumentException e) {
+						Citadel.getInstance().getLogger().warning("The specified reinforceable material " + s + " could not be parsed");					
+					}
+				}
+			}
 			new ReinforcementType(mat, amount, percentReturn, returnValue,
-					hitpoints, maturation, acid, maturation_scale, lore, effect);
+					hitpoints, maturation, acid, maturation_scale, lore, effect, reinforceableMats);
 			if (CitadelConfigManager.shouldLogInternal()) {
 				Citadel.getInstance().getLogger().log(Level.INFO,
 						"Adding Reinforcement {0} with:\n  material {1} \n  amount {2} "
@@ -136,8 +157,9 @@ public class ReinforcementType {
 	 */
 	public static ReinforcementType getReinforcementType(ItemStack stack){
 		for (ItemStack storedStack: types.keySet())
-			if (storedStack.isSimilar(stack))
+			if (storedStack.isSimilar(stack)) {
 				return types.get(storedStack);
+			}
 		return null;
 	}
 	/**
@@ -145,6 +167,13 @@ public class ReinforcementType {
 	 */
 	public ItemStack getItemStack(){
 		return stack;
+	}
+	
+	public boolean canBeReinforced(Material mat) {
+		if (allowedReinforceables == null) {
+			return true;
+		}
+		return allowedReinforceables.contains(mat);
 	}
 	
 	public static List<ReinforcementType> getReinforcementTypes(){

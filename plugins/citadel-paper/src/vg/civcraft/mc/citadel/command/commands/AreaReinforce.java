@@ -15,7 +15,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.reinforcementtypes.ExclusiveReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -96,7 +95,7 @@ public class AreaReinforce extends PlayerCommandMiddle {
 							.getBlockAt(x, y, z));
 					if (!(current.getType() == Material.AIR) && !rm.isReinforced(current) 
 							&& !Utility.wouldPlantDoubleReinforce(current)) {				
-						if (!ExclusiveReinforcementType.canReinforce(rt.getMaterial(), current.getType())) {
+						if (!rt.canBeReinforced(current.getType())) {
 							sendAndLog(p, ChatColor.RED, "The block at " + x + ", " + y + ", " + z + 
 									" was not reinforced because the material type you are using cannot reinforce that type of block.");
 							continue;

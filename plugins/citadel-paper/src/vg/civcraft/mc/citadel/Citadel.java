@@ -20,7 +20,6 @@ import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.ShardListener;
 import vg.civcraft.mc.citadel.listener.WorldListener;
 import vg.civcraft.mc.citadel.misc.CitadelStatics;
-import vg.civcraft.mc.citadel.reinforcementtypes.ExclusiveReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -50,7 +49,6 @@ public class Citadel extends JavaPlugin{
 		ReinforcementType.initializeReinforcementTypes();
 		NaturalReinforcementType.initializeNaturalReinforcementsTypes();
 		NonReinforceableType.initializeNonReinforceableTypes();
-		ExclusiveReinforcementType.initializeExclusiveReinforcementTypes();
 		initializeDatabase();
 		
 		rm = new ReinforcementManager(db);
