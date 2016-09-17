@@ -70,7 +70,7 @@ public class MultiPageView {
 			ci.setSlot(baCl, getContentSize());
 		}
 		// next button
-		if ((getContentSize() * (currentPage + 1)) <= clickables.size()) {
+		if ((getContentSize() * (currentPage + 1)) < clickables.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
 			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
