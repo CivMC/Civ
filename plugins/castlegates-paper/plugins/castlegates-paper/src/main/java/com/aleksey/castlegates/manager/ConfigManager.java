@@ -58,6 +58,7 @@ public class ConfigManager {
 	private int maxRedstoneDistance;
 	private boolean allowAutoCreate;
 	private boolean interactWithSnitches;
+	private boolean logChanges;
 	
 	public void load(FileConfiguration file) {
 		this.file = file;
@@ -76,6 +77,7 @@ public class ConfigManager {
 		this.playerStateResetInSeconds = getInt("Settings.PlayerStateResetInSeconds", 5 * 60);
 		this.switchTimeout = getInt("Settings.SwitchTimeout", 1000, 500, 100000);
 		this.maxRedstoneDistance = getInt("Settings.MaxRedstoneDistance", 7);
+		this.logChanges = getBoolean("Settings.LogChanges", true);
 		
 		this.gearMaterials = getBlockMaterials("Blocks.GearMaterials", ConfigDefaults.gearMaterials);
 		this.bridgeMaterials = getBlockMaterials("Blocks.BridgeMaterials", ConfigDefaults.bridgeMaterials);
@@ -184,6 +186,10 @@ public class ConfigManager {
 	
 	public boolean getInteractWithSnitches() {
 		return this.interactWithSnitches;
+	}
+
+	public boolean getLogChanges() {
+		return this.logChanges;
 	}
 
 	private String getString(String path, String defaultData) {
