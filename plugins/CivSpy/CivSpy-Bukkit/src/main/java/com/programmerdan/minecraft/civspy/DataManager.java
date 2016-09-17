@@ -303,9 +303,7 @@ public class DataManager {
 					inFlow += instantInflow[i];
 					outFlow += instantOutflow[i];
 				}
-				avgInflow = (double) inFlow / (double) (flowCaptureWindows - 1);
-				avgOutflow = (double) outFlow / (double) (flowCaptureWindows - 1);
-				flowRatio = avgInflow / avgOutflow;
+				flowRatio = outFlow > 0 ? (double) inFlow / (double) outFlow : 0.0d;
 				
 				int nextFlowWindow = (whichFlowWindow + 1) % flowCaptureWindows;
 				instantInflow[nextFlowWindow] = 0l;
@@ -334,23 +332,27 @@ public class DataManager {
 							missCounterOffloadIndex,
 							missCounterOutsideTracking,
 							missCounterWrongWindow});
-					StringBuilder flowReport = new StringBuilder();
-					flowReport.append(roughWorkerCount).append(" dequeue workers active. Per dequeue averages: ");
-					Iterator<RepeatingQueueMinder> rqms = actualWorkers.iterator();
-					double avgsum = 0.0;
-					double avgcnt = 0.0;
-					while (rqms.hasNext()) {
-						RepeatingQueueMinder rqm = rqms.next();
-						if (rqm.nanoTimeCumulativeAvg < 0.0) {
-							rqms.remove();
-						} else {
-							avgsum += rqm.nanoTimeCumulativeAvg;
-							avgcnt ++;
-							flowReport.append(rqm.nanoTimeCumulativeAvg).append("ns, ");
+					try {
+						StringBuilder flowReport = new StringBuilder();
+						flowReport.append(roughWorkerCount).append(" dequeue workers active. Per dequeue averages: ");
+						Iterator<RepeatingQueueMinder> rqms = actualWorkers.iterator();
+						double avgsum = 0.0;
+						double avgcnt = 0.0;
+						while (rqms.hasNext()) {
+							RepeatingQueueMinder rqm = rqms.next();
+							if (rqm.nanoTimeCumulativeAvg < 0.0) {
+								rqms.remove();
+							} else {
+								avgsum += rqm.nanoTimeCumulativeAvg;
+								avgcnt ++;
+								flowReport.append(String.format("%.2f", rqm.nanoTimeCumulativeAvg)).append("ns, ");
+							}
 						}
+						flowReport.append("\n overall avg: ").append( String.format("%.2f", (avgsum / avgcnt) ) ).append("ns.");
+						logger.log(Level.INFO, flowReport.toString());
+					} catch (Throwable e) {
+						logger.log(Level.WARNING, "Failed to generate flow timing report", e);
 					}
-					flowReport.append("\n overall avg: ").append( (avgsum / avgcnt) ).append("ns.");
-					logger.log(Level.INFO, flowReport.toString());
 				}
 				
 				if (truePeriod > (flowCapturePeriod * 1.1d)) {
