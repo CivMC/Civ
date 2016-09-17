@@ -1771,10 +1771,11 @@ recipes:
         lore:
         - Recipe coming soon!
     output:
-      strengthIIext:
+      effects:
         material: POTION
         type: STRENGTH
         upgraded: true
+        extended: false
         custom_effects:
           strengthIIext:
             type: STRENGTH
@@ -1792,10 +1793,11 @@ recipes:
         lore:
         - Recipe coming soon!
     output:
-      speedIIext:
+      effects:
         material: POTION
         type: SPEED
         upgraded: true
+        extended: false
         custom_effects:
           speedIIext:
             type: SPEED
@@ -1813,15 +1815,16 @@ recipes:
         lore:
         - Recipe coming soon!
     output:
-      regenext:
+      effects:
         material: POTION
         type: REGEN
-        upgraded: true
+        upgraded: false
+        extended: true
         custom_effects:
           regenext:
             type: REGEN
             duration: 8m
-            amplifier: 2
+            amplifier: 1
   Placeholder:
     type: PRODUCTION
     name: Placeholder
