@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Effect;
@@ -28,6 +29,13 @@ public class CitadelConfigManager {
 	public static List<String> getReinforceableMaterials(String mat){
 		if(config.getConfigurationSection("reinforcements." + mat).contains("reinforceables")) {
 			return config.getConfigurationSection("reinforcements." + mat).getStringList("reinforceables");
+		}
+		return null;
+	}
+	
+	public static List<String> getNonReinforceableMaterials(String mat){
+		if(config.getConfigurationSection("reinforcements." + mat).contains("non_reinforceables")) {
+			return config.getConfigurationSection("reinforcements." + mat).getStringList("non_reinforceables");
 		}
 		return null;
 	}
@@ -205,5 +213,25 @@ public class CitadelConfigManager {
 	
 	public static boolean defaultBypassOn() {
 		return config.getBoolean("default_bypass_mode");
+	}
+	
+	public static Set<Material> parseMaterialList(List <String> stringList) {
+		Set <Material> reinforceableMats;
+		if (stringList == null || stringList.size() == 0) {
+			reinforceableMats = null;
+		}
+		else {
+			reinforceableMats = new HashSet<Material>();
+			for(String s : stringList) {
+				try {
+					Material reinmat = Material.valueOf(s);
+					reinforceableMats.add(reinmat);
+				}
+				catch (IllegalArgumentException e) {
+					Citadel.getInstance().getLogger().warning("The specified reinforceable material " + s + " could not be parsed");					
+				}
+			}
+		}
+		return reinforceableMats;
 	}
 }
