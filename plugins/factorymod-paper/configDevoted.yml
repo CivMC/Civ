@@ -339,7 +339,7 @@ recipes:
         amount: 16
     output:
       Stone_Obsidian:
-        material: OBSIDIAN
+        material: STONE
         amount: 128
         lore:
         - Stone Reinforced Obsidian
@@ -350,43 +350,50 @@ recipes:
     input:
       lead:
         material: COAL
+        name: Lead
         amount: 8
         lore:
         - Lead T1
       steel:
         material: IRON_INGOT
+        name: Steel
         amount: 8
         lore:
         - Steel T1
       bronze:
         material: INK_SACK
+        name: Bronze
         durability: 4
         amount: 4
         lore:
         - Bronze T1
       silver:
         material: GOLD_INGOT
+        name: Silver
         amount: 4
         lore:
         - Silver T1
       copper:
         material: REDSTONE
+        name: Copper
         amount: 4
         lore:
         - Copper T1
       titanium:
         material: DIAMOND
+        name: Titanium
         amount: 4
         lore:
         - Titanium T1
       mercury:
         material: EMERALD
+        name: Mercury
         amount: 4
         lore:
         - Mercury T1
     output:
       Iron_Obsidian:
-        material: OBSIDIAN
+        material: IRON_INGOT
         amount: 16
         lore:
         - Iron Reinforced Obsidian
@@ -397,43 +404,50 @@ recipes:
     input:
       nickel:
         material: COAL
+        name: Nickel
         amount: 64
         lore:
         - Nickel T2
-      aluminum:
+      Aluminium:
         material: IRON_INGOT
+        name: Aluminium
         amount: 64
         lore:
-        - Aluminum T2
+        - Aluminium T2
       pewter:
         material: INK_SACK
+        name: Pewter
         durability: 4
         amount: 32
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
+        name: Pearl
         amount: 32
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
+        name: Brass
         amount: 32
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
+        name: Platinum
         amount: 32
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
+        name: Enderite
         amount: 32
         lore:
         - Enderite T2
     output:
       Diamond_Obsidian:
-        material: OBSIDIAN
+        material: DIAMOND
         amount: 128
         lore:
         - Diamond Reinforced Obsidian
@@ -444,80 +458,94 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
         - Rotten Heart T3
     output:
       Emerald_Obsidian:
-        material: OBSIDIAN
+        material: EMERALD
         amount: 256
         lore:
         - Emerald Reinforced Obsidian
@@ -528,43 +556,50 @@ recipes:
     input:
       lead:
         material: COAL
+        name: Lead
         amount: 8
         lore:
         - Lead T1
       steel:
         material: IRON_INGOT
+        name: Steel
         amount: 8
         lore:
         - Steel T1
       bronze:
         material: INK_SACK
+        name: Bronze
         durability: 4
         amount: 4
         lore:
         - Bronze T1
       silver:
         material: GOLD_INGOT
+        name: Silver
         amount: 4
         lore:
         - Silver T1
       copper:
         material: REDSTONE
+        name: Copper
         amount: 4
         lore:
         - Copper T1
       titanium:
         material: DIAMOND
+        name: Titanium
         amount: 4
         lore:
         - Titanium T1
       mercury:
         material: EMERALD
+        name: Mercury
         amount: 4
         lore:
         - Mercury T1
     output:
       Iron_Door:
-        material: IRON_DOOR
+        material: IRON_INGOT
         amount: 8
         lore:
         - Iron Reinforced Door
@@ -575,43 +610,50 @@ recipes:
     input:
       nickel:
         material: COAL
+        name: Nickel
         amount: 64
         lore:
         - Nickel T2
-      aluminum:
+      Aluminium:
         material: IRON_INGOT
+        name: Aluminium
         amount: 64
         lore:
-        - Aluminum T2
+        - Aluminium T2
       pewter:
         material: INK_SACK
+        name: Pewter
         durability: 4
         amount: 32
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
+        name: Pearl
         amount: 32
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
+        name: Brass
         amount: 32
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
+        name: Platinum
         amount: 32
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
+        name: Enderite
         amount: 32
         lore:
         - Enderite T2
     output:
       Diamond_Door:
-        material: IRON_DOOR
+        material: DIAMOND
         amount: 32
         lore:
         - Diamond Reinforced Door
@@ -622,80 +664,94 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
         - Rotten Heart T3
     output:
       Emerald_Door:
-        material: IRON_DOOR
+        material: EMERALD
         amount: 32
         lore:
         - Emerald Reinforced Door
@@ -706,43 +762,50 @@ recipes:
     input:
       nickel:
         material: COAL
+        name: Nickel
         amount: 64
         lore:
         - Nickel T2
-      aluminum:
+      Aluminium:
         material: IRON_INGOT
+        name: Aluminium
         amount: 64
         lore:
-        - Aluminum T2
+        - Aluminium T2
       pewter:
         material: INK_SACK
+        name: Pewter
         durability: 4
         amount: 32
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
+        name: Pearl
         amount: 32
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
+        name: Brass
         amount: 32
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
+        name: Platinum
         amount: 32
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
+        name: Enderite
         amount: 32
         lore:
         - Enderite T2
     output:
       Diamond_Chest:
-        material: CHEST
+        material: DIAMOND
         amount: 8
         lore:
         - Diamond Reinforced Chest
@@ -753,80 +816,94 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
         - Rotten Heart T3
     output:
       Emerald_Chest:
-        material: CHEST
+        material: EMERALD
         amount: 32
         lore:
         - Emerald Reinforced Chest
@@ -837,43 +914,50 @@ recipes:
     input:
       nickel:
         material: COAL
+        name: Nickel
         amount: 256
         lore:
         - Nickel T2
-      aluminum:
+      Aluminium:
         material: IRON_INGOT
+        name: Aluminium
         amount: 128
         lore:
-        - Aluminum T2
+        - Aluminium T2
       pewter:
         material: INK_SACK
+        name: Pewter
         durability: 4
         amount: 64
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
+        name: Pearl
         amount: 64
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
+        name: Brass
         amount: 64
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
+        name: Platinum
         amount: 64
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
+        name: Enderite
         amount: 64
         lore:
         - Enderite T2
     output:
       Diamond_Spike:
-        material: OBSIDIAN
+        material: DIAMOND
         amount: 4
         lore:
         - Diamond Reinforced Obsidian Spike
@@ -884,80 +968,94 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 124
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 124
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 64
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 64
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 64
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 64
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 64
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 64
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 64
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 64
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 64
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 64
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 64
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 64
         lore:
         - Rotten Heart T3
     output:
       Emerald_Spike:
-        material: OBSIDIAN
+        material: EMERALD
         amount: 16
         lore:
         - Emerald Reinforced Obsidian Spike
@@ -975,6 +1073,7 @@ recipes:
     output:
       sponge:
         material: SPONGE
+        name: Claims Bastion
         amount: 1
         lore:
         - Claims Bastion
@@ -985,43 +1084,51 @@ recipes:
     input:
       lead:
         material: COAL
+        name: Lead
         amount: 4
         lore:
         - Lead T1
       steel:
         material: IRON_INGOT
+        name: Steel
         amount: 4
         lore:
         - Steel T1
       bronze:
         material: INK_SACK
+        name: Bronze
         durability: 4
         amount: 2
         lore:
         - Bronze T1
       silver:
         material: GOLD_INGOT
+        name: Silver
         amount: 2
         lore:
         - Silver T1
       copper:
         material: REDSTONE
+        name: Copper
         amount: 2
         lore:
         - Copper T1
       titanium:
         material: DIAMOND
+        name: Titanium
         amount: 2
         lore:
         - Titanium T1
       mercury:
         material: EMERALD
+        name: Mercury
         amount: 2
         lore:
         - Mercury T1
     output:
       sponge:
         material: SPONGE
+        name: City Bastion
         amount: 1
         lore:
         - City Bastion
@@ -1032,73 +1139,87 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 124
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 124
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 64
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 64
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 64
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 64
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 64
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 64
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 64
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 64
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 64
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 64
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 64
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 64
         lore:
@@ -1106,6 +1227,7 @@ recipes:
     output:
       sponge:
         material: SPONGE
+        name: Vault Bastion
         amount: 32
         lore:
         - Vault Bastion
@@ -1116,37 +1238,44 @@ recipes:
     input:
       ghasteye:
         material: SPIDER_EYE
+        name: Ghast Eye
         amount: 32
         lore:
         - Ghast Eye T1
       cocoon:
         material: SNOW_BALL
+        name: Cocoon
         amount: 32
         lore:
         - Cocoon T1
       blazeember:
         material: SULPHUR
+        name: Blaze Ember
         amount: 32
         lore:
         - Blaze Ember T1
       creeperblood:
         material: CARPET
+        name: Creeper Blood
         durability: 14
         amount: 32
         lore:
         - Creeper Blood T1
       ribcage:
         material: BONE_BLOCK
+        name: Ribcage
         amount: 32
         lore:
         - Ribcage T1
       magmaegg:
         material: MAGMA
+        name: Magma Egg
         amount: 32
         lore:
         - Magma Egg T1
       zombietooth:
         material: FEATHER
+        name: Zombie's Tooth
         amount: 32
         lore:
         - Zombie's Tooth T1
@@ -1165,37 +1294,44 @@ recipes:
     input:
       ghasteye:
         material: SPIDER_EYE
+        name: Ghast Eye
         amount: 64
         lore:
         - Ghast Eye T1
       cocoon:
         material: SNOW_BALL
+        name: Cocoon
         amount: 64
         lore:
         - Cocoon T1
       blazeember:
         material: SULPHUR
+        name: Blaze Ember
         amount: 64
         lore:
         - Blaze Ember T1
       creeperblood:
         material: CARPET
+        name: Creeper Blood
         durability: 14
         amount: 64
         lore:
         - Creeper Blood T1
       ribcage:
         material: BONE_BLOCK
+        name: Ribcage
         amount: 64
         lore:
         - Ribcage T1
       magmaegg:
         material: MAGMA
+        name: Magma Egg
         amount: 64
         lore:
         - Magma Egg T1
       zombietooth:
         material: FEATHER
+        name: Zombie's Tooth
         amount: 64
         lore:
         - Zombie's Tooth T1
@@ -1214,73 +1350,87 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
@@ -1300,37 +1450,44 @@ recipes:
     input:
       ghasteye:
         material: SPIDER_EYE
+        name: Ghast Eye
         amount: 32
         lore:
         - Ghast Eye T1
       cocoon:
         material: SNOW_BALL
+        name: Cocoon
         amount: 32
         lore:
         - Cocoon T1
       blazeember:
         material: SULPHUR
+        name: Blaze Ember
         amount: 32
         lore:
         - Blaze Ember T1
       creeperblood:
         material: CARPET
+        name: Creeper Blood
         durability: 14
         amount: 32
         lore:
         - Creeper Blood T1
       ribcage:
         material: BONE_BLOCK
+        name: Ribcage
         amount: 32
         lore:
         - Ribcage T1
       magmaegg:
         material: MAGMA
+        name: Magma Egg
         amount: 32
         lore:
         - Magma Egg T1
       zombietooth:
         material: FEATHER
+        name: Zombie's Tooth
         amount: 32
         lore:
         - Zombie's Tooth T1
@@ -1343,7 +1500,6 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 6
-            ~~
   Efficiency VII Pickaxe:
     type: PRODUCTION
     name: Efficiency VII Pickaxe
@@ -1351,37 +1507,44 @@ recipes:
     input:
       ghasteye:
         material: SPIDER_EYE
+        name: Ghast Eye
         amount: 64
         lore:
         - Ghast Eye T1
       cocoon:
         material: SNOW_BALL
+        name: Cocoon
         amount: 64
         lore:
         - Cocoon T1
       blazeember:
         material: SULPHUR
+        name: Blaze Ember
         amount: 64
         lore:
         - Blaze Ember T1
       creeperblood:
         material: CARPET
+        name: Creeper Blood
         durability: 14
         amount: 64
         lore:
         - Creeper Blood T1
       ribcage:
         material: BONE_BLOCK
+        name: Ribcage
         amount: 64
         lore:
         - Ribcage T1
       magmaegg:
         material: MAGMA
+        name: Magma Egg
         amount: 64
         lore:
         - Magma Egg T1
       zombietooth:
         material: FEATHER
+        name: Zombie's Tooth
         amount: 64
         lore:
         - Zombie's Tooth T1
@@ -1394,7 +1557,6 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 7
-            ~~
   Efficiency VIII Pickaxe:
     type: PRODUCTION
     name: Efficiency VIII Pickaxe
@@ -1402,73 +1564,87 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
@@ -1482,7 +1658,6 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
-            ~~
   Efficiency VI Axe:
     type: PRODUCTION
     name: Efficiency VIII Axe
@@ -1490,73 +1665,87 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 64
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 64
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 32
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 32
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 32
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 32
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 32
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 32
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 32
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 32
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 32
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 32
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 32
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 32
         lore:
@@ -1570,7 +1759,6 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
-            ~~
   Brew Strength II Extra Ext:
     type: PRODUCTION
     name: Brew Strength II Extra Ext
@@ -1686,37 +1874,44 @@ recipes:
     input:
       lead:
         material: COAL
+        name: Lead
         amount: 196
         lore:
         - Lead T1
       steel:
         material: IRON_INGOT
+        name: Steel
         amount: 128
         lore:
         - Steel T1
       bronze:
         material: INK_SACK
+        name: Bronze
         amount: 64
         durability: 14
         lore:
         - Bronze T1
       silver:
         material: IRON_INGOT
+        name: Silver
         amount: 64
         lore:
         - Silver T1
       copper:
         material: REDSTONE
+        name: Copper
         amount: 64
         lore:
         - Copper T1
       titanium:
         material: DIAMOND
+        name: Titanium
         amount: 64
         lore:
         - Titanium T1
       mercury:
         material: EMERALD
+        name: Mercury
         amount: 64
         lore:
         - Mercury T1
@@ -1728,37 +1923,44 @@ recipes:
     input:
       nickel:
         material: COAL
+        name: Nickel
         amount: 384
         lore:
         - Nickel T2
-      aluminum:
+      aluminium:
         material: IRON_INGOT
+        name: Aluminium
         amount: 256
         lore:
-        - Aluminum T2
+        - Aluminium T2
       pewter:
         material: INK_SACK
+        name: Pewter
         amount: 128
         durability: 8
         lore:
         - Pewter T2
       pearl:
         material: EYE_OF_ENDER
+        name: Pearl
         amount: 128
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
+        name: Brass
         amount: 128
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
+        name: Platinum
         amount: 128
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
+        name: Enderite
         amount: 128
         lore:
         - Enderite T2
@@ -1770,37 +1972,44 @@ recipes:
     input:
       oil:
         material: COAL
+        name: Oil
         amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
+        name: Silicon
         amount: 256
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
+        name: Fiberglass
         amount: 128
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
+        name: Artifact
         amount: 128
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
+        name: Graphite
         amount: 128
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
+        name: Carbon
         amount: 128
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
+        name: Uranium
         amount: 128
         lore:
         - Uranium T3
@@ -1812,37 +2021,44 @@ recipes:
     input:
       ghasteye:
         material: SPIDER_EYE
+        name: Ghast Eye
         amount: 128
         lore:
         - Ghast Eye T1
       cocoon:
         material: SNOW_BALL
+        name: Cocoon
         amount: 128
         lore:
         - Cocoon T1
       blazeember:
         material: SULPHUR
+        name: Blaze Ember
         amount: 128
         lore:
         - Blaze Ember T1
       creeperblood:
         material: CARPET
+        name: Creeper Blood
         durability: 14
         amount: 128
         lore:
         - Creeper Blood T1
       ribcage:
         material: BONE_BLOCK
+        name: Ribcage
         amount: 128
         lore:
         - Ribcage T1
       magmaegg:
         material: MAGMA
+        name: Magma Egg
         amount: 128
         lore:
         - Magma Egg T1
       zombietooth:
         material: FEATHER
+        name: Zombie's Tooth
         amount: 128
         lore:
         - Zombie's Tooth T1
@@ -1854,36 +2070,43 @@ recipes:
     input:
       ghastfireball:
         material: FIREBALL
+        name: Ghast Fireball
         amount: 256
         lore:
         - Ghast Fireball T2
       spiderfang:
         material: TRIPWIRE_HOOK
+        name: Spider Fang
         amount: 256
         lore:
         - Spider Fang T2
       blazefireball:
         material: BLAZE_POWDER
+        name: Blaze Fireball
         amount: 256
         lore:
         - Blaze Fireball T2
       creeperleg:
         material: CACTUS
+        name: Creeper Leg
         amount: 256
         lore:
         - Creeper Leg T2
       femur:
         material: QUARTZ_BLOCK
+        name: Femur
         amount: 256
         lore:
         - Femur T2
       magmaeye:
         material: RED_MUSHROOM
+        name: Magma Eye
         amount: 256
         lore:
         - Magma Eye T2
       zombieleg:
         material: END_ROD
+        name: Zombie Leg
         amount: 256
         lore:
         - Zombie Leg T2
@@ -1895,37 +2118,44 @@ recipes:
     input:
       ghastheart:
         material: FIREWORK_CHARGE
+        name: Ghast Heart
         amount: 512
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
         amount: 512
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
+        name: Burnt Heart
         amount: 512
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
+        name: Sulfur Heart
         amount: 512
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
+        name: Bone Heart
         durability: 15
         amount: 512
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
+        name: Magma Heart
         amount: 512
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
+        name: Rotten Heart
         durability: 3
         amount: 512
         lore:
@@ -1939,7 +2169,7 @@ recipes:
       blazerods:
         material: BLAZE_ROD
         amount: 64
-      SULPHUR:
+      sulphur:
         material: SULPHUR
         amount: 128
       bone:
