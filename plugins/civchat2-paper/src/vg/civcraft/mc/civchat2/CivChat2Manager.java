@@ -255,9 +255,7 @@ public class CivChat2Manager {
 	 * @param chatMessage Message to send
 	 * @param recipients Players in range to receive the message
 	 */
-	public void broadcastMessage(AsyncPlayerChatEvent event, Set<Player> recipients) {
-		Player sender = event.getPlayer();
-		String chatMessage = event.getMessage();
+	public void broadcastMessage(Player sender, String chatMessage, Set<Player> recipients) {
 		int range = config.getChatRange();
 		int height = config.getYInc();	
 		Location location = sender.getLocation();
@@ -285,9 +283,7 @@ public class CivChat2Manager {
 		}
 		
 		ChatColor color = ChatColor.valueOf(defaultColor);
-		if(event.getFormat().equals("<%1$s> %2$s")) {
-			event.setFormat("%1$s: %2$s");
-		}
+		String format = "%1$s: %2$s";
 
 		Set<String> recivers = new HashSet<String>();
 		for (Player receiver : recipients){
@@ -306,7 +302,7 @@ public class CivChat2Manager {
 							receiverDistance,
 							newColor.name()));*/
 
-						receiver.sendMessage(String.format(event.getFormat(), newColor + NameAPI.getCurrentName(sender.getUniqueId()), 
+						receiver.sendMessage(String.format(format, newColor + NameAPI.getCurrentName(sender.getUniqueId()), 
 								newColor + chatMessage));
 					}
 				}
