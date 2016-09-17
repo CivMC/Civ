@@ -85,7 +85,7 @@ public class MultiPageView {
 			};
 			ci.setSlot(forCl, getContentSize() + 8);
 		}
-		int extraSlot = getContentSize() + 1;
+		int extraSlot = getContentSize() + 2;
 		for (IClickable click : extraMenuItems) {
 			if (click == null) {
 				continue;
