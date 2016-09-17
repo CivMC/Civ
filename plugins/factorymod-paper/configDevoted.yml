@@ -295,6 +295,9 @@ recipes:
       rails:
         material: RAILS
         amount: 48
+      buckets:
+        material: BUCKET
+        amount: 4
   Forge Powered Rails:
     type: PRODUCTION
     name: Forge Powered Rails
@@ -310,6 +313,9 @@ recipes:
       poweredrails:
         material: POWERED_RAIL
         amount: 24
+      buckets:
+        material: BUCKET
+        amount: 4
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
