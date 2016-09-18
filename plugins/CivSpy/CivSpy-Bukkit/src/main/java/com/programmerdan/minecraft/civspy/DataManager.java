@@ -457,7 +457,7 @@ public class DataManager {
 	 * It adds data to be processed. It increments the inflow counter.
 	 */
 	public void enqueue(DataSample data) {
-		if (!active) return;
+		if (!active || data == null) return;
 		sampleQueue.offer(data);
 		instantInflow[whichFlowWindow]++;
 	}

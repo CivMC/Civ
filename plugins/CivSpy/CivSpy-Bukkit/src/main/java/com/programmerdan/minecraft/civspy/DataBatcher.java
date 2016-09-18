@@ -99,6 +99,10 @@ public class DataBatcher {
 		active = false;
 		int delay = 0;
 		while (!this.batchQueue.isEmpty() && delay < 120) {
+			if (this.workerCount.get() < this.maxExecutors) {
+				this.generateWorker();
+				this.logger.log(Level.INFO, "Starting a new worker to help with offloading");
+			}
 			try {
 				Thread.sleep(1000l);
 			} catch(Exception e) {}
@@ -129,11 +133,17 @@ public class DataBatcher {
 	 */
 	private void startWatcher() {
 		scheduler.scheduleAtFixedRate(new Runnable() {
-			
+			private long executions = 0;
 			@Override
 			public void run() {
+				executions ++;
 				if (workerCount.get() < 1) {
 					generateWorker();
+				}
+				
+				if (executions % 20 == 0) {
+					logger.log(Level.INFO, "{0} Batch Unloaders running. Total: {1} records received, {2} records written.",
+							new Object[] {workerCount.get(), inflowCount.get(), outflowCount.get()});
 				}
 			}
 		}, maxBatchWait, maxBatchWait, TimeUnit.MILLISECONDS);
@@ -172,6 +182,7 @@ public class DataBatcher {
 							}
 						} catch (InterruptedException ie) {
 							logger.log(Level.WARNING, "A batching task was interrupted", ie);
+							break;
 						}
 					}
 					
