@@ -1901,7 +1901,7 @@ recipes:
         lore:
         - Bronze T1
       silver:
-        material: IRON_INGOT
+        material: GOLD_INGOT
         name: Silver
         amount: 320
         lore:
