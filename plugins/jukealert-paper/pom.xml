@@ -11,18 +11,16 @@
 
 
 	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
 		<resources>
 			<resource>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>*.yml</include>
 					<include>LICENSE.txt</include>
@@ -51,12 +49,12 @@
 			<version>3.5.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.kitteh</groupId>
-			<artifactId>VanishNoPacket</artifactId>
-			<version>3.20</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.kitteh</groupId>
+            <artifactId>VanishNoPacket</artifactId>
+            <version>3.20</version>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.untamedears</groupId>
 			<artifactId>ItemExchange</artifactId>
@@ -69,12 +67,18 @@
 			<version>1.2.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			 <groupId>vg.civcraft.mc.civmodcore</groupId>
+	         <artifactId>CivModCore</artifactId>
+	         <version>1.5.0</version>
+	         <scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
 			<id>civcraft-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+			<url>http://build.civcraft.co/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>kittehReleases</id>
