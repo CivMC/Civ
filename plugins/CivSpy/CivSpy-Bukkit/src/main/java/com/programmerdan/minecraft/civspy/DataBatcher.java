@@ -148,7 +148,7 @@ public class DataBatcher {
 					generateWorker();
 				}
 				
-				if (executions % 20 == 0) {
+				if (executions % 40 == 0) {
 					logger.log(Level.INFO, "Since last report, {0} Batch Unloaders ran. Total: {1} records received, {2} records written.",
 							new Object[] {periodWorkerCount.getAndSet(0l), periodInflowCount.getAndSet(0l), periodOutflowCount.getAndSet(0l)});
 				}
