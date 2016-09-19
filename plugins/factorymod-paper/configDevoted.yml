@@ -1891,7 +1891,7 @@ recipes:
         material: FURNACE
         amount: 8
       coal:
-        material
+        material: COAL
         amount: 8
     factory: Smelter
   Upgrade to First Vault Factory:
