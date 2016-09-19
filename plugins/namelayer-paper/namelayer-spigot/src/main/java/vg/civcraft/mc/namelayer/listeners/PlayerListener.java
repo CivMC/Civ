@@ -140,6 +140,7 @@ public class PlayerListener implements Listener{
 					gm.createGroupAsync(new Group(newName, uuid, false, null, -1), this, true);
 				}
 			} else {
+				NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation succeeded for " + g.getName() + " " + uuid);
 				g.setDefaultGroup(uuid);
 			}
 		}

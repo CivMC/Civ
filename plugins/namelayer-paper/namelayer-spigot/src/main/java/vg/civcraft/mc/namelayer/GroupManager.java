@@ -74,7 +74,8 @@ public class GroupManager{
 				Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
 						@Override
 						public void run() {
-							if (getGroup(group.getName()) == null) {
+							// So.... when you `new Group` it makes a ton of DB calls and gets ids and members. If the group exists, ID at this point will be > -1...
+							if (group.getGroupId() == -1) {// || getGroup(group.getName()) == null) {
 								// group doesn't exist, so schedule create.
 								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), new Runnable() {
 										@Override
@@ -85,7 +86,7 @@ public class GroupManager{
 							} else {
 								// group does exist, so run postCreate with failure.
 								NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
-								postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1));
+								postCreate.setGroup(new Group(null, null, true, null, -1));
 								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);								
 							}
 						}
