@@ -30,6 +30,10 @@ public class DataBatcher {
 	private final AtomicLong outflowCount;
 	private final AtomicInteger workerCount;
 	
+	private final AtomicLong periodInflowCount;
+	private final AtomicLong periodOutflowCount;
+	private final AtomicLong periodWorkerCount;
+	
 	/**
 	 * Threadpool to handle scheduled tasks, liveness tester 
 	 */
@@ -76,6 +80,9 @@ public class DataBatcher {
 		this.inflowCount = new AtomicLong(0l);
 		this.outflowCount = new AtomicLong(0l);
 		this.workerCount = new AtomicInteger(0);
+		this.periodInflowCount = new AtomicLong(0l);
+		this.periodOutflowCount = new AtomicLong(0l);
+		this.periodWorkerCount = new AtomicLong(0l);
 
 		this.maxBatchSize = (maxBatchSize == null ? 100l : maxBatchSize);
 		this.maxBatchWait = (maxBatchWait == null ? 1000l : maxBatchWait);
@@ -142,8 +149,8 @@ public class DataBatcher {
 				}
 				
 				if (executions % 20 == 0) {
-					logger.log(Level.INFO, "{0} Batch Unloaders running. Total: {1} records received, {2} records written.",
-							new Object[] {workerCount.get(), inflowCount.get(), outflowCount.get()});
+					logger.log(Level.INFO, "Since last report, {0} Batch Unloaders ran. Total: {1} records received, {2} records written.",
+							new Object[] {periodWorkerCount.getAndSet(0l), periodInflowCount.getAndSet(0l), periodOutflowCount.getAndSet(0l)});
 				}
 			}
 		}, maxBatchWait, maxBatchWait, TimeUnit.MILLISECONDS);
@@ -179,6 +186,7 @@ public class DataBatcher {
 										newLine.timestamp, null, batch);
 								count ++;
 								outflowCount.getAndIncrement();
+								periodOutflowCount.getAndIncrement();
 							}
 						} catch (InterruptedException ie) {
 							logger.log(Level.WARNING, "A batching task was interrupted", ie);
@@ -206,8 +214,11 @@ public class DataBatcher {
 					
 					inflowCount.addAndGet(-count);
 					outflowCount.addAndGet(-count);
+					workerCount.decrementAndGet();
 				}
 			});
+			workerCount.incrementAndGet();
+			periodWorkerCount.incrementAndGet();
 		} catch (RejectedExecutionException ree) {
 			logger.log(Level.WARNING, "Tried to scheduled a new batch worker, rejected: ", ree);
 		}
@@ -226,10 +237,12 @@ public class DataBatcher {
 		if (aggregate.sum != null) {
 			this.batchQueue.offer(new BatchLine(key, aggregate.getTimestamp(), null, aggregate.sum));
 			this.inflowCount.getAndIncrement();
+			this.periodInflowCount.getAndIncrement();
 		}
 		for (Entry<String, Double> entry : aggregate.namedSums.entrySet()) {
 			this.batchQueue.offer(new BatchLine(key, aggregate.getTimestamp(), entry.getKey(), entry.getValue()));
 			this.inflowCount.getAndIncrement();
+			this.periodInflowCount.getAndIncrement();
 		}
 		if (this.inflowCount.get() - this.outflowCount.get() >= maxBatchSize) {
 			if (this.workerCount.get() < this.maxExecutors) {
