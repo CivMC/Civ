@@ -43,13 +43,17 @@ public class DropListener extends ServerDataListener {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void itemDropListener(PlayerDropItemEvent event) {
 		Player dropper = event.getPlayer();
+		if (dropper == null) return;
 		UUID id = dropper.getUniqueId();
 		Item toDrop = event.getItemDrop();
+		if (toDrop == null) return;
 		
 		Location location = toDrop.getLocation();
+		if (location == null) return;
 		Chunk chunk = location.getChunk();
 		
 		ItemStack drop = toDrop.getItemStack();
+		if (drop == null) return;
 		ItemStack dropQ = drop.clone();
 		dropQ.setAmount(1);
 		DataSample rdrop = new PointDataSample("player.drop", this.getServer(),

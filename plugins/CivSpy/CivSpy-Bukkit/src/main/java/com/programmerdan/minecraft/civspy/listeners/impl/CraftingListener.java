@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -49,7 +50,16 @@ public final class CraftingListener extends ServerDataListener {
 		Chunk chunk = location.getChunk();
 		
 		CraftingInventory resultMap = event.getInventory();
+		if (resultMap == null) return;
 		ItemStack result = resultMap.getResult();
+		if (result == null) {
+			if (event.getRecipe() != null) {
+				logger.log(Level.INFO, "Result was null on a crafting event - {0}", 
+						event.getRecipe().getResult());
+			} else {
+				logger.log(Level.INFO, "Result was null on a crafting event  ??");
+			}
+		}
 		
 		ItemStack stack = result.clone();
 		stack.setAmount(1);
