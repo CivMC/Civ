@@ -22,6 +22,7 @@ factories:
   workshop:
     type: FCC
     name: Workshop
+    citadelBreakReduction: 1.0
     setupcost:
       stonepick:
         material: STONE_PICKAXE
@@ -36,6 +37,7 @@ factories:
   Smelter:
     type: FCCUPGRADE
     name: Smelter
+    citadelBreakReduction: 1.0
     recipes:
     - Smelt Glass
     - Smelt Stone
@@ -53,6 +55,7 @@ factories:
   Vault_Factory_1:
     type: FCCUPGRADE
     name: Vault Factory 1
+    citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
     - Iron Obsidian
@@ -63,6 +66,7 @@ factories:
   Vault_Factory_2:
     type: FCCUPGRADE
     name: Vault Factory 2
+    citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
     - Iron Obsidian
@@ -77,6 +81,7 @@ factories:
   Vault_Factory_3:
     type: FCCUPGRADE
     name: Vault Factory 3
+    citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
     - Iron Obsidian
@@ -95,6 +100,7 @@ factories:
   Pickaxe_Factory_1:
     type: FCCUPGRADE
     name: Pickaxe Factory 1
+    citadelBreakReduction: 1.0
     recipes:
     - Unbreaking IV Book
     - Efficiency VI Pickaxe
@@ -103,6 +109,7 @@ factories:
   Pickaxe_Factory_2:
     type: FCCUPGRADE
     name: Pickaxe Factory 2
+    citadelBreakReduction: 1.0
     recipes:
     - Unbreaking IV Book
     - Unbreaking V Book
@@ -113,6 +120,7 @@ factories:
   Pickaxe_Factory_3:
     type: FCCUPGRADE
     name: Pickaxe Factory 3
+    citadelBreakReduction: 1.0
     recipes:
     - Unbreaking IV Book
     - Unbreaking V Book
@@ -125,6 +133,7 @@ factories:
   Potion_Factory:
     type: FCCUPGRADE
     name: Potion Factory
+    citadelBreakReduction: 1.0
     recipes:
     - Brew Strength II Extra Ext
     - Brew Speed II Extra Ext
@@ -133,6 +142,7 @@ factories:
   Lottery_Factory:
     type: FCCUPGRADE
     name: Lottery Factory
+    citadelBreakReduction: 1.0
     recipes:
     - Placeholder
     - Accident Repair
@@ -414,12 +424,12 @@ recipes:
         amount: 256
         lore:
         - Nickel T2
-      Aluminium:
+      Aluminum:
         material: IRON_INGOT
-        name: Aluminium
+        name: Aluminum
         amount: 256
         lore:
-        - Aluminium T2
+        - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
@@ -620,12 +630,12 @@ recipes:
         amount: 256
         lore:
         - Nickel T2
-      Aluminium:
+      Aluminum:
         material: IRON_INGOT
-        name: Aluminium
+        name: Aluminum
         amount: 256
         lore:
-        - Aluminium T2
+        - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
@@ -772,12 +782,12 @@ recipes:
         amount: 256
         lore:
         - Nickel T2
-      Aluminium:
+      Aluminum:
         material: IRON_INGOT
-        name: Aluminium
+        name: Aluminum
         amount: 256
         lore:
-        - Aluminium T2
+        - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
@@ -924,12 +934,12 @@ recipes:
         amount: 1024
         lore:
         - Nickel T2
-      Aluminium:
+      Aluminum:
         material: IRON_INGOT
-        name: Aluminium
+        name: Aluminum
         amount: 512
         lore:
-        - Aluminium T2
+        - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
@@ -1506,6 +1516,8 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 6
+        nbt:
+          RepairCost: 5000
   Efficiency VII Pickaxe:
     type: PRODUCTION
     name: Efficiency VII Pickaxe
@@ -1563,6 +1575,8 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 7
+        nbt:
+          RepairCost: 5000
   Efficiency VIII Pickaxe:
     type: PRODUCTION
     name: Efficiency VIII Pickaxe
@@ -1664,6 +1678,8 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
+        nbt:
+          RepairCost: 5000
   Efficiency VI Axe:
     type: PRODUCTION
     name: Efficiency VIII Axe
@@ -1765,6 +1781,8 @@ recipes:
           Efficiency:
             enchant: DIG_SPEED
             level: 8
+        nbt:
+          RepairCost: 5000
   Brew Strength II Extra Ext:
     type: PRODUCTION
     name: Brew Strength II Extra Ext
@@ -1872,8 +1890,8 @@ recipes:
       furnace:
         material: FURNACE
         amount: 8
-      coalore:
-        material: COAL_ORE
+      coal:
+        material
         amount: 8
     factory: Smelter
   Upgrade to First Vault Factory:
@@ -1936,12 +1954,12 @@ recipes:
         amount: 1536
         lore:
         - Nickel T2
-      aluminium:
+      aluminum:
         material: IRON_INGOT
-        name: Aluminium
+        name: Aluminum
         amount: 1024
         lore:
-        - Aluminium T2
+        - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
