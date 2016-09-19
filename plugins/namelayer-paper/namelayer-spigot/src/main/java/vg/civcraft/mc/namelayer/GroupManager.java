@@ -49,6 +49,81 @@ public class GroupManager{
 		return createGroup(group,true);
 	}
 	
+	/**
+	 * This will create a group asynchronously. Always saves to database. Pass in a Runnable of type RunnableOnGroup that 
+	 * specifies what to run <i>synchronously</i> after the insertion of the group. Your runnable should handle the case where
+	 * id = -1 (failure).
+	 * 
+	 * Note that internally, we setGroupId on the RunnableOnGroup; your run() method should use getGroupId() to retrieve it 
+	 * and react to it.
+	 * 
+	 * @param group the Group placeholder to use in creating a group. Calls GroupCreateEvent synchronously, then insert the
+	 *    group asynchronously, then calls the RunnableOnGroup synchronously.
+	 * @param postCreate The RunnableOnGroup to run after insertion (whether successful or not!)
+	 * @param checkBeforeCreate Checks if the group already exists (asynchronously) prior to creating it. Runs the CreateEvent
+	 *    synchronously, then behaves as normal after that (running async create).
+	 */
+	public void createGroupAsync(final Group group, final RunnableOnGroup postCreate, boolean checkBeforeCreate) {
+		if (group == null) {
+			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
+			postCreate.setGroup(new Group(null, null, true, null, -1));
+			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
+		} else {
+			if (checkBeforeCreate) {
+				// Run check asynchronously. 
+				Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
+						@Override
+						public void run() {
+							if (getGroup(group.getName()) == null) {
+								// group doesn't exist, so schedule create.
+								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), new Runnable() {
+										@Override
+										public void run() {
+											doCreateGroupAsync(group, postCreate);
+										}
+								});
+							} else {
+								// group does exist, so run postCreate with failure.
+								NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
+								postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1));
+								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);								
+							}
+						}
+					});
+				
+			} else {
+				doCreateGroupAsync(group, postCreate);
+			}
+		}
+	}
+	
+	private void doCreateGroupAsync(final Group group, final RunnableOnGroup postCreate) {
+		GroupCreateEvent event = new GroupCreateEvent(
+				group.getName(), group.getOwner(),
+				group.getPassword());
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()){
+			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
+			postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1));
+			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
+		}
+		final String name = event.getGroupName();
+		final UUID owner = event.getOwner();
+		final String password = event.getPassword();
+		NameLayerPlugin.getBlackList().initEmptyBlackList(name);
+		Bukkit.getScheduler().runTaskAsynchronously(NameLayerPlugin.getInstance(), new Runnable() {
+			@Override
+			public void run() {
+				int id = internalCreateGroup(group, true, name, owner, password);
+				NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Async group create finished for group {0}, id assigned: {1}",
+						new Object[]{name, id});
+				Group g = GroupManager.getGroup(id);
+				postCreate.setGroup(g);
+				Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
+			}
+		});
+	}
+	
 	public int createGroup(Group group, boolean savetodb){
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
@@ -62,24 +137,20 @@ public class GroupManager{
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
 			return -1;
 		}
+		return internalCreateGroup(group, savetodb, event.getGroupName(), event.getOwner(), event.getPassword());
+	}
+	
+	private int internalCreateGroup(Group group, boolean savetodb, String name, UUID owner, String password) {
 		int id;
 		if (savetodb){
-			id = groupManagerDao.createGroup(
-				event.getGroupName(), event.getOwner(), 
-				event.getPassword());
+			id = groupManagerDao.createGroup(name, owner, password);
 			Mercury.createGroup(group, id);
+			if (id > -1) {
+				initiateDefaultPerms(id); // give default perms to a newly create group
+				GroupManager.getGroup(id); // force a recache from DB.
+			}
 		} else {
 			id = group.getGroupId();
-		}
-		if (id > -1 && savetodb) {
-			initiateDefaultPerms(id); // give default perms to a newly create group
-			GroupManager.getGroup(id); // force a recache from DB.
-			/*group.setGroupIds(groupManagerDao.getAllIDs(event.getGroupName()));
-			group.addMember(event.getOwner(), PlayerType.OWNER);
-			groupsByName.put(event.getGroupName(), group);
-			for (int q : group.getGroupIds()) {
-				groupsById.put(q, group);
-			}*/
 		}
 		return id;
 	}

@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
 public class PlayerListener implements Listener{
 
@@ -89,31 +91,58 @@ public class PlayerListener implements Listener{
 			//assume something went wrong, feel free to chose a random civcraft dev to blame
 			return;
 		}
-		Group g = null;
-		if (GroupManager.getGroup(p.getName()) == null) {
-			g = createNewFriendGroup(p.getName(), p.getUniqueId());
-		}
-		for(int i = 0; i < 20 && g == null ; i++) {
-			if (GroupManager.getGroup(p.getName() + String.valueOf(i)) == null) {
-				g = createNewFriendGroup(p.getName() + String.valueOf(i), p.getUniqueId());
-			}
-		}
-		if (g != null) {
-			g.setDefaultGroup(p.getUniqueId());
-		}
+		final UUID uuid = p.getUniqueId();
+		final String name = p.getName();
 		
+		new NewfriendCreate(name, uuid).bootstrap();
 	}
 	
-	private Group createNewFriendGroup(String name, UUID owner) {
-		GroupManager gm = NameAPI.getGroupManager();
-		Group g = new Group(name, owner, false, null, -1);
-		int id = gm.createGroup(g);
-		if (id == -1) { // failure
-			NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation failed for " + name + " " + owner);
-			return null;
+	/**
+	 * This simple (hah) runnable encapsulates the prior logic in a safe, but asynchronous fashion.
+	 * The code in this runnable is always called synchronously. It keeps track of which combination (name, name+1, name+2) that has been tried, and
+	 * triggers the next attempt if prior has failed. If it runs out of tries, it gracefully ends.
+	 * 
+	 * Note that at every step it checks if group exists before creating. This adds some tick-time overhead but should work well.
+	 * 
+	 * All this is off the main thread (the actual database calls) so trauma should be low.
+	 * 
+	 * @author ProgrammerDan
+	 *
+	 */
+	private static class NewfriendCreate extends RunnableOnGroup {
+		private Integer inc = null;
+		private final String name;
+		private final UUID uuid;
+		
+		NewfriendCreate(final String name, final UUID uuid) {
+			this.name = name;
+			this.uuid = uuid;
 		}
-		g.setGroupId(id);
-		NameLayerPlugin.getBlackList().initEmptyBlackList(name);
-		return g;
+		
+		public void bootstrap() {
+			GroupManager gm = NameAPI.getGroupManager();
+			gm.createGroupAsync(new Group(name, uuid, false, null, -1), this, true);
+		}
+		
+		@Override
+		public void run() {
+			Group g = getGroup();
+			if (g.getGroupId() == -1) { // now try + num
+				NameLayerPlugin.log(Level.WARNING, "Newfriend automatic group creation failed for " + g.getName() + " " + uuid);
+				GroupManager gm = NameAPI.getGroupManager();
+				if (inc == null) {
+					inc = 0;
+				} else {
+					inc ++;
+				}
+				if (inc < 20) {
+					String newName = name + String.valueOf(inc);
+					gm.createGroupAsync(new Group(newName, uuid, false, null, -1), this, true);
+				}
+			} else {
+				g.setDefaultGroup(uuid);
+			}
+		}
+
 	}
 }
