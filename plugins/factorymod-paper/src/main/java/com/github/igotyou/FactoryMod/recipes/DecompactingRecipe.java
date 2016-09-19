@@ -11,7 +11,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -42,8 +42,8 @@ public class DecompactingRecipe extends InputRecipe {
 		return false;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
 				if (is != null) {
@@ -68,10 +68,10 @@ public class DecompactingRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
@@ -101,7 +101,7 @@ public class DecompactingRecipe extends InputRecipe {
 		return res;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			result.add(new ItemStack(Material.STONE, 64));

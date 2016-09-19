@@ -38,7 +38,7 @@ public class AOERepairRecipe extends InputRecipe {
 		return essence;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
@@ -96,7 +96,7 @@ public class AOERepairRecipe extends InputRecipe {
 		return list;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
@@ -131,7 +131,7 @@ public class AOERepairRecipe extends InputRecipe {
 		return bla;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);

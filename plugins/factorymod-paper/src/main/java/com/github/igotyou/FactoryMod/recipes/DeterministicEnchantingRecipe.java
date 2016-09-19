@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class DeterministicEnchantingRecipe extends InputRecipe {
 	private Enchantment enchant;
@@ -52,7 +52,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return is;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		ItemMeta im = is.getItemMeta();
 		im.removeEnchant(enchant);
@@ -73,7 +73,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return stacks;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			List<ItemStack> bla = input.getItemStackRepresentation();
 			bla.add(tool.getItemStackRepresentation().get(0));
@@ -87,8 +87,8 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return returns;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		if (input.removeSafelyFrom(i)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
 			for (ItemStack is : i.getContents()) {
@@ -104,7 +104,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
 	@Override

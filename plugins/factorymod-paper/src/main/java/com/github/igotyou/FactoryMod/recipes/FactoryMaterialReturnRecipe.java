@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
@@ -33,14 +32,14 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 		this.factor = factor;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
 		return createLoredStacksForInfo(i);
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.PAPER);
 			ISUtils.setName(is, "Total setupcost");
@@ -67,19 +66,19 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 		return is;
 	}
 
-	public void applyEffect(Inventory i, final Factory f) {
-		FactoryMod.getManager().removeFactory(f);
-		for (Block b : f.getMultiBlockStructure().getRelevantBlocks()) {
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		FactoryMod.getManager().removeFactory(fccf);
+		for (Block b : fccf.getMultiBlockStructure().getRelevantBlocks()) {
 			b.setType(Material.AIR);
 		}
 		Bukkit.getScheduler().runTaskLater(FactoryMod.getPlugin(),
 				new Runnable() {
 					@Override
 					public void run() {
-						Location dropLoc = f.getMultiBlockStructure()
+						Location dropLoc = fccf.getMultiBlockStructure()
 								.getCenter();
 						for (Entry<ItemStack, Integer> items : FactoryMod
-								.getManager().getTotalSetupCost(f)
+								.getManager().getTotalSetupCost(fccf)
 								.getEntrySet()) {
 							int returnAmount = (int) (items.getValue() * factor);
 							ItemMap im = new ItemMap();

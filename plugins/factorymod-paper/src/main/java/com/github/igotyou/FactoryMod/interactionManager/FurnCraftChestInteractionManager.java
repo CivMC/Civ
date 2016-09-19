@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,20 +27,24 @@ import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
+	
     private FurnCraftChestFactory fccf;
     private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
+    private DecimalFormat decimalFormatting;
 
     public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
-	this.fccf = fccf;
+    	this();
+    	this.fccf = fccf;
     }
 
     public FurnCraftChestInteractionManager() {
-
+    	this.decimalFormatting = new DecimalFormat("#.#####");
     }
 
     public void setFactory(FurnCraftChestFactory fccf) {
@@ -111,7 +116,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			.getCurrentRecipe().getName());
 		int index = 4;
 		List<ItemStack> inp = ((InputRecipe) fccf.getCurrentRecipe())
-			.getInputRepresentation(fccf.getInventory());
+			.getInputRepresentation(fccf.getInventory(), fccf);
 		if (inp.size() > 18) {
 		    inp = new ItemMap(inp).getLoredItemCountRepresentation();
 		}
@@ -141,7 +146,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
 		index = 49;
 		List<ItemStack> outp = ((InputRecipe) fccf.getCurrentRecipe())
-			.getOutputRepresentation(fccf.getInventory());
+			.getOutputRepresentation(fccf.getInventory(), fccf);
 		if (outp.size() > 18) {
 		    outp = new ItemMap(outp).getLoredItemCountRepresentation();
 		}
@@ -220,11 +225,19 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	    for (IRecipe rec : fccf.getRecipes()) {
 		InputRecipe recipe = (InputRecipe) (rec);
 		ItemStack recStack = recipe.getRecipeRepresentation();
+		int runcount = fccf.getRunCount(recipe);
 		ISUtils.addLore(
 			recStack,
-			ChatColor.GOLD + "Ran "
-				+ String.valueOf(fccf.getRunCount(recipe))
+			ChatColor.AQUA + "Ran "
+				+ String.valueOf(runcount)
 				+ " times");
+		if (recipe instanceof ProductionRecipe) {
+			ProductionRecipe prod = (ProductionRecipe) recipe;
+			if (prod.getModifier() != null) {
+				ISUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD + String.valueOf(fccf.getRecipeLevel(recipe)) + " ★");
+				ISUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting.format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
+			}
+		}
 		Clickable c = new Clickable(recStack) {
 
 		    @Override

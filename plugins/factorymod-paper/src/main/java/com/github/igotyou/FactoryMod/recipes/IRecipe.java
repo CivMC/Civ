@@ -2,7 +2,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import org.bukkit.inventory.Inventory;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 /**
  * Encapsulates a specific functionality for a FurnCraftChest factory. Each
@@ -45,7 +45,7 @@ public interface IRecipe {
 	 * @param f
 	 *            Factory which is run
 	 */
-	public void applyEffect(Inventory i, Factory f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory f);
 
 	/**
 	 * Each implementation of this class has to specify a unique identifier,

@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class PylonRecipe extends InputRecipe {
@@ -30,7 +29,7 @@ public class PylonRecipe extends InputRecipe {
 		this.weight = weight;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		if (!input.isContainedIn(i)) {
 			return;
 		}
@@ -53,7 +52,7 @@ public class PylonRecipe extends InputRecipe {
 		return globalLimit;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemMap currOut = getCurrentOutput();
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		for (ItemStack is : currOut.getItemStackRepresentation()) {
@@ -67,7 +66,7 @@ public class PylonRecipe extends InputRecipe {
 		return res;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}

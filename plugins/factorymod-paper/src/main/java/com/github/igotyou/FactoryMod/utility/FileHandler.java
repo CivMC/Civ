@@ -99,6 +99,7 @@ public class FileHandler {
 					}
 					for(IRecipe i : ((FurnCraftChestFactory) f).getRecipes()) {
 						config.set(current + ".runcounts." + i.getName(), fccf.getRunCount(i));
+						config.set(current + ".recipeLevels." + i.getName(), fccf.getRecipeLevel(i));
 					}
 				} else if (f instanceof Pipe) {
 					Pipe p = (Pipe) f;
@@ -265,6 +266,18 @@ public class FileHandler {
 						for(IRecipe r : fac.getRecipes()) {
 							if (r.getName().equals(countKey)) {
 								fac.setRunCount(r, runs);
+								break;
+							}
+						}
+					}
+				}
+				ConfigurationSection recipeLevels = current.getConfigurationSection("recipeLevels");
+				if(recipeLevels != null) {
+					for(String countKey : recipeLevels.getKeys(false)) {
+						int runs = recipeLevels.getInt(countKey);
+						for(IRecipe r : fac.getRecipes()) {
+							if (r.getName().equals(countKey)) {
+								fac.setRecipeLevel(r, runs);
 								break;
 							}
 						}

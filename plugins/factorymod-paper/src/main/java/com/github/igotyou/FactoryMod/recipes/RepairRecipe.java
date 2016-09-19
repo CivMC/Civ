@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
@@ -28,7 +29,7 @@ public class RepairRecipe extends InputRecipe {
 		this.healthPerRun = healthPerRun;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
 		ISUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
@@ -36,26 +37,26 @@ public class RepairRecipe extends InputRecipe {
 		return result;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
 		return createLoredStacksForInfo(i);
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		if (enoughMaterialAvailable(i)) {
 			if (input.removeSafelyFrom(i)) {
-				((PercentageHealthRepairManager) (f.getRepairManager()))
+				((PercentageHealthRepairManager) (fccf.getRepairManager()))
 						.repair(healthPerRun);
-				LoggingUtils.log(((PercentageHealthRepairManager) (f
+				LoggingUtils.log(((PercentageHealthRepairManager) (fccf
 						.getRepairManager())).getHealth()
 						+ " for "
-						+ f.getLogData() + " after repairing");
+						+ fccf.getLogData() + " after repairing");
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
 	public ItemStack getRecipeRepresentation() {

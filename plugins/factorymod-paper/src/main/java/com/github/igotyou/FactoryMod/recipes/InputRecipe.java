@@ -9,6 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
@@ -35,43 +36,49 @@ public abstract class InputRecipe implements IRecipe {
 	/**
 	 * Used to get a representation of a recipes input materials, which is
 	 * displayed in an item gui to illustrate the recipe and to give additional
-	 * information. If null is given instead of an inventory just general
-	 * information should be returned, which doesnt depend on a specific
+	 * information. If null is given instead of an inventory or factory, just
+	 * general information should be returned, which doesnt depend on a specific
 	 * instance
 	 * 
 	 * @param i
 	 *            Inventory for which the recipe would be run, this is used to
 	 *            add lore to the items, which tells how often the recipe could
 	 *            be run
+	 * @param fccf
+	 *            Factory for which the representation is meant. Needed for
+	 *            recipe run scaling
 	 * @return List of itemstacks which represent the input required to run this
 	 *         recipe
 	 */
-	public abstract List<ItemStack> getInputRepresentation(Inventory i);
+	public abstract List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf);
 
 	/**
 	 * Used to get a representation of a recipes output materials, which is
 	 * displayed in an item gui to illustrate the recipe and to give additional
-	 * information. If null is given instead of an inventory just general
-	 * information should be returned, which doesnt depend on a specific
+	 * information. If null is given instead of an inventory or factory, just
+	 * general information should be returned, which doesnt depend on a specific
 	 * instance
 	 * 
 	 * @param i
 	 *            Inventory for which the recipe would be run, this is used to
 	 *            add lore to the items, which tells how often the recipe could
 	 *            be run
+	 * @param fccf
+	 *            Factory for which the representation is meant. Needed for
+	 *            recipe run scaling
 	 * @return List of itemstacks which represent the output returned when
 	 *         running this recipe
 	 */
-	public abstract List<ItemStack> getOutputRepresentation(Inventory i);
+	public abstract List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf);
 
 	public String getName() {
 		return name;
 	}
-	
+
 	public int getFuelConsumptionIntervall() {
 		return fuel_consumption_intervall;
 	}
-	
+
 	public void setFuelConsumptionIntervall(int intervall) {
 		this.fuel_consumption_intervall = intervall;
 	}
@@ -87,7 +94,7 @@ public abstract class InputRecipe implements IRecipe {
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(i);
 	}
-	
+
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -115,10 +122,7 @@ public abstract class InputRecipe implements IRecipe {
 		ItemMap possibleRuns = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
 			if (inventoryMap.getAmount(entry.getKey()) != 0) {
-				possibleRuns.addItemAmount(
-						entry.getKey(),
-						inventoryMap.getAmount(entry.getKey())
-								/ entry.getValue());
+				possibleRuns.addItemAmount(entry.getKey(), inventoryMap.getAmount(entry.getKey()) / entry.getValue());
 			} else {
 				possibleRuns.addItemAmount(entry.getKey(), 0);
 
@@ -126,21 +130,24 @@ public abstract class InputRecipe implements IRecipe {
 		}
 
 		for (ItemStack is : input.getItemStackRepresentation()) {
-			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
-					+ String.valueOf(possibleRuns.getAmount(is)) + " runs");
+			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
+					+ " runs");
 			result.add(is);
 		}
 		return result;
 	}
 
 	protected void logBeforeRecipeRun(Inventory i, Factory f) {
-		LoggingUtils.logInventory(i, "Before executing recipe " + name
-				+ " for " + f.getLogData());
+		LoggingUtils.logInventory(i, "Before executing recipe " + name + " for " + f.getLogData());
 	}
 
 	protected void logAfterRecipeRun(Inventory i, Factory f) {
-		LoggingUtils.logInventory(i, "After executing recipe " + name + " for "
-				+ f.getLogData());
+		LoggingUtils.logInventory(i, "After executing recipe " + name + " for " + f.getLogData());
+	}
+	
+	@Override
+	public int hashCode() {
+		return identifier.hashCode();
 	}
 
 }

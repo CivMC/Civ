@@ -12,7 +12,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class LoreEnchantRecipe extends InputRecipe {
 
@@ -49,7 +49,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 		return is;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		for (String s : appliedLore) {
 			ISUtils.addLore(is, s);
@@ -67,7 +67,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 		return stacks;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			List<ItemStack> bla = input.getItemStackRepresentation();
 			ItemStack is = tool.getItemStackRepresentation().get(0);
@@ -87,8 +87,8 @@ public class LoreEnchantRecipe extends InputRecipe {
 		return returns;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		if (input.removeSafelyFrom(i)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
 			for (ItemStack is : i.getContents()) {
@@ -111,7 +111,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
 	private boolean hasStackRequiredLore(ItemStack is) {

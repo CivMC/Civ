@@ -11,7 +11,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -46,8 +46,8 @@ public class RandomOutputRecipe extends InputRecipe {
 		}
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = null;
 		int counter = 0;
@@ -62,7 +62,7 @@ public class RandomOutputRecipe extends InputRecipe {
 			}
 		}
 		if (toAdd == null) {
-			FactoryMod.getPlugin().warning("Unable to find a random item to output. Recipe execution was cancelled," + f.getLogData());
+			FactoryMod.getPlugin().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return;
 		}
 		if (toRemove.isContainedIn(i)) {
@@ -72,7 +72,7 @@ public class RandomOutputRecipe extends InputRecipe {
 				}
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
 	public Map<ItemMap, Double> getOutputs() {
@@ -97,14 +97,14 @@ public class RandomOutputRecipe extends InputRecipe {
 		return is;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
 		return createLoredStacksForInfo(i);
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List <ItemStack> items = lowestChanceMap.getItemStackRepresentation();
 		for (ItemStack is : items) {
 			ISUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");

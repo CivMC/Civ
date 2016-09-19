@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.commands.commands.Create;
 import com.github.igotyou.FactoryMod.commands.commands.Menu;
+import com.github.igotyou.FactoryMod.commands.commands.RunAmountSetterCommand;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 
@@ -15,6 +16,7 @@ public class FactoryModCommandHandler extends CommandHandler{
 	public void registerCommands() {
 		addCommands(new Menu("fm"));
 		addCommands(new Create("fmc"));
+		addCommands(new RunAmountSetterCommand("fmsrc"));
 	}
 	
 	public static List <String> tabCompleteFactory(CommandSender arg0, String [] arg1) {

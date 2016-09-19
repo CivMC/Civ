@@ -1,13 +1,11 @@
 package com.github.igotyou.FactoryMod;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Material;
@@ -38,8 +36,10 @@ import com.github.igotyou.FactoryMod.recipes.LoreEnchantRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
+import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
+import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
@@ -55,6 +55,7 @@ public class ConfigParser {
 	private double defaultReturnRate;
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
+	private HashMap<RecipeScalingUpgradeRecipe, String []> recipeScalingUpgradeMapping;
 	private String defaultMenuFactory;
 	private long defaultBreakGracePeriod;
 	private int defaultDamagePerBreakPeriod;
@@ -136,8 +137,10 @@ public class ConfigParser {
 				logInventories, factoryRenames);
 		upgradeEggs = new HashMap<String, IFactoryEgg>();
 		recipeLists = new HashMap<IFactoryEgg, List<String>>();
+		recipeScalingUpgradeMapping = new HashMap<RecipeScalingUpgradeRecipe, String[]>();
 		parseFactories(config.getConfigurationSection("factories"));
 		parseRecipes(config.getConfigurationSection("recipes"));
+		assignRecipeScalingRecipes();
 		assignRecipesToFactories();
 		enableFactoryDecay(config);
 		manager.calculateTotalSetupCosts();
@@ -558,7 +561,11 @@ public class ConfigParser {
 			else {
 				output = parseItemMap(outputSection);
 			}
-			result = new ProductionRecipe(identifier, name, productionTime, input, output);
+			ProductionRecipeModifier modi = parseProductionRecipeModifier(config.getConfigurationSection("modi"));
+			if (modi == null && parentRecipe instanceof ProductionRecipe) {
+				modi = ((ProductionRecipe) parentRecipe).getModifier().clone();
+			}
+			result = new ProductionRecipe(identifier, name, productionTime, input, output, modi);
 			break;
 		case "COMPACT":
 			String compactedLore = config.getString("compact_lore", 
@@ -787,6 +794,18 @@ public class ConfigParser {
 			}
 			result = new LoreEnchantRecipe(identifier, name, productionTime, input, toolMap, appliedLore, overwrittenLore);
 			break;
+		case "RECIPEMODIFIERUPGRADE":
+			int rank = config.getInt("rank");
+			String toUpgrade = config.getString("recipeUpgraded");
+			if (toUpgrade == null) {
+				plugin.warning("No recipe to upgrade specified at " + config.getCurrentPath());
+				return null;
+			}
+			String followUpRecipe = config.getString("followUpRecipe");
+			result = new RecipeScalingUpgradeRecipe(identifier, name, productionTime, input, null, rank, null);
+			String [] data = {toUpgrade, followUpRecipe};
+			recipeScalingUpgradeMapping.put((RecipeScalingUpgradeRecipe) result, data);
+			break;
 		case "DUMMY":
 			result = new DummyParsingRecipe(identifier, name, productionTime, null);
 			break;
@@ -846,6 +865,55 @@ public class ConfigParser {
 		for(IRecipe reci : recipes.values()) {
 			if (!usedRecipes.contains(reci)) {
 				plugin.warning("The recipe " + reci.getName() + " is specified in the config, but not used in any factory");
+			}
+		}
+	}
+	
+	private ProductionRecipeModifier parseProductionRecipeModifier(ConfigurationSection config) {
+		ProductionRecipeModifier modi = new ProductionRecipeModifier();
+		if (config == null) {
+			return null;
+		}
+		for(String key : config.getKeys(false)) {
+			ConfigurationSection current = config.getConfigurationSection(key);
+			if (current == null) {
+				plugin.warning("Found invalid config value at " + config.getCurrentPath() + " " + key + ". Only identifiers for recipe modifiers allowed at this level");
+				continue;
+			}
+			int minimumRunAmount = current.getInt("minimumRunAmount");
+			int maximumRunAmount = current.getInt("maximumRunAmount");
+			double minimumMultiplier = current.getDouble("baseMultiplier");
+			double maximumMultiplier = current.getDouble("maximumMultiplier");
+			int rank = current.getInt("rank");
+			modi.addConfig(minimumRunAmount, maximumRunAmount, minimumMultiplier, maximumMultiplier, rank);
+		}
+		return modi;
+	}
+	
+	private void assignRecipeScalingRecipes() {
+		for(Entry <RecipeScalingUpgradeRecipe, String []> entry : recipeScalingUpgradeMapping.entrySet()) {
+			IRecipe prod = recipes.get(entry.getValue() [0]);
+			if (prod == null) {
+				plugin.warning("The recipe " + entry.getValue() [0] + ", which the recipe " + entry.getKey().getName() + " is supposed to upgrade doesnt exist");
+				continue;
+			}
+			if (!(prod instanceof ProductionRecipe)) {
+				plugin.warning("The recipe "  + entry.getKey().getName() + " has a non production recipe specified as recipe to upgrade, this doesnt work");
+				continue;
+			}
+			entry.getKey().setUpgradedRecipe((ProductionRecipe) prod);
+			String followUp = entry.getValue() [1];
+			if (followUp != null) {
+				IRecipe followRecipe = recipes.get(followUp);
+				if (followRecipe == null) {
+					plugin.warning("The recipe " + entry.getValue() [0] + ", which the recipe " + entry.getKey().getName() + " is supposed to use as follow up recipe doesnt exist");
+					continue;
+				}
+				if (!(followRecipe instanceof RecipeScalingUpgradeRecipe)) {
+					plugin.warning("The recipe "  + entry.getKey().getName() + " has a non recipe scaling upgrade recipe specified as recipe to follow up with, this doesnt work");
+					continue;
+				}
+				entry.getKey().setFollowUpRecipe((RecipeScalingUpgradeRecipe) followRecipe);
 			}
 		}
 	}

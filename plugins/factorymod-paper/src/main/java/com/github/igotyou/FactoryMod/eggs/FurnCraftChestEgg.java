@@ -107,7 +107,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(health, maximumHealth, breakTime, healthPerDamagePeriod, breakGracePeriod);
-		List <IRecipe> currRecipes = new ArrayList <IRecipe> (recipes);
+		List <IRecipe> currRecipes = new ArrayList <IRecipe> ();
 		for(String recName : recipeStrings) {
 			boolean found = false;
 			for(IRecipe exRec : currRecipes) {

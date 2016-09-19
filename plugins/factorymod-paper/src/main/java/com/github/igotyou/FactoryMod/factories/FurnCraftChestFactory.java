@@ -32,6 +32,7 @@ import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
+import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
@@ -50,6 +51,7 @@ public class FurnCraftChestFactory extends Factory {
 	protected List<IRecipe> recipes;
 	protected IRecipe currentRecipe;
 	protected Map<IRecipe, Integer> runCount;
+	protected Map<IRecipe, Integer> recipeLevel;
 	private UUID activator;
 	private double citadelBreakReduction;
 
@@ -60,11 +62,11 @@ public class FurnCraftChestFactory extends Factory {
 			String name, List<IRecipe> recipes, double citadelBreakReduction) {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
-		this.recipes = recipes;
 		this.runCount = new HashMap<IRecipe, Integer>();
+		this.recipeLevel = new HashMap<IRecipe, Integer>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		for (IRecipe rec : recipes) {
-			runCount.put(rec, 0);
+			addRecipe(rec);
 		}
 		if (pylonFactories == null) {
 			pylonFactories = new HashSet<FurnCraftChestFactory>();
@@ -244,6 +246,12 @@ public class FurnCraftChestFactory extends Factory {
 			runCount.put(r, count);
 		}
 	}
+	
+	public void setRecipeLevel(IRecipe r, Integer level) {
+		if (recipes.contains(r)) {
+			recipeLevel.put(r, level);
+		}
+	}
 
 	/**
 	 * @return UUID of the person who activated the factory or null if the
@@ -321,12 +329,13 @@ public class FurnCraftChestFactory extends Factory {
 								+ currentRecipe.getName() + " for "
 								+ getLogData()
 								+ " was cancelled over the event");
+						deactivate();
 						return;
 					}
 					sendActivatorMessage(ChatColor.GOLD
 							+ currentRecipe.getName() + " in " + name
 							+ " completed");
-					if (currentRecipe instanceof Upgraderecipe) {
+					if (currentRecipe instanceof Upgraderecipe || currentRecipe instanceof RecipeScalingUpgradeRecipe) {
 						// this if else might look a bit weird, but because
 						// upgrading changes the current recipe and a lot of
 						// other stuff, this is needed
@@ -409,6 +418,10 @@ public class FurnCraftChestFactory extends Factory {
 	public int getRunCount(IRecipe r) {
 		return runCount.get(r);
 	}
+	
+	public int getRecipeLevel(IRecipe r) {
+		return recipeLevel.get(r);
+	}
 
 	private void sendActivatorMessage(String msg) {
 		if (activator != null) {
@@ -417,6 +430,26 @@ public class FurnCraftChestFactory extends Factory {
 				p.sendMessage(msg);
 			}
 		}
+	}
+	
+	/**
+	 * Adds the given recipe to this factory
+	 * @param rec Recipe to add
+	 */
+	public void addRecipe(IRecipe rec) {
+		recipes.add(rec);
+		runCount.put(rec, 0);
+		recipeLevel.put(rec, 1);
+	}
+	
+	/**
+	 * Removes the given recipe from this factory
+	 * @param rec Recipe to remove
+	 */
+	public void removeRecipe(IRecipe rec) {
+		recipes.remove(rec);
+		runCount.remove(rec);
+		recipeLevel.remove(rec);
 	}
 
 	/**

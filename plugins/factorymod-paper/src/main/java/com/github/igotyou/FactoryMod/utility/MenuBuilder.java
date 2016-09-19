@@ -30,6 +30,7 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
+import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 
@@ -172,8 +173,9 @@ public class MenuBuilder {
 			if (recipes.get(i) == null) {
 				continue;
 			}
-			Clickable c = new Clickable(
-					((InputRecipe) recipes.get(i)).getRecipeRepresentation()) {
+			InputRecipe rec = ((InputRecipe) recipes.get(i));
+			ItemStack is = rec.getRecipeRepresentation();
+			Clickable c = new Clickable(is) {
 				@Override
 				public void clicked(Player arg0) {
 					openDetailedRecipeBrowser(arg0,
@@ -410,7 +412,7 @@ public class MenuBuilder {
 		DecorationStack inputClickable = new DecorationStack(inputStack);
 		ci.setSlot(inputClickable, 4);
 		int index = 13;
-		List <ItemStack> ins = rec.getInputRepresentation(null);
+		List <ItemStack> ins = rec.getInputRepresentation(null, null);
 		if (ins.size() > 18) {
 			ins = new ItemMap(ins).getLoredItemCountRepresentation();
 		}
@@ -450,7 +452,7 @@ public class MenuBuilder {
 
 		ci.setSlot(outputClickable, 31);
 		index = 40;
-		List <ItemStack> out = rec.getOutputRepresentation(null);
+		List <ItemStack> out = rec.getOutputRepresentation(null, null);
 		if (out.size() > 18) {
 			out = new ItemMap(out).getLoredItemCountRepresentation();
 		}

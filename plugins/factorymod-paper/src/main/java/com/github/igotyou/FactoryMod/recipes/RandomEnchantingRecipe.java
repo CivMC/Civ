@@ -15,6 +15,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class RandomEnchantingRecipe extends InputRecipe {
 	private List<RandomEnchant> enchants;
@@ -52,7 +53,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return is;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			List<ItemStack> bla = input.getItemStackRepresentation();
 			bla.add(new ItemStack(tool));
@@ -66,7 +67,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return returns;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = new ItemStack(tool);
 		for (RandomEnchant re : enchants) {
 			is.addEnchantment(re.enchant, re.level);
@@ -94,8 +95,8 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return stacks;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logBeforeRecipeRun(i, f);
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logBeforeRecipeRun(i, fccf);
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			i.removeItem(is);
 		}
@@ -115,7 +116,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 				break;
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 	
 	@Override

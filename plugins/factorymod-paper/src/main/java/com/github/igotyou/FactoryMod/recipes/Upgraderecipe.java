@@ -29,22 +29,22 @@ public class Upgraderecipe extends InputRecipe {
 		this.egg = egg;
 	}
 
-	public void applyEffect(Inventory i, Factory f) {
-		logAfterRecipeRun(i, f);
-		if (input.isContainedIn(i) && f instanceof FurnCraftChestFactory) {
+	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		logAfterRecipeRun(i, fccf);
+		if (input.isContainedIn(i)) {
 			if (input.removeSafelyFrom(i)) {
 				FurnCraftChestEgg e = (FurnCraftChestEgg) egg;
-				((FurnCraftChestFactory) f).upgrade(e.getName(),
+				fccf.upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
 						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
 						e.getDamagePerDamagingPeriod(), e.getBreakGracePeriod(), e.getCitadelBreakReduction());
 			}
 		}
-		logAfterRecipeRun(i, f);
+		logAfterRecipeRun(i, fccf);
 	}
 
 	public ItemStack getRecipeRepresentation() {
-		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null).get(0);
+		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
 		res.setAmount(1);
 		ItemMeta im = res.getItemMeta();
 		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
@@ -54,7 +54,7 @@ public class Upgraderecipe extends InputRecipe {
 		return res;
 	}
 
-	public List<ItemStack> getInputRepresentation(Inventory i) {
+	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
@@ -84,7 +84,7 @@ public class Upgraderecipe extends InputRecipe {
 		return result;
 	}
 
-	public List<ItemStack> getOutputRepresentation(Inventory i) {
+	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		ItemStack cr = new ItemStack(Material.WORKBENCH);
 		ISUtils.setName(cr, egg.getName());
