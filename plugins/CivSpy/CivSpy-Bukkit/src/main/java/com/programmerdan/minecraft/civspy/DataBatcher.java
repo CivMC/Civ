@@ -248,7 +248,7 @@ public class DataBatcher {
 			if (this.workerCount.get() < this.maxExecutors) {
 				this.generateWorker();
 			} else {
-				logger.log(Level.WARNING, "Inflow count far in advance of outflow count, but no room for more outflow workers. Check your config!");
+				//logger.log(Level.WARNING, "Inflow count far in advance of outflow count, but no room for more outflow workers. Check your config!");
 			}
 		}
 	}
