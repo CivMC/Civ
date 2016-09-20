@@ -46,6 +46,12 @@ public class Group {
 		this.password = password;
 		this.owner = owner;
 		this.isDisciplined = disciplined;
+		
+		if (name == null) {
+			this.ids.add(id);
+			this.id = id;
+			return;
+		}
 	
 		for (PlayerType permission : PlayerType.values()) {
 			List<UUID> list = db.getAllMembers(name, permission);

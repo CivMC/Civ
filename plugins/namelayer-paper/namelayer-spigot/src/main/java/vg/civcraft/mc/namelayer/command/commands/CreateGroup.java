@@ -4,7 +4,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -12,6 +14,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
+import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -78,19 +81,29 @@ public class CreateGroup extends PlayerCommandMiddle{
 		else {
 			password = null;
 		}
-		UUID uuid = NameAPI.getUUID(p.getName());
+		final UUID uuid = NameAPI.getUUID(p.getName());
 		Group g = new Group(name, uuid, false, password, -1);
-		int id = gm.createGroup(g);
-		if (id == -1) { // failure
-			p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
-			return true;
-		}
-		g.setGroupId(id);
-		NameLayerPlugin.getBlackList().initEmptyBlackList(name);
-		p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
+		gm.createGroupAsync(g, new RunnableOnGroup() {
+			@Override
+			public void run() {
+				Player p = null;
+				p = Bukkit.getPlayer(uuid);
+				Group g = getGroup();
+				if (p != null) {
+					if (g.getGroupId() == -1) { // failure
+						p.sendMessage(ChatColor.RED + "That group is already taken or creation failed.");
+					}
+					p.sendMessage(ChatColor.GREEN + "The group " + g.getName() + " was successfully created.");
+				} else {
+					NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group {0} creation complete resulting in group id: {1}",
+							new Object[] {g.getName(), g.getGroupId()});
+				}
+			}
+		}, false);
 		if (NameLayerPlugin.getInstance().getGroupLimit() == (currentGroupCount + 1)){
 			p.sendMessage(ChatColor.YELLOW + "You have reached the group limit with " + NameLayerPlugin.getInstance().getGroupLimit() + " groups! Please delete un-needed groups if you wish to create more.");
 		}
+		p.sendMessage(ChatColor.GREEN + "Group creation request is in process.");
 		return true;
 	}
 
