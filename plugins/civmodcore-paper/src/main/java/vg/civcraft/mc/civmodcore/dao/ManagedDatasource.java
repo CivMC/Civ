@@ -391,6 +391,28 @@ public class ManagedDatasource {
 	}
 
 	/**
+	 * Checks if this plugin is already managed by the ManagedDatasource infrastructure or not.
+	 *
+	 * @return Returns true if the plugin has an entry in the migrations table; false for any other
+	 *   outcome.
+	 */
+	public boolean isManaged() {
+		try (Connection connection = getConnection();
+				PreparedStatement statement = connection.prepareStatement(CHECK_LAST_MIGRATION); ){
+			statement.setString(1, plugin.getName());
+			try (ResultSet set = statement.executeQuery();) {
+				if (set.next()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} catch (SQLException e) {
+			return false;
+		}
+	}
+
+	/**
 	 * This attempts to acquire a lock every WAIT_PERIOD milliseconds, up to MAX_WAIT_FOR_LOCK milliseconds.
 	 * 
 	 * If max wait is exhausted, throws a TimeoutException.
