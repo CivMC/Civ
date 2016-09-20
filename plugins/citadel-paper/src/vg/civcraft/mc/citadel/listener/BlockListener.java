@@ -475,27 +475,36 @@ public class BlockListener implements Listener {
 					ReinforcementType type = ReinforcementType
 							.getReinforcementType(stack);
 					if (type != null) {
-						// Don't allow double reinforcing reinforceable plants
-						if (wouldPlantDoubleReinforce(block)) {
-							sendAndLog(player, ChatColor.RED,
-									"Cancelled reinforcement, crop would already be reinforced.");
-						} else {
-							String gName = gm.getDefaultGroup(player.getUniqueId());
-							Group g = null;
-							if (gName != null) {
-								g = GroupManager.getGroup(gName);
-							}
-							if (g != null) {
-								try {
-									createPlayerReinforcement(player, g,
-											block, type, null);
-								} catch (ReinforcemnetFortificationCancelException e) {
-									Citadel.getInstance()
-											.getLogger()
-											.log(Level.WARNING,
-													"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
-													e);
-								}
+						 // Don't allow double reinforcing reinforceable plants
+				        if (wouldPlantDoubleReinforce(block)) {
+				        	sendAndLog(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+				            return;
+				        }
+				        // Don't allow incorrect reinforcement with exclusive reinforcement types
+				        if (!type.canBeReinforced(block.getType())) {
+				            sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+				            return;
+				        }
+						if (!canPlace(block, player)){
+							sendAndLog(player, ChatColor.RED, "Cancelled interact easymode rein, mismatched reinforcement.");
+							return;
+						}						
+						
+						String gName = gm.getDefaultGroup(player.getUniqueId());
+						Group g = null;
+						if (gName != null) {
+							g = GroupManager.getGroup(gName);
+						}
+						if (g != null) {
+							try {
+								createPlayerReinforcement(player, g,
+										block, type, null);
+							} catch (ReinforcemnetFortificationCancelException e) {
+								Citadel.getInstance()
+										.getLogger()
+										.log(Level.WARNING,
+												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
+												e);
 							}
 						}
 					}	
