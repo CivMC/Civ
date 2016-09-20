@@ -8,8 +8,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.ChatColor;
 
-import net.md_5.bungee.api.ChatColor;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
