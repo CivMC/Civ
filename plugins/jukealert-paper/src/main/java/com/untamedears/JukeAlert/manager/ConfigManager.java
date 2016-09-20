@@ -45,6 +45,7 @@ public class ConfigManager
 	
 	public ConfigManager()
 	{
+		this.plugin = JukeAlert.getInstance();
 		this.config = plugin.getConfig();
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
