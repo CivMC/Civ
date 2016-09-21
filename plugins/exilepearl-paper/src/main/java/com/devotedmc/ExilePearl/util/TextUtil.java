@@ -142,4 +142,109 @@ public class TextUtil
 		.replace("<it>", ChatColor.ITALIC.toString())
 		.replace("<reset>", ChatColor.RESET.toString());
 	}
+	
+	// -------------------------------------------- //
+	// Standard utils like UCFirst, implode and repeat.
+	// -------------------------------------------- //
+	
+	public String upperCaseFirst(String string) {
+		Guard.ArgumentNotNull(string, "string");
+		return string.substring(0, 1).toUpperCase()+string.substring(1);
+	}
+	
+	public String repeat(String string, int times) {
+		Guard.ArgumentNotNull(string, "string");
+		if (times <= 0) return "";
+		else return string + repeat(string, times-1);
+	}
+	
+	public String implode(List<String> list, String glue) {
+		Guard.ArgumentNotNull(list, "list");
+		Guard.ArgumentNotNull(glue, "glue");
+		StringBuilder ret = new StringBuilder();
+		for (int i=0; i<list.size(); i++)
+		{
+			if (i!=0)
+			{
+				ret.append(glue);
+			}
+			ret.append(list.get(i));
+		}
+		return ret.toString();
+	}
+	
+	public String implodeCommaAnd(List<String> list, String comma, String and)
+	{
+		if (list.size() == 0) return "";
+		if (list.size() == 1) return list.get(0);
+		
+		String lastItem = list.get(list.size()-1);
+		String nextToLastItem = list.get(list.size()-2);
+		String merge = nextToLastItem+and+lastItem;
+		list.set(list.size()-2, merge);
+		list.remove(list.size()-1);
+		
+		return implode(list, comma);
+	}
+	public String implodeCommaAnd(List<String> list)
+	{
+		return implodeCommaAnd(list, ", ", " and ");
+	}
+	
+	// -------------------------------------------- //
+	// Paging and chrome-tools like titleize
+	// -------------------------------------------- //
+	
+	private final String titleizeLine = repeat("_", 52);
+	private final int titleizeBalance = -1;
+	public String titleize(String str)
+	{
+		return titleize("<a>", str);
+	}
+	
+	public String titleize(String colorCode, String str)
+	{
+		String center = ".[ "+ parseTags("<l>") + str + parseTags(colorCode)+ " ].";
+		int centerlen = ChatColor.stripColor(center).length();
+		int pivot = titleizeLine.length() / 2;
+		int eatLeft = (centerlen / 2) - titleizeBalance;
+		int eatRight = (centerlen - eatLeft) + titleizeBalance;
+
+		if (eatLeft < pivot)
+			return parseTags(colorCode)+titleizeLine.substring(0, pivot - eatLeft) + center + titleizeLine.substring(pivot + eatRight);
+		else
+			return parseTags(colorCode)+center;
+	}
+	
+	public ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title)
+	{
+		ArrayList<String> ret = new ArrayList<String>();
+		int pageZeroBased = pageHumanBased - 1;
+		int pageheight = 9;
+		int pagecount = (lines.size() / pageheight)+1;
+		
+		ret.add(this.titleize(title+" "+pageHumanBased+"/"+pagecount));
+		
+		if (pagecount == 0)
+		{
+			ret.add(this.parseTags("<i>Sorry. No Pages available."));
+			return ret;
+		}
+		else if (pageZeroBased < 0 || pageHumanBased > pagecount)
+		{
+			ret.add(this.parseTags("<i>Invalid page. Must be between 1 and "+pagecount));
+			return ret;
+		}
+		
+		int from = pageZeroBased * pageheight;
+		int to = from+pageheight;
+		if (to > lines.size())
+		{
+			to = lines.size();
+		}
+		
+		ret.addAll(lines.subList(from, to));
+		
+		return ret;
+	}
 }

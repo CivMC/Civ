@@ -4,3 +4,4 @@ main: ${groupId}.${name}.${name}Plugin
 depend: [CivModCore]
 softdepend: [NameLayer, WorldBorder, CombatTagPlus, CBanManagement]
 commands:
+  ep:

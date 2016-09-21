@@ -36,14 +36,12 @@ public class ExilePearl {
 
 	private final ExilePearlPlugin plugin;
 	private final UUID playerId;
-	private Player player;
+	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
 	private LinkedBlockingQueue<PearlHolder> holders;
 	private long lastMoved;
-	private boolean summoned;
-	private boolean canDamage;
-	private Location returnLocation;
+	private boolean freedOffline;
 
 	/**
 	 * Creates a new prison pearl instance
@@ -57,8 +55,6 @@ public class ExilePearl {
 		this.holders = new LinkedBlockingQueue<PearlHolder>();
 		this.lastMoved = pearledOn.getTime();
 		this.setHolder(holder);
-		this.summoned = false;
-		this.canDamage = false;
 	}
 
 
@@ -67,22 +63,22 @@ public class ExilePearl {
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public ExilePearl(ExilePearlPlugin plugin, Player player, PearlHolder holder) {
+	public ExilePearl(ExilePearlPlugin plugin, PearlPlayer player, PearlHolder holder) {
 		this(plugin, player.getUniqueId(), holder);
 		this.player = player;
 	}
-	
+
 	/**
 	 * Creates a new prison pearl instance
 	 * @param playerId The pearled player id
 	 * @param imprisoner The imprisoner
 	 */
-	public ExilePearl(ExilePearlPlugin plugin, Player player, Player imprisoner) {
+	public ExilePearl(ExilePearlPlugin plugin, PearlPlayer player, Player imprisoner) {
 		this(plugin, player.getUniqueId(), new PlayerHolder(imprisoner));
 		this.player = player;
 	}
-	
-	
+
+
 	/**
 	 * Gets the imprisoned player ID
 	 * @return The player ID
@@ -96,9 +92,9 @@ public class ExilePearl {
 	 * Gets the imprisoned player
 	 * @return The player instance
 	 */
-	public Player getPlayer() {
+	public PearlPlayer getPlayer() {
 		if (player == null) {
-			player = plugin.getPlayerById(playerId);
+			player = plugin.getPearlPlayer(playerId);
 		}
 		return player;
 	}
@@ -162,8 +158,8 @@ public class ExilePearl {
 	 * Sets the pearl holder to a player
 	 * @param holder The new pearl holder
 	 */
-	public void setHolder(Player p) {
-		this.setHolder(new PlayerHolder(p));
+	public void setHolder(PearlPlayer p) {
+		this.setHolder(new PlayerHolder(p.getBukkitPlayer()));
 	}
 
 
@@ -195,70 +191,34 @@ public class ExilePearl {
 		final String str = loc.getWorld().getName() + " " + vec.getBlockX() + " " + vec.getBlockY() + " " + vec.getBlockZ();
 		return "held by " + holder.getName() + " at " + str;
 	}
-	
-	
+
+
 	/**
 	 * Marks when the pearl was moved last
 	 */
-    public void markMove() {
-        this.lastMoved = System.currentTimeMillis();
-    }
-    
-    
-    /**
-     * Gets the summoned status
-     * @return The summoned status
-     */
-    public boolean getSummoned() {
-    	return this.summoned;
-    }
-    
-    
-    /**
-     * Sets the summoned status
-     * @param The summoned status
-     */
-    public void setSummoned(boolean summoned) {
-    	this.summoned = summoned;
-    }
+	public void markMove() {
+		this.lastMoved = System.currentTimeMillis();
+	}
 
-    
-    /**
-     * Gets the damage status
-     * @return The damage status
-     */
-    public boolean getCanDamage() {
-    	return this.canDamage;
-    }
-    
-    
-    /**
-     * Sets whether the player can damage others
-     * @param The damage status
-     */
-    public void setCanDamage(boolean canDamage) {
-    	this.canDamage = canDamage;
-    }
-    
-    
-    /**
-     * Gets the return location
-     * @return The return location
-     */
-    public Location getReturnLocation() {
-    	return this.returnLocation;
-    }
-    
-    
-    /**
-     * Sets the return location
-     * @param returnLocation The return location
-     */
-    public void setReturnLocation(Location returnLocation) {
-    	this.returnLocation = returnLocation;
-    }
-    
-    
+
+
+	/**
+	 * Gets whether the player was freed offline
+	 * @return true if the player was freed offline
+	 */
+	public boolean getFreedOffline() {
+		return this.freedOffline;
+	}
+
+	/**
+	 * Gets whether the player was freed offline
+	 * @return true if the player was freed offline
+	 */
+	public void setFreedOffline(boolean freedOffline) {
+		this.freedOffline = freedOffline;
+	}
+
+
 
 	/**
 	 * Creates an item stack for the pearl
@@ -273,7 +233,7 @@ public class ExilePearl {
 		is.setItemMeta(im);
 		return is;
 	}
-	
+
 	/**
 	 * Generates the lore for the pearl
 	 * @return The pearl lore
@@ -295,8 +255,8 @@ public class ExilePearl {
 
 	// For parsing the UUID out of the pearl lore
 	private static Pattern idPattern = Pattern.compile(parse("<a>UUID: <n>(.+)"));
-	
-	
+
+
 	/**
 	 * Gets the UUID from a prison pearl
 	 * @param is The item stack
@@ -306,7 +266,7 @@ public class ExilePearl {
 		if (is == null) {
 			return null;
 		}
-		
+
 		if (!is.getType().equals(Material.ENDER_PEARL)) {
 			return null;
 		}
@@ -320,17 +280,17 @@ public class ExilePearl {
 		if (lore == null) {
 			return null;
 		}
-		
+
 		String idLore  = lore.get(2);
 		Matcher match = idPattern.matcher(idLore);
 		if (match.find()) {
 			UUID id = UUID.fromString(match.group(1));
 			return id;
 		}
-		
+
 		return null;
 	}
-	
+
 
 	/**
 	 * Validates that an item stack is the prison pearl
@@ -341,14 +301,14 @@ public class ExilePearl {
 
 		UUID id = getIDFromItemStack(is);
 		if (id != null && id.equals(this.playerId)) {
-			
+
 			// re-create the item stack to update the values
 			ItemMeta im = is.getItemMeta();
 			im.setLore(this.generateLore());
 			is.setItemMeta(im);
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -378,7 +338,7 @@ public class ExilePearl {
 		}
 		sb.append(String.format("PP (%s, %s) failed verification for reason %s: %s",
 				playerId.toString(), this.getName(), failure_reason_log.toString(), verifier_log.toString()));
-		
+
 		plugin.log(sb.toString());
 		return false;
 	}
@@ -391,16 +351,16 @@ public class ExilePearl {
 	 * @return true if the pearl was found in a valid location
 	 */
 	private HolderVerifyResult verifyHolder(PearlHolder holder, StringBuilder feedback) {
-		
+
 		if (System.currentTimeMillis() - this.lastMoved < 2000) {
 			// The pearl was recently moved. Due to a race condition, this exists to
 			//  prevent players from spamming /ppl to get free when a pearl is moved.
 			return HolderVerifyResult.TIME;
 		}
-		
+
 		return holder.validate(this, feedback);
 	}
-	
+
 	public Location getLocation() {
 		return this.holders.peek().getLocation();
 	}
@@ -413,21 +373,21 @@ public class ExilePearl {
 	protected static String parse(String str, Object... args) {
 		return String.format(parse(str), args);
 	}
-	
-	
+
+
 	/**
 	 * Gets the item stack from an inventory if it exists
 	 * @param inv The inventory to search
 	 * @return The pearl item
 	 */
 	public ItemStack getItemFromInventory(Inventory inv) {
-		
+
 		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
 			if (this.validateItemStack(item)) {
 				return item;
 			}
 		}
-		
+
 		return null;
 	}
 }
