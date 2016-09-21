@@ -43,6 +43,7 @@ factories:
     - Smelt Stone
     - Create Sea Lantern
     - Craft Coal Blocks
+    - Smelt Bricks
     - Create Netherbrick
     - Create Quartz Blocks
     - Create Prismarine Blocks
@@ -326,6 +327,18 @@ recipes:
       buckets:
         material: BUCKET
         amount: 4
+  Smelt Bricks:
+    type: PRODUCTION
+    name: Smelt Bricks
+    production_time: 5s
+    input:
+      clayblock:
+        material: CLAY
+        amount: 32
+    output:
+      bricks:
+        material: BRICK
+        amount: 192
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
