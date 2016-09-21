@@ -1,0 +1,86 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                      http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.untamedears</groupId>
+	<artifactId>PrisonPearl</artifactId>
+	<packaging>jar</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>ExilePearl</name>
+	<url>https://github.com/DevotedMC/ExilePearl</url>
+
+	<properties>
+		<maven.compiler.source>1.7</maven.compiler.source>
+		<maven.compiler.target>1.7</maven.compiler.target>
+	</properties>
+
+	<build>
+		<sourceDirectory>${basedir}/src</sourceDirectory>
+
+		<resources>
+			<resource>
+				<directory>${basedir}</directory>
+				<includes>
+					<include>*.yml</include>
+					<include>LICENSE.txt</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
+		</resources>
+	</build>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>Spigot</artifactId>
+			<version>1.10</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.7</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.wimbli.WorldBorder</groupId>
+			<artifactId>WorldBorder</artifactId>
+			<version>1.8.7</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.minelink</groupId>
+			<artifactId>CombatTagPlus</artifactId>
+			<version>1.2.4-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc</groupId>
+			<artifactId>CBanManagement</artifactId>
+			<version>1.4.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<artifactId>CivModCore</artifactId>
+			<version>1.3.2</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>civcraft-repo</id>
+			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>minelink-releases</id>
+			<url>http://repo.minelink.net/content/repositories/releases/</url>
+		</repository>
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+	</repositories>
+</project>
+
