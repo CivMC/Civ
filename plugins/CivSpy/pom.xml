@@ -21,7 +21,7 @@
 		</repository>
 		<repository>
 			<id>civcraft-repo</id>
-			<url>http://build.civcraft.co/plugin/repository/everything/</url>
+			<url>https://build.civcraft.co/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>bungeecord-repo</id>

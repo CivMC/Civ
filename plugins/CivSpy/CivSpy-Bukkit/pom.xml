@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>civspy</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 	<name>CivSpy</name>
 	<url>https://github.com/ProgrammerDan/CivSpy</url>
@@ -113,6 +113,18 @@
 			<artifactId>recipeManager</artifactId>
 			<version>2.7.3</version>
 			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.citadel</groupId>
+			<artifactId>Citadel</artifactId>
+			<version>3.5.91</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.9.03</version>
+			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 </project>
