@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -44,53 +45,61 @@ public class PickupListener extends ServerDataListener {
 	}
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void itemDropListener(PlayerPickupItemEvent event) {
-		Player picker = event.getPlayer();
-		if (picker == null) return;
-		UUID id = picker.getUniqueId();
-		Item toPick = event.getItem();
-		if (toPick == null) return;
-		
-		Location location = toPick.getLocation();
-		if (location == null) return;
-		Chunk chunk = location.getChunk();
-		
-		ItemStack pick = toPick.getItemStack();
-		if (pick == null) return;
-		ItemStack pickQ = pick.clone();
-		pickQ.setAmount(1);
-		DataSample rpick = new PointDataSample("player.pickup", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(pickQ), pick.getAmount());
-		this.record(rpick);
+	public void playerPickupListener(PlayerPickupItemEvent event) {
+		try {
+			Player picker = event.getPlayer();
+			if (picker == null) return;
+			UUID id = picker.getUniqueId();
+			Item toPick = event.getItem();
+			if (toPick == null) return;
+			
+			Location location = toPick.getLocation();
+			if (location == null) return;
+			Chunk chunk = location.getChunk();
+			
+			ItemStack pick = toPick.getItemStack();
+			if (pick == null) return;
+			ItemStack pickQ = pick.clone();
+			pickQ.setAmount(1);
+			DataSample rpick = new PointDataSample("player.pickup", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(pickQ), pick.getAmount());
+			this.record(rpick);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a player pickup event", e);
+		}
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void inventoryPickupListener(InventoryPickupItemEvent event) {
-		Inventory inventory = event.getInventory();
-		if (inventory == null) return;
-		Location location = inventory.getLocation();
-		Chunk chunk = location.getChunk();
-		
-		InventoryHolder holder = inventory.getHolder();
-		if (holder == null) return;
-		String picker = null;
-		
-		if (holder instanceof Hopper) {
-			picker = "Hopper";
-		} else if (holder instanceof HopperMinecart) {
-			picker = "HopperMinecart";
-		} else {
-			picker = "Unknown";
+		try {
+			Inventory inventory = event.getInventory();
+			if (inventory == null) return;
+			Location location = inventory.getLocation();
+			Chunk chunk = location.getChunk();
+			
+			InventoryHolder holder = inventory.getHolder();
+			if (holder == null) return;
+			String picker = null;
+			
+			if (holder instanceof Hopper) {
+				picker = "Hopper";
+			} else if (holder instanceof HopperMinecart) {
+				picker = "HopperMinecart";
+			} else {
+				picker = "Unknown";
+			}
+			
+			Item item = event.getItem();
+			ItemStack pick = item.getItemStack();
+			ItemStack pickQ = pick.clone();
+			pickQ.setAmount(1);
+			DataSample rpick = new PointDataSample("inventory.pickup." + picker, this.getServer(),
+					chunk.getWorld().getName(), null, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(pickQ), pick.getAmount());
+			this.record(rpick);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy an inventory pickup event", e);
 		}
-		
-		Item item = event.getItem();
-		ItemStack pick = item.getItemStack();
-		ItemStack pickQ = pick.clone();
-		pickQ.setAmount(1);
-		DataSample rpick = new PointDataSample("inventory.pickup." + picker, this.getServer(),
-				chunk.getWorld().getName(), null, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(pickQ), pick.getAmount());
-		this.record(rpick);
 	}
 }

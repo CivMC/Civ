@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -42,16 +43,20 @@ public final class PlaceListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void PlaceListen(BlockPlaceEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-		Block placed = event.getBlockPlaced();
-		Chunk chunk = placed.getChunk();
-
-		DataSample blockPlace = new PointDataSample("player.blockplace", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(placed.getState()));
-		this.record(blockPlace);
+		try {
+			Player p = event.getPlayer();
+			if (p == null) return;
+			UUID id = p.getUniqueId();
+			Block placed = event.getBlockPlaced();
+			Chunk chunk = placed.getChunk();
+		
+			DataSample blockPlace = new PointDataSample("player.blockplace", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(placed.getState()));
+			this.record(blockPlace);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a place event", e);
+		}
 	}
 
 }

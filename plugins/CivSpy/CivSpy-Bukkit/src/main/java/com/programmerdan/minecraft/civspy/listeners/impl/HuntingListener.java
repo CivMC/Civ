@@ -2,6 +2,7 @@ package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -53,91 +54,99 @@ public final class HuntingListener extends ServerDataListener {
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void capturePlayerDeath(PlayerDeathEvent event) {
-		Player died = event.getEntity();
-		if (died == null) return;
-		
-		UUID playerUUID = died.getUniqueId();
-		
-		Location location = died.getLocation();
-		Chunk chunk = location.getChunk();
-		
-		String killerName = null;
-		boolean killerIsEntity = false;
-		if (died.getKiller() != null) {
-			Player killer = died.getKiller();
-			killerName = killer.getUniqueId().toString();
-			killerIsEntity = true;
-		} else if (died.getLastDamageCause() != null) {
-			EntityDamageEvent ede = died.getLastDamageCause();
-			if (ede instanceof EntityDamageByEntityEvent) {
-				Entity killer = ((EntityDamageByEntityEvent) ede).getDamager();
-				if (killer != null) {
-					killerName = killer.getCustomName() != null ? killer.getCustomName() : killer.getType().toString();
-				} else {
-					killerName = "Unknown";
-				}
+		try {
+			Player died = event.getEntity();
+			if (died == null) return;
+			
+			UUID playerUUID = died.getUniqueId();
+			
+			Location location = died.getLocation();
+			Chunk chunk = location.getChunk();
+			
+			String killerName = null;
+			boolean killerIsEntity = false;
+			if (died.getKiller() != null) {
+				Player killer = died.getKiller();
+				killerName = killer.getUniqueId().toString();
 				killerIsEntity = true;
-			} else {
-				killerName = ede.getCause().toString();
+			} else if (died.getLastDamageCause() != null) {
+				EntityDamageEvent ede = died.getLastDamageCause();
+				if (ede instanceof EntityDamageByEntityEvent) {
+					Entity killer = ((EntityDamageByEntityEvent) ede).getDamager();
+					if (killer != null) {
+						killerName = killer.getCustomName() != null ? killer.getCustomName() : killer.getType().toString();
+					} else {
+						killerName = "Unknown";
+					}
+					killerIsEntity = true;
+				} else {
+					killerName = ede.getCause().toString();
+				}
 			}
-		}
-		
-		DataSample death = new PointDataSample("player." + (killerIsEntity ? "killed" : "died"), this.getServer(),
-					chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
-					killerName);
-		this.record(death);
-		
-		List<ItemStack> dropped = event.getDrops();
-		
-		if (dropped != null && dropped.size() > 0) {
-			for (ItemStack drop : dropped) {
-				ItemStack dropQ = drop.clone();
-				dropQ.setAmount(1);
-				DataSample deathdrop = new PointDataSample("player." + (killerIsEntity ? "killed.drop" : "died.drop"),
-						this.getServer(), chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
-						ItemStackToString.toString(dropQ), drop.getAmount());
-				this.record(deathdrop);
+			
+			DataSample death = new PointDataSample("player." + (killerIsEntity ? "killed" : "died"), this.getServer(),
+						chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
+						killerName);
+			this.record(death);
+			
+			List<ItemStack> dropped = event.getDrops();
+			
+			if (dropped != null && dropped.size() > 0) {
+				for (ItemStack drop : dropped) {
+					ItemStack dropQ = drop.clone();
+					dropQ.setAmount(1);
+					DataSample deathdrop = new PointDataSample("player." + (killerIsEntity ? "killed.drop" : "died.drop"),
+							this.getServer(), chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
+							ItemStackToString.toString(dropQ), drop.getAmount());
+					this.record(deathdrop);
+				}
 			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a player death event", e);
 		}
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void captureDeath(EntityDeathEvent event) {
-		if (event instanceof PlayerDeathEvent || event.getEntity() == null || event.getEntity() instanceof Player) return;
-
-		LivingEntity died = event.getEntity();
-		List<ItemStack> dropped = event.getDrops();
-		int xpd = event.getDroppedExp();
-
-		Player killer = died.getKiller();
-		UUID killerUUID = killer == null ? null : killer.getUniqueId();
-
-		Location location = died.getLocation();
-		Chunk chunk = location.getChunk();
-
-		String type = died.getType().name();
-		String diedCName = died.getCustomName();
-		
-		DataSample death = new PointDataSample("entity.death." + type, this.getServer(),
-				chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName);
-		this.record(death);
-
-		if (dropped != null && dropped.size() > 0) {
-			for (ItemStack drop : dropped) {
-				ItemStack dropQ = drop.clone();
-				dropQ.setAmount(1);
-				DataSample deathdrop = new PointDataSample("entity.death.drop." + type, this.getServer(),
-						chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), 
-						ItemStackToString.toString(dropQ), drop.getAmount());
-				this.record(deathdrop);
-			}
-		}
-
-		if (xpd > 0) {
-			DataSample deathxp = new PointDataSample("entity.death.xp." + type, this.getServer(),
-					chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName, xpd);
-			this.record(deathxp);
+		try {
+			if (event instanceof PlayerDeathEvent || event.getEntity() == null || event.getEntity() instanceof Player) return;
+	
+			LivingEntity died = event.getEntity();
+			List<ItemStack> dropped = event.getDrops();
+			int xpd = event.getDroppedExp();
+	
+			Player killer = died.getKiller();
+			UUID killerUUID = killer == null ? null : killer.getUniqueId();
+	
+			Location location = died.getLocation();
+			Chunk chunk = location.getChunk();
+	
+			String type = died.getType().name();
+			String diedCName = died.getCustomName();
 			
+			DataSample death = new PointDataSample("entity.death." + type, this.getServer(),
+					chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName);
+			this.record(death);
+	
+			if (dropped != null && dropped.size() > 0) {
+				for (ItemStack drop : dropped) {
+					ItemStack dropQ = drop.clone();
+					dropQ.setAmount(1);
+					DataSample deathdrop = new PointDataSample("entity.death.drop." + type, this.getServer(),
+							chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), 
+							ItemStackToString.toString(dropQ), drop.getAmount());
+					this.record(deathdrop);
+				}
+			}
+	
+			if (xpd > 0) {
+				DataSample deathxp = new PointDataSample("entity.death.xp." + type, this.getServer(),
+						chunk.getWorld().getName(), killerUUID, chunk.getX(), chunk.getZ(), diedCName, xpd);
+				this.record(deathxp);
+				
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy an entity death event", e);
 		}
 	}
 }

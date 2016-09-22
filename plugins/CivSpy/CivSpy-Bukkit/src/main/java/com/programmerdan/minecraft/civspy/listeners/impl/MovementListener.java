@@ -2,6 +2,7 @@ package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -56,26 +57,30 @@ public final class MovementListener extends ServerDataListener {
 	}
 	
 	private void doMove(Player p, UUID id, Location to) {
-		Location from = storedLocations.get(id);
-		if (from == null || !from.getWorld().equals(to.getWorld())) {
-			storedLocations.put(id, to);
-			return;
-		}
-		
-		// Check if the player moved at least 1 in any cardinal axis.
-		int xMove = from.getBlockX() - to.getBlockX();
-		int yMove = from.getBlockY() - to.getBlockY();
-		int zMove = from.getBlockZ() - to.getBlockZ();
-		if (xMove != 0 || yMove != 0 || zMove != 0) {
-			String world = to.getWorld().getName();
-			double distance = Math.sqrt(xMove * xMove + yMove * yMove + zMove * zMove);
-			String type = p.isSneaking() ? "sneaking" : p.isFlying() ? "flying" : p.isGliding() ? "gliding" : 
-				p.isInsideVehicle() ? (p.getVehicle() == null ? "vehicle" : p.getVehicle().getType().toString()) : p.isSprinting() ? "running" : "walking";
-			Chunk chunk = to.getChunk();
-			DataSample chunkMovement = new PointDataSample("player.movement", this.getServer(), world, id,
-					chunk.getX(), chunk.getZ(), type, distance);
-			this.record(chunkMovement);
-			storedLocations.put(id, to);
+		try {
+			Location from = storedLocations.get(id);
+			if (from == null || !from.getWorld().equals(to.getWorld())) {
+				storedLocations.put(id, to);
+				return;
+			}
+			
+			// Check if the player moved at least 1 in any cardinal axis.
+			int xMove = from.getBlockX() - to.getBlockX();
+			int yMove = from.getBlockY() - to.getBlockY();
+			int zMove = from.getBlockZ() - to.getBlockZ();
+			if (xMove != 0 || yMove != 0 || zMove != 0) {
+				String world = to.getWorld().getName();
+				double distance = Math.sqrt(xMove * xMove + yMove * yMove + zMove * zMove);
+				String type = p.isSneaking() ? "sneaking" : p.isFlying() ? "flying" : p.isGliding() ? "gliding" : 
+					p.isInsideVehicle() ? (p.getVehicle() == null ? "vehicle" : p.getVehicle().getType().toString()) : p.isSprinting() ? "running" : "walking";
+				Chunk chunk = to.getChunk();
+				DataSample chunkMovement = new PointDataSample("player.movement", this.getServer(), world, id,
+						chunk.getX(), chunk.getZ(), type, distance);
+				this.record(chunkMovement);
+				storedLocations.put(id, to);
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a move event", e);
 		}
 	}
 	

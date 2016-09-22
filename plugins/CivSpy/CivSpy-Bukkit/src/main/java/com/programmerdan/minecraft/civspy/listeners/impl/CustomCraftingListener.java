@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -45,26 +46,30 @@ public final class CustomCraftingListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void CraftListen(RecipeManagerCraftEvent event) {
-		Player player = event.getPlayer();
-		if (player == null) return;
-		UUID id = player.getUniqueId();
-
-		Location location = player.getLocation();
-		Chunk chunk = location.getChunk();
-		
-		WorkbenchRecipe recipe = event.getRecipe();
-		ItemResult result = event.getResult();
-		
-		ItemStack stack = result.toItemStack();
-		stack.setAmount(1);
-		
-		DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(stack), result.getAmount());
-		this.record(recipeGen);
-		
-		DataSample customCraft = new PointDataSample("player.craft.custom", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), recipe.getName());
-		this.record(customCraft);
+		try {
+			Player player = event.getPlayer();
+			if (player == null) return;
+			UUID id = player.getUniqueId();
+	
+			Location location = player.getLocation();
+			Chunk chunk = location.getChunk();
+			
+			WorkbenchRecipe recipe = event.getRecipe();
+			ItemResult result = event.getResult();
+			
+			ItemStack stack = result.toItemStack();
+			stack.setAmount(1);
+			
+			DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(stack), result.getAmount());
+			this.record(recipeGen);
+			
+			DataSample customCraft = new PointDataSample("player.craft.custom", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), recipe.getName());
+			this.record(customCraft);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a RecipeManager craft event", e);
+		}
 	}
 }

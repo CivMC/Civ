@@ -42,31 +42,35 @@ public final class CraftingListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void CraftListen(CraftItemEvent event) {
-		HumanEntity player = event.getWhoClicked();
-		if (player == null) return;
-		UUID id = player.getUniqueId();
-
-		Location location = player.getLocation();
-		Chunk chunk = location.getChunk();
+		try {
+			HumanEntity player = event.getWhoClicked();
+			if (player == null) return;
+			UUID id = player.getUniqueId();
 		
-		CraftingInventory resultMap = event.getInventory();
-		if (resultMap == null) return;
-		ItemStack result = resultMap.getResult();
-		if (result == null) {
-			if (event.getRecipe() != null) {
-				logger.log(Level.INFO, "Result was null on a crafting event - {0}", 
-						event.getRecipe().getResult());
-			} else {
-				logger.log(Level.INFO, "Result was null on a crafting event  ??");
+			Location location = player.getLocation();
+			Chunk chunk = location.getChunk();
+			
+			CraftingInventory resultMap = event.getInventory();
+			if (resultMap == null) return;
+			ItemStack result = resultMap.getResult();
+			if (result == null) {
+				if (event.getRecipe() != null) {
+					logger.log(Level.INFO, "Result was null on a crafting event - {0}", 
+							event.getRecipe().getResult());
+				} else {
+					logger.log(Level.INFO, "Result was null on a crafting event  ??");
+				}
 			}
+			
+			ItemStack stack = result.clone();
+			stack.setAmount(1);
+			
+			DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(stack), result.getAmount());
+			this.record(recipeGen);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a craft event", e);
 		}
-		
-		ItemStack stack = result.clone();
-		stack.setAmount(1);
-		
-		DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(stack), result.getAmount());
-		this.record(recipeGen);
 	}
 }

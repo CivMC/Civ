@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -48,32 +49,36 @@ public final class BreakListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void BreakListen(BlockBreakEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-		Block broken = event.getBlock();
-		Chunk chunk = broken.getChunk();
-		
-		if (broken instanceof InventoryHolder) {
-			Inventory inventory = ((InventoryHolder) broken).getInventory();
-			ItemStack[] dropped = inventory.getStorageContents();
+		try {
+			Player p = event.getPlayer();
+			if (p == null) return;
+			UUID id = p.getUniqueId();
+			Block broken = event.getBlock();
+			Chunk chunk = broken.getChunk();
 			
-			if (dropped != null && dropped.length > 0) {
-				for (ItemStack drop : dropped) {
-					ItemStack dropQ = drop.clone();
-					dropQ.setAmount(1);
-					DataSample deathdrop = new PointDataSample("block.drop." + broken.getType().toString(),
-							this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-							ItemStackToString.toString(dropQ), drop.getAmount());
-					this.record(deathdrop);
+			if (broken instanceof InventoryHolder) {
+				Inventory inventory = ((InventoryHolder) broken).getInventory();
+				ItemStack[] dropped = inventory.getStorageContents();
+				
+				if (dropped != null && dropped.length > 0) {
+					for (ItemStack drop : dropped) {
+						ItemStack dropQ = drop.clone();
+						dropQ.setAmount(1);
+						DataSample deathdrop = new PointDataSample("block.drop." + broken.getType().toString(),
+								this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+								ItemStackToString.toString(dropQ), drop.getAmount());
+						this.record(deathdrop);
+					}
 				}
 			}
+			
+			DataSample blockBreak = new PointDataSample("player.blockbreak", this.getServer(),
+					chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(broken.getState()));
+			this.record(blockBreak);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a break event", e);
 		}
-		
-		DataSample blockBreak = new PointDataSample("player.blockbreak", this.getServer(),
-				chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(broken.getState()));
-		this.record(blockBreak);
 	}
 
 }

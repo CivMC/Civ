@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
@@ -54,36 +55,39 @@ public final class CitadelListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void DamageListen(ReinforcementDamageEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-		Block broken = event.getBlock();
-		if (broken == null) return;
-		Chunk chunk = broken.getChunk();
-		
-		Reinforcement reinf = event.getReinforcement();
-		if (reinf == null) return;
-		
-		String type = reinf.getMaterial().toString();
-		
-		if (reinf instanceof PlayerReinforcement) {
-			PlayerReinforcement pr = (PlayerReinforcement) reinf;
-			type = ItemStackToString.toString( pr.getStackRepresentation() );
-			Group group = pr.getGroup();
+		try {
+			Player p = event.getPlayer();
+			if (p == null) return;
+			UUID id = p.getUniqueId();
+			Block broken = event.getBlock();
+			if (broken == null) return;
+			Chunk chunk = broken.getChunk();
 			
-			if (group != null) {
-				DataSample groupDamage = new PointDataSample("player.citadel.damage.group",
-						this.getServer(), chunk.getWorld().getName(), id, 
-						chunk.getX(), chunk.getZ(), group.getName());
-				this.record(groupDamage);
+			Reinforcement reinf = event.getReinforcement();
+			if (reinf == null) return;
+			
+			String type = reinf.getMaterial().toString();
+			
+			if (reinf instanceof PlayerReinforcement) {
+				PlayerReinforcement pr = (PlayerReinforcement) reinf;
+				type = ItemStackToString.toString( pr.getStackRepresentation() );
+				Group group = pr.getGroup();
+				
+				if (group != null) {
+					DataSample groupDamage = new PointDataSample("player.citadel.damage.group",
+							this.getServer(), chunk.getWorld().getName(), id, 
+							chunk.getX(), chunk.getZ(), group.getName());
+					this.record(groupDamage);
+				}
 			}
-		}
-		
-		DataSample reinfDamage = new PointDataSample("player.citadel.damage." + type, 
-				this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(broken.getState()));
-		this.record(reinfDamage);
-		
+			
+			DataSample reinfDamage = new PointDataSample("player.citadel.damage." + type, 
+					this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(broken.getState()));
+			this.record(reinfDamage);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a citadel damage event", e);
+		}		
 	}
 
 	/**
@@ -97,35 +101,39 @@ public final class CitadelListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void CreateListen(ReinforcementCreationEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-		Block broken = event.getBlock();
-		if (broken == null) return;
-		Chunk chunk = broken.getChunk();
-
-		Reinforcement reinf = event.getReinforcement();
-		if (reinf == null) return;
-
-		String type = reinf.getMaterial().toString();
-		
-		if (reinf instanceof PlayerReinforcement) {
-			PlayerReinforcement pr = (PlayerReinforcement) reinf;
-			type = ItemStackToString.toString( pr.getStackRepresentation() );
-			Group group = pr.getGroup();
+		try {
+			Player p = event.getPlayer();
+			if (p == null) return;
+			UUID id = p.getUniqueId();
+			Block broken = event.getBlock();
+			if (broken == null) return;
+			Chunk chunk = broken.getChunk();
+	
+			Reinforcement reinf = event.getReinforcement();
+			if (reinf == null) return;
+	
+			String type = reinf.getMaterial().toString();
 			
-			if (group != null) {
-				DataSample groupDamage = new PointDataSample("player.citadel.create.group",
-						this.getServer(), chunk.getWorld().getName(), id, 
-						chunk.getX(), chunk.getZ(), group.getName());
-				this.record(groupDamage);
+			if (reinf instanceof PlayerReinforcement) {
+				PlayerReinforcement pr = (PlayerReinforcement) reinf;
+				type = ItemStackToString.toString( pr.getStackRepresentation() );
+				Group group = pr.getGroup();
+				
+				if (group != null) {
+					DataSample groupDamage = new PointDataSample("player.citadel.create.group",
+							this.getServer(), chunk.getWorld().getName(), id, 
+							chunk.getX(), chunk.getZ(), group.getName());
+					this.record(groupDamage);
+				}
 			}
+			
+			DataSample reinfCreate = new PointDataSample("player.citadel.create." + type, 
+					this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(broken.getState()));
+			this.record(reinfCreate);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a citadel create event", e);
 		}
-		
-		DataSample reinfCreate = new PointDataSample("player.citadel.create." + type, 
-				this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(broken.getState()));
-		this.record(reinfCreate);
 	}
 
 	/**
@@ -136,39 +144,43 @@ public final class CitadelListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void ChangeListen(ReinforcementChangeTypeEvent event) {
-		Player p = event.getPlayer();
-		if (p == null) return;
-		UUID id = p.getUniqueId();
-
-		ReinforcementType rtype = event.getNewType();
-		if (rtype == null) return;
-		
-		Reinforcement reinf = event.getReinforcement();
-		if (reinf == null) return;
-		
-		Location block = reinf.getLocation();
-		if (block == null) return;
-		Chunk chunk = block.getChunk();
-
-		String type = reinf.getMaterial().toString();
-		
-		if (reinf instanceof PlayerReinforcement) {
-			PlayerReinforcement pr = (PlayerReinforcement) reinf;
-			type = ItemStackToString.toString( pr.getStackRepresentation());
-			Group group = pr.getGroup();
+		try {
+			Player p = event.getPlayer();
+			if (p == null) return;
+			UUID id = p.getUniqueId();
+	
+			ReinforcementType rtype = event.getNewType();
+			if (rtype == null) return;
 			
-			if (group != null) {
-				DataSample groupDamage = new PointDataSample("player.citadel.change.group",
-						this.getServer(), chunk.getWorld().getName(), id, 
-						chunk.getX(), chunk.getZ(), group.getName());
-				this.record(groupDamage);
+			Reinforcement reinf = event.getReinforcement();
+			if (reinf == null) return;
+			
+			Location block = reinf.getLocation();
+			if (block == null) return;
+			Chunk chunk = block.getChunk();
+	
+			String type = reinf.getMaterial().toString();
+			
+			if (reinf instanceof PlayerReinforcement) {
+				PlayerReinforcement pr = (PlayerReinforcement) reinf;
+				type = ItemStackToString.toString( pr.getStackRepresentation());
+				Group group = pr.getGroup();
+				
+				if (group != null) {
+					DataSample groupDamage = new PointDataSample("player.citadel.change.group",
+							this.getServer(), chunk.getWorld().getName(), id, 
+							chunk.getX(), chunk.getZ(), group.getName());
+					this.record(groupDamage);
+				}
 			}
+			
+			DataSample reinfChange = new PointDataSample("player.citadel.change." + type, 
+					this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
+					ItemStackToString.toString(rtype.getItemStack()));
+			this.record(reinfChange);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a citadel change event", e);
 		}
-		
-		DataSample reinfChange = new PointDataSample("player.citadel.change." + type, 
-				this.getServer(), chunk.getWorld().getName(), id, chunk.getX(), chunk.getZ(), 
-				ItemStackToString.toString(rtype.getItemStack()));
-		this.record(reinfChange);
 	}
 	
 	/**
@@ -179,30 +191,34 @@ public final class CitadelListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void AcidListen(AcidBlockEvent event) {
-		PlayerReinforcement destroyed = event.getDestoryedBlockReinforcement();
-		PlayerReinforcement acid = event.getAcidBlockReinforcement();
-		
-		if (destroyed == null || acid == null) return;
-		
-		Location block = destroyed.getLocation();
-		if (block == null) return;
-		Chunk chunk = block.getChunk();
-		
-		String typeDestroyed = ItemStackToString.toString( destroyed.getStackRepresentation());
-		String typeAcid = ItemStackToString.toString( acid.getStackRepresentation());
-		
-		DataSample reinfCreate = new PointDataSample("player.citadel.acid." + typeAcid, 
-				this.getServer(), chunk.getWorld().getName(), null, chunk.getX(), chunk.getZ(), 
-				typeDestroyed);
-		this.record(reinfCreate);
-		
-		Group group = destroyed.getGroup();
-		
-		if (group != null) {
-			DataSample groupDamage = new PointDataSample("player.citadel.acid.destroyed.group",
-					this.getServer(), chunk.getWorld().getName(), null, 
-					chunk.getX(), chunk.getZ(), group.getName());
-			this.record(groupDamage);
+		try {
+			PlayerReinforcement destroyed = event.getDestoryedBlockReinforcement();
+			PlayerReinforcement acid = event.getAcidBlockReinforcement();
+			
+			if (destroyed == null || acid == null) return;
+			
+			Location block = destroyed.getLocation();
+			if (block == null) return;
+			Chunk chunk = block.getChunk();
+			
+			String typeDestroyed = ItemStackToString.toString( destroyed.getStackRepresentation());
+			String typeAcid = ItemStackToString.toString( acid.getStackRepresentation());
+			
+			DataSample reinfCreate = new PointDataSample("player.citadel.acid." + typeAcid, 
+					this.getServer(), chunk.getWorld().getName(), null, chunk.getX(), chunk.getZ(), 
+					typeDestroyed);
+			this.record(reinfCreate);
+			
+			Group group = destroyed.getGroup();
+			
+			if (group != null) {
+				DataSample groupDamage = new PointDataSample("player.citadel.acid.destroyed.group",
+						this.getServer(), chunk.getWorld().getName(), null, 
+						chunk.getX(), chunk.getZ(), group.getName());
+				this.record(groupDamage);
+			}
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Failed to spy a citadel acid event", e);
 		}
 	}
 }
