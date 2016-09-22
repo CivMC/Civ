@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl;
 
+import java.util.logging.Level;
+
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -36,10 +38,19 @@ public class PearlWorker implements Runnable {
 	 * Starts the worker task
 	 */
 	public void start() {
+		if (enabled) {
+			plugin.log(Level.WARNING, "Tried to start the pearl worker task but it was already started.");
+		}
+		
 		long tickInterval = config.getPearlUpkeepIntervalMin() * TICKS_PER_MINUTE;
-		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, tickInterval);
-		enabled = true;
-		plugin.log("Started the pearl worker task");
+		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, tickInterval, tickInterval);
+		if (taskId == -1) {
+			enabled = true;
+			plugin.log(Level.SEVERE, "Failed to start pearl worker task");
+		} else {
+			enabled = true;
+			plugin.log("Started the pearl worker task");
+		}
 	}
 
 	/**
@@ -65,7 +76,6 @@ public class PearlWorker implements Runnable {
 
 	@Override
 	public void run() {
-
 		if (!enabled) {
 			return;
 		}

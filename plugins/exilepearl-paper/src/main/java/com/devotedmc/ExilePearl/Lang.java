@@ -10,7 +10,7 @@ public class Lang
 	public static final String pearlYouWereBound = "<b>You've been bound to an exile pearl by <c>%s<b>!";
 	public static final String pearlYouWereFreed = "<g>You've been freed!";
 	public static final String pearlYouFreed = "<g>You freed <c>%s<g>.";
-	public static final String pearlNotHoldingPearl = "<b>You are not holding an exile pearl.";
+	public static final String pearlMustBeHoldingPearl = "<b>You must be holding an exile pearl to do that.";
 	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by a prison pearl.";
 	public static final String pearlPlayerNotImprisoned = "<i>That player is not imprisoned.";
 	public static final String pearlCantDoThat = "<i>You can't do that when imprisoned!";

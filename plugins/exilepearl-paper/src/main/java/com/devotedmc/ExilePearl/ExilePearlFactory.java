@@ -14,14 +14,14 @@ public interface ExilePearlFactory {
 	 * @param strength The pearl strength
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, Location location, int strength);
+	ExilePearl createExilePearl(UUID uid, String killedBy, Location location, int strength);
 	
 	/**
 	 * Creates an exile pearl instance from a player holder
 	 * @param uid The prisoner UUID
-	 * @param player The player holding the pearl
+	 * @param killedBy The killing player
 	 * @param strength The pearl strength
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, Player player, int strength);
+	ExilePearl createExilePearl(UUID uid, Player killedBy, int strength);
 }

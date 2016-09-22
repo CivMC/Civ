@@ -217,7 +217,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, Location location, int strength) {
+	public ExilePearl createExilePearl(UUID uid, String killedBy, Location location, int strength) {
 		PearlHolder holder;
 		
 		if (location.getBlock().getState() instanceof InventoryHolder) {
@@ -226,12 +226,12 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 			holder = new LocationHolder(location);
 		}
 
-		return new ExilePearl(this, storage, uid, holder, strength);
+		return new ExilePearl(this, storage, uid, killedBy, holder, strength);
 	}
 
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, Player player, int strength) {
-		return new ExilePearl(this, storage, uid, new PlayerHolder(player), strength);
+	public ExilePearl createExilePearl(UUID uid, Player killedBy, int strength) {
+		return new ExilePearl(this, storage, uid, getPearlPlayer(killedBy.getUniqueId()).getName(), new PlayerHolder(killedBy), strength);
 	}
 }

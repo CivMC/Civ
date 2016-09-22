@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -38,6 +39,7 @@ public class ExilePearl {
 	private final ExilePearlPlugin plugin;
 	private final PearlUpdateStorage storage;
 	private final UUID playerId;
+	private final String killedBy;
 	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
@@ -51,15 +53,17 @@ public class ExilePearl {
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public ExilePearl(ExilePearlPlugin plugin, PearlUpdateStorage storage, UUID playerId, PearlHolder holder, int strength) {
+	public ExilePearl(ExilePearlPlugin plugin, PearlUpdateStorage storage, UUID playerId, String killedBy, PearlHolder holder, int strength) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
+		Guard.ArgumentNotNullOrEmpty(killedBy, "killedBy");
 		Guard.ArgumentNotNull(holder, "holder");
 		
 		this.plugin = plugin;
 		this.storage = storage;
 		this.playerId = playerId;
+		this.killedBy = killedBy;
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingQueue<PearlHolder>();
 		this.lastMoved = pearledOn.getTime();
@@ -246,6 +250,10 @@ public class ExilePearl {
 		is.setItemMeta(im);
 		return is;
 	}
+	
+	// These need to match!
+	private static String UidStringFormat = "<a>UUID: <n>%s";
+	private static String UidStringFormatRegex = "<a>UUID: <n>(.+)";
 
 	/**
 	 * Generates the lore for the pearl
@@ -255,19 +263,18 @@ public class ExilePearl {
 		List<String> lore = new ArrayList<String>();
 		lore.add(parse("<l>%s", ITEM_NAME));
 		lore.add(parse("<a>Player: <n>%s", this.getName()));
-		lore.add(parse("<a>UUID: <n>%s", playerId.toString()));
-		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearledOn)));
+		lore.add(parse(UidStringFormat, playerId.toString()));
+		lore.add(parse("<a>Strength: <n>%d", strength));
+		lore.add(parse("<a>Imprisoned on: <n>%s", killedBy));
+		lore.add(parse("<a>Killed by: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearledOn)));
 		lore.add(parse(""));
 		lore.add(parse("<l>Commands:"));
-		//lore.add(parse(CmdPearl.getInstance().cmdFree.getUsageTemplate(true)));
-		//lore.add(parse(CmdPearl.getInstance().cmdSummon.getUsageTemplate(true)));
-		//lore.add(parse(CmdPearl.getInstance().cmdReturn.getUsageTemplate(true)));
-		//lore.add(parse(CmdPearl.getInstance().cmdKill.getUsageTemplate(true)));
+		lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
 		return lore;
 	}
 
 	// For parsing the UUID out of the pearl lore
-	private static Pattern idPattern = Pattern.compile(parse("<a>UUID: <n>(.+)"));
+	private static Pattern idPattern = Pattern.compile(parse(UidStringFormatRegex));
 
 
 	/**
