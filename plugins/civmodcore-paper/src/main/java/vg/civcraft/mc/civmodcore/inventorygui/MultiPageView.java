@@ -45,7 +45,7 @@ public class MultiPageView {
 		ClickableInventory ci = new ClickableInventory(getRowAmount() * 9, invName);
 		int contentSize = getContentSize();
 		// size may have changed
-		while (clickables.size() < 45 * contentSize * currentPage && currentPage != 0) {
+		while (clickables.size() < contentSize * currentPage && currentPage != 0) {
 			// would show an empty page, so go to previous
 			currentPage--;
 		}
