@@ -11,9 +11,9 @@ public class Lang
 	public static final String pearlYouWereFreed = "<g>You've been freed!";
 	public static final String pearlYouFreed = "<g>You freed <c>%s<g>.";
 	public static final String pearlMustBeHoldingPearl = "<b>You must be holding an exile pearl to do that.";
-	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by a prison pearl.";
-	public static final String pearlPlayerNotImprisoned = "<i>That player is not imprisoned.";
-	public static final String pearlCantDoThat = "<i>You can't do that when imprisoned!";
+	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by an exile pearl.";
+	public static final String pearlPlayerNotExiled = "<i>That player is not exiled.";
+	public static final String pearlCantDoThat = "<i>You can't do that when exiled!";
 	public static final String pearlNoPlayer = "<i>There's no online player by that name.";
 	public static final String pearlBcastRequestSent = "<i>Broadcast request sent.";
 	public static final String pearlBcastRequest = "<c>%s <i>has requested to broadcast their pearl location.\nType <c>/pp confirm <i>to confirm";

@@ -34,22 +34,22 @@ import com.devotedmc.ExilePearl.util.TextUtil;
  */
 public class ExilePearl {
 	public static final int HOLDER_COUNT = 5;
-	public static String ITEM_NAME = "Prison Pearl";
+	public static String ITEM_NAME = "Exile Pearl";
 
 	private final ExilePearlPlugin plugin;
 	private final PearlUpdateStorage storage;
 	private final UUID playerId;
 	private final String killedBy;
+	private final LinkedBlockingQueue<PearlHolder> holders;
 	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
-	private LinkedBlockingQueue<PearlHolder> holders;
 	private long lastMoved;
 	private boolean freedOffline;
 	private int strength;
 
 	/**
-	 * Creates a new prison pearl instance
+	 * Creates a new ExilePearl instance
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
@@ -67,13 +67,14 @@ public class ExilePearl {
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingQueue<PearlHolder>();
 		this.lastMoved = pearledOn.getTime();
-		this.setHolder(holder);
+		this.holder = holder;
+		this.holders.add(holder);
 		this.strength = strength;
 	}
 
 
 	/**
-	 * Gets the imprisoned player ID
+	 * Gets the exiled player ID
 	 * @return The player ID
 	 */
 	public UUID getPlayerID() {
@@ -82,7 +83,7 @@ public class ExilePearl {
 
 
 	/**
-	 * Gets the imprisoned player
+	 * Gets the exiled player
 	 * @return The player instance
 	 */
 	public PearlPlayer getPlayer() {
@@ -107,12 +108,14 @@ public class ExilePearl {
 	 * @param pearledOn The time the player was pearled
 	 */
 	public void setPearledOn(Date pearledOn) {
+		Guard.ArgumentNotNull(pearledOn, "pearledOn");
+		
 		this.pearledOn = pearledOn;
 	}
 
 
 	/**
-	 * Gets the imprisoned name
+	 * Gets the exiled name
 	 * @return The player name
 	 */
 	public String getName() {
@@ -134,9 +137,7 @@ public class ExilePearl {
 	 * @param holder The new pearl holder
 	 */
 	public void setHolder(PearlHolder holder) {
-		if (holder == null) {
-			throw new RuntimeException("Prisonpearl holder cannot be null.");
-		}
+		Guard.ArgumentNotNull(holder, "holder");
 
 		this.holder = holder;
 		this.holders.add(holder);
@@ -144,6 +145,8 @@ public class ExilePearl {
 		if (holders.size() > HOLDER_COUNT) {
 			holders.poll();
 		}
+		
+		storage.pearlUpdateLocation(this);
 	}
 
 
@@ -152,7 +155,7 @@ public class ExilePearl {
 	 * @param holder The new pearl holder
 	 */
 	public void setHolder(PearlPlayer p) {
-		this.setHolder(new PlayerHolder(p.getBukkitPlayer()));
+		setHolder(new PlayerHolder(p.getBukkitPlayer()));
 	}
 
 
@@ -161,7 +164,16 @@ public class ExilePearl {
 	 * @param holder The new pearl block
 	 */
 	public void setHolder(Block b) {
-		this.setHolder(new BlockHolder(b));
+		setHolder(new BlockHolder(b));
+	}
+
+
+	/**
+	 * Sets the pearl holder to a location
+	 * @param holder The new pearl location
+	 */
+	public void setHolder(Location l) {
+		setHolder(new LocationHolder(l));
 	}
 
     
@@ -189,16 +201,6 @@ public class ExilePearl {
 
 
 	/**
-	 * Sets the pearl holder to a location
-	 * @param holder The new pearl location
-	 */
-	public void setHolder(Location l) {
-		this.setHolder(new LocationHolder(l));
-		storage.pearlUpdateLocation(this);
-	}
-
-
-	/**
 	 * Gets the name of the current location
 	 * @return The string of the current location
 	 */
@@ -214,9 +216,8 @@ public class ExilePearl {
 	 * Marks when the pearl was moved last
 	 */
 	public void markMove() {
-		this.lastMoved = System.currentTimeMillis();
+		lastMoved = System.currentTimeMillis();
 	}
-
 
 
 	/**
@@ -265,8 +266,8 @@ public class ExilePearl {
 		lore.add(parse("<a>Player: <n>%s", this.getName()));
 		lore.add(parse(UidStringFormat, playerId.toString()));
 		lore.add(parse("<a>Strength: <n>%d", strength));
-		lore.add(parse("<a>Imprisoned on: <n>%s", killedBy));
-		lore.add(parse("<a>Killed by: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearledOn)));
+		lore.add(parse("<a>Exiled on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearledOn)));
+		lore.add(parse("<a>Killed by: <n>%s", killedBy));
 		lore.add(parse(""));
 		lore.add(parse("<l>Commands:"));
 		lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
@@ -278,7 +279,7 @@ public class ExilePearl {
 
 
 	/**
-	 * Gets the UUID from a prison pearl
+	 * Gets the UUID from a exile pearl
 	 * @param is The item stack
 	 * @return The player UUID, or null if it can't parse
 	 */
@@ -313,11 +314,12 @@ public class ExilePearl {
 
 
 	/**
-	 * Validates that an item stack is the prison pearl
+	 * Validates that an item stack is the exile pearl
 	 * @param is The item stack
 	 * @return true if it checks out
 	 */
 	public boolean validateItemStack(ItemStack is) {
+		Guard.ArgumentNotNull(is, "is");
 
 		UUID id = getIDFromItemStack(is);
 		if (id != null && id.equals(this.playerId)) {
@@ -381,6 +383,10 @@ public class ExilePearl {
 		return holder.validate(this, feedback);
 	}
 
+	/**
+	 * Get the holder location
+	 * @return The holder location
+	 */
 	public Location getLocation() {
 		return this.holders.peek().getLocation();
 	}
@@ -401,6 +407,7 @@ public class ExilePearl {
 	 * @return The pearl item
 	 */
 	public ItemStack getItemFromInventory(Inventory inv) {
+		Guard.ArgumentNotNull(inv, "inv");
 
 		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
 			if (this.validateItemStack(item)) {
