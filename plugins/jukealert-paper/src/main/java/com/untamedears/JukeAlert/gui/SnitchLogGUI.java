@@ -186,6 +186,10 @@ public class SnitchLogGUI {
 					is = new ItemStack(action.getMaterial());
 					bucketName = action.getMaterial().toString();
 				}
+				if (is.getItemMeta() == null) {
+					//this is needed due to uncreatable itemstacks being stored as used item
+					is = new ItemStack(Material.WATER_BUCKET);
+				}
 				String bucketAction = action.getAction() == LoggedAction.BUCKET_EMPTY ? "emptied" : "filled";
 				ISUtils.setName(is,
 						ChatColor.GOLD + bucketName + " " + bucketAction + " by " + action.getInitiateUser());
