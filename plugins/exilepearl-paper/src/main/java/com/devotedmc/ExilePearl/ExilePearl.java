@@ -44,14 +44,14 @@ public class ExilePearl {
 	private LinkedBlockingQueue<PearlHolder> holders;
 	private long lastMoved;
 	private boolean freedOffline;
-	private int sealStrength;
+	private int strength;
 
 	/**
 	 * Creates a new prison pearl instance
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public ExilePearl(ExilePearlPlugin plugin, PearlUpdateStorage storage, UUID playerId, PearlHolder holder) {
+	public ExilePearl(ExilePearlPlugin plugin, PearlUpdateStorage storage, UUID playerId, PearlHolder holder, int strength) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
@@ -64,6 +64,7 @@ public class ExilePearl {
 		this.holders = new LinkedBlockingQueue<PearlHolder>();
 		this.lastMoved = pearledOn.getTime();
 		this.setHolder(holder);
+		this.strength = strength;
 	}
 
 
@@ -165,7 +166,7 @@ public class ExilePearl {
      * @return The strength value
      */
     public int getSealStrength() {
-    	return this.sealStrength;
+    	return this.strength;
     }
     
     
@@ -178,7 +179,7 @@ public class ExilePearl {
     		sealStrength = 0;
     	}
     	
-    	this.sealStrength = sealStrength;
+    	this.strength = sealStrength;
     	storage.pearlUpdateStrength(this);
     }
 

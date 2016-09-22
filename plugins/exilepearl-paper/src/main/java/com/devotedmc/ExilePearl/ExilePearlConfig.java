@@ -36,24 +36,24 @@ public class ExilePearlConfig {
 		return plugin.GetConfig().get("database.mysql.port").getInt();
 	}
 	
-	@CivConfig(name = "ignore_feed.feed_delay", def = "72000000" , type = CivConfigType.Long)
-	public long getIgnoreFeedDelay() {
-		return plugin.GetConfig().get("ignore_feed.feed_delay").getLong();
-	}
-	
-	@CivConfig(name = "upkeep.interval", def = "240" , type = CivConfigType.Int)
-	public int getResourceUpkeepIntervalMin() {
+	@CivConfig(name = "upkeep.interval_min", def = "60" , type = CivConfigType.Int)
+	public int getPearlUpkeepIntervalMin() {
 		return plugin.GetConfig().get("upkeep.interval_min").getInt();
 	}
 	
 	@CivConfig(name = "upkeep.resource", def = "263", type = CivConfigType.Int)
-	public int getResourceUpkeepMaterial() {
+	public int getPearlUpkeepMaterial() {
 		return plugin.GetConfig().get("upkeep.resource").getInt();
 	}
 	
-	@CivConfig(name = "upkeep.quantity", def = "1" , type = CivConfigType.Int)
-	public int getResourceUpkeepAmount() {
-		return plugin.GetConfig().get("upkeep.quantity").getInt();
+	@CivConfig(name = "upkeep.amount", def = "1" , type = CivConfigType.Int)
+	public int getPearlUpkeepAmount() {
+		return plugin.GetConfig().get("upkeep.amount").getInt();
+	}
+	
+	@CivConfig(name = "upkeep.start_strength", def = "4" , type = CivConfigType.Int)
+	public int getPearlStartStrength() {
+		return plugin.GetConfig().get("upkeep.start_strength").getInt();
 	}
 	
 	@CivConfig(name = "autofree_worldborder", def = "true", type = CivConfigType.Bool)

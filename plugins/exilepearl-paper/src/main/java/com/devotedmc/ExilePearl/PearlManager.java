@@ -24,8 +24,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  */
 public class PearlManager {
 
-	private final PearlLogging logger;
-	private final ExilePearlFactory factory;
+	private final ExilePearlPlugin plugin;
 	private final PearlStorage storage;
 	
 	private final HashMap<UUID, ExilePearl> pearls;
@@ -37,13 +36,11 @@ public class PearlManager {
 	 * @param factory The pearl factory
 	 * @param storage The database storage
 	 */
-	public PearlManager(final PearlLogging logger, final ExilePearlFactory factory, final PearlStorage storage) {
-		Guard.ArgumentNotNull(logger, "logger");
-		Guard.ArgumentNotNull(factory, "factory");
+	public PearlManager(final ExilePearlPlugin plugin, final PearlStorage storage) {
+		Guard.ArgumentNotNull(plugin, "plugin");
 		Guard.ArgumentNotNull(storage, "storage");
 		
-		this.logger = logger;
-		this.factory = factory;
+		this.plugin = plugin;
 		this.storage = storage;
 		
 		this.pearls = new HashMap<UUID, ExilePearl>();
@@ -133,11 +130,11 @@ public class PearlManager {
 		Location l = imprisoner.getBukkitPlayer().getLocation();
 		if (dropStack != null) {
 			imprisoner.getBukkitPlayer().getWorld().dropItem(l, dropStack);
-			logger.log(l + ", " + dropStack.getAmount());
+			plugin.log(l + ", " + dropStack.getAmount());
 		}
 		
 		
-		final ExilePearl pearl = factory.createExilePearl(exiled.getUniqueId(), imprisoner.getBukkitPlayer());
+		final ExilePearl pearl = plugin.createExilePearl(exiled.getUniqueId(), imprisoner.getBukkitPlayer(), plugin.getPearlConfig().getPearlStartStrength());
 		pearl.markMove();
 
 		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.NEW, imprisoner);
