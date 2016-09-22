@@ -49,7 +49,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.3.2</version>
+			<version>1.4.41</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

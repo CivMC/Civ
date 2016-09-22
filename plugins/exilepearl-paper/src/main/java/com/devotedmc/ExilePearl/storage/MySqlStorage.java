@@ -3,7 +3,6 @@ package com.devotedmc.ExilePearl.storage;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.UUID;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlFactory;
