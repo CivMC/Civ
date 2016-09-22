@@ -8,17 +8,24 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.holder.BlockHolder;
+import com.devotedmc.ExilePearl.holder.LocationHolder;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
-import com.devotedmc.ExilePearl.database.MySqlStorage;
-import com.devotedmc.ExilePearl.database.PearlStorage;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
+import com.devotedmc.ExilePearl.storage.MySqlStorage;
+import com.devotedmc.ExilePearl.storage.PearlStorage;
+import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -28,11 +35,11 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLogging, ExilePearlFactory {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
-	private final PearlStorage pearlStorage = new MySqlStorage();
-	private final PearlManager pearlManager = new PearlManager(this, pearlStorage);
+	private final PluginStorage storage = new MySqlStorage(this);
+	private final PearlManager pearlManager = new PearlManager(this, this, storage);
 	private final PlayerListener playerListener = new PlayerListener(this, pearlManager);
 	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -108,11 +115,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	}
 	
 	/**
-	 * Gets the pearl storage
-	 * @return The pearl storage instance
+	 * Gets the plugin storage
+	 * @return The storage instance
 	 */
-	public PearlStorage getPearlStorage() {
-		return pearlStorage;
+	public PluginStorage getStorage() {
+		return storage;
 	}
 	
 	/**
@@ -197,5 +204,25 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	@Override
 	public boolean isPlayerExiled(UUID uid) {
 		return pearlManager.isExiled(uid);
+	}
+
+
+	@Override
+	public ExilePearl createExilePearl(UUID uid, Location location) {
+		PearlHolder holder;
+		
+		if (location.getBlock().getState() instanceof InventoryHolder) {
+			holder = new BlockHolder(location.getBlock());
+		} else {
+			holder = new LocationHolder(location);
+		}
+
+		return new ExilePearl(this, storage, uid, holder);
+	}
+
+
+	@Override
+	public ExilePearl createExilePearl(UUID uid, Player player) {
+		return new ExilePearl(this, storage, uid, new PlayerHolder(player));
 	}
 }

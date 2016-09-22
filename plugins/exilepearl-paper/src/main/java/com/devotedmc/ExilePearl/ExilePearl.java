@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -23,6 +22,8 @@ import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
+import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 /**
@@ -35,6 +36,7 @@ public class ExilePearl {
 	public static String ITEM_NAME = "Prison Pearl";
 
 	private final ExilePearlPlugin plugin;
+	private final PearlUpdateStorage storage;
 	private final UUID playerId;
 	private PearlPlayer player;
 	private PearlHolder holder;
@@ -42,40 +44,26 @@ public class ExilePearl {
 	private LinkedBlockingQueue<PearlHolder> holders;
 	private long lastMoved;
 	private boolean freedOffline;
+	private int sealStrength;
 
 	/**
 	 * Creates a new prison pearl instance
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public ExilePearl(ExilePearlPlugin plugin, UUID playerId, PearlHolder holder) {
+	public ExilePearl(ExilePearlPlugin plugin, PearlUpdateStorage storage, UUID playerId, PearlHolder holder) {
+		Guard.ArgumentNotNull(plugin, "plugin");
+		Guard.ArgumentNotNull(storage, "storage");
+		Guard.ArgumentNotNull(playerId, "playerId");
+		Guard.ArgumentNotNull(holder, "holder");
+		
 		this.plugin = plugin;
+		this.storage = storage;
 		this.playerId = playerId;
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingQueue<PearlHolder>();
 		this.lastMoved = pearledOn.getTime();
 		this.setHolder(holder);
-	}
-
-
-	/**
-	 * Creates a new prison pearl instance
-	 * @param playerId The pearled player id
-	 * @param holder The holder instance
-	 */
-	public ExilePearl(ExilePearlPlugin plugin, PearlPlayer player, PearlHolder holder) {
-		this(plugin, player.getUniqueId(), holder);
-		this.player = player;
-	}
-
-	/**
-	 * Creates a new prison pearl instance
-	 * @param playerId The pearled player id
-	 * @param imprisoner The imprisoner
-	 */
-	public ExilePearl(ExilePearlPlugin plugin, PearlPlayer player, Player imprisoner) {
-		this(plugin, player.getUniqueId(), new PlayerHolder(imprisoner));
-		this.player = player;
 	}
 
 
@@ -171,6 +159,29 @@ public class ExilePearl {
 		this.setHolder(new BlockHolder(b));
 	}
 
+    
+    /**
+     * Gets the pearl seal strength
+     * @return The strength value
+     */
+    public int getSealStrength() {
+    	return this.sealStrength;
+    }
+    
+    
+    /**
+     * Sets the pearl seal strength
+     * @param The strength value
+     */
+    public void setSealStrength(int sealStrength) {
+    	if (sealStrength < 0) {
+    		sealStrength = 0;
+    	}
+    	
+    	this.sealStrength = sealStrength;
+    	storage.pearlUpdateStrength(this);
+    }
+
 
 	/**
 	 * Sets the pearl holder to a location
@@ -178,6 +189,7 @@ public class ExilePearl {
 	 */
 	public void setHolder(Location l) {
 		this.setHolder(new LocationHolder(l));
+		storage.pearlUpdateLocation(this);
 	}
 
 

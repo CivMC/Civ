@@ -14,8 +14,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import com.devotedmc.ExilePearl.database.PearlStorage;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.storage.PearlStorage;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -24,23 +24,27 @@ import com.devotedmc.ExilePearl.util.Guard;
  */
 public class PearlManager {
 
-	private final ExilePearlPlugin plugin;
-	private final PearlStorage db;
+	private final PearlLogging logger;
+	private final ExilePearlFactory factory;
+	private final PearlStorage storage;
 	
 	private final HashMap<UUID, ExilePearl> pearls;
 	
 	
 	/**
 	 * Creates a new PearlManager instance
-	 * @param plugin the plugin instance
-	 * @param db The database storage
+	 * @param logger The logging instance
+	 * @param factory The pearl factory
+	 * @param storage The database storage
 	 */
-	public PearlManager(final ExilePearlPlugin plugin, final PearlStorage db) {
-		Guard.ArgumentNotNull(plugin, "plugin");
-		Guard.ArgumentNotNull(db, "db");
+	public PearlManager(final PearlLogging logger, final ExilePearlFactory factory, final PearlStorage storage) {
+		Guard.ArgumentNotNull(logger, "logger");
+		Guard.ArgumentNotNull(factory, "factory");
+		Guard.ArgumentNotNull(storage, "storage");
 		
-		this.plugin = plugin;
-		this.db = db;
+		this.logger = logger;
+		this.factory = factory;
+		this.storage = storage;
 		
 		this.pearls = new HashMap<UUID, ExilePearl>();
 	}
@@ -50,7 +54,8 @@ public class PearlManager {
 	 * Loads all the pearls from the database
 	 */
 	public void load() {
-		for (ExilePearl p : db.pearlGetall()) {
+		pearls.clear();
+		for (ExilePearl p : storage.loadAllPearls()) {
 			pearls.put(p.getPlayerID(), p);
 		}
 	}
@@ -128,11 +133,11 @@ public class PearlManager {
 		Location l = imprisoner.getBukkitPlayer().getLocation();
 		if (dropStack != null) {
 			imprisoner.getBukkitPlayer().getWorld().dropItem(l, dropStack);
-			plugin.log(l + ", " + dropStack.getAmount());
+			logger.log(l + ", " + dropStack.getAmount());
 		}
 		
 		
-		ExilePearl pearl = new ExilePearl(plugin, exiled, imprisoner.getBukkitPlayer());
+		final ExilePearl pearl = factory.createExilePearl(exiled.getUniqueId(), imprisoner.getBukkitPlayer());
 		pearl.markMove();
 
 		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.NEW, imprisoner);
@@ -143,7 +148,7 @@ public class PearlManager {
 		
 		inv.setItem(pearlnum, pearl.createItemStack());
 		pearls.put(pearl.getPlayerID(), pearl);
-		db.pearlInsert(pearl);
+		storage.pearlInsert(pearl);
 		
 		return pearl;
 	}
@@ -160,7 +165,7 @@ public class PearlManager {
 		
 		if (!e.isCancelled()) {
 			pearls.remove(pearl.getPlayerID());
-			db.pearlRemove(pearl);
+			storage.pearlRemove(pearl);
 			return true;
 		}
 		return false;
@@ -173,16 +178,7 @@ public class PearlManager {
 	 */
 	public void freePlayer(PearlPlayer p) {
 		ExilePearl pearl = pearls.remove(p.getUniqueId());
-		db.pearlRemove(pearl);
-	}
-	
-	
-	/**
-	 * Updates a pearl
-	 * @param pearl The pearl to update
-	 */
-	public void updatePearl(ExilePearl pearl) {
-		db.pearlUpdate(pearl);
+		storage.pearlRemove(pearl);
 	}
 	
 	

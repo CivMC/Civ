@@ -76,7 +76,7 @@ public class PearlWorker implements Runnable {
 			return;
 		}
 
-		Date lastFeed = plugin.getPearlStorage().getLastFeedTime();
+		Date lastFeed = plugin.getStorage().getLastFeedTime();
 		Date now = new Date();
 
 		// Make sure enough time has elapsed
@@ -89,7 +89,7 @@ public class PearlWorker implements Runnable {
 		feedAmount = config.getResourceUpkeepAmount();
 
 		// Update feed time
-		plugin.getPearlStorage().updateLastFeedTime(now);
+		plugin.getStorage().updateLastFeedTime(now);
 
 		plugin.log("Feeding pearls.");
 

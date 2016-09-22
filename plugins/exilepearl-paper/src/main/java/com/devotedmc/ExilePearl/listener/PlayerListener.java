@@ -123,7 +123,6 @@ public class PlayerListener implements Listener  {
 
 		pearl.markMove();
 		pearl.setHolder(item.getLocation());
-		pearls.updatePearl(pearl);
 		updatePearl(pearl, e.getEntity());
 	}
 
@@ -257,7 +256,6 @@ public class PlayerListener implements Listener  {
 	 */
 	private void updatePearl(ExilePearl pearl, Item item) {
 		pearl.setHolder(item.getLocation());
-		pearls.updatePearl(pearl);
 		generatePearlEvent(pearl, ExilePearlEvent.Type.DROPPED);
 	}
 
@@ -269,7 +267,6 @@ public class PlayerListener implements Listener  {
 	 */
 	private <ItemBlock extends InventoryHolder & BlockState> void updatePearl(ExilePearl pearl, ItemBlock block) {
 		pearl.setHolder(block.getBlock());
-		pearls.updatePearl(pearl);
 		generatePearlEvent(pearl, ExilePearlEvent.Type.HELD);
 	}
 
@@ -281,7 +278,6 @@ public class PlayerListener implements Listener  {
 	 */
 	private void updatePearl(ExilePearl pearl, Player player) {
 		pearl.setHolder(plugin.getPearlPlayer(player.getUniqueId()));
-		pearls.updatePearl(pearl);
 		generatePearlEvent(pearl, ExilePearlEvent.Type.HELD);
 	}
 
@@ -457,7 +453,6 @@ public class PlayerListener implements Listener  {
 
 		pearl.markMove();
 		pearl.setHolder(plugin.getPearlPlayer(e.getPlayer().getUniqueId()));
-		pearls.updatePearl(pearl);
 		updatePearl(pearl, (Player) e.getPlayer());
 	}
 
