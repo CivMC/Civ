@@ -9,12 +9,12 @@ public class CmdExilePearl extends PearlCommand {
 		this.aliases.add("ep");
 		
 		this.setHelpShort("The ExilePearl base command");
+		this.getLongHelp().add("This is the root command for Exile Pearl.");
 		
 		this.addSubCommand(new CmdPearlLocate(p));
 		
 		// Admin commands
-		this.addSubCommand(new CmdLoadConfig(p));
-		this.addSubCommand(new CmdSaveConfig(p));
+		this.addSubCommand(new CmdConfig(p));
 	}
 
 	@Override

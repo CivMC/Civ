@@ -50,7 +50,7 @@ import com.devotedmc.ExilePearl.util.TextUtil;
  * Handles events related to prison pearls
  * @author GFQ
  */
-public class PlayerListener implements Listener  {
+public class PlayerListener implements Listener {
 
 	private final ExilePearlPlugin plugin;
 	private final PearlManager pearls;

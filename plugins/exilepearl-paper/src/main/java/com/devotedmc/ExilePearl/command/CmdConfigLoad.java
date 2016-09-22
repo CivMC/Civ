@@ -1,20 +1,17 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.util.Permission;
 
-public class CmdLoadConfig extends PearlCommand
+public class CmdConfigLoad extends PearlCommand
 {
-	public CmdLoadConfig(ExilePearlPlugin plugin) {
+	public CmdConfigLoad(ExilePearlPlugin plugin) {
 		super(plugin);
 		
 		this.senderMustBePlayer = false;
+		this.errorOnToManyArgs = false;
 		
-		this.aliases.add("loadconfig");
+		this.aliases.add("load");
 		this.helpShort = "Reloads the plugin configuration";
-		
-		this.permission = Permission.ADMIN.node;
-		this.visibility = CommandVisibility.SECRET;
 	}
 	
 	@Override

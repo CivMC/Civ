@@ -39,6 +39,7 @@ public class PearlWorker implements Runnable {
 		long tickInterval = config.getPearlUpkeepIntervalMin() * TICKS_PER_MINUTE;
 		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, 0, tickInterval);
 		enabled = true;
+		plugin.log("Started the pearl worker task");
 	}
 
 	/**
@@ -49,6 +50,7 @@ public class PearlWorker implements Runnable {
 			plugin.getServer().getScheduler().cancelTask(taskId);
 			enabled = false;
 			taskId = 0;
+			plugin.log("Stopped the pearl worker task");
 		}
 	}
 

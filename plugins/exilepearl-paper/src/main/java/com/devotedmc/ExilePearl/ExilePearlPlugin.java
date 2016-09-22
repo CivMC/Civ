@@ -22,6 +22,7 @@ import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
@@ -40,8 +41,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	private final PluginStorage storage = new MySqlStorage(this);
 	private final PearlManager pearlManager = new PearlManager(this, storage);
 	private final PlayerListener playerListener = new PlayerListener(this, pearlManager);
+	private final ExileListener exileListener = new ExileListener(this, pearlManager, pearlConfig);
 	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
+	private final PearlWorker pearlWorker = new PearlWorker(this, pearlManager, pearlConfig);
 	
 	
 	/**
@@ -68,11 +71,16 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 		long timeEnableStart = System.currentTimeMillis();
 		super.onEnable();
 		
-		// Register events
-		this.getServer().getPluginManager().registerEvents(playerListener, this);
-		
 		// Add commands
 		commands.add(new CmdExilePearl(this));
+		
+		// Register events
+		this.getServer().getPluginManager().registerEvents(playerListener, this);
+		this.getServer().getPluginManager().registerEvents(exileListener, this);
+		
+		// Start tasks
+		pearlWorker.start();
+		
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
@@ -83,6 +91,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	@Override
 	public void onDisable() {
 		super.onDisable();
+		
+		pearlWorker.stop();
 	}
 	
 	/**

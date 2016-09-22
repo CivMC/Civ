@@ -1,20 +1,17 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.util.Permission;
 
-public class CmdSaveConfig extends PearlCommand
+public class CmdConfigSave extends PearlCommand
 {
-	public CmdSaveConfig(ExilePearlPlugin plugin) {
+	public CmdConfigSave(ExilePearlPlugin plugin) {
 		super(plugin);
 		
 		this.senderMustBePlayer = false;
+		this.errorOnToManyArgs = false;
 		
-		this.aliases.add("saveconfig");
+		this.aliases.add("save");
 		this.helpShort = "Saves the plugin configuration";
-		
-		this.permission = Permission.ADMIN.node;
-		this.visibility = CommandVisibility.SECRET;
 	}
 	
 	@Override
