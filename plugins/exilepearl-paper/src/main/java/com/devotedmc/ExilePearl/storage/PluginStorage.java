@@ -1,19 +1,22 @@
 package com.devotedmc.ExilePearl.storage;
 
-import java.util.Date;
-
 public interface PluginStorage extends PearlStorage {
-
-
-	/**
-	 * Updates the last pearl feed time
-	 * @param now The current time
-	 */
-	public void updateLastFeedTime(Date now);
 	
 	/**
-	 * Gets the last feed time
-	 * @return The last feed time
+	 * Connects the storage
+	 * @return true if connection succeeds
 	 */
-	public Date getLastFeedTime();
+	public boolean connect();
+	
+	/**
+	 * Disconnects the storage
+	 * @return true if disconnect succeeds
+	 */
+	public boolean disconnect();
+	
+	/**
+	 * Gets whether the storage is connected
+	 * @return true if connected
+	 */
+	public boolean isConnected();
 }

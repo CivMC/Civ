@@ -22,6 +22,7 @@ import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
+import com.devotedmc.ExilePearl.storage.MySqlStorageAsync;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -36,7 +37,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
-	private final PluginStorage storage = new MySqlStorage(pearlFactory);
+	private final PluginStorage storage = new MySqlStorageAsync(new MySqlStorage(pearlFactory), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
 	
@@ -72,6 +73,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		super.onEnable();
 		
 		// Storage connect and load
+		if (!storage.connect()) {
+			log(Level.SEVERE, "Failed to connect to database.");
+			return;
+		}
 		pearlManager.loadPearls();
 		
 		// Add commands
@@ -84,7 +89,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		// Start tasks
 		pearlWorker.start();
 		
-		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
 
@@ -96,6 +100,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		super.onDisable();
 		
 		pearlWorker.stop();
+		storage.disconnect();
 	}
 	
 	/**
