@@ -27,7 +27,7 @@ public class CmdPearlFree extends PearlCommand {
 		}
 		
 		if (pearls.freePearl(pearl)) {
-			me().msg(Lang.pearlYouFreed, pearl.getName());
+			me().msg(Lang.pearlYouFreed, pearl.getPlayerName());
 			me().getBukkitPlayer().setItemInHand(new ItemStack(Material.AIR));
 		}
 	}

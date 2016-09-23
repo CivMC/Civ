@@ -5,23 +5,24 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public interface ExilePearlFactory {
+public interface PearlFactory {
 
 	/**
 	 * Creates an exile pearl instance from a location
 	 * @param uid The prisoner UUID
+	 * @param killedBy The killing player UUID
 	 * @param location The location of the pearl
-	 * @param strength The pearl strength
+	 * @param health The pearl health
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, String killedBy, Location location, int strength);
+	ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location, double health);
 	
 	/**
 	 * Creates an exile pearl instance from a player holder
 	 * @param uid The prisoner UUID
 	 * @param killedBy The killing player
-	 * @param strength The pearl strength
+	 * @param health The pearl health
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, Player killedBy, int strength);
+	ExilePearl createExilePearl(UUID uid, Player killedBy, double health);
 }

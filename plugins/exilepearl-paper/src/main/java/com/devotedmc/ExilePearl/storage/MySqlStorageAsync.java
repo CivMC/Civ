@@ -58,7 +58,7 @@ public class MySqlStorageAsync implements PluginStorage, Runnable {
 	}
 
 	@Override
-	public void pearlUpdateStrength(ExilePearl strength) {
+	public void pearlUpdateHealth(ExilePearl pearl) {
 		// TODO Auto-generated method stub
 		
 	}

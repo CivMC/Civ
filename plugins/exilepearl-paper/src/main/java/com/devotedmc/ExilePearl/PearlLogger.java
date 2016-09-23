@@ -2,7 +2,7 @@ package com.devotedmc.ExilePearl;
 
 import java.util.logging.Level;
 
-public interface PearlLogging {
+public interface PearlLogger {
 
 	/**
 	 * Logs a message

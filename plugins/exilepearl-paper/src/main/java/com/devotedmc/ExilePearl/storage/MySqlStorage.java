@@ -5,18 +5,18 @@ import java.util.Date;
 import java.util.HashSet;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlFactory;
+import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.util.Guard;
 
 public class MySqlStorage implements PluginStorage {
 	
-	private final ExilePearlFactory pearlFactory;
+	private final PearlFactory pearlFactory;
 	
 	/**
 	 * Creates a new MySqlStorage instance
 	 * @param pearlFactory The pearl factory
 	 */
-	public MySqlStorage(ExilePearlFactory pearlFactory) {
+	public MySqlStorage(PearlFactory pearlFactory) {
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 	
 		this.pearlFactory = pearlFactory;
@@ -63,7 +63,7 @@ public class MySqlStorage implements PluginStorage {
 	}
 
 	@Override
-	public void pearlUpdateStrength(ExilePearl strength) {
+	public void pearlUpdateHealth(ExilePearl pearl) {
 		// TODO Auto-generated method stub
 		
 	}

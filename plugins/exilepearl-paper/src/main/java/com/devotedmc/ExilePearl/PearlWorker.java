@@ -80,7 +80,7 @@ public class PearlWorker implements Runnable {
 			return;
 		}
 		
-		int feedAmount = config.getPearlUpkeepAmount();
+		double decayAmount = config.getPearlUpkeepAmount();
 
 		plugin.log("Feeding pearls.");
 
@@ -89,9 +89,9 @@ public class PearlWorker implements Runnable {
 		for (ExilePearl pearl : pearls.getPearls()) {
 			if (pearl.verifyLocation()) {
 				
-				int udpatedStrength = pearl.getSealStrength() - feedAmount;
-				if (udpatedStrength > 0) {
-					pearl.setSealStrength(udpatedStrength);
+				double updatedHealth = pearl.getHealth() - decayAmount;
+				if (updatedHealth > 0) {
+					pearl.setHealth(updatedHealth);
 				} else {
 					plugin.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayer().getName());
 					pearls.freePearl(pearl);

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.core.CorePearlFactory;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -35,11 +36,12 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLogging, ExilePearlFactory {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLogger, PearlPlayerProvider {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
-	private final PluginStorage storage = new MySqlStorage(this);
-	private final PearlManager pearlManager = new PearlManager(this, storage);
+	private final PearlFactory pearlFactory = new CorePearlFactory(this);
+	private final PluginStorage storage = new MySqlStorage(pearlFactory);
+	private final PearlManager pearlManager = new PearlManager(this, pearlFactory, storage);
 	private final PlayerListener playerListener = new PlayerListener(this, pearlManager);
 	private final ExileListener exileListener = new ExileListener(this, pearlManager, pearlConfig);
 	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
@@ -213,25 +215,5 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	@Override
 	public boolean isPlayerExiled(UUID uid) {
 		return pearlManager.isExiled(uid);
-	}
-
-
-	@Override
-	public ExilePearl createExilePearl(UUID uid, String killedBy, Location location, int strength) {
-		PearlHolder holder;
-		
-		if (location.getBlock().getState() instanceof InventoryHolder) {
-			holder = new BlockHolder(location.getBlock());
-		} else {
-			holder = new LocationHolder(location);
-		}
-
-		return new ExilePearl(this, storage, uid, killedBy, holder, strength);
-	}
-
-
-	@Override
-	public ExilePearl createExilePearl(UUID uid, Player killedBy, int strength) {
-		return new ExilePearl(this, storage, uid, getPearlPlayer(killedBy.getUniqueId()).getName(), new PlayerHolder(killedBy), strength);
 	}
 }

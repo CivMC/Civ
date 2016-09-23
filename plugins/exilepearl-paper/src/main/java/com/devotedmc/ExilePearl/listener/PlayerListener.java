@@ -44,6 +44,7 @@ import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.util.Guard;
+import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 /**
@@ -95,12 +96,12 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && ExilePearl.getIDFromItemStack(item) != null) {
+		if (item.getType() == Material.ENDER_PEARL && PearlLoreUtil.getIDFromItemStack(item) != null) {
 			ExilePearl pearl = pearls.getPearlByItem(item);
 			if (pearl == null) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
 			}
-			pearl.markMove();
+			pearl.updateLastMoved();
 			//generatePearlEvent(pearl, Type.HELD);
 		}
 
@@ -121,7 +122,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		pearl.markMove();
+		pearl.updateLastMoved();
 		pearl.setHolder(item.getLocation());
 		updatePearl(pearl, e.getEntity());
 	}
@@ -151,7 +152,7 @@ public class PlayerListener implements Listener {
 			if (pearl == null) {
 				continue;
 			}
-			pearl.markMove();
+			pearl.updateLastMoved();
 			int slot = entry.getKey();
 			inv.clear(slot);
 			world.dropItemNaturally(loc, item);
@@ -189,7 +190,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		plugin.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getName(), pearl.getPlayerID());
+		plugin.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getUniqueId());
 		pearls.freePearl(pearl);
 	}
 
@@ -212,7 +213,7 @@ public class PlayerListener implements Listener {
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearlHolder(pearl, holder, event);
 
 				if(event.isCancelled()) {
@@ -339,7 +340,7 @@ public class PlayerListener implements Listener {
 			ExilePearl pearl = pearls.getPearlByItem(event.getCurrentItem());
 
 			if(pearl != null) {
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearl(pearl, (Player) event.getWhoClicked());
 			}
 		}
@@ -353,10 +354,10 @@ public class PlayerListener implements Listener {
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 				if (holder==null) {
-					pearl.markMove();
+					pearl.updateLastMoved();
 				}
 				else {
-					pearl.markMove();
+					pearl.updateLastMoved();
 					updatePearlHolder(pearl, holder, event);
 				}
 			}
@@ -369,10 +370,10 @@ public class PlayerListener implements Listener {
 
 				InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 				if (holder==null) {
-					pearl.markMove();
+					pearl.updateLastMoved();
 				}
 				else if(holder.getInventory().firstEmpty() >= 0) {
-					pearl.markMove();
+					pearl.updateLastMoved();
 					updatePearlHolder(pearl, holder, event);
 				}
 			}
@@ -386,7 +387,7 @@ public class PlayerListener implements Listener {
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearlHolder(pearl, holder, event);
 			}
 
@@ -396,7 +397,7 @@ public class PlayerListener implements Listener {
 			pearl = pearls.getPearlByItem(event.getCurrentItem());
 
 			if(pearl != null) {
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearl(pearl, (Player) event.getWhoClicked());
 			}
 		}
@@ -408,7 +409,7 @@ public class PlayerListener implements Listener {
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearlHolder(pearl, holder, event);
 			}
 
@@ -418,7 +419,7 @@ public class PlayerListener implements Listener {
 			pearl = pearls.getPearlByItem(event.getCurrentItem());
 
 			if(pearl != null) {
-				pearl.markMove();
+				pearl.updateLastMoved();
 				updatePearl(pearl, (Player) event.getWhoClicked());
 			}
 		}
@@ -451,7 +452,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		pearl.markMove();
+		pearl.updateLastMoved();
 		pearl.setHolder(plugin.getPearlPlayer(e.getPlayer().getUniqueId()));
 		updatePearl(pearl, (Player) e.getPlayer());
 	}
@@ -480,7 +481,7 @@ public class PlayerListener implements Listener {
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
 				// Make sure we're holding a blank pearl
-				if (ExilePearl.getIDFromItemStack(entry.getValue()) == null) {
+				if (PearlLoreUtil.getIDFromItemStack(entry.getValue()) == null) {
 					firstpearl = Math.min(entry.getKey(), firstpearl);
 				}
 			}
@@ -527,7 +528,7 @@ public class PlayerListener implements Listener {
 	public void onExilePearlEvent(ExilePearlEvent event) {
 		
 		ExilePearl pearl = event.getExilePearl();
-		PearlPlayer imprisoned = plugin.getPearlPlayer(pearl.getPlayerID());
+		PearlPlayer imprisoned = plugin.getPearlPlayer(pearl.getUniqueId());
 		
 		if (event.getType() == ExilePearlEvent.Type.NEW) {
 

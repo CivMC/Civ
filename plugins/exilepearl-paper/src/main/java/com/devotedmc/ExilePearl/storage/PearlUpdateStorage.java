@@ -11,8 +11,8 @@ public interface PearlUpdateStorage {
 	void pearlUpdateLocation(ExilePearl pearl);
 	
 	/**
-	 * Updates the pearl strength
-	 * @param strength The pearl instance to udpate
+	 * Updates the pearl health
+	 * @param strength The pearl instance to update
 	 */
-	void pearlUpdateStrength(ExilePearl strength);
+	void pearlUpdateHealth(ExilePearl pearl);
 }
