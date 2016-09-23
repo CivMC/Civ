@@ -82,6 +82,7 @@ public class ItemStackToString {
 	 * For 1.10.2 ItemStacks.
 	 */
 	public static String toString(ItemStack itemStack) {
+		if (itemStack == null) return "Nothing";
 		StringBuilder toString = new StringBuilder();
 
 		Material material = itemStack.getType();
@@ -228,6 +229,7 @@ public class ItemStackToString {
 	 */
 	@SuppressWarnings("deprecation")
 	public static String toString(BlockState block) {
+		if (block == null) return "Empty";
 		StringBuilder toString = new StringBuilder();
 
 		Material material = block.getType();

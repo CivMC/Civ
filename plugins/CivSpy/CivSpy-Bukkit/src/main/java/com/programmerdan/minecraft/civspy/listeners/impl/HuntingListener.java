@@ -7,16 +7,22 @@ import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.projectiles.ProjectileSource;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
@@ -28,7 +34,7 @@ import com.programmerdan.minecraft.civspy.util.ItemStackToString;
  * Listener that accumulates kills of non-players by players, and players by entities (including players).
  * <br>
  * Contributes <code>entity.death.TYPE</code> and <code>entity.death.drop.TYPE</code> and <code>entity.death.xp.TYPE</code>
- * where TYPE is the EntityType.name() of what died.
+ * where TYPE is the EntityType.name() of what died. and <code>entity.death.by</code> which shows what killed the entity.
  * <br>
  * If killer is a player and isn't empty, UUID is filled for all. Otherwise is null.
  * <br>
@@ -39,6 +45,7 @@ import com.programmerdan.minecraft.civspy.util.ItemStackToString;
  * string value field. The UUID field holds the player killed in all cases. If <code>.died</code> then killed by 
  * some non-strictly-entity cause (drowning, etc.).
  * The <code>.drop</code> contributions are similar to entity death, but the UUID recorded is the player that died.
+ * Also contributes <code>player.killed.by</code> to show what weapon killed them, if any.
  * @author ProgrammerDan
  */
 public final class HuntingListener extends ServerDataListener {
@@ -64,30 +71,66 @@ public final class HuntingListener extends ServerDataListener {
 			Chunk chunk = location.getChunk();
 			
 			String killerName = null;
+			String killerTool = null;
 			boolean killerIsEntity = false;
+			boolean killerIsPlayer = false;
 			if (died.getKiller() != null) {
 				Player killer = died.getKiller();
+				killerTool = ItemStackToString.toString(killer.getEquipment().getItemInMainHand());
 				killerName = killer.getUniqueId().toString();
 				killerIsEntity = true;
+				killerIsPlayer = true;
 			} else if (died.getLastDamageCause() != null) {
 				EntityDamageEvent ede = died.getLastDamageCause();
 				if (ede instanceof EntityDamageByEntityEvent) {
+					killerIsEntity = true;
 					Entity killer = ((EntityDamageByEntityEvent) ede).getDamager();
 					if (killer != null) {
-						killerName = killer.getCustomName() != null ? killer.getCustomName() : killer.getType().toString();
+						if (killer instanceof Projectile) {
+							// Projectiles do the killing, but they are launched by someone!
+							Projectile arrow = (Projectile) killer;
+							ProjectileSource ps = arrow.getShooter();
+							if (ps instanceof Entity) {
+									Entity psk = (Entity) ps;
+									killerName = psk.getCustomName() != null ? psk.getCustomName() : psk.getType().toString();
+							} else {
+									killerName = "ProjectileLauncher-" + killer.getType().toString(); 
+							}
+							// record the tool as the arrow that hit.
+							killerTool = arrow.getType().toString();
+						} else if (killer instanceof LivingEntity) {
+							if (((LivingEntity) killer).getEquipment() != null) {
+								killerTool = ItemStackToString.toString(((LivingEntity) killer).getEquipment().getItemInMainHand());
+							}
+						}
+						if (killerName == null) {
+							killerName = killer.getCustomName() != null ? killer.getCustomName() : killer.getType().toString();
+						}
 					} else {
 						killerName = "Unknown";
 					}
-					killerIsEntity = true;
+				} else if (ede instanceof EntityDamageByBlockEvent) {
+					Block block = ((EntityDamageByBlockEvent) ede).getDamager();
+					killerName = ItemStackToString.toString(block.getState());
 				} else {
 					killerName = ede.getCause().toString();
 				}
+			} else {
+				killerIsEntity = event.getEntityType() != null;
+				killerName = (killerIsEntity ? event.getEntityType().toString() : "Unknown");
 			}
 			
 			DataSample death = new PointDataSample("player." + (killerIsEntity ? "killed" : "died"), this.getServer(),
 						chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
 						killerName);
 			this.record(death);
+
+			if (killerTool == null) {
+				DataSample by = new PointDataSample("player." + (killerIsEntity ? "killed.by" : "died.by"), this.getServer(),
+						chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
+						killerTool);
+				this.record(by);
+			}
 			
 			List<ItemStack> dropped = event.getDrops();
 			
@@ -106,6 +149,7 @@ public final class HuntingListener extends ServerDataListener {
 		}
 	}
 	
+	// TODO: Add what did the killing
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void captureDeath(EntityDeathEvent event) {
 		try {
