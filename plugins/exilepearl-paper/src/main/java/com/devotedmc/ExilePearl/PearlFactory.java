@@ -5,6 +5,10 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+/**
+ * Factory interface for creating concrete pearl classes
+ * @author Gordon
+ */
 public interface PearlFactory {
 
 	/**
@@ -25,4 +29,16 @@ public interface PearlFactory {
 	 * @return The new exile pearl instance
 	 */
 	ExilePearl createExilePearl(UUID uid, Player killedBy, double health);
+	
+	/**
+	 * Creates a pearl manager instance
+	 * @return The new pearl manager instance
+	 */
+	PearlManager createPearlManager();
+	
+	/**
+	 * Creates a pearl worker instance
+	 * @return The new pearl worker instance
+	 */
+	PearlWorker createPearlWorker();
 }

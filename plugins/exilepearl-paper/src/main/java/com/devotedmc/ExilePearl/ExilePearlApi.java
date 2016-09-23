@@ -8,7 +8,7 @@ import java.util.logging.Level;
  * @author Gordon
  *
  */
-public interface ExilePearlApi extends PearlManager {
+public interface ExilePearlApi extends PearlAccess {
 	
 	/**
 	 * Gets a player instance by UUID

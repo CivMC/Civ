@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
@@ -27,10 +28,10 @@ import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 
 /**
- * The prison pearl manager
+ * The prison pearl manager implementation
  * @author Gordon
  */
-public class CorePearlManager implements PearlManager {
+class CorePearlManager implements PearlManager {
 
 	private final ExilePearlApi pearlApi;
 	private final PearlFactory pearlFactory;
@@ -64,7 +65,7 @@ public class CorePearlManager implements PearlManager {
 	/**
 	 * Loads all the pearls from the database
 	 */
-	public void load() {
+	public void loadPearls() {
 		pearls.clear();
 		for (ExilePearl p : storage.loadAllPearls()) {
 			pearls.put(p.getUniqueId(), p);
@@ -76,8 +77,9 @@ public class CorePearlManager implements PearlManager {
 	 * Gets the pearled players
 	 * @return The collection of pearled players
 	 */
+	@Override
 	public Collection<ExilePearl> getPearls() {
-		return pearls.values();
+		return Collections.unmodifiableCollection(pearls.values());
 	}
 	
 	

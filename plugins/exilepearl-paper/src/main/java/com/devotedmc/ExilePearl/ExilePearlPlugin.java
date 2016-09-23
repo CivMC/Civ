@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +16,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
-import com.devotedmc.ExilePearl.core.CorePearlManager;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
@@ -37,12 +37,14 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
 	private final PluginStorage storage = new MySqlStorage(pearlFactory);
-	private final CorePearlManager pearlManager = new CorePearlManager(this, pearlFactory, storage, pearlConfig);
+	private final PearlManager pearlManager = pearlFactory.createPearlManager();
+	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
+	
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this, pearlConfig);
+	
 	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
-	private final PearlWorker pearlWorker = new PearlWorker(this, pearlManager, pearlConfig);
 	
 	
 	/**
@@ -68,6 +70,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		log("=== ENABLE START ===");
 		long timeEnableStart = System.currentTimeMillis();
 		super.onEnable();
+		
+		// Storage connect and load
+		pearlManager.loadPearls();
 		
 		// Add commands
 		commands.add(new CmdExilePearl(this));
@@ -113,7 +118,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	 * Gets the pearl manager
 	 * @return The pearl manager instance
 	 */
-	public CorePearlManager getPearlManager() {
+	public PearlManager getPearlManager() {
 		return pearlManager;
 	}
 	
@@ -191,6 +196,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	@Override
 	public ExilePearl getPearl(UUID uid) {
 		return pearlManager.getPearl(uid);
+	}
+
+	@Override
+	public Collection<ExilePearl> getPearls() {
+		return pearlManager.getPearls();
 	}
 
 	@Override
