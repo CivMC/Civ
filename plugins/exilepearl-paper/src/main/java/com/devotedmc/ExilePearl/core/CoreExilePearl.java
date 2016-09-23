@@ -14,9 +14,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PearlPlayerProvider;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -35,10 +34,7 @@ class CoreExilePearl implements ExilePearl {
 	private static String ITEM_NAME = "Exile Pearl";
 
 	// The player provider instance
-	private final PearlPlayerProvider playerProvider;
-	
-	// The logging instance
-	private final PearlLogger logger;
+	private final ExilePearlApi pearlApi;
 	
 	// The storage instance
 	private final PearlUpdateStorage storage;
@@ -62,17 +58,15 @@ class CoreExilePearl implements ExilePearl {
 	 * @param playerId The pearled player id
 	 * @param holder The holder instance
 	 */
-	public CoreExilePearl(final PearlPlayerProvider playerProvider, final PearlLogger logger, final PearlUpdateStorage storage, 
+	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
 			final UUID playerId, final UUID killedBy, final PearlHolder holder, final double health) {
-		Guard.ArgumentNotNull(playerProvider, "playerProvider");
-		Guard.ArgumentNotNull(logger, "logger");
+		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		Guard.ArgumentNotNull(holder, "holder");
 		
-		this.playerProvider = playerProvider;
-		this.logger = logger;
+		this.pearlApi = pearlApi;
 		this.storage = storage;
 		this.playerId = playerId;
 		this.killedBy = killedBy;
@@ -102,7 +96,7 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public PearlPlayer getPlayer() {
 		if (player == null) {
-			player = playerProvider.getPearlPlayer(playerId);
+			player = pearlApi.getPearlPlayer(playerId);
 		}
 		return player;
 	}
@@ -238,7 +232,7 @@ class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public String getKilledByName() {
-		return playerProvider.getPearlPlayer(killedBy).getName();
+		return pearlApi.getPearlPlayer(killedBy).getName();
 	}
 
 
@@ -335,7 +329,7 @@ class CoreExilePearl implements ExilePearl {
 			if (reason.isValid()) {
 				sb.append(String.format("PP (%s, %s) passed verification for reason '%s': %s",
 						playerId.toString(), this.getPlayerName(), reason.toString(), verifier_log.toString()));
-				logger.log(sb.toString());
+				pearlApi.log(sb.toString());
 
 				return true;
 			} else {
@@ -346,7 +340,7 @@ class CoreExilePearl implements ExilePearl {
 		sb.append(String.format("PP (%s, %s) failed verification for reason %s: %s",
 				playerId.toString(), this.getPlayerName(), failure_reason_log.toString(), verifier_log.toString()));
 
-		logger.log(sb.toString());
+		pearlApi.log(sb.toString());
 		return false;
 	}
 

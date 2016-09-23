@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl;
 
 import java.util.logging.Level;
 
+import com.devotedmc.ExilePearl.core.CorePearlManager;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -11,7 +12,7 @@ import com.devotedmc.ExilePearl.util.Guard;
 public class PearlWorker implements Runnable {
 
 	private final ExilePearlPlugin plugin;
-	private final PearlManager pearls;
+	private final CorePearlManager pearls;
 	private final ExilePearlConfig config;
 
 	private boolean enabled = false;
@@ -23,7 +24,7 @@ public class PearlWorker implements Runnable {
 	/**
 	 * Creates a new FactoryWorker instance
 	 */
-	public PearlWorker(final ExilePearlPlugin plugin, final PearlManager pearls, final ExilePearlConfig config) {
+	public PearlWorker(final ExilePearlPlugin plugin, final CorePearlManager pearls, final ExilePearlConfig config) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		Guard.ArgumentNotNull(pearls, "pearls");
 		Guard.ArgumentNotNull(config, "config");

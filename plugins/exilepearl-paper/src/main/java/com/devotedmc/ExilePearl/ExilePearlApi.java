@@ -1,27 +1,41 @@
 package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
-
-import org.bukkit.entity.Player;
+import java.util.logging.Level;
 
 /**
  * External API for ExilePearl
  * @author Gordon
  *
  */
-public interface ExilePearlApi {
-
-	/**
-	 * Gets whether a player is exiled
-	 * @param player The player to check
-	 * @return true if the player is exiled
-	 */
-	boolean isPlayerExiled(Player player);
+public interface ExilePearlApi extends PearlManager {
 	
 	/**
-	 * Gets whether a player is exiled
-	 * @param uid The player UUID to check
-	 * @return true if the player is exiled
+	 * Gets a player instance by UUID
+	 * @param uniqueId The player UUID
+	 * @return The player instance
 	 */
-	boolean isPlayerExiled(UUID uid);
+	PearlPlayer getPearlPlayer(final UUID uid);
+	
+	/**
+	 * Gets a player instance by name
+	 * @param uniqueId The player name
+	 * @return The player instance
+	 */
+	PearlPlayer getPearlPlayer(final String name);
+
+	/**
+	 * Logs a message
+	 * @param level The logging level
+	 * @param msg The message
+	 * @param args The message arguments
+	 */
+	void log(Level level, String msg, Object... args);
+	
+	/**
+	 * Logs a message
+	 * @param msg The message
+	 * @param args The message arguments
+	 */
+	void log(String msg, Object... args);
 }

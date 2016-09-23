@@ -8,18 +8,14 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
-import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.LocationHolder;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.core.CorePearlManager;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
@@ -36,14 +32,14 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLogger, PearlPlayerProvider {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
 	private final PluginStorage storage = new MySqlStorage(pearlFactory);
-	private final PearlManager pearlManager = new PearlManager(this, pearlFactory, storage);
-	private final PlayerListener playerListener = new PlayerListener(this, pearlManager);
-	private final ExileListener exileListener = new ExileListener(this, pearlManager, pearlConfig);
+	private final CorePearlManager pearlManager = new CorePearlManager(this, pearlFactory, storage, pearlConfig);
+	private final PlayerListener playerListener = new PlayerListener(this);
+	private final ExileListener exileListener = new ExileListener(this, pearlConfig);
 	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
 	private final PearlWorker pearlWorker = new PearlWorker(this, pearlManager, pearlConfig);
@@ -98,26 +94,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	}
 	
 	/**
-	 * Gets a player instance by UUID
-	 * @param uniqueId The player UUID
-	 * @return The player instance
-	 */
-	public PearlPlayer getPearlPlayer(final UUID uid) {
-		Player p = Bukkit.getPlayer(uid);
-		return new PearlPlayer(p, p.getName());  // TODO Namelayer
-	}
-	
-	/**
-	 * Gets a player instance by name
-	 * @param uniqueId The player name
-	 * @return The player instance
-	 */
-	public PearlPlayer getPearlPlayer(final String name) {
-		Player p = Bukkit.getPlayer(name);
-		return new PearlPlayer(p, p.getName());  // TODO Namelayer
-	}
-	
-	/**
 	 * Gets the pearl configuration
 	 * @return The pearl configuration
 	 */
@@ -137,7 +113,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	 * Gets the pearl manager
 	 * @return The pearl manager instance
 	 */
-	public PearlManager getPearlManager() {
+	public CorePearlManager getPearlManager() {
 		return pearlManager;
 	}
 	
@@ -208,12 +184,44 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PearlLog
 	}
 
 	@Override
+	public ExilePearl exilePlayer(Player exiled, Player killedBy) {
+		return pearlManager.exilePlayer(exiled, killedBy);
+	}
+
+	@Override
+	public ExilePearl getPearl(UUID uid) {
+		return pearlManager.getPearl(uid);
+	}
+
+	@Override
 	public boolean isPlayerExiled(Player player) {
-		return pearlManager.isExiled(player);
+		return pearlManager.isPlayerExiled(player);
 	}
 
 	@Override
 	public boolean isPlayerExiled(UUID uid) {
-		return pearlManager.isExiled(uid);
+		return pearlManager.isPlayerExiled(uid);
+	}
+
+	@Override
+	public ExilePearl getPearlFromItemStack(ItemStack is) {
+		return pearlManager.getPearlFromItemStack(is);
+	}
+
+	@Override
+	public boolean freePearl(ExilePearl pearl) {
+		return pearlManager.freePearl(pearl);
+	}
+	
+	@Override
+	public PearlPlayer getPearlPlayer(final UUID uid) {
+		Player p = Bukkit.getPlayer(uid);
+		return new PearlPlayer(p, p.getName());  // TODO Namelayer
+	}
+	
+	@Override
+	public PearlPlayer getPearlPlayer(final String name) {
+		Player p = Bukkit.getPlayer(name);
+		return new PearlPlayer(p, p.getName());  // TODO Namelayer
 	}
 }

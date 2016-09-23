@@ -20,7 +20,7 @@ public class CmdPearlLocate extends PearlCommand {
 
 	@Override
 	public void perform() {
-		ExilePearl pp = pearls.getById(me().getUniqueId());
+		ExilePearl pp = pearlApi.getPearl(me().getUniqueId());
 		
 		if (pp == null) {
 			msg(Lang.pearlNotImprisoned);
@@ -43,7 +43,7 @@ public class CmdPearlLocate extends PearlCommand {
 			
 		} else {
 			plugin.log("%s is freed because the pearl could not be located.", pp.getLocation());
-			pearls.freePearl(pp);
+			pearlApi.freePearl(pp);
 		}
 	}
 }

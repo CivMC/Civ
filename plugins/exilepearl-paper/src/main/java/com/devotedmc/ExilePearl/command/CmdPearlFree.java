@@ -20,13 +20,13 @@ public class CmdPearlFree extends PearlCommand {
 	@SuppressWarnings("deprecation")
 	@Override
 	public void perform() {
-		ExilePearl pearl = pearls.getPearlByItem(me().getBukkitPlayer().getItemInHand());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(me().getBukkitPlayer().getItemInHand());
 		if (pearl == null) {
 			msg(Lang.pearlMustBeHoldingPearl);
 			return;
 		}
 		
-		if (pearls.freePearl(pearl)) {
+		if (pearlApi.freePearl(pearl)) {
 			me().msg(Lang.pearlYouFreed, pearl.getPlayerName());
 			me().getBukkitPlayer().setItemInHand(new ItemStack(Material.AIR));
 		}

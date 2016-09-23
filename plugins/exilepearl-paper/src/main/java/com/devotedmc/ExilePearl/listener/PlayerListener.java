@@ -38,9 +38,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.util.Guard;
@@ -53,19 +52,16 @@ import com.devotedmc.ExilePearl.util.TextUtil;
  */
 public class PlayerListener implements Listener {
 
-	private final ExilePearlPlugin plugin;
-	private final PearlManager pearls;
+	private final ExilePearlApi pearlApi;
 	
 	/**
 	 * Creates a new PlayerListener instance
-	 * @param plugin The plugin instance
+	 * @param pearlApi The pearlApi instance
 	 */
-	public PlayerListener(final ExilePearlPlugin plugin, final PearlManager pearls) {
-		Guard.ArgumentNotNull(plugin, "plugin");
-		Guard.ArgumentNotNull(pearls, "pearls");
+	public PlayerListener(final ExilePearlApi pearlApi) {
+		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		
-		this.plugin = plugin;
-		this.pearls = pearls;
+		this.pearlApi = pearlApi;
 	}
 
 
@@ -97,7 +93,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (item.getType() == Material.ENDER_PEARL && PearlLoreUtil.getIDFromItemStack(item) != null) {
-			ExilePearl pearl = pearls.getPearlByItem(item);
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
 			}
@@ -117,7 +113,7 @@ public class PlayerListener implements Listener {
 	public void onItemSpawn(ItemSpawnEvent e) {
 		Item item = e.getEntity();
 
-		ExilePearl pearl = pearls.getPearlByItem(item.getItemStack());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
 		if (pearl == null) {
 			return;
 		}
@@ -148,7 +144,7 @@ public class PlayerListener implements Listener {
 		for (Entry<Integer, ? extends ItemStack> entry :
 			inv.all(Material.ENDER_PEARL).entrySet()) {
 			ItemStack item = entry.getValue();
-			ExilePearl pearl = pearls.getPearlByItem(item);
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
 				continue;
 			}
@@ -168,7 +164,7 @@ public class PlayerListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onItemDespawn(ItemDespawnEvent e) {
-		ExilePearl pearl = pearls.getPearlByItem(e.getEntity().getItemStack());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getEntity().getItemStack());
 		if (pearl != null) {
 			e.setCancelled(true);
 		}
@@ -185,13 +181,13 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		ExilePearl pearl = pearls.getPearlByItem(((Item) e.getEntity()).getItemStack());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(((Item) e.getEntity()).getItemStack());
 		if (pearl == null) {
 			return;
 		}
 
-		plugin.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getUniqueId());
-		pearls.freePearl(pearl);
+		pearlApi.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getUniqueId());
+		pearlApi.freePearl(pearl);
 	}
 
 
@@ -207,7 +203,7 @@ public class PlayerListener implements Listener {
 		for(Integer slot : items.keySet()) {
 			ItemStack item = items.get(slot);
 
-			ExilePearl pearl = pearls.getPearlByItem(item);
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(slot) == slot;
 
@@ -278,7 +274,7 @@ public class PlayerListener implements Listener {
 	 * @param player The player holding the pearl
 	 */
 	private void updatePearl(ExilePearl pearl, Player player) {
-		pearl.setHolder(plugin.getPearlPlayer(player.getUniqueId()));
+		pearl.setHolder(pearlApi.getPearlPlayer(player.getUniqueId()));
 		generatePearlEvent(pearl, ExilePearlEvent.Type.HELD);
 	}
 
@@ -291,10 +287,10 @@ public class PlayerListener implements Listener {
 	public void onExilePearlClick(InventoryClickEvent e) {
 		Player clicker = (Player) e.getWhoClicked();
 
-		ExilePearl pearl = pearls.getPearlByItem(e.getCurrentItem());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getCurrentItem());
 		if(pearl != null) {
-			if (pearls.isExiled(clicker)) {
-				plugin.getPearlPlayer(clicker.getUniqueId()).msg(Lang.pearlCantHold);
+			if (pearlApi.isPlayerExiled(clicker)) {
+				pearlApi.getPearlPlayer(clicker.getUniqueId()).msg(Lang.pearlCantHold);
 				e.setCancelled(true);
 			}
 		}
@@ -309,12 +305,12 @@ public class PlayerListener implements Listener {
 	public void onPlayerPickupPearl(PlayerPickupItemEvent e) {
 		Item item = e.getItem();
 
-		ExilePearl pearl = pearls.getPearlByItem(item.getItemStack());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
 		if (pearl == null) {
 			return;
 		}
 
-		if (pearls.isExiled(e.getPlayer())) {
+		if (pearlApi.isPlayerExiled(e.getPlayer())) {
 			e.setCancelled(true);
 		}
 	}
@@ -337,7 +333,7 @@ public class PlayerListener implements Listener {
 		InventoryAction a = event.getAction();
 		if(a == InventoryAction.COLLECT_TO_CURSOR || a == InventoryAction.PICKUP_ALL 
 				|| a == InventoryAction.PICKUP_HALF || a == InventoryAction.PICKUP_ONE) {
-			ExilePearl pearl = pearls.getPearlByItem(event.getCurrentItem());
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
 				pearl.updateLastMoved();
@@ -347,7 +343,7 @@ public class PlayerListener implements Listener {
 		else if(event.getAction() == InventoryAction.PLACE_ALL
 				|| event.getAction() == InventoryAction.PLACE_SOME
 				|| event.getAction() == InventoryAction.PLACE_ONE) {	
-			ExilePearl pearl = pearls.getPearlByItem(event.getCursor());
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCursor());
 
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
@@ -363,7 +359,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 		else if(event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {			
-			ExilePearl pearl = pearls.getPearlByItem(event.getCurrentItem());
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
@@ -380,7 +376,7 @@ public class PlayerListener implements Listener {
 		}
 		else if(event.getAction() == InventoryAction.HOTBAR_SWAP) {
 			PlayerInventory playerInventory = event.getWhoClicked().getInventory();
-			ExilePearl pearl = pearls.getPearlByItem(playerInventory.getItem(event.getHotbarButton()));
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(playerInventory.getItem(event.getHotbarButton()));
 
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
@@ -394,7 +390,7 @@ public class PlayerListener implements Listener {
 			if(event.isCancelled())
 				return;
 
-			pearl = pearls.getPearlByItem(event.getCurrentItem());
+			pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
 				pearl.updateLastMoved();
@@ -402,7 +398,7 @@ public class PlayerListener implements Listener {
 			}
 		}
 		else if (event.getAction() == InventoryAction.SWAP_WITH_CURSOR) {
-			ExilePearl pearl = pearls.getPearlByItem(event.getCursor());
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCursor());
 
 			if(pearl != null) {
 				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
@@ -416,7 +412,7 @@ public class PlayerListener implements Listener {
 			if(event.isCancelled())
 				return;
 
-			pearl = pearls.getPearlByItem(event.getCurrentItem());
+			pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
 				pearl.updateLastMoved();
@@ -430,7 +426,7 @@ public class PlayerListener implements Listener {
 			// Handled by onItemSpawn
 		}
 		else {
-			if(pearls.getPearlByItem(event.getCurrentItem()) != null || pearls.getPearlByItem(event.getCursor()) != null) {
+			if(pearlApi.getPearlFromItemStack(event.getCurrentItem()) != null || pearlApi.getPearlFromItemStack(event.getCursor()) != null) {
 				((Player) event.getWhoClicked()).sendMessage(ChatColor.RED + "Error: ExilePearl doesn't support this inventory functionality quite yet!");
 
 				event.setCancelled(true);
@@ -447,13 +443,13 @@ public class PlayerListener implements Listener {
 	public void onPlayerPickupItem(PlayerPickupItemEvent e) {
 		Item item = e.getItem();
 
-		ExilePearl pearl = pearls.getPearlByItem(item.getItemStack());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
 		if (pearl == null) {
 			return;
 		}
 
 		pearl.updateLastMoved();
-		pearl.setHolder(plugin.getPearlPlayer(e.getPlayer().getUniqueId()));
+		pearl.setHolder(pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()));
 		updatePearl(pearl, (Player) e.getPlayer());
 	}
 
@@ -472,10 +468,9 @@ public class PlayerListener implements Listener {
 
 		Player killer = player.getKiller();
 		if (killer != null) {
-			PearlPlayer imprisoner = plugin.getPearlPlayer(killer.getUniqueId());
 			
 			// Need to get by name b/c of combat tag entity
-			PearlPlayer imprisoned = plugin.getPearlPlayer(e.getEntity().getName());
+			PearlPlayer imprisoned = pearlApi.getPearlPlayer(e.getEntity().getName());
 
 			int firstpearl = Integer.MAX_VALUE;
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
@@ -487,9 +482,8 @@ public class PlayerListener implements Listener {
 			}
 
 			if (firstpearl  !=  Integer.MAX_VALUE) {
-				pearls.imprisonPlayer(imprisoned, imprisoner);
+				pearlApi.exilePlayer(imprisoned.getBukkitPlayer(), killer);
 			}
-
 		}
 	}
 	
@@ -501,10 +495,10 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		UUID uid = e.getPlayer().getUniqueId();
-		ExilePearl pearl = pearls.getById(uid);
+		ExilePearl pearl = pearlApi.getPearl(uid);
 		if (pearl != null && pearl.getFreedOffline()) {
 			pearl.getPlayer().msg(Lang.pearlYouWereFreed);
-			pearls.freePearl(pearl);
+			pearlApi.freePearl(pearl);
 		}
 	}
 	
@@ -528,13 +522,13 @@ public class PlayerListener implements Listener {
 	public void onExilePearlEvent(ExilePearlEvent event) {
 		
 		ExilePearl pearl = event.getExilePearl();
-		PearlPlayer imprisoned = plugin.getPearlPlayer(pearl.getUniqueId());
+		PearlPlayer imprisoned = pearlApi.getPearlPlayer(pearl.getUniqueId());
 		
 		if (event.getType() == ExilePearlEvent.Type.NEW) {
 
-			PearlPlayer imprisoner = plugin.getPearlPlayer(event.getImprisoner().getUniqueId());
+			PearlPlayer imprisoner = pearlApi.getPearlPlayer(event.getKilledBy().getUniqueId());
 			// Log the capturing ExilePearl event.
-			plugin.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
+			pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
 			
 			imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
 			imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());

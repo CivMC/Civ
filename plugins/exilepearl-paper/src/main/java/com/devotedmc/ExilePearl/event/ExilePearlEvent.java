@@ -1,24 +1,24 @@
 package com.devotedmc.ExilePearl.event;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class ExilePearlEvent extends Event {
 	public enum Type { NEW, HELD, DROPPED, FREED }
 	
 	private final ExilePearl pearl;
 	private final Type type;
-	private final PearlPlayer imprisoner;
+	private final Player imprisoner;
 	
 	private boolean cancelled;
 	
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 	
-	public ExilePearlEvent(final ExilePearl pearl, final Type type, final PearlPlayer imprisoner) {
+	public ExilePearlEvent(final ExilePearl pearl, final Type type, final Player imprisoner) {
 		this.pearl = pearl;
 		this.type = type;
 		this.imprisoner = imprisoner;
@@ -48,7 +48,7 @@ public class ExilePearlEvent extends Event {
 	 * Gets the imprisoner if one exists, otherwise null
 	 * @return The imprisoner
 	 */
-	public PearlPlayer getImprisoner() {
+	public Player getKilledBy() {
 		return imprisoner;
 	}
 	

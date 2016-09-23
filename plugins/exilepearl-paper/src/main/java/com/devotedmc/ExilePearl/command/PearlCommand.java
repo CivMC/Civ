@@ -1,17 +1,17 @@
 package com.devotedmc.ExilePearl.command;
 
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public abstract class PearlCommand extends BaseCommand<ExilePearlPlugin> {
 	
-	protected final PearlManager pearls;
+	protected final ExilePearlApi pearlApi;
 	
 	public PearlCommand(ExilePearlPlugin plugin) {
 		super(plugin);
 		
-		pearls = plugin.getPearlManager();
+		pearlApi = plugin;
 	}
 	
 

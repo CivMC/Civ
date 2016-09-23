@@ -43,11 +43,11 @@ public class CorePearlFactory implements PearlFactory {
 			holder = new LocationHolder(location);
 		}
 
-		return new CoreExilePearl(plugin, plugin, plugin.getStorage(), uid, killedBy, holder, health);
+		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy, holder, health);
 	}
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, Player killedBy, double health) {
-		return new CoreExilePearl(plugin, plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), new PlayerHolder(killedBy), health);
+		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), new PlayerHolder(killedBy), health);
 	}
 }

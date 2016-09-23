@@ -2,9 +2,8 @@ package com.devotedmc.ExilePearl.listener;
 
 import org.bukkit.event.Listener;
 
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlConfig;
-import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -31,8 +30,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  */
 public class ExileListener implements Listener {
 
-	private final PearlLogger logger;
-	private final PearlManager pearls;
+	private final ExilePearlApi pearlApi;
 	private final ExilePearlConfig config;
 	
 	/**
@@ -41,13 +39,11 @@ public class ExileListener implements Listener {
 	 * @param pearls The pearl manger
 	 * @param config The plugin configuration
 	 */
-	public ExileListener(final PearlLogger logger, final PearlManager pearls, final ExilePearlConfig config) {
-		Guard.ArgumentNotNull(logger, "logger");
-		Guard.ArgumentNotNull(pearls, "pearls");
+	public ExileListener(final ExilePearlApi pearlApi, final ExilePearlConfig config) {
+		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(config, "config");
 		
-		this.logger = logger;
-		this.pearls = pearls;
+		this.pearlApi = pearlApi;
 		this.config = config;
 	}
 }
