@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.logging.Level;
 
-import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlWorker;
@@ -81,23 +80,6 @@ class CorePearlWorker implements PearlWorker, Runnable {
 			return;
 		}
 		
-		double decayAmount = config.getPearlUpkeepAmount();
-
-		plugin.log("Feeding pearls.");
-
-		// Iterate through all the pearls and reduce the strength
-		// This will free any pearls that reach zero strength
-		for (ExilePearl pearl : plugin.getPearls()) {
-			if (pearl.verifyLocation()) {
-				
-				double updatedHealth = pearl.getHealth() - decayAmount;
-				if (updatedHealth > 0) {
-					pearl.setHealth(updatedHealth);
-				} else {
-					plugin.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayer().getName());
-					plugin.freePearl(pearl);
-				}
-			}
-		}
+		plugin.getPearlManager().decayPearls();
 	}
 }

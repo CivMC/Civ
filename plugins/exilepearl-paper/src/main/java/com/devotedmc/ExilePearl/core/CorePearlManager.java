@@ -5,11 +5,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -97,62 +95,6 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		// set up the imprisoner's inventory
-		Inventory inv = killedBy.getInventory();
-		ItemStack stack = null;
-		int stacknum = -1;
-		
-		// Scan for the smallest stack of normal ender pearls
-		for (Entry<Integer, ? extends ItemStack> entry :
-				inv.all(Material.ENDER_PEARL).entrySet()) {
-			ItemStack newstack = entry.getValue();
-			int newstacknum = entry.getKey();
-			if (newstack.getDurability() == 0) {
-				if (stack != null) {
-					// don't keep a stack bigger than the previous one
-					if (newstack.getAmount() > stack.getAmount()) {
-						continue;
-					}
-					// don't keep an identical sized stack in a higher slot
-					if (newstack.getAmount() == stack.getAmount() &&
-							newstacknum > stacknum) {
-						continue;
-					}
-				}
-
-				stack = newstack;
-				stacknum = entry.getKey();
-			}
-		}
-		
-		int pearlnum;
-		ItemStack dropStack = null;
-		if (stacknum == -1) { // no pearl (admin command)
-			// give him a new one at the first empty slot
-			pearlnum = inv.firstEmpty();
-		} else if (stack.getAmount() == 1) { // if he's just got one pearl
-			pearlnum = stacknum; // put the prison pearl there
-		} else {
-			// otherwise, put the prison pearl in the first empty slot
-			pearlnum = inv.firstEmpty();
-			if (pearlnum > 0) {
-				// and reduce his stack of pearls by one
-				stack.setAmount(stack.getAmount() - 1);
-				inv.setItem(stacknum, stack);
-			} else { // no empty slot?
-				dropStack = new ItemStack(Material.ENDER_PEARL, stack.getAmount() - 1);
-				pearlnum = stacknum; // then overwrite his stack of pearls
-			}
-		}
-		
-		// Drop pearls that otherwise would be deleted
-		Location l = killedBy.getLocation();
-		if (dropStack != null) {
-			killedBy.getWorld().dropItem(l, dropStack);
-			pearlApi.log(l + ", " + dropStack.getAmount());
-		}
-		
-		
 		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy, config.getPearlStartStrength());
 		pearl.updateLastMoved();
 
@@ -162,7 +104,6 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		inv.setItem(pearlnum, pearl.createItemStack());
 		pearls.put(pearl.getUniqueId(), pearl);
 		storage.pearlInsert(pearl);
 		
@@ -188,13 +129,19 @@ class CorePearlManager implements PearlManager {
 		}
 		return false;
 	}
+
+	@Override
+	public ExilePearl getPearl(String name) {
+		Guard.ArgumentNotNullOrEmpty(name, "name");
+		
+		for(ExilePearl pearl :pearls.values()) {
+			if (pearl.getPlayerName().equalsIgnoreCase(name));
+			return pearl;
+		}
+		return null;
+	}
 	
 	
-	/**
-	 * Gets a pearl by ID
-	 * @param uid The ID to match
-	 * @return The prison pearl instance if it exists
-	 */
 	@Override
 	public ExilePearl getPearl(UUID uid) {
 		Guard.ArgumentNotNull(uid, "uid");
@@ -270,5 +217,33 @@ class CorePearlManager implements PearlManager {
 		}
 		
 		return null;
+	}
+
+
+	@Override
+	public void decayPearls() {
+		pearlApi.log("Performing pearl decay.");
+		long startTime = System.currentTimeMillis();
+
+		final Collection<ExilePearl> pearls = getPearls();
+		final double decayAmount = config.getPearlUpkeepAmount();
+		int numFreed = 0;
+
+		// Iterate through all the pearls and reduce the strength
+		// This will free any pearls that reach zero strength
+		for (ExilePearl pearl : pearls) {
+			if (pearl.verifyLocation()) {
+				
+				double updatedHealth = pearl.getHealth() - decayAmount;
+				if (updatedHealth > 0) {
+					pearl.setHealth(updatedHealth);
+				} else {
+					pearlApi.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayer().getName());
+					freePearl(pearl);
+				}
+			}
+		}
+		
+		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), numFreed);
 	}
 }

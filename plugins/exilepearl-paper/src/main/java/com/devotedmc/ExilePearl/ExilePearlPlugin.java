@@ -194,6 +194,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	}
 
 	@Override
+	public ExilePearl getPearl(String name) {
+		return pearlManager.getPearl(name);
+	}
+
+	@Override
 	public ExilePearl getPearl(UUID uid) {
 		return pearlManager.getPearl(uid);
 	}
@@ -226,12 +231,20 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	@Override
 	public PearlPlayer getPearlPlayer(final UUID uid) {
 		Player p = Bukkit.getPlayer(uid);
+		if (p == null) {
+			return null;
+		}
+		
 		return new PearlPlayer(p, p.getName());  // TODO Namelayer
 	}
 	
 	@Override
 	public PearlPlayer getPearlPlayer(final String name) {
 		Player p = Bukkit.getPlayer(name);
+		if (p == null) {
+			return null;
+		}
+		
 		return new PearlPlayer(p, p.getName());  // TODO Namelayer
 	}
 }

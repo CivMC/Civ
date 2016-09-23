@@ -17,6 +17,13 @@ public interface PearlAccess {
 	ExilePearl exilePlayer(Player exiled, Player killedBy);
 	
 	/**
+	 * Gets a pearl instance by name
+	 * @param name The name to search for
+	 * @return The instance if it is found, otherwise null
+	 */
+	ExilePearl getPearl(String name);
+	
+	/**
 	 * Gets a pearl instance by UUID
 	 * @param uid The UUID to search for
 	 * @return The instance if it is found, otherwise null

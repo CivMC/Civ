@@ -481,9 +481,72 @@ public class PlayerListener implements Listener {
 				}
 			}
 
-			if (firstpearl  !=  Integer.MAX_VALUE) {
-				pearlApi.exilePlayer(imprisoned.getBukkitPlayer(), killer);
+			if (firstpearl ==  Integer.MAX_VALUE) {
+				return;
 			}
+			
+			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getBukkitPlayer(), killer);
+			if (pearl == null) {
+				return;
+			}
+			
+			// Pearl succeeded
+			// set up the imprisoner's inventory
+			Inventory inv = killer.getInventory();
+			ItemStack stack = null;
+			int stacknum = -1;
+			
+			// Scan for the smallest stack of normal ender pearls
+			for (Entry<Integer, ? extends ItemStack> entry :
+					inv.all(Material.ENDER_PEARL).entrySet()) {
+				ItemStack newstack = entry.getValue();
+				int newstacknum = entry.getKey();
+				if (newstack.getDurability() == 0) {
+					if (stack != null) {
+						// don't keep a stack bigger than the previous one
+						if (newstack.getAmount() > stack.getAmount()) {
+							continue;
+						}
+						// don't keep an identical sized stack in a higher slot
+						if (newstack.getAmount() == stack.getAmount() &&
+								newstacknum > stacknum) {
+							continue;
+						}
+					}
+
+					stack = newstack;
+					stacknum = entry.getKey();
+				}
+			}
+			
+			int pearlnum;
+			ItemStack dropStack = null;
+			if (stacknum == -1) { // no pearl (admin command)
+				// give him a new one at the first empty slot
+				pearlnum = inv.firstEmpty();
+			} else if (stack.getAmount() == 1) { // if he's just got one pearl
+				pearlnum = stacknum; // put the prison pearl there
+			} else {
+				// otherwise, put the prison pearl in the first empty slot
+				pearlnum = inv.firstEmpty();
+				if (pearlnum > 0) {
+					// and reduce his stack of pearls by one
+					stack.setAmount(stack.getAmount() - 1);
+					inv.setItem(stacknum, stack);
+				} else { // no empty slot?
+					dropStack = new ItemStack(Material.ENDER_PEARL, stack.getAmount() - 1);
+					pearlnum = stacknum; // then overwrite his stack of pearls
+				}
+			}
+			
+			// Drop pearls that otherwise would be deleted
+			Location l = killer.getLocation();
+			if (dropStack != null) {
+				killer.getWorld().dropItem(l, dropStack);
+				pearlApi.log(l + ", " + dropStack.getAmount());
+			}
+			
+			inv.setItem(pearlnum, pearl.createItemStack());
 		}
 	}
 	
