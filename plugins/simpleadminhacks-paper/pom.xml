@@ -9,7 +9,7 @@
   <version>1.0.9</version>
   <name>SimpleAdminHacks</name>
   <url>https://github.com/DevotedMC/SimpleAdminHacks</url>
-  
+
   <build>
     <finalName>${project.name}-${project.version}</finalName>
     <plugins>
@@ -40,6 +40,7 @@
               <exclude>com/programmerdan/minecraft/simpleadminhacks/**/*Test.class</exclude>
             </excludes>
           </instrumentation>
+          <check/>
         </configuration>
         <executions>
           <execution>
@@ -72,6 +73,7 @@
           <formats>
             <format>html</format>
           </formats>
+          <check/>
         </configuration>
         <reportSets>
           <reportSet>
@@ -140,6 +142,12 @@
       <version>2.8.03</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>vg.civcraft.mc.citadel</groupId>
+      <artifactId>Citadel</artifactId>
+      <version>3.5.3</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
- 
+
 </project>
