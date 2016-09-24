@@ -519,6 +519,12 @@ public class GroupManagerDao {
 	}
 	
 	public Group getGroup(String groupName){
+		String name = null;
+		UUID owner = null;
+		boolean discipline = false;
+		String password = null;
+		int id = -1;
+		
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroup = connection.prepareStatement(GroupManagerDao.getGroup)){
 			
@@ -528,51 +534,59 @@ public class GroupManagerDao {
 					return null;
 				}
 				
-				String name = set.getString(1);
+				name = set.getString(1);
 				String uuid = set.getString(2);
-				UUID owner = (uuid != null) ? UUID.fromString(uuid) : null;
-				boolean discipline = set.getInt(4) != 0;
-				String password = set.getString(3);
-				int id = set.getInt(5);
-				
-				Group g = new Group(name, owner, discipline, password, id);
-				
-				// other group IDs cached via the constructor.
-				return g;
+				owner = (uuid != null) ? UUID.fromString(uuid) : null;
+				discipline = set.getInt(4) != 0;
+				password = set.getString(3);
+				id = set.getInt(5);
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem getting group " + groupName, e);
+				return null;
 			}
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem preparing query to get group " + groupName, e);
+			return null;
 		}
-		return null;
+		Group g = new Group(name, owner, discipline, password, id);
+		
+		// other group IDs cached via the constructor.
+		return g;
 	}
 	
 	public Group getGroup(int groupId){
+		String name = null;
+		UUID owner = null;
+		boolean dis = false;
+		String password = null;
+		int id = -1;
+		
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroupById = connection.prepareStatement(GroupManagerDao.getGroupById)){
 			getGroupById.setInt(1, groupId);
 			try (ResultSet set = getGroupById.executeQuery();) {
-				if (!set.next()) return null;
+				if (!set.next()) {
+					return null;
+				}
 
-				String name = set.getString(1);
+				name = set.getString(1);
 				String uuid = set.getString(2);
-				UUID owner = null;
+				owner = null;
 				if (uuid != null)
 					owner = UUID.fromString(uuid);
-				boolean dis = set.getInt(4) != 0;
-				String password = set.getString(3);
-				int id = set.getInt(5);
-				
-				Group g = new Group(name, owner, dis, password, id);
-				return g;
+				dis = set.getInt(4) != 0;
+				password = set.getString(3);
+				id = set.getInt(5);
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem getting group " + groupId, e);
+				return null;
 			}
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem preparing query to get group " + groupId, e);
+			return null;
 		}
-		return null;
+		Group g = new Group(name, owner, dis, password, id);
+		return g;
 	}
 	
 	public List<String> getGroupNames(UUID uuid){
@@ -808,35 +822,36 @@ public class GroupManagerDao {
 	
 	public List<Group> getSubGroups(String group){
 		List<Group> groups = new ArrayList<Group>();
+		List<String> subgroups = Lists.newArrayList();
 		try (Connection connection = db.getConnection();
 				PreparedStatement getSubGroups = connection.prepareStatement(GroupManagerDao.getSubGroups)){
 			getSubGroups.setString(1, group);
 			
-			List<String> subgroups = Lists.newArrayList();
 			try (ResultSet set = getSubGroups.executeQuery();){
 				while (set.next()) {
 					subgroups.add(set.getString(1));
 				}
 			}			
-			for (String groupname : subgroups) {				
-				Group g = null;
-				if (GroupManager.hasGroup(groupname)) {
-					g = GroupManager.getGroup(groupname);
-				} else {
-					g = getGroup(groupname);
-				}
-				
-				if (g != null) {
-					groups.add(g);
-				}
-			}
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting subgroups for group " + group, e);
+		}
+		for (String groupname : subgroups) {				
+			Group g = null;
+			if (GroupManager.hasGroup(groupname)) {
+				g = GroupManager.getGroup(groupname);
+			} else {
+				g = getGroup(groupname);
+			}
+			
+			if (g != null) {
+				groups.add(g);
+			}
 		}
 		return groups;
 	}
 	
 	public Group getSuperGroup(String group){
+		String supergroup = null;
 		try (Connection connection = db.getConnection();
 				PreparedStatement getSuperGroup = connection.prepareStatement(GroupManagerDao.getSuperGroup)){
 			getSuperGroup.setString(1, group);
@@ -844,19 +859,20 @@ public class GroupManagerDao {
 				if (!set.next()) {
 					return null;
 				}
-				String supergroup = set.getString(1);
-				if (GroupManager.hasGroup(supergroup)) {
-					return GroupManager.getGroup(supergroup);
-				} else {
-					return getGroup(supergroup);
-				}
+				supergroup = set.getString(1);
 			} catch (Exception e){
 				logger.log(Level.WARNING, "Problem finding or getting superGroup for group " + group, e);
+				return null;
 			}
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem getting superGroup for group " + group, e);
+			return null;
 		}
-		return null;
+		if (GroupManager.hasGroup(supergroup)) {
+			return GroupManager.getGroup(supergroup);
+		} else {
+			return getGroup(supergroup);
+		}
 	}
 	
 	public void removeSubGroupAsync(final String group, final String subgroup){
@@ -1534,6 +1550,7 @@ public class GroupManagerDao {
 				}
 				Group g = null;
 				if(group != null){
+					// TODO: This triggers subqueries. Don't trigger subqueries inside a query.
 					g = GroupManager.getGroup(group);
 				}
 				PlayerType type = null;
