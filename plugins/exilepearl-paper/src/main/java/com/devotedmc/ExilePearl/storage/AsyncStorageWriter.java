@@ -22,7 +22,6 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 	private final BlockingQueue<AsyncPearlRecord> queue = new LinkedBlockingQueue<AsyncPearlRecord>();
 	private Thread thread;
 	private boolean isEnabled;
-	private boolean isRunning;
 	
 	public AsyncStorageWriter(final PluginStorage storage, final PearlLogger logger) {
 		Guard.ArgumentNotNull(storage, "storage");
@@ -53,7 +52,7 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	@Override
 	public boolean isConnected() {
-		return storage.isConnected();
+		return isEnabled && storage.isConnected();
 	}
 	
 	@Override
@@ -96,7 +95,6 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
-		isRunning = true;
 		
 		while (isEnabled) {
 			try {
@@ -106,7 +104,7 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 			}
 		}
 		
-		isRunning = false;
+		isEnabled = false;
 		logger.log("The async database thread has terminated.");
 	}
 	
@@ -141,7 +139,7 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 	
 	
 	private void checkRunning() {
-		if (!isRunning) {
+		if (!isEnabled) {
 			throw new NotYetConnectedException();
 		}
 	}
