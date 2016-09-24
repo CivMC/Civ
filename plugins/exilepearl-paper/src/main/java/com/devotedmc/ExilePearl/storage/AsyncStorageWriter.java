@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.storage;
 
+import java.nio.channels.NotYetConnectedException;
 import java.util.Collection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -14,15 +15,16 @@ import com.devotedmc.ExilePearl.util.Guard;
  * Wrapper class for PluginStorage that performs asynchronous writes
  * @author Gordon
  */
-public class MySqlStorageAsync implements PluginStorage, Runnable {
+public class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	private final PluginStorage storage;
 	private final PearlLogger logger;
 	private final BlockingQueue<AsyncPearlRecord> queue = new LinkedBlockingQueue<AsyncPearlRecord>();
 	private Thread thread;
 	private boolean isEnabled;
+	private boolean isRunning;
 	
-	public MySqlStorageAsync(final PluginStorage storage, final PearlLogger logger) {
+	public AsyncStorageWriter(final PluginStorage storage, final PearlLogger logger) {
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(logger, "logger");
 		
@@ -62,34 +64,39 @@ public class MySqlStorageAsync implements PluginStorage, Runnable {
 	@Override
 	public void pearlInsert(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		queue.add(new AsyncPearlRecord(pearl, WriteType.INSERT));
+		checkRunning();
 		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.INSERT));
 	}
 
 	@Override
 	public void pearlRemove(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		queue.add(new AsyncPearlRecord(pearl, WriteType.REMOVE));
+		checkRunning();
 		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.REMOVE));
 	}
 
 	@Override
 	public void pearlUpdateLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LOCATION));
+		checkRunning();
 		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LOCATION));
 	}
 
 	@Override
 	public void pearlUpdateHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_HEALTH));
+		checkRunning();
 		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_HEALTH));
 	}
 
 	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
+		isRunning = true;
 		
 		while (isEnabled) {
 			try {
@@ -99,6 +106,7 @@ public class MySqlStorageAsync implements PluginStorage, Runnable {
 			}
 		}
 		
+		isRunning = false;
 		logger.log("The async database thread has terminated.");
 	}
 	
@@ -128,6 +136,13 @@ public class MySqlStorageAsync implements PluginStorage, Runnable {
 		case TERMINATE:
 		default:
 			break;
+		}
+	}
+	
+	
+	private void checkRunning() {
+		if (!isRunning) {
+			throw new NotYetConnectedException();
 		}
 	}
 }

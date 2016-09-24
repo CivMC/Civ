@@ -22,7 +22,7 @@ import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
-import com.devotedmc.ExilePearl.storage.MySqlStorageAsync;
+import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -37,7 +37,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
-	private final PluginStorage storage = new MySqlStorageAsync(new MySqlStorage(pearlFactory), this);
+	private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
 	
