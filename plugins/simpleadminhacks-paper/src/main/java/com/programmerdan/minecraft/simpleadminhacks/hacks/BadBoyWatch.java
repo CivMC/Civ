@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +28,9 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.BadBoyWatchConfig;
  */
 public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listener {
 
-	// tracking cache, persists and ignores logouts.
+	/**
+	 *  tracking cache, persists and ignores logouts.
+	 */
 	private Map<UUID, BadBoyRecord> boys = null;
 	
 	public BadBoyWatch(SimpleAdminHacks plugin, BadBoyWatchConfig config) {
@@ -36,10 +39,12 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
 	public void breakListen(BlockBreakEvent bbe) {
+		if (!config.isEnabled()) return;
 		try {
 			Player player = bbe.getPlayer();
 			Block block = bbe.getBlock();
-			Material material = block.getType();
+			BlockState bs = block.getState();
+			Material material = bs.getType();
 			
 			trackAndReport(player.getUniqueId(), block.getLocation(), material);
 		} catch (Exception e) {
@@ -53,7 +58,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		
 		BadBoyRecord record = boys.get(uuid);
 		if (record == null) {
-			record = new BadBoyRecord(config.getTrackingDepth());
+			record = new BadBoyRecord(config);
 			boys.put(uuid, record);
 		}
 		
@@ -91,11 +96,13 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 
 	@Override
 	public String status() {
-		if (config.isEnabled()) {
-			return "Listening for bad boy breaks";
-		} else {
+		if (!config.isEnabled()) {
 			return "Bad Boy Listening disabled.";
 		}
+		StringBuffer status = new StringBuffer("Listening for bad boy breaks");
+		
+		status.append("\n  Currently watching ").append(boys.size()).append(" players.");
+		return status.toString();
 	}
 
 	public static BadBoyWatchConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
@@ -105,15 +112,17 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	@Override
 	public void registerCommands() {}
 	
-	private class BadBoyRecord {
+	private static class BadBoyRecord {
 		private int nextBreak;
 		private int breakCount;
 		private BadBoyBlock[] breaks;
+		private BadBoyWatchConfig config;
 		
-		public BadBoyRecord(int numberToTrack) {
+		public BadBoyRecord(BadBoyWatchConfig config) {
+			this.config = config;
 			this.nextBreak = 0;
 			this.breakCount = 0;
-			this.breaks = new BadBoyBlock[numberToTrack];
+			this.breaks = new BadBoyBlock[config.getTrackingDepth() + 1];
 		}
 		
 		/**
@@ -123,7 +132,6 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		 *   breaks leading to this otherwise.
 		 */
 		public synchronized String registerBreak(Location location, Material material) {
-		
 			breaks[nextBreak] = new BadBoyBlock(location, material);
 			
 			nextBreak = (nextBreak + 1) % breaks.length;
@@ -136,6 +144,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 				}
 				if (config.isClearOnMatch()) {
 					this.clear();
+					breakCount = 0;
 				}
 				return breaks;
 			}
@@ -160,7 +169,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			StringBuilder sb = new StringBuilder("BadBoyBreak: ");
 			int max = breaks.length;
 			
-			for (int i = (nextBreak - 1) % max; i != nextBreak; i = (i - 1) % max) {
+			for (int i = (nextBreak - 1 + max) % max; i != nextBreak; i = (i - 1 + max) % max) {
 				BadBoyBlock bbb = breaks[i];
 				if (bbb == null) break;
 				sb.append('[').append(bbb.toString()).append(']');
@@ -184,7 +193,8 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			StringBuilder se = new StringBuilder();
 			
 			se.append(location.getWorld().getName());
-			se.append('(').append(location.getBlockX()).append(location.getBlockY())
+			se.append('(').append(location.getBlockX()).append(',')
+				.append(location.getBlockY()).append(',')
 				.append(location.getBlockZ()).append(')');
 			se.append(material.toString());
 			return se.toString();

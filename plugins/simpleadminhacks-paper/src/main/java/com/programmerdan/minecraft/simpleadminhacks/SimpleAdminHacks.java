@@ -78,15 +78,18 @@ public class SimpleAdminHacks extends JavaPlugin {
 								Method genBasic = clazz.getMethod("generate", SimpleAdminHacks.class, ConfigurationSection.class);
 								hackingConfig = (SimpleHackConfig) genBasic.invoke(null, this, hackConfig);
 							} catch (IllegalAccessException failure) {
+								log(Level.WARNING, "Creating configuration for hack {0} failed, illegal access failure", clazz.getName());
 							} catch (IllegalArgumentException failure) {
+								log(Level.WARNING, "Creating configuration for hack {0} failed, illegal argument failure", clazz.getName());
 							} catch (InvocationTargetException failure) {
+								log(Level.WARNING, "Creating configuration for hack {0} failed, invocation target failure", clazz.getName());
 							}
 						} else {
 							log(Level.INFO, "Hack for {0} found but no configuration, skipping.", clazz.getSimpleName());
 						}
 						
 						if (hackingConfig != null) {
-							log(Level.INFO, "Configuration for Hack {0} found.", clazz.getSimpleName());
+							log(Level.INFO, "Configuration for Hack {0} found, instance: {1}", clazz.getSimpleName(), hackingConfig.toString());
 							SimpleHack<?> hack = null;
 							try {
 								Constructor<?> constructBasic = clazz.getConstructor(SimpleAdminHacks.class, hackingConfig.getClass());
@@ -94,7 +97,9 @@ public class SimpleAdminHacks extends JavaPlugin {
 								log(Level.INFO, "Created a new Hack of type {0}", clazz.getSimpleName());
 							} catch (InvalidConfigException ice) {
 								log(Level.WARNING, "Failed to activate {0} hack, configuration failed", clazz.getSimpleName());
-							} catch (Exception e) {}
+							} catch (Exception e) {
+								log(Level.WARNING, "Failed to activate {0} hack, configuration failed: {1}", clazz.getSimpleName(), e.getMessage());
+							}
 							
 							if (hack == null) {
 								log(Level.WARNING, "Failed to create a Hack of type {0}", clazz.getSimpleName());

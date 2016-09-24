@@ -19,10 +19,10 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
  */
 public class BadBoyWatchConfig extends SimpleHackConfig {
 
-	private int trackingDepth = 8;
-	private boolean clearOnMatch = true;
-	private int minDepthToMatch = 2; // default; block + something else.
-	private Set<Material> watchedMaterials = null;
+	private int trackingDepth;
+	private boolean clearOnMatch;
+	private int minDepthToMatch;
+	private Set<Material> watchedMaterials;
 	
 	private static final List<Material> defaultWatched = Arrays.asList(
 			Material.CHEST,
@@ -40,20 +40,26 @@ public class BadBoyWatchConfig extends SimpleHackConfig {
 
 	@Override
 	protected void wireup(ConfigurationSection config) {
-		this.trackingDepth = config.getInt("trackingDepth", this.trackingDepth);
-		this.clearOnMatch = config.getBoolean("clearOnMatch", this.clearOnMatch);
-		this.minDepthToMatch = config.getInt("minDepthToMatch", this.minDepthToMatch);
+		this.trackingDepth = config.getInt("trackingDepth", 8); // keep up to 8 breaks
+		plugin().log(Level.INFO, "  Tracking Depth: {0}", this.trackingDepth);
+		this.clearOnMatch = config.getBoolean("clearOnMatch", true); // once you print out don't keep old records
+		plugin().log(Level.INFO, "  Clear On Match: {0}", this.clearOnMatch);
+		this.minDepthToMatch = config.getInt("minDepthToMatch", 2); // this block + 1
+		plugin().log(Level.INFO, "  Minimum Breakpath Depth To Match: {0}", this.minDepthToMatch);
 		@SuppressWarnings("unchecked")
 		List<String> watch = (List<String>) config.getList("watchedMaterials");
 		this.watchedMaterials = new HashSet<Material>();
-		if (watch == null) {
+		if (watch == null || watch.isEmpty()) {
 			this.watchedMaterials.addAll(defaultWatched);
+			plugin().log(Level.INFO, "  Adding default watch set");
 		} else {
 			for (String mat : watch) {
 				try {
-					this.watchedMaterials.add(Material.matchMaterial(mat));
+					Material nmat = Material.matchMaterial(mat);
+					this.watchedMaterials.add(nmat);
+					plugin().log(Level.INFO, "  Watching material {0}", nmat);
 				} catch (Exception e) {
-					plugin().getLogger().log(Level.WARNING, "Invalid material {0} listed", mat);
+					plugin().log(Level.WARNING, "  Invalid material {0} listed", mat);
 				}
 			}
 		}

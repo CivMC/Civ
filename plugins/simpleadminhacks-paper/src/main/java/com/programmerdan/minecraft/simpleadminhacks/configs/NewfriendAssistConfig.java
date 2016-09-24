@@ -22,7 +22,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	/**
 	 * What should I send to people when I announce a newfriend?
 	 */
-	private String announceMessage = "&f%Player% is brand new!";
+	private String announceMessage;
 	/**
 	 * Who should I broadcast to?
 	 */
@@ -48,7 +48,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 
 	@Override
 	protected void wireup(ConfigurationSection config) {		
-		this.announceMessage = config.getString("announce", announceMessage);
+		this.announceMessage = config.getString("announce", "&f%Player% is brand new!");
 		
 		List<String> broadcastTo = config.getStringList("broadcast");
 		if (this.announceBroadcast == null) {
