@@ -86,6 +86,7 @@ public class FileHandler {
 					config.set(current + ".runtime", fccf.getRunningTime());
 					config.set(current + ".selectedRecipe", fccf
 							.getCurrentRecipe().getName());
+					config.set(current + ".autoSelect", fccf.isAutoSelect());
 					List <String> recipeList = new LinkedList<String>();
 					for(IRecipe rec : fccf.getRecipes()) {
 						recipeList.add(rec.getIdentifier());
@@ -245,6 +246,7 @@ public class FileHandler {
 				long breakTime = current.getLong("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				List <String> recipes = current.getStringList("recipes");
+				boolean autoSelect = current.getBoolean("autoSelect", false);
 				if (recipes == null) {
 					recipes = new LinkedList<String>();
 				}
@@ -283,6 +285,7 @@ public class FileHandler {
 						}
 					}
 				}
+				fac.setAutoSelect(autoSelect);
 				manager.addFactory(fac);
 				counter++;
 				break;

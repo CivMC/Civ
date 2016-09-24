@@ -213,9 +213,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 		.getCraftingTable())) { // crafting table interaction
 	    int rows = (fccf.getRecipes().size() / 9) + 1;
-	    if (fccf.getRecipes().size() > 53 || rows > 6) {
+	    if (fccf.getRecipes().size() > 52 || rows > 6) {
 		p.sendMessage(ChatColor.RED
-			+ "This factory has more than 53 recipes and the GUI for it can't be opened. Either complain to "
+			+ "This factory has more than 52 recipes and the GUI for it can't be opened. Either complain to "
 			+ "your admin to have them put less recipes in this factory or complain to /u/maxopoly to add "
 			+ "scrollviews to this");
 		return;
@@ -258,6 +258,19 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		recipes.put(c, recipe);
 		ci.addSlot(c);
 	    }
+	    ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
+	    ISUtils.setName(autoSelectStack, "Toggle auto select");
+	    ISUtils.addLore(autoSelectStack, ChatColor.GOLD + "Auto select will make the factory automatically select any "
+	    		+ "recipe it can run whenever you activate it.", ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
+	    Clickable autoClick = new Clickable(autoSelectStack) {
+			
+			@Override
+			public void clicked(Player arg0) {
+				arg0.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on") + " for " + fccf.getName());
+				fccf.setAutoSelect(!fccf.isAutoSelect());				
+			}
+		};
+		ci.setSlot(autoClick, (rows * 9) - 2);
 	    ItemStack menuStack = new ItemStack(Material.PAINTING);
 	    ISUtils.setName(menuStack, "Open menu");
 	    ISUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE
