@@ -51,6 +51,9 @@ public class ProductionRecipe extends InputRecipe {
 	}
 	
 	public ItemMap getGuaranteedOutput(int rank, int runs) {
+		if (modifier == null) {
+			return output.clone();
+		}
 		ItemMap adjusted = new ItemMap();
 		double factor = modifier.getFactor(rank, runs);
 		for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
@@ -102,12 +105,18 @@ public class ProductionRecipe extends InputRecipe {
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
-		ItemMap toAdd = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
-		double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
-		for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
-			double additionalChance = (((double) entry.getValue()) * factor) - toAdd.getAmount(entry.getKey());
-			if (rng.nextDouble() <= additionalChance) {
-				toAdd.addItemAmount(entry.getKey(), 1);
+		ItemMap toAdd;
+		if (getModifier() == null) {
+			toAdd = output.clone();
+		}
+		else {
+			toAdd = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
+			double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
+			for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
+				double additionalChance = (((double) entry.getValue()) * factor) - toAdd.getAmount(entry.getKey());
+				if (rng.nextDouble() <= additionalChance) {
+					toAdd.addItemAmount(entry.getKey(), 1);
+				}
 			}
 		}
 		if (toRemove.isContainedIn(i)) {

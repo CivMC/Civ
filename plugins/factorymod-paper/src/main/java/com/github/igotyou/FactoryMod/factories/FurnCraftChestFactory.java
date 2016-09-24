@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.factories;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -65,6 +66,7 @@ public class FurnCraftChestFactory extends Factory {
 		this.active = false;
 		this.runCount = new HashMap<IRecipe, Integer>();
 		this.recipeLevel = new HashMap<IRecipe, Integer>();
+		this.recipes = new ArrayList<IRecipe>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		this.autoSelect = false;
 		for (IRecipe rec : recipes) {
@@ -155,7 +157,7 @@ public class FurnCraftChestFactory extends Factory {
 					return;
 				} else {
 					if (p != null) {
-						p.sendMessage(ChatColor.GOLD + "Automatically select recipe " + autoSelected.getName());
+						p.sendMessage(ChatColor.GOLD + "Automatically selected recipe " + autoSelected.getName());
 					}
 					setRecipe(autoSelected);
 				}
