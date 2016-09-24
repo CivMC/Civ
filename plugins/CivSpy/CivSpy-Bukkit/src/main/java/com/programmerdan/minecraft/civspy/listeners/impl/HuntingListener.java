@@ -125,7 +125,7 @@ public final class HuntingListener extends ServerDataListener {
 						killerName);
 			this.record(death);
 
-			if (killerTool == null) {
+			if (killerTool != null) {
 				DataSample by = new PointDataSample("player." + (killerIsEntity ? "killed.by" : "died.by"), this.getServer(),
 						chunk.getWorld().getName(), playerUUID, chunk.getX(), chunk.getZ(), 
 						killerTool);
