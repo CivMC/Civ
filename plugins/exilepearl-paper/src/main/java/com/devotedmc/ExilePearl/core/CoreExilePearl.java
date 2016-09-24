@@ -3,7 +3,7 @@ package com.devotedmc.ExilePearl.core;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -48,8 +48,7 @@ class CoreExilePearl implements ExilePearl {
 	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
-	private LinkedBlockingQueue<PearlHolder> holders;
-	private long lastMoved;
+	private LinkedBlockingDeque<PearlHolder> holders;
 	private boolean freedOffline;
 	private double health;
 
@@ -71,8 +70,7 @@ class CoreExilePearl implements ExilePearl {
 		this.playerId = playerId;
 		this.killedBy = killedBy;
 		this.pearledOn = new Date();
-		this.holders = new LinkedBlockingQueue<PearlHolder>();
-		this.lastMoved = pearledOn.getTime();
+		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holder = holder;
 		this.holders.add(holder);
 		this.health = health;
@@ -118,6 +116,7 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public void setPearledOn(Date pearledOn) {
+		Guard.ArgumentNotNull(pearledOn, "pearledOn");
 		this.pearledOn = pearledOn;
 	}
 
@@ -139,6 +138,16 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public PearlHolder getHolder() {
 		return this.holder;
+	}
+
+
+	/**
+	 * Sets the pearl holder to a player
+	 * @param holder The new pearl holder
+	 */
+	public void setHolder(PearlHolder holder) {
+		Guard.ArgumentNotNull(holder, "holder");
+		setHolderInternal(holder);
 	}
 
 
@@ -211,6 +220,10 @@ class CoreExilePearl implements ExilePearl {
     		health = 0;
     	}
     	
+    	if (health > 100) {
+    		health = 100;
+    	}
+    	
     	this.health = health;
     	storage.pearlUpdateHealth(this);
     }
@@ -220,7 +233,7 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public Location getLocation() {
-		return this.holders.peek().getLocation();
+		return this.holders.peekLast().getLocation();
 	}
 
 
@@ -246,15 +259,6 @@ class CoreExilePearl implements ExilePearl {
 		final Vector vec = loc.toVector();
 		final String str = loc.getWorld().getName() + " " + vec.getBlockX() + " " + vec.getBlockY() + " " + vec.getBlockZ();
 		return "held by " + holder.getName() + " at " + str;
-	}
-
-
-	/**
-	 * Marks when the pearl was moved last
-	 */
-	@Override
-	public void updateLastMoved() {
-		this.lastMoved = System.currentTimeMillis();
 	}
 
 
@@ -299,6 +303,7 @@ class CoreExilePearl implements ExilePearl {
 	 * @return true if it checks out
 	 */
 	public boolean validateItemStack(ItemStack is) {
+		Guard.ArgumentNotNull(is, "is");
 
 		UUID id = PearlLoreUtil.getIDFromItemStack(is);
 		if (id != null && id.equals(this.playerId)) {
@@ -327,7 +332,7 @@ class CoreExilePearl implements ExilePearl {
 		for (final PearlHolder holder : this.holders) {
 			HolderVerifyResult reason = this.verifyHolder(holder, verifier_log);
 			if (reason.isValid()) {
-				sb.append(String.format("PP (%s, %s) passed verification for reason '%s': %s",
+				sb.append(String.format("ExilePearl (%s, %s) passed verification for reason '%s': %s",
 						playerId.toString(), this.getPlayerName(), reason.toString(), verifier_log.toString()));
 				pearlApi.log(sb.toString());
 
@@ -337,7 +342,7 @@ class CoreExilePearl implements ExilePearl {
 			}
 			verifier_log.append(", ");
 		}
-		sb.append(String.format("PP (%s, %s) failed verification for reason %s: %s",
+		sb.append(String.format("ExilePearl (%s, %s) failed verification for reason %s: %s",
 				playerId.toString(), this.getPlayerName(), failure_reason_log.toString(), verifier_log.toString()));
 
 		pearlApi.log(sb.toString());
@@ -352,13 +357,6 @@ class CoreExilePearl implements ExilePearl {
 	 * @return true if the pearl was found in a valid location
 	 */
 	private HolderVerifyResult verifyHolder(PearlHolder holder, StringBuilder feedback) {
-
-		if (System.currentTimeMillis() - this.lastMoved < 2000) {
-			// The pearl was recently moved. Due to a race condition, this exists to
-			//  prevent players from spamming /ppl to get free when a pearl is moved.
-			return HolderVerifyResult.TIME;
-		}
-
 		return holder.validate(this, feedback);
 	}
 
@@ -369,6 +367,7 @@ class CoreExilePearl implements ExilePearl {
 	 * @return The pearl item
 	 */
 	public ItemStack getItemFromInventory(Inventory inv) {
+		Guard.ArgumentNotNull(inv, "inv");
 
 		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
 			if (this.validateItemStack(item)) {

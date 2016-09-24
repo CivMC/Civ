@@ -106,11 +106,6 @@ public interface ExilePearl {
 	String getLocationDescription();
 
 	/**
-	 * Updates when the pearl was moved last
-	 */
-	void updateLastMoved();
-
-	/**
 	 * Gets whether the player was freed offline
 	 * @return true if the player was freed offline
 	 */
