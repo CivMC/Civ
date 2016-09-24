@@ -118,72 +118,92 @@ public class ChatFiller {
 	};
 
 
+    /**
+     * Trims and/or fills a string to be as close to the required length without exceeding it.
+     * If the string is trimmed, the supplied suffix is added (provided that won't exceed reqLength)
+     * @param str string to trim/fill
+     * @param reqLength required length
+     * @return the trimmed/filled string
+     */
+    public static String fillString(String str, Double reqLength, String suffix) {
+        
+        double suffixLength = calcLength(suffix);
+        char[] chars = str.toCharArray();
+        StringBuffer result = new StringBuffer();
+        StringBuffer suffixResult = new StringBuffer();
+        Double length = 0.0;
+        
+        // Cut size and add suffix if necessary
+        boolean suffixFilled = false;
+        for (int i = 0; i < chars.length; i++) {
+            
+            Double charLength = SIZE_MAP.get(chars[i]);
+            if(charLength == null) charLength = DEFAULT_LENGTH;
+            
+            if (!suffixFilled && length + charLength + suffixLength > reqLength){
+                suffixFilled = true;
+                suffixResult.append(suffix);
+            }
 
+            if(length + charLength > reqLength){
+                result = suffixResult;
+                break;
+            }
+            
+            result.append(chars[i]);
+            if (!suffixFilled){
+                suffixResult.append(chars[i]);
+            }
 
+            if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR))){
+                length += charLength;
+            }
+        }
+        
+        // Add spaces:
+        Character fillChar = ' ';
+        Double fillLength = 1.0;
+        while(true){
 
+            Double gapLength = reqLength - length;
 
-	/**
-	 * Fills a string.
-	 * 
-	 * @param str string to fill
-	 * @param reqLength required length
-	 * @return string with the given length 
-	 */
-	public static String fillString(String str, Double reqLength) {
+            // Gap filled:
+            if(gapLength <= 0) break;
 
+            // Add custom fillers: 
+            if(gapLength <= MAX_GAP){
 
-		char[] chars = str.toCharArray();
+                fillChar = findCustom(gapLength, reqLength);
+                if(fillChar != null){
+                    result.append(fillChar);
+                    fillLength = SIZE_MAP.get(fillChar);
+                }
 
-		StringBuffer result = new StringBuffer();
-		Double length = 0.0;
+                break;
 
-		// Cut size:
-		for (int i = 0; i < chars.length; i++) {
+            }
 
-			Double charLength = SIZE_MAP.get(chars[i]);
-			if(charLength == null) charLength = DEFAULT_LENGTH;
+            result.append(fillChar);
+            length += fillLength;
 
-			if(length + charLength > reqLength) break;
+        }
 
-			result.append(chars[i]);
+        return result.toString();
 
-			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
-			length += charLength;
-
-		}
-
-		// Add spaces:
-		Character fillChar = ' ';
-		Double fillLength = 1.0;
-		while(true){
-
-			Double gapLength = reqLength - length;
-
-			// Gap filled:
-			if(gapLength <= 0) break;
-
-			// Add custom fillers: 
-			if(gapLength <= MAX_GAP){
-
-				fillChar = findCustom(gapLength, reqLength);
-				if(fillChar != null){
-					result.append(fillChar);
-					fillLength = SIZE_MAP.get(fillChar);
-				}
-
-				break;
-
-			}
-
-			result.append(fillChar);
-			length += fillLength;
-
-		}
-
-		return result.toString();
-
-
-	}
+    }
+    
+    
+    /**
+     * Trims and/or fills a string to be as close to the required length without exceeding it.
+     * If the string is trimmed, no suffix is added
+     * @param str string to trim/fill
+     * @param reqLength required length
+     * @return the trimmed/filled string <= required length
+     */
+    public static String fillString(String str, Double reqLength) {
+        return fillString(str, reqLength, "");
+    }
+    
 
 	/**
 	 * Finds a custom character with the best fit.

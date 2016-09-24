@@ -34,17 +34,21 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
+import com.untamedears.JukeAlert.chat.SendSnitchList;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchAction;
 import com.untamedears.JukeAlert.tasks.GetSnitchInfoTask;
+
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  *
@@ -363,7 +367,8 @@ public class JukeAlertLogger {
             				+ " 			,s.last_semi_owner_visit_date                                                                      \n"
             				+ " 		) AS TimeLeftAliveInSeconds                                                                            \n"
             				+ " 		, s.snitch_should_log AS DoesSnitchRegisterEvents                                                      \n"
-            				+ " 		, s.snitch_group AS SnitchGroup					                                                       \n"
+            				+ " 		, s.snitch_group AS SnitchGroup					                                                              \n"
+            				+ " 		, s.snitch_name as SnitchName                                                                          \n"
             				+ " 	 FROM                                                                                                      \n"
             				+ " 		{0} s                                                                                                  \n"
             				+ " 		INNER JOIN GroupNames filter                                                                           \n"
@@ -689,55 +694,102 @@ public class JukeAlertLogger {
 
         return info;
     }
-    public synchronized List<String> getSnitchList(Player player, int offset) {
-        List<String> info = new ArrayList<String>();
+    
+    public synchronized SendSnitchList getSnitchList(Player player, int offset) {
+        
+        final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
+        final boolean showWorldColumn = plugin.getConfigManager().getMultipleWorldSupport();
+        
+        double worldColWidth = (double)0;
+        double locationColWidth = (double)26;
+        double cullColWidth = (double)10;
+        double groupColWidth = (double)22;
+        double nameColWidth = (double)20;
+        if (showWorldColumn){
+            worldColWidth = (double)10;
+            groupColWidth = (double)17;
+            nameColWidth = (double)15;
+        }
+        
+        List<TextComponent> info = new ArrayList<TextComponent>();
+        String worldName = "";
+        offset = (offset-1)*10;
 
         try {
-        	String uuidString = java.util.UUID.randomUUID().toString();
+            String uuidString = java.util.UUID.randomUUID().toString();
             UUID accountId = player.getUniqueId();
-        	List<String> groups = groupMediator.getGroupsWithPermission(accountId, PermissionType.getPermission("LIST_SNITCHES"));
-        	
-        	StringBuilder sb = new StringBuilder();
-        	for(String group : groups) {
-        		sb.append(group);
-        		sb.append(uuidString);
-        	}
-        	
-        	getSnitchListStmt.setString(1, sb.toString());
-        	getSnitchListStmt.setString(2, uuidString);
-        	getSnitchListStmt.setInt(3, offset);
-        	
+            List<String> groups = groupMediator.getGroupsWithPermission(accountId, PermissionType.getPermission("LIST_SNITCHES"));
+            
+            StringBuilder sb = new StringBuilder();
+            for(String group : groups) {
+                sb.append(group);
+                sb.append(uuidString);
+            }
+            
+            getSnitchListStmt.setString(1, sb.toString());
+            getSnitchListStmt.setString(2, uuidString);
+            getSnitchListStmt.setInt(3, offset);
+            
             ResultSet set = getSnitchListStmt.executeQuery();
             if (set.isBeforeFirst()) {
                 while (set.next()) {
-                	
-                	String snitchGroupString = set.getString("SnitchGroup");
-                	String truncatedGroupString = ChatFiller.fillString(set.getString("SnitchGroup"), 20.0);
-                	
-                	if (!snitchGroupString.trim().equals(truncatedGroupString.trim())) {
-                		truncatedGroupString = truncatedGroupString.substring(0, truncatedGroupString.length()-4) + ChatColor.GRAY +  "..." + ChatColor.WHITE;
-                	}
-                	
-                    info.add(ChatColor.WHITE
-                    		+ "  "
-                    		+ ChatFiller.fillString(set.getString("world"), 11.0) 
-                    		
-                    		+ ChatFiller.fillString("[" + set.getString("x") + " " + set.getString("y") + " " + set.getString("z") + "]", 31.0)
-                            
-                    		+ ChatFiller.fillString(
-                        			(((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1)
-                        			|| (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) ? 
-                        					 String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0))  : ""), 14.0)
-                                             
-                     		+ truncatedGroupString
-                			);
+                    String snitchWorld = set.getString("world");
+                    String snitchX = set.getString("x");
+                    String snitchY = set.getString("y");
+                    String snitchZ = set.getString("z");
+                    String snitchGroup = set.getString("SnitchGroup");
+                    String snitchName = set.getString("SnitchName");
+                    String snitchCullTime = "";
+                    String snitchLocation = "[" + snitchX + " " + snitchY + " " + snitchZ + "]";
+                    
+                    if (snitchWorld == null){
+                        snitchWorld = "";
+                    }
+                    if (worldName == null || worldName.isEmpty()){
+                        worldName = snitchWorld;
+                    }
+                    if ((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1) || 
+                            (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)){
+                        snitchCullTime = String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0));
+                    }
+                    if (snitchGroup == null){
+                        snitchGroup = "";
+                    }
+                    if (snitchName == null){
+                        snitchName = "";
+                    }
+                    if (snitchCullTime == null){
+                        snitchCullTime = "";
+                    }
+                    
+                    // Building each line like this is a little ugly to look at, but it avoids compounding position errors
+                    String currLine = ChatColor.WHITE.toString();
+                    if (showWorldColumn){
+                        currLine = ChatFiller.fillString(currLine + snitchWorld, worldColWidth, ChatColor.GRAY + "..." + ChatColor.WHITE);
+                    }
+                    currLine = ChatFiller.fillString(currLine + snitchLocation, worldColWidth + locationColWidth);
+                    currLine = ChatFiller.fillString(currLine + snitchCullTime, worldColWidth + locationColWidth + cullColWidth, truncateChars);
+                    currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth + cullColWidth + groupColWidth, truncateChars);
+                    currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth + cullColWidth + groupColWidth + nameColWidth, truncateChars);
+                    currLine += "\n";
+                    
+                    TextComponent lineText = new TextComponent(currLine);
+                    String hoverText = String.format("World: %s\nLocation: %s\nHours to cull: %s\n", snitchWorld, snitchLocation, snitchCullTime)
+                                     + String.format("Group: %s\nName: %s", snitchGroup, snitchName);
+                    lineText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+                    info.add(lineText);
                 }
             }
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + player.getDisplayName(), ex);
         }
-
-        return info;
+        
+        if (showWorldColumn == true){
+            return new SendSnitchList(info, "", player, (offset/10)+1);
+        }
+        else{
+            return new SendSnitchList(info, worldName, player, (offset/10)+1);
+        }
     }
 
     public List<String> getSnitchGroupInfo(String group, int offset) {

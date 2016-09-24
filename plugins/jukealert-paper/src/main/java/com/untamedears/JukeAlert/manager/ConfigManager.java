@@ -38,6 +38,7 @@ public class ConfigManager
     private boolean toggleRestartCheckGroup;
     private boolean displayOwnerOnBreak;
     private boolean softDelete;
+    private boolean multipleWorldSupport = false;
     
     private boolean broadcastAllServers;
 
@@ -91,6 +92,7 @@ public class ConfigManager
         toggleRestartCheckGroup = config.getBoolean("settings.togglerestartgroupcheck", false);
         displayOwnerOnBreak = config.getBoolean("settings.displayOwnerOnSnitchBreak", true);
         softDelete = config.getBoolean("settings.softDelete", true);
+        multipleWorldSupport = config.getBoolean("settings.multipleWorldSupport", false);
 
         broadcastAllServers = config.getBoolean("mercury.broadcastallservers", false);
     }
@@ -225,6 +227,10 @@ public class ConfigManager
     
     public boolean isSoftDelete() {
     	return softDelete;
+    }
+    
+    public boolean getMultipleWorldSupport() {
+        return multipleWorldSupport;
     }
     
     public boolean getToggleRestartCheckGroup(){

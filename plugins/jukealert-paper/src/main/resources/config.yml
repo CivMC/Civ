@@ -21,6 +21,7 @@ settings:
 #  max_alert_distance:  
 #  max_alert_distance_ns:
   softDelete: true
+  multipleWorldSupport: false
 entryculling:
   enabled: true
   maxcount: 200
