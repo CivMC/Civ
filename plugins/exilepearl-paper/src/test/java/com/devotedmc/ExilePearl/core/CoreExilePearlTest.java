@@ -111,6 +111,11 @@ public class CoreExilePearlTest {
 		Date now = new Date();
 		pearl.setPearledOn(now);
 		assertEquals(pearl.getPearledOn(), now);
+		
+		// Null arg throws exception
+		Throwable e = null;
+		try { pearl.setPearledOn(null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
 	}
 
 	@Test
@@ -145,6 +150,23 @@ public class CoreExilePearlTest {
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocation(), l2);
 		assertEquals(pearl.getHolder().getLocation(), l2);
+		
+		// Null arg throws exception
+		Throwable e = null;
+		try { pearl.setHolder((PearlHolder)null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { pearl.setHolder((PlayerHolder)null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { pearl.setHolder((Block)null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { pearl.setHolder((Location)null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
 	}
 
 	@Test
@@ -276,6 +298,11 @@ public class CoreExilePearlTest {
 		assertFalse(pearl.validateItemStack(is));
 		when(is.getItemMeta()).thenReturn(im);
 		assertTrue(pearl.validateItemStack(is));
+		
+		// Null arg throws exception
+		Throwable e = null;
+		try { pearl.validateItemStack(null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
 	}
 
 	@Test
@@ -295,6 +322,11 @@ public class CoreExilePearlTest {
 
 	@Test
 	public void testGetItemFromInventory() {
+		// Null arg throws exception
+		Throwable e = null;
+		try { pearl.getItemFromInventory(null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
 		PearlPlayer pPlayer = new PearlPlayer(player, "CustomName");
 		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
 		
@@ -318,6 +350,9 @@ public class CoreExilePearlTest {
 		final HashMap<Integer, ItemStack> itemMap = new HashMap<Integer, ItemStack>();
 		itemMap.put(0, is);
 		
+		// Negative test
+		assertEquals(pearl.getItemFromInventory(inv), null);
+		
 		when(inv.all(Material.ENDER_PEARL)).thenAnswer(new Answer<HashMap<Integer, ? extends ItemStack>>() {
 
 			@Override
@@ -326,6 +361,7 @@ public class CoreExilePearlTest {
 			}
 		});
 		
+		// Positive test
 		assertEquals(pearl.getItemFromInventory(inv), is);
 	}
 }
