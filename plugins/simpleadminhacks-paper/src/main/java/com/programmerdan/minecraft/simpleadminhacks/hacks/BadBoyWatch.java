@@ -64,7 +64,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		
 		String report = record.registerBreak(location, material);
 		if (report != null) {
-			plugin().log(report);
+			plugin().log(uuid.toString() + "} " + report);
 		}
 	}
 

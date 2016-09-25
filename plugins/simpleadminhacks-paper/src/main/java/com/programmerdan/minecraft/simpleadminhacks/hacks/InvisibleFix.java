@@ -51,7 +51,9 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 						for (Player online : Bukkit.getOnlinePlayers()) {
 							if (online != p) {
 								online.hidePlayer(p);
+								p.hidePlayer(online);
 								online.showPlayer(p);
+								p.showPlayer(online);
 							}
 						}
 					} finally {
@@ -60,7 +62,7 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 						}
 					}
 				}
-			}, activeJoins.getAndIncrement());
+			}, activeJoins.incrementAndGet() * 20);
 	}
 
 	@Override
