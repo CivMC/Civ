@@ -40,9 +40,15 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Smelt Glass
+    - Smelt Glass Alternative
     - Smelt Stone
+    - Smelt Sandstone
+    - Smelt Hardened Clay
+    - Smelt Red Sandstone
+    - Craft Netherrack
     - Create Sea Lantern
     - Craft Coal Blocks
+    - Smelt Bricks
     - Create Netherbrick
     - Create Quartz Blocks
     - Create Prismarine Blocks
@@ -326,6 +332,83 @@ recipes:
       buckets:
         material: BUCKET
         amount: 4
+  Smelt Bricks:
+    type: PRODUCTION
+    name: Smelt Bricks
+    production_time: 5s
+    input:
+      clayblock:
+        material: CLAY
+        amount: 32
+    output:
+      bricks:
+        material: BRICK
+        amount: 192
+  Smelt Sandstone:
+    type: PRODUCTION
+    name: Smelt Sandstone
+    production_time: 5s
+    input:
+      sand:
+        material: SAND
+        amount: 64
+    output:
+      sandstone:
+        material: SANDSTONE
+        amount: 96
+  Smelt Hardened Clay:
+    type: PRODUCTION
+    name: Smelt Hardened Clay
+    production_time: 5s
+    input:
+      clayblock:
+        material: CLAY
+        amount: 32
+    output:
+      hardenedclay:
+        material: HARD_CLAY
+        amount: 192
+  Smelt Glass Alternative:
+    type: PRODUCTION
+    name: Smelt Glass Alternative
+    production_time: 5s
+    input:
+      redsand:
+        material: SAND
+        durability: 1
+        amount: 64
+    output:
+      glass:
+        material: GLASS
+        amount: 192
+  Craft Netherrack:
+    type: PRODUCTION
+    name: Craft Netherrack
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+      netherwart:
+        material: NETHER_STALK
+        amount: 32
+    output:
+      netherrack:
+        material: NETHERRACK
+        amount: 192
+  Smelt Red Sandstone:
+    type: PRODUCTION
+    name: Smelt Red Sandstone
+    production_time: 5s
+    input:
+      redsand:
+        material: SAND
+        durability: 1
+        amount: 64
+    output:
+      redsandstone:
+        material: RED_SANDSTONE
+        amount: 96
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
