@@ -32,6 +32,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -45,11 +46,17 @@ public class CoreExilePearlTest {
 	
 	private CoreExilePearl pearl;
 	private PearlUpdateStorage storage;
+	private final String playerName = "Player";
+	private final UUID playerId = UUID.randomUUID();
 	private Player player;
+	
+	private final String killerName = "Killer";
+	private final UUID killerId = UUID.randomUUID();
 	private Player killer;
 	private PearlHolder holder;
 	
 	private ExilePearlApi pearlApi;
+	private PlayerNameProvider nameProvider;
 	
 
 	@Before
@@ -59,14 +66,27 @@ public class CoreExilePearlTest {
 		storage = mock(PearlUpdateStorage.class);
 		player = mock(Player.class);
 		when(player.getName()).thenReturn("Player");
-		when(player.getUniqueId()).thenReturn(UUID.randomUUID());
+		when(player.getUniqueId()).thenReturn(playerId);
 		killer = mock(Player.class);
 		when(killer.getName()).thenReturn("Killer");
-		when(killer.getUniqueId()).thenReturn(UUID.randomUUID());
+		when(killer.getUniqueId()).thenReturn(killerId);
+		
+		nameProvider = mock(PlayerNameProvider.class);
+		when(nameProvider.getName(player.getUniqueId())).thenReturn(playerName);
+		when(nameProvider.getName(killer.getUniqueId())).thenReturn(killerName);
+		when(nameProvider.getUniqueId(playerName)).thenReturn(playerId);
+		when(nameProvider.getUniqueId(killerName)).thenReturn(killerId);
+		
+		when(pearlApi.getPearlPlayer(playerName)).thenReturn(new CorePearlPlayer(player, nameProvider));
+		when(pearlApi.getPearlPlayer(playerId)).thenReturn(new CorePearlPlayer(player, nameProvider));
+		when(pearlApi.getPearlPlayer(killerName)).thenReturn(new CorePearlPlayer(killer, nameProvider));
+		when(pearlApi.getPearlPlayer(killerId)).thenReturn(new CorePearlPlayer(killer, nameProvider));
 		
 		holder = new PlayerHolder(killer);
 		
 		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder, 10);
+		
+		
 	}
 
 	@Test
@@ -99,11 +119,9 @@ public class CoreExilePearlTest {
 	}
 
 	@Test
-	public void testGetPlayer() {
-		PearlPlayer pPlayer = new PearlPlayer(player, player.getName());
-		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
-		
-		assertEquals(pearl.getPlayer(), pPlayer);
+	public void testGetPlayer() {		
+		assertEquals(pearl.getPlayer().getName(), player.getName());
+		assertEquals(pearl.getPlayer().getUniqueId(), player.getUniqueId());
 	}
 
 	@Test
@@ -119,18 +137,15 @@ public class CoreExilePearlTest {
 	}
 
 	@Test
-	public void testGetPlayerName() {
-		PearlPlayer pPlayer = new PearlPlayer(player, "NameLayer Name");
-		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
-		
-		assertEquals(pearl.getPlayerName(), "NameLayer Name");
+	public void testGetPlayerName() {		
+		assertEquals(pearl.getPlayerName(), player.getName());
 	}
 
 	@Test
 	public void testGetSetHolder() {
 		assertEquals(pearl.getHolder(), holder);
 
-		PearlPlayer pPlayer = new PearlPlayer(player, player.getName());
+		PearlPlayer pPlayer = new CorePearlPlayer(player, nameProvider);
 		pearl.setHolder(pPlayer);
 		assertEquals(pearl.getHolder().getName(), pPlayer.getName());
 	}
@@ -201,10 +216,7 @@ public class CoreExilePearlTest {
 
 	@Test
 	public void testGetKilledByName() {
-		PearlPlayer pPlayer = new PearlPlayer(killer, "Killer Name");
-		when(pearlApi.getPearlPlayer(killer.getUniqueId())).thenReturn(pPlayer);
-		
-		assertEquals(pearl.getKilledByName(), "Killer Name");
+		assertEquals(pearl.getKilledByName(), killerName);
 	}
 
 	@Test
@@ -236,12 +248,6 @@ public class CoreExilePearlTest {
 
 	@Test
 	public void testItemStack() {
-		PearlPlayer pPlayer = new PearlPlayer(player, "CustomName");
-		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
-		
-		PearlPlayer killerPlayer = new PearlPlayer(player, "Killer");
-		when(pearlApi.getPearlPlayer(killer.getUniqueId())).thenReturn(killerPlayer);
-		
 		new CmdExilePearl(mock(ExilePearlPlugin.class));
 		
 	    PowerMockito.mockStatic(Bukkit.class);
@@ -258,7 +264,7 @@ public class CoreExilePearlTest {
 		
 		// Now validate the item stack
 		when(im.getLore()).thenReturn(lore);
-		when(im.getDisplayName()).thenReturn(pPlayer.getName());
+		when(im.getDisplayName()).thenReturn(playerName);
 		
 		// Positive test
 		assertTrue(pearl.validateItemStack(is));
@@ -266,10 +272,10 @@ public class CoreExilePearlTest {
 		// Duplicate object
 		ExilePearl pearl2 = mock(ExilePearl.class);
 		when(pearl2.getItemName()).thenReturn(pearl.getItemName());
-		when(pearl2.getPlayerName()).thenReturn(pearl.getPlayerName());
+		when(pearl2.getPlayerName()).thenReturn(playerName);
 		when(pearl2.getUniqueId()).thenReturn(pearl.getUniqueId());
 		when(pearl2.getHealth()).thenReturn(pearl.getHealth());
-		when(pearl2.getKilledByName()).thenReturn(killerPlayer.getName());
+		when(pearl2.getKilledByName()).thenReturn(killerName);
 		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
 
 		List<String> lore2 = PearlLoreUtil.generateLore(pearl2);
@@ -310,9 +316,6 @@ public class CoreExilePearlTest {
 		PearlHolder holder = mock(PearlHolder.class);
 		when(holder.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.IN_CHEST);
 		
-		PearlPlayer pPlayer = new PearlPlayer(player, "NameLayer Name");
-		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
-		
 		pearl.setHolder(holder);
 		assertTrue(pearl.verifyLocation());
 		
@@ -327,12 +330,6 @@ public class CoreExilePearlTest {
 		try { pearl.getItemFromInventory(null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
-		PearlPlayer pPlayer = new PearlPlayer(player, "CustomName");
-		when(pearlApi.getPearlPlayer(player.getUniqueId())).thenReturn(pPlayer);
-		
-		PearlPlayer killerPlayer = new PearlPlayer(player, "Killer");
-		when(pearlApi.getPearlPlayer(killer.getUniqueId())).thenReturn(killerPlayer);
-		
 		Inventory inv = mock(Inventory.class);
 		
 		new CmdExilePearl(mock(ExilePearlPlugin.class));
@@ -344,7 +341,7 @@ public class CoreExilePearlTest {
 	    when(Bukkit.getItemFactory()).thenReturn(itemFactory);
 		List<String> lore = PearlLoreUtil.generateLore(pearl);
 		when(im.getLore()).thenReturn(lore);
-		when(im.getDisplayName()).thenReturn(pPlayer.getName());
+		when(im.getDisplayName()).thenReturn(playerName);
 		
 		ItemStack is = spy(pearl.createItemStack());
 		final HashMap<Integer, ItemStack> itemMap = new HashMap<Integer, ItemStack>();

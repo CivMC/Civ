@@ -33,7 +33,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNameProvider {
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
@@ -235,21 +235,30 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	@Override
 	public PearlPlayer getPearlPlayer(final UUID uid) {
-		Player p = Bukkit.getPlayer(uid);
-		if (p == null) {
+		Player player = Bukkit.getPlayer(uid);
+		if (player == null) {
 			return null;
 		}
 		
-		return new PearlPlayer(p, p.getName());  // TODO Namelayer
+		return pearlFactory.createPearlPlayer(player);
 	}
 	
 	@Override
 	public PearlPlayer getPearlPlayer(final String name) {
-		Player p = Bukkit.getPlayer(name);
-		if (p == null) {
-			return null;
-		}
-		
-		return new PearlPlayer(p, p.getName());  // TODO Namelayer
+		return getPearlPlayer(getUniqueId(name));
+	}
+
+	@Override
+	public String getName(UUID uid) {
+		// TODO Namelayer
+		return Bukkit.getOfflinePlayer(uid).getName();
+	}
+	
+
+	@SuppressWarnings("deprecation")
+	@Override
+	public UUID getUniqueId(String name) {
+		// TODO Namelayer
+		return Bukkit.getOfflinePlayer(name).getUniqueId();
 	}
 }

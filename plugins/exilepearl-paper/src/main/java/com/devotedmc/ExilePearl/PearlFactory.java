@@ -41,4 +41,11 @@ public interface PearlFactory {
 	 * @return The new pearl worker instance
 	 */
 	PearlWorker createPearlWorker();
+	
+	/**
+	 * Creates a new PearlPlayer instance
+	 * @param player The bukkit player instance
+	 * @return The new PearlPlayer instance
+	 */
+	PearlPlayer createPearlPlayer(Player player);
 }

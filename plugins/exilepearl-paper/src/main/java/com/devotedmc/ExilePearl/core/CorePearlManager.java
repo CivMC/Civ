@@ -237,7 +237,7 @@ class CorePearlManager implements PearlManager {
 				if (updatedHealth > 0) {
 					pearl.setHealth(updatedHealth);
 				} else {
-					pearlApi.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayer().getName());
+					pearlApi.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayerName());
 					freePearl(pearl);
 				}
 			}

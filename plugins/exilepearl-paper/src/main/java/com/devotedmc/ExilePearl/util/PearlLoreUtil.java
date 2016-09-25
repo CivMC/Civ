@@ -30,8 +30,8 @@ public class PearlLoreUtil {
 		lore.add(parse("<a>Player: <n>%s", pearl.getPlayerName()));
 		lore.add(parse(UidStringFormat, pearl.getUniqueId().toString()));
 		lore.add(parse("<a>Health: <n>%f", pearl.getHealth()));
-		lore.add(parse("<a>Imprisoned on: <n>%s", pearl.getKilledByName()));
-		lore.add(parse("<a>Killed by: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
+		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
+		lore.add(parse("<a>Killed by: <n>%s", pearl.getKilledByName()));
 		lore.add(parse(""));
 		lore.add(parse("<l>Commands:"));
 		lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));

@@ -10,6 +10,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlManager;
+import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PearlWorker;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
@@ -68,5 +69,10 @@ public class CorePearlFactory implements PearlFactory {
 	@Override
 	public PearlWorker createPearlWorker() {
 		return new CorePearlWorker(plugin, plugin.getPearlConfig());
+	}
+
+	@Override
+	public PearlPlayer createPearlPlayer(Player player) {
+		return new CorePearlPlayer(player, plugin);
 	}
 }

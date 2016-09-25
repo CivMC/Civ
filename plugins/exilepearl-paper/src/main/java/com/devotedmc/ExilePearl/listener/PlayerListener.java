@@ -467,7 +467,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			
-			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getBukkitPlayer(), killer);
+			ExilePearl pearl = pearlApi.exilePlayer(imprisoned, killer);
 			if (pearl == null) {
 				return;
 			}

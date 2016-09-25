@@ -84,14 +84,14 @@ public class CmdAdminExilePlayer extends PearlCommand {
 			}
 		}
 		
-		pearl = pearlApi.exilePlayer(player.getBukkitPlayer(), killedBy.getBukkitPlayer());
+		pearl = pearlApi.exilePlayer(player, killedBy);
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s but the operation failed.", name);
 			return;
 		}
 		
 		if (!senderIsConsole) {
-			inv = me().getBukkitPlayer().getInventory();
+			inv = me().getInventory();
 			
 			if (inv.firstEmpty() == -1) {
 				msg("<i>You need an open inventory slot to do that.");
