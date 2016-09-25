@@ -130,12 +130,12 @@ public class ItemStackToString {
 			if (meta instanceof BannerMeta) {
 				BannerMeta banner = (BannerMeta) meta;
 				toString.append('/').append("Pattern")
-						.append(':').append(banner.getBaseColor().toString());
+						.append(':').append(banner.getBaseColor());
 				if (banner.numberOfPatterns() > 0) {
 					toString.append('[');
 					for (Pattern pattern : banner.getPatterns()) {
-						toString.append(pattern.getColor().toString())
-								.append(':').append(pattern.getPattern().getIdentifier())
+						toString.append(pattern.getColor())
+								.append(':').append((pattern.getPattern() != null ? pattern.getPattern().getIdentifier() : pattern.toString()))
 								.append('|');
 					}
 					toString.deleteCharAt(toString.length() - 1);
@@ -200,9 +200,9 @@ public class ItemStackToString {
 						toString.append(effect.getType().getName())
 								.append("x").append(effect.getAmplifier())
 								.append("t").append(effect.getDuration())
-								.append("c").append(effect.getColor().toString());
+								.append("c").append(effect.getColor());
 						if (effect.isAmbient()) {
-							toString.append('/').append("Abient");
+							toString.append('/').append("Ambient");
 						} else if (effect.hasParticles()) {
 							toString.append('/').append("Particles");
 						}
@@ -440,8 +440,8 @@ public class ItemStackToString {
 		} else if (data instanceof Wool) {
 			toString.append("Wool");
 		} else {
-			toString.append(material.toString());
-			if (data.getData() != 0) {
+			toString.append(material != null ? material.toString() : "Null?");
+			if (data != null && data.getData() != 0) {
 				toString.append(":").append(data.getData());
 			}
 		}
