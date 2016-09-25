@@ -27,6 +27,7 @@ import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 /**
  * An offshoot of Civcraft's PrisonPearl plugin
@@ -250,7 +251,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 
 	@Override
 	public String getName(UUID uid) {
-		// TODO Namelayer
+		if (isNameLayerEnabled()) {
+			return NameAPI.getCurrentName(uid);
+		}
 		return Bukkit.getOfflinePlayer(uid).getName();
 	}
 	
@@ -258,7 +261,13 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	@SuppressWarnings("deprecation")
 	@Override
 	public UUID getUniqueId(String name) {
-		// TODO Namelayer
+		if (isNameLayerEnabled()) {
+			return NameAPI.getUUID(name);
+		}
 		return Bukkit.getOfflinePlayer(name).getUniqueId();
+	}
+	
+	private boolean isNameLayerEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
 	}
 }
