@@ -85,8 +85,6 @@ public class CoreExilePearlTest {
 		holder = new PlayerHolder(killer);
 		
 		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder, 10);
-		
-		
 	}
 
 	@Test
@@ -313,13 +311,41 @@ public class CoreExilePearlTest {
 
 	@Test
 	public void testVerifyLocation() {
-		PearlHolder holder = mock(PearlHolder.class);
-		when(holder.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.IN_CHEST);
+		PearlHolder holder1 = mock(PearlHolder.class);
+		when(holder1.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.IN_CHEST);
 		
-		pearl.setHolder(holder);
+		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
-		when(holder.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		pearl.setHolder(holder1);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder1);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder1);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder1);
+		assertTrue(pearl.verifyLocation());
+		
+
+		PearlHolder holder2 = mock(PearlHolder.class);
+		when(holder2.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		
+		pearl.setHolder(holder2);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder2);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder2);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder2);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder2);
 		assertFalse(pearl.verifyLocation());
 	}
 
