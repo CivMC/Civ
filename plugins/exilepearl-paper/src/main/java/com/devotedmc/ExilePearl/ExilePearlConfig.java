@@ -12,27 +12,27 @@ public class ExilePearlConfig {
 	}
 	
 	@CivConfig(name = "database.mysql.username", def = "bukkit", type = CivConfigType.String)
-	public String getUsername() {
+	public String getDbUsername() {
 		return plugin.GetConfig().get("database.mysql.username").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.password", def = "", type = CivConfigType.String)
-	public String getPassword() {
+	public String getDbPassword() {
 		return plugin.GetConfig().get("database.mysql.password").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.dbname", def = "bukkit", type = CivConfigType.String)
-	public String getDBName() {
+	public String getDbName() {
 		return plugin.GetConfig().get("database.mysql.dbname").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.host", def = "localhost", type = CivConfigType.String)
-	public String getHost() {
+	public String getDbHost() {
 		return plugin.GetConfig().get("database.mysql.host").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.port", def = "3306", type = CivConfigType.Int)
-	public int getPort() {
+	public int getDbPort() {
 		return plugin.GetConfig().get("database.mysql.port").getInt();
 	}
 	

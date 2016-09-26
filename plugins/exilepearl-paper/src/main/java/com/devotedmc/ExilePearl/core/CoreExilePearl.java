@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -51,6 +53,7 @@ class CoreExilePearl implements ExilePearl {
 	private LinkedBlockingDeque<PearlHolder> holders;
 	private boolean freedOffline;
 	private double health;
+	private boolean storageEnabled;
 
 	/**
 	 * Creates a new prison pearl instance
@@ -74,6 +77,7 @@ class CoreExilePearl implements ExilePearl {
 		this.holder = holder;
 		this.holders.add(holder);
 		this.health = health;
+		storageEnabled = false;
 	}
 
 
@@ -196,7 +200,9 @@ class CoreExilePearl implements ExilePearl {
 			holders.poll();
 		}
 
-		storage.pearlUpdateLocation(this);
+		if(storageEnabled) {
+			storage.pearlUpdateLocation(this);
+		}
 	}
 
     
@@ -225,7 +231,10 @@ class CoreExilePearl implements ExilePearl {
     	}
     	
     	this.health = health;
-    	storage.pearlUpdateHealth(this);
+    	
+		if(storageEnabled) {
+			storage.pearlUpdateHealth(this);
+		}
     }
 
 	/**
@@ -244,7 +253,13 @@ class CoreExilePearl implements ExilePearl {
 
 
 	@Override
-	public String getKilledByName() {
+	public UUID getKillerUniqueId() {
+		return killedBy;
+	}
+
+
+	@Override
+	public String getKillerName() {
 		return pearlApi.getPearlPlayer(killedBy).getName();
 	}
 
@@ -377,4 +392,43 @@ class CoreExilePearl implements ExilePearl {
 
 		return null;
 	}
+
+
+	@Override
+	public void enableStorage() {
+		storageEnabled = true;
+	}
+	
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
+            .append(playerId)
+            .append(killedBy)
+            .append(getLocation())
+            .append(health)
+            .append(pearledOn)
+            .append(freedOffline)
+            .toHashCode();
+    }
+	
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        CoreExilePearl other = (CoreExilePearl) o;
+
+		return new EqualsBuilder()
+				.append(playerId, other.playerId)
+				.append(killedBy, other.killedBy)
+				.append(getLocation(), other.getLocation())
+				.append(health, other.health)
+				.append(pearledOn, other.pearledOn)
+				.append(freedOffline, other.freedOffline)
+				.isEquals();
+    }
 }

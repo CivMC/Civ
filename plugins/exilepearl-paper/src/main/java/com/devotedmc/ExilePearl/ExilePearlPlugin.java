@@ -38,7 +38,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	
 	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
-	private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory), this);
+	private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
 	

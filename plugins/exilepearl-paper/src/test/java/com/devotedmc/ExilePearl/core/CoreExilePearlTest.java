@@ -188,7 +188,11 @@ public class CoreExilePearlTest {
 		
 		pearl.setHealth(0);
 		assertEquals(pearl.getHealth(), 0, 0);
-		verify(storage).pearlUpdateHealth(pearl);
+		verify(storage, times(0)).pearlUpdateHealth(pearl);
+		
+		pearl.enableStorage();
+		pearl.setHealth(0);
+		verify(storage, times(1)).pearlUpdateHealth(pearl);
 		
 		pearl.setHealth(-10);
 		assertEquals(pearl.getHealth(), 0, 0);
@@ -213,8 +217,13 @@ public class CoreExilePearlTest {
 	}
 
 	@Test
-	public void testGetKilledByName() {
-		assertEquals(pearl.getKilledByName(), killerName);
+	public void testGetKillerUniqueId() {
+		assertEquals(pearl.getKillerUniqueId(), killerId);
+	}
+
+	@Test
+	public void testGetKillerName() {
+		assertEquals(pearl.getKillerName(), killerName);
 	}
 
 	@Test
@@ -273,7 +282,7 @@ public class CoreExilePearlTest {
 		when(pearl2.getPlayerName()).thenReturn(playerName);
 		when(pearl2.getUniqueId()).thenReturn(pearl.getUniqueId());
 		when(pearl2.getHealth()).thenReturn(pearl.getHealth());
-		when(pearl2.getKilledByName()).thenReturn(killerName);
+		when(pearl2.getKillerName()).thenReturn(killerName);
 		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
 
 		List<String> lore2 = PearlLoreUtil.generateLore(pearl2);

@@ -33,13 +33,11 @@ public class AsyncStorageWriterTest {
 		
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new AsyncStorageWriter(null, null); } catch (Throwable ex) { e = ex; }
+		try { new AsyncStorageWriter(null, logger); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
+		e = null;
 		try { new AsyncStorageWriter(storage, null); } catch (Throwable ex) { e = ex; }
-		assertTrue(e instanceof NullArgumentException);
-
-		try { new AsyncStorageWriter(null, logger); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
@@ -128,5 +126,16 @@ public class AsyncStorageWriterTest {
 		writer.pearlUpdateHealth(pearl);
 		Thread.sleep(10); // Wait for async writer to execute
 		verify(storage).pearlUpdateHealth(pearl);
+	}
+
+	@Test
+	public void testPearlUpdateFreedOffline() throws Exception {
+		when(storage.connect()).thenReturn(true);
+		when(storage.isConnected()).thenReturn(true);
+		assertTrue(writer.connect());
+		
+		writer.pearlUpdateFreedOffline(pearl);
+		Thread.sleep(10); // Wait for async writer to execute
+		verify(storage).pearlUpdateFreedOffline(pearl);
 	}
 }

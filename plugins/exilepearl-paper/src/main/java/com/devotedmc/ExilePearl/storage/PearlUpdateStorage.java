@@ -12,7 +12,13 @@ public interface PearlUpdateStorage {
 	
 	/**
 	 * Updates the pearl health
-	 * @param strength The pearl instance to update
+	 * @param pearl The pearl instance to update
 	 */
 	void pearlUpdateHealth(ExilePearl pearl);
+	
+	/**
+	 * Updates the freed offline status
+	 * @param pearl The pearl instance to update
+	 */
+	void pearlUpdateFreedOffline(ExilePearl pearl);
 }

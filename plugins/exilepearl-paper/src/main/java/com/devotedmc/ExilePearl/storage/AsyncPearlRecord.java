@@ -16,7 +16,8 @@ class AsyncPearlRecord {
 		INSERT,
 		REMOVE,
 		UPDATE_LOCATION,
-		UPDATE_HEALTH
+		UPDATE_HEALTH,
+		UPDATE_FREED_OFFLINE
 	}
 	
 	private final ExilePearl pearl;

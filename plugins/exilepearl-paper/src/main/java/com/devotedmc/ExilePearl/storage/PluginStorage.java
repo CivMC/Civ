@@ -10,9 +10,8 @@ public interface PluginStorage extends PearlStorage {
 	
 	/**
 	 * Disconnects the storage
-	 * @return true if disconnect succeeds
 	 */
-	public boolean disconnect();
+	public void disconnect();
 	
 	/**
 	 * Gets whether the storage is connected

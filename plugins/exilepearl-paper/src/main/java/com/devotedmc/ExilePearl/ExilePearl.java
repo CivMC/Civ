@@ -94,10 +94,16 @@ public interface ExilePearl {
 	Location getLocation();
 	
 	/**
+	 * Gets the ID of the killing player
+	 * @return The ID of the killing player
+	 */
+	UUID getKillerUniqueId();
+	
+	/**
 	 * Gets the name of the killing player
 	 * @return The name of the killing player
 	 */
-	String getKilledByName();
+	String getKillerName();
 
 	/**
 	 * Gets the string describing the pearl current location
@@ -135,4 +141,9 @@ public interface ExilePearl {
 	 * @return true if validation passes
 	 */
 	boolean validateItemStack(ItemStack is);
+	
+	/**
+	 * Enables storage updates when writing values
+	 */
+	void enableStorage();
 }

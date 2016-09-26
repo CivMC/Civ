@@ -44,10 +44,10 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
-	public boolean disconnect() {
+	public void disconnect() {
 		isEnabled = false;
 		queue.add(new AsyncPearlRecord(null, WriteType.TERMINATE));
-		return storage.disconnect();
+		storage.disconnect();
 	}
 
 	@Override
@@ -93,6 +93,14 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
+	public void pearlUpdateFreedOffline(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		checkRunning();
+		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_FREED_OFFLINE));
+	}
+
+	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
 		
@@ -129,6 +137,10 @@ public class AsyncStorageWriter implements PluginStorage, Runnable {
 			
 		case UPDATE_HEALTH:
 			storage.pearlUpdateHealth(record.getPearl());
+			break;
+			
+		case UPDATE_FREED_OFFLINE:
+			storage.pearlUpdateFreedOffline(record.getPearl());
 			break;
 
 		case TERMINATE:
