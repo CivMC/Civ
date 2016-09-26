@@ -30,7 +30,6 @@ import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 /**
  * First guinea pig of conversion to ManagedDatasource.
@@ -41,7 +40,8 @@ public class GroupManagerDao {
 	private ManagedDatasource db;
 	protected NameLayerPlugin plugin = NameLayerPlugin.getInstance();
 	
-		
+	private static final String removeCycles = "delete a from subgroup a join faction_id a2 ON a.group_id = a2.group_id "
+				+ "JOIN subgroup b JOIN faction_id b2 on b.sub_group_id = b2.group_id where a2.group_name = b2.group_name;";
 	private static final String createGroup = "call createGroup(?,?,?,?)";
 	private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
 				"from faction f "
@@ -548,7 +548,12 @@ public class GroupManagerDao {
 			logger.log(Level.WARNING, "Problem preparing query to get group " + groupName, e);
 			return null;
 		}
-		Group g = new Group(name, owner, discipline, password, id);
+		Group g = null;
+		try {
+			g = new Group(name, owner, discipline, password, id);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Problem retrieving group " + groupName, e);
+		}
 		
 		// other group IDs cached via the constructor.
 		return g;
@@ -585,7 +590,13 @@ public class GroupManagerDao {
 			logger.log(Level.WARNING, "Problem preparing query to get group " + groupId, e);
 			return null;
 		}
-		Group g = new Group(name, owner, dis, password, id);
+		Group g = null;
+		try {
+			g = new Group(name, owner, dis, password, id);
+		} catch (Exception e) {
+			logger.log(Level.WARNING, "Problem retrieving group " + groupId, e);
+		}
+
 		return g;
 	}
 	
@@ -818,6 +829,7 @@ public class GroupManagerDao {
 			logger.log(Level.WARNING, "Problem adding subgroup " + subGroup
 					+ " to group " + group, e);
 		}
+		removeCycles();
 	}
 	
 	public List<Group> getSubGroups(String group){
@@ -1174,6 +1186,17 @@ public class GroupManagerDao {
 			mergeGroup.execute();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Problem merging group " + toMerge + " into " + groupName, e);
+		}
+		removeCycles();
+	}
+	
+	public void removeCycles() {
+		try (Connection connection = db.getConnection();
+				PreparedStatement removeCycles = connection.prepareStatement(GroupManagerDao.removeCycles);) {
+			int removed = removeCycles.executeUpdate();
+			logger.log(Level.INFO, "Removed {0} subgroup cycles", removed);
+		} catch (SQLException e) {
+			logger.log(Level.WARNING, "Failed to execute cycle removal code!");
 		}
 	}
 	
