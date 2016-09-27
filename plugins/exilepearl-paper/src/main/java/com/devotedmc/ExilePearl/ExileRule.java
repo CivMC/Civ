@@ -3,37 +3,44 @@ package com.devotedmc.ExilePearl;
 import com.devotedmc.ExilePearl.util.Guard;
 
 public enum ExileRule {
-	PEARL_RADIUS("PEARL_RADIUS"),
-	DAMAGE_REINFORCEMENT("DAMAGE_REINFORCEMENT"),
-	DAMAGE_BASTION("DAMAGE_BASTION"),
-	ENTER_BASTION("ENTER_BASTION"),
-	THROW_PEARL("THROW_PEARL"),
-	CHAT("CHAT"),
-	PVP("PVP"),
-	IGNITE("IGNITE"),
-	USE_BUCKET("USE_BUCKET"),
-	PLACE_WATER("PLACE_WATER"),
-	PLACE_LAVA("PLACE_LAVA"),
-	USE_POTIONS("USE_POTIONS"),
-	USE_BED("USE_BED"),
-	SUICIDE("SUICIDE"),
-	SNITCH("SNITCH"),
-	MINE("MINE"),
-	BREW("BREW"),
-	ENCHANT("ENCHANT")
+	PEARL_RADIUS("PEARL_RADIUS", "pearl radius"),
+	DAMAGE_REINFORCEMENT("DAMAGE_REINFORCEMENT", "break reinforced blocks"),
+	DAMAGE_BASTION("DAMAGE_BASTION", "break bastion blocks"),
+	ENTER_BASTION("ENTER_BASTION", "enter bastion fields"),
+	THROW_PEARL("THROW_PEARL", "throw ender pearls"),
+	CHAT("CHAT", "use local chat"),
+	PVP("PVP", "fight other players"),
+	IGNITE("IGNITE", "start fire"),
+	USE_BUCKET("USE_BUCKET", "use buckets"),
+	PLACE_WATER("PLACE_WATER", "place water"),
+	PLACE_LAVA("PLACE_LAVA", "place lava"),
+	USE_POTIONS("USE_POTIONS", "use potions"),
+	USE_BED("USE_BED", "set your bed"),
+	SUICIDE("SUICIDE", "commit suicide"),
+	SNITCH("SNITCH", "place snitches"),
+	MINE("MINE", "break blocks"),
+	BREW("BREW", "use brew potions"),
+	ENCHANT("ENCHANT", "enchant items")
 	;
 	
 	private final String text;
+	private final String actionText;
 	
-	private ExileRule(final String text) {
+	private ExileRule(final String text, final String actionText) {
 		Guard.ArgumentNotNullOrEmpty(text, "text");
+		Guard.ArgumentNotNullOrEmpty(actionText, "actionText");
 		
 		this.text = text;
+		this.actionText = actionText;
 	}
 	
 	@Override
 	public String toString() {
 		return text;
+	}
+	
+	public String getActionString() {
+		return actionText;
 	}
 	
 	public static ExileRule fromString(String text) {
