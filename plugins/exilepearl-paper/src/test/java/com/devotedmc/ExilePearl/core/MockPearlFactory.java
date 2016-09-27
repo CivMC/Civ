@@ -10,17 +10,24 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PearlWorker;
+import com.devotedmc.ExilePearl.PlayerNameProvider;
 
 public class MockPearlFactory implements PearlFactory {
+	
+	private PlayerNameProvider nameProvider;
+	
+	public MockPearlFactory(PlayerNameProvider nameProvider) {
+		this.nameProvider = nameProvider;
+	}
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location) {
-		return new MockPearl(uid, killedBy, location);
+		return new MockPearl(nameProvider, uid, killedBy, location);
 	}
 
 	@Override
 	public ExilePearl createExilePearl(UUID uid, Player killedBy, int health) {
-		ExilePearl pearl = new MockPearl(uid, killedBy.getUniqueId(), killedBy.getLocation());
+		ExilePearl pearl = new MockPearl(nameProvider, uid, killedBy.getUniqueId(), killedBy.getLocation());
 		pearl.setHealth(health);
 		return pearl;
 	}

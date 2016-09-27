@@ -11,10 +11,12 @@ import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 public class MockPearl implements ExilePearl {
 	
+	private PlayerNameProvider nameProvider;
 	private UUID playerId;
 	private UUID killedBy;
 	private Location loc;
@@ -22,7 +24,8 @@ public class MockPearl implements ExilePearl {
 	private int health;
 	private boolean freedOffline;
 	
-	public MockPearl(final UUID playerId, final UUID killedBy, Location loc) {
+	public MockPearl(final PlayerNameProvider nameProvider, final UUID playerId, final UUID killedBy, Location loc) {
+		this.nameProvider = nameProvider;
 		this.playerId = playerId;
 		this.killedBy = killedBy;
 		this.loc = loc;
@@ -57,7 +60,7 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public String getPlayerName() {
-		return null;
+		return nameProvider.getName(playerId);
 	}
 
 	@Override
@@ -132,7 +135,7 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public boolean verifyLocation() {
-		return false;
+		return true;
 	}
 
 	@Override

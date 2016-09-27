@@ -122,6 +122,8 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setPearledOn(Date pearledOn) {
 		Guard.ArgumentNotNull(pearledOn, "pearledOn");
+		checkPearlValid();
+		
 		this.pearledOn = pearledOn;
 	}
 
@@ -194,6 +196,8 @@ class CoreExilePearl implements ExilePearl {
 	 * @param holder The new holder instance
 	 */
 	private void setHolderInternal(PearlHolder holder) {
+		checkPearlValid();
+		
 		this.holder = holder;
 		this.holders.add(holder);
 
@@ -233,6 +237,8 @@ class CoreExilePearl implements ExilePearl {
      */
 	@Override
     public void setHealth(int health) {
+		checkPearlValid();
+		
     	if (health < 0) {
     		health = 0;
     	}
@@ -303,6 +309,8 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public void setFreedOffline(boolean freedOffline) {
+		checkPearlValid();
+		
 		this.freedOffline = freedOffline;
 		
 		if (storageEnabled) {
@@ -412,6 +420,15 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public void enableStorage() {
 		storageEnabled = true;
+	}
+	
+	/**
+	 * Checks to make sure the pearl being operated on is valid
+	 */
+	private void checkPearlValid() {
+		if (!pearlApi.isPlayerExiled(playerId)) {
+			throw new RuntimeException(String.format("Tried to modify exile pearl for player %s that is no longer valid.", getPlayerName()));
+		}
 	}
 	
     @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,16 +88,14 @@ class CorePearlManager implements PearlManager {
 	 */
 	@Override
 	public ExilePearl exilePlayer(final Player exiled, final Player killedBy) {
+		Guard.ArgumentNotNull(exiled, "exiled");
+		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
 		final PearlPlayer pPlayer = pearlApi.getPearlPlayer(exiled.getUniqueId());
 		final PearlPlayer pKilledBy = pearlApi.getPearlPlayer(killedBy.getUniqueId());
 		
-		if (pearls.containsKey(pPlayer.getUniqueId())) {
-			throw new RuntimeException(String.format("Tried to exile player %s, but he was already exiled.", pPlayer.getName()));
-		}
-		
 		if (isPlayerExiled(exiled)) {
-			pKilledBy.msg(Lang.pearlAlreadyPearled, exiled.getName());
+			pKilledBy.msg(Lang.pearlAlreadyPearled, pPlayer.getName());
 			return null;
 		}
 		
@@ -231,23 +230,28 @@ class CorePearlManager implements PearlManager {
 
 		final Collection<ExilePearl> pearls = getPearls();
 		final int decayAmount = config.getPearlHealthDecayAmount();
-		int numFreed = 0;
+		final HashSet<ExilePearl> pearlsToFree = new HashSet<ExilePearl>();
 
-		// Iterate through all the pearls and reduce the strength
-		// This will free any pearls that reach zero strength
+		// Iterate through all the pearls and reduce the health
 		for (ExilePearl pearl : pearls) {
-			if (pearl.verifyLocation()) {
-				
-				int updatedHealth = pearl.getHealth() - decayAmount;
-				if (updatedHealth > 0) {
-					pearl.setHealth(updatedHealth);
-				} else {
-					pearlApi.log("Freeing pearl for player %s because the strength reached 0.", pearl.getPlayerName());
-					freePearl(pearl);
-				}
+			pearl.setHealth(pearl.getHealth() - decayAmount);
+			
+			if (pearl.getHealth() == 0) {
+				pearlApi.log("Freeing pearl for player %s because the health reached 0.", pearl.getPlayerName());
+				pearlsToFree.add(pearl);
+			}
+			
+			if (!pearl.verifyLocation()) {
+				pearlApi.log("Freeing pearl for player %s because the verification failed.", pearl.getPlayerName());
+				pearlsToFree.add(pearl);
 			}
 		}
 		
-		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), numFreed);
+		// Free the pending pearls
+		for (ExilePearl pearl : pearlsToFree) {
+			freePearl(pearl);
+		}
+		
+		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());
 	}
 }
