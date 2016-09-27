@@ -3,8 +3,10 @@ package com.devotedmc.ExilePearl.storage;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Random;
 import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
@@ -33,33 +35,20 @@ public class MySqlStorageIntegrationTest {
 	private PearlFactory pearlFactory;
 	private PearlLogger logger;
 	private ExilePearlConfig config;
-	private MySqlStorage storage;
-	
-	ExilePearl pearl1;
-	ExilePearl pearl2;
-	
-	UUID p1Id = UUID.randomUUID();
-	String p1Name = "Player1";
-	UUID p2Id = UUID.randomUUID();
-	String p2Name = "Player2";
+	private MySqlStorage storage;	
+	private World world;
 
 	@Before
 	public void setUp() throws Exception {
 		
-		World world = mock(World.class);
+		world = mock(World.class);
 		when(world.getName()).thenReturn("world");
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    when(Bukkit.getWorld("world")).thenReturn(world);
 		
+	    // Mock pearl factory for generating mock pearl instances
 		pearlFactory = mock(PearlFactory.class);
-		pearl1 = mock(ExilePearl.class);
-		when(pearl1.getUniqueId()).thenReturn(UUID.randomUUID());
-		when(pearl1.getKillerUniqueId()).thenReturn(UUID.randomUUID());
-		
-		when(pearl1.getLocation()).thenReturn(new Location(world, 1, 2, 3));
-		when(pearl1.getHealth()).thenReturn(10);
-		when(pearl1.getPearledOn()).thenReturn(new Date());
 		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), any(Location.class))).thenAnswer(new Answer<ExilePearl>() {
 
 			@Override
@@ -76,12 +65,7 @@ public class MySqlStorageIntegrationTest {
 					return null;
 				}
 				
-				ExilePearl pearl = mock(ExilePearl.class);
-				when(pearl.getUniqueId()).thenReturn(playerId);
-				when(pearl.getKillerUniqueId()).thenReturn(killerId);
-				when(pearl.getLocation()).thenReturn(loc);
-				
-				return null;
+				return new MockPearl(playerId, killerId, loc);				
 			}
 		});
 		
@@ -127,13 +111,89 @@ public class MySqlStorageIntegrationTest {
 
 	@Test
 	public void testPearls() {
-		Collection<ExilePearl> pearls = storage.loadAllPearls();
-		assertEquals(pearls.size(), 0);
+		// Load initial pearl table and verify size is zero
+		Collection<ExilePearl> loadedPearls = storage.loadAllPearls();
+		assertEquals(loadedPearls.size(), 0);
 		
-		storage.pearlInsert(pearl1);
+		// Generate a bunch of pearls with a variety of values
+		ArrayList<ExilePearl> pearlsToAdd = new ArrayList<ExilePearl>();
+		Random rand = new Random(587);
+		final int numPearlsToAdd = 100;
+		for(int i = 0; i < numPearlsToAdd; i++) {
+			ExilePearl toAdd = new MockPearl(UUID.randomUUID(), UUID.randomUUID(), new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+			toAdd.setPearledOn(new Date());
+			toAdd.setHealth(rand.nextInt(100));
+			
+			if (i % 3 == 0) {
+				toAdd.setFreedOffline(true);
+			}
+			
+			pearlsToAdd.add(toAdd);
+		}
 		
-		pearls = storage.loadAllPearls();
-		assertEquals(pearls.size(), 1);		
-		assertTrue(pearls.contains(pearl1));
+		// Insert all the generated pearls to the database
+		for(ExilePearl p : pearlsToAdd) {
+			storage.pearlInsert(p);
+		}
+		
+		// Perform a load operation of all pearls and verify the size is correct
+		loadedPearls = storage.loadAllPearls();
+		assertEquals(loadedPearls.size(), numPearlsToAdd);
+		
+		// Verify that all the generated pearls exist in the loaded pearl collection
+		for(ExilePearl p : pearlsToAdd) {
+			assertTrue(loadedPearls.contains(p));
+		}
+		
+		// Now we pick a pearl to update.
+		// Verify that it exists in the collection
+		ExilePearl updatePearl = pearlsToAdd.get(0);
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+		
+		
+		// Change the health and verify that it no longer matches any loaded pearls
+		updatePearl.setHealth(updatePearl.getHealth() + 1);
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Perform the update and verify it now exists
+		storage.pearlUpdateHealth(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+
+		
+		
+		// Change the location and verify that it no longer matches any loaded pearls
+		updatePearl.setHolder(new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Perform the update and verify it now exists
+		storage.pearlUpdateLocation(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+		
+		
+		// Change the freed offline value and verify that it no longer matches any loaded pearls
+		updatePearl.setFreedOffline(!updatePearl.getFreedOffline());
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+		
+		// Perform the update and verify it now exists
+		storage.pearlUpdateFreedOffline(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
 	}
 }

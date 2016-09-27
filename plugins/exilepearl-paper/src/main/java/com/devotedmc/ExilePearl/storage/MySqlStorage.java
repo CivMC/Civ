@@ -86,7 +86,7 @@ public class MySqlStorage implements PluginStorage {
 				"y int not null," +
 				"z int not null," +
 				"health int not null," +
-				"pearled_on datetime not null default 0," +
+				"pearled_on long not null," +
 				"freed_offline bool," +
 				"PRIMARY KEY (uid));");
 
@@ -114,13 +114,13 @@ public class MySqlStorage implements PluginStorage {
 			while (resultSet.next()) {
 				try {
 					UUID playerId = UUID.fromString(resultSet.getString("uid"));
-					UUID killerId = UUID.fromString(resultSet.getString("uid"));
+					UUID killerId = UUID.fromString(resultSet.getString("killer_uid"));
 					World world = Bukkit.getWorld(resultSet.getString("world"));
 					int x = resultSet.getInt("x");
 					int y = resultSet.getInt("y");
 					int z = resultSet.getInt("z");
 					int health = resultSet.getInt("health");
-					Date pearledOn = resultSet.getDate("pearled_on");
+					Date pearledOn = new Date(resultSet.getLong("pearled_on"));
 					boolean freedOffline = resultSet.getBoolean("freed_offline");
 
 					if (world == null) {
@@ -164,13 +164,12 @@ public class MySqlStorage implements PluginStorage {
 			ps.setInt(5, l.getBlockY());
 			ps.setInt(6, l.getBlockZ());
 			ps.setInt(7, pearl.getHealth());
-			ps.setDate(8, new java.sql.Date(pearl.getPearledOn().getTime()));
+			ps.setLong(8, pearl.getPearledOn().getTime());
 			ps.setBoolean(9, pearl.getFreedOffline());
 			ps.executeUpdate();
 			
 		} catch (Exception ex) {
-			logger.log(Level.SEVERE, "Failed to insert pearl to database for player %s.", pearl.getPlayerName());
-			ex.printStackTrace();
+			logFailedPearlOperation(ex, pearl, "insert record");
 		}
 	}
 
@@ -183,8 +182,7 @@ public class MySqlStorage implements PluginStorage {
 			ps.setString(1, pearl.getUniqueId().toString());
 		}
 		catch (Exception ex) {
-			logger.log(Level.SEVERE, "Failed to delete pearl from database for player %s.", pearl.getPlayerName());
-			ex.printStackTrace();
+			logFailedPearlOperation(ex, pearl, "delete record");
 		}
 	}
 
@@ -192,24 +190,52 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlUpdateLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		
-		// TODO Auto-generated method stub
-
+		try {
+			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET world = ?, x = ?, y = ?, z = ? WHERE uid = ?");
+			
+			Location l = pearl.getLocation();
+			ps.setString(1, l.getWorld().getName());
+			ps.setInt(2, l.getBlockX());
+			ps.setInt(3, l.getBlockY());
+			ps.setInt(4, l.getBlockZ());
+			ps.setString(5, pearl.getUniqueId().toString());
+			ps.executeUpdate();
+		}
+		catch (Exception ex) {
+			logFailedPearlOperation(ex, pearl, "update 'location'");
+		}
 	}
 
 	@Override
 	public void pearlUpdateHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		
-		// TODO Auto-generated method stub
-
+		try {
+			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET health = ? WHERE uid = ?");
+			
+			ps.setInt(1, pearl.getHealth());
+			ps.setString(2, pearl.getUniqueId().toString());
+			ps.executeUpdate();
+		}
+		catch (Exception ex) {
+			logFailedPearlOperation(ex, pearl, "update 'health'");
+		}
 	}
 
 	@Override
 	public void pearlUpdateFreedOffline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		
-		// TODO Auto-generated method stub
-		
+		try {
+			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?");
+			
+			ps.setBoolean(1, pearl.getFreedOffline());
+			ps.setString(2, pearl.getUniqueId().toString());
+			ps.executeUpdate();
+		}
+		catch (Exception ex) {
+			logFailedPearlOperation(ex, pearl, "update 'freed offline'");
+		}
 	}
 
 	/**
@@ -251,5 +277,10 @@ public class MySqlStorage implements PluginStorage {
 			logger.log(Level.SEVERE, "Failed to update the plugin setting %s.", setting);
 			ex.printStackTrace();
 		}
+	}
+	
+	private void logFailedPearlOperation(Exception ex, ExilePearl pearl, String action) {
+		logger.log(Level.SEVERE, "Failed to %s for the pearl for player %s.", action, pearl.getPlayerName());
+		ex.printStackTrace();
 	}
 }
