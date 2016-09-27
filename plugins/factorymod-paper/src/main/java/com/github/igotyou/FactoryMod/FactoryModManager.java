@@ -506,7 +506,7 @@ public class FactoryModManager {
 
 	public void saveFactories() {
 		plugin.info("Attempting to save factory data");
-		fileHandler.save(factories);
+		fileHandler.save(getAllFactories());
 	}
 
 	public void loadFactories() {
@@ -594,7 +594,9 @@ public class FactoryModManager {
 	 * @return All existing factory instances
 	 */
 	public HashSet<Factory> getAllFactories() {
-		return factories;
+		synchronized (factories) {
+			return new HashSet<Factory>(factories);
+		}
 	}
 	
 	/**
