@@ -131,13 +131,22 @@ public class CoreExilePearlTest {
 	@Test
 	public void testGetSetPearledOn() {
 		Date now = new Date();
-		pearl.setPearledOn(now);
-		assertEquals(pearl.getPearledOn(), now);
 		
 		// Null arg throws exception
 		Throwable e = null;
 		try { pearl.setPearledOn(null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
+		
+		// Can't modify invalid pearl
+		e = null;
+		try { pearl.setPearledOn(now); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof RuntimeException);
+
+		// Set pearl valid
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
+		
+		pearl.setPearledOn(now);
+		assertEquals(pearl.getPearledOn(), now);
 	}
 
 	@Test
@@ -150,6 +159,15 @@ public class CoreExilePearlTest {
 		assertEquals(pearl.getHolder(), holder);
 
 		PearlPlayer pPlayer = new CorePearlPlayer(player, nameProvider);
+
+		// Can't modify invalid pearl
+		Throwable e = null;
+		try { pearl.setHolder(pPlayer); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof RuntimeException);
+
+		// Set pearl valid
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
+		
 		pearl.setHolder(pPlayer);
 		assertEquals(pearl.getHolder().getName(), pPlayer.getName());
 	}
@@ -161,6 +179,14 @@ public class CoreExilePearlTest {
 		Block b = mock(Block.class);
 		when(b.getLocation()).thenReturn(l2);
 		when(b.getType()).thenReturn(Material.CHEST);
+		
+		// Can't modify invalid pearl
+		Throwable e = null;
+		try { pearl.setHolder(l1); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof RuntimeException);
+
+		// Set pearl valid
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
 		pearl.setHolder(l1);
 		assertEquals(pearl.getLocation(), l1);
@@ -174,7 +200,7 @@ public class CoreExilePearlTest {
 		verify(storage).pearlUpdateLocation(pearl);
 		
 		// Null arg throws exception
-		Throwable e = null;
+		e = null;
 		try { pearl.setHolder((PearlHolder)null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
@@ -194,6 +220,14 @@ public class CoreExilePearlTest {
 	@Test
 	public void testGetSetHealth() {
 		assertEquals(pearl.getHealth(), 10, 0);
+		
+		// Can't modify invalid pearl
+		Throwable e = null;
+		try { pearl.setHealth(0); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof RuntimeException);
+		
+		// Set pearl valid
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
 		pearl.setHealth(0);
 		assertEquals(pearl.getHealth(), 0, 0);
@@ -248,7 +282,8 @@ public class CoreExilePearlTest {
 		Block b = mock(Block.class);
 		when(b.getLocation()).thenReturn(l);
 		when(b.getType()).thenReturn(Material.CHEST);
-		
+
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocationDescription(), "held by a chest at world 1 2 3");
 		
@@ -259,6 +294,14 @@ public class CoreExilePearlTest {
 	@Test
 	public void testGetSetFreedOffline() {
 		assertFalse(pearl.getFreedOffline());
+		
+		// Can't modify invalid pearl
+		Throwable e = null;
+		try { pearl.setFreedOffline(true); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof RuntimeException);
+
+		// Set pearl valid
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
 		pearl.setFreedOffline(true);
 		assertTrue(pearl.getFreedOffline());
@@ -344,6 +387,7 @@ public class CoreExilePearlTest {
 	public void testVerifyLocation() {
 		PearlHolder holder1 = mock(PearlHolder.class);
 		when(holder1.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.IN_CHEST);
+		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
@@ -360,7 +404,6 @@ public class CoreExilePearlTest {
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
-
 		PearlHolder holder2 = mock(PearlHolder.class);
 		when(holder2.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		

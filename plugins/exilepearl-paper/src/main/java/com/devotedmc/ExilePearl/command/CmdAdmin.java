@@ -16,6 +16,7 @@ public class CmdAdmin extends PearlCommand {
 		this.addSubCommand(new CmdAdminExilePlayer(p));
 		this.addSubCommand(new CmdAdminCheckExiled(p));
 		this.addSubCommand(new CmdAdminListExiled(p));
+		this.addSubCommand(new CmdAdminReload(p));
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;
