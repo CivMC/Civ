@@ -100,7 +100,7 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy, config.getPearlStartStrength());
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy, config.getPearlHealthStartValue());
 
 		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.NEW, killedBy);
 		Bukkit.getPluginManager().callEvent(e);
@@ -230,7 +230,7 @@ class CorePearlManager implements PearlManager {
 		long startTime = System.currentTimeMillis();
 
 		final Collection<ExilePearl> pearls = getPearls();
-		final double decayAmount = config.getPearlUpkeepAmount();
+		final int decayAmount = config.getPearlHealthDecayAmount();
 		int numFreed = 0;
 
 		// Iterate through all the pearls and reduce the strength
@@ -238,7 +238,7 @@ class CorePearlManager implements PearlManager {
 		for (ExilePearl pearl : pearls) {
 			if (pearl.verifyLocation()) {
 				
-				double updatedHealth = pearl.getHealth() - decayAmount;
+				int updatedHealth = pearl.getHealth() - decayAmount;
 				if (updatedHealth > 0) {
 					pearl.setHealth(updatedHealth);
 				} else {

@@ -16,10 +16,9 @@ public interface PearlFactory {
 	 * @param uid The prisoner UUID
 	 * @param killedBy The killing player UUID
 	 * @param location The location of the pearl
-	 * @param health The pearl health
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location, double health);
+	ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location);
 	
 	/**
 	 * Creates an exile pearl instance from a player holder
@@ -28,7 +27,7 @@ public interface PearlFactory {
 	 * @param health The pearl health
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, Player killedBy, double health);
+	ExilePearl createExilePearl(UUID uid, Player killedBy, int health);
 	
 	/**
 	 * Creates a pearl manager instance

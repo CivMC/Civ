@@ -86,33 +86,34 @@ public class CoreExilePearlTest {
 		when(pearlApi.getPearlPlayer(playerId)).thenReturn(new CorePearlPlayer(player, nameProvider));
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(new CorePearlPlayer(killer, nameProvider));
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(new CorePearlPlayer(killer, nameProvider));
+		when(pearlApi.getMaxPearlHealth()).thenReturn(100);
 		
 		holder = new PlayerHolder(killer);
 		
-		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder, 10);
+		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder);
 	}
 
 	@Test
 	public void testCoreExilePearl() {
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer), 0); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer), 0); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, null, killer.getUniqueId(), new PlayerHolder(killer), 0); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, null, killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), null, new PlayerHolder(killer), 0); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), null, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), null, 0); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
@@ -206,8 +207,8 @@ public class CoreExilePearlTest {
 		assertEquals(pearl.getHealth(), 0, 0);
 		verify(storage, times(2)).pearlUpdateHealth(pearl);
 		
-		pearl.setHealth(90.5);
-		assertEquals(pearl.getHealth(), 90.5, 0);
+		pearl.setHealth(90);
+		assertEquals(pearl.getHealth(), 90, 0);
 		verify(storage, times(3)).pearlUpdateHealth(pearl);
 		
 		pearl.setHealth(100);
@@ -216,7 +217,12 @@ public class CoreExilePearlTest {
 		
 		pearl.setHealth(110);
 		assertEquals(pearl.getHealth(), 100, 0);
+		assertEquals(pearl.getHealthPercent(), 100, 0);
 		verify(storage, times(5)).pearlUpdateHealth(pearl);
+		
+		// Health percent changes with max health value change
+		when(pearlApi.getMaxPearlHealth()).thenReturn(1000);
+		assertEquals(pearl.getHealthPercent(), 10, 0);
 	}
 
 	@Test
@@ -296,6 +302,8 @@ public class CoreExilePearlTest {
 		when(pearl2.getPlayerName()).thenReturn(playerName);
 		when(pearl2.getUniqueId()).thenReturn(pearl.getUniqueId());
 		when(pearl2.getHealth()).thenReturn(pearl.getHealth());
+		final Integer pearlHealth = pearl.getHealthPercent();
+		when(pearl2.getHealthPercent()).thenReturn(pearlHealth);
 		when(pearl2.getKillerName()).thenReturn(killerName);
 		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
 

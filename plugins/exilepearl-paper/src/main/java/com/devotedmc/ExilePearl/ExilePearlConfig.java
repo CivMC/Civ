@@ -36,24 +36,29 @@ public class ExilePearlConfig {
 		return plugin.GetConfig().get("database.mysql.port").getInt();
 	}
 	
-	@CivConfig(name = "upkeep.interval_min", def = "60" , type = CivConfigType.Int)
-	public int getPearlUpkeepIntervalMin() {
+	@CivConfig(name = "health.decay_interval_min", def = "60" , type = CivConfigType.Int)
+	public int getPearlHealthDecayIntervalMin() {
 		return plugin.GetConfig().get("upkeep.interval_min").getInt();
 	}
 	
-	@CivConfig(name = "upkeep.resource", def = "263", type = CivConfigType.Int)
-	public int getPearlUpkeepMaterial() {
-		return plugin.GetConfig().get("upkeep.resource").getInt();
-	}
-	
-	@CivConfig(name = "upkeep.amount", def = "1" , type = CivConfigType.Int)
-	public int getPearlUpkeepAmount() {
+	@CivConfig(name = "health.amount", def = "1" , type = CivConfigType.Int)
+	public int getPearlHealthDecayAmount() {
 		return plugin.GetConfig().get("upkeep.amount").getInt();
 	}
 	
-	@CivConfig(name = "upkeep.start_strength", def = "4" , type = CivConfigType.Int)
-	public int getPearlStartStrength() {
-		return plugin.GetConfig().get("upkeep.start_strength").getInt();
+	@CivConfig(name = "health.resource", def = "263", type = CivConfigType.Int)
+	public int getPearlHealthMaterial() {
+		return plugin.GetConfig().get("upkeep.resource").getInt();
+	}
+	
+	@CivConfig(name = "health.start_value", def = "4" , type = CivConfigType.Int)
+	public int getPearlHealthStartValue() {
+		return plugin.GetConfig().get("upkeep.start_value").getInt();
+	}
+	
+	@CivConfig(name = "health.max_value", def = "336" , type = CivConfigType.Int)
+	public int getPearlHealthMaxValue() {
+		return plugin.GetConfig().get("upkeep.max_value").getInt();
 	}
 	
 	@CivConfig(name = "autofree_worldborder", def = "true", type = CivConfigType.Bool)

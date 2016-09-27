@@ -22,4 +22,10 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	 * @return The player instance
 	 */
 	PearlPlayer getPearlPlayer(final String name);
+	
+	/**
+	 * Gets the max pearl health allowed
+	 * @return The max allowed pearl health
+	 */
+	int getMaxPearlHealth();
 }

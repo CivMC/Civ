@@ -58,22 +58,20 @@ public class MySqlStorageIntegrationTest {
 		when(pearl1.getKillerUniqueId()).thenReturn(UUID.randomUUID());
 		
 		when(pearl1.getLocation()).thenReturn(new Location(world, 1, 2, 3));
-		when(pearl1.getHealth()).thenReturn(10.0);
+		when(pearl1.getHealth()).thenReturn(10);
 		when(pearl1.getPearledOn()).thenReturn(new Date());
-		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), any(Location.class), anyDouble())).thenAnswer(new Answer<ExilePearl>() {
+		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), any(Location.class))).thenAnswer(new Answer<ExilePearl>() {
 
 			@Override
 			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
 				UUID playerId;
 				UUID killerId;
 				Location loc;
-				double health;
 				
 				try {
 					playerId = (UUID)invocation.getArguments()[0];
 					killerId = (UUID)invocation.getArguments()[1];
 					loc = (Location)invocation.getArguments()[2];
-					health = (double)invocation.getArguments()[3];
 				} catch(Exception ex) {
 					return null;
 				}
@@ -82,7 +80,6 @@ public class MySqlStorageIntegrationTest {
 				when(pearl.getUniqueId()).thenReturn(playerId);
 				when(pearl.getKillerUniqueId()).thenReturn(killerId);
 				when(pearl.getLocation()).thenReturn(loc);
-				when(pearl.getHealth()).thenReturn(health);
 				
 				return null;
 			}

@@ -85,7 +85,7 @@ public class MySqlStorage implements PluginStorage {
 				"x int not null," +
 				"y int not null," +
 				"z int not null," +
-				"health double not null," +
+				"health int not null," +
 				"pearled_on datetime not null default 0," +
 				"freed_offline bool," +
 				"PRIMARY KEY (uid));");
@@ -119,7 +119,7 @@ public class MySqlStorage implements PluginStorage {
 					int x = resultSet.getInt("x");
 					int y = resultSet.getInt("y");
 					int z = resultSet.getInt("z");
-					double health = resultSet.getDouble("health");
+					int health = resultSet.getInt("health");
 					Date pearledOn = resultSet.getDate("pearled_on");
 					boolean freedOffline = resultSet.getBoolean("freed_offline");
 
@@ -129,7 +129,8 @@ public class MySqlStorage implements PluginStorage {
 					}
 					Location loc = new Location(world, x, y, z);
 
-					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, loc, health);
+					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, loc);
+					pearl.setHealth(health);
 					pearl.setPearledOn(pearledOn);
 					pearl.setFreedOffline(freedOffline);
 					pearl.enableStorage();
@@ -162,7 +163,7 @@ public class MySqlStorage implements PluginStorage {
 			ps.setInt(4, l.getBlockX());
 			ps.setInt(5, l.getBlockY());
 			ps.setInt(6, l.getBlockZ());
-			ps.setDouble(7, pearl.getHealth());
+			ps.setInt(7, pearl.getHealth());
 			ps.setDate(8, new java.sql.Date(pearl.getPearledOn().getTime()));
 			ps.setBoolean(9, pearl.getFreedOffline());
 			ps.executeUpdate();

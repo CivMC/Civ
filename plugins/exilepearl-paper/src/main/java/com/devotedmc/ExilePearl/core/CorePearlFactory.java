@@ -37,7 +37,7 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location, double health) {
+	public ExilePearl createExilePearl(UUID uid, UUID killedBy, Location location) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		Guard.ArgumentNotNull(location, "location");
@@ -50,15 +50,16 @@ public class CorePearlFactory implements PearlFactory {
 			holder = new LocationHolder(location);
 		}
 
-		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy, holder, health);
+		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy, holder);
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, Player killedBy, double health) {
+	public ExilePearl createExilePearl(UUID uid, Player killedBy, int health) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
-		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), new PlayerHolder(killedBy), health);
+		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), new PlayerHolder(killedBy));
+		pearl.setHealth(health);
 		pearl.enableStorage();
 		return pearl;
 	}

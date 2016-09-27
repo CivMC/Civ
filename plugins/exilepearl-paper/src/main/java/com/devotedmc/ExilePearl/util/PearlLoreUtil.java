@@ -29,7 +29,7 @@ public class PearlLoreUtil {
 		lore.add(parse("<l>%s", pearl.getItemName()));
 		lore.add(parse("<a>Player: <n>%s", pearl.getPlayerName()));
 		lore.add(parse(UidStringFormat, pearl.getUniqueId().toString()));
-		lore.add(parse("<a>Health: <n>%f", pearl.getHealth()));
+		lore.add(parse("<a>Health: <n>%s%%", pearl.getHealthPercent().toString()));
 		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
 		lore.add(parse(""));

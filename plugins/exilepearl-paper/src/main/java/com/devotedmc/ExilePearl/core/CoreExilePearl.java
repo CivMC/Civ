@@ -34,6 +34,7 @@ import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 class CoreExilePearl implements ExilePearl {
 	private static final int HOLDER_COUNT = 5;
 	private static String ITEM_NAME = "Exile Pearl";
+	private static final int DEFAULT_HEALTH = 10;
 
 	// The player provider instance
 	private final ExilePearlApi pearlApi;
@@ -52,7 +53,7 @@ class CoreExilePearl implements ExilePearl {
 	private Date pearledOn;
 	private LinkedBlockingDeque<PearlHolder> holders;
 	private boolean freedOffline;
-	private double health;
+	private int health;
 	private boolean storageEnabled;
 
 	/**
@@ -61,7 +62,7 @@ class CoreExilePearl implements ExilePearl {
 	 * @param holder The holder instance
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final UUID killedBy, final PearlHolder holder, final double health) {
+			final UUID playerId, final UUID killedBy, final PearlHolder holder) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
@@ -76,7 +77,7 @@ class CoreExilePearl implements ExilePearl {
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holder = holder;
 		this.holders.add(holder);
-		this.health = health;
+		this.health = DEFAULT_HEALTH;
 		storageEnabled = false;
 	}
 
@@ -207,27 +208,37 @@ class CoreExilePearl implements ExilePearl {
 
     
     /**
-     * Gets the pearl seal strength
+     * Gets the pearl health value
      * @return The strength value
      */
 	@Override
-    public double getHealth() {
+    public Integer getHealthPercent() {
+		return (int)Math.round(((double)health / pearlApi.getMaxPearlHealth()) * 100);
+    }
+
+    
+    /**
+     * Gets the pearl health value
+     * @return The strength value
+     */
+	@Override
+    public int getHealth() {
     	return this.health;
     }
     
     
     /**
-     * Sets the pearl seal strength
+     * Sets the pearl heatlh value
      * @param The strength value
      */
 	@Override
-    public void setHealth(double health) {
+    public void setHealth(int health) {
     	if (health < 0) {
     		health = 0;
     	}
     	
-    	if (health > 100) {
-    		health = 100;
+    	if (health > pearlApi.getMaxPearlHealth()) {
+    		health = pearlApi.getMaxPearlHealth();
     	}
     	
     	this.health = health;

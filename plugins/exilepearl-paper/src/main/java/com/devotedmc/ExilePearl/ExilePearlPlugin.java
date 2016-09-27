@@ -233,6 +233,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	public boolean freePearl(ExilePearl pearl) {
 		return pearlManager.freePearl(pearl);
 	}
+
+	@Override
+	public int getMaxPearlHealth() {
+		return pearlConfig.getPearlHealthMaxValue();
+	}
 	
 	@Override
 	public PearlPlayer getPearlPlayer(final UUID uid) {

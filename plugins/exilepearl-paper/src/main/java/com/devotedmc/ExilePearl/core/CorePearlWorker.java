@@ -42,7 +42,7 @@ class CorePearlWorker implements PearlWorker, Runnable {
 			plugin.log(Level.WARNING, "Tried to start the pearl worker task but it was already started.");
 		}
 		
-		long tickInterval = config.getPearlUpkeepIntervalMin() * TICKS_PER_MINUTE;
+		long tickInterval = config.getPearlHealthDecayIntervalMin() * TICKS_PER_MINUTE;
 		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, tickInterval, tickInterval);
 		if (taskId == -1) {
 			enabled = true;

@@ -76,16 +76,22 @@ public interface ExilePearl {
 	void setHolder(Location l);
 
     /**
-     * Gets the pearl health from 0 to 100
+     * Gets the pearl health value
      * @return The health value
      */
-    double getHealth();
+    int getHealth();
+
+    /**
+     * Gets the pearl health percent value
+     * @return The health percent value
+     */
+    Integer getHealthPercent();
     
     /**
-     * Sets the pearl health from 0 to 100
+     * Sets the pearl health value
      * @param health The health value
      */
-    void setHealth(double health);
+    void setHealth(int health);
     
     /**
      * Gets the location of the pearl
