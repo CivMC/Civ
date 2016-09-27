@@ -293,6 +293,10 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setFreedOffline(boolean freedOffline) {
 		this.freedOffline = freedOffline;
+		
+		if (storageEnabled) {
+			storage.pearlUpdateFreedOffline(this);
+		}
 	}
 
 

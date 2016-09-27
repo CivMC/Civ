@@ -31,7 +31,7 @@ public class PlayerHolder implements PearlHolder {
 
 	@Override
 	public Location getLocation() {
-		return p.getPlayer().getLocation().add(0, -.5, 0);
+		return p.getLocation().add(0, -.5, 0);
 	}
 	
 	

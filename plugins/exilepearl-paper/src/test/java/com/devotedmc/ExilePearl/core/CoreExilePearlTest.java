@@ -62,6 +62,9 @@ public class CoreExilePearlTest {
 	@Before
 	public void setUp() throws Exception {
 		
+		World world = mock(World.class);
+		when(world.getName()).thenReturn("world");
+		
 		pearlApi = mock(ExilePearlApi.class);
 		storage = mock(PearlUpdateStorage.class);
 		player = mock(Player.class);
@@ -70,6 +73,8 @@ public class CoreExilePearlTest {
 		killer = mock(Player.class);
 		when(killer.getName()).thenReturn("Killer");
 		when(killer.getUniqueId()).thenReturn(killerId);
+		when(player.getLocation()).thenReturn(new Location(world, 0, 1, 2));
+		when(killer.getLocation()).thenReturn(new Location(world, 10, 20, 30));
 		
 		nameProvider = mock(PlayerNameProvider.class);
 		when(nameProvider.getName(player.getUniqueId())).thenReturn(playerName);
@@ -159,10 +164,13 @@ public class CoreExilePearlTest {
 		pearl.setHolder(l1);
 		assertEquals(pearl.getLocation(), l1);
 		assertEquals(pearl.getHolder().getLocation(), l1);
+		verify(storage, times(0)).pearlUpdateLocation(pearl);
+		pearl.enableStorage();
 		
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocation(), l2);
 		assertEquals(pearl.getHolder().getLocation(), l2);
+		verify(storage).pearlUpdateLocation(pearl);
 		
 		// Null arg throws exception
 		Throwable e = null;
@@ -248,6 +256,12 @@ public class CoreExilePearlTest {
 		
 		pearl.setFreedOffline(true);
 		assertTrue(pearl.getFreedOffline());
+		verify(storage, times(0)).pearlUpdateFreedOffline(pearl);
+		
+		pearl.enableStorage();
+		pearl.setFreedOffline(true);
+		assertTrue(pearl.getFreedOffline());
+		verify(storage).pearlUpdateFreedOffline(pearl);
 
 		pearl.setFreedOffline(false);
 		assertFalse(pearl.getFreedOffline());

@@ -88,7 +88,12 @@ class CorePearlManager implements PearlManager {
 	@Override
 	public ExilePearl exilePlayer(final Player exiled, final Player killedBy) {
 		
+		final PearlPlayer pPlayer = pearlApi.getPearlPlayer(exiled.getUniqueId());
 		final PearlPlayer pKilledBy = pearlApi.getPearlPlayer(killedBy.getUniqueId());
+		
+		if (pearls.containsKey(pPlayer.getUniqueId())) {
+			throw new RuntimeException(String.format("Tried to exile player %s, but he was already exiled.", pPlayer.getName()));
+		}
 		
 		if (isPlayerExiled(exiled)) {
 			pKilledBy.msg(Lang.pearlAlreadyPearled, exiled.getName());
