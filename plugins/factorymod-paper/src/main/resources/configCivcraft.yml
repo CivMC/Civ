@@ -5652,7 +5652,7 @@ recipes:
     name: Extract Aether
     type: PYLON
     production_time: 4h
-    fuel_consumption_intervall: 6m
+    fuel_consumption_intervall: 24m
     input:
     output:
       aether:
@@ -5667,7 +5667,7 @@ recipes:
   Pylon_Advanced:
     name: Extract Aether
     type: PYLON
-    fuel_consumption_intervall: 6m
+    fuel_consumption_intervall: 24m
     production_time: 2h
     input:
     output:
@@ -5683,7 +5683,7 @@ recipes:
   Pylon_Expert:
     name: Extract Aether
     type: PYLON
-    fuel_consumption_intervall: 6m
+    fuel_consumption_intervall: 24m
     production_time: 2h
     input:
     output:
@@ -7140,7 +7140,7 @@ recipes:
          - Compacted Item
       junglesaplings:
         material: SAPLING
-        amount: 2
+        amount: 1
         durability: 3
         lore:
          - Compacted Item
@@ -7157,12 +7157,15 @@ recipes:
 #      chicken:
 #        material: RAW_CHICKEN
 #        amount: 160
-      inksacs:
-        material: INK_SACK
-        amount: 64
-      apples:
-        material: APPLE
-        amount: 32
+      vines:
+        material: VINE
+        amount: 6
+        lore:
+         - Compacted Item
+      fish:
+        material: RAW_FISH
+        amount: 15
+        durability: 1
       aether:
         material: GOLD_NUGGET
         amount: 120
@@ -7194,7 +7197,7 @@ recipes:
          - Compacted Item
       darkoaksaplings:
         material: SAPLING
-        amount: 32
+        amount: 16
         durability: 5
       cactus:
         material: CACTUS
@@ -7210,13 +7213,13 @@ recipes:
 #      beef:
 #        material: RAW_BEEF
 #        amount: 160
-      clownfish:
+      pufferfish:
         material: RAW_FISH
         amount: 3
         durability: 3
-      eggs:
-        material: EGG
-        amount: 8
+      vines:
+        material: VINE
+        amount: 6
         lore:
          - Compacted Item
       aether:
@@ -7250,7 +7253,7 @@ recipes:
          - Compacted Item
       oaksaplings:
         material: SAPLING
-        amount: 2
+        amount: 1
         durability: 0
         lore:
          - Compacted Item
@@ -7269,7 +7272,7 @@ recipes:
 #        amount: 160
       salmon:
         material: RAW_FISH
-        amount: 19
+        amount: 5
         durability: 1
       vines:
         material: VINE
