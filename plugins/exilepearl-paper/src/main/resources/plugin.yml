@@ -2,6 +2,6 @@ name: ${name}
 version: ${version}
 main: ${groupId}.${name}.${name}Plugin
 depend: [CivModCore]
-softdepend: [NameLayer, WorldBorder, CombatTagPlus, CBanManagement]
+softdepend: [NameLayer, CombatTagPlus]
 commands:
   ep:
