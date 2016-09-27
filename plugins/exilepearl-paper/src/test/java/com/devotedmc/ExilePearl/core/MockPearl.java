@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.storage;
+package com.devotedmc.ExilePearl.core;
 
 import java.util.Date;
 import java.util.UUID;

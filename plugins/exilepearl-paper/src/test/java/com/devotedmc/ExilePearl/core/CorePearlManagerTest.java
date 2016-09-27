@@ -68,8 +68,7 @@ public class CorePearlManagerTest {
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pPlayer);
 		
-		pearlFactory = mock(PearlFactory.class);
-		
+		pearlFactory = new MockPearlFactory();
 		
 		storage = mock(PearlStorage.class);
 		config = mock(ExilePearlConfig.class);

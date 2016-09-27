@@ -17,8 +17,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -27,6 +25,8 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.core.MockPearl;
+import com.devotedmc.ExilePearl.core.MockPearlFactory;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Bukkit.class)
@@ -48,26 +48,7 @@ public class MySqlStorageIntegrationTest {
 	    when(Bukkit.getWorld("world")).thenReturn(world);
 		
 	    // Mock pearl factory for generating mock pearl instances
-		pearlFactory = mock(PearlFactory.class);
-		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), any(Location.class))).thenAnswer(new Answer<ExilePearl>() {
-
-			@Override
-			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
-				UUID playerId;
-				UUID killerId;
-				Location loc;
-				
-				try {
-					playerId = (UUID)invocation.getArguments()[0];
-					killerId = (UUID)invocation.getArguments()[1];
-					loc = (Location)invocation.getArguments()[2];
-				} catch(Exception ex) {
-					return null;
-				}
-				
-				return new MockPearl(playerId, killerId, loc);				
-			}
-		});
+		pearlFactory = new MockPearlFactory();
 		
 		logger = mock(PearlLogger.class);
 		
