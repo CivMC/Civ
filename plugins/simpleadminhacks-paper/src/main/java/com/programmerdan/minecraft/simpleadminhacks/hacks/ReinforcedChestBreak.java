@@ -52,7 +52,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
         manager = Citadel.getReinforcementManager();
         messenger = new Messenger();
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin(), messenger, 0, config.getDelay() * 20);
+        Bukkit.getScheduler().runTaskTimer(plugin(), messenger, 0, config.getDelay() * 20);
     }
 
     @Override
@@ -67,7 +67,6 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     @Override
     public String status() {
         return "Delay: " + config.getDelay() +
-                ", next execution: " + messenger.getNextExecutionTime() +
                 ", next message to be send: " + lastMessage;
     }
 
@@ -91,12 +90,12 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     }
 
     /**
-     * build message
+     * Builds the message
      * @param name the player name
      * @param x block x
      * @param y block y
      * @param z block z
-     * @return
+     * @return returns the builded String
      */
     private String setVars(String name, String x, String y, String z)
     {
@@ -115,11 +114,6 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
             {
                 Bukkit.getPlayer(uuid).sendMessage(lastMessage);
             }
-        }
-
-        public int getNextExecutionTime()
-        {
-            return this.getNextExecutionTime();
         }
     }
 }
