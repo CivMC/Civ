@@ -67,7 +67,29 @@ factories:
     - Iron Obsidian
     - Iron Door
     - City Bastion
-    - Upgrade to Second Vault Factory
+    - Upgrade to Second Vault Factory Part 1
+    - Accident Repair
+  Vault_Factory_2_Part_1:
+    type: FCCUPGRADE
+    name: Vault Factory 2 Part 1
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Iron Door
+    - City Bastion
+    - Upgrade to Second Vault Factory Part 2
+    - Accident Repair
+  Vault_Factory_2_Part_2:
+    type: FCCUPGRADE
+    name: Vault Factory 2 Part 2
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Iron Door
+    - City Bastion
+    - Upgrade to Second Vault Factory Final
     - Accident Repair
   Vault_Factory_2:
     type: FCCUPGRADE
@@ -82,7 +104,82 @@ factories:
     - Diamond Chest
     - Diamond Spike
     - City Bastion
-    - Upgrade to Third Vault Factory
+    - Upgrade to Third Vault Factory Part 1
+    - Accident Repair
+  Vault_Factory_3_Part_1:
+    type: FCCUPGRADE
+    name: Vault Factory 3 Part 1
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory Part 2
+    - Accident Repair
+  Vault_Factory_3_Part_2:
+    type: FCCUPGRADE
+    name: Vault Factory 3 Part 2
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory Part 3
+    - Accident Repair
+  Vault_Factory_3_Part_3:
+    type: FCCUPGRADE
+    name: Vault Factory 3 Part 3
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory Part 4
+    - Accident Repair
+  Vault_Factory_3_Part_4:
+    type: FCCUPGRADE
+    name: Vault Factory 3 Part 4
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory Part 5
+    - Accident Repair
+  Vault_Factory_3_Part_5:
+    type: FCCUPGRADE
+    name: Vault Factory 3 Part 5
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - Iron Obsidian
+    - Diamond Obsidian
+    - Iron Door
+    - Diamond Door
+    - Diamond Chest
+    - Diamond Spike
+    - City Bastion
+    - Upgrade to Third Vault Factory Final
     - Accident Repair
   Vault_Factory_3:
     type: FCCUPGRADE
@@ -110,7 +207,25 @@ factories:
     recipes:
     - Unbreaking IV Book
     - Efficiency VI Pickaxe
-    - Upgrade to Second Pickaxe Factory
+    - Upgrade to Second Pickaxe Factory Part 1
+    - Accident Repair
+  Pickaxe_Factory_2_Part_1:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 2 Part 1
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Efficiency VI Pickaxe
+    - Upgrade to Second Pickaxe Factory Part 2
+    - Accident Repair
+  Pickaxe_Factory_2_Part_2:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 2 Part 2
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Efficiency VI Pickaxe
+    - Upgrade to Second Pickaxe Factory Final
     - Accident Repair
   Pickaxe_Factory_2:
     type: FCCUPGRADE
@@ -121,7 +236,62 @@ factories:
     - Unbreaking V Book
     - Efficiency VI Pickaxe
     - Efficiency VII Pickaxe
-    - Upgrade to Third Pickaxe Factory
+    - Upgrade to Third Pickaxe Factory Part 1
+    - Accident Repair
+  Pickaxe_Factory_3_Part_1:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3 Part 1
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory Part 2
+    - Accident Repair
+  Pickaxe_Factory_3_Part_2:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3 Part 2
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory Part 3
+    - Accident Repair
+  Pickaxe_Factory_3_Part_3:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3 Part 3
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory Part 4
+    - Accident Repair
+  Pickaxe_Factory_3_Part_4:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3 Part 4
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory Part 5
+    - Accident Repair
+  Pickaxe_Factory_3_Part_5:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3 Part 5
+    citadelBreakReduction: 1.0
+    recipes:
+    - Unbreaking IV Book
+    - Unbreaking V Book
+    - Efficiency VI Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Third Pickaxe Factory Final
     - Accident Repair
   Pickaxe_Factory_3:
     type: FCCUPGRADE
@@ -493,7 +663,7 @@ recipes:
     output:
       Iron_Obsidian:
         material: IRON_INGOT
-        amount: 16
+        amount: 4
         lore:
         - Iron Reinforced Obsidian
   Diamond Obsidian:
@@ -547,7 +717,7 @@ recipes:
     output:
       Diamond_Obsidian:
         material: DIAMOND
-        amount: 128
+        amount: 32
         lore:
         - Diamond Reinforced Obsidian
   Emerald Obsidian:
@@ -645,7 +815,7 @@ recipes:
     output:
       Emerald_Obsidian:
         material: EMERALD
-        amount: 256
+        amount: 64
         lore:
         - Emerald Reinforced Obsidian
   Iron Door:
@@ -699,7 +869,7 @@ recipes:
     output:
       Iron_Door:
         material: IRON_INGOT
-        amount: 8
+        amount: 4
         lore:
         - Iron Reinforced Door
   Diamond Door:
@@ -753,7 +923,7 @@ recipes:
     output:
       Diamond_Door:
         material: DIAMOND
-        amount: 32
+        amount: 16
         lore:
         - Diamond Reinforced Door
   Emerald Door:
@@ -1068,94 +1238,94 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 496
+        amount: 256
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 496
+        amount: 256
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 256
+        amount: 128
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 256
+        amount: 128
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 256
+        amount: 128
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 256
+        amount: 128
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 256
+        amount: 128
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
         name: Ghast Heart
-        amount: 256
+        amount: 128
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
         name: Slimy Heart
-        amount: 256
+        amount: 128
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
         name: Burnt Heart
-        amount: 256
+        amount: 128
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
         name: Sulfur Heart
-        amount: 256
+        amount: 128
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
         name: Bone Heart
         durability: 15
-        amount: 256
+        amount: 128
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
         name: Magma Heart
-        amount: 256
+        amount: 128
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
         name: Rotten Heart
         durability: 3
-        amount: 256
+        amount: 128
         lore:
         - Rotten Heart T3
     output:
       Emerald_Spike:
         material: EMERALD
-        amount: 16
+        amount: 8
         lore:
         - Emerald Reinforced Obsidian Spike
   Create Claims Bastion:
@@ -1239,95 +1409,95 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 496
+        amount: 256
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 496
+        amount: 256
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 256
+        amount: 128
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 256
+        amount: 128
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 256
+        amount: 128
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 256
+        amount: 128
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 256
+        amount: 128
         lore:
         - Uranium T3
       ghastheart:
         material: FIREWORK_CHARGE
         name: Ghast Heart
-        amount: 256
+        amount: 128
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
         name: Slimy Heart
-        amount: 256
+        amount: 128
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
         name: Burnt Heart
-        amount: 256
+        amount: 128
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
         name: Sulfur Heart
-        amount: 256
+        amount: 128
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
         name: Bone Heart
         durability: 15
-        amount: 256
+        amount: 128
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
         name: Magma Heart
-        amount: 256
+        amount: 128
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
         name: Rotten Heart
         durability: 3
-        amount: 256
+        amount: 128
         lore:
         - Rotten Heart T3
     output:
       sponge:
         material: SPONGE
         name: Vault Bastion
-        amount: 32
+        amount: 16
         lore:
         - Vault Bastion
   Unbreaking IV Book:
@@ -1391,49 +1561,48 @@ recipes:
     name: Unbreaking V Book
     production_time: 5s
     input:
-      ghasteye:
-        material: SPIDER_EYE
-        name: Ghast Eye
+      ghastfireball:
+        material: FIREBALL
+        name: Ghast Fireball
         amount: 256
         lore:
-        - Ghast Eye T1
-      cocoon:
-        material: SNOW_BALL
-        name: Cocoon
+        - Ghast Fireball T2
+      spiderfang:
+        material: TRIPWIRE_HOOK
+        name: Spider Fang
         amount: 256
         lore:
-        - Cocoon T1
-      blazeember:
-        material: SULPHUR
-        name: Blaze Ember
+        - Spider Fang T2
+      blazefireball:
+        material: BLAZE_POWDER
+        name: Blaze Fireball
         amount: 256
         lore:
-        - Blaze Ember T1
-      creeperblood:
-        material: CARPET
-        name: Creeper Blood
-        durability: 14
+        - Blaze Fireball T2
+      creeperleg:
+        material: CACTUS
+        name: Creeper Leg
         amount: 256
         lore:
-        - Creeper Blood T1
-      ribcage:
-        material: BONE_BLOCK
-        name: Ribcage
+        - Creeper Leg T2
+      femur:
+        material: QUARTZ_BLOCK
+        name: Femur
         amount: 256
         lore:
-        - Ribcage T1
-      magmaegg:
-        material: MAGMA
-        name: Magma Egg
+        - Femur T2
+      magmaeye:
+        material: RED_MUSHROOM
+        name: Magma Eye
         amount: 256
         lore:
-        - Magma Egg T1
-      zombietooth:
-        material: FEATHER
-        name: Zombie's Tooth
+        - Magma Eye T2
+      zombieleg:
+        material: END_ROD
+        name: Zombie Leg
         amount: 256
         lore:
-        - Zombie's Tooth T1
+        - Zombie's Leg T2
     output:
       Unbreaking_V_Book:
         material: ENCHANTED_BOOK
@@ -1606,49 +1775,48 @@ recipes:
     name: Efficiency VII Pickaxe
     production_time: 5s
     input:
-      ghasteye:
-        material: SPIDER_EYE
-        name: Ghast Eye
+      ghastfireball:
+        material: FIREBALL
+        name: Ghast Fireball
         amount: 256
         lore:
-        - Ghast Eye T1
-      cocoon:
-        material: SNOW_BALL
-        name: Cocoon
+        - Ghast Fireball T2
+      spiderfang:
+        material: TRIPWIRE_HOOK
+        name: Spider Fang
         amount: 256
         lore:
-        - Cocoon T1
-      blazeember:
-        material: SULPHUR
-        name: Blaze Ember
+        - Spider Fang T2
+      blazefireball:
+        material: BLAZE_POWDER
+        name: Blaze Fireball
         amount: 256
         lore:
-        - Blaze Ember T1
-      creeperblood:
-        material: CARPET
-        name: Creeper Blood
-        durability: 14
+        - Blaze Fireball T2
+      creeperleg:
+        material: CACTUS
+        name: Creeper Leg
         amount: 256
         lore:
-        - Creeper Blood T1
-      ribcage:
-        material: BONE_BLOCK
-        name: Ribcage
+        - Creeper Leg T2
+      femur:
+        material: QUARTZ_BLOCK
+        name: Femur
         amount: 256
         lore:
-        - Ribcage T1
-      magmaegg:
-        material: MAGMA
-        name: Magma Egg
+        - Femur T2
+      magmaeye:
+        material: RED_MUSHROOM
+        name: Magma Eye
         amount: 256
         lore:
-        - Magma Egg T1
-      zombietooth:
-        material: FEATHER
-        name: Zombie's Tooth
+        - Magma Eye T2
+      zombieleg:
+        material: END_ROD
+        name: Zombie Leg
         amount: 256
         lore:
-        - Zombie's Tooth T1
+        - Zombie's Leg T2
     output:
       diamondpick:
         material: DIAMOND_PICKAXE
@@ -1856,14 +2024,13 @@ recipes:
         lore:
         - Rotten Heart T3
     output:
-      diamondaxe:
-        material: DIAMOND_AXE
+      goldaxe:
+        material: GOLD_AXE
         amount: 1
-        durability: 1511
         enchants:
           Efficiency:
             enchant: DIG_SPEED
-            level: 8
+            level: 6
         nbt:
           RepairCost: 5000
   Brew Strength II Extra Ext:
@@ -1985,7 +2152,7 @@ recipes:
       lead:
         material: COAL
         name: Lead
-        amount: 784
+        amount: 768
         lore:
         - Lead T1
       steel:
@@ -2026,101 +2193,444 @@ recipes:
         lore:
         - Mercury T1
     factory: Vault Factory 1
-  Upgrade to Second Vault Factory:
-    name: Upgrade to Second Vault Factory
+  Upgrade to Second Vault Factory Part 1:
+    name: Upgrade to Second Vault Factory Part 1
     production_time: 10s
     type: UPGRADE
     input:
       nickel:
         material: COAL
         name: Nickel
-        amount: 1536
+        amount: 1024
         lore:
         - Nickel T2
       aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 1024
+        amount: 680
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
-        amount: 512
+        amount: 340
         durability: 8
         lore:
         - Pewter T2
       pearl:
         material: EYE_OF_ENDER
         name: Pearl
-        amount: 512
+        amount: 340
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 512
+        amount: 340
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 512
+        amount: 340
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 512
+        amount: 340
+        lore:
+        - Enderite T2
+    factory: Vault Factory 2 Part 1
+  Upgrade to Second Vault Factory Part 2:
+    name: Upgrade to Second Vault Factory Part 2
+    production_time: 10s
+    type: UPGRADE
+    input:
+      nickel:
+        material: COAL
+        name: Nickel
+        amount: 1024
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        name: Aluminum
+        amount: 680
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        name: Pewter
+        amount: 340
+        durability: 8
+        lore:
+        - Pewter T2
+      pearl:
+        material: EYE_OF_ENDER
+        name: Pearl
+        amount: 340
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 340
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        name: Platinum
+        amount: 340
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        name: Enderite
+        amount: 340
+        lore:
+        - Enderite T2
+    factory: Vault Factory 2 Part 2
+  Upgrade to Second Vault Factory Final:
+    name: Upgrade to Second Vault Factory Final
+    production_time: 10s
+    type: UPGRADE
+    input:
+      nickel:
+        material: COAL
+        name: Nickel
+        amount: 1024
+        lore:
+        - Nickel T2
+      aluminum:
+        material: IRON_INGOT
+        name: Aluminum
+        amount: 688
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        name: Pewter
+        amount: 344
+        durability: 8
+        lore:
+        - Pewter T2
+      pearl:
+        material: EYE_OF_ENDER
+        name: Pearl
+        amount: 344
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 344
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        name: Platinum
+        amount: 344
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        name: Enderite
+        amount: 344
         lore:
         - Enderite T2
     factory: Vault Factory 2
-  Upgrade to Third Vault Factory:
-    name: Upgrade to Third Vault Factory
+  Upgrade to Third Vault Factory Part 1:
+    name: Upgrade to Third Vault Factory Part 1
     production_time: 10s
     type: UPGRADE
     input:
       oil:
         material: COAL
         name: Oil
-        amount: 1536
+        amount: 512
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 1024
+        amount: 340
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 512
+        amount: 170
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 512
+        amount: 170
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 512
+        amount: 170
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 512
+        amount: 170
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
+        amount: 170
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3 Part 1
+  Upgrade to Third Vault Factory Part 2:
+    name: Upgrade to Third Vault Factory Part 2
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
         amount: 512
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 340
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 170
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 170
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 170
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 170
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 170
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3 Part 2
+  Upgrade to Third Vault Factory Part 3:
+    name: Upgrade to Third Vault Factory Part 3
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 512
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 340
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 170
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 170
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 170
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 170
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 170
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3 Part 3
+  Upgrade to Third Vault Factory Part 4:
+    name: Upgrade to Third Vault Factory Part 4
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 512
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 340
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 170
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 170
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 170
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 170
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 170
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3 Part 4
+  Upgrade to Third Vault Factory Part 5:
+    name: Upgrade to Third Vault Factory Part 5
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 512
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 340
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 170
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 170
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 170
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 170
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 170
+        lore:
+        - Uranium T3
+    factory: Vault Factory 3 Part 5
+  Upgrade to Third Vault Factory Final:
+    name: Upgrade to Third Vault Factory Final
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 512
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 348
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 174
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 174
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 174
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 174
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 174
         lore:
         - Uranium T3
     factory: Vault Factory 3
@@ -2138,7 +2648,7 @@ recipes:
       cocoon:
         material: SNOW_BALL
         name: Cocoon
-        amount: 512
+        amount: 256
         lore:
         - Cocoon T1
       blazeember:
@@ -2173,101 +2683,447 @@ recipes:
         lore:
         - Zombie's Tooth T1
     factory: Pickaxe Factory 1
-  Upgrade to Second Pickaxe Factory:
-    name: Upgrade to Second Pickaxe Factory
+  Upgrade to Second Pickaxe Factory Part 1:
+    name: Upgrade to Second Pickaxe Factory Part 1
     production_time: 10s
     type: UPGRADE
     input:
       ghastfireball:
         material: FIREBALL
         name: Ghast Fireball
-        amount: 1024
+        amount: 340
         lore:
         - Ghast Fireball T2
       spiderfang:
         material: TRIPWIRE_HOOK
         name: Spider Fang
-        amount: 1024
+        amount: 340
         lore:
         - Spider Fang T2
       blazefireball:
         material: BLAZE_POWDER
         name: Blaze Fireball
-        amount: 1024
+        amount: 340
         lore:
         - Blaze Fireball T2
       creeperleg:
         material: CACTUS
         name: Creeper Leg
-        amount: 1024
+        amount: 340
         lore:
         - Creeper Leg T2
       femur:
         material: QUARTZ_BLOCK
         name: Femur
-        amount: 1024
+        amount: 340
         lore:
         - Femur T2
       magmaeye:
         material: RED_MUSHROOM
         name: Magma Eye
-        amount: 1024
+        amount: 340
         lore:
         - Magma Eye T2
       zombieleg:
         material: END_ROD
         name: Zombie Leg
-        amount: 1024
+        amount: 340
+        lore:
+        - Zombie Leg T2
+    factory: Pickaxe Factory 2 Part 1
+  Upgrade to Second Pickaxe Factory Part 2:
+    name: Upgrade to Second Pickaxe Factory Part 2
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastfireball:
+        material: FIREBALL
+        name: Ghast Fireball
+        amount: 340
+        lore:
+        - Ghast Fireball T2
+      spiderfang:
+        material: TRIPWIRE_HOOK
+        name: Spider Fang
+        amount: 340
+        lore:
+        - Spider Fang T2
+      blazefireball:
+        material: BLAZE_POWDER
+        name: Blaze Fireball
+        amount: 340
+        lore:
+        - Blaze Fireball T2
+      creeperleg:
+        material: CACTUS
+        name: Creeper Leg
+        amount: 340
+        lore:
+        - Creeper Leg T2
+      femur:
+        material: QUARTZ_BLOCK
+        name: Femur
+        amount: 340
+        lore:
+        - Femur T2
+      magmaeye:
+        material: RED_MUSHROOM
+        name: Magma Eye
+        amount: 340
+        lore:
+        - Magma Eye T2
+      zombieleg:
+        material: END_ROD
+        name: Zombie Leg
+        amount: 340
+        lore:
+        - Zombie Leg T2
+    factory: Pickaxe Factory 2 Part 2
+  Upgrade to Second Pickaxe Factory Final:
+    name: Upgrade to Second Pickaxe Factory Final
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastfireball:
+        material: FIREBALL
+        name: Ghast Fireball
+        amount: 344
+        lore:
+        - Ghast Fireball T2
+      spiderfang:
+        material: TRIPWIRE_HOOK
+        name: Spider Fang
+        amount: 344
+        lore:
+        - Spider Fang T2
+      blazefireball:
+        material: BLAZE_POWDER
+        name: Blaze Fireball
+        amount: 344
+        lore:
+        - Blaze Fireball T2
+      creeperleg:
+        material: CACTUS
+        name: Creeper Leg
+        amount: 344
+        lore:
+        - Creeper Leg T2
+      femur:
+        material: QUARTZ_BLOCK
+        name: Femur
+        amount: 344
+        lore:
+        - Femur T2
+      magmaeye:
+        material: RED_MUSHROOM
+        name: Magma Eye
+        amount: 344
+        lore:
+        - Magma Eye T2
+      zombieleg:
+        material: END_ROD
+        name: Zombie Leg
+        amount: 344
         lore:
         - Zombie Leg T2
     factory: Pickaxe Factory 2
-  Upgrade to Third Pickaxe Factory:
-    name: Upgrade to Third Pickaxe Factory
+  Upgrade to Third Pickaxe Factory Part 1:
+    name: Upgrade to Third Pickaxe Factory Part 1
     production_time: 10s
     type: UPGRADE
     input:
       ghastheart:
         material: FIREWORK_CHARGE
         name: Ghast Heart
-        amount: 2048
+        amount: 340
         lore:
         - Ghast Heart T3
       slimyheart:
         material: FERMENTED_SPIDER_EYE
         name: Slimy Heart
-        amount: 2048
+        amount: 340
         lore:
         - Slimy Heart T3
       burntheart:
         material: COAL
         name: Burnt Heart
-        amount: 2048
+        amount: 340
         lore:
         - Burnt Heart T3
       sulfurheart:
         material: STONE
         name: Sulfur Heart
-        amount: 2048
+        amount: 340
         lore:
         - Sulfur Heart T3
       boneheart:
         material: INK_SACK
         name: Bone Heart
         durability: 15
-        amount: 2048
+        amount: 340
         lore:
         - Bone Heart T3
       magmaheart:
         material: REDSTONE_TORCH_ON
         name: Magma Heart
-        amount: 2048
+        amount: 340
         lore:
         - Magma Heart T3
       rottenheart:
         material: INK_SACK
         name: Rotten Heart
         durability: 3
-        amount: 2048
+        amount: 340
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3 Part 1
+  Upgrade to Third Pickaxe Factory Part 2:
+    name: Upgrade to Third Pickaxe Factory Part 2
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        name: Ghast Heart
+        amount: 340
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
+        amount: 340
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        name: Burnt Heart
+        amount: 340
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        name: Sulfur Heart
+        amount: 340
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        name: Bone Heart
+        durability: 15
+        amount: 340
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        name: Magma Heart
+        amount: 340
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        name: Rotten Heart
+        durability: 3
+        amount: 340
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3 Part 2
+  Upgrade to Third Pickaxe Factory Part 3:
+    name: Upgrade to Third Pickaxe Factory Part 3
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        name: Ghast Heart
+        amount: 340
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
+        amount: 340
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        name: Burnt Heart
+        amount: 340
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        name: Sulfur Heart
+        amount: 340
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        name: Bone Heart
+        durability: 15
+        amount: 340
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        name: Magma Heart
+        amount: 340
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        name: Rotten Heart
+        durability: 3
+        amount: 340
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3 Part 3
+  Upgrade to Third Pickaxe Factory Part 4:
+    name: Upgrade to Third Pickaxe Factory Part 4
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        name: Ghast Heart
+        amount: 340
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
+        amount: 340
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        name: Burnt Heart
+        amount: 340
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        name: Sulfur Heart
+        amount: 340
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        name: Bone Heart
+        durability: 15
+        amount: 340
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        name: Magma Heart
+        amount: 340
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        name: Rotten Heart
+        durability: 3
+        amount: 340
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3 Part 4
+  Upgrade to Third Pickaxe Factory Part 5:
+    name: Upgrade to Third Pickaxe Factory Part 5
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        name: Ghast Heart
+        amount: 340
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
+        amount: 340
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        name: Burnt Heart
+        amount: 340
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        name: Sulfur Heart
+        amount: 340
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        name: Bone Heart
+        durability: 15
+        amount: 340
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        name: Magma Heart
+        amount: 340
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        name: Rotten Heart
+        durability: 3
+        amount: 340
+        lore:
+        - Rotten Heart T3
+    factory: Pickaxe Factory 3 Part 5
+  Upgrade to Third Pickaxe Factory Final:
+    name: Upgrade to Third Pickaxe Factory Final
+    production_time: 10s
+    type: UPGRADE
+    input:
+      ghastheart:
+        material: FIREWORK_CHARGE
+        name: Ghast Heart
+        amount: 344
+        lore:
+        - Ghast Heart T3
+      slimyheart:
+        material: FERMENTED_SPIDER_EYE
+        name: Slimy Heart
+        amount: 344
+        lore:
+        - Slimy Heart T3
+      burntheart:
+        material: COAL
+        name: Burnt Heart
+        amount: 344
+        lore:
+        - Burnt Heart T3
+      sulfurheart:
+        material: STONE
+        name: Sulfur Heart
+        amount: 344
+        lore:
+        - Sulfur Heart T3
+      boneheart:
+        material: INK_SACK
+        name: Bone Heart
+        durability: 15
+        amount: 344
+        lore:
+        - Bone Heart T3
+      magmaheart:
+        material: REDSTONE_TORCH_ON
+        name: Magma Heart
+        amount: 344
+        lore:
+        - Magma Heart T3
+      rottenheart:
+        material: INK_SACK
+        name: Rotten Heart
+        durability: 3
+        amount: 344
         lore:
         - Rotten Heart T3
     factory: Pickaxe Factory 3
