@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.util.Guard;
 
 /**
  * A player holding an exile pearl
@@ -14,55 +15,52 @@ import com.devotedmc.ExilePearl.ExilePearl;
  */
 public class PlayerHolder implements PearlHolder {
 
-	private final Player p;
+	private final Player player;
 	
 	/**
 	 * Creates a new PlayerHolder instance
 	 * @param p The player holding the pearl
 	 */
-	public PlayerHolder(final Player p) {
-		this.p = p;
+	public PlayerHolder(final Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		this.player = player;
 	}
 
 	@Override
 	public String getName() {
-		return p.getName();
+		return player.getName();
 	}
 
 	@Override
 	public Location getLocation() {
-		return p.getLocation().add(0, -.5, 0);
-	}
-	
-	
-	public Player getPlayer() {
-		return this.p;
+		return player.getLocation().add(0, -.5, 0);
 	}
 
 	@Override
 	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
 		
 		// Is the holder online?
-		if (!p.isOnline()) {
-			feedback.append(String.format("Jailor %s not online", p.getName()));
+		if (!player.isOnline()) {
+			feedback.append(String.format("Jailor %s not online", player.getName()));
 			return HolderVerifyResult.PLAYER_NOT_ONLINE;
 		}
 		
 		// Is the item held?
-		ItemStack cursorItem = p.getItemOnCursor();
+		ItemStack cursorItem = player.getItemOnCursor();
 		if (pearl.validateItemStack(cursorItem)) {
 			return HolderVerifyResult.IN_HAND;
 		}
 		
 		// In the player inventory?
-		for (ItemStack item : p.getInventory().all(Material.ENDER_PEARL).values()) {
+		for (ItemStack item : player.getInventory().all(Material.ENDER_PEARL).values()) {
 			if (pearl.validateItemStack(item)) {
 				return HolderVerifyResult.IN_CHEST;
 			}
 		}
 
 		// Nope, not found
-		feedback.append(String.format("Not in %s's inventory", p.getName()));
+		feedback.append(String.format("Not in %s's inventory", player.getName()));
 		return HolderVerifyResult.DEFAULT;
 	}
 }

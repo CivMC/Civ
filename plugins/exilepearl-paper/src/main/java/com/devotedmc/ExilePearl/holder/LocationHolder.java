@@ -7,6 +7,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.util.Guard;
 
 /**
  * A location holding an exile pearl
@@ -15,14 +16,16 @@ import com.devotedmc.ExilePearl.ExilePearl;
  */
 public class LocationHolder implements PearlHolder {
 
-	private final Location l;
+	private final Location loc;
 	
 	/**
 	 * Creates a new LocationHolder instance
-	 * @param l The location
+	 * @param loc The location
 	 */
-	public LocationHolder(final Location l) {
-		this.l = l;
+	public LocationHolder(final Location loc) {
+		Guard.ArgumentNotNull(loc, "loc");
+		
+		this.loc = loc;
 	}
 
 	@Override
@@ -32,13 +35,13 @@ public class LocationHolder implements PearlHolder {
 
 	@Override
 	public Location getLocation() {
-		return l;
+		return loc;
 	}
 
 	@Override
 	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
 		 // Location holder
-		Chunk chunk = l.getChunk();
+		Chunk chunk = loc.getChunk();
 		for (Entity entity : chunk.getEntities()) {
 			if (entity instanceof Item) {
 				Item item = (Item)entity;
