@@ -187,6 +187,14 @@ blocks:
      - stone_pickaxe
      - iron_pickaxe
      - diamond_pickaxe
+    # Chance for XP to drop when this gen/drop occurs
+    # you can add this section to "biomes" as well for unique biome-level drops
+    # chance and amount are modified by tool.
+    xp:
+     # standard amount config; amount for "always" value, minAmount/maxAmount for randomized size
+     amount: 1
+     # Chance of XP to generate; this is a separate chance and computed separately for XP
+     chance: 1.0
     minY: 1
     maxY: 67
     chance: 0.007

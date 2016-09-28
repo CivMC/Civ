@@ -93,6 +93,25 @@ public class DropConfig {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).chance : limits.chance;
 	}
 
+	private XPConfig getBiomeXP(String biome) {
+		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).xp : limits.xp;
+	}
+	
+	public double getXPChance(String biome) {
+		XPConfig xp = getBiomeXP(biome);
+		return xp != null ? xp.chance : 0.0d;
+	}
+
+	public double getXPMinAmount(String biome) {
+		XPConfig xp = getBiomeXP(biome);
+		return xp != null ? xp.minAmount : 0.0d;
+	}
+	
+	public double getXPMaxAmount(String biome) {
+		XPConfig xp = getBiomeXP(biome);
+		return xp != null ? xp.maxAmount : 0.0d;
+	}
+
 	/**
 	 * Gives even chance of any amount.
 	 * 
@@ -121,7 +140,7 @@ public class DropConfig {
 	/**
 	 * Gives even chance of any amount. 
 	 * 
-	 * @param drop
+	 * @param modify
 	 * @param biome
 	 * @return Items that can be transformed.
 	 */
@@ -143,6 +162,26 @@ public class DropConfig {
 		return toTransform;
 	}
 
+	/**
+	 * Gives chance to drop XP
+	 * 
+	 * @param biome
+	 * @param modify
+	 * @return XP to drop
+	 */
+	public int renderXP(String biome, ToolConfig modify) {
+		/** multipliers **/
+		double min = getXPMinAmount(biome) + (modify != null ? modify.getMinAmountModifier() : 0.0);
+		double max = getXPMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
+		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
+		
+		if (Config.isDebug) {
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Trigger xp {0} [{1}, {2}] = {3}", 
+					new Object[] {dropName, min, max, amount});
+		}
+		
+		return (int) Math.round(amount);
+	}
 	
 	public boolean shouldTransformIfAble() {
 		return this.transformIfAble;

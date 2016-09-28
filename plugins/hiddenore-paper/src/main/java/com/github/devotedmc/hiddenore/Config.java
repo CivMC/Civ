@@ -203,10 +203,30 @@ public final class Config {
 		}
 		dlc.minY = drop.getInt("minY", parent.minY);
 		dlc.maxY = drop.getInt("maxY", parent.maxY);
+		
+		// Get xp data as well.
+		ConfigurationSection xp = drop.getConfigurationSection("xp");
+		if (xp != null) {
+			XPConfig xpc = new XPConfig();
+			xpc.chance = xp.getDouble("chance", parent.xp != null ? parent.xp.chance : 0.0d);
+			Double xpamount = xp.isSet("amount") ? xp.getDouble("amount") : null;
+			if (xpamount != null) {
+				xpc.minAmount = amount;
+				xpc.maxAmount = amount;
+			} else {
+				xpc.minAmount = xp.getDouble("minAmount", parent.xp != null ? parent.xp.minAmount : 0.0d);
+				xpc.maxAmount = xp.getDouble("maxAmount", parent.xp != null ? parent.xp.maxAmount : 0.0d);
+			}
+			dlc.xp = xpc;
+		}
+		
 		HiddenOre.getPlugin().getLogger()
 				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4} with {5} tools",
 						new Object[] {dlc.chance*100.0, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY, dlc.tools.size()});
 		HiddenOre.getPlugin().getLogger().log(Level.INFO, "     tools: {0}", dlc.tools);
+		if (dlc.xp != null) {
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "     xp: {0}", dlc.xp.toString());
+		}
 		return dlc;
 	}
 

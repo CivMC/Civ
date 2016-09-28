@@ -7,6 +7,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -139,6 +142,8 @@ public class BlockBreakListener implements Listener {
 					if (!hasDrop) {
 						// Core of event cancelled!
 						return;
+					} else {
+						doXP(dc, biomeName, dropModifier, b.getLocation());
 					}
 				}
 			}
@@ -155,6 +160,8 @@ public class BlockBreakListener implements Listener {
 				if (!hasDrop) {
 					// Core of event cancelled!
 					return;
+				} else {
+					doXP(dc, biomeName, tc, b.getLocation());
 				}
 			}
 		}
@@ -167,6 +174,21 @@ public class BlockBreakListener implements Listener {
 		}
 	}
 
+	private void doXP(DropConfig dc, String biomeName, ToolConfig dropModifier, Location loc) {
+		double xpChance = dc.getXPChance(biomeName) 
+				* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier());
+		if (xpChance > Math.random()) {
+			int toXP = dc.renderXP(biomeName, dropModifier);
+			if (toXP > 0) {
+				Entity xp = loc.getWorld().spawnEntity(loc, EntityType.EXPERIENCE_ORB);
+				if (xp instanceof ExperienceOrb) {
+					ExperienceOrb eo = (ExperienceOrb) xp;
+					eo.setExperience(toXP);
+				}
+			}
+		}
+	}
+	
 	/**
 	 * Reuse! Handles the actual rendering and dropping of drops. 
 	 * 
@@ -213,6 +235,9 @@ public class BlockBreakListener implements Listener {
 						blockSubType, alertBuffer, dropConfig);
 			}
 		}
+		
+		// now try for XP
+		
 
 		return true;
 	}
@@ -317,6 +342,8 @@ public class BlockBreakListener implements Listener {
 						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
 						xform.getAmount()- cPlace, xform.getType().name(), xform.getDurability(),
 						expressed);
+				
+				dropConfig.getXPChance(biome)
 				
 				// Anything to tell anyone about?
 				if (cPlace < xform.getAmount() && Config.isAlertUser()) {
