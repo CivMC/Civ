@@ -49,6 +49,7 @@ factories:
     - Upgrade_to_Wood_Processor_2
     - Upgrade_to_Basic_Forge
     - Upgrade_to_Basic_Fortification
+    - Upgrade_to_Printing_Press
     
   #Reinforcement factories
   #Basic Contraption --> Basic Fortification
@@ -680,7 +681,6 @@ factories:
     - Repair_Rudimentary_Factory
     - Upgrade_to_Bastion_Factory
     - Upgrade_to_Compactor_Basic
-    - Upgrade_to_Printing_Press
     - Upgrade_to_Basic_Pylon
     - Upgrade_to_Redstone_Factory_Basic
   bastionfactory:
@@ -695,6 +695,8 @@ factories:
     name: Printing Press
     citadelBreakReduction: 0.1
     recipes:
+    - Bind_Books
+    - Bind_Writable_Books
     - Repair_Factory
   compactorbasic:
     type: FCCUPGRADE
@@ -1543,6 +1545,39 @@ recipes:
       pumpkin pie:
         material: PUMPKIN_PIE
         amount: 192
+  Bind_Books:
+    type: PRODUCTION
+    name: Bind Books
+    production_time: 10s
+    input:
+      leather:
+        material: LEATHER
+        amount: 6
+      paper:
+        material: PAPER
+        amount: 18
+    output:
+      books:
+        material: BOOK
+        amount: 12
+  Bind_Writable_Books:
+    type: PRODUCTION
+    name: Bind Writable Books
+    production_time: 30s
+    input:
+      ink:
+        material: INK_SACK
+        amount: 6
+      feather:
+        material: FEATHER
+        amount: 6
+      book:
+        material: BOOK
+        amount: 6
+    output:
+      books:
+        material: BOOK_AND_QUILL
+        amount: 18
   Burn_Charcoal_from_Coal:
     type: PRODUCTION
     name: Burn Charcoal from Coal
@@ -3953,18 +3988,6 @@ recipes:
         material: DOUBLE_PLANT
         amount: 32
         durability: 2
-  Random_Printing_Press_Recipe:
-    type: PRODUCTION
-    name: Random Printing Press Recipe
-    production_time: 5s
-    input:
-      identifiername:
-        material: STONE
-        amount: 1
-    output:
-      identifiername:
-        material: STONE
-        amount: 1
   Smelt_Clay_Bricks:
     type: PRODUCTION
     name: Smelt Clay Bricks
