@@ -1377,7 +1377,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-        amount: 35
+        amount: 17
     health_gained: 3334
 # lvl 2
   Repair_Basic_Factory:
@@ -1392,7 +1392,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-        amount: 53
+        amount: 26
     health_gained: 3334
 # lvl 3
   Repair_Factory:
@@ -1407,7 +1407,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-        amount: 70
+        amount: 35
     health_gained: 3334
 # lvl 4
   Repair_Advanced_Factory:
@@ -1422,7 +1422,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-        amount: 140
+        amount: 70
     health_gained: 3334
 # lvl 5
   Repair_Expert_Factory:
@@ -1437,7 +1437,7 @@ recipes:
         enchants:
           dura:
             enchant: DURABILITY
-        amount: 210
+        amount: 105
     health_gained: 3334
   Bake_Bread_Advanced:
     type: PRODUCTION
