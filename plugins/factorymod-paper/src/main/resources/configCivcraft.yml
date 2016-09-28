@@ -11585,6 +11585,32 @@ recipes:
         lore: 
          - Strong Reinforcement Ingredient
         amount: 1
+        
+  Produce_strong_Hunter_Component2:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce strong Hunter Component
+    input:
+      decentHunter:
+        material: SULPHUR
+        name: Hunter Component
+        lore: 
+         - Decent Reinforcement Ingredient
+        amount: 2
+      ghastTear:
+        material: GHAST_TEAR
+        amount: 6
+      witherskull:
+        material: SKULL_ITEM
+        durability: 1
+        amount: 2
+    output:
+      strongHunter:
+        material: GHAST_TEAR
+        name: Hunter Component
+        lore: 
+         - Strong Reinforcement Ingredient
+        amount: 1
       
   Produce_strong_Miner_Component:
     type: PRODUCTION
@@ -11597,6 +11623,32 @@ recipes:
         lore: 
          - Decent Reinforcement Ingredient
         amount: 2
+      diamond:
+        material: DIAMOND
+        amount: 4
+      lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 8
+    output:
+      strongMiner:
+        material: PRISMARINE
+        name: Miner Component
+        lore: 
+         - Strong Reinforcement Ingredient
+        amount: 1
+        
+  Produce_strong_Miner_Component2:
+    type: PRODUCTION
+    production_time: 4s
+    name: Produce strong Miner Component
+    input:
+      decentMiner:
+        material: QUARTZ
+        name: Miner Component
+        lore: 
+         - Decent Reinforcement Ingredient
+        amount: 8
       diamond:
         material: DIAMOND
         amount: 4
