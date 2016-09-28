@@ -95,6 +95,8 @@ factories:
      - Produce_decent_reinforcement
      - Produce_strong_Hunter_Component
      - Produce_strong_Miner_Component
+     - Produce_strong_Hunter_Component2
+     - Produce_strong_Miner_Component2
      - Produce_good_reinforcement
      - Produce_Bracers
      - Upgrade_to_Advanced_Fortification
@@ -121,6 +123,8 @@ factories:
      - Produce_decent_reinforcement
      - Produce_strong_Hunter_Component
      - Produce_strong_Miner_Component
+     - Produce_strong_Hunter_Component2
+     - Produce_strong_Miner_Component2
      - Produce_good_reinforcement
      - Produce_Bracers
      - Produce_best_reinforcement
