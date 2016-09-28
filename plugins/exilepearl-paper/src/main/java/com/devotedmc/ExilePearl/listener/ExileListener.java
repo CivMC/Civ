@@ -1,9 +1,17 @@
 package com.devotedmc.ExilePearl.listener;
 
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlConfig;
+import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -45,5 +53,36 @@ public class ExileListener implements Listener {
 		
 		this.pearlApi = pearlApi;
 		this.config = config;
+	}
+	
+	
+	/**
+	 * Clear the bed of a newly exiled player
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void exileRuleClearBed(ExilePearlEvent e) {
+		if (config.getRuleCanUseBed()) {
+			return;
+		}
+		
+		if (e.getType() == Type.NEW) {
+			e.getExilePearl().getPlayer().setBedSpawnLocation(null, true);
+		}
+	}
+	
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onRuleBreakBlocks(BlockBreakEvent e) {
+		if (config.getRuleCanMine()) {
+			return;
+		}
+		
+		Player p = e.getPlayer();
+		
+		if (pearlApi.isPlayerExiled(p)) {
+			e.setCancelled(true);
+			pearlApi.getPearlPlayer(p).msg(Lang.ruleCantDoThat, ExileRule.MINE.getActionString());
+		}
 	}
 }

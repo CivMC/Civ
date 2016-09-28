@@ -10,6 +10,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.util.Guard;
 
 /**
  * A block holding an exile pearl
@@ -18,70 +19,61 @@ import com.devotedmc.ExilePearl.ExilePearl;
  */
 public class BlockHolder implements PearlHolder {
 
-	private final Block b;
-	private final String name;
+	private final Block block;
 	
 	/**
 	 * Creates a new BlockHolder instance
 	 * @param b The block containing the pearl
 	 */
-	public BlockHolder(final Block b) {
-		this.b = b;
+	public BlockHolder(final Block block) {
+		Guard.ArgumentNotNull(block, "block");
 		
-		switch (b.getType()) {
-		case CHEST:
-		case TRAPPED_CHEST:
-			this.name = "a chest";
-			break;
-			
-		case FURNACE:
-			this.name =  "a furnace";
-			break;
-			
-		case BREWING_STAND:
-			this.name =  "a brewing stand";
-			break;
-			
-		case DISPENSER:
-			this.name =  "a dispenser";
-			break;
-			
-		case ITEM_FRAME:
-			this.name =  "a wall frame";
-			break;
-			
-		case DROPPER:
-			this.name =  "a dropper";
-			break;
-			
-		case HOPPER:
-			this.name =  "a hopper";
-			break;
-			
-		case ENDER_CHEST:
-			this.name =  "a chest";
-			break;
-			
-		default:
-			this.name = "a block";
-		}
+		this.block = block;
 	}
 
 	@Override
 	public String getName() {
-		return this.name;
+		switch (block.getType()) {
+		case CHEST:
+		case TRAPPED_CHEST:
+		case ENDER_CHEST:
+			return "a chest";
+			
+		case FURNACE:
+			return "a furnace";
+			
+		case BREWING_STAND:
+			return "a brewing stand";
+			
+		case DISPENSER:
+			return "a dispenser";
+			
+		case ITEM_FRAME:
+			return "a wall frame";
+			
+		case DROPPER:
+			return "a dropper";
+			
+		case HOPPER:
+			return "a hopper";
+			
+		case ENCHANTMENT_TABLE:
+			return "an enchantment table";
+			
+		default:
+			return "a block";
+		}
 	}
 
 	@Override
 	public Location getLocation() {
-		return b.getLocation();
+		return block.getLocation();
 	}
 
 	@Override
-	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
+	public HolderVerifyResult validate(final ExilePearl pearl, final StringBuilder feedback) {
 		// Check the block state first
-		Location bl = b.getLocation();
-		BlockState bs = bl.getBlock().getState();
+		BlockState bs = block.getState();
 		if (bs == null) {
 			feedback.append("BlockState is null");
 			return HolderVerifyResult.BLOCK_STATE_NULL;
@@ -103,9 +95,9 @@ public class BlockHolder implements PearlHolder {
 			if (pearl.validateItemStack(cursoritem)) {
 				feedback.append(String.format("In hand of %s viewing chest at (%d,%d,%d)",
 						viewer.getName(),
-						b.getLocation().getBlockX(),
-						b.getLocation().getBlockY(),
-						b.getLocation().getBlockZ()));
+						block.getLocation().getBlockX(),
+						block.getLocation().getBlockY(),
+						block.getLocation().getBlockZ()));
 			return HolderVerifyResult.IN_VIEWER_HAND;
 			}
 		}

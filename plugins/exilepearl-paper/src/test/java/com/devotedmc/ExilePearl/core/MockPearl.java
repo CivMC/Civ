@@ -160,7 +160,20 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public boolean validateItemStack(ItemStack is) {
-		return false;
+		if (is.getItemMeta() == null) {
+			return false;
+		}
+		
+		ItemMeta im = is.getItemMeta();
+		ItemMeta other = createItemStack().getItemMeta();
+		
+		if (im.getDisplayName() != other.getDisplayName()) {
+			return false;
+		}
+		
+		List<String> lore1 = im.getLore();
+		List<String> lore2 = other.getLore();
+		return lore1.equals(lore2);
 	}
 
 	@Override

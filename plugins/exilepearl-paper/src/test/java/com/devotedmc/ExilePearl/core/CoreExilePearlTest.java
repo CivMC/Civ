@@ -143,6 +143,7 @@ public class CoreExilePearlTest {
 		
 		// Can't modify invalid pearl
 		e = null;
+		pearl.enableStorage();
 		try { pearl.setPearledOn(now); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof RuntimeException);
 
@@ -163,6 +164,8 @@ public class CoreExilePearlTest {
 		assertEquals(pearl.getHolder(), holder);
 
 		PearlPlayer pPlayer = new CorePearlPlayer(player, nameProvider);
+		
+		pearl.enableStorage();
 
 		// Can't modify invalid pearl
 		Throwable e = null;
@@ -183,6 +186,8 @@ public class CoreExilePearlTest {
 		Block b = mock(Block.class);
 		when(b.getLocation()).thenReturn(l2);
 		when(b.getType()).thenReturn(Material.CHEST);
+
+		pearl.enableStorage();
 		
 		// Can't modify invalid pearl
 		Throwable e = null;
@@ -192,12 +197,7 @@ public class CoreExilePearlTest {
 		// Set pearl valid
 		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
-		pearl.setHolder(l1);
-		assertEquals(pearl.getLocation(), l1);
-		assertEquals(pearl.getHolder().getLocation(), l1);
-		verify(storage, times(0)).pearlUpdateLocation(pearl);
 		pearl.enableStorage();
-		
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocation(), l2);
 		assertEquals(pearl.getHolder().getLocation(), l2);
@@ -225,6 +225,8 @@ public class CoreExilePearlTest {
 	public void testGetSetHealth() {
 		assertEquals(pearl.getHealth(), 10, 0);
 		
+		pearl.enableStorage();
+		
 		// Can't modify invalid pearl
 		Throwable e = null;
 		try { pearl.setHealth(0); } catch (Throwable ex) { e = ex; }
@@ -232,10 +234,6 @@ public class CoreExilePearlTest {
 		
 		// Set pearl valid
 		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
-		
-		pearl.setHealth(0);
-		assertEquals(pearl.getHealth(), 0, 0);
-		verify(storage, times(0)).pearlUpdateHealth(pearl);
 		
 		pearl.enableStorage();
 		pearl.setHealth(0);
@@ -298,6 +296,7 @@ public class CoreExilePearlTest {
 	@Test
 	public void testGetSetFreedOffline() {
 		assertFalse(pearl.getFreedOffline());
+		pearl.enableStorage();
 		
 		// Can't modify invalid pearl
 		Throwable e = null;
@@ -307,11 +306,6 @@ public class CoreExilePearlTest {
 		// Set pearl valid
 		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
-		pearl.setFreedOffline(true);
-		assertTrue(pearl.getFreedOffline());
-		verify(storage, times(0)).pearlUpdateFreedOffline(pearl);
-		
-		pearl.enableStorage();
 		pearl.setFreedOffline(true);
 		assertTrue(pearl.getFreedOffline());
 		verify(storage).pearlUpdateFreedOffline(pearl);

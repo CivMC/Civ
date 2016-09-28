@@ -29,5 +29,5 @@ public interface PearlHolder {
 	 * @param feedback The string feedback
 	 * @return the validation result
 	 */
-	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback);
+	public HolderVerifyResult validate(final ExilePearl pearl, final StringBuilder feedback);
 }

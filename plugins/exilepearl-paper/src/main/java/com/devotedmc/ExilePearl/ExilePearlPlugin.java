@@ -256,6 +256,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	}
 
 	@Override
+	public PearlPlayer getPearlPlayer(Player player) {
+		return getPearlPlayer(player.getUniqueId());
+	}
+
+	@Override
 	public String getName(UUID uid) {
 		if (isNameLayerEnabled()) {
 			return NameAPI.getCurrentName(uid);

@@ -425,7 +425,7 @@ class CoreExilePearl implements ExilePearl {
 	 * Checks to make sure the pearl being operated on is valid
 	 */
 	private void checkPearlValid() {
-		if (!pearlApi.isPlayerExiled(playerId)) {
+		if (storageEnabled && !pearlApi.isPlayerExiled(playerId)) {
 			throw new RuntimeException(String.format("Tried to modify exile pearl for player %s that is no longer valid.", getPlayerName()));
 		}
 	}
