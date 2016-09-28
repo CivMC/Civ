@@ -41,6 +41,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
+	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this, pearlConfig);
@@ -274,5 +275,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	
 	private boolean isNameLayerEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
+	}
+
+	@Override
+	public PearlLoreGenerator getLoreGenerator() {
+		return loreGenerator;
 	}
 }

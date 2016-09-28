@@ -1,13 +1,20 @@
 package com.devotedmc.ExilePearl.core;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
+
+import static org.mockito.Mockito.*;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.mockito.Mockito;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlPlayer;
@@ -130,7 +137,20 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public ItemStack createItemStack() {
-		return null;
+		List<String> lore = new ArrayList<String>();
+		lore.add(getItemName());
+		lore.add(getPlayerName());
+		lore.add(getUniqueId().toString());
+		ItemStack is = mock(ItemStack.class);
+		when(is.getType()).thenReturn(Material.ENDER_PEARL);
+		when(is.getAmount()).thenReturn(1);
+		
+		ItemMeta im = Mockito.mock(ItemMeta.class);
+		final String playerName = getPlayerName();
+		when(im.getDisplayName()).thenReturn(playerName);
+		when(im.getLore()).thenReturn(lore);
+		when(is.getItemMeta()).thenReturn(im);
+		return is;
 	}
 
 	@Override

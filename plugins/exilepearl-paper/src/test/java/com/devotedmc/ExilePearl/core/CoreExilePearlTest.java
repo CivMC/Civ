@@ -31,6 +31,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
@@ -38,7 +39,6 @@ import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
-import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(Bukkit.class)
@@ -57,6 +57,7 @@ public class CoreExilePearlTest {
 	
 	private ExilePearlApi pearlApi;
 	private PlayerNameProvider nameProvider;
+	private PearlLoreGenerator loreGenerator;
 	
 
 	@Before
@@ -87,6 +88,9 @@ public class CoreExilePearlTest {
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(new CorePearlPlayer(killer, nameProvider));
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(new CorePearlPlayer(killer, nameProvider));
 		when(pearlApi.getMaxPearlHealth()).thenReturn(100);
+		
+		loreGenerator = new MockLoreGenerator();
+		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 		
 		holder = new PlayerHolder(killer);
 		
@@ -328,7 +332,7 @@ public class CoreExilePearlTest {
 		
 		ItemStack is = spy(pearl.createItemStack());
 		assertEquals(is.getItemMeta(), im);
-		List<String> lore = PearlLoreUtil.generateLore(pearl);
+		List<String> lore = loreGenerator.generateLore(pearl);
 		verify(im).setLore(lore);
 		
 		
@@ -350,14 +354,14 @@ public class CoreExilePearlTest {
 		when(pearl2.getKillerName()).thenReturn(killerName);
 		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
 
-		List<String> lore2 = PearlLoreUtil.generateLore(pearl2);
+		List<String> lore2 = loreGenerator.generateLore(pearl2);
 		assertEquals(lore, lore2);
 		when(im.getLore()).thenReturn(lore2);
 		assertTrue(pearl.validateItemStack(is));
 		
 		// Now change the ID and negative test
 		when(pearl2.getUniqueId()).thenReturn(UUID.randomUUID());
-		lore2 = PearlLoreUtil.generateLore(pearl2);
+		lore2 = loreGenerator.generateLore(pearl2);
 		when(im.getLore()).thenReturn(lore2);
 		assertFalse(pearl.validateItemStack(is));
 		
@@ -439,7 +443,7 @@ public class CoreExilePearlTest {
 	    ItemMeta im = mock(ItemMeta.class);
 	    when(itemFactory.getItemMeta(Material.ENDER_PEARL)).thenReturn(im);
 	    when(Bukkit.getItemFactory()).thenReturn(itemFactory);
-		List<String> lore = PearlLoreUtil.generateLore(pearl);
+		List<String> lore = loreGenerator.generateLore(pearl);
 		when(im.getLore()).thenReturn(lore);
 		when(im.getDisplayName()).thenReturn(playerName);
 		

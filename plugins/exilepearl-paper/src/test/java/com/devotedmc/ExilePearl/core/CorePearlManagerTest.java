@@ -11,6 +11,7 @@ import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,6 +27,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
@@ -72,6 +74,7 @@ public class CorePearlManagerTest {
 		when(pearlApi.getPearlPlayer(playerId)).thenReturn(pPlayer);
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pPlayer);
+		when(pearlApi.getLoreGenerator()).thenReturn(new MockLoreGenerator());
 		
 		PlayerNameProvider nameProvider = mock(PlayerNameProvider.class);
 		when(nameProvider.getName(playerId)).thenReturn(playerName);
@@ -253,18 +256,25 @@ public class CorePearlManagerTest {
 	}
 
 	@Test
-	public void testGetInventoryExilePearls() {
-		fail("Not yet implemented");
-	}
-
-	@Test
-	public void testGetInventoryPearlStacks() {
-		fail("Not yet implemented");
-	}
-
-	@Test
 	public void testGetPearlFromItemStack() {
-		fail("Not yet implemented");
+		ExilePearl pearl = manager.exilePlayer(player, killer);
+		ItemStack is = pearl.createItemStack();
+		
+		// Create mock lore generator
+		PearlLoreGenerator loreGenerator = mock(PearlLoreGenerator.class);
+		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
+		
+		// Test fails when lore generator fails
+		when(loreGenerator.getIDFromItemStack(is)).thenReturn(null);
+		assertNull(manager.getPearlFromItemStack(is));
+
+		// Test passes when lore generator succeeds
+		when(loreGenerator.getIDFromItemStack(is)).thenReturn(pearl.getUniqueId());
+		assertEquals(manager.getPearlFromItemStack(is), pearl);
+		
+		// Test fails when the pearl is freed
+		manager.freePearl(pearl);
+		assertNull(manager.getPearlFromItemStack(is));
 	}
 
 	@Test

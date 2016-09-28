@@ -28,4 +28,10 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	 * @return The max allowed pearl health
 	 */
 	int getMaxPearlHealth();
+	
+	/**
+	 * Gets the pearl lore generator
+	 * @return The lore generator
+	 */
+	PearlLoreGenerator getLoreGenerator();
 }

@@ -9,6 +9,7 @@ import org.bukkit.inventory.InventoryHolder;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PearlWorker;
@@ -77,5 +78,10 @@ public class CorePearlFactory implements PearlFactory {
 	@Override
 	public PearlPlayer createPearlPlayer(Player player) {
 		return new CorePearlPlayer(player, plugin);
+	}
+
+	@Override
+	public PearlLoreGenerator createLoreGenerator() {
+		return new CoreLoreGenerator();
 	}
 }

@@ -25,7 +25,6 @@ import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 
 /**
  * Instance of a player who is imprisoned in an exile pearl
@@ -325,7 +324,7 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public ItemStack createItemStack() {
-		List<String> lore = PearlLoreUtil.generateLore(this);
+		List<String> lore = pearlApi.getLoreGenerator().generateLore(this);
 		ItemStack is = new ItemStack(Material.ENDER_PEARL, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(this.getPlayerName());
@@ -343,12 +342,12 @@ class CoreExilePearl implements ExilePearl {
 	public boolean validateItemStack(ItemStack is) {
 		Guard.ArgumentNotNull(is, "is");
 
-		UUID id = PearlLoreUtil.getIDFromItemStack(is);
+		UUID id = pearlApi.getLoreGenerator().getIDFromItemStack(is);
 		if (id != null && id.equals(this.playerId)) {
 
 			// re-create the item stack to update the values
 			ItemMeta im = is.getItemMeta();
-			im.setLore(PearlLoreUtil.generateLore(this));
+			im.setLore(pearlApi.getLoreGenerator().generateLore(this));
 			is.setItemMeta(im);
 			return true;
 		}

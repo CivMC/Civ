@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PearlWorker;
@@ -44,6 +45,11 @@ public class MockPearlFactory implements PearlFactory {
 
 	@Override
 	public PearlPlayer createPearlPlayer(Player player) {
+		return null;
+	}
+
+	@Override
+	public PearlLoreGenerator createLoreGenerator() {
 		return null;
 	}
 

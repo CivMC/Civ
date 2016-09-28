@@ -1,17 +1,13 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -24,7 +20,6 @@ import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
 import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 
 /**
  * The prison pearl manager implementation
@@ -150,50 +145,6 @@ class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNull(uid, "uid");
 		return pearls.get(uid);
 	}
-    
-
-	/**
-	 * Gets a list of pearls located in an inventory
-	 * @param inv The inventory to search
-	 * @return The list of contained pearls
-	 */
-	public List<ExilePearl> getInventoryExilePearls(Inventory inv) {
-		Guard.ArgumentNotNull(inv, "inv");
-		
-		List<ExilePearl> pearls = new ArrayList<ExilePearl>();
-		
-		for (ItemStack is : inv.all(Material.ENDER_PEARL).values()) {
-			if (is.hasItemMeta() && is.getItemMeta().hasLore()) {
-				UUID id = PearlLoreUtil.getIDFromItemStack(is);
-				if (id != null) {
-					ExilePearl pearl = this.getPearl(id);
-					if (pearl != null) {
-						pearls.add(pearl);
-					}
-				}
-			}
-		}
-		
-		return pearls;
-	}
-	
-	
-	/**
-	 * Gets the prison pearl stacks located in an inventory
-	 * @param inv The inventory to search
-	 * @return The list of contained pearls
-	 */
-	public List<ItemStack> getInventoryPearlStacks(Inventory inv) {
-		List<ItemStack> pearls = new ArrayList<ItemStack>();
-		
-		for (ItemStack is : inv.all(Material.ENDER_PEARL).values()) {
-			if (is.hasItemMeta() && is.getItemMeta().hasLore()) {
-				pearls.add(is);
-			}
-		}
-		
-		return pearls;
-	}
 
 
 	@Override
@@ -214,7 +165,7 @@ class CorePearlManager implements PearlManager {
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
 		Guard.ArgumentNotNull(is, "is");
 		
-		UUID id = PearlLoreUtil.getIDFromItemStack(is);
+		UUID id = pearlApi.getLoreGenerator().getIDFromItemStack(is);
 		if (id != null) {
 			return pearls.get(id);
 		}

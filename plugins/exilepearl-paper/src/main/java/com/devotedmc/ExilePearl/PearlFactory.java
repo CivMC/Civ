@@ -47,4 +47,10 @@ public interface PearlFactory {
 	 * @return The new PearlPlayer instance
 	 */
 	PearlPlayer createPearlPlayer(Player player);
+	
+	/**
+	 * Creates the lore generator instance
+	 * @return The lore generator instance
+	 */
+	PearlLoreGenerator createLoreGenerator();
 }

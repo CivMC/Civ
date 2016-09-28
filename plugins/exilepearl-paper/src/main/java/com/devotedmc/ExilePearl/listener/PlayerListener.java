@@ -43,7 +43,6 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.PearlLoreUtil;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 /**
@@ -92,7 +91,7 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && PearlLoreUtil.getIDFromItemStack(item) != null) {
+		if (item.getType() == Material.ENDER_PEARL && pearlApi.getLoreGenerator().getIDFromItemStack(item) != null) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
@@ -458,7 +457,7 @@ public class PlayerListener implements Listener {
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
 				// Make sure we're holding a blank pearl
-				if (PearlLoreUtil.getIDFromItemStack(entry.getValue()) == null) {
+				if (pearlApi.getLoreGenerator().getIDFromItemStack(entry.getValue()) == null) {
 					firstpearl = Math.min(entry.getKey(), firstpearl);
 				}
 			}

@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.util;
+package com.devotedmc.ExilePearl.core;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,9 +12,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.util.TextUtil;
 
-public class PearlLoreUtil {
+class CoreLoreGenerator implements PearlLoreGenerator {
 	
 	// These need to match!
 	private static String UidStringFormat = "<a>UUID: <n>%s";
@@ -24,7 +26,7 @@ public class PearlLoreUtil {
 	 * Generates the lore for the pearl
 	 * @return The pearl lore
 	 */
-	public static List<String> generateLore(ExilePearl pearl) {
+	public List<String> generateLore(ExilePearl pearl) {
 		List<String> lore = new ArrayList<String>();
 		lore.add(parse("<l>%s", pearl.getItemName()));
 		lore.add(parse("<a>Player: <n>%s", pearl.getPlayerName()));
@@ -46,7 +48,7 @@ public class PearlLoreUtil {
 	 * @param is The item stack
 	 * @return The player UUID, or null if it can't parse
 	 */
-	public static UUID getIDFromItemStack(ItemStack is) {
+	public UUID getIDFromItemStack(ItemStack is) {
 		if (is == null) {
 			return null;
 		}
