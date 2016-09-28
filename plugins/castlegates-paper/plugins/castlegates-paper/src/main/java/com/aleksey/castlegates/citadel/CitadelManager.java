@@ -16,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -52,7 +51,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
     }
     
 	public double getMaxRedstoneDistance() {
-		return CitadelConfigManager.getMaxRedstoneDistance();
+		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 	
 	public boolean canAccessDoors(List<Player> players, Location loc) {

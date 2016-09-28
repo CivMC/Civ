@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
@@ -251,6 +252,8 @@ public class CastleGatesManager {
 			
 		player.sendMessage(ChatColor.GREEN + "Gearblock has been created.");
 		
+		playeEffect(block);
+		
 		return true;
 	}
 	
@@ -299,6 +302,8 @@ public class CastleGatesManager {
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
 			player.sendMessage(ChatColor.GREEN + "Gearblock has been linked with gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
+			playeEffect(player, gearblock1);
+			playeEffect(player, result.gearblock);
 			return true;
 		}
 
@@ -330,6 +335,7 @@ public class CastleGatesManager {
 	}
 	
 	private void showGearInfo(PlayerInteractEvent event) {
+		Player player = event.getPlayer();
 		Block block = event.getClickedBlock();
 		BlockCoord blockCoord = new BlockCoord(block);
 		Gearblock gearblock = this.gearManager.getGearblock(blockCoord);
@@ -339,10 +345,10 @@ public class CastleGatesManager {
 			
 			switch(searchResult) {
 			case Bridge:
-				event.getPlayer().sendMessage("Bridge block");
+				player.sendMessage("Bridge block");
 				break;
 			case Gates:
-				event.getPlayer().sendMessage("Gates block");
+				player.sendMessage("Gates block");
 				break;
 			default:
 				break;
@@ -351,23 +357,54 @@ public class CastleGatesManager {
 			return;
 		}
 		
-		if(!CastleGates.getCitadelManager().canViewInformation(event.getPlayer(), block.getLocation())) {
-			event.getPlayer().sendMessage(ChatColor.RED + "Gearblock");
+		if(!CastleGates.getCitadelManager().canViewInformation(player, block.getLocation())) {
+			player.sendMessage(ChatColor.RED + "Gearblock");
 		}
 		else if(gearblock.getLink() == null) {
-			event.getPlayer().sendMessage(ChatColor.GREEN + "Gearblock not linked");
+			player.sendMessage(ChatColor.GREEN + "Gearblock not linked");
 			
 			if(gearblock.getBrokenLink() != null) {
-				event.getPlayer().sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
+				player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
 			}
 		}
 		else {
 			Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
-			event.getPlayer().sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
+			player.sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
 			
 			if(gearblock.getLink().isDrawn()) {
-				event.getPlayer().sendMessage(ChatColor.GREEN + "Link is in drawn state");
+				player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
 			}
+			
+			playeEffect(player, gearblock2);
 		}
+	}
+	
+	private void playeEffect(Player player, Gearblock gearblock) {
+		BlockCoord coord = gearblock.getCoord();
+		Location location = new Location(player.getWorld(), 0.5 + coord.getX(), 0.5 + coord.getY(), 0.5 + coord.getZ());
+
+		playeEffect(location);
+	}
+	
+	private void playeEffect(Block block) {
+		Location location = new Location(block.getWorld(), 0.5 + block.getX(), 0.5 + block.getY(), 0.5 + block.getZ());
+
+		playeEffect(location);
+	}
+
+	private void playeEffect(Location location) {
+		final Effect effect = Effect.FLYING_GLYPH;
+		final int id = 0;
+		final int data = 0;
+		final float offsetX = 0;
+		final float offsetY = 0;
+		final float offsetZ = 0;
+		final float speed = 0.5f;
+		final int particleCount = 80;
+		
+		final int viewDistance = CastleGates.getConfigManager().getMaxBridgeLength()
+				+ (int)CastleGates.getConfigManager().getMaxRedstoneDistance();
+
+		location.getWorld().spigot().playEffect(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, viewDistance);
 	}
 }
