@@ -55,12 +55,11 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, Player killedBy, int health) {
+	public ExilePearl createExilePearl(UUID uid, Player killedBy) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
 		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), new PlayerHolder(killedBy));
-		pearl.setHealth(health);
 		pearl.enableStorage();
 		return pearl;
 	}

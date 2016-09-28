@@ -27,9 +27,8 @@ public class MockPearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, Player killedBy, int health) {
+	public ExilePearl createExilePearl(UUID uid, Player killedBy) {
 		ExilePearl pearl = new MockPearl(nameProvider, uid, killedBy.getUniqueId(), killedBy.getLocation());
-		pearl.setHealth(health);
 		return pearl;
 	}
 

@@ -38,22 +38,22 @@ public class ExilePearlConfig {
 	
 	@CivConfig(name = "health.decay_interval_min", def = "60" , type = CivConfigType.Int)
 	public int getPearlHealthDecayIntervalMin() {
-		return plugin.GetConfig().get("upkeep.interval_min").getInt();
+		return plugin.GetConfig().get("health.decay_interval_min").getInt();
 	}
 	
 	@CivConfig(name = "health.amount", def = "1" , type = CivConfigType.Int)
 	public int getPearlHealthDecayAmount() {
-		return plugin.GetConfig().get("upkeep.amount").getInt();
+		return plugin.GetConfig().get("health.amount").getInt();
 	}
 	
 	@CivConfig(name = "health.resource", def = "263", type = CivConfigType.Int)
 	public int getPearlHealthMaterial() {
-		return plugin.GetConfig().get("upkeep.resource").getInt();
+		return plugin.GetConfig().get("health.resource").getInt();
 	}
 	
 	@CivConfig(name = "health.start_value", def = "4" , type = CivConfigType.Int)
 	public int getPearlHealthStartValue() {
-		return plugin.GetConfig().get("upkeep.start_value").getInt();
+		return plugin.GetConfig().get("health.start_value").getInt();
 	}
 	
 	@CivConfig(name = "health.max_value", def = "336" , type = CivConfigType.Int)

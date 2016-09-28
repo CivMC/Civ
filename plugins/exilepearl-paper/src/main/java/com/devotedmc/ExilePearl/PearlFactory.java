@@ -24,10 +24,9 @@ public interface PearlFactory {
 	 * Creates an exile pearl instance from a player holder
 	 * @param uid The prisoner UUID
 	 * @param killedBy The killing player
-	 * @param health The pearl health
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, Player killedBy, int health);
+	ExilePearl createExilePearl(UUID uid, Player killedBy);
 	
 	/**
 	 * Creates a pearl manager instance

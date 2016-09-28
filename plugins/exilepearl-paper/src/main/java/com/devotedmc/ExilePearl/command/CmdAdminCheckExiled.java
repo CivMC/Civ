@@ -23,6 +23,13 @@ public class CmdAdminCheckExiled extends PearlCommand {
 			msg("<i>No pearl was found with the name <c>%s", name);
 			return;
 		}
-		msg("<g>The player <c>%s <g>is exiled and is", pearl.getLocationDescription());
+		msg("<g>Found exile pearl for player %s", name);
+
+		for (String s : pearlApi.getLoreGenerator().generateLore(pearl)) {
+			if (s.contains("Commands")) {
+				return;
+			}
+			msg(s);
+		}
 	}
 }

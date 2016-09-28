@@ -75,11 +75,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 		super.onEnable();
 		
 		// Storage connect and load
-		if (!storage.connect()) {
+		if (storage.connect()) {
+			pearlManager.loadPearls();
+		} else {
 			log(Level.SEVERE, "Failed to connect to database.");
-			return;
 		}
-		pearlManager.loadPearls();
 		
 		// Add commands
 		commands.add(new CmdExilePearl(this));

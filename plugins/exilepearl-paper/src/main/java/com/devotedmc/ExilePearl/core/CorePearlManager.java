@@ -94,7 +94,7 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy, config.getPearlHealthStartValue());
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy);
 
 		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.NEW, killedBy);
 		Bukkit.getPluginManager().callEvent(e);
@@ -104,6 +104,8 @@ class CorePearlManager implements PearlManager {
 		
 		pearls.put(pearl.getUniqueId(), pearl);
 		storage.pearlInsert(pearl);
+
+		pearl.setHealth(config.getPearlHealthStartValue());
 		
 		return pearl;
 	}
