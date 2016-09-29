@@ -15,7 +15,6 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlAccess;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
-import com.devotedmc.ExilePearl.util.TextUtil;
 
 public class CorePearlPlayerTest {
 

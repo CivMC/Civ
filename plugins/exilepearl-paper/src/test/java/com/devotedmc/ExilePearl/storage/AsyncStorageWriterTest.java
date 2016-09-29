@@ -91,8 +91,7 @@ public class AsyncStorageWriterTest {
 		assertTrue(writer.connect());
 		
 		writer.pearlInsert(pearl);
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlInsert(pearl);
+		verify(storage, timeout(5000)).pearlInsert(pearl);
 	}
 
 	@Test
@@ -102,8 +101,7 @@ public class AsyncStorageWriterTest {
 		assertTrue(writer.connect());
 		
 		writer.pearlRemove(pearl);
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlRemove(pearl);
+		verify(storage, timeout(5000)).pearlRemove(pearl);
 	}
 
 	@Test
@@ -113,8 +111,7 @@ public class AsyncStorageWriterTest {
 		assertTrue(writer.connect());
 		
 		writer.pearlUpdateLocation(pearl);
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlUpdateLocation(pearl);
+		verify(storage, timeout(5000)).pearlUpdateLocation(pearl);
 	}
 
 	@Test
@@ -124,8 +121,7 @@ public class AsyncStorageWriterTest {
 		assertTrue(writer.connect());
 		
 		writer.pearlUpdateHealth(pearl);
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlUpdateHealth(pearl);
+		verify(storage, timeout(5000)).pearlUpdateHealth(pearl);
 	}
 
 	@Test
@@ -135,7 +131,6 @@ public class AsyncStorageWriterTest {
 		assertTrue(writer.connect());
 		
 		writer.pearlUpdateFreedOffline(pearl);
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlUpdateFreedOffline(pearl);
+		verify(storage, timeout(5000)).pearlUpdateFreedOffline(pearl);
 	}
 }
