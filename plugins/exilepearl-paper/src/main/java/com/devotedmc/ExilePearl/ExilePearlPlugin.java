@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,10 +10,13 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
@@ -66,6 +70,20 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	 * 			and when an ExilePearl is placed in an InventoryHolder tile entity or picked up / in a player inventory (for tracking).
 	 * 
 	 */
+	
+	/**
+	 * Default constructor
+	 */
+	public ExilePearlPlugin() { }
+	
+    /**
+     * Constructor for unit testing.
+     * @deprecated
+     */
+    @Deprecated
+    public ExilePearlPlugin(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, server, description, dataFolder, file);
+    }
 
 	/**
 	 * Spigot enable method
@@ -186,11 +204,15 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	}
 	
 	public void log(Level level, String msg, Object... args) {
-		getLogger().log(level, String.format(msg, args));
+		logInternal(level, String.format(msg, args));
 	}
 	
 	public void log(String msg, Object... args) {
-		log(Level.INFO, msg, args);
+		logInternal(Level.INFO, String.format(msg, args));
+	}
+	
+	private void logInternal(Level level, String msg) {
+		Bukkit.getLogger().log(level, String.format("[%s] %s", getPluginName(), msg));
 	}
 	
 	public String formatText(String text, Object... args) {

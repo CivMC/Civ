@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.4.41</version>
+			<version>1.4.44</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

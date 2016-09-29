@@ -9,19 +9,18 @@ import java.util.Map.Entry;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.util.StringListIgnoresCase;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
-import vg.civcraft.mc.civmodcore.ACivMod;
-
-public abstract class BaseCommand<T extends ACivMod> {
+public abstract class BaseCommand<T extends  JavaPlugin> {
 	
 	protected final T plugin;
 	
 	private final Map<String, String> permissionDescriptions = new HashMap<String, String>();
-	private final List<BaseCommand<? extends ACivMod>> subCommands = new ArrayList<BaseCommand<? extends ACivMod>>();
+	private final List<BaseCommand<? extends  JavaPlugin>> subCommands = new ArrayList<BaseCommand<? extends  JavaPlugin>>();
 	
 	// The different names this commands will react to  
 	protected final StringListIgnoresCase aliases = new StringListIgnoresCase();
@@ -58,7 +57,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	protected CommandSender sender; // Will always be set
 	protected boolean senderIsConsole;
 	protected List<String> args; // Will contain the arguments, or and empty list if there are none.
-	protected List<BaseCommand<? extends ACivMod>> commandChain = new ArrayList<BaseCommand<? extends ACivMod>>(); // The command chain used to execute this command
+	protected List<BaseCommand<? extends  JavaPlugin>> commandChain = new ArrayList<BaseCommand<? extends  JavaPlugin>>(); // The command chain used to execute this command
 	
 	// Will only be set when the sender is a player
 	private Player me;
@@ -94,7 +93,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @param args The command arguments
 	 * @param commandChain The command chain
 	 */
-	public final void execute(CommandSender sender, List<String> args, List<BaseCommand<? extends ACivMod>> commandChain) {
+	public final void execute(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
 		if (prepareCommand(sender, args, commandChain)) {
 			perform();
 		}
@@ -107,7 +106,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @param commandChain The command chain
 	 */
 	public final void execute(CommandSender sender, List<String> args) {
-		execute(sender, args, new ArrayList<BaseCommand<? extends ACivMod>>());
+		execute(sender, args, new ArrayList<BaseCommand<? extends  JavaPlugin>>());
 	}
 	
 	
@@ -117,7 +116,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @param args The command arguments
 	 * @return The tab list
 	 */
-	public final List<String> getTabList(CommandSender sender, List<String> args, List<BaseCommand<? extends ACivMod>> commandChain) {
+	public final List<String> getTabList(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
 		if (prepareCommand(sender, args, commandChain)) {
 			return performTabList();
 		}
@@ -132,7 +131,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @param commandChain The command chain
 	 * @return true if the command should execute
 	 */
-	private boolean prepareCommand(CommandSender sender, List<String> args, List<BaseCommand<? extends ACivMod>> commandChain) {
+	private boolean prepareCommand(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
 		// Set the execution-time specific variables
 		this.sender = sender;
 		if (sender instanceof Player) {
@@ -154,7 +153,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 
 		// Find a matching sub-command
 		if (args.size() > 0 ) {
-			for (BaseCommand<? extends ACivMod> subCommand: this.subCommands) {
+			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
 				if (subCommand.aliases.contains(args.get(0)) || subCommand.hiddenAliases.contains(args.get(0))) {
 					args.remove(0);
 					commandChain.add(this);
@@ -179,7 +178,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @return The tab list
 	 */
 	public final List<String> getTabList(CommandSender sender, List<String> args) {
-		return getTabList(sender, args, new ArrayList<BaseCommand<? extends ACivMod>>());
+		return getTabList(sender, args, new ArrayList<BaseCommand<? extends  JavaPlugin>>());
 	}
 	
 	
@@ -204,7 +203,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * Adds a sub-command
 	 * @param subCommand the sub-command to add
 	 */
-	public void addSubCommand(BaseCommand<? extends ACivMod> subCommand) {
+	public void addSubCommand(BaseCommand<? extends  JavaPlugin> subCommand) {
 		subCommand.commandChain.addAll(this.commandChain);
 		subCommand.commandChain.add(this);
 		this.subCommands.add(subCommand);
@@ -214,7 +213,7 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * Gets the sub-commands
 	 * @return The sub-commands
 	 */
-	public List<BaseCommand<? extends ACivMod>> getSubCommands() {
+	public List<BaseCommand<? extends  JavaPlugin>> getSubCommands() {
 		return this.subCommands;
 	}
 	
@@ -339,12 +338,12 @@ public abstract class BaseCommand<T extends ACivMod> {
 	 * @param addShortHelp Whether to add a short help description
 	 * @return The full command help
 	 */
-	public String getUseageTemplate(List<BaseCommand<? extends ACivMod>> commandChain, boolean addShortHelp) {
+	public String getUseageTemplate(List<BaseCommand<? extends  JavaPlugin>> commandChain, boolean addShortHelp) {
 		StringBuilder ret = new StringBuilder();
 		ret.append(txt.parseTags("<c>"));
 		ret.append('/');
 		
-		for (BaseCommand<? extends ACivMod> mc : commandChain) {
+		for (BaseCommand<? extends  JavaPlugin> mc : commandChain) {
 			ret.append(txt.implode(mc.aliases, ","));
 			ret.append(' ');
 		}

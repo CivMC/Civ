@@ -143,7 +143,6 @@ public class MySqlStorage implements PluginStorage {
 
 		} catch (Exception ex) {
 			logger.log(Level.SEVERE, "Failed to load pearls.");
-			ex.printStackTrace();
 		}
 
 		return pearls;
@@ -281,6 +280,5 @@ public class MySqlStorage implements PluginStorage {
 	
 	private void logFailedPearlOperation(Exception ex, ExilePearl pearl, String action) {
 		logger.log(Level.SEVERE, "Failed to %s for the pearl for player %s.", action, pearl.getPlayerName());
-		ex.printStackTrace();
 	}
 }

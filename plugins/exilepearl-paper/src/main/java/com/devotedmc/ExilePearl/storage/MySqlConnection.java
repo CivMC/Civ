@@ -54,7 +54,6 @@ public class MySqlConnection {
             return true;
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to connect to the MySQL database.");
-            ex.printStackTrace();
             return false;
         }
     }
@@ -68,7 +67,6 @@ public class MySqlConnection {
             connection = null;
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to close MySQL database connection");
-            ex.printStackTrace();
         }
     }
 
@@ -85,7 +83,6 @@ public class MySqlConnection {
         try {
             return connection.isValid(5);
         } catch (SQLException ex) {
-        	ex.printStackTrace();
         }
         return false;
     }
@@ -120,7 +117,6 @@ public class MySqlConnection {
             connection.prepareStatement(query).executeUpdate();
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to exectue SQL query.");
-            ex.printStackTrace();
         }
     }
 }
