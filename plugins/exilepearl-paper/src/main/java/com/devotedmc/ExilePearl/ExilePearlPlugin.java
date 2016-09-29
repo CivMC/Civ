@@ -215,7 +215,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	}
 	
 	private void logInternal(Level level, String msg) {
-		Bukkit.getLogger().log(level, String.format("[%s] %s", getPluginName(), msg));
+		getLogger().log(level, String.format("[%s] %s", getPluginName(), msg));
 	}
 	
 	public String formatText(String text, Object... args) {
