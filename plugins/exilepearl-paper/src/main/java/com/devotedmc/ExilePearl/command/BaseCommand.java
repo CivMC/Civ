@@ -24,7 +24,6 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	
 	// The different names this commands will react to  
 	protected final StringListIgnoresCase aliases = new StringListIgnoresCase();
-	protected final StringListIgnoresCase hiddenAliases = new StringListIgnoresCase();
 	
 	// Information on the args
 	protected final List<String> requiredArgs = new ArrayList<String>();
@@ -50,7 +49,6 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	// Some information on permissions
 	protected boolean senderMustBePlayer;
 	protected String permission;
-	
 	protected boolean senderMustConfirm;
 	
 	// Information available on execution of the command
@@ -154,7 +152,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 		// Find a matching sub-command
 		if (args.size() > 0 ) {
 			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
-				if (subCommand.aliases.contains(args.get(0)) || subCommand.hiddenAliases.contains(args.get(0))) {
+				if (subCommand.aliases.contains(args.get(0))) {
 					args.remove(0);
 					commandChain.add(this);
 					subCommand.execute(sender, args, commandChain);

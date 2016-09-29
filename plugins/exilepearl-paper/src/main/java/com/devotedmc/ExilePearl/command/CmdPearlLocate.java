@@ -11,7 +11,6 @@ public class CmdPearlLocate extends PearlCommand {
 
 	public CmdPearlLocate(ExilePearlPlugin plugin) {
 		super(plugin);
-		this.aliases.add("l");
 		this.aliases.add("locate");
 
 		this.senderMustBePlayer = true;

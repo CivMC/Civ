@@ -2,16 +2,20 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminFreePlayer extends PearlCommand {
 
 	public CmdAdminFreePlayer(ExilePearlPlugin plugin) {
 		super(plugin);
-		this.aliases.add("free");
+		this.aliases.add("freeany");
 
-		this.setHelpShort("Frees an exiled player.");
+		this.setHelpShort("Frees any exiled player.");
 		
 		this.requiredArgs.add("player");
+		
+		this.permission = Permission.ADMIN.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

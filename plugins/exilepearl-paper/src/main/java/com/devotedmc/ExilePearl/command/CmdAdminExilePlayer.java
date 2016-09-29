@@ -12,12 +12,13 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminExilePlayer extends PearlCommand {
 
 	public CmdAdminExilePlayer(ExilePearlPlugin plugin) {
 		super(plugin);
-		this.aliases.add("exile");
+		this.aliases.add("exileany");
 
 		this.setHelpShort("Exiles a player.");
 		
@@ -27,6 +28,9 @@ public class CmdAdminExilePlayer extends PearlCommand {
 		this.optionalArgs.put("x", "?");
 		this.optionalArgs.put("y", "?");
 		this.optionalArgs.put("z", "?");
+		
+		this.permission = Permission.ADMIN.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

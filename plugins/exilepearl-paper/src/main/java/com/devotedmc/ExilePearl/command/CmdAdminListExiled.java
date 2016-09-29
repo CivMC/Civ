@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.util.Permission;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 public class CmdAdminListExiled extends PearlCommand {
@@ -13,6 +14,9 @@ public class CmdAdminListExiled extends PearlCommand {
 		this.aliases.add("list");
 
 		this.setHelpShort("Lists all the exiled players.");
+		
+		this.permission = Permission.ADMIN.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

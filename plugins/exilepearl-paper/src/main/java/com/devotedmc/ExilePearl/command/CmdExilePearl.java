@@ -27,8 +27,13 @@ public class CmdExilePearl extends PearlCommand {
 		this.addSubCommand(cmdFree);
 		
 		// Admin commands
-		this.addSubCommand(new CmdAdmin(p));
 		this.addSubCommand(new CmdConfig(p));
+		this.addSubCommand(new CmdAdminDecay(p));
+		this.addSubCommand(new CmdAdminExilePlayer(p));
+		this.addSubCommand(new CmdAdminFreePlayer(p));
+		this.addSubCommand(new CmdAdminCheckExiled(p));
+		this.addSubCommand(new CmdAdminListExiled(p));
+		this.addSubCommand(new CmdAdminReload(p));
 		
 		instance = this;
 	}

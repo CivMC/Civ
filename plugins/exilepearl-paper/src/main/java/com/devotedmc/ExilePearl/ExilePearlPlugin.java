@@ -23,6 +23,7 @@ import com.devotedmc.ExilePearl.core.CorePearlFactory;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
@@ -52,7 +53,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this, pearlConfig);
 	
-	private final HashSet<PearlCommand> commands = new HashSet<PearlCommand>();
+	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
 	
 	
@@ -103,6 +104,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 		
 		// Add commands
 		commands.add(new CmdExilePearl(this));
+		commands.add(new CmdLegacy(this));
 		
 		// Register events
 		this.getServer().getPluginManager().registerEvents(playerListener, this);
@@ -162,7 +164,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String alias, String[] args) {
-		for (BaseCommand<? extends ExilePearlPlugin> c : commands) {
+		for (BaseCommand<?> c : commands) {
 			List<String> aliases = c.getAliases();
 			if (aliases.contains(cmd.getLabel())) {
 
@@ -173,6 +175,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	
@@ -182,7 +185,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	 */
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		for (BaseCommand<? extends ExilePearlPlugin> c : commands) {
+		for (BaseCommand<?> c : commands) {
 			List<String> aliases = c.getAliases();
 			if (aliases.contains(cmd.getLabel())) {
 

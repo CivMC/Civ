@@ -62,8 +62,7 @@ public class AsyncStorageWriterTest {
 		try { writer.pearlInsert(pearl); } catch (Throwable ex) { e = ex; }
 		assertNull(e);
 		
-		Thread.sleep(10); // Wait for async writer to execute
-		verify(storage).pearlInsert(pearl);;
+		verify(storage, timeout(5000)).pearlInsert(pearl);;
 		
 		writer.disconnect();
 		assertFalse(writer.isConnected());

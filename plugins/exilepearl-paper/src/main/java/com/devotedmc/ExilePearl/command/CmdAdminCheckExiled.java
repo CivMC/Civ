@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminCheckExiled extends PearlCommand {
 
@@ -12,6 +13,9 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		this.setHelpShort("Checks if a player is exiled");
 		
 		this.requiredArgs.add("player");
+		
+		this.permission = Permission.ADMIN.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override

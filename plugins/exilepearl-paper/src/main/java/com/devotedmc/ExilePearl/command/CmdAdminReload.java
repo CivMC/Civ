@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminReload extends PearlCommand {
 
@@ -9,6 +10,9 @@ public class CmdAdminReload extends PearlCommand {
 		this.aliases.add("reload");
 
 		this.setHelpShort("Reloads the entire plugin.");
+		
+		this.permission = Permission.ADMIN.node;
+		this.visibility = CommandVisibility.SECRET;
 	}
 
 	@Override
