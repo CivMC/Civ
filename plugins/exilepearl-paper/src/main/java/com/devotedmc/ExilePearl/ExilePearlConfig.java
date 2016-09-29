@@ -58,7 +58,7 @@ public class ExilePearlConfig {
 	
 	@CivConfig(name = "health.max_value", def = "336" , type = CivConfigType.Int)
 	public int getPearlHealthMaxValue() {
-		return plugin.GetConfig().get("upkeep.max_value").getInt();
+		return plugin.GetConfig().get("health.max_value").getInt();
 	}
 	
 	@CivConfig(name = "autofree_worldborder", def = "true", type = CivConfigType.Bool)

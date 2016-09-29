@@ -101,6 +101,6 @@ public class CmdAdminExilePlayer extends PearlCommand {
 		
 		// Place the pearl in the inventory
 		inv.setItem(inv.firstEmpty(), pearl.createItemStack());
-		msg("<g>You exiled the player <c>%s", name);
+		msg("<g>You exiled the player <c>%s", pearl.getPlayerName());
 	}
 }

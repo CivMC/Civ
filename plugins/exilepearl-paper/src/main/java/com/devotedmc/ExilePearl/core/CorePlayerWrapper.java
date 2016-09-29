@@ -1082,8 +1082,7 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public Location getLocation() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLocation();
 	}
 
 	@Override
@@ -1345,14 +1344,12 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public void sendMessage(String arg0) {
-		// TODO Auto-generated method stub
-		
+		player.sendMessage(arg0);
 	}
 
 	@Override
 	public void sendMessage(String[] arg0) {
-		// TODO Auto-generated method stub
-		
+		player.sendMessage(arg0);
 	}
 
 	@Override
@@ -1585,8 +1582,7 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public boolean isOnline() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isOnline();
 	}
 
 	@Override
