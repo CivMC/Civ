@@ -69,10 +69,8 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      * @param eve BLockBreakEvent
      */
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent eve)
-    {
-        if(manager.isReinforced(eve.getBlock()))
-        {
+    public void onBlockBreak(BlockBreakEvent eve) {
+        if(manager.isReinforced(eve.getBlock())) {
             String name = eve.getPlayer().getDisplayName();
             Location loc = eve.getBlock().getLocation();
 
@@ -91,8 +89,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      * @param z block z
      * @return returns the builded String
      */
-    private String setVars(String name, String x, String y, String z)
-    {
+    private String setVars(String name, String x, String y, String z) {
         return ChatColor.translateAlternateColorCodes('&', config.getMessage()
                                                  .replace("%player%", name)
                                                  .replace("%x%", x)
@@ -104,8 +101,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
         @Override
         public void run() {
-            for (String message: messages)
-            {
+            for (String message: messages) {
                 plugin().serverOperatorBroadcast(message);
             }
             messages.clear();

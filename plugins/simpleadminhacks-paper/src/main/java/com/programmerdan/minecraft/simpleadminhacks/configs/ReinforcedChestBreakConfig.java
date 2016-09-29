@@ -26,13 +26,11 @@ public class ReinforcedChestBreakConfig extends SimpleHackConfig{
         this.message = config.getString("message", "&4%Player% is raiding a chest at %x% %y% %z%.");
     }
 
-    public int getDelay()
-    {
+    public int getDelay() {
         return delay;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 }
