@@ -55,6 +55,12 @@ import org.bukkit.util.Vector;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.util.Guard;
 
+/**
+ * Wrapper class for a Bukkit Player instance that will fetch the player
+ * name from a given player provider instead of the player instance.
+ * @author Gordon
+ *
+ */
 @SuppressWarnings("deprecation")
 public class CorePlayerWrapper implements Player {
 	
@@ -728,356 +734,297 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public InventoryView openInventory(Inventory arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.openInventory(arg0);
 	}
 
 	@Override
 	public void openInventory(InventoryView arg0) {
-		// TODO Auto-generated method stub
-		
+		player.openInventory(arg0);
 	}
 
 	@Override
 	public InventoryView openMerchant(Villager arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.openMerchant(arg0, arg1);
 	}
 
 	@Override
 	public InventoryView openWorkbench(Location arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.openWorkbench(arg0, arg1);
 	}
 
 	@Override
 	public void setGameMode(GameMode arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setGameMode(arg0);
 	}
 
 	@Override
 	public void setItemInHand(ItemStack arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setItemInHand(arg0);
 	}
 
 	@Override
 	public void setItemOnCursor(ItemStack arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setItemOnCursor(arg0);
 	}
 
 	@Override
 	public boolean setWindowProperty(Property arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.setWindowProperty(arg0, arg1);
 	}
 
 	@Override
 	public int _INVALID_getLastDamage() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player._INVALID_getLastDamage();
 	}
 
 	@Override
 	public void _INVALID_setLastDamage(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player._INVALID_setLastDamage(arg0);
 	}
 
 	@Override
 	public boolean addPotionEffect(PotionEffect arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.addPotionEffect(arg0);
 	}
 
 	@Override
 	public boolean addPotionEffect(PotionEffect arg0, boolean arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.addPotionEffect(arg0, arg1);
 	}
 
 	@Override
 	public boolean addPotionEffects(Collection<PotionEffect> arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.addPotionEffects(arg0);
 	}
 
 	@Override
 	public Collection<PotionEffect> getActivePotionEffects() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getActivePotionEffects();
 	}
 
 	@Override
 	public boolean getCanPickupItems() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.getCanPickupItems();
 	}
 
 	@Override
 	public EntityEquipment getEquipment() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getEquipment();
 	}
 
 	@Override
 	public double getEyeHeight() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getEyeHeight();
 	}
 
 	@Override
 	public double getEyeHeight(boolean arg0) {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getEyeHeight();
 	}
 
 	@Override
 	public Location getEyeLocation() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getEyeLocation();
 	}
 
 	@Override
 	public Player getKiller() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getKiller();
 	}
 
 	@Override
 	public double getLastDamage() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getLastDamage();
 	}
 
 	@Override
 	public List<Block> getLastTwoTargetBlocks(HashSet<Byte> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLastTwoTargetBlocks(arg0, arg1);
 	}
 
 	@Override
 	public List<Block> getLastTwoTargetBlocks(Set<Material> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLastTwoTargetBlocks(arg0, arg1);
 	}
 
 	@Override
 	public Entity getLeashHolder() throws IllegalStateException {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLeashHolder();
 	}
 
 	@Override
 	public List<Block> getLineOfSight(HashSet<Byte> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLineOfSight(arg0, arg1);
 	}
 
 	@Override
 	public List<Block> getLineOfSight(Set<Material> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLineOfSight(arg0, arg1);
 	}
 
 	@Override
 	public int getMaximumAir() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getMaximumAir();
 	}
 
 	@Override
 	public int getMaximumNoDamageTicks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getMaximumNoDamageTicks();
 	}
 
 	@Override
 	public int getNoDamageTicks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getNoDamageTicks();
 	}
 
 	@Override
 	public PotionEffect getPotionEffect(PotionEffectType arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getPotionEffect(arg0);
 	}
 
 	@Override
 	public int getRemainingAir() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getRemainingAir();
 	}
 
 	@Override
 	public boolean getRemoveWhenFarAway() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.getRemoveWhenFarAway();
 	}
 
 	@Override
 	public Block getTargetBlock(HashSet<Byte> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getTargetBlock(arg0, arg1);
 	}
 
 	@Override
 	public Block getTargetBlock(Set<Material> arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getTargetBlock(arg0, arg1);
 	}
 
 	@Override
 	public boolean hasAI() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasAI();
 	}
 
 	@Override
 	public boolean hasLineOfSight(Entity arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasLineOfSight(arg0);
 	}
 
 	@Override
 	public boolean hasPotionEffect(PotionEffectType arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasPotionEffect(arg0);
 	}
 
 	@Override
 	public boolean isCollidable() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isCollidable();
 	}
 
 	@Override
 	public boolean isGliding() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isGliding();
 	}
 
 	@Override
 	public boolean isLeashed() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isLeashed();
 	}
 
 	@Override
 	public void removePotionEffect(PotionEffectType arg0) {
-		// TODO Auto-generated method stub
-		
+		player.removePotionEffect(arg0);
 	}
 
 	@Override
 	public void setAI(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setAI(arg0);
 	}
 
 	@Override
 	public void setCanPickupItems(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setCanPickupItems(arg0);
 	}
 
 	@Override
 	public void setCollidable(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setCollidable(arg0);
 	}
 
 	@Override
 	public void setGliding(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setGliding(arg0);
 	}
 
 	@Override
 	public void setLastDamage(double arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setLastDamage(arg0);
 	}
 
 	@Override
 	public boolean setLeashHolder(Entity arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.setLeashHolder(arg0);
 	}
 
 	@Override
 	public void setMaximumAir(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setMaximumAir(arg0);
 	}
 
 	@Override
 	public void setMaximumNoDamageTicks(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setMaximumNoDamageTicks(arg0);
 	}
 
 	@Override
 	public void setNoDamageTicks(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setNoDamageTicks(arg0);
 	}
 
 	@Override
 	public void setRemainingAir(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setRemainingAir(arg0);
 	}
 
 	@Override
 	public void setRemoveWhenFarAway(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setRemoveWhenFarAway(arg0);
 	}
 
 	@Override
 	public AttributeInstance getAttribute(Attribute arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getAttribute(arg0);
 	}
 
 	@Override
 	public boolean eject() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.eject();
 	}
 
 	@Override
 	public String getCustomName() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getCustomName();
 	}
 
 	@Override
 	public int getEntityId() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getEntityId();
 	}
 
 	@Override
 	public float getFallDistance() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getFallDistance();
 	}
 
 	@Override
 	public int getFireTicks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getFireTicks();
 	}
 
 	@Override
 	public EntityDamageEvent getLastDamageCause() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLastDamageCause();
 	}
 
 	@Override
@@ -1087,44 +1034,37 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public Location getLocation(Location arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getLocation(arg0);
 	}
 
 	@Override
 	public int getMaxFireTicks() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getMaxFireTicks();
 	}
 
 	@Override
 	public List<Entity> getNearbyEntities(double arg0, double arg1, double arg2) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getNearbyEntities(arg0, arg1, arg2);
 	}
 
 	@Override
 	public Entity getPassenger() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getPassenger();
 	}
 
 	@Override
 	public Server getServer() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getServer();
 	}
 
 	@Override
 	public int getTicksLived() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getTicksLived();
 	}
 
 	@Override
 	public EntityType getType() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getType();
 	}
 
 	@Override
@@ -1134,212 +1074,177 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public Entity getVehicle() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getVehicle();
 	}
 
 	@Override
 	public Vector getVelocity() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getVelocity();
 	}
 
 	@Override
 	public World getWorld() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getWorld();
 	}
 
 	@Override
 	public boolean hasGravity() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasGravity();
 	}
 
 	@Override
 	public boolean isCustomNameVisible() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isCustomNameVisible();
 	}
 
 	@Override
 	public boolean isDead() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isDead();
 	}
 
 	@Override
 	public boolean isEmpty() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isEmpty();
 	}
 
 	@Override
 	public boolean isGlowing() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isGlowing();
 	}
 
 	@Override
 	public boolean isInsideVehicle() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isInsideVehicle();
 	}
 
 	@Override
 	public boolean isInvulnerable() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isInvulnerable();
 	}
 
 	@Override
 	public boolean isSilent() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isSilent();
 	}
 
 	@Override
 	public boolean isValid() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isValid();
 	}
 
 	@Override
 	public boolean leaveVehicle() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.leaveVehicle();
 	}
 
 	@Override
 	public void playEffect(EntityEffect arg0) {
-		// TODO Auto-generated method stub
-		
+		player.playEffect(arg0);
 	}
 
 	@Override
 	public void remove() {
-		// TODO Auto-generated method stub
-		
+		player.remove();
 	}
 
 	@Override
 	public void setCustomName(String arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setCustomName(arg0);
 	}
 
 	@Override
 	public void setCustomNameVisible(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setCustomNameVisible(arg0);
 	}
 
 	@Override
 	public void setFallDistance(float arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setFallDistance(arg0);
 	}
 
 	@Override
 	public void setFireTicks(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setFireTicks(arg0);
 	}
 
 	@Override
 	public void setGlowing(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setGlowing(arg0);
 	}
 
 	@Override
 	public void setGravity(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setGravity(arg0);
 	}
 
 	@Override
 	public void setInvulnerable(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setInvulnerable(arg0);
 	}
 
 	@Override
 	public void setLastDamageCause(EntityDamageEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setLastDamageCause(arg0);
 	}
 
 	@Override
 	public boolean setPassenger(Entity arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.setPassenger(arg0);
 	}
 
 	@Override
 	public void setSilent(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setSilent(arg0);
 	}
 
 	@Override
 	public void setTicksLived(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setTicksLived(arg0);
 	}
 
 	@Override
 	public void setVelocity(Vector arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setVelocity(arg0);
 	}
 
 	@Override
 	public boolean teleport(Location arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.teleport(arg0);
 	}
 
 	@Override
 	public boolean teleport(Entity arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.teleport(arg0);
 	}
 
 	@Override
 	public boolean teleport(Location arg0, TeleportCause arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.teleport(arg0, arg1);
 	}
 
 	@Override
 	public boolean teleport(Entity arg0, TeleportCause arg1) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.teleport(arg0, arg1);
 	}
 
 	@Override
 	public List<MetadataValue> getMetadata(String arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getMetadata(arg0);
 	}
 
 	@Override
 	public boolean hasMetadata(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasMetadata(arg0);
 	}
 
 	@Override
 	public void removeMetadata(String arg0, Plugin arg1) {
-		// TODO Auto-generated method stub
-		
+		player.removeMetadata(arg0, arg1);
 	}
 
 	@Override
 	public void setMetadata(String arg0, MetadataValue arg1) {
-		// TODO Auto-generated method stub
-		
+		player.setMetadata(arg0, arg1);
 	}
 
 	@Override
@@ -1354,230 +1259,192 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.addAttachment(arg0);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin arg0, int arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.addAttachment(arg0, arg1);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.addAttachment(arg0, arg1, arg2);
 	}
 
 	@Override
 	public PermissionAttachment addAttachment(Plugin arg0, String arg1, boolean arg2, int arg3) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.addAttachment(arg0, arg1, arg2, arg3);
 	}
 
 	@Override
 	public Set<PermissionAttachmentInfo> getEffectivePermissions() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getEffectivePermissions();
 	}
 
 	@Override
 	public boolean hasPermission(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasPermission(arg0);
 	}
 
 	@Override
 	public boolean hasPermission(Permission arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasPermission(arg0);
 	}
 
 	@Override
 	public boolean isPermissionSet(String arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isPermissionSet(arg0);
 	}
 
 	@Override
 	public boolean isPermissionSet(Permission arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isPermissionSet(arg0);
 	}
 
 	@Override
 	public void recalculatePermissions() {
-		// TODO Auto-generated method stub
-		
+		player.recalculatePermissions();
 	}
 
 	@Override
 	public void removeAttachment(PermissionAttachment arg0) {
-		// TODO Auto-generated method stub
-		
+		player.removeAttachment(arg0);
 	}
 
 	@Override
 	public boolean isOp() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isOp();
 	}
 
 	@Override
 	public void setOp(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setOp(arg0);
 	}
 
 	@Override
 	public void _INVALID_damage(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player._INVALID_damage(arg0);
 	}
 
 	@Override
 	public void _INVALID_damage(int arg0, Entity arg1) {
-		// TODO Auto-generated method stub
-		
+		player._INVALID_damage(arg0, arg1);
 	}
 
 	@Override
 	public int _INVALID_getHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player._INVALID_getHealth();
 	}
 
 	@Override
 	public int _INVALID_getMaxHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player._INVALID_getMaxHealth();
 	}
 
 	@Override
 	public void _INVALID_setHealth(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player._INVALID_setHealth(arg0);
 	}
 
 	@Override
 	public void _INVALID_setMaxHealth(int arg0) {
-		// TODO Auto-generated method stub
-		
+		player._INVALID_setMaxHealth(arg0);
 	}
 
 	@Override
 	public void damage(double arg0) {
-		// TODO Auto-generated method stub
-		
+		player.damage(arg0);
 	}
 
 	@Override
 	public void damage(double arg0, Entity arg1) {
-		// TODO Auto-generated method stub
-		
+		player.damage(arg0, arg1);
 	}
 
 	@Override
 	public double getHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getHealth();
 	}
 
 	@Override
 	public double getMaxHealth() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getMaxHealth();
 	}
 
 	@Override
 	public void resetMaxHealth() {
-		// TODO Auto-generated method stub
-		
+		player.resetMaxHealth();
 	}
 
 	@Override
 	public void setHealth(double arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setHealth(arg0);
 	}
 
 	@Override
 	public void setMaxHealth(double arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setMaxHealth(arg0);
 	}
 
 	@Override
 	public <T extends Projectile> T launchProjectile(Class<? extends T> arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.launchProjectile(arg0);
 	}
 
 	@Override
 	public <T extends Projectile> T launchProjectile(Class<? extends T> arg0, Vector arg1) {
-		// TODO Auto-generated method stub
-		return null;
+		return player.launchProjectile(arg0, arg1);
 	}
 
 	@Override
 	public void abandonConversation(Conversation arg0) {
-		// TODO Auto-generated method stub
-		
+		player.abandonConversation(arg0);
 	}
 
 	@Override
 	public void abandonConversation(Conversation arg0, ConversationAbandonedEvent arg1) {
-		// TODO Auto-generated method stub
-		
+		player.abandonConversation(arg0, arg1);
 	}
 
 	@Override
 	public void acceptConversationInput(String arg0) {
-		// TODO Auto-generated method stub
-		
+		player.acceptConversationInput(arg0);
 	}
 
 	@Override
 	public boolean beginConversation(Conversation arg0) {
-		// TODO Auto-generated method stub
-		return false;
+		return player.beginConversation(arg0);
 	}
 
 	@Override
 	public boolean isConversing() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isConversing();
 	}
 
 	@Override
 	public long getFirstPlayed() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getFirstPlayed();
 	}
 
 	@Override
 	public long getLastPlayed() {
-		// TODO Auto-generated method stub
-		return 0;
+		return player.getLastPlayed();
 	}
 
 	@Override
 	public Player getPlayer() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getPlayer();
 	}
 
 	@Override
 	public boolean hasPlayedBefore() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.hasPlayedBefore();
 	}
 
 	@Override
 	public boolean isBanned() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isBanned();
 	}
 
 	@Override
@@ -1587,38 +1454,31 @@ public class CorePlayerWrapper implements Player {
 
 	@Override
 	public boolean isWhitelisted() {
-		// TODO Auto-generated method stub
-		return false;
+		return player.isWhitelisted();
 	}
 
 	@Override
 	public void setBanned(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setBanned(arg0);
 	}
 
 	@Override
 	public void setWhitelisted(boolean arg0) {
-		// TODO Auto-generated method stub
-		
+		player.setWhitelisted(arg0);
 	}
 
 	@Override
 	public Map<String, Object> serialize() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.serialize();
 	}
 
 	@Override
 	public Set<String> getListeningPluginChannels() {
-		// TODO Auto-generated method stub
-		return null;
+		return player.getListeningPluginChannels();
 	}
 
 	@Override
 	public void sendPluginMessage(Plugin arg0, String arg1, byte[] arg2) {
-		// TODO Auto-generated method stub
-		
+		player.sendPluginMessage(arg0, arg1, arg2);
 	}
-
 }
