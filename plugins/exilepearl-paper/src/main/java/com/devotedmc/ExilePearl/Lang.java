@@ -4,7 +4,7 @@ public class Lang
 {
 	public static final String pearlCantHold = "<b>Imprisoned players cannot pick up prison pearls.";
 	public static final String pearlMotd2 = "<i>Type \"<c>/pp locate<i>\" to locate your pearl.";
-	public static final String pearlNotImprisoned = "<i>You are not imprisoned.";
+	public static final String pearlNotExiled = "<i>You are not exiled.";
 	public static final String pearlPearlIsHeld = "<i>Your pearl is held by <a>%s <n>[%d %d %d %s]";
 	public static final String pearlYouBound = "<g>You've bound <c>%s <g>to an exile pearl!";
 	public static final String pearlYouWereBound = "<b>You've been bound to an exile pearl by <c>%s<b>!";
@@ -13,12 +13,16 @@ public class Lang
 	public static final String pearlMustBeHoldingPearl = "<b>You must be holding an exile pearl to do that.";
 	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by an exile pearl.";
 	public static final String pearlPlayerNotExiled = "<i>That player is not exiled.";
+	public static final String pearlPlayerNotExiledOrBcasting = "<i>That player is not exiled or broadcasting to you.";
 	public static final String pearlCantDoThat = "<i>You can't do that when exiled!";
 	public static final String pearlNoPlayer = "<i>There's no online player by that name.";
 	public static final String pearlBcastRequestSent = "<i>Broadcast request sent.";
-	public static final String pearlBcastRequest = "<c>%s <i>has requested to broadcast their pearl location.\nType <c>/pp confirm <i>to confirm";
+	public static final String pearlBcastRequest = "<c>%s <i>has requested to broadcast their pearl location.\nType <c>/ep confirm <i>to confirm";
 	public static final String pearlNoBcastRequest = "<i>You have no broadcast requests.";
 	public static final String pearlGettingBcasts = "<g>You have now receiving broadcasts from <c>%s.";
+	public static final String pearlNotGettingBcasts = "<i>You aren't getting broadcasts from <c>%s.";
+	public static final String pearlCantBcastSelf = "<i>You can't broadcast to yourself.";
+	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	
 	public static final String permForbidden = "<b>You don't have permission to %s.";

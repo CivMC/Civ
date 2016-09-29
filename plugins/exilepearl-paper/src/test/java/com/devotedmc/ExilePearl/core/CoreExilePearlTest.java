@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +35,9 @@ import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
@@ -314,9 +317,14 @@ public class CoreExilePearlTest {
 		assertFalse(pearl.getFreedOffline());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testItemStack() {
-		new CmdExilePearl(mock(ExilePearlPlugin.class));
+		ExilePearlPlugin plugin = mock(ExilePearlPlugin.class);
+		PearlCommand autoHelp = mock(PearlCommand.class);
+		when(autoHelp.getCommandChain()).thenReturn((List<BaseCommand<? extends JavaPlugin>>)mock(List.class));
+		when(plugin.getAutoHelp()).thenReturn(autoHelp);
+		new CmdExilePearl(plugin);
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    ItemFactory itemFactory = mock(ItemFactory.class);
@@ -421,6 +429,7 @@ public class CoreExilePearlTest {
 		assertFalse(pearl.verifyLocation());
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	public void testGetItemFromInventory() {
 		// Null arg throws exception
@@ -430,7 +439,11 @@ public class CoreExilePearlTest {
 		
 		Inventory inv = mock(Inventory.class);
 		
-		new CmdExilePearl(mock(ExilePearlPlugin.class));
+		ExilePearlPlugin plugin = mock(ExilePearlPlugin.class);
+		PearlCommand autoHelp = mock(PearlCommand.class);
+		when(autoHelp.getCommandChain()).thenReturn((List<BaseCommand<? extends JavaPlugin>>)mock(List.class));
+		when(plugin.getAutoHelp()).thenReturn(autoHelp);
+		new CmdExilePearl(plugin);
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    ItemFactory itemFactory = mock(ItemFactory.class);

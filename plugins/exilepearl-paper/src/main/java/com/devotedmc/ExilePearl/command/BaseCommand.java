@@ -192,7 +192,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * Gets the sender instance
 	 * @return The sender instance
 	 */
-	protected Player player() {
+	protected Player me() {
 		return me;
 	}
 
@@ -202,9 +202,18 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param subCommand the sub-command to add
 	 */
 	public void addSubCommand(BaseCommand<? extends  JavaPlugin> subCommand) {
-		subCommand.commandChain.addAll(this.commandChain);
-		subCommand.commandChain.add(this);
+		subCommand.getCommandChain().addAll(this.commandChain);
+		subCommand.getCommandChain().add(this);
 		this.subCommands.add(subCommand);
+	}
+	
+	
+	/**
+	 * Gets the command chain
+	 * @return The command chain
+	 */
+	public List<BaseCommand<? extends  JavaPlugin>> getCommandChain() {
+		return commandChain;
 	}
 	
 	/**

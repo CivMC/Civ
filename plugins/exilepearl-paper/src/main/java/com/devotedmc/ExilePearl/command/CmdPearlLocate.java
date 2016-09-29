@@ -12,6 +12,8 @@ public class CmdPearlLocate extends PearlCommand {
 	public CmdPearlLocate(ExilePearlPlugin plugin) {
 		super(plugin);
 		this.aliases.add("locate");
+		
+		this.optionalArgs.put("player", "you");
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Locates your exile pearl");
@@ -19,30 +21,59 @@ public class CmdPearlLocate extends PearlCommand {
 
 	@Override
 	public void perform() {
-		ExilePearl pp = pearlApi.getPearl(me().getUniqueId());
 		
-		if (pp == null) {
-			msg(Lang.pearlNotImprisoned);
-			return;
+		if(this.args.size() == 1) {			
+			PearlPlayer player = plugin.getPearlPlayer(this.argAsString(0));
+			if (player == null) {
+				msg(Lang.pearlNoPlayer);
+				return;
+			}
+			
+			if(!player.isExiled() || !player.getBcastPlayers().contains(me())) {
+				msg(Lang.pearlPlayerNotExiledOrBcasting);
+				return;
+			}
+			
+			msg(getBcastString(player.getExilePearl()));
 		}
 		
-		if (pp.verifyLocation()) {
+		if (!me().isExiled()) {
 
-			Location l = pp.getHolder().getLocation();
-			String name = pp.getHolder().getName();
+			msg(Lang.pearlNotExiled);
+			return;
+		}
+
+		ExilePearl pearl = pearlApi.getPearl(me().getUniqueId());
+		if (pearl.verifyLocation()) {
+
+			Location l = pearl.getHolder().getLocation();
+			String name = pearl.getHolder().getName();
 			
 			msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 			
-			String bcastMsg = plugin.formatText(Lang.pearlBroadcast, me().getName(), 
-					name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+			String bcastMsg = getBcastString(pearl);
 			
 			for(PearlPlayer p : me().getBcastPlayers()) {
 				p.msg(bcastMsg);
 			}
 			
 		} else {
-			plugin.log("%s is freed because the pearl could not be located.", pp.getLocation());
-			pearlApi.freePearl(pp);
+			plugin.log("%s is freed because the pearl could not be located.", pearl.getLocation());
+			pearlApi.freePearl(pearl);
 		}
+	}
+	
+	/**
+	 * Gets the pearl broadcast message
+	 * @param pearl The pearl instance
+	 * @return The broadcast message
+	 */
+	private String getBcastString(ExilePearl pearl) {
+
+		Location l = pearl.getHolder().getLocation();
+		String name = pearl.getHolder().getName();
+		
+		return plugin.formatText(Lang.pearlBroadcast, me().getName(), 
+				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 	}
 }

@@ -57,6 +57,11 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 	}
 
 	@Override
+	public void removeBcastPlayer(PearlPlayer sp) {
+		this.bcastPlayers.remove(sp);
+	}
+
+	@Override
 	public PearlPlayer getRequestedBcastPlayer() {
 		return this.broadcastRequestPlayer;
 	}

@@ -10,30 +10,42 @@ public class CmdExilePearl extends PearlCommand {
 		return instance;
 	}
 	
-	public final CmdPearlLocate cmdLocate;
-	public final CmdPearlFree cmdFree;
+	public final PearlCommand cmdLocate;
+	public final PearlCommand cmdFree;
+	public final PearlCommand cmdBcast;
+	public final PearlCommand cmdBcastConfirm;
+	public final PearlCommand cmdBcastSilence;
 	
 	public CmdExilePearl(ExilePearlPlugin p) {
 		super(p);
 		this.aliases.add("ep");
 		
-		this.setHelpShort("The ExilePearl base command");
-		this.getLongHelp().add("This is the root command for Exile Pearl.");
+		this.setHelpShort("The ExilePearl command");
+		this.getLongHelp().add("The ExilePearl command.");
+		this.getLongHelp().add("Use /ep help for command help.");
 		
 		cmdLocate = new CmdPearlLocate(p);
 		cmdFree = new CmdPearlFree(p);
+		cmdBcast = new CmdPearlBroadcast(p);
+		cmdBcastConfirm = new CmdPearlBroadcastConfirm(p);
+		cmdBcastSilence = new CmdPearlBroadcastSilence(p);
 		
-		this.addSubCommand(cmdLocate);
-		this.addSubCommand(cmdFree);
+		addSubCommand(plugin.getAutoHelp());
+		
+		addSubCommand(cmdLocate);
+		addSubCommand(cmdFree);
+		addSubCommand(cmdBcast);
+		addSubCommand(cmdBcastConfirm);
+		addSubCommand(cmdBcastSilence);
 		
 		// Admin commands
-		this.addSubCommand(new CmdConfig(p));
-		this.addSubCommand(new CmdAdminDecay(p));
-		this.addSubCommand(new CmdAdminExilePlayer(p));
-		this.addSubCommand(new CmdAdminFreePlayer(p));
-		this.addSubCommand(new CmdAdminCheckExiled(p));
-		this.addSubCommand(new CmdAdminListExiled(p));
-		this.addSubCommand(new CmdAdminReload(p));
+		addSubCommand(new CmdConfig(p));
+		addSubCommand(new CmdAdminDecay(p));
+		addSubCommand(new CmdAdminExilePlayer(p));
+		addSubCommand(new CmdAdminFreePlayer(p));
+		addSubCommand(new CmdAdminCheckExiled(p));
+		addSubCommand(new CmdAdminListExiled(p));
+		addSubCommand(new CmdAdminReload(p));
 		
 		instance = this;
 	}

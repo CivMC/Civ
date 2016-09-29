@@ -27,9 +27,15 @@ public interface PearlPlayer extends Player {
 	
 	/**
 	 * Adds a broadcast player
-	 * @param sp The broadcast player
+	 * @param sp The broadcast player to add
 	 */
 	void addBcastPlayer(PearlPlayer sp);
+	
+	/**
+	 * Removes a broadcast player
+	 * @param sp The broadcast player to remove
+	 */
+	void removeBcastPlayer(PearlPlayer sp);
 	
 	/**
 	 * Gets the player requested to broadcast pearl location
