@@ -42,6 +42,9 @@ factories:
     - Smelt Glass
     - Smelt Glass Alternative
     - Smelt Stone
+    - Craft Granite
+    - Craft Andesite
+    - Craft Diorite
     - Smelt Sandstone
     - Smelt Hardened Clay
     - Smelt Red Sandstone
@@ -579,6 +582,45 @@ recipes:
       redsandstone:
         material: RED_SANDSTONE
         amount: 96
+  Craft Granite:
+    type: PRODUCTION
+    name: Craft Granite
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      granite:
+        material: STONE
+        durability: 1
+        amount: 64
+  Craft Andesite:
+    type: PRODUCTION
+    name: Craft Andesite
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      andesite:
+        material: STONE
+        durability: 5
+        amount: 64
+  Craft Diorite:
+    type: PRODUCTION
+    name: Craft Diorite
+    production_time: 5s
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    output:
+      diorite:
+        material: STONE
+        durability: 3
+        amount: 64
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
