@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,8 +26,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     private ReinforcementManager manager;
     private Messenger messenger;
-    private String lastMessage;
-    private List<Player> messageList;
+    private List<String> messages;
 
     public ReinforcedChestBreak(SimpleAdminHacks plugin, ReinforcedChestBreakConfig config) {
         super(plugin, config);
@@ -42,12 +42,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     @Override
     public void dataBootstrap() {
-        for (UUID uniqueId: config.getAdmins())
-        {
-            messageList.add(Bukkit.getPlayer(uniqueId));
-        }
-
-        lastMessage = "";
+        messages = new ArrayList<>();
 
         manager = Citadel.getReinforcementManager();
         messenger = new Messenger();
@@ -66,8 +61,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     @Override
     public String status() {
-        return "Delay: " + config.getDelay() +
-                ", next message to be send: " + lastMessage;
+        return "Delay: " + config.getDelay();
     }
 
     /**
@@ -82,10 +76,10 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
             String name = eve.getPlayer().getDisplayName();
             Location loc = eve.getBlock().getLocation();
 
-            lastMessage = setVars(name,
+            messages.add(setVars(name,
                     String.valueOf(loc.getBlockX()),
                     String.valueOf(loc.getBlockY()),
-                    String.valueOf(loc.getBlockZ()));
+                    String.valueOf(loc.getBlockZ())));
         }
     }
 
@@ -110,10 +104,11 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
         @Override
         public void run() {
-            for (UUID uuid: config.getAdmins())
+            for (String message: messages)
             {
-                Bukkit.getPlayer(uuid).sendMessage(lastMessage);
+                plugin().serverOperatorBroadcast(message);
             }
+            messages.clear();
         }
     }
 }
