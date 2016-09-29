@@ -43,6 +43,87 @@ public class CmdConfigSet extends PearlCommand
 			valBool = argAsBool(1);
 			result = config.setRuleCanDamageReinforcement(valBool);
 			break;
+			
+		case DAMAGE_BASTION:
+			valBool = argAsBool(1);
+			result = config.setRuleCanDamageBastion(valBool);
+			break;
+			
+		case ENTER_BASTION:
+			valBool = argAsBool(1);
+			result = config.setRuleCanEnterBastion(valBool);
+			break;
+			
+		case THROW_PEARL:
+			valBool = argAsBool(1);
+			result = config.setRuleCanThrowEnderPearl(valBool);
+			break;
+			
+		case CHAT:
+			valBool = argAsBool(1);
+			result = config.setRuleCanChatLocal(valBool);
+			break;
+			
+		case PVP:
+			valBool = argAsBool(1);
+			result = config.setRuleCanPvp(valBool);
+			break;
+			
+		case IGNITE:
+			valBool = argAsBool(1);
+			result = config.setRuleCanIgnite(valBool);
+			break;
+			
+		case USE_BUCKET:
+			valBool = argAsBool(1);
+			result = config.setRuleCanUseBucket(valBool);
+			break;
+			
+		case PLACE_WATER:
+			valBool = argAsBool(1);
+			result = config.setRuleCanPlaceWater(valBool);
+			break;
+			
+		case PLACE_LAVA:
+			valBool = argAsBool(1);
+			result = config.setRuleCanPlaceLava(valBool);
+			break;
+			
+		case USE_POTIONS:
+			valBool = argAsBool(1);
+			result = config.setRuleCanUsePotions(valBool);
+			break;
+			
+		case USE_BED:
+			valBool = argAsBool(1);
+			result = config.setRuleCanUseBed(valBool);
+			break;
+			
+		case SUICIDE:
+			valBool = argAsBool(1);
+			result = config.setRuleCanSuicide(valBool);
+			break;
+			
+		case SNITCH:
+			valBool = argAsBool(1);
+			result = config.setRuleCanPlaceSnitch(valBool);
+			break;
+			
+		case MINE:
+			valBool = argAsBool(1);
+			result = config.setRuleCanMine(valBool);
+			break;
+			
+		case BREW:
+			valBool = argAsBool(1);
+			result = config.setRuleCanBrew(valBool);
+			break;
+			
+		case ENCHANT:
+			valBool = argAsBool(1);
+			result = config.setRuleCanEnchant(valBool);
+			break;
+			
 		default:
 			msg("<b>That rule isn't implemented yet.");
 			return;

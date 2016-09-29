@@ -19,7 +19,7 @@ public enum ExileRule {
 	SUICIDE("SUICIDE", "commit suicide"),
 	SNITCH("SNITCH", "place snitches"),
 	MINE("MINE", "break blocks"),
-	BREW("BREW", "use brew potions"),
+	BREW("BREW", "brew potions"),
 	ENCHANT("ENCHANT", "enchant items")
 	;
 	

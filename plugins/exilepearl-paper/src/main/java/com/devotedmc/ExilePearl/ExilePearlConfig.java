@@ -116,79 +116,143 @@ public class ExilePearlConfig {
 	public boolean getRuleCanDamageBastion() {
 		return plugin.GetConfig().get("rules.damage_bastion").getBool();
 	}
+	
+	public boolean setRuleCanDamageBastion(Boolean value) {
+		return plugin.GetConfig().set("rules.damage_bastion", value.toString());
+	}
 
 	@CivConfig(name = "rules.enter_bastion", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanEnterBastion() {
 		return plugin.GetConfig().get("rules.enter_bastion").getBool();
 	}
 	
+	public boolean setRuleCanEnterBastion(Boolean value) {
+		return plugin.GetConfig().set("rules.enter_bastion", value.toString());
+	}
+	
 	@CivConfig(name = "rules.throw_pearl", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanThrowEnderPearl() {
 		return plugin.GetConfig().get("rules.throw_pearl").getBool();
+	}
+	
+	public boolean setRuleCanThrowEnderPearl(Boolean value) {
+		return plugin.GetConfig().set("rules.throw_pearl", value.toString());
 	}
 
 	@CivConfig(name = "rules.chat_local", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanChatLocal() {
 		return plugin.GetConfig().get("rules.chat_local").getBool();
 	}
+	
+	public boolean setRuleCanChatLocal(Boolean value) {
+		return plugin.GetConfig().set("rules.chat_local", value.toString());
+	}
 
 	@CivConfig(name = "rules.pvp", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanPvp() {
 		return plugin.GetConfig().get("rules.pvp").getBool();
+	}
+	
+	public boolean setRuleCanPvp(Boolean value) {
+		return plugin.GetConfig().set("rules.pvp", value.toString());
 	}
 
 	@CivConfig(name = "rules.ignite", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanIgnite() {
 		return plugin.GetConfig().get("rules.ignite").getBool();
 	}
+	
+	public boolean setRuleCanIgnite(Boolean value) {
+		return plugin.GetConfig().set("rules.ignite", value.toString());
+	}
 
 	@CivConfig(name = "rules.use_bucket", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanUseBucket() {
 		return plugin.GetConfig().get("rules.use_bucket").getBool();
+	}
+	
+	public boolean setRuleCanUseBucket(Boolean value) {
+		return plugin.GetConfig().set("rules.use_bucket", value.toString());
 	}
 
 	@CivConfig(name = "rules.place_water", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanPlaceWater() {
 		return plugin.GetConfig().get("rules.place_water").getBool();
 	}
+	
+	public boolean setRuleCanPlaceWater(Boolean value) {
+		return plugin.GetConfig().set("rules.place_water", value.toString());
+	}
 
 	@CivConfig(name = "rules.place_lava", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanPlaceLava() {
 		return plugin.GetConfig().get("rules.place_lava").getBool();
+	}
+	
+	public boolean setRuleCanPlaceLava(Boolean value) {
+		return plugin.GetConfig().set("rules.place_lava", value.toString());
 	}
 
 	@CivConfig(name = "rules.use_potions", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanUsePotions() {
 		return plugin.GetConfig().get("rules.use_potions").getBool();
 	}
+	
+	public boolean setRuleCanUsePotions(Boolean value) {
+		return plugin.GetConfig().set("rules.use_potions", value.toString());
+	}
 
 	@CivConfig(name = "rules.use_bed", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanUseBed() {
 		return plugin.GetConfig().get("rules.use_bed").getBool();
+	}
+	
+	public boolean setRuleCanUseBed(Boolean value) {
+		return plugin.GetConfig().set("rules.use_bed", value.toString());
 	}
 
 	@CivConfig(name = "rules.suicide", def = "true", type = CivConfigType.Bool)
 	public boolean getRuleCanSuicide() {
 		return plugin.GetConfig().get("rules.suicide").getBool();
 	}
+	
+	public boolean setRuleCanSuicide(Boolean value) {
+		return plugin.GetConfig().set("rules.suicide", value.toString());
+	}
 
 	@CivConfig(name = "rules.place_snitch", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanPlaceSnitch() {
 		return plugin.GetConfig().get("rules.place_snitch").getBool();
+	}
+	
+	public boolean setRuleCanPlaceSnitch(Boolean value) {
+		return plugin.GetConfig().set("rules.place_snitch", value.toString());
 	}
 
 	@CivConfig(name = "rules.mine_blocks", def = "true", type = CivConfigType.Bool)
 	public boolean getRuleCanMine() {
 		return plugin.GetConfig().get("rules.mine_blocks").getBool();
 	}
+	
+	public boolean setRuleCanMine(Boolean value) {
+		return plugin.GetConfig().set("rules.mine_blocks", value.toString());
+	}
 
 	@CivConfig(name = "rules.brew", def = "true", type = CivConfigType.Bool)
 	public boolean getRuleCanBrew() {
 		return plugin.GetConfig().get("rules.brew").getBool();
 	}
+	
+	public boolean setRuleCanBrew(Boolean value) {
+		return plugin.GetConfig().set("rules.brew", value.toString());
+	}
 
 	@CivConfig(name = "rules.enchant", def = "true", type = CivConfigType.Bool)
 	public boolean getRuleCanEnchant() {
 		return plugin.GetConfig().get("rules.enchant").getBool();
+	}
+	
+	public boolean setRuleCanEnchant(Boolean value) {
+		return plugin.GetConfig().set("rules.enchant", value.toString());
 	}
 }
