@@ -6,11 +6,21 @@ import java.util.Set;
 
 import org.bukkit.entity.Player;
 
+import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlAccess;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
+/**
+ * Extends the Bukkit Player class to add ExilePearl specific data
+ * @author Gordon
+ *
+ */
 class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
+	
+	private final PearlAccess pearlAccess;
 
 	// Players that are receiving prison pearl broadcast messages
 	private final Set<PearlPlayer> bcastPlayers = new HashSet<PearlPlayer>();
@@ -18,8 +28,11 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 	// The last player who requested a pearl broadcast
 	private PearlPlayer broadcastRequestPlayer;
 	
-	public CorePearlPlayer(final Player player, final PlayerNameProvider nameProvider) {
+	public CorePearlPlayer(final Player player, final PlayerNameProvider nameProvider, final PearlAccess pearlAccess) {
 		super(player, nameProvider);
+		Guard.ArgumentNotNull(pearlAccess, "pearlAccess");
+		
+		this.pearlAccess = pearlAccess;
 	}
 
 	@Override
@@ -29,7 +42,7 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 		}
 		
 		if (isOnline()) {
-			sendMessage(TextUtil.instance().parse(str, args));
+			sendMessage(TextUtil.instance().parse(String.format(str, args)));
 		}
 	}
 	
@@ -51,5 +64,15 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 	@Override
 	public void setRequestedBcastPlayer(PearlPlayer broadcastRequestPlayer) {
 		this.broadcastRequestPlayer = broadcastRequestPlayer;
+	}
+
+	@Override
+	public boolean isExiled() {
+		return pearlAccess.isPlayerExiled(this);
+	}
+
+	@Override
+	public ExilePearl getExilePearl() {
+		return pearlAccess.getPearl(this.getUniqueId());
 	}
 }

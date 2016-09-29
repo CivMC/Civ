@@ -42,4 +42,16 @@ public interface PearlPlayer extends Player {
 	 * @param broadcastRequestPlayer the requested broadcast player
 	 */
 	void setRequestedBcastPlayer(PearlPlayer broadcastRequestPlayer);
+	
+	/**
+	 * Gets whether the player is exiled
+	 * @return true if the player is exiled
+	 */
+	boolean isExiled();
+	
+	/**
+	 * Gets the player's exile pearl instance if it exists
+	 * @return The exile pearl if it exists, otherwise null
+	 */
+	ExilePearl getExilePearl();
 }
