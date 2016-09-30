@@ -33,10 +33,10 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	PearlPlayer getPearlPlayer(final Player player);
 	
 	/**
-	 * Gets the max pearl health allowed
-	 * @return The max allowed pearl health
+	 * Gets the exile pearl configuration
+	 * @return The exile pearl configuration
 	 */
-	int getMaxPearlHealth();
+	PearlConfig getPearlConfig();
 	
 	/**
 	 * Gets the pearl lore generator

@@ -216,7 +216,7 @@ class CoreExilePearl implements ExilePearl {
      */
 	@Override
     public Integer getHealthPercent() {
-		return (int)Math.round(((double)health / pearlApi.getMaxPearlHealth()) * 100);
+		return (int)Math.round(((double)health / pearlApi.getPearlConfig().getPearlHealthMaxValue()) * 100);
     }
 
     
@@ -242,8 +242,8 @@ class CoreExilePearl implements ExilePearl {
     		health = 0;
     	}
     	
-    	if (health > pearlApi.getMaxPearlHealth()) {
-    		health = pearlApi.getMaxPearlHealth();
+    	if (health > pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
+    		health = pearlApi.getPearlConfig().getPearlHealthMaxValue();
     	}
     	
     	this.health = health;

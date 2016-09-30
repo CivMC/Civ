@@ -8,15 +8,16 @@ import org.bukkit.inventory.InventoryHolder;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PearlWorker;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.util.BukkitTask;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -66,12 +67,12 @@ public class CorePearlFactory implements PearlFactory {
 
 	@Override
 	public PearlManager createPearlManager() {
-		return new CorePearlManager(plugin, this, plugin.getStorage(), plugin.getPearlConfig());
+		return new CorePearlManager(plugin, this, plugin.getStorage());
 	}
 
 	@Override
-	public PearlWorker createPearlWorker() {
-		return new CorePearlWorker(plugin, plugin.getPearlConfig());
+	public BukkitTask createPearlDecayWorker() {
+		return new PearlDecayWorker(plugin);
 	}
 
 	@Override
@@ -82,5 +83,10 @@ public class CorePearlFactory implements PearlFactory {
 	@Override
 	public PearlLoreGenerator createLoreGenerator() {
 		return new CoreLoreGenerator();
+	}
+
+	@Override
+	public PearlConfig createPearlConfig() {
+		return new CorePearlConfig(plugin);
 	}
 }

@@ -1,14 +1,22 @@
-package com.devotedmc.ExilePearl;
+package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.PearlConfig;
+
+import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 
-public class ExilePearlConfig {
+class CorePearlConfig implements PearlConfig {
 
-	private final ExilePearlPlugin plugin;
+	private final ACivMod plugin;
 	
-	public ExilePearlConfig(ExilePearlPlugin plugin) {
+	public CorePearlConfig(final ACivMod plugin) {
 		this.plugin = plugin;
+	}
+	
+	@CivConfig(name = "database.mysql.host", def = "localhost", type = CivConfigType.String)
+	public String getDbHost() {
+		return plugin.GetConfig().get("database.mysql.host").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.username", def = "bukkit", type = CivConfigType.String)
@@ -24,11 +32,6 @@ public class ExilePearlConfig {
 	@CivConfig(name = "database.mysql.dbname", def = "bukkit", type = CivConfigType.String)
 	public String getDbName() {
 		return plugin.GetConfig().get("database.mysql.dbname").getString();
-	}
-	
-	@CivConfig(name = "database.mysql.host", def = "localhost", type = CivConfigType.String)
-	public String getDbHost() {
-		return plugin.GetConfig().get("database.mysql.host").getString();
 	}
 	
 	@CivConfig(name = "database.mysql.port", def = "3306", type = CivConfigType.Int)
@@ -69,11 +72,6 @@ public class ExilePearlConfig {
 	@CivConfig(name = "prison_musthotbar", def = "true", type = CivConfigType.Bool)
 	public boolean getMustPrisonPearlHotBar() {
 		return plugin.GetConfig().get("prison_musthotbar").getBool();
-	}
-	
-	@CivConfig(name = "prison_stealing", def = "true", type = CivConfigType.Bool)
-	public boolean getAllowPrisonStealing() {
-		return plugin.GetConfig().get("prison_stealing").getBool();
 	}
 	
 	@CivConfig(name = "damagelog_min", def = "3" , type = CivConfigType.Int)

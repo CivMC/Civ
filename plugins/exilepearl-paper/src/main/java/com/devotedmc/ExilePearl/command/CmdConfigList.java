@@ -1,14 +1,14 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 public class CmdConfigList extends PearlCommand
 {
 	
-	private final ExilePearlConfig config;
+	private final PearlConfig config;
 	private int lineLength;
 	
 	public CmdConfigList(ExilePearlPlugin plugin) {

@@ -2,19 +2,17 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.logging.Level;
 
-import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
-import com.devotedmc.ExilePearl.PearlWorker;
+import com.devotedmc.ExilePearl.util.BukkitTask;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
  * Interval task that deducts strength from existing prison pearls
  * @author Gordon
  */
-class CorePearlWorker implements PearlWorker, Runnable {
+class PearlDecayWorker implements BukkitTask, Runnable {
 
 	private final ExilePearlPlugin plugin;
-	private final ExilePearlConfig config;
 
 	private boolean enabled = false;
 	private int taskId = 0;
@@ -25,12 +23,10 @@ class CorePearlWorker implements PearlWorker, Runnable {
 	/**
 	 * Creates a new FactoryWorker instance
 	 */
-	public CorePearlWorker(final ExilePearlPlugin plugin, final ExilePearlConfig config) {
+	public PearlDecayWorker(final ExilePearlPlugin plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
-		Guard.ArgumentNotNull(config, "config");
 
 		this.plugin = plugin;
-		this.config = config;
 	}
 
 
@@ -42,7 +38,7 @@ class CorePearlWorker implements PearlWorker, Runnable {
 			plugin.log(Level.WARNING, "Tried to start the pearl worker task but it was already started.");
 		}
 		
-		long tickInterval = config.getPearlHealthDecayIntervalMin() * TICKS_PER_MINUTE;
+		long tickInterval = plugin.getPearlConfig().getPearlHealthDecayIntervalMin() * TICKS_PER_MINUTE;
 		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, tickInterval, tickInterval);
 		if (taskId == -1) {
 			enabled = true;
@@ -71,6 +67,12 @@ class CorePearlWorker implements PearlWorker, Runnable {
 	public void restart() {
 		stop();
 		start();
+	}
+
+
+	@Override
+	public boolean isRunning() {
+		return enabled;
 	}
 
 

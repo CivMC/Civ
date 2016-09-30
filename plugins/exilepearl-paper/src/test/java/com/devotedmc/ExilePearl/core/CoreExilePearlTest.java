@@ -32,6 +32,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
@@ -58,6 +59,7 @@ public class CoreExilePearlTest {
 	private Player killer;
 	private PearlHolder holder;
 	
+	private PearlConfig pearlConfig;
 	private ExilePearlApi pearlApi;
 	private PlayerNameProvider nameProvider;
 	private PearlLoreGenerator loreGenerator;
@@ -86,11 +88,14 @@ public class CoreExilePearlTest {
 		when(nameProvider.getUniqueId(playerName)).thenReturn(playerId);
 		when(nameProvider.getUniqueId(killerName)).thenReturn(killerId);
 		
+		pearlConfig = mock(PearlConfig.class);
+		when(pearlConfig.getPearlHealthMaxValue()).thenReturn(100);
+		
 		when(pearlApi.getPearlPlayer(playerName)).thenReturn(new CorePearlPlayer(player, nameProvider, pearlApi));
 		when(pearlApi.getPearlPlayer(playerId)).thenReturn(new CorePearlPlayer(player, nameProvider, pearlApi));
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(new CorePearlPlayer(killer, nameProvider, pearlApi));
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(new CorePearlPlayer(killer, nameProvider, pearlApi));
-		when(pearlApi.getMaxPearlHealth()).thenReturn(100);
+		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
 		loreGenerator = new MockLoreGenerator();
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
@@ -260,7 +265,7 @@ public class CoreExilePearlTest {
 		verify(storage, times(5)).pearlUpdateHealth(pearl);
 		
 		// Health percent changes with max health value change
-		when(pearlApi.getMaxPearlHealth()).thenReturn(1000);
+		when(pearlConfig.getPearlHealthMaxValue()).thenReturn(1000);
 		assertEquals(pearl.getHealthPercent(), 10, 0);
 	}
 

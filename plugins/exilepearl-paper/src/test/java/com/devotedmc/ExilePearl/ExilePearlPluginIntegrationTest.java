@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -49,6 +48,7 @@ import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.storage.RamStorage;
+import com.devotedmc.ExilePearl.util.BukkitTask;
 import com.devotedmc.ExilePearl.util.MockScheduler;
 import com.devotedmc.ExilePearl.util.MockWorld;
 
@@ -105,7 +105,7 @@ public class ExilePearlPluginIntegrationTest {
         
         Bukkit.setServer(mockServer);
         
-		plugin.onEnable();
+		//plugin.onEnable();
 	}
 	
     /**
@@ -201,43 +201,43 @@ public class ExilePearlPluginIntegrationTest {
         
         plugin.onLoad();
         
-        // Override all the private fields with spy  instances
-        ExilePearlConfig pearlConfig =  spy(new ExilePearlConfig(plugin));
-        Field field = ExilePearlPlugin.class.getDeclaredField("pearlConfig");
-        field.setAccessible(true);
-        field.set(plugin, pearlConfig);
-        
-        PearlFactory pearlFactory =  spy(new CorePearlFactory(plugin));
-        field = ExilePearlPlugin.class.getDeclaredField("pearlFactory");
+        // Override all the private fields with spy  instances        
+        PearlFactory pearlFactory = spy(new CorePearlFactory(plugin));
+        Field field = ExilePearlPlugin.class.getDeclaredField("pearlFactory");
         field.setAccessible(true);
         field.set(plugin, pearlFactory);
         
-        PluginStorage storage =  spy(new AsyncStorageWriter(new RamStorage(), plugin));
+        PearlConfig pearlConfig = spy(pearlFactory.createPearlConfig());
+        field = ExilePearlPlugin.class.getDeclaredField("pearlConfig");
+        field.setAccessible(true);
+        field.set(plugin, pearlConfig);
+        
+        PluginStorage storage = spy(new AsyncStorageWriter(new RamStorage(), plugin));
         field = ExilePearlPlugin.class.getDeclaredField("storage");
         field.setAccessible(true);
         field.set(plugin, storage);
         
-        PearlManager pearlManager =  spy(pearlFactory.createPearlManager());
+        PearlManager pearlManager = spy(pearlFactory.createPearlManager());
         field = ExilePearlPlugin.class.getDeclaredField("pearlManager");
         field.setAccessible(true);
         field.set(plugin, pearlManager);
         
-        PearlWorker pearlWorker =  spy(pearlFactory.createPearlWorker());
+        BukkitTask pearlWorker = spy(pearlFactory.createPearlDecayWorker());
         field = ExilePearlPlugin.class.getDeclaredField("pearlWorker");
         field.setAccessible(true);
         field.set(plugin, pearlWorker);
         
-        PearlLoreGenerator loreGenerator =  spy(pearlFactory.createLoreGenerator());
+        PearlLoreGenerator loreGenerator = spy(pearlFactory.createLoreGenerator());
         field = ExilePearlPlugin.class.getDeclaredField("loreGenerator");
         field.setAccessible(true);
         field.set(plugin, loreGenerator);
         
-        PlayerListener playerListener =  spy(new PlayerListener(plugin));
+        PlayerListener playerListener = spy(new PlayerListener(plugin));
         field = ExilePearlPlugin.class.getDeclaredField("playerListener");
         field.setAccessible(true);
         field.set(plugin, playerListener);
         
-        ExileListener exileListener =  spy(new ExileListener(plugin, pearlConfig));
+        ExileListener exileListener = spy(new ExileListener(plugin));
         field = ExilePearlPlugin.class.getDeclaredField("exileListener");
         field.setAccessible(true);
         field.set(plugin, exileListener);

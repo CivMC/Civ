@@ -22,7 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlConfig;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
@@ -35,7 +35,7 @@ public class MySqlStorageIntegrationTest {
 	
 	private PearlFactory pearlFactory;
 	private PearlLogger logger;
-	private ExilePearlConfig config;
+	private PearlConfig config;
 	private MySqlStorage storage;	
 	private World world;
 
@@ -53,7 +53,7 @@ public class MySqlStorageIntegrationTest {
 		
 		logger = mock(PearlLogger.class);
 		
-		config = mock(ExilePearlConfig.class);
+		config = mock(PearlConfig.class);
 		when(config.getDbHost()).thenReturn("localhost");
 		when(config.getDbName()).thenReturn("bukkittest");
 		when(config.getDbPort()).thenReturn(3306);

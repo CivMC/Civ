@@ -13,7 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlConfig;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.util.Guard;
@@ -24,7 +24,7 @@ public class MySqlStorage implements PluginStorage {
 
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
-	private final ExilePearlConfig config;
+	private final PearlConfig config;
 
 	private MySqlConnection db;
 	private boolean isConnected = false;
@@ -33,7 +33,7 @@ public class MySqlStorage implements PluginStorage {
 	 * Creates a new MySqlStorage instance
 	 * @param pearlFactory The pearl factory
 	 */
-	public MySqlStorage(final PearlFactory pearlFactory, final PearlLogger logger, final ExilePearlConfig config) {
+	public MySqlStorage(final PearlFactory pearlFactory, final PearlLogger logger, final PearlConfig config) {
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(logger, "logger");
 		Guard.ArgumentNotNull(config, "config");

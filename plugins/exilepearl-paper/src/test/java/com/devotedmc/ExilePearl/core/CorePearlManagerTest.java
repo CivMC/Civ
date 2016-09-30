@@ -25,7 +25,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlConfig;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
@@ -40,7 +40,7 @@ public class CorePearlManagerTest {
 	private ExilePearlApi pearlApi;
 	private PearlFactory pearlFactory;
 	private PearlStorage storage;
-	private ExilePearlConfig config;
+	private PearlConfig config;
 	private CorePearlManager manager;
 	private PluginManager pluginManager;
 	
@@ -83,8 +83,11 @@ public class CorePearlManagerTest {
 		pearlFactory = new MockPearlFactory(nameProvider);
 		
 		storage = mock(PearlStorage.class);
-		config = mock(ExilePearlConfig.class);
-		manager = new CorePearlManager(pearlApi, pearlFactory, storage, config);
+		config = mock(PearlConfig.class);
+		
+		when(pearlApi.getPearlConfig()).thenReturn(config);
+		
+		manager = new CorePearlManager(pearlApi, pearlFactory, storage);
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    pluginManager = mock(PluginManager.class);
@@ -95,19 +98,15 @@ public class CorePearlManagerTest {
 	public void testCorePearlManager() {
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new CorePearlManager(null, pearlFactory, storage, config); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlManager(null, pearlFactory, storage); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CorePearlManager(pearlApi, null, storage, config); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlManager(pearlApi, null, storage); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CorePearlManager(pearlApi, pearlFactory, null, config); } catch (Throwable ex) { e = ex; }
-		assertTrue(e instanceof NullArgumentException);
-		
-		e = null;
-		try { new CorePearlManager(pearlApi, pearlFactory, storage, null); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlManager(pearlApi, pearlFactory, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 

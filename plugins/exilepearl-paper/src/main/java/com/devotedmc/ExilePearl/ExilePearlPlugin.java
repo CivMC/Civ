@@ -30,6 +30,7 @@ import com.devotedmc.ExilePearl.storage.MySqlStorage;
 import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.storage.RamStorage;
+import com.devotedmc.ExilePearl.util.BukkitTask;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -42,16 +43,16 @@ import vg.civcraft.mc.namelayer.NameAPI;
  */
 public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNameProvider {
 	
-	private final ExilePearlConfig pearlConfig = new ExilePearlConfig(this);
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
+	private final PearlConfig pearlConfig = pearlFactory.createPearlConfig();
 	//private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
 	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
-	private final PearlWorker pearlWorker = pearlFactory.createPearlWorker();
+	private final BukkitTask pearlWorker = pearlFactory.createPearlDecayWorker();
 	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
-	private final ExileListener exileListener = new ExileListener(this, pearlConfig);
+	private final ExileListener exileListener = new ExileListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -131,7 +132,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	 * Gets the pearl configuration
 	 * @return The pearl configuration
 	 */
-	public ExilePearlConfig getPearlConfig() {
+	@Override
+	public PearlConfig getPearlConfig() {
 		return pearlConfig;
 	}
 	
@@ -260,11 +262,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	@Override
 	public boolean freePearl(ExilePearl pearl) {
 		return pearlManager.freePearl(pearl);
-	}
-
-	@Override
-	public int getMaxPearlHealth() {
-		return pearlConfig.getPearlHealthMaxValue();
 	}
 	
 	@Override

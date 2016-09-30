@@ -6,12 +6,13 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PearlWorker;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.util.BukkitTask;
 
 public class MockPearlFactory implements PearlFactory {
 	
@@ -38,7 +39,7 @@ public class MockPearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public PearlWorker createPearlWorker() {
+	public BukkitTask createPearlDecayWorker() {
 		return null;
 	}
 
@@ -49,6 +50,11 @@ public class MockPearlFactory implements PearlFactory {
 
 	@Override
 	public PearlLoreGenerator createLoreGenerator() {
+		return null;
+	}
+
+	@Override
+	public PearlConfig createPearlConfig() {
 		return null;
 	}
 

@@ -12,7 +12,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlManager;
@@ -30,7 +29,6 @@ class CorePearlManager implements PearlManager {
 	private final ExilePearlApi pearlApi;
 	private final PearlFactory pearlFactory;
 	private final PearlStorage storage;
-	private final ExilePearlConfig config;
 	
 	private final HashMap<UUID, ExilePearl> pearls;
 	
@@ -41,16 +39,14 @@ class CorePearlManager implements PearlManager {
 	 * @param factory The pearl factory
 	 * @param storage The database storage
 	 */
-	public CorePearlManager(final ExilePearlApi pearlApi, final PearlFactory pearlFactory, final PearlStorage storage, final ExilePearlConfig config) {
+	public CorePearlManager(final ExilePearlApi pearlApi, final PearlFactory pearlFactory, final PearlStorage storage) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(storage, "storage");
-		Guard.ArgumentNotNull(config, "config");
 		
 		this.pearlApi = pearlApi;
 		this.pearlFactory = pearlFactory;
 		this.storage = storage;
-		this.config = config;
 		
 		this.pearls = new HashMap<UUID, ExilePearl>();
 	}
@@ -105,7 +101,7 @@ class CorePearlManager implements PearlManager {
 		pearls.put(pearl.getUniqueId(), pearl);
 		storage.pearlInsert(pearl);
 
-		pearl.setHealth(config.getPearlHealthStartValue());
+		pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
 		
 		return pearl;
 	}
@@ -182,7 +178,7 @@ class CorePearlManager implements PearlManager {
 		long startTime = System.currentTimeMillis();
 
 		final Collection<ExilePearl> pearls = getPearls();
-		final int decayAmount = config.getPearlHealthDecayAmount();
+		final int decayAmount = pearlApi.getPearlConfig().getPearlHealthDecayAmount();
 		final HashSet<ExilePearl> pearlsToFree = new HashSet<ExilePearl>();
 
 		// Iterate through all the pearls and reduce the health

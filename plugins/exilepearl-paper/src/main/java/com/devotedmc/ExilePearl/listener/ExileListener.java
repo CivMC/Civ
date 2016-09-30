@@ -7,9 +7,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlConfig;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
 import com.devotedmc.ExilePearl.util.Guard;
@@ -39,7 +39,7 @@ import com.devotedmc.ExilePearl.util.Guard;
 public class ExileListener implements Listener {
 
 	private final ExilePearlApi pearlApi;
-	private final ExilePearlConfig config;
+	private final PearlConfig config;
 	
 	/**
 	 * Creates a new ExileListener instance
@@ -47,12 +47,11 @@ public class ExileListener implements Listener {
 	 * @param pearls The pearl manger
 	 * @param config The plugin configuration
 	 */
-	public ExileListener(final ExilePearlApi pearlApi, final ExilePearlConfig config) {
+	public ExileListener(final ExilePearlApi pearlApi) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		Guard.ArgumentNotNull(config, "config");
 		
 		this.pearlApi = pearlApi;
-		this.config = config;
+		this.config = pearlApi.getPearlConfig();
 	}
 	
 	

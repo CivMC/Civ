@@ -5,6 +5,8 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.devotedmc.ExilePearl.util.BukkitTask;
+
 /**
  * Factory interface for creating concrete pearl classes
  * @author Gordon
@@ -38,7 +40,7 @@ public interface PearlFactory {
 	 * Creates a pearl worker instance
 	 * @return The new pearl worker instance
 	 */
-	PearlWorker createPearlWorker();
+	BukkitTask createPearlDecayWorker();
 	
 	/**
 	 * Creates a new PearlPlayer instance
@@ -52,4 +54,10 @@ public interface PearlFactory {
 	 * @return The lore generator instance
 	 */
 	PearlLoreGenerator createLoreGenerator();
+	
+	/**
+	 * Creates the pearl config instance
+	 * @return The pearl config instance
+	 */
+	PearlConfig createPearlConfig();
 }
