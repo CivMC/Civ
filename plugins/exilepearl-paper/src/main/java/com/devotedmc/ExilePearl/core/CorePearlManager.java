@@ -195,6 +195,12 @@ class CorePearlManager implements PearlManager {
 
 		// Iterate through all the pearls and reduce the health
 		for (ExilePearl pearl : pearls) {
+			
+			// Ignore freed offline pearls
+			if (pearl.getFreedOffline()) {
+				continue;
+			}
+			
 			pearl.setHealth(pearl.getHealth() - decayAmount);
 			
 			if (pearl.getHealth() == 0) {

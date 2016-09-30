@@ -7,6 +7,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +19,8 @@ import org.bukkit.util.Vector;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -197,8 +200,16 @@ class CoreExilePearl implements ExilePearl {
 	private void setHolderInternal(PearlHolder holder) {
 		checkPearlValid();
 		
+		// Do nothing if the holder is the same
+		if (holder == holders.getLast()) {
+			return;
+		}
+		
 		this.holder = holder;
 		this.holders.add(holder);
+		
+		// Generate a moved event
+		Bukkit.getPluginManager().callEvent(new ExilePearlEvent(this, Type.MOVED));
 
 		if (holders.size() > HOLDER_COUNT) {
 			holders.poll();

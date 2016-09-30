@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -93,10 +92,9 @@ public class PlayerListener implements Listener {
 
 		if (item.getType() == Material.ENDER_PEARL && pearlApi.getLoreGenerator().getIDFromItemStack(item) != null) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
-			if (pearl == null) {
+			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
 			}
-			//generatePearlEvent(pearl, Type.HELD); TODO
 		}
 
 		return null;
@@ -248,7 +246,6 @@ public class PlayerListener implements Listener {
 	 */
 	private void updatePearl(ExilePearl pearl, Item item) {
 		pearl.setHolder(item.getLocation());
-		generatePearlEvent(pearl, ExilePearlEvent.Type.DROPPED);
 	}
 
 
@@ -259,7 +256,6 @@ public class PlayerListener implements Listener {
 	 */
 	private <ItemBlock extends InventoryHolder & BlockState> void updatePearl(ExilePearl pearl, ItemBlock block) {
 		pearl.setHolder(block.getBlock());
-		generatePearlEvent(pearl, ExilePearlEvent.Type.HELD);
 	}
 
 	
@@ -270,7 +266,6 @@ public class PlayerListener implements Listener {
 	 */
 	private void updatePearl(ExilePearl pearl, Player player) {
 		pearl.setHolder(pearlApi.getPearlPlayer(player.getUniqueId()));
-		generatePearlEvent(pearl, ExilePearlEvent.Type.HELD);
 	}
 
 
@@ -548,17 +543,6 @@ public class PlayerListener implements Listener {
 	
 	
 	/**
-	 * Generates a new prison pearl event
-	 * @param pearl The pearl
-	 * @param type The event type
-	 */
-	public void generatePearlEvent(ExilePearl pearl, ExilePearlEvent.Type type) {
-		Bukkit.getPluginManager().callEvent(
-				new ExilePearlEvent(pearl, ExilePearlEvent.Type.DROPPED));
-	}
-	
-	
-	/**
 	 * Handles prison pearl events
 	 * @param event
 	 */
@@ -577,7 +561,7 @@ public class PlayerListener implements Listener {
 			imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
 			imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());
 			
-		} else if (event.getType() == ExilePearlEvent.Type.DROPPED || event.getType() == ExilePearlEvent.Type.HELD) {
+		} else if (event.getType() == ExilePearlEvent.Type.MOVED) {
 			
 			Location l = pearl.getHolder().getLocation();
 			String name = pearl.getHolder().getName();

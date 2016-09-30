@@ -7,7 +7,7 @@ import org.bukkit.event.HandlerList;
 import com.devotedmc.ExilePearl.ExilePearl;
 
 public class ExilePearlEvent extends Event {
-	public enum Type { NEW, HELD, DROPPED, FREED }
+	public enum Type { NEW, MOVED, FREED }
 	
 	private final ExilePearl pearl;
 	private final Type type;
