@@ -7,17 +7,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Level;
 
 /**
  * Sends every 3 minutes a message to the admins if a chest is broken
@@ -28,7 +26,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     private ReinforcementManager manager;
     private Messenger messenger;
-    private List<String> messages;
+    private Set<String> messages;
 
     public ReinforcedChestBreak(SimpleAdminHacks plugin, ReinforcedChestBreakConfig config) {
         super(plugin, config);
@@ -44,7 +42,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     @Override
     public void dataBootstrap() {
-        messages = new ArrayList<>();
+        messages = new HashSet<>();
 
         manager = Citadel.getReinforcementManager();
         messenger = new Messenger();
@@ -70,17 +68,21 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      * Gets fired by the BLockBreakEvent and checks if the block is reinforced
      * @param eve BLockBreakEvent
      */
-    @EventHandler
+    @EventHandler(priority = EventPriority.LOWEST)
     public void onBlockBreak(BlockBreakEvent eve) {
         if (eve.getBlock().getType().equals(Material.CHEST)) {
             if(manager.isReinforced(eve.getBlock())) {
                 String name = eve.getPlayer().getDisplayName();
                 Location loc = eve.getBlock().getLocation();
 
-                messages.add(setVars(name,
-                        String.valueOf(loc.getBlockX()),
-                        String.valueOf(loc.getBlockY()),
-                        String.valueOf(loc.getBlockZ())));
+                String msg = setVars(name,
+                                    String.valueOf(loc.getBlockX()),
+                                    String.valueOf(loc.getBlockY()),
+                                    String.valueOf(loc.getBlockZ()));
+
+                if(messages.add(msg)) {
+                    plugin().log(Level.INFO, msg);
+                }
             }
         }
     }
