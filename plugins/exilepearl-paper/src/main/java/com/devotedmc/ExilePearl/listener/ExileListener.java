@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -28,6 +29,8 @@ import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
 import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 
 /**
  * Listener for disallowing certain actions of exiled players
@@ -198,6 +201,29 @@ public class ExileListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent e) {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
 	}
+	
+	/**
+	 * Prevents exiled players from damaging reinforcements
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onReinforcementDamage(ReinforcementDamageEvent e) {
+		checkAndCancelRule(ExileRule.DAMAGE_REINFORCEMENT, e, e.getPlayer());
+	}
+	
+	
+	/**
+	 * Prevents exiled players from placing snitches
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onReinforcementDamage(BlockPlaceEvent e) {
+		Material m = e.getBlockPlaced().getType();
+		if (m == Material.JUKEBOX || m == Material.NOTE_BLOCK) {
+			checkAndCancelRule(ExileRule.SNITCH, e, e.getPlayer());
+		}
+	}
+	  
 	
 	
 	/**

@@ -26,7 +26,7 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -81,9 +81,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>vg.civcraft.mc</groupId>
-			<artifactId>CBanManagement</artifactId>
-			<version>1.4.0</version>
+			<groupId>vg.civcraft.mc.citadel</groupId>
+			<artifactId>Citadel</artifactId>
+			<version>3.5.4</version>
 			<scope>provided</scope>
 		</dependency>
 

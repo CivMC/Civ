@@ -2,7 +2,7 @@ name: ${name}
 version: ${version}
 main: ${groupId}.${name}.${name}Plugin
 depend: [CivModCore]
-softdepend: [NameLayer, CombatTagPlus]
+softdepend: [NameLayer, CombatTagPlus, Citadel, Bastion]
 commands:
   ep:
   suicide:

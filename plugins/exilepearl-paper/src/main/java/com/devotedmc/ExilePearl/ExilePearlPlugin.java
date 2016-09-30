@@ -63,21 +63,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	
 	
 	/**
-	 * 
-	 * ProgrammerDan - Today at 2:00 PM
-	 * my "wish list" would be 
-	 * 		(1) supports reload 
-	 * 		(2) exposes command to self-reload 
-	 * 		(3) individual configuration options can be changed at runtime and saved to config 
-	 * 		(4) admins can exile players or de-exile them either in game or on console; 
-	 * 			if on console exiling a player requires giving coordinates to a chest / InventoryHolder tile entity or player name 
-	 * 		(5)easy admin command to see which players are exiled 
-	 * 		(6) Throw bukkit events for when players are exiled or freed from exile, and when they attempt to breach their exile, 
-	 * 			and when an ExilePearl is placed in an InventoryHolder tile entity or picked up / in a player inventory (for tracking).
-	 * 
-	 */
-	
-	/**
 	 * Default constructor
 	 */
 	public ExilePearlPlugin() { }

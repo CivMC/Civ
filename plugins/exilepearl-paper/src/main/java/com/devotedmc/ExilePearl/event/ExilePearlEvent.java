@@ -1,12 +1,13 @@
 package com.devotedmc.ExilePearl.event;
 
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 
-public class ExilePearlEvent extends Event {
+public class ExilePearlEvent extends Event implements Cancellable {
 	public enum Type { NEW, MOVED, FREED }
 	
 	private final ExilePearl pearl;
@@ -56,6 +57,7 @@ public class ExilePearlEvent extends Event {
 	 * Gets whether the event is cancelled
 	 * @return true if the event is cancelled
 	 */
+	@Override
 	public boolean isCancelled() {
 		return cancelled;
 	}
@@ -64,6 +66,7 @@ public class ExilePearlEvent extends Event {
 	 * Sets whether the event is cancelled
 	 * @param cancelled whether the event is cancelled
 	 */
+	@Override
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
