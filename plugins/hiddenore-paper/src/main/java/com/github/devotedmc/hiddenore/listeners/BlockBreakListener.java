@@ -259,9 +259,10 @@ public class BlockBreakListener implements Listener {
 
 			// Correct stats output.
 			for (ItemStack item: hoe.getDrops()) {
+				String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
 				log("STAT: Player {0} at {1} broke {2}:{3} - dropping {4} {5}:{6}", 
 						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
-						item.getAmount(), item.getType().name(), item.getDurability());
+						item.getAmount(), name, item.getDurability());
 			}
 			
 			if (Config.isAlertUser()) {
@@ -269,16 +270,17 @@ public class BlockBreakListener implements Listener {
 					StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
 
 					for (ItemStack item : hoe.getDrops()) {
-						customAlerts.append(" ").append(item.getAmount()).append(" ")
-							.append(Config.getPrettyName(item.getType().name(), item.getDurability()));
+						String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
+								item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name(), item.getDurability());
+						customAlerts.append(" ").append(item.getAmount()).append(" ").append(name);
 					}
 					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
 				} else {
 					if (Config.isListDrops()) {
 						for (ItemStack item : hoe.getDrops()) {
-							alertBuffer.append(" ").append(item.getAmount()).append(" ").append(
-									Config.getPrettyName(item.getType().name(), item.getDurability())
-								).append(",");
+							String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
+									item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name(), item.getDurability());
+							alertBuffer.append(" ").append(item.getAmount()).append(" ").append(name).append(",");
 						}
 					}
 				}
@@ -338,27 +340,26 @@ public class BlockBreakListener implements Listener {
 				newDrops.add(toDrop);
 				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
 			} else {
+				String name = xform.hasItemMeta() && xform.getItemMeta().hasDisplayName() ? 
+						xform.getItemMeta().getDisplayName() : Config.getPrettyName(xform.getType().name(), xform.getDurability());
+						
 				log("STAT: Player {0} at {1} broke {2}:{3} - replacing with {4} {5}:{6} as {7}", 
 						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
-						xform.getAmount()- cPlace, xform.getType().name(), xform.getDurability(),
+						xform.getAmount()- cPlace, name, xform.getDurability(),
 						expressed);
-				
-				dropConfig.getXPChance(biome)
 				
 				// Anything to tell anyone about?
 				if (cPlace < xform.getAmount() && Config.isAlertUser()) {
 					if (blockConfig.hasCustomPrefix(dropName)) {
 						StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
-
+						
 						customAlerts.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
-									Config.getPrettyName(xform.getType().name(), xform.getDurability())
-								).append(" nearby"); // TODO: Replace with configured suffix
+								name).append(" nearby"); // TODO: Replace with configured suffix
 						player.sendMessage(ChatColor.GOLD + customAlerts.toString());
 					} else {
 						if (Config.isListDrops()) {
 							alertBuffer.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
-										Config.getPrettyName(xform.getType().name(), xform.getDurability())
-									).append(" nearby,"); // TODO: Replace with configured suffix
+									name).append(" nearby,"); // TODO: Replace with configured suffix
 						}
 					}
 				}

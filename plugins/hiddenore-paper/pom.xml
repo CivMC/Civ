@@ -6,7 +6,7 @@
 
     <groupId>com.github.devotedmc</groupId>
     <artifactId>hiddenore</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
     <name>HiddenOre</name>
 
 	<repositories>
