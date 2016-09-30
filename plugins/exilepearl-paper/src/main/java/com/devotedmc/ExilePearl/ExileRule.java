@@ -12,8 +12,6 @@ public enum ExileRule {
 	PVP("PVP", "fight other players"),
 	IGNITE("IGNITE", "start fire"),
 	USE_BUCKET("USE_BUCKET", "use buckets"),
-	PLACE_WATER("PLACE_WATER", "place water"),
-	PLACE_LAVA("PLACE_LAVA", "place lava"),
 	USE_POTIONS("USE_POTIONS", "use potions"),
 	USE_BED("USE_BED", "set your bed"),
 	SUICIDE("SUICIDE", "commit suicide"),
@@ -64,10 +62,6 @@ public enum ExileRule {
 			return IGNITE;
 		case "USE_BUCKET":
 			return USE_BUCKET;
-		case "PLACE_WATER":
-			return PLACE_WATER;
-		case "PLACE_LAVA":
-			return PLACE_LAVA;
 		case "USE_POTIONS":
 			return USE_POTIONS;
 		case "USE_BED":

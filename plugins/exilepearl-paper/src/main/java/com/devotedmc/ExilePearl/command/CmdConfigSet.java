@@ -79,16 +79,6 @@ public class CmdConfigSet extends PearlCommand
 			result = config.setRuleCanUseBucket(valBool);
 			break;
 			
-		case PLACE_WATER:
-			valBool = argAsBool(1);
-			result = config.setRuleCanPlaceWater(valBool);
-			break;
-			
-		case PLACE_LAVA:
-			valBool = argAsBool(1);
-			result = config.setRuleCanPlaceLava(valBool);
-			break;
-			
 		case USE_POTIONS:
 			valBool = argAsBool(1);
 			result = config.setRuleCanUsePotions(valBool);

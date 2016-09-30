@@ -117,14 +117,6 @@ public interface PearlConfig {
 	
 	boolean setRuleCanUseBucket(Boolean value);
 
-	boolean getRuleCanPlaceWater();
-	
-	boolean setRuleCanPlaceWater(Boolean value);
-
-	boolean getRuleCanPlaceLava();
-	
-	boolean setRuleCanPlaceLava(Boolean value);
-
 	boolean getRuleCanUsePotions();
 	
 	boolean setRuleCanUsePotions(Boolean value);
@@ -152,4 +144,6 @@ public interface PearlConfig {
 	boolean getRuleCanEnchant();
 	
 	boolean setRuleCanEnchant(Boolean value);
+	
+	boolean isRuleSet(ExileRule rule);
 }

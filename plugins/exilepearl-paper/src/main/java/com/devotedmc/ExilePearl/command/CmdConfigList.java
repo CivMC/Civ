@@ -39,8 +39,6 @@ public class CmdConfigList extends PearlCommand
 		appendBooleanRule(sb, ExileRule.PVP.toString(), config.getRuleCanPvp());
 		appendBooleanRule(sb, ExileRule.IGNITE.toString(), config.getRuleCanIgnite());
 		appendBooleanRule(sb, ExileRule.USE_BUCKET.toString(), config.getRuleCanUseBucket());
-		appendBooleanRule(sb, ExileRule.PLACE_LAVA.toString(), config.getRuleCanPlaceWater());
-		appendBooleanRule(sb, ExileRule.PLACE_WATER.toString(), config.getRuleCanPlaceLava());
 		appendBooleanRule(sb, ExileRule.USE_POTIONS.toString(), config.getRuleCanUsePotions());
 		appendBooleanRule(sb, ExileRule.USE_BED.toString(), config.getRuleCanUseBed());
 		appendBooleanRule(sb, ExileRule.SUICIDE.toString(), config.getRuleCanSuicide());

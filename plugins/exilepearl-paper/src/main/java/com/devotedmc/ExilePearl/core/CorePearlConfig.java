@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
+import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.PearlConfig;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -173,24 +174,6 @@ class CorePearlConfig implements PearlConfig {
 		return plugin.GetConfig().set("rules.use_bucket", value.toString());
 	}
 
-	@CivConfig(name = "rules.place_water", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanPlaceWater() {
-		return plugin.GetConfig().get("rules.place_water").getBool();
-	}
-	
-	public boolean setRuleCanPlaceWater(Boolean value) {
-		return plugin.GetConfig().set("rules.place_water", value.toString());
-	}
-
-	@CivConfig(name = "rules.place_lava", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanPlaceLava() {
-		return plugin.GetConfig().get("rules.place_lava").getBool();
-	}
-	
-	public boolean setRuleCanPlaceLava(Boolean value) {
-		return plugin.GetConfig().set("rules.place_lava", value.toString());
-	}
-
 	@CivConfig(name = "rules.use_potions", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanUsePotions() {
 		return plugin.GetConfig().get("rules.use_potions").getBool();
@@ -252,5 +235,62 @@ class CorePearlConfig implements PearlConfig {
 	
 	public boolean setRuleCanEnchant(Boolean value) {
 		return plugin.GetConfig().set("rules.enchant", value.toString());
+	}
+
+	@Override
+	public boolean isRuleSet(ExileRule rule) {
+		switch(rule) {
+		
+		case PEARL_RADIUS:
+			return getRulePearlRadius() > 0;
+
+		case DAMAGE_REINFORCEMENT:
+			return getRuleCanDamageReinforcement();
+			
+		case DAMAGE_BASTION:
+			return getRuleCanDamageBastion();
+			
+		case ENTER_BASTION:
+			return getRuleCanEnterBastion();
+			
+		case THROW_PEARL:
+			return getRuleCanThrowEnderPearl();
+			
+		case CHAT:
+			return getRuleCanChatLocal();
+			
+		case PVP:
+			return getRuleCanPvp();
+			
+		case IGNITE:
+			return getRuleCanIgnite();
+			
+		case USE_BUCKET:
+			return getRuleCanUseBucket();
+			
+		case USE_POTIONS:
+			return getRuleCanUsePotions();
+			
+		case USE_BED:
+			return getRuleCanUseBed();
+			
+		case SUICIDE:
+			return getRuleCanSuicide();
+			
+		case SNITCH:
+			return getRuleCanPlaceSnitch();
+			
+		case MINE:
+			return getRuleCanMine();
+			
+		case BREW:
+			return getRuleCanBrew();
+			
+		case ENCHANT:
+			return getRuleCanEnchant();
+			
+		default:
+			return false;
+		}
 	}
 }

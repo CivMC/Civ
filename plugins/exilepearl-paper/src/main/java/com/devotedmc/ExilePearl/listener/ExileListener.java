@@ -1,10 +1,17 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.UUID;
+
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerBucketEvent;
+import org.bukkit.event.player.PlayerEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
@@ -56,7 +63,7 @@ public class ExileListener implements Listener {
 	
 	
 	/**
-	 * Clear the bed of a newly exiled player
+	 * Clears the bed of newly exiled players
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -69,19 +76,77 @@ public class ExileListener implements Listener {
 			e.getExilePearl().getPlayer().setBedSpawnLocation(null, true);
 		}
 	}
+
+	/**
+	 * Prevent exiled players from using a bed
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onPlayerEnterBed(PlayerBedEnterEvent e) {
+		checkAndCancelRule(ExileRule.USE_BED, e);
+	}
+	
+	/**
+	 * Prevent exiled players from using buckets
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onPlayerUseBucket(PlayerBucketEvent e) {
+		checkAndCancelRule(ExileRule.USE_BUCKET, e);
+	}
+	
+	/**
+	 * Prevent exiled players from using local chat
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onPlayerChat(PlayerBucketEvent e) {
+		
+		// TODO check chat channel
+		checkAndCancelRule(ExileRule.CHAT, e);
+	}
+	
 	
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onRuleBreakBlocks(BlockBreakEvent e) {
-		if (config.getRuleCanMine()) {
-			return;
+	public void onBlockBreak(BlockBreakEvent e) {
+		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
+	}
+	
+	
+	/**
+	 * Gets whether a rule is active for the given player
+	 * @param rule The exile rule
+	 * @param playerId The player to check
+	 * @return true if the rule is active for the player
+	 */
+	private boolean isRuleActive(ExileRule rule, UUID playerId) {
+		return config.isRuleSet(rule) && pearlApi.isPlayerExiled(playerId);
+	}
+	
+	
+	/**
+	 * Checks if a rule is active for a given player and cancels it
+	 * @param rule The rule to check
+	 * @param event The event
+	 * @param player The player to check
+	 */
+	private void checkAndCancelRule(ExileRule rule, Event event, Player player) {
+		UUID playerId = player.getUniqueId();
+		if (isRuleActive(rule, playerId)) {
+			if (event instanceof Cancellable) {
+				((Cancellable)event).setCancelled(true);
+				pearlApi.getPearlPlayer(playerId).msg(Lang.ruleCantDoThat, rule.getActionString());
+			}
 		}
-		
-		Player p = e.getPlayer();
-		
-		if (pearlApi.isPlayerExiled(p)) {
-			e.setCancelled(true);
-			pearlApi.getPearlPlayer(p).msg(Lang.ruleCantDoThat, ExileRule.MINE.getActionString());
-		}
+	}
+	
+	/**
+	 * Checks if a rule is active for a given player even and cancels it
+	 * @param rule The rule to check
+	 * @param event The player event
+	 */
+	private void checkAndCancelRule(ExileRule rule, PlayerEvent event) {
+		checkAndCancelRule(rule, event, event.getPlayer());
 	}
 }
