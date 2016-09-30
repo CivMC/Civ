@@ -409,11 +409,11 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param args The message arguments
 	 */
 	protected void msg(String str, Object... args) {
+		str = parse(str, args);
 		if (senderIsConsole) {
-			String message = parse(str, args);
-			sender.sendMessage(message);
+			sender.sendMessage(str);
 		} else {
-			me.sendMessage(parse(str, args));
+			me.sendMessage(str);
 		}
 	}
 	

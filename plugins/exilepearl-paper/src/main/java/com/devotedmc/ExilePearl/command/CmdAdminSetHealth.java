@@ -10,10 +10,10 @@ public class CmdAdminSetHealth extends PearlCommand {
 		super(plugin);
 		this.aliases.add("sethealth");
 
-		this.setHelpShort("Sets the health % value of a pearl.");
+		this.setHelpShort("Sets the health %% value of a pearl.");
 		
 		this.requiredArgs.add("player");
-		this.requiredArgs.add("health %");
+		this.requiredArgs.add("health %%");
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;
@@ -33,6 +33,6 @@ public class CmdAdminSetHealth extends PearlCommand {
 		// calculate the actual value
 		int healthValue = (int)(pearlApi.getPearlConfig().getPearlHealthMaxValue() * ((double)percent / 100));
 		pearl.setHealth(healthValue);
-		msg("<g>You updated the pearl health of player % to %d%%.", pearl.getPlayerName(), percent);
+		msg("<g>You updated the pearl health of player %s to %d%%.", pearl.getPlayerName(), percent);
 	}
 }
