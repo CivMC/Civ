@@ -50,6 +50,8 @@ public class CorePearlManagerTest {
 	private final UUID killerId = UUID.randomUUID();
 	private Player player;
 	private Player killer;
+	private PearlPlayer pPlayer;
+	private PearlPlayer pKiller;
 	
 	
 	@Before
@@ -58,16 +60,19 @@ public class CorePearlManagerTest {
 		player = mock(Player.class);
 		when(player.getUniqueId()).thenReturn(playerId);
 		when(player.getName()).thenReturn(playerName);
-		PearlPlayer pPlayer = mock(PearlPlayer.class);
+		pPlayer = mock(PearlPlayer.class);
 		when(pPlayer.getUniqueId()).thenReturn(playerId);
 		when(pPlayer.getName()).thenReturn(playerName);
+		when(pPlayer.isOnline()).thenReturn(true);
 		
 		killer = mock(Player.class);
 		when(killer.getUniqueId()).thenReturn(killerId);
 		when(killer.getName()).thenReturn(killerName);
-		PearlPlayer pKiller = mock(PearlPlayer.class);
+		pKiller = mock(PearlPlayer.class);
 		when(pKiller.getUniqueId()).thenReturn(killerId);
 		when(pKiller.getName()).thenReturn(killerName);
+		when(pKiller.isOnline()).thenReturn(true);
+		
 		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlPlayer(playerName)).thenReturn(pPlayer);
@@ -223,6 +228,7 @@ public class CorePearlManagerTest {
 		
 		// Now allow the event to pass
 		reset(pluginManager);
+		
 	    assertTrue(manager.freePearl(pearl));
 	    assertFalse(manager.isPlayerExiled(player));
 

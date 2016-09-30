@@ -115,15 +115,27 @@ class CorePearlManager implements PearlManager {
 	public boolean freePearl(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		
-		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.FREED, null);
-		Bukkit.getPluginManager().callEvent(e);
+		// Don't call the event if the pearl was already freed while they were offline
+		if (!pearl.getFreedOffline()) {
+			ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.FREED, null);
+			Bukkit.getPluginManager().callEvent(e);
+			
+			if (e.isCancelled()) {
+				return false; // The event was cancelled
+			}
+		}
 		
-		if (!e.isCancelled()) {
+		PearlPlayer player = pearlApi.getPearlPlayer(pearl.getUniqueId());
+		
+		// If the player is online, do the full remove, otherwise mark the pearl
+		// as free offline and it will be removed when they log in
+		if (player != null && player.isOnline()) {
 			pearls.remove(pearl.getUniqueId());
 			storage.pearlRemove(pearl);
-			return true;
+		} else {
+			pearl.setFreedOffline(true);
 		}
-		return false;
+		return true;
 	}
 
 	@Override
