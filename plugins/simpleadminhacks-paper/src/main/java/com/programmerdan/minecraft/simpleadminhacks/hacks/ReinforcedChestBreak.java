@@ -6,6 +6,8 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.ReinforcedChestBreak
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,14 +72,16 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      */
     @EventHandler
     public void onBlockBreak(BlockBreakEvent eve) {
-        if(manager.isReinforced(eve.getBlock())) {
-            String name = eve.getPlayer().getDisplayName();
-            Location loc = eve.getBlock().getLocation();
+        if (eve.getBlock().getType().equals(Material.CHEST)) {
+            if(manager.isReinforced(eve.getBlock())) {
+                String name = eve.getPlayer().getDisplayName();
+                Location loc = eve.getBlock().getLocation();
 
-            messages.add(setVars(name,
-                    String.valueOf(loc.getBlockX()),
-                    String.valueOf(loc.getBlockY()),
-                    String.valueOf(loc.getBlockZ())));
+                messages.add(setVars(name,
+                        String.valueOf(loc.getBlockX()),
+                        String.valueOf(loc.getBlockY()),
+                        String.valueOf(loc.getBlockZ())));
+            }
         }
     }
 
