@@ -73,7 +73,7 @@ public class CorePearlFactory implements PearlFactory {
 
 	@Override
 	public BukkitTask createPearlDecayWorker() {
-		return new PearlDecayWorker(plugin);
+		return new PearlDecayTask(plugin);
 	}
 
 	@Override

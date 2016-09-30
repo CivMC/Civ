@@ -334,4 +334,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	public JavaPlugin getPlugin() {
 		return this;
 	}
+
+	@Override
+	public void decayPearls() {
+		pearlManager.decayPearls();
+	}
 }

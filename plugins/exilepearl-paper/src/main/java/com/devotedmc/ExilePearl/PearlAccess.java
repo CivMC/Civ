@@ -65,4 +65,9 @@ public interface PearlAccess {
 	 * @return true if the pearl is freed, otherwise false
 	 */
 	boolean freePearl(ExilePearl pearl);
+	
+	/**
+	 * Performs a health decay operation on all pearls
+	 */
+	public void decayPearls();
 }
