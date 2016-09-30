@@ -3,6 +3,8 @@ package com.devotedmc.ExilePearl;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * External API for ExilePearl
@@ -43,4 +45,16 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	 * @return The lore generator
 	 */
 	PearlLoreGenerator getLoreGenerator();
+	
+	/**
+	 * Gets the plugin scheduler
+	 * @return The plugin scheduler
+	 */
+	BukkitScheduler getScheduler();
+	
+	/**
+	 * Gets the java plugin instance
+	 * @return The plugin plugin instance
+	 */
+	JavaPlugin getPlugin();
 }

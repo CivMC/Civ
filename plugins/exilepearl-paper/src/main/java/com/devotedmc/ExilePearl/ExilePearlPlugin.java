@@ -17,6 +17,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitScheduler;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
@@ -321,5 +323,15 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	@Override
 	public PearlLoreGenerator getLoreGenerator() {
 		return loreGenerator;
+	}
+
+	@Override
+	public BukkitScheduler getScheduler() {
+		return Bukkit.getScheduler();
+	}
+
+	@Override
+	public JavaPlugin getPlugin() {
+		return this;
 	}
 }
