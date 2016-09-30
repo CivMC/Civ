@@ -36,13 +36,14 @@ class PearlDecayWorker implements BukkitTask, Runnable {
 	public void start() {
 		if (enabled) {
 			plugin.log(Level.WARNING, "Tried to start the pearl worker task but it was already started.");
+			return;
 		}
 		
 		long tickInterval = plugin.getPearlConfig().getPearlHealthDecayIntervalMin() * TICKS_PER_MINUTE;
 		taskId = plugin.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, this, tickInterval, tickInterval);
 		if (taskId == -1) {
-			enabled = true;
 			plugin.log(Level.SEVERE, "Failed to start pearl worker task");
+			return;
 		} else {
 			enabled = true;
 			plugin.log("Started the pearl worker task");

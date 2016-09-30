@@ -13,6 +13,7 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -73,6 +74,11 @@ public class CorePearlFactory implements PearlFactory {
 	@Override
 	public BukkitTask createPearlDecayWorker() {
 		return new PearlDecayWorker(plugin);
+	}
+
+	@Override
+	public SuicideHandler createSuicideHandler() {
+		return new PlayerSuicideTask(plugin);
 	}
 
 	@Override

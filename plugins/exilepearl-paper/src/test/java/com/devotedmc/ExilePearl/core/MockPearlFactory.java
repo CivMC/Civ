@@ -12,6 +12,7 @@ import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.util.BukkitTask;
 
 public class MockPearlFactory implements PearlFactory {
@@ -55,6 +56,11 @@ public class MockPearlFactory implements PearlFactory {
 
 	@Override
 	public PearlConfig createPearlConfig() {
+		return null;
+	}
+
+	@Override
+	public SuicideHandler createSuicideHandler() {
 		return null;
 	}
 

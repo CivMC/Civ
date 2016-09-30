@@ -74,6 +74,12 @@ public interface PearlConfig {
 	 */
 	boolean getMustPrisonPearlHotBar();
 	
+	/**
+	 * Gets the suicide timeout in seconds
+	 * @return The suicide timeout
+	 */
+	int getSuicideTimeoutSeconds();
+	
 	int getDamageLogMin();
 	
 	int getDamagelogTicks();

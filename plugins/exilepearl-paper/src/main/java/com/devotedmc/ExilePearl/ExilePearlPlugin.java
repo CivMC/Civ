@@ -24,6 +24,7 @@ import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.CmdLegacy;
+import com.devotedmc.ExilePearl.command.CmdSuicide;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
@@ -48,8 +49,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	//private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
 	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
-	private final BukkitTask pearlWorker = pearlFactory.createPearlDecayWorker();
 	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
+	private final BukkitTask pearlDecayWorker = pearlFactory.createPearlDecayWorker();
+	private final SuicideHandler suicideHandler = pearlFactory.createSuicideHandler();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this);
@@ -106,13 +108,15 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 		// Add commands
 		commands.add(new CmdExilePearl(this));
 		commands.add(new CmdLegacy(this));
+		commands.add(new CmdSuicide(this));
 		
 		// Register events
 		this.getServer().getPluginManager().registerEvents(playerListener, this);
 		this.getServer().getPluginManager().registerEvents(exileListener, this);
+		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
 		
 		// Start tasks
-		pearlWorker.start();
+		pearlDecayWorker.start();
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
@@ -124,7 +128,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	public void onDisable() {
 		super.onDisable();
 		
-		pearlWorker.stop();
+		pearlDecayWorker.stop();
 		storage.disconnect();
 	}
 	
@@ -159,6 +163,14 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	 */
 	public PearlCommand getAutoHelp() {
 		return autoHelp;
+	}
+	
+	/**
+	 * Gets the suicide handler
+	 * @return The suicide handler
+	 */
+	public SuicideHandler getSuicideHandler() {
+		return suicideHandler;
 	}
 	
 	/**

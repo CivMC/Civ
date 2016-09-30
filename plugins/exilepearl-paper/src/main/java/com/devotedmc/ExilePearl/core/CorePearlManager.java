@@ -160,7 +160,8 @@ class CorePearlManager implements PearlManager {
 	@Override
 	public boolean isPlayerExiled(Player player) {
 		Guard.ArgumentNotNull(player, "player");
-		return pearls.get(player.getUniqueId()) != null;
+		ExilePearl pearl = pearls.get(player.getUniqueId());
+		return pearl != null && !pearl.getFreedOffline();
 	}
 
 

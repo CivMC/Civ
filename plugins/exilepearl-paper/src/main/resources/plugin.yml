@@ -5,6 +5,7 @@ depend: [CivModCore]
 softdepend: [NameLayer, CombatTagPlus]
 commands:
   ep:
+  suicide:
   pp:
     description: Legacy prison pearl commands
     aliases: [pplocate, ppl, ppfree, ppf, ppbroadcast, ppb, ppconfirm, ppsilence]

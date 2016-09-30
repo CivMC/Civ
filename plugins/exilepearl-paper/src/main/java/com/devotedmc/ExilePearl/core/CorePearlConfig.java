@@ -74,6 +74,12 @@ class CorePearlConfig implements PearlConfig {
 	public boolean getMustPrisonPearlHotBar() {
 		return plugin.GetConfig().get("prison_musthotbar").getBool();
 	}
+
+	@Override
+	@CivConfig(name = "suicide_time_seconds", def = "180" , type = CivConfigType.Int)
+	public int getSuicideTimeoutSeconds() {
+		return plugin.GetConfig().get("suicide_time_seconds").getInt();
+	}
 	
 	@CivConfig(name = "damagelog_min", def = "3" , type = CivConfigType.Int)
 	public int getDamageLogMin() {

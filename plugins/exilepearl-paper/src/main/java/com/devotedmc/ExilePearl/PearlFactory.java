@@ -43,6 +43,12 @@ public interface PearlFactory {
 	BukkitTask createPearlDecayWorker();
 	
 	/**
+	 * Creates the suicide handler instance
+	 * @return The new suicide handler instance
+	 */
+	SuicideHandler createSuicideHandler();
+	
+	/**
 	 * Creates a new PearlPlayer instance
 	 * @param player The bukkit player instance
 	 * @return The new PearlPlayer instance

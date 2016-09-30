@@ -19,10 +19,12 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
@@ -39,6 +41,7 @@ import com.devotedmc.ExilePearl.PlayerNameProvider;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
@@ -63,6 +66,7 @@ public class CoreExilePearlTest {
 	private ExilePearlApi pearlApi;
 	private PlayerNameProvider nameProvider;
 	private PearlLoreGenerator loreGenerator;
+	private PluginManager pluginManager;
 	
 
 	@Before
@@ -103,6 +107,10 @@ public class CoreExilePearlTest {
 		holder = new PlayerHolder(killer);
 		
 		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder);
+		
+	    PowerMockito.mockStatic(Bukkit.class);
+	    pluginManager = mock(PluginManager.class);
+	    when(Bukkit.getPluginManager()).thenReturn(pluginManager);
 	}
 
 	@Test
@@ -403,6 +411,10 @@ public class CoreExilePearlTest {
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
+		ArgumentCaptor<ExilePearlEvent> eventArg = ArgumentCaptor.forClass(ExilePearlEvent.class);
+		verify(pluginManager).callEvent(eventArg.capture());
+		assertEquals(eventArg.getValue().getType(), ExilePearlEvent.Type.MOVED);
+		
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
@@ -418,19 +430,31 @@ public class CoreExilePearlTest {
 		PearlHolder holder2 = mock(PearlHolder.class);
 		when(holder2.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
-		pearl.setHolder(holder2);
-		assertTrue(pearl.verifyLocation());
+		PearlHolder holder3 = mock(PearlHolder.class);
+		when(holder3.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		
+		PearlHolder holder4 = mock(PearlHolder.class);
+		when(holder4.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		
+		PearlHolder holder5 = mock(PearlHolder.class);
+		when(holder5.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		
+		PearlHolder holder6 = mock(PearlHolder.class);
+		when(holder6.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		pearl.setHolder(holder2);
 		assertTrue(pearl.verifyLocation());
 		
-		pearl.setHolder(holder2);
+		pearl.setHolder(holder3);
 		assertTrue(pearl.verifyLocation());
 		
-		pearl.setHolder(holder2);
+		pearl.setHolder(holder4);
 		assertTrue(pearl.verifyLocation());
 		
-		pearl.setHolder(holder2);
+		pearl.setHolder(holder5);
+		assertTrue(pearl.verifyLocation());
+		
+		pearl.setHolder(holder6);
 		assertFalse(pearl.verifyLocation());
 	}
 

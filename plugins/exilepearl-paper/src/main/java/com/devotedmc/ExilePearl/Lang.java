@@ -34,4 +34,8 @@ public class Lang
 	public static final String unknownPlayer = "<i>No player was found by that name.";
 	public static final String locNotInventory = "<i>That location isn't an inventory.";
 	public static final String ruleCantDoThat = "<i>You can't %s when you are exiled.";
+	public static final String onlyExiledPlayers = "<i>Only exiled players can do that.";
+	public static final String suicideInSeconds = "<n>You will suicide in %d seconds.";
+	public static final String suicideCancelled = "<i>Your suicide has been cancelled because you moved.";
+	
 }
