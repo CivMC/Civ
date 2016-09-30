@@ -2,6 +2,9 @@ package isaac.bastion.manager;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.event.BastionCreateEvent;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockSet;
 import isaac.bastion.util.QTBox;
 
@@ -38,13 +41,11 @@ import org.bukkit.material.Dispenser;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
 	public BastionBlockSet set;
-	private Map<String, Long> playerLastEroded = new HashMap<String, Long>();
+	private Map<Player, Long> playerLastEroded = new HashMap<Player, Long>();
 	private static Random generator = new Random();
 
 	public BastionBlockManager() {
@@ -56,33 +57,53 @@ public class BastionBlockManager {
 		set.close();
 	}
 
-	public void addBastion(Location location, PlayerReinforcement reinforcement) {
+	public boolean addBastion(Player player, Location location, PlayerReinforcement reinforcement) {
 		BastionBlock toAdd = new BastionBlock(location, reinforcement);
-		set.add(toAdd);
+		
+		BastionCreateEvent e = new BastionCreateEvent(toAdd, player);
+		Bukkit.getPluginManager().callEvent(e);
+		
+		if (!e.isCancelled()) {
+			set.add(toAdd);
+			return true;
+		}
+		
+		return false;
 	}
 	
 	// TODO why is origin and result passed if not used
-	public void erodeFromPlace(Block origin, Set<Block> result, String player, Set<BastionBlock> blocking) {
+	public void erodeFromPlace(Block origin, Set<Block> result, Player player, Set<BastionBlock> blocking) {
 		erodeFromAction(player, blocking, true);
 	}
 	
 	// TODO: Why is loc passed if not used.
-	public void erodeFromTeleport(Location loc, String player, Set<BastionBlock> blocking){
+	public void erodeFromTeleport(Location loc, Player player, Set<BastionBlock> blocking){
 		erodeFromAction(player, blocking, false);
 	}
 
 	/**
 	 * Common handler for erosion.
 	 */
-	private void erodeFromAction(String player, Set<BastionBlock> blocking, boolean fromBlock) {
+	private void erodeFromAction(Player player, Set<BastionBlock> blocking, boolean fromBlock) {
 		if (onCooldown(player)) return;
 		
 		if (Bastion.getConfigManager().getBastionBlocksToErode() < 0) {
 			for (BastionBlock bastion : blocking){
 				if (fromBlock) {
-					bastion.erode(bastion.erosionFromBlock());
+					BastionDamageEvent e = new BastionDamageEvent(bastion, player, Cause.BLOCK_PLACED);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						bastion.erode(bastion.erosionFromBlock());
+					}
+					
 				} else {
-					bastion.erode(bastion.erosionFromPearl());
+					BastionDamageEvent e = new BastionDamageEvent(bastion, player, Cause.PEARL);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						bastion.erode(bastion.erosionFromPearl());
+					}
 				}
 			}
 		} else {
@@ -92,16 +113,26 @@ public class BastionBlockManager {
 				int erode = generator.nextInt(ordered.size()); 
 				BastionBlock toErode = ordered.get(erode);
 				if (fromBlock) {
-					toErode.erode(toErode.erosionFromBlock());
+					BastionDamageEvent e = new BastionDamageEvent(toErode, player, Cause.BLOCK_PLACED);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						toErode.erode(toErode.erosionFromBlock());
+					}
 				} else {
-					toErode.erode(toErode.erosionFromPearl());
+					BastionDamageEvent e = new BastionDamageEvent(toErode, player, Cause.PEARL);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						toErode.erode(toErode.erosionFromPearl());
+					}
 				}
 				ordered.remove(erode);
 			}
 		}
 	}
 	
-	public boolean onCooldown(String player){
+	public boolean onCooldown(Player player){
 		Long last_placed = playerLastEroded.get(player);
 		if (last_placed == null){
 			playerLastEroded.put(player, System.currentTimeMillis());
@@ -294,7 +325,7 @@ public class BastionBlockManager {
 		Set<BastionBlock> blocking = shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
 		
 		if (blocking.size() != 0){
-			erodeFromPlace(null, blocks,event.getPlayer().getName(),blocking);
+			erodeFromPlace(null, blocks,event.getPlayer(), blocking);
 			
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
@@ -393,7 +424,7 @@ public class BastionBlockManager {
 		
 		if (blocking.size() > 0) {
 			if(!Bastion.getConfigManager().getDamageFirstBastion()){
-				this.erodeFromTeleport(event.getTo(), event.getPlayer().getName(), blocking);
+				this.erodeFromTeleport(event.getTo(), event.getPlayer(), blocking);
 			}
 			event.getPlayer().sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
 			// TODO: Make consumption of pearls optional here.
@@ -424,7 +455,7 @@ public class BastionBlockManager {
 		
 		if (blocking.size() > 0){
 			// TODO: Double check: We use getFrom() to find a list of blockers, but previously used erode getTo() if a blocker was found.
-			this.erodeFromTeleport(event.getFrom(), event.getPlayer().getName(), blocking);
+			this.erodeFromTeleport(event.getFrom(), event.getPlayer(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
 			// TODO: Make consumption of pearls optional here.
 			if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {

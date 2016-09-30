@@ -71,8 +71,12 @@ public final class BastionListener implements Listener {
 				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
 			PlayersStates.touchPlayer(event.getPlayer());
 			PlayerReinforcement rein = (PlayerReinforcement) event.getReinforcement();
-			bastionManager.addBastion(event.getBlock().getLocation(), rein);
-			event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion block created");
+			if (bastionManager.addBastion(event.getPlayer(), event.getBlock().getLocation(), rein)) {
+				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion block created");
+			} else {
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.RED + "Failed to create bastion block");
+			}
 		}
 	}
 	
