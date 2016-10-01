@@ -1,0 +1,69 @@
+package isaac.bastion.event;
+
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
+
+import isaac.bastion.BastionBlock;
+
+public class BastionDamageEvent extends PlayerEvent implements Cancellable {
+	public enum Cause { BLOCK_PLACED, PEARL }
+	
+	private final BastionBlock bastion;
+	private final Cause cause;
+	
+	private boolean cancelled;
+	
+	// Handler list for spigot events
+	private static final HandlerList handlers = new HandlerList();
+	
+	public BastionDamageEvent(final BastionBlock bastion, final Player player, final Cause cause) {
+		super(player);
+		this.bastion = bastion;
+		this.cause = cause;
+	}
+	
+	/**
+	 * Gets the damaged bastion
+	 * @return The damaged bastion
+	 */
+	public BastionBlock getBastion() {
+		return bastion;
+	}
+	
+	/**
+	 * Gets the damage cause
+	 * @return The damage cause
+	 */
+	public Cause getCause() {
+		return cause;
+	}
+	
+	/**
+	 * Gets whether the event is cancelled
+	 * @return true if the event is cancelled
+	 */
+	@Override
+	public boolean isCancelled() {
+		return cancelled;
+	}
+	
+	/**
+	 * Sets whether the event is cancelled
+	 * @param cancelled whether the event is cancelled
+	 */
+	@Override
+	public void setCancelled(boolean cancelled) {
+		this.cancelled = cancelled;
+	}
+	
+	@Override
+	public HandlerList getHandlers() {
+	    return handlers;
+	}
+	
+	public static HandlerList getHandlerList() {
+	    return handlers;
+	}
+}
