@@ -7,6 +7,10 @@ import org.bukkit.event.player.PlayerEvent;
 
 import isaac.bastion.BastionBlock;
 
+/**
+ * Event that gets fired when a bastion is created
+ * @author Gordon
+ */
 public class BastionCreateEvent extends PlayerEvent implements Cancellable {
 	
 	private final BastionBlock bastion;
@@ -16,6 +20,11 @@ public class BastionCreateEvent extends PlayerEvent implements Cancellable {
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 	
+	/**
+	 * Creates a new BastionCreateEvent instance
+	 * @param bastion The bastion instance
+	 * @param player The player creating the bastion
+	 */
 	public BastionCreateEvent(final BastionBlock bastion, final Player player) {
 		super(player);
 		this.bastion = bastion;

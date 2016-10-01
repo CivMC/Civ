@@ -44,36 +44,8 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
-	
-	/**
-	 * Class for tracking the last time a player damaged a bastion
-	 * @author Gordon
-	 */
-	class BastionErodeRecord {
-		private final Player player;
-		private long time;
-		
-		public BastionErodeRecord(final Player player, final long time) {
-			this.player = player;
-			this.time = time;
-		}
-		
-		public Player getPlayer() {
-			return player;
-		}
-		
-		public long getTime() {
-			return time;
-		}
-		
-		public void setTime(long time) {
-			this.time = time;
-		}
-		
-	};
-	
 	public BastionBlockSet set;
-	private final Map<UUID, BastionErodeRecord> playerLastEroded = new HashMap<UUID, BastionErodeRecord>();
+	private final Map<UUID, Long> playerLastEroded = new HashMap<UUID, Long>();
 	private static Random generator = new Random();
 
 	public BastionBlockManager() {
@@ -161,16 +133,16 @@ public class BastionBlockManager {
 	}
 	
 	public boolean onCooldown(Player player){
-		BastionErodeRecord lastPlacedRecord = playerLastEroded.get(player.getUniqueId());
-		if (lastPlacedRecord == null){
-			lastPlacedRecord = playerLastEroded.put(player.getUniqueId(), new BastionErodeRecord(player, System.currentTimeMillis()));
+		Long last_placed = playerLastEroded.get(player);
+		if (last_placed == null){
+			playerLastEroded.put(player.getUniqueId(), System.currentTimeMillis());
 			return false;
 		}
 		
-		if ((System.currentTimeMillis() - lastPlacedRecord.getTime()) < BastionBlock.MIN_BREAK_TIME) {
+		if ((System.currentTimeMillis() - playerLastEroded.get(player)) < BastionBlock.MIN_BREAK_TIME) {
 			return true;
 		} else {
-			lastPlacedRecord.setTime(System.currentTimeMillis());
+			playerLastEroded.put(player.getUniqueId(), System.currentTimeMillis());
 		}
 		
 		return false;

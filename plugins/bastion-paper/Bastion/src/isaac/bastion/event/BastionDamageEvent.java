@@ -7,8 +7,12 @@ import org.bukkit.event.player.PlayerEvent;
 
 import isaac.bastion.BastionBlock;
 
+/**
+ * Event that gets fired when a bastion is damaged
+ * @author Gordon
+ */
 public class BastionDamageEvent extends PlayerEvent implements Cancellable {
-	public enum Cause { BLOCK_PLACED, PEARL }
+	public enum Cause { BLOCK_PLACED, PEARL, ELYTRA }
 	
 	private final BastionBlock bastion;
 	private final Cause cause;
@@ -18,6 +22,12 @@ public class BastionDamageEvent extends PlayerEvent implements Cancellable {
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 	
+	/**
+	 * Creates a new BastionDamageEvent instance
+	 * @param bastion The damaged bastion instance
+	 * @param player The damaging player
+	 * @param cause The damage cause
+	 */
 	public BastionDamageEvent(final BastionBlock bastion, final Player player, final Cause cause) {
 		super(player);
 		this.bastion = bastion;
