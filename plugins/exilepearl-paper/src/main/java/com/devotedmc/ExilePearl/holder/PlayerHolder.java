@@ -63,4 +63,18 @@ public class PlayerHolder implements PearlHolder {
 		feedback.append(String.format("Not in %s's inventory", player.getName()));
 		return HolderVerifyResult.DEFAULT;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        PlayerHolder other = (PlayerHolder) o;
+
+		return player.equals(other.player);
+	}
 }

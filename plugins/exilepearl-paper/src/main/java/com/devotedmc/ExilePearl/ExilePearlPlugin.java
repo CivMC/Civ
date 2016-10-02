@@ -27,6 +27,7 @@ import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.command.CmdSuicide;
+import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
@@ -57,6 +58,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this);
+	private final CitadelListener citadelListener = new CitadelListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -98,12 +100,16 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		commands.add(new CmdSuicide(this));
 		
 		// Register events
+		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
 		this.getServer().getPluginManager().registerEvents(playerListener, this);
 		this.getServer().getPluginManager().registerEvents(exileListener, this);
-		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
+		if (isCitadelEnabled()) {
+			this.getServer().getPluginManager().registerEvents(citadelListener, this);
+		}
 		
 		// Start tasks
 		pearlDecayWorker.start();
+		suicideHandler.start();
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
@@ -308,6 +314,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	
 	private boolean isNameLayerEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
+	}
+	
+	private boolean isCitadelEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("Citadel");
 	}
 
 	@Override

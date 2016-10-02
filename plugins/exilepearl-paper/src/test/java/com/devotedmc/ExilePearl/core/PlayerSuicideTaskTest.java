@@ -133,7 +133,12 @@ public class PlayerSuicideTaskTest {
 		verify(player).msg(Lang.suicideInSeconds, pearlConfig.getSuicideTimeoutSeconds());
 		assertTrue(dut.isAdded(uid));
 		
-		PlayerMoveEvent e = new PlayerMoveEvent(p, mock(Location.class), mock(Location.class));
+		Location l1 = mock(Location.class);
+		when(p.getLocation()).thenReturn(l1);
+		
+		Location l2 = mock(Location.class);
+		when(l2.distance(any(Location.class))).thenReturn(3.0);
+		PlayerMoveEvent e = new PlayerMoveEvent(p, l1, l2);
 		
 		dut.onPlayerMove(e);
 		verify(player).msg(Lang.suicideCancelled);

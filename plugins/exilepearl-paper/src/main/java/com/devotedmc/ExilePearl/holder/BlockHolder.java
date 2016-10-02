@@ -112,4 +112,18 @@ public class BlockHolder implements PearlHolder {
 		// Nope, not found
 		return HolderVerifyResult.DEFAULT;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BlockHolder other = (BlockHolder) o;
+
+		return block.equals(other.block);
+	}
 }

@@ -151,5 +151,5 @@ public interface PearlConfig {
 	
 	boolean setRuleCanEnchant(Boolean value);
 	
-	boolean isRuleSet(ExileRule rule);
+	boolean canPerform(ExileRule rule);
 }

@@ -1,13 +1,9 @@
 package com.devotedmc.ExilePearl.listener;
 
-import java.util.UUID;
-
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
@@ -24,13 +20,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
-import com.devotedmc.ExilePearl.util.Guard;
-
-import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 
 /**
  * Listener for disallowing certain actions of exiled players
@@ -54,10 +45,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
  * Exiled players can still play, mine, enchant, trade, grind, and explore.
  *
  */
-public class ExileListener implements Listener {
-
-	private final ExilePearlApi pearlApi;
-	private final PearlConfig config;
+public class ExileListener extends RuleListener {
 	
 	/**
 	 * Creates a new ExileListener instance
@@ -66,10 +54,7 @@ public class ExileListener implements Listener {
 	 * @param config The plugin configuration
 	 */
 	public ExileListener(final ExilePearlApi pearlApi) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		
-		this.pearlApi = pearlApi;
-		this.config = pearlApi.getPearlConfig();
+		super(pearlApi);
 	}
 	
 	
@@ -202,56 +187,16 @@ public class ExileListener implements Listener {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
 	}
 	
-	/**
-	 * Prevents exiled players from damaging reinforcements
-	 * @param e The event
-	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onReinforcementDamage(ReinforcementDamageEvent e) {
-		checkAndCancelRule(ExileRule.DAMAGE_REINFORCEMENT, e, e.getPlayer());
-	}
-	
 	
 	/**
 	 * Prevents exiled players from placing snitches
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onReinforcementDamage(BlockPlaceEvent e) {
+	public void onSnitchPlaced(BlockPlaceEvent e) {
 		Material m = e.getBlockPlaced().getType();
 		if (m == Material.JUKEBOX || m == Material.NOTE_BLOCK) {
 			checkAndCancelRule(ExileRule.SNITCH, e, e.getPlayer());
-		}
-	}
-	  
-	
-	
-	/**
-	 * Gets whether a rule is active for the given player
-	 * @param rule The exile rule
-	 * @param playerId The player to check
-	 * @return true if the rule is active for the player
-	 */
-	private boolean isRuleActive(ExileRule rule, UUID playerId) {
-		return config.isRuleSet(rule) && pearlApi.isPlayerExiled(playerId);
-	}
-	
-	
-	/**
-	 * Checks if a rule is active for a given player and cancels it
-	 * @param rule The rule to check
-	 * @param event The event
-	 * @param player The player to check
-	 */
-	private void checkAndCancelRule(ExileRule rule, Cancellable event, Player player) {
-		if (event == null || player == null) {
-			return;
-		}
-		
-		UUID playerId = player.getUniqueId();
-		if (isRuleActive(rule, playerId)) {
-			((Cancellable)event).setCancelled(true);
-			pearlApi.getPearlPlayer(playerId).msg(Lang.ruleCantDoThat, rule.getActionString());
 		}
 	}
 }

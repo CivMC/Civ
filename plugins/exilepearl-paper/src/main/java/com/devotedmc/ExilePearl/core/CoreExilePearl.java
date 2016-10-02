@@ -201,7 +201,7 @@ class CoreExilePearl implements ExilePearl {
 		checkPearlValid();
 		
 		// Do nothing if the holder is the same
-		if (holder == holders.getLast()) {
+		if (holder.equals(holders.getLast())) {
 			return;
 		}
 		

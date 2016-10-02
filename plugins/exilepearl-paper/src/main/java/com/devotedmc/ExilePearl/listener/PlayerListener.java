@@ -115,7 +115,6 @@ public class PlayerListener implements Listener {
 		}
 
 		pearl.setHolder(item.getLocation());
-		updatePearl(pearl, e.getEntity());
 	}
 
 
@@ -236,16 +235,6 @@ public class PlayerListener implements Listener {
 		}else {
 			event.setCancelled(true);
 		}
-	}
-	
-	
-	/**
-	 * Updates the pearl status
-	 * @param pearl The prison pearl
-	 * @param item The pearl item
-	 */
-	private void updatePearl(ExilePearl pearl, Item item) {
-		pearl.setHolder(item.getLocation());
 	}
 
 
@@ -425,7 +414,6 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		pearl.setHolder(pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()));
 		updatePearl(pearl, (Player) e.getPlayer());
 	}
 

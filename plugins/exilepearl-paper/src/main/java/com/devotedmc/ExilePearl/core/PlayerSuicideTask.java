@@ -6,7 +6,11 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -19,7 +23,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  * Lets exiled players kill themselves with a timer
  * @author Gordon
  */
-class PlayerSuicideTask implements Runnable, SuicideHandler {
+class PlayerSuicideTask implements Runnable, SuicideHandler, Listener {
 
 	private final ExilePearlApi pearlApi;
 
@@ -28,7 +32,17 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 
 	public static final int TICKS_PER_SECOND = 20;
 	
-	private final HashMap<UUID, Integer> players = new HashMap<UUID, Integer>();
+	class SuicideRecord {
+		public final Location location;
+		public int seconds;
+		
+		public SuicideRecord(final Location location, final int seconds) {
+			this.location = location;
+			this.seconds = seconds;
+		}
+	}
+	
+	private final HashMap<UUID, SuicideRecord> players = new HashMap<UUID, SuicideRecord>();
 	private final HashSet<UUID> toRemove = new HashSet<UUID>();
 
 	/**
@@ -96,10 +110,10 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 		
 		toRemove.clear();
 		
-		for (Entry<UUID, Integer> rec : players.entrySet()) {
+		for (Entry<UUID, SuicideRecord> rec : players.entrySet()) {
 			PearlPlayer p = pearlApi.getPearlPlayer(rec.getKey());
-			int seconds = rec.getValue() - 1;
-			rec.setValue(seconds);
+			int seconds = rec.getValue().seconds - 1;
+			rec.getValue().seconds = seconds;
 			
 			if (seconds > 0) {
 				// Notify every 10 seconds and last 5 seconds
@@ -124,7 +138,7 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 	@Override
 	public void addPlayer(PearlPlayer player) {
 		int timeout = pearlApi.getPearlConfig().getSuicideTimeoutSeconds();
-		players.put(player.getUniqueId(), timeout);
+		players.put(player.getUniqueId(), new SuicideRecord(player.getPlayer().getLocation(), timeout));
 		player.msg(Lang.suicideInSeconds, timeout);
 	}
 
@@ -138,8 +152,10 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 	 * Cancels a pending suicide if the player moves
 	 * @param e
 	 */
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerMove(PlayerMoveEvent e) {
-		if (players.containsKey(e.getPlayer().getUniqueId())) {
+		SuicideRecord rec = players.get(e.getPlayer().getUniqueId());
+		if (rec != null && e.getTo().distance(rec.location) > 2) {
 			players.remove(e.getPlayer().getUniqueId());
 			pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()).msg(Lang.suicideCancelled);
 		}

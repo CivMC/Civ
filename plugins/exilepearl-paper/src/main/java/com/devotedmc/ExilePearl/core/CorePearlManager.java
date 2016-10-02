@@ -174,7 +174,6 @@ class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
-		Guard.ArgumentNotNull(is, "is");
 		
 		UUID id = pearlApi.getLoreGenerator().getIDFromItemStack(is);
 		if (id != null) {

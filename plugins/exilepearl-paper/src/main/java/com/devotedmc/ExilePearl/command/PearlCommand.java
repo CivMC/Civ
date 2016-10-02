@@ -21,6 +21,6 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlPlugin> {
 	 * @return The sender instance
 	 */
 	protected PearlPlayer me() {
-		return plugin.getPearlPlayer(me().getUniqueId());
+		return plugin.getPearlPlayer(player().getUniqueId());
 	}
 }

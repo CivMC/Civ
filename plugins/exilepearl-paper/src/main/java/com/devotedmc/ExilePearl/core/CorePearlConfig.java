@@ -244,7 +244,7 @@ class CorePearlConfig implements PearlConfig {
 	}
 
 	@Override
-	public boolean isRuleSet(ExileRule rule) {
+	public boolean canPerform(ExileRule rule) {
 		switch(rule) {
 		
 		case PEARL_RADIUS:

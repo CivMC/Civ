@@ -59,4 +59,18 @@ public class LocationHolder implements PearlHolder {
 		feedback.append("On ground not in chunk");
 		return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        LocationHolder other = (LocationHolder) o;
+
+		return loc.equals(other.loc);
+	}
 }
