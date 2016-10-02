@@ -83,7 +83,7 @@ public class CorePearlFactory implements PearlFactory {
 
 	@Override
 	public PearlPlayer createPearlPlayer(Player player) {
-		return new CorePearlPlayer(player, plugin, plugin);
+		return new CorePearlPlayer(player.getUniqueId(), plugin, plugin);
 	}
 
 	@Override

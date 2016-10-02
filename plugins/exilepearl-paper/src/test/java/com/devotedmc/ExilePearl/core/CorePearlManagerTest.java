@@ -29,7 +29,7 @@ import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
 
@@ -64,6 +64,7 @@ public class CorePearlManagerTest {
 		when(pPlayer.getUniqueId()).thenReturn(playerId);
 		when(pPlayer.getName()).thenReturn(playerName);
 		when(pPlayer.isOnline()).thenReturn(true);
+		when(pPlayer.getPlayer()).thenReturn(player);
 		
 		killer = mock(Player.class);
 		when(killer.getUniqueId()).thenReturn(killerId);
@@ -72,7 +73,7 @@ public class CorePearlManagerTest {
 		when(pKiller.getUniqueId()).thenReturn(killerId);
 		when(pKiller.getName()).thenReturn(killerName);
 		when(pKiller.isOnline()).thenReturn(true);
-		
+		when(pKiller.getPlayer()).thenReturn(killer);		
 		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlPlayer(playerName)).thenReturn(pPlayer);
@@ -81,7 +82,7 @@ public class CorePearlManagerTest {
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pPlayer);
 		when(pearlApi.getLoreGenerator()).thenReturn(new MockLoreGenerator());
 		
-		PlayerNameProvider nameProvider = mock(PlayerNameProvider.class);
+		PlayerProvider nameProvider = mock(PlayerProvider.class);
 		when(nameProvider.getName(playerId)).thenReturn(playerName);
 		when(nameProvider.getName(killerId)).thenReturn(killerName);
 		

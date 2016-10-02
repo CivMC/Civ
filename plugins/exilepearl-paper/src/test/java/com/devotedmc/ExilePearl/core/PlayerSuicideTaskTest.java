@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
@@ -78,7 +79,10 @@ public class PlayerSuicideTaskTest {
 		
 		final UUID uid = UUID.randomUUID();		
 		PearlPlayer player = mock(PearlPlayer.class);
+		when(player.getPlayer()).thenReturn(mock(Player.class));
 		when(player.getUniqueId()).thenReturn(uid);
+		
+		when(pearlApi.getPearlPlayer(uid)).thenReturn(player);
 		
 		when(pearlConfig.getSuicideTimeoutSeconds()).thenReturn(20);
 
@@ -109,25 +113,30 @@ public class PlayerSuicideTaskTest {
 		verify(player).msg(Lang.suicideInSeconds, 1);
 
 		dut.run();
-		verify(player).setHealth(0);
+		verify(player.getPlayer()).setHealth(0);
 	}
 
 	@Test
 	public void testAddPlayer() {
-		final UUID uid = UUID.randomUUID();		
+		final UUID uid = UUID.randomUUID();
+		Player p = mock(Player.class);
 		PearlPlayer player = mock(PearlPlayer.class);
 		when(player.getUniqueId()).thenReturn(uid);
+		when(player.getPlayer()).thenReturn(p);
+		when(p.getUniqueId()).thenReturn(uid);
+		
+		when(pearlApi.getPearlPlayer(uid)).thenReturn(player);
 	
-		assertFalse(dut.isAdded(player));
+		assertFalse(dut.isAdded(uid));
 		
 		dut.addPlayer(player);
 		verify(player).msg(Lang.suicideInSeconds, pearlConfig.getSuicideTimeoutSeconds());
-		assertTrue(dut.isAdded(player));
+		assertTrue(dut.isAdded(uid));
 		
-		PlayerMoveEvent e = new PlayerMoveEvent(player, mock(Location.class), mock(Location.class));
+		PlayerMoveEvent e = new PlayerMoveEvent(p, mock(Location.class), mock(Location.class));
 		
 		dut.onPlayerMove(e);
 		verify(player).msg(Lang.suicideCancelled);
-		assertFalse(dut.isAdded(player));
+		assertFalse(dut.isAdded(uid));
 	}
 }

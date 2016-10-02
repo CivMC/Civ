@@ -192,7 +192,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * Gets the sender instance
 	 * @return The sender instance
 	 */
-	protected Player me() {
+	protected Player player() {
 		return me;
 	}
 

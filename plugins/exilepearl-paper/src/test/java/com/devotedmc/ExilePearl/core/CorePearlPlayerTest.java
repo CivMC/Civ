@@ -14,7 +14,7 @@ import org.junit.Test;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlAccess;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 
 public class CorePearlPlayerTest {
 
@@ -22,7 +22,7 @@ public class CorePearlPlayerTest {
 	private Player p2;
 	private Player p3;
 	
-	private PlayerNameProvider nameProvider;
+	private PlayerProvider nameProvider;
 	private PearlAccess pearlAccess;
 	
 	private CorePearlPlayer pp1;
@@ -33,16 +33,20 @@ public class CorePearlPlayerTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		nameProvider = mock(PlayerNameProvider.class);
+		nameProvider = mock(PlayerProvider.class);
 		pearlAccess = mock(PearlAccess.class);
 		
 		p1 = createMockPlayer("Player1");
 		p2 = createMockPlayer("Player2");
 		p3 = createMockPlayer("Player3");
 		
-		pp1 = new CorePearlPlayer(p1, nameProvider, pearlAccess);
-		pp2 = new CorePearlPlayer(p2, nameProvider, pearlAccess);
-		pp3 = new CorePearlPlayer(p3, nameProvider, pearlAccess);
+		pp1 = new CorePearlPlayer(p1.getUniqueId(), nameProvider, pearlAccess);
+		pp2 = new CorePearlPlayer(p2.getUniqueId(), nameProvider, pearlAccess);
+		pp3 = new CorePearlPlayer(p3.getUniqueId(), nameProvider, pearlAccess);
+		
+		when(pp1.getPlayer()).thenReturn(p1);
+		when(pp2.getPlayer()).thenReturn(p2);
+		when(pp3.getPlayer()).thenReturn(p3);
 		
 	}
 
@@ -54,11 +58,11 @@ public class CorePearlPlayerTest {
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CorePearlPlayer(p1, null, pearlAccess); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlPlayer(p1.getUniqueId(), null, pearlAccess); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CorePearlPlayer(p1, nameProvider, null); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlPlayer(p1.getUniqueId(), nameProvider, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
@@ -113,7 +117,7 @@ public class CorePearlPlayerTest {
 	public void testIsExiled() {
 		assertFalse(pp1.isExiled());
 		
-		when(pearlAccess.isPlayerExiled(pp1)).thenReturn(true);
+		when(pearlAccess.isPlayerExiled(pp1.getUniqueId())).thenReturn(true);
 		assertTrue(pp1.isExiled());
 	}
 

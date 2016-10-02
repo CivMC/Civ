@@ -25,7 +25,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 import com.devotedmc.ExilePearl.core.MockPearlFactory;
 
@@ -49,7 +49,7 @@ public class MySqlStorageIntegrationTest {
 	    when(Bukkit.getWorld("world")).thenReturn(world);
 		
 	    // Mock pearl factory for generating mock pearl instances
-		pearlFactory = new MockPearlFactory(mock(PlayerNameProvider.class));
+		pearlFactory = new MockPearlFactory(mock(PlayerProvider.class));
 		
 		logger = mock(PearlLogger.class);
 		
@@ -102,7 +102,7 @@ public class MySqlStorageIntegrationTest {
 		Random rand = new Random(587);
 		final int numPearlsToAdd = 100;
 		for(int i = 0; i < numPearlsToAdd; i++) {
-			ExilePearl toAdd = new MockPearl(mock(PlayerNameProvider.class), UUID.randomUUID(), UUID.randomUUID(), new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+			ExilePearl toAdd = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
 			toAdd.setPearledOn(new Date());
 			toAdd.setHealth(rand.nextInt(100));
 			

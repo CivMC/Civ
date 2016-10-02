@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -27,18 +28,8 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 
 	public static final int TICKS_PER_SECOND = 20;
 	
-	class SuicideRecord {
-		public final PearlPlayer player;
-		public int seconds;
-		
-		public SuicideRecord(final PearlPlayer player, final int seconds) {
-			this.player = player;
-			this.seconds = seconds;
-		}
-	};
-	
-	private final HashMap<UUID, SuicideRecord> players = new HashMap<UUID, SuicideRecord>();
-	private final HashSet<Player> toRemove = new HashSet<Player>();
+	private final HashMap<UUID, Integer> players = new HashMap<UUID, Integer>();
+	private final HashSet<UUID> toRemove = new HashSet<UUID>();
 
 	/**
 	 * Creates a new FactoryWorker instance
@@ -105,22 +96,27 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 		
 		toRemove.clear();
 		
-		for (SuicideRecord rec : players.values()) {
-			rec.seconds--;
+		for (Entry<UUID, Integer> rec : players.entrySet()) {
+			PearlPlayer p = pearlApi.getPearlPlayer(rec.getKey());
+			int seconds = rec.getValue() - 1;
+			rec.setValue(seconds);
 			
-			if (rec.seconds > 0) {
+			if (seconds > 0) {
 				// Notify every 10 seconds and last 5 seconds
-				if (rec.seconds <= 5 || rec.seconds % 10 == 0) {
-					rec.player.msg(Lang.suicideInSeconds, rec.seconds);
+				if (seconds <= 5 || seconds % 10 == 0) {
+					p.msg(Lang.suicideInSeconds, seconds);
 				}
 			} else {
-				toRemove.add(rec.player);
+				toRemove.add(rec.getKey());
 			}
 		}
 		
-		for(Player p : toRemove) {
-			players.remove(p.getUniqueId());
-			p.setHealth(0);
+		for(UUID uid : toRemove) {
+			players.remove(uid);
+			Player p = pearlApi.getPearlPlayer(uid).getPlayer();
+			if (p != null) {
+				p.setHealth(0);
+			}
 		}
 	}
 
@@ -128,14 +124,14 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 	@Override
 	public void addPlayer(PearlPlayer player) {
 		int timeout = pearlApi.getPearlConfig().getSuicideTimeoutSeconds();
-		players.put(player.getUniqueId(), new SuicideRecord(player, timeout));
+		players.put(player.getUniqueId(), timeout);
 		player.msg(Lang.suicideInSeconds, timeout);
 	}
 
 
 	@Override
-	public boolean isAdded(Player player) {
-		return players.containsKey(player.getUniqueId());
+	public boolean isAdded(UUID uid) {
+		return players.containsKey(uid);
 	}
 	
 	/**
@@ -144,7 +140,8 @@ class PlayerSuicideTask implements Runnable, SuicideHandler {
 	 */
 	public void onPlayerMove(PlayerMoveEvent e) {
 		if (players.containsKey(e.getPlayer().getUniqueId())) {
-			players.remove(e.getPlayer().getUniqueId()).player.msg(Lang.suicideCancelled);
+			players.remove(e.getPlayer().getUniqueId());
+			pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()).msg(Lang.suicideCancelled);
 		}
 	}
 }

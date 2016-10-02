@@ -84,7 +84,7 @@ public class ExileListener implements Listener {
 		}
 		
 		if (e.getType() == Type.NEW) {
-			e.getExilePearl().getPlayer().setBedSpawnLocation(null, true);
+			e.getExilePearl().getPlayer().getPlayer().setBedSpawnLocation(null, true);
 		}
 	}
 

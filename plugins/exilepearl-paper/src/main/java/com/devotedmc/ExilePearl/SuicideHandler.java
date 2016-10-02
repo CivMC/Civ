@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl;
 
-import org.bukkit.entity.Player;
+import java.util.UUID;
+
 import org.bukkit.event.Listener;
 
 import com.devotedmc.ExilePearl.util.BukkitTask;
@@ -15,8 +16,8 @@ public interface SuicideHandler extends BukkitTask, Listener {
 
 	/**
 	 * Gets whether a player is added
-	 * @param player The player to check
+	 * @param uid The player to check
 	 * @return true if the player is added
 	 */
-	boolean isAdded(Player player);
+	boolean isAdded(UUID uid);
 }

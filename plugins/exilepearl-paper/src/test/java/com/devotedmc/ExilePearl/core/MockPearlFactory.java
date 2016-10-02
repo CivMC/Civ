@@ -11,15 +11,15 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.util.BukkitTask;
 
 public class MockPearlFactory implements PearlFactory {
 	
-	private PlayerNameProvider nameProvider;
+	private PlayerProvider nameProvider;
 	
-	public MockPearlFactory(PlayerNameProvider nameProvider) {
+	public MockPearlFactory(PlayerProvider nameProvider) {
 		this.nameProvider = nameProvider;
 	}
 

@@ -25,7 +25,7 @@ public class CmdSuicide extends PearlCommand {
 			return;
 		}
 		
-		if (!pearlApi.isPlayerExiled(me())) {
+		if (!pearlApi.isPlayerExiled(me().getUniqueId())) {
 			msg(Lang.onlyExiledPlayers);
 			return;
 		}

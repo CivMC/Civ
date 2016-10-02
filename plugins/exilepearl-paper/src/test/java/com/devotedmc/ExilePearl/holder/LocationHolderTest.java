@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
 public class LocationHolderTest {
@@ -54,7 +54,7 @@ public class LocationHolderTest {
 
 	@Test
 	public void testValidate() {
-		MockPearl pearl = new MockPearl(mock(PlayerNameProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
+		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
 		final ItemStack pearlStack = pearl.createItemStack();
 		StringBuilder sb = new StringBuilder();
 

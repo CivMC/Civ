@@ -167,7 +167,7 @@ class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setHolder(PearlPlayer player) {
 		Guard.ArgumentNotNull(player, "player");
-		setHolderInternal(new PlayerHolder(player));
+		setHolderInternal(new PlayerHolder(player.getPlayer()));
 	}
 
 

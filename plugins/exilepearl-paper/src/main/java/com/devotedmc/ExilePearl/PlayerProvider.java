@@ -2,11 +2,20 @@ package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 /**
  * An interface for providing the real names of players
  * @author Gordon
  */
-public interface PlayerNameProvider {
+public interface PlayerProvider {
+	
+	/**
+	 * Gets a bukkit player instance
+	 * @param uid The player ID
+	 * @return The player instance if it exists
+	 */
+	Player getPlayer(UUID uid);
 	
 	/**
 	 * Gets a player name from a UUID

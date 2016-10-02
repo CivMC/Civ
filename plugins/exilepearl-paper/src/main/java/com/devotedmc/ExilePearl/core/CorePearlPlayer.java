@@ -3,13 +3,14 @@ package com.devotedmc.ExilePearl.core;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlAccess;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -18,9 +19,32 @@ import com.devotedmc.ExilePearl.util.TextUtil;
  * @author Gordon
  *
  */
-class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
+class CorePearlPlayer implements PearlPlayer {
 	
+	private final UUID playerId;
+	private final PlayerProvider playerProvider;
 	private final PearlAccess pearlAccess;
+
+	@Override
+	public UUID getUniqueId() {
+		return playerId;
+	}
+
+	@Override
+	public String getName() {
+		return playerProvider.getName(playerId);
+	}
+
+	@Override
+	public boolean isOnline() {
+		Player p = getPlayer();
+		return p != null && p.isOnline();
+	}
+
+	@Override
+	public Player getPlayer() {
+		return playerProvider.getPlayer(playerId);
+	}
 
 	// Players that are receiving prison pearl broadcast messages
 	private final Set<PearlPlayer> bcastPlayers = new HashSet<PearlPlayer>();
@@ -28,10 +52,13 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 	// The last player who requested a pearl broadcast
 	private PearlPlayer broadcastRequestPlayer;
 	
-	public CorePearlPlayer(final Player player, final PlayerNameProvider nameProvider, final PearlAccess pearlAccess) {
-		super(player, nameProvider);
+	public CorePearlPlayer(final UUID playerId, final PlayerProvider nameProvider, final PearlAccess pearlAccess) {
+		Guard.ArgumentNotNull(playerId, "playerId");
+		Guard.ArgumentNotNull(nameProvider, "nameProvider");
 		Guard.ArgumentNotNull(pearlAccess, "pearlAccess");
 		
+		this.playerId = playerId;
+		this.playerProvider = nameProvider;
 		this.pearlAccess = pearlAccess;
 	}
 
@@ -41,8 +68,9 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 			return; // Silently ignore null or empty strings
 		}
 		
-		if (isOnline()) {
-			sendMessage(TextUtil.instance().parse(String.format(str, args)));
+		Player p = getPlayer();
+		if (p != null && p.isOnline()) {
+			p.sendMessage(TextUtil.instance().parse(String.format(str, args)));
 		}
 	}
 	
@@ -73,7 +101,7 @@ class CorePearlPlayer extends CorePlayerWrapper implements PearlPlayer {
 
 	@Override
 	public boolean isExiled() {
-		return pearlAccess.isPlayerExiled(this);
+		return pearlAccess.isPlayerExiled(playerId);
 	}
 
 	@Override

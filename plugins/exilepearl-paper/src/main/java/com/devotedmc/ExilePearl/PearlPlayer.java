@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl;
 
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
@@ -10,7 +11,31 @@ import org.bukkit.entity.Player;
  * @author Gordon
  *
  */
-public interface PearlPlayer extends Player {
+public interface PearlPlayer {
+	
+	/**
+	 * Gets the player name
+	 * @return The player name
+	 */
+	String getName();
+	
+	/**
+	 * Gets the player ID
+	 * @return The player ID
+	 */
+	UUID getUniqueId();
+	
+	/**
+	 * Gets whether the player is online
+	 * @return true if the player is online
+	 */
+	boolean isOnline();
+	
+	/**
+	 * Gets the bukkit player instance
+	 * @return
+	 */
+	Player getPlayer();
 	
 	/**
 	 * Sends a formatted message to the player

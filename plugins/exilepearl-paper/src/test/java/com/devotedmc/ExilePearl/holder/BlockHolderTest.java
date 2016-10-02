@@ -21,7 +21,7 @@ import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
 public class BlockHolderTest {
@@ -96,7 +96,7 @@ public class BlockHolderTest {
 
 	@Test
 	public void testValidate() {
-		MockPearl pearl = new MockPearl(mock(PlayerNameProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
+		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
 		StringBuilder sb = new StringBuilder();
 		
 		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.BLOCK_STATE_NULL);

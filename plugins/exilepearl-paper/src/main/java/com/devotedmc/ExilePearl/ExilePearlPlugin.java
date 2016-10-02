@@ -44,7 +44,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNameProvider {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerProvider {
 	
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
 	private final PearlConfig pearlConfig = pearlFactory.createPearlConfig();
@@ -281,6 +281,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerNa
 	@Override
 	public PearlPlayer getPearlPlayer(Player player) {
 		return getPearlPlayer(player.getUniqueId());
+	}
+
+	@Override
+	public Player getPlayer(UUID uid) {
+		return Bukkit.getPlayer(uid);
 	}
 
 	@Override

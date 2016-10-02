@@ -18,12 +18,12 @@ import org.mockito.Mockito;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.PlayerNameProvider;
+import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 public class MockPearl implements ExilePearl {
 	
-	private PlayerNameProvider nameProvider;
+	private PlayerProvider nameProvider;
 	private UUID playerId;
 	private UUID killedBy;
 	private Location loc;
@@ -31,7 +31,7 @@ public class MockPearl implements ExilePearl {
 	private int health;
 	private boolean freedOffline;
 	
-	public MockPearl(final PlayerNameProvider nameProvider, final UUID playerId, final UUID killedBy, Location loc) {
+	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final UUID killedBy, Location loc) {
 		this.nameProvider = nameProvider;
 		this.playerId = playerId;
 		this.killedBy = killedBy;
@@ -77,7 +77,7 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public void setHolder(PearlPlayer p) {
-		loc = p.getLocation();
+		loc = p.getPlayer().getLocation();
 	}
 
 	@Override
