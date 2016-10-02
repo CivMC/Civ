@@ -1,6 +1,6 @@
 package isaac.bastion;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -8,7 +8,8 @@ import org.bukkit.material.MaterialData;
 
 public class BastionType {
 	
-	private static HashMap<String, BastionType> types = new HashMap<String, BastionType>();
+	private static LinkedHashMap<String, BastionType> types = new LinkedHashMap<String, BastionType>();
+	private static String defaultType;
 	private static int maxRadius = 0;
 
 	private String name;
@@ -21,7 +22,7 @@ public class BastionType {
 	private int startScaleFactor;
 	private double finalScaleFactor;
 	private long warmupTime;
-	private int erosionPerDay;
+	private int erosionTime;
 	private long placementCooldown;
 	private boolean destroyOnRemove;
 	private boolean blockPearls;
@@ -35,13 +36,14 @@ public class BastionType {
 	private boolean damageElytra;
 	private int elytraScale;
 	private boolean elytraRequireMature;
+	private boolean damageFirstBastion;
 	
 	public BastionType(String name, MaterialData material, String lore, boolean square, int effectRadius,
 			boolean includeY, int startScaleFactor, double finalScaleFactor, long warmupTime,
-			int erosionPerDay, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
+			int erosionTime, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
 			boolean blockMidair, int pearlScale, boolean pearlRequireMature, boolean consumeOnBlock, int blocksToErode,
 			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale,
-			boolean elytraRequireMature) {
+			boolean elytraRequireMature, boolean damageFirstBastion) {
 		this.name = name;
 		this.material = material;
 		this.lore = lore;
@@ -52,7 +54,7 @@ public class BastionType {
 		this.startScaleFactor = startScaleFactor;
 		this.finalScaleFactor = finalScaleFactor;
 		this.warmupTime = warmupTime;
-		this.erosionPerDay = erosionPerDay;
+		this.erosionTime = erosionTime;
 		this.placementCooldown = placementCooldown;
 		this.destroyOnRemove = destroyOnRemove;
 		this.blockPearls = blockPearls;
@@ -66,99 +68,205 @@ public class BastionType {
 		this.damageElytra = damageElytra;
 		this.elytraScale = elytraScale;
 		this.elytraRequireMature = elytraRequireMature;
+		this.damageFirstBastion = damageFirstBastion;
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
 
+	/**
+	 * @return The material for this bastion type
+	 */
 	public MaterialData getMaterial() {
 		return material;
 	}
 
+	/**
+	 * @return The lore for this bastion type
+	 */
 	public String getLore() {
 		return lore;
 	}
 
+	/**
+	 * @return true if bastion is square
+	 */
 	public boolean isSquare() {
 		return square;
 	}
 
+	/**
+	 * @return the radius of the bastion
+	 */
 	public int getEffectRadius() {
 		return effectRadius;
 	}
 
+	/**
+	 * 
+	 * @return the radius of the bastion squared
+	 */
 	public int getRadiusSquared() {
 		return radiusSquared;
 	}
 	
+	/**
+	 * 
+	 * @return true if the bastion blocks on it's own y level
+	 */
 	public boolean isIncludeY() {
 		return includeY;
 	}
 
+	/**
+	 * 
+	 * @return The scale for amplifying damage when a bastion is first placed
+	 */
 	public int getStartScaleFactor() {
 		return startScaleFactor;
 	}
 
+	/**
+	 * 
+	 * @return The scale for amplifying damage when a bastion is mature
+	 */
 	public double getFinalScaleFactor() {
 		return finalScaleFactor;
 	}
 
+	/**
+	 * 
+	 * @return The time in ms it takes for a bastion to mature
+	 */
 	public long getWarmupTime() {
 		return warmupTime;
 	}
 	
-	public int getErosionPerDay() {
-		return erosionPerDay;
+	/**
+	 * 
+	 * @return The amount of time between erosions
+	 */
+	public int getErosionTime() {
+		return erosionTime;
 	}
 
+	/**
+	 * 
+	 * @return true if the physical block should be destroyed when a bastion dies
+	 */
 	public boolean isDestroyOnRemove() {
 		return destroyOnRemove;
 	}
 
+	/**
+	 * 
+	 * @return true if the bastion blocks pearls
+	 */
 	public boolean isBlockPearls() {
 		return blockPearls;
 	}
 
+	/**
+	 * 
+	 * @return true if the bastion blocks midair rather than when the pearl lands
+	 */
 	public boolean isBlockMidair() {
 		return blockMidair;
 	}
 
+	/**
+	 * 
+	 * @return The scale for increased bastion damage from pearls
+	 */
 	public int getPearlScaleFactor() {
 		return pearlScale;
 	}
 
+	/**
+	 * 
+	 * @return true if the bastion must be mature to block pearls
+	 */
 	public boolean isRequireMaturity() {
 		return pearlRequireMature;
 	}
 
+	/**
+	 * 
+	 * @return true if pearls are consumed when blocked by bastion
+	 */
 	public boolean isConsumeOnBlock() {
 		return consumeOnBlock;
 	}
 	
+	/**
+	 * 
+	 * @return The number of bastions that should be eroded from a block place
+	 */
 	public int getBlocksToErode() {
 		return blocksToErode;
 	}
 	
+	/**
+	 * 
+	 * @return The cooldown for damaging a bastion
+	 */
 	public long getPlacementCooldown() {
 		return placementCooldown;
 	}
 	
+	/**
+	 * 
+	 * @return true if the bastion blocks elytra
+	 */
 	public boolean isBlockElytra() {
 		return blockElytra;
 	}
 
+	/**
+	 * 
+	 * @return true if the bastion destroys elytra
+	 */
 	public boolean isDestroyElytra() {
 		return destroyElytra;
 	}
 
+	/**
+	 * 
+	 * @return true if the bastion just damages elytra
+	 */
 	public boolean isDamageElytra() {
 		return damageElytra;
 	}
 
+	/**
+	 * 
+	 * @return The scale for increased damage from elytra collision
+	 */
 	public int getElytraScale() {
 		return elytraScale;
 	}
 
+	/**
+	 * 
+	 * @return true if bastion must be mature to block elytra
+	 */
 	public boolean isElytraRequireMature() {
 		return elytraRequireMature;
+	}
+	
+	/**
+	 * 
+	 * @return true if only the first bastion hit should be damaged by pearls
+	 */
+	public boolean damageFirstBastion() {
+		return damageFirstBastion;
+	}
+	
+	/**
+	 * Gets the name of the bastion type
+	 * This is used to reduce space in maps elsewhere
+	 * @return The name of this bastion type
+	 */
+	public String getName() {
+		return name;
 	}
 
 	public int hashCode() {
@@ -168,11 +276,12 @@ public class BastionType {
 	public boolean equals(Object obj) {
 		if(!(obj instanceof BastionType)) return false;
 		BastionType other = (BastionType) obj;
-		return other.equals(name);
+		return other.getName().equals(name);
 	}
 
 	public static void loadBastionTypes(ConfigurationSection config) {
 		for(String key : config.getKeys(false)) {
+			if(defaultType == null) defaultType = key;
 			types.put(key, getBastionType(config.getConfigurationSection(key)));
 		}
 	}
@@ -189,8 +298,20 @@ public class BastionType {
 		return null;
 	}
 	
+	/**
+	 * 
+	 * @return The radius of the largest bastion type
+	 */
 	public static int getMaxRadius() {
 		return maxRadius;
+	}
+	
+	/**
+	 * 
+	 * @return The default bastion type
+	 */
+	public static String getDefaultType() {
+		return defaultType;
 	}
 	
 	public static BastionType getBastionType(ConfigurationSection config) {
@@ -205,17 +326,18 @@ public class BastionType {
 		int startScaleFactor = config.getInt("startScaleFactor");
 		double finalScaleFactor = config.getDouble("finalScaleFactor");
 		long warmupTime = config.getLong("warmupTime");
-		int erosionPerDay = config.getInt("erosionPerDay");
-		if(erosionPerDay != 0) {
-			erosionPerDay = 1728000 / erosionPerDay;
+		int erosionTime = config.getInt("erosionPerDay");
+		if(erosionTime != 0) {
+			erosionTime = 1728000 / erosionTime;
 		}
 		long placementCooldown = config.getLong("placementCooldown");
 		boolean destroyOnRemove = config.getBoolean("destroyOnRemove");
 		boolean blockPearls = config.getBoolean("blockPearls");
-		boolean blockMidair = config.getBoolean("blockMidair");
+		boolean blockMidair = config.getBoolean("blockPearlsMidair");
 		int scaleFactor = config.getInt("pearlScaleFactor");
-		boolean requireMaturity = config.getBoolean("requireMaturity");
-		boolean consumeOnBlock = config.getBoolean("consumeOnBlock");
+		boolean requireMaturity = config.getBoolean("pearlRequireMaturity");
+		boolean consumeOnBlock = config.getBoolean("consumePearl");
+		boolean damageFirstBastion = config.getBoolean("damageFirstBastion");
 		int blocksToErode = config.getInt("blocksToErode");
 		boolean blockElytra = config.getBoolean("blockElytra");
 		boolean destroyElytra = config.getBoolean("destroyElytra");
@@ -223,7 +345,7 @@ public class BastionType {
 		int elytraScale = config.getInt("elytraScale");
 		boolean elytraRequireMature = config.getBoolean("elytraRequireMaturity");
 		return new BastionType(name, material, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
-				erosionPerDay, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
-				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature);
+				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
+				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, damageFirstBastion);
 	}
 }

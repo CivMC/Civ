@@ -37,7 +37,7 @@ public class ModeChangeCommand implements CommandExecutor {
 					Player player = (Player) sender;
 					Bukkit.getServer().getPluginManager().callEvent(
 							new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK,
-							player.getItemInHand(), new Location(player.getLocation().getWorld(),
+							player.getInventory().getItemInMainHand(), new Location(player.getLocation().getWorld(),
 							x, y - 1, z).getBlock(), BlockFace.UP ));
 				} catch (NumberFormatException e) {
 					sender.sendMessage("One of the arguments you provided was not a number");

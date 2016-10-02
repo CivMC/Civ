@@ -1,8 +1,5 @@
 package isaac.bastion.commands;
 
-import isaac.bastion.Bastion;
-
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 
@@ -10,6 +7,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+
+import isaac.bastion.Bastion;
 
 public class BastionCommandManager implements CommandExecutor {
 

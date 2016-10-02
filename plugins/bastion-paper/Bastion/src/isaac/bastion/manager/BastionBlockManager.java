@@ -14,83 +14,75 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Dispenser;
 
+import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.storage.BastionBlockSet;
-import isaac.bastion.util.QTBox;
+import isaac.bastion.events.BastionDamagedEvent;
+import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
-	public BastionBlockSet set;
-	private HashMap<UUID, HashMap<BastionType, Long>> cooldowns = new HashMap<UUID, HashMap<BastionType, Long>>();
-	private static Random generator = new Random();
+	private static Random rng = new Random();
+	
+	private HashMap<UUID, HashMap<String, Long>> cooldowns = new HashMap<UUID, HashMap<String, Long>>();
+	private BastionBlockStorage storage;
 
+	public enum Cause {PEARL, BLOCK, ELYTRA}
+	
 	public BastionBlockManager() {
-		set = new BastionBlockSet();
-		set.load();
+		storage = Bastion.getBastionStorage();
 	}
 	
-	public void close() {
-		set.close();
+	//For block places
+	public void erodeFromPlace(Player player, Set<BastionBlock> blocking) {
+		erodeFromAction(player, blocking, Cause.BLOCK);
 	}
 
-	public void addBastion(Location location, PlayerReinforcement reinforcement, BastionType type) {
-		BastionBlock toAdd = new BastionBlock(location, reinforcement, type);
-		set.add(toAdd);
+	//For pearls
+	public void erodeFromTeleport(Player player, Set<BastionBlock> blocking){
+		erodeFromAction(player, blocking, Cause.PEARL);
 	}
 	
-	public void erodeFromPlace(UUID player, Set<BastionBlock> blocking) {
-		erodeFromAction(player, blocking, true);
-	}
-	
-	public void erodeFromTeleport(UUID player, Set<BastionBlock> blocking){
-		erodeFromAction(player, blocking, false);
-	}
-
 	/**
 	 * Common handler for erosion.
 	 */
-	private void erodeFromAction(UUID player, Set<BastionBlock> blocking, boolean fromBlock) {
-		HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
+	private void erodeFromAction(Player player, Set<BastionBlock> blocking, Cause cause) {
+		HashMap<String, Set<BastionBlock>> typeMap = new HashMap<String, Set<BastionBlock>>();
 		for(BastionBlock block : blocking) {
-			if(!typeMap.containsKey(block.getType())) {
-				typeMap.put(block.getType(), new HashSet<BastionBlock>());
+			if(!typeMap.containsKey(block.getType().getName())) {
+				typeMap.put(block.getType().getName(), new HashSet<BastionBlock>());
 			}
-			typeMap.get(block.getType()).add(block);
+			typeMap.get(block.getType().getName()).add(block);
 		}
 		
-		for(BastionType type : typeMap.keySet()) {
-			if(onCooldown(player, type)) continue;
-			Set<BastionBlock> bastions = typeMap.get(type);
-			double damage = fromBlock ? type.getBlocksToErode() : type.getBlocksToErode() * type.getPearlScaleFactor();
+		for(String key : typeMap.keySet()) {
+			BastionType type = BastionType.getBastionType(key);
+			if(onCooldown(player.getUniqueId(), type)) continue;
+			Set<BastionBlock> bastions = typeMap.get(key);
 			if(type.getBlocksToErode() < 0) {
 				for(BastionBlock bastion : bastions) {
+					double damage = cause == Cause.BLOCK ? bastion.getErosionFromBlock() : bastion.getErosionFromPearl();
+					BastionDamagedEvent event = new BastionDamagedEvent(bastion, player, cause, damage);
+					Bukkit.getPluginManager().callEvent(event);
+					if(event.isCancelled()) continue;
 					bastion.erode(damage);
 				}
 			} else {
-				List<BastionBlock> ordered = new LinkedList<BastionBlock>(blocking);
-				for(int i = 0; i < ordered.size() && i < type.getBlocksToErode(); ++i) {
-					int erode = generator.nextInt(ordered.size());
-					BastionBlock toErode = ordered.get(erode);
-					toErode.erode(damage);
+				List<BastionBlock> ordered = new LinkedList<BastionBlock>(bastions);
+				for(int i = 0; i < ordered.size() && i < type.getBlocksToErode(); i++) {
+					int erode = rng.nextInt(ordered.size());
+					BastionBlock bastion = ordered.get(erode);
+					double damage = cause == Cause.BLOCK ? bastion.getErosionFromBlock() : bastion.getErosionFromPearl();
+					BastionDamagedEvent event = new BastionDamagedEvent(bastion, player, cause, damage);
+					Bukkit.getPluginManager().callEvent(event);
+					if(event.isCancelled()) continue;
+					bastion.erode(damage);
 					ordered.remove(erode);
 				}
 			}
@@ -99,19 +91,19 @@ public class BastionBlockManager {
 	
 	public boolean onCooldown(UUID player, BastionType type){
 		if(!cooldowns.containsKey(player)) {
-			cooldowns.put(player, new HashMap<BastionType, Long>());
+			cooldowns.put(player, new HashMap<String, Long>());
 			return false;
 		}
-		if(!cooldowns.get(player).containsKey(type)) {
-			cooldowns.get(player).put(type, System.currentTimeMillis());
+		if(!cooldowns.get(player).containsKey(type.getName())) {
+			cooldowns.get(player).put(type.getName(), System.currentTimeMillis());
 			return false;
 		}
-		long last_placed = cooldowns.get(player).get(type);
+		long last_placed = cooldowns.get(player).get(type.getName());
 
 		if ((System.currentTimeMillis() - last_placed) < type.getPlacementCooldown()) {
 			return true;
 		} else {
-			cooldowns.get(player).put(type, System.currentTimeMillis());
+			cooldowns.get(player).put(type.getName(), System.currentTimeMillis());
 		}
 		
 		return false;
@@ -159,7 +151,7 @@ public class BastionBlockManager {
 	// TODO: This is potentially inefficient: new LL, plus shuffle, all to "random-choose" a bastion?
 	//   Evaluable if forLocation returns a new Set; if so, just directly mess with the set.
 	private BastionBlock getBlockingBastion(Location loc, Player player) {
-		Set<? extends QTBox> possible = set.forLocation(loc);
+		Set<? extends QTBox> possible = storage.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
 		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
@@ -174,7 +166,7 @@ public class BastionBlockManager {
 	}
 
 	public BastionBlock getBlockingBastion(Location loc) {
-		Set<? extends QTBox> possible = set.forLocation(loc);
+		Set<? extends QTBox> possible = storage.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
 		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
@@ -190,7 +182,7 @@ public class BastionBlockManager {
 	
 	@SuppressWarnings("unchecked")
 	public Set<BastionBlock> getBlockingBastions(Location loc){
-		Set<? extends QTBox> boxes = set.forLocation(loc);
+		Set<? extends QTBox> boxes = storage.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
 		if(boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock) {
@@ -213,8 +205,8 @@ public class BastionBlockManager {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Set<BastionBlock> getBlockingBastions(Location loc, Player player, PermissionType perm){
-		Set<? extends QTBox> boxes = set.forLocation(loc);
+	public Set<BastionBlock> getBlockingBastions(Location loc, Player player, PermissionType perm){
+		Set<? extends QTBox> boxes = storage.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
 		if (boxes.size() > 0 && boxes.iterator().next() instanceof BastionBlock) {
@@ -238,7 +230,7 @@ public class BastionBlockManager {
 	
 	@SuppressWarnings("unchecked")
 	private Set<BastionBlock> getBlockingBastions(Location loc, Set<UUID> players) {
-		Set<? extends QTBox> boxes = set.forLocation(loc);
+		Set<? extends QTBox> boxes = storage.forLocation(loc);
 		Set<BastionBlock> bastions = null;
 		
 		if (boxes.size() != 0) {
@@ -261,10 +253,10 @@ public class BastionBlockManager {
 	}
 	
 	public String infoMessage(boolean dev, Block block, Block clicked, Player player) {
-		BastionBlock bastion = set.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
+		BastionBlock bastion = storage.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
 
 		if (bastion != null) { //See if anything was found
-			return bastion.infoMessage(dev, player); //If there is actually something there tell the player about it.
+			return bastion.infoMessage(dev); //If there is actually something there tell the player about it.
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -286,149 +278,5 @@ public class BastionBlockManager {
 		}
 
 		return sb.toString();
-	}
-
-	public void handleBlockPlace(BlockPlaceEvent event) {
-		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
-		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
-		
-		if (blocking.size() != 0){
-			erodeFromPlace(event.getPlayer().getUniqueId(),blocking);
-			
-			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
-		}
-	}
-
-	public void handleFlowingWater(BlockFromToEvent event) {
-		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
-		blocks.add(event.getToBlock());
-		Set<BastionBlock> blocking = shouldStopBlock(event.getBlock(),blocks, null);
-		
-		if(blocking.size() != 0){
-			event.setCancelled(true);
-		}
-	}
-	
-	public void handleTreeGrowth(StructureGrowEvent event) {
-		HashSet<Block> blocks = new HashSet<Block>();
-		for(BlockState state: event.getBlocks()) {
-			blocks.add(state.getBlock());
-		}
-		
-		Player player = event.getPlayer();
-		UUID playerName = null;
-		if (player != null) {
-			playerName = player.getUniqueId();
-		}
-		
-		Set<BastionBlock> blocking = shouldStopBlock(event.getLocation().getBlock(), blocks, playerName);
-		
-		if (blocking.size() != 0) {
-			event.setCancelled(true);
-		}
-	}
-	
-	public void handlePistonPush(BlockPistonExtendEvent event) {
-		Block pistion = event.getBlock();
-		Set<Block> involved = new HashSet<Block>(event.getBlocks());
-		involved.add(pistion.getRelative(event.getDirection()));
-		
-		Set<BastionBlock> blocking = shouldStopBlock(pistion, involved, null);
-		
-		if (blocking.size() != 0) {
-			event.setCancelled(true);
-		}
-	}
-	
-	public void handleBucketPlace(PlayerBucketEmptyEvent event) {
-		Set<Block> blocks = new HashSet<Block>();
-		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
-		
-		Set<BastionBlock> blocking = shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
-		
-		if (blocking.size() != 0) {
-			event.setCancelled(true);
-		}
-	}
-	
-	public void handleDispensed(BlockDispenseEvent event) {
-		if (!(event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET || event.getItem().getType() == Material.FLINT_AND_STEEL)) return;
-		
-		Set<Block> blocks = new HashSet<Block>();
-		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getState().getData()).getFacing()));
-		
-		Set<BastionBlock> blocking = shouldStopBlock(event.getBlock(),blocks, null);
-		
-		if(blocking.size() != 0) {
-			event.setCancelled(true);
-		}
-	}
-	
-	public void handleBlockBreakEvent(BlockBreakEvent event) {
-		BastionBlock bastion = set.getBastionBlock(event.getBlock().getLocation());
-		if (bastion != null) {
-			bastion.close();
-		}
-	}
-	
-	public void handleEnderPearlLanded(PlayerTeleportEvent event) {
-		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
-		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
-		
-		Set<BastionBlock> blocking = getBlockingBastions(event.getTo(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
-		
-		Iterator<BastionBlock> i = blocking.iterator();
-		
-		while(i.hasNext()) {
-			BastionBlock bastion = i.next();
-			if(bastion.getType().isBlockMidair() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
-				i.remove();
-			}
-		}
-		
-		if(blocking.size() > 0) {
-			erodeFromTeleport(event.getPlayer().getUniqueId(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
-			boolean consume = false;
-			for(BastionBlock block : blocking) {
-				if(block.getType().isConsumeOnBlock()) {
-					consume = true;
-				}
-			}
-			if(!consume) {
-				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			}
-			event.setCancelled(true);
-			return;
-		}
-		
-		blocking = getBlockingBastions(event.getFrom(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
-		
-		i = blocking.iterator();
-		
-		while(i.hasNext()) {
-			BastionBlock bastion = i.next();
-			if(bastion.getType().isBlockMidair() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
-				i.remove();
-			}
-		}
-		
-		if(blocking.size() > 0) {
-			erodeFromTeleport(event.getPlayer().getUniqueId(), blocking);
-			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
-			boolean consume = false;
-			for(BastionBlock block : blocking) {
-				if(block.getType().isConsumeOnBlock()) {
-					consume = true;
-				}
-			}
-			if(!consume) {
-				event.getPlayer().getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			}
-			event.setCancelled(true);
-			return;
-		}
 	}
 }

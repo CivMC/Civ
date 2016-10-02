@@ -10,6 +10,7 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
@@ -23,18 +24,23 @@ import com.untamedears.humbug.CustomNMSEntityEnderPearl;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.storage.BastionBlockSet;
+import isaac.bastion.storage.BastionBlockStorage;
 
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT = 800;
-	private BastionBlockSet bastions;
+	private BastionBlockStorage storage;
+	private boolean humbugLoaded = true;
 	
 	private FlightTask task;
 	
 	public EnderPearlManager() {
-		bastions=Bastion.getBastionManager().set;
-
+		storage = Bastion.getBastionStorage();
 		task = new FlightTask();
+		try {
+			Class.forName("com.untamedears.humbug.CustomNMSEntityEnderPearl");
+		} catch (ClassNotFoundException e) {
+			humbugLoaded = false;
+		}
 	}
 
 	public void handlePearlLaunched(EnderPearl pearl) {
@@ -43,12 +49,8 @@ public class EnderPearlManager {
 
 	private void getBlocking(EnderPearl pearl) {
 		double gravity = 0.03F;
-		try {
-			if (pearl instanceof CustomNMSEntityEnderPearl) {
-				gravity = ((CustomNMSEntityEnderPearl) pearl ).y_adjust_;
-			} // else means humbug isn't adjusting.
-		} catch(NoClassDefFoundError e ) {
-			Bastion.getPlugin().getLogger().info("Humbug not found");
+		if(humbugLoaded && pearl instanceof CustomNMSEntityEnderPearl) {
+			gravity = ((CustomNMSEntityEnderPearl)pearl).y_adjust_;
 		}
 
 		Vector speed = pearl.getVelocity();
@@ -74,7 +76,7 @@ public class EnderPearlManager {
 			threw = (Player) pearl.getShooter();
 		}
 
-		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
+		Set<BastionBlock> possible = storage.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
 
 		// no need to do anything if there aren't any bastions to run into.
 		if (possible.isEmpty()) {
@@ -106,39 +108,6 @@ public class EnderPearlManager {
 			task.manage(new Flight(pearl, firstCollisionTime, firstCollision));
 			return;
 		}
-	}
-	
-	private static EnderPearlManager staticInstance;
-	
-	public static Set<BastionBlock> staticSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
-		if (staticInstance == null) {
-			staticInstance = new EnderPearlManager();
-		}
-		return staticInstance.alternateSimpleCollide(possible, start, end, player);
-	}
-
-	private Set<BastionBlock> alternateSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
-		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
-		for (BastionBlock bastion : possible) {
-			Location loc = bastion.getLocation().clone();
-			loc.setY(0);
-			
-			if (bastion.canPlace(player)) { // not blocked, continue
-				continue;
-			}
-			
-			if (bastion.getType().isSquare()) {
-				if (!getCollisionPointsSquare(start, end, loc, bastion.getType().getEffectRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
-					couldCollide.add(bastion);
-				}
-			} else {
-				if (!getCollisionPoints(start, end, loc, bastion.getType().getRadiusSquared()).isEmpty()) {
-					couldCollide.add(bastion);
-				}
-			}
-		}
-
-		return couldCollide;
 	}
 	
 	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
@@ -487,9 +456,24 @@ public class EnderPearlManager {
 		
 		public void cancel() {
 			if (pearl.getShooter() instanceof Player) {
-				handleTeleport(blocking, pearl.getLocation(), (Player) pearl.getShooter());
+				Player player = (Player) pearl.getShooter();
+				
+				if (blocking.getType().damageFirstBastion() && !Bastion.getBastionManager().onCooldown(player.getUniqueId(), blocking.getType())) {
+					blocking.erode(blocking.getErosionFromPearl());
+					pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
+				}
+				
+				if (blocking.getType().isBlockMidair()) {
+					player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+					if (!blocking.getType().isConsumeOnBlock()) {
+						player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+						player.updateInventory();
+					}
+				}
 			}
-			pearl.remove();
+			if (blocking.getType().isBlockMidair()) {
+				pearl.remove();
+			}
 			
 		}
 		
@@ -500,17 +484,6 @@ public class EnderPearlManager {
 		@Override
 		public int compareTo(Flight o) {
 			return (int) Math.signum(o.endTime - endTime);
-		}
-	}
-	
-	private void handleTeleport(BastionBlock blocking, Location loc, Player player) {
-		if (!Bastion.getBastionManager().onCooldown(player.getUniqueId(), blocking.getType())) {
-			blocking.erode(blocking.erosionFromPearl());
-		}
-		
-		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
-		if (!blocking.getType().isConsumeOnBlock()) {
-			player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 		}
 	}
 }
