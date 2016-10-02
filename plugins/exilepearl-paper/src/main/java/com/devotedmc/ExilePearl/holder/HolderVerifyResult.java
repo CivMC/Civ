@@ -18,8 +18,9 @@ public enum HolderVerifyResult
 	ON_GROUND("on ground", true),
 	IN_HAND("in player hand", true),
 	IN_CHEST("in chest", true),
+	IN_PLAYER_INVENTORY("in player inventory", true),
 	IN_VIEWER_HAND("in viewer hand", true),
-	TIME("time", true);
+	CREATVE_MODE("creative mode", true);
 	
 	private final String text;
 	private final boolean isValid;

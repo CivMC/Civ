@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,7 +23,7 @@ import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent;
 import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.LocationHolder;
+import com.devotedmc.ExilePearl.holder.ItemHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
@@ -187,9 +188,9 @@ class CoreExilePearl implements ExilePearl {
 	 * @param location The new pearl location
 	 */
 	@Override
-	public void setHolder(Location location) {
-		Guard.ArgumentNotNull(location, "location");
-		setHolderInternal(new LocationHolder(location));
+	public void setHolder(Item item) {
+		Guard.ArgumentNotNull(item, "item");
+		setHolderInternal(new ItemHolder(item));
 	}
 	
 	

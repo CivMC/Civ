@@ -86,7 +86,7 @@ public class PlayerHolderTest {
 			}
 		});
 		
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_CHEST);
+		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_PLAYER_INVENTORY);
 		
 		when(player.getItemOnCursor()).thenReturn(pearlStack);
 		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_HAND);

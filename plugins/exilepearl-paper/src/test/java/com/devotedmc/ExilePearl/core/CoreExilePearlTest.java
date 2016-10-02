@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFactory;
@@ -202,7 +203,7 @@ public class CoreExilePearlTest {
 
 	@Test
 	public void testSetHolderBlockLocation() {
-		Location l1 = mock(Location.class);
+		//Location l1 = mock(Location.class);
 		Location l2 = mock(Location.class);
 		Block b = mock(Block.class);
 		when(b.getLocation()).thenReturn(l2);
@@ -212,7 +213,7 @@ public class CoreExilePearlTest {
 		
 		// Can't modify invalid pearl
 		Throwable e = null;
-		try { pearl.setHolder(l1); } catch (Throwable ex) { e = ex; }
+		try { pearl.setHolder(b); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof RuntimeException);
 
 		// Set pearl valid
@@ -238,7 +239,7 @@ public class CoreExilePearlTest {
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { pearl.setHolder((Location)null); } catch (Throwable ex) { e = ex; }
+		try { pearl.setHolder((Item)null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
@@ -310,7 +311,10 @@ public class CoreExilePearlTest {
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocationDescription(), "held by a chest at world 1 2 3");
 		
-		pearl.setHolder(l);
+		Item item = mock(Item.class);
+		when(item.getLocation()).thenReturn(l);
+		
+		pearl.setHolder(item);
 		assertEquals(pearl.getLocationDescription(), "held by nobody at world 1 2 3");
 	}
 

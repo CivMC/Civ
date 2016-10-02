@@ -13,6 +13,7 @@ import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Item;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -151,7 +152,10 @@ public class MySqlStorageIntegrationTest {
 		
 		
 		// Change the location and verify that it no longer matches any loaded pearls
-		updatePearl.setHolder(new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+		Location l = new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt());
+		Item item = mock(Item.class);
+		when(item.getLocation()).thenReturn(l);
+		updatePearl.setHolder(item);
 		assertFalse(loadedPearls.contains(updatePearl));
 		
 		// Even after reloading, it does not match

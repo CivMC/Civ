@@ -114,7 +114,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		pearl.setHolder(item.getLocation());
+		pearl.setHolder(item);
 	}
 
 
@@ -310,12 +310,15 @@ public class PlayerListener implements Listener {
 		}
 
 		InventoryAction a = event.getAction();
-		if(a == InventoryAction.COLLECT_TO_CURSOR || a == InventoryAction.PICKUP_ALL 
-				|| a == InventoryAction.PICKUP_HALF || a == InventoryAction.PICKUP_ONE) {
+		pearlApi.log("Inv action: %s", a.toString());
+		if(a == InventoryAction.COLLECT_TO_CURSOR
+				|| a == InventoryAction.PICKUP_ALL 
+				|| a == InventoryAction.PICKUP_HALF
+				|| a == InventoryAction.PICKUP_ONE) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
-				updatePearl(pearl, (Player) event.getWhoClicked());
+				pearl.setHolder(pearlApi.getPearlPlayer(((Player) event.getWhoClicked()).getUniqueId()));
 			}
 		}
 		else if(event.getAction() == InventoryAction.PLACE_ALL
@@ -393,7 +396,7 @@ public class PlayerListener implements Listener {
 		}
 		else {
 			if(pearlApi.getPearlFromItemStack(event.getCurrentItem()) != null || pearlApi.getPearlFromItemStack(event.getCursor()) != null) {
-				((Player) event.getWhoClicked()).sendMessage(ChatColor.RED + "Error: ExilePearl doesn't support this inventory functionality quite yet!");
+				((Player) event.getWhoClicked()).sendMessage(ChatColor.RED + "You can't do that with an exile pearl.");
 
 				event.setCancelled(true);
 			}

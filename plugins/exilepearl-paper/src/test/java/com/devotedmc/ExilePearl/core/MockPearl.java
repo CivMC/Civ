@@ -12,6 +12,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mockito.Mockito;
@@ -86,8 +87,8 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public void setHolder(Location l) {
-		loc = l;
+	public void setHolder(Item item) {
+		loc = item.getLocation();
 	}
 
 	@Override

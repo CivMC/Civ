@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.holder;
 
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -39,6 +40,10 @@ public class PlayerHolder implements PearlHolder {
 
 	@Override
 	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
+		// When the the pearl holder is in creative mode, the inventory options checks do strange things
+		if (player.getGameMode() == GameMode.CREATIVE) {
+			return HolderVerifyResult.CREATVE_MODE;
+		}
 		
 		// Is the holder online?
 		if (!player.isOnline()) {
@@ -55,7 +60,7 @@ public class PlayerHolder implements PearlHolder {
 		// In the player inventory?
 		for (ItemStack item : player.getInventory().all(Material.ENDER_PEARL).values()) {
 			if (pearl.validateItemStack(item)) {
-				return HolderVerifyResult.IN_CHEST;
+				return HolderVerifyResult.IN_PLAYER_INVENTORY;
 			}
 		}
 

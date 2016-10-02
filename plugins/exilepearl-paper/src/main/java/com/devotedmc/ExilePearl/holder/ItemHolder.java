@@ -4,7 +4,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
-import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.util.Guard;
@@ -14,18 +13,18 @@ import com.devotedmc.ExilePearl.util.Guard;
  * @author Gordon
  *
  */
-public class LocationHolder implements PearlHolder {
+public class ItemHolder implements PearlHolder {
 
-	private final Location loc;
+	private final Item item;
 	
 	/**
 	 * Creates a new LocationHolder instance
 	 * @param loc The location
 	 */
-	public LocationHolder(final Location loc) {
-		Guard.ArgumentNotNull(loc, "loc");
+	public ItemHolder(final Item item) {
+		Guard.ArgumentNotNull(item, "item");
 		
-		this.loc = loc;
+		this.item = item;
 	}
 
 	@Override
@@ -35,25 +34,24 @@ public class LocationHolder implements PearlHolder {
 
 	@Override
 	public Location getLocation() {
-		return loc;
+		return item.getLocation();
 	}
 
 	@Override
 	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
 		 // Location holder
-		Chunk chunk = loc.getChunk();
+		Chunk chunk = item.getLocation().getChunk();
+		
 		for (Entity entity : chunk.getEntities()) {
-			if (entity instanceof Item) {
-				Item item = (Item)entity;
-				ItemStack is = item.getItemStack();
-
-				if (pearl.validateItemStack(is)) {
-					feedback.append(String.format("Found on ground at (%d,%d,%d)",
+			if (entity.equals(item)) {
+				if (pearl.validateItemStack(item.getItemStack())) {
+					feedback.append(String.format("Found in world at (%d, %d, %d)",
 							entity.getLocation().getBlockX(),
 							entity.getLocation().getBlockY(),
 							entity.getLocation().getBlockZ()));
 					return HolderVerifyResult.ON_GROUND;
 				}
+				return HolderVerifyResult.ON_GROUND;
 			}
 		}
 		feedback.append("On ground not in chunk");
@@ -69,8 +67,8 @@ public class LocationHolder implements PearlHolder {
             return false;
         }
 
-        LocationHolder other = (LocationHolder) o;
+        ItemHolder other = (ItemHolder) o;
 
-		return loc.equals(other.loc);
+		return item.equals(other.item);
 	}
 }

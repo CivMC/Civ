@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -59,21 +60,21 @@ public interface ExilePearl {
 
 	/**
 	 * Sets the pearl holder to a player
-	 * @param holder The new pearl holder
+	 * @param player The new pearl holder
 	 */
-	void setHolder(PearlPlayer p);
+	void setHolder(PearlPlayer player);
 
 	/**
 	 * Sets the pearl holder to a block
-	 * @param holder The new pearl block
+	 * @param block The new pearl block
 	 */
-	void setHolder(Block b);
+	void setHolder(Block block);
 
 	/**
 	 * Sets the pearl holder to a location
-	 * @param holder The new pearl location
+	 * @param item The new pearl item
 	 */
-	void setHolder(Location l);
+	void setHolder(Item item);
 
     /**
      * Gets the pearl health value

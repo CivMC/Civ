@@ -4,7 +4,6 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.InventoryHolder;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
@@ -15,7 +14,6 @@ import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.LocationHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.BukkitTask;
@@ -45,13 +43,7 @@ public class CorePearlFactory implements PearlFactory {
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		Guard.ArgumentNotNull(location, "location");
 		
-		PearlHolder holder;
-		
-		if (location.getBlock().getState() instanceof InventoryHolder) {
-			holder = new BlockHolder(location.getBlock());
-		} else {
-			holder = new LocationHolder(location);
-		}
+		PearlHolder holder = new BlockHolder(location.getBlock());
 
 		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy, holder);
 	}
