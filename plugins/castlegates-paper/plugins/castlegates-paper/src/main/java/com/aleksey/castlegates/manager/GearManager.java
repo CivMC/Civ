@@ -25,8 +25,9 @@ import com.aleksey.castlegates.citadel.ICitadelManager;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.GearblockLink;
 import com.aleksey.castlegates.types.Gearblock;
+import com.aleksey.castlegates.types.GearblockLink;
+import com.aleksey.castlegates.types.PowerResult;
 import com.aleksey.castlegates.utils.DataWorker;
 
 public class GearManager {
@@ -41,7 +42,6 @@ public class GearManager {
 	
 	public static enum CreateResult { NotCreated, AlreadyExist, Created }
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
-	public static enum PowerResult { NotLinked, Unchanged, Unpowered, Blocked, Brocken, Drawn, Undrawn, CannotDrawGear, NotInCitadelGroup, BastionBlocked, Allowed }
 	public static enum SearchBridgeBlockResult { NotFound, Bridge, Gates }
 
 	private Map<BlockCoord, Gearblock> gearblocks;
@@ -386,9 +386,9 @@ public class GearManager {
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1);
 			
-			if(!configManager.isBridgeMaterial(block)) return PowerResult.Brocken;
+			if(!configManager.isBridgeMaterial(block)) return new PowerResult(PowerResult.Status.Broken, block);
 			
-			if(this.gearblocks.containsKey(new BlockCoord(block))) return PowerResult.CannotDrawGear;
+			if(this.gearblocks.containsKey(new BlockCoord(block))) return new PowerResult(PowerResult.Status.CannotDrawGear, block);
 			
 			if(!canAccessDoors(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 			
@@ -456,7 +456,7 @@ public class GearManager {
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1); 
 			
-			if(block.getType() != Material.AIR) return PowerResult.Blocked;
+			if(block.getType() != Material.AIR) return new PowerResult(PowerResult.Status.Blocked, block);
 			
 			bridgeBlocks.add(block);
 			

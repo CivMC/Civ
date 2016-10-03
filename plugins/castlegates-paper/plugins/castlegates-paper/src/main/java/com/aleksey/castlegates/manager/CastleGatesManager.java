@@ -11,9 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
-import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -30,7 +28,10 @@ import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.Gearblock;
+import com.aleksey.castlegates.types.PowerResult;
+import com.aleksey.castlegates.utils.EffectHelper;
 import com.aleksey.castlegates.utils.Helper;
+import com.aleksey.castlegates.utils.PowerResultHelper;
 
 public class CastleGatesManager {
 	private static class FindGearResult {
@@ -153,48 +154,14 @@ public class CastleGatesManager {
 		{
 			List<Player> players = Helper.getNearbyPlayers(block.getLocation());
 			
-			GearManager.PowerResult result = this.gearManager.processGearblock(
+			PowerResult result = this.gearManager.processGearblock(
 					block.getWorld(),
 					gearblock,
 					block.isBlockPowered(),
 					players
 					);
 			
-			String message;
-			
-			switch(result) {
-			case Blocked:
-				message = ChatColor.RED + "Undraw path is blocked";
-				break;
-			case Brocken:
-				message = ChatColor.RED + "Bridge/gates is broken";
-				break;
-			case CannotDrawGear:
-				message = ChatColor.RED + "Gearblock cannot be drawn";
-				break;
-			case NotInCitadelGroup:
-				message = ChatColor.RED + "Citadel prevent this operation";
-				break;
-			case BastionBlocked:
-				message = ChatColor.RED + "Bastion prevent undrawing";
-				break;
-			default:
-				message = null;
-				break;
-			}
-			
-			if(message != null) {
-				for(Player player : players) {
-					player.sendMessage(message);
-				}
-			}
-			else if(result == GearManager.PowerResult.Drawn || result == GearManager.PowerResult.Undrawn){
-				Sound sound = result == GearManager.PowerResult.Drawn
-						? Sound.BLOCK_PISTON_CONTRACT
-						: Sound.BLOCK_PISTON_EXTEND;
-				
-				block.getWorld().playSound(block.getLocation(), sound, 0.7f, 1);
-			}
+			PowerResultHelper.showStatus(block.getLocation(), players, result);
 		} finally {
 			this.processingBlocks.remove(block);
 		}
@@ -211,11 +178,13 @@ public class CastleGatesManager {
 		for(BlockFace face : GearManager.faces) {
 			FindGearResult result = findEndGear(block, face);
 			
-			if(result == null || result.gearblock.getLink() != null) continue;
-			
-			linkGearblocks(event.getPlayer(), gearblock1, result);
-			
-			break;
+			if(result != null
+					&& result.gearblock.getLink() == null
+					&& linkGearblocks(event.getPlayer(), gearblock1, result, false)
+				)
+			{
+				break;
+			}
 		}
 		
 		return true;
@@ -241,7 +210,7 @@ public class CastleGatesManager {
 		GearManager.CreateResult result = this.gearManager.createGear(block); 
 		
 		if(result == GearManager.CreateResult.NotCreated) {
-			player.sendMessage(ChatColor.RED + "This material cannot be used for gearblock.");
+			player.sendMessage(ChatColor.RED + block.getType().toString() + " cannot be used as gearblock.");
 			return false;
 		} else if(result == GearManager.CreateResult.AlreadyExist) {
 			player.sendMessage(ChatColor.RED + "Gearblock already exist.");
@@ -252,7 +221,7 @@ public class CastleGatesManager {
 			
 		player.sendMessage(ChatColor.GREEN + "Gearblock has been created.");
 		
-		playeEffect(block);
+		EffectHelper.play(block, EffectHelper.Type.Info);
 		
 		return true;
 	}
@@ -286,28 +255,43 @@ public class CastleGatesManager {
 		if(result == null) {
 			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
 		} else {
-			linkGearblocks(player, gearblock1, result);
+			linkGearblocks(player, gearblock1, result, true);
 		}
 		
 		return true;
 	}
 	
-	private boolean linkGearblocks(Player player, Gearblock gearblock1, FindGearResult result) {
+	private boolean linkGearblocks(Player player, Gearblock gearblock1, FindGearResult result, boolean showError) {
 		Location loc = new Location(player.getWorld(), result.gearblock.getCoord().getX(), result.gearblock.getCoord().getY(), result.gearblock.getCoord().getZ());
 		
 		if(!CastleGates.getCitadelManager().canBypass(player, loc)) {
-			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
+			if(showError) {
+				player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
+			}
+			
+			return false;
+		}
+		
+		if(result.gearblock.getLink() != null) {
+			if(showError) {
+				player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " already has link. Remove it before creating this link.");
+				EffectHelper.play(player, result.gearblock, EffectHelper.Type.Warning);
+			}
+			
 			return false;
 		}
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
 			player.sendMessage(ChatColor.GREEN + "Gearblock has been linked with gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
-			playeEffect(player, gearblock1);
-			playeEffect(player, result.gearblock);
+			EffectHelper.play(player, gearblock1, EffectHelper.Type.Info);
+			EffectHelper.play(player, result.gearblock, EffectHelper.Type.Info);
 			return true;
 		}
 
-		player.sendMessage(ChatColor.RED + "Link cannot be created.");
+		if(showError) {
+			player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has broken link and it cannot be restored using clicked gearblock because of location is wrong.");
+			EffectHelper.play(player, result.gearblock, EffectHelper.Type.Warning);
+		}
 		
 		return false;
 	}
@@ -375,36 +359,7 @@ public class CastleGatesManager {
 				player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
 			}
 			
-			playeEffect(player, gearblock2);
+			EffectHelper.play(player, gearblock2, EffectHelper.Type.Info);
 		}
-	}
-	
-	private void playeEffect(Player player, Gearblock gearblock) {
-		BlockCoord coord = gearblock.getCoord();
-		Location location = new Location(player.getWorld(), 0.5 + coord.getX(), 0.5 + coord.getY(), 0.5 + coord.getZ());
-
-		playeEffect(location);
-	}
-	
-	private void playeEffect(Block block) {
-		Location location = new Location(block.getWorld(), 0.5 + block.getX(), 0.5 + block.getY(), 0.5 + block.getZ());
-
-		playeEffect(location);
-	}
-
-	private void playeEffect(Location location) {
-		final Effect effect = Effect.FLYING_GLYPH;
-		final int id = 0;
-		final int data = 0;
-		final float offsetX = 0;
-		final float offsetY = 0;
-		final float offsetZ = 0;
-		final float speed = 0.5f;
-		final int particleCount = 80;
-		
-		final int viewDistance = CastleGates.getConfigManager().getMaxBridgeLength()
-				+ (int)CastleGates.getConfigManager().getMaxRedstoneDistance();
-
-		location.getWorld().spigot().playEffect(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, viewDistance);
 	}
 }
