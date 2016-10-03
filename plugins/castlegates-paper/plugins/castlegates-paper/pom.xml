@@ -6,7 +6,7 @@
   <groupId>com.aleksey</groupId>
   <artifactId>castlegates</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.8-SNAPSHOT</version>
+  <version>1.0.9-SNAPSHOT</version>
   <name>CastleGates</name>
   <url>https://github.com/Aleksey-Terzi/CastleGates</url>
   
