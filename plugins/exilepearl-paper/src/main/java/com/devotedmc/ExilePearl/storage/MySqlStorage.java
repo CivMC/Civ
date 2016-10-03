@@ -81,7 +81,7 @@ public class MySqlStorage implements PluginStorage {
 		db.execute("create table if not exists exilepearls( " +
 				"uid varchar(255) not null," +
 				"killer_uid varchar(255) not null," +
-				"unique int not null," +
+				"pearl_id int not null," +
 				"world varchar(255) not null," +
 				"x int not null," +
 				"y int not null," +
@@ -116,7 +116,7 @@ public class MySqlStorage implements PluginStorage {
 				try {
 					UUID playerId = UUID.fromString(resultSet.getString("uid"));
 					UUID killerId = UUID.fromString(resultSet.getString("killer_uid"));
-					int pearlId = resultSet.getInt("unique");
+					int pearlId = resultSet.getInt("pearl_id");
 					World world = Bukkit.getWorld(resultSet.getString("world"));
 					int x = resultSet.getInt("x");
 					int y = resultSet.getInt("y");

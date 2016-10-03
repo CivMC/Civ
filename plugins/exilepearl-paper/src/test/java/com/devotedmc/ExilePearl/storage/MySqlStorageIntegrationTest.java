@@ -121,7 +121,7 @@ public class MySqlStorageIntegrationTest {
 		
 		// Perform a load operation of all pearls and verify the size is correct
 		loadedPearls = storage.loadAllPearls();
-		assertEquals(loadedPearls.size(), numPearlsToAdd);
+		assertEquals(numPearlsToAdd, loadedPearls.size());
 		
 		// Verify that all the generated pearls exist in the loaded pearl collection
 		for(ExilePearl p : pearlsToAdd) {
