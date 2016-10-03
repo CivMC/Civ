@@ -27,6 +27,11 @@ public class CmdAdminCheckExiled extends PearlCommand {
 			msg("<i>No pearl was found with the name <c>%s", name);
 			return;
 		}
+		if(pearl.getFreedOffline()) {
+			msg("<i>%s has been freed but hasn't logged in yet.", name);
+			return;
+		}
+		
 		msg("<g>Found exile pearl for player %s", name);
 
 		for (String s : pearlApi.getLoreGenerator().generateLore(pearl)) {
