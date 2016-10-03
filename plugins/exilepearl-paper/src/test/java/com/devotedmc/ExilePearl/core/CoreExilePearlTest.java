@@ -394,6 +394,16 @@ public class CoreExilePearlTest {
 		when(im.getLore()).thenReturn(lore);
 		assertTrue(pearl.validateItemStack(is));
 		
+		// Now change the pearl ID and negative test
+		when(pearl2.getPearlId()).thenReturn(500);
+		lore2 = loreGenerator.generateLore(pearl2);
+		when(im.getLore()).thenReturn(lore2);
+		assertFalse(pearl.validateItemStack(is));
+		
+		// Change lore back and validate true
+		when(im.getLore()).thenReturn(lore);
+		assertTrue(pearl.validateItemStack(is));
+		
 		// Negative test material
 		when(is.getType()).thenReturn(Material.STONE);
 		assertFalse(pearl.validateItemStack(is));
