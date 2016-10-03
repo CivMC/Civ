@@ -13,7 +13,7 @@ import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.SuicideHandler;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 public class MockPearlFactory implements PearlFactory {
 	
@@ -61,6 +61,11 @@ public class MockPearlFactory implements PearlFactory {
 
 	@Override
 	public SuicideHandler createSuicideHandler() {
+		return null;
+	}
+
+	@Override
+	public ExilePearlRunnable createPearlBorderTask() {
 		return null;
 	}
 

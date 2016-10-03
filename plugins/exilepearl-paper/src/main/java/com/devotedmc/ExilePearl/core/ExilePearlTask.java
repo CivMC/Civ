@@ -1,10 +1,12 @@
-package com.devotedmc.ExilePearl.util;
+package com.devotedmc.ExilePearl.core;
 
 import java.util.logging.Level;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
+import com.devotedmc.ExilePearl.util.Guard;
 
-public abstract class ExilePearlTask implements ExilePearlRunnable {
+abstract class ExilePearlTask implements ExilePearlRunnable {
 
 	protected static final int TICKS_PER_MINUTE = 1200;
 	public static final int TICKS_PER_SECOND = 20;

@@ -15,7 +15,6 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
 
 /**
  * Lets exiled players kill themselves with a timer

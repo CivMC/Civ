@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 /**
  * Factory interface for creating concrete pearl classes
@@ -33,22 +33,28 @@ public interface PearlFactory {
 	ExilePearl createExilePearl(UUID uid, Player killedBy, int pearlId);
 	
 	/**
-	 * Creates a pearl manager instance
+	 * Creates the pearl manager instance
 	 * @return The new pearl manager instance
 	 */
 	PearlManager createPearlManager();
 	
 	/**
-	 * Creates a pearl worker instance
+	 * Creates the pearl worker instance
 	 * @return The new pearl worker instance
 	 */
-	ExilePearlTask createPearlDecayWorker();
+	ExilePearlRunnable createPearlDecayWorker();
 	
 	/**
 	 * Creates the suicide handler instance
 	 * @return The new suicide handler instance
 	 */
 	SuicideHandler createSuicideHandler();
+	
+	/**
+	 * Creates the pearl border task
+	 * @return The new pearl border task instance
+	 */
+	ExilePearlRunnable createPearlBorderTask();
 	
 	/**
 	 * Creates a new PearlPlayer instance

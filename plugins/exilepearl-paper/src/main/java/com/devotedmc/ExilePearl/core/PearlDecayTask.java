@@ -1,7 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
 
 /**
  * Interval task that deducts strength from existing prison pearls

@@ -10,7 +10,6 @@ import java.util.UUID;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlConfig;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Bukkit;

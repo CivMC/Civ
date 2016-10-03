@@ -16,7 +16,7 @@ import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -64,13 +64,18 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearlTask createPearlDecayWorker() {
+	public ExilePearlRunnable createPearlDecayWorker() {
 		return new PearlDecayTask(plugin);
 	}
 
 	@Override
 	public SuicideHandler createSuicideHandler() {
 		return new PlayerSuicideTask(plugin);
+	}
+
+	@Override
+	public ExilePearlRunnable createPearlBorderTask() {
+		return new PearlBoundaryTask(plugin);
 	}
 
 	@Override

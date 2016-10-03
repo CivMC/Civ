@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,13 +10,10 @@ import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitScheduler;
 
@@ -35,7 +31,7 @@ import com.devotedmc.ExilePearl.storage.MySqlStorage;
 import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.storage.RamStorage;
-import com.devotedmc.ExilePearl.util.ExilePearlTask;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -54,7 +50,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
-	private final ExilePearlTask pearlDecayWorker = pearlFactory.createPearlDecayWorker();
+	private final ExilePearlRunnable pearlDecayWorker = pearlFactory.createPearlDecayWorker();
+	private final ExilePearlRunnable pearlBordertask = pearlFactory.createPearlBorderTask();
 	private final SuicideHandler suicideHandler = pearlFactory.createSuicideHandler();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
@@ -97,6 +94,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		
 		// Start tasks
 		pearlDecayWorker.start();
+		pearlBordertask.start();
 		suicideHandler.start();
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
