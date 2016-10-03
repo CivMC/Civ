@@ -18,12 +18,13 @@ public class MockLoreGenerator implements PearlLoreGenerator {
 		List<String> lore = new ArrayList<String>();
 		lore.add(pearl.getItemName());
 		lore.add(pearl.getPlayerName());
-		lore.add(pearl.getUniqueId().toString());
+		lore.add(pearl.getPlayerId().toString());
+		lore.add(new Integer(pearl.getPearlId()).toString());
 		return lore;
 	}
 
 	@Override
-	public UUID getIDFromItemStack(ItemStack is) {
+	public UUID getPlayerIdFromItemStack(ItemStack is) {
 		if (is == null) {
 			return null;
 		}
@@ -43,6 +44,29 @@ public class MockLoreGenerator implements PearlLoreGenerator {
 		}
 
 		return UUID.fromString(lore.get(2));
+	}
+
+	@Override
+	public int getPearlIdFromItemStack(ItemStack is) {
+		if (is == null) {
+			return 0;
+		}
+
+		if (!is.getType().equals(Material.ENDER_PEARL)) {
+			return 0;
+		}
+
+		ItemMeta im = is.getItemMeta();
+		if (im == null) {
+			return 0;
+		}
+
+		List<String> lore = im.getLore();
+		if (lore == null) {
+			return 0;
+		}
+		
+		return new Integer(lore.get(3));
 	}
 
 }

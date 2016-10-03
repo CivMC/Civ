@@ -61,7 +61,7 @@ public class PlayerHolderTest {
 
 	@Test
 	public void testValidate() {
-		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
+		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), 1, loc);
 		final ItemStack pearlStack = pearl.createItemStack();
 		
 		assertEquals(holder.validate(pearl), HolderVerifyResult.PLAYER_NOT_ONLINE);

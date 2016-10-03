@@ -186,7 +186,7 @@ public class CorePearlManagerTest {
 		pearl = manager.exilePlayer(player, killer);
 		assertNotNull(pearl);
 		assertTrue(manager.isPlayerExiled(player));
-		assertEquals(pearl.getUniqueId(), player.getUniqueId());
+		assertEquals(pearl.getPlayerId(), player.getUniqueId());
 		assertEquals(pearl.getHealth(), 55);
 		
 		ArgumentCaptor<PlayerPearledEvent> eventArg = ArgumentCaptor.forClass(PlayerPearledEvent.class);
@@ -275,11 +275,11 @@ public class CorePearlManagerTest {
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 		
 		// Test fails when lore generator fails
-		when(loreGenerator.getIDFromItemStack(is)).thenReturn(null);
+		when(loreGenerator.getPlayerIdFromItemStack(is)).thenReturn(null);
 		assertNull(manager.getPearlFromItemStack(is));
 
 		// Test passes when lore generator succeeds
-		when(loreGenerator.getIDFromItemStack(is)).thenReturn(pearl.getUniqueId());
+		when(loreGenerator.getPlayerIdFromItemStack(is)).thenReturn(pearl.getPlayerId());
 		assertEquals(manager.getPearlFromItemStack(is), pearl);
 		
 		// Test fails when the pearl is freed

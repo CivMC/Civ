@@ -103,7 +103,7 @@ public class MySqlStorageIntegrationTest {
 		Random rand = new Random(587);
 		final int numPearlsToAdd = 100;
 		for(int i = 0; i < numPearlsToAdd; i++) {
-			ExilePearl toAdd = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+			ExilePearl toAdd = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), i, new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
 			toAdd.setPearledOn(new Date());
 			toAdd.setHealth(rand.nextInt(100));
 			

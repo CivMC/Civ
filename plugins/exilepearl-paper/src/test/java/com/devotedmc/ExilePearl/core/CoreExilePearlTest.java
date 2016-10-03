@@ -112,7 +112,7 @@ public class CoreExilePearlTest {
 		
 		holder = new PlayerHolder(killer);
 		
-		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), holder);
+		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), 1, holder);
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    pluginManager = mock(PluginManager.class);
@@ -123,29 +123,29 @@ public class CoreExilePearlTest {
 	public void testCoreExilePearl() {
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, null, killer.getUniqueId(), new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, null, killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), null, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), null, 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), null); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), 1, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
 	@Test
 	public void testGetUniqueId() {
-		assertEquals(pearl.getUniqueId(), player.getUniqueId());
+		assertEquals(pearl.getPlayerId(), player.getUniqueId());
 	}
 
 	@Test
@@ -371,12 +371,13 @@ public class CoreExilePearlTest {
 		ExilePearl pearl2 = mock(ExilePearl.class);
 		when(pearl2.getItemName()).thenReturn(pearl.getItemName());
 		when(pearl2.getPlayerName()).thenReturn(playerName);
-		when(pearl2.getUniqueId()).thenReturn(pearl.getUniqueId());
+		when(pearl2.getPlayerId()).thenReturn(pearl.getPlayerId());
 		when(pearl2.getHealth()).thenReturn(pearl.getHealth());
 		final Integer pearlHealth = pearl.getHealthPercent();
 		when(pearl2.getHealthPercent()).thenReturn(pearlHealth);
 		when(pearl2.getKillerName()).thenReturn(killerName);
 		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
+		when(pearl2.getPearlId()).thenReturn(pearl.getPearlId());
 
 		List<String> lore2 = loreGenerator.generateLore(pearl2);
 		assertEquals(lore, lore2);
@@ -384,7 +385,7 @@ public class CoreExilePearlTest {
 		assertTrue(pearl.validateItemStack(is));
 		
 		// Now change the ID and negative test
-		when(pearl2.getUniqueId()).thenReturn(UUID.randomUUID());
+		when(pearl2.getPlayerId()).thenReturn(UUID.randomUUID());
 		lore2 = loreGenerator.generateLore(pearl2);
 		when(im.getLore()).thenReturn(lore2);
 		assertFalse(pearl.validateItemStack(is));

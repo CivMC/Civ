@@ -14,9 +14,16 @@ public interface PearlLoreGenerator {
 	List<String> generateLore(ExilePearl pearl);
 	
 	/**
-	 * Parses a UUID from a pearl item stack
+	 * Parses the player ID from a pearl item stack
 	 * @param is The item stack to parse
 	 * @return The player UUID, or null if it can't parse
 	 */
-	UUID getIDFromItemStack(ItemStack is);
+	UUID getPlayerIdFromItemStack(ItemStack is);
+	
+	/**
+	 * Gets the pearl ID from a pearl item stack
+	 * @param is The item stack to parse
+	 * @return The pearl ID, or 0 if can't parse
+	 */
+	int getPearlIdFromItemStack(ItemStack is);
 }

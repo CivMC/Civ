@@ -21,6 +21,10 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	// These need to match!
 	private static String UidStringFormat = "<a>UUID: <n>%s";
 	private static String UidStringFormatRegex = "<a>UUID: <n>(.+)";
+	
+	// These need to match!
+	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%04X";
+	private static String PlayerNameStringFormatRegex = "<a>Player: <n>.+ <gray>#(.+)";
 
 	/**
 	 * Generates the lore for the pearl
@@ -29,26 +33,31 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	public List<String> generateLore(ExilePearl pearl) {
 		List<String> lore = new ArrayList<String>();
 		lore.add(parse("<l>%s", pearl.getItemName()));
-		lore.add(parse("<a>Player: <n>%s", pearl.getPlayerName()));
-		lore.add(parse(UidStringFormat, pearl.getUniqueId().toString()));
+		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), pearl.getPearlId()));
+		lore.add(parse(UidStringFormat, pearl.getPlayerId().toString()));
 		lore.add(parse("<a>Health: <n>%s%%", pearl.getHealthPercent().toString()));
 		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
 		lore.add(parse(""));
-		lore.add(parse("<l>Commands:"));
-		lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
+		
+		CmdExilePearl cmd = CmdExilePearl.instance();
+		if (cmd != null) {
+			lore.add(parse("<l>Commands:"));
+			lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
+		}
 		return lore;
 	}
 
 	// For parsing the UUID out of the pearl lore
-	private static Pattern idPattern = Pattern.compile(parse(UidStringFormatRegex));
+	private static Pattern playerIdPattern = Pattern.compile(parse(UidStringFormatRegex));
+	private static Pattern pearlIdPattern = Pattern.compile(parse(PlayerNameStringFormatRegex));
 
 	/**
 	 * Gets the UUID from a prison pearl
 	 * @param is The item stack
 	 * @return The player UUID, or null if it can't parse
 	 */
-	public UUID getIDFromItemStack(ItemStack is) {
+	public UUID getPlayerIdFromItemStack(ItemStack is) {
 		if (is == null) {
 			return null;
 		}
@@ -68,13 +77,45 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 		}
 
 		String idLore  = lore.get(2);
-		Matcher match = idPattern.matcher(idLore);
+		Matcher match = playerIdPattern.matcher(idLore);
 		if (match.find()) {
 			UUID id = UUID.fromString(match.group(1));
 			return id;
 		}
 
 		return null;
+	}
+
+
+	@Override
+	public int getPearlIdFromItemStack(ItemStack is) {
+		if (is == null) {
+			return 0;
+		}
+
+		if (!is.getType().equals(Material.ENDER_PEARL)) {
+			return 0;
+		}
+
+		ItemMeta im = is.getItemMeta();
+		if (im == null) {
+			return 0;
+		}
+
+		List<String> lore = im.getLore();
+		if (lore == null) {
+			return 0;
+		}
+
+		String idLore  = lore.get(1);
+		Matcher match = pearlIdPattern.matcher(idLore);
+		if (match.find()) {
+			String str = match.group(1);
+			int id = Integer.parseInt(str, 16);
+			return id;
+		}
+
+		return 0;
 	}
 
 

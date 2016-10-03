@@ -50,6 +50,9 @@ class CoreExilePearl implements ExilePearl {
 	// The ID of the player who killed the exiled player
 	private final UUID killedBy;
 	
+	// The unique player ID
+	private final int pearlId;
+	
 	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
@@ -64,7 +67,7 @@ class CoreExilePearl implements ExilePearl {
 	 * @param holder The holder instance
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final UUID killedBy, final PearlHolder holder) {
+			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
@@ -74,6 +77,7 @@ class CoreExilePearl implements ExilePearl {
 		this.pearlApi = pearlApi;
 		this.storage = storage;
 		this.playerId = playerId;
+		this.pearlId = pearlId;
 		this.killedBy = killedBy;
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
@@ -89,8 +93,14 @@ class CoreExilePearl implements ExilePearl {
 	 * @return The player ID
 	 */
 	@Override
-	public UUID getUniqueId() {
+	public UUID getPlayerId() {
 		return playerId;
+	}
+	
+
+	@Override
+	public int getPearlId() {
+		return pearlId;
 	}
 
 
@@ -353,8 +363,10 @@ class CoreExilePearl implements ExilePearl {
 	public boolean validateItemStack(ItemStack is) {
 		Guard.ArgumentNotNull(is, "is");
 
-		UUID id = pearlApi.getLoreGenerator().getIDFromItemStack(is);
-		if (id != null && id.equals(this.playerId)) {
+		UUID playerId = pearlApi.getLoreGenerator().getPlayerIdFromItemStack(is);
+		int pearlId = pearlApi.getLoreGenerator().getPearlIdFromItemStack(is);
+		
+		if (playerId != null && playerId.equals(this.playerId) && pearlId == this.pearlId) {
 
 			// re-create the item stack to update the values
 			ItemMeta im = is.getItemMeta();

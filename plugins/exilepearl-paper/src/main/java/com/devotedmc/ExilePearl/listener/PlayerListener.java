@@ -95,7 +95,7 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && pearlApi.getLoreGenerator().getIDFromItemStack(item) != null) {
+		if (item.getType() == Material.ENDER_PEARL && pearlApi.getLoreGenerator().getPlayerIdFromItemStack(item) != null) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
@@ -184,7 +184,7 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		pearlApi.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getUniqueId());
+		pearlApi.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getPlayerId());
 		pearlApi.freePearl(pearl, PearlFreeReason.PEARL_DESTROYED);
 	}
 
@@ -448,7 +448,7 @@ public class PlayerListener implements Listener {
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
 				// Make sure we're holding a blank pearl
-				if (pearlApi.getLoreGenerator().getIDFromItemStack(entry.getValue()) == null) {
+				if (entry.getValue().getItemMeta() == null) {
 					firstpearl = Math.min(entry.getKey(), firstpearl);
 				}
 			}

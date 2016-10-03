@@ -57,7 +57,7 @@ public class ItemHolderTest {
 
 	@Test
 	public void testValidate() {
-		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
+		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), 1, loc);
 		final ItemStack pearlStack = pearl.createItemStack();
 
 		Chunk chunk = mock(Chunk.class);

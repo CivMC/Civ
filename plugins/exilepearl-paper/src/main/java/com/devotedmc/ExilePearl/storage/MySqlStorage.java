@@ -81,6 +81,7 @@ public class MySqlStorage implements PluginStorage {
 		db.execute("create table if not exists exilepearls( " +
 				"uid varchar(255) not null," +
 				"killer_uid varchar(255) not null," +
+				"unique int not null," +
 				"world varchar(255) not null," +
 				"x int not null," +
 				"y int not null," +
@@ -115,6 +116,7 @@ public class MySqlStorage implements PluginStorage {
 				try {
 					UUID playerId = UUID.fromString(resultSet.getString("uid"));
 					UUID killerId = UUID.fromString(resultSet.getString("killer_uid"));
+					int pearlId = resultSet.getInt("unique");
 					World world = Bukkit.getWorld(resultSet.getString("world"));
 					int x = resultSet.getInt("x");
 					int y = resultSet.getInt("y");
@@ -129,7 +131,7 @@ public class MySqlStorage implements PluginStorage {
 					}
 					Location loc = new Location(world, x, y, z);
 
-					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, loc);
+					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
 					pearl.setHealth(health);
 					pearl.setPearledOn(pearledOn);
 					pearl.setFreedOffline(freedOffline);
@@ -155,16 +157,17 @@ public class MySqlStorage implements PluginStorage {
 		try {
 			Location l = pearl.getLocation();
 			
-			PreparedStatement ps = db.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);");
-			ps.setString(1, pearl.getUniqueId().toString());
+			PreparedStatement ps = db.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+			ps.setString(1, pearl.getPlayerId().toString());
 			ps.setString(2, pearl.getKillerUniqueId().toString());
-			ps.setString(3, l.getWorld().getName());
-			ps.setInt(4, l.getBlockX());
-			ps.setInt(5, l.getBlockY());
-			ps.setInt(6, l.getBlockZ());
-			ps.setInt(7, pearl.getHealth());
-			ps.setLong(8, pearl.getPearledOn().getTime());
-			ps.setBoolean(9, pearl.getFreedOffline());
+			ps.setInt(3, pearl.getPearlId());
+			ps.setString(4, l.getWorld().getName());
+			ps.setInt(5, l.getBlockX());
+			ps.setInt(6, l.getBlockY());
+			ps.setInt(7, l.getBlockZ());
+			ps.setInt(8, pearl.getHealth());
+			ps.setLong(9, pearl.getPearledOn().getTime());
+			ps.setBoolean(10, pearl.getFreedOffline());
 			ps.executeUpdate();
 			
 		} catch (Exception ex) {
@@ -178,7 +181,7 @@ public class MySqlStorage implements PluginStorage {
 		
 		try {
 			PreparedStatement ps = db.prepareStatement("DELETE FROM exilepearls WHERE uid = ?");
-			ps.setString(1, pearl.getUniqueId().toString());
+			ps.setString(1, pearl.getPlayerId().toString());
 		}
 		catch (Exception ex) {
 			logFailedPearlOperation(ex, pearl, "delete record");
@@ -197,7 +200,7 @@ public class MySqlStorage implements PluginStorage {
 			ps.setInt(2, l.getBlockX());
 			ps.setInt(3, l.getBlockY());
 			ps.setInt(4, l.getBlockZ());
-			ps.setString(5, pearl.getUniqueId().toString());
+			ps.setString(5, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
 		catch (Exception ex) {
@@ -213,7 +216,7 @@ public class MySqlStorage implements PluginStorage {
 			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET health = ? WHERE uid = ?");
 			
 			ps.setInt(1, pearl.getHealth());
-			ps.setString(2, pearl.getUniqueId().toString());
+			ps.setString(2, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
 		catch (Exception ex) {
@@ -229,7 +232,7 @@ public class MySqlStorage implements PluginStorage {
 			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?");
 			
 			ps.setBoolean(1, pearl.getFreedOffline());
-			ps.setString(2, pearl.getUniqueId().toString());
+			ps.setString(2, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
 		catch (Exception ex) {

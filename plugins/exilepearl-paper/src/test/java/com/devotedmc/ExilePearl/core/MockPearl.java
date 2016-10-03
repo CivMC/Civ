@@ -27,15 +27,17 @@ public class MockPearl implements ExilePearl {
 	private PlayerProvider nameProvider;
 	private UUID playerId;
 	private UUID killedBy;
+	private int pearlId;
 	private Location loc;
 	private Date pearledOn;
 	private int health;
 	private boolean freedOffline;
 	
-	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final UUID killedBy, Location loc) {
+	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final UUID killedBy, int pearlId, Location loc) {
 		this.nameProvider = nameProvider;
 		this.playerId = playerId;
 		this.killedBy = killedBy;
+		this.pearlId = pearlId;
 		this.loc = loc;
 		this.health = 10;
 		this.pearledOn = new Date();
@@ -47,8 +49,13 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public UUID getUniqueId() {
+	public UUID getPlayerId() {
 		return playerId;
+	}
+
+	@Override
+	public int getPearlId() {
+		return pearlId;
 	}
 
 	@Override
@@ -141,7 +148,7 @@ public class MockPearl implements ExilePearl {
 		List<String> lore = new ArrayList<String>();
 		lore.add(getItemName());
 		lore.add(getPlayerName());
-		lore.add(getUniqueId().toString());
+		lore.add(getPlayerId().toString());
 		ItemStack is = mock(ItemStack.class);
 		when(is.getType()).thenReturn(Material.ENDER_PEARL);
 		when(is.getAmount()).thenReturn(1);

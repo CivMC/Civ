@@ -26,7 +26,13 @@ public interface ExilePearl {
 	 * Gets the exiled player ID
 	 * @return The player ID
 	 */
-	UUID getUniqueId();
+	UUID getPlayerId();
+	
+	/**
+	 * Gets the unique pearl ID
+	 * @return The pearl ID
+	 */
+	int getPearlId();
 
 	/**
 	 * Gets the exiled player instance

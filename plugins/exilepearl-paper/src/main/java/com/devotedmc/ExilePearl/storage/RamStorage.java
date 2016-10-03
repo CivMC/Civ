@@ -21,12 +21,12 @@ public class RamStorage implements PluginStorage {
 
 	@Override
 	public void pearlInsert(ExilePearl pearl) {
-		pearls.put(pearl.getUniqueId(), pearl);
+		pearls.put(pearl.getPlayerId(), pearl);
 	}
 
 	@Override
 	public void pearlRemove(ExilePearl pearl) {
-		pearls.remove(pearl.getUniqueId());
+		pearls.remove(pearl.getPlayerId());
 	}
 
 	@Override

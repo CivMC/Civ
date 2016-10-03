@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ class CorePearlManager implements PearlManager {
 	public void loadPearls() {
 		pearls.clear();
 		for (ExilePearl p : storage.loadAllPearls()) {
-			pearls.put(p.getUniqueId(), p);
+			pearls.put(p.getPlayerId(), p);
 		}
 	}
 	
@@ -93,7 +94,7 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy);
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy, createUniquePearlId());
 
 		PlayerPearledEvent e = new PlayerPearledEvent(pearl, killedBy);
 		Bukkit.getPluginManager().callEvent(e);
@@ -101,7 +102,7 @@ class CorePearlManager implements PearlManager {
 			return null;
 		}
 		
-		pearls.put(pearl.getUniqueId(), pearl);
+		pearls.put(pearl.getPlayerId(), pearl);
 		storage.pearlInsert(pearl);
 
 		pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
@@ -129,12 +130,12 @@ class CorePearlManager implements PearlManager {
 			}
 		}
 		
-		PearlPlayer player = pearlApi.getPearlPlayer(pearl.getUniqueId());
+		PearlPlayer player = pearlApi.getPearlPlayer(pearl.getPlayerId());
 		
 		// If the player is online, do the full remove, otherwise mark the pearl
 		// as free offline and it will be removed when they log in
 		if (player != null && player.isOnline()) {
-			pearls.remove(pearl.getUniqueId());
+			pearls.remove(pearl.getPlayerId());
 			storage.pearlRemove(pearl);
 		} else {
 			pearl.setFreedOffline(true);
@@ -181,7 +182,7 @@ class CorePearlManager implements PearlManager {
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
 		
-		UUID id = pearlApi.getLoreGenerator().getIDFromItemStack(is);
+		UUID id = pearlApi.getLoreGenerator().getPlayerIdFromItemStack(is);
 		if (id != null) {
 			return pearls.get(id);
 		}
@@ -226,5 +227,27 @@ class CorePearlManager implements PearlManager {
 		}
 		
 		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());
+	}
+	
+	
+	/**
+	 * Gets a unique pearlId
+	 * @return The unique pearl ID
+	 */
+	private int createUniquePearlId() {
+		Random rand = new Random();
+		int pearlId = 0;
+		
+		while(pearlId == 0) {
+			pearlId = rand.nextInt(Short.MAX_VALUE);
+			for(ExilePearl p : pearls.values()) {
+				if (p.getPearlId() == pearlId) {
+					pearlId = 0;
+					continue;
+				}
+			}
+		}
+		
+		return pearlId;
 	}
 }
