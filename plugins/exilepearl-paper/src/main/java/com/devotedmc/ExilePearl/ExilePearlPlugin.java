@@ -35,7 +35,7 @@ import com.devotedmc.ExilePearl.storage.MySqlStorage;
 import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.storage.RamStorage;
-import com.devotedmc.ExilePearl.util.BukkitTask;
+import com.devotedmc.ExilePearl.util.ExilePearlTask;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -54,7 +54,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
-	private final BukkitTask pearlDecayWorker = pearlFactory.createPearlDecayWorker();
+	private final ExilePearlTask pearlDecayWorker = pearlFactory.createPearlDecayWorker();
 	private final SuicideHandler suicideHandler = pearlFactory.createSuicideHandler();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);

@@ -80,4 +80,9 @@ public class PlayerHolder implements PearlHolder {
 
 		return player.equals(other.player);
 	}
+
+	@Override
+	public boolean isBlock() {
+		return false;
+	}
 }

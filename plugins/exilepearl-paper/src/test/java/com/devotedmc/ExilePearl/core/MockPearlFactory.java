@@ -13,7 +13,7 @@ import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.SuicideHandler;
-import com.devotedmc.ExilePearl.util.BukkitTask;
+import com.devotedmc.ExilePearl.util.ExilePearlTask;
 
 public class MockPearlFactory implements PearlFactory {
 	
@@ -40,7 +40,7 @@ public class MockPearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public BukkitTask createPearlDecayWorker() {
+	public ExilePearlTask createPearlDecayWorker() {
 		return null;
 	}
 

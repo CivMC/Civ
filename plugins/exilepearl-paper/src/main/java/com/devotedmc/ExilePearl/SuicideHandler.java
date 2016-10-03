@@ -4,9 +4,9 @@ import java.util.UUID;
 
 import org.bukkit.event.Listener;
 
-import com.devotedmc.ExilePearl.util.BukkitTask;
+import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
-public interface SuicideHandler extends BukkitTask, Listener {
+public interface SuicideHandler extends ExilePearlRunnable, Listener {
 	
 	/**
 	 * Adds a player to the suicide queue

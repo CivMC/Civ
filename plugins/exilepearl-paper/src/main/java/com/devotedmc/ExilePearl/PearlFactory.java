@@ -5,7 +5,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.devotedmc.ExilePearl.util.BukkitTask;
+import com.devotedmc.ExilePearl.util.ExilePearlTask;
 
 /**
  * Factory interface for creating concrete pearl classes
@@ -42,7 +42,7 @@ public interface PearlFactory {
 	 * Creates a pearl worker instance
 	 * @return The new pearl worker instance
 	 */
-	BukkitTask createPearlDecayWorker();
+	ExilePearlTask createPearlDecayWorker();
 	
 	/**
 	 * Creates the suicide handler instance

@@ -4,33 +4,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
-import com.devotedmc.ExilePearl.util.Guard;
+import com.devotedmc.ExilePearl.util.ExilePearlTask;
 
 /**
  * Lets exiled players kill themselves with a timer
  * @author Gordon
  */
-class PlayerSuicideTask implements Runnable, SuicideHandler, Listener {
-
-	private final ExilePearlApi pearlApi;
-
-	private boolean enabled = false;
-	private int taskId = 0;
-
-	public static final int TICKS_PER_SECOND = 20;
+class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 	
 	class SuicideRecord {
 		public final Location location;
@@ -49,56 +40,18 @@ class PlayerSuicideTask implements Runnable, SuicideHandler, Listener {
 	 * Creates a new FactoryWorker instance
 	 */
 	public PlayerSuicideTask(final ExilePearlApi pearlApi) {
-		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-
-		this.pearlApi = pearlApi;
+		super(pearlApi);
 	}
-
-
-	/**
-	 * Starts the worker task
-	 */
-	public void start() {
-		if (enabled) {
-			pearlApi.log(Level.WARNING, "Tried to start the player suicide task but it was already started.");
-			return;
-		}
-		
-		taskId = pearlApi.getScheduler().scheduleSyncRepeatingTask(pearlApi.getPlugin(), this, TICKS_PER_SECOND, TICKS_PER_SECOND);
-		if (taskId == -1) {
-			pearlApi.log(Level.SEVERE, "Failed to start the player suicide task");
-			return;
-		} else {
-			players.clear();
-			enabled = true;
-			pearlApi.log("Started the player suicide task");
-		}
-	}
-
-	/**
-	 * Stops the worker task
-	 */
-	public void stop() {
-		if (enabled) {
-			pearlApi.getScheduler().cancelTask(taskId);
-			enabled = false;
-			taskId = 0;
-			pearlApi.log("Stopped the player suicide task");
-		}
-	}
-
-	/**
-	 * Restarts the worker task
-	 */
-	public void restart() {
-		stop();
-		start();
+	
+	@Override
+	public String getTaskName() {
+		return "Player Suicide";
 	}
 
 
 	@Override
-	public boolean isRunning() {
-		return enabled;
+	public int getTickInterval() {
+		return TICKS_PER_SECOND;
 	}
 
 

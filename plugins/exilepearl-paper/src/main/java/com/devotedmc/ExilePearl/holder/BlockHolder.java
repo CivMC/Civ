@@ -116,4 +116,9 @@ public class BlockHolder implements PearlHolder {
 
 		return block.equals(other.block);
 	}
+
+	@Override
+	public boolean isBlock() {
+		return true;
+	}
 }

@@ -29,4 +29,10 @@ public interface PearlHolder {
 	 * @return the validation result
 	 */
 	public HolderVerifyResult validate(final ExilePearl pearl);
+	
+	/**
+	 * Gets whether the holder is a block
+	 * @return true if the holder is a block
+	 */
+	public boolean isBlock();
 }

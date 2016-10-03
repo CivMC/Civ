@@ -66,4 +66,9 @@ public class ItemHolder implements PearlHolder {
 
 		return item.equals(other.item);
 	}
+
+	@Override
+	public boolean isBlock() {
+		return false;
+	}
 }

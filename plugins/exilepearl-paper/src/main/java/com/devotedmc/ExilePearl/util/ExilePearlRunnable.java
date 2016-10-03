@@ -1,7 +1,7 @@
 package com.devotedmc.ExilePearl.util;
 
-public interface BukkitTask {
-
+public interface ExilePearlRunnable extends Runnable {
+	
 	/**
 	 * Start the pearl worker
 	 */
