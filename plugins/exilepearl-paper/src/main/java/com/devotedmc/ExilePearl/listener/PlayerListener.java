@@ -20,6 +20,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -27,6 +28,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
@@ -522,7 +524,7 @@ public class PlayerListener implements Listener {
 	 * Handles logging in players
 	 * @param e The event args
 	 */
-	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent e) {
 		UUID uid = e.getPlayer().getUniqueId();
 		ExilePearl pearl = pearlApi.getPearl(uid);
@@ -530,6 +532,34 @@ public class PlayerListener implements Listener {
 			pearl.getPlayer().msg(Lang.pearlYouWereFreed);
 			pearlApi.freePearl(pearl);
 		}
+	}
+	
+	/**
+	 * Frees pearls when right-clicked
+	 * @param e The event args
+	 */
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onPlayerInteract(PlayerInteractEvent e) {
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getItem());
+		if (pearl == null) {
+			return;
+		}
+
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			Material m = e.getClickedBlock().getType();
+			if (m == Material.CHEST || m == Material.WORKBENCH
+					|| m == Material.FURNACE || m == Material.DISPENSER
+					|| m == Material.BREWING_STAND)
+				return;
+		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
+			return;
+		}
+
+		Player player = e.getPlayer();
+		player.getInventory().setItemInMainHand(null);
+		e.setCancelled(true);
+		
+		pearlApi.freePearl(pearl);
 	}
 	
 	

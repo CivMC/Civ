@@ -38,23 +38,18 @@ public class ItemHolder implements PearlHolder {
 	}
 
 	@Override
-	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
+	public HolderVerifyResult validate(ExilePearl pearl) {
 		 // Location holder
 		Chunk chunk = item.getLocation().getChunk();
 		
 		for (Entity entity : chunk.getEntities()) {
 			if (entity.equals(item)) {
 				if (pearl.validateItemStack(item.getItemStack())) {
-					feedback.append(String.format("Found in world at (%d, %d, %d)",
-							entity.getLocation().getBlockX(),
-							entity.getLocation().getBlockY(),
-							entity.getLocation().getBlockZ()));
 					return HolderVerifyResult.ON_GROUND;
 				}
 				return HolderVerifyResult.ON_GROUND;
 			}
 		}
-		feedback.append("On ground not in chunk");
 		return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;
 	}
 	

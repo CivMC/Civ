@@ -39,7 +39,7 @@ public class PlayerHolder implements PearlHolder {
 	}
 
 	@Override
-	public HolderVerifyResult validate(ExilePearl pearl, StringBuilder feedback) {
+	public HolderVerifyResult validate(ExilePearl pearl) {
 		// When the the pearl holder is in creative mode, the inventory options checks do strange things
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			return HolderVerifyResult.CREATVE_MODE;
@@ -47,7 +47,6 @@ public class PlayerHolder implements PearlHolder {
 		
 		// Is the holder online?
 		if (!player.isOnline()) {
-			feedback.append(String.format("Jailor %s not online", player.getName()));
 			return HolderVerifyResult.PLAYER_NOT_ONLINE;
 		}
 		
@@ -65,7 +64,6 @@ public class PlayerHolder implements PearlHolder {
 		}
 
 		// Nope, not found
-		feedback.append(String.format("Not in %s's inventory", player.getName()));
 		return HolderVerifyResult.DEFAULT;
 	}
 	

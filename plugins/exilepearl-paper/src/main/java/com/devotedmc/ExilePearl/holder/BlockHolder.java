@@ -71,20 +71,15 @@ public class BlockHolder implements PearlHolder {
 	}
 
 	@Override
-	public HolderVerifyResult validate(final ExilePearl pearl, final StringBuilder feedback) {
+	public HolderVerifyResult validate(final ExilePearl pearl) {
 		// Check the block state first
 		BlockState bs = block.getState();
 		if (bs == null) {
-			feedback.append("BlockState is null");
 			return HolderVerifyResult.BLOCK_STATE_NULL;
 		}
 		
 		// Is the block an inventory block?
-		Location bsLoc = bs.getLocation();
 		if (!(bs instanceof InventoryHolder)) {
-			feedback.append(String.format(
-					"%s not inventory at (%d,%d,%d)", bs.getType().toString(),
-					bsLoc.getBlockX(), bsLoc.getBlockY(), bsLoc.getBlockZ()));
 			return HolderVerifyResult.NOT_BLOCK_INVENTORY;
 		}
 		
@@ -93,11 +88,6 @@ public class BlockHolder implements PearlHolder {
 		for (HumanEntity viewer : inv.getViewers()) {
 			ItemStack cursoritem = viewer.getItemOnCursor();
 			if (pearl.validateItemStack(cursoritem)) {
-				feedback.append(String.format("In hand of %s viewing chest at (%d,%d,%d)",
-						viewer.getName(),
-						block.getLocation().getBlockX(),
-						block.getLocation().getBlockY(),
-						block.getLocation().getBlockZ()));
 			return HolderVerifyResult.IN_VIEWER_HAND;
 			}
 		}

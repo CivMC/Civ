@@ -375,24 +375,22 @@ class CoreExilePearl implements ExilePearl {
 	public boolean verifyLocation() {
 		StringBuilder sb = new StringBuilder();
 
-		StringBuilder verifier_log = new StringBuilder();
 		StringBuilder failure_reason_log = new StringBuilder();
 
 		for (final PearlHolder holder : this.holders) {
-			HolderVerifyResult reason = this.verifyHolder(holder, verifier_log);
+			HolderVerifyResult reason = this.verifyHolder(holder);
 			if (reason.isValid()) {
-				sb.append(String.format("ExilePearl (%s, %s) passed verification for reason '%s': %s",
-						playerId.toString(), this.getPlayerName(), reason.toString(), verifier_log.toString()));
+				sb.append(String.format("ExilePearl (%s, %s) passed verification for reason '%s'.",
+						playerId.toString(), this.getPlayerName(), reason.toString()));
 				pearlApi.log(sb.toString());
 
 				return true;
 			} else {
 				failure_reason_log.append(reason.toString()).append(", ");
 			}
-			verifier_log.append(", ");
 		}
-		sb.append(String.format("ExilePearl (%s, %s) failed verification for reason %s: %s",
-				playerId.toString(), this.getPlayerName(), failure_reason_log.toString(), verifier_log.toString()));
+		sb.append(String.format("ExilePearl (%s, %s) failed verification for reason '%s'.",
+				playerId.toString(), this.getPlayerName(), failure_reason_log.toString()));
 
 		pearlApi.log(sb.toString());
 		return false;
@@ -405,8 +403,8 @@ class CoreExilePearl implements ExilePearl {
 	 * @param feedback The feedback string
 	 * @return true if the pearl was found in a valid location
 	 */
-	private HolderVerifyResult verifyHolder(PearlHolder holder, StringBuilder feedback) {
-		return holder.validate(this, feedback);
+	private HolderVerifyResult verifyHolder(PearlHolder holder) {
+		return holder.validate(this);
 	}
 
 

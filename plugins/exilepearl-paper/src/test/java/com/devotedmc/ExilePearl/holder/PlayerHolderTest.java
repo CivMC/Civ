@@ -63,9 +63,8 @@ public class PlayerHolderTest {
 	public void testValidate() {
 		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
 		final ItemStack pearlStack = pearl.createItemStack();
-		StringBuilder sb = new StringBuilder();
 		
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.PLAYER_NOT_ONLINE);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.PLAYER_NOT_ONLINE);
 		
 		when(player.isOnline()).thenReturn(true);
 		ItemStack cursorItem = mock(ItemStack.class);
@@ -74,7 +73,7 @@ public class PlayerHolderTest {
 		PlayerInventory inv = mock(PlayerInventory.class);
 		when(player.getInventory()).thenReturn(inv);
 		
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.DEFAULT);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
 
 		HashMap<Integer, ItemStack> invItems = new HashMap<Integer, ItemStack>();
 		invItems.put(0, pearlStack);
@@ -86,9 +85,9 @@ public class PlayerHolderTest {
 			}
 		});
 		
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_PLAYER_INVENTORY);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_PLAYER_INVENTORY);
 		
 		when(player.getItemOnCursor()).thenReturn(pearlStack);
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_HAND);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_HAND);
 	}
 }

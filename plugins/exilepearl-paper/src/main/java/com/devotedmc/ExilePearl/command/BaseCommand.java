@@ -402,6 +402,15 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	public String getUsageTemplate() {
 		return getUsageTemplate(false);
 	}
+	
+	protected void msg(String str) {
+		str = parse(str);
+		if (senderIsConsole) {
+			sender.sendMessage(str);
+		} else {
+			me.sendMessage(str);
+		}
+	}
 
 	/**
 	 * Formats and sends a message to the player
@@ -643,5 +652,9 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 */
 	protected String parse(String str, Object... args) {
 		return txt.parse(str, args);
+	}
+	
+	protected String parse(String str) {
+		return txt.parse(str);
 	}
 }

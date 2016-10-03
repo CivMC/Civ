@@ -59,7 +59,6 @@ public class ItemHolderTest {
 	public void testValidate() {
 		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
 		final ItemStack pearlStack = pearl.createItemStack();
-		StringBuilder sb = new StringBuilder();
 
 		Chunk chunk = mock(Chunk.class);
 		when(loc.getChunk()).thenReturn(chunk);
@@ -68,7 +67,7 @@ public class ItemHolderTest {
 		when(chunk.getEntities()).thenReturn(entities);
 		
 		// Pearl shouldn't be found
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.ENTITY_NOT_IN_CHUNK);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.ENTITY_NOT_IN_CHUNK);
 		
 		entities = new Entity[1];
 		when(item.getItemStack()).thenReturn(pearlStack);
@@ -77,6 +76,6 @@ public class ItemHolderTest {
 		when(chunk.getEntities()).thenReturn(entities);
 		
 		// Pearl should now be found
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.ON_GROUND);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.ON_GROUND);
 	}
 }

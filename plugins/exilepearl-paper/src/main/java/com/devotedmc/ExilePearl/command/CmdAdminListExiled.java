@@ -36,7 +36,9 @@ public class CmdAdminListExiled extends PearlCommand {
 				lineLength = 0;
 			}
 		}
-		sb.setLength(sb.length() - 2);
+		if (pearls.size() > 0) {
+			sb.setLength(sb.length() - 2);
+		}
 		
 		msg(sb.toString());
 	}

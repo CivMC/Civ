@@ -414,7 +414,7 @@ public class CoreExilePearlTest {
 	@Test
 	public void testVerifyLocation() {
 		PearlHolder holder1 = mock(PearlHolder.class);
-		when(holder1.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.IN_CHEST);
+		when(holder1.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.IN_CHEST);
 		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
 		
 		pearl.setHolder(holder1);
@@ -437,19 +437,19 @@ public class CoreExilePearlTest {
 		assertTrue(pearl.verifyLocation());
 		
 		PearlHolder holder2 = mock(PearlHolder.class);
-		when(holder2.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		when(holder2.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		PearlHolder holder3 = mock(PearlHolder.class);
-		when(holder3.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		when(holder3.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		PearlHolder holder4 = mock(PearlHolder.class);
-		when(holder4.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		when(holder4.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		PearlHolder holder5 = mock(PearlHolder.class);
-		when(holder5.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		when(holder5.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		PearlHolder holder6 = mock(PearlHolder.class);
-		when(holder6.validate(any(ExilePearl.class), any(StringBuilder.class))).thenReturn(HolderVerifyResult.DEFAULT);
+		when(holder6.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.DEFAULT);
 		
 		pearl.setHolder(holder2);
 		assertTrue(pearl.verifyLocation());

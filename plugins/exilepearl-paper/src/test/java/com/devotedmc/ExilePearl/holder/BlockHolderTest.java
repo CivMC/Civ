@@ -97,16 +97,15 @@ public class BlockHolderTest {
 	@Test
 	public void testValidate() {
 		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), loc);
-		StringBuilder sb = new StringBuilder();
 		
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.BLOCK_STATE_NULL);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.BLOCK_STATE_NULL);
 		
 		BlockState bs = mock(BlockState.class);
 		when(bs.getType()).thenReturn(Material.STONE);
 		when(bs.getLocation()).thenReturn(loc);
 		
 		when(b.getState()).thenReturn(bs);
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.NOT_BLOCK_INVENTORY);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.NOT_BLOCK_INVENTORY);
 		
 		MockInventoryHolder invHolder = mock(MockInventoryHolder.class);
 		when(b.getState()).thenReturn(invHolder);
@@ -114,7 +113,7 @@ public class BlockHolderTest {
 		Inventory inv = mock(Inventory.class);
 		when(invHolder.getInventory()).thenReturn(inv);
 
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.DEFAULT);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
 		
 		// Put the pearl itemstack in the fake inventory
 		HashMap<Integer, ItemStack> invItems = new HashMap<Integer, ItemStack>();
@@ -130,7 +129,7 @@ public class BlockHolderTest {
 		});
 		
 		// It should be found in the chest now
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_CHEST);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_CHEST);
 		
 		// mock someone holding the pearl in their hand
 		HumanEntity viwer = mock(HumanEntity.class);
@@ -140,7 +139,7 @@ public class BlockHolderTest {
 		when(inv.getViewers()).thenReturn(viewers);
 		
 		// It should be found in the player hand now
-		assertEquals(holder.validate(pearl, sb), HolderVerifyResult.IN_VIEWER_HAND);
+		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_VIEWER_HAND);
 		
 	}
 }

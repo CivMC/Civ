@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -69,7 +70,7 @@ class CorePearlManager implements PearlManager {
 	 */
 	@Override
 	public Collection<ExilePearl> getPearls() {
-		return Collections.unmodifiableCollection(pearls.values());
+		return Collections.unmodifiableCollection(pearls.values().stream().filter(p -> !p.getFreedOffline()).collect(Collectors.toSet()));
 	}
 	
 	

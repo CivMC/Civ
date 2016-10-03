@@ -26,8 +26,7 @@ public interface PearlHolder {
 	/**
 	 * Validate that the given pearl still exists in this holder instance
 	 * @param pearl The exile pearl
-	 * @param feedback The string feedback
 	 * @return the validation result
 	 */
-	public HolderVerifyResult validate(final ExilePearl pearl, final StringBuilder feedback);
+	public HolderVerifyResult validate(final ExilePearl pearl);
 }
