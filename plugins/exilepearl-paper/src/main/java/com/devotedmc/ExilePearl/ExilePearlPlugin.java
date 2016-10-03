@@ -65,21 +65,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
 	
 	private final HashMap<UUID, PearlPlayer> players = new HashMap<UUID, PearlPlayer>();
-	
-	
-	/**
-	 * Default constructor
-	 */
-	public ExilePearlPlugin() { }
-	
-    /**
-     * Constructor for unit testing.
-     * @deprecated
-     */
-    @Deprecated
-    public ExilePearlPlugin(PluginLoader loader, Server server, PluginDescriptionFile description, File dataFolder, File file) {
-        super(loader, server, description, dataFolder, file);
-    }
 
 	/**
 	 * Spigot enable method
