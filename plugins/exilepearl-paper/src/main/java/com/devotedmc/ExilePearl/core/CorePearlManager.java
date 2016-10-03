@@ -15,9 +15,11 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
 import com.devotedmc.ExilePearl.util.Guard;
 
@@ -93,7 +95,7 @@ class CorePearlManager implements PearlManager {
 		
 		final ExilePearl pearl = pearlFactory.createExilePearl(exiled.getUniqueId(), killedBy);
 
-		ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.NEW, killedBy);
+		PlayerPearledEvent e = new PlayerPearledEvent(pearl, killedBy);
 		Bukkit.getPluginManager().callEvent(e);
 		if (e.isCancelled()) {
 			return null;
@@ -113,12 +115,13 @@ class CorePearlManager implements PearlManager {
 	 * @param pearl The pearl to free
 	 */
 	@Override
-	public boolean freePearl(ExilePearl pearl) {
+	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
 		Guard.ArgumentNotNull(pearl, "pearl");
+		Guard.ArgumentNotNull(reason, "reason");
 		
 		// Don't call the event if the pearl was already freed while they were offline
 		if (!pearl.getFreedOffline()) {
-			ExilePearlEvent e = new ExilePearlEvent(pearl, ExilePearlEvent.Type.FREED, null);
+			PlayerFreedEvent e = new PlayerFreedEvent(pearl, reason);
 			Bukkit.getPluginManager().callEvent(e);
 			
 			if (e.isCancelled()) {
@@ -136,6 +139,8 @@ class CorePearlManager implements PearlManager {
 		} else {
 			pearl.setFreedOffline(true);
 		}
+		pearlApi.log("Player %s was freed for reason %s.", player.getName(), reason.toString());
+		
 		return true;
 	}
 
@@ -217,7 +222,7 @@ class CorePearlManager implements PearlManager {
 		
 		// Free the pending pearls
 		for (ExilePearl pearl : pearlsToFree) {
-			freePearl(pearl);
+			freePearl(pearl, PearlFreeReason.HEALTH_DECAY);
 		}
 		
 		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());

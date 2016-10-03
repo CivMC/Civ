@@ -20,8 +20,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 /**
  * Listener for disallowing certain actions of exiled players
@@ -63,14 +62,11 @@ public class ExileListener extends RuleListener {
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void exileRuleClearBed(ExilePearlEvent e) {
+	public void exileRuleClearBed(PlayerPearledEvent e) {
 		if (config.getRuleCanUseBed()) {
 			return;
 		}
-		
-		if (e.getType() == Type.NEW) {
-			e.getExilePearl().getPlayer().getPlayer().setBedSpawnLocation(null, true);
-		}
+		e.getPearl().getPlayer().getPlayer().setBedSpawnLocation(null, true);
 	}
 
 	/**

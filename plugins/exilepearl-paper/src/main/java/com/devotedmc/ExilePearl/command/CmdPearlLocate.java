@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlLocate extends PearlCommand {
@@ -58,8 +59,7 @@ public class CmdPearlLocate extends PearlCommand {
 			}
 			
 		} else {
-			plugin.log("%s is freed because the pearl could not be located.", pearl.getLocation());
-			pearlApi.freePearl(pearl);
+			pearlApi.freePearl(pearl, PearlFreeReason.VALIDATION_FAILED);
 		}
 	}
 	

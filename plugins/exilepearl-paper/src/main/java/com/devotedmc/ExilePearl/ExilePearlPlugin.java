@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -62,6 +63,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
+	
+	private final HashMap<UUID, PearlPlayer> players = new HashMap<UUID, PearlPlayer>();
 	
 	
 	/**
@@ -265,18 +268,19 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public boolean freePearl(ExilePearl pearl) {
-		return pearlManager.freePearl(pearl);
+	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
+		return pearlManager.freePearl(pearl, reason);
 	}
 	
 	@Override
 	public PearlPlayer getPearlPlayer(final UUID uid) {
-		Player player = Bukkit.getPlayer(uid);
-		if (player == null) {
-			return null;
+		PearlPlayer p = players.get(uid);
+		if (p == null) {
+			p = pearlFactory.createPearlPlayer(uid);
+			players.put(uid, p);
 		}
 		
-		return pearlFactory.createPearlPlayer(player);
+		return p;
 	}
 	
 	@Override

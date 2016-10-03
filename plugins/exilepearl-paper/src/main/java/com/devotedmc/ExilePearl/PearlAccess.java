@@ -62,9 +62,10 @@ public interface PearlAccess {
 	/**
 	 * Frees an exile pearl
 	 * @param pearl The pearl to free
+	 * @param reason The free reason
 	 * @return true if the pearl is freed, otherwise false
 	 */
-	boolean freePearl(ExilePearl pearl);
+	boolean freePearl(ExilePearl pearl, PearlFreeReason reason);
 	
 	/**
 	 * Performs a health decay operation on all pearls

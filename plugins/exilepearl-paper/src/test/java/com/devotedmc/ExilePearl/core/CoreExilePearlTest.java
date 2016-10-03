@@ -42,7 +42,7 @@ import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.PearlCommand;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
@@ -420,9 +420,9 @@ public class CoreExilePearlTest {
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
-		ArgumentCaptor<ExilePearlEvent> eventArg = ArgumentCaptor.forClass(ExilePearlEvent.class);
+		ArgumentCaptor<PearlMovedEvent> eventArg = ArgumentCaptor.forClass(PearlMovedEvent.class);
 		verify(pluginManager).callEvent(eventArg.capture());
-		assertEquals(eventArg.getValue().getType(), ExilePearlEvent.Type.MOVED);
+		assertEquals(eventArg.getValue().getPearl(), pearl);
 		
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());

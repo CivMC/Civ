@@ -27,10 +27,12 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
 
 @RunWith(PowerMockRunner.class)
@@ -159,10 +161,10 @@ public class CorePearlManagerTest {
 	    doAnswer(new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {
-				ExilePearlEvent event;
+				PlayerPearledEvent event;
 				
-				if (invocation.getArguments()[0] instanceof ExilePearlEvent) {
-					event = (ExilePearlEvent)invocation.getArguments()[0];
+				if (invocation.getArguments()[0] instanceof PlayerPearledEvent) {
+					event = (PlayerPearledEvent)invocation.getArguments()[0];
 				} else {
 					return null;
 				}
@@ -187,10 +189,9 @@ public class CorePearlManagerTest {
 		assertEquals(pearl.getUniqueId(), player.getUniqueId());
 		assertEquals(pearl.getHealth(), 55);
 		
-		ArgumentCaptor<ExilePearlEvent> eventArg = ArgumentCaptor.forClass(ExilePearlEvent.class);
+		ArgumentCaptor<PlayerPearledEvent> eventArg = ArgumentCaptor.forClass(PlayerPearledEvent.class);
 		verify(pluginManager).callEvent(eventArg.capture());
-		assertEquals(eventArg.getValue().getType(), ExilePearlEvent.Type.NEW);
-		assertEquals(eventArg.getValue().getExilePearl(), pearl);
+		assertEquals(eventArg.getValue().getPearl(), pearl);
 	}
 
 	@Test
@@ -202,17 +203,21 @@ public class CorePearlManagerTest {
 
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { manager.freePearl(null); } catch (Throwable ex) { e = ex; }
+		try { manager.freePearl(null, PearlFreeReason.FREED_BY_PLAYER); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { manager.freePearl(pearl, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		// This will cancel the free pearl event
 	    doAnswer(new Answer<Void>() {
 			@Override
 			public Void answer(InvocationOnMock invocation) throws Throwable {
-				ExilePearlEvent event;
+				PlayerFreedEvent event;
 				
-				if (invocation.getArguments()[0] instanceof ExilePearlEvent) {
-					event = (ExilePearlEvent)invocation.getArguments()[0];
+				if (invocation.getArguments()[0] instanceof PlayerFreedEvent) {
+					event = (PlayerFreedEvent)invocation.getArguments()[0];
 				} else {
 					return null;
 				}
@@ -224,19 +229,18 @@ public class CorePearlManagerTest {
 		}).when(pluginManager).callEvent(any(Event.class));
 		
 	    // Freeing the pearl should fail
-	    assertFalse(manager.freePearl(pearl));
+	    assertFalse(manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER));
 		assertTrue(manager.isPlayerExiled(player));
 		
 		// Now allow the event to pass
 		reset(pluginManager);
 		
-	    assertTrue(manager.freePearl(pearl));
+	    assertTrue(manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER));
 	    assertFalse(manager.isPlayerExiled(player));
 
-		ArgumentCaptor<ExilePearlEvent> eventArg = ArgumentCaptor.forClass(ExilePearlEvent.class);
+		ArgumentCaptor<PlayerFreedEvent> eventArg = ArgumentCaptor.forClass(PlayerFreedEvent.class);
 		verify(pluginManager).callEvent(eventArg.capture());
-		assertEquals(eventArg.getValue().getType(), ExilePearlEvent.Type.FREED);
-		assertEquals(eventArg.getValue().getExilePearl(), pearl);
+		assertEquals(eventArg.getValue().getPearl(), pearl);
 	}
 
 	@Test
@@ -279,7 +283,7 @@ public class CorePearlManagerTest {
 		assertEquals(manager.getPearlFromItemStack(is), pearl);
 		
 		// Test fails when the pearl is freed
-		manager.freePearl(pearl);
+		manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER);
 		assertNull(manager.getPearlFromItemStack(is));
 	}
 

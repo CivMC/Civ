@@ -74,8 +74,8 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public PearlPlayer createPearlPlayer(Player player) {
-		return new CorePearlPlayer(player.getUniqueId(), plugin, plugin);
+	public PearlPlayer createPearlPlayer(UUID uid) {
+		return new CorePearlPlayer(uid, plugin, plugin);
 	}
 
 	@Override

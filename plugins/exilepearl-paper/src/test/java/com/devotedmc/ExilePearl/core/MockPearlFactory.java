@@ -45,7 +45,7 @@ public class MockPearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public PearlPlayer createPearlPlayer(Player player) {
+	public PearlPlayer createPearlPlayer(UUID uid) {
 		return null;
 	}
 

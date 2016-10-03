@@ -41,8 +41,11 @@ import org.bukkit.inventory.PlayerInventory;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -182,7 +185,7 @@ public class PlayerListener implements Listener {
 		}
 
 		pearlApi.log("%s (%s) is being freed. Reason: ExilePearl combusted(lava/fire).", pearl.getPlayerName(), pearl.getUniqueId());
-		pearlApi.freePearl(pearl);
+		pearlApi.freePearl(pearl, PearlFreeReason.PEARL_DESTROYED);
 	}
 
 
@@ -530,7 +533,7 @@ public class PlayerListener implements Listener {
 		ExilePearl pearl = pearlApi.getPearl(uid);
 		if (pearl != null && pearl.getFreedOffline()) {
 			pearl.getPlayer().msg(Lang.pearlYouWereFreed);
-			pearlApi.freePearl(pearl);
+			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
 		}
 	}
 	
@@ -559,46 +562,59 @@ public class PlayerListener implements Listener {
 		player.getInventory().setItemInMainHand(null);
 		e.setCancelled(true);
 		
-		pearlApi.freePearl(pearl);
+		pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN);
 	}
 	
 	
 	/**
-	 * Handles prison pearl events
-	 * @param event
+	 * Handles new prison pearl events
+	 * @param e The event args
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
-	public void onExilePearlEvent(ExilePearlEvent event) {
-		
-		ExilePearl pearl = event.getExilePearl();
-		PearlPlayer imprisoned = pearlApi.getPearlPlayer(pearl.getUniqueId());
-		
-		if (event.getType() == ExilePearlEvent.Type.NEW) {
+	public void onPlayerPearled(PlayerPearledEvent e) {
 
-			PearlPlayer imprisoner = pearlApi.getPearlPlayer(event.getKilledBy().getUniqueId());
-			// Log the capturing ExilePearl event.
-			pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
-			
-			imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
-			imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());
-			
-		} else if (event.getType() == ExilePearlEvent.Type.MOVED) {
-			
-			Location l = pearl.getHolder().getLocation();
-			String name = pearl.getHolder().getName();
-			imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
-			
-			String bcastMsg = TextUtil.instance().parse(Lang.pearlBroadcast, imprisoned.getName(), 
-					name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-			
-			for(PearlPlayer p : imprisoned.getBcastPlayers()) {
-				p.msg(bcastMsg);
-			}
-
-		} else if (event.getType() == ExilePearlEvent.Type.FREED) {			
-			imprisoned.msg(Lang.pearlYouWereFreed);
+		PearlPlayer imprisoned = e.getPearl().getPlayer();
+		PearlPlayer imprisoner = pearlApi.getPearlPlayer(e.getKilledBy().getUniqueId());
+		
+		// Log the capturing ExilePearl event.
+		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
+		
+		imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
+		imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());
+	}
+	
+	
+	/**
+	 * Handles player freed events
+	 * @param e The event args
+	 */
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerFreed(PlayerFreedEvent e) {
+		e.getPearl().getPlayer().msg(Lang.pearlYouWereFreed);
+	}
+	
+	
+	/**
+	 * Handles a pearl move event
+	 * @param e The event args
+	 */
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPearlMoved(PearlMovedEvent e) {
+		
+		PearlPlayer imprisoned = e.getPearl().getPlayer();
+		
+		Location l = e.getDestinationHolder().getLocation();
+		String name = e.getDestinationHolder().getName();
+		imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
+		
+		String bcastMsg = TextUtil.instance().parse(Lang.pearlBroadcast, imprisoned.getName(), 
+				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		
+		for(PearlPlayer p : imprisoned.getBcastPlayers()) {
+			p.msg(bcastMsg);
 		}
 	}
+	
 	
 	/**
 	 * Clears out a player's inventory when being summoned from the end

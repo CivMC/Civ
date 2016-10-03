@@ -20,8 +20,7 @@ import org.bukkit.util.Vector;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlPlayer;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent;
-import com.devotedmc.ExilePearl.event.ExilePearlEvent.Type;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.ItemHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -206,11 +205,11 @@ class CoreExilePearl implements ExilePearl {
 			return;
 		}
 		
+		// Generate a moved event
+		Bukkit.getPluginManager().callEvent(new PearlMovedEvent(this, this.holder, holder));
+		
 		this.holder = holder;
 		this.holders.add(holder);
-		
-		// Generate a moved event
-		Bukkit.getPluginManager().callEvent(new ExilePearlEvent(this, Type.MOVED));
 
 		if (holders.size() > HOLDER_COUNT) {
 			holders.poll();

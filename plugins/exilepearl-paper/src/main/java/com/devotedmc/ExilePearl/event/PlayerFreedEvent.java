@@ -1,56 +1,51 @@
 package com.devotedmc.ExilePearl.event;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.util.Guard;
 
-public class ExilePearlEvent extends Event implements Cancellable {
-	public enum Type { NEW, MOVED, FREED }
+public class PlayerFreedEvent extends Event implements Cancellable {
 	
 	private final ExilePearl pearl;
-	private final Type type;
-	private final Player imprisoner;
+	private final PearlFreeReason reason;
 	
 	private boolean cancelled;
 	
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 	
-	public ExilePearlEvent(final ExilePearl pearl, final Type type, final Player imprisoner) {
-		this.pearl = pearl;
-		this.type = type;
-		this.imprisoner = imprisoner;
-	}
 	
-	public ExilePearlEvent(ExilePearl pearl, Type type) {
-		this(pearl, type, null);
+	/**
+	 * Creates a new PlayerPearledEvent instance. Called when a player is freed.
+	 * @param pearl The pearl instance
+	 * @param reason The reason for being freed
+	 */
+	public PlayerFreedEvent(final ExilePearl pearl, final PearlFreeReason reason) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		Guard.ArgumentNotNull(reason, "reason");
+		
+		this.pearl = pearl;
+		this.reason = reason;
 	}
 	
 	/**
 	 * Gets the exile pearl
 	 * @return The exile pearl
 	 */
-	public ExilePearl getExilePearl() {
+	public ExilePearl getPearl() {
 		return pearl;
 	}
 	
 	/**
-	 * Gets the event type
-	 * @return The event type
+	 * Gets the freeing reason
+	 * @return The freeing reason
 	 */
-	public Type getType() {
-		return type;
-	}
-
-	/**
-	 * Gets the imprisoner if one exists, otherwise null
-	 * @return The imprisoner
-	 */
-	public Player getKilledBy() {
-		return imprisoner;
+	public PearlFreeReason getReason() {
+		return reason;
 	}
 	
 	/**

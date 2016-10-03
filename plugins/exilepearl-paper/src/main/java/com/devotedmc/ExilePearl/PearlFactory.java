@@ -50,10 +50,10 @@ public interface PearlFactory {
 	
 	/**
 	 * Creates a new PearlPlayer instance
-	 * @param player The bukkit player instance
+	 * @param uid The player ID
 	 * @return The new PearlPlayer instance
 	 */
-	PearlPlayer createPearlPlayer(Player player);
+	PearlPlayer createPearlPlayer(UUID uid);
 	
 	/**
 	 * Creates the lore generator instance

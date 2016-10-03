@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 
 public class CmdPearlFree extends PearlCommand {
 
@@ -26,7 +27,7 @@ public class CmdPearlFree extends PearlCommand {
 			return;
 		}
 		
-		if (pearlApi.freePearl(pearl)) {
+		if (pearlApi.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER)) {
 			me().msg(Lang.pearlYouFreed, pearl.getPlayerName());
 			me().getPlayer().setItemInHand(new ItemStack(Material.AIR));
 		}

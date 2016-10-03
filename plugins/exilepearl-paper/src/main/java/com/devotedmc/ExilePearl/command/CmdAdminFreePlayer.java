@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminFreePlayer extends PearlCommand {
@@ -28,7 +29,7 @@ public class CmdAdminFreePlayer extends PearlCommand {
 			return;
 		}
 		
-		if (pearlApi.freePearl(pearl)) {
+		if (pearlApi.freePearl(pearl, PearlFreeReason.FREED_BY_ADMIN)) {
 			msg("<g>You freed <c>%s", name);
 			return;
 		}
