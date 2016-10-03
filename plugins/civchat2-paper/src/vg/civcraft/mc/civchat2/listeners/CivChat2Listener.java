@@ -17,6 +17,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
+import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
+import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -83,8 +86,14 @@ public class CivChat2Listener implements Listener {
 					UUID receiverUUID = NameAPI.getUUID(chatChannel);
 					Player receiver = Bukkit.getPlayer(receiverUUID);
 					CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
-					if(receiver != null){	
-						chatman.sendPrivateMsg(sender, receiver, chatMessage);
+					if(receiver != null){
+						PrivateMessageEvent event = new PrivateMessageEvent(sender, receiver, chatMessage);
+						Bukkit.getPluginManager().callEvent(event);
+						
+						if (!event.isCancelled()) {
+							chatman.sendPrivateMsg(sender, receiver, chatMessage);
+						}
+						
 						return;
 					} else {
 						if (CivChat2.getInstance().isMercuryEnabled()){
@@ -109,7 +118,12 @@ public class CivChat2Listener implements Listener {
 				if(groupChat != null){
 					//player is group chatting
 					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
-						chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+						GroupChatEvent event = new GroupChatEvent(sender, groupChat, chatMessage);
+						Bukkit.getPluginManager().callEvent(event);
+						
+						if (!event.isCancelled()) {
+							chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+						}
 						return;
 					} //player lost perm to write in the chat
 					else {
@@ -118,8 +132,13 @@ public class CivChat2Listener implements Listener {
 					}
 				}
 				
-				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
-				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+				GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage);
+				Bukkit.getPluginManager().callEvent(event);
+				
+				if (!event.isCancelled()) {
+					CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
+					chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+				}
 		    }
 		}.runTask(CivChat2.getInstance());
 	}
