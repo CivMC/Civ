@@ -181,7 +181,7 @@ public class ManagedDatasource {
 				statement.executeUpdate(ManagedDatasource.CHECK_CREATE_LOCK_TABLE);
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to prepare migrations table or register this plugin to it.");
+			logger.log(Level.SEVERE, "Failed to prepare migrations table or register this plugin to it.", e);
 		}
 	}
 	
