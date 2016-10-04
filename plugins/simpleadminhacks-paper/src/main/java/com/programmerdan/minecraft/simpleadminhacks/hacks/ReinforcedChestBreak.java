@@ -68,9 +68,15 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      * Gets fired by the BLockBreakEvent and checks if the block is reinforced
      * @param eve BLockBreakEvent
      */
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
     public void onBlockBreak(BlockBreakEvent eve) {
-        if (eve.getBlock().getType().equals(Material.CHEST)) {
+    	if (eve.getPlayer() == null) return;
+    	if (eve.getBlock() == null) return;
+    	Material bbe = eve.getBlock().getType();
+        if (Material.CHEST.equals(bbe) || Material.TRAPPED_CHEST.equals(bbe)
+        		|| Material.ENDER_CHEST.equals(bbe) || Material.FURNACE.equals(bbe)
+        		|| Material.BURNING_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
+        		|| Material.DROPPER.equals(bbe) || Material.HOPPER.equals(bbe)) {
             if(manager.isReinforced(eve.getBlock())) {
                 String name = eve.getPlayer().getDisplayName();
                 Location loc = eve.getBlock().getLocation();
