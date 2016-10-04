@@ -8,16 +8,18 @@ import org.bukkit.event.player.PlayerEvent;
 public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 	
 	private final String message;
+	private final String format;
 	private boolean cancelled;
 	
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 	
 	
-	public GlobalChatEvent(final Player player, final String message) {
+	public GlobalChatEvent(final Player player, final String message, final String format) {
 		super(player);
 		
 		this.message = message;
+		this.format = format;
 	}
 	
 	/**
@@ -45,5 +47,13 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 	@Override
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
+	}
+	
+	/**
+	 * Gets the format to use to display this chat message.
+	 * @return The message format
+	 */
+	public String getFormat() {
+		return format;
 	}
 }
