@@ -17,9 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
-import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
-import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -120,7 +117,6 @@ public class CivChat2Listener implements Listener {
 						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 					}
 				}
-
 				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
 				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(), asyncPlayerChatEvent.getRecipients());
 		    }
