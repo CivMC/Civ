@@ -49,8 +49,8 @@ class CoreExilePearl implements ExilePearl {
 	// The ID of the exiled player
 	private final UUID playerId;
 	
-	// The name of the player who killed the exiled player
-	private final String killedByName;
+	// The ID of the player who killed the exiled player
+	private final UUID killedBy;
 	
 	// The unique player ID
 	private final int pearlId;
@@ -69,18 +69,18 @@ class CoreExilePearl implements ExilePearl {
 	 * @param holder The holder instance
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final String killedByName, int pearlId, final PearlHolder holder) {
+			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
-		Guard.ArgumentNotNullOrEmpty(killedByName, "killedByName");
+		Guard.ArgumentNotNull(killedBy, "killedBy");
 		Guard.ArgumentNotNull(holder, "holder");
 		
 		this.pearlApi = pearlApi;
 		this.storage = storage;
 		this.playerId = playerId;
 		this.pearlId = pearlId;
-		this.killedByName = killedByName;
+		this.killedBy = killedBy;
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holder = holder;
@@ -292,8 +292,18 @@ class CoreExilePearl implements ExilePearl {
 
 
 	@Override
+	public UUID getKillerUniqueId() {
+		return killedBy;
+	}
+
+
+	@Override
 	public String getKillerName() {
-		return killedByName;
+		String name = pearlApi.getPearlPlayer(killedBy).getName();
+		if (name == null) {
+			name = "Unknown player";
+		}
+		return name;
 	}
 
 
@@ -452,7 +462,7 @@ class CoreExilePearl implements ExilePearl {
     public int hashCode() {
         return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
             .append(playerId)
-            .append(killedByName)
+            .append(killedBy)
             .append(getLocation())
             .append(health)
             .append(pearledOn)
@@ -473,7 +483,7 @@ class CoreExilePearl implements ExilePearl {
 
 		return new EqualsBuilder()
 				.append(playerId, other.playerId)
-				.append(killedByName, other.killedByName)
+				.append(killedBy, other.killedBy)
 				.append(getLocation(), other.getLocation())
 				.append(health, other.health)
 				.append(pearledOn, other.pearledOn)

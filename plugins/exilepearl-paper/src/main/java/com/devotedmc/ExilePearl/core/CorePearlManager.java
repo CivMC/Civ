@@ -78,19 +78,19 @@ class CorePearlManager implements PearlManager {
 	
 	
 	@Override
-	public ExilePearl exilePlayer(UUID exiledId, String killedByName) {
+	public ExilePearl exilePlayer(final UUID exiledId, final UUID killedById) {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
-		Guard.ArgumentNotNull(killedByName, "killedByName");
+		Guard.ArgumentNotNull(killedById, "killedById");
 		
 		final PearlPlayer pPlayer = pearlApi.getPearlPlayer(exiledId);
-		final PearlPlayer pKiller = pearlApi.getPearlPlayer(killedByName);
+		final PearlPlayer pKilledBy = pearlApi.getPearlPlayer(killedById);
 		
-		if (isPlayerExiled(exiledId) && pKiller != null || pKiller.getPlayer() == null) {
-			pKiller.msg(Lang.pearlAlreadyPearled, pPlayer.getName());
+		if (pPlayer.isExiled()) {
+			pKilledBy.msg(Lang.pearlAlreadyPearled, pPlayer.getName());
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, pKiller.getPlayer(), createUniquePearlId());
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, pKilledBy.getPlayer(), createUniquePearlId());
 
 		PlayerPearledEvent e = new PlayerPearledEvent(pearl);
 		Bukkit.getPluginManager().callEvent(e);
@@ -111,7 +111,7 @@ class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNull(exiled, "exiled");
 		Guard.ArgumentNotNull(killer, "killer");
 		
-		return exilePlayer(exiled.getUniqueId(), pearlApi.getPearlPlayer(killer).getName());
+		return exilePlayer(exiled.getUniqueId(), killer.getUniqueId());
 	}
 	
 	
@@ -204,12 +204,18 @@ class CorePearlManager implements PearlManager {
 		}
 
 		// If no pearl record is found, then we need to migrate that pearl to the new plugin
+		// The prison pearl only stores the name of the killer, so pick a random ID if the killer
+		// ID can't be found. Shouldn't really happen but just in case.
 		String killerName = pearlApi.getLoreGenerator().getKillerNameFromLegacyPearl(is);
-		if (killerName == null) {
-			killerName = "Unknown";
+		UUID killerId = UUID.randomUUID();
+		if (killerName != null) {
+			PearlPlayer killer = pearlApi.getPearlPlayer(killerName);
+			if (killer != null) {
+				killerId = killer.getUniqueId();
+			}
 		}
 		
-		pearl = exilePlayer(legacyId, killerName);
+		pearl = exilePlayer(legacyId, killerId);
 		if (pearl == null) {
 			pearlApi.log("Failed to convert Prison Pearl for player %s", legacyId.toString());
 		} else {

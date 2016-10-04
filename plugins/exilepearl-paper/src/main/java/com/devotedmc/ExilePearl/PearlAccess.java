@@ -11,10 +11,10 @@ public interface PearlAccess {
 	/**
 	 * Binds a player to an exile pearl
 	 * @param exiledId The UUID of the player to exile
-	 * @param killedBy The killing player name
+	 * @param killedBy The killing player ID
 	 * @return The new ExilePearl if the operation succeeds, otherwise null
 	 */
-	ExilePearl exilePlayer(UUID exiledId, String killedBy);
+	ExilePearl exilePlayer(UUID exiledId, UUID killedBy);
 	
 	/**
 	 * Binds a player to an exile pearl

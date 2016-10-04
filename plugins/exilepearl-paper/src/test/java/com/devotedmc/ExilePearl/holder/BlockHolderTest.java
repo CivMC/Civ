@@ -96,7 +96,7 @@ public class BlockHolderTest {
 
 	@Test
 	public void testValidate() {
-		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), "Killer", 1, loc);
+		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), 1, loc);
 		
 		assertEquals(holder.validate(pearl), HolderVerifyResult.BLOCK_STATE_NULL);
 		

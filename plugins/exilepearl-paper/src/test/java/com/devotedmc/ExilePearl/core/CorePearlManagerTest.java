@@ -152,11 +152,11 @@ public class CorePearlManagerTest {
 
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { manager.exilePlayer(null, killer.getName()); } catch (Throwable ex) { e = ex; }
+		try { manager.exilePlayer(null, killer); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 
 		e = null;
-		try { manager.exilePlayer(player.getUniqueId(), null); } catch (Throwable ex) { e = ex; }
+		try { manager.exilePlayer(player, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		// This will cancel the new pearl event
@@ -317,6 +317,10 @@ public class CorePearlManagerTest {
 		// Now try to parse out an un-pearled player
 		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(legacyId);
 		when(loreGenerator.getKillerNameFromLegacyPearl(is)).thenReturn(legacyName);
+		
+		PearlPlayer legacyPlayer = mock(PearlPlayer.class);
+		when(legacyPlayer.getUniqueId()).thenReturn(legacyId);
+		when(pearlApi.getPearlPlayer(legacyId)).thenReturn(legacyPlayer);
 		
 		legacyPearl = manager.getPearlFromItemStack(is);
 		assertNotNull(legacyPearl);

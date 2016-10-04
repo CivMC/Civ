@@ -112,7 +112,7 @@ public class CoreExilePearlTest {
 		
 		holder = new PlayerHolder(killer);
 		
-		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getName(), 1, holder);
+		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), 1, holder);
 		
 	    PowerMockito.mockStatic(Bukkit.class);
 	    pluginManager = mock(PluginManager.class);
@@ -123,15 +123,15 @@ public class CoreExilePearlTest {
 	public void testCoreExilePearl() {
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getName(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(null, storage, player.getUniqueId(), killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getName(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, null, player.getUniqueId(), killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, null, killer.getName(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, null, killer.getUniqueId(), 1, new PlayerHolder(killer)); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
@@ -139,7 +139,7 @@ public class CoreExilePearlTest {
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getName(), 1, null); } catch (Throwable ex) { e = ex; }
+		try { new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), 1, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 	}
 
@@ -286,6 +286,11 @@ public class CoreExilePearlTest {
 	@Test
 	public void testGetItemName() {
 		assertEquals(pearl.getItemName(), "Exile Pearl");
+	}
+
+	@Test
+	public void testGetKillerUniqueId() {
+		assertEquals(pearl.getKillerUniqueId(), killerId);
 	}
 
 	@Test
