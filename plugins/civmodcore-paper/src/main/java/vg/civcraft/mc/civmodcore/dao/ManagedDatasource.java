@@ -182,6 +182,8 @@ public class ManagedDatasource {
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to prepare migrations table or register this plugin to it.", e);
+			logger.log(Level.SEVERE, "Assuming you provided proper database credentials this is most likely happening, " + 
+					   "because your mysql install is outdated. We recommend using MariaDB or at least the latest mysql version");
 		}
 	}
 	
