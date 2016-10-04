@@ -28,6 +28,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -77,7 +78,7 @@ public class PlayerListener implements Listener {
 
 		Inventory inv = event.getPlayer().getInventory();
 		ItemStack item = inv.getItem(event.getNewSlot());
-		ItemStack newitem = validatePearl(event.getPlayer(), item);
+		ItemStack newitem = validatePearl(item);
 		if (newitem != null) {
 			inv.setItem(event.getNewSlot(), newitem);
 		}
@@ -85,12 +86,27 @@ public class PlayerListener implements Listener {
 
 
 	/**
-	 * Announces a pearl change
-	 * @param player 
-	 * @param item
-	 * @return
+	 * Updates all pearls in an inventory when opened
+	 * @param e The event args
 	 */
-	private ItemStack validatePearl(Player player, ItemStack item) {
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onInventoryOpen(InventoryOpenEvent e) {
+		Inventory inv = e.getInventory();
+		for (Entry<Integer, ? extends ItemStack> entry : inv.all(Material.ENDER_PEARL).entrySet()) {
+			ItemStack newitem = validatePearl(entry.getValue());
+			if (newitem != null) {
+				inv.setItem(entry.getKey(), newitem);
+			}
+		}
+	}
+
+
+	/**
+	 * Validates an ender pearl item
+	 * @param item The item to check
+	 * @return the updated item
+	 */
+	private ItemStack validatePearl(ItemStack item) {
 		if (item == null) {
 			return null;
 		}
@@ -309,7 +325,7 @@ public class PlayerListener implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 
 		// Announce an prison pearl if it is clicked
-		ItemStack newitem = validatePearl((Player) event.getWhoClicked(), event.getCurrentItem());
+		ItemStack newitem = validatePearl(event.getCurrentItem());
 		if (newitem != null) {
 			event.setCurrentItem(newitem);
 		}
@@ -639,5 +655,5 @@ public class PlayerListener implements Listener {
 			inv.clear(i);
 			world.dropItemNaturally(loc, item);
 		}
-	}	
+	}
 }

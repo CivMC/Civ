@@ -113,6 +113,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		super.onDisable();
 		
 		pearlDecayWorker.stop();
+		pearlBordertask.stop();
+		suicideHandler.stop();
 		storage.disconnect();
 	}
 	
