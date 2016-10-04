@@ -23,7 +23,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	private static String UidStringFormatRegex = "<a>UUID: <n>(.+)";
 	
 	// These need to match!
-	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%04X";
+	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";
 	private static String PlayerNameStringFormatRegex = "<a>Player: <n>.+ <gray>#(.+)";
 
 	/**
@@ -33,8 +33,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	public List<String> generateLore(ExilePearl pearl) {
 		List<String> lore = new ArrayList<String>();
 		lore.add(parse("<l>%s", pearl.getItemName()));
-		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), pearl.getPearlId()));
-		lore.add(parse(UidStringFormat, pearl.getPlayerId().toString()));
+		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
 		lore.add(parse("<a>Health: <n>%s%%", pearl.getHealthPercent().toString()));
 		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
@@ -111,7 +110,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 		Matcher match = pearlIdPattern.matcher(idLore);
 		if (match.find()) {
 			String str = match.group(1);
-			int id = Integer.parseInt(str, 16);
+			int id = Integer.parseInt(str, 36);
 			return id;
 		}
 

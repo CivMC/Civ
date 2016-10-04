@@ -363,10 +363,9 @@ class CoreExilePearl implements ExilePearl {
 	public boolean validateItemStack(ItemStack is) {
 		Guard.ArgumentNotNull(is, "is");
 
-		UUID playerId = pearlApi.getLoreGenerator().getPlayerIdFromItemStack(is);
 		int pearlId = pearlApi.getLoreGenerator().getPearlIdFromItemStack(is);
 		
-		if (playerId != null && playerId.equals(this.playerId) && pearlId == this.pearlId) {
+		if (pearlId == this.pearlId) {
 
 			// re-create the item stack to update the values
 			ItemMeta im = is.getItemMeta();

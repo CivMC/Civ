@@ -95,10 +95,13 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && pearlApi.getLoreGenerator().getPlayerIdFromItemStack(item) != null) {
-			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
-			if (pearl == null || pearl.getFreedOffline()) {
-				return new ItemStack(Material.ENDER_PEARL, 1);
+		if (item.getType() == Material.ENDER_PEARL) {
+			ExilePearl pearl = null;
+			if(item.getItemMeta() != null && item.getItemMeta().getLore() != null && item.getItemMeta().getLore().get(0).contains("Exile Pearl")) {
+				 pearl = pearlApi.getPearlFromItemStack(item);
+				if (pearl == null || pearl.getFreedOffline()) {
+					return new ItemStack(Material.ENDER_PEARL, 1);
+				}
 			}
 		}
 
@@ -315,7 +318,6 @@ public class PlayerListener implements Listener {
 		}
 
 		InventoryAction a = event.getAction();
-		pearlApi.log("Inv action: %s", a.toString());
 		if(a == InventoryAction.COLLECT_TO_CURSOR
 				|| a == InventoryAction.PICKUP_ALL 
 				|| a == InventoryAction.PICKUP_HALF
@@ -399,7 +401,7 @@ public class PlayerListener implements Listener {
 				|| event.getAction() == InventoryAction.DROP_ONE_SLOT) {
 			// Handled by onItemSpawn
 		}
-		else {
+		else if (a != InventoryAction.NOTHING) {
 			if(pearlApi.getPearlFromItemStack(event.getCurrentItem()) != null || pearlApi.getPearlFromItemStack(event.getCursor()) != null) {
 				((Player) event.getWhoClicked()).sendMessage(ChatColor.RED + "You can't do that with an exile pearl.");
 
@@ -448,7 +450,7 @@ public class PlayerListener implements Listener {
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
 				// Make sure we're holding a blank pearl
-				if (entry.getValue().getItemMeta() == null) {
+				if (pearlApi.getPearlFromItemStack(entry.getValue()) == null) {
 					firstpearl = Math.min(entry.getKey(), firstpearl);
 				}
 			}

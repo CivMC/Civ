@@ -275,11 +275,11 @@ public class CorePearlManagerTest {
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 		
 		// Test fails when lore generator fails
-		when(loreGenerator.getPlayerIdFromItemStack(is)).thenReturn(null);
+		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(0);
 		assertNull(manager.getPearlFromItemStack(is));
 
 		// Test passes when lore generator succeeds
-		when(loreGenerator.getPlayerIdFromItemStack(is)).thenReturn(pearl.getPlayerId());
+		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(pearl.getPearlId());
 		assertEquals(manager.getPearlFromItemStack(is), pearl);
 		
 		// Test fails when the pearl is freed

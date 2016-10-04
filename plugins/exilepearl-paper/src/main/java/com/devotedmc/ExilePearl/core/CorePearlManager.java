@@ -182,9 +182,9 @@ class CorePearlManager implements PearlManager {
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
 		
-		UUID id = pearlApi.getLoreGenerator().getPlayerIdFromItemStack(is);
-		if (id != null) {
-			return pearls.get(id);
+		int pearlId = pearlApi.getLoreGenerator().getPearlIdFromItemStack(is);
+		if (pearlId != 0) {
+			return getPearlById(pearlId);
 		}
 		
 		return null;
@@ -239,15 +239,22 @@ class CorePearlManager implements PearlManager {
 		int pearlId = 0;
 		
 		while(pearlId == 0) {
-			pearlId = rand.nextInt(Short.MAX_VALUE);
-			for(ExilePearl p : pearls.values()) {
-				if (p.getPearlId() == pearlId) {
-					pearlId = 0;
-					continue;
-				}
+			pearlId = rand.nextInt(Integer.MAX_VALUE >> 1);
+			if (getPearlById(pearlId) != null) {
+				pearlId = 0;
+				continue;
 			}
 		}
 		
 		return pearlId;
+	}
+	
+	private ExilePearl getPearlById(int pearlId) {
+		for(ExilePearl p : pearls.values()) {
+			if (p.getPearlId() == pearlId) {
+				return p;
+			}
+		}
+		return null;
 	}
 }
