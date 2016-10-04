@@ -7,7 +7,9 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -19,12 +21,15 @@ import com.devotedmc.ExilePearl.util.TextUtil;
 class CoreLoreGenerator implements PearlLoreGenerator {
 	
 	// These need to match!
-	private static String UidStringFormat = "<a>UUID: <n>%s";
+	//private static String UidStringFormat = "<a>UUID: <n>%s";
 	private static String UidStringFormatRegex = "<a>UUID: <n>(.+)";
 	
 	// These need to match!
 	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";
 	private static String PlayerNameStringFormatRegex = "<a>Player: <n>.+ <gray>#(.+)";
+	
+	// For getting the legacy killer name
+	private static String LegacyKillerNameStringFormatRegex = ChatColor.RESET + "Killed by " + ChatColor.GOLD + "(.+)";
 
 	/**
 	 * Generates the lore for the pearl
@@ -47,9 +52,10 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 		return lore;
 	}
 
-	// For parsing the UUID out of the pearl lore
+	// For parsing data out of the pearl lore
 	private static Pattern playerIdPattern = Pattern.compile(parse(UidStringFormatRegex));
 	private static Pattern pearlIdPattern = Pattern.compile(parse(PlayerNameStringFormatRegex));
+	private static Pattern killerNamePattern = Pattern.compile(LegacyKillerNameStringFormatRegex);
 
 	/**
 	 * Gets the UUID from a prison pearl
@@ -57,20 +63,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	 * @return The player UUID, or null if it can't parse
 	 */
 	public UUID getPlayerIdFromItemStack(ItemStack is) {
-		if (is == null) {
-			return null;
-		}
-
-		if (!is.getType().equals(Material.ENDER_PEARL)) {
-			return null;
-		}
-
-		ItemMeta im = is.getItemMeta();
-		if (im == null) {
-			return null;
-		}
-
-		List<String> lore = im.getLore();
+		List<String> lore = getValidLore(is);
 		if (lore == null) {
 			return null;
 		}
@@ -88,20 +81,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 
 	@Override
 	public int getPearlIdFromItemStack(ItemStack is) {
-		if (is == null) {
-			return 0;
-		}
-
-		if (!is.getType().equals(Material.ENDER_PEARL)) {
-			return 0;
-		}
-
-		ItemMeta im = is.getItemMeta();
-		if (im == null) {
-			return 0;
-		}
-
-		List<String> lore = im.getLore();
+		List<String> lore = getValidLore(is);
 		if (lore == null) {
 			return 0;
 		}
@@ -115,6 +95,59 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 		}
 
 		return 0;
+	}
+
+
+	/**
+	 * Parses a player ID from a legacy Prison Pearl
+	 * The UUID should be on the 2nd line without any formatting
+	 */
+	@Override
+	public UUID getPlayerIdFromLegacyPearl(ItemStack is) {
+		List<String> lore = getValidLore(is);
+		if (lore == null) {
+			return null;
+		}
+
+		return UUID.fromString(lore.get(1));
+	}
+
+
+	@Override
+	public String getKillerNameFromLegacyPearl(ItemStack is) {
+		List<String> lore = getValidLore(is);
+		if (lore == null) {
+			return null;
+		}
+
+		Matcher match = killerNamePattern.matcher(lore.get(2));
+		if (match.find()) {
+			return match.group(1);
+		}
+
+		return null;
+	}
+	
+	
+	private List<String> getValidLore(ItemStack is) {
+		if (is == null) {
+			return null;
+		}
+
+		if (!is.getType().equals(Material.ENDER_PEARL)) {
+			return null;
+		}
+
+		ItemMeta im = is.getItemMeta();
+		if (im == null || !im.hasEnchants() || !im.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
+			return null;
+		}
+		
+		List<String> lore = im.getLore();
+		if (lore == null || lore.size() < 5) {
+			return null;
+		}
+		return lore;
 	}
 
 

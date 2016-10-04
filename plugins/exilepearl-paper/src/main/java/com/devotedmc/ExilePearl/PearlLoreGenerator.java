@@ -26,4 +26,16 @@ public interface PearlLoreGenerator {
 	 * @return The pearl ID, or 0 if can't parse
 	 */
 	int getPearlIdFromItemStack(ItemStack is);
+	
+	/**
+	 * Gets a player ID from a legacy prison pearl
+	 * @return The player ID if it exists
+	 */
+	UUID getPlayerIdFromLegacyPearl(ItemStack is);
+	
+	/**
+	 * Gets the killer name from a legacy prison pearl
+	 * @return The killer name if it exists
+	 */
+	String getKillerNameFromLegacyPearl(ItemStack is);
 }

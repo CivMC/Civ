@@ -69,4 +69,14 @@ public class MockLoreGenerator implements PearlLoreGenerator {
 		return new Integer(lore.get(3));
 	}
 
+	@Override
+	public UUID getPlayerIdFromLegacyPearl(ItemStack is) {
+		return null;
+	}
+
+	@Override
+	public String getKillerNameFromLegacyPearl(ItemStack is) {
+		return null;
+	}
+
 }

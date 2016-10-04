@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.event;
 
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -11,7 +10,6 @@ import com.devotedmc.ExilePearl.util.Guard;
 public class PlayerPearledEvent extends Event implements Cancellable {
 	
 	private final ExilePearl pearl;
-	private final Player imprisoner;
 	
 	private boolean cancelled;
 	
@@ -24,12 +22,10 @@ public class PlayerPearledEvent extends Event implements Cancellable {
 	 * @param pearl The pearl instance
 	 * @param imprisoner The imprisoner player
 	 */
-	public PlayerPearledEvent(final ExilePearl pearl, final Player imprisoner) {
+	public PlayerPearledEvent(final ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		Guard.ArgumentNotNull(imprisoner, "imprisoner");
 		
 		this.pearl = pearl;
-		this.imprisoner = imprisoner;
 	}
 	
 	/**
@@ -38,14 +34,6 @@ public class PlayerPearledEvent extends Event implements Cancellable {
 	 */
 	public ExilePearl getPearl() {
 		return pearl;
-	}
-
-	/**
-	 * Gets the imprisoner if one exists, otherwise null
-	 * @return The imprisoner
-	 */
-	public Player getKilledBy() {
-		return imprisoner;
 	}
 	
 	/**

@@ -107,12 +107,6 @@ public interface ExilePearl {
 	Location getLocation();
 	
 	/**
-	 * Gets the ID of the killing player
-	 * @return The ID of the killing player
-	 */
-	UUID getKillerUniqueId();
-	
-	/**
 	 * Gets the name of the killing player
 	 * @return The name of the killing player
 	 */

@@ -38,14 +38,14 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, UUID killedBy, int pearlId, Location location) {
+	public ExilePearl createExilePearl(UUID uid, String killedByName, int pearlId, Location location) {
 		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(killedBy, "killedBy");
+		Guard.ArgumentNotNull(killedByName, "killedByName");
 		Guard.ArgumentNotNull(location, "location");
 		
 		PearlHolder holder = new BlockHolder(location.getBlock());
 
-		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy, pearlId, holder);
+		return new CoreExilePearl(plugin, plugin.getStorage(), uid, killedByName, pearlId, holder);
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class CorePearlFactory implements PearlFactory {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
-		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
+		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorage(), uid, plugin.getPearlPlayer(killedBy).getName(), pearlId, new PlayerHolder(killedBy));
 		pearl.enableStorage();
 		return pearl;
 	}

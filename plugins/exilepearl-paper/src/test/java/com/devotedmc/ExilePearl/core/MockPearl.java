@@ -26,17 +26,17 @@ public class MockPearl implements ExilePearl {
 	
 	private PlayerProvider nameProvider;
 	private UUID playerId;
-	private UUID killedBy;
+	private String killedByName;
 	private int pearlId;
 	private Location loc;
 	private Date pearledOn;
 	private int health;
 	private boolean freedOffline;
 	
-	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final UUID killedBy, int pearlId, Location loc) {
+	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final String killedByName, int pearlId, Location loc) {
 		this.nameProvider = nameProvider;
 		this.playerId = playerId;
-		this.killedBy = killedBy;
+		this.killedByName = killedByName;
 		this.pearlId = pearlId;
 		this.loc = loc;
 		this.health = 10;
@@ -119,13 +119,8 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public UUID getKillerUniqueId() {
-		return killedBy;
-	}
-
-	@Override
 	public String getKillerName() {
-		return null;
+		return killedByName;
 	}
 
 	@Override
@@ -192,7 +187,7 @@ public class MockPearl implements ExilePearl {
     public int hashCode() {
         return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
             .append(playerId)
-            .append(killedBy)
+            .append(killedByName)
             .append(getLocation())
             .append(health)
             .append(pearledOn)
@@ -213,7 +208,7 @@ public class MockPearl implements ExilePearl {
 
 		return new EqualsBuilder()
 				.append(playerId, other.playerId)
-				.append(killedBy, other.killedBy)
+				.append(killedByName, other.killedByName)
 				.append(getLocation(), other.getLocation())
 				.append(health, other.health)
 				.append(pearledOn, other.pearledOn)

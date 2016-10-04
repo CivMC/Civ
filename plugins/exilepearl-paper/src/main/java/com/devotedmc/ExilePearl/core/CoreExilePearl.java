@@ -11,8 +11,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
@@ -47,8 +49,8 @@ class CoreExilePearl implements ExilePearl {
 	// The ID of the exiled player
 	private final UUID playerId;
 	
-	// The ID of the player who killed the exiled player
-	private final UUID killedBy;
+	// The name of the player who killed the exiled player
+	private final String killedByName;
 	
 	// The unique player ID
 	private final int pearlId;
@@ -67,18 +69,18 @@ class CoreExilePearl implements ExilePearl {
 	 * @param holder The holder instance
 	 */
 	public CoreExilePearl(final ExilePearlApi pearlApi, final PearlUpdateStorage storage, 
-			final UUID playerId, final UUID killedBy, int pearlId, final PearlHolder holder) {
+			final UUID playerId, final String killedByName, int pearlId, final PearlHolder holder) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(playerId, "playerId");
-		Guard.ArgumentNotNull(killedBy, "killedBy");
+		Guard.ArgumentNotNullOrEmpty(killedByName, "killedByName");
 		Guard.ArgumentNotNull(holder, "holder");
 		
 		this.pearlApi = pearlApi;
 		this.storage = storage;
 		this.playerId = playerId;
 		this.pearlId = pearlId;
-		this.killedBy = killedBy;
+		this.killedByName = killedByName;
 		this.pearledOn = new Date();
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holder = holder;
@@ -290,14 +292,8 @@ class CoreExilePearl implements ExilePearl {
 
 
 	@Override
-	public UUID getKillerUniqueId() {
-		return killedBy;
-	}
-
-
-	@Override
 	public String getKillerName() {
-		return pearlApi.getPearlPlayer(killedBy).getName();
+		return killedByName;
 	}
 
 
@@ -350,6 +346,8 @@ class CoreExilePearl implements ExilePearl {
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(this.getPlayerName());
 		im.setLore(lore);
+		im.addEnchant(Enchantment.DURABILITY, 1, true);
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		is.setItemMeta(im);
 		return is;
 	}
@@ -454,7 +452,7 @@ class CoreExilePearl implements ExilePearl {
     public int hashCode() {
         return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
             .append(playerId)
-            .append(killedBy)
+            .append(killedByName)
             .append(getLocation())
             .append(health)
             .append(pearledOn)
@@ -475,7 +473,7 @@ class CoreExilePearl implements ExilePearl {
 
 		return new EqualsBuilder()
 				.append(playerId, other.playerId)
-				.append(killedBy, other.killedBy)
+				.append(killedByName, other.killedByName)
 				.append(getLocation(), other.getLocation())
 				.append(health, other.health)
 				.append(pearledOn, other.pearledOn)

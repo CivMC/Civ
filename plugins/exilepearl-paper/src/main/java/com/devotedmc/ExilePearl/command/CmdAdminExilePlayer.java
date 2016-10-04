@@ -88,7 +88,7 @@ public class CmdAdminExilePlayer extends PearlCommand {
 			}
 		}
 		
-		pearl = pearlApi.exilePlayer(player.getPlayer(), killedBy.getPlayer());
+		pearl = pearlApi.exilePlayer(player.getUniqueId(), killedBy.getName());
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s but the operation failed.", name);
 			return;

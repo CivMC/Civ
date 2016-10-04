@@ -80,7 +80,7 @@ public class MySqlStorage implements PluginStorage {
 		// Create pearl table
 		db.execute("create table if not exists exilepearls( " +
 				"uid varchar(255) not null," +
-				"killer_uid varchar(255) not null," +
+				"killer_name varchar(255) not null," +
 				"pearl_id int not null," +
 				"world varchar(255) not null," +
 				"x int not null," +
@@ -115,7 +115,7 @@ public class MySqlStorage implements PluginStorage {
 			while (resultSet.next()) {
 				try {
 					UUID playerId = UUID.fromString(resultSet.getString("uid"));
-					UUID killerId = UUID.fromString(resultSet.getString("killer_uid"));
+					String killerName = resultSet.getString("killer_name");
 					int pearlId = resultSet.getInt("pearl_id");
 					World world = Bukkit.getWorld(resultSet.getString("world"));
 					int x = resultSet.getInt("x");
@@ -131,7 +131,7 @@ public class MySqlStorage implements PluginStorage {
 					}
 					Location loc = new Location(world, x, y, z);
 
-					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
+					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerName, pearlId, loc);
 					pearl.setHealth(health);
 					pearl.setPearledOn(pearledOn);
 					pearl.setFreedOffline(freedOffline);
@@ -159,7 +159,7 @@ public class MySqlStorage implements PluginStorage {
 			
 			PreparedStatement ps = db.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			ps.setString(1, pearl.getPlayerId().toString());
-			ps.setString(2, pearl.getKillerUniqueId().toString());
+			ps.setString(2, pearl.getKillerName());
 			ps.setInt(3, pearl.getPearlId());
 			ps.setString(4, l.getWorld().getName());
 			ps.setInt(5, l.getBlockX());

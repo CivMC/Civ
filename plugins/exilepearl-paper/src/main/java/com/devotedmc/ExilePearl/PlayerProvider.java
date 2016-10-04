@@ -18,6 +18,13 @@ public interface PlayerProvider {
 	Player getPlayer(UUID uid);
 	
 	/**
+	 * Gets a bukkit player instance
+	 * @param name The name of the player
+	 * @return The player instance if it exists
+	 */
+	Player getPlayer(String name);
+	
+	/**
 	 * Gets a player name from a UUID
 	 * @param uuid The given player UUID
 	 * @return The matching player name

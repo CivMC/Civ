@@ -221,8 +221,13 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public ExilePearl exilePlayer(Player exiled, Player killedBy) {
-		return pearlManager.exilePlayer(exiled, killedBy);
+	public ExilePearl exilePlayer(UUID exiledId, String killedByName) {
+		return pearlManager.exilePlayer(exiledId, killedByName);
+	}
+	
+	@Override
+	public ExilePearl exilePlayer(Player exiled, Player killer) {
+		return pearlManager.exilePlayer(exiled, killer);
 	}
 
 	@Override
@@ -284,6 +289,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	@Override
 	public Player getPlayer(UUID uid) {
 		return Bukkit.getPlayer(uid);
+	}
+
+	@Override
+	public Player getPlayer(String name) {
+		return Bukkit.getPlayer(name);
 	}
 
 	@Override

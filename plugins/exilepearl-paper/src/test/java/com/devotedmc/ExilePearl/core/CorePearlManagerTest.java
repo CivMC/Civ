@@ -80,8 +80,10 @@ public class CorePearlManagerTest {
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlPlayer(playerName)).thenReturn(pPlayer);
 		when(pearlApi.getPearlPlayer(playerId)).thenReturn(pPlayer);
+		when(pearlApi.getPearlPlayer(player)).thenReturn(pPlayer);
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
-		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pPlayer);
+		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pKiller);
+		when(pearlApi.getPearlPlayer(killer)).thenReturn(pKiller);
 		when(pearlApi.getLoreGenerator()).thenReturn(new MockLoreGenerator());
 		
 		PlayerProvider nameProvider = mock(PlayerProvider.class);
@@ -150,11 +152,11 @@ public class CorePearlManagerTest {
 
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { manager.exilePlayer(null, killer); } catch (Throwable ex) { e = ex; }
+		try { manager.exilePlayer(null, killer.getName()); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 
 		e = null;
-		try { manager.exilePlayer(player, null); } catch (Throwable ex) { e = ex; }
+		try { manager.exilePlayer(player.getUniqueId(), null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		// This will cancel the new pearl event
@@ -286,6 +288,43 @@ public class CorePearlManagerTest {
 		manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER);
 		assertNull(manager.getPearlFromItemStack(is));
 	}
+	
+	/**
+	 * Tests converting a legacy prison pearl to an exile pearl
+	 */
+	@Test
+	public void testLegacyGetPearlFromItemStack() {
+		UUID legacyId = UUID.randomUUID();
+		String legacyName = "Killer";
+		
+		ItemStack is = mock(ItemStack.class);
+		
+		// Create mock lore generator
+		PearlLoreGenerator loreGenerator = mock(PearlLoreGenerator.class);
+		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
+
+		manager.exilePlayer(player, killer);
+
+		// Test if legacy pearl has same ID as an already pearled player
+		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(playerId);
+		when(loreGenerator.getKillerNameFromLegacyPearl(is)).thenReturn(killerName);
+		
+		ExilePearl legacyPearl = manager.getPearlFromItemStack(is);
+		assertNotNull(legacyPearl);
+		assertEquals(playerId, legacyPearl.getPlayerId());
+		assertEquals(legacyName, legacyPearl.getKillerName());
+		
+		// Now try to parse out an un-pearled player
+		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(legacyId);
+		when(loreGenerator.getKillerNameFromLegacyPearl(is)).thenReturn(legacyName);
+		
+		legacyPearl = manager.getPearlFromItemStack(is);
+		assertNotNull(legacyPearl);
+		assertEquals(legacyId, legacyPearl.getPlayerId());
+		assertEquals(legacyName, legacyPearl.getKillerName());
+		
+	}
+	
 
 	@Test
 	public void testDecayPearls() {

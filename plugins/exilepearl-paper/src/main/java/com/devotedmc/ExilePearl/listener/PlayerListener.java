@@ -95,13 +95,10 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL) {
-			ExilePearl pearl = null;
-			if(item.getItemMeta() != null && item.getItemMeta().getLore() != null && item.getItemMeta().getLore().get(0).contains("Exile Pearl")) {
-				 pearl = pearlApi.getPearlFromItemStack(item);
-				if (pearl == null || pearl.getFreedOffline()) {
-					return new ItemStack(Material.ENDER_PEARL, 1);
-				}
+		if (item.getType() == Material.ENDER_PEARL && item.getDurability() != 0) {
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
+			if (pearl == null || pearl.getFreedOffline()) {
+				return new ItemStack(Material.ENDER_PEARL, 1);
 			}
 		}
 
@@ -445,6 +442,7 @@ public class PlayerListener implements Listener {
 			
 			// Need to get by name b/c of combat tag entity
 			PearlPlayer imprisoned = pearlApi.getPearlPlayer(e.getEntity().getName());
+			PearlPlayer pKiller = pearlApi.getPearlPlayer(killer);
 
 			int firstpearl = Integer.MAX_VALUE;
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
@@ -459,7 +457,7 @@ public class PlayerListener implements Listener {
 				return;
 			}
 			
-			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getPlayer(), killer);
+			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getUniqueId(), pKiller.getName());
 			if (pearl == null) {
 				return;
 			}
@@ -576,7 +574,7 @@ public class PlayerListener implements Listener {
 	public void onPlayerPearled(PlayerPearledEvent e) {
 
 		PearlPlayer imprisoned = e.getPearl().getPlayer();
-		PearlPlayer imprisoner = pearlApi.getPearlPlayer(e.getKilledBy().getUniqueId());
+		PearlPlayer imprisoner = pearlApi.getPearlPlayer(e.getPearl().getKillerName());
 		
 		// Log the capturing ExilePearl event.
 		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));

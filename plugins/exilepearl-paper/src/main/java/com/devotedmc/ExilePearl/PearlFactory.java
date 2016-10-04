@@ -16,12 +16,12 @@ public interface PearlFactory {
 	/**
 	 * Creates an exile pearl instance from a location
 	 * @param uid The prisoner UUID
-	 * @param killedBy The killing player UUID
+	 * @param killedBy The killing player name
 	 * @param pearlId The pearl Id
 	 * @param location The location of the pearl
 	 * @return The new exile pearl instance
 	 */
-	ExilePearl createExilePearl(UUID uid, UUID killedBy, int pearlId, Location location);
+	ExilePearl createExilePearl(UUID uid, String killedBy, int pearlId, Location location);
 	
 	/**
 	 * Creates an exile pearl instance from a player holder
