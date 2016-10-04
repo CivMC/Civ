@@ -3,6 +3,8 @@ package com.devotedmc.ExilePearl.storage;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -12,47 +14,51 @@ import java.util.UUID;
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.PlayerProvider;
+import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.core.MockPearl;
 import com.devotedmc.ExilePearl.core.MockPearlFactory;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Bukkit.class)
 public class MySqlStorageIntegrationTest {
 	
-	private PearlFactory pearlFactory;
-	private PearlLogger logger;
-	private PearlConfig config;
-	private MySqlStorage storage;	
-	private World world;
+	private static PearlFactory pearlFactory;
+	private static MockPearlLogger logger;
+	private static PearlConfig config;
+	private static MySqlStorage storage;	
+	private static World world;
+	
+	private static MySqlConnection db;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void setUp() throws Exception {
+		
+		logger = new MockPearlLogger("ExilePearl");
 		
 		world = mock(World.class);
 		when(world.getName()).thenReturn("world");
 		
-	    PowerMockito.mockStatic(Bukkit.class);
-	    when(Bukkit.getWorld("world")).thenReturn(world);
+		Server mockServer = mock(Server.class);
+		when(mockServer.getWorld("world")).thenReturn(world);
+		when(mockServer.getLogger()).thenReturn(logger.getLogger());
+		when(mockServer.getName()).thenReturn("TestBukkit");
+		when(mockServer.getVersion()).thenReturn("0.0.0");
+		when(mockServer.getBukkitVersion()).thenReturn("0.0.0");
+		
+	    Bukkit.setServer(mockServer);
 		
 	    // Mock pearl factory for generating mock pearl instances
 		pearlFactory = new MockPearlFactory(mock(PlayerProvider.class));
-		
-		logger = mock(PearlLogger.class);
 		
 		config = mock(PearlConfig.class);
 		when(config.getDbHost()).thenReturn("localhost");
@@ -61,23 +67,32 @@ public class MySqlStorageIntegrationTest {
 		when(config.getDbUsername()).thenReturn("BukkitTest");
 		when(config.getDbPassword()).thenReturn("test");
 		
+		db = new MySqlConnection(config.getDbHost(), config.getDbPort(), config.getDbName(), config.getDbUsername(), config.getDbPassword(), mock(PearlLogger.class));
+		db.connect();
+		db.execute("DELETE FROM exilepearlplugin;");
+		
+		// Add some fake PP data
+		addPrisonPearlData();
+		
 		storage = new MySqlStorage(pearlFactory, logger, config);
 		
 		assertFalse(storage.isConnected());
 		assertTrue(storage.connect());
 		assertTrue(storage.isConnected());
 		
-		// Clear the pearl table
-		storage.deleteAllPearls();
+
 	}
 	
-	@After
-	public void tearDown() throws Exception {
+	@AfterClass
+	public static void tearDownClass() throws Exception {
 		storage.disconnect();
+		db.close();
 	}
 
 	@Test
 	public void testMySqlStorage() {
+		db.execute("DELETE FROM exilepearls;");
+		
 		// Null arguments throw exceptions
 		Throwable e = null;
 		try { new MySqlStorage(null, logger, config); } catch (Throwable ex) { e = ex; }
@@ -114,10 +129,14 @@ public class MySqlStorageIntegrationTest {
 			pearlsToAdd.add(toAdd);
 		}
 		
+		logger.log("Inserting %d exile pearls to the database.", numPearlsToAdd);
+		
 		// Insert all the generated pearls to the database
 		for(ExilePearl p : pearlsToAdd) {
 			storage.pearlInsert(p);
 		}
+		
+		logger.log("Loading all pearls from the database.");
 		
 		// Perform a load operation of all pearls and verify the size is correct
 		loadedPearls = storage.loadAllPearls();
@@ -181,5 +200,47 @@ public class MySqlStorageIntegrationTest {
 		storage.pearlUpdateFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
+	}
+	
+	private static String addPearlQuery = "insert into PrisonPearls(uuid, world, server, x, y, z, uq, motd, killer, pearlTime)"
+			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+	
+	
+	private static void addPrisonPearlData() throws SQLException {
+
+		db.execute("DELETE FROM PrisonPearls;");
+		
+		db.execute("create table if not exists PrisonPearls( "
+				+ "uuid varchar(36) not null,"
+				+ "world varchar(36) not null,"
+				+ "server varchar(255) not null,"
+				+ "x int not null,"
+				+ "y int not null," 
+				+ "z int not null,"
+				+ "uq int not null,"
+				+ "motd varchar(255)," 
+				+ "killer varchar(36)," 
+				+ "pearlTime bigint,"
+				+ "primary key ids_id(uuid));");
+
+		Random rand = new Random(127);
+		logger.log("Adding 50 dummy values to PrisonPearl table to test migration");
+		
+		for (int i = 0; i < 50; i++) {
+			PreparedStatement addPearl = db.prepareStatement(addPearlQuery);
+			
+			addPearl.setString(1, UUID.randomUUID().toString());
+			addPearl.setString(2, world.getName());
+			addPearl.setString(3, "bukkit");
+			addPearl.setInt(4, rand.nextInt());
+			addPearl.setInt(5, rand.nextInt());
+			addPearl.setInt(6, rand.nextInt());
+			addPearl.setInt(7, rand.nextInt());
+			addPearl.setString(8, "motd");
+			addPearl.setString(9, UUID.randomUUID().toString());
+			addPearl.setLong(10, new Date().getTime());
+			addPearl.execute();
+		}
+		
 	}
 }

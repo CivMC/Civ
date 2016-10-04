@@ -50,7 +50,7 @@ public class MySqlConnection {
         }
         try {
             connection = DriverManager.getConnection(jdbc);
-            logger.log(Level.INFO, "Connected to MySQL database.");
+            logger.log(Level.INFO, "Connected to the MySQL database.");
             return true;
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to connect to the MySQL database.");
@@ -65,6 +65,7 @@ public class MySqlConnection {
         try {
             connection.close();
             connection = null;
+            logger.log(Level.INFO, "Disconnected from the MySQL database.");
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to close MySQL database connection");
         }
@@ -118,5 +119,9 @@ public class MySqlConnection {
         } catch (SQLException ex) {
             logger.log(Level.SEVERE, "Failed to exectue SQL query.");
         }
+    }
+    
+    public Connection getConnection() {
+    	return connection;
     }
 }
