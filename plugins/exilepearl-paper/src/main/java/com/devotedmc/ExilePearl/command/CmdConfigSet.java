@@ -39,6 +39,7 @@ public class CmdConfigSet extends PearlCommand
 		case PEARL_RADIUS:
 			result = config.setRulePearlRadius(argAsInt(1));
 			break;
+			
 		case DAMAGE_REINFORCEMENT:
 			valBool = argAsBool(1);
 			result = config.setRuleCanDamageReinforcement(valBool);
@@ -47,6 +48,11 @@ public class CmdConfigSet extends PearlCommand
 		case DAMAGE_BASTION:
 			valBool = argAsBool(1);
 			result = config.setRuleCanDamageBastion(valBool);
+			break;
+			
+		case CREATE_BASTION:
+			valBool = argAsBool(1);
+			result = config.setRuleCanCreateBastion(valBool);
 			break;
 			
 		case ENTER_BASTION:

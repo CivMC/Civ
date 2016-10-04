@@ -125,6 +125,15 @@ class CorePearlConfig implements PearlConfig {
 	public boolean setRuleCanDamageBastion(Boolean value) {
 		return plugin.GetConfig().set("rules.damage_bastion", value.toString());
 	}
+	
+	@CivConfig(name = "rules.create_bastion", def = "false", type = CivConfigType.Bool)
+	public boolean getRuleCanCreateBastion() {
+		return plugin.GetConfig().get("rules.create_bastion").getBool();
+	}
+	
+	public boolean setRuleCanCreateBastion(Boolean value) {
+		return plugin.GetConfig().set("rules.create_bastion", value.toString());
+	}
 
 	@CivConfig(name = "rules.enter_bastion", def = "false", type = CivConfigType.Bool)
 	public boolean getRuleCanEnterBastion() {
@@ -255,6 +264,9 @@ class CorePearlConfig implements PearlConfig {
 			
 		case DAMAGE_BASTION:
 			return getRuleCanDamageBastion();
+			
+		case CREATE_BASTION:
+			return getRuleCanCreateBastion();
 			
 		case ENTER_BASTION:
 			return getRuleCanEnterBastion();

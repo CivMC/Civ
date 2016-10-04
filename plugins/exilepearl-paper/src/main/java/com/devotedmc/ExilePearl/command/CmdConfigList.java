@@ -32,6 +32,7 @@ public class CmdConfigList extends PearlCommand
 
 		appendIntRule(sb, ExileRule.PEARL_RADIUS.toString(), config.getRulePearlRadius());
 		appendBooleanRule(sb, ExileRule.DAMAGE_REINFORCEMENT.toString(), config.getRuleCanDamageReinforcement());
+		appendBooleanRule(sb, ExileRule.CREATE_BASTION.toString(), config.getRuleCanCreateBastion());
 		appendBooleanRule(sb, ExileRule.DAMAGE_BASTION.toString(), config.getRuleCanDamageBastion());
 		appendBooleanRule(sb, ExileRule.ENTER_BASTION.toString(), config.getRuleCanEnterBastion());
 		appendBooleanRule(sb, ExileRule.THROW_PEARL.toString(), config.getRuleCanThrowEnderPearl());

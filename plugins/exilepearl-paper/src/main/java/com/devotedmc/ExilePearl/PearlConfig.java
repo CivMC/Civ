@@ -98,6 +98,10 @@ public interface PearlConfig {
 	boolean getRuleCanDamageBastion();
 	
 	boolean setRuleCanDamageBastion(Boolean value);
+	
+	boolean getRuleCanCreateBastion();
+	
+	boolean setRuleCanCreateBastion(Boolean value);
 
 	boolean getRuleCanEnterBastion();
 	
