@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
@@ -25,15 +26,18 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -655,5 +659,37 @@ public class PlayerListener implements Listener {
 			inv.clear(i);
 			world.dropItemNaturally(loc, item);
 		}
+	}
+    
+
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPrepareCraftPearl(PrepareItemCraftEvent e) {
+		CraftingInventory inv = e.getInventory();
+		
+		if (inv.all(Material.ENDER_PEARL).size() != 1) {
+			return;
+		}
+		
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(inv.getItem(inv.first(Material.ENDER_PEARL)));
+		if (pearl == null) {
+			return;
+		}
+		
+		// TODO
+		
+		inv.setResult(pearl.createItemStack());
+	}
+	
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onCraftPearl(CraftItemEvent e) {
+		
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getInventory().getResult());
+		if (pearl == null) {
+			return;
+		}
+		
+		pearl.setHealth(pearl.getHealth() + 1);
+		
+		e.getInventory().setResult(pearl.createItemStack());
 	}
 }
