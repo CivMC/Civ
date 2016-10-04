@@ -25,6 +25,7 @@ import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.command.CmdSuicide;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
+import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.MySqlStorage;
@@ -57,6 +58,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	private final PlayerListener playerListener = new PlayerListener(this);
 	private final ExileListener exileListener = new ExileListener(this);
 	private final CitadelListener citadelListener = new CitadelListener(this);
+	private final CivChatListener chatListener = new CivChatListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -90,6 +92,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		this.getServer().getPluginManager().registerEvents(exileListener, this);
 		if (isCitadelEnabled()) {
 			this.getServer().getPluginManager().registerEvents(citadelListener, this);
+		}
+		if (isCivChatEnabled()) {
+			this.getServer().getPluginManager().registerEvents(chatListener, this);
 		}
 		
 		// Start tasks
@@ -305,6 +310,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	
 	private boolean isCitadelEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("Citadel");
+	}
+	
+	private boolean isCivChatEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("CivChat2");
 	}
 
 	@Override
