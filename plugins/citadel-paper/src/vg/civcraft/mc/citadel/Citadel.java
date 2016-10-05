@@ -23,6 +23,7 @@ import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.reinforcementtypes.NaturalReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.NonReinforceableType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -72,8 +73,22 @@ public class Citadel extends JavaPlugin{
 		String password = CitadelConfigManager.getPassword();
 		int port = CitadelConfigManager.getPort();
 		String dbName = CitadelConfigManager.getDBName();
-		Database data = new Database(host, port, dbName, user, password, getLogger());
-		db = new CitadelReinforcementData(data);
+		int poolsize = CitadelConfigManager.getPoolSize();
+		long connectionTimeout = CitadelConfigManager.getConnectionTimeout();
+		long idleTimeout = CitadelConfigManager.getIdleTimeout();
+		long maxLifetime = CitadelConfigManager.getMaxLifetime();
+		try {
+			ManagedDatasource idb = new ManagedDatasource(this, user, password, host, port,
+					dbName, poolsize, connectionTimeout, idleTimeout, maxLifetime);
+			idb.getConnection().close();
+
+			db = new CitadelReinforcementData(idb);
+		} catch (Exception se) {
+			getLogger().log(Level.WARNING, "Could not connect to database, shutting down!");
+			Bukkit.shutdown();
+			return;
+		}
+
 	}
 	/**
 	 * Registers the listeners for Citadel.

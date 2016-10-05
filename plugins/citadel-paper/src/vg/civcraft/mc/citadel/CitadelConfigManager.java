@@ -183,6 +183,22 @@ public class CitadelConfigManager {
 		return config.getString("mysql.password", "");
 	}
 
+	public static int getPoolSize() {
+		return config.getInt("mysql.poolsize", 20);
+	}
+
+	public static long getConnectionTimeout() {
+		return config.getLong("mysql.connection_timeout", 10000l);
+	}
+
+	public static long getIdleTimeout() {
+		return config.getLong("mysql.idle_timeout", 600000l);
+	}
+
+	public static long getMaxLifetime() {
+		return config.getLong("mysql.max_lifetime", 7200000l);
+	}
+
 	public static boolean shouldLogInternal() {
 		return config.getBoolean("internal_logging", false);
 	}
