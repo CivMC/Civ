@@ -15,6 +15,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -40,8 +41,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.ShapelessRecipe;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -70,6 +74,24 @@ public class PlayerListener implements Listener {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		
 		this.pearlApi = pearlApi;
+		
+		setupRecipes();
+	}
+	
+	
+	
+	private void setupRecipes() {
+		ItemStack resultItem = new ItemStack(Material.ENDER_PEARL, 1);
+		ItemMeta im = resultItem.getItemMeta();
+		im.addEnchant(Enchantment.DURABILITY, 1, true);
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		resultItem.setItemMeta(im);
+		
+		ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+		r1.addIngredient(1, Material.ENDER_PEARL);
+		r1.addIngredient(1, Material.OBSIDIAN);
+		
+		pearlApi.getPlugin().getServer().addRecipe(r1);
 	}
 
 
@@ -115,11 +137,12 @@ public class PlayerListener implements Listener {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && item.getDurability() != 0) {
+		if (item.getType() == Material.ENDER_PEARL && item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
 			}
+			return pearl.createItemStack();
 		}
 
 		return null;
@@ -665,31 +688,60 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPrepareCraftPearl(PrepareItemCraftEvent e) {
 		CraftingInventory inv = e.getInventory();
+		ItemStack result = inv.getResult();
 		
-		if (inv.all(Material.ENDER_PEARL).size() != 1) {
+		if (result.getType() != Material.ENDER_PEARL) {
 			return;
 		}
 		
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(inv.getItem(inv.first(Material.ENDER_PEARL)));
+		if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
+			inv.setResult(new ItemStack(Material.AIR));
+			return;
+		}
+		
+		// Get the pearl item being crafted
+		ItemStack pearlItem = null;
+		HashMap<Integer, ? extends ItemStack> pearlItems = inv.all(Material.ENDER_PEARL);
+		for(Entry<Integer, ? extends ItemStack> entry : pearlItems.entrySet()) {
+			ItemStack is = entry.getValue();
+			if (is.getEnchantmentLevel(Enchantment.DURABILITY) == 1 && is.getItemMeta().getLore() != null) {
+				pearlItem = is;
+				break;
+			}
+		}
+		
+		if (pearlItem == null) {
+			inv.setResult(new ItemStack(Material.AIR));
+			return;
+		}
+		
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(pearlItem);
 		if (pearl == null) {
+			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
 		
 		// TODO
+		ItemStack resultStack = pearl.createItemStack();
+		ItemMeta im = resultStack.getItemMeta();
+		im.setLore(pearlApi.getLoreGenerator().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + 8));
+		resultStack.setItemMeta(im);
 		
-		inv.setResult(pearl.createItemStack());
+		e.getInventory().setResult(resultStack);
 	}
 	
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraftPearl(CraftItemEvent e) {
+		CraftingInventory inv = e.getInventory();
+		ItemStack result = inv.getResult();
 		
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getInventory().getResult());
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(result);
 		if (pearl == null) {
 			return;
 		}
 		
-		pearl.setHealth(pearl.getHealth() + 1);
+		pearl.setHealth(pearl.getHealth() + 8);
 		
-		e.getInventory().setResult(pearl.createItemStack());
+		inv.setResult(pearl.createItemStack());
 	}
 }

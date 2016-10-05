@@ -85,7 +85,7 @@ public class CorePearlFactory implements PearlFactory {
 
 	@Override
 	public PearlLoreGenerator createLoreGenerator() {
-		return new CoreLoreGenerator();
+		return new CoreLoreGenerator(plugin.getPearlConfig());
 	}
 
 	@Override

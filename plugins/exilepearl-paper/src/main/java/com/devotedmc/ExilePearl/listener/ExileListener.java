@@ -66,7 +66,9 @@ public class ExileListener extends RuleListener {
 		if (config.getRuleCanUseBed()) {
 			return;
 		}
-		e.getPearl().getPlayer().getPlayer().setBedSpawnLocation(null, true);
+		if (e.getPearl().getPlayer().isOnline()) {
+			e.getPearl().getPlayer().getPlayer().setBedSpawnLocation(null, true);
+		}
 	}
 
 	/**

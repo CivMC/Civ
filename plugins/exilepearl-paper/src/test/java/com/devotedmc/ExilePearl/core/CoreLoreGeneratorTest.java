@@ -18,18 +18,24 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlConfig;
 
 public class CoreLoreGeneratorTest {
 	
 	private final UUID playerId = UUID.randomUUID();
 	private final int pearlId = 1234;
 	
+	private PearlConfig config;
 	private CoreLoreGenerator dut;
 	private ExilePearl pearl;
 
 	@Before
 	public void setUp() throws Exception {
-		dut = new CoreLoreGenerator();
+		
+		config = mock(PearlConfig.class);
+		when(config.getPearlHealthMaxValue()).thenReturn(100);
+		
+		dut = new CoreLoreGenerator(config);
 		
 		pearl = mock(ExilePearl.class);
 		when(pearl.getItemName()).thenReturn("ExilePearl");

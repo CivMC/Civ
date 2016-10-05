@@ -14,8 +14,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 class CoreLoreGenerator implements PearlLoreGenerator {
@@ -30,16 +32,36 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	
 	// For getting the legacy killer name
 	private static String LegacyKillerNameStringFormatRegex = ChatColor.RESET + "Killed by " + ChatColor.GOLD + "(.+)";
+	
+	private final PearlConfig config;
+	
+	public CoreLoreGenerator(final PearlConfig config) {
+		Guard.ArgumentNotNull(config, "config");
+		
+		this.config = config;
+	}
 
 	/**
 	 * Generates the lore for the pearl
 	 * @return The pearl lore
 	 */
 	public List<String> generateLore(ExilePearl pearl) {
+		return generateLoreInternal(pearl, pearl.getHealth());
+	}
+
+	@Override
+	public List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue) {
+		return generateLoreInternal(pearl, healthValue);
+	}
+	
+	private List<String> generateLoreInternal(ExilePearl pearl, int health) {
 		List<String> lore = new ArrayList<String>();
+
+		Integer healthPercent = Math.min(100, Math.max(0, (int)Math.round(((double)health / config.getPearlHealthMaxValue()) * 100)));
+		
 		lore.add(parse("<l>%s", pearl.getItemName()));
 		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
-		lore.add(parse("<a>Health: <n>%s%%", pearl.getHealthPercent().toString()));
+		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
 		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
 		lore.add(parse(""));

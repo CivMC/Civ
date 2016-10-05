@@ -79,4 +79,10 @@ public class MockLoreGenerator implements PearlLoreGenerator {
 		return null;
 	}
 
+	@Override
+	public List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

@@ -14,6 +14,12 @@ public interface PearlLoreGenerator {
 	List<String> generateLore(ExilePearl pearl);
 	
 	/**
+	 * Generates the lore for a pearl with a modified health value
+	 * @return The pearl lore
+	 */
+	List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue);
+	
+	/**
 	 * Parses the player ID from a pearl item stack
 	 * @param is The item stack to parse
 	 * @return The player UUID, or null if it can't parse
