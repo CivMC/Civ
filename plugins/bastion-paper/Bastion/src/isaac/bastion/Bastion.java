@@ -24,6 +24,8 @@ public final class Bastion extends ACivMod {
 	
 	public void onEnable() 	{
 		plugin = this;
+		saveDefaultConfig();
+		reloadConfig();
 		BastionType.loadBastionTypes(getConfig().getConfigurationSection("bastions"));
 		setupDatabase();
 		registerNameLayerPermissions();
