@@ -15,13 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -31,20 +27,18 @@ import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
+import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Bukkit.class)
-public class CorePearlManagerTest {
+public class CorePearlManagerTest extends BukkitTestCase {
 	
 	private ExilePearlApi pearlApi;
 	private PearlFactory pearlFactory;
 	private PearlStorage storage;
 	private PearlConfig config;
 	private CorePearlManager manager;
-	private PluginManager pluginManager;
 	
 	private final String playerName = "Player";
 	private final UUID playerId = UUID.randomUUID();
@@ -54,7 +48,6 @@ public class CorePearlManagerTest {
 	private Player killer;
 	private PearlPlayer pPlayer;
 	private PearlPlayer pKiller;
-	
 	
 	@Before
 	public void setUp() throws Exception {
@@ -84,7 +77,6 @@ public class CorePearlManagerTest {
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pKiller);
 		when(pearlApi.getPearlPlayer(killer)).thenReturn(pKiller);
-		when(pearlApi.getLoreGenerator()).thenReturn(new MockLoreGenerator());
 		
 		PlayerProvider nameProvider = mock(PlayerProvider.class);
 		when(nameProvider.getName(playerId)).thenReturn(playerName);
@@ -98,10 +90,6 @@ public class CorePearlManagerTest {
 		when(pearlApi.getPearlConfig()).thenReturn(config);
 		
 		manager = new CorePearlManager(pearlApi, pearlFactory, storage);
-		
-	    PowerMockito.mockStatic(Bukkit.class);
-	    pluginManager = mock(PluginManager.class);
-	    when(Bukkit.getPluginManager()).thenReturn(pluginManager);
 	}
 
 	@Test
@@ -147,6 +135,8 @@ public class CorePearlManagerTest {
 	@Test
 	public void testExilePlayer() {
 		assertFalse(manager.isPlayerExiled(player));
+		final PluginManager pluginManager = Bukkit.getPluginManager();
+		reset(pluginManager);
 		
 		when(config.getPearlHealthStartValue()).thenReturn(55);
 
@@ -202,6 +192,8 @@ public class CorePearlManagerTest {
 		ExilePearl pearl = manager.exilePlayer(player, killer);
 		assertTrue(manager.isPlayerExiled(player));
 		assertNotNull(pearl);
+		final PluginManager pluginManager = Bukkit.getPluginManager();
+		reset(pluginManager);
 
 		// Null arguments throw exceptions
 		Throwable e = null;

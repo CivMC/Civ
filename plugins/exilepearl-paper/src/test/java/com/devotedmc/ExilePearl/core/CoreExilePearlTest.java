@@ -4,8 +4,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
@@ -16,41 +15,25 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlLoreGenerator;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.command.BaseCommand;
-import com.devotedmc.ExilePearl.command.CmdExilePearl;
-import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest(Bukkit.class)
-public class CoreExilePearlTest {
+public class CoreExilePearlTest extends BukkitTestCase {
 	
 	private CoreExilePearl pearl;
 	private PearlUpdateStorage storage;
@@ -67,7 +50,6 @@ public class CoreExilePearlTest {
 	private ExilePearlApi pearlApi;
 	private PlayerProvider nameProvider;
 	private PearlLoreGenerator loreGenerator;
-	private PluginManager pluginManager;
 	
 
 	@Before
@@ -107,16 +89,12 @@ public class CoreExilePearlTest {
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(p2);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
-		loreGenerator = new MockLoreGenerator();
+		loreGenerator = mock(PearlLoreGenerator.class);
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 		
 		holder = new PlayerHolder(killer);
 		
 		pearl = new CoreExilePearl(pearlApi, storage, player.getUniqueId(), killer.getUniqueId(), 1, holder);
-		
-	    PowerMockito.mockStatic(Bukkit.class);
-	    pluginManager = mock(PluginManager.class);
-	    when(Bukkit.getPluginManager()).thenReturn(pluginManager);
 	}
 
 	@Test
@@ -339,72 +317,20 @@ public class CoreExilePearlTest {
 		assertFalse(pearl.getFreedOffline());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testItemStack() {
-		ExilePearlPlugin plugin = mock(ExilePearlPlugin.class);
-		PearlCommand autoHelp = mock(PearlCommand.class);
-		when(autoHelp.getCommandChain()).thenReturn((List<BaseCommand<? extends JavaPlugin>>)mock(List.class));
-		when(plugin.getAutoHelp()).thenReturn(autoHelp);
-		new CmdExilePearl(plugin);
+	    
+		when(loreGenerator.generateLore(pearl)).thenReturn(new LinkedList<String>());
 		
-	    PowerMockito.mockStatic(Bukkit.class);
-	    ItemFactory itemFactory = mock(ItemFactory.class);
-	    ItemMeta im = mock(ItemMeta.class);
-	    when(itemFactory.getItemMeta(Material.ENDER_PEARL)).thenReturn(im);
-	    when(Bukkit.getItemFactory()).thenReturn(itemFactory);
-		
-		ItemStack is = spy(pearl.createItemStack());
-		assertEquals(is.getItemMeta(), im);
-		List<String> lore = loreGenerator.generateLore(pearl);
-		verify(im).setLore(lore);
-		
-		
-		// Now validate the item stack
-		when(im.getLore()).thenReturn(lore);
-		when(im.getDisplayName()).thenReturn(playerName);
-		
-		// Positive test
-		assertTrue(pearl.validateItemStack(is));
-		
-		// Duplicate object
-		ExilePearl pearl2 = mock(ExilePearl.class);
-		when(pearl2.getItemName()).thenReturn(pearl.getItemName());
-		when(pearl2.getPlayerName()).thenReturn(playerName);
-		when(pearl2.getPlayerId()).thenReturn(pearl.getPlayerId());
-		when(pearl2.getHealth()).thenReturn(pearl.getHealth());
-		final Integer pearlHealth = pearl.getHealthPercent();
-		when(pearl2.getHealthPercent()).thenReturn(pearlHealth);
-		when(pearl2.getKillerName()).thenReturn(killerName);
-		when(pearl2.getPearledOn()).thenReturn(pearl.getPearledOn());
-		when(pearl2.getPearlId()).thenReturn(pearl.getPearlId());
+		ItemStack is = pearl.createItemStack();
 
-		List<String> lore2 = loreGenerator.generateLore(pearl2);
-		assertEquals(lore, lore2);
-		when(im.getLore()).thenReturn(lore2);
+		// Positive test
+		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(pearl.getPearlId());
 		assertTrue(pearl.validateItemStack(is));
 		
-		// Now change the pearl ID and negative test
-		when(pearl2.getPearlId()).thenReturn(500);
-		lore2 = loreGenerator.generateLore(pearl2);
-		when(im.getLore()).thenReturn(lore2);
+		// Negative test
+		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(0);
 		assertFalse(pearl.validateItemStack(is));
-		
-		// Change lore back and validate true
-		when(im.getLore()).thenReturn(lore);
-		assertTrue(pearl.validateItemStack(is));
-		
-		// Negative test material
-		when(is.getType()).thenReturn(Material.STONE);
-		assertFalse(pearl.validateItemStack(is));
-		when(is.getType()).thenReturn(Material.ENDER_PEARL);
-		assertTrue(pearl.validateItemStack(is));
-		
-		// Negative test item meta
-		when(is.getItemMeta()).thenReturn(null);
-		assertFalse(pearl.validateItemStack(is));
-		when(is.getItemMeta()).thenReturn(im);
-		assertTrue(pearl.validateItemStack(is));
 		
 		// Null arg throws exception
 		Throwable e = null;
@@ -417,12 +343,13 @@ public class CoreExilePearlTest {
 		PearlHolder holder1 = mock(PearlHolder.class);
 		when(holder1.validate(any(ExilePearl.class))).thenReturn(HolderVerifyResult.IN_CHEST);
 		when(pearlApi.isPlayerExiled(playerId)).thenReturn(true);
+		reset(Bukkit.getPluginManager());
 		
 		pearl.setHolder(holder1);
 		assertTrue(pearl.verifyLocation());
 		
 		ArgumentCaptor<PearlMovedEvent> eventArg = ArgumentCaptor.forClass(PearlMovedEvent.class);
-		verify(pluginManager).callEvent(eventArg.capture());
+		verify(Bukkit.getPluginManager()).callEvent(eventArg.capture());
 		assertEquals(eventArg.getValue().getPearl(), pearl);
 		
 		pearl.setHolder(holder1);
@@ -466,49 +393,5 @@ public class CoreExilePearlTest {
 		
 		pearl.setHolder(holder6);
 		assertFalse(pearl.verifyLocation());
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testGetItemFromInventory() {
-		// Null arg throws exception
-		Throwable e = null;
-		try { pearl.getItemFromInventory(null); } catch (Throwable ex) { e = ex; }
-		assertTrue(e instanceof NullArgumentException);
-		
-		Inventory inv = mock(Inventory.class);
-		
-		ExilePearlPlugin plugin = mock(ExilePearlPlugin.class);
-		PearlCommand autoHelp = mock(PearlCommand.class);
-		when(autoHelp.getCommandChain()).thenReturn((List<BaseCommand<? extends JavaPlugin>>)mock(List.class));
-		when(plugin.getAutoHelp()).thenReturn(autoHelp);
-		new CmdExilePearl(plugin);
-		
-	    PowerMockito.mockStatic(Bukkit.class);
-	    ItemFactory itemFactory = mock(ItemFactory.class);
-	    ItemMeta im = mock(ItemMeta.class);
-	    when(itemFactory.getItemMeta(Material.ENDER_PEARL)).thenReturn(im);
-	    when(Bukkit.getItemFactory()).thenReturn(itemFactory);
-		List<String> lore = loreGenerator.generateLore(pearl);
-		when(im.getLore()).thenReturn(lore);
-		when(im.getDisplayName()).thenReturn(playerName);
-		
-		ItemStack is = spy(pearl.createItemStack());
-		final HashMap<Integer, ItemStack> itemMap = new HashMap<Integer, ItemStack>();
-		itemMap.put(0, is);
-		
-		// Negative test
-		assertEquals(pearl.getItemFromInventory(inv), null);
-		
-		when(inv.all(Material.ENDER_PEARL)).thenAnswer(new Answer<HashMap<Integer, ? extends ItemStack>>() {
-
-			@Override
-			public HashMap<Integer, ? extends ItemStack> answer(InvocationOnMock invocation) throws Throwable {
-				return itemMap;
-			}
-		});
-		
-		// Positive test
-		assertEquals(pearl.getItemFromInventory(inv), is);
 	}
 }

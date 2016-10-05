@@ -14,7 +14,6 @@ import java.util.UUID;
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.entity.Item;
 import org.junit.AfterClass;
@@ -26,7 +25,9 @@ import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.PlayerProvider;
+import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
+import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.core.MockPearl;
 import com.devotedmc.ExilePearl.core.MockPearlFactory;
 
@@ -42,20 +43,10 @@ public class MySqlStorageIntegrationTest {
 
 	@BeforeClass
 	public static void setUp() throws Exception {
+		TestBukkit.create(true);
+		logger = new MockPearlLogger(Bukkit.getServer().getLogger());
 		
-		logger = new MockPearlLogger("ExilePearl");
-		
-		world = mock(World.class);
-		when(world.getName()).thenReturn("world");
-		
-		Server mockServer = mock(Server.class);
-		when(mockServer.getWorld("world")).thenReturn(world);
-		when(mockServer.getLogger()).thenReturn(logger.getLogger());
-		when(mockServer.getName()).thenReturn("TestBukkit");
-		when(mockServer.getVersion()).thenReturn("0.0.0");
-		when(mockServer.getBukkitVersion()).thenReturn("0.0.0");
-		
-	    Bukkit.setServer(mockServer);
+		world = Bukkit.getWorld("world");
 		
 	    // Mock pearl factory for generating mock pearl instances
 		pearlFactory = new MockPearlFactory(mock(PlayerProvider.class));

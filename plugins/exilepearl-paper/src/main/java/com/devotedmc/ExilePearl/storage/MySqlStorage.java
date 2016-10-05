@@ -375,6 +375,6 @@ public class MySqlStorage implements PluginStorage {
 	}
 
 	private void logFailedPearlOperation(Exception ex, ExilePearl pearl, String action) {
-		logger.log(Level.SEVERE, "Failed to %s for the pearl for player %s.", action, pearl.getPlayerName());
+		logger.log(Level.SEVERE, "Failed to %s pearl for player %s.", action, pearl.getPlayerName());
 	}
 }

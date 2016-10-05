@@ -13,7 +13,6 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -423,24 +422,6 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	private HolderVerifyResult verifyHolder(PearlHolder holder) {
 		return holder.validate(this);
-	}
-
-
-	/**
-	 * Gets the item stack from an inventory if it exists
-	 * @param inv The inventory to search
-	 * @return The pearl item
-	 */
-	public ItemStack getItemFromInventory(Inventory inv) {
-		Guard.ArgumentNotNull(inv, "inv");
-
-		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
-			if (this.validateItemStack(item)) {
-				return item;
-			}
-		}
-
-		return null;
 	}
 
 
