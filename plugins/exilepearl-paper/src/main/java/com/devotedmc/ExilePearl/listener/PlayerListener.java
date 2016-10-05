@@ -16,6 +16,7 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -718,6 +719,21 @@ public class PlayerListener implements Listener {
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(pearlItem);
 		if (pearl == null) {
 			inv.setResult(new ItemStack(Material.AIR));
+			return;
+		}
+		
+		PearlPlayer crafter = null;
+		
+		// Prevent crafting with lore items
+		for(HumanEntity he : e.getViewers()) {
+			if(he instanceof Player) {
+				crafter = pearlApi.getPearlPlayer((Player)he);
+			}
+		}
+		
+		if (pearl.getHealth() == pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
+			inv.setResult(new ItemStack(Material.AIR));
+			crafter.msg("<i>That pearl is already at full health.");
 			return;
 		}
 		

@@ -34,11 +34,13 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 	private static String LegacyKillerNameStringFormatRegex = ChatColor.RESET + "Killed by " + ChatColor.GOLD + "(.+)";
 	
 	private final PearlConfig config;
+	private final SimpleDateFormat dateFormat;
 	
 	public CoreLoreGenerator(final PearlConfig config) {
 		Guard.ArgumentNotNull(config, "config");
 		
 		this.config = config;
+		this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	}
 
 	/**
@@ -62,7 +64,7 @@ class CoreLoreGenerator implements PearlLoreGenerator {
 		lore.add(parse("<l>%s", pearl.getItemName()));
 		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
-		lore.add(parse("<a>Imprisoned on: <n>%s", new SimpleDateFormat("yyyy-MM-dd").format(pearl.getPearledOn())));
+		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
 		lore.add(parse(""));
 		
