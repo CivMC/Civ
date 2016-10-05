@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.inventory.ItemStack;
 
-public interface PearlLoreGenerator {
+public interface PearlLoreProvider {
 
 	/**
 	 * Generates the lore for the pearl
@@ -20,13 +20,6 @@ public interface PearlLoreGenerator {
 	List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue);
 	
 	/**
-	 * Parses the player ID from a pearl item stack
-	 * @param is The item stack to parse
-	 * @return The player UUID, or null if it can't parse
-	 */
-	UUID getPlayerIdFromItemStack(ItemStack is);
-	
-	/**
 	 * Gets the pearl ID from a pearl item stack
 	 * @param is The item stack to parse
 	 * @return The pearl ID, or 0 if can't parse
@@ -38,10 +31,4 @@ public interface PearlLoreGenerator {
 	 * @return The player ID if it exists
 	 */
 	UUID getPlayerIdFromLegacyPearl(ItemStack is);
-	
-	/**
-	 * Gets the killer name from a legacy prison pearl
-	 * @return The killer name if it exists
-	 */
-	String getKillerNameFromLegacyPearl(ItemStack is);
 }

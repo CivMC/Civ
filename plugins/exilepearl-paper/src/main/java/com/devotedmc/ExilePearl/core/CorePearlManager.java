@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -199,27 +199,9 @@ class CorePearlManager implements PearlManager {
 		
 		// If an existing pearl is found, just use that
 		ExilePearl pearl = pearls.get(legacyId);
-		if (pearl != null) {
-			return pearl;
-		}
-
-		// If no pearl record is found, then we need to migrate that pearl to the new plugin
-		// The prison pearl only stores the name of the killer, so pick a random ID if the killer
-		// ID can't be found. Shouldn't really happen but just in case.
-		String killerName = pearlApi.getLoreGenerator().getKillerNameFromLegacyPearl(is);
-		UUID killerId = UUID.randomUUID();
-		if (killerName != null) {
-			PearlPlayer killer = pearlApi.getPearlPlayer(killerName);
-			if (killer != null) {
-				killerId = killer.getUniqueId();
-			}
-		}
-		
-		pearl = exilePlayer(legacyId, killerId);
 		if (pearl == null) {
-			pearlApi.log("Failed to convert Prison Pearl for player %s", legacyId.toString());
-		} else {
-			pearlApi.log("Converted Prison Pearl for player %s", pearl.getPlayerName());
+			pearlApi.log(Level.SEVERE, "Found legacy PrisonPearl item for player %s but no pearl was found.", legacyId.toString());
+			return null;
 		}
 		return pearl;
 	}

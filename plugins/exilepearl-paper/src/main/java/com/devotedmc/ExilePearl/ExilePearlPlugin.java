@@ -51,7 +51,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	//private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
 	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
-	private final PearlLoreGenerator loreGenerator = pearlFactory.createLoreGenerator();
+	private final PearlLoreProvider loreGenerator = pearlFactory.createLoreGenerator();
 	private final ExilePearlRunnable pearlDecayWorker = pearlFactory.createPearlDecayWorker();
 	private final ExilePearlRunnable pearlBordertask = pearlFactory.createPearlBorderTask();
 	private final SuicideHandler suicideHandler = pearlFactory.createSuicideHandler();
@@ -346,7 +346,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public PearlLoreGenerator getLoreGenerator() {
+	public PearlLoreProvider getLoreGenerator() {
 		return loreGenerator;
 	}
 

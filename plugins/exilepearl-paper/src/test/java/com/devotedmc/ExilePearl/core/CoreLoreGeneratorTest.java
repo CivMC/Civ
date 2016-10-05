@@ -86,6 +86,5 @@ public class CoreLoreGeneratorTest {
 		when(is.getType()).thenReturn(Material.ENDER_PEARL);
 		
 		assertEquals(legacyId, dut.getPlayerIdFromLegacyPearl(is));
-		assertEquals(legacyName, dut.getKillerNameFromLegacyPearl(is));
 	}
 }

@@ -44,7 +44,7 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	 * Gets the pearl lore generator
 	 * @return The lore generator
 	 */
-	PearlLoreGenerator getLoreGenerator();
+	PearlLoreProvider getLoreGenerator();
 	
 	/**
 	 * Gets the plugin scheduler

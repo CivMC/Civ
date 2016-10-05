@@ -67,7 +67,7 @@ public interface PearlFactory {
 	 * Creates the lore generator instance
 	 * @return The lore generator instance
 	 */
-	PearlLoreGenerator createLoreGenerator();
+	PearlLoreProvider createLoreGenerator();
 	
 	/**
 	 * Creates the pearl config instance

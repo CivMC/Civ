@@ -25,7 +25,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlLoreGenerator;
+import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
@@ -298,7 +298,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		ItemStack is = pearl.createItemStack();
 		
 		// Create mock lore generator
-		PearlLoreGenerator loreGenerator = mock(PearlLoreGenerator.class);
+		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 		
 		// Test fails when lore generator fails
@@ -325,14 +325,13 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		ItemStack is = mock(ItemStack.class);
 		
 		// Create mock lore generator
-		PearlLoreGenerator loreGenerator = mock(PearlLoreGenerator.class);
+		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
 		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
 
 		manager.exilePlayer(player, killer);
 
 		// Test if legacy pearl has same ID as an already pearled player
 		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(playerId);
-		when(loreGenerator.getKillerNameFromLegacyPearl(is)).thenReturn(killerName);
 		
 		ExilePearl legacyPearl = manager.getPearlFromItemStack(is);
 		assertNotNull(legacyPearl);
@@ -341,17 +340,18 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		
 		// Now try to parse out an un-pearled player
 		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(legacyId);
-		when(loreGenerator.getKillerNameFromLegacyPearl(is)).thenReturn(legacyName);
 		
 		PearlPlayer legacyPlayer = mock(PearlPlayer.class);
 		when(legacyPlayer.getUniqueId()).thenReturn(legacyId);
 		when(pearlApi.getPearlPlayer(legacyId)).thenReturn(legacyPlayer);
 		
 		legacyPearl = manager.getPearlFromItemStack(is);
+		assertNull(legacyPearl);
+		manager.exilePlayer(legacyId, killer.getUniqueId());
+		
+		legacyPearl = manager.getPearlFromItemStack(is);
 		assertNotNull(legacyPearl);
 		assertEquals(legacyId, legacyPearl.getPlayerId());
-		assertEquals(legacyName, legacyPearl.getKillerName());
-		
 	}
 	
 

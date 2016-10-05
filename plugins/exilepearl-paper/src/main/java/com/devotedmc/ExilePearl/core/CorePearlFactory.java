@@ -9,7 +9,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
-import com.devotedmc.ExilePearl.PearlLoreGenerator;
+import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
@@ -84,7 +84,7 @@ public class CorePearlFactory implements PearlFactory {
 	}
 
 	@Override
-	public PearlLoreGenerator createLoreGenerator() {
+	public PearlLoreProvider createLoreGenerator() {
 		return new CoreLoreGenerator(plugin.getPearlConfig());
 	}
 
