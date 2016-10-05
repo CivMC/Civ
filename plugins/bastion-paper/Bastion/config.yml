@@ -19,22 +19,23 @@ bastions:
     finalScaleFactor: 0.2
     warmupTime: 86400000
     erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
     placementCooldown: 2000
     destroyOnRemove: true
-    blockPearls: true
-    blockMidair: true
-    pearlScaleFactor: 1
-    requireMaturity: true
-    consumeOnBlock: true
-    blocksToErode: 1
-    blockElytra: true
-    destroyElytra: false
-    damageElytra: true
-    elytraScale: 1
-    elytraRequireMaturity: true
-    damageFirstBastion: false
-    regenPerDay: 24
-  otherbastion:
+    pearls:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+  anotherbastion:
     block:
       material: SPONGE
       durability: 0
@@ -46,18 +47,19 @@ bastions:
     finalScaleFactor: 0.2
     warmupTime: 86400000
     erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
     placementCooldown: 2000
     destroyOnRemove: true
-    blockPearls: true
-    blockMidair: true
-    pearlScaleFactor: 1
-    requireMaturity: true
-    consumeOnBlock: true
-    blocksToErode: 1
-    blockElytra: true
-    destroyElytra: false
-    damageElytra: true
-    elytraScale: 1
-    elytraRequireMaturity: true
-    damageFirstBastion: false
-    regenPerDay: 24
+    pearls:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true

@@ -344,18 +344,18 @@ public class BastionType {
 		}
 		long placementCooldown = config.getLong("placementCooldown");
 		boolean destroyOnRemove = config.getBoolean("destroyOnRemove");
-		boolean blockPearls = config.getBoolean("blockPearls");
-		boolean blockMidair = config.getBoolean("blockPearlsMidair");
-		int scaleFactor = config.getInt("pearlScaleFactor");
-		boolean requireMaturity = config.getBoolean("pearlRequireMaturity");
-		boolean consumeOnBlock = config.getBoolean("consumePearl");
-		boolean damageFirstBastion = config.getBoolean("damageFirstBastion");
+		boolean blockPearls = config.getBoolean("pearls.block");
+		boolean blockMidair = config.getBoolean("pearls.blockMidair");
+		int scaleFactor = config.getInt("pearls.scaleFactor");
+		boolean requireMaturity = config.getBoolean("pearls.requireMaturity");
+		boolean consumeOnBlock = config.getBoolean("pearls.consumeOnBlock");
+		boolean damageFirstBastion = config.getBoolean("pearls.damageFirstBastion");
 		int blocksToErode = config.getInt("blocksToErode");
-		boolean blockElytra = config.getBoolean("blockElytra");
-		boolean destroyElytra = config.getBoolean("destroyElytra");
-		boolean damageElytra = config.getBoolean("damageElytra");
-		int elytraScale = config.getInt("elytraScale");
-		boolean elytraRequireMature = config.getBoolean("elytraRequireMaturity");
+		boolean blockElytra = config.getBoolean("elytra.block");
+		boolean destroyElytra = config.getBoolean("elytra.destroyOnBlock");
+		boolean damageElytra = config.getBoolean("elytra.damageOnBlock");
+		int elytraScale = config.getInt("elytra.scaleFactor");
+		boolean elytraRequireMature = config.getBoolean("elytra.requireMaturity");
 		int regenTime = config.getInt("regenPerDay");
 		if(regenTime > 0) {
 			regenTime = 1728000 / regenTime;
