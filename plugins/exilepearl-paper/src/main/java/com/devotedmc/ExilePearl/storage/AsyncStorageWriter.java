@@ -17,7 +17,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  */
 public class AsyncStorageWriter implements PluginStorage, Runnable {
 
-	private final PluginStorage storage;
+	private PluginStorage storage;
 	private final PearlLogger logger;
 	private final BlockingQueue<AsyncPearlRecord> queue = new LinkedBlockingQueue<AsyncPearlRecord>();
 	private Thread thread;

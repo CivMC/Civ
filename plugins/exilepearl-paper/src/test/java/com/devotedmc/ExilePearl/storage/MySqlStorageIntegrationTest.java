@@ -1,6 +1,8 @@
 package com.devotedmc.ExilePearl.storage;
 
 import static org.junit.Assert.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.sql.PreparedStatement;
@@ -19,17 +21,17 @@ import org.bukkit.entity.Item;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.core.MockPearl;
-import com.devotedmc.ExilePearl.core.MockPearlFactory;
 
 public class MySqlStorageIntegrationTest {
 	
@@ -49,7 +51,23 @@ public class MySqlStorageIntegrationTest {
 		world = Bukkit.getWorld("world");
 		
 	    // Mock pearl factory for generating mock pearl instances
-		pearlFactory = new MockPearlFactory(mock(PlayerProvider.class));
+		pearlFactory = mock(PearlFactory.class);
+		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), anyInt(), any(Location.class))).then(new Answer<ExilePearl>() {
+
+			@Override
+			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
+				
+				try {
+					UUID uid1 = (UUID)invocation.getArguments()[0];
+					UUID uid2 = (UUID)invocation.getArguments()[1];
+					int pearlId = (int)invocation.getArguments()[2];
+					Location l = (Location)invocation.getArguments()[3];
+					return new MockPearl(mock(PlayerProvider.class), uid1, uid2, pearlId, l);
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		});
 		
 		config = mock(PearlConfig.class);
 		when(config.getDbHost()).thenReturn("localhost");

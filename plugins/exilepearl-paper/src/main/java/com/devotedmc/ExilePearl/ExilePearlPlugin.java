@@ -24,6 +24,7 @@ import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.command.CmdSuicide;
+import com.devotedmc.ExilePearl.listener.BastionListener;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
@@ -59,6 +60,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	private final ExileListener exileListener = new ExileListener(this);
 	private final CitadelListener citadelListener = new CitadelListener(this);
 	private final CivChatListener chatListener = new CivChatListener(this);
+	private final BastionListener bastionListener = new BastionListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -94,9 +96,18 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		this.getServer().getPluginManager().registerEvents(exileListener, this);
 		if (isCitadelEnabled()) {
 			this.getServer().getPluginManager().registerEvents(citadelListener, this);
+		} else {
+			log(Level.WARNING, "Ignoring hooks for Citadel since it's not enabled.");
 		}
 		if (isCivChatEnabled()) {
 			this.getServer().getPluginManager().registerEvents(chatListener, this);
+		} else {
+			log(Level.WARNING, "Ignoring hooks for CivChat since it's not enabled.");
+		}
+		if (isBastionEnabled()) {
+			this.getServer().getPluginManager().registerEvents(bastionListener, this);
+		} else {
+			log(Level.WARNING, "Ignoring hooks for Bastion since it's not enabled.");
 		}
 		
 		// Start tasks
@@ -328,6 +339,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	
 	private boolean isCivChatEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("CivChat2");
+	}
+	
+	private boolean isBastionEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("Bastion");
 	}
 
 	@Override

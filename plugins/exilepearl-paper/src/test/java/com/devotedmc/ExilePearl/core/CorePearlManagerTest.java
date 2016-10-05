@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
@@ -82,7 +83,39 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		when(nameProvider.getName(playerId)).thenReturn(playerName);
 		when(nameProvider.getName(killerId)).thenReturn(killerName);
 		
-		pearlFactory = new MockPearlFactory(nameProvider);
+		pearlFactory = mock(PearlFactory.class);
+		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), anyInt(), any(Location.class))).then(new Answer<ExilePearl>() {
+
+			@Override
+			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
+				
+				try {
+					UUID uid1 = (UUID)invocation.getArguments()[0];
+					UUID uid2 = (UUID)invocation.getArguments()[1];
+					int pearlId = (int)invocation.getArguments()[2];
+					Location l = (Location)invocation.getArguments()[3];
+					return new MockPearl(nameProvider, uid1, uid2, pearlId, l);
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		});
+		
+		when(pearlFactory.createExilePearl(any(UUID.class), any(Player.class), anyInt())).then(new Answer<ExilePearl>() {
+
+			@Override
+			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
+				
+				try {
+					UUID uid1 = (UUID)invocation.getArguments()[0];
+					Player p2 = (Player)invocation.getArguments()[1];
+					int pearlId = (int)invocation.getArguments()[2];
+					return new MockPearl(nameProvider, uid1, p2.getUniqueId(), pearlId, p2.getLocation());
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		});
 		
 		storage = mock(PearlStorage.class);
 		config = mock(PearlConfig.class);
