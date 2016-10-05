@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.6.2</version>
+	<version>3.7.0</version>
 	<name>Citadel</name>
 	<url>https://github.com/Civcraft/Citadel</url>
 
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.5.0</version>
+			<version>1.5.02</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

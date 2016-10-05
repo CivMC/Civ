@@ -25,6 +25,19 @@ import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public class ReinforcementManager {
 
+	// TODO : Batching of inserts, saves, and deletes.
+	// Thinking:
+	//   Second layer cache. Situation exists where a reinf is scheduled for 
+	//    real save (in queue) but batch isn't executed.
+	//    So a cache load miss should read from this queue first; if no match,
+	//    then DB load.
+	//   Given architecture at present, this cache needs to be more persistent then top cache, and
+	//    clear atomically into batched inserts, updates, and deletes. 
+	//   Idea would be that since we've disambiguated final outcome "state" in the dirty-cache,
+	//    we are clear to batch all operations of like-kind as there will be no overlap.
+	//   Meanwhile, a new dirty cache will begin accumulating.
+	
+	
 	private CitadelReinforcementData db;
 	private long dayMultiplier;
 
@@ -56,6 +69,7 @@ public class ReinforcementManager {
 						return new NullReinforcement(loc);
 					}
 					CitadelStatics.updateHitStat(CitadelStatics.LOAD);
+					// TODO: count misses in a chunk, and fucking load the whole chunk if we cross a threshold.
 					// decrement cache because it gets increased from getReinforcement()
 					CitadelStatics.decrementHitStat(CitadelStatics.CACHE);
 					return rein;
@@ -279,6 +293,7 @@ public class ReinforcementManager {
 		return reins_new;
 	}
 	
+	// TODO how tf is this not used, mfw
 	public void loadReinforcementChunk(Chunk chunk) {
 		if (chunk == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager loadReinforcementChunk called with null");
