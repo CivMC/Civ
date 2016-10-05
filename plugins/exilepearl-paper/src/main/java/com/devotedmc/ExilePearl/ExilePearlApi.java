@@ -2,6 +2,8 @@ package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
 
+import org.bukkit.plugin.Plugin;
+
 /**
  * External API for ExilePearl
  * @author Gordon
@@ -40,4 +42,10 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	 * @return The lore provider
 	 */
 	PearlLoreProvider getLoreProvider();
+	
+	/**
+	 * Gets the plugin instance
+	 * @return The plugin instance
+	 */
+	Plugin getPlugin();
 }

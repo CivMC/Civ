@@ -14,6 +14,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
@@ -346,5 +347,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	@Override
 	public void decayPearls() {
 		pearlManager.decayPearls();
+	}
+
+	@Override
+	public Plugin getPlugin() {
+		return this;
 	}
 }

@@ -15,7 +15,6 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 	public static final int TICKS_PER_SECOND = 20;
 	
 	protected final ExilePearlApi pearlApi;
-	private final Plugin plugin;
 	
 	protected boolean enabled = false;
 	protected int taskId = 0;
@@ -24,7 +23,6 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		
 		this.pearlApi = pearlApi;
-		this.plugin = Bukkit.getPluginManager().getPlugin(pearlApi.getPluginName());
 	}
 
 	/**
@@ -37,7 +35,7 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 		}
 		
 		long tickInterval = getTickInterval();
-		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, this, tickInterval, tickInterval);
+		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pearlApi.getPlugin(), this, tickInterval, tickInterval);
 		if (taskId == -1) {
 			pearlApi.log("Failed to start the task '%s'.", getTaskName());
 			return;
