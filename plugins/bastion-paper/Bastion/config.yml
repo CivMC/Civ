@@ -34,3 +34,30 @@ bastions:
     elytraRequireMaturity: true
     damageFirstBastion: false
     regenPerDay: 24
+  otherbastion:
+    block:
+      material: SPONGE
+      durability: 0
+      lore: 'This is another bastion'
+    squarefield: true
+    effectRadius: 15
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    placementCooldown: 2000
+    destroyOnRemove: true
+    blockPearls: true
+    blockMidair: true
+    pearlScaleFactor: 1
+    requireMaturity: true
+    consumeOnBlock: true
+    blocksToErode: 1
+    blockElytra: true
+    destroyElytra: false
+    damageElytra: true
+    elytraScale: 1
+    elytraRequireMaturity: true
+    damageFirstBastion: false
+    regenPerDay: 24
