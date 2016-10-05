@@ -26,6 +26,7 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.storage.BastionBlockStorage;
 
+@SuppressWarnings("deprecation")
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT = 800;
 	private BastionBlockStorage storage;

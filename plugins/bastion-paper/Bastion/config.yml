@@ -32,3 +32,5 @@ bastions:
     damageElytra: true
     elytraScale: 1
     elytraRequireMaturity: true
+    damageFirstBastion: false
+    regenPerDay: 24

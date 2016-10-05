@@ -12,7 +12,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -30,6 +29,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private int health; //current durability
 	private long placed; //time when the bastion block was created
 	private int erosionTask; //the id of the task associated with erosion
+	private int regenTask;
 	private BastionType type;
 
 	/**
@@ -78,6 +78,9 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		if(type.getErosionTime() != 0) {
 			erosionTask = registerErosionTask();
 		}
+		if(type.getRegenTime() != 0) {
+			regenTask = registerRegenTask();
+		}
 	}
 	
 	/**
@@ -85,14 +88,30 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return Task ID of the {@link BukkitRunnable} that results.
 	 */
 	private int registerErosionTask() {
-		BukkitScheduler scheduler = Bukkit.getServer().getScheduler();
-		return scheduler.runTaskTimer(Bastion.getPlugin(), 
+		return Bukkit.getScheduler().runTaskTimer(Bastion.getPlugin(), 
 			new Runnable() {
 				public void run() {
 					erode(1);
 				}
 			},
 		random.nextInt(type.getErosionTime()),type.getErosionTime()).getTaskId();
+	}
+	
+	/**
+	 * called to register regen task
+	 * @return Task ID of the {@link BukkitRunnable} that results.
+	 */
+	private int registerRegenTask() {
+		return Bukkit.getScheduler().runTaskTimer(Bastion.getPlugin(),
+			new Runnable() {
+				public void run() {
+					Reinforcement reinf = getReinforcement();
+					if(reinf != null) {
+						reinf.setDurability(++health);
+					}
+				}
+			},
+		random.nextInt(type.getRegenTime()), type.getRegenTime()).getTaskId();
 	}
 
 
@@ -234,7 +253,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return true if the Bastion's strength is at zero and it should be removed
 	 */
 	public boolean shouldCull() {
-		return !(health-balance > 0);
+		return health - balance <= 0;
 	}
 
 	/**
@@ -260,10 +279,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		reinforcement.setDurability(health);
 
-		Bastion.getBastionStorage().updated(this);
-
 		if (shouldCull()) {
 			destroy();
+		} else {
+			Bastion.getBastionStorage().updated(this);
 		}
 	}
 
@@ -495,7 +514,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 			location.getBlock().setType(Material.AIR);
 		}
 		if (type.getErosionTime() != 0) {
-			Bukkit.getServer().getScheduler().cancelTask(erosionTask);
+			Bukkit.getScheduler().cancelTask(erosionTask);
+		}
+		if(type.getRegenTime() != 0) {
+			Bukkit.getScheduler().cancelTask(regenTask);
 		}
 		Bastion.getBastionStorage().deleteBastion(this);
 	}

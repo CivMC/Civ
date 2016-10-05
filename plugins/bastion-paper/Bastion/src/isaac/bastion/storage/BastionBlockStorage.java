@@ -229,6 +229,7 @@ public class BastionBlockStorage {
 	/**
 	 * Loads all bastions from the database
 	 */
+	@SuppressWarnings("deprecation")
 	public void loadBastions() {
 		int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
 		for(World world : Bukkit.getWorlds()) {

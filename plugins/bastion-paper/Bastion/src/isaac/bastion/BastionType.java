@@ -37,13 +37,14 @@ public class BastionType {
 	private int elytraScale;
 	private boolean elytraRequireMature;
 	private boolean damageFirstBastion;
+	private int regenTime;
 	
 	public BastionType(String name, MaterialData material, String lore, boolean square, int effectRadius,
 			boolean includeY, int startScaleFactor, double finalScaleFactor, long warmupTime,
 			int erosionTime, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
 			boolean blockMidair, int pearlScale, boolean pearlRequireMature, boolean consumeOnBlock, int blocksToErode,
 			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale,
-			boolean elytraRequireMature, boolean damageFirstBastion) {
+			boolean elytraRequireMature, boolean damageFirstBastion, int regenTime) {
 		this.name = name;
 		this.material = material;
 		this.lore = lore;
@@ -261,6 +262,14 @@ public class BastionType {
 	}
 	
 	/**
+	 * 
+	 * @return The amount of time between regenerations
+	 */
+	public int getRegenTime() {
+		return regenTime;
+	}
+	
+	/**
 	 * Gets the name of the bastion type
 	 * This is used to reduce space in maps elsewhere
 	 * @return The name of this bastion type
@@ -314,6 +323,7 @@ public class BastionType {
 		return defaultType;
 	}
 	
+	@SuppressWarnings("deprecation")
 	public static BastionType getBastionType(ConfigurationSection config) {
 		String name = config.getName();
 		Material mat = Material.getMaterial(config.getString("block.material"));
@@ -327,8 +337,10 @@ public class BastionType {
 		double finalScaleFactor = config.getDouble("finalScaleFactor");
 		long warmupTime = config.getLong("warmupTime");
 		int erosionTime = config.getInt("erosionPerDay");
-		if(erosionTime != 0) {
+		if(erosionTime > 0) {
 			erosionTime = 1728000 / erosionTime;
+		} else if(erosionTime < 0) {
+			erosionTime = 0;
 		}
 		long placementCooldown = config.getLong("placementCooldown");
 		boolean destroyOnRemove = config.getBoolean("destroyOnRemove");
@@ -344,8 +356,14 @@ public class BastionType {
 		boolean damageElytra = config.getBoolean("damageElytra");
 		int elytraScale = config.getInt("elytraScale");
 		boolean elytraRequireMature = config.getBoolean("elytraRequireMaturity");
+		int regenTime = config.getInt("regenPerDay");
+		if(regenTime > 0) {
+			regenTime = 1728000 / regenTime;
+		} else if(regenTime < 0) {
+			regenTime = 0;
+		}
 		return new BastionType(name, material, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
-				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, damageFirstBastion);
+				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, damageFirstBastion, regenTime);
 	}
 }
