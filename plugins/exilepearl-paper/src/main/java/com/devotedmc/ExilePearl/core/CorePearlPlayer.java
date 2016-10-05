@@ -32,7 +32,7 @@ class CorePearlPlayer implements PearlPlayer {
 
 	@Override
 	public String getName() {
-		return playerProvider.getName(playerId);
+		return playerProvider.getRealPlayerName(playerId);
 	}
 
 	@Override

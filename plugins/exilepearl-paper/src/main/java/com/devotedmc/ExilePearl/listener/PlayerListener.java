@@ -5,6 +5,7 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -122,9 +123,9 @@ public class PlayerListener implements Listener {
 			r3.setIngredient('R', repair8.getData());
 			r3.setIngredient('P', Material.ENDER_PEARL);
 
-			pearlApi.getPlugin().getServer().addRecipe(r1);
-			pearlApi.getPlugin().getServer().addRecipe(r2);
-			pearlApi.getPlugin().getServer().addRecipe(r3);
+			Bukkit.getServer().addRecipe(r1);
+			Bukkit.getServer().addRecipe(r2);
+			Bukkit.getServer().addRecipe(r3);
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
 		}
@@ -521,7 +522,7 @@ public class PlayerListener implements Listener {
 
 			// Need to get by name b/c of combat tag entity
 			PearlPlayer imprisoned = pearlApi.getPearlPlayer(e.getEntity().getName());
-			PearlPlayer pKiller = pearlApi.getPearlPlayer(killer);
+			PearlPlayer pKiller = pearlApi.getPearlPlayer(killer.getUniqueId());
 
 			int firstpearl = Integer.MAX_VALUE;
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
@@ -640,7 +641,7 @@ public class PlayerListener implements Listener {
 		Player player = e.getPlayer();
 		
 		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
-			pearlApi.getPearlPlayer(player).msg(Lang.pearlCantThrow);
+			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlCantThrow);
 			e.setCancelled(true);
 			return;
 		}
@@ -761,7 +762,7 @@ public class PlayerListener implements Listener {
 		// Prevent crafting with lore items
 		for(HumanEntity he : e.getViewers()) {
 			if(he instanceof Player) {
-				crafter = pearlApi.getPearlPlayer((Player)he);
+				crafter = pearlApi.getPearlPlayer(((Player)he).getUniqueId());
 			}
 		}
 
@@ -778,7 +779,7 @@ public class PlayerListener implements Listener {
 		// Generate a new item with the updated health value as the crafting result
 		ItemStack resultStack = pearl.createItemStack();
 		ItemMeta im = resultStack.getItemMeta();
-		im.setLore(pearlApi.getLoreGenerator().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
+		im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
 		resultStack.setItemMeta(im);
 
 		e.getInventory().setResult(resultStack);

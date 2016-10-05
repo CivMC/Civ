@@ -34,7 +34,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		
 		msg("<g>Found exile pearl for player %s", name);
 
-		for (String s : pearlApi.getLoreGenerator().generateLore(pearl)) {
+		for (String s : pearlApi.getLoreProvider().generateLore(pearl)) {
 			if (s.contains("Commands")) {
 				return;
 			}

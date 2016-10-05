@@ -14,8 +14,6 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.core.CorePearlFactory;
@@ -44,7 +42,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
  * @author GordonFreemanQ
  *
  */
-public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerProvider {
+public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final PearlFactory pearlFactory = new CorePearlFactory(this);
 	private final PearlConfig pearlConfig = pearlFactory.createPearlConfig();
@@ -215,7 +213,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	 * Gets the plugin name
 	 */
 	@Override
-	protected final String getPluginName() {
+	public final String getPluginName() {
 		return "ExilePearl";
 	}
 	
@@ -297,11 +295,6 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public PearlPlayer getPearlPlayer(Player player) {
-		return getPearlPlayer(player.getUniqueId());
-	}
-
-	@Override
 	public Player getPlayer(UUID uid) {
 		return Bukkit.getPlayer(uid);
 	}
@@ -312,7 +305,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public String getName(UUID uid) {
+	public String getRealPlayerName(UUID uid) {
 		if (isNameLayerEnabled()) {
 			return NameAPI.getCurrentName(uid);
 		}
@@ -346,18 +339,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 
 	@Override
-	public PearlLoreProvider getLoreGenerator() {
+	public PearlLoreProvider getLoreProvider() {
 		return loreGenerator;
-	}
-
-	@Override
-	public BukkitScheduler getScheduler() {
-		return Bukkit.getScheduler();
-	}
-
-	@Override
-	public JavaPlugin getPlugin() {
-		return this;
 	}
 
 	@Override

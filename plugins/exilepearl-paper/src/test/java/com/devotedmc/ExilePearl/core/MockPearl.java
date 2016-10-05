@@ -75,7 +75,7 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public String getPlayerName() {
-		return nameProvider.getName(playerId);
+		return nameProvider.getRealPlayerName(playerId);
 	}
 
 	@Override
@@ -125,7 +125,7 @@ public class MockPearl implements ExilePearl {
 
 	@Override
 	public String getKillerName() {
-		return nameProvider.getName(killedBy);
+		return nameProvider.getRealPlayerName(killedBy);
 	}
 
 	@Override

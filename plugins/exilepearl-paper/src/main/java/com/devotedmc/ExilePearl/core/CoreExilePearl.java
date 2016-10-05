@@ -350,7 +350,7 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public ItemStack createItemStack() {
-		List<String> lore = pearlApi.getLoreGenerator().generateLore(this);
+		List<String> lore = pearlApi.getLoreProvider().generateLore(this);
 		ItemStack is = new ItemStack(Material.ENDER_PEARL, 1);
 		ItemMeta im = is.getItemMeta();
 		im.setDisplayName(this.getPlayerName());
@@ -370,13 +370,13 @@ class CoreExilePearl implements ExilePearl {
 	public boolean validateItemStack(ItemStack is) {
 		Guard.ArgumentNotNull(is, "is");
 
-		int pearlId = pearlApi.getLoreGenerator().getPearlIdFromItemStack(is);
+		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 		
 		if (pearlId == this.pearlId) {
 
 			// re-create the item stack to update the values
 			ItemMeta im = is.getItemMeta();
-			im.setLore(pearlApi.getLoreGenerator().generateLore(this));
+			im.setLore(pearlApi.getLoreProvider().generateLore(this));
 			is.setItemMeta(im);
 			return true;
 		}

@@ -70,8 +70,8 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		when(killer.getLocation()).thenReturn(new Location(world, 10, 20, 30));
 		
 		nameProvider = mock(PlayerProvider.class);
-		when(nameProvider.getName(player.getUniqueId())).thenReturn(playerName);
-		when(nameProvider.getName(killer.getUniqueId())).thenReturn(killerName);
+		when(nameProvider.getRealPlayerName(player.getUniqueId())).thenReturn(playerName);
+		when(nameProvider.getRealPlayerName(killer.getUniqueId())).thenReturn(killerName);
 		when(nameProvider.getUniqueId(playerName)).thenReturn(playerId);
 		when(nameProvider.getUniqueId(killerName)).thenReturn(killerId);
 		
@@ -90,7 +90,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
 		loreGenerator = mock(PearlLoreProvider.class);
-		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
+		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 		
 		holder = new PlayerHolder(killer);
 		

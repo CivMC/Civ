@@ -137,7 +137,7 @@ public class CorePearlPlayerTest {
 		when(p.getName()).thenReturn(name);
 		when(p.getUniqueId()).thenReturn(id);
 
-		when(nameProvider.getName(id)).thenReturn(name);
+		when(nameProvider.getRealPlayerName(id)).thenReturn(name);
 		when(nameProvider.getUniqueId(name)).thenReturn(id);
 		
 		return p;

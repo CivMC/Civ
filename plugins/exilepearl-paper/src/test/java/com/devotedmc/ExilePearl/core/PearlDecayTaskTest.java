@@ -10,10 +10,10 @@ import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 
-public class PearlDecayTaskTest {
+public class PearlDecayTaskTest extends BukkitTestCase {
 	
-	private BukkitScheduler mockScheduler;
 	private PearlConfig pearlConfig;
 	private ExilePearlApi pearlApi;
 	private PearlDecayTask dut;
@@ -21,14 +21,11 @@ public class PearlDecayTaskTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		mockScheduler = mock(BukkitScheduler.class);
-		
 		pearlConfig = mock(PearlConfig.class);
 		when(pearlConfig.getPearlHealthDecayIntervalMin()).thenReturn(60);
 		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
-		when(pearlApi.getScheduler()).thenReturn(mockScheduler);
 		
 		dut = spy(new PearlDecayTask(pearlApi));
 	}
@@ -43,19 +40,21 @@ public class PearlDecayTaskTest {
 
 	@Test
 	public void testStartStop() {
+		final BukkitScheduler scheduler = getServer().getScheduler();
+		reset(scheduler);
 		
 		assertFalse(dut.isRunning());
 		
 		dut.start();
-		verify(mockScheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
+		verify(scheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
 		
 		dut.start();
-		verify(mockScheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
+		verify(scheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
 		
 		dut.stop();
-		verify(mockScheduler).cancelTask(anyInt());
+		verify(scheduler).cancelTask(anyInt());
 		assertFalse(dut.isRunning());
 	}
 

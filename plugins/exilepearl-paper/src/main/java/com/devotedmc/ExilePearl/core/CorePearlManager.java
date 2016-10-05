@@ -188,13 +188,13 @@ class CorePearlManager implements PearlManager {
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
 		
-		int pearlId = pearlApi.getLoreGenerator().getPearlIdFromItemStack(is);
+		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 		if (pearlId != 0) {
 			return getPearlById(pearlId);
 		}
 		
 		// Check if this is a legacy pearl
-		UUID legacyId = pearlApi.getLoreGenerator().getPlayerIdFromLegacyPearl(is);
+		UUID legacyId = pearlApi.getLoreProvider().getPlayerIdFromLegacyPearl(is);
 		if (legacyId == null) {
 			return null;
 		}

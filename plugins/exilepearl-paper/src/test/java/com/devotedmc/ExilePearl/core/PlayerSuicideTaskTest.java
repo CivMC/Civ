@@ -17,10 +17,10 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 
-public class PlayerSuicideTaskTest {
+public class PlayerSuicideTaskTest extends BukkitTestCase {
 	
-	private BukkitScheduler mockScheduler;
 	private PearlConfig pearlConfig;
 	private ExilePearlApi pearlApi;
 	private PlayerSuicideTask dut;
@@ -28,14 +28,11 @@ public class PlayerSuicideTaskTest {
 	@Before
 	public void setUp() throws Exception {
 		
-		mockScheduler = mock(BukkitScheduler.class);
-		
 		pearlConfig = mock(PearlConfig.class);
 		when(pearlConfig.getSuicideTimeoutSeconds()).thenReturn(100);
 		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
-		when(pearlApi.getScheduler()).thenReturn(mockScheduler);
 		
 		dut = spy(new PlayerSuicideTask(pearlApi));
 	}
@@ -50,19 +47,21 @@ public class PlayerSuicideTaskTest {
 
 	@Test
 	public void testStartStop() {
+		final BukkitScheduler scheduler = getServer().getScheduler();
+		reset(scheduler);
 		
 		assertFalse(dut.isRunning());
 		
 		dut.start();
-		verify(mockScheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
+		verify(scheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
 		assertTrue(dut.isRunning());
 		
 		dut.start();
-		verify(mockScheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
+		verify(scheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
 		assertTrue(dut.isRunning());
 		
 		dut.stop();
-		verify(mockScheduler).cancelTask(anyInt());
+		verify(scheduler).cancelTask(anyInt());
 		assertFalse(dut.isRunning());
 	}
 

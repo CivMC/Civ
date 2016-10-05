@@ -77,14 +77,12 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlPlayer(playerName)).thenReturn(pPlayer);
 		when(pearlApi.getPearlPlayer(playerId)).thenReturn(pPlayer);
-		when(pearlApi.getPearlPlayer(player)).thenReturn(pPlayer);
 		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
 		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pKiller);
-		when(pearlApi.getPearlPlayer(killer)).thenReturn(pKiller);
 		
 		PlayerProvider nameProvider = mock(PlayerProvider.class);
-		when(nameProvider.getName(playerId)).thenReturn(playerName);
-		when(nameProvider.getName(killerId)).thenReturn(killerName);
+		when(nameProvider.getRealPlayerName(playerId)).thenReturn(playerName);
+		when(nameProvider.getRealPlayerName(killerId)).thenReturn(killerName);
 		
 		pearlFactory = mock(PearlFactory.class);
 		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), anyInt(), any(Location.class))).then(new Answer<ExilePearl>() {
@@ -306,7 +304,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		
 		// Create mock lore generator
 		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
-		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
+		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 		
 		// Test fails when lore generator fails
 		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(0);
@@ -333,7 +331,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		
 		// Create mock lore generator
 		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
-		when(pearlApi.getLoreGenerator()).thenReturn(loreGenerator);
+		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 
 		manager.exilePlayer(player, killer);
 

@@ -2,16 +2,18 @@ package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
 
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitScheduler;
-
 /**
  * External API for ExilePearl
  * @author Gordon
  *
  */
-public interface ExilePearlApi extends PearlAccess, PearlLogger {
+public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider {
+	
+	/**
+	 * Gets the plugin name
+	 * @return The plugin name
+	 */
+	String getPluginName();
 	
 	/**
 	 * Gets a player instance by UUID
@@ -28,33 +30,14 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger {
 	PearlPlayer getPearlPlayer(final String name);
 	
 	/**
-	 * Gets a player instance by player instance
-	 * @param uniqueId The player instance
-	 * @return The PearlPlayer instance
-	 */
-	PearlPlayer getPearlPlayer(final Player player);
-	
-	/**
 	 * Gets the exile pearl configuration
 	 * @return The exile pearl configuration
 	 */
 	PearlConfig getPearlConfig();
 	
 	/**
-	 * Gets the pearl lore generator
-	 * @return The lore generator
+	 * Gets the pearl lore provider
+	 * @return The lore provider
 	 */
-	PearlLoreProvider getLoreGenerator();
-	
-	/**
-	 * Gets the plugin scheduler
-	 * @return The plugin scheduler
-	 */
-	BukkitScheduler getScheduler();
-	
-	/**
-	 * Gets the java plugin instance
-	 * @return The plugin plugin instance
-	 */
-	JavaPlugin getPlugin();
+	PearlLoreProvider getLoreProvider();
 }
