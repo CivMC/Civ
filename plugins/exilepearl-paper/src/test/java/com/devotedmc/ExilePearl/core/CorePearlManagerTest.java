@@ -11,6 +11,7 @@ import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
@@ -29,6 +30,8 @@ import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
+import com.devotedmc.ExilePearl.event.PearlDecayEvent;
+import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
@@ -121,6 +124,10 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		config = mock(PearlConfig.class);
 		
 		when(pearlApi.getPearlConfig()).thenReturn(config);
+		
+		final PluginManager pluginManager = Bukkit.getPluginManager();
+		reset(pluginManager);
+		doNothing().when(pluginManager).callEvent(any(Event.class));
 		
 		manager = new CorePearlManager(pearlApi, pearlFactory, storage);
 	}
@@ -357,15 +364,57 @@ public class CorePearlManagerTest extends BukkitTestCase {
 
 	@Test
 	public void testDecayPearls() {
+		final PluginManager pluginManager = Bukkit.getPluginManager();
+		ArgumentCaptor<PearlDecayEvent> eventArg = ArgumentCaptor.forClass(PearlDecayEvent.class);
+		reset(pluginManager);
+		
 		when(config.getPearlHealthStartValue()).thenReturn(10);
 		when(config.getPearlHealthDecayAmount()).thenReturn(1);
 		
 		ExilePearl pearl1 = manager.exilePlayer(player, killer);
 		assertEquals(pearl1.getHealth(), 10);
+		
+		reset(pluginManager);
+		
+		// This will cancel the decay pearl event
+	    doAnswer(new Answer<Void>() {
+			@Override
+			public Void answer(InvocationOnMock invocation) throws Throwable {
+				Cancellable event;
+				
+				if (invocation.getArguments()[0] instanceof Cancellable) {
+					event = (Cancellable)invocation.getArguments()[0];
+				} else {
+					return null;
+				}
+				
+				// Cancel the event
+				event.setCancelled(true);
+				return null;
+			}
+		}).when(pluginManager).callEvent(any(PearlDecayEvent.class));
 
 		manager.decayPearls();
+		verify(pluginManager).callEvent(eventArg.capture());
+		assertEquals(eventArg.getValue().getAction(), DecayAction.START);
+		
+		// Health should be unchanged
+		assertEquals(pearl1.getHealth(), 10);
+		
+		// Now allow the event to pass
+		reset(pluginManager);
+
+		manager.decayPearls();
+		
+		// Event should be called for decay start and complete
+		verify(pluginManager, times(2)).callEvent(eventArg.capture());
+		assertEquals(eventArg.getAllValues().get(1).getAction(), DecayAction.START);
+		assertEquals(eventArg.getAllValues().get(2).getAction(), DecayAction.COMPLETE);
+		
+		// Health should be lowered
 		assertEquals(pearl1.getHealth(), 9);
 		
+		// Now add a second pearl
 		ExilePearl pearl2 = manager.exilePlayer(killer, player);
 		assertEquals(pearl2.getHealth(), 10);
 

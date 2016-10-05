@@ -19,6 +19,8 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.event.PearlDecayEvent;
+import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.storage.PearlStorage;
@@ -209,6 +211,13 @@ class CorePearlManager implements PearlManager {
 
 	@Override
 	public void decayPearls() {
+		PearlDecayEvent e = new PearlDecayEvent(DecayAction.START);
+		Bukkit.getPluginManager().callEvent(e);
+		
+		if (e.isCancelled()) {
+			return;
+		}
+		
 		pearlApi.log("Performing pearl decay.");
 		long startTime = System.currentTimeMillis();
 
@@ -243,6 +252,9 @@ class CorePearlManager implements PearlManager {
 		}
 		
 		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());
+		
+		e = new PearlDecayEvent(DecayAction.COMPLETE);
+		Bukkit.getPluginManager().callEvent(e);
 	}
 	
 	
