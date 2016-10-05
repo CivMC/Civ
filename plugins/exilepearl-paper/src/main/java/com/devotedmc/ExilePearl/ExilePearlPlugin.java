@@ -86,6 +86,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 		commands.add(new CmdLegacy(this));
 		commands.add(new CmdSuicide(this));
 		
+		playerListener.setupRecipes();
+		
 		// Register events
 		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
 		this.getServer().getPluginManager().registerEvents(playerListener, this);
@@ -215,7 +217,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi, PlayerPr
 	}
 	
 	private void logInternal(Level level, String msg) {
-		getLogger().log(level, String.format("[%s] %s", getPluginName(), msg));
+		getLogger().log(level, msg);
 	}
 	
 	public String formatText(String text, Object... args) {

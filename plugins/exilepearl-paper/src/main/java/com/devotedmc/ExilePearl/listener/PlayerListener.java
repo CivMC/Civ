@@ -1,8 +1,8 @@
 package com.devotedmc.ExilePearl.listener;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -45,6 +45,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -66,33 +67,67 @@ import com.devotedmc.ExilePearl.util.TextUtil;
 public class PlayerListener implements Listener {
 
 	private final ExilePearlApi pearlApi;
-	
+
+	private Material healthMaterial = Material.OBSIDIAN;
+
 	/**
 	 * Creates a new PlayerListener instance
 	 * @param pearlApi The pearlApi instance
 	 */
 	public PlayerListener(final ExilePearlApi pearlApi) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		
+
 		this.pearlApi = pearlApi;
-		
-		setupRecipes();
 	}
-	
-	
-	
-	private void setupRecipes() {
-		ItemStack resultItem = new ItemStack(Material.ENDER_PEARL, 1);
-		ItemMeta im = resultItem.getItemMeta();
-		im.addEnchant(Enchantment.DURABILITY, 1, true);
-		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		resultItem.setItemMeta(im);
-		
-		ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
-		r1.addIngredient(1, Material.ENDER_PEARL);
-		r1.addIngredient(1, Material.OBSIDIAN);
-		
-		pearlApi.getPlugin().getServer().addRecipe(r1);
+
+
+	/**
+	 * Sets up the pearl repair recipes
+	 */
+	public void setupRecipes() {
+
+		try {
+			// This item is basically used as a trigger to catch the recipe being created
+			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
+			ItemMeta im = resultItem.getItemMeta();
+			im.addEnchant(Enchantment.DURABILITY, 1, true);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			resultItem.setItemMeta(im);
+
+			healthMaterial = Material.valueOf(pearlApi.getPearlConfig().getPearlRepairMaterial());
+			if (healthMaterial == null) {
+				pearlApi.log("Failed to load pearl repair material. Defaulting to Obsidian.");
+				healthMaterial = Material.OBSIDIAN;
+			}
+
+			ItemStack repair8 = new ItemStack(healthMaterial, 8);
+
+			// Shapeless recipe
+			ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+			r1.addIngredient(1, Material.ENDER_PEARL);
+			r1.addIngredient(1, repair8.getData());
+
+			ShapedRecipe r2 = new ShapedRecipe(resultItem);
+			r2.shape(	"ARA", 
+					"RPR", 
+					"ARA");
+			r2.setIngredient('A', Material.AIR);
+			r2.setIngredient('R', repair8.getData());
+			r2.setIngredient('P', Material.ENDER_PEARL);
+
+			ShapedRecipe r3 = new ShapedRecipe(resultItem);
+			r3.shape(	"RRR", 
+					"RPR", 
+					"RRR");
+			r3.setIngredient('R', repair8.getData());
+			r3.setIngredient('P', Material.ENDER_PEARL);
+
+			pearlApi.getPlugin().getServer().addRecipe(r1);
+			pearlApi.getPlugin().getServer().addRecipe(r2);
+			pearlApi.getPlugin().getServer().addRecipe(r3);
+		} catch (Exception ex) {
+			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
+		}
 	}
 
 
@@ -296,7 +331,7 @@ public class PlayerListener implements Listener {
 		pearl.setHolder(block.getBlock());
 	}
 
-	
+
 	/**
 	 * Updates the pearl status
 	 * @param pearl The prison pearl
@@ -483,7 +518,7 @@ public class PlayerListener implements Listener {
 
 		Player killer = player.getKiller();
 		if (killer != null) {
-			
+
 			// Need to get by name b/c of combat tag entity
 			PearlPlayer imprisoned = pearlApi.getPearlPlayer(e.getEntity().getName());
 			PearlPlayer pKiller = pearlApi.getPearlPlayer(killer);
@@ -500,21 +535,21 @@ public class PlayerListener implements Listener {
 			if (firstpearl ==  Integer.MAX_VALUE) {
 				return;
 			}
-			
+
 			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getUniqueId(), pKiller.getUniqueId());
 			if (pearl == null) {
 				return;
 			}
-			
+
 			// Pearl succeeded
 			// set up the imprisoner's inventory
 			Inventory inv = killer.getInventory();
 			ItemStack stack = null;
 			int stacknum = -1;
-			
+
 			// Scan for the smallest stack of normal ender pearls
 			for (Entry<Integer, ? extends ItemStack> entry :
-					inv.all(Material.ENDER_PEARL).entrySet()) {
+				inv.all(Material.ENDER_PEARL).entrySet()) {
 				ItemStack newstack = entry.getValue();
 				int newstacknum = entry.getKey();
 				if (newstack.getDurability() == 0) {
@@ -534,7 +569,7 @@ public class PlayerListener implements Listener {
 					stacknum = entry.getKey();
 				}
 			}
-			
+
 			int pearlnum;
 			ItemStack dropStack = null;
 			if (stacknum == -1) { // no pearl (admin command)
@@ -554,19 +589,19 @@ public class PlayerListener implements Listener {
 					pearlnum = stacknum; // then overwrite his stack of pearls
 				}
 			}
-			
+
 			// Drop pearls that otherwise would be deleted
 			Location l = killer.getLocation();
 			if (dropStack != null) {
 				killer.getWorld().dropItem(l, dropStack);
 				pearlApi.log(l + ", " + dropStack.getAmount());
 			}
-			
+
 			inv.setItem(pearlnum, pearl.createItemStack());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Handles logging in players
 	 * @param e The event args
@@ -580,7 +615,7 @@ public class PlayerListener implements Listener {
 			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
 		}
 	}
-	
+
 	/**
 	 * Frees pearls when right-clicked
 	 * @param e The event args
@@ -605,11 +640,11 @@ public class PlayerListener implements Listener {
 		Player player = e.getPlayer();
 		player.getInventory().setItemInMainHand(null);
 		e.setCancelled(true);
-		
+
 		pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN);
 	}
-	
-	
+
+
 	/**
 	 * Handles new prison pearl events
 	 * @param e The event args
@@ -619,15 +654,15 @@ public class PlayerListener implements Listener {
 
 		PearlPlayer imprisoned = e.getPearl().getPlayer();
 		PearlPlayer imprisoner = pearlApi.getPearlPlayer(e.getPearl().getKillerName());
-		
+
 		// Log the capturing ExilePearl event.
 		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
-		
+
 		imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
 		imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());
 	}
-	
-	
+
+
 	/**
 	 * Handles player freed events
 	 * @param e The event args
@@ -636,36 +671,36 @@ public class PlayerListener implements Listener {
 	public void onPlayerFreed(PlayerFreedEvent e) {
 		e.getPearl().getPlayer().msg(Lang.pearlYouWereFreed);
 	}
-	
-	
+
+
 	/**
 	 * Handles a pearl move event
 	 * @param e The event args
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPearlMoved(PearlMovedEvent e) {
-		
+
 		PearlPlayer imprisoned = e.getPearl().getPlayer();
-		
+
 		Location l = e.getDestinationHolder().getLocation();
 		String name = e.getDestinationHolder().getName();
 		imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
-		
+
 		String bcastMsg = TextUtil.instance().parse(Lang.pearlBroadcast, imprisoned.getName(), 
 				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-		
+
 		for(PearlPlayer p : imprisoned.getBcastPlayers()) {
 			p.msg(bcastMsg);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Clears out a player's inventory when being summoned from the end
 	 * @param player The player instance
 	 * @param loc The location
 	 */
-    public void dropInventory(Player player, Location loc) {
+	public void dropInventory(Player player, Location loc) {
 		if (loc == null) {
 			loc = player.getLocation();
 		}
@@ -684,80 +719,77 @@ public class PlayerListener implements Listener {
 			world.dropItemNaturally(loc, item);
 		}
 	}
-    
+
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPrepareCraftPearl(PrepareItemCraftEvent e) {
 		CraftingInventory inv = e.getInventory();
 		ItemStack result = inv.getResult();
-		
-		if (result.getType() != Material.ENDER_PEARL) {
+
+		if (result.getType() != Material.STONE_BUTTON) {
 			return;
 		}
-		
+
 		if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		// Get the pearl item being crafted
-		ItemStack pearlItem = null;
-		HashMap<Integer, ? extends ItemStack> pearlItems = inv.all(Material.ENDER_PEARL);
-		for(Entry<Integer, ? extends ItemStack> entry : pearlItems.entrySet()) {
-			ItemStack is = entry.getValue();
-			if (is.getEnchantmentLevel(Enchantment.DURABILITY) == 1 && is.getItemMeta().getLore() != null) {
-				pearlItem = is;
-				break;
-			}
-		}
-		
+		ItemStack pearlItem = inv.getItem(inv.first(Material.ENDER_PEARL));
+
 		if (pearlItem == null) {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(pearlItem);
 		if (pearl == null) {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		PearlPlayer crafter = null;
-		
+
 		// Prevent crafting with lore items
 		for(HumanEntity he : e.getViewers()) {
 			if(he instanceof Player) {
 				crafter = pearlApi.getPearlPlayer((Player)he);
 			}
 		}
-		
+
+		// Ignore pearls that are at full health
 		if (pearl.getHealth() == pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
 			inv.setResult(new ItemStack(Material.AIR));
 			crafter.msg("<i>That pearl is already at full health.");
 			return;
 		}
-		
-		// TODO
+
+		// Get the total repair value
+		int repairAmount = inv.all(healthMaterial).size() * pearlApi.getPearlConfig().getPearlRepairAmount();
+
+		// Generate a new item with the updated health value as the crafting result
 		ItemStack resultStack = pearl.createItemStack();
 		ItemMeta im = resultStack.getItemMeta();
-		im.setLore(pearlApi.getLoreGenerator().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + 8));
+		im.setLore(pearlApi.getLoreGenerator().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
 		resultStack.setItemMeta(im);
-		
+
 		e.getInventory().setResult(resultStack);
 	}
-	
+
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraftPearl(CraftItemEvent e) {
 		CraftingInventory inv = e.getInventory();
 		ItemStack result = inv.getResult();
-		
+
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(result);
 		if (pearl == null) {
 			return;
 		}
-		
-		pearl.setHealth(pearl.getHealth() + 8);
-		
+
+		// Repair the pearl and update the item stack
+		int repairAmount = inv.all(healthMaterial).size() * pearlApi.getPearlConfig().getPearlRepairAmount();
+		pearl.setHealth(pearl.getHealth() + repairAmount);
 		inv.setResult(pearl.createItemStack());
 	}
 }

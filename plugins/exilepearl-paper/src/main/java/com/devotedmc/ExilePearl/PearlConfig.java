@@ -48,7 +48,13 @@ public interface PearlConfig {
 	 * Gets the pearl health material
 	 * @return the pearl health material
 	 */
-	int getPearlHealthMaterial();
+	String getPearlRepairMaterial();
+	
+	/**
+	 * Gets the pearl health material repair value
+	 * @return the pearl health material repair value
+	 */
+	int getPearlRepairAmount();
 	
 	/**
 	 * Gets the pearl health start value
