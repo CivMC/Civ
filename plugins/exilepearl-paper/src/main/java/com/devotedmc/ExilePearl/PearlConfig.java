@@ -81,6 +81,12 @@ public interface PearlConfig {
 	boolean getMustPrisonPearlHotBar();
 	
 	/**
+	 * Gets whether pearls can be freed by throwing them
+	 * @return true if they can be freed by throwing
+	 */
+	boolean getFreeByThrowing();
+	
+	/**
 	 * Gets the suicide timeout in seconds
 	 * @return The suicide timeout
 	 */

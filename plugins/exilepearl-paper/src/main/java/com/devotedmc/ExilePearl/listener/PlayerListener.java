@@ -636,8 +636,15 @@ public class PlayerListener implements Listener {
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
-
+		
 		Player player = e.getPlayer();
+		
+		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
+			pearlApi.getPearlPlayer(player).msg(Lang.pearlCantThrow);
+			e.setCancelled(true);
+			return;
+		}
+		
 		player.getInventory().setItemInMainHand(null);
 		e.setCancelled(true);
 

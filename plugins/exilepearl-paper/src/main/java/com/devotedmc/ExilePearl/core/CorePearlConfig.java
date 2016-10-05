@@ -82,15 +82,21 @@ class CorePearlConfig implements PearlConfig {
 	}
 
 	@Override
-	@CivConfig(name = "autofree_worldborder", def = "true", type = CivConfigType.Bool)
+	@CivConfig(name = "pearls.autofree_worldborder", def = "true", type = CivConfigType.Bool)
 	public boolean getShouldAutoFreeWorldBorder() {
-		return plugin.GetConfig().get("autofree_worldborder").getBool();
+		return plugin.GetConfig().get("pearls.autofree_worldborder").getBool();
 	}
 
 	@Override
-	@CivConfig(name = "prison_musthotbar", def = "true", type = CivConfigType.Bool)
+	@CivConfig(name = "pearls.hotbar_needed", def = "true", type = CivConfigType.Bool)
 	public boolean getMustPrisonPearlHotBar() {
-		return plugin.GetConfig().get("prison_musthotbar").getBool();
+		return plugin.GetConfig().get("pearls.hotbar_needed").getBool();
+	}
+	
+	@Override
+	@CivConfig(name = "pearls.free_by_throwing", def = "false", type = CivConfigType.Bool)
+	public boolean getFreeByThrowing() {
+		return plugin.GetConfig().get("pearls.free_by_throwing").getBool();
 	}
 
 	@Override

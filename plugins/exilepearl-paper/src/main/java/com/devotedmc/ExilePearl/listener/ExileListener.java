@@ -4,6 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
@@ -45,7 +46,7 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
  *
  */
 public class ExileListener extends RuleListener {
-	
+
 	/**
 	 * Creates a new ExileListener instance
 	 * @param logger The logger instance
@@ -55,8 +56,8 @@ public class ExileListener extends RuleListener {
 	public ExileListener(final ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
-	
-	
+
+
 	/**
 	 * Clears the bed of newly exiled players
 	 * @param e The event
@@ -79,7 +80,21 @@ public class ExileListener extends RuleListener {
 	public void onPlayerEnterBed(PlayerBedEnterEvent e) {
 		checkAndCancelRule(ExileRule.USE_BED, e, e.getPlayer());
 	}
-	
+
+	/**
+	 * Prevent exiled players from throwing ender pearls
+	 * @param e The event
+	 */
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onPearlThrow(PlayerInteractEvent e) {
+		if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+			if(e.getPlayer().getItemInHand().getType().equals(Material.ENDER_PEARL)) {
+				checkAndCancelRule(ExileRule.THROW_PEARL, e, e.getPlayer());
+			}
+		}
+	}
+
 	/**
 	 * Prevent exiled players from using buckets
 	 * @param e The event
@@ -88,7 +103,7 @@ public class ExileListener extends RuleListener {
 	public void onPlayerFillBucket(PlayerBucketFillEvent e) {
 		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
 	}
-	
+
 	/**
 	 * Prevent exiled players from using buckets
 	 * @param e The event
@@ -97,18 +112,18 @@ public class ExileListener extends RuleListener {
 	public void onPlayerEmptyBucket(PlayerBucketEmptyEvent e) {
 		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
 	}
-	
+
 	/**
 	 * Prevent exiled players from using local chat
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerChat(AsyncPlayerChatEvent e) {
-		
+
 		// TODO check chat channel
 		checkAndCancelRule(ExileRule.CHAT, e, e.getPlayer());
 	}
-	
+
 	/**
 	 * Prevent exiled players from using brewing stands
 	 * @param e The event
@@ -121,7 +136,7 @@ public class ExileListener extends RuleListener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Prevent exiled players from enchanting
 	 * @param e The event
@@ -130,7 +145,7 @@ public class ExileListener extends RuleListener {
 	public void onPlayerEnchant(EnchantItemEvent e) {
 		checkAndCancelRule(ExileRule.ENCHANT, e, e.getEnchanter());
 	}
-	
+
 	/**
 	 * Prevent exiled players from pvping
 	 * @param e The event
@@ -140,10 +155,10 @@ public class ExileListener extends RuleListener {
 		if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
 			return;
 		}
-		
+
 		checkAndCancelRule(ExileRule.PVP, e, (Player)e.getDamager());
 	}
-	
+
 	/**
 	 * Prevent exiled players from drinking potions
 	 * @param e The event
@@ -154,7 +169,7 @@ public class ExileListener extends RuleListener {
 			checkAndCancelRule(ExileRule.USE_POTIONS, e, e.getPlayer());
 		}
 	}
-	
+
 	/**
 	 * Prevent exiled players from using splash potions
 	 * @param e The event
@@ -163,7 +178,7 @@ public class ExileListener extends RuleListener {
 	public void onPlayerThrowPotion(PotionSplashEvent e) {
 		checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 	}
-	
+
 	/**
 	 * Prevents exiled players from breaking blocks
 	 * @param e The event
@@ -174,8 +189,8 @@ public class ExileListener extends RuleListener {
 			checkAndCancelRule(ExileRule.IGNITE, e, e.getPlayer());
 		}
 	}
-	
-	
+
+
 	/**
 	 * Prevents exiled players from breaking blocks
 	 * @param e The event
@@ -184,8 +199,8 @@ public class ExileListener extends RuleListener {
 	public void onBlockBreak(BlockBreakEvent e) {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
 	}
-	
-	
+
+
 	/**
 	 * Prevents exiled players from placing snitches
 	 * @param e The event

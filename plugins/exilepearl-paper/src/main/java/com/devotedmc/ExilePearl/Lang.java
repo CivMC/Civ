@@ -24,6 +24,7 @@ public class Lang
 	public static final String pearlCantBcastSelf = "<i>You can't broadcast to yourself.";
 	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
+	public static final String pearlCantThrow = "<i>You can't throw exile pearls.";
 	
 	public static final String permForbidden = "<b>You don't have permission to %s.";
 	public static final String permDoThat = "do that";
