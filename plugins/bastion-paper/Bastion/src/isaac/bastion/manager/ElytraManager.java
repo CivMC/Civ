@@ -153,6 +153,7 @@ public class ElytraManager {
 			
 			HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
 			for(BastionBlock block : impact) {
+				if(!block.getType().isDamageElytra()) continue;
 				if(!typeMap.containsKey(block.getType())) {
 					typeMap.put(block.getType(), new HashSet<BastionBlock>());
 				}

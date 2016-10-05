@@ -55,6 +55,7 @@ public class BastionBlockManager {
 	private void erodeFromAction(Player player, Set<BastionBlock> blocking, Cause cause) {
 		HashMap<String, Set<BastionBlock>> typeMap = new HashMap<String, Set<BastionBlock>>();
 		for(BastionBlock block : blocking) {
+			if(cause == Cause.PEARL && !block.getType().isBlockPearls()) continue;
 			if(!typeMap.containsKey(block.getType().getName())) {
 				typeMap.put(block.getType().getName(), new HashSet<BastionBlock>());
 			}
