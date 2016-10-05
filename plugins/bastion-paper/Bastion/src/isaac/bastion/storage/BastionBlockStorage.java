@@ -64,8 +64,8 @@ public class BastionBlockStorage {
 				+ "placed bigint(20) Unsigned,"
 				+ "fraction float(20) Unsigned,"
 				+ "PRIMARY_KEY (`bastion_id`));");
-		db.registerMigration(1, true, 
-				"ALTER TABLE bastion_blocks ADD bastion_type VARCHAR(40) DEAULT '"
+		db.registerMigration(1, false, 
+				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEAULT '"
 				+ BastionType.getDefaultType() + "';");		
 	}
 	
