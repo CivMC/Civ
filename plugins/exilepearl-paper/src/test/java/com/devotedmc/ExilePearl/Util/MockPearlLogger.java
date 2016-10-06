@@ -27,4 +27,9 @@ public class MockPearlLogger implements PearlLogger {
 		logger.log(Level.INFO, String.format(msg, args));
 	}
 
+	@Override
+	public Logger getPluginLogger() {
+		return logger;
+	}
+
 }

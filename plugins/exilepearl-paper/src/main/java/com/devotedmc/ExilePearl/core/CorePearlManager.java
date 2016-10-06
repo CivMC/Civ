@@ -19,11 +19,11 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.storage.PearlStorage;
 import com.devotedmc.ExilePearl.util.Guard;
 
 /**
@@ -34,7 +34,7 @@ class CorePearlManager implements PearlManager {
 
 	private final ExilePearlApi pearlApi;
 	private final PearlFactory pearlFactory;
-	private final PearlStorage storage;
+	private final StorageProvider storage;
 	
 	private final HashMap<UUID, ExilePearl> pearls;
 	
@@ -43,9 +43,9 @@ class CorePearlManager implements PearlManager {
 	 * Creates a new PearlManager instance
 	 * @param logger The logging instance
 	 * @param factory The pearl factory
-	 * @param storage The database storage
+	 * @param storage The database storage provider
 	 */
-	public CorePearlManager(final ExilePearlApi pearlApi, final PearlFactory pearlFactory, final PearlStorage storage) {
+	public CorePearlManager(final ExilePearlApi pearlApi, final PearlFactory pearlFactory, final StorageProvider storage) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(storage, "storage");
@@ -63,7 +63,7 @@ class CorePearlManager implements PearlManager {
 	 */
 	public void loadPearls() {
 		pearls.clear();
-		for (ExilePearl p : storage.loadAllPearls()) {
+		for (ExilePearl p : storage.getStorage().loadAllPearls()) {
 			pearls.put(p.getPlayerId(), p);
 		}
 	}
@@ -101,7 +101,7 @@ class CorePearlManager implements PearlManager {
 		}
 		
 		pearls.put(pearl.getPlayerId(), pearl);
-		storage.pearlInsert(pearl);
+		storage.getStorage().pearlInsert(pearl);
 
 		pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
 		
@@ -142,7 +142,7 @@ class CorePearlManager implements PearlManager {
 		// as free offline and it will be removed when they log in
 		if (player != null && player.isOnline()) {
 			pearls.remove(pearl.getPlayerId());
-			storage.pearlRemove(pearl);
+			storage.getStorage().pearlRemove(pearl);
 		} else {
 			pearl.setFreedOffline(true);
 		}

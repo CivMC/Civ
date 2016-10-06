@@ -29,20 +29,22 @@ import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
+import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.storage.PearlStorage;
+import com.devotedmc.ExilePearl.storage.PluginStorage;
 
 public class CorePearlManagerTest extends BukkitTestCase {
 	
 	private ExilePearlApi pearlApi;
 	private PearlFactory pearlFactory;
-	private PearlStorage storage;
+	private PluginStorage storage;
 	private PearlConfig config;
 	private CorePearlManager manager;
+	private StorageProvider storageProvider;
 	
 	private final String playerName = "Player";
 	private final UUID playerId = UUID.randomUUID();
@@ -118,7 +120,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 			}
 		});
 		
-		storage = mock(PearlStorage.class);
+		storage = mock(PluginStorage.class);
 		config = mock(PearlConfig.class);
 		
 		when(pearlApi.getPearlConfig()).thenReturn(config);
@@ -127,18 +129,21 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		reset(pluginManager);
 		doNothing().when(pluginManager).callEvent(any(Event.class));
 		
-		manager = new CorePearlManager(pearlApi, pearlFactory, storage);
+		storageProvider = mock(StorageProvider.class);
+		when(storageProvider.getStorage()).thenReturn(storage);
+		
+		manager = new CorePearlManager(pearlApi, pearlFactory, storageProvider);
 	}
 
 	@Test
 	public void testCorePearlManager() {
 		// Null arguments throw exceptions
 		Throwable e = null;
-		try { new CorePearlManager(null, pearlFactory, storage); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlManager(null, pearlFactory, storageProvider); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;
-		try { new CorePearlManager(pearlApi, null, storage); } catch (Throwable ex) { e = ex; }
+		try { new CorePearlManager(pearlApi, null, storageProvider); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		e = null;

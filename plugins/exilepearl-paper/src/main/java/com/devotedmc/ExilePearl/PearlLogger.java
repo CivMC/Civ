@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public interface PearlLogger {
 
@@ -18,4 +19,10 @@ public interface PearlLogger {
 	 * @param args The message arguments
 	 */
 	void log(String msg, Object... args);
+	
+	/**
+	 * Gets the raw logger instance
+	 * @return The logger instance
+	 */
+	Logger getPluginLogger();
 }

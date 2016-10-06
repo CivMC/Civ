@@ -15,7 +15,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  * Wrapper class for PluginStorage that performs asynchronous writes
  * @author Gordon
  */
-public class AsyncStorageWriter implements PluginStorage, Runnable {
+class AsyncStorageWriter implements PluginStorage, Runnable {
 
 	private PluginStorage storage;
 	private final PearlLogger logger;

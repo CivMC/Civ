@@ -1,36 +1,8 @@
 package com.devotedmc.ExilePearl;
 
-public interface PearlConfig {
-	
-	/**
-	 * Gets the database host
-	 * @return the database host
-	 */
-	String getDbHost();
+import com.devotedmc.ExilePearl.storage.MySqlConfig;
 
-	/**
-	 * Gets the database user name
-	 * @return the database user name
-	 */
-	String getDbUsername();
-	
-	/**
-	 * Gets the database password
-	 * @return the database password
-	 */
-	String getDbPassword();
-	
-	/**
-	 * Gets the database name
-	 * @return the database name
-	 */
-	String getDbName();
-	
-	/**
-	 * Gets the database port
-	 * @return the database port
-	 */
-	int getDbPort();
+public interface PearlConfig extends MySqlConfig {
 	
 	/**
 	 * Gets whether to use ram storage

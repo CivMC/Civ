@@ -70,7 +70,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		when(killer.getLocation()).thenReturn(new Location(world, 10, 20, 30));
 		
 		nameProvider = mock(PlayerProvider.class);
-		when(nameProvider.getRealPlayerName(player.getUniqueId())).thenReturn(playerName);
+		when(nameProvider.getRealPlayerName(playerId)).thenReturn(playerName);
 		when(nameProvider.getRealPlayerName(killer.getUniqueId())).thenReturn(killerName);
 		when(nameProvider.getUniqueId(playerName)).thenReturn(playerId);
 		when(nameProvider.getUniqueId(killerName)).thenReturn(killerId);
@@ -156,7 +156,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 
 	@Test
 	public void testGetPlayerName() {		
-		assertEquals(pearl.getPlayerName(), player.getName());
+		assertEquals(player.getName(), pearl.getPlayerName());
 	}
 
 	@Test
@@ -263,17 +263,17 @@ public class CoreExilePearlTest extends BukkitTestCase {
 
 	@Test
 	public void testGetItemName() {
-		assertEquals(pearl.getItemName(), "Exile Pearl");
+		assertEquals("Exile Pearl", pearl.getItemName());
 	}
 
 	@Test
 	public void testGetKillerUniqueId() {
-		assertEquals(pearl.getKillerUniqueId(), killerId);
+		assertEquals(killerId, pearl.getKillerUniqueId());
 	}
 
 	@Test
 	public void testGetKillerName() {
-		assertEquals(pearl.getKillerName(), killerName);
+		assertEquals(killerName, pearl.getKillerName());
 	}
 
 	@Test

@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 
-public class RamStorage implements PluginStorage {
+class RamStorage implements PluginStorage {
 	
 	private HashMap<UUID, ExilePearl> pearls = new HashMap<UUID, ExilePearl>();
 	

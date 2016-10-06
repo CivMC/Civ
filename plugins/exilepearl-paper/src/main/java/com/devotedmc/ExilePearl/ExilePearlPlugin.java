@@ -8,8 +8,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -29,8 +31,8 @@ import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.JukeAlertListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
+import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
-import com.devotedmc.ExilePearl.storage.StorageProvider;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -46,8 +48,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final CorePluginFactory pearlFactory = new CorePluginFactory(this);
 	private final PearlConfig pearlConfig = pearlFactory.createPearlConfig();
-	private final StorageProvider storageProvider = new StorageProvider(this, pearlFactory);
-	private final PluginStorage storage = storageProvider.createStorage();
+	private final CoreStorageProvider storageProvider = new CoreStorageProvider(this, pearlFactory);
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlLoreProvider loreGenerator = pearlFactory.createLoreGenerator();
 	private final ExilePearlRunnable pearlDecayWorker = pearlFactory.createPearlDecayWorker();
@@ -65,6 +66,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
 	
 	private final HashMap<UUID, PearlPlayer> players = new HashMap<UUID, PearlPlayer>();
+	
+	private PluginStorage storage;
 
 	/**
 	 * Spigot enable method
@@ -76,6 +79,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		super.onEnable();
 		
 		// Storage connect and load
+		storage = storageProvider.createStorage();
 		if (storage.connect()) {
 			pearlManager.loadPearls();
 		} else {
@@ -146,11 +150,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	}
 	
 	/**
-	 * Gets the plugin storage
-	 * @return The storage instance
+	 * Gets the plugin storage provider
+	 * @return The storage instance provider
 	 */
-	public PluginStorage getStorage() {
-		return storage;
+	public StorageProvider getStorageProvider() {
+		return storageProvider;
 	}
 	
 	/**
@@ -223,13 +227,20 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	public final String getPluginName() {
 		return "ExilePearl";
 	}
-	
+
+	@Override
 	public void log(Level level, String msg, Object... args) {
 		logInternal(level, String.format(msg, args));
 	}
-	
+
+	@Override
 	public void log(String msg, Object... args) {
 		logInternal(Level.INFO, String.format(msg, args));
+	}
+
+	@Override
+	public Logger getPluginLogger() {
+		return super.getLogger();
 	}
 	
 	private void logInternal(Level level, String msg) {
@@ -316,7 +327,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		if (isNameLayerEnabled()) {
 			return NameAPI.getCurrentName(uid);
 		}
-		return Bukkit.getOfflinePlayer(uid).getName();
+		OfflinePlayer player = Bukkit.getOfflinePlayer(uid);
+		if (player == null) {
+			return null;
+		}
+		return player.getName();
 	}
 	
 

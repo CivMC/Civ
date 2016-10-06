@@ -1,8 +1,10 @@
 package com.devotedmc.ExilePearl.storage;
 
+import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -19,7 +21,9 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.util.Guard;
 
-public class MySqlStorage implements PluginStorage {
+import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
+
+class MySqlStorage implements PluginStorage {
 
 	private static final Integer DATABASE_VERSION = 1;
 
@@ -27,8 +31,26 @@ public class MySqlStorage implements PluginStorage {
 	private final PearlLogger logger;
 	private final PearlConfig config;
 
-	private MySqlConnection db;
+	private ConnectionPool db;
 	private boolean isConnected = false;
+
+	private static final String createPluginTable = "create table if not exists exilepearlplugin( " + 
+			"setting varchar(255) NOT NULL," +
+			"value varchar(255) NOT NULL," +
+			"PRIMARY KEY (setting));";
+	
+	private static final String createPearlTable = "create table if not exists exilepearls( " +
+			"uid varchar(36) not null," +
+			"killer_id varchar(36) not null," +
+			"pearl_id int not null," +
+			"world varchar(36) not null," +
+			"x int not null," +
+			"y int not null," +
+			"z int not null," +
+			"health int not null," +
+			"pearled_on long not null," +
+			"freed_offline bool," +
+			"PRIMARY KEY (uid));";
 
 	/**
 	 * Creates a new MySqlStorage instance
@@ -46,25 +68,34 @@ public class MySqlStorage implements PluginStorage {
 
 	@Override
 	public boolean connect() {
-		db = new MySqlConnection(config.getDbHost(), config.getDbPort(), config.getDbName(), config.getDbUsername(), config.getDbPassword(), logger);
-		isConnected = db.connect();
-		if (isConnected) {
-			setupDatabase();
-			return true;
-		}
-		return false;
+		db = new ConnectionPool(logger.getPluginLogger(), 
+				config.getMySqlUsername(), 
+				config.getMySqlPassword(), 
+				config.getMySqlHost(), 
+				config.getMySqlPort(), 
+				config.getMySqlName(), 
+				config.getMySqlPoolSize(), 
+				config.getMySqlConnectionTimeout(), 
+				config.getMySqlIdleTimeout(), 
+				config.getMySqlMaxLifetime());
+
+		isConnected = true;
+		setupDatabase();
+		return true;
 	}
 
 	@Override
 	public void disconnect() {
 		isConnected = false;
-		db.close();
-		db = null;
+		try {
+			db.close();
+		} catch (SQLException e) {
+		}
 	}
 
 	@Override
 	public boolean isConnected() {
-		return isConnected && db.isConnected();
+		return isConnected;
 	}
 
 	/**
@@ -72,46 +103,41 @@ public class MySqlStorage implements PluginStorage {
 	 */
 	private void setupDatabase() {
 
-		// Create plugin table
-		db.execute("create table if not exists exilepearlplugin( " + 
-				"setting varchar(255) NOT NULL," +
-				"value varchar(255) NOT NULL," +
-				"PRIMARY KEY (setting));");
+		try (Connection connection = db.getConnection();) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement(createPluginTable)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to create the plugin table.");
+			}
+			
+			try (PreparedStatement preparedStatement = connection.prepareStatement(createPearlTable)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to create the pearl table.");
+			}
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Failed to setup the database");
+		}
 
-		// Create pearl table
-		db.execute("create table if not exists exilepearls( " +
-				"uid varchar(36) not null," +
-				"killer_id varchar(36) not null," +
-				"pearl_id int not null," +
-				"world varchar(36) not null," +
-				"x int not null," +
-				"y int not null," +
-				"z int not null," +
-				"health int not null," +
-				"pearled_on long not null," +
-				"freed_offline bool," +
-				"PRIMARY KEY (uid));");
-		
 		if (isFirstRun()) {
 			logger.log(Level.WARNING, "ExilePearl is running for the first time.");
 			migratePrisonPearl();
 			setHasRun();
 		} else if (getDatabaseVersion() < DATABASE_VERSION) {
 			// This is a placeholder for any future upgrade methods
-
 		}
-		
+
 		updateDatabaseVersion();
 	}
 
 	@Override
 	public Collection<ExilePearl> loadAllPearls() {
 		HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
-		
+
 		logger.log("Loading ExilePearl pearls.");
 
-		try {
-			PreparedStatement preparedStatement = db.prepareStatement("SELECT * FROM ExilePearls");
+		try (Connection connection = db.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM ExilePearls"); ) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			while (resultSet.next()) {
 				try {
@@ -144,10 +170,10 @@ public class MySqlStorage implements PluginStorage {
 				}
 			}
 
-		} catch (Exception ex) {
+		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "An error occurred when loading pearls.");
 		}
-		
+
 		logger.log("Loaded %d exile pearls.", pearls.size());
 
 		return pearls;
@@ -157,10 +183,11 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlInsert(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
-		try {
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
+
 			Location l = pearl.getLocation();
 
-			PreparedStatement ps = db.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
 			ps.setString(1, pearl.getPlayerId().toString());
 			ps.setString(2, pearl.getKillerUniqueId().toString());
 			ps.setInt(3, pearl.getPearlId());
@@ -173,7 +200,7 @@ public class MySqlStorage implements PluginStorage {
 			ps.setBoolean(10, pearl.getFreedOffline());
 			ps.executeUpdate();
 
-		} catch (Exception ex) {
+		} catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "insert record");
 		}
 	}
@@ -182,11 +209,11 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlRemove(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
-		try {
-			PreparedStatement ps = db.prepareStatement("DELETE FROM exilepearls WHERE uid = ?");
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("DELETE FROM exilepearls WHERE uid = ?"); ) {
 			ps.setString(1, pearl.getPlayerId().toString());
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "delete record");
 		}
 	}
@@ -195,8 +222,8 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlUpdateLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
-		try {
-			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET world = ?, x = ?, y = ?, z = ? WHERE uid = ?");
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET world = ?, x = ?, y = ?, z = ? WHERE uid = ?"); ) {
 
 			Location l = pearl.getLocation();
 			ps.setString(1, l.getWorld().getName());
@@ -206,7 +233,7 @@ public class MySqlStorage implements PluginStorage {
 			ps.setString(5, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update 'location'");
 		}
 	}
@@ -215,14 +242,14 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlUpdateHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
-		try {
-			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET health = ? WHERE uid = ?");
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET health = ? WHERE uid = ?"); ) {
 
 			ps.setInt(1, pearl.getHealth());
 			ps.setString(2, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update 'health'");
 		}
 	}
@@ -231,14 +258,14 @@ public class MySqlStorage implements PluginStorage {
 	public void pearlUpdateFreedOffline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
-		try {
-			PreparedStatement ps = db.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?");
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?"); ) {
 
 			ps.setBoolean(1, pearl.getFreedOffline());
 			ps.setString(2, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update 'freed offline'");
 		}
 	}
@@ -254,49 +281,61 @@ public class MySqlStorage implements PluginStorage {
 
 		try {
 			// Check if the table exists
-			DatabaseMetaData dbm = db.getConnection().getMetaData();
-			ResultSet tables = dbm.getTables(null, null, "prisonpearls", null);
-			if (!tables.next()) {
-				logger.log(Level.WARNING, "No PrisonPearl data was found.");
+			try (Connection connection = db.getConnection();) {
+				DatabaseMetaData dbm = db.getConnection().getMetaData();
+
+				ResultSet tables = dbm.getTables(null, null, "prisonpearls", null);
+				if (!tables.next()) {
+					logger.log(Level.WARNING, "No PrisonPearl data was found.");
+					return;
+				}
+			} catch(Exception ex) {
+				logger.log(Level.WARNING, "Failed to retrieve PrisonPearl table.");
 				return;
 			}
-			
-			PreparedStatement getAllPearls = db.prepareStatement("SELECT * FROM PrisonPearls;");
-			ResultSet set = getAllPearls.executeQuery();
-			while (set.next()) {
-				try {
-					String w = set.getString("world");
-					World world = Bukkit.getWorld(w);
-					int x = set.getInt("x");
-					int y = set.getInt("y");
-					int z = set.getInt("z");
-					UUID playerId = UUID.fromString(set.getString("uuid"));
-					int pearlId = set.getInt("uq");
-					UUID killerId = null;
-					String killerUUIDAsString = set.getString("killer");
-					if (killerUUIDAsString == null) {
-						killerId = UUID.randomUUID();
+
+			try (Connection connection = db.getConnection();
+					PreparedStatement getAllPearls = connection.prepareStatement("SELECT * FROM PrisonPearls;"); ) {
+				ResultSet set = getAllPearls.executeQuery();
+				while (set.next()) {
+					try {
+						String w = set.getString("world");
+						World world = Bukkit.getWorld(w);
+						int x = set.getInt("x");
+						int y = set.getInt("y");
+						int z = set.getInt("z");
+						UUID playerId = UUID.fromString(set.getString("uuid"));
+						int pearlId = set.getInt("uq");
+						UUID killerId = null;
+						String killerUUIDAsString = set.getString("killer");
+						if (killerUUIDAsString == null) {
+							killerId = UUID.randomUUID();
+						}
+						else {
+							killerId = UUID.fromString(killerUUIDAsString);
+						}
+						long imprisonTime = set.getLong("pearlTime");
+						if (imprisonTime == 0) {
+							imprisonTime = new Date().getTime();
+						}
+						Date pearledOn = new Date(imprisonTime);
+						Location loc = new Location(world, x, y, z);
+
+						ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
+						pearl.setPearledOn(pearledOn);
+						pearl.setHealth(config.getPearlHealthMaxValue() / 2); // set health to half max health
+						pearl.enableStorage();
+						pearlInsert(pearl);
+
+						migrated++;
+					} catch(SQLException ex) {
+						failed++;
+						logger.log(Level.SEVERE, "Failed to migrate PisonPearl pearl.");
 					}
-					else {
-						killerId = UUID.fromString(killerUUIDAsString);
-					}
-					long imprisonTime = set.getLong("pearlTime");
-					if (imprisonTime == 0) {
-						imprisonTime = new Date().getTime();
-					}
-					Date pearledOn = new Date(imprisonTime);
-					Location loc = new Location(world, x, y, z);
-					
-					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
-					pearl.setPearledOn(pearledOn);
-					pearl.enableStorage();
-					pearlInsert(pearl);
-					
-					migrated++;
-				} catch(Exception ex) {
-					failed++;
-					logger.log(Level.SEVERE, "Failed to migrate PisonPearl pearl.");
 				}
+			} catch(SQLException ex) {
+				logger.log(Level.SEVERE, "An error occurred when migrating PrisonPearl data.");
+				return;
 			}
 		} catch(Exception ex) {
 			logger.log(Level.SEVERE, "An error occurred when migrating PrisonPearl data.");
@@ -311,18 +350,14 @@ public class MySqlStorage implements PluginStorage {
 	 * @return The database version
 	 */
 	private int getDatabaseVersion() {
-		try {
-			PreparedStatement getDBVersion = db.prepareStatement("select * from ExilePearlPlugin;");
-			ResultSet resultSet = getDBVersion.executeQuery();
-			if (resultSet.next()) {
-				return new Integer(resultSet.getString("db_version"));
-			}
+		int version = DATABASE_VERSION;
+		String versionStr = getPluginSetting("db_version");
 
+		if (versionStr == null) {
+			version = Integer.parseInt(versionStr);
 		}
-		catch (Exception ex) {
-			logger.log(Level.SEVERE, "Failed to get the database version.");
-		}
-		return DATABASE_VERSION;
+
+		return version;
 	}
 
 	/**
@@ -341,15 +376,15 @@ public class MySqlStorage implements PluginStorage {
 	}
 
 	private void setPluginSetting(final String setting, final String value) {
-		try {
-			PreparedStatement stmt = db.prepareStatement("INSERT INTO ExilePearlPlugin(setting, value) VALUES(?, ?) " + 
-					"ON DUPLICATE KEY UPDATE value = ?;");
+		try (Connection connection = db.getConnection();
+				PreparedStatement stmt = connection.prepareStatement("INSERT INTO ExilePearlPlugin(setting, value) VALUES(?, ?) " + 
+						"ON DUPLICATE KEY UPDATE value = ?;");) {
 			stmt.setString(1, setting);
 			stmt.setString(2, value);
 			stmt.setString(3, value);
 			stmt.execute();
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Failed to update the plugin setting %s.", setting);
 			ex.printStackTrace();
 		}
@@ -358,8 +393,8 @@ public class MySqlStorage implements PluginStorage {
 	private String getPluginSetting(final String setting) {
 		String value = null;
 
-		try {
-			PreparedStatement stmt = db.prepareStatement("SELECT * FROM ExilePearlPlugin where setting = ?;"); 
+		try (Connection connection = db.getConnection();
+				PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ExilePearlPlugin where setting = ?;");) {
 			stmt.setString(1, setting);
 
 			ResultSet resultSet = stmt.executeQuery();
@@ -367,7 +402,7 @@ public class MySqlStorage implements PluginStorage {
 				value = resultSet.getString("value");
 			}
 		}
-		catch (Exception ex) {
+		catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Failed to update the plugin setting %s.", setting);
 			ex.printStackTrace();
 		}

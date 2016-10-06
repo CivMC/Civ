@@ -17,32 +17,56 @@ class CorePearlConfig implements PearlConfig {
 	
 	@Override
 	@CivConfig(name = "database.mysql.host", def = "localhost", type = CivConfigType.String)
-	public String getDbHost() {
+	public String getMySqlHost() {
 		return plugin.GetConfig().get("database.mysql.host").getString();
 	}
 
 	@Override
 	@CivConfig(name = "database.mysql.username", def = "bukkit", type = CivConfigType.String)
-	public String getDbUsername() {
+	public String getMySqlUsername() {
 		return plugin.GetConfig().get("database.mysql.username").getString();
 	}
 
 	@Override
 	@CivConfig(name = "database.mysql.password", def = "", type = CivConfigType.String)
-	public String getDbPassword() {
+	public String getMySqlPassword() {
 		return plugin.GetConfig().get("database.mysql.password").getString();
 	}
 
 	@Override
 	@CivConfig(name = "database.mysql.dbname", def = "bukkit", type = CivConfigType.String)
-	public String getDbName() {
+	public String getMySqlName() {
 		return plugin.GetConfig().get("database.mysql.dbname").getString();
 	}
 
 	@Override
 	@CivConfig(name = "database.mysql.port", def = "3306", type = CivConfigType.Int)
-	public int getDbPort() {
+	public int getMySqlPort() {
 		return plugin.GetConfig().get("database.mysql.port").getInt();
+	}
+
+	@Override
+	@CivConfig(name = "database.mysql.pool_size", def = "5", type = CivConfigType.Int)
+	public int getMySqlPoolSize() {
+		return plugin.GetConfig().get("database.mysql.pool_size").getInt();
+	}
+
+	@Override
+	@CivConfig(name = "database.mysql.connection_timeout", def = "5000", type = CivConfigType.Int)
+	public int getMySqlConnectionTimeout() {
+		return plugin.GetConfig().get("database.mysql.connection_timeout").getInt();
+	}
+
+	@Override
+	@CivConfig(name = "database.mysql.idle_timeout", def = "5000", type = CivConfigType.Int)
+	public int getMySqlIdleTimeout() {
+		return plugin.GetConfig().get("database.mysql.idle_timeout").getInt();
+	}
+
+	@Override
+	@CivConfig(name = "database.mysql.max_lifetime", def = "5000", type = CivConfigType.Int)
+	public int getMySqlMaxLifetime() {
+		return plugin.GetConfig().get("database.mysql.max_lifetime").getInt();
 	}
 	
 	@Override

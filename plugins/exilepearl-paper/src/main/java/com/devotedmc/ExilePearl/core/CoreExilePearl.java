@@ -147,7 +147,11 @@ class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public String getPlayerName() {
-		return this.getPlayer().getName();
+		String name = this.getPlayer().getName();
+		if (name == null) {
+			name = "Unknown player";
+		}
+		return name;
 	}
 
 
