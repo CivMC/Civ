@@ -1,11 +1,20 @@
 package com.devotedmc.ExilePearl.core;
 
+import java.util.HashSet;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.bukkit.inventory.ItemStack;
+
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.RepairMaterial;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.annotations.CivConfig;
 import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 class CorePearlConfig implements PearlConfig {
 
@@ -86,18 +95,6 @@ class CorePearlConfig implements PearlConfig {
 	public int getPearlHealthDecayAmount() {
 		return plugin.GetConfig().get("health.decay_amount").getInt();
 	}
-	
-	@Override
-	@CivConfig(name = "health.repair_material", def = "OBSIDIAN", type = CivConfigType.String)
-	public String getPearlRepairMaterial() {
-		return plugin.GetConfig().get("health.repair_material").getString();
-	}
-	
-	@Override
-	@CivConfig(name = "health.repair_amount", def = "3" , type = CivConfigType.Int)
-	public int getPearlRepairAmount() {
-		return plugin.GetConfig().get("health.repair_amount").getInt();
-	}
 
 	@Override
 	@CivConfig(name = "health.start_value", def = "4" , type = CivConfigType.Int)
@@ -109,6 +106,23 @@ class CorePearlConfig implements PearlConfig {
 	@CivConfig(name = "health.max_value", def = "336" , type = CivConfigType.Int)
 	public int getPearlHealthMaxValue() {
 		return plugin.GetConfig().get("health.max_value").getInt();
+	}
+
+	@Override
+	public Set<RepairMaterial> getRepairMaterials() {
+		HashSet<RepairMaterial> materials = new HashSet<RepairMaterial>();
+		ItemMap itemMap = ConfigParsing.parseItemMap(plugin.getConfig().getConfigurationSection("health.repair_materials"));
+		
+		// The amount value is used for the repair amount
+		for(Entry<ItemStack, Integer> entry : itemMap.getEntrySet()) {
+			int repairAmount = entry.getValue();
+			ItemStack item = entry.getKey();
+			item.setAmount(1);
+			
+			materials.add(new RepairMaterial(item, repairAmount));
+		}
+		
+		return materials;
 	}
 
 	@Override

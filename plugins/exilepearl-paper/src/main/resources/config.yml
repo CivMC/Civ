@@ -1,0 +1,46 @@
+database:
+  use_dev_ram_storage: true
+  mysql:
+    connection_timeout: 5000
+    dbname: bukkit
+    host: localhost
+    idle_timeout: 5000
+    max_lifetime: 5000
+    password: ''
+    pool_size: 5
+    port: 3306
+    username: bukkit
+health:
+  decay_amount: 1
+  decay_interval_min: 60
+  max_value: 336
+  start_value: 4
+  repair_materials:
+    obsidian:
+      material: OBSIDIAN
+      amount: 3
+pearls:
+  autofree_worldborder: true
+  free_by_throwing: false
+  hotbar_needed: true
+rules:
+  brew: true
+  chat_local: false
+  create_bastion: false
+  damage_bastion: false
+  damage_reinforcement: false
+  enchant: true
+  enter_bastion: false
+  ignite: false
+  mine_blocks: true
+  pearl_radius: 1000
+  place_snitch: false
+  pvp: false
+  suicide: true
+  throw_pearl: false
+  use_bed: false
+  use_bucket: false
+  use_potions: false
+suicide_time_seconds: 180
+damagelog_min: 3
+damagelog_ticks: 600

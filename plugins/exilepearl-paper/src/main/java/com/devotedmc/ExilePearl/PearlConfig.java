@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl;
 
+import java.util.Set;
+
 import com.devotedmc.ExilePearl.storage.MySqlConfig;
 
 public interface PearlConfig extends MySqlConfig {
@@ -21,18 +23,6 @@ public interface PearlConfig extends MySqlConfig {
 	 * @return the pearl decay amount
 	 */
 	int getPearlHealthDecayAmount();
-	
-	/**
-	 * Gets the pearl health material
-	 * @return the pearl health material
-	 */
-	String getPearlRepairMaterial();
-	
-	/**
-	 * Gets the pearl health material repair value
-	 * @return the pearl health material repair value
-	 */
-	int getPearlRepairAmount();
 	
 	/**
 	 * Gets the pearl health start value
@@ -63,6 +53,12 @@ public interface PearlConfig extends MySqlConfig {
 	 * @return true if they can be freed by throwing
 	 */
 	boolean getFreeByThrowing();
+	
+	/**
+	 * Gets the pearl repair materials
+	 * @return The pearl repair materials
+	 */
+	Set<RepairMaterial> getRepairMaterials();
 	
 	/**
 	 * Gets the suicide timeout in seconds

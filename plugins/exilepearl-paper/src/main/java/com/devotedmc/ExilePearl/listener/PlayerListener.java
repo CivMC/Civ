@@ -97,15 +97,13 @@ public class PlayerListener implements Listener {
 			im.addEnchant(Enchantment.DURABILITY, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
-
-			Material healthMaterial = Material.valueOf(pearlApi.getPearlConfig().getPearlRepairMaterial());
-			if (healthMaterial == null) {
-				pearlApi.log("Failed to load pearl repair materials. Defaulting to Obsidian.");
-				healthMaterial = Material.OBSIDIAN;
-			}
 			
-			// TODO
-			repairMaterials.add(new RepairMaterial(new ItemStack(healthMaterial), 3));
+			repairMaterials.addAll(pearlApi.getPearlConfig().getRepairMaterials());
+			
+			if (repairMaterials.size() == 0) {
+				pearlApi.log("Failed to load any pearl repair materials. Defaulting to Obsidian.");
+				repairMaterials.add(new RepairMaterial(new ItemStack(Material.OBSIDIAN), 2));
+			}
 			
 			for(RepairMaterial mat : repairMaterials) {
 				// Shapeless recipe
