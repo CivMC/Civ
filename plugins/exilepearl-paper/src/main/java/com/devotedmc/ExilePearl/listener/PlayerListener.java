@@ -1,7 +1,9 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.UUID;
 
@@ -53,12 +55,14 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.ItemList;
 import com.devotedmc.ExilePearl.util.TextUtil;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Handles events related to prison pearls
@@ -68,7 +72,7 @@ public class PlayerListener implements Listener {
 
 	private final ExilePearlApi pearlApi;
 
-	private Material healthMaterial = Material.OBSIDIAN;
+	private Set<RepairMaterial> repairMaterials = new HashSet<RepairMaterial>();
 
 	/**
 	 * Creates a new PlayerListener instance
@@ -94,24 +98,24 @@ public class PlayerListener implements Listener {
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 
-			healthMaterial = Material.valueOf(pearlApi.getPearlConfig().getPearlRepairMaterial());
+			Material healthMaterial = Material.valueOf(pearlApi.getPearlConfig().getPearlRepairMaterial());
 			if (healthMaterial == null) {
-				pearlApi.log("Failed to load pearl repair material. Defaulting to Obsidian.");
+				pearlApi.log("Failed to load pearl repair materials. Defaulting to Obsidian.");
 				healthMaterial = Material.OBSIDIAN;
 			}
+			
+			// TODO
+			repairMaterials.add(new RepairMaterial(new ItemStack(healthMaterial), 3));
+			
+			for(RepairMaterial mat : repairMaterials) {
+				// Shapeless recipe
+				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+				r1.addIngredient(1, Material.ENDER_PEARL);
+				r1.addIngredient(1, mat.getStack().getData());
 
-			// Shapeless recipe
-			ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
-			r1.addIngredient(1, Material.ENDER_PEARL);
-			r1.addIngredient(1, healthMaterial);
+				Bukkit.getServer().addRecipe(r1);
+			}
 			
-			ShapelessRecipe r2 = new ShapelessRecipe(resultItem);
-			r2.addIngredient(1, Material.ENDER_PEARL);
-			r2.addIngredient(1, healthMaterial);
-			r2.addIngredient(1, healthMaterial);
-			
-			Bukkit.getServer().addRecipe(r1);
-			Bukkit.getServer().addRecipe(r2);
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
 		}
@@ -748,13 +752,27 @@ public class PlayerListener implements Listener {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-
-		// Gets the repair amount from the total number of repair materials being crafted
-		int repairPerItem = pearlApi.getPearlConfig().getPearlRepairAmount();
-		int repairAmount = 0;
-		for (ItemStack s : inv.all(healthMaterial).values()) {
-			repairAmount += (s.getAmount() * repairPerItem);
+		
+		ItemMap invItems = new ItemMap(inv);
+		RepairMaterial repairItem = null;
+		
+		// Find the repair material that is being used for crafting
+		for(RepairMaterial item : repairMaterials) {
+			if (invItems.getAmount(item.getStack()) > 0) {
+				repairItem = item;
+				break;
+			}
 		}
+		
+		// Quit if no repair item was found
+		if (repairItem == null) {
+			inv.setResult(new ItemStack(Material.AIR));
+			return;
+		}
+		
+		// Get the total possible repair amount. This doesn't need to be limited
+		// because the lore generator will cap at 100%
+		int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
 
 		// Generate a new item with the updated health value as the crafting result
 		ItemStack resultStack = pearl.createItemStack();
@@ -770,25 +788,39 @@ public class PlayerListener implements Listener {
 		CraftingInventory inv = e.getInventory();
 		ItemStack result = inv.getResult();
 
+		// Check if we are crafting an exile pearl
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(result);
 		if (pearl == null) {
 			return;
 		}
 		
-		ItemList repairItems = new ItemList();
-		repairItems.add(new ItemStack(healthMaterial));
+		ItemMap invItems = new ItemMap(inv);
+		RepairMaterial repairItem = null;
 		
-		// Gets the repair amount from the total number of repair materials being crafted
+		// Find the repair material that is being used for crafting
+		for(RepairMaterial item : repairMaterials) {
+			if (invItems.getAmount(item.getStack()) > 0) {
+				repairItem = item;
+				break;
+			}
+		}
+		
+		// Quit if no repair items were found in the crafting inventory
+		if (repairItem == null) {
+			return;
+		}
+
 		int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
-		int repairPerItem = pearlApi.getPearlConfig().getPearlRepairAmount();
-		int repairMatsAvailable = repairItems.amountAvailable(inv);
+		int repairPerItem = repairItem.getRepairAmount();
+		int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
 		int repairMatsToUse = Math.min(((int)(maxHealth - pearl.getHealth()) / repairPerItem), repairMatsAvailable);
 		int repairAmount = repairMatsToUse * repairPerItem;
 
 		// Take away the consumed repair materials
-		repairItems.clear();
-		repairItems.add(new ItemStack(healthMaterial, repairMatsToUse));
-		repairItems.removeFrom(inv);
+		ItemStack removeStack = repairItem.getStack().clone();
+		removeStack.setAmount(repairMatsToUse);
+		ItemMap removeItems = new ItemMap(removeStack);
+		removeItems.removeSafelyFrom(inv);
 
 		// Repair the pearl and update the item stack
 		pearl.setHealth(pearl.getHealth() + repairAmount);
