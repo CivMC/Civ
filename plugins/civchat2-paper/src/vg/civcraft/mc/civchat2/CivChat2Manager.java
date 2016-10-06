@@ -14,6 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
+import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
+import vg.civcraft.mc.civchat2.event.GroupChatEvent;
+import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.mercury.MercuryAPI;
@@ -127,6 +130,13 @@ public class CivChat2Manager {
 	 * @param chatMessage Message to send from sender to receive
 	 */
 	public void sendPrivateMsg(Player sender, Player receiver, String chatMessage) {		
+		PrivateMessageEvent event = new PrivateMessageEvent(sender, receiver, chatMessage);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return;
+		}
+		
 		StringBuilder sb = new StringBuilder();
 	
 		String senderName = sender.getName();
@@ -255,7 +265,14 @@ public class CivChat2Manager {
 	 * @param chatMessage Message to send
 	 * @param recipients Players in range to receive the message
 	 */
-	public void broadcastMessage(Player sender, String chatMessage, Set<Player> recipients) {
+	public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
+		GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage, messageFormat);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return;
+		}
+		
 		int range = config.getChatRange();
 		int height = config.getYInc();	
 		Location location = sender.getLocation();
@@ -283,7 +300,6 @@ public class CivChat2Manager {
 		}
 		
 		ChatColor color = ChatColor.valueOf(defaultColor);
-		String format = "%1$s: %2$s";
 
 		Set<String> recivers = new HashSet<String>();
 		for (Player receiver : recipients){
@@ -302,7 +318,7 @@ public class CivChat2Manager {
 							receiverDistance,
 							newColor.name()));*/
 
-						receiver.sendMessage(String.format(format, newColor + NameAPI.getCurrentName(sender.getUniqueId()), 
+						receiver.sendMessage(String.format(messageFormat, newColor + NameAPI.getCurrentName(sender.getUniqueId()), 
 								newColor + chatMessage));
 					}
 				}
@@ -442,6 +458,14 @@ public class CivChat2Manager {
 		}
 		StringBuilder sb = new StringBuilder();
 		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
+		
+		GroupChatEvent event = new GroupChatEvent(msgSender, group.getName(), groupMsg);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		if (event.isCancelled()) {
+			return;
+		}
+		
 		List<Player> members = new ArrayList<Player>();
 		List<UUID> membersUUID = group.getAllMembers();
 		for(UUID uuid : membersUUID){

@@ -83,7 +83,7 @@ public class CivChat2Listener implements Listener {
 					UUID receiverUUID = NameAPI.getUUID(chatChannel);
 					Player receiver = Bukkit.getPlayer(receiverUUID);
 					CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
-					if(receiver != null){	
+					if(receiver != null) {
 						chatman.sendPrivateMsg(sender, receiver, chatMessage);
 						return;
 					} else {
@@ -117,9 +117,8 @@ public class CivChat2Listener implements Listener {
 						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 					}
 				}
-				
 				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
-				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getRecipients());
+				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(), asyncPlayerChatEvent.getRecipients());
 		    }
 		}.runTask(CivChat2.getInstance());
 	}
