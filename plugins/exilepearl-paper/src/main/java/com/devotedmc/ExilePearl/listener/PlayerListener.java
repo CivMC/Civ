@@ -197,11 +197,10 @@ public class PlayerListener implements Listener {
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		Player imprisoner = event.getPlayer();
 
-		/* TODO CombatTag
-		if (SabrePlugin.instance().getCombatTag().isTagged(imprisoner.getUniqueId())) {
-			return; // if player is tagged
-		} */
-
+		// Don't drop if the player is tagged
+		if (pearlApi.isPlayerTagged(imprisoner.getUniqueId())) {
+			return;
+		}
 
 		Location loc = imprisoner.getLocation();
 		World world = imprisoner.getWorld();

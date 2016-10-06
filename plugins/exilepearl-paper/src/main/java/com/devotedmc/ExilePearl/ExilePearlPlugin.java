@@ -36,6 +36,8 @@ import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
+import net.minelink.ctplus.CombatTagPlus;
+import net.minelink.ctplus.TagManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -68,6 +70,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final HashMap<UUID, PearlPlayer> players = new HashMap<UUID, PearlPlayer>();
 	
 	private PluginStorage storage;
+	private TagManager tagManager;
 
 	/**
 	 * Spigot enable method
@@ -123,6 +126,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		pearlDecayWorker.start();
 		borderHandler.start();
 		suicideHandler.start();
+		
+		if(Bukkit.getPluginManager().getPlugin("CombatTagPlus") != null) {
+			CombatTagPlus combat = (CombatTagPlus) Bukkit.getPluginManager().getPlugin("CombatTagPlus");
+			tagManager = combat.getTagManager();
+		}
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
@@ -363,6 +371,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private boolean isJukeAlertEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
 	}
+	
+	private boolean isCombatTagEnabled() {
+		return tagManager != null;
+	}
 
 	@Override
 	public PearlLoreProvider getLoreProvider() {
@@ -377,5 +389,13 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	@Override
 	public Plugin getPlugin() {
 		return this;
+	}
+
+	@Override
+	public boolean isPlayerTagged(UUID uid) {
+		if (isCombatTagEnabled()) {
+			return tagManager.isTagged(uid);
+		}
+		return false;
 	}
 }

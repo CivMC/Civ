@@ -48,4 +48,11 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	 * @return The plugin instance
 	 */
 	Plugin getPlugin();
+	
+	/**
+	 * Gets whether a player is combat tagged
+	 * @param uid The player UUID
+	 * @return true if the player is tagged
+	 */
+	boolean isPlayerTagged(UUID uid);
 }

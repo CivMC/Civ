@@ -98,6 +98,12 @@
 			<version>1.1.3</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>net.minelink</groupId>
+			<artifactId>CombatTagPlus</artifactId>
+			<version>1.2.4-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
@@ -105,7 +111,6 @@
 			<version>4.8.2</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.powermock</groupId>
 			<artifactId>powermock-module-junit4</artifactId>
