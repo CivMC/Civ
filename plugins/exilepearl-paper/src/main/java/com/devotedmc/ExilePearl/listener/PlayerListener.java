@@ -1,6 +1,5 @@
 package com.devotedmc.ExilePearl.listener;
 
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -58,6 +57,7 @@ import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.Guard;
+import com.devotedmc.ExilePearl.util.ItemList;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 /**
@@ -776,48 +776,20 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		
+		ItemList repairItems = new ItemList();
+		repairItems.add(new ItemStack(healthMaterial));
+		
 		// Gets the repair amount from the total number of repair materials being crafted
 		int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
 		int repairPerItem = pearlApi.getPearlConfig().getPearlRepairAmount();
-		int repairAmount = 0;
-		int totalRepairMats = 0;
-		
-		for (ItemStack s : inv.all(healthMaterial).values()) {
-			totalRepairMats += s.getAmount();
-		}
-		repairAmount = totalRepairMats * repairPerItem;
-		
-		// Take away the used materials
-		if (pearl.getHealth() + repairAmount > maxHealth) {
-			int toRemove = ((totalRepairMats * repairPerItem) - ((pearl.getHealth() + repairAmount) - maxHealth)) / repairPerItem;
-			
-			ListIterator<ItemStack> iterator = inv.iterator();
-			while(iterator.hasNext() && toRemove > 0) {
-				ItemStack item = iterator.next();
-				if (item.getType() != healthMaterial) {
-					continue;
-				}
-				
-				if (item.getAmount() == toRemove) {
-					iterator.set(new ItemStack(Material.AIR, 0));
-					toRemove = 0;
-				}
-				else if (item.getAmount() > toRemove) {
-					ItemStack temp = item.clone();
-					temp.setAmount(item.getAmount() - toRemove);
-					iterator.set(temp);
-					toRemove = 0;
-				}
-				else {
-					int inStack = item.getAmount();
-					iterator.set(new ItemStack(Material.AIR, 0));
-					toRemove -= inStack;
-				}
-			}
-			
-		} else {
-			inv.clear();
-		}
+		int repairMatsAvailable = repairItems.amountAvailable(inv);
+		int repairMatsToUse = Math.min(((int)(maxHealth - pearl.getHealth()) / repairPerItem), repairMatsAvailable);
+		int repairAmount = repairMatsToUse * repairPerItem;
+
+		// Take away the consumed repair materials
+		repairItems.clear();
+		repairItems.add(new ItemStack(healthMaterial, repairMatsToUse));
+		repairItems.removeFrom(inv);
 
 		// Repair the pearl and update the item stack
 		pearl.setHealth(pearl.getHealth() + repairAmount);
