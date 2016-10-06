@@ -8,11 +8,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -76,7 +74,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from using a bed
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerEnterBed(PlayerBedEnterEvent e) {
 		checkAndCancelRule(ExileRule.USE_BED, e, e.getPlayer());
 	}
@@ -86,7 +84,7 @@ public class ExileListener extends RuleListener {
 	 * @param e The event
 	 */
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPearlThrow(PlayerInteractEvent e) {
 		if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
 			if(e.getPlayer().getItemInHand().getType().equals(Material.ENDER_PEARL)) {
@@ -99,7 +97,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from using buckets
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerFillBucket(PlayerBucketFillEvent e) {
 		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
 	}
@@ -108,27 +106,16 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from using buckets
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerEmptyBucket(PlayerBucketEmptyEvent e) {
 		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
-	}
-
-	/**
-	 * Prevent exiled players from using local chat
-	 * @param e The event
-	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onPlayerChat(AsyncPlayerChatEvent e) {
-
-		// TODO check chat channel
-		checkAndCancelRule(ExileRule.CHAT, e, e.getPlayer());
 	}
 
 	/**
 	 * Prevent exiled players from using brewing stands
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.hasBlock()) {
 			if (e.getClickedBlock().getType().equals(Material.BREWING_STAND)) {
@@ -141,7 +128,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from enchanting
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerEnchant(EnchantItemEvent e) {
 		checkAndCancelRule(ExileRule.ENCHANT, e, e.getEnchanter());
 	}
@@ -150,7 +137,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from pvping
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerPvp(EntityDamageByEntityEvent e) {
 		if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
 			return;
@@ -163,7 +150,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from drinking potions
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerDrinkPotion(PlayerItemConsumeEvent e) {
 		if(e.getItem().getType() == Material.POTION) {
 			checkAndCancelRule(ExileRule.USE_POTIONS, e, e.getPlayer());
@@ -174,7 +161,7 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from using splash potions
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerThrowPotion(PotionSplashEvent e) {
 		checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 	}
@@ -198,18 +185,5 @@ public class ExileListener extends RuleListener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
-	}
-
-
-	/**
-	 * Prevents exiled players from placing snitches
-	 * @param e The event
-	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onSnitchPlaced(BlockPlaceEvent e) {
-		Material m = e.getBlockPlaced().getType();
-		if (m == Material.JUKEBOX || m == Material.NOTE_BLOCK) {
-			checkAndCancelRule(ExileRule.SNITCH, e, e.getPlayer());
-		}
 	}
 }

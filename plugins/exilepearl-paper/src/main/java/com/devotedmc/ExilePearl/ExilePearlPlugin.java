@@ -27,6 +27,7 @@ import com.devotedmc.ExilePearl.listener.BastionListener;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
+import com.devotedmc.ExilePearl.listener.JukeAlertListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.storage.StorageProvider;
@@ -58,6 +59,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final CitadelListener citadelListener = new CitadelListener(this);
 	private final CivChatListener chatListener = new CivChatListener(this);
 	private final BastionListener bastionListener = new BastionListener(this);
+	private final JukeAlertListener jukeAlertListener = new JukeAlertListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -105,6 +107,11 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 			this.getServer().getPluginManager().registerEvents(bastionListener, this);
 		} else {
 			log(Level.WARNING, "Ignoring hooks for Bastion since it's not enabled.");
+		}
+		if (isJukeAlertEnabled()) {
+			this.getServer().getPluginManager().registerEvents(jukeAlertListener, this);
+		} else {
+			log(Level.WARNING, "Ignoring hooks for JukeAlert since it's not enabled.");
 		}
 		
 		// Start tasks
@@ -335,6 +342,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private boolean isBastionEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("Bastion");
+	}
+	
+	private boolean isJukeAlertEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
 	}
 
 	@Override
