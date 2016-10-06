@@ -44,6 +44,12 @@ class CorePearlConfig implements PearlConfig {
 	public int getDbPort() {
 		return plugin.GetConfig().get("database.mysql.port").getInt();
 	}
+	
+	@Override
+	@CivConfig(name = "database.use_dev_ram_storage", def = "false", type = CivConfigType.Bool)
+	public boolean getUseDevRamStorage() {
+		return plugin.GetConfig().get("database.use_dev_ram_storage").getBool();
+	}
 
 	@Override
 	@CivConfig(name = "health.decay_interval_min", def = "60" , type = CivConfigType.Int)

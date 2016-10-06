@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
-import com.devotedmc.ExilePearl.core.CorePearlFactory;
+import com.devotedmc.ExilePearl.core.CorePluginFactory;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
@@ -28,10 +28,8 @@ import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
-import com.devotedmc.ExilePearl.storage.MySqlStorage;
-import com.devotedmc.ExilePearl.storage.AsyncStorageWriter;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
-import com.devotedmc.ExilePearl.storage.RamStorage;
+import com.devotedmc.ExilePearl.storage.StorageProvider;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
@@ -45,10 +43,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
  */
 public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
-	private final PearlFactory pearlFactory = new CorePearlFactory(this);
+	private final CorePluginFactory pearlFactory = new CorePluginFactory(this);
 	private final PearlConfig pearlConfig = pearlFactory.createPearlConfig();
-	//private final PluginStorage storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, this, pearlConfig), this);
-	private final PluginStorage storage = new AsyncStorageWriter(new RamStorage(), this);
+	private final StorageProvider storageProvider = new StorageProvider(this, pearlFactory);
+	private final PluginStorage storage = storageProvider.createStorage();
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlLoreProvider loreGenerator = pearlFactory.createLoreGenerator();
 	private final ExilePearlRunnable pearlDecayWorker = pearlFactory.createPearlDecayWorker();

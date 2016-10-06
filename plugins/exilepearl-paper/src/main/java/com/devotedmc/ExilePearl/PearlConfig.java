@@ -33,6 +33,12 @@ public interface PearlConfig {
 	int getDbPort();
 	
 	/**
+	 * Gets whether to use ram storage
+	 * @return true if it should use ram storage
+	 */
+	boolean getUseDevRamStorage();
+	
+	/**
 	 * Gets the pearl decay minute interval
 	 * @return the pearl decay minute interval
 	 */

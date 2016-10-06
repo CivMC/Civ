@@ -3,7 +3,6 @@ package com.devotedmc.ExilePearl.core;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;

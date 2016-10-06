@@ -23,7 +23,7 @@ import com.devotedmc.ExilePearl.util.Guard;
  * Factory class for creating new core class instances
  * @author Gordon
  */
-public class CorePearlFactory implements PearlFactory {
+public class CorePluginFactory implements PearlFactory {
 	
 	private final ExilePearlPlugin plugin;
 	
@@ -31,7 +31,7 @@ public class CorePearlFactory implements PearlFactory {
 	 * Creates a new ExilePearlFactory instance
 	 * @param plugin The plugin instance
 	 */
-	public CorePearlFactory(final ExilePearlPlugin plugin) {
+	public CorePluginFactory(final ExilePearlPlugin plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		
 		this.plugin = plugin;
@@ -58,37 +58,30 @@ public class CorePearlFactory implements PearlFactory {
 		return pearl;
 	}
 
-	@Override
 	public PearlManager createPearlManager() {
 		return new CorePearlManager(plugin, this, plugin.getStorage());
 	}
 
-	@Override
 	public ExilePearlRunnable createPearlDecayWorker() {
 		return new PearlDecayTask(plugin);
 	}
 
-	@Override
 	public SuicideHandler createSuicideHandler() {
 		return new PlayerSuicideTask(plugin);
 	}
 
-	@Override
 	public ExilePearlRunnable createPearlBorderTask() {
 		return new PearlBoundaryTask(plugin);
 	}
 
-	@Override
 	public PearlPlayer createPearlPlayer(UUID uid) {
 		return new CorePearlPlayer(uid, plugin, plugin);
 	}
 
-	@Override
 	public PearlLoreProvider createLoreGenerator() {
 		return new CoreLoreGenerator(plugin.getPearlConfig());
 	}
 
-	@Override
 	public PearlConfig createPearlConfig() {
 		return new CorePearlConfig(plugin);
 	}
