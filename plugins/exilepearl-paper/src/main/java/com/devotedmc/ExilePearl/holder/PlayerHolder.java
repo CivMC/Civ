@@ -62,6 +62,13 @@ public class PlayerHolder implements PearlHolder {
 				return HolderVerifyResult.IN_PLAYER_INVENTORY;
 			}
 		}
+		
+		// In a crafting inventory?
+		for (ItemStack item : player.getOpenInventory().getTopInventory().all(Material.ENDER_PEARL).values()) {
+			if (pearl.validateItemStack(item)) {
+				return HolderVerifyResult.IN_PLAYER_INVENTORY_VIEW;
+			}
+		}
 
 		// Nope, not found
 		return HolderVerifyResult.DEFAULT;

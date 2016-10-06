@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.junit.Before;
@@ -73,6 +74,11 @@ public class PlayerHolderTest {
 		PlayerInventory inv = mock(PlayerInventory.class);
 		when(player.getInventory()).thenReturn(inv);
 		
+		PlayerInventory craftInv = mock(PlayerInventory.class);
+		InventoryView inView = mock(InventoryView.class);
+		when(inView.getTopInventory()).thenReturn(craftInv);
+		when(player.getOpenInventory()).thenReturn(inView);		
+		
 		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
 
 		HashMap<Integer, ItemStack> invItems = new HashMap<Integer, ItemStack>();
@@ -86,6 +92,22 @@ public class PlayerHolderTest {
 		});
 		
 		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_PLAYER_INVENTORY);
+		
+		invItems.clear();
+		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
+		
+		// Check crafting inventory
+		HashMap<Integer, ItemStack> craftItems = new HashMap<Integer, ItemStack>();
+		craftItems.put(0, pearlStack);
+		when(craftInv.all(Material.ENDER_PEARL)).thenAnswer(new Answer<HashMap<Integer, ItemStack>>() {
+
+			@Override
+			public HashMap<Integer, ItemStack> answer(InvocationOnMock invocation) throws Throwable {
+				return craftItems;
+			}
+		});
+
+		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_PLAYER_INVENTORY_VIEW);
 		
 		when(player.getItemOnCursor()).thenReturn(pearlStack);
 		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_HAND);

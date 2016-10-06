@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -17,7 +18,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -46,7 +46,6 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -101,31 +100,18 @@ public class PlayerListener implements Listener {
 				healthMaterial = Material.OBSIDIAN;
 			}
 
-			ItemStack repair8 = new ItemStack(healthMaterial, 8);
-
 			// Shapeless recipe
 			ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
 			r1.addIngredient(1, Material.ENDER_PEARL);
-			r1.addIngredient(1, repair8.getData());
-
-			ShapedRecipe r2 = new ShapedRecipe(resultItem);
-			r2.shape(	"ARA", 
-					"RPR", 
-					"ARA");
-			r2.setIngredient('A', Material.AIR);
-			r2.setIngredient('R', repair8.getData());
-			r2.setIngredient('P', Material.ENDER_PEARL);
-
-			ShapedRecipe r3 = new ShapedRecipe(resultItem);
-			r3.shape(	"RRR", 
-					"RPR", 
-					"RRR");
-			r3.setIngredient('R', repair8.getData());
-			r3.setIngredient('P', Material.ENDER_PEARL);
-
+			r1.addIngredient(1, healthMaterial);
+			
+			ShapelessRecipe r2 = new ShapelessRecipe(resultItem);
+			r2.addIngredient(1, Material.ENDER_PEARL);
+			r2.addIngredient(1, healthMaterial);
+			r2.addIngredient(1, healthMaterial);
+			
 			Bukkit.getServer().addRecipe(r1);
 			Bukkit.getServer().addRecipe(r2);
-			Bukkit.getServer().addRecipe(r3);
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
 		}
@@ -395,6 +381,7 @@ public class PlayerListener implements Listener {
 		}
 
 		InventoryAction a = event.getAction();
+		pearlApi.log("Inv Action: " + a.toString());
 		if(a == InventoryAction.COLLECT_TO_CURSOR
 				|| a == InventoryAction.PICKUP_ALL 
 				|| a == InventoryAction.PICKUP_HALF
@@ -757,24 +744,18 @@ public class PlayerListener implements Listener {
 			return;
 		}
 
-		PearlPlayer crafter = null;
-
-		// Prevent crafting with lore items
-		for(HumanEntity he : e.getViewers()) {
-			if(he instanceof Player) {
-				crafter = pearlApi.getPearlPlayer(((Player)he).getUniqueId());
-			}
-		}
-
 		// Ignore pearls that are at full health
 		if (pearl.getHealth() == pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
 			inv.setResult(new ItemStack(Material.AIR));
-			crafter.msg("<i>That pearl is already at full health.");
 			return;
 		}
 
-		// Get the total repair value
-		int repairAmount = inv.all(healthMaterial).size() * pearlApi.getPearlConfig().getPearlRepairAmount();
+		// Gets the repair amount from the total number of repair materials being crafted
+		int repairPerItem = pearlApi.getPearlConfig().getPearlRepairAmount();
+		int repairAmount = 0;
+		for (ItemStack s : inv.all(healthMaterial).values()) {
+			repairAmount += (s.getAmount() * repairPerItem);
+		}
 
 		// Generate a new item with the updated health value as the crafting result
 		ItemStack resultStack = pearl.createItemStack();
@@ -794,9 +775,51 @@ public class PlayerListener implements Listener {
 		if (pearl == null) {
 			return;
 		}
+		
+		// Gets the repair amount from the total number of repair materials being crafted
+		int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
+		int repairPerItem = pearlApi.getPearlConfig().getPearlRepairAmount();
+		int repairAmount = 0;
+		int totalRepairMats = 0;
+		
+		for (ItemStack s : inv.all(healthMaterial).values()) {
+			totalRepairMats += s.getAmount();
+		}
+		repairAmount = totalRepairMats * repairPerItem;
+		
+		// Take away the used materials
+		if (pearl.getHealth() + repairAmount > maxHealth) {
+			int toRemove = ((totalRepairMats * repairPerItem) - ((pearl.getHealth() + repairAmount) - maxHealth)) / repairPerItem;
+			
+			ListIterator<ItemStack> iterator = inv.iterator();
+			while(iterator.hasNext() && toRemove > 0) {
+				ItemStack item = iterator.next();
+				if (item.getType() != healthMaterial) {
+					continue;
+				}
+				
+				if (item.getAmount() == toRemove) {
+					iterator.set(new ItemStack(Material.AIR, 0));
+					toRemove = 0;
+				}
+				else if (item.getAmount() > toRemove) {
+					ItemStack temp = item.clone();
+					temp.setAmount(item.getAmount() - toRemove);
+					iterator.set(temp);
+					toRemove = 0;
+				}
+				else {
+					int inStack = item.getAmount();
+					iterator.set(new ItemStack(Material.AIR, 0));
+					toRemove -= inStack;
+				}
+			}
+			
+		} else {
+			inv.clear();
+		}
 
 		// Repair the pearl and update the item stack
-		int repairAmount = inv.all(healthMaterial).size() * pearlApi.getPearlConfig().getPearlRepairAmount();
 		pearl.setHealth(pearl.getHealth() + repairAmount);
 		inv.setResult(pearl.createItemStack());
 	}

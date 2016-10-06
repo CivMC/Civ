@@ -19,6 +19,7 @@ public enum HolderVerifyResult
 	IN_HAND("in player hand", true),
 	IN_CHEST("in chest", true),
 	IN_PLAYER_INVENTORY("in player inventory", true),
+	IN_PLAYER_INVENTORY_VIEW("in player inventory view", true),
 	IN_VIEWER_HAND("in viewer hand", true),
 	CREATVE_MODE("creative mode", true);
 	
