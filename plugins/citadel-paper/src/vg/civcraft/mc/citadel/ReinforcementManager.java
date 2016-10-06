@@ -21,6 +21,7 @@ import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.misc.CitadelStatics;
 import vg.civcraft.mc.citadel.misc.LoadingCacheNullException;
 import vg.civcraft.mc.citadel.reinforcement.NullReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public class ReinforcementManager {
@@ -103,6 +104,41 @@ public class ReinforcementManager {
 		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);
 		rein.setDirty(false);
+	}
+	
+	public void saveManyReinforcements(List<Reinforcement> reins) {
+		if (reins == null || reins.size() == 0) {
+			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager saveManyReinforcement called with null or empty");
+			return;
+		}
+		List<Reinforcement> removes = new ArrayList<Reinforcement>(reins.size());
+		List<PlayerReinforcement> updates = new ArrayList<PlayerReinforcement>(reins.size());
+		List<Reinforcement> remainder = new ArrayList<Reinforcement>(reins.size());
+		for (Reinforcement rein : reins) {
+			if (rein.getDurability() <= 0) {
+				reinforcements.invalidate(rein.getLocation());
+				CitadelStatics.updateHitStat(CitadelStatics.DELETE);
+				removes.add(rein);
+			} else {
+				if (rein instanceof PlayerReinforcement) {
+					CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
+					rein.setDirty(false);
+					updates.add((PlayerReinforcement) rein);
+				} else {
+					remainder.add(rein);
+				}
+			}
+		}
+		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement removing {0}", removes.size());
+		db.deleteManyReinforcements(removes);
+		
+		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving player reinfs {0}", updates.size());
+		db.saveManyPlayerReinforcements(updates);
+		
+		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving other reinfs {0}", remainder.size());
+		for (Reinforcement rein : remainder) {
+			saveReinforcement(rein);
+		}
 	}
 
 	/**
@@ -233,10 +269,10 @@ public class ReinforcementManager {
 					long dirty = 0l;
 					long s = 0l;
 					if (CitadelConfigManager.shouldLogInternal()) {
-						Citadel.Log("Running Scheduled Save");
+						Citadel.getInstance().getLogger().log(Level.INFO, "Running Scheduled Save");
 						s = System.currentTimeMillis();
 					}
-					List<Reinforcement> reins = new ArrayList<Reinforcement>();
+					List<Reinforcement> reins = new ArrayList<Reinforcement>(100);
 					synchronized(reinforcements){
 						for (Reinforcement r: reinforcements.asMap().values()) {
 							if (r.isDirty()) {
@@ -246,13 +282,14 @@ public class ReinforcementManager {
 							cached++;
 						}
 					}
-					for (Reinforcement r: reins) {
-						saveReinforcement(r);
-					}
+					
+					saveManyReinforcements(reins);
+					
 					if (CitadelConfigManager.shouldLogInternal()) {
 						s = System.currentTimeMillis() - s;
-						Citadel.Log("Scheduled Save complete in " + s + " ms. Cache holds " +
-							cached + " entries, " + dirty + " entries saved to DB.");
+						Citadel.getInstance().getLogger().log(Level.INFO, 
+							"Scheduled Save complete in {0} ms. Cache holds {1} entries, {2} entries saved to DB.",
+							new Object[] {s, cached, dirty});
 					}
 				} catch (Exception e) {
 					Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager scheduled save encountered a problem", e);

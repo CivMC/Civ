@@ -68,6 +68,6 @@ public enum CitadelStatics {
 		stats.append("  Amount of Reinforcement saves ").append(reins_updated_to_db).append(".\n");
 		stats.append("  Reinforcements deleted from the db ").append(reins_deleted_from_db).append(".\n");
 		stats.append("  Reinforcements created and saved to db ").append(reins_insert_to_db).append(".\n");
-		Citadel.Log(stats.toString());
+		Citadel.getInstance().getLogger().info(stats.toString());
 	}
 }

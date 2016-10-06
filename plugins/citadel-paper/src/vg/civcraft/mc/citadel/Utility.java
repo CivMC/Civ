@@ -98,7 +98,7 @@ public class Utility {
         List<Integer> slots = new ArrayList<Integer>(type.getRequiredAmount());
         int requirementscheck =  type.getRequiredAmount();
         if (requirementscheck <= 0) {
-            Citadel.Log("Reinforcement requirements too low for " + itemType.getType().name());
+        	Citadel.getInstance().getLogger().info("Reinforcement requirements too low for " + itemType.getType().name());
             return null;
         }
         if (reinfMat != null && itemType.isSimilar(reinfMat)){ // only in CTF.
@@ -152,7 +152,7 @@ public class Utility {
 			slb.append("reinforced a ").append(block.getType()).append(" with a ")
 					.append(rein.getMaterial()).append(" reinforcement at ")
 					.append(rein.getLocation());
-			Citadel.Log(slb.toString());
+			Citadel.getInstance().getLogger().info(slb.toString());
 		}
         // Now eat the materials
         
@@ -191,7 +191,7 @@ public class Utility {
             requirements -= deduction;
         }
         if (requirements != 0) {
-            Citadel.Log(String.format( "Reinforcement material out of sync %d vs %d", 
+            Citadel.getInstance().getLogger().info(String.format( "Reinforcement material out of sync %d vs %d", 
 					requirements, type.getRequiredAmount()));
         }
         player.updateInventory();
@@ -428,7 +428,7 @@ public class Utility {
 				}
 				slb.append("broke a ").append(reinforcement.getMaterial()).append(" reinforcement at ")
 						.append(reinforcement.getLocation());
-				Citadel.Log(slb.toString());
+				Citadel.getInstance().getLogger().info(slb.toString());
 			}
 	        cancelled = reinforcementBroken(null, reinforcement);
         } else {
@@ -468,7 +468,7 @@ public class Utility {
 					slb.append("excellent (");
 				}
 				slb.append(durability).append(") at ").append(reinforcement.getLocation());
-				Citadel.Log(slb.toString());
+				Citadel.getInstance().getLogger().info(slb.toString());
 			}
             if (reinforcement instanceof PlayerReinforcement) {
                 // leave message
@@ -591,16 +591,16 @@ public class Utility {
 				}
 				if (logIt) {
                     slb.append(" - reinf mat refunded");
-					Citadel.Log(slb.toString());
+					Citadel.getInstance().getLogger().info(slb.toString());
                 }
             } else if (logIt) {
                 slb.append(" - reinf mat lost");
-				Citadel.Log(slb.toString());
+				Citadel.getInstance().getLogger().info(slb.toString());
             }
             return (pr.isDoor() || pr.isContainer());
         }
         if (logIt) {
-            Citadel.Log(slb.toString());
+            Citadel.getInstance().getLogger().info(slb.toString());
         }
         return false;  // implicit isSecureable() == false
     }
@@ -698,7 +698,7 @@ public class Utility {
                 }
             }
         } catch (ConcurrentModificationException e) {
-            Citadel.Log("ConcurrentModificationException at redstonePower() in BlockListener");
+            Citadel.getInstance().getLogger().warning("ConcurrentModificationException at redstonePower() in BlockListener");
         }
         return result;
     }
