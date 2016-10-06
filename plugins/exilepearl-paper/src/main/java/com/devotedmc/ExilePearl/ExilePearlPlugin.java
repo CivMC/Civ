@@ -51,7 +51,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final PearlManager pearlManager = pearlFactory.createPearlManager();
 	private final PearlLoreProvider loreGenerator = pearlFactory.createLoreGenerator();
 	private final ExilePearlRunnable pearlDecayWorker = pearlFactory.createPearlDecayWorker();
-	private final ExilePearlRunnable pearlBordertask = pearlFactory.createPearlBorderTask();
+	private final BorderHandler borderHandler = pearlFactory.createPearlBorderHandler();
 	private final SuicideHandler suicideHandler = pearlFactory.createSuicideHandler();
 	
 	private final PlayerListener playerListener = new PlayerListener(this);
@@ -90,8 +90,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		playerListener.setupRecipes();
 		
 		// Register events
-		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
 		this.getServer().getPluginManager().registerEvents(playerListener, this);
+		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
+		this.getServer().getPluginManager().registerEvents(borderHandler, this);
 		this.getServer().getPluginManager().registerEvents(exileListener, this);
 		if (isCitadelEnabled()) {
 			this.getServer().getPluginManager().registerEvents(citadelListener, this);
@@ -116,7 +117,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		
 		// Start tasks
 		pearlDecayWorker.start();
-		pearlBordertask.start();
+		borderHandler.start();
 		suicideHandler.start();
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
@@ -130,7 +131,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		super.onDisable();
 		
 		pearlDecayWorker.stop();
-		pearlBordertask.stop();
+		borderHandler.stop();
 		suicideHandler.stop();
 		storage.disconnect();
 	}

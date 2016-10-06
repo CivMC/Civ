@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlConfig;
@@ -70,7 +71,7 @@ public class CorePluginFactory implements PearlFactory {
 		return new PlayerSuicideTask(plugin);
 	}
 
-	public ExilePearlRunnable createPearlBorderTask() {
+	public BorderHandler createPearlBorderHandler() {
 		return new PearlBoundaryTask(plugin);
 	}
 
