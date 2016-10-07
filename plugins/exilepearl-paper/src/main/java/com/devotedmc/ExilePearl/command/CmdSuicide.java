@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 
 /**
@@ -20,7 +21,7 @@ public class CmdSuicide extends PearlCommand {
 
 	@Override
 	public void perform() {
-		if(!plugin.getPearlConfig().getRuleCanSuicide()) {
+		if(!plugin.getPearlConfig().canPerform(ExileRule.SUICIDE)) {
 			msg(Lang.unknownCommand);
 			return;
 		}

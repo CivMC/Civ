@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class CoreLoreGeneratorTest {
 	

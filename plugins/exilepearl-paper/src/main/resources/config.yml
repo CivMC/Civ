@@ -1,46 +1,179 @@
-database:
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                               STORAGE SETTINGS                              #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# storage.use_dev_ram_storage
+#  - Only for dev purposes.
+#  - Uses a volatile storage class that is cleared whenever the plugin reloads
+# 
+# storage.mysql.x
+#  - Connection option for a MySQL database
+# 
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                               GENERAL SETTINGS                              #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# general.suicide_time_seconds
+#  - The timeout for the /suicide command before the player 
+#    actually dies
+# 
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                PEARL SETTINGS                               #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# pearls.autofree_worldborder
+#  - When true, pearls that are outside world-border will be freed during a 
+#    decay operation
+# 
+# pearls.free_by_throwing
+#  - When true, pearls can be freed by throwing them
+# 
+# pearls.hotbar_needed
+#  - When true, players will only be pearled if the killer has a pearl 
+#    in their hotbar
+# 
+# pearls.decay_interval_min
+#  - How often the decay task runs in minutes
+# 
+# pearls.decay_amount
+#  - The raw health amount that is removed with each decay operation
+# 
+# pearls.max_value
+#  - The maximum health value.
+#  - This will determine the displayed health percent value
+# 
+# pearls.start_value
+#  - The starting health value of pearls when they are created
+# 
+# pearls.repair_materials
+#  - The materials used to repair pearls
+#  - The amount value is how many health points are repaired for each item 
+# 
+# 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                  EXILE RULES                                #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# rules.pearl_radius
+#  - The radius around their pearl that an exiled player can't enter
+#  - Set this value to 0 to disable the radius 
+# 
+# rules.ignite
+#  - When false, exiled players can't set things on fire
+# 
+# rules.use_bed
+#  - When false, exiled players can't use beds
+# 
+# rules.use_bucket
+#  - When false, exiled players can't use buckets
+# 
+# rules.use_potions
+#  - When false, exiled players can't use potions
+# 
+# rules.throw_pearl
+#  - When false, exiled players can't throw ender pearls
+# 
+# rules.pvp
+#  - When false, exiled players can't harm other players
+# 
+# rules.kill_pets
+#  - When false, exiled players can't harm pet mobs
+# 
+# rules.kill_mobs
+#  - When false, exiled players can't harm protected mobs
+# 
+# rules.enchant
+#  - When false, exiled players can't enchant items
+# 
+# rules.brew
+#  - When false, exiled players can't brew potions
+# 
+# rules.suicide
+#  - When true, exiled players can use the /suicide command
+# 
+# rules.mine_blocks
+#  - When false, exiled players can't break any blocks
+# 
+# rules.chat_local
+#  - When false, exiled players can't chat locally.
+#  - Requires CivChat2 plugin
+# 
+# rules.create_bastion
+#  - When false, exiled players can't create bastions
+#  - Requires Bastion plugin
+# 
+# rules.damage_bastion
+#  - When false, exiled players can't damage bastions
+#  - Requires Bastion plugin
+# 
+# rules.enter_bastion
+#  - When false, exiled players can't enter bastion fields that they 
+#    aren't a member of
+#  - Requires Bastion plugin
+# 
+# rules.damage_reinforcement
+#  - When false, exiled players can't damage reinforced blocks
+#  - Requires Citadel plugin
+# 
+# rules.place_snitch
+#  - When false, exiled players can't place jukeboxes or noteblocks
+#  - Requires JukeAlert plugin
+# 
+# rules.protected_mobs
+#  - Mobs that are protected when rules.kill_mobs is set to false
+# 
+# 
+# Start Config
+storage:
   use_dev_ram_storage: true
   mysql:
-    connection_timeout: 5000
-    dbname: bukkit
     host: localhost
-    idle_timeout: 5000
-    max_lifetime: 5000
-    password: ''
-    pool_size: 5
+    dbname: bukkit
     port: 3306
     username: bukkit
-health:
-  decay_amount: 1
-  decay_interval_min: 60
-  max_value: 336
-  start_value: 4
-  repair_materials:
-    obsidian:
-      material: OBSIDIAN
-      amount: 3
+    password: ''
+    connection_timeout: 5000
+    idle_timeout: 5000
+    max_lifetime: 5000
+    pool_size: 5
+general:
+  suicide_time_seconds: 180
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
   hotbar_needed: true
+  decay_interval_min: 60
+  decay_amount: 1
+  start_value: 12
+  max_value: 336
+  repair_materials:
+    obsidian:
+      material: OBSIDIAN
+      amount: 3
 rules:
-  brew: true
-  chat_local: false
-  create_bastion: false
-  damage_bastion: false
-  damage_reinforcement: false
-  enchant: true
-  enter_bastion: false
-  ignite: false
-  mine_blocks: true
   pearl_radius: 1000
-  place_snitch: false
-  pvp: false
-  suicide: true
-  throw_pearl: false
+  ignite: false
   use_bed: false
   use_bucket: false
   use_potions: false
-suicide_time_seconds: 180
-damagelog_min: 3
-damagelog_ticks: 600
+  throw_pearl: false
+  pvp: false
+  kill_pets: false
+  kill_mobs: false
+  enchant: true
+  brew: true
+  suicide: true
+  mine_blocks: true
+  chat_local: false
+  create_bastion: false
+  damage_bastion: false
+  enter_bastion: false
+  damage_reinforcement: false
+  place_snitch: false
+  protected_mobs:
+  - Sheep
+  - Cow
+  - Pig
+  - Horse

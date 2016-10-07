@@ -1,10 +1,12 @@
-package com.devotedmc.ExilePearl;
+package com.devotedmc.ExilePearl.config;
 
 import java.util.Set;
 
+import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.storage.MySqlConfig;
 
-public interface PearlConfig extends MySqlConfig {
+public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	
 	/**
 	 * Gets whether to use ram storage
@@ -61,6 +63,12 @@ public interface PearlConfig extends MySqlConfig {
 	Set<RepairMaterial> getRepairMaterials();
 	
 	/**
+	 * Gets the names of animals that are protected
+	 * @return The protected animal names
+	 */
+	Set<String> getProtectedAnimals();
+	
+	/**
 	 * Gets the suicide timeout in seconds
 	 * @return The suicide timeout
 	 */
@@ -69,77 +77,12 @@ public interface PearlConfig extends MySqlConfig {
 	int getDamageLogMin();
 	
 	int getDamagelogTicks();
-	
-	
-	// Exile Rules
 
 	int getRulePearlRadius();
 	
-	boolean setRulePearlRadius(Integer value);
-	
-	boolean getRuleCanDamageReinforcement();
-	
-	boolean setRuleCanDamageReinforcement(Boolean value);
-	
-	boolean getRuleCanDamageBastion();
-	
-	boolean setRuleCanDamageBastion(Boolean value);
-	
-	boolean getRuleCanCreateBastion();
-	
-	boolean setRuleCanCreateBastion(Boolean value);
-
-	boolean getRuleCanEnterBastion();
-	
-	boolean setRuleCanEnterBastion(Boolean value);
-	
-	boolean getRuleCanThrowEnderPearl();
-	
-	boolean setRuleCanThrowEnderPearl(Boolean value);
-
-	boolean getRuleCanChatLocal();
-	
-	boolean setRuleCanChatLocal(Boolean value);
-
-	boolean getRuleCanPvp();
-	
-	boolean setRuleCanPvp(Boolean value);
-
-	boolean getRuleCanIgnite();
-	
-	boolean setRuleCanIgnite(Boolean value);
-
-	boolean getRuleCanUseBucket();
-	
-	boolean setRuleCanUseBucket(Boolean value);
-
-	boolean getRuleCanUsePotions();
-	
-	boolean setRuleCanUsePotions(Boolean value);
-
-	boolean getRuleCanUseBed();
-	
-	boolean setRuleCanUseBed(Boolean value);
-
-	boolean getRuleCanSuicide();
-	
-	boolean setRuleCanSuicide(Boolean value);
-
-	boolean getRuleCanPlaceSnitch();
-	
-	boolean setRuleCanPlaceSnitch(Boolean value);
-
-	boolean getRuleCanMine();
-	
-	boolean setRuleCanMine(Boolean value);
-
-	boolean getRuleCanBrew();
-	
-	boolean setRuleCanBrew(Boolean value);
-
-	boolean getRuleCanEnchant();
-	
-	boolean setRuleCanEnchant(Boolean value);
+	void setRulePearlRadius(int value);
 	
 	boolean canPerform(ExileRule rule);
+	
+	void setRule(ExileRule rule, boolean value);
 }

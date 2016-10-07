@@ -34,6 +34,12 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 		}
 		
 		long tickInterval = getTickInterval();
+		
+		if (tickInterval == 0) {
+			pearlApi.log(Level.SEVERE, "Failed to start the task '%s' because the tick interval was 0.", getTaskName());
+			return;
+		}
+		
 		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pearlApi.getPlugin(), this, tickInterval, tickInterval);
 		if (taskId == -1) {
 			pearlApi.log("Failed to start the task '%s'.", getTaskName());

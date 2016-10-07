@@ -9,7 +9,7 @@ import org.bukkit.event.Listener;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.Guard;
 
 public class RuleListener implements Listener {

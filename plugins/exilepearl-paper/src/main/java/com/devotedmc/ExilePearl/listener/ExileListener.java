@@ -1,7 +1,12 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -21,6 +26,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.ExilePearl.config.Documentable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 /**
@@ -45,8 +52,10 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
  * Exiled players can still play, mine, enchant, trade, grind, and explore.
  *
  */
-public class ExileListener extends RuleListener {
-
+public class ExileListener extends RuleListener implements Documentable {
+	
+	private Set<String> protectedAnimals = new HashSet<String>();
+	
 	/**
 	 * Creates a new ExileListener instance
 	 * @param logger The logger instance
@@ -56,6 +65,12 @@ public class ExileListener extends RuleListener {
 	public ExileListener(final ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
+	
+	/**
+	 * Loads the config
+	 */
+	public void load() {
+	}
 
 
 	/**
@@ -64,7 +79,7 @@ public class ExileListener extends RuleListener {
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void exileRuleClearBed(PlayerPearledEvent e) {
-		if (config.getRuleCanUseBed()) {
+		if (config.canPerform(ExileRule.USE_BED)) {
 			return;
 		}
 		if (e.getPearl().getPlayer().isOnline()) {
@@ -133,16 +148,36 @@ public class ExileListener extends RuleListener {
 	}
 
 	/**
-	 * Prevent exiled players from pvping
+	 * Prevent exiled players from pvping and killing pets and protected mobs
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onPlayerPvp(EntityDamageByEntityEvent e) {
-		if (!(e.getEntity() instanceof Player && e.getDamager() instanceof Player)) {
+	public void onPlayerDamage(EntityDamageByEntityEvent e) {
+		if (!(e.getDamager() instanceof Player)) {
 			return;
 		}
+		Player player = (Player)e.getDamager();
+		
+		if (e.getEntity() instanceof Player) {
+			checkAndCancelRule(ExileRule.PVP, e, player);
+			return;
+		}
+		
+		if (!(e.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		
+		LivingEntity living = (LivingEntity)e.getEntity();
+		String name = living.getCustomName();
+		
+		if (name != null && name != "") {
+			checkAndCancelRule(ExileRule.KILL_PETS, e, player);
+		}
+		
+		if (protectedAnimals.contains(living.getType().toString())) {
+			checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
+		}
 
-		checkAndCancelRule(ExileRule.PVP, e, (Player)e.getDamager());
 	}
 
 	/**
@@ -193,5 +228,21 @@ public class ExileListener extends RuleListener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
+	}
+
+	@Override
+	public String getDocumentKey() {
+		return "";
+	}
+
+	@Override
+	public Document getDocument() {
+		return new Document();
+	}
+
+	@Override
+	public Documentable loadDocument(Document doc) {
+		protectedAnimals.addAll(doc.getStringList("rules.protected_mobs"));		
+		return this;
 	}
 }

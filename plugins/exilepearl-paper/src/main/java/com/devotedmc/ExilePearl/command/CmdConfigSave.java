@@ -17,7 +17,7 @@ public class CmdConfigSave extends PearlCommand
 	@Override
 	public void perform() {
 		long startTime = System.currentTimeMillis();
-		plugin.GetConfig().save();
+		plugin.getPearlConfig().saveToFile();
 		msg("<g>Configuration saved to disk in %dms.", System.currentTimeMillis() - startTime);
 	}
 }

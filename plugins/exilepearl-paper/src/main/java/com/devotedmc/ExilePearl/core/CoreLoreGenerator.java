@@ -13,9 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.Guard;
 import com.devotedmc.ExilePearl.util.TextUtil;
 

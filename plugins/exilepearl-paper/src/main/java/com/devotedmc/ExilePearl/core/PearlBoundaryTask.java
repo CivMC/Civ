@@ -11,8 +11,8 @@ import java.util.UUID;
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.google.common.collect.ImmutableList;
 
@@ -45,6 +45,8 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	// Tracks players who are being moved outside the pearl border.
 	private Set<UUID> handlingPlayers = Collections.synchronizedSet(new LinkedHashSet<UUID>());
 	
+	private int radius;
+	
 	//these material IDs are acceptable for places to teleport player; breathable blocks and water
 	public static final LinkedHashSet<Integer> safeOpenBlocks = new LinkedHashSet<Integer>(Arrays.asList(
 		 new Integer[] { 
@@ -75,12 +77,18 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public int getTickInterval() {
 		return TICKS_PER_SECOND;
 	}
+	
+	@Override
+	public void start() {
+		radius = config.getRulePearlRadius();
+		super.start();
+	}
 
 	@Override
 	public void run()
 	{
 		// if radius is set to 0, simply return
-		if (config.getRulePearlRadius() == 0)
+		if (radius == 0)
 			return;
 
 		Collection<UUID> players = ImmutableList.copyOf(pearledPlayers);
@@ -127,7 +135,7 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 
 		// Ignore if player outside the radius
-		if (pearlLocation.distance(playerLocation) >= config.getRulePearlRadius()) {
+		if (pearlLocation.distance(playerLocation) >= radius) {
 			return;
 		}
 
@@ -149,7 +157,7 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		double xLoc = playerLocation.getX();
 		double zLoc = playerLocation.getZ();
 		double yLoc = playerLocation.getY();
-		double radiusSquared = (config.getRulePearlRadius() * config.getRulePearlRadius()) + 5;
+		double radiusSquared = (radius * radius) + 5;
 		int knockback = 3;
 
 		// algorithm originally from: http://stackoverflow.com/questions/300871/best-way-to-find-a-point-on-a-circle-closest-to-a-given-point

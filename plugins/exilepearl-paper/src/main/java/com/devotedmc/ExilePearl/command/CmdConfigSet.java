@@ -2,7 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class CmdConfigSet extends PearlCommand
 {
@@ -31,105 +31,20 @@ public class CmdConfigSet extends PearlCommand
 			return;
 		}
 		
-		boolean result = false;
-		Boolean valBool = false;
+		Boolean valBool = argAsBool(1);
 		
 		switch(rule) {
 		
 		case PEARL_RADIUS:
-			result = config.setRulePearlRadius(argAsInt(1));
-			break;
-			
-		case DAMAGE_REINFORCEMENT:
-			valBool = argAsBool(1);
-			result = config.setRuleCanDamageReinforcement(valBool);
-			break;
-			
-		case DAMAGE_BASTION:
-			valBool = argAsBool(1);
-			result = config.setRuleCanDamageBastion(valBool);
-			break;
-			
-		case CREATE_BASTION:
-			valBool = argAsBool(1);
-			result = config.setRuleCanCreateBastion(valBool);
-			break;
-			
-		case ENTER_BASTION:
-			valBool = argAsBool(1);
-			result = config.setRuleCanEnterBastion(valBool);
-			break;
-			
-		case THROW_PEARL:
-			valBool = argAsBool(1);
-			result = config.setRuleCanThrowEnderPearl(valBool);
-			break;
-			
-		case CHAT:
-			valBool = argAsBool(1);
-			result = config.setRuleCanChatLocal(valBool);
-			break;
-			
-		case PVP:
-			valBool = argAsBool(1);
-			result = config.setRuleCanPvp(valBool);
-			break;
-			
-		case IGNITE:
-			valBool = argAsBool(1);
-			result = config.setRuleCanIgnite(valBool);
-			break;
-			
-		case USE_BUCKET:
-			valBool = argAsBool(1);
-			result = config.setRuleCanUseBucket(valBool);
-			break;
-			
-		case USE_POTIONS:
-			valBool = argAsBool(1);
-			result = config.setRuleCanUsePotions(valBool);
-			break;
-			
-		case USE_BED:
-			valBool = argAsBool(1);
-			result = config.setRuleCanUseBed(valBool);
-			break;
-			
-		case SUICIDE:
-			valBool = argAsBool(1);
-			result = config.setRuleCanSuicide(valBool);
-			break;
-			
-		case SNITCH:
-			valBool = argAsBool(1);
-			result = config.setRuleCanPlaceSnitch(valBool);
-			break;
-			
-		case MINE:
-			valBool = argAsBool(1);
-			result = config.setRuleCanMine(valBool);
-			break;
-			
-		case BREW:
-			valBool = argAsBool(1);
-			result = config.setRuleCanBrew(valBool);
-			break;
-			
-		case ENCHANT:
-			valBool = argAsBool(1);
-			result = config.setRuleCanEnchant(valBool);
+			config.setRulePearlRadius(argAsInt(1));
 			break;
 			
 		default:
-			msg("<b>That rule isn't implemented yet.");
-			return;
+			config.setRule(rule, valBool);
+			break;
 		}
 		
-		if (result) {
-			msg("<g>Rule <a>%s <g>updated to <a>%s", rule.toString(), argAsString(1));
-			msg("<i>Use <c>/ep config save <i>to save new values.");
-		} else {
-			msg("<b>Failed to set rule value.");
-		}
+		msg("<g>Rule <a>%s <g>updated to <a>%s", rule.toString(), argAsString(1));
+		msg("<i>Use <c>/ep config save <i>to save new values.");
 	}
 }

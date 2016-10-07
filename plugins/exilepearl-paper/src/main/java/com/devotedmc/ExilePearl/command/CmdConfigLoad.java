@@ -17,7 +17,7 @@ public class CmdConfigLoad extends PearlCommand
 	@Override
 	public void perform() {
 		long startTime = System.currentTimeMillis();
-		plugin.GetConfig().load();
+		plugin.getPearlConfig().reloadFile();
 		msg("<g>Configuration reloaded in %dms.", System.currentTimeMillis() - startTime);
 	}
 }

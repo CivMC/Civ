@@ -4,6 +4,8 @@ import java.util.UUID;
 
 import org.bukkit.plugin.Plugin;
 
+import com.devotedmc.ExilePearl.config.PearlConfig;
+
 /**
  * External API for ExilePearl
  * @author Gordon

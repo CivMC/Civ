@@ -2,7 +2,7 @@ package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.PearlConfig;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.TextUtil;
 
 public class CmdConfigList extends PearlCommand
@@ -31,34 +31,37 @@ public class CmdConfigList extends PearlCommand
 		lineLength = 0;
 
 		appendIntRule(sb, ExileRule.PEARL_RADIUS.toString(), config.getRulePearlRadius());
-		appendBooleanRule(sb, ExileRule.DAMAGE_REINFORCEMENT.toString(), config.getRuleCanDamageReinforcement());
-		appendBooleanRule(sb, ExileRule.CREATE_BASTION.toString(), config.getRuleCanCreateBastion());
-		appendBooleanRule(sb, ExileRule.DAMAGE_BASTION.toString(), config.getRuleCanDamageBastion());
-		appendBooleanRule(sb, ExileRule.ENTER_BASTION.toString(), config.getRuleCanEnterBastion());
-		appendBooleanRule(sb, ExileRule.THROW_PEARL.toString(), config.getRuleCanThrowEnderPearl());
-		appendBooleanRule(sb, ExileRule.CHAT.toString(), config.getRuleCanChatLocal());
-		appendBooleanRule(sb, ExileRule.PVP.toString(), config.getRuleCanPvp());
-		appendBooleanRule(sb, ExileRule.IGNITE.toString(), config.getRuleCanIgnite());
-		appendBooleanRule(sb, ExileRule.USE_BUCKET.toString(), config.getRuleCanUseBucket());
-		appendBooleanRule(sb, ExileRule.USE_POTIONS.toString(), config.getRuleCanUsePotions());
-		appendBooleanRule(sb, ExileRule.USE_BED.toString(), config.getRuleCanUseBed());
-		appendBooleanRule(sb, ExileRule.SUICIDE.toString(), config.getRuleCanSuicide());
-		appendBooleanRule(sb, ExileRule.SNITCH.toString(), config.getRuleCanPlaceSnitch());
-		appendBooleanRule(sb, ExileRule.MINE.toString(), config.getRuleCanMine());
-		appendBooleanRule(sb, ExileRule.BREW.toString(), config.getRuleCanBrew());
-		appendBooleanRule(sb, ExileRule.ENCHANT.toString(), config.getRuleCanEnchant());
+		appendBooleanRule(sb, ExileRule.DAMAGE_REINFORCEMENT);
+		appendBooleanRule(sb, ExileRule.CREATE_BASTION);
+		appendBooleanRule(sb, ExileRule.DAMAGE_BASTION);
+		appendBooleanRule(sb, ExileRule.ENTER_BASTION);
+		appendBooleanRule(sb, ExileRule.THROW_PEARL);
+		appendBooleanRule(sb, ExileRule.CHAT);
+		appendBooleanRule(sb, ExileRule.PVP);
+		appendBooleanRule(sb, ExileRule.KILL_PETS);
+		appendBooleanRule(sb, ExileRule.KILL_MOBS);
+		appendBooleanRule(sb, ExileRule.IGNITE);
+		appendBooleanRule(sb, ExileRule.USE_BUCKET);
+		appendBooleanRule(sb, ExileRule.USE_POTIONS);
+		appendBooleanRule(sb, ExileRule.USE_BED);
+		appendBooleanRule(sb, ExileRule.SUICIDE);
+		appendBooleanRule(sb, ExileRule.SNITCH);
+		appendBooleanRule(sb, ExileRule.MINE);
+		appendBooleanRule(sb, ExileRule.BREW);
+		appendBooleanRule(sb, ExileRule.ENCHANT);
 		sb.setLength(sb.length() - 2);
 		
 		msg(sb.toString());
 	}
 	
-	private void appendBooleanRule(StringBuilder sb, String name, boolean value) {
+	private void appendBooleanRule(StringBuilder sb, ExileRule rule) {
 		String tag = "<g>";
+		boolean value = config.canPerform(rule);
 		if (!value) {
 			tag = "<b>";
 		}
 		
-		String txt = String.format("%s%s<n>, ", tag, name);
+		String txt = String.format("%s%s<n>, ", tag, rule.toString());
 		int strLength = txt.length() - 6;
 		if (lineLength + strLength > 50) {
 			sb.append("\n");

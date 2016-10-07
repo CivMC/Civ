@@ -19,6 +19,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
+import com.devotedmc.ExilePearl.config.Documentable;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.core.CorePluginFactory;
 import com.devotedmc.ExilePearl.command.BaseCommand;
 import com.devotedmc.ExilePearl.command.CmdAutoHelp;
@@ -73,8 +75,19 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private final HashMap<UUID, PearlPlayer> players = new HashMap<UUID, PearlPlayer>();
 	
+	private HashSet<Documentable> documentables = new HashSet<>();
 	private PluginStorage storage;
 	private TagManager tagManager;
+	
+	public ExilePearlPlugin() {
+		documentables.add(exileListener);
+	}
+	
+	@Override
+	public void onLoad() {
+		// Not calling CivModCore load on purpose b/c it fucks up the config
+		//super.onLoad();
+	}
 
 	/**
 	 * Spigot enable method
@@ -85,12 +98,25 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		long timeEnableStart = System.currentTimeMillis();
 		super.onEnable();
 		
+		saveDefaultConfig();
+		pearlConfig.reloadFile();
+		
 		// Storage connect and load
 		storage = storageProvider.createStorage();
 		if (storage.connect()) {
 			pearlManager.loadPearls();
 		} else {
 			log(Level.SEVERE, "Failed to connect to database.");
+		}
+		
+		// Load configuration for all documentable classes
+		for(Documentable d : documentables) {
+			String key = d.getDocumentKey();
+			if (key == null || key == "") {
+				d.loadDocument(pearlConfig.getDocument());
+			} else {
+				d.loadDocument(pearlConfig.getDocument().getDocument(key));
+			}
 		}
 		
 		// Add commands

@@ -9,8 +9,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class PearlDecayTaskTest extends BukkitTestCase {
 	

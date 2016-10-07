@@ -11,6 +11,8 @@ public enum ExileRule {
 	THROW_PEARL("THROW_PEARL", "throw ender pearls"),
 	CHAT("CHAT", "chat globally"),
 	PVP("PVP", "fight other players"),
+	KILL_PETS("KILL_PETS", "kill pets"),
+	KILL_MOBS("KILL_MOBS", "kill that creature"),
 	IGNITE("IGNITE", "start fire"),
 	USE_BUCKET("USE_BUCKET", "use buckets"),
 	USE_POTIONS("USE_POTIONS", "use potions"),

@@ -1,413 +1,284 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.util.HashSet;
-import java.util.Map.Entry;
 import java.util.Set;
 
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.PearlConfig;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 
-import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.annotations.CivConfig;
-import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
-
-class CorePearlConfig implements PearlConfig {
-
-	private final ACivMod plugin;
+class CorePearlConfig extends CoreConfiguration implements PearlConfig {
 	
-	public CorePearlConfig(final ACivMod plugin) {
-		this.plugin = plugin;
-	}
-	
-	@Override
-	@CivConfig(name = "database.mysql.host", def = "localhost", type = CivConfigType.String)
-	public String getMySqlHost() {
-		return plugin.GetConfig().get("database.mysql.host").getString();
+	public CorePearlConfig(final Plugin plugin) {
+		super(plugin);
 	}
 
 	@Override
-	@CivConfig(name = "database.mysql.username", def = "bukkit", type = CivConfigType.String)
-	public String getMySqlUsername() {
-		return plugin.GetConfig().get("database.mysql.username").getString();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.password", def = "", type = CivConfigType.String)
-	public String getMySqlPassword() {
-		return plugin.GetConfig().get("database.mysql.password").getString();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.dbname", def = "bukkit", type = CivConfigType.String)
-	public String getMySqlName() {
-		return plugin.GetConfig().get("database.mysql.dbname").getString();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.port", def = "3306", type = CivConfigType.Int)
-	public int getMySqlPort() {
-		return plugin.GetConfig().get("database.mysql.port").getInt();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.pool_size", def = "5", type = CivConfigType.Int)
-	public int getMySqlPoolSize() {
-		return plugin.GetConfig().get("database.mysql.pool_size").getInt();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.connection_timeout", def = "5000", type = CivConfigType.Int)
-	public int getMySqlConnectionTimeout() {
-		return plugin.GetConfig().get("database.mysql.connection_timeout").getInt();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.idle_timeout", def = "5000", type = CivConfigType.Int)
-	public int getMySqlIdleTimeout() {
-		return plugin.GetConfig().get("database.mysql.idle_timeout").getInt();
-	}
-
-	@Override
-	@CivConfig(name = "database.mysql.max_lifetime", def = "5000", type = CivConfigType.Int)
-	public int getMySqlMaxLifetime() {
-		return plugin.GetConfig().get("database.mysql.max_lifetime").getInt();
-	}
-	
-	@Override
-	@CivConfig(name = "database.use_dev_ram_storage", def = "false", type = CivConfigType.Bool)
 	public boolean getUseDevRamStorage() {
-		return plugin.GetConfig().get("database.use_dev_ram_storage").getBool();
+		return doc.getBoolean("storage.use_dev_ram_storage", false);
 	}
 
 	@Override
-	@CivConfig(name = "health.decay_interval_min", def = "60" , type = CivConfigType.Int)
+	public String getMySqlHost() {
+		return doc.getString("storage.mysql.host", "localhost");
+	}
+
+	@Override
+	public String getMySqlName() {
+		return doc.getString("storage.mysql.dbname", "bukkit");
+	}
+
+	@Override
+	public String getMySqlUsername() {
+		return doc.getString("storage.mysql.username", "bukkit");
+	}
+
+	@Override
+	public String getMySqlPassword() {
+		return doc.getString("storage.mysql.password", "");
+	}
+
+	@Override
+	public int getMySqlPort() {
+		return doc.getInteger("storage.mysql.port", 3306);
+	}
+
+	@Override
+	public int getMySqlPoolSize() {
+		return doc.getInteger("storage.mysql.pool_size", 5);
+	}
+
+	@Override
+	public int getMySqlConnectionTimeout() {
+		return doc.getInteger("storage.mysql.connection_timeout", 5000);
+	}
+
+	@Override
+	public int getMySqlIdleTimeout() {
+		return doc.getInteger("storage.mysql.idle_timeout", 5000);
+	}
+
+	@Override
+	public int getMySqlMaxLifetime() {
+		return doc.getInteger("storage.mysql.max_lifetime", 5000);
+	}
+
+	@Override
 	public int getPearlHealthDecayIntervalMin() {
-		return plugin.GetConfig().get("health.decay_interval_min").getInt();
+		return doc.getInteger("pearls.decay_interval_min", 60);
 	}
 
 	@Override
-	@CivConfig(name = "health.decay_amount", def = "1" , type = CivConfigType.Int)
 	public int getPearlHealthDecayAmount() {
-		return plugin.GetConfig().get("health.decay_amount").getInt();
+		return doc.getInteger("pearls.decay_amount", 1);
 	}
 
 	@Override
-	@CivConfig(name = "health.start_value", def = "4" , type = CivConfigType.Int)
 	public int getPearlHealthStartValue() {
-		return plugin.GetConfig().get("health.start_value").getInt();
+		return doc.getInteger("pearls.start_value", 12);
 	}
 
 	@Override
-	@CivConfig(name = "health.max_value", def = "336" , type = CivConfigType.Int)
 	public int getPearlHealthMaxValue() {
-		return plugin.GetConfig().get("health.max_value").getInt();
+		return doc.getInteger("pearls.max_value", 336);
+	}
+
+	@Override
+	public boolean getShouldAutoFreeWorldBorder() {
+		return doc.getBoolean("pearls.autofree_worldborder", true);
+	}
+
+	@Override
+	public boolean getMustPrisonPearlHotBar() {
+		return doc.getBoolean("pearls.autofree_worldborder", true);
+	}
+
+	@Override
+	public boolean getFreeByThrowing() {
+		return doc.getBoolean("pearls.autofree_worldborder", false);
 	}
 
 	@Override
 	public Set<RepairMaterial> getRepairMaterials() {
-		HashSet<RepairMaterial> materials = new HashSet<RepairMaterial>();
-		ItemMap itemMap = ConfigParsing.parseItemMap(plugin.getConfig().getConfigurationSection("health.repair_materials"));
-		
-		// The amount value is used for the repair amount
-		for(Entry<ItemStack, Integer> entry : itemMap.getEntrySet()) {
-			int repairAmount = entry.getValue();
-			ItemStack item = entry.getKey();
-			item.setAmount(1);
-			
-			materials.add(new RepairMaterial(item, repairAmount));
-		}
-		
-		return materials;
+		Object o = doc.get("pearls.repair_materials");
+		return null;
 	}
 
 	@Override
-	@CivConfig(name = "pearls.autofree_worldborder", def = "true", type = CivConfigType.Bool)
-	public boolean getShouldAutoFreeWorldBorder() {
-		return plugin.GetConfig().get("pearls.autofree_worldborder").getBool();
+	public Set<String> getProtectedAnimals() {
+		Object o = doc.get("rules.protected_mobs");
+		return null;
 	}
 
 	@Override
-	@CivConfig(name = "pearls.hotbar_needed", def = "true", type = CivConfigType.Bool)
-	public boolean getMustPrisonPearlHotBar() {
-		return plugin.GetConfig().get("pearls.hotbar_needed").getBool();
-	}
-	
-	@Override
-	@CivConfig(name = "pearls.free_by_throwing", def = "false", type = CivConfigType.Bool)
-	public boolean getFreeByThrowing() {
-		return plugin.GetConfig().get("pearls.free_by_throwing").getBool();
-	}
-
-	@Override
-	@CivConfig(name = "suicide_time_seconds", def = "180" , type = CivConfigType.Int)
 	public int getSuicideTimeoutSeconds() {
-		return plugin.GetConfig().get("suicide_time_seconds").getInt();
+		return doc.getInteger("general.suicide_time_seconds", 180);
 	}
 
 	@Override
-	@CivConfig(name = "damagelog_min", def = "3" , type = CivConfigType.Int)
 	public int getDamageLogMin() {
-		return plugin.GetConfig().get("damagelog_min").getInt();
+		return doc.getInteger("general.damage_log_min", 5);
 	}
 
 	@Override
-	@CivConfig(name = "damagelog_ticks", def = "600" , type = CivConfigType.Int)
 	public int getDamagelogTicks() {
-		return plugin.GetConfig().get("damagelog_ticks").getInt();
+		return doc.getInteger("general.damage_log_min", 5);
 	}
-	
-	
-	// Exile Rules
 
 	@Override
-	@CivConfig(name = "rules.pearl_radius", def = "1000", type = CivConfigType.Int)
 	public int getRulePearlRadius() {
-		return plugin.GetConfig().get("rules.pearl_radius").getInt();
+		return doc.getInteger("rules.pearl_radius", 1000);
 	}
 
 	@Override
-	public boolean setRulePearlRadius(Integer value) {
-		return plugin.GetConfig().set("rules.pearl_radius", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.damage_reinforcement", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanDamageReinforcement() {
-		return plugin.GetConfig().get("rules.damage_reinforcement").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanDamageReinforcement(Boolean value) {
-		return plugin.GetConfig().set("rules.damage_reinforcement", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.damage_bastion", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanDamageBastion() {
-		return plugin.GetConfig().get("rules.damage_bastion").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanDamageBastion(Boolean value) {
-		return plugin.GetConfig().set("rules.damage_bastion", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.create_bastion", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanCreateBastion() {
-		return plugin.GetConfig().get("rules.create_bastion").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanCreateBastion(Boolean value) {
-		return plugin.GetConfig().set("rules.create_bastion", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.enter_bastion", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanEnterBastion() {
-		return plugin.GetConfig().get("rules.enter_bastion").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanEnterBastion(Boolean value) {
-		return plugin.GetConfig().set("rules.enter_bastion", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.throw_pearl", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanThrowEnderPearl() {
-		return plugin.GetConfig().get("rules.throw_pearl").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanThrowEnderPearl(Boolean value) {
-		return plugin.GetConfig().set("rules.throw_pearl", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.chat_local", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanChatLocal() {
-		return plugin.GetConfig().get("rules.chat_local").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanChatLocal(Boolean value) {
-		return plugin.GetConfig().set("rules.chat_local", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.pvp", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanPvp() {
-		return plugin.GetConfig().get("rules.pvp").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanPvp(Boolean value) {
-		return plugin.GetConfig().set("rules.pvp", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.ignite", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanIgnite() {
-		return plugin.GetConfig().get("rules.ignite").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanIgnite(Boolean value) {
-		return plugin.GetConfig().set("rules.ignite", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.use_bucket", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanUseBucket() {
-		return plugin.GetConfig().get("rules.use_bucket").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanUseBucket(Boolean value) {
-		return plugin.GetConfig().set("rules.use_bucket", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.use_potions", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanUsePotions() {
-		return plugin.GetConfig().get("rules.use_potions").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanUsePotions(Boolean value) {
-		return plugin.GetConfig().set("rules.use_potions", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.use_bed", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanUseBed() {
-		return plugin.GetConfig().get("rules.use_bed").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanUseBed(Boolean value) {
-		return plugin.GetConfig().set("rules.use_bed", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.suicide", def = "true", type = CivConfigType.Bool)
-	public boolean getRuleCanSuicide() {
-		return plugin.GetConfig().get("rules.suicide").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanSuicide(Boolean value) {
-		return plugin.GetConfig().set("rules.suicide", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.place_snitch", def = "false", type = CivConfigType.Bool)
-	public boolean getRuleCanPlaceSnitch() {
-		return plugin.GetConfig().get("rules.place_snitch").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanPlaceSnitch(Boolean value) {
-		return plugin.GetConfig().set("rules.place_snitch", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.mine_blocks", def = "true", type = CivConfigType.Bool)
-	public boolean getRuleCanMine() {
-		return plugin.GetConfig().get("rules.mine_blocks").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanMine(Boolean value) {
-		return plugin.GetConfig().set("rules.mine_blocks", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.brew", def = "true", type = CivConfigType.Bool)
-	public boolean getRuleCanBrew() {
-		return plugin.GetConfig().get("rules.brew").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanBrew(Boolean value) {
-		return plugin.GetConfig().set("rules.brew", value.toString());
-	}
-
-	@Override
-	@CivConfig(name = "rules.enchant", def = "true", type = CivConfigType.Bool)
-	public boolean getRuleCanEnchant() {
-		return plugin.GetConfig().get("rules.enchant").getBool();
-	}
-
-	@Override
-	public boolean setRuleCanEnchant(Boolean value) {
-		return plugin.GetConfig().set("rules.enchant", value.toString());
+	public void setRulePearlRadius(int value) {
+		doc.append("rules.pearl_radius", value);
 	}
 
 	@Override
 	public boolean canPerform(ExileRule rule) {
 		switch(rule) {
-		
 		case PEARL_RADIUS:
 			return getRulePearlRadius() > 0;
 
 		case DAMAGE_REINFORCEMENT:
-			return getRuleCanDamageReinforcement();
+			return doc.getBoolean("rules.damage_reinforcement", false);
 			
 		case DAMAGE_BASTION:
-			return getRuleCanDamageBastion();
+			return doc.getBoolean("rules.damage_bastion", false);
 			
 		case CREATE_BASTION:
-			return getRuleCanCreateBastion();
+			return doc.getBoolean("rules.create_bastion", false);
 			
 		case ENTER_BASTION:
-			return getRuleCanEnterBastion();
+			return doc.getBoolean("rules.enter_bastion", false);
 			
 		case THROW_PEARL:
-			return getRuleCanThrowEnderPearl();
+			return doc.getBoolean("rules.throw_pearl", false);
 			
 		case CHAT:
-			return getRuleCanChatLocal();
+			return doc.getBoolean("rules.chat_local", false);
 			
 		case PVP:
-			return getRuleCanPvp();
+			return doc.getBoolean("rules.pvp", false);
+			
+		case KILL_PETS:
+			return doc.getBoolean("rules.kill_pets", false);
+			
+		case KILL_MOBS:
+			return doc.getBoolean("rules.kill_mobs", false);
 			
 		case IGNITE:
-			return getRuleCanIgnite();
+			return doc.getBoolean("rules.ignite", false);
 			
 		case USE_BUCKET:
-			return getRuleCanUseBucket();
+			return doc.getBoolean("rules.use_bucket", false);
 			
 		case USE_POTIONS:
-			return getRuleCanUsePotions();
+			return doc.getBoolean("rules.use_potions", false);
 			
 		case USE_BED:
-			return getRuleCanUseBed();
+			return doc.getBoolean("rules.use_bed", false);
 			
 		case SUICIDE:
-			return getRuleCanSuicide();
+			return doc.getBoolean("rules.suicide", false);
 			
 		case SNITCH:
-			return getRuleCanPlaceSnitch();
+			return doc.getBoolean("rules.place_snitch", false);
 			
 		case MINE:
-			return getRuleCanMine();
+			return doc.getBoolean("rules.mine_blocks", true);
 			
 		case BREW:
-			return getRuleCanBrew();
+			return doc.getBoolean("rules.brew", true);
 			
 		case ENCHANT:
-			return getRuleCanEnchant();
+			return doc.getBoolean("rules.enchant", true);
 			
 		default:
 			return false;
 		}
 	}
+
+	@Override
+	public void setRule(ExileRule rule, boolean value) {
+		switch(rule) {
+		case DAMAGE_REINFORCEMENT:
+			doc.append("rules.damage_reinforcement", value);
+			break;
+			
+		case DAMAGE_BASTION:
+			doc.append("rules.damage_bastion", value);
+			break;
+			
+		case CREATE_BASTION:
+			doc.append("rules.create_bastion", value);
+			break;
+			
+		case ENTER_BASTION:
+			doc.append("rules.enter_bastion", value);
+			break;
+			
+		case THROW_PEARL:
+			doc.append("rules.throw_pearl", value);
+			break;
+			
+		case CHAT:
+			doc.append("rules.chat_local", value);
+			break;
+			
+		case PVP:
+			doc.append("rules.pvp", value);
+			break;
+			
+		case KILL_PETS:
+			doc.append("rules.kill_pets", value);
+			break;
+			
+		case KILL_MOBS:
+			doc.append("rules.kill_mobs", value);
+			break;
+			
+		case IGNITE:
+			doc.append("rules.ignite", value);
+			break;
+			
+		case USE_BUCKET:
+			doc.append("rules.use_bucket", value);
+			break;
+			
+		case USE_POTIONS:
+			doc.append("rules.use_potions", value);
+			break;
+			
+		case USE_BED:
+			doc.append("rules.use_bed", value);
+			break;
+			
+		case SUICIDE:
+			doc.append("rules.suicide", value);
+			break;
+			
+		case SNITCH:
+			doc.append("rules.place_snitch", value);
+			break;
+			
+		case MINE:
+			doc.append("rules.mine_blocks", value);
+			break;
+			
+		case BREW:
+			doc.append("rules.brew", value);
+			break;
+			
+		case ENCHANT:
+			doc.append("rules.enchant", true);
+			break;
+			
+		default:
+			break;
+		}
+	}
+	
 }
