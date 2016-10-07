@@ -31,6 +31,8 @@ import com.devotedmc.ExilePearl.listener.CivChatListener;
 import com.devotedmc.ExilePearl.listener.ExileListener;
 import com.devotedmc.ExilePearl.listener.JukeAlertListener;
 import com.devotedmc.ExilePearl.listener.PlayerListener;
+import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
+import com.devotedmc.ExilePearl.listener.WorldBorderListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
@@ -63,6 +65,8 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	private final CivChatListener chatListener = new CivChatListener(this);
 	private final BastionListener bastionListener = new BastionListener(this);
 	private final JukeAlertListener jukeAlertListener = new JukeAlertListener(this);
+	private final RandomSpawnListener randomSpawnListener = new RandomSpawnListener(this);
+	private final WorldBorderListener worldBorderListener = new WorldBorderListener(this);
 	
 	private final HashSet<BaseCommand<?>> commands = new HashSet<BaseCommand<?>>();
 	private final CmdAutoHelp autoHelp = new CmdAutoHelp(this);
@@ -104,23 +108,34 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		if (isCitadelEnabled()) {
 			this.getServer().getPluginManager().registerEvents(citadelListener, this);
 		} else {
-			log(Level.WARNING, "Ignoring hooks for Citadel since it's not enabled.");
+			logIgnoringHooks("Citadel");
 		}
 		if (isCivChatEnabled()) {
 			this.getServer().getPluginManager().registerEvents(chatListener, this);
 		} else {
-			log(Level.WARNING, "Ignoring hooks for CivChat since it's not enabled.");
+			logIgnoringHooks("CivChat");
 		}
 		if (isBastionEnabled()) {
 			this.getServer().getPluginManager().registerEvents(bastionListener, this);
 		} else {
-			log(Level.WARNING, "Ignoring hooks for Bastion since it's not enabled.");
+			logIgnoringHooks("Bastion");
 		}
 		if (isJukeAlertEnabled()) {
 			this.getServer().getPluginManager().registerEvents(jukeAlertListener, this);
 		} else {
-			log(Level.WARNING, "Ignoring hooks for JukeAlert since it's not enabled.");
+			logIgnoringHooks("JukeAlert");
 		}
+		if (isRandomSpawnEnabled()) {
+			this.getServer().getPluginManager().registerEvents(randomSpawnListener, this);
+		} else {
+			logIgnoringHooks("RandomSpawn");
+		}
+		if (isWorldBorderEnabled()) {
+			this.getServer().getPluginManager().registerEvents(worldBorderListener, this);
+		} else {
+			logIgnoringHooks("WorldBorder");
+		}
+		
 		
 		// Start tasks
 		pearlDecayWorker.start();
@@ -146,6 +161,10 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		borderHandler.stop();
 		suicideHandler.stop();
 		storage.disconnect();
+	}
+	
+	private void logIgnoringHooks(String pluginName) {
+		log(Level.WARNING, "Ignoring hooks for %s since it's not enabled.", pluginName);
 	}
 	
 	/**
@@ -370,6 +389,14 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	private boolean isJukeAlertEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
+	}
+	
+	private boolean isRandomSpawnEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
+	}
+	
+	private boolean isWorldBorderEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("WorldBorder");
 	}
 	
 	private boolean isCombatTagEnabled() {
