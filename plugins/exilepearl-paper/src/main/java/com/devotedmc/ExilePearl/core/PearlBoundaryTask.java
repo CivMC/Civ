@@ -136,6 +136,8 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().getPlayer().isFlying());
 		player.teleport(newLoc, TeleportCause.PLUGIN);
+		pearl.getPlayer().msg("<i>You can't come within %d blocks of your pearl at (%d, %d).", config.getRulePearlRadius(), 
+				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
 		
 		handlingPlayers.remove(player.getName().toLowerCase());
 	}
@@ -149,7 +151,6 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		double yLoc = playerLocation.getY();
 		double radius = config.getRulePearlRadius();
 		double knockback = 5;
-		boolean wrapping = false;
 
 		// algorithm originally from: http://stackoverflow.com/questions/300871/best-way-to-find-a-point-on-a-circle-closest-to-a-given-point
 		// modified by Lang Lukas to support elliptical border shape
@@ -157,17 +158,10 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		//Transform the ellipse to a circle with radius 1 (we need to transform the point the same way)
 		double dX = xLoc - x;
 		double dZ = zLoc - z;
-		double dU = Math.sqrt(dX *dX + dZ * dZ); //distance of the untransformed point from the center
-		double dT = Math.sqrt(dX *dX / radius + dZ * dZ / radius); //distance of the transformed point from the center
-		double f = (1 / dT - knockback / dU); //"correction" factor for the distances
-		if (wrapping)
-		{
-			xLoc = x - dX * f;
-			zLoc = z - dZ * f;
-		} else {
-			xLoc = x + dX * f;
-			zLoc = z + dZ * f;
-		}
+		double magV = Math.sqrt(dX *dX + dZ * dZ); //distance of the untransformed point from the center
+		double f = (1 / magV - knockback / magV); //"correction" factor for the distances
+		xLoc = xLoc + dX / magV * (radius) / f;
+		zLoc = zLoc + dZ / magV * (radius) / f;
 
 		int ixLoc = Location.locToBlock(xLoc);
 		int izLoc = Location.locToBlock(zLoc);
