@@ -1,16 +1,18 @@
 package com.devotedmc.ExilePearl.listener;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -83,13 +85,10 @@ public class ExileListener extends RuleListener {
 	 * Prevent exiled players from throwing ender pearls
 	 * @param e The event
 	 */
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onPearlThrow(PlayerInteractEvent e) {
-		if(e.getAction().equals(Action.RIGHT_CLICK_AIR) || e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
-			if(e.getPlayer().getItemInHand().getType().equals(Material.ENDER_PEARL)) {
-				checkAndCancelRule(ExileRule.THROW_PEARL, e, e.getPlayer());
-			}
+	public void onPearlThrow(ProjectileLaunchEvent e) {
+		if (e.getEntity() instanceof EnderPearl) {
+			checkAndCancelRule(ExileRule.THROW_PEARL, e, (Player)e.getEntity().getShooter());
 		}
 	}
 
@@ -163,6 +162,15 @@ public class ExileListener extends RuleListener {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerThrowPotion(PotionSplashEvent e) {
+		checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
+	}
+	
+	/**
+	 * Prevent exiled players from using lingering splash potions
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onPlayerThrowLingeringPotion(LingeringPotionSplashEvent e) {
 		checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 	}
 
