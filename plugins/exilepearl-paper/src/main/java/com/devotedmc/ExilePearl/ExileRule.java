@@ -14,7 +14,7 @@ public enum ExileRule {
 	IGNITE("IGNITE", "start fire"),
 	USE_BUCKET("USE_BUCKET", "use buckets"),
 	USE_POTIONS("USE_POTIONS", "use potions"),
-	USE_BED("USE_BED", "set your bed"),
+	USE_BED("USE_BED", "use beds"),
 	SUICIDE("SUICIDE", "commit suicide"),
 	SNITCH("SNITCH", "place snitches"),
 	MINE("MINE", "break blocks"),
