@@ -811,14 +811,16 @@ public class PlayerListener implements Listener {
 		int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
 		int repairPerItem = repairItem.getRepairAmount();
 		int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
-		int repairMatsToUse = Math.min(((int)(maxHealth - pearl.getHealth()) / repairPerItem), repairMatsAvailable);
+		int repairMatsToUse = Math.min((int)Math.ceil((maxHealth - pearl.getHealth()) / (double)repairPerItem), repairMatsAvailable);
 		int repairAmount = repairMatsToUse * repairPerItem;
 
 		// Take away the consumed repair materials
 		ItemStack removeStack = repairItem.getStack().clone();
 		removeStack.setAmount(repairMatsToUse);
 		ItemMap removeItems = new ItemMap(removeStack);
+		removeItems.addItemStack(pearl.createItemStack());
 		removeItems.removeSafelyFrom(inv);
+		inv.remove(Material.ENDER_PEARL);
 
 		// Repair the pearl and update the item stack
 		pearl.setHealth(pearl.getHealth() + repairAmount);
