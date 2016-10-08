@@ -674,7 +674,7 @@ recipes:
       bronze:
         material: INK_SACK
         name: Bronze
-        durability: 4
+        durability: 14
         amount: 16
         lore:
         - Bronze T1
@@ -728,7 +728,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 128
         lore:
         - Pewter T2
@@ -880,7 +880,7 @@ recipes:
       bronze:
         material: INK_SACK
         name: Bronze
-        durability: 4
+        durability: 14
         amount: 16
         lore:
         - Bronze T1
@@ -934,7 +934,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 128
         lore:
         - Pewter T2
@@ -1086,7 +1086,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 128
         lore:
         - Pewter T2
@@ -1408,7 +1408,7 @@ recipes:
       bronze:
         material: INK_SACK
         name: Bronze
-        durability: 4
+        durability: 14
         amount: 8
         lore:
         - Bronze T1
