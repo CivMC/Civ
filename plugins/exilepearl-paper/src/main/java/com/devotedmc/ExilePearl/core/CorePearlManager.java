@@ -66,6 +66,7 @@ class CorePearlManager implements PearlManager {
 		for (ExilePearl p : storage.getStorage().loadAllPearls()) {
 			pearls.put(p.getPlayerId(), p);
 		}
+		pearlApi.log("Loaded %d pearls from storage.", pearls.size());
 	}
 	
 	

@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.config;
 
+import java.util.List;
 import java.util.Set;
 
 import com.devotedmc.ExilePearl.ExileRule;
@@ -66,7 +67,7 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 * Gets the names of animals that are protected
 	 * @return The protected animal names
 	 */
-	Set<String> getProtectedAnimals();
+	List<String> getProtectedAnimals();
 	
 	/**
 	 * Gets the suicide timeout in seconds

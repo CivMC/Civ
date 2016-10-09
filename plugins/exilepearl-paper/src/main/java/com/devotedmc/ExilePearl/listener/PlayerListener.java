@@ -19,7 +19,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -31,7 +30,6 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -633,41 +631,15 @@ public class PlayerListener implements Listener {
 		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
 			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlCantThrow);
 			e.setCancelled(true);
+			player.getInventory().setItemInMainHand(pearl.createItemStack());
 			return;
 		}
-		
-		player.getInventory().setItemInMainHand(null);
-		e.setCancelled(true);
 
-		pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onPearlThrow(ProjectileLaunchEvent e) {
-		if (!(e.getEntity() instanceof EnderPearl)) {
-			return;
-		}
-		
-		Player player = (Player)e.getEntity().getShooter();
-		if (player == null) {
-			return;
-		}
-		
-		@SuppressWarnings("deprecation")
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(player.getItemInHand());
-		if (pearl == null) {
-			return;
-		}
-		
-		if (pearlApi.getPearlConfig().getFreeByThrowing()) {
-			player.getInventory().setItemInMainHand(null);
-			pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN);
-		} else {
-			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlCantThrow);
-		}
-		
 		e.setCancelled(true);
-		return;
+		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
+			player.getInventory().setItemInMainHand(null);
+			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlYouFreed, pearl.getPlayerName());
+		}
 	}
 
 

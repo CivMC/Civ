@@ -7,6 +7,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 
 import isaac.bastion.event.BastionCreateEvent;
+import isaac.bastion.event.BastionDamageEvent;
 
 public class BastionListener extends RuleListener {
 
@@ -29,7 +30,7 @@ public class BastionListener extends RuleListener {
 	 * @param e The event args
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onBastionDamage(BastionCreateEvent e) {
+	public void onBastionDamage(BastionDamageEvent e) {
 		checkAndCancelRule(ExileRule.DAMAGE_BASTION, e, e.getPlayer());
 	}
 }

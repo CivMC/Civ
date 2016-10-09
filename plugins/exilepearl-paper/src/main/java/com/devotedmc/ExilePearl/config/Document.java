@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.config;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -212,7 +213,19 @@ public class Document implements Map<String, Object> {
     
     @SuppressWarnings("unchecked")
 	public List<String> getStringList(final Object key) {
-        return (List<String>) get(key);
+        Object o = get(key);
+        
+        if (o == null) {
+        	return new ArrayList<String>();
+        }
+        List<String> list;
+        
+        try {
+        	list = (List<String>)o;
+        } catch(Exception ex) {
+        	list = new ArrayList<String>();
+        }
+        return list;
     }
     
     
@@ -229,6 +242,9 @@ public class Document implements Map<String, Object> {
     @SuppressWarnings("unchecked")
 	public Document getDocument(final Object key) {
     	Object value = get(key);
+    	if (value == null) {
+    		return null;
+    	}
     	return new Document((Map<String, Object>) value);
     }
     
@@ -278,8 +294,12 @@ public class Document implements Map<String, Object> {
     	}
     	
     	Document doc = this;
-    	for(int i = 0; i < keys.length - 1; i++) {
+    	for(int i = 0; i < keys.length - 1 && doc != null; i++) {
     		doc = doc.getDocument(keys[i]);
+    	}
+    	
+    	if (doc == null) {
+    		return null;
     	}
     	
         return doc.get(keys[keys.length - 1]);

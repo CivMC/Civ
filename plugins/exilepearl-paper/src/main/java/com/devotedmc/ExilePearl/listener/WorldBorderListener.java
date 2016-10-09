@@ -29,12 +29,10 @@ public class WorldBorderListener extends RuleListener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPearlDecay(PearlDecayEvent e) {
-		if (e.getAction() != DecayAction.COMPLETE) {
-			return;
-		}
-			
 		WorldBorder wb = WorldBorder.plugin;
-		if (wb == null) {
+		boolean autoFree = pearlApi.getPearlConfig().getShouldAutoFreeWorldBorder();
+		
+		if (!autoFree || e.getAction() != DecayAction.COMPLETE || wb == null) {
 			return;
 		}
 		

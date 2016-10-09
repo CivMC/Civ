@@ -1,7 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Material;
@@ -172,12 +171,27 @@ public class ExileListener extends RuleListener implements Documentable {
 		
 		if (name != null && name != "") {
 			checkAndCancelRule(ExileRule.KILL_PETS, e, player);
+			return;
 		}
 		
-		if (protectedAnimals.contains(living.getType().toString())) {
-			checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
+		if (!isRuleActive(ExileRule.KILL_MOBS, player.getUniqueId())) {
+			return;
 		}
-
+		
+		for(String animal : protectedAnimals) {
+			Class<?> clazz = null;
+			
+			try {
+				clazz = Class.forName("org.bukkit.entity." + animal);
+			} catch (Exception ex) {
+				continue;
+			}
+			
+			if (clazz != null && clazz.isInstance(living)) {
+				checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
+				return;
+			}
+		}
 	}
 
 	/**

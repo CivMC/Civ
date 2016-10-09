@@ -20,7 +20,7 @@ public class CivChatListener extends RuleListener {
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onReinforcementDamage(GlobalChatEvent e) {
+	public void onChatEvent(GlobalChatEvent e) {
 		checkAndCancelRule(ExileRule.CHAT, e, e.getPlayer());
 	}
 }

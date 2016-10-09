@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.plugin.Plugin;
@@ -91,12 +92,12 @@ class CorePearlConfig extends CoreConfiguration implements PearlConfig {
 
 	@Override
 	public boolean getMustPrisonPearlHotBar() {
-		return doc.getBoolean("pearls.autofree_worldborder", true);
+		return doc.getBoolean("pearls.hotbar_needed", true);
 	}
 
 	@Override
 	public boolean getFreeByThrowing() {
-		return doc.getBoolean("pearls.autofree_worldborder", false);
+		return doc.getBoolean("pearls.free_by_throwing", false);
 	}
 
 	@Override
@@ -106,9 +107,8 @@ class CorePearlConfig extends CoreConfiguration implements PearlConfig {
 	}
 
 	@Override
-	public Set<String> getProtectedAnimals() {
-		Object o = doc.get("rules.protected_mobs");
-		return null;
+	public List<String> getProtectedAnimals() {
+		return doc.getStringList("rules.protected_mobs");
 	}
 
 	@Override

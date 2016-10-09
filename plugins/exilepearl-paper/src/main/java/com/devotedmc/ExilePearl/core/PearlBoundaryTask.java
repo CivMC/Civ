@@ -80,7 +80,6 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	
 	@Override
 	public void start() {
-		radius = config.getRulePearlRadius();
 		super.start();
 	}
 
@@ -88,6 +87,7 @@ class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public void run()
 	{
 		// if radius is set to 0, simply return
+		radius = config.getRulePearlRadius();
 		if (radius == 0)
 			return;
 
