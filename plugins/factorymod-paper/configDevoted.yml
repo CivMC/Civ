@@ -705,7 +705,7 @@ recipes:
     output:
       Iron_Obsidian:
         material: IRON_INGOT
-        amount: 4
+        amount: 16
         lore:
         - Iron Reinforced Obsidian
   Diamond Obsidian:
