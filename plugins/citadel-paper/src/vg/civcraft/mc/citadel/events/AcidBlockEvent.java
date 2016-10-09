@@ -2,38 +2,51 @@ package vg.civcraft.mc.citadel.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
-public class AcidBlockEvent extends Event implements Cancellable{
+/**
+ * Event that is called when an acid block action is performed
+ *
+ */
+public class AcidBlockEvent extends PlayerEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
-	
-	private Player p;
-	private PlayerReinforcement acidBlock;
-	private PlayerReinforcement destroyedBlock;
-	public AcidBlockEvent(Player p, PlayerReinforcement acidBlock,
-			PlayerReinforcement destroyedBlock){
-		this.p = p;
+
+	private final PlayerReinforcement acidBlock;
+	private final PlayerReinforcement destroyedBlock;
+
+	/**
+	 * Creates a new AcidBlockEvent instance
+	 * @param player The player performing the acid action
+	 * @param acidBlock The acid block instance
+	 * @param destroyedBlock The destroyed block instance
+	 */
+	public AcidBlockEvent(final Player player, final PlayerReinforcement acidBlock,
+			PlayerReinforcement destroyedBlock) {
+		super(player);
+
 		this.acidBlock = acidBlock;
 		this.destroyedBlock = destroyedBlock;
 	}
+
 	/**
 	 * Gets the PlayerReinforcement on the acid block.
 	 * @return Returns the PlayerReinforcement.
 	 */
-	public PlayerReinforcement getAcidBlockReinforcement(){
+	public PlayerReinforcement getAcidBlockReinforcement() {
 		return acidBlock;
 	}
+
 	/**
 	 * Gets the PlayerReinforcement on the block above the Acid Block.
 	 * @return Returns the PlayerReinforcement for the block above the Acid Block.
 	 */
-	public PlayerReinforcement getDestoryedBlockReinforcement(){
+	public PlayerReinforcement getDestroyedBlockReinforcement() {
 		return destroyedBlock;
 	}
-	
+
 	private boolean isCancelled = false;
 	@Override
 	public boolean isCancelled() {
@@ -49,8 +62,8 @@ public class AcidBlockEvent extends Event implements Cancellable{
 	public HandlerList getHandlers() {
 		return handlers;
 	}
-	
+
 	public static HandlerList getHandlerList() {
 		return handlers;
-		}
+	}
 }
