@@ -46,6 +46,16 @@ public class AcidBlockEvent extends PlayerEvent implements Cancellable {
 	public PlayerReinforcement getDestroyedBlockReinforcement() {
 		return destroyedBlock;
 	}
+	
+	/**
+	 * @Deprecated
+	 * @return Returns the PlayerReinforcement for the block above the Acid Block.
+	 * @deprecated Use getDestroyedBlockReinforcement instead.
+	 */
+	@Deprecated
+	public PlayerReinforcement getDestoryedBlockReinforcement() {
+		return destroyedBlock;
+	}
 
 	private boolean isCancelled = false;
 	@Override
