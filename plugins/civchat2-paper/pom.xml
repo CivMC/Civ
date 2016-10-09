@@ -33,33 +33,21 @@
 
 	<dependencies>
 		<dependency>
-            <groupId>vg.civcraft.mc.namelayer</groupId>
-            <artifactId>NameLayer</artifactId>
-            <version>2.9.02</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot</artifactId>
+			<version>1.10</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.9.00</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.5.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.mercury</groupId>
-			<artifactId>Mercury</artifactId>
-			<version>1.2.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.10-R0.1-SNAPSHOT</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.bettershards</groupId>
-			<artifactId>BetterShards</artifactId>
-			<version>1.4</version>
+			<version>1.5.02</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

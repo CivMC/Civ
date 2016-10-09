@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
@@ -19,7 +18,6 @@ import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -31,7 +29,6 @@ public class CivChat2Manager {
 	private CivChat2FileLogger chatLog;
 	private CivChat2 instance;
 	private DatabaseManager DBM;
-	private final String sep = "|";
 	
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
@@ -112,18 +109,6 @@ public class CivChat2Manager {
 	}
 	
 	/**
-	 * Method to Send a message to a player on a different shard
-	 * @param receive Name of the player receiving the message
-	 * @param chatMessage Message to send to the player
-	 */
-	public void sendMsgAcrossShards(String receiver, String chatMessage){
-		String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
-		//This separator needs to be changed to load from config.
-        String sep = "|";
-        MercuryAPI.sendMessage(receiverServer, "msg" + sep + receiver + sep + chatMessage.replace(sep, ""), "civchat2");
-	}
-	
-	/**
 	 * Method to Send private message between to players
 	 * @param sender Player sending the message
 	 * @param receiver Player Receiving the message
@@ -189,77 +174,6 @@ public class CivChat2Manager {
 	}
 	
 	/**
-	 * Method to Send a private message to a player on a different shard
-	 * @param sender Player sending the message on the current shard
-	 * @param receiver Name of the player receiving the message on a different shard
-	 * @param chatMessage Message to send from sender to receiver
-	 */
-	public void sendPrivateMsgAcrossShards(Player sender, String receiver, String chatMessage){
-        String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
-        //This separator needs to be changed to load from config.
-        String sep = "|";
-       
-        if (DBM.isIgnoringPlayer(receiver, sender.getName())){
-            sender.sendMessage(ChatColor.YELLOW + "Player " + receiver +" is ignoring you");
-            return;
-        }
-       
-        if (DBM.isIgnoringPlayer(sender.getName(), receiver)){
-            sender.sendMessage(ChatColor.YELLOW + "You need to unignore " + receiver);
-            return;
-        }
-       
-        StringBuilder sb = new StringBuilder();
-       
-        String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
-                                .append("To ")
-                                .append(receiver)
-                                .append(": ")
-                                .append(chatMessage)
-                                .toString();
-       
-        sender.sendMessage(senderMessage);
-       
-        CivChat2.debugmessage(sb.append("ChatManager.sendPrivateMsg Sender: " )
-                .append( sender.getName())  
-                .append(" receiver: ")
-                .append( receiver)
-                .append( " Message: ")
-                .append(chatMessage)
-                .toString());
-        CivChat2.debugmessage("Sending private chat message");
-        chatLog.logPrivateMessage(sender, chatMessage, receiver);
-       
-        replyList.put(sender.getName(), receiver);
-        MercuryAPI.sendMessage(receiverServer, "pm" + sep + sender.getName() + sep + receiver.trim()+sep + chatMessage.replace(sep, ""), "civchat2");
-    }
-	
-	/**
-	 * Method to Receive a private message from a player on a different shard
-	 * @param sender Player sending the message on the current shard
-	 * @param receiver Name of the player receiving the message on a different shard
-	 * @param chatMessage Message to send from sender to receiver
-	 */
-    public void receivePrivateMsgAcrossShards(String sender, Player receiver, String chatMessage){
-        if(isAfk(receiver.getName())){
-            sendMsgAcrossShards(sender, AFKMSG);
-        }
-       
-        StringBuilder sb = new StringBuilder();
-       
-        String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE)
-                                .append("From ")
-                                .append(sender)
-                                .append(": ")
-                                .append(chatMessage)
-                                .toString();
-        sb.delete(0, sb.length());
-       
-        replyList.put(receiver.getName(), sender);
-        receiver.sendMessage(receiverMessage);
-    }	
-	
-	/**
 	 * Method to broadcast a message in global chat
 	 * @param sender Player who sent the message
 	 * @param chatMessage Message to send
@@ -276,13 +190,9 @@ public class CivChat2Manager {
 		int range = config.getChatRange();
 		int height = config.getYInc();	
 		Location location = sender.getLocation();
-		int x = location.getBlockX();
 		int y = location.getBlockY();
-		int z = location.getBlockZ();
 		double scale = (config.getYScale())/1000;			
-		double chatdist = 0;
 		
-		UUID uuid = NameAPI.getUUID(sender.getName());
 		StringBuilder sb = new StringBuilder();
 
 		//do height check
@@ -453,9 +363,6 @@ public class CivChat2Manager {
 	 * @param group Group to send the message too
 	 */
 	public void sendGroupMsg(String name, String groupMsg, Group group) {
-		if (CivChat2.getInstance().isMercuryEnabled()) {
-			MercuryAPI.sendGlobalMessage("gc" + sep + name + sep + group.getName() + sep + groupMsg.replace(sep, ""), "civchat2");
-		}
 		StringBuilder sb = new StringBuilder();
 		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
 		
@@ -511,51 +418,11 @@ public class CivChat2Manager {
 		}
 		
 		Set<String> players = new HashSet<String>();
-		for(UUID uuid : membersUUID){
-			if(MercuryAPI.getAllAccounts().contains(uuid)){
-				players.add(NameAPI.getCurrentName(uuid));
-			}
+		for(UUID uuid : membersUUID) {
+			players.add(NameAPI.getCurrentName(uuid));
 		}
 		players.remove(name); //remove the sender from the list
 		chatLog.logGroupMessage(msgSender, groupMsg, group.getName(), players);
-	}
-	
-	public void sendGroupMsgFromOtherShard(String name, String groupName, String groupMsg) {
-		Group g = NameAPI.getGroupManager().getGroup(groupName);
-		if (g == null) {
-			return;
-		}
-		List<Player> members = new ArrayList<Player>();
-		List<UUID> membersUUID = g.getAllMembers();
-		for(UUID uuid : membersUUID){
-			Player toAdd = Bukkit.getPlayer(uuid);
-			if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
-					g, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT"))) {
-				members.add(toAdd);
-			}
-		}
-		StringBuilder sb = new StringBuilder();
-		for(Player receiver: members){
-			sb.delete(0, sb.length());
-			if(DBM.isIgnoringGroup(receiver.getUniqueId(), g.getName())){
-				continue;
-			}
-			if(DBM.isIgnoringPlayer(receiver.getName(), name)){
-				continue;
-			}
-			else {
-				receiver.sendMessage(sb.append(ChatColor.GRAY )
-										.append( "[" )
-										.append( g.getName() )
-										.append( "] ") 
-										.append( name) 
-										.append( ": " )
-										.append( ChatColor.WHITE) 
-										.append( groupMsg)
-										.toString());
-				sb.delete(0, sb.length());
-			}
-		}
 	}
 	
 	/**

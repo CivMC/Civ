@@ -53,7 +53,7 @@ public class GroupChat extends PlayerCommand{
 		if(args.length <1){
 			//check if player is in groupchat and move them to normal chat
 			if(isGroupChatting){
-				sender.sendMessage(ChatColor.RED + "You have been moved to global chat");
+				sender.sendMessage(ChatColor.YELLOW + "You have been moved to global chat");
 				chatMan.removeGroupChat(playerName);
 				return true;
 			}
@@ -80,7 +80,7 @@ public class GroupChat extends PlayerCommand{
 			return true;
 		}
 		if (plugin.getDatabaseManager().isIgnoringGroup(sender.getName(), group.getName())){
-			sender.sendMessage(ChatColor.RED + "You need to unignore group: "+group.getName());
+			sender.sendMessage(ChatColor.YELLOW + "You need to unignore group: " + group.getName());
 			return true;
 		}
 		if(args.length == 1){	
@@ -88,18 +88,18 @@ public class GroupChat extends PlayerCommand{
 				//player already groupchatting check if its this group
 				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
 				if(curGroup == group){
-					sender.sendMessage(ChatColor.RED + "You are already chatting in that group.");
+					sender.sendMessage(ChatColor.YELLOW + "You are already chatting in that group.");
 					return true;
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "You have changed to groupchat: " + group.getName());
+					sender.sendMessage(ChatColor.YELLOW + "You have changed to groupchat: " + group.getName());
 					chatMan.removeGroupChat(playerName);
 					chatMan.addGroupChat(playerName, group.getName());
 					return true;
 				}
 			}
 			else{
-				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
+				sender.sendMessage(ChatColor.YELLOW + "You have been moved to groupchat: " + group.getName());
 				String chattingWith = chatMan.getChannel(playerName);
 				if (chattingWith != null) {
 					chatMan.removeChannel(playerName);
@@ -122,7 +122,7 @@ public class GroupChat extends PlayerCommand{
 					return true;
 				}
 				else{
-					sender.sendMessage(ChatColor.RED + "You have changed to groupchat: " + group.getName());
+					sender.sendMessage(ChatColor.YELLOW + "You have changed to groupchat: " + group.getName());
 					chatMan.removeGroupChat(playerName);
 					chatMan.addGroupChat(playerName, group.getName());
 					chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
@@ -130,7 +130,7 @@ public class GroupChat extends PlayerCommand{
 				}
 			}
 			else{
-				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
+				sender.sendMessage(ChatColor.YELLOW + "You have been moved to groupchat: " + group.getName());
 				String chattingWith = chatMan.getChannel(playerName);
 				if (chattingWith != null) {
 					chatMan.removeChannel(playerName);

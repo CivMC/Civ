@@ -12,7 +12,6 @@ import java.util.UUID;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class DatabaseManager {
@@ -20,7 +19,6 @@ public class DatabaseManager {
 	private CivChat2Config config = plugin.getPluginConfig();
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
 	private Database db;
-	private final String sep = "|";
 	
 	private HashMap<UUID, List<UUID>> ignoredPlayers = new HashMap<UUID, List<UUID>>();
 	private HashMap<UUID, List<String>> ignoredGroups = new HashMap<UUID, List<String>>();
@@ -163,9 +161,6 @@ public class DatabaseManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		if(plugin.isMercuryEnabled()){
-			MercuryAPI.sendGlobalMessage("ignore" + sep + "player" + sep + playerUUID + sep + ignoredPlayerUUID, "civchat2");
-		}
 		return true;
 	}
 	
@@ -210,9 +205,6 @@ public class DatabaseManager {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		if(plugin.isMercuryEnabled()){
-			MercuryAPI.sendGlobalMessage("unignore" + sep + "player" + sep + playerUUID + sep + ignoredPlayerUUID, "civchat2");
-		}
 		return true;
 	}
 	
@@ -236,9 +228,6 @@ public class DatabaseManager {
 			addIgnoredGroup.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		if(plugin.isMercuryEnabled()){
-			MercuryAPI.sendGlobalMessage("ignore" + sep + "group" + sep + playerUUID + sep + group, "civchat2");
 		}
 		return true;
 	}
@@ -283,9 +272,6 @@ public class DatabaseManager {
 			removeIgnoredGroup.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
-		if(plugin.isMercuryEnabled()){
-			MercuryAPI.sendGlobalMessage("unignore" + sep + "group" + sep + playerUUID + sep + group, "civchat2");
 		}
 		return true;
 	}

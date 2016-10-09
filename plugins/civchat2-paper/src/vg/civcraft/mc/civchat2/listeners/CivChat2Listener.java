@@ -17,7 +17,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -30,11 +29,9 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class CivChat2Listener implements Listener {
 	
 	private CivChat2Manager chatman;
-	private GroupManager gm;
 	
 	public CivChat2Listener(CivChat2Manager instance){
 		chatman = instance;
-		gm = NameAPI.getGroupManager();
 	}
 	
 	
@@ -87,16 +84,6 @@ public class CivChat2Listener implements Listener {
 						chatman.sendPrivateMsg(sender, receiver, chatMessage);
 						return;
 					} else {
-						if (CivChat2.getInstance().isMercuryEnabled()){
-							String receiverName = NameAPI.getCurrentName(receiverUUID);
-							for(String name : MercuryAPI.getAllPlayers()) {
-								if (name.equalsIgnoreCase(receiverName)){
-									//This separator needs to be changed to load from config.
-									chatman.sendPrivateMsgAcrossShards(sender, receiverName, chatMessage);
-									return;
-								}	
-							}
-						}
 						chatman.removeChannel(sender.getName());
 						String offlineMessage = sb.append(ChatColor.GOLD )
 													.append( "The player you were chatting with has gone offline,")

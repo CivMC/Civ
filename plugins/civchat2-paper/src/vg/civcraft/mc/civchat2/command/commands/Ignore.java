@@ -2,7 +2,6 @@ package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,7 +12,6 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class Ignore extends PlayerCommand{
@@ -75,22 +73,16 @@ public class Ignore extends PlayerCommand{
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (args.length != 1)
+		if (args.length != 1) {
 			return null;
+		}
+		
 		List<String> namesToReturn = new ArrayList<String>();
-		if (plugin.isMercuryEnabled()) {
-			Set<String> players = MercuryAPI.getAllPlayers();
-			for (String x: players) {
-				if (x.toLowerCase().startsWith(args[0].toLowerCase()))
-					namesToReturn.add(x);
-			}
+		for (Player p: Bukkit.getOnlinePlayers()) {
+			if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+				namesToReturn.add(p.getName());
 		}
-		else {
-			for (Player p: Bukkit.getOnlinePlayers()) {
-				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
-					namesToReturn.add(p.getName());
-			}
-		}
+		
 		return namesToReturn;
 	}	
 
