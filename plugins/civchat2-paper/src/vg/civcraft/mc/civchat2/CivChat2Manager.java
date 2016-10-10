@@ -379,10 +379,10 @@ public class CivChat2Manager {
 	}
 	
 	public String parse(String text) {
-		return TextUtil.instance().parse(text);
+		return TextUtil.parse(text);
 	}
 	
 	public String parse(String text, Object... args) {
-		return TextUtil.instance().parse(text, args);
+		return TextUtil.parse(text, args);
 	}
 }
