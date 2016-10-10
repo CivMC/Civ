@@ -83,13 +83,13 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>3.5.4</version>
+			<version>3.5.93</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civchat2</groupId>
 			<artifactId>CivChat2</artifactId>
-			<version>1.3.5</version>
+			<version>1.4.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
