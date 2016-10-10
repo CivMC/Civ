@@ -25,7 +25,7 @@ public class ClassUtility {
 				ClassPath path = ClassPath.from(classloader);
 
 				for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
-					Class clazz = null;
+					Class<?> clazz = null;
 					try {
 						clazz = Class.forName(info.getName(), true, classloader);
 					} catch (NoClassDefFoundError e) {
