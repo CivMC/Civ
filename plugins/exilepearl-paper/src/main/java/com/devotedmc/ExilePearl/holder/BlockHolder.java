@@ -10,7 +10,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * A block holding an exile pearl

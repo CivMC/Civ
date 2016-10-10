@@ -38,11 +38,11 @@ import com.devotedmc.ExilePearl.listener.WorldBorderListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
-import com.devotedmc.ExilePearl.util.TextUtil;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 /**
@@ -300,6 +300,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		getLogger().log(level, msg);
 	}
 	
+	@Override
 	public String formatText(String text, Object... args) {
 		return TextUtil.instance().parse(text, args);
 	}

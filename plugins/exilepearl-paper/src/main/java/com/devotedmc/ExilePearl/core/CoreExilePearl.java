@@ -28,7 +28,8 @@ import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Instance of a player who is imprisoned in an exile pearl

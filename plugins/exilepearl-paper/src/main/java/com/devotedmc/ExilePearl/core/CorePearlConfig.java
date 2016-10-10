@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.core;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -7,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 class CorePearlConfig extends CoreConfiguration implements PearlConfig {
@@ -102,8 +104,14 @@ class CorePearlConfig extends CoreConfiguration implements PearlConfig {
 
 	@Override
 	public Set<RepairMaterial> getRepairMaterials() {
-		Object o = doc.get("pearls.repair_materials");
-		return null;
+		Set<RepairMaterial> repairs = new HashSet<RepairMaterial>();
+		Document repairRecipes = doc.getDocument("pearls.repair_materials");
+		
+		for(String repairName : repairRecipes.keySet()) {
+			repairs.add(RepairMaterial.fromDocument(repairName, repairRecipes.getDocument(repairName)));
+		}
+		
+		return repairs;
 	}
 
 	@Override

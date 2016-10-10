@@ -59,9 +59,8 @@ import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.TextUtil;
 
+import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -102,7 +101,7 @@ public class PlayerListener implements Listener {
 			
 			if (repairMaterials.size() == 0) {
 				pearlApi.log("Failed to load any pearl repair materials. Defaulting to Obsidian.");
-				repairMaterials.add(new RepairMaterial(new ItemStack(Material.OBSIDIAN), 2));
+				repairMaterials.add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
 			}
 			
 			for(RepairMaterial mat : repairMaterials) {
@@ -684,7 +683,7 @@ public class PlayerListener implements Listener {
 		String name = e.getDestinationHolder().getName();
 		imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
 
-		String bcastMsg = TextUtil.instance().parse(Lang.pearlBroadcast, imprisoned.getName(), 
+		String bcastMsg = pearlApi.formatText(Lang.pearlBroadcast, imprisoned.getName(), 
 				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
 		for(PearlPlayer p : imprisoned.getBcastPlayers()) {

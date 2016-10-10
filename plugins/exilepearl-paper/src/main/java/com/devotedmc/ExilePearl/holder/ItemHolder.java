@@ -6,7 +6,8 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * A location holding an exile pearl

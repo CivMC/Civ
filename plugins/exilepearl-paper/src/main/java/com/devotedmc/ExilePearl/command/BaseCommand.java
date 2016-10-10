@@ -13,7 +13,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.util.StringListIgnoresCase;
-import com.devotedmc.ExilePearl.util.TextUtil;
+
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class BaseCommand<T extends  JavaPlugin> {
 	

@@ -6,7 +6,8 @@ import org.bukkit.event.HandlerList;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class PlayerFreedEvent extends Event implements Cancellable {
 	

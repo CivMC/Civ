@@ -16,8 +16,9 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.TextUtil;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 class CoreLoreGenerator implements PearlLoreProvider {
 	

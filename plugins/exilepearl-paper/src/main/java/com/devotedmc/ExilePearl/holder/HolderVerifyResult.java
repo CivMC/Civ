@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl.holder;
 
-import com.devotedmc.ExilePearl.util.Guard;
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Validation result for checking an exile pearl

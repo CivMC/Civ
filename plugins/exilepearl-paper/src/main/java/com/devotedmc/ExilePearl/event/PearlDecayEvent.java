@@ -4,7 +4,7 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import com.devotedmc.ExilePearl.util.Guard;
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class PearlDecayEvent extends Event implements Cancellable {
 	

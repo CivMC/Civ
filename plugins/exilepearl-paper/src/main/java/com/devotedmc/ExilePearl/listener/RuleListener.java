@@ -10,7 +10,8 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class RuleListener implements Listener {
 	

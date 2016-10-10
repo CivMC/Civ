@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.storage.AsyncPearlRecord.WriteType;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
  * Wrapper class for PluginStorage that performs asynchronous writes

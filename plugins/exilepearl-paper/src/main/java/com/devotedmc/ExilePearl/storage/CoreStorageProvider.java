@@ -5,7 +5,8 @@ import java.util.logging.Level;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.StorageProvider;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class CoreStorageProvider implements StorageProvider {
 

@@ -19,8 +19,8 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.config.PearlConfig;
-import com.devotedmc.ExilePearl.util.Guard;
 
+import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 class MySqlStorage implements PluginStorage {

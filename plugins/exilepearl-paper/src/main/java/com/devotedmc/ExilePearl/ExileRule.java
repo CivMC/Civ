@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl;
 
-import com.devotedmc.ExilePearl.util.Guard;
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public enum ExileRule {
 	PEARL_RADIUS("PEARL_RADIUS", "pearl radius"),

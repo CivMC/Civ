@@ -6,7 +6,8 @@ import org.bukkit.Bukkit;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 abstract class ExilePearlTask implements ExilePearlRunnable {
 

@@ -5,7 +5,8 @@ import org.bukkit.event.HandlerList;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
 
 public class PearlMovedEvent extends Event {
 	

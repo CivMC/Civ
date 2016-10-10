@@ -57,4 +57,12 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	 * @return true if the player is tagged
 	 */
 	boolean isPlayerTagged(UUID uid);
+	
+	/**
+	 * Color formats a string message
+	 * @param text The text to format
+	 * @param args The text arguments
+	 * @return The formatted message
+	 */
+	String formatText(String text, Object... args);
 }

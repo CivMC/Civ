@@ -11,8 +11,10 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlAccess;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.util.Guard;
-import com.devotedmc.ExilePearl.util.TextUtil;
+
+import vg.civcraft.mc.civmodcore.util.Guard;
+
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * Extends the Bukkit Player class to add ExilePearl specific data
