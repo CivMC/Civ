@@ -24,8 +24,12 @@ public interface Command {
 
 	void postSetup();
 	
-	boolean getSenderMustBeConsole();
+	boolean getSenderMustBePlayer();
+	
+	boolean getErrorOnTooManyArgs();
 	
 	void setSender(CommandSender sender);
+	
+	void setArgs(String[] args);
 
 }

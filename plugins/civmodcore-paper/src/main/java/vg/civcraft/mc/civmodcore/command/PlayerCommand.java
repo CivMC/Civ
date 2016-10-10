@@ -2,6 +2,9 @@ package vg.civcraft.mc.civmodcore.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.civmodcore.util.TextUtil;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 
@@ -13,8 +16,10 @@ public abstract class PlayerCommand implements Command {
 	private String identifier = "";
 	private int min = 0;
 	private int max = 0;
-	private boolean senderMustBeConsole = false;
+	private boolean senderMustBePlayer = false;
+	private boolean errorOnTooManyArgs = true;
 	private CommandSender sender;
+	private String[] args;
 
 	public PlayerCommand(String name) {
 		this.name = name;
@@ -51,16 +56,28 @@ public abstract class PlayerCommand implements Command {
 	}
 
 	@Override
-	public boolean getSenderMustBeConsole() {
-		return senderMustBeConsole;
+	public boolean getSenderMustBePlayer() {
+		return senderMustBePlayer;
+	}
+	
+	@Override
+	public boolean getErrorOnTooManyArgs() {
+		return this.errorOnTooManyArgs;
 	}
 	
 	@Override
 	public void setSender(CommandSender sender) {
 		this.sender = sender;
 	}
+
+	@Override
+	public void setArgs(String[] args) {
+		this.args = args;
+	}
 	
-	
+	public String[] getArgs() {
+		return args;
+	}
 
 	public void postSetup() {
 		PluginCommand cmd = Bukkit.getPluginCommand(identifier);
@@ -99,19 +116,31 @@ public abstract class PlayerCommand implements Command {
 		return flag;
 	}
 	
-	public void setSenderMustBeConsole(boolean senderMustBeConsole) {
-		this.senderMustBeConsole = senderMustBeConsole;
+	public void setSenderMustBePlayer(boolean senderMustBeConsole) {
+		this.senderMustBePlayer = senderMustBeConsole;
 	}
 	
-	public void messageSender(String msg) {
-		sender.sendMessage(msg);
-	}
-	
-	public void messageSender(String msg, Object... args) {
-		sender.sendMessage(String.format(msg, args));
+	public void setErrorOnTooManyArgs(boolean errorOnTooManyArgs) {
+		this.errorOnTooManyArgs = errorOnTooManyArgs;
 	}
 	
 	public Player me() {
 		return (Player)sender;
+	}
+	
+	public void msg(String msg) {
+		sender.sendMessage(parse(msg));
+	}
+	
+	public void msg(String msg, Object... args) {
+		sender.sendMessage(parse(msg, args));
+	}
+	
+	public String parse(String text) {
+		return TextUtil.instance().parse(text);
+	}
+	
+	public String parse(String text, Object... args) {
+		return TextUtil.instance().parse(text, args);
 	}
 }

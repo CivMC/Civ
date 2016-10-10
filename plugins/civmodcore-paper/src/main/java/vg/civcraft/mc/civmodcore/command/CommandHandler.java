@@ -10,10 +10,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.CivStrings;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
+
 public abstract class CommandHandler {
 
 	public Map<String, Command> commands = new HashMap<>();
 	private Boolean mercuryEnabled;
+	private CommandSender sender;
 
 	public abstract void registerCommands();
 
@@ -25,19 +29,23 @@ public abstract class CommandHandler {
 	}
 
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
+		this.sender = sender;
+		
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
-			if (args.length < command.getMinArguments() || args.length > command.getMaxArguments()) {
+			
+			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
+				msg(CivStrings.cmdMustBePlayer);
+				return true;
+			}
+			
+			if (args.length < command.getMinArguments() || (command.getErrorOnTooManyArgs() && args.length > command.getMaxArguments())) {
 				helpPlayer(command, sender);
 				return true;
 			}
 			
-			if (command.getSenderMustBeConsole() && (!(sender instanceof Player))) {
-				sender.sendMessage(ChatColor.YELLOW + "Only in-game players can perform that command.");
-				return true;
-			}
-			
 			command.setSender(sender);
+			command.setArgs(args);
 			command.execute(sender, args);
 		}
 		return true;
@@ -46,6 +54,14 @@ public abstract class CommandHandler {
 	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
+			
+			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
+				msg(CivStrings.cmdMustBePlayer);
+				return null;
+			}
+
+			command.setSender(sender);
+			command.setArgs(args);
 			List <String> completes = command.tabComplete(sender, args);
 			String completeArg;
 			if (args.length == 0) {
@@ -82,6 +98,22 @@ public abstract class CommandHandler {
 				.append(command.getDescription()).toString());
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ")
 				.append(command.getUsage()).toString());
+	}
+	
+	public void msg(String msg) {
+		sender.sendMessage(parse(msg));
+	}
+	
+	public void msg(String msg, Object... args) {
+		sender.sendMessage(parse(msg, args));
+	}
+	
+	public String parse(String text) {
+		return TextUtil.instance().parse(text);
+	}
+	
+	public String parse(String text, Object... args) {
+		return TextUtil.instance().parse(text, args);
 	}
 
 }
