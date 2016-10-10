@@ -8,25 +8,9 @@ import org.bukkit.ChatColor;
 
 public class TextUtil
 {	
-	private static TextUtil instance;
+	private static Map<String, String> tags = new HashMap<String, String>();
 	
-	public Map<String, String> tags;
-	
-	private TextUtil() {
-		this.tags = new HashMap<String, String>();
-		
-		createTags();
-	}
-	
-	public static TextUtil instance() {
-		if (instance == null) {
-			instance = new TextUtil();
-		}
-		return instance;
-	}
-	
-	private void createTags()
-	{
+	static {
 		tags.put("l", TextUtil.parseColor("<green>"));		// logo
 		tags.put("a", TextUtil.parseColor("<gold>"));		// art
 		tags.put("n", TextUtil.parseColor("<silver>"));		// notice
@@ -44,28 +28,24 @@ public class TextUtil
 	// Top-level parsing functions.
 	// -------------------------------------------- //
 	
-	public String parse(String str, Object... args)
-	{
-		return String.format(this.parse(str), args);
+	public static String parse(String str, Object... args) {
+		return String.format(parse(str), args);
 	}
 	
-	public String parse(String str)
-	{
-		return this.parseTags(parseColor(str));
+	public static String parse(String str) {
+		return parseTags(parseColor(str));
 	}
 	
 	// -------------------------------------------- //
 	// Tag parsing
 	// -------------------------------------------- //
 	
-	public String parseTags(String str)
-	{
-		return replaceTags(str, this.tags);
+	public static String parseTags(String str) {
+		return replaceTags(str, tags);
 	}
 	
 	public static final transient Pattern patternTag = Pattern.compile("<([a-zA-Z0-9_]*)>");
-	public static String replaceTags(String str, Map<String, String> tags)
-	{
+	public static String replaceTags(String str, Map<String, String> tags) {
 		StringBuffer ret = new StringBuffer();
 		Matcher matcher = patternTag.matcher(str);
 		while (matcher.find())
@@ -89,24 +69,21 @@ public class TextUtil
 	// Color parsing
 	// -------------------------------------------- //
 	
-	public static String parseColor(String string)
-	{
+	public static String parseColor(String string) {
 		string = parseColorAmp(string);
 		string = parseColorAcc(string);
 		string = parseColorTags(string);
 		return string;
 	}
 	
-	public static String parseColorAmp(String string)
-	{
+	public static String parseColorAmp(String string) {
 		string = string.replaceAll("(§([a-z0-9]))", "\u00A7$2");
 		string = string.replaceAll("(&([a-z0-9]))", "\u00A7$2");
 		string = string.replace("&&", "&");
 		return string;
 	}
 	
-	public static String parseColorAcc(String string)
-	{
+	public static String parseColorAcc(String string) {
 		return string.replace("`e", "")
 		.replace("`r", ChatColor.RED.toString()) .replace("`R", ChatColor.DARK_RED.toString())
 		.replace("`y", ChatColor.YELLOW.toString()) .replace("`Y", ChatColor.GOLD.toString())
@@ -118,8 +95,7 @@ public class TextUtil
 		.replace("`S", ChatColor.DARK_GRAY.toString()) .replace("`w", ChatColor.WHITE.toString());
 	}
 	
-	public static String parseColorTags(String string)
-	{
+	public static String parseColorTags(String string) {
 		return string.replace("<empty>", "")
 		.replace("<black>", "\u00A70")
 		.replace("<navy>", "\u00A71")
@@ -147,18 +123,18 @@ public class TextUtil
 	// Standard utils like UCFirst, implode and repeat.
 	// -------------------------------------------- //
 	
-	public String upperCaseFirst(String string) {
+	public static String upperCaseFirst(String string) {
 		Guard.ArgumentNotNull(string, "string");
 		return string.substring(0, 1).toUpperCase()+string.substring(1);
 	}
 	
-	public String repeat(String string, int times) {
+	public static String repeat(String string, int times) {
 		Guard.ArgumentNotNull(string, "string");
 		if (times <= 0) return "";
 		else return string + repeat(string, times-1);
 	}
 	
-	public String implode(List<String> list, String glue) {
+	public static String implode(List<String> list, String glue) {
 		Guard.ArgumentNotNull(list, "list");
 		Guard.ArgumentNotNull(glue, "glue");
 		StringBuilder ret = new StringBuilder();
@@ -173,7 +149,7 @@ public class TextUtil
 		return ret.toString();
 	}
 	
-	public String implodeCommaAnd(List<String> list, String comma, String and)
+	public static String implodeCommaAnd(List<String> list, String comma, String and)
 	{
 		if (list.size() == 0) return "";
 		if (list.size() == 1) return list.get(0);
@@ -186,7 +162,7 @@ public class TextUtil
 		
 		return implode(list, comma);
 	}
-	public String implodeCommaAnd(List<String> list)
+	public static String implodeCommaAnd(List<String> list)
 	{
 		return implodeCommaAnd(list, ", ", " and ");
 	}
@@ -195,15 +171,13 @@ public class TextUtil
 	// Paging and chrome-tools like titleize
 	// -------------------------------------------- //
 	
-	private final String titleizeLine = repeat("_", 52);
-	private final int titleizeBalance = -1;
-	public String titleize(String str)
-	{
+	private static final String titleizeLine = repeat("_", 52);
+	private static final int titleizeBalance = -1;
+	public static String titleize(String str) {
 		return titleize("<a>", str);
 	}
 	
-	public String titleize(String colorCode, String str)
-	{
+	public static String titleize(String colorCode, String str) {
 		String center = ".[ "+ parseTags("<l>") + str + parseTags(colorCode)+ " ].";
 		int centerlen = ChatColor.stripColor(center).length();
 		int pivot = titleizeLine.length() / 2;
@@ -216,30 +190,26 @@ public class TextUtil
 			return parseTags(colorCode)+center;
 	}
 	
-	public ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title)
-	{
+	public static ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title) {
 		ArrayList<String> ret = new ArrayList<String>();
 		int pageZeroBased = pageHumanBased - 1;
 		int pageheight = 9;
 		int pagecount = (lines.size() / pageheight)+1;
 		
-		ret.add(this.titleize(title+" "+pageHumanBased+"/"+pagecount));
+		ret.add(titleize(title+" "+pageHumanBased+"/"+pagecount));
 		
-		if (pagecount == 0)
-		{
-			ret.add(this.parseTags("<i>Sorry. No Pages available."));
+		if (pagecount == 0) {
+			ret.add(parseTags("<i>Sorry. No Pages available."));
 			return ret;
 		}
-		else if (pageZeroBased < 0 || pageHumanBased > pagecount)
-		{
-			ret.add(this.parseTags("<i>Invalid page. Must be between 1 and "+pagecount));
+		else if (pageZeroBased < 0 || pageHumanBased > pagecount) {
+			ret.add(parseTags("<i>Invalid page. Must be between 1 and "+pagecount));
 			return ret;
 		}
 		
 		int from = pageZeroBased * pageheight;
 		int to = from+pageheight;
-		if (to > lines.size())
-		{
+		if (to > lines.size()) {
 			to = lines.size();
 		}
 		

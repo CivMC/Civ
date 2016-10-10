@@ -2,5 +2,5 @@ package vg.civcraft.mc.civmodcore;
 
 public final class CivStrings {
 
-	public static final String cmdMustBePlayer = "<i>Only in-game players can perform that command.";
+	public static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";
 }
