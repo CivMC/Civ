@@ -67,11 +67,11 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		if (i == null || fccf == null) {
+			return output.getItemStackRepresentation();
+		}
 		ItemMap currentOut = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
 		List<ItemStack> stacks = currentOut.getItemStackRepresentation();
-		if (i == null || fccf == null) {
-			return stacks;
-		}
 		double factor = modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this));
 		for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
 			double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
