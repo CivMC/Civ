@@ -11,8 +11,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -28,6 +32,9 @@ import java.util.UUID;
 public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements Listener {
 	public static final String NAME = "InvisibleFix";
 	private AtomicInteger activeJoins = new AtomicInteger(0);
+	
+	private LinkedTransferQueue<UUID> ltq = new LinkedTransferQueue<UUID>();
+	private BukkitTask recheckTask = null;
 
 	public InvisibleFix(SimpleAdminHacks plugin, InvisibleFixConfig config) {
 		super(plugin, config);
@@ -39,7 +46,12 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 		Player p = event.getPlayer();
 		if (p == null) return;
 		final UUID uuid = p.getUniqueId();
+		ltq.offer(uuid);
 
+		if (p.isOp() && config.getIgnoreOps()) return;
+		String tPerm = config.getIgnorePermission();
+		if (tPerm != null && p.hasPermission(tPerm)) return;
+		
 		Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
 				@Override
 				public void run() {
@@ -70,6 +82,64 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 		if (config.isEnabled()) {
 			plugin().log("Registering InvisibleFix listener");
 			plugin().registerListener(this);
+			plugin().log("Starting recheck task");
+			this.recheckTask = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin(), 
+					new Runnable() {
+						@Override
+						public void run() {
+							if (!config.isEnabled()) return;
+							doRecheck();
+						}				
+					},
+					config.getRecheckInterval(), config.getRecheckInterval());
+		}
+	}
+	
+	private void doRecheck() {
+		// unspool, then recheck.
+		plugin().debug("Refixing invisibles...");
+		HashSet<Player> refix = new HashSet<Player>(config.getMaxPlayersPerRecheck());
+		LinkedList<UUID> skiplist = new LinkedList<UUID>();
+		int cnt = 0;
+		// accumulate
+		while (this.ltq.peek() != null && cnt < config.getMaxPlayersPerRecheck()) {
+			UUID fixerUUID = ltq.poll();
+			if (fixerUUID == null) break;
+			Player fixer = Bukkit.getPlayer(fixerUUID);
+			if (fixer != null) {
+				if (fixer.isOp() && config.getIgnoreOps()) {
+					skiplist.add(fixerUUID);
+					continue;
+				}
+				String tPerm = config.getIgnorePermission();
+				if (tPerm != null && fixer.hasPermission(tPerm)) {
+					skiplist.add(fixerUUID);
+					continue;
+				}
+				refix.add(fixer);
+				cnt++;
+			}
+		}
+		if (cnt > 0) {
+			plugin().debug("Found {0} players to refix", cnt);
+			// unblind
+			for (Player online : Bukkit.getOnlinePlayers()) {
+				for (Player fix : refix) {
+					if (!refix.contains(fix)) {
+						online.hidePlayer(fix);
+						fix.hidePlayer(online);
+						online.showPlayer(fix);
+						fix.hidePlayer(online);
+					}
+				}
+			}
+			// add them back.
+			for (Player fix : refix) {
+				this.ltq.offer(fix.getUniqueId());
+			}
+		}
+		for (UUID skip : skiplist) {
+			this.ltq.offer(skip);
 		}
 	}
 
@@ -80,10 +150,15 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 	@Override
 	public void dataBootstrap() {
 		activeJoins.set(0);
+		ltq.clear();
 	}
 
 	@Override
 	public void unregisterListeners() {
+		if (this.recheckTask != null) {
+			plugin().debug("Stopping InvisibleFix recheck task");
+			this.recheckTask.cancel();
+		}
 	}
 
 	@Override
@@ -92,6 +167,7 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 
 	@Override
 	public void dataCleanup() {
+		ltq.clear();
 	}
 
 	@Override

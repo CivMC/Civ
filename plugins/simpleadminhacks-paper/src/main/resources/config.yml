@@ -105,3 +105,12 @@ hacks:
           x: 50.0
   InvControl:
     enabled: true
+  InvisibleFix:
+    enabled: true
+    ignoreOps: true
+    ignorePermission: sah.allowInvisible
+    recheckInterval: 10000
+  ReinforcedChestBreak:
+    enabled: true
+    delay: 180
+    message: "&4%Player% is raiding a chest at %x% %y% %z%."
