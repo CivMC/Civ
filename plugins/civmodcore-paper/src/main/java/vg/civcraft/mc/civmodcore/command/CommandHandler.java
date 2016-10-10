@@ -31,6 +31,13 @@ public abstract class CommandHandler {
 				helpPlayer(command, sender);
 				return true;
 			}
+			
+			if (command.getSenderMustBeConsole() && (!(sender instanceof Player))) {
+				sender.sendMessage(ChatColor.YELLOW + "Only in-game players can perform that command.");
+				return true;
+			}
+			
+			command.setSender(sender);
 			command.execute(sender, args);
 		}
 		return true;

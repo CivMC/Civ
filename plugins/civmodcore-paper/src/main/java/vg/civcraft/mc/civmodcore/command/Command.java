@@ -23,5 +23,9 @@ public interface Command {
 	int getMinArguments();
 
 	void postSetup();
+	
+	boolean getSenderMustBeConsole();
+	
+	void setSender(CommandSender sender);
 
 }
