@@ -38,6 +38,6 @@ public class CmdAutoHelp extends PearlCommand
 		
 		int page = this.argAsInt(0, 1);
 		
-		msg(TextUtil.instance().getPage(lines, page, "Help for command \""+cmd.getAliases().get(0)+"\""));
+		msg(TextUtil.getPage(lines, page, "Help for command \""+cmd.getAliases().get(0)+"\""));
 	}
 }

@@ -102,7 +102,9 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		pearlConfig.reloadFile();
 		
 		// Storage connect and load
-		storage = storageProvider.createStorage();
+		if (storageProvider.getStorage() == null) {
+			storage = storageProvider.createStorage();
+		}
 		if (storage.connect()) {
 			pearlManager.loadPearls();
 		} else {
@@ -302,7 +304,7 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 	
 	@Override
 	public String formatText(String text, Object... args) {
-		return TextUtil.instance().parse(text, args);
+		return TextUtil.parse(text, args);
 	}
 
 	@Override

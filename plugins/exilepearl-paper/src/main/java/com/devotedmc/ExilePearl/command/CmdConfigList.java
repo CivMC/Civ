@@ -28,7 +28,7 @@ public class CmdConfigList extends PearlCommand
 	public void perform() {
 		
 		StringBuilder sb = new StringBuilder();
-		sb.append(TextUtil.instance().titleize("Exile Pearl Rules") + "\n");
+		sb.append(TextUtil.titleize("Exile Pearl Rules") + "\n");
 		lineLength = 0;
 
 		appendIntRule(sb, ExileRule.PEARL_RADIUS.toString(), config.getRulePearlRadius());

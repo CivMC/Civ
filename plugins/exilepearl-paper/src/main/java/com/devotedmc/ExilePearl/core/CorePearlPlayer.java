@@ -72,7 +72,7 @@ class CorePearlPlayer implements PearlPlayer {
 		
 		Player p = getPlayer();
 		if (p != null && p.isOnline()) {
-			p.sendMessage(TextUtil.instance().parse(String.format(str, args)));
+			p.sendMessage(TextUtil.parse(String.format(str, args)));
 		}
 	}
 	

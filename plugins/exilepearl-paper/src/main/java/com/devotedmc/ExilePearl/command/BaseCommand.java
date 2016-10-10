@@ -61,8 +61,6 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	// Will only be set when the sender is a player
 	private Player me;
 	
-	private TextUtil txt = TextUtil.instance();
-	
 	/**
 	 * Creates a new SabreCommand instance
 	 * @param sabreApi The Sabre API
@@ -323,7 +321,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 			{
 				// Get the to many string slice
 				List<String> theToMany = args.subList(this.requiredArgs.size() + this.optionalArgs.size(), args.size());
-				msg(Lang.commandToManyArgs, txt.implode(theToMany, " "));
+				msg(Lang.commandToManyArgs, TextUtil.implode(theToMany, " "));
 				sender.sendMessage(this.getUsageTemplate());
 			}
 			return false;
@@ -348,15 +346,15 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 */
 	public String getUseageTemplate(List<BaseCommand<? extends  JavaPlugin>> commandChain, boolean addShortHelp) {
 		StringBuilder ret = new StringBuilder();
-		ret.append(txt.parseTags("<c>"));
+		ret.append(TextUtil.parseTags("<c>"));
 		ret.append('/');
 		
 		for (BaseCommand<? extends  JavaPlugin> mc : commandChain) {
-			ret.append(txt.implode(mc.aliases, ","));
+			ret.append(TextUtil.implode(mc.aliases, ","));
 			ret.append(' ');
 		}
 		
-		ret.append(txt.implode(this.aliases, ","));
+		ret.append(TextUtil.implode(this.aliases, ","));
 		
 		List<String> args = new ArrayList<String>();
 		
@@ -375,12 +373,12 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 		}
 		
 		if (args.size() > 0) {
-			ret.append(txt.parseTags("<p> "));
-			ret.append(txt.implode(args, " "));
+			ret.append(TextUtil.parseTags("<p> "));
+			ret.append(TextUtil.implode(args, " "));
 		}
 		
 		if (addShortHelp) {
-			ret.append(txt.parseTags(" <i>"));
+			ret.append(TextUtil.parseTags(" <i>"));
 			ret.append(this.getHelpShort());
 		}
 		
@@ -652,10 +650,10 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @return The formatted string
 	 */
 	protected String parse(String str, Object... args) {
-		return txt.parse(str, args);
+		return TextUtil.parse(str, args);
 	}
 	
 	protected String parse(String str) {
-		return txt.parse(str);
+		return TextUtil.parse(str);
 	}
 }

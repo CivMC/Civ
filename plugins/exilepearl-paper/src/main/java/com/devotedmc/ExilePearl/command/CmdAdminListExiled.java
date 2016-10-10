@@ -26,7 +26,7 @@ public class CmdAdminListExiled extends PearlCommand {
 		final Collection<ExilePearl> pearls = pearlApi.getPearls();
 		int lineLength = 0;
 		
-		sb.append(TextUtil.instance().titleize("Exiled Players") + "\n");
+		sb.append(TextUtil.titleize("Exiled Players") + "\n");
 		sb.append(String.format("<i>There is a total of <c>%d <i>players exiled.\n <n>", pearls.size()));
 		
 		for(ExilePearl pearl : pearls) {

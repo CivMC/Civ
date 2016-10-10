@@ -135,12 +135,7 @@ class CoreLoreGenerator implements PearlLoreProvider {
 		return lore;
 	}
 
-
-	protected static String parse(String str) {
-		return TextUtil.instance().parse(str);
-	}
-
 	protected static String parse(String str, Object... args) {
-		return String.format(parse(str), args);
+		return TextUtil.parse(str, args);
 	}
 }
