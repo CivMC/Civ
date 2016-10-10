@@ -414,8 +414,9 @@ public class ConfigParser {
 				.getString("transfer_time_multiplier"));
 		int transferAmount = config.getInt("transfer_amount");
 		byte color = (byte) config.getInt("glass_color");
+		int maxLength = config.getInt("maximum_length");
 		return new PipeEgg(name, update, fuel, fuelIntervall, null,
-				transferTimeMultiplier, transferAmount, color, returnRate);
+				transferTimeMultiplier, transferAmount, color, returnRate, maxLength);
 	}
 
 	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {

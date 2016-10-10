@@ -250,6 +250,8 @@ public class FactoryModManager {
 	 *            Player attempting to create the factory
 	 */
 	public void attemptCreation(Block b, Player p) {
+		//this method should probably be taken apart and the individual logic should be exported in
+		//a class that fits each factory type
 		if (!factoryExistsAt(b.getLocation())) {
 			// Cycle through possible structures here
 			if (b.getType() == Material.WORKBENCH) {
@@ -323,6 +325,11 @@ public class FactoryModManager {
 									.getColor()) {
 								p.sendMessage(ChatColor.RED
 										+ "You dont have the right color of glass for this pipe");
+								return;
+							}
+							if (ps.getLength() > ((PipeEgg) egg).getMaximumLength()) {
+								p.sendMessage(ChatColor.RED
+										+ "You cant make pipes of this type, which are that long");
 								return;
 							}
 							Factory f = egg.hatch(ps, p);

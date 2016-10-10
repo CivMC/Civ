@@ -27,11 +27,12 @@ public class PipeEgg implements IFactoryEgg {
 	private int transferTimeMultiplier;
 	private int transferAmount;
 	private byte color;
-	double returnRate;
+	private double returnRate;
+	private int maximumLength;
 
 	public PipeEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, List<Material> allowedMaterials,
-			int transferTimeMultiplier, int transferAmount, byte color, double returnRate) {
+			int transferTimeMultiplier, int transferAmount, byte color, double returnRate, int maximumLength) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
@@ -41,6 +42,7 @@ public class PipeEgg implements IFactoryEgg {
 		this.allowedMaterials = allowedMaterials;
 		this.color = color;
 		this.returnRate = returnRate;
+		this.maximumLength = maximumLength;
 	}
 
 	public String getName() {
@@ -77,6 +79,10 @@ public class PipeEgg implements IFactoryEgg {
 	
 	public byte getColor() {
 		return color;
+	}
+	
+	public int getMaximumLength() {
+		return maximumLength;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {

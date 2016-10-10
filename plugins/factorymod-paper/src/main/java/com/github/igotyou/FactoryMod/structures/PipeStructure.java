@@ -21,7 +21,6 @@ public class PipeStructure extends MultiBlockStructure {
 	private List<Location> glassPipe;
 	private byte glassColor;
 	private static Material pipeMaterial = Material.STAINED_GLASS;
-	private static int maximumLength = 128;
 	private boolean complete;
 
 	public PipeStructure(Block startBlock) {
@@ -47,7 +46,7 @@ public class PipeStructure extends MultiBlockStructure {
 		glassColor = currentBlock.getData();
 		glassPipe.add(currentBlock.getLocation());
 		int length = 1;
-		while (length <= maximumLength) {
+		while (length <= 512) {
 			List<Block> blocks = MultiBlockStructure
 					.getAdjacentBlocks(currentBlock);
 			boolean foundEnd = false;
