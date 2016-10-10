@@ -27,7 +27,7 @@ public class PlayerBroadcastTarget implements PearlBroadcastTarget {
 		Location l = pearl.getHolder().getLocation();
 		String name = pearl.getHolder().getName();
 		
-		String msg = TextUtil.parse(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		String msg = TextUtil.parse(Lang.pearlBroadcast, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 		
 		Player p = Bukkit.getPlayer(playerId);
 		if (p != null && p.isOnline()) {
