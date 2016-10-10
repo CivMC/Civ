@@ -11,17 +11,21 @@ public class TextUtil
 	private static Map<String, String> tags = new HashMap<String, String>();
 	
 	static {
-		tags.put("l", TextUtil.parseColor("<green>"));		// logo
-		tags.put("a", TextUtil.parseColor("<gold>"));		// art
-		tags.put("n", TextUtil.parseColor("<silver>"));		// notice
-		tags.put("i", TextUtil.parseColor("<yellow>"));		// info
 		tags.put("g", TextUtil.parseColor("<lime>"));		// good
 		tags.put("b", TextUtil.parseColor("<rose>"));		// bad
+		tags.put("i", TextUtil.parseColor("<yellow>"));		// info
+		tags.put("a", TextUtil.parseColor("<gold>"));		// art
+		tags.put("l", TextUtil.parseColor("<green>"));		// logo
+		tags.put("n", TextUtil.parseColor("<silver>"));		// notice
 		tags.put("h", TextUtil.parseColor("<pink>"));		// highlight
 		tags.put("c", TextUtil.parseColor("<aqua>"));		// parameter
 		tags.put("p", TextUtil.parseColor("<teal>"));		// parameter
 		tags.put("w", TextUtil.parseColor("<white>"));		// parameter
 		tags.put("lp", TextUtil.parseColor("<lpurple>"));
+	}
+	
+	public static Map<String, String> getTags() {
+		return tags;
 	}
 	
 	// -------------------------------------------- //
