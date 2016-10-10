@@ -17,8 +17,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /*
@@ -71,20 +71,19 @@ public class CivChat2Listener implements Listener {
 		    public void run() {
 				String chatMessage = asyncPlayerChatEvent.getMessage();
 				Player sender = asyncPlayerChatEvent.getPlayer();
-				String chatChannel = chatman.getChannel(sender.getName());
-				String groupChat = chatman.getGroupChatting(sender.getName());
+				UUID chatChannel = chatman.getChannel(sender);
+				Group groupChat = chatman.getGroupChatting(sender);
 				
 				CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
 				if(chatChannel != null){
 					StringBuilder sb = new StringBuilder();
-					UUID receiverUUID = NameAPI.getUUID(chatChannel);
-					Player receiver = Bukkit.getPlayer(receiverUUID);
+					Player receiver = Bukkit.getPlayer(chatChannel);
 					CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
 					if(receiver != null) {
 						chatman.sendPrivateMsg(sender, receiver, chatMessage);
 						return;
 					} else {
-						chatman.removeChannel(sender.getName());
+						chatman.removeChannel(sender);
 						String offlineMessage = sb.append(ChatColor.GOLD )
 													.append( "The player you were chatting with has gone offline,")
 													.append(" you have been moved to regular chat").toString();
@@ -96,11 +95,11 @@ public class CivChat2Listener implements Listener {
 				if(groupChat != null){
 					//player is group chatting
 					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
-						chatman.sendGroupMsg(sender.getName(), chatMessage, GroupManager.getGroup(groupChat));
+						chatman.sendGroupMsg(sender, groupChat, chatMessage);
 						return;
 					} //player lost perm to write in the chat
 					else {
-						chatman.removeGroupChat(sender.getName());
+						chatman.removeGroupChat(sender);
 						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 					}
 				}

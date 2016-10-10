@@ -1,16 +1,29 @@
 package vg.civcraft.mc.civchat2;
 
-import org.bukkit.ChatColor;
-
 public class ChatStrings {
 	
-	public final static String chatPlayerIsOffline = ChatColor.YELLOW + "That player is offline.";
-	public final static String chatNoOneToReplyTo = ChatColor.YELLOW + "You have no one to reply too.";
-	public final static String chatCantMessageSelf = ChatColor.YELLOW + "You can't message yourself";
-	public final static String chatNowChattingWith = ChatColor.LIGHT_PURPLE + "You are now chatting with " + ChatColor.YELLOW + " %s.";
-	public final static String chatMovedToGlobal = ChatColor.YELLOW + "You've been moved to global chat.";
+	public final static String chatPlayerIsOffline = "<i>That player is offline.";
+	public final static String chatNoOneToReplyTo = "<i>You have no one to reply too.";
+	public final static String chatCantMessageSelf = "<i>You can't message yourself.";
+	public final static String chatCantIgnoreSelf = "<i>You can't ignore yourself.";
+	public final static String chatNowChattingWith = "<g>You are now chatting with <i>%s.";
+	public final static String chatMovedToGlobal = "<i>You are now in global chat.";
+	public final static String chatGroupNotFound = "<b>There is no group with that name.";
+	public final static String chatGroupAlreadyChatting = "<i>You are already chatting in that group.";
+	public final static String chatGroupNowChattingIn = "<i>You are now chatting in group <c>%s";
+	public final static String chatGroupNoPerms = "<b>You don't have permission to chat in this group.";
+	public final static String chatNeedToUnignore = "<i>You need to unignore <c>%s";
+	public final static String chatPlayerNotFound = "<b>No player exists with that name";
+	public final static String chatNowIgnoring = "<i>You are now ignoring <c>%s";
+	public final static String chatStoppedIgnoring = "<i>You stopped ignoring <c>%s";
+	public final static String chatNotIgnoringAnyPlayers = "<i>You are not ignoring any players.";
+	public final static String chatNotIgnoringAnyGroups = "<i>You are not ignoring any groups.";
+	public final static String chatPlayerIgnoringYou = "<i>Player <c>%s <i>is ignoring you.";
+	public final static String chatRemovedFromChat = "<g>You left private chat.";
+	public final static String chatNotInPrivateChat = "<i>You aren't in private chat.";
+	public final static String chatAfk = "<blue>You are now AFK, type /afk to remove AFK status.";
+	public final static String chatNotAfk = "<blue>You are no longer AFK.";
 	
-	
-	public final static String chatMustBePlayer = ChatColor.RED + "Only in-game players can perform this command.";
+	public final static String chatGroupMessage = "<gray>[%s] %s: <white>%s";
 
 }

@@ -1,21 +1,19 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civchat2.command.ChatCommand;
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Tell extends PlayerCommand {
+public class Tell extends ChatCommand {
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
@@ -24,73 +22,65 @@ public class Tell extends PlayerCommand {
 	public Tell(String name) {
 		super(name);
 		setIdentifier("tell");
-		setDescription("This command is used to send a message or chat with another player");
-		setUsage("/tell <PlayerName> (message)");
-		setArguments(0,100);
+		setDescription("Sends a private message to another player");
+		setUsage("/tell <player> <message>");
+		setSenderMustBePlayer(true);
+		setErrorOnTooManyArgs(false);
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
-		chatMan = plugin.getCivChat2Manager();
-		if(!(sender instanceof Player)){
-			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
-			return true;
-		}
-
-		Player player = (Player) sender;
+	public boolean execute(CommandSender sender, String[] args) {
 
 		if (args.length == 0){
-			String chattingWith = chatMan.getChannel(player.getName());
+			UUID chattingWith = chatMan.getChannel(me());
 			if (chattingWith != null) {
-				chatMan.removeChannel(player.getName());
-				player.sendMessage(ChatColor.GREEN + "You have been removed from private chat.");
+				chatMan.removeChannel(me());
+				msg(ChatStrings.chatRemovedFromChat);
 			}
 			else {
-				player.sendMessage(ChatColor.YELLOW + "You are not in a private chat");
+				msg(ChatStrings.chatNotInPrivateChat);
 			}
 			return true;
 		}
 
-		UUID receiverUUID = chatMan.getPlayerUUID(args[0].trim());
-		Player receiver = Bukkit.getPlayer(receiverUUID);
-		if(receiver == null){
-			sender.sendMessage(ChatColor.RED + "There is no player with that name.");
+		Player receiver = argAsPlayer(0);
+		if(receiver == null) {
+			msg(ChatStrings.chatPlayerNotFound);
 			return true;
 		}
 
-		if(! (receiver.isOnline()) ){
-			String offlinemsg = ChatColor.RED + "That player is offline.";
-			sender.sendMessage(offlinemsg);
-			logger.debug(offlinemsg);
+		if(! (receiver.isOnline())) {
+			msg(ChatStrings.chatPlayerIsOffline);
+			logger.debug(parse(ChatStrings.chatPlayerIsOffline));
 			return true;
 		}
 
-		if(player.getName().equals(receiver.getName())){
-			sender.sendMessage(ChatColor.RED + "You can't message yourself.");
+		if(me().equals(receiver)) {
+			msg(ChatStrings.chatCantMessageSelf);
 			return true;
 		}
-		if(args.length >= 2){
+		
+		if(args.length >= 2) {
 			//player and message
 			StringBuilder builder = new StringBuilder();
 			for (int x = 1; x < args.length; x++)
 				builder.append(args[x] + " ");
 
-			chatMan.sendPrivateMsg(player, receiver, builder.toString());
+			chatMan.sendPrivateMsg(me(), receiver, builder.toString());
 			return true;
 		}
-		else if(args.length == 1){
-			if (DBM.isIgnoringPlayer(player.getUniqueId(), receiver.getUniqueId()) ){
-				player.sendMessage(ChatColor.YELLOW + "You need to unignore " + receiver.getName());
+		else if(args.length == 1) {
+			if (DBM.isIgnoringPlayer(me().getUniqueId(), receiver.getUniqueId())) {
+				msg(ChatStrings.chatNeedToUnignore);
 				return true;
 			}
 			
-			if (DBM.isIgnoringPlayer(receiver.getUniqueId(), player.getUniqueId())){
-				sender.sendMessage(ChatColor.YELLOW + "Player " + receiver.getName() +" is ignoring you");
+			if (DBM.isIgnoringPlayer(receiver.getUniqueId(), me().getUniqueId())) {
+				msg(ChatStrings.chatPlayerIgnoringYou);
 				return true;
 			}
-			chatMan.addChatChannel(player.getName(), receiver.getName());
-			player.sendMessage(ChatColor.GREEN + "You are now chatting with " + receiver.getName() + ".");
+			chatMan.addChatChannel(me(), receiver);
+			msg(ChatStrings.chatNowChattingWith);
 			return true;
 		}
 		return false;
@@ -102,13 +92,6 @@ public class Tell extends PlayerCommand {
 			return null;
 		}
 
-		List<String> namesToReturn = new ArrayList<String>();
-		for (Player p: Bukkit.getOnlinePlayers()) {
-			if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
-				namesToReturn.add(p.getName());
-		}
-
-		return namesToReturn;
+		return findPlayers(args[0]);
 	}	
-
 }
