@@ -11,7 +11,6 @@ import vg.civcraft.mc.civchat2.command.CivChat2CommandHandler;
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
-import vg.civcraft.mc.civchat2.utility.CivChat2Executor;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
@@ -33,7 +32,6 @@ public class CivChat2 extends ACivMod{
 	private static CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
 	private CivChat2FileLogger fileLog;
-	private static CivChat2Executor executor;
 	private DatabaseManager DBM;
 	
 	public void onEnable(){
@@ -63,7 +61,6 @@ public class CivChat2 extends ACivMod{
 		handle.registerCommands();
 		
 		chatListener = new CivChat2Listener(chatMan);
-		executor = new CivChat2Executor(instance);
 		registerNameLayerPermissions();
 		registerEvents();
 	}

@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
@@ -35,7 +36,7 @@ public class GroupChat extends PlayerCommand{
 		chatMan = plugin.getCivChat2Manager();
 		if(!(sender instanceof Player)){
 			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
+			sender.sendMessage(ChatStrings.chatMustBePlayer);
 			return true;
 		}
 
@@ -53,7 +54,7 @@ public class GroupChat extends PlayerCommand{
 		if(args.length <1){
 			//check if player is in groupchat and move them to normal chat
 			if(isGroupChatting){
-				sender.sendMessage(ChatColor.YELLOW + "You have been moved to global chat");
+				sender.sendMessage(ChatStrings.chatMovedToGlobal);
 				chatMan.removeGroupChat(playerName);
 				return true;
 			}

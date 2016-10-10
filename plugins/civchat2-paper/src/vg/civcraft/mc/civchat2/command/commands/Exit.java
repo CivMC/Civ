@@ -2,18 +2,18 @@ package vg.civcraft.mc.civchat2.command.commands;
 
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Exit extends PlayerCommand{
+public class Exit extends PlayerCommand {
 	private CivChat2 plugin = CivChat2.getInstance();
 	private CivChat2Manager chatMan;
-	
+
 	public Exit(String name) {
 		super(name);
 		setIdentifier("exit");
@@ -21,22 +21,22 @@ public class Exit extends PlayerCommand{
 		setUsage("/exit");
 		setArguments(0,0);
 	}
-	
+
 	@Override
 	public boolean execute(CommandSender sender, String[] args){
 		chatMan = plugin.getCivChat2Manager();
 		if(!(sender instanceof Player)){
 			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
+			sender.sendMessage(ChatStrings.chatMustBePlayer);
 			return true;
 		}
-		
+
 		Player player = (Player) sender;
 		String name = player.getName();
-		
+
 		chatMan.removeChannel(name);
 		chatMan.removeGroupChat(name);
-		sender.sendMessage(ChatColor.YELLOW + "You have been moved to global chat.");
+		sender.sendMessage(ChatStrings.chatMovedToGlobal);
 		return true;	
 	}
 
