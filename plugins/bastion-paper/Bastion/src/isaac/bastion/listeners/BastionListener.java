@@ -75,7 +75,6 @@ public final class BastionListener implements Listener {
 				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion block created");
 			} else {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "Failed to create bastion block");
 			}
 		}
 	}
