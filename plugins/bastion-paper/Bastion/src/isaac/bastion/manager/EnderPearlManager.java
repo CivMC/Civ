@@ -2,6 +2,8 @@ package isaac.bastion.manager;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockSet;
 
 import java.util.ArrayList;
@@ -456,9 +458,14 @@ public class EnderPearlManager {
 			if (pearl.getShooter() instanceof Player) {
 				Player player = (Player) pearl.getShooter();
 				
-				if (Bastion.getConfigManager().getDamageFirstBastion() && !Bastion.getBastionManager().onCooldown(player.getName())) {
-					blocking.erode(blocking.erosionFromPearl());
-					pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
+				if (Bastion.getConfigManager().getDamageFirstBastion() && !Bastion.getBastionManager().onCooldown(player)) {
+					BastionDamageEvent e = new BastionDamageEvent(blocking, player, Cause.PEARL);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						blocking.erode(blocking.erosionFromPearl());
+						pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
+					}
 				}
 				
 				if (Bastion.getConfigManager().blockMidAir()) {
