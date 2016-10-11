@@ -250,6 +250,9 @@ public class CitadelReinforcementData {
 					+ "(SELECT rt.rein_type_id FROM reinforcement_type rt where rt.rein_type = rein_type LIMIT 1), "
 					+ "lore, (select LAST_INSERT_ID()), acid_time);"
 					+ "end;");
+		db.registerMigration(12, false, "CREATE TABLE reinforcements_temp AS SELECT a.rein_id, x, y, z, world, "
+					+ "material_id, durability, insecure, group_id, maturation_time, lore, acid_time, rein_type_id "
+					+ "FROM reinforcement_id a JOIN reinforcement b ON a.rein_id = b.rein_id;");
 	}
 	
 	
