@@ -10,14 +10,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civmodcore.CivStrings;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class CommandHandler {
+	
+	private static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";
 
 	public Map<String, Command> commands = new HashMap<>();
 	private Boolean mercuryEnabled;
-	private CommandSender sender;
 
 	public abstract void registerCommands();
 
@@ -29,13 +29,11 @@ public abstract class CommandHandler {
 	}
 
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
-		this.sender = sender;
-		
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
 			
 			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
-				msg(CivStrings.cmdMustBePlayer);
+				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
 				return true;
 			}
 			
@@ -56,7 +54,7 @@ public abstract class CommandHandler {
 			Command command = commands.get(cmd.getName().toLowerCase());
 			
 			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
-				msg(CivStrings.cmdMustBePlayer);
+				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
 				return null;
 			}
 
@@ -99,21 +97,4 @@ public abstract class CommandHandler {
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ")
 				.append(command.getUsage()).toString());
 	}
-	
-	public void msg(String msg) {
-		sender.sendMessage(parse(msg));
-	}
-	
-	public void msg(String msg, Object... args) {
-		sender.sendMessage(parse(msg, args));
-	}
-	
-	public String parse(String text) {
-		return TextUtil.parse(text);
-	}
-	
-	public String parse(String text, Object... args) {
-		return TextUtil.parse(text, args);
-	}
-
 }

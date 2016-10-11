@@ -124,7 +124,7 @@ public abstract class PlayerCommand implements Command {
 		this.errorOnTooManyArgs = errorOnTooManyArgs;
 	}
 	
-	public Player me() {
+	public Player player() {
 		return (Player)sender;
 	}
 	
