@@ -5,6 +5,9 @@
 package com.untamedears.JukeAlert.tasks;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.model.SnitchAction;
+import com.untamedears.JukeAlert.storage.JukeAlertLogger;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +30,12 @@ public class GetSnitchInfoTask implements Runnable {
 
     @Override
     public void run() {
-        info = plugin.getJaLogger().getSnitchInfo(snitchId, offset * 10);
+        List<SnitchAction> entries = plugin.getJaLogger().getSnitchInfo(snitchId, offset * 10);
+        if (entries != null && !entries.isEmpty()){
+            for (SnitchAction entry : entries){
+                info.add(JukeAlertLogger.createInfoString(entry, false, false));
+            }
+        }
     }
 
     public List<String> getInfo() {

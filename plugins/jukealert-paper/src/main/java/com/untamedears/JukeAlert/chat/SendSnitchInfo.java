@@ -3,7 +3,9 @@ package com.untamedears.JukeAlert.chat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
+import java.util.TreeMap;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
@@ -11,16 +13,19 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.model.SnitchAction;
+import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
 
 public class SendSnitchInfo implements Runnable {
-	private List<String> info;
+	private List<SnitchAction> info;
 	private Player player;
 	private int offset;
     private String snitchName;
 	private boolean shouldCensor;
+	private boolean isGroup;
 
-	public SendSnitchInfo(List<String> info, Player player, int offset, String snitchName, boolean shouldCensor) {
+	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, String snitchName, boolean shouldCensor, boolean isGroup) {
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
@@ -29,26 +34,13 @@ public class SendSnitchInfo implements Runnable {
         if (this.snitchName != null && this.snitchName.length() > 32) {
             this.snitchName = this.snitchName.substring(0, 32);
         }
-	}
-
-	public void run() {
+        this.isGroup = isGroup;
+    }
+	
+    public void run() {
 		if (info != null && !info.isEmpty()) {
 			String output = "";
-			String id = " ";
-
-			for (String dataEntry : info) {
-				if (dataEntry.contains("["))
-				{
-					String data = ChatColor.stripColor(dataEntry.split("\\[")[0]);
-					data = data.split(" ")[data.split(" ").length - 1];
-					if (Material.matchMaterial(data) != null)
-						if (!id.contains(Material.matchMaterial(data).toString()))
-							id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%s " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", Integer.parseInt(data), Material.matchMaterial(data));
-				}
-			}
-
-			id = id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
-
+			
             if (this.snitchName != null) {
 			    output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
                        + ChatColor.DARK_GRAY + "-----------------------------------".substring(this.snitchName.length()) + "\n";
@@ -71,19 +63,28 @@ public class SendSnitchInfo implements Runnable {
                                                         "timezone header in SendSnitchInfo", iae);
             }
             
-			output += id;
+            // Build ID header line
+            String id = " ";
+            Map<Integer, String> materials = new TreeMap<Integer, String>();
+            for (SnitchAction entry: info){
+                Material mat = entry.getMaterial();
+                if (mat != null && !mat.equals(Material.AIR)){
+                    int mat_id = mat.getId();
+                    String mat_name = mat.name();
+                    if (mat_name != null && !mat_name.isEmpty() && !materials.containsKey(mat_id)){
+                        materials.put(mat_id, mat_name);
+                    }
+                }
+            }
+            for(Map.Entry<Integer,String> entry : materials.entrySet()) {
+                id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%d " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", entry.getKey(), entry.getValue());
+            }
+            output += id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
+            
+            // Build table of entries
 			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
-			
-			for (String dataEntry : info)
-			{
-				if (shouldCensor)
-				{
-					output += dataEntry.replaceAll("\\[((-)?[0-9]*( )?){3}\\]", "[*** *** ***]") + "\n";
-				}
-				else
-				{
-					output += dataEntry + "\n";
-				}
+			for (SnitchAction entry : info){
+			    output += JukeAlertLogger.createInfoString(entry, this.shouldCensor, this.isGroup) + "\n";
 			}
 
 			output += "\n";

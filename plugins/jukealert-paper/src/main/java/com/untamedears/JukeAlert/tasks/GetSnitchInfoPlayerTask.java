@@ -54,9 +54,9 @@ public class GetSnitchInfoPlayerTask implements Runnable {
     public void run() {
 		SendSnitchInfo sendSnitchInfo;
 		if (group == null)
-			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, this.snitchName, shouldCensor);
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset-1) * 10), this.player, offset, this.snitchName, shouldCensor, false);
 		else
-			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset-1) * 10), this.player, offset, null, false);
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset-1) * 10), this.player, offset, null, false, true);
 		sendSnitchInfo.run();
     }
 
