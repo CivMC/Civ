@@ -36,38 +36,54 @@ public class CitadelReinforcementData {
 	private Citadel plugin = Citadel.getInstance();
 	private Logger logger = plugin.getLogger();
 
-	private static final String getRein = "select r.material_id, r.durability, " +
-			"r.insecure, r.maturation_time, r.acid_time, rt.rein_type, "
-			+ "r.lore, r.group_id, r.rein_id from reinforcement r "
-			+ "inner join reinforcement_id ri on r.rein_id = ri.rein_id "
-			+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
-			+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.chunk_id = ? and ri.world = ?";
-	private static final String getReins = "select ri.x, ri.y, ri.z, ri.world, r.material_id, r.durability, " +
-			"r.insecure, r.maturation_time, rt.rein_type, "
-			+ "r.lore, r.group_id, r.rein_id, r.acid_time from reinforcement r "
-			+ "inner join reinforcement_id ri on r.rein_id = ri.rein_id "
-			+ "inner join reinforcement_type rt on rt.rein_type_id = r.rein_type_id "
-			+ "where ri.chunk_id = ?";
-	private static final String addRein = "insert into reinforcement ("
-			+ "material_id, durability, "
-			+ "insecure, group_id, maturation_time, rein_type_id,"
-			+ "lore, rein_id, acid_time) select ?, ?, ?, ?, ?, rt.rein_type_id, ?, ?, ? "
-			+ "from reinforcement_type rt where rt.rein_type = ?";
-	private static final String removeRein = "delete r.*, ri.* from reinforcement r "
-			+ "left join reinforcement_id ri on r.rein_id = ri.rein_id "
-			+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world = ?";
-	private static final String updateRein = "update reinforcement r "
-			+ "inner join reinforcement_id ri on ri.rein_id = r.rein_id "
-			+ "set r.durability = ?, r.insecure = ?, r.group_id = ?, "
-			+ "maturation_time = ?, acid_time = ? "
-			+ "where ri.x = ? and ri.y = ? and ri.z = ? and ri.world =?";
+	private Map<Integer, ReinforcementNature> natures = new HashMap<Integer, ReinforcementNature>();
+
+	private static enum ReinforcementNature {
+		PLAYER_REINFORCEMENT ("PlayerReinforcement"),
+		NATURAL_REINFORCEMENT ("NaturalReinforcement"),
+		MULTIBLOCK_REINFORCEMENT ("MultiblockReinforcement");
+
+		private String label;
+
+		ReinforcementNature(String label) {
+			this.label = label;
+		}
+
+		public String getLabel() {
+			return this.label;
+		}
+
+		public static ReinforcementNature decode(String label) {
+			if (!label == null) {
+				for (ReinforcementNature nature : ReinforcementNature.values()) {
+					if (nature.label.equalsIgnoreCase(label)) {
+						return nature;
+					}
+				}
+			}
+			throw new IllegalArgumentException("No ReinforcementNature matching " + label);
+		}
+	}
+
+	private static final String getRein = 
+			"SELECT material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
+				+ "FROM reinforcement WHERE x = ? and y = ? and z = ? and world = ?";
+	private static final String getReins = 
+			"SELECT x, y, z, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
+				+ "FROM reinforcement WHERE chunk_x = ? and chunk_z = ? and world = ?;";
+	private static final String addRein = 
+			"INSERT INTO reinforcement (x, y, z, world, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); "
+	private static final String removeRein = "DELETE from reinforcement WHERE x = ? and y = ? and z = ? and world = ?";
+	private static final String updateRein = 
+			"UPDATE reinforcement SET durability = ?, insecure = ?, group_id = ?, maturation_time = ?, acid_time = ? "
+				+ "WHERE x = ? and y = ? and z = ? and world = ?";
+	private static final String getNatures = "SELECT rein_type_id, rein_type FROM reinforcement_type";
 	
-	private static final String insertReinID = "call insertReinID(?,?,?,?,?)";
-	private static final String insertCustomReinID = "call insertCustomReinID(?,?,?,?,?,?)";
-	private static final String insertReinFully = "call insertRein(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-	private static final String getCordsbyReinID = "select x, y, z, world from reinforcement_id where rein_id = ?";
-	private static final String selectReinCountForGroup = "select count(*) as count from reinforcement WHERE FIND_IN_SET(CAST(group_id AS char), ?) > 0";
-	private static final String selectReinCount = "select count(*) as count from reinforcement r";
+	private static final String getCoordsbyReinID = "SELECT x, y, z, world FROM reinforcement WHERE rein_id = ?";
+	private static final String selectReinCountForGroup = 
+			"SELECT count(*) AS count FROM reinforcement WHERE FIND_IN_SET(CAST(group_id AS char), ?) > 0";
+	private static final String selectReinCount = "SELECT count(*) AS count FROM reinforcement";
 
 	public CitadelReinforcementData(ManagedDatasource db){
 		this.db = db;
@@ -113,30 +129,6 @@ public class CitadelReinforcementData {
 	}
 	
 	public void registerMigrations() {
-		/* Multipath migration is bad, mmmkay?
-		 * This is super legacy, just keeping it here as a nod to the past.
-				Citadel.Log("Detected previous version of Citadel, " +
-						"updating to new db.\n" +
-						"You should have backed up your data, " +
-						"if you havent already you have ten seconds to" +
-						" shut down the server and perform a backup.");
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e1) {
-					Citadel.getInstance().getLogger().log(Level.SEVERE, "Update sleep interrupted", e1);
-				}
-				long first_time = System.currentTimeMillis();
-				db.execute("alter table reinforcement drop security_level, drop version, add group_id int not null;");
-				db.execute("insert into faction_id (group_name) values (null);"); // For natural reinforcements
-				db.execute("delete from reinforcement where `name` is null;");
-				db.execute("update ignore reinforcement r inner join faction_id f on f.group_name = r.`name` "
-						+ "set r.group_id = f.group_id;");
-				db.execute("alter table reinforcement drop `name`, add rein_type_id int not null default 1, "
-						+ "add lore varchar(255);");
-				db.execute("drop table citadel_account_id_map;");
-				Citadel.Log("The update to new format took " + (System.currentTimeMillis() - first_time) / 1000 + " seconds.");
-		 */
-		
 		db.registerMigration(6, false,
 				new Callable<Boolean> () {
 					@Override
@@ -250,9 +242,37 @@ public class CitadelReinforcementData {
 					+ "(SELECT rt.rein_type_id FROM reinforcement_type rt where rt.rein_type = rein_type LIMIT 1), "
 					+ "lore, (select LAST_INSERT_ID()), acid_time);"
 					+ "end;");
-		db.registerMigration(12, false, "CREATE TABLE reinforcements_temp AS SELECT a.rein_id, x, y, z, world, "
-					+ "material_id, durability, insecure, group_id, maturation_time, lore, acid_time, rein_type_id "
-					+ "FROM reinforcement_id a JOIN reinforcement b ON a.rein_id = b.rein_id;");
+		db.registerMigration(12, false, 
+				"CREATE TABLE reinforcements_temp ("
+					+ "rein_id int not null auto_increment,"
+					+ "x int not null,"
+					+ "y int not null,"
+					+ "z int not null,"
+					+ "chunk_x int not null default floor(x / 16),"
+					+ "chunk_z int not null default floor(z / 16),"
+					+ "world varchar(255) not null,"
+					+ "material_id int not null,"
+					+ "durability varchar(10) not null,"
+					+ "insecure tinyint(1) not null,"
+					+ "group_id int not null,"
+					+ "maturation_time int not null,"
+					+ "rein_type_id int not null,"
+					+ "lore varchar(255),"
+					+ "acid_time int not null,"
+					+ "primary key rid (rein_id),"
+					+ "unique index realcoord (x,y,z,world),"
+					+ "index chunkcoord(chunk_x, chunk_z, world)"
+					+ ");",
+				"INSERT IGNORE INTO reinforcements_temp SELECT a.rein_id, x, y, z, floor(x/16), floor(z/16), world, "
+					+ "material_id, durability, insecure, group_id, maturation_time, rein_type_id, lore, acid_time "
+					+ "FROM reinforcement_id a JOIN reinforcement b ON a.rein_id = b.rein_id;",
+				"RENAME TABLE reinforcements_id TO deprecated_reinforcements_id;",
+				"RENAME TABLE reinforcements TO deprecated_reinforcements;",
+				"RENAME TABLE reinforcements_temp TO reinforcements;",
+				"DROP PROCEDURE if exists insertReinID;",
+				"DROP PROCEDURE if exists insertCustomReinID;",
+				"DROP PROCEDURE if exists insertRein;",
+				);
 	}
 	
 	
@@ -278,9 +298,7 @@ public class CitadelReinforcementData {
 			getRein.setInt(1, x);
 			getRein.setInt(2, y);
 			getRein.setInt(3, z);
-			String formatChunk = formatChunk(loc);
-			getRein.setString(4, formatChunk);
-			getRein.setString(5, loc.getWorld().getName());
+			getRein.setString(4, loc.getWorld().getName());
 			ResultSet set = getRein.executeQuery();
 			if (!set.next()) {
 				set.close();
@@ -292,12 +310,14 @@ public class CitadelReinforcementData {
 			boolean inSecure = set.getBoolean(3);
 			int mature = set.getInt(4);
 			int acid = set.getInt(5);
-			String rein_type = set.getString(6);
+			int rein_type_id = set.getInt(6);
+			ReinforcementNature rein_type = natures.get(rein_type_id);
 			String lore = set.getString(7);
 			int group_id = set.getInt(8);
-			// Check for what type of reinforcement and return the one needed.
-			if ("PlayerReinforcement".equals(rein_type)) {
-				set.close();
+			int id = set.getInt(9);
+			set.close();
+			switch(rein_type) {
+			case ReinforcementNature.PLAYER_REINFORCEMENT:
 				ItemStack stack = new ItemStack(mat);
 				if (lore != null) {
 					ItemMeta meta = stack.getItemMeta();
@@ -314,48 +334,17 @@ public class CitadelReinforcementData {
 					}
 					return null; // group not found!
 				}
-				PlayerReinforcement rein = new PlayerReinforcement(loc, durability, 
-							mature, acid, g,stack);
+				PlayerReinforcement rein = new PlayerReinforcement(loc, durability, mature, acid, g, stack);
 				rein.setInsecure(inSecure);
 				return rein;
-			} else if ("NaturalReinforcement".equals(rein_type)){
-				set.close();
+			case ReinforcementNature.NATURAL_REINFORCEMENT:
 				NaturalReinforcement rein = new NaturalReinforcement(loc.getBlock(), durability);
 				return rein;
-			} else if ("MultiBlockReinforcement".equals(rein_type)) {
-				int id = set.getInt(9);
-				set.close();
-				MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
-				if (rein != null) {
-					return rein;
-				}
-				List<Location> locs = new ArrayList<Location>();
-				// TODO: How can I defer or embed these second-tier lookups?
-				try (PreparedStatement getCordsbyReinID = connection.prepareStatement(CitadelReinforcementData.getCordsbyReinID);) {
-					getCordsbyReinID.setInt(1, id);
-					try (ResultSet get = getCordsbyReinID.executeQuery();) {
-						while (get.next()){
-							int xx = get.getInt(1), yy = get.getInt(2), zz = get.getInt(3);
-							String world = get.getString(4);
-							locs.add(new Location(Bukkit.getWorld(world), xx, yy, zz));
-						}
-					}
-				} catch (Exception e) {
-					logger.log(Level.SEVERE, "Error getting multiblock reinforcement {0}", id);
-					logger.log(Level.SEVERE, "Error getting multiblock reinforcement", e);
-				}
-
-				Group g = GroupManager.getGroup(group_id);
-				if (g == null) {
-					if (CitadelConfigManager.shouldLogReinforcement()) {
-						logger.log(Level.WARNING,
-								"Multiblock Reinforcement touching {0} lacks a valid group (group {1} failed lookup)", 
-								new Object[] {loc, group_id});
-					}
-					return null; // group not found!
-				}
-				rein = new MultiBlockReinforcement(locs, g, durability, mature, acid, id);
+			case ReinforcementNature.MULTIBLOCK_REINFORCEMENT:
+				logger.log(Level.WARNING, "Multiblock reinforcements not currently supported");
 				return rein;
+			default:
+				logger.log(Level.SEVERE, "Unknown reinforcement type in database: {0}", rein_type_id);
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed while retrieving reinforcement from database", e);
@@ -378,33 +367,41 @@ public class CitadelReinforcementData {
 		}
 
 		List<Reinforcement> reins = new ArrayList<Reinforcement>();
-		String formatChunk = formatChunk(chunk);
+		int cx = chunk.getChunkX();
+		int cz = chunk.getChunkZ();
+		String world = chunk.getWorld().getName();
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement getReins = connection.prepareStatement(CitadelReinforcementData.getReins);) {
 			if (CitadelConfigManager.shouldLogInternal()) {
 				logger.log(Level.WARNING,
-						"CitadelReinforcementData getReinforcements chunk called for {0}", formatChunk);
+						"CitadelReinforcementData getReinforcements chunk called for {0}", chunk);
 			}
-			getReins.setString(1, formatChunk);
+			getReins.setInt(1, cx);
+			getReins.setInt(2, cz);
+			getReins.setString(3, world);
 			
+			"SELECT x, y, z, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
 			try (ResultSet set = getReins.executeQuery();) {
 				while (set.next()) {
-					int x = set.getInt(1), y = set.getInt(2), z = set.getInt(3);
-					String world = set.getString(4);
+					int x = set.getInt(1);
+					int y = set.getInt(2);
+					int z = set.getInt(3);
 					@SuppressWarnings("deprecation")
-					Material mat = Material.getMaterial(set.getInt(5));
-					int durability = set.getInt(6);
-					boolean inSecure = set.getBoolean(7);
-					int mature = set.getInt(8);
-					String rein_type = set.getString(9);
+					Material mat = Material.getMaterial(set.getInt(4));
+					int durability = set.getInt(5);
+					boolean inSecure = set.getBoolean(6);
+					int mature = set.getInt(7);
+					int acid = set.getInt(8);
+					int rein_type_id = set.getInt(9);
+					ReinforcementNature rein_type = natures.get(rein_type_id);
 					String lore = set.getString(10);
 					int group_id = set.getInt(11);
-					int acid = set.getInt(13);
 					
-					Location loc = new Location(Bukkit.getWorld(world), x, y, z);
+					Location loc = new Location(chunk.getWorld(), x, y, z);
 					
-					if ("PlayerReinforcement".equals(rein_type)) {
+					switch(rein_type) {
+					case PLAYER_REINFORCEMENT:
 						Group g = GroupManager.getGroup(group_id);
 						if (g == null) {
 							if (CitadelConfigManager.shouldLogReinforcement()) {
@@ -424,49 +421,21 @@ public class CitadelReinforcementData {
 						PlayerReinforcement rein = new PlayerReinforcement(loc, durability, mature, acid, g, stack);
 						rein.setInsecure(inSecure);
 						reins.add(rein);
-					} else if("NaturalReinforcement".equals(rein_type)) {
+						break;
+					case NATURAL_REINFORCEMENT:
 						NaturalReinforcement rein = new NaturalReinforcement(loc.getBlock(), durability);
 						reins.add(rein);
-					} else if ("MultiBlockReinforcement".equals(rein_type)) {
-						int id = set.getInt(12);
-						MultiBlockReinforcement rein = MultiBlockReinforcement.getMultiRein(id);
-						if (rein != null) {
-							reins.add(rein);
-							continue;
-						}
-						
-						Group g = GroupManager.getGroup(group_id);
-						if (g == null) {
-							if (CitadelConfigManager.shouldLogReinforcement()) {
-								logger.log(Level.WARNING,
-										"During Chunk {0} load, Multiblock Reinforcement at {1} lacks a valid group (group {2} failed lookup)", 
-										new Object[] {formatChunk, loc, group_id});
-							}
-							continue; // group not found!
-						}
-						List<Location> locs = new ArrayList<Location>();
-						try (PreparedStatement getCordsbyReinID = connection.prepareStatement(CitadelReinforcementData.getCordsbyReinID);) {
-							getCordsbyReinID.setInt(1, id);
-							try (ResultSet multi = getCordsbyReinID.executeQuery();) {
-								while (multi.next()){
-									int xx = multi.getInt(1), yy = multi.getInt(2), zz = multi.getInt(3);
-									String w = multi.getString(4);
-									locs.add(new Location(Bukkit.getWorld(w), xx, yy, zz));
-								}
-							}
-						} catch (Exception e) {
-							logger.log(Level.SEVERE, "Failed to get a multiblock reinforcement {0} due to {1}", new Object[] {
-									id, e.getMessage()
-							});
-						}
-						
-						rein = new MultiBlockReinforcement(locs, g, durability, mature, acid, id);
-						reins.add(rein);
+						break;
+					case MULTIBLOCK_REINFORCEMENT:
+						logger.log(Level.WARNING, "Multiblock reinforcements not currently supported");
+						break;
+					default:
+						logger.log(Level.SEVERE, "Unknown reinforcement type in database: {0}", rein_type_id);
 					}
 				}
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed while retrieving chunk " + formatChunk + " reinforcement from database", e);
+			logger.log(Level.SEVERE, "Failed while retrieving chunk " + chunk.toString() + " reinforcements from database", e);
 		}
 		return reins;
 	}
