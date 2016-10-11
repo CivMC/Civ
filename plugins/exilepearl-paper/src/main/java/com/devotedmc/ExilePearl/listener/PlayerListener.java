@@ -49,6 +49,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -400,7 +401,7 @@ public class PlayerListener implements Listener {
 	 * Forbid pearls from being put in storage minecarts
 	 * @param event
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onInventoryClick(InventoryClickEvent event) {
 
 		// Announce an prison pearl if it is clicked
@@ -410,7 +411,7 @@ public class PlayerListener implements Listener {
 		}
 
 		InventoryAction a = event.getAction();
-		pearlApi.log("Inv Action: " + a.toString());
+		//pearlApi.log("Inv Action: " + a.toString());
 		if(a == InventoryAction.COLLECT_TO_CURSOR
 				|| a == InventoryAction.PICKUP_ALL 
 				|| a == InventoryAction.PICKUP_HALF
@@ -842,6 +843,63 @@ public class PlayerListener implements Listener {
 
 		e.getInventory().setResult(resultStack);
 	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onRecipeUpdate(InventoryClickEvent e) {
+		InventoryView view = e.getView();
+		if (view == null) {
+			return;
+		}
+		
+		if (!(view.getTopInventory() instanceof CraftingInventory)) {
+			return;
+		}
+		CraftingInventory inv = (CraftingInventory)view.getTopInventory();
+		ItemStack result = inv.getResult();
+		if (result == null || result.getType() != Material.ENDER_PEARL) {
+			return;
+		}
+		
+		InventoryAction a = e.getAction();
+		if (a != InventoryAction.PLACE_ONE && a != InventoryAction.PLACE_SOME && a != InventoryAction.PLACE_ALL) {
+			return;
+		}
+		
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(result);
+		if (pearl == null) {
+			return;
+		}
+		
+		ItemMap invItems = new ItemMap(inv);
+		RepairMaterial repairItem = null;
+		
+		// Find the repair material that is being used for crafting
+		for(RepairMaterial item : repairMaterials) {
+			if (invItems.getAmount(item.getStack()) > 0) {
+				repairItem = item;
+				break;
+			}
+		}
+		
+		// Quit if no repair item was found
+		if (repairItem == null) {
+			inv.setResult(new ItemStack(Material.AIR));
+			return;
+		}
+		
+		// Get the total possible repair amount. This doesn't need to be limited
+		// because the lore generator will cap at 100%
+		int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
+		pearlApi.log("Repair amount = %d", repairAmount);
+
+		// Generate a new item with the updated health value as the crafting result
+		ItemStack resultStack = pearl.createItemStack();
+		ItemMeta im = resultStack.getItemMeta();
+		im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
+		resultStack.setItemMeta(im);
+
+		inv.setResult(resultStack);
+	}
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraftPearl(CraftItemEvent e) {
@@ -887,5 +945,6 @@ public class PlayerListener implements Listener {
 		// Repair the pearl and update the item stack
 		pearl.setHealth(pearl.getHealth() + repairAmount);
 		inv.setResult(pearl.createItemStack());
+		pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
 	}
 }

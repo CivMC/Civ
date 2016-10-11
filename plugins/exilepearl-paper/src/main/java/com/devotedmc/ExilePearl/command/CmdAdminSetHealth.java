@@ -33,6 +33,6 @@ public class CmdAdminSetHealth extends PearlCommand {
 		// calculate the actual value
 		int healthValue = (int)(pearlApi.getPearlConfig().getPearlHealthMaxValue() * ((double)percent / 100));
 		pearl.setHealth(healthValue);
-		msg("<g>You updated the pearl health of player %s to %d%%.", pearl.getPlayerName(), percent);
+		msg("<g>You updated the pearl health of player %s to %d%%", pearl.getPlayerName(), percent);
 	}
 }
