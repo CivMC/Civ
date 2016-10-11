@@ -21,8 +21,7 @@ public class CmdExilePearl extends PearlCommand {
 		this.aliases.add("ep");
 		
 		this.setHelpShort("The ExilePearl command");
-		this.getLongHelp().add("The ExilePearl command.");
-		this.getLongHelp().add("Use /ep help for command help.");
+		this.getLongHelp().add("<n><it>Use <c>/ep help <n>for command help.");
 		
 		cmdLocate = new CmdPearlLocate(p);
 		cmdFree = new CmdPearlFree(p);

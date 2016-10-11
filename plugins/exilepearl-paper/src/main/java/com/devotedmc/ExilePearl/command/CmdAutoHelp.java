@@ -11,8 +11,6 @@ public class CmdAutoHelp extends PearlCommand
 	public CmdAutoHelp(ExilePearlPlugin plugin) {
 		super(plugin);
 		
-		this.aliases.add("?");
-		this.aliases.add("h");
 		this.aliases.add("help");
 		
 		this.setHelpShort("");
@@ -30,6 +28,10 @@ public class CmdAutoHelp extends PearlCommand
 		lines.addAll(cmd.getLongHelp());
 		
 		for(BaseCommand<?> c : cmd.getSubCommands()) {
+			if (!c.validSenderType(sender, false)) {
+				continue;
+			}
+			
 			// Only list help for commands that are visible or the sender has permission for
 			if (c.getVisibility() == CommandVisibility.VISIBLE || (c.getVisibility() == CommandVisibility.SECRET && c.validSenderPermissions(sender, false))) {
 				lines.add(c.getUseageTemplate(this.commandChain, true));

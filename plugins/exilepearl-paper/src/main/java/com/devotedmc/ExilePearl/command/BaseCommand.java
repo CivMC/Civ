@@ -114,10 +114,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @return The tab list
 	 */
 	public final List<String> getTabList(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
-		if (prepareCommand(sender, args, commandChain)) {
-			return performTabList();
-		}
-		return null;
+		return prepareTab(sender, args, commandChain);
 	}
 	
 	
@@ -165,6 +162,75 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 		}
 		
 		return true;
+	}
+	
+	/**
+	 * Prepares a tab command for execution
+	 * @param sender The command sender
+	 * @param args The command arguments
+	 * @param commandChain The command chain
+	 * @return the tab results
+	 */
+	private List<String> prepareTab(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
+		// Set the execution-time specific variables
+		this.sender = sender;
+		if (sender instanceof Player) {
+			Player p = (Player)sender;
+			
+			this.me = plugin.getServer().getPlayer(p.getUniqueId());
+			this.senderIsConsole = false;
+		} else {
+			this.me = null;
+			this.senderIsConsole = true;
+		}
+		this.args = args;
+		this.commandChain = commandChain;
+		
+		// Sender must have permission for the root node of this command
+		if ( !validSenderPermissions(sender, true)) {
+			return null;
+		}
+
+		// Find a matching sub-command
+		if (args.size() > 0 ) {
+			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
+				if (subCommand.aliases.contains(args.get(0))) {
+					args.remove(0);
+					commandChain.add(this);
+					return subCommand.getTabList(sender, args, commandChain);
+				}
+			}
+		}
+		
+		List<String> subCommands = new ArrayList<String>();
+		
+		// Get the tab list of any matching sub-commands
+		if (args.size() > 0 ) {
+			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
+				if (!(subCommand.validSenderPermissions(sender, false))) {
+					continue;
+				}
+				
+				if (subCommand.senderMustBePlayer && senderIsConsole) {
+					continue;
+				}
+				
+				for(String alias : subCommand.aliases) {
+					if (alias.startsWith(args.get(0))) {
+						subCommands.add(alias);
+						break;
+					}
+				}
+			}
+		}
+		
+		// Return the matching tab commands if there are any
+		if (subCommands.size() > 0) {
+			return subCommands;
+		}
+		
+		// Otherwise perform the tab routine for the command itself
+		return performTabList();
 	}
 	
 	
@@ -274,8 +340,8 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param informSenderIfNot Whether to inform the sender if not valid
 	 * @return true if the sender is valid
 	 */
-	protected boolean validSenderType(CommandSender sender, boolean informSenderIfNot) {
-		if (senderMustBePlayer && senderIsConsole) {
+	protected boolean validSenderType(CommandSender sender, boolean informSenderIfNot) {		
+		if (senderMustBePlayer && (!(sender instanceof Player))) {
 			if (informSenderIfNot) {
 				msg(Lang.commandSenderMustBePlayer);
 			}
