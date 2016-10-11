@@ -27,7 +27,7 @@ public class InvisibleFixConfig extends SimpleHackConfig {
 		this.ignoreOps = config.getBoolean("ignoreOps", true);
 		this.ignorePermission = config.getString("ignorePermission", "sah.allowInvisible");
 		if (this.ignorePermission.equals("")) this.ignorePermission = null;
-		this.recheckInterval = config.getLong("recheckInterval", 10000l);
+		this.recheckInterval = config.getLong("recheckInterval", 500l);
 		this.maxPlayersPerRecheck = config.getInt("maxPlayerPerRecheck", 5);
 	}
 	
