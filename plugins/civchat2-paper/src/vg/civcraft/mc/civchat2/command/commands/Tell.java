@@ -7,18 +7,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.ChatStrings;
-import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.command.ChatCommand;
-import vg.civcraft.mc.civchat2.database.DatabaseManager;
-import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 
 public class Tell extends ChatCommand {
-	private CivChat2 plugin = CivChat2.getInstance();
-	private CivChat2Manager chatMan;
-	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	private DatabaseManager DBM = plugin.getDatabaseManager();
-
+	
 	public Tell(String name) {
 		super(name);
 		setIdentifier("tell");
@@ -32,9 +24,9 @@ public class Tell extends ChatCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 
 		if (args.length == 0){
-			UUID chattingWith = chatMan.getChannel(me());
+			UUID chattingWith = chatMan.getChannel(player());
 			if (chattingWith != null) {
-				chatMan.removeChannel(me());
+				chatMan.removeChannel(player());
 				msg(ChatStrings.chatRemovedFromChat);
 			}
 			else {
@@ -55,7 +47,7 @@ public class Tell extends ChatCommand {
 			return true;
 		}
 
-		if(me().equals(receiver)) {
+		if(player().equals(receiver)) {
 			msg(ChatStrings.chatCantMessageSelf);
 			return true;
 		}
@@ -66,21 +58,21 @@ public class Tell extends ChatCommand {
 			for (int x = 1; x < args.length; x++)
 				builder.append(args[x] + " ");
 
-			chatMan.sendPrivateMsg(me(), receiver, builder.toString());
+			chatMan.sendPrivateMsg(player(), receiver, builder.toString());
 			return true;
 		}
 		else if(args.length == 1) {
-			if (DBM.isIgnoringPlayer(me().getUniqueId(), receiver.getUniqueId())) {
-				msg(ChatStrings.chatNeedToUnignore);
+			if (DBM.isIgnoringPlayer(player().getUniqueId(), receiver.getUniqueId())) {
+				msg(ChatStrings.chatNeedToUnignore, getRealName(receiver));
 				return true;
 			}
 			
-			if (DBM.isIgnoringPlayer(receiver.getUniqueId(), me().getUniqueId())) {
+			if (DBM.isIgnoringPlayer(receiver.getUniqueId(), player().getUniqueId())) {
 				msg(ChatStrings.chatPlayerIgnoringYou);
 				return true;
 			}
-			chatMan.addChatChannel(me(), receiver);
-			msg(ChatStrings.chatNowChattingWith);
+			chatMan.addChatChannel(player(), receiver);
+			msg(ChatStrings.chatNowChattingWith, getRealName(receiver));
 			return true;
 		}
 		return false;

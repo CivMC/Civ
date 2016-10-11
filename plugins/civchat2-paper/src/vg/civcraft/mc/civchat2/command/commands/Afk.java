@@ -19,14 +19,14 @@ public class Afk extends ChatCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		
-		Boolean isAfk = chatMan.setPlayerAfk(me(), !chatMan.isPlayerAfk(me()));
+		Boolean isAfk = chatMan.setPlayerAfk(player(), !chatMan.isPlayerAfk(player()));
 		
 		if (isAfk) {
 			msg(ChatStrings.chatAfk);
 		} else {
 			msg(ChatStrings.chatNotAfk);
 		}
-		logger.debug(String.format("Player %s changed afk status to %s.", getRealName(me()), isAfk.toString()));
+		logger.debug(String.format("Player %s changed afk status to %s.", getRealName(player()), isAfk.toString()));
 
 		return true;
 	}

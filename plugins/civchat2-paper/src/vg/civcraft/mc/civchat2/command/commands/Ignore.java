@@ -29,7 +29,7 @@ public class Ignore extends ChatCommand {
 		}
 		
 		String ignoreName = getRealName(ignore);
-		String name = getRealName(me());
+		String name = getRealName(player());
 		if(ignoreName == name) {
 			msg(ChatStrings.chatCantIgnoreSelf);
 			return true;

@@ -29,15 +29,15 @@ public class IgnoreGroup extends ChatCommand {
 			return true;
 		}
 		String ignore = group.getName();
-		String name = getRealName(me());
+		String name = getRealName(player());
 		if(!DBM.isIgnoringGroup(name, ignore)) {
 			//Player added to list
 			DBM.addIgnoredGroup(name, ignore);
 			String debugMessage = "Player ignored Group, Player: " + name + " Group: " + ignore;
 			logger.debug(debugMessage);
 			msg(ChatStrings.chatNowIgnoring, ignore);
-			if (group.equals(chatMan.getGroupChatting(me()))) {
-				chatMan.removeGroupChat(me());
+			if (group.equals(chatMan.getGroupChatting(player()))) {
+				chatMan.removeGroupChat(player());
 				msg(ChatStrings.chatMovedToGlobal);
 			}
 			return true;

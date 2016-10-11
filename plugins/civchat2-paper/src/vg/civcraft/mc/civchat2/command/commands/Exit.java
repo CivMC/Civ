@@ -18,8 +18,8 @@ public class Exit extends ChatCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		chatMan.removeChannel(me());
-		chatMan.removeGroupChat(me());
+		chatMan.removeChannel(player());
+		chatMan.removeGroupChat(player());
 		msg(ChatStrings.chatMovedToGlobal);
 		return true;	
 	}

@@ -77,7 +77,7 @@ public abstract class ChatCommand extends PlayerCommand {
 	protected List<String> findGroups(String pattern) {
 		List<String> groupsToReturn = new ArrayList<String>();
 		GroupManager gm = NameAPI.getGroupManager();
-		List<String> groups = gm.getAllGroupNames(me().getUniqueId());
+		List<String> groups = gm.getAllGroupNames(player().getUniqueId());
 		for(String group:groups) {
 			if(group.toLowerCase().startsWith(pattern.toLowerCase())) {
 				groupsToReturn.add(group);

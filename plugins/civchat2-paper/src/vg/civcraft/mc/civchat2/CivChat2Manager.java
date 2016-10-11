@@ -45,8 +45,6 @@ public class CivChat2Manager {
 	// Contains the players who are currently AFK
 	private final Set<UUID> afkPlayers;
 	
-	private static final String AFKMSG = ChatColor.AQUA + "That Player is currently AFK";
-	private static final String IGNOREMSG = ChatColor.YELLOW + "That Player is ignoring you";
 	protected static final GroupManager GM = NameAPI.getGroupManager();
 
 	private String defaultColor;
@@ -155,15 +153,15 @@ public class CivChat2Manager {
 		
 		if(isPlayerAfk(receiver)){
 			receiver.sendMessage(receiverMessage);
-			sender.sendMessage(AFKMSG);
+			sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
 			return;
 		}
 		else if(DBM.isIgnoringPlayer(receiverName, senderName)){
 			//player is ignoring the sender
-			sender.sendMessage(IGNOREMSG);
+			sender.sendMessage(parse(ChatStrings.chatPlayerIgnoringYou));
 			return;
 		} else if (DBM.isIgnoringPlayer(senderName, receiverName)){
-			sender.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiverName);
+			sender.sendMessage(parse(ChatStrings.chatNeedToUnignore, receiverName));
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");

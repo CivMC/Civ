@@ -28,7 +28,7 @@ public class GroupChat extends ChatCommand {
 		GroupManager gm = NameAPI.getGroupManager();
 		boolean isGroupChatting = true;
 		logger.debug("chatMan = [" + chatMan.toString() + "]");
-		if(chatMan.getGroupChatting(me()) == null) {
+		if(chatMan.getGroupChatting(player()) == null) {
 			isGroupChatting = false;
 		}
 		Group group;
@@ -36,12 +36,12 @@ public class GroupChat extends ChatCommand {
 		if(args.length < 1) {
 			//check if player is in groupchat and move them to normal chat
 			if(isGroupChatting) {
-				sender.sendMessage(ChatStrings.chatMovedToGlobal);
-				chatMan.removeGroupChat(me());
+				msg(ChatStrings.chatMovedToGlobal);
+				chatMan.removeGroupChat(player());
 				return true;
 			}
 			else {
-				String grpName = gm.getDefaultGroup(me().getUniqueId());
+				String grpName = gm.getDefaultGroup(player().getUniqueId());
 				if (grpName != null) {
 					group = GroupManager.getGroup(grpName);
 					defGroup = true;
@@ -58,7 +58,7 @@ public class GroupChat extends ChatCommand {
 			msg(ChatStrings.chatGroupNotFound);
 			return true;
 		}
-		if(!NameAPI.getGroupManager().hasAccess(group, me().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+		if(!NameAPI.getGroupManager().hasAccess(group, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 			msg(ChatStrings.chatGroupNoPerms);
 			return true;
 		}
@@ -69,24 +69,24 @@ public class GroupChat extends ChatCommand {
 		if(args.length == 1) {	
 			if(isGroupChatting) {
 				//player already groupchatting check if its this group
-				Group curGroup = chatMan.getGroupChatting(me());
+				Group curGroup = chatMan.getGroupChatting(player());
 				if(curGroup == group) {
 					msg(ChatStrings.chatGroupAlreadyChatting);
 					return true;
 				}
 				else {
 					msg(ChatStrings.chatGroupNowChattingIn, group.getName());
-					chatMan.removeGroupChat(me());
-					chatMan.addGroupChat(me(), group);
+					chatMan.removeGroupChat(player());
+					chatMan.addGroupChat(player(), group);
 					return true;
 				}
 			}
 			else {
 				msg(ChatStrings.chatGroupNowChattingIn, group.getName());
-				if (chatMan.getChannel(me()) != null) {
-					chatMan.removeChannel(me());
+				if (chatMan.getChannel(player()) != null) {
+					chatMan.removeChannel(player());
 				}
-				chatMan.addGroupChat(me(), group);
+				chatMan.addGroupChat(player(), group);
 				return true;
 			}
 
@@ -98,26 +98,26 @@ public class GroupChat extends ChatCommand {
 			}
 			if(isGroupChatting) {
 				//player already groupchatting check if its this group
-				Group curGroup = chatMan.getGroupChatting(me());
+				Group curGroup = chatMan.getGroupChatting(player());
 				if(curGroup == group){
-					chatMan.sendGroupMsg(me(), group, chatMsg.toString());
+					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				}
 				else {
-					chatMan.removeGroupChat(me());
-					chatMan.addGroupChat(me(), group);
+					chatMan.removeGroupChat(player());
+					chatMan.addGroupChat(player(), group);
 					msg(ChatStrings.chatGroupNowChattingIn, group.getName());
-					chatMan.sendGroupMsg(me(), group, chatMsg.toString());
+					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				}
 			}
 			else {
-				if (chatMan.getChannel(me()) != null) {
-					chatMan.removeChannel(me());
+				if (chatMan.getChannel(player()) != null) {
+					chatMan.removeChannel(player());
 				}
-				chatMan.addGroupChat(me(), group);
+				chatMan.addGroupChat(player(), group);
 				msg(ChatStrings.chatGroupNowChattingIn, group.getName());
-				chatMan.sendGroupMsg(me(), group, chatMsg.toString());
+				chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 				return true;
 			}
 		}

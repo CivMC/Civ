@@ -24,15 +24,15 @@ public class IgnoreList extends ChatCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		
-		List<UUID> players = DBM.getIgnoredPlayers(me().getUniqueId());
-		List<String> groups = DBM.getIgnoredGroups(me().getUniqueId());
+		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
+		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
 		
-		if(players == null){
+		if(players == null || players.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyPlayers);
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append("<i>Ignored Players: \n<n>");
+			sb.append("<a>Ignored Players: \n<n>");
 			for(UUID playerUUID : players){
 				String playerName = NameAPI.getCurrentName(playerUUID);
 				if(playerName != null){
@@ -40,21 +40,31 @@ public class IgnoreList extends ChatCommand {
 					sb.append(", ");
 				}
 			}
-			msg(sb.toString());
+			String msg = sb.toString();
+			if (msg.endsWith(", ")) {
+				msg = msg.substring(0, msg.length() -2);
+			}
+			
+			msg(msg);
 		}
 		
-		if(groups == null) {
+		if(groups == null || groups.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyGroups);
 			return true;
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append("<i>Ignored Groups: \n<n>");
+			sb.append("<a>Ignored Groups: \n<n>");
 			for(String s : groups){
 				sb.append(s);
 				sb.append(", ");
 			}
-			msg(sb.toString());
+			String msg = sb.toString();
+			if (msg.endsWith(", ")) {
+				msg = msg.substring(0, msg.length() -2);
+			}
+			
+			msg(msg);
 			return true;
 		}
 	}
