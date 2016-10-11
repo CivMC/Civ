@@ -22,8 +22,8 @@ public class CmdAdminExilePlayer extends PearlCommand {
 
 		this.setHelpShort("Exiles a player.");
 		
-		this.requiredArgs.add("player");
-		this.requiredArgs.add("killed by");
+		this.requiredArgs.add("player", AutoTab.PLAYER);
+		this.requiredArgs.add("killed by", AutoTab.GROUP);
 		this.optionalArgs.put("world", "?");
 		this.optionalArgs.put("x", "?");
 		this.optionalArgs.put("y", "?");

@@ -10,10 +10,10 @@ public class CmdAdminSetHealth extends PearlCommand {
 		super(plugin);
 		this.aliases.add("sethealth");
 
-		this.setHelpShort("Sets the health %% value of a pearl.");
+		this.setHelpShort("Sets the health % value of a pearl.");
 		
 		this.requiredArgs.add("player");
-		this.requiredArgs.add("health %%");
+		this.requiredArgs.add("health %");
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

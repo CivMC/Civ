@@ -27,7 +27,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	protected final StringListIgnoresCase aliases = new StringListIgnoresCase();
 	
 	// Information on the args
-	protected final List<String> requiredArgs = new ArrayList<String>();
+	protected final CommandArgs requiredArgs = new CommandArgs();
 	protected final LinkedHashMap<String, String> optionalArgs = new LinkedHashMap<String, String>();
 	protected boolean errorOnToManyArgs = true;
 	
@@ -229,6 +229,28 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 			return subCommands;
 		}
 		
+		// Check if the arg is an auto-tab type
+		CommandArg arg = requiredArgs.get(Math.max(0, args.size() - 1));
+		if (arg.isAutoTab()) {
+			List<String> tabList = new ArrayList<String>();
+			switch(arg.getAutoTab()) {
+			case PLAYER:
+				tabList.add("Player1");
+				tabList.add("Player2");
+				tabList.add("Player3"); // TODO
+				break;
+			case GROUP:
+				tabList.add("Group1");
+				tabList.add("Group2");
+				tabList.add("Group3"); // TODO
+				break;
+			default:
+				break;
+			}
+			return tabList;
+		}
+		
+		
 		// Otherwise perform the tab routine for the command itself
 		return performTabList();
 	}
@@ -424,7 +446,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 		
 		List<String> args = new ArrayList<String>();
 		
-		for (String requiredArg : this.requiredArgs) {
+		for (CommandArg requiredArg : this.requiredArgs) {
 			args.add("<"+requiredArg+">");
 		}
 		
