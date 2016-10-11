@@ -43,7 +43,7 @@ public class PlayerHolder implements PearlHolder {
 	public HolderVerifyResult validate(ExilePearl pearl) {
 		// When the the pearl holder is in creative mode, the inventory options checks do strange things
 		if (player.getGameMode() == GameMode.CREATIVE) {
-			return HolderVerifyResult.CREATVE_MODE;
+			//return HolderVerifyResult.CREATVE_MODE;
 		}
 		
 		// Is the holder online?

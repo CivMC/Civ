@@ -48,7 +48,6 @@ public class ItemHolder implements PearlHolder {
 				if (pearl.validateItemStack(item.getItemStack())) {
 					return HolderVerifyResult.ON_GROUND;
 				}
-				return HolderVerifyResult.ON_GROUND;
 			}
 		}
 		return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;

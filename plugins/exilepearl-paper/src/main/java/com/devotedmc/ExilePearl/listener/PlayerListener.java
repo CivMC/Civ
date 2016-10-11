@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -19,6 +20,8 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
 import org.bukkit.block.Furnace;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -30,6 +33,7 @@ import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -41,6 +45,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -231,6 +236,30 @@ public class PlayerListener implements Listener {
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getEntity().getItemStack());
 		if (pearl != null) {
 			e.setCancelled(true);
+			pearlApi.log("Prevented pearl from despawning at %s for player %s.", pearl.getLocation().toString(), pearl.getPlayerName());
+		}
+	}
+	
+
+	/**
+	 * Prevent chunk that contain pearls from unloading
+	 * @param e The event args
+	 */
+	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled = true)
+	public void onChunkUnload(ChunkUnloadEvent e) {
+		Chunk chunk = e.getChunk();
+		for (Entity entity : chunk.getEntities()) {
+			if (!(entity instanceof Item)) {
+				continue;
+			}
+			
+			Item item = (Item)entity;
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
+			
+			if (pearl != null) {
+				e.setCancelled(true);
+				pearlApi.log("Prevented chunk (%d, %d) from unloading because it contained an exile pearl for player %s.", chunk.getX(), chunk.getZ(), pearl.getPlayerName());
+			}
 		}
 	}
 
@@ -606,7 +635,7 @@ public class PlayerListener implements Listener {
 
 	/**
 	 * Frees pearls when right-clicked
-	 * @param e The event args
+	 * @param e The event argst
 	 */
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e) {
@@ -639,6 +668,38 @@ public class PlayerListener implements Listener {
 			player.getInventory().setItemInMainHand(null);
 			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlYouFreed, pearl.getPlayerName());
 		}
+	}
+	
+	/**
+	 * Prevent pearling with an exile pearl
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onPearlThrow(ProjectileLaunchEvent e) {
+		if (!(e.getEntity() instanceof EnderPearl)) {
+			return;
+		}
+		
+		final Player p = (Player)e.getEntity().getShooter();
+		if (p == null) {
+			return;
+		}
+		
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(p.getInventory().getItemInMainHand());
+		if (pearl == null) {
+			return;
+		}
+		
+		pearlApi.getPearlPlayer(p.getUniqueId()).msg(Lang.pearlCantThrow);
+		e.setCancelled(true);
+		
+		// Need to schedule this or else the re-created pearl doesn't show up
+		Bukkit.getScheduler().scheduleSyncDelayedTask(pearlApi.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				p.getInventory().setItemInMainHand(pearl.createItemStack());
+			}
+		});
 	}
 
 

@@ -2,7 +2,7 @@ package com.devotedmc.ExilePearl;
 
 public class Lang 
 {
-	public static final String pearlCantHold = "<b>Imprisoned players cannot pick up prison pearls.";
+	public static final String pearlCantHold = "<b>Exiled players can't pick up exile pearls.";
 	public static final String pearlMotd2 = "<i>Type \"<c>/pp locate<i>\" to locate your pearl.";
 	public static final String pearlNotExiled = "<i>You are not exiled.";
 	public static final String pearlPearlIsHeld = "<i>Your pearl is held by <a>%s <n>[%d %d %d %s]";
