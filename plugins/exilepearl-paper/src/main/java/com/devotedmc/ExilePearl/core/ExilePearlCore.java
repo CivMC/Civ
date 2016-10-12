@@ -154,7 +154,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		if (storage.connect()) {
 			pearlManager.loadPearls();
 		} else {
-			log(Level.SEVERE, "Failed to connect to database.");
+			log(Level.SEVERE, "Failed to connect to storage.");
 		}
 		
 		// Load configuration for all documentable classes

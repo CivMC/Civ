@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.storage;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -28,13 +29,22 @@ public class CoreStorageProvider implements StorageProvider {
 			throw new RuntimeException("Can't re-create the storage instance.");
 		}
 		
-		if (pearlApi.getPearlConfig().getUseDevRamStorage()) {
-			pearlApi.log(Level.WARNING, "Using RAM storage instance. Data will not be saved.");
+		StorageType storageType = pearlApi.getPearlConfig().getStorageType();
+		
+		if (storageType == StorageType.RAM) {
+			pearlApi.log(Level.WARNING, "Using RAM storage. Data will not be saved.");
 			storage = new RamStorage();
-		} else {
-			storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, pearlApi, pearlApi.getPearlConfig()), pearlApi);
 		}
-		return storage;
+		else if (storageType == StorageType.MYSQL) {
+			storage = new AsyncStorageWriter(new MySqlStorage(pearlFactory, pearlApi, pearlApi.getPearlConfig()), pearlApi);
+			pearlApi.log(Level.INFO, "Using MySQL storage.");
+		}
+		else {
+			File storageFile = new File("plugins/ExilePearl/pearls.yml");
+			storage = new AsyncStorageWriter(new FileStorage(storageFile, pearlFactory, pearlApi), pearlApi);
+			pearlApi.log(Level.INFO, "Using File storage.");
+		}
+		return storage; 
 	}
 
 	@Override

@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Document implements Map<String, Object> {
@@ -28,7 +30,7 @@ public class Document implements Map<String, Object> {
      */
     public Document(final String key, final Object value) {
         documentAsMap = new LinkedHashMap<String, Object>();
-        documentAsMap.put(key, value);
+        append(key, value);
     }
 
     /**
@@ -49,8 +51,12 @@ public class Document implements Map<String, Object> {
      * @param value value
      * @return this
      */
-    public Document append(final String key, final Object value) {
+    public Document append(final String key, Object value) {
     	String[] keys = key.split("\\.");
+    	
+    	if (value instanceof Location) {
+    		value = serializeLocation((Location) value);
+    	}
     	
     	if (keys.length == 1) {
     		documentAsMap.put(key, value);
@@ -64,10 +70,6 @@ public class Document implements Map<String, Object> {
     	
     	doc = doc.append(keys[keys.length - 1], value);
     	return this;
-    }
-    
-    public Document append(final DataPair pair) {
-    	return append(pair.getKey(), pair.getValue());
     }
 
     /**
@@ -208,6 +210,10 @@ public class Document implements Map<String, Object> {
         	list = new ArrayList<String>();
         }
         return list;
+    }
+    
+    public Location getLocation(final String key) {
+    	return deserializeLocation(getDocument(key));
     }
     
     
@@ -381,5 +387,27 @@ public class Document implements Map<String, Object> {
 		}
 		
 		return mem;
+	}
+	
+	private static Document serializeLocation(Location l) {
+		Document doc = new Document("world", l.getWorld().getName())
+		.append("x", l.getBlockX())
+		.append("y", l.getBlockY())
+		.append("z", l.getBlockZ());
+		
+		return doc;
+	}
+    
+	
+	private static Location deserializeLocation(Document doc) {
+		try {
+			String worldName = doc.getString("world");
+			int x = doc.getInteger("x");
+			int y = doc.getInteger("y");
+			int z = doc.getInteger("z");
+			return new Location(Bukkit.getWorld(worldName), x, y, z);
+		} catch(Exception ex) {
+			return null;
+		}
 	}
 }

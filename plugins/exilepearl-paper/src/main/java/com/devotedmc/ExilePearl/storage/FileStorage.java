@@ -1,15 +1,15 @@
 package com.devotedmc.ExilePearl.storage;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -31,6 +31,8 @@ class FileStorage implements PluginStorage {
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
 	
+	private Document doc = new Document();
+	
 	public FileStorage(final File file, final PearlFactory pearlFactory, final PearlLogger logger) {
 		Guard.ArgumentNotNull(file, "file");
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
@@ -45,27 +47,19 @@ class FileStorage implements PluginStorage {
 	public Collection<ExilePearl> loadAllPearls() {
 		HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
 		
-		FileConfiguration config = YamlConfiguration.loadConfiguration(file);
-		Document doc = Document.configurationSectionToDocument(config);
+		FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(file);
+		doc = Document.configurationSectionToDocument(fileConfig);
 		
-		for(String k : doc.keySet()) {
+		for(Entry<String, Object> entry : doc.entrySet()) {
 			try {
-				UUID playerId = UUID.fromString(doc.getString("uid"));
-				UUID killerId = UUID.fromString(doc.getString("killer_id"));
-				int pearlId = doc.getInteger("pearl_id");
-				World world = Bukkit.getWorld(doc.getString("world"));
-				int x = doc.getInteger("x");
-				int y = doc.getInteger("y");
-				int z = doc.getInteger("z");
-				int health = doc.getInteger("health");
-				Date pearledOn = new Date(doc.getLong("pearled_on"));
-				boolean freedOffline = doc.getBoolean("freed_offline");
-
-				if (world == null) {
-					logger.log(Level.WARNING, "Failed to load world for pearl %s", playerId.toString());
-					continue;
-				}
-				Location loc = new Location(world, x, y, z);
+				Document value = (Document)entry.getValue();
+				UUID playerId = UUID.fromString(entry.getKey());
+				UUID killerId = UUID.fromString(value.getString("killer_id"));
+				int pearlId = value.getInteger("pearl_id");
+				Location loc = value.getLocation("location");
+				int health = value.getInteger("health");
+				Date pearledOn = value.getDate("pearled_on");
+				boolean freedOffline = value.getBoolean("freed_offline");
 
 				ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
 				pearl.setHealth(health);
@@ -74,7 +68,7 @@ class FileStorage implements PluginStorage {
 				pearl.enableStorage();
 				pearls.add(pearl);
 			} catch (Exception ex) {
-				logger.log(Level.WARNING, "Failed to load pearl record: %s", doc.get(k));
+				logger.log(Level.WARNING, "Failed to load pearl record: %s", doc.get(entry.getKey()));
 				ex.printStackTrace();
 			}
 		}
@@ -84,28 +78,62 @@ class FileStorage implements PluginStorage {
 
 	@Override
 	public void pearlInsert(ExilePearl pearl) {
+		Document pearlDoc = new Document()
+				.append("killer_id", pearl.getKillerUniqueId().toString())
+				.append("pearl_id", pearl.getPearlId())
+				.append("location", pearl.getLocation())
+				.append("health", pearl.getHealth())
+				.append("pearled_on", pearl.getPearledOn())
+				.append("freed_offline", pearl.getFreedOffline());
+		
+		doc.append(pearl.getPlayerId().toString(), pearlDoc);
+		writeFile();
 	}
 
 	@Override
 	public void pearlRemove(ExilePearl pearl) {
+		doc.remove(pearl.getPlayerId().toString());
+		writeFile();
 	}
 
 	@Override
-	public void pearlUpdateLocation(ExilePearl pearl) {
+	public void pearlUpdateLocation(ExilePearl pearl) {		
+		doc.getDocument(pearl.getPlayerId().toString()).append("location", pearl.getLocation());
+		writeFile();
 	}
 
 	@Override
 	public void pearlUpdateHealth(ExilePearl pearl) {
-		
+		doc.getDocument(pearl.getPlayerId().toString()).append("health", pearl.getHealth());
+		writeFile();
 	}
 
 	@Override
 	public void pearlUpdateFreedOffline(ExilePearl pearl) {
-		
+		doc.getDocument(pearl.getPlayerId().toString()).append("freed_offline", pearl.getFreedOffline());
+		writeFile();
+	}
+	
+	private void writeFile() {
+		YamlConfiguration config = new YamlConfiguration();
+		Document.documentToConfigurationSection(config, doc);
+		try {
+			config.save(file);
+		} catch (IOException e) {
+			logger.log(Level.SEVERE, "Failed to write pearl data to file");
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public boolean connect() {
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				return false;
+			}
+		}
 		return true;
 	}
 

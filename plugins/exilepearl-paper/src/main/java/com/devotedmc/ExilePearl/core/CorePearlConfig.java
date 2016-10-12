@@ -11,6 +11,7 @@ import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.storage.StorageType;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
@@ -50,8 +51,8 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public boolean getUseDevRamStorage() {
-		return doc.getBoolean("storage.use_dev_ram_storage", false);
+	public StorageType getStorageType() {
+		return StorageType.valueOf(doc.getInteger("storage.type", 0));
 	}
 
 	@Override
@@ -97,6 +98,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	@Override
 	public int getMySqlMaxLifetime() {
 		return doc.getInteger("storage.mysql.max_lifetime", 5000);
+	}
+
+	@Override
+	public boolean getMigratePrisonPearl() {
+		return doc.getBoolean("storage.mysql.migrate_pp", false);
 	}
 
 	@Override

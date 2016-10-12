@@ -5,14 +5,15 @@ import java.util.Set;
 
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.storage.StorageType;
 
 public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	
 	/**
-	 * Gets whether to use ram storage
-	 * @return true if it should use ram storage
+	 * Gets the storage type to use
+	 * @return The storage type
 	 */
-	boolean getUseDevRamStorage();
+	StorageType getStorageType();
 	
 	/**
 	 * Gets the pearl decay minute interval

@@ -2,12 +2,19 @@
 #                               STORAGE SETTINGS                              #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 # 
-# storage.use_dev_ram_storage
-#  - Only for dev purposes.
-#  - Uses a volatile storage class that is cleared whenever the plugin reloads
+# storage.type
+#  - What type of storage to use
+#  - Options: 
+#       0: File storage (default)
+#       1: MySQL storage
+#       2: RAM storage (dev use only)
 # 
 # storage.mysql.x
 #  - Connection option for a MySQL database
+# 
+# storage.mysql.migrate_pp
+#  - When true, the MySQL storage will attempt to migrate PrisonPearl data 
+#    when it connects for the first time.
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -127,7 +134,7 @@
 # 
 # Start Config
 storage:
-  use_dev_ram_storage: true
+  type: 0
   mysql:
     host: localhost
     dbname: bukkit
@@ -138,6 +145,7 @@ storage:
     idle_timeout: 5000
     max_lifetime: 5000
     pool_size: 5
+    migrate_pp: false
 general:
   suicide_time_seconds: 180
 pearls:

@@ -35,7 +35,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	@Override
 	public boolean connect() {
 		if (storage.connect()) {
-			logger.log("Starting the async database thread.");
+			logger.log("Starting the async storage thread.");
 			isEnabled = true;
 			thread = new Thread(this);
 			thread.start();
@@ -114,7 +114,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 		}
 		
 		isEnabled = false;
-		logger.log("The async database thread has terminated.");
+		logger.log("The async storage thread has terminated.");
 	}
 	
 	
