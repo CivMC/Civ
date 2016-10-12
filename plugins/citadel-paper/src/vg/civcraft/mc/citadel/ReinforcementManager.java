@@ -112,33 +112,23 @@ public class ReinforcementManager {
 			return;
 		}
 		List<Reinforcement> removes = new ArrayList<Reinforcement>(reins.size());
-		List<PlayerReinforcement> updates = new ArrayList<PlayerReinforcement>(reins.size());
-		List<Reinforcement> remainder = new ArrayList<Reinforcement>(reins.size());
+		List<Reinforcement> updates = new ArrayList<Reinforcement>(reins.size());
 		for (Reinforcement rein : reins) {
 			if (rein.getDurability() <= 0) {
 				reinforcements.invalidate(rein.getLocation());
 				CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 				removes.add(rein);
 			} else {
-				if (rein instanceof PlayerReinforcement) {
-					CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
-					rein.setDirty(false);
-					updates.add((PlayerReinforcement) rein);
-				} else {
-					remainder.add(rein);
-				}
+				CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
+				rein.setDirty(false);
+				updates.add((PlayerReinforcement) rein);
 			}
 		}
 		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement removing {0}", removes.size());
 		db.deleteManyReinforcements(removes);
 		
 		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving player reinfs {0}", updates.size());
-		db.saveManyPlayerReinforcements(updates);
-		
-		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving other reinfs {0}", remainder.size());
-		for (Reinforcement rein : remainder) {
-			saveReinforcement(rein);
-		}
+		db.saveManyReinforcements(updates);
 	}
 
 	/**
@@ -313,16 +303,16 @@ public class ReinforcementManager {
 		List<Reinforcement> reins = db.getReinforcements(chunk);
 		List<Reinforcement> reins_new = new ArrayList<Reinforcement>();
 		for (Reinforcement rein: reins){
-			if (reinforcements.getIfPresent(rein.getLocation()) == null){
+			Reinforcement prep = reinforcements.getIfPresent(rein.getLocation());
+			if (prep == null || prep instanceof NullReinforcement){
 				reinforcements.put(rein.getLocation(), rein);
 				reins_new.add(rein);
-			}
-			else {
+			} else {
 				Reinforcement r = null;
 				try {
 					r = reinforcements.get(rein.getLocation());
 				} catch (ExecutionException e) {
-					Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcementsByChunk called with null", e);
+					Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager getReinforcementsByChunk failed a get", e);
 				}
 				reins_new.add(r);
 			}
@@ -330,7 +320,9 @@ public class ReinforcementManager {
 		return reins_new;
 	}
 	
-	// TODO how tf is this not used, mfw
+	/**
+	 * Identical to {@link #getReinforcementsByChunk(Chunk)} 
+	 */
 	public void loadReinforcementChunk(Chunk chunk) {
 		if (chunk == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager loadReinforcementChunk called with null");
