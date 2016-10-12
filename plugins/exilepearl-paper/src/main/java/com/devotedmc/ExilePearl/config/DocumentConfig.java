@@ -1,5 +1,10 @@
 package com.devotedmc.ExilePearl.config;
 
+/**
+ * A document-based configuration file
+ * 
+ * @author Gordon
+ */
 public interface DocumentConfig {
 	
 	/**

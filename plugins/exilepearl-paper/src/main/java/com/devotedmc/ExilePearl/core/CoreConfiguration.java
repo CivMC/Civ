@@ -53,11 +53,13 @@ class CoreConfiguration implements DocumentConfig {
 		Document doc = new Document();
 		
 		for(Entry<String, Object> e : mem.getValues(false).entrySet()) {
-			if (e.getValue() instanceof ConfigurationSection) {
-				doc.append(e.getKey(), configurationSectionToDocument((ConfigurationSection)e.getValue()));
+			String k = e.getKey();
+			Object o = e.getValue();
+			if (o instanceof ConfigurationSection) {
+				doc.append(k, configurationSectionToDocument((ConfigurationSection)o));
 			}
 			else {
-				doc.append(e.getKey(), e.getValue());
+				doc.append(k, o);
 			}
 		}
 		
@@ -72,11 +74,13 @@ class CoreConfiguration implements DocumentConfig {
 	 */
 	private ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
 		for(Entry<String, Object> e : doc.entrySet()) {
-			if (e.getValue() instanceof Document) {
-				documentToConfigurationSection(mem.createSection(e.getKey()), (Document)e.getValue());
+			String k = e.getKey();
+			Object o = e.getValue();
+			if (o instanceof Document) {
+				documentToConfigurationSection(mem.createSection(k), (Document)o);
 			}
 			else {
-				mem.set(e.getKey(), e.getValue());
+				mem.set(k, o);
 			}
 		}
 		

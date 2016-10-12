@@ -61,27 +61,11 @@ public class Document implements Map<String, Object> {
     	}
     	
     	doc = doc.append(keys[keys.length - 1], value);
-    	documentAsMap.put(keys[0], doc);
     	return this;
     }
     
     public Document append(final DataPair pair) {
     	return append(pair.getKey(), pair.getValue());
-    }
-
-    /**
-     * Gets the value of the given key, casting it to the given {@code Class<T>}.  This is useful to avoid having casts in client code,
-     * though the effect is the same.  So to get the value of a key that is of type String, you would write {@code String name =
-     * doc.get("name", String.class)} instead of {@code String name = (String) doc.get("x") }.
-     *
-     * @param key   the key
-     * @param clazz the non-null class to cast the value to
-     * @param <T>   the type of the class
-     * @return the value of the given key, or null if the instance does not contain this key.
-     * @throws ClassCastException if the value of the given key is not of type T
-     */
-    public <T> T get(final Object key, final Class<T> clazz) {
-        return clazz.cast(get(key));
     }
 
     /**
@@ -152,10 +136,6 @@ public class Document implements Map<String, Object> {
      */
     public String getString(final Object key) {
         return (String) get(key);
-    }
-    
-    public String getString(final DataPair pair) {
-        return (String) get(pair.getKey());
     }
 
     /**
@@ -239,23 +219,8 @@ public class Document implements Map<String, Object> {
     	return value != null && value instanceof Document;
     }
     
-    @SuppressWarnings("unchecked")
 	public Document getDocument(final Object key) {
-    	Object value = get(key);
-    	if (value == null) {
-    		return null;
-    	}
-    	return new Document((Map<String, Object>) value);
-    }
-    
-    @SuppressWarnings("unchecked")
-	public <T> T getRaw(final Object key) {
-        return (T)documentAsMap.get(key);
-    }
-    
-	public <T> Document setRaw(final String key, final T value) {
-        documentAsMap.put(key, value);
-        return this;
+    	return (Document)get(key);
     }
 
     // Vanilla Map methods delegate to map field
