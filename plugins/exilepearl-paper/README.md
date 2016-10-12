@@ -9,6 +9,7 @@ Exiled players can't come within a set radius of their pearl, so the only way th
 
 ### Player Commands
     /ep                           The root command
+    /ep help                      Displays plugin help
     /ep locate                    Locates your pearl location
     /ep free                      Frees a pearl in your hand
     /ep broadcast                 Broadcasts your pearl's location to a group or player
@@ -31,11 +32,11 @@ Exiled players can't come within a set radius of their pearl, so the only way th
 ### Permissions
   The player commands are enabled by default for all players
   
-    exilepearl.check              Grants access to '/ep check' command
-    exilepearl.decay              Grants access to '/ep decay' command
-    exilepearl.exileany           Grants access to '/ep exileany' command
-    exilepearl.freeany            Grants access to '/ep freeany' command
-    exilepearl.list               Grants access to '/ep list' command
-    exilepearl.reload             Grants access to '/ep reload' command
-    exilepearl.sethealth          Grants access to '/ep sethealth' command
-    exilepearl.config             Grants access to '/ep config' command
+    exilepearl.check              Grants access to '/ep check'
+    exilepearl.decay              Grants access to '/ep decay'
+    exilepearl.exileany           Grants access to '/ep exileany'
+    exilepearl.freeany            Grants access to '/ep freeany'
+    exilepearl.list               Grants access to '/ep list'
+    exilepearl.reload             Grants access to '/ep reload'
+    exilepearl.sethealth          Grants access to '/ep sethealth'
+    exilepearl.config             Grants access to '/ep config'
