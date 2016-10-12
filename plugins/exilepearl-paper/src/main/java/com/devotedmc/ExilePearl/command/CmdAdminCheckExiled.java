@@ -12,7 +12,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 
 		this.setHelpShort("Checks if a player is exiled");
 		
-		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(requiredPearlPlayer());
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

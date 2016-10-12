@@ -13,7 +13,7 @@ public class CmdAdminFreeAny extends PearlCommand {
 
 		this.setHelpShort("Frees any exiled player.");
 		
-		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(requiredPearlPlayer());
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

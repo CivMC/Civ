@@ -16,8 +16,7 @@ public enum Permission
 	 */
 	public final String node;
 	
-	Permission(final String node)
-	{
+	Permission(final String node) {
 		this.node = "exilepearl." + node;
 	}
 }
