@@ -31,7 +31,7 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  * The prison pearl manager implementation
  * @author Gordon
  */
-class CorePearlManager implements PearlManager {
+final class CorePearlManager implements PearlManager {
 
 	private final ExilePearlApi pearlApi;
 	private final PearlFactory pearlFactory;

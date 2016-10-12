@@ -6,7 +6,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
  * Interval task that deducts strength from existing prison pearls
  * @author Gordon
  */
-class PearlDecayTask extends ExilePearlTask {
+final class PearlDecayTask extends ExilePearlTask {
 
 	/**
 	 * Creates a new FactoryWorker instance

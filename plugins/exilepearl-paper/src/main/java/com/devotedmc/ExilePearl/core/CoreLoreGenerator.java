@@ -20,7 +20,7 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-class CoreLoreGenerator implements PearlLoreProvider {
+final class CoreLoreGenerator implements PearlLoreProvider {
 	
 	// These need to match!
 	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";

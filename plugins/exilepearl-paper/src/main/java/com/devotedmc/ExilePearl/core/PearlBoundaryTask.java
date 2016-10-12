@@ -30,13 +30,13 @@ import org.bukkit.World;
 /**
  * This class tracks the pearls players that are online and prevents them
  * from entering the zone around their pearl location.
- * 
+ * <p>
  * It also prevents them from entering bastion fields that they don't
  * have permission on. (this part isn't done yet)
  * 
  * @author Gordon
  */
-class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
+final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 	private final PearlConfig config;
 

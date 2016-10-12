@@ -11,7 +11,7 @@ import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
-class CorePearlConfig extends CoreConfiguration implements PearlConfig {
+final class CorePearlConfig extends CoreConfiguration implements PearlConfig {
 	
 	public CorePearlConfig(final Plugin plugin) {
 		super(plugin);

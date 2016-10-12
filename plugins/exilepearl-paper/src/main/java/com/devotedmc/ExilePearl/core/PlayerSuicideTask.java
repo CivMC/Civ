@@ -20,7 +20,7 @@ import com.devotedmc.ExilePearl.SuicideHandler;
  * Lets exiled players kill themselves with a timer
  * @author Gordon
  */
-class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
+final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 	
 	class SuicideRecord {
 		public final Location location;

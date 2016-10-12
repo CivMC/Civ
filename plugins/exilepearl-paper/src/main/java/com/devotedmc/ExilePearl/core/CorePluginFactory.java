@@ -25,7 +25,7 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  * Factory class for creating new core class instances
  * @author Gordon
  */
-public class CorePluginFactory implements PearlFactory {
+public final class CorePluginFactory implements PearlFactory {
 	
 	private final ExilePearlPlugin plugin;
 	
