@@ -7,21 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.util.StringListIgnoresCase;
 
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-public abstract class BaseCommand<T extends  JavaPlugin> {
+public abstract class BaseCommand<T extends Plugin> {
 	
 	protected final T plugin;
 	
 	private final Map<String, String> permissionDescriptions = new HashMap<String, String>();
-	private final List<BaseCommand<? extends  JavaPlugin>> subCommands = new ArrayList<BaseCommand<? extends  JavaPlugin>>();
+	private final List<BaseCommand<? extends Plugin>> subCommands = new ArrayList<BaseCommand<? extends Plugin>>();
 	
 	// The different names this commands will react to  
 	protected final StringListIgnoresCase aliases = new StringListIgnoresCase();
@@ -56,7 +57,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	protected CommandSender sender; // Will always be set
 	protected boolean senderIsConsole;
 	protected List<String> args; // Will contain the arguments, or and empty list if there are none.
-	protected List<BaseCommand<? extends  JavaPlugin>> commandChain = new ArrayList<BaseCommand<? extends  JavaPlugin>>(); // The command chain used to execute this command
+	protected List<BaseCommand<? extends Plugin>> commandChain = new ArrayList<BaseCommand<? extends Plugin>>(); // The command chain used to execute this command
 	
 	// Will only be set when the sender is a player
 	private Player me;
@@ -90,7 +91,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param args The command arguments
 	 * @param commandChain The command chain
 	 */
-	public final void execute(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
+	public final void execute(CommandSender sender, List<String> args, List<BaseCommand<? extends Plugin>> commandChain) {
 		if (prepareCommand(sender, args, commandChain)) {
 			perform();
 		}
@@ -103,7 +104,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param commandChain The command chain
 	 */
 	public final void execute(CommandSender sender, List<String> args) {
-		execute(sender, args, new ArrayList<BaseCommand<? extends  JavaPlugin>>());
+		execute(sender, args, new ArrayList<BaseCommand<? extends Plugin>>());
 	}
 	
 	
@@ -113,7 +114,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param args The command arguments
 	 * @return The tab list
 	 */
-	public final List<String> getTabList(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
+	public final List<String> getTabList(CommandSender sender, List<String> args, List<BaseCommand<? extends Plugin>> commandChain) {
 		return prepareTab(sender, args, commandChain);
 	}
 	
@@ -125,7 +126,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param commandChain The command chain
 	 * @return true if the command should execute
 	 */
-	private boolean prepareCommand(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
+	private boolean prepareCommand(CommandSender sender, List<String> args, List<BaseCommand<? extends Plugin>> commandChain) {
 		// Set the execution-time specific variables
 		this.sender = sender;
 		if (sender instanceof Player) {
@@ -147,7 +148,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 
 		// Find a matching sub-command
 		if (args.size() > 0 ) {
-			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
+			for (BaseCommand<? extends Plugin> subCommand: this.subCommands) {
 				if (subCommand.aliases.contains(args.get(0))) {
 					args.remove(0);
 					commandChain.add(this);
@@ -171,7 +172,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param commandChain The command chain
 	 * @return the tab results
 	 */
-	private List<String> prepareTab(CommandSender sender, List<String> args, List<BaseCommand<? extends  JavaPlugin>> commandChain) {
+	private List<String> prepareTab(CommandSender sender, List<String> args, List<BaseCommand<? extends Plugin>> commandChain) {
 		// Set the execution-time specific variables
 		this.sender = sender;
 		if (sender instanceof Player) {
@@ -193,7 +194,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 
 		// Find a matching sub-command
 		if (args.size() > 0 ) {
-			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
+			for (BaseCommand<? extends Plugin> subCommand: this.subCommands) {
 				if (subCommand.aliases.contains(args.get(0))) {
 					args.remove(0);
 					commandChain.add(this);
@@ -206,7 +207,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 		
 		// Get the tab list of any matching sub-commands
 		if (args.size() > 0 ) {
-			for (BaseCommand<? extends  JavaPlugin> subCommand: this.subCommands) {
+			for (BaseCommand<? extends Plugin> subCommand: this.subCommands) {
 				if (!(subCommand.validSenderPermissions(sender, false))) {
 					continue;
 				}
@@ -229,30 +230,52 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 			return subCommands;
 		}
 		
-		// Check if the arg is an auto-tab type
-		CommandArg arg = requiredArgs.get(Math.max(0, args.size() - 1));
-		if (arg.isAutoTab()) {
-			List<String> tabList = new ArrayList<String>();
-			switch(arg.getAutoTab()) {
-			case PLAYER:
-				tabList.add("Player1");
-				tabList.add("Player2");
-				tabList.add("Player3"); // TODO
-				break;
-			case GROUP:
-				tabList.add("Group1");
-				tabList.add("Group2");
-				tabList.add("Group3"); // TODO
-				break;
-			default:
-				break;
-			}
-			return tabList;
+		// This is the case when someone tabs at the end of a command before pressing space
+		if (args.size() == 0 || (args.size() == 1 && args.get(0) == "")) {
+			return null;
 		}
 		
+		// Check if the arg is an auto-tab type
+	   if(args.size() > requiredArgs.size()) {
+		   return null;
+	   }
+		
+		CommandArg tabArg = requiredArgs.get(args.size() - 1);
+		if (tabArg == null) {
+			return null;
+		}
+		
+		List<String> tabList = getAutoTab(tabArg, args.get(args.size() - 1));
+		if (tabList != null) {
+			return tabList;
+		}		
 		
 		// Otherwise perform the tab routine for the command itself
 		return performTabList();
+	}
+	
+	private List<String> getAutoTab(CommandArg tabArg, String pattern) {
+		if (!tabArg.isAutoTab()) {
+			return null;
+		}
+		
+		List<String> tabList = new ArrayList<String>();
+		
+		switch(tabArg.getAutoTab()) {
+		case PLAYER:
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getName().toLowerCase().startsWith(pattern.toLowerCase()))
+					tabList.add(p.getName());
+			}
+			break;
+		default:
+			break;
+		}
+		
+		if (tabList.size() == 0) {
+			return null;
+		}
+		return tabList;
 	}
 	
 	
@@ -263,7 +286,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @return The tab list
 	 */
 	public final List<String> getTabList(CommandSender sender, List<String> args) {
-		return getTabList(sender, args, new ArrayList<BaseCommand<? extends  JavaPlugin>>());
+		return getTabList(sender, args, new ArrayList<BaseCommand<? extends Plugin>>());
 	}
 	
 	
@@ -288,7 +311,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * Adds a sub-command
 	 * @param subCommand the sub-command to add
 	 */
-	public void addSubCommand(BaseCommand<? extends  JavaPlugin> subCommand) {
+	public void addSubCommand(BaseCommand<? extends Plugin> subCommand) {
 		subCommand.getCommandChain().addAll(this.commandChain);
 		subCommand.getCommandChain().add(this);
 		this.subCommands.add(subCommand);
@@ -299,7 +322,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * Gets the command chain
 	 * @return The command chain
 	 */
-	public List<BaseCommand<? extends  JavaPlugin>> getCommandChain() {
+	public List<BaseCommand<? extends Plugin>> getCommandChain() {
 		return commandChain;
 	}
 	
@@ -307,7 +330,7 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * Gets the sub-commands
 	 * @return The sub-commands
 	 */
-	public List<BaseCommand<? extends  JavaPlugin>> getSubCommands() {
+	public List<BaseCommand<? extends Plugin>> getSubCommands() {
 		return this.subCommands;
 	}
 	
@@ -432,12 +455,12 @@ public abstract class BaseCommand<T extends  JavaPlugin> {
 	 * @param addShortHelp Whether to add a short help description
 	 * @return The full command help
 	 */
-	public String getUseageTemplate(List<BaseCommand<? extends  JavaPlugin>> commandChain, boolean addShortHelp) {
+	public String getUseageTemplate(List<BaseCommand<? extends Plugin>> commandChain, boolean addShortHelp) {
 		StringBuilder ret = new StringBuilder();
 		ret.append(TextUtil.parseTags("<c>"));
 		ret.append('/');
 		
-		for (BaseCommand<? extends  JavaPlugin> mc : commandChain) {
+		for (BaseCommand<? extends Plugin> mc : commandChain) {
 			ret.append(TextUtil.implode(mc.aliases, ","));
 			ret.append(' ');
 		}

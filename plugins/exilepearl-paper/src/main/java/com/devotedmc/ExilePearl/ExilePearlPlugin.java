@@ -399,36 +399,44 @@ public class ExilePearlPlugin extends ACivMod implements ExilePearlApi {
 		}
 		return Bukkit.getOfflinePlayer(name).getUniqueId();
 	}
-	
-	private boolean isNameLayerEnabled() {
+
+	@Override
+	public boolean isNameLayerEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("NameLayer");
 	}
-	
-	private boolean isCitadelEnabled() {
+
+	@Override
+	public boolean isCitadelEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("Citadel");
 	}
-	
-	private boolean isCivChatEnabled() {
+
+	@Override
+	public boolean isCivChatEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("CivChat2");
 	}
-	
-	private boolean isBastionEnabled() {
+
+	@Override
+	public boolean isBastionEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("Bastion");
 	}
-	
-	private boolean isJukeAlertEnabled() {
+
+	@Override
+	public boolean isJukeAlertEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("JukeAlert");
 	}
-	
-	private boolean isRandomSpawnEnabled() {
+
+	@Override
+	public boolean isRandomSpawnEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("RandomSpawn");
 	}
-	
-	private boolean isWorldBorderEnabled() {
+
+	@Override
+	public boolean isWorldBorderEnabled() {
 		return Bukkit.getPluginManager().isPluginEnabled("WorldBorder");
 	}
-	
-	private boolean isCombatTagEnabled() {
+
+	@Override
+	public boolean isCombatTagEnabled() {
 		return tagManager != null;
 	}
 

@@ -65,4 +65,20 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	 * @return The formatted message
 	 */
 	String formatText(String text, Object... args);
+	
+	boolean isNameLayerEnabled();
+	
+	boolean isCitadelEnabled();
+	
+	boolean isCivChatEnabled();
+	
+	boolean isBastionEnabled();
+	
+	boolean isJukeAlertEnabled();
+	
+	boolean isRandomSpawnEnabled();
+	
+	boolean isWorldBorderEnabled();
+	
+	boolean isCombatTagEnabled();
 }
