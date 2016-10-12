@@ -5,15 +5,15 @@ import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.util.Permission;
 
-public class CmdAdminFreePlayer extends PearlCommand {
+public class CmdAdminFreeAny extends PearlCommand {
 
-	public CmdAdminFreePlayer(ExilePearlPlugin plugin) {
+	public CmdAdminFreeAny(ExilePearlPlugin plugin) {
 		super(plugin);
 		this.aliases.add("freeany");
 
 		this.setHelpShort("Frees any exiled player.");
 		
-		this.requiredArgs.add("player");
+		this.commandArgs.add(requiredPlayer("player"));
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

@@ -14,7 +14,7 @@ public class CmdPearlLocate extends PearlCommand {
 		super(plugin);
 		this.aliases.add("locate");
 		
-		this.optionalArgs.put("player", "you");
+		this.commandArgs.add(optional("player", autoTab("player")));
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Locates your exile pearl");

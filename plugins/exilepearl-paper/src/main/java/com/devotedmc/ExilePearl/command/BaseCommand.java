@@ -2,10 +2,8 @@ package com.devotedmc.ExilePearl.command;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -28,8 +26,7 @@ public abstract class BaseCommand<T extends Plugin> {
 	protected final StringListIgnoresCase aliases = new StringListIgnoresCase();
 	
 	// Information on the args
-	protected final CommandArgs requiredArgs = new CommandArgs();
-	protected final LinkedHashMap<String, String> optionalArgs = new LinkedHashMap<String, String>();
+	protected final List<CommandArg> commandArgs = new ArrayList<CommandArg>();
 	protected boolean errorOnToManyArgs = true;
 	
 	// FIELD: Help Short
@@ -226,8 +223,12 @@ public abstract class BaseCommand<T extends Plugin> {
 		}
 		
 		// Return the matching tab commands if there are any
-		if (subCommands.size() > 0) {
-			return subCommands;
+		if (this.subCommands.size() > 0) {
+			if (subCommands.size() > 0) {
+				return subCommands;
+			} else {
+				return null;
+			}
 		}
 		
 		// This is the case when someone tabs at the end of a command before pressing space
@@ -236,11 +237,12 @@ public abstract class BaseCommand<T extends Plugin> {
 		}
 		
 		// Check if the arg is an auto-tab type
-	   if(args.size() > requiredArgs.size()) {
+	   if(args.size() > commandArgs.size()) {
+		   msg("<i>No more arguments are needed.");
 		   return null;
 	   }
 		
-		CommandArg tabArg = requiredArgs.get(args.size() - 1);
+		CommandArg tabArg = commandArgs.get(args.size() - 1);
 		if (tabArg == null) {
 			return null;
 		}
@@ -248,10 +250,19 @@ public abstract class BaseCommand<T extends Plugin> {
 		List<String> tabList = getAutoTab(tabArg, args.get(args.size() - 1));
 		if (tabList != null) {
 			return tabList;
-		}		
+		}
 		
 		// Otherwise perform the tab routine for the command itself
-		return performTabList();
+		tabList = performTabList();
+		if (tabList != null) {
+			return tabList;
+		}
+		
+		// If still nothing found, send the help message
+		if(tabArg.isAutoTab() && tabArg.getAutoTab().getHelp() != null) {
+			msg("<i>" + tabArg.getAutoTab().getHelp());
+		}
+		return null;
 	}
 	
 	private List<String> getAutoTab(CommandArg tabArg, String pattern) {
@@ -261,21 +272,38 @@ public abstract class BaseCommand<T extends Plugin> {
 		
 		List<String> tabList = new ArrayList<String>();
 		
-		switch(tabArg.getAutoTab()) {
-		case PLAYER:
+		switch(tabArg.getAutoTab().getName()) {
+		case "player":
 			for (Player p: Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(pattern.toLowerCase()))
 					tabList.add(p.getName());
 			}
 			break;
 		default:
+		{
+			List<String> customTab = getCustomAutoTab(tabArg.getAutoTab().getName(), pattern);
+			if (customTab != null) {
+				tabList.addAll(customTab);
+			}
+		}
 			break;
 		}
 		
 		if (tabList.size() == 0) {
 			return null;
 		}
+		
 		return tabList;
+	}
+	
+	/**
+	 * Method that can be overridden for getting custom auto-tabs
+	 * @param tabArg The tab argument
+	 * @param pattern The search pattern
+	 * @return The tab list if any results
+	 */
+	protected List<String> getCustomAutoTab(String tabName, String pattern) {
+		return null;
 	}
 	
 	
@@ -414,30 +442,35 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param sender The command sender
 	 * @return true if the commands are valid
 	 */
-	protected boolean validArgs(List<String> args, CommandSender sender)
-	{
-		if (args.size() < this.requiredArgs.size())
-		{
-			if (sender != null)
-			{
-				msg(Lang.commandToFewArgs);
-				sender.sendMessage(this.getUsageTemplate());
-			}
+	protected boolean validArgs(List<String> args, CommandSender sender) {
+		if (args.size() < numRequiredArgs()) {
+			msg(Lang.commandToFewArgs);
+			msg(getUsageTemplate());
 			return false;
 		}
 		
-		if (args.size() > this.requiredArgs.size() + this.optionalArgs.size() && this.errorOnToManyArgs)
-		{
-			if (sender != null)
-			{
-				// Get the to many string slice
-				List<String> theToMany = args.subList(this.requiredArgs.size() + this.optionalArgs.size(), args.size());
-				msg(Lang.commandToManyArgs, TextUtil.implode(theToMany, " "));
-				sender.sendMessage(this.getUsageTemplate());
-			}
+		if (args.size() > this.commandArgs.size() && this.errorOnToManyArgs) {
+			// Get the to many string slice
+			List<String> theToMany = args.subList(this.commandArgs.size(), args.size());
+			msg(Lang.commandToManyArgs, TextUtil.implode(theToMany, " "));
+			msg(this.getUsageTemplate());
 			return false;
 		}
 		return true;
+	}
+	
+	/**
+	 * Gets the number of required arguments
+	 * @return The number of required arguments
+	 */
+	protected int numRequiredArgs() {
+		int i = 0;
+		for (CommandArg a : commandArgs) {
+			if (a.isRequired()) {
+				i++;
+			}
+		}
+		return i;
 	}
 	
 	/**
@@ -467,25 +500,11 @@ public abstract class BaseCommand<T extends Plugin> {
 		
 		ret.append(TextUtil.implode(this.aliases, ","));
 		
-		List<String> args = new ArrayList<String>();
-		
-		for (CommandArg requiredArg : this.requiredArgs) {
-			args.add("<"+requiredArg+">");
-		}
-		
-		for (Entry<String, String> optionalArg : this.optionalArgs.entrySet()) {
-			String val = optionalArg.getValue();
-			if (val == null) {
-				val = "";
-			} else {
-				val = "="+val;
+		if (commandArgs.size() > 0) {
+			for (CommandArg a : this.commandArgs) {
+				ret.append("<p> ");
+				ret.append(a.toString());
 			}
-			args.add("["+optionalArg.getKey()+val+"]");
-		}
-		
-		if (args.size() > 0) {
-			ret.append(TextUtil.parseTags("<p> "));
-			ret.append(TextUtil.implode(args, " "));
 		}
 		
 		if (addShortHelp) {
@@ -760,11 +779,58 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param args The string arguments
 	 * @return The formatted string
 	 */
-	protected String parse(String str, Object... args) {
+	protected static String parse(String str, Object... args) {
 		return TextUtil.parse(str, args);
 	}
 	
-	protected String parse(String str) {
+	protected static String parse(String str) {
 		return TextUtil.parse(str);
+	}
+	
+	
+	/*
+	 * The following are utility methods for easily generating 
+	 * command and auto-tab instances
+	 */
+	
+	
+	protected final static AutoTab autoTab(String name, String help) {
+		return new AutoTab(name, help);
+	}
+	
+	protected final static AutoTab autoTab(String name) {
+		return new AutoTab(name, null);
+	}
+	
+	protected final static CommandArg required(String name, AutoTab autoTab) {
+		return new RequiredCommandArg(name, autoTab);
+	}
+	
+	protected final static CommandArg required(String name) {
+		return required(name, null);
+	}
+	
+	protected final static CommandArg requiredPlayer(String name) {
+		return required(name, autoTab("player", "No matching players found."));
+	}
+	
+	protected final static CommandArg optional(String name, String defValue, AutoTab autoTab) {
+		return new OptionalCommandArg(name, defValue, autoTab);
+	}
+	
+	protected final static CommandArg optional(String name, String defValue) {
+		return optional(name, defValue, null);
+	}
+	
+	protected final static CommandArg optional(String name, AutoTab autoTab) {
+		return optional(name, null, autoTab);
+	}
+	
+	protected final static CommandArg optional(String name) {
+		return optional(name, null, null);
+	}
+	
+	protected final static CommandArg optionalPlayer(String name) {
+		return optional(name, autoTab("player", "No matching players found."));
 	}
 }

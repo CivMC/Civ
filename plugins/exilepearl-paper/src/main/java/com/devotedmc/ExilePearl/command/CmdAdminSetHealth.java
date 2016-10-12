@@ -12,8 +12,8 @@ public class CmdAdminSetHealth extends PearlCommand {
 
 		this.setHelpShort("Sets the health % value of a pearl.");
 		
-		this.requiredArgs.add("player");
-		this.requiredArgs.add("health %");
+		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(required("health %", autoTab("", "Enter the desired health percent")));
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

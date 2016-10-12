@@ -15,7 +15,7 @@ public class CmdAutoHelp extends PearlCommand
 		
 		this.setHelpShort("");
 		
-		this.optionalArgs.put("page","1");
+		this.commandArgs.add(optional("page", "1"));
 	}
 	
 	@Override

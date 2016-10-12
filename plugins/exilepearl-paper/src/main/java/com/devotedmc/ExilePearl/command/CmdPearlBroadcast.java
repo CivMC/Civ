@@ -10,7 +10,7 @@ public class CmdPearlBroadcast extends PearlCommand {
 		super(plugin);
 		this.aliases.add("broadcast");
 		
-		this.requiredArgs.add("player");
+		this.commandArgs.add(requiredPlayer("player"));
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Broadcasts your pearl location to another player.");

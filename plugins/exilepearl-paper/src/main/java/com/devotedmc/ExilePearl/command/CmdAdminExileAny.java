@@ -14,20 +14,20 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.util.Permission;
 
-public class CmdAdminExilePlayer extends PearlCommand {
+public class CmdAdminExileAny extends PearlCommand {
 
-	public CmdAdminExilePlayer(ExilePearlPlugin plugin) {
+	public CmdAdminExileAny(ExilePearlPlugin plugin) {
 		super(plugin);
 		this.aliases.add("exileany");
 
 		this.setHelpShort("Exiles a player.");
 		
-		this.requiredArgs.add("player", AutoTab.PLAYER);
-		this.requiredArgs.add("killed by", AutoTab.GROUP);
-		this.optionalArgs.put("world", "?");
-		this.optionalArgs.put("x", "?");
-		this.optionalArgs.put("y", "?");
-		this.optionalArgs.put("z", "?");
+		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(requiredPlayer("killed by"));
+		this.commandArgs.add(optional("world"));
+		this.commandArgs.add(optional("x"));
+		this.commandArgs.add(optional("y"));
+		this.commandArgs.add(optional("z"));
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

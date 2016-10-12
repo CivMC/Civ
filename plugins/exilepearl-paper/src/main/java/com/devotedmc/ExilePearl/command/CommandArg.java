@@ -1,46 +1,34 @@
 package com.devotedmc.ExilePearl.command;
 
-public class CommandArg {
+/**
+ * Represents a command argument
+ * @author Gordon
+ *
+ */
+interface CommandArg {
 
-	private final String name;
-	private final String defValue;
-	private final AutoTab tab;
+	/**
+	 * Gets the argument name
+	 * @return The argument name
+	 */
+	String getName();
 	
-	public CommandArg(String name, String defValue, AutoTab tab) {
-		this.name = name;
-		this.defValue = defValue;
-		this.tab = tab;
-	}
+	/**
+	 * Gets whether the argument is required
+	 * @return true if the argument is required
+	 */
+	boolean isRequired();
 	
-	public CommandArg(String name, AutoTab tab) {
-		this(name, null, tab);
-	}
+	/**
+	 * Gets whether the argument supports auto-tab complete
+	 * @return true if it supports auto-tab
+	 */
+	boolean isAutoTab();
 	
-	public CommandArg(String name, String defValue) {
-		this(name, defValue, AutoTab.DEFAULT);
-	}
+	/**
+	 * Gets the auto-tab if it exists
+	 * @return The auto-tab instance
+	 */
+	AutoTab getAutoTab();
 	
-	public CommandArg(String name) {
-		this(name, null, AutoTab.DEFAULT);
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public AutoTab getAutoTab() {
-		return tab;
-	}
-	
-	public boolean isAutoTab() {
-		return tab != AutoTab.DEFAULT;
-	}
-	
-	@Override
-	public String toString() {
-		if (defValue != null) {
-			return name + "=" + defValue;
-		}
-		return name;
-	}
 }

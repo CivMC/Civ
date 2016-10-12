@@ -10,7 +10,7 @@ public class CmdPearlBroadcastSilence extends PearlCommand {
 		super(plugin);
 		this.aliases.add("silence");
 		
-		this.requiredArgs.add("player");
+		this.commandArgs.add(requiredPlayer("player"));
 
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Silences pearl broadcast request from a player");

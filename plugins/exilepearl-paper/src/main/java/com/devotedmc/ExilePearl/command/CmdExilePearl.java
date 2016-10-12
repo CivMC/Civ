@@ -40,8 +40,8 @@ public class CmdExilePearl extends PearlCommand {
 		// Admin commands
 		addSubCommand(new CmdConfig(p));
 		addSubCommand(new CmdAdminDecay(p));
-		addSubCommand(new CmdAdminExilePlayer(p));
-		addSubCommand(new CmdAdminFreePlayer(p));
+		addSubCommand(new CmdAdminExileAny(p));
+		addSubCommand(new CmdAdminFreeAny(p));
 		addSubCommand(new CmdAdminSetHealth(p));
 		addSubCommand(new CmdAdminCheckExiled(p));
 		addSubCommand(new CmdAdminListExiled(p));

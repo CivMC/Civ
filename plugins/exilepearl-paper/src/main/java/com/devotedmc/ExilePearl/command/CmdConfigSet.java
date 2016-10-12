@@ -18,8 +18,8 @@ public class CmdConfigSet extends PearlCommand
 		this.aliases.add("set");
 		this.helpShort = "Sets a exile rule value";
 		
-		this.requiredArgs.add("rule");
-		this.requiredArgs.add("value");
+		this.commandArgs.add(required("rule", autoTab("exile_rule", "No matching rule found.")));
+		this.commandArgs.add(required("value", autoTab("", "Enter the rule value.")));
 	}
 	
 	@Override
@@ -32,19 +32,22 @@ public class CmdConfigSet extends PearlCommand
 		}
 		
 		Boolean valBool = argAsBool(1);
+		String argStr = "";
 		
 		switch(rule) {
 		
 		case PEARL_RADIUS:
 			config.setRulePearlRadius(argAsInt(1));
+			argStr = argAsInt(1).toString();
 			break;
 			
 		default:
 			config.setRule(rule, valBool);
+			argStr = valBool.toString();
 			break;
 		}
 		
-		msg("<g>Rule <a>%s <g>updated to <a>%s", rule.toString(), argAsString(1));
+		msg("<g>Rule <a>%s <g>updated to <a>%s", rule.toString(), argStr);
 		msg("<i>Use <c>/ep config save <i>to save new values.");
 	}
 }
