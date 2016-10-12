@@ -38,6 +38,13 @@ public class ReinforcementManager {
 	//    we are clear to batch all operations of like-kind as there will be no overlap.
 	//   Meanwhile, a new dirty cache will begin accumulating.
 	
+	// TODO: For chunk loading, on block break peek() at end of a queue, if diff chunk, offer() the chunk
+	//  of cache MISS. 
+	// Then, a scheduled task runs every second, or several works running continuously, goes through that queue.
+	//  This task keeps a list of chunks that have been loaded, and how long ago
+	//  if last time was longer then the cachetimeout, the chunk is reloaded on request, otherwise
+	//  skipped. and so on.
+
 	
 	private CitadelReinforcementData db;
 	private long dayMultiplier;
@@ -204,9 +211,10 @@ public class ReinforcementManager {
 			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager deleteReinforcement called with null");
 			return;
 		}
+		rein.setDirty(false);
 		reinforcements.invalidate(rein.getLocation());
-		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 		db.deleteReinforcement(rein);
+		CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 	}
 
 	/**
@@ -323,18 +331,28 @@ public class ReinforcementManager {
 	
 	/**
 	 * Identical to {@link #getReinforcementsByChunk(Chunk)} 
+	 *  just doesn't try to return anything
 	 */
 	public void loadReinforcementChunk(Chunk chunk) {
 		if (chunk == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementManager loadReinforcementChunk called with null");
 			return;
 		}
+		long s = System.currentTimeMillis();
 		List<Reinforcement> reins = db.getReinforcements(chunk);
+		int count = 0;
 		for (Reinforcement rein: reins){
 			Reinforcement r = reinforcements.getIfPresent(rein.getLocation());
 			if (r == null || r instanceof NullReinforcement) {
 				reinforcements.put(rein.getLocation(), rein);
+				count++;
 			}
+		}
+		if (count > 0 && CitadelConfigManager.shouldLogInternal()) {
+			s = System.currentTimeMillis() - s;
+			Citadel.getInstance().getLogger().log(Level.INFO, 
+					"Chunk load {0} complete in {1} ms. Added {2} entries to the cache.",
+					new Object[] {chunk.toString(), s, count});
 		}
 	}
 }
