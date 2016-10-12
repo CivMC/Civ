@@ -31,11 +31,11 @@ Exiled players can't come within a set radius of their pearl, so the only way th
 ### Permissions
   The player commands are enabled by default for all players
   
-    exilepearl.check					Grants access to '/ep check' command
-    exilepearl.decay					Grants access to '/ep decay' command
-    exilepearl.exileany				Grants access to '/ep exileany' command
-    exilepearl.freeany				Grants access to '/ep freeany' command
-    exilepearl.list					Grants access to '/ep list' command
-    exilepearl.reload					Grants access to '/ep reload' command
-    exilepearl.sethealth				Grants access to '/ep sethealth' command
-    exilepearl.config					Grants access to '/ep config' command
+    exilepearl.check              Grants access to '/ep check' command
+    exilepearl.decay              Grants access to '/ep decay' command
+    exilepearl.exileany           Grants access to '/ep exileany' command
+    exilepearl.freeany            Grants access to '/ep freeany' command
+    exilepearl.list               Grants access to '/ep list' command
+    exilepearl.reload             Grants access to '/ep reload' command
+    exilepearl.sethealth          Grants access to '/ep sethealth' command
+    exilepearl.config             Grants access to '/ep config' command
