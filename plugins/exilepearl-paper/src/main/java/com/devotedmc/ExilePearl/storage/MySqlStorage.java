@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Date;
@@ -18,7 +19,8 @@ import org.bukkit.World;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLogger;
-import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.ExilePearl.config.MySqlConfig;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
@@ -29,7 +31,7 @@ class MySqlStorage implements PluginStorage {
 
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
-	private final PearlConfig config;
+	private final MySqlConfig config;
 
 	private ConnectionPool db;
 	private boolean isConnected = false;
@@ -56,7 +58,7 @@ class MySqlStorage implements PluginStorage {
 	 * Creates a new MySqlStorage instance
 	 * @param pearlFactory The pearl factory
 	 */
-	public MySqlStorage(final PearlFactory pearlFactory, final PearlLogger logger, final PearlConfig config) {
+	public MySqlStorage(final PearlFactory pearlFactory, final PearlLogger logger, final MySqlConfig config) {
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(logger, "logger");
 		Guard.ArgumentNotNull(config, "config");
@@ -141,31 +143,25 @@ class MySqlStorage implements PluginStorage {
 		try (Connection connection = db.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM ExilePearls"); ) {
 			ResultSet resultSet = preparedStatement.executeQuery();
+			ResultSetMetaData meta = resultSet.getMetaData();
 			while (resultSet.next()) {
 				try {
-					UUID playerId = UUID.fromString(resultSet.getString("uid"));
-					UUID killerId = UUID.fromString(resultSet.getString("killer_id"));
-					int pearlId = resultSet.getInt("pearl_id");
-					World world = Bukkit.getWorld(resultSet.getString("world"));
-					int x = resultSet.getInt("x");
-					int y = resultSet.getInt("y");
-					int z = resultSet.getInt("z");
-					int health = resultSet.getInt("health");
-					Date pearledOn = new Date(resultSet.getLong("pearled_on"));
-					boolean freedOffline = resultSet.getBoolean("freed_offline");
-
-					if (world == null) {
-						logger.log(Level.WARNING, "Failed to load world for pearl %s", playerId.toString());
-						continue;
-					}
-					Location loc = new Location(world, x, y, z);
-
-					ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
-					pearl.setHealth(health);
-					pearl.setPearledOn(pearledOn);
-					pearl.setFreedOffline(freedOffline);
-					pearl.enableStorage();
-					pearls.add(pearl);
+					// Translate the SQL data into a document
+					Document doc = new Document();
+					for (int i = 1; i <= meta.getColumnCount(); i++) {
+		                String key = meta.getColumnName(i);
+		                Object value = resultSet.getObject(key);
+		                doc.put(key, value);
+		            }
+					
+					// Translate the date and location to the expected format
+					doc.append("pearled_on", new Date(Long.parseLong(doc.getString("pearled_on"))));
+					doc.append("location", new Document("world", doc.getString("world"))
+							.append("x", doc.getInteger("x"))
+							.append("y", doc.getInteger("y"))
+							.append("z", doc.getInteger("z")));
+					
+					pearls.add(pearlFactory.createExilePearl(doc.getUUID("uid"), doc));
 				} catch (Exception ex) {
 					logger.log(Level.WARNING, "Failed to load pearl record: %s", resultSet.toString());
 					ex.printStackTrace();
@@ -301,12 +297,13 @@ class MySqlStorage implements PluginStorage {
 				ResultSet set = getAllPearls.executeQuery();
 				while (set.next()) {
 					try {
+						UUID playerId = UUID.fromString(set.getString("uuid"));
+						
 						String w = set.getString("world");
 						World world = Bukkit.getWorld(w);
 						int x = set.getInt("x");
 						int y = set.getInt("y");
 						int z = set.getInt("z");
-						UUID playerId = UUID.fromString(set.getString("uuid"));
 						int pearlId = set.getInt("uq");
 						UUID killerId = null;
 						String killerUUIDAsString = set.getString("killer");
@@ -323,10 +320,12 @@ class MySqlStorage implements PluginStorage {
 						Date pearledOn = new Date(imprisonTime);
 						Location loc = new Location(world, x, y, z);
 
-						ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
-						pearl.setPearledOn(pearledOn);
-						pearl.setHealth(config.getPearlHealthMaxValue() / 2); // set health to half max health
-						pearl.enableStorage();
+						Document doc = new Document("killer_id", killerId)
+								.append("pearl_id", pearlId)
+								.append("location", loc)
+								.append("pearled_on", pearledOn);
+
+						ExilePearl pearl = pearlFactory.createExilePearl(playerId, doc);
 						pearlInsert(pearl);
 
 						migrated++;

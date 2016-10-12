@@ -7,6 +7,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -58,6 +59,10 @@ public class Document implements Map<String, Object> {
     		value = serializeLocation((Location) value);
     	}
     	
+    	if (value instanceof UUID) {
+    		value = value.toString();
+    	}
+    	
     	if (keys.length == 1) {
     		documentAsMap.put(key, value);
     		return this;
@@ -79,7 +84,7 @@ public class Document implements Map<String, Object> {
      * @return the value as an integer, which may be null
      * @throws java.lang.ClassCastException if the value is not an integer
      */
-    public Integer getInteger(final Object key) {
+    public Integer getInteger(final String key) {
         return (Integer) get(key);
     }
 
@@ -91,7 +96,7 @@ public class Document implements Map<String, Object> {
      * @return the value as an integer, which may be null
      * @throws java.lang.ClassCastException if the value is not an integer
      */
-    public int getInteger(final Object key, final int defaultValue) {
+    public int getInteger(final String key, final int defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (Integer) value;
     }
@@ -103,7 +108,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a long, which may be null
      * @throws java.lang.ClassCastException if the value is not an long
      */
-    public Long getLong(final Object key) {
+    public Long getLong(final String key) {
         return (Long) get(key);
     }
 
@@ -115,7 +120,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a long, which may be null
      * @throws java.lang.ClassCastException if the value is not a long
      */
-    public Long getLong(final Object key, final long defaultValue) {
+    public Long getLong(final String key, final long defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (Long) value;
     }
@@ -127,7 +132,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a double, which may be null
      * @throws java.lang.ClassCastException if the value is not an double
      */
-    public Double getDouble(final Object key) {
+    public Double getDouble(final String key) {
         return (Double) get(key);
     }
 
@@ -138,7 +143,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a String, which may be null
      * @throws java.lang.ClassCastException if the value is not a String
      */
-    public String getString(final Object key) {
+    public String getString(final String key) {
         return (String) get(key);
     }
 
@@ -150,7 +155,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a String, which may be null
      * @throws java.lang.ClassCastException if the value is not a String
      */
-    public String getString(final Object key, final String defaultValue) {
+    public String getString(final String key, final String defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (String) value;
     }
@@ -162,7 +167,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a double, which may be null
      * @throws java.lang.ClassCastException if the value is not an double
      */
-    public Boolean getBoolean(final Object key) {
+    public Boolean getBoolean(final String key) {
         return (Boolean) get(key);
     }
 
@@ -174,7 +179,7 @@ public class Document implements Map<String, Object> {
      * @return the value as a double, which may be null
      * @throws java.lang.ClassCastException if the value is not an double
      */
-    public boolean getBoolean(final Object key, final boolean defaultValue) {
+    public boolean getBoolean(final String key, final boolean defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (Boolean) value;
     }
@@ -186,17 +191,17 @@ public class Document implements Map<String, Object> {
      * @return the value as a Date, which may be null
      * @throws java.lang.ClassCastException if the value is not a Date
      */
-    public Date getDate(final Object key) {
+    public Date getDate(final String key) {
         return (Date) get(key);
     }
     
-    public Date getDate(final Object key, final Date defaultValue) {
+    public Date getDate(final String key, final Date defaultValue) {
         Object value = get(key);
         return value == null ? defaultValue : (Date) value;
     }
     
     @SuppressWarnings("unchecked")
-	public List<String> getStringList(final Object key) {
+	public List<String> getStringList(final String key) {
         Object o = get(key);
         
         if (o == null) {
@@ -217,18 +222,22 @@ public class Document implements Map<String, Object> {
     }
     
     
-    public boolean containsField(final Object key) {
+    public boolean containsField(final String key) {
     	Object value = get(key);
     	return value != null;
     }
     
-    public boolean containsDocument(final Object key) {
+    public boolean containsDocument(final String key) {
     	Object value = get(key);
     	return value != null && value instanceof Document;
     }
     
-	public Document getDocument(final Object key) {
+	public Document getDocument(final String key) {
     	return (Document)get(key);
+    }
+	
+	public UUID getUUID(final String key) {
+    	return UUID.fromString(getString(key));
     }
 
     // Vanilla Map methods delegate to map field

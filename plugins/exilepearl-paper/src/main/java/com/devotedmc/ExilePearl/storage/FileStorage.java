@@ -3,13 +3,11 @@ package com.devotedmc.ExilePearl.storage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
 
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -52,21 +50,8 @@ class FileStorage implements PluginStorage {
 		
 		for(Entry<String, Object> entry : doc.entrySet()) {
 			try {
-				Document value = (Document)entry.getValue();
 				UUID playerId = UUID.fromString(entry.getKey());
-				UUID killerId = UUID.fromString(value.getString("killer_id"));
-				int pearlId = value.getInteger("pearl_id");
-				Location loc = value.getLocation("location");
-				int health = value.getInteger("health");
-				Date pearledOn = value.getDate("pearled_on");
-				boolean freedOffline = value.getBoolean("freed_offline");
-
-				ExilePearl pearl = pearlFactory.createExilePearl(playerId, killerId, pearlId, loc);
-				pearl.setHealth(health);
-				pearl.setPearledOn(pearledOn);
-				pearl.setFreedOffline(freedOffline);
-				pearl.enableStorage();
-				pearls.add(pearl);
+				pearls.add(pearlFactory.createExilePearl(playerId, (Document)entry.getValue()));
 			} catch (Exception ex) {
 				logger.log(Level.WARNING, "Failed to load pearl record: %s", doc.get(entry.getKey()));
 				ex.printStackTrace();

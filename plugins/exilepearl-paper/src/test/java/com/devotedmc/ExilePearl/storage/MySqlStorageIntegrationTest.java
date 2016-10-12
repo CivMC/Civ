@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl.storage;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
 
 import java.sql.Connection;
@@ -31,6 +30,7 @@ import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.Util.TestBukkit;
+import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
@@ -55,17 +55,20 @@ public class MySqlStorageIntegrationTest {
 
 		// Mock pearl factory for generating mock pearl instances
 		pearlFactory = mock(PearlFactory.class);
-		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), anyInt(), any(Location.class))).then(new Answer<ExilePearl>() {
+		when(pearlFactory.createExilePearl(any(UUID.class), any(Document.class))).then(new Answer<ExilePearl>() {
 
 			@Override
 			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
 
 				try {
 					UUID uid1 = (UUID)invocation.getArguments()[0];
-					UUID uid2 = (UUID)invocation.getArguments()[1];
-					int pearlId = (int)invocation.getArguments()[2];
-					Location l = (Location)invocation.getArguments()[3];
-					return new MockPearl(mock(PlayerProvider.class), uid1, uid2, pearlId, l);
+					Document doc = (Document)invocation.getArguments()[1];
+					ExilePearl pearl = new MockPearl(mock(PlayerProvider.class), uid1, doc.getUUID("killer_id"), doc.getInteger("pearl_id"), doc.getLocation("location"));
+					pearl.setHealth(doc.getInteger("health"));
+					pearl.setPearledOn(doc.getDate("pearled_on"));
+					pearl.setFreedOffline(doc.getBoolean("freed_offline"));
+					return pearl;
+					
 				} catch (Exception ex) {
 					return null;
 				}
@@ -74,10 +77,10 @@ public class MySqlStorageIntegrationTest {
 
 		config = mock(PearlConfig.class);
 		when(config.getMySqlHost()).thenReturn("localhost");
-		when(config.getMySqlName()).thenReturn("bukkittest");
+		when(config.getMySqlName()).thenReturn("exilepearltest");
 		when(config.getMySqlPort()).thenReturn(3306);
-		when(config.getMySqlUsername()).thenReturn("BukkitTest");
-		when(config.getMySqlPassword()).thenReturn("test");
+		when(config.getMySqlUsername()).thenReturn("bukkit");
+		when(config.getMySqlPassword()).thenReturn("");
 		when(config.getMySqlPoolSize()).thenReturn(50);
 		when(config.getMySqlConnectionTimeout()).thenReturn(5000);
 		when(config.getMySqlIdleTimeout()).thenReturn(5000);

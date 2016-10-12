@@ -1,6 +1,8 @@
 package com.devotedmc.ExilePearl.core;
 
+import java.util.Date;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -14,9 +16,9 @@ import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
+import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
-import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
@@ -45,14 +47,29 @@ public final class CorePluginFactory implements PearlFactory {
 	}
 
 	@Override
-	public ExilePearl createExilePearl(UUID uid, UUID killedBy, int pearlId, Location location) {
+	public ExilePearl createExilePearl(UUID uid, Document doc) {
 		Guard.ArgumentNotNull(uid, "uid");
-		Guard.ArgumentNotNull(killedBy, "killedBy");
-		Guard.ArgumentNotNull(location, "location");
+		Guard.ArgumentNotNull(doc, "doc");
 		
-		PearlHolder holder = new BlockHolder(location.getBlock());
-
-		return new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, holder);
+		try {
+			UUID killedBy = UUID.fromString(doc.getString("killer_id"));
+			int pearlId = doc.getInteger("pearl_id");
+			Location loc = doc.getLocation("location");
+			int health = doc.getInteger("health");
+			Date pearledOn = doc.getDate("pearled_on");
+			boolean freedOffline = doc.getBoolean("freed_offline");
+			
+			ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, new BlockHolder(loc.getBlock()));
+			pearl.setHealth(health);
+			pearl.setPearledOn(pearledOn);
+			pearl.setFreedOffline(freedOffline);
+			pearl.enableStorage();
+			return pearl;
+			
+		} catch(Exception ex) {
+			pearlApi.log(Level.SEVERE, "Failed to create pearl for ID=%s, ", uid.toString(), doc);
+			return null;
+		}
 	}
 
 	@Override
@@ -63,6 +80,15 @@ public final class CorePluginFactory implements PearlFactory {
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
 		pearl.enableStorage();
 		return pearl;
+	}
+
+	@Override
+	public ExilePearl createdMigratedPearl(UUID uid, Document doc) {
+		Guard.ArgumentNotNull(uid, "uid");
+		Guard.ArgumentNotNull(doc, "doc");
+		
+		doc.append("health", pearlApi.getPearlConfig().getPearlHealthMaxValue() / 2); // set health to half max health
+		return createExilePearl(uid, doc);
 	}
 
 	public PearlManager createPearlManager() {
