@@ -4,14 +4,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 
 public class CmdPearlFree extends PearlCommand {
 
-	public CmdPearlFree(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdPearlFree(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("free");
 
 		this.senderMustBePlayer = true;
@@ -20,13 +20,13 @@ public class CmdPearlFree extends PearlCommand {
 
 	@Override
 	public void perform() {
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(me().getPlayer().getInventory().getItemInMainHand());
+		ExilePearl pearl = plugin.getPearlFromItemStack(me().getPlayer().getInventory().getItemInMainHand());
 		if (pearl == null) {
 			msg(Lang.pearlMustBeHoldingPearl);
 			return;
 		}
 		
-		if (pearlApi.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER)) {
+		if (plugin.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER)) {
 			me().msg(Lang.pearlYouFreed, pearl.getPlayerName());
 			me().getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 		}

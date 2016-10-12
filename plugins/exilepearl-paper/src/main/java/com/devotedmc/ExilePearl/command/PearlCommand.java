@@ -6,21 +6,16 @@ import java.util.List;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public abstract class PearlCommand extends BaseCommand<ExilePearlPlugin> {
+public abstract class PearlCommand extends BaseCommand<ExilePearlApi> {
 	
-	protected final ExilePearlApi pearlApi;
-	
-	public PearlCommand(ExilePearlPlugin plugin) {
-		super(plugin);
-		
-		pearlApi = plugin;
+	public PearlCommand(ExilePearlApi pearlApi) {
+		super(pearlApi);
 	}
 	
 
@@ -46,7 +41,7 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlPlugin> {
 			}
 			break;
 		case "pearled":
-			for(ExilePearl pearl : pearlApi.getPearls()) {
+			for(ExilePearl pearl : plugin.getPearls()) {
 				if (pearl.getPlayerName().toLowerCase().startsWith(pattern.toLowerCase())) {
 					tabList.add(pearl.getPlayerName());
 				}

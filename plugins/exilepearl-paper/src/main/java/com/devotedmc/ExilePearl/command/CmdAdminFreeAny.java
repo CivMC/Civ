@@ -1,14 +1,14 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminFreeAny extends PearlCommand {
 
-	public CmdAdminFreeAny(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAdminFreeAny(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("freeany");
 
 		this.setHelpShort("Frees any exiled player.");
@@ -23,13 +23,13 @@ public class CmdAdminFreeAny extends PearlCommand {
 	public void perform() {
 		String name = argAsString(0);
 		
-		ExilePearl pearl = pearlApi.getPearl(name);
+		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl == null) {
 			msg("<i>No pearl was found with the name <c>%s", name);
 			return;
 		}
 		
-		if (pearlApi.freePearl(pearl, PearlFreeReason.FREED_BY_ADMIN)) {
+		if (plugin.freePearl(pearl, PearlFreeReason.FREED_BY_ADMIN)) {
 			msg("<g>You freed <c>%s", name);
 			return;
 		}

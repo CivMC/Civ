@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 
@@ -10,8 +10,8 @@ import com.devotedmc.ExilePearl.Lang;
  */
 public class CmdSuicide extends PearlCommand {
 	
-	public CmdSuicide(ExilePearlPlugin p) {
-		super(p);
+	public CmdSuicide(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("suicide");
 		
 		this.senderMustBePlayer = true;
@@ -26,7 +26,7 @@ public class CmdSuicide extends PearlCommand {
 			return;
 		}
 		
-		if (!pearlApi.isPlayerExiled(me().getUniqueId())) {
+		if (!plugin.isPlayerExiled(me().getUniqueId())) {
 			msg(Lang.onlyExiledPlayers);
 			return;
 		}

@@ -1,19 +1,17 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-public class CmdConfigList extends PearlCommand
-{
-	
+public class CmdConfigList extends PearlCommand {
 	private final PearlConfig config;
 	private int lineLength;
 	
-	public CmdConfigList(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdConfigList(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		
 		config = plugin.getPearlConfig();
 		

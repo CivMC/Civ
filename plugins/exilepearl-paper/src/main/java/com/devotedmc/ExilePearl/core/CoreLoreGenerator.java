@@ -20,6 +20,11 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
+/**
+ * Implementation class for generating and parsing exile pearl lore
+ * 
+ * @author Gordon
+ */
 final class CoreLoreGenerator implements PearlLoreProvider {
 	
 	// These need to match!

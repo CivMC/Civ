@@ -4,20 +4,15 @@ import java.util.UUID;
 
 import org.bukkit.plugin.Plugin;
 
+import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 /**
- * External API for ExilePearl
+ * The API for the ExilePearl plugin.
  * @author Gordon
  *
  */
-public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider {
-	
-	/**
-	 * Gets the plugin name
-	 * @return The plugin name
-	 */
-	String getPluginName();
+public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerProvider {
 	
 	/**
 	 * Gets a player instance by UUID
@@ -46,10 +41,22 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	PearlLoreProvider getLoreProvider();
 	
 	/**
-	 * Gets the plugin instance
-	 * @return The plugin instance
+	 * Gets the storage provider
+	 * @return The storage provider
 	 */
-	Plugin getPlugin();
+	StorageProvider getStorageProvider();
+	
+	/**
+	 * Gets the suicide handler
+	 * @return The suicide handler
+	 */
+	SuicideHandler getSuicideHandler();
+	
+	/**
+	 * Gets the auto-help command
+	 * @return The auto-help
+	 */
+	PearlCommand getAutoHelp();
 	
 	/**
 	 * Gets whether a player is combat tagged
@@ -59,26 +66,50 @@ public interface ExilePearlApi extends PearlAccess, PearlLogger, PlayerProvider 
 	boolean isPlayerTagged(UUID uid);
 	
 	/**
-	 * Color formats a string message
-	 * @param text The text to format
-	 * @param args The text arguments
-	 * @return The formatted message
+	 * Gets whether NameLayer hooks are enabled
+	 * @return True if it is enabled
 	 */
-	String formatText(String text, Object... args);
-	
 	boolean isNameLayerEnabled();
 	
+	/**
+	 * Gets whether Citadel hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isCitadelEnabled();
 	
+	/**
+	 * Gets whether CivChat hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isCivChatEnabled();
 	
+	/**
+	 * Gets whether Bastion hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isBastionEnabled();
 	
+	/**
+	 * Gets whether JukeAlert hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isJukeAlertEnabled();
 	
+	/**
+	 * Gets whether RandomSpawn hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isRandomSpawnEnabled();
 	
+	/**
+	 * Gets whether WorldBorder hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isWorldBorderEnabled();
 	
+	/**
+	 * Gets whether CombatTag hooks are enabled
+	 * @return True if it is enabled
+	 */
 	boolean isCombatTagEnabled();
 }

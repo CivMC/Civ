@@ -1,13 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminCheckExiled extends PearlCommand {
 
-	public CmdAdminCheckExiled(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAdminCheckExiled(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("check");
 
 		this.setHelpShort("Checks if a player is exiled");
@@ -22,7 +22,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 	public void perform() {
 		String name = argAsString(0);
 		
-		ExilePearl pearl = pearlApi.getPearl(name);
+		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl == null) {
 			msg("<i>No pearl was found with the name <c>%s", name);
 			return;
@@ -34,7 +34,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		
 		msg("<g>Found exile pearl for player %s", name);
 
-		for (String s : pearlApi.getLoreProvider().generateLore(pearl)) {
+		for (String s : plugin.getLoreProvider().generateLore(pearl)) {
 			if (s.contains("Commands")) {
 				return;
 			}

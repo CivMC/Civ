@@ -34,7 +34,7 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
-		dut = spy(new PlayerSuicideTask(pearlApi));
+		dut = new PlayerSuicideTask(pearlApi);
 	}
 
 	@Test
@@ -53,11 +53,11 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 		assertFalse(dut.isRunning());
 		
 		dut.start();
-		verify(scheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
+		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
 		assertTrue(dut.isRunning());
 		
 		dut.start();
-		verify(scheduler).scheduleSyncRepeatingTask(null, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
+		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, PlayerSuicideTask.TICKS_PER_SECOND, PlayerSuicideTask.TICKS_PER_SECOND);
 		assertTrue(dut.isRunning());
 		
 		dut.stop();
@@ -68,8 +68,6 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 	@Test
 	public void testRestart() {		
 		dut.restart();
-		verify(dut).stop();
-		verify(dut).start();
 		assertTrue(dut.isRunning());
 	}
 

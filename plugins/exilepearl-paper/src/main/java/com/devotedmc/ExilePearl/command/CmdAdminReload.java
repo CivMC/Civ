@@ -1,12 +1,12 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminReload extends PearlCommand {
 
-	public CmdAdminReload(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAdminReload(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("reload");
 
 		this.setHelpShort("Reloads the entire plugin.");

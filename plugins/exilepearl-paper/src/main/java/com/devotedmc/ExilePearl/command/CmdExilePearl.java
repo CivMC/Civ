@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 
 public class CmdExilePearl extends PearlCommand {
 	
@@ -16,18 +16,18 @@ public class CmdExilePearl extends PearlCommand {
 	public final PearlCommand cmdBcastConfirm;
 	public final PearlCommand cmdBcastSilence;
 	
-	public CmdExilePearl(ExilePearlPlugin p) {
-		super(p);
+	public CmdExilePearl(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("ep");
 		
 		this.setHelpShort("The ExilePearl command");
 		this.getLongHelp().add("<n>Use <c>/ep help <n>for command help.");
 		
-		cmdLocate = new CmdPearlLocate(p);
-		cmdFree = new CmdPearlFree(p);
-		cmdBcast = new CmdPearlBroadcast(p);
-		cmdBcastConfirm = new CmdPearlBroadcastConfirm(p);
-		cmdBcastSilence = new CmdPearlBroadcastSilence(p);
+		cmdLocate = new CmdPearlLocate(plugin);
+		cmdFree = new CmdPearlFree(plugin);
+		cmdBcast = new CmdPearlBroadcast(plugin);
+		cmdBcastConfirm = new CmdPearlBroadcastConfirm(plugin);
+		cmdBcastSilence = new CmdPearlBroadcastSilence(plugin);
 		
 		addSubCommand(plugin.getAutoHelp());
 		
@@ -38,14 +38,14 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(cmdBcastSilence);
 		
 		// Admin commands
-		addSubCommand(new CmdConfig(p));
-		addSubCommand(new CmdAdminDecay(p));
-		addSubCommand(new CmdAdminExileAny(p));
-		addSubCommand(new CmdAdminFreeAny(p));
-		addSubCommand(new CmdAdminSetHealth(p));
-		addSubCommand(new CmdAdminCheckExiled(p));
-		addSubCommand(new CmdAdminListExiled(p));
-		addSubCommand(new CmdAdminReload(p));
+		addSubCommand(new CmdConfig(plugin));
+		addSubCommand(new CmdAdminDecay(plugin));
+		addSubCommand(new CmdAdminExileAny(plugin));
+		addSubCommand(new CmdAdminFreeAny(plugin));
+		addSubCommand(new CmdAdminSetHealth(plugin));
+		addSubCommand(new CmdAdminCheckExiled(plugin));
+		addSubCommand(new CmdAdminListExiled(plugin));
+		addSubCommand(new CmdAdminReload(plugin));
 		
 		instance = this;
 	}

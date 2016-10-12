@@ -2,14 +2,14 @@ package com.devotedmc.ExilePearl.command;
 
 import java.util.ArrayList;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CmdAutoHelp extends PearlCommand
 {
-	public CmdAutoHelp(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAutoHelp(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		
 		this.aliases.add("help");
 		

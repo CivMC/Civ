@@ -9,15 +9,15 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminExileAny extends PearlCommand {
 
-	public CmdAdminExileAny(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAdminExileAny(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("exileany");
 
 		this.setHelpShort("Exiles a player.");
@@ -39,19 +39,19 @@ public class CmdAdminExileAny extends PearlCommand {
 		String killedByName = argAsString(1);
 		Inventory inv = null;
 		
-		ExilePearl pearl = pearlApi.getPearl(name);
+		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl != null) {
 			msg("<i>The player <c>%s <i>is already exiled and is %s.", name, pearl.getLocationDescription());
 			return;
 		}
 		
-		PearlPlayer player = pearlApi.getPearlPlayer(name);
+		PearlPlayer player = plugin.getPearlPlayer(name);
 		if (player == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		
-		PearlPlayer killedBy = pearlApi.getPearlPlayer(killedByName);
+		PearlPlayer killedBy = plugin.getPearlPlayer(killedByName);
 		if (killedBy == null) {
 			msg(Lang.unknownPlayer);
 			return;
@@ -88,7 +88,7 @@ public class CmdAdminExileAny extends PearlCommand {
 			}
 		}
 		
-		pearl = pearlApi.exilePlayer(player.getUniqueId(), killedBy.getUniqueId());
+		pearl = plugin.exilePlayer(player.getUniqueId(), killedBy.getUniqueId());
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s but the operation failed.", name);
 			return;

@@ -1,20 +1,20 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdConfig extends PearlCommand {
 	
-	public CmdConfig(ExilePearlPlugin p) {
-		super(p);
+	public CmdConfig(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("config");
 		
 		this.setHelpShort("Manage ExilePearl configuration");
 		
-		this.addSubCommand(new CmdConfigLoad(p));
-		this.addSubCommand(new CmdConfigSave(p));
-		this.addSubCommand(new CmdConfigList(p));
-		this.addSubCommand(new CmdConfigSet(p));
+		this.addSubCommand(new CmdConfigLoad(plugin));
+		this.addSubCommand(new CmdConfigSave(plugin));
+		this.addSubCommand(new CmdConfigList(plugin));
+		this.addSubCommand(new CmdConfigSet(plugin));
 		
 		this.permission = Permission.ADMIN.node;
 		this.visibility = CommandVisibility.SECRET;

@@ -27,7 +27,7 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
-		dut = spy(new PearlDecayTask(pearlApi));
+		dut = new PearlDecayTask(pearlApi);
 	}
 
 	@Test
@@ -46,11 +46,11 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 		assertFalse(dut.isRunning());
 		
 		dut.start();
-		verify(scheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
+		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
 		
 		dut.start();
-		verify(scheduler).scheduleSyncRepeatingTask(null, dut, 72000, 72000);
+		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
 		
 		dut.stop();
@@ -61,8 +61,6 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 	@Test
 	public void testRestart() {		
 		dut.restart();
-		verify(dut).stop();
-		verify(dut).start();
 		assertTrue(dut.isRunning());
 	}
 

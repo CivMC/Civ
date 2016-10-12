@@ -1,15 +1,14 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
-public class CmdConfigSet extends PearlCommand
-{
+public class CmdConfigSet extends PearlCommand {
 	private final PearlConfig config;
 	
-	public CmdConfigSet(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdConfigSet(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		
 		config = plugin.getPearlConfig();
 		

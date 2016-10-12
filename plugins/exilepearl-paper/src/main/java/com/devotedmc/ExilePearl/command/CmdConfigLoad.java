@@ -1,11 +1,10 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 
-public class CmdConfigLoad extends PearlCommand
-{
-	public CmdConfigLoad(ExilePearlPlugin plugin) {
-		super(plugin);
+public class CmdConfigLoad extends PearlCommand {
+	public CmdConfigLoad(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		
 		this.senderMustBePlayer = false;
 		this.errorOnToManyArgs = false;

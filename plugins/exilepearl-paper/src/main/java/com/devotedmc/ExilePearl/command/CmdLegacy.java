@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 
 /**
  * Command that tells players to use the new command if they try
@@ -9,8 +9,8 @@ import com.devotedmc.ExilePearl.ExilePearlPlugin;
  */
 public class CmdLegacy extends PearlCommand {
 	
-	public CmdLegacy(ExilePearlPlugin p) {
-		super(p);
+	public CmdLegacy(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("pp");
 		
 		this.visibility = CommandVisibility.INVISIBLE;

@@ -1,13 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlBroadcastSilence extends PearlCommand {
 
-	public CmdPearlBroadcastSilence(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdPearlBroadcastSilence(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("silence");
 		
 		this.commandArgs.add(requiredPlayer("player"));

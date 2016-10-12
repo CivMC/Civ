@@ -1,13 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminSetHealth extends PearlCommand {
 
-	public CmdAdminSetHealth(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdAdminSetHealth(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("sethealth");
 
 		this.setHelpShort("Sets the health % value of a pearl.");
@@ -24,14 +24,14 @@ public class CmdAdminSetHealth extends PearlCommand {
 		String name = argAsString(0);
 		int percent = Math.min(100, Math.max(1, argAsInt(1)));
 		
-		ExilePearl pearl = pearlApi.getPearl(name);
+		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl == null) {
 			msg("<i>No pearl was found with the name <c>%s", name);
 			return;
 		}
 		
 		// calculate the actual value
-		int healthValue = (int)(pearlApi.getPearlConfig().getPearlHealthMaxValue() * ((double)percent / 100));
+		int healthValue = (int)(plugin.getPearlConfig().getPearlHealthMaxValue() * ((double)percent / 100));
 		pearl.setHealth(healthValue);
 		msg("<g>You updated the pearl health of player %s to %d%%", pearl.getPlayerName(), percent);
 	}

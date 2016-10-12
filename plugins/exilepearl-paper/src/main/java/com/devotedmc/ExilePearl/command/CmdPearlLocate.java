@@ -3,15 +3,15 @@ package com.devotedmc.ExilePearl.command;
 import org.bukkit.Location;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlLocate extends PearlCommand {
 
-	public CmdPearlLocate(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdPearlLocate(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("locate");
 		
 		this.commandArgs.add(optionalPlayer("player"));
@@ -44,7 +44,7 @@ public class CmdPearlLocate extends PearlCommand {
 			return;
 		}
 
-		ExilePearl pearl = pearlApi.getPearl(me().getUniqueId());
+		ExilePearl pearl = plugin.getPearl(me().getUniqueId());
 		if (pearl.verifyLocation()) {
 
 			Location l = pearl.getHolder().getLocation();
@@ -59,7 +59,7 @@ public class CmdPearlLocate extends PearlCommand {
 			}
 			
 		} else {
-			pearlApi.freePearl(pearl, PearlFreeReason.VALIDATION_FAILED);
+			plugin.freePearl(pearl, PearlFreeReason.VALIDATION_FAILED);
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class CmdPearlLocate extends PearlCommand {
 		Location l = pearl.getHolder().getLocation();
 		String name = pearl.getHolder().getName();
 		
-		return plugin.formatText(Lang.pearlBroadcast, me().getName(), 
+		return parse(Lang.pearlBroadcast, me().getName(), 
 				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 	}
 }

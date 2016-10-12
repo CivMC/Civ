@@ -1,13 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlBroadcast extends PearlCommand {
 
-	public CmdPearlBroadcast(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdPearlBroadcast(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("broadcast");
 		
 		this.commandArgs.add(requiredPlayer("player"));

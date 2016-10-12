@@ -1,13 +1,13 @@
 package com.devotedmc.ExilePearl.command;
 
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlBroadcastConfirm extends PearlCommand {
 
-	public CmdPearlBroadcastConfirm(ExilePearlPlugin plugin) {
-		super(plugin);
+	public CmdPearlBroadcastConfirm(ExilePearlApi pearlApi) {
+		super(pearlApi);
 		this.aliases.add("confirm");
 
 		this.senderMustBePlayer = true;

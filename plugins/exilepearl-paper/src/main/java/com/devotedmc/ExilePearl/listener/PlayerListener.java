@@ -67,6 +67,7 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -695,7 +696,7 @@ public class PlayerListener implements Listener {
 		e.setCancelled(true);
 		
 		// Need to schedule this or else the re-created pearl doesn't show up
-		Bukkit.getScheduler().scheduleSyncDelayedTask(pearlApi.getPlugin(), new Runnable() {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(pearlApi, new Runnable() {
 			@Override
 			public void run() {
 				p.getInventory().setItemInMainHand(pearl.createItemStack());
@@ -745,7 +746,7 @@ public class PlayerListener implements Listener {
 		String name = e.getDestinationHolder().getName();
 		imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
 
-		String bcastMsg = pearlApi.formatText(Lang.pearlBroadcast, imprisoned.getName(), 
+		String bcastMsg = TextUtil.parse(Lang.pearlBroadcast, imprisoned.getName(), 
 				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 
 		for(PearlPlayer p : imprisoned.getBcastPlayers()) {

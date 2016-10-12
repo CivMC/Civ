@@ -41,7 +41,7 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 			return;
 		}
 		
-		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pearlApi.getPlugin(), this, tickInterval, tickInterval);
+		taskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pearlApi, this, tickInterval, tickInterval);
 		if (taskId == -1) {
 			pearlApi.log("Failed to start the task '%s'.", getTaskName());
 			return;

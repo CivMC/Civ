@@ -4,10 +4,11 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
+import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
@@ -27,16 +28,20 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  */
 public final class CorePluginFactory implements PearlFactory {
 	
-	private final ExilePearlPlugin plugin;
+	private final ExilePearlApi pearlApi;
+	
+	public static ExilePearlApi createCore(final Plugin plugin) {
+		return new ExilePearlCore(plugin);
+	}
 	
 	/**
 	 * Creates a new ExilePearlFactory instance
 	 * @param plugin The plugin instance
 	 */
-	public CorePluginFactory(final ExilePearlPlugin plugin) {
+	public CorePluginFactory(final ExilePearlApi plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		
-		this.plugin = plugin;
+		this.pearlApi = plugin;
 	}
 
 	@Override
@@ -47,7 +52,7 @@ public final class CorePluginFactory implements PearlFactory {
 		
 		PearlHolder holder = new BlockHolder(location.getBlock());
 
-		return new CoreExilePearl(plugin, plugin.getStorageProvider().getStorage(), uid, killedBy, pearlId, holder);
+		return new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, holder);
 	}
 
 	@Override
@@ -55,36 +60,36 @@ public final class CorePluginFactory implements PearlFactory {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
-		ExilePearl pearl = new CoreExilePearl(plugin, plugin.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
+		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
 		pearl.enableStorage();
 		return pearl;
 	}
 
 	public PearlManager createPearlManager() {
-		return new CorePearlManager(plugin, this, plugin.getStorageProvider());
+		return new CorePearlManager(pearlApi, this, pearlApi.getStorageProvider());
 	}
 
 	public ExilePearlRunnable createPearlDecayWorker() {
-		return new PearlDecayTask(plugin);
+		return new PearlDecayTask(pearlApi);
 	}
 
 	public SuicideHandler createSuicideHandler() {
-		return new PlayerSuicideTask(plugin);
+		return new PlayerSuicideTask(pearlApi);
 	}
 
 	public BorderHandler createPearlBorderHandler() {
-		return new PearlBoundaryTask(plugin);
+		return new PearlBoundaryTask(pearlApi);
 	}
 
 	public PearlPlayer createPearlPlayer(UUID uid) {
-		return new CorePearlPlayer(uid, plugin, plugin);
+		return new CorePearlPlayer(uid, pearlApi, pearlApi);
 	}
 
 	public PearlLoreProvider createLoreGenerator() {
-		return new CoreLoreGenerator(plugin.getPearlConfig());
+		return new CoreLoreGenerator(pearlApi.getPearlConfig());
 	}
 
 	public PearlConfig createPearlConfig() {
-		return new CorePearlConfig(plugin);
+		return new CorePearlConfig(pearlApi);
 	}
 }
