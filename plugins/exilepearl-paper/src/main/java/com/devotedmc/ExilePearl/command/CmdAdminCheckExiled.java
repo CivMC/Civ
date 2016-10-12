@@ -14,7 +14,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		
 		this.commandArgs.add(requiredPearlPlayer());
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.CHECK.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

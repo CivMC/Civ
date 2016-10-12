@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.storage;
+package com.devotedmc.ExilePearl.config;
 
 public interface MySqlConfig {
 

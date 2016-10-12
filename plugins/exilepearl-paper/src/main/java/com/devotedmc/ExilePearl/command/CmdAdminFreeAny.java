@@ -15,7 +15,7 @@ public class CmdAdminFreeAny extends PearlCommand {
 		
 		this.commandArgs.add(requiredPearlPlayer());
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.FREE_ANY.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

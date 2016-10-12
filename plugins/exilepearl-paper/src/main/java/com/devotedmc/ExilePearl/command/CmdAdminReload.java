@@ -11,7 +11,7 @@ public class CmdAdminReload extends PearlCommand {
 
 		this.setHelpShort("Reloads the entire plugin.");
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.RELOAD.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

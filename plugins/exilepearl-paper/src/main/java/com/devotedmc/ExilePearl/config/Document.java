@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 public class Document implements Map<String, Object> {
     private final LinkedHashMap<String, Object> documentAsMap;
 
@@ -337,4 +339,47 @@ public class Document implements Map<String, Object> {
                + documentAsMap
                + '}';
     }
+    
+	/**
+	 * Recursively converts Bukkit configuration sections into documents
+	 * @param mem The bukkit configuration section
+	 * @return A document containing all the configuration data
+	 */
+    public static Document configurationSectionToDocument(ConfigurationSection mem) {
+		Document doc = new Document();
+		
+		for(Entry<String, Object> e : mem.getValues(false).entrySet()) {
+			String k = e.getKey();
+			Object o = e.getValue();
+			if (o instanceof ConfigurationSection) {
+				doc.append(k, configurationSectionToDocument((ConfigurationSection)o));
+			}
+			else {
+				doc.append(k, o);
+			}
+		}
+		
+		return doc;
+	}
+	
+	/**
+	 * Recursively adds all document data to a Bukkit configuration section
+	 * @param mem The bukkit configuration section
+	 * @param doc The document object
+	 * @return The resulting configuration section
+	 */
+	public static ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
+		for(Entry<String, Object> e : doc.entrySet()) {
+			String k = e.getKey();
+			Object o = e.getValue();
+			if (o instanceof Document) {
+				documentToConfigurationSection(mem.createSection(k), (Document)o);
+			}
+			else {
+				mem.set(k, o);
+			}
+		}
+		
+		return mem;
+	}
 }

@@ -15,7 +15,7 @@ public class CmdAdminSetHealth extends PearlCommand {
 		this.commandArgs.add(requiredPlayer("player"));
 		this.commandArgs.add(required("health %", autoTab("", "Enter the desired health percent")));
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.SET_HEALTH.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

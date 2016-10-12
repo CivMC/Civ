@@ -9,12 +9,44 @@ import org.bukkit.plugin.Plugin;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
-final class CorePearlConfig extends CoreConfiguration implements PearlConfig {
+import vg.civcraft.mc.civmodcore.util.Guard;
+
+final class CorePearlConfig implements DocumentConfig, PearlConfig {
+	
+	protected final Plugin plugin;
+	protected Document doc;
 	
 	public CorePearlConfig(final Plugin plugin) {
-		super(plugin);
+		Guard.ArgumentNotNull(plugin, "plugin");
+		this.plugin = plugin;
+		
+		doc = Document.configurationSectionToDocument(plugin.getConfig());
+	}
+	
+	@Override
+	public Document getDocument() {
+		return this.doc;
+	}
+
+	@Override
+	public DocumentConfig reloadFile() {
+		plugin.reloadConfig();
+		doc = Document.configurationSectionToDocument(plugin.getConfig());
+		return this;
+	}
+
+	@Override
+	public void saveToFile(Document doc) {
+		Document.documentToConfigurationSection(plugin.getConfig(), doc);
+		plugin.saveConfig();
+	}
+	
+	@Override
+	public void saveToFile() {
+		saveToFile(doc);
 	}
 
 	@Override

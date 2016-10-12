@@ -11,7 +11,7 @@ public class CmdAdminDecay extends PearlCommand {
 
 		this.setHelpShort("Performs decay operation on all pearls");
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.DECAY.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

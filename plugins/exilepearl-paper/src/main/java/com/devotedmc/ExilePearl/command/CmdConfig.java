@@ -16,7 +16,7 @@ public class CmdConfig extends PearlCommand {
 		this.addSubCommand(new CmdConfigList(plugin));
 		this.addSubCommand(new CmdConfigSet(plugin));
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.CONFIG.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

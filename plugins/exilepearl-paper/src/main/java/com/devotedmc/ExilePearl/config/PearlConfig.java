@@ -5,7 +5,6 @@ import java.util.Set;
 
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.RepairMaterial;
-import com.devotedmc.ExilePearl.storage.MySqlConfig;
 
 public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	

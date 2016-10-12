@@ -29,7 +29,7 @@ public class CmdAdminExileAny extends PearlCommand {
 		this.commandArgs.add(optional("y"));
 		this.commandArgs.add(optional("z"));
 		
-		this.permission = Permission.ADMIN.node;
+		this.permission = Permission.EXILE_ANY.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 

@@ -2,14 +2,16 @@ package com.devotedmc.ExilePearl.util;
 
 public enum Permission
 {
-	ADMIN("admin"),
-	MOD("mod"),
-	PLAYER("player");
-	
-
-	public static final String ADMIN_NODE = Permission.ADMIN.node;
-	public static final String MOD_NODE = Permission.MOD.node;
-	public static final String PLAYER_NODE = Permission.PLAYER.node;
+	PLAYER("player"),
+	CHECK("check"),
+	DECAY("decay"),
+	EXILE_ANY("exileany"),
+	FREE_ANY("freeany"),
+	LIST("list"),
+	RELOAD("reload"),
+	SET_HEALTH("sethealth"),
+	CONFIG("config")
+	;
 	
 	/**
 	 * The node string that is referenced for permissions
