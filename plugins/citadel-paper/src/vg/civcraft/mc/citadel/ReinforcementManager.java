@@ -100,6 +100,7 @@ public class ReinforcementManager {
 		}
 		if (rein.getDurability() <= 0) {
 			deleteReinforcement(rein);
+			return;
 		}
 		CitadelStatics.updateHitStat(CitadelStatics.UPDATE);
 		db.saveReinforcement(rein);

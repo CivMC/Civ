@@ -74,8 +74,8 @@ public class CitadelReinforcementData {
 			"SELECT x, y, z, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
 				+ "FROM reinforcement WHERE chunk_x = ? and chunk_z = ? and world = ?;";
 	private static final String addRein = 
-			"INSERT INTO reinforcement (x, y, z, world, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id) "
-				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
+			"INSERT INTO reinforcement (x, y, z, world, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, chunk_x, chunk_z) "
+				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 	private static final String removeRein = "DELETE from reinforcement WHERE x = ? and y = ? and z = ? and world = ?";
 	private static final String updateRein = 
 			"UPDATE reinforcement SET durability = ?, insecure = ?, group_id = ?, maturation_time = ?, acid_time = ? "
@@ -270,13 +270,13 @@ public class CitadelReinforcementData {
 					+ "lore, (select LAST_INSERT_ID()), acid_time);"
 					+ "end;");
 		db.registerMigration(12, false, 
-				"CREATE TABLE reinforcements_temp ("
+				"CREATE TABLE reinforcement_temp ("
 					+ "rein_id int not null auto_increment,"
 					+ "x int not null,"
 					+ "y int not null,"
 					+ "z int not null,"
-					+ "chunk_x int not null default floor(x / 16),"
-					+ "chunk_z int not null default floor(z / 16),"
+					+ "chunk_x int not null,"
+					+ "chunk_z int not null,"
 					+ "world varchar(255) not null,"
 					+ "material_id int not null,"
 					+ "durability varchar(10) not null,"
@@ -290,7 +290,7 @@ public class CitadelReinforcementData {
 					+ "unique index realcoord (x,y,z,world),"
 					+ "index chunkcoord(chunk_x, chunk_z, world)"
 					+ ");",
-				"INSERT IGNORE INTO reinforcements_temp SELECT a.rein_id, x, y, z, floor(x/16), floor(z/16), world, "
+				"INSERT IGNORE INTO reinforcement_temp SELECT a.rein_id, x, y, z, floor(x/16), floor(z/16), world, "
 					+ "material_id, durability, insecure, group_id, maturation_time, rein_type_id, lore, acid_time "
 					+ "FROM reinforcement_id a JOIN reinforcement b ON a.rein_id = b.rein_id;",
 				"RENAME TABLE reinforcement_id TO deprecated_reinforcement_id;",
@@ -492,6 +492,8 @@ public class CitadelReinforcementData {
 		int dur = rein.getDurability();
 		int maturationTime = rein.getMaturationTime();
 		int acidTime = rein.getAcidTime();
+		int cx = loc.getChunk().getX();
+		int cz = loc.getChunk().getZ();
 		
 		// specific fields, "safe" values.
 		boolean insecure = false;
@@ -539,6 +541,8 @@ public class CitadelReinforcementData {
 		insertRein.setInt(10, type);		
 		insertRein.setString(11, lore);
 		insertRein.setInt(12, groupId);
+		insertRein.setInt(13, cx);
+		insertRein.setInt(14, cz);
 		return insertRein;
 	}
 	
