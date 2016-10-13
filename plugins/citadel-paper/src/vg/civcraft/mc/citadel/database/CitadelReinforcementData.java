@@ -765,15 +765,25 @@ public class CitadelReinforcementData {
 	public void saveManyReinforcements(Collection<Reinforcement> reins) {
 		if (reins == null || reins.size() == 0) return;
 		boolean failover = false;
+		StringBuilder sb = new StringBuilder();
+		long s = System.currentTimeMillis();
+		long t = 0;
 		try (Connection connection = db.getConnection();
 				PreparedStatement updateRein = connection.prepareStatement(CitadelReinforcementData.updateRein);) {
 			int count = 0;
-			for (Reinforcement rein : reins) {		
+			t = System.currentTimeMillis();
+			sb.append(t - s).append("ms setup ");
+			for (Reinforcement rein : reins) {	
+				s = System.currentTimeMillis();
 				this.prepSaveReinforcement(rein, updateRein).addBatch();
-
+				t = System.currentTimeMillis();
+				sb.append(t - s).append(" ");
 				count++;
 				if (count % 100 == 0) {
+					s = System.currentTimeMillis();
 					int[] done = updateRein.executeBatch();
+					t = System.currentTimeMillis();
+					sb.append(t - s).append(" batch ");
 					if (done == null || done.length == 0) {
 						logger.log(Level.WARNING, "Batch save of Reinforcements -- 100 attempted -- appears to have failed.");
 						failover = true;
@@ -787,15 +797,18 @@ public class CitadelReinforcementData {
 			}
 			
 			if (count % 100 != 0) {
+				s = System.currentTimeMillis();
 				int[] done = updateRein.executeBatch();
+				t = System.currentTimeMillis();
+				sb.append(t - s).append(" batch ");
 				if (done == null || done.length == 0) {
-					logger.log(Level.WARNING, "Batch save of Player reinforcements -- {0} attempted -- appears to have failed.", (count % 100));
+					logger.log(Level.WARNING, "Batch save of reinforcements -- {0} attempted -- appears to have failed.", (count % 100));
 					failover = true;
 				} else if (done.length == (count % 100)){
-					logger.log(Level.INFO, "Saved a batch of Player reinforcements -- {0} attempted", (count % 100));
+					logger.log(Level.INFO, "Saved a batch of reinforcements -- {0} attempted", (count % 100));
 				} else {
 					failover = true;
-					logger.log(Level.INFO, "Saved a batch of Player reinforcements -- {0} attempted -- outcome indeterminate", (count % 100));
+					logger.log(Level.INFO, "Saved a batch of reinforcements -- {0} attempted -- outcome indeterminate", (count % 100));
 				}
 			}
 		} catch (SQLException e) {
@@ -803,6 +816,7 @@ public class CitadelReinforcementData {
 			logger.log(Level.SEVERE, "Citadel encountered a critical error while saving a batch of reinforcements", e);
 		}
 		
+		logger.log(Level.INFO, sb.toString());
 		if (failover) {
 			logger.log(Level.WARNING, "Citadel encountered uncertainty while saving a batch of records. Failing over to individual save logic.");
 			for (Reinforcement rein : reins) {

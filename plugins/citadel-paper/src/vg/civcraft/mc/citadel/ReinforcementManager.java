@@ -123,6 +123,7 @@ public class ReinforcementManager {
 		List<Reinforcement> updates = new ArrayList<Reinforcement>(reins.size());
 		for (Reinforcement rein : reins) {
 			if (rein.getDurability() <= 0) {
+				rein.setDirty(false);
 				reinforcements.invalidate(rein.getLocation());
 				CitadelStatics.updateHitStat(CitadelStatics.DELETE);
 				removes.add(rein);
@@ -135,7 +136,7 @@ public class ReinforcementManager {
 		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement removing {0}", removes.size());
 		db.deleteManyReinforcements(removes);
 		
-		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving player reinfs {0}", updates.size());
+		Citadel.getInstance().getLogger().log(Level.INFO, "ReinforcementManager saveManyReinforcement saving reinfs {0}", updates.size());
 		db.saveManyReinforcements(updates);
 	}
 

@@ -473,7 +473,7 @@ public class Utility {
             if (reinforcement instanceof PlayerReinforcement) {
                 // leave message
             }
-            rm.saveReinforcement(reinforcement);
+            //rm.saveReinforcement(reinforcement);
             if(reinforcement instanceof PlayerReinforcement){
     			playReinforcementEffect((PlayerReinforcement)reinforcement);
             }

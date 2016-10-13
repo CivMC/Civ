@@ -602,8 +602,7 @@ public class BlockListener implements Listener {
 					if (reinforcement.canMakeInsecure(player)) {
 						reinforcement.toggleInsecure();
 						// Save the change
-						Citadel.getReinforcementManager().saveReinforcement(
-								reinforcement);
+						/*Citadel.getReinforcementManager().saveReinforcement(reinforcement);*/
 						if (reinforcement.isInsecure()) {
 							sendAndLog(player, ChatColor.YELLOW,
 									"Reinforcement now insecure");
@@ -674,7 +673,7 @@ public class BlockListener implements Listener {
 								reinforcement, block, player);
 						Bukkit.getPluginManager().callEvent(event);
 						if (!event.isCancelled()) {
-							rm.saveReinforcement(reinforcement);
+							//rm.saveReinforcement(reinforcement);
 							message = "Group has been changed to: "
 									+ group.getName() + ".";
 							sendAndLog(player, ChatColor.GREEN, message);
