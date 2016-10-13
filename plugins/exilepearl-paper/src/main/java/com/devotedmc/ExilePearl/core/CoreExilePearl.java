@@ -1,7 +1,9 @@
 package com.devotedmc.ExilePearl.core;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 
@@ -21,6 +23,7 @@ import org.bukkit.util.Vector;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.ItemHolder;
@@ -35,7 +38,7 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  * Instance of a player who is imprisoned in an exile pearl
  * @author Gordon
  */
-class CoreExilePearl implements ExilePearl {
+final class CoreExilePearl implements ExilePearl {
 	private static final int HOLDER_COUNT = 5;
 	private static String ITEM_NAME = "Exile Pearl";
 	private static final int DEFAULT_HEALTH = 10;
@@ -54,6 +57,8 @@ class CoreExilePearl implements ExilePearl {
 	
 	// The unique player ID
 	private final int pearlId;
+	
+	private final Set<BroadcastListener> bcastListeners = new HashSet<BroadcastListener>();
 	
 	private PearlPlayer player;
 	private PearlHolder holder;
@@ -476,4 +481,24 @@ class CoreExilePearl implements ExilePearl {
 				.append(freedOffline, other.freedOffline)
 				.isEquals();
     }
+
+
+	@Override
+	public void performBroadcast() {
+		for(BroadcastListener b : bcastListeners) {
+			b.broadcast(this);
+		}
+	}
+
+
+	@Override
+	public void addBroadcastListener(BroadcastListener bcast) {
+		bcastListeners.add(bcast);
+	}
+
+
+	@Override
+	public void removeBroadcastListener(BroadcastListener bcast) {
+		bcastListeners.remove(bcast);
+	}
 }

@@ -12,11 +12,11 @@ import com.devotedmc.ExilePearl.Lang;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-public class PlayerBroadcastTarget implements PearlBroadcastTarget {
+public class PlayerBroadcastListener implements BroadcastListener {
 	
 	private final UUID playerId;
 	
-	public PlayerBroadcastTarget(final UUID playerId) {
+	public PlayerBroadcastListener(final UUID playerId) {
 		Guard.ArgumentNotNull(playerId, "playerId");
 		
 		this.playerId = playerId;
@@ -34,5 +34,23 @@ public class PlayerBroadcastTarget implements PearlBroadcastTarget {
 			p.sendMessage(msg);
 		}
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
+        PlayerBroadcastListener other = (PlayerBroadcastListener) o;
+
+		return playerId.equals(other.playerId);
+	}
+	
+	@Override
+	public int hashCode() {
+		return playerId.hashCode();
+	}
 }

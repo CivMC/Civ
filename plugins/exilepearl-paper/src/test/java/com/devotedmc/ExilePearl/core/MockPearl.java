@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
+import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 public class MockPearl implements ExilePearl {
@@ -220,5 +221,23 @@ public class MockPearl implements ExilePearl {
 				.append(freedOffline, other.freedOffline)
 				.isEquals();
     }
+
+	@Override
+	public void performBroadcast() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addBroadcastListener(BroadcastListener bcast) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeBroadcastListener(BroadcastListener bcast) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }

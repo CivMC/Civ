@@ -13,11 +13,11 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class NameLayerGroupBroadcastTarget implements PearlBroadcastTarget {
+public class NLGroupBroadcastListener implements BroadcastListener {
 	
 	private final Group group;
 	
-	public NameLayerGroupBroadcastTarget(final Group group) {
+	public NLGroupBroadcastListener(final Group group) {
 		Guard.ArgumentNotNull(group, "group");
 		
 		this.group = group;
@@ -37,5 +37,23 @@ public class NameLayerGroupBroadcastTarget implements PearlBroadcastTarget {
 			}
 		}
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
+        NLGroupBroadcastListener other = (NLGroupBroadcastListener) o;
+
+		return group.equals(other.group);
+	}
+
+	@Override
+	public int hashCode() {
+		return group.hashCode();
+	}
 }

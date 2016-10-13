@@ -7,7 +7,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
  * @author Gordon
  *
  */
-public interface PearlBroadcastTarget {
+public interface BroadcastListener {
 	
 	/**
 	 * Broadcasts the pearl location

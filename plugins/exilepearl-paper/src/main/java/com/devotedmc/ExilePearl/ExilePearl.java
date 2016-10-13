@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
+import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 /**
@@ -159,4 +160,21 @@ public interface ExilePearl {
 	 * Enables storage updates when writing values
 	 */
 	void enableStorage();
+	
+	/**
+	 * Broadcasts the pearl location to all the listeners
+	 */
+	void performBroadcast();
+	
+	/**
+	 * Adds a broadcast target
+	 * @param bcast The broadcast target
+	 */
+	void addBroadcastListener(BroadcastListener bcast);
+	
+	/**
+	 * Removes a broadcast target
+	 * @param bcast The broadcast target
+	 */
+	void removeBroadcastListener(BroadcastListener bcast);
 }
