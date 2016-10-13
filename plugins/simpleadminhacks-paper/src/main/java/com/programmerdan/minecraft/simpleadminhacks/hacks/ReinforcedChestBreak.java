@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,6 +32,10 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     public ReinforcedChestBreak(SimpleAdminHacks plugin, ReinforcedChestBreakConfig config) {
         super(plugin, config);
     }
+
+	public static ReinforcedChestBreakConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new ReinforcedChestBreakConfig(plugin, config);
+	}
 
     @Override
     public void registerListeners() {
