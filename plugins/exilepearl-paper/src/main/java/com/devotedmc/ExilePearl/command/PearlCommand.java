@@ -7,7 +7,6 @@ import java.util.List;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.PearlPlayer;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -16,16 +15,6 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlApi> {
 	
 	public PearlCommand(ExilePearlApi pearlApi) {
 		super(pearlApi);
-	}
-	
-
-	
-	/**
-	 * Gets the sender instance
-	 * @return The sender instance
-	 */
-	protected PearlPlayer me() {
-		return plugin.getPearlPlayer(player().getUniqueId());
 	}
 	
 	@Override

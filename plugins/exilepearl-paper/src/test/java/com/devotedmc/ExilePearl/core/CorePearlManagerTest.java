@@ -25,7 +25,6 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
@@ -51,8 +50,6 @@ public class CorePearlManagerTest extends BukkitTestCase {
 	private final UUID killerId = UUID.randomUUID();
 	private Player player;
 	private Player killer;
-	private PearlPlayer pPlayer;
-	private PearlPlayer pKiller;
 	
 	@Before
 	public void setUp() throws Exception {
@@ -60,26 +57,16 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		player = mock(Player.class);
 		when(player.getUniqueId()).thenReturn(playerId);
 		when(player.getName()).thenReturn(playerName);
-		pPlayer = mock(PearlPlayer.class);
-		when(pPlayer.getUniqueId()).thenReturn(playerId);
-		when(pPlayer.getName()).thenReturn(playerName);
-		when(pPlayer.isOnline()).thenReturn(true);
-		when(pPlayer.getPlayer()).thenReturn(player);
 		
 		killer = mock(Player.class);
 		when(killer.getUniqueId()).thenReturn(killerId);
 		when(killer.getName()).thenReturn(killerName);
-		pKiller = mock(PearlPlayer.class);
-		when(pKiller.getUniqueId()).thenReturn(killerId);
-		when(pKiller.getName()).thenReturn(killerName);
-		when(pKiller.isOnline()).thenReturn(true);
-		when(pKiller.getPlayer()).thenReturn(killer);		
 		
 		pearlApi = mock(ExilePearlApi.class);
-		when(pearlApi.getPearlPlayer(playerName)).thenReturn(pPlayer);
-		when(pearlApi.getPearlPlayer(playerId)).thenReturn(pPlayer);
-		when(pearlApi.getPearlPlayer(killerName)).thenReturn(pKiller);
-		when(pearlApi.getPearlPlayer(killerId)).thenReturn(pKiller);
+		when(pearlApi.getPlayer(playerName)).thenReturn(player);
+		when(pearlApi.getPlayer(playerId)).thenReturn(player);
+		when(pearlApi.getPlayer(killerName)).thenReturn(killer);
+		when(pearlApi.getPlayer(killerId)).thenReturn(killer);
 		
 		PlayerProvider nameProvider = mock(PlayerProvider.class);
 		when(nameProvider.getRealPlayerName(playerId)).thenReturn(playerName);
@@ -303,7 +290,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		assertEquals(manager.getPearlFromItemStack(is), pearl);
 		
 		// Test fails when the pearl is freed
-		manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER);
+		assertTrue(manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER));
 		assertNull(manager.getPearlFromItemStack(is));
 	}
 	
@@ -334,9 +321,9 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		// Now try to parse out an un-pearled player
 		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(legacyId);
 		
-		PearlPlayer legacyPlayer = mock(PearlPlayer.class);
+		Player legacyPlayer = mock(Player.class);
 		when(legacyPlayer.getUniqueId()).thenReturn(legacyId);
-		when(pearlApi.getPearlPlayer(legacyId)).thenReturn(legacyPlayer);
+		when(pearlApi.getPlayer(legacyId)).thenReturn(legacyPlayer);
 		
 		legacyPearl = manager.getPearlFromItemStack(is);
 		assertNull(legacyPearl);

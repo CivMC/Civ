@@ -21,7 +21,6 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
@@ -29,6 +28,8 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
+
+import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * The prison pearl manager implementation
@@ -88,15 +89,14 @@ final class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
 		Guard.ArgumentNotNull(killedById, "killedById");
 		
-		final PearlPlayer pPlayer = pearlApi.getPearlPlayer(exiledId);
-		final PearlPlayer pKilledBy = pearlApi.getPearlPlayer(killedById);
+		final Player pKilledBy = pearlApi.getPlayer(killedById);
 		
-		if (pPlayer.isExiled()) {
-			pKilledBy.msg(Lang.pearlAlreadyPearled, pPlayer.getName());
+		if (pearlApi.isPlayerExiled(exiledId)) {
+			msg(pKilledBy, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(exiledId));
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, pKilledBy.getPlayer(), createUniquePearlId());
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, pKilledBy, createUniquePearlId());
 
 		PlayerPearledEvent e = new PlayerPearledEvent(pearl);
 		Bukkit.getPluginManager().callEvent(e);
@@ -140,7 +140,7 @@ final class CorePearlManager implements PearlManager {
 			}
 		}
 		
-		PearlPlayer player = pearlApi.getPearlPlayer(pearl.getPlayerId());
+		Player player = pearlApi.getPlayer(pearl.getPlayerId());
 		
 		// If the player is online, do the full remove, otherwise mark the pearl
 		// as free offline and it will be removed when they log in
@@ -193,9 +193,14 @@ final class CorePearlManager implements PearlManager {
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
 		
+		ExilePearl pearl = null;
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 		if (pearlId != 0) {
-			return getPearlById(pearlId);
+			pearl = getPearlById(pearlId);
+			if (pearl.getFreedOffline()) {
+				return null;
+			}
+			return pearl;
 		}
 		
 		// Check if this is a legacy pearl
@@ -205,11 +210,12 @@ final class CorePearlManager implements PearlManager {
 		}
 		
 		// If an existing pearl is found, just use that
-		ExilePearl pearl = pearls.get(legacyId);
+		pearl = pearls.get(legacyId);
 		if (pearl == null) {
 			pearlApi.log(Level.SEVERE, "Found legacy PrisonPearl item for player %s but no pearl was found.", legacyId.toString());
 			return null;
 		}
+		
 		return pearl;
 	}
 

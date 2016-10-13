@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 import java.util.UUID;
 
@@ -15,7 +16,6 @@ import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
@@ -74,73 +74,70 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 
 	@Test
 	public void testRun() {
-		
 		final UUID uid = UUID.randomUUID();		
-		PearlPlayer player = mock(PearlPlayer.class);
-		when(player.getPlayer()).thenReturn(mock(Player.class));
+		Player player = mock(Player.class);
 		when(player.getUniqueId()).thenReturn(uid);
+		when(player.isOnline()).thenReturn(true);
 		
-		when(pearlApi.getPearlPlayer(uid)).thenReturn(player);
+		when(pearlApi.getPlayer(uid)).thenReturn(player);
 		
 		when(pearlConfig.getSuicideTimeoutSeconds()).thenReturn(20);
 		dut.loadConfig(pearlConfig);
 
 		dut.start();
 		dut.addPlayer(player);
-		verify(player).msg(Lang.suicideInSeconds, 20);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 20));
 		
 		for (int i = 0; i < 10; i++) {
 			dut.run();
 		}
-		verify(player).msg(Lang.suicideInSeconds, 10);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 10));
 		
 		for (int i = 0; i < 5; i++) {
 			dut.run();
 		}
-		verify(player).msg(Lang.suicideInSeconds, 5);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 5));
 		
 		dut.run();
-		verify(player).msg(Lang.suicideInSeconds, 4);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 4));
 		
 		dut.run();
-		verify(player).msg(Lang.suicideInSeconds, 3);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 3));
 		
 		dut.run();
-		verify(player).msg(Lang.suicideInSeconds, 2);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 2));
 		
 		dut.run();
-		verify(player).msg(Lang.suicideInSeconds, 1);
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, 1));
 
 		dut.run();
-		verify(player.getPlayer()).setHealth(0);
+		verify(player).setHealth(0);
 	}
 
 	@Test
 	public void testAddPlayer() {
 		final UUID uid = UUID.randomUUID();
-		Player p = mock(Player.class);
-		PearlPlayer player = mock(PearlPlayer.class);
+		Player player = mock(Player.class);
 		when(player.getUniqueId()).thenReturn(uid);
-		when(player.getPlayer()).thenReturn(p);
-		when(p.getUniqueId()).thenReturn(uid);
+		when(player.isOnline()).thenReturn(true);
 		
-		when(pearlApi.getPearlPlayer(uid)).thenReturn(player);
+		when(pearlApi.getPlayer(uid)).thenReturn(player);
 	
 		assertFalse(dut.isAdded(uid));
 		
 		dut.addPlayer(player);
-		verify(player).msg(Lang.suicideInSeconds, pearlConfig.getSuicideTimeoutSeconds());
+		verify(player).sendMessage(parse(Lang.suicideInSeconds, pearlConfig.getSuicideTimeoutSeconds()));
 		assertTrue(dut.isAdded(uid));
 		
 		Location l1 = mock(Location.class);
-		when(p.getLocation()).thenReturn(l1);
+		when(player.getLocation()).thenReturn(l1);
 		
 		Location l2 = mock(Location.class);
 		when(l2.distance(any(Location.class))).thenReturn(3.0);
-		PlayerMoveEvent e = new PlayerMoveEvent(p, l1, l2);
+		PlayerMoveEvent e = new PlayerMoveEvent(player, l1, l2);
 		
 		dut.onPlayerMove(e);
-		verify(player).msg(Lang.suicideCancelled);
+		verify(player).sendMessage(parse(Lang.suicideCancelled));
 		assertFalse(dut.isAdded(uid));
 	}
 }

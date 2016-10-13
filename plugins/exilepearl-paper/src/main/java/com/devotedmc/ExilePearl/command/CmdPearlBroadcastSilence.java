@@ -1,8 +1,10 @@
 package com.devotedmc.ExilePearl.command;
 
+import org.bukkit.entity.Player;
+
+import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlPlayer;
 
 public class CmdPearlBroadcastSilence extends PearlCommand {
 
@@ -18,18 +20,26 @@ public class CmdPearlBroadcastSilence extends PearlCommand {
 
 	@Override
 	public void perform() {
-		PearlPlayer player = plugin.getPearlPlayer(this.argAsString(0));
+		Player player = plugin.getPlayer(this.argAsString(0));
 		if (player == null) {
 			msg(Lang.pearlNoPlayer);
 			return;
 		}
 		
-		if (!player.getBcastPlayers().contains(me())) {
+		ExilePearl pearl = plugin.getPearl(argAsString(0));
+		if (pearl == null) {
+			msg(Lang.pearlPlayerNotExiled);
+			return;
+		}
+		
+		/* TODO
+		
+		if (pearl.addBroadcastListener(bcast);) {
 			msg(Lang.pearlNotGettingBcasts, player.getName());
 			return;
 		}
 		
 		player.removeBcastPlayer(me());
-		msg(Lang.pearlSilencedBcast, player.getName());
+		msg(Lang.pearlSilencedBcast, player.getName()); */
 	}
 }

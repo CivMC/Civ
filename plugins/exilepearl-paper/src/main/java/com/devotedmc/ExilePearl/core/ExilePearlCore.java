@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -32,7 +31,6 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.command.BaseCommand;
@@ -94,8 +92,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final HashSet<BaseCommand<?>> commands;
 	private final CmdAutoHelp autoHelp;
 	
-	private final HashMap<UUID, PearlPlayer> players;
-	
 	private PluginStorage storage;
 	private TagManager tagManager;
 	
@@ -124,8 +120,6 @@ final class ExilePearlCore implements ExilePearlApi {
 		
 		commands = new HashSet<BaseCommand<?>>();
 		autoHelp = new CmdAutoHelp(this);
-		
-		players = new HashMap<UUID, PearlPlayer>();
 	}
 
 	@Override
@@ -375,22 +369,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
 		return pearlManager.freePearl(pearl, reason);
-	}
-	
-	@Override
-	public PearlPlayer getPearlPlayer(final UUID uid) {
-		PearlPlayer p = players.get(uid);
-		if (p == null) {
-			p = pearlFactory.createPearlPlayer(uid);
-			players.put(uid, p);
-		}
-		
-		return p;
-	}
-	
-	@Override
-	public PearlPlayer getPearlPlayer(final String name) {
-		return getPearlPlayer(getUniqueId(name));
 	}
 
 	@Override

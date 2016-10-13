@@ -15,20 +15,6 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerProvider {
 	
 	/**
-	 * Gets a player instance by UUID
-	 * @param uniqueId The player UUID
-	 * @return The PearlPlayer instance
-	 */
-	PearlPlayer getPearlPlayer(final UUID uid);
-	
-	/**
-	 * Gets a player instance by name
-	 * @param uniqueId The player name
-	 * @return The PearlPlayer instance
-	 */
-	PearlPlayer getPearlPlayer(final String name);
-	
-	/**
 	 * Gets the exile pearl configuration
 	 * @return The exile pearl configuration
 	 */

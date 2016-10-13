@@ -11,7 +11,6 @@ import java.util.UUID;
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.google.common.collect.ImmutableList;
@@ -26,6 +25,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.Location;
 import org.bukkit.World;
+
+import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * This class tracks the pearls players that are online and prevents them
@@ -149,7 +150,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().getPlayer().isFlying());
 		player.teleport(newLoc, TeleportCause.PLUGIN);
-		pearl.getPlayer().msg("<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
+		msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
 		
 		handlingPlayers.remove(player.getName().toLowerCase());
@@ -300,7 +301,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerPearled(PlayerPearledEvent e) {
-		PearlPlayer p = e.getPearl().getPlayer();
+		Player p = e.getPearl().getPlayer();
 		if (p.isOnline()) {
 			pearledPlayers.add(e.getPearl().getPlayerId());
 		}

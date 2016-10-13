@@ -26,11 +26,11 @@ public class CmdSuicide extends PearlCommand {
 			return;
 		}
 		
-		if (!plugin.isPlayerExiled(me().getUniqueId())) {
+		if (!plugin.isPlayerExiled(player().getUniqueId())) {
 			msg(Lang.onlyExiledPlayers);
 			return;
 		}
 		
-		plugin.getSuicideHandler().addPlayer(me());
+		plugin.getSuicideHandler().addPlayer(player());
 	}
 }

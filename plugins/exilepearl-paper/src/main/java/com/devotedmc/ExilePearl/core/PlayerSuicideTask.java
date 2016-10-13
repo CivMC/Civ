@@ -13,9 +13,10 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+
+import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * Lets exiled players kill themselves with a timer
@@ -66,14 +67,14 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 		toRemove.clear();
 		
 		for (Entry<UUID, SuicideRecord> rec : players.entrySet()) {
-			PearlPlayer p = pearlApi.getPearlPlayer(rec.getKey());
+			Player p = pearlApi.getPlayer(rec.getKey());
 			int seconds = rec.getValue().seconds - 1;
 			rec.getValue().seconds = seconds;
 			
 			if (seconds > 0) {
 				// Notify every 10 seconds and last 5 seconds
 				if (seconds <= 5 || seconds % 10 == 0) {
-					p.msg(Lang.suicideInSeconds, seconds);
+					msg(p, Lang.suicideInSeconds, seconds);
 				}
 			} else {
 				toRemove.add(rec.getKey());
@@ -82,7 +83,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 		
 		for(UUID uid : toRemove) {
 			players.remove(uid);
-			Player p = pearlApi.getPearlPlayer(uid).getPlayer();
+			Player p = pearlApi.getPlayer(uid);
 			if (p != null) {
 				p.setHealth(0);
 			}
@@ -91,9 +92,9 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 
 
 	@Override
-	public void addPlayer(PearlPlayer player) {
-		players.put(player.getUniqueId(), new SuicideRecord(player.getPlayer().getLocation(), timeout));
-		player.msg(Lang.suicideInSeconds, timeout);
+	public void addPlayer(Player player) {
+		players.put(player.getUniqueId(), new SuicideRecord(player.getLocation(), timeout));
+		msg(player, Lang.suicideInSeconds, timeout);
 	}
 
 
@@ -111,7 +112,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 		SuicideRecord rec = players.get(e.getPlayer().getUniqueId());
 		if (rec != null && e.getTo().distance(rec.location) > 2) {
 			players.remove(e.getPlayer().getUniqueId());
-			pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()).msg(Lang.suicideCancelled);
+			msg(e.getPlayer(), Lang.suicideCancelled);
 		}
 	}
 	

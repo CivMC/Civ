@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -12,7 +13,6 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminExileAny extends PearlCommand {
@@ -53,13 +53,13 @@ public class CmdAdminExileAny extends PearlCommand {
 			}
 		}
 		
-		PearlPlayer player = plugin.getPearlPlayer(name);
+		Player player = plugin.getPlayer(name);
 		if (player == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		
-		PearlPlayer killedBy = plugin.getPearlPlayer(killedByName);
+		Player killedBy = plugin.getPlayer(killedByName);
 		if (killedBy == null) {
 			msg(Lang.unknownPlayer);
 			return;
@@ -103,7 +103,7 @@ public class CmdAdminExileAny extends PearlCommand {
 		}
 		
 		if (!senderIsConsole) {
-			inv = me().getPlayer().getInventory();
+			inv = player().getInventory();
 			
 			if (inv.firstEmpty() == -1) {
 				msg("<i>You need an open inventory slot to do that.");

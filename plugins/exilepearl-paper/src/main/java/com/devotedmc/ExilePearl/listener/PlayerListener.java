@@ -60,7 +60,6 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -69,8 +68,9 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
+import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * Handles events related to prison pearls
@@ -323,7 +323,7 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param player The player holding the pearl
 	 */
 	private void updatePearl(ExilePearl pearl, Player player) {
-		pearl.setHolder(pearlApi.getPearlPlayer(player.getUniqueId()));
+		pearl.setHolder(player);
 	}
 
 
@@ -338,7 +338,7 @@ public class PlayerListener implements Listener, Configurable {
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getCurrentItem());
 		if(pearl != null) {
 			if (pearlApi.isPlayerExiled(clicker)) {
-				pearlApi.getPearlPlayer(clicker.getUniqueId()).msg(Lang.pearlCantHold);
+				msg(clicker, Lang.pearlCantHold);
 				e.setCancelled(true);
 			}
 		}
@@ -387,7 +387,7 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
-				pearl.setHolder(pearlApi.getPearlPlayer(((Player) event.getWhoClicked()).getUniqueId()));
+				pearl.setHolder(((Player) event.getWhoClicked()));
 			}
 		}
 		else if(event.getAction() == InventoryAction.PLACE_ALL
@@ -500,15 +500,10 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		Player player = (Player)e.getEntity();
+		Player imprisoned = (Player)e.getEntity();
 
-		Player killer = player.getKiller();
+		Player killer = imprisoned.getKiller();
 		if (killer != null) {
-
-			// Need to get by name b/c of combat tag entity
-			PearlPlayer imprisoned = pearlApi.getPearlPlayer(e.getEntity().getName());
-			PearlPlayer pKiller = pearlApi.getPearlPlayer(killer.getUniqueId());
-
 			int firstpearl = Integer.MAX_VALUE;
 			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
@@ -522,7 +517,7 @@ public class PlayerListener implements Listener, Configurable {
 				return;
 			}
 
-			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getUniqueId(), pKiller.getUniqueId());
+			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getUniqueId(), killer.getUniqueId());
 			if (pearl == null) {
 				return;
 			}
@@ -597,7 +592,7 @@ public class PlayerListener implements Listener, Configurable {
 		UUID uid = e.getPlayer().getUniqueId();
 		ExilePearl pearl = pearlApi.getPearl(uid);
 		if (pearl != null && pearl.getFreedOffline()) {
-			pearl.getPlayer().msg(Lang.pearlYouWereFreed);
+			msg(pearl.getPlayer(), Lang.pearlYouWereFreed);
 			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
 		}
 	}
@@ -626,7 +621,7 @@ public class PlayerListener implements Listener, Configurable {
 		Player player = e.getPlayer();
 		
 		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
-			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlCantThrow);
+			msg(player, Lang.pearlCantThrow);
 			e.setCancelled(true);
 			player.getInventory().setItemInMainHand(pearl.createItemStack());
 			return;
@@ -635,7 +630,7 @@ public class PlayerListener implements Listener, Configurable {
 		e.setCancelled(true);
 		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
 			player.getInventory().setItemInMainHand(null);
-			pearlApi.getPearlPlayer(player.getUniqueId()).msg(Lang.pearlYouFreed, pearl.getPlayerName());
+			msg(player, Lang.pearlYouFreed, pearl.getPlayerName());
 		}
 	}
 	
@@ -659,7 +654,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 		
-		pearlApi.getPearlPlayer(p.getUniqueId()).msg(Lang.pearlCantThrow);
+		msg(p, Lang.pearlCantThrow);
 		e.setCancelled(true);
 		
 		// Need to schedule this or else the re-created pearl doesn't show up
@@ -679,14 +674,14 @@ public class PlayerListener implements Listener, Configurable {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerPearled(PlayerPearledEvent e) {
 
-		PearlPlayer imprisoned = e.getPearl().getPlayer();
-		PearlPlayer imprisoner = pearlApi.getPearlPlayer(e.getPearl().getKillerName());
+		Player imprisoned = e.getPearl().getPlayer();
+		Player imprisoner = pearlApi.getPlayer(e.getPearl().getKillerUniqueId());
 
 		// Log the capturing ExilePearl event.
 		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
 
-		imprisoner.msg(Lang.pearlYouBound, imprisoned.getName());
-		imprisoned.msg(Lang.pearlYouWereBound, imprisoner.getName());
+		msg(imprisoner, Lang.pearlYouBound, imprisoned.getName());
+		msg(imprisoned, Lang.pearlYouWereBound, imprisoner.getName());
 	}
 
 
@@ -696,7 +691,7 @@ public class PlayerListener implements Listener, Configurable {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerFreed(PlayerFreedEvent e) {
-		e.getPearl().getPlayer().msg(Lang.pearlYouWereFreed);
+		msg(e.getPearl().getPlayer(), Lang.pearlYouWereFreed);
 	}
 
 
@@ -706,19 +701,7 @@ public class PlayerListener implements Listener, Configurable {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPearlMoved(PearlMovedEvent e) {
-
-		PearlPlayer imprisoned = e.getPearl().getPlayer();
-
-		Location l = e.getDestinationHolder().getLocation();
-		String name = e.getDestinationHolder().getName();
-		imprisoned.msg(Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());	
-
-		String bcastMsg = TextUtil.parse(Lang.pearlBroadcast, imprisoned.getName(), 
-				name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-
-		for(PearlPlayer p : imprisoned.getBcastPlayers()) {
-			p.msg(bcastMsg);
-		}
+		e.getPearl().performBroadcast();
 	}
 
 

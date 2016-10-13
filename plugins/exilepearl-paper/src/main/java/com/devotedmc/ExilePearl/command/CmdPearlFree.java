@@ -20,15 +20,15 @@ public class CmdPearlFree extends PearlCommand {
 
 	@Override
 	public void perform() {
-		ExilePearl pearl = plugin.getPearlFromItemStack(me().getPlayer().getInventory().getItemInMainHand());
+		ExilePearl pearl = plugin.getPearlFromItemStack(player().getInventory().getItemInMainHand());
 		if (pearl == null) {
 			msg(Lang.pearlMustBeHoldingPearl);
 			return;
 		}
 		
 		if (plugin.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER)) {
-			me().msg(Lang.pearlYouFreed, pearl.getPlayerName());
-			me().getPlayer().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
+			msg(Lang.pearlYouFreed, pearl.getPlayerName());
+			player().getInventory().setItemInMainHand(new ItemStack(Material.AIR));
 		}
 	}
 }

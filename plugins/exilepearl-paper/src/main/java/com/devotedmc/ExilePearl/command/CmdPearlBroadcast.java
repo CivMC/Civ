@@ -20,7 +20,7 @@ public class CmdPearlBroadcast extends PearlCommand {
 
 	@Override
 	public void perform() {
-		ExilePearl pearl = plugin.getPearl(me().getUniqueId());
+		ExilePearl pearl = plugin.getPearl(player().getUniqueId());
 		
 		if (pearl == null) {
 			msg(Lang.pearlNotExiled);

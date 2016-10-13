@@ -23,7 +23,6 @@ import org.mockito.ArgumentCaptor;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -78,16 +77,13 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		pearlConfig = mock(PearlConfig.class);
 		when(pearlConfig.getPearlHealthMaxValue()).thenReturn(100);
 		
-		PearlPlayer p1 = new CorePearlPlayer(playerId, nameProvider, pearlApi);
-		when(p1.getPlayer()).thenReturn(player);
-		PearlPlayer p2 = new CorePearlPlayer(killerId, nameProvider, pearlApi);
-		when(p2.getPlayer()).thenReturn(killer);
-		
-		when(pearlApi.getPearlPlayer(playerName)).thenReturn(p1);
-		when(pearlApi.getPearlPlayer(playerId)).thenReturn(p1);
-		when(pearlApi.getPearlPlayer(killerName)).thenReturn(p2);
-		when(pearlApi.getPearlPlayer(killerId)).thenReturn(p2);
+		when(pearlApi.getPlayer(playerName)).thenReturn(player);
+		when(pearlApi.getPlayer(playerId)).thenReturn(player);
+		when(pearlApi.getPlayer(killerName)).thenReturn(killer);
+		when(pearlApi.getPlayer(killerId)).thenReturn(killer);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
+		
+		when(pearlApi.getRealPlayerName(killerId)).thenReturn(killerName);
 		
 		loreGenerator = mock(PearlLoreProvider.class);
 		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
@@ -163,7 +159,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 	public void testGetSetHolder() {
 		assertEquals(pearl.getHolder(), holder);
 
-		PearlPlayer pPlayer = new CorePearlPlayer(player.getUniqueId(), nameProvider, pearlApi);
+		Player pPlayer = mock(Player.class);
 		
 		pearl.enableStorage();
 

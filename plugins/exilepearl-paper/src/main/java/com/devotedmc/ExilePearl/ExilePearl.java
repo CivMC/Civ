@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
@@ -39,7 +40,7 @@ public interface ExilePearl {
 	 * Gets the exiled player instance
 	 * @return The exiled player 
 	 */
-	PearlPlayer getPlayer();
+	Player getPlayer();
 
 	/**
 	 * Gets when the player was pearled
@@ -69,7 +70,7 @@ public interface ExilePearl {
 	 * Sets the pearl holder to a player
 	 * @param player The new pearl holder
 	 */
-	void setHolder(PearlPlayer player);
+	void setHolder(Player player);
 
 	/**
 	 * Sets the pearl holder to a block

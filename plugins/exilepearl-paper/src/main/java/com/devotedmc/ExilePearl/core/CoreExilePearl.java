@@ -15,6 +15,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,7 +23,6 @@ import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
@@ -60,7 +60,6 @@ final class CoreExilePearl implements ExilePearl {
 	
 	private final Set<BroadcastListener> bcastListeners = new HashSet<BroadcastListener>();
 	
-	private PearlPlayer player;
 	private PearlHolder holder;
 	private Date pearledOn;
 	private LinkedBlockingDeque<PearlHolder> holders;
@@ -116,11 +115,8 @@ final class CoreExilePearl implements ExilePearl {
 	 * @return The player instance
 	 */
 	@Override
-	public PearlPlayer getPlayer() {
-		if (player == null) {
-			player = pearlApi.getPearlPlayer(playerId);
-		}
-		return player;
+	public Player getPlayer() {
+		return pearlApi.getPlayer(playerId);
 	}
 
 
@@ -186,9 +182,9 @@ final class CoreExilePearl implements ExilePearl {
 	 * @param player The new pearl holder
 	 */
 	@Override
-	public void setHolder(PearlPlayer player) {
+	public void setHolder(Player player) {
 		Guard.ArgumentNotNull(player, "player");
-		setHolderInternal(new PlayerHolder(player.getPlayer()));
+		setHolderInternal(new PlayerHolder(player));
 	}
 
 
@@ -308,7 +304,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public String getKillerName() {
-		String name = pearlApi.getPearlPlayer(killedBy).getName();
+		String name = pearlApi.getRealPlayerName(killedBy);
 		if (name == null) {
 			name = "Unknown player";
 		}

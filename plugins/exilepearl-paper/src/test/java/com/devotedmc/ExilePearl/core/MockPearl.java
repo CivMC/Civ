@@ -13,12 +13,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.mockito.Mockito;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -60,7 +60,7 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public PearlPlayer getPlayer() {
+	public Player getPlayer() {
 		return null;
 	}
 
@@ -85,7 +85,7 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public void setHolder(PearlPlayer p) {
+	public void setHolder(Player p) {
 		loc = p.getPlayer().getLocation();
 	}
 
