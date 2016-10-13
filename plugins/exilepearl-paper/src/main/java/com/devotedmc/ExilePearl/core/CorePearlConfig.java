@@ -53,6 +53,7 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 				ex.printStackTrace();
 			}
 		}
+		logger.log("Configuration loaded.");
 	}
 	
 	@Override

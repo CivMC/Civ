@@ -51,10 +51,16 @@ final class PearlDecayTask extends ExilePearlTask {
 	
 	@Override
 	public void loadConfig(PearlConfig config) {
-		this.interval = pearlApi.getPearlConfig().getPearlHealthDecayIntervalMin();
+		int newInterval = pearlApi.getPearlConfig().getPearlHealthDecayIntervalMin();
 		
-		if (enabled) {
-			restart();
+		if (newInterval != interval) {
+			this.interval = newInterval;
+
+			// Reschedule the task if the interval changed
+			if (enabled) {
+				pearlApi.log("Rescheduling the pearl decay task because the interval changed.");
+				restart();
+			}
 		}
 	}
 }
