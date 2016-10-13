@@ -16,10 +16,10 @@ public class PlayerBroadcastListener implements BroadcastListener {
 	
 	private final UUID playerId;
 	
-	public PlayerBroadcastListener(final UUID playerId) {
-		Guard.ArgumentNotNull(playerId, "playerId");
+	public PlayerBroadcastListener(final Player player) {
+		Guard.ArgumentNotNull(player, "player");
 		
-		this.playerId = playerId;
+		this.playerId = player.getUniqueId();
 	}
 	
 	@Override

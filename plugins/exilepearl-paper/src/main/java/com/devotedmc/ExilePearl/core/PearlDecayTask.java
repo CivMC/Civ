@@ -46,7 +46,7 @@ final class PearlDecayTask extends ExilePearlTask {
 			return;
 		}
 		
-		pearlApi.decayPearls();
+		pearlApi.getPearlManager().decayPearls();
 	}
 	
 	@Override

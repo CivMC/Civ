@@ -9,12 +9,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class PearlDecayTaskTest extends BukkitTestCase {
 	
 	private PearlConfig pearlConfig;
+	private PearlManager manager;
 	private ExilePearlApi pearlApi;
 	private PearlDecayTask dut;
 
@@ -24,8 +26,11 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 		pearlConfig = mock(PearlConfig.class);
 		when(pearlConfig.getPearlHealthDecayIntervalMin()).thenReturn(60);
 		
+		manager = mock(PearlManager.class);
+		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
+		when(pearlApi.getPearlManager()).thenReturn(manager);
 		
 		dut = new PearlDecayTask(pearlApi);
 	}
@@ -67,10 +72,10 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 	@Test
 	public void testRun() {
 		dut.run();
-		verify(pearlApi, times(0)).decayPearls();
+		verify(manager, times(0)).decayPearls();
 
 		dut.start();
 		dut.run();
-		verify(pearlApi).decayPearls();
+		verify(manager).decayPearls();
 	}
 }

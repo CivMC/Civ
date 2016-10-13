@@ -242,6 +242,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	 * Gets the plugin storage provider
 	 * @return The storage instance provider
 	 */
+	@Override
 	public StorageProvider getStorageProvider() {
 		return storageProvider;
 	}
@@ -250,6 +251,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	 * Gets the pearl manager
 	 * @return The pearl manager instance
 	 */
+	@Override
 	public PearlManager getPearlManager() {
 		return pearlManager;
 	}
@@ -258,6 +260,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	 * Gets the auto-help command
 	 * @return The auto-help command
 	 */
+	@Override
 	public PearlCommand getAutoHelp() {
 		return autoHelp;
 	}
@@ -266,6 +269,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	 * Gets the suicide handler
 	 * @return The suicide handler
 	 */
+	@Override
 	public SuicideHandler getSuicideHandler() {
 		return suicideHandler;
 	}
@@ -464,11 +468,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public PearlLoreProvider getLoreProvider() {
 		return loreGenerator;
-	}
-
-	@Override
-	public void decayPearls() {
-		pearlManager.decayPearls();
 	}
 
 	@Override

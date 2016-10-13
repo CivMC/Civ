@@ -544,6 +544,21 @@ public abstract class BaseCommand<T extends Plugin> {
 		return getUsageTemplate(false);
 	}
 	
+	protected void msg(Player player, String str) {
+		str = parse(str);
+		player.sendMessage(str);
+	}
+
+	/**
+	 * Formats and sends a message to the player
+	 * @param str The message to send 
+	 * @param args The message arguments
+	 */
+	protected void msg(Player player, String str, Object... args) {
+		str = parse(str, args);
+		player.sendMessage(str);
+	}
+	
 	protected void msg(String str) {
 		str = parse(str);
 		if (senderIsConsole) {

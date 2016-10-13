@@ -17,7 +17,7 @@ public class CmdAdminDecay extends PearlCommand {
 
 	@Override
 	public void perform() {
-		plugin.decayPearls();
+		plugin.getPearlManager().decayPearls();
 		msg("<g>Decay operation complete.");
 	}
 }

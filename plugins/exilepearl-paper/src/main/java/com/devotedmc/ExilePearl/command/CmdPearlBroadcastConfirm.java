@@ -1,8 +1,9 @@
 package com.devotedmc.ExilePearl.command;
 
+import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
-import com.devotedmc.ExilePearl.PearlPlayer;
+import com.devotedmc.ExilePearl.broadcast.PlayerBroadcastListener;
 
 public class CmdPearlBroadcastConfirm extends PearlCommand {
 
@@ -16,24 +17,15 @@ public class CmdPearlBroadcastConfirm extends PearlCommand {
 
 	@Override
 	public void perform() {
-		PearlPlayer requested = me().getRequestedBcastPlayer();
-		if (requested == null) {
+		ExilePearl pearl = plugin.getPearlManager().getBroadcastRequest(player());
+		
+		if (pearl == null) {
 			msg(Lang.pearlNoBcastRequest);
-		}
-		
-		if (requested.isExiled()) {
-			msg(Lang.pearlPlayerNotExiled);
-			me().setRequestedBcastPlayer(null);
 			return;
 		}
 		
-		if (requested.equals(me())) {
-			msg(Lang.pearlCantBcastSelf);
-			return;
-		}
-		
-		requested.addBcastPlayer(me());
-		me().setRequestedBcastPlayer(null);
-		msg(Lang.pearlGettingBcasts, requested.getName());
+		pearl.addBroadcastListener(new PlayerBroadcastListener(player()));
+		plugin.getPearlManager().removeBroadcastRequest(player());
+		msg(Lang.pearlGettingBcasts, pearl.getPlayerName());
 	}
 }

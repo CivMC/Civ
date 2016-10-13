@@ -4,7 +4,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -37,7 +40,8 @@ final class CorePearlManager implements PearlManager {
 	private final PearlFactory pearlFactory;
 	private final StorageProvider storage;
 	
-	private final HashMap<UUID, ExilePearl> pearls;
+	private final Map<UUID, ExilePearl> pearls = new HashMap<UUID, ExilePearl>();
+	private final Map<UUID, ExilePearl> bcastRequests = new HashMap<UUID, ExilePearl>();
 	
 	
 	/**
@@ -54,8 +58,6 @@ final class CorePearlManager implements PearlManager {
 		this.pearlApi = pearlApi;
 		this.pearlFactory = pearlFactory;
 		this.storage = storage;
-		
-		this.pearls = new HashMap<UUID, ExilePearl>();
 	}
 	
 	
@@ -144,6 +146,7 @@ final class CorePearlManager implements PearlManager {
 		// as free offline and it will be removed when they log in
 		if ((player != null && player.isOnline()) || reason == PearlFreeReason.FORCE_FREED_BY_ADMIN) {
 			pearls.remove(pearl.getPlayerId());
+			clearPearlBroadcasts(pearl);
 			storage.getStorage().pearlRemove(pearl);
 		} else {
 			pearl.setFreedOffline(true);
@@ -286,5 +289,37 @@ final class CorePearlManager implements PearlManager {
 			}
 		}
 		return null;
+	}
+
+
+	@Override
+	public void addBroadcastRequest(Player player, ExilePearl pearl) {
+		bcastRequests.put(player.getUniqueId(), pearl);
+	}
+
+
+	@Override
+	public ExilePearl getBroadcastRequest(Player player) {
+		return bcastRequests.get(player.getUniqueId());
+	}
+
+
+	@Override
+	public void removeBroadcastRequest(Player player) {
+		bcastRequests.remove(player.getUniqueId());
+	}
+	
+	private void clearPearlBroadcasts(ExilePearl pearl) {
+		Set<UUID> toRemove = new HashSet<UUID>();
+		
+		for(Entry<UUID, ExilePearl> entry : bcastRequests.entrySet()) {
+			if (entry.getValue().equals(pearl)) {
+				toRemove.add(entry.getKey());
+			}
+		}
+		
+		for(UUID uid : toRemove) {
+			bcastRequests.remove(uid);
+		}
 	}
 }

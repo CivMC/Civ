@@ -53,6 +53,12 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	SuicideHandler getSuicideHandler();
 	
 	/**
+	 * Gets the pearl manager
+	 * @return The pearl manager
+	 */
+	PearlManager getPearlManager();
+	
+	/**
 	 * Gets the auto-help command
 	 * @return The auto-help
 	 */
