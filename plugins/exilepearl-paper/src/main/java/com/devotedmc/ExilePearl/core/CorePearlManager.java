@@ -142,7 +142,7 @@ final class CorePearlManager implements PearlManager {
 		
 		// If the player is online, do the full remove, otherwise mark the pearl
 		// as free offline and it will be removed when they log in
-		if (player != null && player.isOnline()) {
+		if ((player != null && player.isOnline()) || reason == PearlFreeReason.FORCE_FREED_BY_ADMIN) {
 			pearls.remove(pearl.getPlayerId());
 			storage.getStorage().pearlRemove(pearl);
 		} else {

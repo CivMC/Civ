@@ -79,7 +79,16 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	}
 	
 	@Override
-	public void start() {
+	public void start() {		
+		
+		// Track any players who are already online
+		for(ExilePearl p : pearlApi.getPearls()) {
+			Player player = p.getPlayer().getPlayer();
+			if (player != null && player.isOnline()) {
+				pearledPlayers.add(player.getUniqueId());
+			}
+		}
+		
 		super.start();
 	}
 

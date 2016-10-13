@@ -95,7 +95,8 @@ public class PlayerListener implements Listener {
 	 * Sets up the pearl repair recipes
 	 */
 	public void setupRecipes() {
-
+		repairMaterials.clear();
+		
 		try {
 			// This item is basically used as a trigger to catch the recipe being created
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);

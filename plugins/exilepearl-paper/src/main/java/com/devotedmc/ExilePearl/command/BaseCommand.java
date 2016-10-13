@@ -147,6 +147,12 @@ public abstract class BaseCommand<T extends Plugin> {
 		if (args.size() > 0 ) {
 			for (BaseCommand<? extends Plugin> subCommand: this.subCommands) {
 				if (subCommand.aliases.contains(args.get(0))) {
+					// Pretend like this command doesn't exist
+					if (!subCommand.validSenderPermissions(sender, false) && subCommand.visibility != CommandVisibility.VISIBLE) {
+						sendTooManyArgs();
+						return false;
+					}				
+					
 					args.remove(0);
 					commandChain.add(this);
 					subCommand.execute(sender, args, commandChain);
@@ -450,13 +456,19 @@ public abstract class BaseCommand<T extends Plugin> {
 		}
 		
 		if (args.size() > this.commandArgs.size() && this.errorOnToManyArgs) {
+			sendTooManyArgs();
+			return false;
+		}
+		return true;
+	}
+	
+	private void sendTooManyArgs() {
+		if (args.size() > this.commandArgs.size() && this.errorOnToManyArgs) {
 			// Get the to many string slice
 			List<String> theToMany = args.subList(this.commandArgs.size(), args.size());
 			msg(Lang.commandToManyArgs, TextUtil.implode(theToMany, " "));
 			msg(this.getUsageTemplate());
-			return false;
 		}
-		return true;
 	}
 	
 	/**
@@ -764,10 +776,12 @@ public abstract class BaseCommand<T extends Plugin> {
 			return true;
 		}
 		else if (visiblity != CommandVisibility.VISIBLE) {
-			me.sendMessage(Lang.unknownCommand);
+			if (informSenderIfNot) {
+				me.sendMessage(Lang.unknownCommand);
+			}
 		}
-		else if (informSenderIfNot && me != null) {
-			me.sendMessage(this.getForbiddenMessage(perm));
+		else if (informSenderIfNot) {
+			msg(getForbiddenMessage(perm));
 		}
 		return false;
 	}

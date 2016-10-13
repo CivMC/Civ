@@ -56,7 +56,7 @@
 # 
 # pearls.repair_materials
 #  - The materials used to repair pearls
-#  - The amount value is how many health points are repaired for each item 
+#  - The repair value is how many health points are repaired for each item 
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -159,7 +159,7 @@ pearls:
   repair_materials:
     obsidian:
       material: OBSIDIAN
-      amount: 3
+      repair: 3
 rules:
   pearl_radius: 1000
   ignite: false

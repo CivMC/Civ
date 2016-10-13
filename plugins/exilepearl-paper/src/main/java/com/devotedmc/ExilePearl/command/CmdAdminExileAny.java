@@ -11,6 +11,7 @@ import org.bukkit.inventory.InventoryHolder;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.util.Permission;
 
@@ -41,8 +42,15 @@ public class CmdAdminExileAny extends PearlCommand {
 		
 		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl != null) {
-			msg("<i>The player <c>%s <i>is already exiled and is %s.", name, pearl.getLocationDescription());
-			return;
+			
+			if(pearl.getFreedOffline()) {
+				// The player has been freed but the pearl still exists because they haven't logged in yet.
+				// This will force free the pearl so they can be re-pearled
+				plugin.freePearl(pearl, PearlFreeReason.FORCE_FREED_BY_ADMIN);
+			} else {
+				msg("<i>The player <c>%s <i>is already exiled and is %s.", name, pearl.getLocationDescription());
+				return;
+			}
 		}
 		
 		PearlPlayer player = plugin.getPearlPlayer(name);
