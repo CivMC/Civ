@@ -5,6 +5,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class TextUtil
 {	
@@ -220,5 +221,33 @@ public class TextUtil
 		ret.addAll(lines.subList(from, to));
 		
 		return ret;
+	}
+	
+	/**
+	 * Static utility method for easily sending formatting strings to players
+	 * Import statically for easier use
+	 * 		import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
+	 * 
+	 * @param player The player
+	 * @param message The message
+	 */
+	public static void msg(Player player, String message) {
+		if (player != null && player.isOnline()) {
+			player.sendMessage(parse(message));
+		}
+	}
+	
+	/**
+	 * Static utility method for easily sending formatting strings to players
+	 * Import statically for easier use
+	 * 		import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
+	 * 
+	 * @param player The player
+	 * @param message The message
+	 */
+	public static void msg(Player player, String message, Object... args) {
+		if (player != null && player.isOnline()) {
+			player.sendMessage(parse(message, args));
+		}
 	}
 }
