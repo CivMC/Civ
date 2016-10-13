@@ -24,7 +24,7 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		this.plugin = plugin;
 		
-		doc = Document.configurationSectionToDocument(plugin.getConfig());
+		doc = new Document(plugin.getConfig());
 	}
 	
 	@Override
@@ -35,13 +35,13 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	@Override
 	public DocumentConfig reloadFile() {
 		plugin.reloadConfig();
-		doc = Document.configurationSectionToDocument(plugin.getConfig());
+		doc = new Document(plugin.getConfig());
 		return this;
 	}
 
 	@Override
 	public void saveToFile(Document doc) {
-		Document.documentToConfigurationSection(plugin.getConfig(), doc);
+		doc.savetoConfig(plugin.getConfig());
 		plugin.saveConfig();
 	}
 	

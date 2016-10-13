@@ -14,7 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class Document implements Map<String, Object> {
-    private final LinkedHashMap<String, Object> documentAsMap;
+    private final Map<String, Object> documentAsMap;
 
     /**
      * Creates an empty Document instance.
@@ -41,6 +41,10 @@ public class Document implements Map<String, Object> {
      */
     public Document(final Map<String, Object> map) {
         documentAsMap = new LinkedHashMap<String, Object>(map);
+    }
+    
+    public Document(final ConfigurationSection configSection) {
+        documentAsMap = parseConfigurationSection(configSection);
     }
 
     /**
@@ -355,22 +359,27 @@ public class Document implements Map<String, Object> {
                + '}';
     }
     
+    
+    public void savetoConfig(ConfigurationSection mem) {
+    	documentToConfigurationSection(mem, this);
+    }
+    
 	/**
 	 * Recursively converts Bukkit configuration sections into documents
 	 * @param mem The bukkit configuration section
 	 * @return A document containing all the configuration data
 	 */
-    public static Document configurationSectionToDocument(ConfigurationSection mem) {
-		Document doc = new Document();
+    private static Map<String, Object> parseConfigurationSection(ConfigurationSection mem) {
+    	Document doc = new Document();
 		
 		for(Entry<String, Object> e : mem.getValues(false).entrySet()) {
 			String k = e.getKey();
 			Object o = e.getValue();
 			if (o instanceof ConfigurationSection) {
-				doc.append(k, configurationSectionToDocument((ConfigurationSection)o));
+				doc.put(k, parseConfigurationSection((ConfigurationSection)o));
 			}
 			else {
-				doc.append(k, o);
+				doc.put(k, o);
 			}
 		}
 		
@@ -383,7 +392,7 @@ public class Document implements Map<String, Object> {
 	 * @param doc The document object
 	 * @return The resulting configuration section
 	 */
-	public static ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
+	private static ConfigurationSection documentToConfigurationSection(ConfigurationSection mem, Document doc) {
 		for(Entry<String, Object> e : doc.entrySet()) {
 			String k = e.getKey();
 			Object o = e.getValue();

@@ -74,7 +74,6 @@ public class FileStorageIntegrationTest {
         if (file.exists()) {
         	file.delete();
         }
-        assertTrue(file.createNewFile());
 
 		storage = new FileStorage(file, pearlFactory, logger);
 
@@ -111,13 +110,28 @@ public class FileStorageIntegrationTest {
 		// Load initial pearl table and verify size is zero
 		Collection<ExilePearl> loadedPearls = storage.loadAllPearls();
 		assertEquals(0, loadedPearls.size());
+		
+		PlayerProvider playerProvider = mock(PlayerProvider.class);
+		when(playerProvider.getRealPlayerName(any(UUID.class))).thenAnswer(new Answer<String>() {
+
+			@Override
+			public String answer(InvocationOnMock invocation) throws Throwable {
+				try {
+					UUID uid1 = (UUID)invocation.getArguments()[0];
+					return "player: " + uid1.hashCode();
+					
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		});
 
 		// Generate a bunch of pearls with a variety of values
 		ArrayList<ExilePearl> pearlsToAdd = new ArrayList<ExilePearl>();
 		Random rand = new Random(587);
 		final int numPearlsToAdd = 100;
 		for(int i = 0; i < numPearlsToAdd; i++) {
-			ExilePearl toAdd = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), i, new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
+			ExilePearl toAdd = new MockPearl(playerProvider, UUID.randomUUID(), UUID.randomUUID(), i, new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt()));
 			toAdd.setPearledOn(new Date());
 			toAdd.setHealth(rand.nextInt(100));
 
