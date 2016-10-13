@@ -83,6 +83,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		when(pearlApi.getPlayer(killerId)).thenReturn(killer);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
+		when(pearlApi.getRealPlayerName(playerId)).thenReturn(playerName);
 		when(pearlApi.getRealPlayerName(killerId)).thenReturn(killerName);
 		
 		loreGenerator = mock(PearlLoreProvider.class);
@@ -197,7 +198,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		pearl.setHolder(b);
 		assertEquals(pearl.getLocation(), l2);
 		assertEquals(pearl.getHolder().getLocation(), l2);
-		verify(storage).pearlUpdateLocation(pearl);
+		verify(storage).updatePearlLocation(pearl);
 		
 		// Null arg throws exception
 		e = null;
@@ -233,24 +234,24 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		
 		pearl.enableStorage();
 		pearl.setHealth(0);
-		verify(storage, times(1)).pearlUpdateHealth(pearl);
+		verify(storage, times(1)).updatePearlHealth(pearl);
 		
 		pearl.setHealth(-10);
 		assertEquals(pearl.getHealth(), 0, 0);
-		verify(storage, times(2)).pearlUpdateHealth(pearl);
+		verify(storage, times(2)).updatePearlHealth(pearl);
 		
 		pearl.setHealth(90);
 		assertEquals(pearl.getHealth(), 90, 0);
-		verify(storage, times(3)).pearlUpdateHealth(pearl);
+		verify(storage, times(3)).updatePearlHealth(pearl);
 		
 		pearl.setHealth(100);
 		assertEquals(pearl.getHealth(), 100, 0);
-		verify(storage, times(4)).pearlUpdateHealth(pearl);
+		verify(storage, times(4)).updatePearlHealth(pearl);
 		
 		pearl.setHealth(110);
 		assertEquals(pearl.getHealth(), 100, 0);
 		assertEquals(pearl.getHealthPercent(), 100, 0);
-		verify(storage, times(5)).pearlUpdateHealth(pearl);
+		verify(storage, times(5)).updatePearlHealth(pearl);
 		
 		// Health percent changes with max health value change
 		when(pearlConfig.getPearlHealthMaxValue()).thenReturn(1000);
@@ -307,7 +308,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		
 		pearl.setFreedOffline(true);
 		assertTrue(pearl.getFreedOffline());
-		verify(storage).pearlUpdateFreedOffline(pearl);
+		verify(storage).updatePearlFreedOffline(pearl);
 
 		pearl.setFreedOffline(false);
 		assertFalse(pearl.getFreedOffline());

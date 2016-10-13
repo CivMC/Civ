@@ -31,7 +31,7 @@ import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.config.Document;
-import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
@@ -40,7 +40,7 @@ public class MySqlStorageIntegrationTest {
 
 	private static PearlFactory pearlFactory;
 	private static MockPearlLogger logger;
-	private static PearlConfig config;
+	private static MySqlConfig config;
 	private static MySqlStorage storage;	
 	private static World world;
 
@@ -75,7 +75,7 @@ public class MySqlStorageIntegrationTest {
 			}
 		});
 
-		config = mock(PearlConfig.class);
+		config = mock(MySqlConfig.class);
 		when(config.getMySqlHost()).thenReturn("localhost");
 		when(config.getMySqlName()).thenReturn("exilepearltest");
 		when(config.getMySqlPort()).thenReturn(3306);
@@ -210,7 +210,7 @@ public class MySqlStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateHealth(updatePearl);
+		storage.updatePearlHealth(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 
@@ -229,7 +229,7 @@ public class MySqlStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateLocation(updatePearl);
+		storage.updatePearlLocation(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 
@@ -244,7 +244,7 @@ public class MySqlStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateFreedOffline(updatePearl);
+		storage.updatePearlFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 	}

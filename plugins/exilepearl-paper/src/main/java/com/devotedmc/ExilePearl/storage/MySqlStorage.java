@@ -45,6 +45,7 @@ class MySqlStorage implements PluginStorage {
 			"uid varchar(36) not null," +
 			"killer_id varchar(36) not null," +
 			"pearl_id int not null," +
+			"ptype int not null," +
 			"world varchar(36) not null," +
 			"x int not null," +
 			"y int not null," +
@@ -160,6 +161,7 @@ class MySqlStorage implements PluginStorage {
 							.append("x", doc.getInteger("x"))
 							.append("y", doc.getInteger("y"))
 							.append("z", doc.getInteger("z")));
+					doc.append("type", doc.getInteger("ptype", 0));
 					
 					pearls.add(pearlFactory.createExilePearl(doc.getUUID("uid"), doc));
 				} catch (Exception ex) {
@@ -182,20 +184,21 @@ class MySqlStorage implements PluginStorage {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
-				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
+				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
 
 			Location l = pearl.getLocation();
 
 			ps.setString(1, pearl.getPlayerId().toString());
 			ps.setString(2, pearl.getKillerUniqueId().toString());
 			ps.setInt(3, pearl.getPearlId());
-			ps.setString(4, l.getWorld().getName());
-			ps.setInt(5, l.getBlockX());
-			ps.setInt(6, l.getBlockY());
-			ps.setInt(7, l.getBlockZ());
-			ps.setInt(8, pearl.getHealth());
-			ps.setLong(9, pearl.getPearledOn().getTime());
-			ps.setBoolean(10, pearl.getFreedOffline());
+			ps.setInt(4, pearl.getPearlType().toInt());
+			ps.setString(5, l.getWorld().getName());
+			ps.setInt(6, l.getBlockX());
+			ps.setInt(7, l.getBlockY());
+			ps.setInt(8, l.getBlockZ());
+			ps.setInt(9, pearl.getHealth());
+			ps.setLong(10, pearl.getPearledOn().getTime());
+			ps.setBoolean(11, pearl.getFreedOffline());
 			ps.executeUpdate();
 
 		} catch (SQLException ex) {
@@ -217,7 +220,7 @@ class MySqlStorage implements PluginStorage {
 	}
 
 	@Override
-	public void pearlUpdateLocation(ExilePearl pearl) {
+	public void updatePearlLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
@@ -237,7 +240,7 @@ class MySqlStorage implements PluginStorage {
 	}
 
 	@Override
-	public void pearlUpdateHealth(ExilePearl pearl) {
+	public void updatePearlHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
@@ -253,13 +256,29 @@ class MySqlStorage implements PluginStorage {
 	}
 
 	@Override
-	public void pearlUpdateFreedOffline(ExilePearl pearl) {
+	public void updatePearlFreedOffline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET freed_offline = ? WHERE uid = ?"); ) {
 
 			ps.setBoolean(1, pearl.getFreedOffline());
+			ps.setString(2, pearl.getPlayerId().toString());
+			ps.executeUpdate();
+		}
+		catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update 'freed offline'");
+		}
+	}
+
+	@Override
+	public void updatePearlType(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET ptype = ? WHERE uid = ?"); ) {
+
+			ps.setInt(1, pearl.getPearlType().toInt());
 			ps.setString(2, pearl.getPlayerId().toString());
 			ps.executeUpdate();
 		}

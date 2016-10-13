@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
@@ -48,18 +49,13 @@ final class CoreExilePearl implements ExilePearl {
 	
 	// The storage instance
 	private final PearlUpdateStorage storage;
-	
-	// The ID of the exiled player
+
 	private final UUID playerId;
-	
-	// The ID of the player who killed the exiled player
 	private final UUID killedBy;
-	
-	// The unique player ID
 	private final int pearlId;
-	
 	private final Set<BroadcastListener> bcastListeners = new HashSet<BroadcastListener>();
-	
+
+	private PearlType pearlType;
 	private PearlHolder holder;
 	private Date pearledOn;
 	private LinkedBlockingDeque<PearlHolder> holders;
@@ -86,6 +82,7 @@ final class CoreExilePearl implements ExilePearl {
 		this.pearlId = pearlId;
 		this.killedBy = killedBy;
 		this.pearledOn = new Date();
+		this.pearlType = PearlType.EXILE;
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holder = holder;
 		this.holders.add(holder);
@@ -94,10 +91,6 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Gets the imprisoned player ID
-	 * @return The player ID
-	 */
 	@Override
 	public UUID getPlayerId() {
 		return playerId;
@@ -108,32 +101,32 @@ final class CoreExilePearl implements ExilePearl {
 	public int getPearlId() {
 		return pearlId;
 	}
-
-
-	/**
-	 * Gets the imprisoned player
-	 * @return The player instance
-	 */
+	
+	
 	@Override
 	public Player getPlayer() {
 		return pearlApi.getPlayer(playerId);
 	}
+	
+	
+	@Override
+	public PearlType getPearlType() {
+		return pearlType;
+	}
+
+	
+	@Override
+	public void setPearlType(PearlType pearlType) {
+		this.pearlType = pearlType;
+	}
 
 
-	/**
-	 * Gets when the player was pearled
-	 * @return The time the player was pearled
-	 */
 	@Override
 	public Date getPearledOn() {
 		return this.pearledOn;
 	}
 
 
-	/**
-	 * Sets when the player was pearled
-	 * @param pearledOn The time the player was pearled
-	 */
 	@Override
 	public void setPearledOn(Date pearledOn) {
 		Guard.ArgumentNotNull(pearledOn, "pearledOn");
@@ -143,13 +136,9 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Gets the imprisoned name
-	 * @return The player name
-	 */
 	@Override
 	public String getPlayerName() {
-		String name = this.getPlayer().getName();
+		String name = pearlApi.getRealPlayerName(playerId);
 		if (name == null) {
 			name = "Unknown player";
 		}
@@ -157,30 +146,18 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Gets the pearl holder
-	 * @return The pearl holder
-	 */
 	@Override
 	public PearlHolder getHolder() {
 		return this.holder;
 	}
 
 
-	/**
-	 * Sets the pearl holder to a player
-	 * @param holder The new pearl holder
-	 */
 	public void setHolder(PearlHolder holder) {
 		Guard.ArgumentNotNull(holder, "holder");
 		setHolderInternal(holder);
 	}
 
 
-	/**
-	 * Sets the pearl holder to a player
-	 * @param player The new pearl holder
-	 */
 	@Override
 	public void setHolder(Player player) {
 		Guard.ArgumentNotNull(player, "player");
@@ -188,10 +165,6 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Sets the pearl holder to a block
-	 * @param block The new pearl block
-	 */
 	@Override
 	public void setHolder(Block block) {
 		Guard.ArgumentNotNull(block, "block");
@@ -199,10 +172,6 @@ final class CoreExilePearl implements ExilePearl {
 	}
 
 
-	/**
-	 * Sets the pearl holder to a location
-	 * @param location The new pearl location
-	 */
 	@Override
 	public void setHolder(Item item) {
 		Guard.ArgumentNotNull(item, "item");
@@ -233,7 +202,7 @@ final class CoreExilePearl implements ExilePearl {
 		}
 
 		if(storageEnabled) {
-			storage.pearlUpdateLocation(this);
+			storage.updatePearlLocation(this);
 		}
 	}
 
@@ -277,7 +246,7 @@ final class CoreExilePearl implements ExilePearl {
     	this.health = health;
     	
 		if(storageEnabled) {
-			storage.pearlUpdateHealth(this);
+			storage.updatePearlHealth(this);
 		}
     }
 
@@ -345,7 +314,7 @@ final class CoreExilePearl implements ExilePearl {
 		this.freedOffline = freedOffline;
 		
 		if (storageEnabled) {
-			storage.pearlUpdateFreedOffline(this);
+			storage.updatePearlFreedOffline(this);
 		}
 	}
 

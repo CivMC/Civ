@@ -73,6 +73,7 @@ class FileStorage implements PluginStorage {
 				.append("player_name", pearl.getPlayerName()) // Not needed, just makes it easier to search file
 				.append("killer_id", pearl.getKillerUniqueId().toString())
 				.append("pearl_id", pearl.getPearlId())
+				.append("type", pearl.getPearlType().toInt())
 				.append("location", pearl.getLocation())
 				.append("health", pearl.getHealth())
 				.append("pearled_on", pearl.getPearledOn())
@@ -89,20 +90,26 @@ class FileStorage implements PluginStorage {
 	}
 
 	@Override
-	public void pearlUpdateLocation(ExilePearl pearl) {		
+	public void updatePearlLocation(ExilePearl pearl) {		
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("location", pearl.getLocation());
 		writeFile();
 	}
 
 	@Override
-	public void pearlUpdateHealth(ExilePearl pearl) {
+	public void updatePearlHealth(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("health", pearl.getHealth());
 		writeFile();
 	}
 
 	@Override
-	public void pearlUpdateFreedOffline(ExilePearl pearl) {
+	public void updatePearlFreedOffline(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("freed_offline", pearl.getFreedOffline());
+		writeFile();
+	}
+
+	@Override
+	public void updatePearlType(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("type", pearl.getPearlType().toInt());
 		writeFile();
 	}
 	

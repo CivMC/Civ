@@ -19,6 +19,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.mockito.Mockito;
 
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -31,6 +32,7 @@ public class MockPearl implements ExilePearl {
 	private int pearlId;
 	private Location loc;
 	private Date pearledOn;
+	private PearlType pearlType;
 	private int health;
 	private boolean freedOffline;
 	
@@ -42,6 +44,7 @@ public class MockPearl implements ExilePearl {
 		this.loc = loc;
 		this.health = 10;
 		this.pearledOn = new Date();
+		this.pearlType = PearlType.EXILE;
 	}
 
 	@Override
@@ -62,6 +65,16 @@ public class MockPearl implements ExilePearl {
 	@Override
 	public Player getPlayer() {
 		return null;
+	}
+
+	@Override
+	public PearlType getPearlType() {
+		return pearlType;
+	}
+
+	@Override
+	public void setPearlType(PearlType pearlType) {
+		this.pearlType = pearlType;
 	}
 
 	@Override

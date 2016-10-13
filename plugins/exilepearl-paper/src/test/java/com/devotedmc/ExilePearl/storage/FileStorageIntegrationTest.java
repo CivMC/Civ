@@ -176,7 +176,7 @@ public class FileStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateHealth(updatePearl);
+		storage.updatePearlHealth(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 
@@ -195,7 +195,7 @@ public class FileStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateLocation(updatePearl);
+		storage.updatePearlLocation(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 
@@ -210,7 +210,7 @@ public class FileStorageIntegrationTest {
 		assertFalse(loadedPearls.contains(updatePearl));
 
 		// Perform the update and verify it now exists
-		storage.pearlUpdateFreedOffline(updatePearl);
+		storage.updatePearlFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 	}

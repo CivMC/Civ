@@ -78,7 +78,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
-	public void pearlUpdateLocation(ExilePearl pearl) {
+	public void updatePearlLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
 		
@@ -86,7 +86,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
-	public void pearlUpdateHealth(ExilePearl pearl) {
+	public void updatePearlHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
 		
@@ -94,11 +94,19 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
-	public void pearlUpdateFreedOffline(ExilePearl pearl) {
+	public void updatePearlFreedOffline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
 		
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_FREED_OFFLINE));
+	}
+
+	@Override
+	public void updatePearlType(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		checkRunning();
+		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_TYPE));
 	}
 
 	@Override
@@ -133,15 +141,19 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 			break;
 			
 		case UPDATE_LOCATION:
-			storage.pearlUpdateLocation(record.getPearl());
+			storage.updatePearlLocation(record.getPearl());
 			break;
 			
 		case UPDATE_HEALTH:
-			storage.pearlUpdateHealth(record.getPearl());
+			storage.updatePearlHealth(record.getPearl());
 			break;
 			
 		case UPDATE_FREED_OFFLINE:
-			storage.pearlUpdateFreedOffline(record.getPearl());
+			storage.updatePearlFreedOffline(record.getPearl());
+			break;
+			
+		case UPDATE_TYPE:
+			storage.updatePearlType(record.getPearl());
 			break;
 
 		case TERMINATE:

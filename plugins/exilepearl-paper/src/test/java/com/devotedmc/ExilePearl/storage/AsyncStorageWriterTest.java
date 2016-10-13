@@ -109,8 +109,8 @@ public class AsyncStorageWriterTest {
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
 		
-		writer.pearlUpdateLocation(pearl);
-		verify(storage, timeout(5000)).pearlUpdateLocation(pearl);
+		writer.updatePearlLocation(pearl);
+		verify(storage, timeout(5000)).updatePearlLocation(pearl);
 	}
 
 	@Test
@@ -119,8 +119,8 @@ public class AsyncStorageWriterTest {
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
 		
-		writer.pearlUpdateHealth(pearl);
-		verify(storage, timeout(5000)).pearlUpdateHealth(pearl);
+		writer.updatePearlHealth(pearl);
+		verify(storage, timeout(5000)).updatePearlHealth(pearl);
 	}
 
 	@Test
@@ -129,7 +129,7 @@ public class AsyncStorageWriterTest {
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
 		
-		writer.pearlUpdateFreedOffline(pearl);
-		verify(storage, timeout(5000)).pearlUpdateFreedOffline(pearl);
+		writer.updatePearlFreedOffline(pearl);
+		verify(storage, timeout(5000)).updatePearlFreedOffline(pearl);
 	}
 }

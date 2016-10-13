@@ -161,8 +161,9 @@ final class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNullOrEmpty(name, "name");
 		
 		for(ExilePearl pearl :pearls.values()) {
-			if (pearl.getPlayerName().equalsIgnoreCase(name));
-			return pearl;
+			if (pearl.getPlayerName().equalsIgnoreCase(name)) {
+				return pearl;
+			}
 		}
 		return null;
 	}

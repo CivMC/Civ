@@ -41,6 +41,18 @@ public interface ExilePearl {
 	 * @return The exiled player 
 	 */
 	Player getPlayer();
+	
+	/**
+	 * Gets the pearl type
+	 * @return The pearl type
+	 */
+	PearlType getPearlType();
+	
+	/**
+	 * Sets the pearl type
+	 * @param type The pearl type
+	 */
+	void setPearlType(PearlType type);
 
 	/**
 	 * Gets when the player was pearled

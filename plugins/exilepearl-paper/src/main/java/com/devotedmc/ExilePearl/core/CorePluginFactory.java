@@ -14,6 +14,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -59,6 +60,7 @@ public final class CorePluginFactory implements PearlFactory {
 			boolean freedOffline = doc.getBoolean("freed_offline");
 			
 			ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, new BlockHolder(loc.getBlock()));
+			pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
 			pearl.setHealth(health);
 			pearl.setPearledOn(pearledOn);
 			pearl.setFreedOffline(freedOffline);
