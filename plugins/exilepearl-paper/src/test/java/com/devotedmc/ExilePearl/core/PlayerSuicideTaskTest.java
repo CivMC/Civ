@@ -35,6 +35,7 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		
 		dut = new PlayerSuicideTask(pearlApi);
+		dut.loadConfig(pearlConfig);
 	}
 
 	@Test
@@ -82,6 +83,7 @@ public class PlayerSuicideTaskTest extends BukkitTestCase {
 		when(pearlApi.getPearlPlayer(uid)).thenReturn(player);
 		
 		when(pearlConfig.getSuicideTimeoutSeconds()).thenReturn(20);
+		dut.loadConfig(pearlConfig);
 
 		dut.start();
 		dut.addPlayer(player);

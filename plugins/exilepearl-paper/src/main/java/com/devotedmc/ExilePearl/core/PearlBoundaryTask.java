@@ -38,14 +38,12 @@ import org.bukkit.World;
  */
 final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
-	private final PearlConfig config;
-
 	private Set<UUID> pearledPlayers = new HashSet<UUID>();
 	
 	// Tracks players who are being moved outside the pearl border.
 	private Set<UUID> handlingPlayers = Collections.synchronizedSet(new LinkedHashSet<UUID>());
 	
-	private int radius;
+	private int radius = 1000;
 	
 	//these material IDs are acceptable for places to teleport player; breathable blocks and water
 	public static final LinkedHashSet<Integer> safeOpenBlocks = new LinkedHashSet<Integer>(Arrays.asList(
@@ -62,8 +60,6 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 	public PearlBoundaryTask(final ExilePearlApi pearlApi) {
 		super(pearlApi);
-
-		this.config = pearlApi.getPearlConfig();
 	}
 
 
@@ -90,13 +86,13 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 		
 		super.start();
+		if (enabled) {
+			pearlApi.log("Using pearl radius value of %d.", radius);
+		}
 	}
 
 	@Override
-	public void run()
-	{
-		// if radius is set to 0, simply return
-		radius = config.getRulePearlRadius();
+	public void run() {
 		if (radius == 0)
 			return;
 
@@ -153,7 +149,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().getPlayer().isFlying());
 		player.teleport(newLoc, TeleportCause.PLUGIN);
-		pearl.getPlayer().msg("<i>You can't come within %d blocks of your pearl at (%d, %d).", config.getRulePearlRadius(), 
+		pearl.getPlayer().msg("<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
 		
 		handlingPlayers.remove(player.getName().toLowerCase());
@@ -317,5 +313,10 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerFreed(PlayerPearledEvent e) {
 		pearledPlayers.remove(e.getPearl().getPlayerId());
+	}
+	
+	@Override
+	public void loadConfig(PearlConfig config) {
+		this.radius = config.getRulePearlRadius();
 	}
 }

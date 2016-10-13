@@ -5,6 +5,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
@@ -74,6 +75,11 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 
 	public boolean isRunning() {
 		return enabled;
+	}
+	
+	@Override
+	public void loadConfig(PearlConfig config) {
+		
 	}
 	
 	public abstract String getTaskName();

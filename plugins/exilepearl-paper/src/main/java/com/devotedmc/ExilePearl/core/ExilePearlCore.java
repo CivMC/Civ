@@ -41,7 +41,6 @@ import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.command.CmdSuicide;
 import com.devotedmc.ExilePearl.command.PearlCommand;
-import com.devotedmc.ExilePearl.config.Documentable;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.listener.BastionListener;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
@@ -97,7 +96,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	
 	private final HashMap<UUID, PearlPlayer> players;
 	
-	private HashSet<Documentable> documentables;
 	private PluginStorage storage;
 	private TagManager tagManager;
 	
@@ -128,8 +126,6 @@ final class ExilePearlCore implements ExilePearlApi {
 		autoHelp = new CmdAutoHelp(this);
 		
 		players = new HashMap<UUID, PearlPlayer>();
-		
-		documentables = new HashSet<>();
 	}
 
 	@Override
@@ -144,8 +140,14 @@ final class ExilePearlCore implements ExilePearlApi {
 		log("=== ENABLE START ===");
 		long timeEnableStart = System.currentTimeMillis();
 		
+		pearlConfig.addConfigurable(playerListener);
+		pearlConfig.addConfigurable(exileListener);
+		pearlConfig.addConfigurable(pearlDecayWorker);
+		pearlConfig.addConfigurable(borderHandler);
+		pearlConfig.addConfigurable(suicideHandler);
+		
 		saveDefaultConfig();
-		pearlConfig.reloadFile();
+		pearlConfig.reload();
 		
 		// Storage connect and load
 		if (storageProvider.getStorage() == null) {
@@ -157,22 +159,10 @@ final class ExilePearlCore implements ExilePearlApi {
 			log(Level.SEVERE, "Failed to connect to storage.");
 		}
 		
-		// Load configuration for all documentable classes
-		for(Documentable d : documentables) {
-			String key = d.getDocumentKey();
-			if (key == null || key == "") {
-				d.loadDocument(pearlConfig.getDocument());
-			} else {
-				d.loadDocument(pearlConfig.getDocument().getDocument(key));
-			}
-		}
-		
 		// Add commands
 		commands.add(new CmdExilePearl(this));
 		commands.add(new CmdLegacy(this));
 		commands.add(new CmdSuicide(this));
-		
-		playerListener.setupRecipes();
 		
 		// Register events
 		this.getServer().getPluginManager().registerEvents(playerListener, this);

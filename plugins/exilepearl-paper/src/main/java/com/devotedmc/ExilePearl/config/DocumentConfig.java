@@ -1,23 +1,22 @@
 package com.devotedmc.ExilePearl.config;
 
 /**
- * A document-based configuration file
+ * A document-based configuration
  * 
  * @author Gordon
  */
 public interface DocumentConfig {
 	
 	/**
-	 * Gets a document with all the configuration data
+	 * Gets the raw document with all the configuration data
 	 * @return The configuration document
 	 */
 	Document getDocument();
 	
 	/**
 	 * Reloads the configuration from file
-	 * @return The SabreConfig instance
 	 */
-	DocumentConfig reloadFile();
+	void reload();
 	
 	/**
 	 * Saves the configuration to file
@@ -25,8 +24,8 @@ public interface DocumentConfig {
 	void saveToFile();
 	
 	/**
-	 * Saves a specific document to the configuration file
-	 * @param doc The document to save
+	 * Registers a configurable object
+	 * @param configurable The object to register
 	 */
-	void saveToFile(Document doc);
+	void addConfigurable(Configurable configurable);
 }

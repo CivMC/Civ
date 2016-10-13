@@ -25,8 +25,8 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
-import com.devotedmc.ExilePearl.config.Document;
-import com.devotedmc.ExilePearl.config.Documentable;
+import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 /**
@@ -51,7 +51,7 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
  * Exiled players can still play, mine, enchant, trade, grind, and explore.
  *
  */
-public class ExileListener extends RuleListener implements Documentable {
+public class ExileListener extends RuleListener implements Configurable {
 	
 	private Set<String> protectedAnimals = new HashSet<String>();
 	
@@ -63,12 +63,6 @@ public class ExileListener extends RuleListener implements Documentable {
 	 */
 	public ExileListener(final ExilePearlApi pearlApi) {
 		super(pearlApi);
-	}
-	
-	/**
-	 * Loads the config
-	 */
-	public void load() {
 	}
 
 
@@ -245,18 +239,7 @@ public class ExileListener extends RuleListener implements Documentable {
 	}
 
 	@Override
-	public String getDocumentKey() {
-		return "";
-	}
-
-	@Override
-	public Document getDocument() {
-		return new Document();
-	}
-
-	@Override
-	public Documentable loadDocument(Document doc) {
-		protectedAnimals.addAll(doc.getStringList("rules.protected_mobs"));		
-		return this;
+	public void loadConfig(PearlConfig config) {
+		protectedAnimals.addAll(config.getProtectedAnimals());
 	}
 }

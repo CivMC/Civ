@@ -116,6 +116,6 @@ public final class CorePluginFactory implements PearlFactory {
 	}
 
 	public PearlConfig createPearlConfig() {
-		return new CorePearlConfig(pearlApi);
+		return new CorePearlConfig(pearlApi, pearlApi);
 	}
 }

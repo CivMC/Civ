@@ -3,11 +3,14 @@ package com.devotedmc.ExilePearl.core;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.PearlLogger;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -17,12 +20,17 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 
 final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	
-	protected final Plugin plugin;
-	protected Document doc;
+	private final Plugin plugin;
+	private final PearlLogger logger;
+	private Document doc;
+	private Set<Configurable> configurables = new HashSet<Configurable>();
 	
-	public CorePearlConfig(final Plugin plugin) {
+	public CorePearlConfig(final Plugin plugin, final PearlLogger logger) {
 		Guard.ArgumentNotNull(plugin, "plugin");
+		Guard.ArgumentNotNull(logger, "logger");
+		
 		this.plugin = plugin;
+		this.logger = logger;
 		
 		doc = new Document(plugin.getConfig());
 	}
@@ -33,21 +41,29 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public DocumentConfig reloadFile() {
+	public void reload() {
 		plugin.reloadConfig();
 		doc = new Document(plugin.getConfig());
-		return this;
-	}
-
-	@Override
-	public void saveToFile(Document doc) {
-		doc.savetoConfig(plugin.getConfig());
-		plugin.saveConfig();
+		
+		for(Configurable c : configurables) {
+			try {
+				c.loadConfig(this);
+			} catch (Exception ex) {
+				logger.log(Level.SEVERE, "Failed to load configuration for class %s", c.getClass().getName());
+				ex.printStackTrace();
+			}
+		}
 	}
 	
 	@Override
 	public void saveToFile() {
-		saveToFile(doc);
+		doc.savetoConfig(plugin.getConfig());
+		plugin.saveConfig();
+	}
+
+	@Override
+	public void addConfigurable(Configurable configurable) {
+		configurables.add(configurable);
 	}
 
 	@Override
@@ -325,6 +341,5 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		default:
 			break;
 		}
-	}
-	
+	}	
 }

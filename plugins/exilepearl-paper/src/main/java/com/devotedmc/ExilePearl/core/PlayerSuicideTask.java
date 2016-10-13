@@ -15,12 +15,15 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.SuicideHandler;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 
 /**
  * Lets exiled players kill themselves with a timer
  * @author Gordon
  */
 final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
+	
+	private int timeout = 180;
 	
 	class SuicideRecord {
 		public final Location location;
@@ -89,7 +92,6 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 
 	@Override
 	public void addPlayer(PearlPlayer player) {
-		int timeout = pearlApi.getPearlConfig().getSuicideTimeoutSeconds();
 		players.put(player.getUniqueId(), new SuicideRecord(player.getPlayer().getLocation(), timeout));
 		player.msg(Lang.suicideInSeconds, timeout);
 	}
@@ -111,5 +113,10 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 			players.remove(e.getPlayer().getUniqueId());
 			pearlApi.getPearlPlayer(e.getPlayer().getUniqueId()).msg(Lang.suicideCancelled);
 		}
+	}
+	
+	@Override
+	public void loadConfig(PearlConfig config) {
+		this.timeout = pearlApi.getPearlConfig().getSuicideTimeoutSeconds();
 	}
 }

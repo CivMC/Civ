@@ -62,6 +62,8 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlPlayer;
 import com.devotedmc.ExilePearl.RepairMaterial;
+import com.devotedmc.ExilePearl.config.Configurable;
+import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -74,7 +76,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
  * Handles events related to prison pearls
  * @author GFQ
  */
-public class PlayerListener implements Listener {
+public class PlayerListener implements Listener, Configurable {
 
 	private final ExilePearlApi pearlApi;
 
@@ -88,42 +90,6 @@ public class PlayerListener implements Listener {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 
 		this.pearlApi = pearlApi;
-	}
-
-
-	/**
-	 * Sets up the pearl repair recipes
-	 */
-	public void setupRecipes() {
-		repairMaterials.clear();
-		
-		try {
-			// This item is basically used as a trigger to catch the recipe being created
-			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
-			ItemMeta im = resultItem.getItemMeta();
-			im.addEnchant(Enchantment.DURABILITY, 1, true);
-			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-			resultItem.setItemMeta(im);
-			
-			repairMaterials.addAll(pearlApi.getPearlConfig().getRepairMaterials());
-			
-			if (repairMaterials.size() == 0) {
-				pearlApi.log("Failed to load any pearl repair materials. Defaulting to Obsidian.");
-				repairMaterials.add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
-			}
-			
-			for(RepairMaterial mat : repairMaterials) {
-				// Shapeless recipe
-				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
-				r1.addIngredient(1, Material.ENDER_PEARL);
-				r1.addIngredient(1, mat.getStack().getData());
-
-				Bukkit.getServer().addRecipe(r1);
-			}
-			
-		} catch (Exception ex) {
-			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
-		}
 	}
 
 
@@ -948,5 +914,39 @@ public class PlayerListener implements Listener {
 		pearl.setHealth(pearl.getHealth() + repairAmount);
 		inv.setResult(pearl.createItemStack());
 		pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
+	}
+
+
+	@Override
+	public void loadConfig(PearlConfig config) {
+		repairMaterials.clear();
+		
+		try {
+			// This item is basically used as a trigger to catch the recipe being created
+			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
+			ItemMeta im = resultItem.getItemMeta();
+			im.addEnchant(Enchantment.DURABILITY, 1, true);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			resultItem.setItemMeta(im);
+			
+			repairMaterials.addAll(config.getRepairMaterials());
+			
+			if (repairMaterials.size() == 0) {
+				pearlApi.log("Failed to load any pearl repair materials. Defaulting to Obsidian.");
+				repairMaterials.add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
+			}
+			
+			for(RepairMaterial mat : repairMaterials) {
+				// Shapeless recipe
+				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+				r1.addIngredient(1, Material.ENDER_PEARL);
+				r1.addIngredient(1, mat.getStack().getData());
+
+				Bukkit.getServer().addRecipe(r1);
+			}
+			
+		} catch (Exception ex) {
+			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
+		}
 	}
 }

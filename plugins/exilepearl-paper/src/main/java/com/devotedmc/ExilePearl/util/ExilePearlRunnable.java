@@ -1,6 +1,8 @@
 package com.devotedmc.ExilePearl.util;
 
-public interface ExilePearlRunnable extends Runnable {
+import com.devotedmc.ExilePearl.config.Configurable;
+
+public interface ExilePearlRunnable extends Runnable, Configurable {
 	
 	/**
 	 * Start the pearl worker
