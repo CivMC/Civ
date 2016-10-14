@@ -43,7 +43,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("BYPASS_REINFORCEMENT"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BYPASS_REINFORCEMENT"));
 	}
 	
 	public boolean canAccessCrops(Player p) {
@@ -51,7 +51,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("CROPS"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("CROPS"));
 	}
 	
 	public boolean canAccessChests(Player p) {
@@ -59,7 +59,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("CHESTS"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("CHESTS"));
 	}
 	
 	public boolean canAccessDoors(Player p) {
@@ -67,7 +67,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("DOORS"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("DOORS"));
 	}
 	
 	public boolean canViewInformation(Player p) {
@@ -75,7 +75,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("REINFORCEMENT_INFO"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("REINFORCEMENT_INFO"));
 	}
 	
 	public boolean canMakeInsecure(Player p) {
@@ -83,7 +83,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("INSECURE_REINFORCEMENT"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("INSECURE_REINFORCEMENT"));
 	}
 	
 	public boolean canAcid(Player p) {
@@ -91,7 +91,7 @@ public class PlayerReinforcement extends Reinforcement{
 		if (g == null) {
 			return false;
 		}
-		return gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("ACIDBLOCK"));
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("ACIDBLOCK"));
 	}
 	
 	public boolean isSecurable() {
@@ -99,6 +99,7 @@ public class PlayerReinforcement extends Reinforcement{
 	}
 	
 	public int getDamageMultiplier(){
+		checkValid();
 		if (g == null){
 			return 1;
 		}
