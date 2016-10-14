@@ -38,6 +38,11 @@ public class CmdPearlBroadcast extends PearlCommand {
 			return;
 		}
 		
+		if (pearl.isBroadcastingTo(player.getUniqueId())) {
+			msg(Lang.pearlAlreadyBcasting);
+			return;
+		}
+		
 		plugin.getPearlManager().addBroadcastRequest(player, pearl);
 
 		msg(player, Lang.pearlBcastRequest, player().getName());

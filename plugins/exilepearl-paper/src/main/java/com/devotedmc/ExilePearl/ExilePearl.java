@@ -189,5 +189,12 @@ public interface ExilePearl {
 	 * Removes a broadcast target
 	 * @param bcast The broadcast target
 	 */
-	void removeBroadcastListener(BroadcastListener bcast);
+	void removeBroadcastListener(Object bcast);
+	
+	/**
+	 * Checks if the pearl is broadcasting to an object
+	 * @param o The object to check
+	 * @return true if it is broadcasting
+	 */
+	boolean isBroadcastingTo(Object o);
 }

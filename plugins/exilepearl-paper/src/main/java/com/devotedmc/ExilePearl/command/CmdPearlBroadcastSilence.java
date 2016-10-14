@@ -32,14 +32,12 @@ public class CmdPearlBroadcastSilence extends PearlCommand {
 			return;
 		}
 		
-		/* TODO
-		
-		if (pearl.addBroadcastListener(bcast);) {
+		if (!pearl.isBroadcastingTo(player().getUniqueId())) {
 			msg(Lang.pearlNotGettingBcasts, player.getName());
 			return;
 		}
 		
-		player.removeBcastPlayer(me());
-		msg(Lang.pearlSilencedBcast, player.getName()); */
+		pearl.removeBroadcastListener(player().getUniqueId());
+		msg(Lang.pearlSilencedBcast, player.getName());
 	}
 }

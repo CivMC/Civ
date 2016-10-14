@@ -14,5 +14,12 @@ public interface BroadcastListener {
 	 * @param pearl The pearl to broadcast
 	 */
 	void broadcast(ExilePearl pearl);
+	
+	/**
+	 * Gets whether the broadcast listener contains an underlying object
+	 * @param o the object to check
+	 * @return true if it exists
+	 */
+	boolean contains(Object o);
 
 }

@@ -22,6 +22,7 @@ public class Lang
 	public static final String pearlGettingBcasts = "<g>You have now receiving broadcasts from <c>%s.";
 	public static final String pearlNotGettingBcasts = "<i>You aren't getting broadcasts from <c>%s.";
 	public static final String pearlCantBcastSelf = "<i>You can't broadcast to yourself.";
+	public static final String pearlAlreadyBcasting = "<i>You're already broadcasting to that player.";
 	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	public static final String pearlCantThrow = "<i>You can't throw exile pearls.";

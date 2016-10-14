@@ -23,6 +23,7 @@ import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
@@ -34,6 +35,7 @@ import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * Instance of a player who is imprisoned in an exile pearl
@@ -56,7 +58,6 @@ final class CoreExilePearl implements ExilePearl {
 	private final Set<BroadcastListener> bcastListeners = new HashSet<BroadcastListener>();
 
 	private PearlType pearlType;
-	private PearlHolder holder;
 	private Date pearledOn;
 	private LinkedBlockingDeque<PearlHolder> holders;
 	private boolean freedOffline;
@@ -84,7 +85,6 @@ final class CoreExilePearl implements ExilePearl {
 		this.pearledOn = new Date();
 		this.pearlType = PearlType.EXILE;
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
-		this.holder = holder;
 		this.holders.add(holder);
 		this.health = DEFAULT_HEALTH;
 		storageEnabled = false;
@@ -148,7 +148,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public PearlHolder getHolder() {
-		return this.holder;
+		return holders.peekLast();
 	}
 
 
@@ -191,11 +191,11 @@ final class CoreExilePearl implements ExilePearl {
 			return;
 		}
 		
-		// Generate a moved event
-		Bukkit.getPluginManager().callEvent(new PearlMovedEvent(this, this.holder, holder));
+		PearlHolder from = holders.peekLast();
+		holders.add(holder);
 		
-		this.holder = holder;
-		this.holders.add(holder);
+		// Generate a moved event
+		Bukkit.getPluginManager().callEvent(new PearlMovedEvent(this, from, holder));
 
 		if (holders.size() > HOLDER_COUNT) {
 			holders.poll();
@@ -287,10 +287,10 @@ final class CoreExilePearl implements ExilePearl {
 	 */
 	@Override
 	public String getLocationDescription() {
-		final Location loc = holder.getLocation();
+		final Location loc = getHolder().getLocation();
 		final Vector vec = loc.toVector();
 		final String str = loc.getWorld().getName() + " " + vec.getBlockX() + " " + vec.getBlockY() + " " + vec.getBlockZ();
-		return "held by " + holder.getName() + " at " + str;
+		return "held by " + getHolder().getName() + " at " + str;
 	}
 
 
@@ -450,6 +450,10 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public void performBroadcast() {
+		Location l = getHolder().getLocation();
+		String name = getHolder().getName();		
+		TextUtil.msg(getPlayer(), Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		
 		for(BroadcastListener b : bcastListeners) {
 			b.broadcast(this);
 		}
@@ -463,7 +467,23 @@ final class CoreExilePearl implements ExilePearl {
 
 
 	@Override
-	public void removeBroadcastListener(BroadcastListener bcast) {
-		bcastListeners.remove(bcast);
+	public void removeBroadcastListener(Object o) {
+		for(BroadcastListener b : bcastListeners) {
+			if (b.contains(o)) {
+				bcastListeners.remove(b);
+				return;
+			}
+		}
+	}
+
+
+	@Override
+	public boolean isBroadcastingTo(Object o) {
+		for(BroadcastListener b : bcastListeners) {
+			if (b.contains(o)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

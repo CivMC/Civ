@@ -25,9 +25,9 @@ public class PlayerBroadcastListener implements BroadcastListener {
 	@Override
 	public void broadcast(ExilePearl pearl) {
 		Location l = pearl.getHolder().getLocation();
-		String name = pearl.getHolder().getName();
+		String holderName = pearl.getHolder().getName();
 		
-		String msg = TextUtil.parse(Lang.pearlBroadcast, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		String msg = TextUtil.parse(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 		
 		Player p = Bukkit.getPlayer(playerId);
 		if (p != null && p.isOnline()) {
@@ -52,5 +52,10 @@ public class PlayerBroadcastListener implements BroadcastListener {
 	@Override
 	public int hashCode() {
 		return playerId.hashCode();
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return playerId.equals(o);
 	}
 }

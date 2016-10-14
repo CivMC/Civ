@@ -248,9 +248,15 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public void removeBroadcastListener(BroadcastListener bcast) {
+	public void removeBroadcastListener(Object bcast) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean isBroadcastingTo(Object o) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -56,4 +56,10 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 	public int hashCode() {
 		return group.hashCode();
 	}
+
+	@Override
+	public boolean contains(Object o) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }
