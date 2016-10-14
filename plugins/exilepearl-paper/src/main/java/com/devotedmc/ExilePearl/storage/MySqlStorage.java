@@ -76,7 +76,7 @@ class MySqlStorage implements PluginStorage {
 				config.getMySqlPassword(), 
 				config.getMySqlHost(), 
 				config.getMySqlPort(), 
-				config.getMySqlName(), 
+				config.getMySqlDatabaseName(), 
 				config.getMySqlPoolSize(), 
 				config.getMySqlConnectionTimeout(), 
 				config.getMySqlIdleTimeout(), 
@@ -173,8 +173,6 @@ class MySqlStorage implements PluginStorage {
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "An error occurred when loading pearls.");
 		}
-
-		logger.log("Loaded %d exile pearls.", pearls.size());
 
 		return pearls;
 	}
@@ -292,14 +290,25 @@ class MySqlStorage implements PluginStorage {
 	 */
 	private void migratePrisonPearl() {
 		logger.log(Level.WARNING, "Attempting to perform PrisonPearl data migration.");
+		
+		ConnectionPool migrateDb = new ConnectionPool(logger.getPluginLogger(), 
+				config.getMySqlUsername(), 
+				config.getMySqlPassword(), 
+				config.getMySqlHost(), 
+				config.getMySqlPort(), 
+				config.getMySqlMigrateDatabaseName(), 
+				config.getMySqlPoolSize(), 
+				config.getMySqlConnectionTimeout(), 
+				config.getMySqlIdleTimeout(), 
+				config.getMySqlMaxLifetime());
 
 		int migrated = 0;
 		int failed = 0;
 
 		try {
 			// Check if the table exists
-			try (Connection connection = db.getConnection();) {
-				DatabaseMetaData dbm = db.getConnection().getMetaData();
+			try (Connection connection = migrateDb.getConnection();) {
+				DatabaseMetaData dbm = migrateDb.getConnection().getMetaData();
 
 				ResultSet tables = dbm.getTables(null, null, "prisonpearls", null);
 				if (!tables.next()) {
@@ -311,7 +320,7 @@ class MySqlStorage implements PluginStorage {
 				return;
 			}
 
-			try (Connection connection = db.getConnection();
+			try (Connection connection = migrateDb.getConnection();
 					PreparedStatement getAllPearls = connection.prepareStatement("SELECT * FROM PrisonPearls;"); ) {
 				ResultSet set = getAllPearls.executeQuery();
 				while (set.next()) {
@@ -344,10 +353,14 @@ class MySqlStorage implements PluginStorage {
 								.append("location", loc)
 								.append("pearled_on", pearledOn);
 
-						ExilePearl pearl = pearlFactory.createExilePearl(playerId, doc);
-						pearlInsert(pearl);
+						ExilePearl pearl = pearlFactory.createdMigratedPearl(playerId, doc);
+						if (pearl != null) {
+							pearlInsert(pearl);
+							migrated++;
+						} else {
+							failed++;
+						}
 
-						migrated++;
 					} catch(SQLException ex) {
 						failed++;
 						logger.log(Level.SEVERE, "Failed to migrate PisonPearl pearl.");

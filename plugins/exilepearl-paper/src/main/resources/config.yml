@@ -137,7 +137,7 @@ storage:
   type: 0
   mysql:
     host: localhost
-    dbname: bukkit
+    dbname: exilepearl
     port: 3306
     username: bukkit
     password: ''
@@ -146,6 +146,7 @@ storage:
     max_lifetime: 5000
     pool_size: 5
     migrate_pp: false
+    migrate_dbname: prisonpearl
 general:
   suicide_time_seconds: 180
 pearls:

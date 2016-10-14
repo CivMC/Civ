@@ -77,7 +77,7 @@ public class MySqlStorageIntegrationTest {
 
 		config = mock(MySqlConfig.class);
 		when(config.getMySqlHost()).thenReturn("localhost");
-		when(config.getMySqlName()).thenReturn("exilepearltest");
+		when(config.getMySqlDatabaseName()).thenReturn("exilepearltest");
 		when(config.getMySqlPort()).thenReturn(3306);
 		when(config.getMySqlUsername()).thenReturn("bukkit");
 		when(config.getMySqlPassword()).thenReturn("");
@@ -92,7 +92,7 @@ public class MySqlStorageIntegrationTest {
 				config.getMySqlPassword(), 
 				config.getMySqlHost(), 
 				config.getMySqlPort(), 
-				config.getMySqlName(), 
+				config.getMySqlDatabaseName(), 
 				config.getMySqlPoolSize(), 
 				config.getMySqlConnectionTimeout(), 
 				config.getMySqlIdleTimeout(), 

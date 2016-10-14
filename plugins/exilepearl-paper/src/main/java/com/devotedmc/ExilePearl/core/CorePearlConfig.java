@@ -78,7 +78,7 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public String getMySqlName() {
+	public String getMySqlDatabaseName() {
 		return doc.getString("storage.mysql.dbname", "bukkit");
 	}
 
@@ -120,6 +120,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	@Override
 	public boolean getMigratePrisonPearl() {
 		return doc.getBoolean("storage.mysql.migrate_pp", false);
+	}
+
+	@Override
+	public String getMySqlMigrateDatabaseName() {
+		return doc.getString("storage.mysql.migrate_dbname", "prisonpearl");
 	}
 
 	@Override

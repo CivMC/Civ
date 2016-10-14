@@ -24,7 +24,7 @@ public interface MySqlConfig {
 	 * Gets the SQL name
 	 * @return the SQL name
 	 */
-	String getMySqlName();
+	String getMySqlDatabaseName();
 	
 	/**
 	 * Gets the SQL port
@@ -61,4 +61,10 @@ public interface MySqlConfig {
 	 * @return whether to migrate or not
 	 */
 	boolean getMigratePrisonPearl();
+	
+	/**
+	 * Gets the SQL migrate database name
+	 * @return the SQL migrate database name
+	 */
+	String getMySqlMigrateDatabaseName();
 }

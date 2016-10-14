@@ -56,8 +56,8 @@ public final class CorePluginFactory implements PearlFactory {
 			int pearlId = doc.getInteger("pearl_id");
 			Location loc = doc.getLocation("location");
 			int health = doc.getInteger("health");
-			Date pearledOn = doc.getDate("pearled_on");
-			boolean freedOffline = doc.getBoolean("freed_offline");
+			Date pearledOn = doc.getDate("pearled_on", new Date());
+			boolean freedOffline = doc.getBoolean("freed_offline", false);
 			
 			ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, new BlockHolder(loc.getBlock()));
 			pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
