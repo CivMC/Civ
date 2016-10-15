@@ -1,53 +1,33 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
-import java.util.List;
-
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.civchat2.ChatStrings;
+import vg.civcraft.mc.civchat2.command.ChatCommand;
 
-public class Afk extends PlayerCommand{
-	private CivChat2 plugin = CivChat2.getInstance();
-	private CivChat2Manager chatMan;
-	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	
+public class Afk extends ChatCommand {
+
 	public Afk(String name) {
 		super(name);
 		setIdentifier("afk");
-		setDescription("This command is used to toggle afk status.");
+		setDescription("Sets your afk status.");
 		setUsage("/afk");
-		setArguments(0,0);
+		setErrorOnTooManyArgs(false);
+		setSenderMustBePlayer(true);
 	}
-	
+
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
-		chatMan = plugin.getCivChat2Manager();
-		if(!(sender instanceof Player)){
-			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
-			return true;
+	public boolean execute(CommandSender sender, String[] args) {
+		
+		Boolean isAfk = chatMan.setPlayerAfk(player(), !chatMan.isPlayerAfk(player()));
+		
+		if (isAfk) {
+			msg(ChatStrings.chatAfk);
+		} else {
+			msg(ChatStrings.chatNotAfk);
 		}
-		
-		Player player = (Player) sender;		
-		String name = NameAPI.getCurrentName(player.getUniqueId());
-		chatMan.toggleAfk(name);
-		String debugMessage = "Player toggled AFK state, Player: " + name + " Current State: " + chatMan.isAfk(name);
-		logger.debug(debugMessage);
-		
+		logger.debug(String.format("Player %s changed afk status to %s.", getRealName(player()), isAfk.toString()));
+
 		return true;
-		
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
-
 }

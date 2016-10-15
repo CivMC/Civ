@@ -1,64 +1,47 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.utility.CivChat2Log;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civchat2.ChatStrings;
+import vg.civcraft.mc.civchat2.command.ChatCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class GroupChat extends PlayerCommand{
-	private CivChat2 plugin = CivChat2.getInstance();
-	private CivChat2Manager chatMan;
-	private CivChat2Log logger = CivChat2.getCivChat2Log();
-	
+public class GroupChat extends ChatCommand {
+
 	public GroupChat(String name) {
 		super(name);
 		setIdentifier("groupc");
-		setDescription("This command is used to join a citadel groupchat");
-		setUsage("/groupc <groupname> (message)");
-		setArguments(0,100);
+		setDescription("Joins a group chat");
+		setUsage("/groupc <group> <message>");
+		setErrorOnTooManyArgs(false);
+		setSenderMustBePlayer(true);
 	}
-	
-	@Override
-	public boolean execute(CommandSender sender, String[] args){
-		chatMan = plugin.getCivChat2Manager();
-		if(!(sender instanceof Player)){
-			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
-			return true;
-		}
 
-		Player player = (Player) sender;
-		UUID uuid = NameAPI.getUUID(player.getName());
-		String playerName = player.getName();
+	@Override
+	public boolean execute(CommandSender sender, String[] args) {
+
 		GroupManager gm = NameAPI.getGroupManager();
 		boolean isGroupChatting = true;
 		logger.debug("chatMan = [" + chatMan.toString() + "]");
-		if(chatMan.getGroupChatting(playerName) == null){
+		if(chatMan.getGroupChatting(player()) == null) {
 			isGroupChatting = false;
 		}
 		Group group;
 		boolean defGroup = false;
-		if(args.length <1){
+		if(args.length < 1) {
 			//check if player is in groupchat and move them to normal chat
-			if(isGroupChatting){
-				sender.sendMessage(ChatColor.RED + "You have been moved to global chat");
-				chatMan.removeGroupChat(playerName);
+			if(isGroupChatting) {
+				msg(ChatStrings.chatMovedToGlobal);
+				chatMan.removeGroupChat(player());
 				return true;
 			}
 			else {
-				String grpName = gm.getDefaultGroup(uuid);
+				String grpName = gm.getDefaultGroup(player().getUniqueId());
 				if (grpName != null) {
 					group = GroupManager.getGroup(grpName);
 					defGroup = true;
@@ -69,99 +52,84 @@ public class GroupChat extends PlayerCommand{
 			}
 		}
 		else {
-			group = GroupManager.getGroup(args[0]);
+			group = argAsGroup(0);
 		}
-		if(group == null){
-			sender.sendMessage(ChatColor.RED + "There is no group with that name.");
+		if(group == null) {
+			msg(ChatStrings.chatGroupNotFound);
 			return true;
 		}
-		if(!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))){
-			sender.sendMessage(ChatColor.RED + "You don't have permission to use chat in this group");
+		if(!NameAPI.getGroupManager().hasAccess(group, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+			msg(ChatStrings.chatGroupNoPerms);
 			return true;
 		}
-		if (plugin.getDatabaseManager().isIgnoringGroup(sender.getName(), group.getName())){
-			sender.sendMessage(ChatColor.RED + "You need to unignore group: "+group.getName());
+		if (plugin.getDatabaseManager().isIgnoringGroup(sender.getName(), group.getName())) {
+			msg(ChatStrings.chatNeedToUnignore, group.getName());
 			return true;
 		}
-		if(args.length == 1){	
-			if(isGroupChatting){
+		if(args.length == 1) {	
+			if(isGroupChatting) {
 				//player already groupchatting check if its this group
-				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
-				if(curGroup == group){
-					sender.sendMessage(ChatColor.RED + "You are already chatting in that group.");
+				Group curGroup = chatMan.getGroupChatting(player());
+				if(curGroup == group) {
+					msg(ChatStrings.chatGroupAlreadyChatting);
 					return true;
 				}
-				else{
-					sender.sendMessage(ChatColor.RED + "You have changed to groupchat: " + group.getName());
-					chatMan.removeGroupChat(playerName);
-					chatMan.addGroupChat(playerName, group.getName());
+				else {
+					msg(ChatStrings.chatGroupNowChattingIn, group.getName());
+					chatMan.removeGroupChat(player());
+					chatMan.addGroupChat(player(), group);
 					return true;
 				}
 			}
-			else{
-				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
-				String chattingWith = chatMan.getChannel(playerName);
-				if (chattingWith != null) {
-					chatMan.removeChannel(playerName);
+			else {
+				msg(ChatStrings.chatGroupNowChattingIn, group.getName());
+				if (chatMan.getChannel(player()) != null) {
+					chatMan.removeChannel(player());
 				}
-				chatMan.addGroupChat(playerName, group.getName());
+				chatMan.addGroupChat(player(), group);
 				return true;
 			}
-			
-		} else if (args.length > 1){
+
+		} else if (args.length > 1) {
 			StringBuilder chatMsg = new StringBuilder();
 			for(int i = defGroup ? 0 : 1; i < args.length; i++){
 				chatMsg.append(args[i]);
 				chatMsg.append(" ");
 			}
-			if(isGroupChatting){
+			if(isGroupChatting) {
 				//player already groupchatting check if its this group
-				Group curGroup = GroupManager.getGroup(chatMan.getGroupChatting(playerName));
+				Group curGroup = chatMan.getGroupChatting(player());
 				if(curGroup == group){
-					chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
+					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				}
-				else{
-					sender.sendMessage(ChatColor.RED + "You have changed to groupchat: " + group.getName());
-					chatMan.removeGroupChat(playerName);
-					chatMan.addGroupChat(playerName, group.getName());
-					chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
+				else {
+					chatMan.removeGroupChat(player());
+					chatMan.addGroupChat(player(), group);
+					msg(ChatStrings.chatGroupNowChattingIn, group.getName());
+					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				}
 			}
-			else{
-				sender.sendMessage(ChatColor.RED + "You have been moved to groupchat: " + group.getName());
-				String chattingWith = chatMan.getChannel(playerName);
-				if (chattingWith != null) {
-					chatMan.removeChannel(playerName);
+			else {
+				if (chatMan.getChannel(player()) != null) {
+					chatMan.removeChannel(player());
 				}
-				chatMan.addGroupChat(playerName, group.getName());
-				chatMan.sendGroupMsg(playerName, chatMsg.toString(), group);
+				chatMan.addGroupChat(player(), group);
+				msg(ChatStrings.chatGroupNowChattingIn, group.getName());
+				chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 				return true;
 			}
 		}
 		return false;
-		
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		if (arg1.length == 0)
-			return null;
-		if (!(arg0 instanceof Player)) {
-			arg0.sendMessage("This command can not be accessed from the console");
+		if (arg1.length == 0) {
 			return null;
 		}
-		List<String> groupsToReturn = new ArrayList<String>();
-		UUID uuid = NameAPI.getUUID(arg0.getName());
-		GroupManager gm = NameAPI.getGroupManager();
-		List<String> groups = gm.getAllGroupNames(uuid);
-		for(String group:groups) {
-			if(group.toLowerCase().startsWith(arg1[0].toLowerCase())) {
-				groupsToReturn.add(group);
-			}
-		}
-		return groupsToReturn;	
-	}	
-
+		
+		return findGroups(arg1[0]);	
+	}
 }

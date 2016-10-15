@@ -11,7 +11,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import vg.civcraft.mc.civchat2.database.DatabaseManager;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
@@ -19,7 +18,8 @@ import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
-import vg.civcraft.mc.mercury.MercuryAPI;
+import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -31,38 +31,35 @@ public class CivChat2Manager {
 	private CivChat2FileLogger chatLog;
 	private CivChat2 instance;
 	private DatabaseManager DBM;
-	private final String sep = "|";
 	
 	
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
-	private HashMap<String, String> chatChannels;
+	private HashMap<UUID, UUID> chatChannels;
 	
 	//groupChatChannels have (Player, Group)
-	private HashMap<String, String> groupChatChannels;
+	private final HashMap<UUID, Group> groupChatChannels;
 	
 	//replyList has (playerName, whotoreplyto)
-	private HashMap<String, String> replyList;
+	private final HashMap<UUID, UUID> replyList;
 	
-	//afk has player names in a list of who is afk
-	private List<String> afk_player;
+	// Contains the players who are currently AFK
+	private final Set<UUID> afkPlayers;
 	
-	private static final String AFKMSG = ChatColor.AQUA + "That Player is currently AFK";
-	private static final String IGNOREMSG = ChatColor.YELLOW + "That Player is ignoring you";
 	protected static final GroupManager GM = NameAPI.getGroupManager();
 
 	private String defaultColor;
 	
 	
-	public CivChat2Manager(CivChat2 pluginInstance){
+	public CivChat2Manager(CivChat2 pluginInstance) {
 		instance = pluginInstance;
 		config = instance.getPluginConfig();
 		chatLog = instance.getCivChat2FileLogger();
 		DBM = instance.getDatabaseManager();
 		defaultColor = config.getDefaultColor();
-		chatChannels = new HashMap<String, String>();
-		groupChatChannels  = new HashMap<String, String>();
-		replyList = new HashMap<String, String>();
-		afk_player = new ArrayList<String>();
+		chatChannels = new HashMap<UUID, UUID>();
+		groupChatChannels  = new HashMap<UUID, Group>();
+		replyList = new HashMap<UUID, UUID>();
+		afkPlayers = new HashSet<UUID>();
 	}
 	
 	
@@ -72,13 +69,10 @@ public class CivChat2Manager {
 	 * @return        Returns a String of channel name, null if doesn't exist
 	 */
 	
-	public String getChannel(String name) {
-		if(chatChannels.containsKey(name)){
-			CivChat2.debugmessage("getChannel returning value: " + chatChannels.get(name));
-			return chatChannels.get(name);
-		}
-		CivChat2.debugmessage("getChannel returning null");
-		return null;
+	public UUID getChannel(Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		return chatChannels.get(player.getUniqueId());
 	}
 	
 	/**
@@ -86,41 +80,31 @@ public class CivChat2Manager {
 	 * @param name    Player Name of the channel
 	 * 
 	 */
-	public void removeChannel(String name) {
-		if(chatChannels.containsKey(name)){
-			CivChat2.debugmessage("removeChannel removing channel: " + name);
-			chatChannels.remove(name);
-		}	
+	public void removeChannel(Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		chatChannels.remove(player.getUniqueId());
 	}
 	
 	/**
 	 * Adds a channel for player to player chat, if player1 is 
 	 * currently in a chatChannel this will overwrite it
-	 * @param player1   Senders name
-	 * @param player2   Recievers name
+	 * @param player1   Sender's name
+	 * @param player2   Receiver's name
 	 */
-	public void addChatChannel(String player1, String player2) {
-		if(getChannel(player1) != null){
-			chatChannels.put(player1, player2);
+	public void addChatChannel(Player player1, Player player2) {
+		Guard.ArgumentNotNull(player1, "player1");
+		Guard.ArgumentNotNull(player2, "player2");
+		
+		if(getChannel(player1) != null) {
+			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
 			CivChat2.debugmessage("addChatChannel adding channel for P1: " + player1 + " P2: " + player2);
 		}
 		else{
-			chatChannels.put(player1, player2);
+			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
 			CivChat2.debugmessage("addChatChannel adding channel for P1: " + player1 + " P2: " + player2);
 		}
 		
-	}
-	
-	/**
-	 * Method to Send a message to a player on a different shard
-	 * @param receive Name of the player receiving the message
-	 * @param chatMessage Message to send to the player
-	 */
-	public void sendMsgAcrossShards(String receiver, String chatMessage){
-		String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
-		//This separator needs to be changed to load from config.
-        String sep = "|";
-        MercuryAPI.sendMessage(receiverServer, "msg" + sep + receiver + sep + chatMessage.replace(sep, ""), "civchat2");
 	}
 	
 	/**
@@ -167,97 +151,26 @@ public class CivChat2Manager {
 								.toString());
 		sb.delete(0, sb.length());
 		
-		if(isAfk(receiver.getName())){
+		if(isPlayerAfk(receiver)){
 			receiver.sendMessage(receiverMessage);
-			sender.sendMessage(AFKMSG);
+			sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
 			return;
 		}
 		else if(DBM.isIgnoringPlayer(receiverName, senderName)){
 			//player is ignoring the sender
-			sender.sendMessage(IGNOREMSG);
+			sender.sendMessage(parse(ChatStrings.chatPlayerIgnoringYou));
 			return;
 		} else if (DBM.isIgnoringPlayer(senderName, receiverName)){
-			sender.sendMessage(ChatColor.YELLOW+"You need to unignore "+receiverName);
+			sender.sendMessage(parse(ChatStrings.chatNeedToUnignore, receiverName));
 			return;
 		}
 		CivChat2.debugmessage("Sending private chat message");
 		chatLog.logPrivateMessage(sender, chatMessage, receiver.getName());
-		replyList.put(receiverName, senderName);
-		replyList.put(senderName, receiverName);
+		replyList.put(receiver.getUniqueId(), sender.getUniqueId());
+		replyList.put(sender.getUniqueId(), receiver.getUniqueId());
 		sender.sendMessage(senderMessage);
 		receiver.sendMessage(receiverMessage);
 	}
-	
-	/**
-	 * Method to Send a private message to a player on a different shard
-	 * @param sender Player sending the message on the current shard
-	 * @param receiver Name of the player receiving the message on a different shard
-	 * @param chatMessage Message to send from sender to receiver
-	 */
-	public void sendPrivateMsgAcrossShards(Player sender, String receiver, String chatMessage){
-        String receiverServer = MercuryAPI.getServerforPlayer(receiver).getServerName();
-        //This separator needs to be changed to load from config.
-        String sep = "|";
-       
-        if (DBM.isIgnoringPlayer(receiver, sender.getName())){
-            sender.sendMessage(ChatColor.YELLOW + "Player " + receiver +" is ignoring you");
-            return;
-        }
-       
-        if (DBM.isIgnoringPlayer(sender.getName(), receiver)){
-            sender.sendMessage(ChatColor.YELLOW + "You need to unignore " + receiver);
-            return;
-        }
-       
-        StringBuilder sb = new StringBuilder();
-       
-        String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
-                                .append("To ")
-                                .append(receiver)
-                                .append(": ")
-                                .append(chatMessage)
-                                .toString();
-       
-        sender.sendMessage(senderMessage);
-       
-        CivChat2.debugmessage(sb.append("ChatManager.sendPrivateMsg Sender: " )
-                .append( sender.getName())  
-                .append(" receiver: ")
-                .append( receiver)
-                .append( " Message: ")
-                .append(chatMessage)
-                .toString());
-        CivChat2.debugmessage("Sending private chat message");
-        chatLog.logPrivateMessage(sender, chatMessage, receiver);
-       
-        replyList.put(sender.getName(), receiver);
-        MercuryAPI.sendMessage(receiverServer, "pm" + sep + sender.getName() + sep + receiver.trim()+sep + chatMessage.replace(sep, ""), "civchat2");
-    }
-	
-	/**
-	 * Method to Receive a private message from a player on a different shard
-	 * @param sender Player sending the message on the current shard
-	 * @param receiver Name of the player receiving the message on a different shard
-	 * @param chatMessage Message to send from sender to receiver
-	 */
-    public void receivePrivateMsgAcrossShards(String sender, Player receiver, String chatMessage){
-        if(isAfk(receiver.getName())){
-            sendMsgAcrossShards(sender, AFKMSG);
-        }
-       
-        StringBuilder sb = new StringBuilder();
-       
-        String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE)
-                                .append("From ")
-                                .append(sender)
-                                .append(": ")
-                                .append(chatMessage)
-                                .toString();
-        sb.delete(0, sb.length());
-       
-        replyList.put(receiver.getName(), sender);
-        receiver.sendMessage(receiverMessage);
-    }	
 	
 	/**
 	 * Method to broadcast a message in global chat
@@ -266,6 +179,11 @@ public class CivChat2Manager {
 	 * @param recipients Players in range to receive the message
 	 */
 	public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
+		Guard.ArgumentNotNull(sender, "sender");
+		Guard.ArgumentNotNull(chatMessage, "chatMessage");
+		Guard.ArgumentNotNullOrEmpty(messageFormat, "messageFormat");
+		Guard.ArgumentNotNull(recipients, "recipients");
+		
 		GlobalChatEvent event = new GlobalChatEvent(sender, chatMessage, messageFormat);
 		Bukkit.getPluginManager().callEvent(event);
 		
@@ -276,13 +194,9 @@ public class CivChat2Manager {
 		int range = config.getChatRange();
 		int height = config.getYInc();	
 		Location location = sender.getLocation();
-		int x = location.getBlockX();
 		int y = location.getBlockY();
-		int z = location.getBlockZ();
 		double scale = (config.getYScale())/1000;			
-		double chatdist = 0;
 		
-		UUID uuid = NameAPI.getUUID(sender.getName());
 		StringBuilder sb = new StringBuilder();
 
 		//do height check
@@ -328,47 +242,32 @@ public class CivChat2Manager {
 		recivers.remove(sender.getName()); //remove the sender from the list
 		chatLog.logGlobalMessage(sender, chatMessage, recivers);
 	}
-
+	
 	/**
-	 * Check if player is afk
-	 * @param playername Name of the player to check
-	 * @return True if player is afk, false if they are not
+	 * Gets whether a player is AFK
+	 * @param player The player to check
+	 * @return true if the player is AFK
 	 */
-	public boolean isAfk(String playername){
-		if(afk_player.contains(playername)){
-			return true;
-		}
-		else{
-			return false;
-		}
+	public boolean isPlayerAfk(Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		return afkPlayers.contains(player.getUniqueId());
 	}
 	
 	/**
-	 * Method to toggle a players afk/not afk status
-	 * @param playername the player to change state
+	 * Sets the AFK status of a player
+	 * @param player The player to change
+	 * @return The player AFK status
 	 */
-	public void toggleAfk(String playername){
-		Player p = Bukkit.getPlayer(NameAPI.getUUID(playername));
-		if(afk_player.contains(playername)){
-			//Player was afk bring them back now
-			afk_player.remove(playername);
-			String afkNoMoreMessage = ChatColor.BLUE + "You are no longer in AFK status";
-			p.sendMessage(afkNoMoreMessage);
+	public boolean setPlayerAfk(Player player, boolean afkStatus) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		if (afkStatus) {
+			afkPlayers.add(player.getUniqueId());
+		} else {
+			afkPlayers.remove(player.getUniqueId());
 		}
-		else{
-			afk_player.add(playername);
-			String afkMessage = ChatColor.BLUE + "You have enabled AFK, type /afk to remove afk status";
-			p.sendMessage(afkMessage);
-		}
-	}
-	
-	/**
-	 * Get a players UUID 
-	 * @param name	Players Name
-	 * @return Returns the players UUID
-	 */
-	public UUID getPlayerUUID(String name) {
-		return NameAPI.getUUID(name);
+		return afkStatus;
 	}
 	
 	/**
@@ -377,89 +276,47 @@ public class CivChat2Manager {
 	 * @return the UUID of the person to reply to, null if none
 	 */
 	public UUID getPlayerReply(Player sender) {
-		String senderName = sender.getName();
-		if(replyList.containsKey(senderName)){
-			//sender has someone to reply too
-			String replyeeName = replyList.get(senderName);
-			UUID uuid = NameAPI.getUUID(replyeeName);
-			StringBuilder sb = new StringBuilder();
-			if(uuid == null){
-				String errorMsg = sb.append("This should not be occuring... ERROR INFO: sender: [" )
-									.append(senderName) 
-									.append("] replyList Value: [")
-									.append( replyeeName) 
-									.append("]")
-									.toString();
-				sb.delete(0, sb.length());
-				CivChat2.warningMessage(errorMsg);
-				sender.sendMessage(sb.append(ChatColor.RED )
-									.append( "Internal Error while performing reply")
-									.toString());
-				sb.delete(0, sb.length());
-			}
-			else{
-				return uuid;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets the player to send reply to
-	 * @param sender the person sending reply command
-	 * @return the UUID of the person to reply to, null if none
-	 */
-	public UUID getPlayerReply(String sender) {
-		if(replyList.containsKey(sender)){
-			String replyName = replyList.get(sender);
-			UUID uuid = NameAPI.getUUID(replyName);
-			if(uuid == null){
-				StringBuilder sb = new StringBuilder();
-				String errorMsg = sb.append("This should not be occuring... ERROR INFO: sender: [").append(sender)
-						.append("] replyList Value: [").append(replyName).append("]").toString();
-				sb.delete(0, sb.length());
-				CivChat2.warningMessage(errorMsg);
-			}
-			return uuid;
-		} else {
-			return null;
-		}
+		Guard.ArgumentNotNull(sender, "sender");
+		
+		return replyList.get(sender.getUniqueId());
 	}
 	
 	/**
 	 * Add a player to the replyList 
-	 * @param The name of the player using the reply command. 
-	 * @param The name of the player that will receive the reply
+	 * @param player The player using the reply command. 
+	 * @param replyPlayer The the player that will receive the reply
 	 */
-	public void addPlayerReply(String player, String playerToReply){
-		if(player != null && playerToReply != null){
-			replyList.put(player, playerToReply);
-		}
+	public void addPlayerReply(Player player, Player replyPlayer) {
+		Guard.ArgumentNotNull(player, "player");
+		Guard.ArgumentNotNull(replyPlayer, "replyPlayer");
+
+		replyList.put(player.getUniqueId(), replyPlayer.getUniqueId());
 	}
 	
 	/**
-	 * Method to add a groupchat channel
+	 * Method to add a group chat channel
 	 * @param name Player sending the message
 	 * @param group Group sending the message to
 	 */
-	public void addGroupChat(String name, String groupName) {
-		groupChatChannels.put(name, groupName);
+	public void addGroupChat(Player player, Group group) {
+		Guard.ArgumentNotNull(player, "player");
+		Guard.ArgumentNotNull(group, "group");
+		
+		groupChatChannels.put(player.getUniqueId(), group);
 	}
 
 	/**
 	 * Method to send a message to a group
-	 * @param name Player sending the message
-	 * @param groupMsg Message to send to the group
+	 * @param name sender sending the message
 	 * @param group Group to send the message too
+	 * @param groupMsg Message to send to the group
 	 */
-	public void sendGroupMsg(String name, String groupMsg, Group group) {
-		if (CivChat2.getInstance().isMercuryEnabled()) {
-			MercuryAPI.sendGlobalMessage("gc" + sep + name + sep + group.getName() + sep + groupMsg.replace(sep, ""), "civchat2");
-		}
-		StringBuilder sb = new StringBuilder();
-		Player msgSender = Bukkit.getPlayer(NameAPI.getUUID(name));
+	public void sendGroupMsg(Player sender, Group group, String message) {
+		Guard.ArgumentNotNull(sender, "sender");
+		Guard.ArgumentNotNull(group, "group");
+		Guard.ArgumentNotNullOrEmpty(message, "message");
 		
-		GroupChatEvent event = new GroupChatEvent(msgSender, group.getName(), groupMsg);
+		GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
 		Bukkit.getPluginManager().callEvent(event);
 		
 		if (event.isCancelled()) {
@@ -476,96 +333,36 @@ public class CivChat2Manager {
 				members.add(toAdd);
 			}
 		}
-		msgSender.sendMessage(sb.append(ChatColor.GRAY )
-								.append("[" )
-								.append( group.getName() )
-								.append( "] ")
-								.append( name )
-								.append(": " )
-								.append(ChatColor.WHITE)
-								.append( groupMsg)
-								.toString());
-		sb.delete(0, sb.length());
-		for(Player receiver: members){
-			sb.delete(0, sb.length());
+		
+		String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), sender.getName(), message);
+		String senderName = NameAPI.getCurrentName(sender.getUniqueId());
+		
+		for(Player receiver : members) {
 			if(DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())){
 				continue;
 			}
-			if(DBM.isIgnoringPlayer(receiver.getName(), name)){
+			if(DBM.isIgnoringPlayer(receiver.getName(), senderName)) {
 				continue;
 			}
-			if(receiver.getName().equals(name)){
-				continue;
-			} else {
-				receiver.sendMessage(sb.append(ChatColor.GRAY )
-										.append( "[" )
-										.append( group.getName() )
-										.append( "] ") 
-										.append( name) 
-										.append( ": " )
-										.append( ChatColor.WHITE) 
-										.append( groupMsg)
-										.toString());
-				sb.delete(0, sb.length());
-			}
+			receiver.sendMessage(formatted);
 		}
 		
 		Set<String> players = new HashSet<String>();
-		for(UUID uuid : membersUUID){
-			if(MercuryAPI.getAllAccounts().contains(uuid)){
-				players.add(NameAPI.getCurrentName(uuid));
-			}
+		for(UUID uuid : membersUUID) {
+			players.add(NameAPI.getCurrentName(uuid));
 		}
-		players.remove(name); //remove the sender from the list
-		chatLog.logGroupMessage(msgSender, groupMsg, group.getName(), players);
-	}
-	
-	public void sendGroupMsgFromOtherShard(String name, String groupName, String groupMsg) {
-		Group g = NameAPI.getGroupManager().getGroup(groupName);
-		if (g == null) {
-			return;
-		}
-		List<Player> members = new ArrayList<Player>();
-		List<UUID> membersUUID = g.getAllMembers();
-		for(UUID uuid : membersUUID){
-			Player toAdd = Bukkit.getPlayer(uuid);
-			if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
-					g, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT"))) {
-				members.add(toAdd);
-			}
-		}
-		StringBuilder sb = new StringBuilder();
-		for(Player receiver: members){
-			sb.delete(0, sb.length());
-			if(DBM.isIgnoringGroup(receiver.getUniqueId(), g.getName())){
-				continue;
-			}
-			if(DBM.isIgnoringPlayer(receiver.getName(), name)){
-				continue;
-			}
-			else {
-				receiver.sendMessage(sb.append(ChatColor.GRAY )
-										.append( "[" )
-										.append( g.getName() )
-										.append( "] ") 
-										.append( name) 
-										.append( ": " )
-										.append( ChatColor.WHITE) 
-										.append( groupMsg)
-										.toString());
-				sb.delete(0, sb.length());
-			}
-		}
+		players.remove(senderName); //remove the sender from the list
+		chatLog.logGroupMessage(sender, message, group.getName(), players);
 	}
 	
 	/**
-	 * Method to remove player from groupchat
-	 * @param name Playername to remove from chat
+	 * Method to remove player from a group chat
+	 * @param player The player to remove from chat
 	 */
-	public void removeGroupChat(String name) {
-		if(groupChatChannels.containsKey(name)){
-			groupChatChannels.remove(name);
-		}
+	public void removeGroupChat(Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		groupChatChannels.remove(player.getUniqueId());
 	}
 
 	/**
@@ -573,12 +370,17 @@ public class CivChat2Manager {
 	 * @param name Players name
 	 * @return Group they are currently chatting in
 	 */
-	public String getGroupChatting(String name) {
-		CivChat2.debugmessage("Checking if user is groupchatting name=[" + name + "]");
-		if(groupChatChannels.containsKey(name)){
-			return groupChatChannels.get(name);
-		} else {
-			return null;
-		}
+	public Group getGroupChatting(Player player) {
+		Guard.ArgumentNotNull(player, "player");
+		
+		return groupChatChannels.get(player.getUniqueId());
+	}
+	
+	public String parse(String text) {
+		return TextUtil.parse(text);
+	}
+	
+	public String parse(String text, Object... args) {
+		return TextUtil.parse(text, args);
 	}
 }

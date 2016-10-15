@@ -17,7 +17,7 @@ public class CivChat2Executor implements CommandExecutor{
 	public CivChat2Executor(CivChat2 instance){
 		this.plugin = instance;
 		this.config = plugin.getPluginConfig();
-		this.logger = plugin.getCivChat2Log();
+		this.logger = CivChat2.getCivChat2Log();
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){ 

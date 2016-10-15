@@ -3,48 +3,36 @@ package vg.civcraft.mc.civchat2.command.commands;
 import java.util.List;
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.database.DatabaseManager;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civchat2.ChatStrings;
+import vg.civcraft.mc.civchat2.command.ChatCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public class IgnoreList extends PlayerCommand{
-	
-	private CivChat2 plugin = CivChat2.getInstance();
-	private DatabaseManager DBM = plugin.getDatabaseManager();
+public class IgnoreList extends ChatCommand {
 	
 	public IgnoreList(String name) {
 		super(name);
 		setIdentifier("ignorelist");
-		setDescription("This command is used to list ignored players/groups");
+		setDescription("Lists the players & groups you are ignoring");
 		setUsage("/ignorelist");
 		setArguments(0,0);
+		setSenderMustBePlayer(true);
+		setErrorOnTooManyArgs(false);
 	}
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
-		if(!(sender instanceof Player)){
-			//console man sending chat... 
-			sender.sendMessage(ChatColor.YELLOW + "You must be a player to perform that command.");
-			return true;
-		}
+	public boolean execute(CommandSender sender, String[] args) {
 		
-		Player player = (Player) sender;
+		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
+		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
 		
-		List<UUID> players = DBM.getIgnoredPlayers(player.getUniqueId());
-		List<String> groups = DBM.getIgnoredGroups(player.getUniqueId());
-		
-		if(players == null){
+		if(players == null || players.size() == 0) {
 			//no players ignored
-			sender.sendMessage(ChatColor.RED + "You are not Ignoring any players");
+			msg(ChatStrings.chatNotIgnoringAnyPlayers);
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Ignored Players: ");
-			sb.append("\n");
+			sb.append("<a>Ignored Players: \n<n>");
 			for(UUID playerUUID : players){
 				String playerName = NameAPI.getCurrentName(playerUUID);
 				if(playerName != null){
@@ -52,30 +40,32 @@ public class IgnoreList extends PlayerCommand{
 					sb.append(", ");
 				}
 			}
-			sender.sendMessage(ChatColor.YELLOW + sb.toString());
+			String msg = sb.toString();
+			if (msg.endsWith(", ")) {
+				msg = msg.substring(0, msg.length() -2);
+			}
+			
+			msg(msg);
 		}
 		
-		if(groups == null){
+		if(groups == null || groups.size() == 0) {
 			//no players ignored
-			sender.sendMessage(ChatColor.RED + "You are not Ignoring any groups");
+			msg(ChatStrings.chatNotIgnoringAnyGroups);
 			return true;
 		} else {
 			StringBuilder sb = new StringBuilder();
-			sb.append("Ignored Groups: ");
-			sb.append("\n");
+			sb.append("<a>Ignored Groups: \n<n>");
 			for(String s : groups){
 				sb.append(s);
 				sb.append(", ");
 			}
-			sender.sendMessage(ChatColor.YELLOW + sb.toString());
+			String msg = sb.toString();
+			if (msg.endsWith(", ")) {
+				msg = msg.substring(0, msg.length() -2);
+			}
+			
+			msg(msg);
 			return true;
 		}
 	}
-
-	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		// TODO Auto-generated method stub
-		return null;
-	}	
-
 }
