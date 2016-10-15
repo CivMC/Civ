@@ -10,7 +10,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.util.TextUtil;
+
 public abstract class CommandHandler {
+	
+	private static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";
 
 	public Map<String, Command> commands = new HashMap<>();
 	private Boolean mercuryEnabled;
@@ -27,10 +31,19 @@ public abstract class CommandHandler {
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
-			if (args.length < command.getMinArguments() || args.length > command.getMaxArguments()) {
+			
+			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
+				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
+				return true;
+			}
+			
+			if (args.length < command.getMinArguments() || (command.getErrorOnTooManyArgs() && args.length > command.getMaxArguments())) {
 				helpPlayer(command, sender);
 				return true;
 			}
+			
+			command.setSender(sender);
+			command.setArgs(args);
 			command.execute(sender, args);
 		}
 		return true;
@@ -39,6 +52,14 @@ public abstract class CommandHandler {
 	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
+			
+			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
+				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
+				return null;
+			}
+
+			command.setSender(sender);
+			command.setArgs(args);
 			List <String> completes = command.tabComplete(sender, args);
 			String completeArg;
 			if (args.length == 0) {
@@ -76,5 +97,4 @@ public abstract class CommandHandler {
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ")
 				.append(command.getUsage()).toString());
 	}
-
 }

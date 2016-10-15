@@ -51,17 +51,11 @@ public abstract class ACivMod extends JavaPlugin {
 		}
 		String option = args[0];
 		String value = null;
-		String subvalue = null;
 		boolean set = false;
-		boolean subvalue_set = false;
 		String msg = "";
 		if (args.length > 1) {
 			value = args[1];
 			set = true;
-		}
-		if (args.length > 2) {
-			subvalue = args[2];
-			subvalue_set = true;
 		}
 		ConfigOption opt = config_.get(option);
 		if (opt != null) {

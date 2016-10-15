@@ -23,5 +23,13 @@ public interface Command {
 	int getMinArguments();
 
 	void postSetup();
+	
+	boolean getSenderMustBePlayer();
+	
+	boolean getErrorOnTooManyArgs();
+	
+	void setSender(CommandSender sender);
+	
+	void setArgs(String[] args);
 
 }
