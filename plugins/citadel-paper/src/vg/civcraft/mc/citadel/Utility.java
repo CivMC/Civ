@@ -781,6 +781,7 @@ public class Utility {
 					"Utility isDroppedReinforcementBlock called with null");
 			return null;
 		}
+		if (!CitadelConfigManager.shouldDropReinforcedBlock()) return null;
         ItemMeta meta = stack.getItemMeta();
         List<String> lore = meta.getLore();
         try{
@@ -791,7 +792,12 @@ public class Utility {
 	        if (!value.hasNext()) {
 	            return null;
 	        }
-	        Material mat = Material.valueOf(value.next());
+	        Material mat = null;
+			try {
+				mat = Material.valueOf(value.next());
+			} catch (IllegalArgumentException iae) {
+				return null;
+			}
 	        if (!value.hasNext()) {
 	            return null;
 	        }
