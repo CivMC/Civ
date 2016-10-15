@@ -129,3 +129,8 @@ hacks:
     # in seconds
     delay: 180
     message: "&4%Player% is raiding a chest at %x% %y% %z%."
+  SanityHack:
+    enabled: true
+    trackPlace: true
+    trackBreak: true
+    belowYLevel: 7
