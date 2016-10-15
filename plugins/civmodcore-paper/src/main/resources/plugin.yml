@@ -1,0 +1,6 @@
+name: ${name}
+version: ${version}
+authors: [valadian, rourke750]
+main: ${groupId}.${name}Plugin
+softdepend: [Mercury]
+dev-url: null

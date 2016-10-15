@@ -1,47 +1,115 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>vg.civcraft.mc.civmodcore</groupId>
-	<artifactId>CivModCore</artifactId>
-	<packaging>jar</packaging>
-	<version>1.4.41</version>
-	<name>CivModCore</name>
-	<url>https://github.com/Civcraft/CivModCore/</url>
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
-	</properties>
+  <groupId>vg.civcraft.mc.civmodcore</groupId>
+  <artifactId>CivModCore</artifactId>
+  <version>1.5.03</version>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>Spigot</artifactId>
-			<version>1.10</version>
-			<scope>provided</scope>
-		</dependency>
-	</dependencies>
+  <name>CivModCore</name>
+  <url>https://github.com/Civcraft/CivModCore/</url>
 
-	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+  </properties>
 
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${basedir}/resources/</directory>
-				<targetPath>./resources/</targetPath>
-				<includes>
-					<include>*.csv</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+  <dependencies>
+    <!-- Run Spigot BuildTools to add this to your local Maven repo -->
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot</artifactId>
+      <version>1.10.2-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
 
+    <dependency>
+      <groupId>org.mcstats.bukkit</groupId>
+      <artifactId>metrics</artifactId>
+      <version>R8-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>vg.civcraft.mc.mercury</groupId>
+      <artifactId>Mercury</artifactId>
+      <version>1.2.16</version>
+      <scope>provided</scope>
+    </dependency>
+    
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>2.4.5</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>Plugin Metrics</id>
+      <url>http://repo.mcstats.org/content/repositories/public</url>
+    </repository>
+    <repository>
+      <id>civcraft-repo</id>
+      <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+    </repository>
+  </repositories>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>2.4.3</version>
+        <configuration>
+          <createDependencyReducedPom>false</createDependencyReducedPom>
+          <artifactSet>
+            <includes>
+              <include>org.mcstats.bukkit:metrics</include>
+              <include>com.zaxxer:HikariCP</include>
+            </includes>
+          </artifactSet>
+          <relocations>
+            <relocation>
+              <pattern>org.mcstats</pattern>
+              <shadedPattern>${project.groupId}</shadedPattern>
+            </relocation>
+          </relocations>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <resources>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>LICENSE.txt</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources/</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+
+  <reporting>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>3.0.4</version>
+      </plugin>
+    </plugins>
+  </reporting>
 </project>
