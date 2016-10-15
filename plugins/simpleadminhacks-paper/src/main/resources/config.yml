@@ -21,9 +21,22 @@ hacks:
     enabled: false
     nether_bed_placement: off
   GameTuning:
-    enabled: false
+    enabled: true
     str2: replace_str1ext
     pearl_gravity: 0.3
+    chunkLimits:
+      enabled: true
+      exceedMessage: '&9Limit reached for this chunk, you cannot place more of this type of block.'
+      tileEntities:
+        HOPPER: 4
+        PISTON: 4
+        STICKY_PISTON: 4
+        DISPENSOR: 4
+        DROPPER: 4
+        COMPARATOR: 4
+      exempt:
+      - Steve
+      - Alex
   CTAnnounce:
     enabled: false
     delay: 10000
