@@ -94,4 +94,12 @@ public class ConnectionPool {
 			throw new SQLException("No Datasource Available");
 		}
 	}
+	
+	/**
+	 * Available for direct use within this package, use the provided public methods for anything else
+	 * @return DataSource being used
+	 */
+	HikariDataSource getHikariDataSource() {
+		return datasource;
+	}
 }
