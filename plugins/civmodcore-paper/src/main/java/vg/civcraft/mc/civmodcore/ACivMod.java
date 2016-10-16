@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
@@ -14,6 +15,7 @@ import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
@@ -116,6 +118,7 @@ public abstract class ACivMod extends JavaPlugin {
 			instance.registerEvents();
 			new NiceNames().loadNames();
 			new DialogManager();
+			ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		}
 	}
 
