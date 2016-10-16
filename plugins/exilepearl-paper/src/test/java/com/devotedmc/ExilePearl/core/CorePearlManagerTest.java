@@ -292,6 +292,9 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		// Test fails when the pearl is freed
 		assertTrue(manager.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER));
 		assertNull(manager.getPearlFromItemStack(is));
+		
+		when(loreGenerator.getPearlIdFromItemStack(is)).thenReturn(1);
+		assertNull(manager.getPearlFromItemStack(is));
 	}
 	
 	/**

@@ -1,11 +1,12 @@
 package com.devotedmc.ExilePearl.command;
 
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -53,14 +54,14 @@ public class CmdAdminExileAny extends PearlCommand {
 			}
 		}
 		
-		Player player = plugin.getPlayer(name);
-		if (player == null) {
+		UUID playerId = plugin.getUniqueId(name);
+		if (playerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		
-		Player killedBy = plugin.getPlayer(killedByName);
-		if (killedBy == null) {
+		UUID killedById = plugin.getUniqueId(killedByName);
+		if (killedById == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
@@ -96,7 +97,7 @@ public class CmdAdminExileAny extends PearlCommand {
 			}
 		}
 		
-		pearl = plugin.exilePlayer(player.getUniqueId(), killedBy.getUniqueId());
+		pearl = plugin.exilePlayer(playerId, killedById);
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s but the operation failed.", name);
 			return;

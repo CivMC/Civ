@@ -151,7 +151,7 @@ final class CorePearlManager implements PearlManager {
 		} else {
 			pearl.setFreedOffline(true);
 		}
-		pearlApi.log("Player %s was freed for reason %s.", player.getName(), reason.toString());
+		pearlApi.log("Player %s was freed for reason %s.", pearl.getPlayerName(), reason.toString());
 		
 		return true;
 	}
