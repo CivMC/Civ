@@ -59,7 +59,6 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return group.equals(o);
 	}
 }

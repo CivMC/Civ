@@ -10,7 +10,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
- * A location holding an exile pearl
+ * A item holding an exile pearl
  * @author Gordon
  *
  */
@@ -19,8 +19,8 @@ public class ItemHolder implements PearlHolder {
 	private final Item item;
 	
 	/**
-	 * Creates a new LocationHolder instance
-	 * @param loc The location
+	 * Creates a new ItemHolder instance
+	 * @param item The item
 	 */
 	public ItemHolder(final Item item) {
 		Guard.ArgumentNotNull(item, "item");
