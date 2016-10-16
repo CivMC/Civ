@@ -33,6 +33,7 @@ public class ConfigManager {
 	private double enderPearlErosionScale;
 	private boolean squareField;
 	private boolean blockMidAir;
+	private boolean damageFirstBastion;
 	private boolean includeBastionYLevel;
 	private boolean consumePearlOnBlock;
 	
@@ -84,6 +85,7 @@ public class ConfigManager {
 		enderPearlBlockingRequiresMaturity = loadBool("BastionBlock.EnderPearls.requireMaturity");
 		enderPearlErosionScale = loadDouble("BastionBlock.EnderPearls.scaleFac");
 		blockMidAir = loadBool("BastionBlock.EnderPearls.block_midair");
+		damageFirstBastion = loadBool("BastionBlock.EnderPearls.damage_first_bastion");
 		consumePearlOnBlock = loadBool("BastionBlock.EnderPearls.consumeOnBlock");
 		
 		blockElytra = loadBool("BastionBlock.Elytra.block");
@@ -163,6 +165,9 @@ public class ConfigManager {
 	
 	public boolean getEnderPearlsBlocked() {
 		return preventEnderPearl;
+	}
+	public boolean getDamageFirstBastion(){
+		return damageFirstBastion;
 	}
 	public boolean getEnderPearlRequireMaturity() {
 		return enderPearlBlockingRequiresMaturity;

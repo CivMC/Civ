@@ -81,8 +81,11 @@ public class CommandListener implements Listener {
 			}
 
 			if (reinforcement.canBypass(player)) {
-				Bastion.getBastionManager().addBastion(block.getLocation(), reinforcement);
-				player.sendMessage(ChatColor.GREEN + "Bastion block created");
+				if (Bastion.getBastionManager().addBastion(player, block.getLocation(), reinforcement)) {
+					player.sendMessage(ChatColor.GREEN + "Bastion block created");
+				} else {
+					player.sendMessage(ChatColor.RED + "Failed to create bastion block");
+				}
 				PlayersStates.touchPlayer(player);
 			} else{
 				player.sendMessage(ChatColor.RED + "You don't have the right permission");

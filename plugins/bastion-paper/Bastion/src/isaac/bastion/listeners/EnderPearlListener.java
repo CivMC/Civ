@@ -31,7 +31,7 @@ public class EnderPearlListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
-		if (!Bastion.getConfigManager().blockMidAir()) {
+		if (!Bastion.getConfigManager().blockMidAir() && !Bastion.getConfigManager().getDamageFirstBastion()) {
 			return;
 		}
 		if (event.getEntity() instanceof EnderPearl) {

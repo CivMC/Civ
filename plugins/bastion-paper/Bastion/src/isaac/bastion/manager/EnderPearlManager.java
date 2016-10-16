@@ -2,6 +2,8 @@ package isaac.bastion.manager;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockSet;
 
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EnderPearl;
@@ -486,9 +489,29 @@ public class EnderPearlManager {
 		
 		public void cancel() {
 			if (pearl.getShooter() instanceof Player) {
-				handleTeleport(blocking, pearl.getLocation(), (Player) pearl.getShooter());
+				Player player = (Player) pearl.getShooter();
+				
+				if (Bastion.getConfigManager().getDamageFirstBastion() && !Bastion.getBastionManager().onCooldown(player)) {
+					BastionDamageEvent e = new BastionDamageEvent(blocking, player, Cause.PEARL);
+					Bukkit.getPluginManager().callEvent(e);
+					
+					if (!e.isCancelled()) {
+						blocking.erode(blocking.erosionFromPearl());
+						pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
+					}
+				}
+				
+				if (Bastion.getConfigManager().blockMidAir()) {
+					player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
+					if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
+						player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+						player.updateInventory();
+					}
+				}
 			}
-			pearl.remove();
+			if (Bastion.getConfigManager().blockMidAir()) {
+				pearl.remove();
+			}
 			
 		}
 		
@@ -499,17 +522,6 @@ public class EnderPearlManager {
 		@Override
 		public int compareTo(Flight o) {
 			return (int) Math.signum(o.endTime - endTime);
-		}
-	}
-	
-	private void handleTeleport(BastionBlock blocking, Location loc, Player player) {
-		if (!Bastion.getBastionManager().onCooldown(player.getName())) {
-			blocking.erode(blocking.erosionFromPearl());
-		}
-		
-		player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
-		if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
-			player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 		}
 	}
 }
