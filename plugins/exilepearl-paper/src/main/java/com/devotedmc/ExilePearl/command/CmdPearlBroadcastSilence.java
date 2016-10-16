@@ -15,7 +15,7 @@ public class CmdPearlBroadcastSilence extends PearlCommand {
 		this.commandArgs.add(requiredPlayer("player"));
 
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Silences pearl broadcast request from a player");
+		this.setHelpShort("Stops pearl broadcasting from a player");
 	}
 
 	@Override

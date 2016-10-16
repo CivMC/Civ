@@ -198,7 +198,7 @@ final class CorePearlManager implements PearlManager {
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 		if (pearlId != 0) {
 			pearl = getPearlById(pearlId);
-			if (pearl.getFreedOffline()) {
+			if (pearl == null || pearl.getFreedOffline()) {
 				return null;
 			}
 			return pearl;

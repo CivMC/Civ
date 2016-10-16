@@ -253,9 +253,13 @@ public abstract class BaseCommand<T extends Plugin> {
 			return null;
 		}
 		
-		List<String> tabList = getAutoTab(tabArg, args.get(args.size() - 1));
-		if (tabList != null) {
-			return tabList;
+		List<String> tabList = new ArrayList<String>();
+		
+		if (tabArg.isAutoTab()) {
+			tabList = getAutoTab(tabArg.getAutoTab().getName(), args.get(args.size() - 1));
+			if (tabList != null) {
+				return tabList;
+			}
 		}
 		
 		// Otherwise perform the tab routine for the command itself
@@ -271,14 +275,10 @@ public abstract class BaseCommand<T extends Plugin> {
 		return null;
 	}
 	
-	private List<String> getAutoTab(CommandArg tabArg, String pattern) {
-		if (!tabArg.isAutoTab()) {
-			return null;
-		}
-		
+	protected List<String> getAutoTab(String name, String pattern) {		
 		List<String> tabList = new ArrayList<String>();
 		
-		switch(tabArg.getAutoTab().getName()) {
+		switch(name) {
 		case "player":
 			for (Player p: Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(pattern.toLowerCase()))
@@ -287,7 +287,7 @@ public abstract class BaseCommand<T extends Plugin> {
 			break;
 		default:
 		{
-			List<String> customTab = getCustomAutoTab(tabArg.getAutoTab().getName(), pattern);
+			List<String> customTab = getCustomAutoTab(name, pattern);
 			if (customTab != null) {
 				tabList.addAll(customTab);
 			}
@@ -840,7 +840,7 @@ public abstract class BaseCommand<T extends Plugin> {
 	}
 	
 	protected final static CommandArg requiredPlayer(String name) {
-		return required(name, autoTab("player", "No matching players found."));
+		return required(name, autoTab("player", "No matching player found."));
 	}
 	
 	protected final static CommandArg optional(String name, String defValue, AutoTab autoTab) {
@@ -860,6 +860,6 @@ public abstract class BaseCommand<T extends Plugin> {
 	}
 	
 	protected final static CommandArg optionalPlayer(String name) {
-		return optional(name, autoTab("player", "No matching players found."));
+		return optional(name, autoTab("player", "No matching player found."));
 	}
 }

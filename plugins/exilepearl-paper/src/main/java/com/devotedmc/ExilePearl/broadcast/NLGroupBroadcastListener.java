@@ -28,7 +28,7 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 		Location l = pearl.getHolder().getLocation();
 		String name = pearl.getHolder().getName();
 		
-		String msg = TextUtil.parse(Lang.pearlBroadcast, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+		String msg = TextUtil.parse(Lang.groupPearlBroadcast, group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
 		
 		for (UUID uid : group.getCurrentMembers()) {
 			Player p = Bukkit.getPlayer(uid);

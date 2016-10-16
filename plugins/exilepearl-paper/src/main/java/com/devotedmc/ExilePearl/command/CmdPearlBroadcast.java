@@ -5,6 +5,12 @@ import org.bukkit.entity.Player;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.broadcast.NLGroupBroadcastListener;
+
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CmdPearlBroadcast extends PearlCommand {
 
@@ -12,10 +18,15 @@ public class CmdPearlBroadcast extends PearlCommand {
 		super(pearlApi);
 		this.aliases.add("broadcast");
 		
-		this.commandArgs.add(requiredPlayer("player"));
+		if (plugin.isNameLayerEnabled()) {
+			this.commandArgs.add(required("group/player", autoTab("group_or_player", "No matching group/player found.")));
+			this.setHelpShort("Broadcasts your pearl location to a group or another player.");
+		} else {
+			this.commandArgs.add(requiredPlayer("player"));
+			this.setHelpShort("Broadcasts your pearl location to another player.");
+		}
 
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Broadcasts your pearl location to another player.");
 	}
 
 	@Override
@@ -27,7 +38,32 @@ public class CmdPearlBroadcast extends PearlCommand {
 			return;
 		}
 		
-		Player player = plugin.getPlayer(this.argAsString(0));
+		// First check for a group
+		if (plugin.isNameLayerEnabled()) {
+			GroupManager gm = NameAPI.getGroupManager();
+			// First look for a matching group
+			Group g = GroupManager.getGroup(argAsString(0));
+			
+			if (g != null) {
+				if (!gm.hasAccess(g.getName(), player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+					msg(Lang.groupNoChatPermission);
+					return;
+				}
+				
+				if (pearl.isBroadcastingTo(g)) {
+					msg(Lang.groupAlreadyBcasting);
+					return;
+				}
+				
+				// Ok the group exists and the player has permission. Create the listener
+				pearl.addBroadcastListener(new NLGroupBroadcastListener(g));
+				msg(Lang.groupNowBcasting, g.getName());
+				return;
+			}
+		}
+		
+		// No group found, try to find a player
+		Player player = plugin.getPlayer(argAsString(0));
 		if (player == null) {
 			msg(Lang.pearlNoPlayer);
 			return;

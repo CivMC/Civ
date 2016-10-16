@@ -26,7 +26,7 @@ public class BastionListener extends RuleListener {
 	}
 	
 	/**
-	 * Prevents exiled players from creating bastions
+	 * Prevents exiled players from damaging bastions
 	 * @param e The event args
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

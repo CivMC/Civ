@@ -46,6 +46,19 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlApi> {
 			}
 			break;
 			
+		case "group_or_player":
+			List<String> groups = getAutoTab("group", pattern);
+			List<String> players = getAutoTab("player", pattern);
+			
+			if (groups != null) {
+				tabList.addAll(groups);
+			}
+			
+			if (players != null) {
+				tabList.addAll(players);
+			}
+			break;
+			
 		default:
 			break;
 		

@@ -27,6 +27,12 @@ public class Lang
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	public static final String pearlCantThrow = "<i>You can't throw exile pearls.";
 	
+	public static final String groupUnknown = "<i>That group doesn't exist.";
+	public static final String groupNoChatPermission = "<i>You don't have permission to chat in that group.";
+	public static final String groupAlreadyBcasting = "<i>You're already broadcasting to that group.";
+	public static final String groupNowBcasting = "<g>You're now broadcasting your pearl location to group <c>%s.";
+	public static final String groupPearlBroadcast = "<gray>[%s]<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
+	
 	public static final String permForbidden = "<b>You don't have permission to %s.";
 	public static final String permDoThat = "do that";
 	public static final String commandSenderMustBePlayer = "<b>This command can only be used by ingame players.";
