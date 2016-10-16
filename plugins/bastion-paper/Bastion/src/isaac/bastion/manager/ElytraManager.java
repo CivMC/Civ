@@ -2,6 +2,8 @@ package isaac.bastion.manager;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockSet;
 
 import java.awt.geom.Point2D;
@@ -16,6 +18,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -147,11 +150,16 @@ public class ElytraManager {
 			doImpact(p);
 			
 			// now handle damage / breaking of bastions.  
-			if (!Bastion.getBastionManager().onCooldown(p.getName())) {
+			if (!Bastion.getBastionManager().onCooldown(p)) {
 				int breakCount = Bastion.getConfigManager().getBastionBlocksToErode();
 				if (breakCount < 0 || impact.size() >= breakCount) { // break all
 					for (BastionBlock bastion : impact) {
-						bastion.erode(bastion.erosionFromElytra());
+						BastionDamageEvent e = new BastionDamageEvent(bastion, p, Cause.ELYTRA);
+						Bukkit.getPluginManager().callEvent(e);
+
+						if (!e.isCancelled()) {
+							bastion.erode(bastion.erosionFromElytra());
+						}
 					}					
 				} else if (breakCount > 0) { // break some randomly
 					Random rng = new Random();
@@ -159,8 +167,12 @@ public class ElytraManager {
 					for (int i = 0;i < ordered.size() && (i < breakCount); ++i){
 						int erode = rng.nextInt(ordered.size());
 						BastionBlock toErode = ordered.get(erode);
-						toErode.erode(toErode.erosionFromElytra());
-						ordered.remove(erode);
+						BastionDamageEvent e = new BastionDamageEvent(toErode, p, Cause.ELYTRA);
+						Bukkit.getPluginManager().callEvent(e);
+						if (!e.isCancelled()) {
+							toErode.erode(toErode.erosionFromElytra());
+							ordered.remove(erode);
+						}
 					}
 				}
 			}
@@ -247,8 +259,6 @@ public class ElytraManager {
 	}
 	
 	private void doImpact(Player p) {
-		p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
-		p.setVelocity(new Vector(0, 0, 0));
 		PlayerInventory inv = p.getInventory();
 		if (Bastion.getConfigManager().getElytraIsDestroyOnBlock()) {
 			inv.setChestplate(new ItemStack(Material.AIR));
@@ -256,6 +266,14 @@ public class ElytraManager {
 			ItemStack elytra = inv.getChestplate();
 			elytra.setDurability((short)432);
 			inv.setChestplate(elytra);
+		}
+		p.setGliding(false);
+		p.setVelocity(p.getVelocity().multiply(-1.0d));
+		if (Bastion.getConfigManager().getElytraExplodesOnBlock()) {
+			p.sendMessage(ChatColor.RED+"You've been blown back by a Bastion Block");
+			p.getWorld().createExplosion(p.getLocation(), (float) Bastion.getConfigManager().getElytraExplosionStrength());
+		} else {
+			p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
 		}
 	}
 }

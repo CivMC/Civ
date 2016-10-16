@@ -41,6 +41,8 @@ public class ConfigManager {
 	private boolean blockElytra;
 	private boolean destroyElytraOnBlock;
 	private boolean damageElytraOnBlock;
+	private boolean explodeElytraOnBlock;
+	private double explodeStrengthOnBlock;
 	private double elytraErosionScale;
 	private boolean elytraBlockingRequiresMaturity;
 	
@@ -91,6 +93,8 @@ public class ConfigManager {
 		blockElytra = loadBool("BastionBlock.Elytra.block");
 		destroyElytraOnBlock = loadBool("BastionBlock.Elytra.destroyOnBlock");
 		damageElytraOnBlock = loadBool("BastionBlock.Elytra.damageOnBlock");
+		explodeElytraOnBlock = loadBool("BastionBlock.Elytra.explodeOnBlock");
+		explodeStrengthOnBlock = loadDouble("BastionBlock.Elytra.explodeOnBlockStrength");
 		elytraErosionScale = loadDouble("BastionBlock.Elytra.scaleFac");
 		elytraBlockingRequiresMaturity = loadBool("BastionBlock.Elytra.requireMaturity");
 	}
@@ -187,6 +191,12 @@ public class ConfigManager {
 	}
 	public boolean getElytraIsDamagedOnBlock() {
 		return damageElytraOnBlock;
+	}
+	public boolean getElytraExplodesOnBlock() {
+		return explodeElytraOnBlock;
+	}
+	public double getElytraExplosionStrength() {
+		return explodeStrengthOnBlock;
 	}
 	public double getElytraErosionScale() {
 		return elytraErosionScale;

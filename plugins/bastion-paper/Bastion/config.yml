@@ -32,5 +32,9 @@ BastionBlock:
     destroyOnBlock: false
     # is the Elytra damaged when blocked?
     damageOnBlock: true
+    # does it explode?!
+    explodeOnBlock: true
+    # explode strength -- 0 is no damage, 4 is TNT, etc.
+    explodeOnBlockStrength: 2.0
     scaleFac: 0
     requireMaturity: true
