@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
@@ -19,6 +20,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the 
@@ -139,4 +141,16 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	// TODO
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void chunkLimitsExploitRetract(BlockPistonRetractEvent event) {}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void bedRClickToSetSpawn(PlayerInteractEvent event) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.BED_BLOCK ||
+				!config.areDaytimeBedsEnabled()) {
+			return;
+		}
+
+		event.getPlayer().setBedSpawnLocation(event.getClickedBlock().getLocation());
+		event.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
+	}
 }

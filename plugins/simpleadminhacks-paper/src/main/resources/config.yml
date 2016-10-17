@@ -37,6 +37,9 @@ hacks:
       exempt:
       - Steve
       - Alex
+    daytimeBed:
+      enabled: true
+      spawnSetMessage: '&7Your spawn has been set.'
   CTAnnounce:
     enabled: false
     delay: 10000
