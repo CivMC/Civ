@@ -34,3 +34,8 @@ weaponModification:
   woodAxe:
     material: WOOD_AXE
     damage: 3
+
+#allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+#This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
+disabledEnchantments:
+ - MENDING

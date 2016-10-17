@@ -1,5 +1,9 @@
 package com.github.maxopoly.finale;
 
+import java.util.Collection;
+
+import org.bukkit.enchantments.Enchantment;
+
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 
@@ -11,15 +15,17 @@ public class FinaleManager {
 	private SaturationHealthRegenHandler regenHandler;
 	private WeaponModifier weaponModifier;
 	private boolean protocolLibEnabled;
+	private Collection <Enchantment> disabledEnchantments;
 	
 	public FinaleManager(boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
-			SaturationHealthRegenHandler regenHandler,WeaponModifier weaponModifier, boolean protocolLibEnabled) {
+			SaturationHealthRegenHandler regenHandler,WeaponModifier weaponModifier, boolean protocolLibEnabled, Collection <Enchantment> disabledEnchants) {
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
 		this.regenHandlerEnabled = regenHandlerEnabled;
 		this.regenHandler = regenHandler;
 		this.protocolLibEnabled = protocolLibEnabled;
 		this.weaponModifier = weaponModifier;
+		this.disabledEnchantments = disabledEnchants;
 	}
 	
 	public boolean isAttackSpeedEnabled() {
@@ -44,5 +50,9 @@ public class FinaleManager {
 	
 	public boolean protocolLibEnabled() {
 		return protocolLibEnabled;
+	}
+	
+	public boolean isDisabledEnchantment(Enchantment enchant) {
+		return disabledEnchantments.contains(enchant);
 	}
 }

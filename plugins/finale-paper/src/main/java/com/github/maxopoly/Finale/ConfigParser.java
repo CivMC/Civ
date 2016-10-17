@@ -1,12 +1,16 @@
 package com.github.maxopoly.finale;
 
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
@@ -41,9 +45,11 @@ public class ConfigParser {
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
 		// Flags
 		boolean protocolLibEnabled = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib");
+		
+		Collection <Enchantment> disabledEnchants = parseDisableEnchantments(config);
 
 		// Initialize the manager
-		manager = new FinaleManager(attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod, protocolLibEnabled);
+		manager = new FinaleManager(attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod, protocolLibEnabled, disabledEnchants);
 		return manager;
 	}
 
@@ -146,6 +152,23 @@ public class ConfigParser {
 
 	public boolean combatTagOnPearl() {
 		return combatTagOnPearl;
+	}
+	
+	private Collection<Enchantment> parseDisableEnchantments(ConfigurationSection config) {
+		List <Enchantment> enchants = new LinkedList<Enchantment>();
+		if (!config.isList("disabledEnchantments")) {
+			return enchants;
+		}
+		for(String ench : config.getStringList("disabledEnchantments")) {
+			Enchantment en = Enchantment.getByName(ench);
+			if (en == null) {
+				plugin.warning("Could not parse disabled enchantment " + ench);
+			}
+			else {
+				enchants.add(en);
+			}
+		}
+		return enchants;
 	}
 
 }
