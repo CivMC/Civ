@@ -4,7 +4,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,12 +11,18 @@ import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.bukkit.util.NumberConversions;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -57,7 +62,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  *
  * @author ProgrammerDan
  */
-public class ManagedDatasource {
+public class ManagedDatasource implements ConfigurationSerializable {
 
 	private static final long MAX_WAIT_FOR_LOCK = 600000l;
 	private static final long WAIT_PERIOD = 500l;
@@ -512,6 +517,40 @@ public class ManagedDatasource {
 			this.ignoreErrors = ignoreErrors;
 			this.postMigration = postMigration;
 		}	
+	}
+
+	@Override
+	public Map<String, Object> serialize() {
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("plugin", plugin.getName());
+		data.put("user", connections.getHikariDataSource().getUsername());
+		data.put("password", connections.getHikariDataSource().getPassword());
+		String jdbcURL = connections.getHikariDataSource().getJdbcUrl();
+		//remove "jdbc:mysql://" from the start of the url
+		jdbcURL = jdbcURL.substring(13, jdbcURL.length());
+		String [] splitByColon = jdbcURL.split(":");
+		data.put("host", splitByColon [0]);
+		data.put("port", Integer.parseInt(splitByColon [1].split("/") [0]));
+		data.put("database", splitByColon [1].split("/") [1]);
+		data.put("poolsize", connections.getHikariDataSource().getMaximumPoolSize());
+		data.put("connectionTimeout", connections.getHikariDataSource().getConnectionTimeout());
+		data.put("idleTimeout", connections.getHikariDataSource().getIdleTimeout());
+		data.put("maxLifetime", connections.getHikariDataSource().getMaxLifetime());
+		return data;
+	}
+	
+	public ManagedDatasource deserialize(Map <String, Object> data) {
+		ACivMod plugin = (ACivMod) Bukkit.getPluginManager().getPlugin((String) data.get("plugin"));
+		String user = (String) data.get("user");
+		String password = (String) data.get("password");
+		String host = (String) data.get("host");
+		int port = NumberConversions.toInt(data.get("port"));
+		String database = (String) data.get("database");
+		int maxPoolSize = NumberConversions.toInt(data.get("poolsize"));
+		long connectionTimeout = NumberConversions.toLong(data.get("connectionTimeout"));
+		long idleTimeout = NumberConversions.toLong(data.get("idleTimeout"));
+		long maxLifetime = NumberConversions.toLong(data.get("maxLifetime"));
+		return new ManagedDatasource(plugin, user, password, host, port, database, maxPoolSize, connectionTimeout, idleTimeout, maxLifetime);
 	}
 	
 }
