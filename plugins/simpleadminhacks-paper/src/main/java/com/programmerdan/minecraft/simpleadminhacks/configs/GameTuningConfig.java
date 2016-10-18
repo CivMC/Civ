@@ -105,6 +105,11 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 * @author Amelorate
      */
 	private void wireupDaytimeBed(ConfigurationSection config) {
+		if (config == null) {
+			this.daytimeBedEnabled = false;
+			return;
+		}
+
 		this.daytimeBedEnabled = config.getBoolean("enabled", false);
 		this.daytimeBedSpawnSetMessage = ChatColor.translateAlternateColorCodes('&',
 				config.getString("spawnSetMessage", ChatColor.GRAY + "Your spawn has been set."));
