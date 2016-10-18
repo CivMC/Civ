@@ -30,7 +30,7 @@ public class GetSnitchInfoTask implements Runnable {
 
     @Override
     public void run() {
-        List<SnitchAction> entries = plugin.getJaLogger().getSnitchInfo(snitchId, offset * 10);
+        List<SnitchAction> entries = plugin.getJaLogger().getSnitchInfo(snitchId, offset * 10, null, "");
         if (entries != null && !entries.isEmpty()){
             for (SnitchAction entry : entries){
                 info.add(JukeAlertLogger.createInfoString(entry, false, false));
