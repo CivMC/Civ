@@ -6,12 +6,10 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 
-import vg.civcraft.mc.civmodcore.annotations.ConfigOption;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -26,84 +24,18 @@ public abstract class ACivMod extends JavaPlugin {
 
 	private static boolean initializedAPIs = false;
 
-	public Config GetConfig() {
-		if (config_ == null) {
-			info("Config not initialized. Most likely due to "
-					+ "overriding onLoad and not calling super.onLoad()");
-		}
-		return config_;
-	}
-
-	private Config config_ = null;
-
 	public ClassLoader classLoader = null;
 
 	public ApiManager apis;
 
 	@Override
-	public boolean onCommand(
-			CommandSender sender,
-			Command command,
-			String label,
-			String[] args) {
-		if (//!(sender instanceof ConsoleCommandSender) ||
-				!command.getName().equals(getPluginName().toLowerCase()) ||
-						args.length < 1) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 			return handle == null ? false : handle.execute(sender, command, args);
-		}
-		String option = args[0];
-		String value = null;
-		boolean set = false;
-		String msg = "";
-		if (args.length > 1) {
-			value = args[1];
-			set = true;
-		}
-		ConfigOption opt = config_.get(option);
-		if (opt != null) {
-			if (set) {
-				opt.set(value);
-			}
-			msg = String.format("%s = %s", option, opt.getString());
-		} else if (option.equals("debug")) {
-			if (set) {
-				config_.DebugLog = toBool(value);
-			}
-			msg = String.format("debug = %s", config_.DebugLog);
-		} else if (option.equals("save")) {
-			config_.save();
-			msg = "Configuration saved";
-		} else if (option.equals("reload")) {
-			config_.reload();
-			msg = "Configuration loaded";
-		} else {
-			msg = String.format("Unknown option %s", option);
-		}
-		sender.sendMessage(msg);
-		return true;
-	}
-	// ================================================
-	// General
-
-	@Override
-	public void onLoad() {
-		classLoader = getClassLoader();
-		loadConfiguration();
-		info("Configuration Loaded");
-	}
-
-	private void loadConfiguration() {
-		config_ = new Config(this);
-		info("loaded config for: {0} Config: {1}", getPluginName(), (config_ != null));
 	}
 
 	@Override
 	public void onEnable() {
-		registerCommands();
 		initApis(this);
-		//global_instance_ = this;
-		getLogger().info("Main Plugin Events and Config Command registered");
-
 		try {
 			Metrics metrics = new Metrics(this);
 			metrics.start();
@@ -126,14 +58,6 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 	}
-
-	public void registerCommands() {
-		ConsoleCommandSender console = getServer().getConsoleSender();
-		console.addAttachment(this, getPluginName().toLowerCase() + ".console", true);
-	}
-//    public boolean isInitiaized() {
-//      return global_instance_ != null;
-//    }
 
 	public boolean toBool(String value) {
 		if (value.equals("1") || value.equalsIgnoreCase("true")) {
@@ -212,7 +136,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message) {
-		if (config_.DebugLog) {
+		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message);
 		}
 	}
@@ -224,7 +148,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message, Object...vars) {
-		if (config_.DebugLog) {
+		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message, vars);
 		}
 	}
