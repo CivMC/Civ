@@ -1,0 +1,41 @@
+# alters the base CPS for all players, set enabled to false to disable
+alterAttack:
+  enabled: true
+  speed: 9.4
+# gives full control over health / regen, default is full reversion to 1.8 mechanics
+foodHealthRegen:
+  enabled: true
+  interval: 4s
+  exhaustionPerHeal: 3.0
+  minimumFood: 18
+  healthPerCycle: 1.0
+  blockFoodRegen: true
+  blockSaturationRegen: true
+# alters pearl cooldown using vanilla mechanism, optionally combattags on pearl (if combattagplus is available)
+pearls:
+  enabled: true
+  cooldown: 10s
+  combatTag: true
+  
+#allows adjusting the attack damage of any item by its spigot material identifier
+weaponModification:
+  diamondAxe:
+    material: DIAMOND_AXE
+    damage: 6
+  ironAxe:
+    material: IRON_AXE
+    damage: 5
+  stoneAxe:
+    material: STONE_AXE
+    damage: 4
+  goldAxe:
+    material: GOLD_AXE
+    damage: 3
+  woodAxe:
+    material: WOOD_AXE
+    damage: 3
+
+#allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
+#This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
+disabledEnchantments:
+ - MENDING

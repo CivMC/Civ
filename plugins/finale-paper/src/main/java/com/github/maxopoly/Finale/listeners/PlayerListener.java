@@ -1,10 +1,11 @@
 package com.github.maxopoly.finale.listeners;
-
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -49,6 +50,16 @@ public class PlayerListener implements Listener {
 		}
 		if (e.getRegainReason() == RegainReason.EATING && manager.getPassiveRegenHandler().blockFoodHealthRegen()) {
 			e.setCancelled(true);
+		}
+	}
+	
+	//@EventHandler
+	public void arrowHit(EntityDamageByEntityEvent e) {
+		if (!(e.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		if (e.getDamager().getType() == EntityType.TIPPED_ARROW) {
+			return;
 		}
 	}
 
