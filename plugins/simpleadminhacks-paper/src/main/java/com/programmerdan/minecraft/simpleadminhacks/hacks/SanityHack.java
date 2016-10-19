@@ -35,6 +35,9 @@ public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener
 		
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
+
+		if (player == null) return;
+		if (block == null) return;
 		
 		if(block.getY() < trackingLevel){
 			plugin().log(Level.INFO, "Player({0}, {1}) caught breaking a block({2}) below Y {3}", player.getName(), player.getUniqueId().toString(), 
@@ -51,6 +54,9 @@ public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 		
+		if (player == null) return;
+		if (block == null) return;
+
 		if(block.getY() < trackingLevel && player != null){
 			plugin().log(Level.INFO, "Player({0}, {1}) caught placing a block({2}) below Y {3}", player.getName(), player.getUniqueId().toString(), 
 					block.getType().toString(), trackingLevel);
