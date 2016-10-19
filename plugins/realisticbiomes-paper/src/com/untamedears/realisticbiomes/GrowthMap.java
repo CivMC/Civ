@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -77,7 +78,18 @@ public class GrowthMap {
 		Material ret = remap.get(newkey);
 		if (ret != null) {
 			GrowthConfig gc = materialMap.get(ret);
+			List<Integer> subtypes = gc.getSubtypes();
 			ItemStack is = new ItemStack(ret, 1);
+			if (subtypes != null) {
+				if (subtypes.size() > 1) {
+					// TODO: allow specification of chance per subtype
+					is.setDurability(subtypes.get(
+								(int) Math.floor( ((double) subtypes.size()) * Math.random() )
+							).shortValue() );
+				} else if (subtypes.size() == 1) {
+					is.setDurability(subtypes.get(0).shortValue());
+				}
+			}
 			if (gc.getApplyRandomEnchantment()) {
 				net.minecraft.server.v1_10_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
 				net.minecraft.server.v1_10_R1.ItemStack nmsis2 = EnchantmentManager.a(

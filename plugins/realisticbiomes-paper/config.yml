@@ -10,6 +10,9 @@ realistic_biomes:
  persistence_enabled: true
  # Set to true if you want fishing_drops to _replace_ MC default instead of control.
  replace_fishing: false
+ # Set to 1.0 if you want XP unaltered from fishing; 0.0 to disable,
+ #   and anything inbetween as a chance (.1 as 10% chance, .9 as 90% chance, etc.)
+ fish_xp_chance: 1.0
  # Set to true if you want tapping a plant with bonemeal to double it.
  allow_tallplant_replication: true
 
@@ -598,6 +601,7 @@ realistic_biomes:
 #  mat_FISH:
 #   # 50% of drops will be fish, regardless of "minecraft" drops.
 #   base_rate: 0.5
+#   subtypes: [0, 1, 2] # note that subtypes only apply for fish.
 #
 #  mat_ENCHANTED_BOOK:
 #   # 25% of drops will be enchanted books, without any "treasure" enchants
