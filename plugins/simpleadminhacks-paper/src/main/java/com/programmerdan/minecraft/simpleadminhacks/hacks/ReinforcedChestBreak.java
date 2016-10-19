@@ -78,6 +78,8 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     	if (eve.getPlayer() == null) return;
     	if (eve.getBlock() == null) return;
     	Material bbe = eve.getBlock().getType();
+		if (bbe == null) return;
+		if (manager == null) manager = Citadel.getReinforcementManager();
         if (Material.CHEST.equals(bbe) || Material.TRAPPED_CHEST.equals(bbe)
         		|| Material.ENDER_CHEST.equals(bbe) || Material.FURNACE.equals(bbe)
         		|| Material.BURNING_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
