@@ -29,6 +29,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 	private Set<UUID> exemptFromLimits;
 	private String chunkLimitsExceededMessage;
 
+	private boolean daytimeBedEnabled;
+	private String daytimeBedSpawnSetMessage;
+
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -37,6 +40,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 	protected void wireup(ConfigurationSection config) {
 		ConfigurationSection chunkLimits = config.getConfigurationSection("chunkLimits");
 		wireupChunkLimits(chunkLimits);
+
+		ConfigurationSection daytimeBed = config.getConfigurationSection("daytimeBed");
+		wireupDaytimeBed(daytimeBed);
 
 		/* Add additional tuning config grabs here. */
 	}
@@ -93,6 +99,22 @@ public class GameTuningConfig extends SimpleHackConfig {
 		}
 	}
 
+	/**
+	 * Wireup for enabling setting your spawn during the day.
+	 *
+	 * @author Amelorate
+     */
+	private void wireupDaytimeBed(ConfigurationSection config) {
+		if (config == null) {
+			this.daytimeBedEnabled = false;
+			return;
+		}
+
+		this.daytimeBedEnabled = config.getBoolean("enabled", false);
+		this.daytimeBedSpawnSetMessage = ChatColor.translateAlternateColorCodes('&',
+				config.getString("spawnSetMessage", ChatColor.GRAY + "Your spawn has been set."));
+	}
+
 
 	/**
 	 * @return true / false if chunk limits are on
@@ -127,5 +149,20 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 */
 	public String getChunkLimitsExceededMessage() {
 		return this.chunkLimitsExceededMessage;
+	}
+
+	/**
+	 * @return The message that is sent to the player if they right click on a bed and set their spawn.
+	 * Empty string if there should not be a message, and null if daytime beds are disabled.
+     */
+	public String getDaytimeBedSpawnSetMessage() {
+		return daytimeBedEnabled ? daytimeBedSpawnSetMessage : null;
+	}
+
+	/**
+	 * @return If setting your spawn with a bed during the daytime is enabled.
+     */
+	public boolean areDaytimeBedsEnabled() {
+		return daytimeBedEnabled;
 	}
 }
