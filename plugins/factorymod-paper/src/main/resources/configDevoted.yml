@@ -2088,7 +2088,7 @@ recipes:
           RepairCost: 5000
   Efficiency VI Axe:
     type: PRODUCTION
-    name: Efficiency VIII Axe
+    name: Efficiency VI Axe
     production_time: 5s
     input:
       oil:
