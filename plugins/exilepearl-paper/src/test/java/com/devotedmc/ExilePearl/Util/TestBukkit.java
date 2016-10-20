@@ -2,9 +2,12 @@ package com.devotedmc.ExilePearl.Util;
 
 import static org.mockito.Mockito.*;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
@@ -14,16 +17,24 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitScheduler;
 
 public class TestBukkit {
+	
+	public static Logger logger;
+	public static final List<MockWorld> worlds = new ArrayList<MockWorld>();
+	
+    public static final File pluginDirectory = new File("bin/test/server/plugins/Sabre");
+    public static final File serverDirectory = new File("bin/test/server");
+    public static final File worldsDirectory = new File("bin/test/server");
 
 	public static Server create(final String name, final boolean useLogger) {
 		
-		Logger logger = Logger.getLogger(name);
+		logger = Logger.getLogger(name);
 		
 		Formatter formatter = new Formatter() {
 			
@@ -40,14 +51,9 @@ public class TestBukkit {
         handler.setFormatter(formatter);
         logger.addHandler(handler);
         
-		World world = mock(World.class);
-		when(world.getName()).thenReturn("world");
-		
-		World worldNether = mock(World.class);
-		when(worldNether.getName()).thenReturn("world_nether");
-		
-		World worldEnd = mock(World.class);
-		when(worldEnd.getName()).thenReturn("world_the_end");
+		World world = createMockWorld(new WorldCreator("world"));
+		World worldNether = createMockWorld(new WorldCreator("world_nether"));
+		World worldEnd = createMockWorld(new WorldCreator("world_the_end"));
 		
 		ItemFactory itemFactory = mock(ItemFactory.class);
 		ItemMeta im = mock(ItemMeta.class);
@@ -87,5 +93,21 @@ public class TestBukkit {
 	public static Server create(final boolean useLogger) {
 		return create("TestBukkit", useLogger);
 	}
+	
+    /**
+     * Creates a mock world
+     * @param creator The world creator
+     * @return The new world
+     */
+    public static World createMockWorld(WorldCreator creator) {
+        File worldFile = new File(serverDirectory, creator.name());
+        worldFile.mkdirs();
+    	
+    	MockWorld mockWorld = MockWorld.create(creator.name(), creator.environment(), creator.type());
+        mockWorld.worldFolder = new File(serverDirectory, mockWorld.getName());
+    	new File(worldsDirectory, mockWorld.getName()).mkdir();
+    	worlds.add(mockWorld);
+    	return mockWorld;
+    }
 	
 }

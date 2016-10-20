@@ -2,7 +2,6 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -12,6 +11,7 @@ import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.google.common.collect.ImmutableList;
 
@@ -41,10 +41,9 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 	private Set<UUID> pearledPlayers = new HashSet<UUID>();
 	
-	// Tracks players who are being moved outside the pearl border.
-	private Set<UUID> handlingPlayers = Collections.synchronizedSet(new LinkedHashSet<UUID>());
-	
 	private int radius = 1000;
+	
+	public static final int KNOCKBACK = 3; 
 	
 	//these material IDs are acceptable for places to teleport player; breathable blocks and water
 	public static final LinkedHashSet<Integer> safeOpenBlocks = new LinkedHashSet<Integer>(Arrays.asList(
@@ -140,20 +139,16 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			return;
 		}
 
-		// Ignore if player outside the radius
-		if (pearlLocation.distance(playerLocation) >= radius) {
+		// Ignore if player outside the radius		
+		double distance = Math.sqrt(Math.pow(pearlLocation.getX() - playerLocation.getX(), 2) + Math.pow(pearlLocation.getZ() - playerLocation.getZ(), 2));
+		if (distance >= radius) {
 			return;
 		}
 
-		// tag this player as being handled so we can't get stuck in a loop due to Bukkit currently sometimes repeatedly providing incorrect location through teleport event
-		handlingPlayers.add(player.getUniqueId());
-
-		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().getPlayer().isFlying());
+		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
 		player.teleport(newLoc, TeleportCause.PLUGIN);
 		msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
-		
-		handlingPlayers.remove(player.getName().toLowerCase());
 	}
 	
 	private Location getCorrectedLocation(Location pearlLocation, Location playerLocation, boolean flying) {
@@ -164,7 +159,6 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		double zLoc = playerLocation.getZ();
 		double yLoc = playerLocation.getY();
 		double radiusSquared = (radius * radius) + 5;
-		int knockback = 3;
 
 		// algorithm originally from: http://stackoverflow.com/questions/300871/best-way-to-find-a-point-on-a-circle-closest-to-a-given-point
 		// modified by Lang Lukas to support elliptical border shape
@@ -174,7 +168,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		double dZ = zLoc - z;
 		double dU = Math.sqrt(dX *dX + dZ * dZ); //distance of the untransformed point from the center
 		double dT = Math.sqrt(dX *dX / radiusSquared + dZ * dZ / radiusSquared); //distance of the transformed point from the center
-		double f = (1 / dT + knockback / dU); //"correction" factor for the distances
+		double f = (1 / dT + KNOCKBACK / dU); //"correction" factor for the distances
 
 		xLoc = x + dX * f;
 		zLoc = z + dZ * f;
@@ -289,10 +283,8 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 * @param e The event args
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerQuist(PlayerQuitEvent e) {
-		if (pearlApi.isPlayerExiled(e.getPlayer())) {
-			pearledPlayers.remove(e.getPlayer().getUniqueId());
-		}
+	public void onPlayerQuit(PlayerQuitEvent e) {
+		pearledPlayers.remove(e.getPlayer().getUniqueId());
 	}
 
 	/**
@@ -312,12 +304,21 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 * @param e The event args
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerFreed(PlayerPearledEvent e) {
+	public void onPlayerFreed(PlayerFreedEvent e) {
 		pearledPlayers.remove(e.getPearl().getPlayerId());
 	}
 	
 	@Override
 	public void loadConfig(PearlConfig config) {
 		this.radius = config.getRulePearlRadius();
+	}
+	
+	/**
+	 * Gets whether a player is being tracked
+	 * @param player The player to check
+	 * @return true if the player is being tracked
+	 */
+	public boolean isPlayerTracked(Player player) {
+		return pearledPlayers.contains(player.getUniqueId());
 	}
 }
