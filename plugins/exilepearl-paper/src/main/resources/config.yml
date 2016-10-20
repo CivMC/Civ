@@ -181,6 +181,8 @@ rules:
   enter_bastion: false
   damage_reinforcement: false
   place_snitch: false
+  collect_xp: true
+  use_anvil: true
   protected_mobs:
   - Sheep
   - Cow

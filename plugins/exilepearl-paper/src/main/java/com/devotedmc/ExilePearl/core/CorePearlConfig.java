@@ -264,6 +264,12 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		case ENCHANT:
 			return doc.getBoolean("rules.enchant", true);
 			
+		case COLLECT_XP:
+			return doc.getBoolean("rules.collect_xp", true);
+			
+		case USE_ANVIL:
+			return doc.getBoolean("rules.use_anvil", true);
+			
 		default:
 			return false;
 		}
@@ -341,7 +347,15 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 			break;
 			
 		case ENCHANT:
-			doc.append("rules.enchant", true);
+			doc.append("rules.enchant", value);
+			break;
+			
+		case COLLECT_XP:
+			doc.append("rules.collect_xp", value);
+			break;
+			
+		case USE_ANVIL:
+			doc.append("rules.use_anvil", value);
 			break;
 			
 		default:

@@ -4,10 +4,9 @@ import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.devotedmc.ExilePearl.core.CorePluginFactory;
-
-import vg.civcraft.mc.civmodcore.ACivMod;
 
 /**
  * The plugin class for ExilePearl
@@ -17,7 +16,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * @author GordonFreemanQ
  *
  */
-public final class ExilePearlPlugin extends ACivMod {
+public final class ExilePearlPlugin extends JavaPlugin {
 	
 	private static ExilePearlApi core;
 	
@@ -52,10 +51,5 @@ public final class ExilePearlPlugin extends ACivMod {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
 		return core.onTabComplete(sender, cmd, alias, args);
-	}
-
-	@Override
-	public final String getPluginName() {
-		return "ExilePearl";
 	}
 }

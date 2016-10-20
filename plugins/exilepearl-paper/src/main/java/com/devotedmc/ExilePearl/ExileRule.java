@@ -21,7 +21,9 @@ public enum ExileRule {
 	SNITCH("SNITCH", "place snitches"),
 	MINE("MINE", "break blocks"),
 	BREW("BREW", "brew potions"),
-	ENCHANT("ENCHANT", "enchant items")
+	ENCHANT("ENCHANT", "enchant items"),
+	COLLECT_XP("COLLECT_XP", "collect xp"),
+	USE_ANVIL("USE_ANVIL", "repair items")
 	;
 	
 	private final String text;
@@ -79,6 +81,10 @@ public enum ExileRule {
 			return BREW;
 		case "ENCHANT":
 			return ENCHANT;
+		case "COLLECT_XP":
+			return COLLECT_XP;
+		case "USE_ANVIL":
+			return USE_ANVIL;
 		
 		default:
 			return null;

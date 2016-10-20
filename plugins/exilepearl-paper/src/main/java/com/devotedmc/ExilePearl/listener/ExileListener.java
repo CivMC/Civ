@@ -20,6 +20,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
+import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 
@@ -121,14 +122,17 @@ public class ExileListener extends RuleListener implements Configurable {
 	}
 
 	/**
-	 * Prevent exiled players from using brewing stands
+	 * Prevent exiled players from using certain blocks
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent e) {
 		if (e.hasBlock()) {
-			if (e.getClickedBlock().getType().equals(Material.BREWING_STAND)) {
+			Material type = e.getClickedBlock().getType();
+			if (type == Material.BREWING_STAND) {
 				checkAndCancelRule(ExileRule.BREW, e, e.getPlayer());
+			} else if (type == Material.ANVIL) {
+				checkAndCancelRule(ExileRule.USE_ANVIL, e, e.getPlayer());
 			}
 		}
 	}
@@ -230,7 +234,6 @@ public class ExileListener extends RuleListener implements Configurable {
 		}
 	}
 
-
 	/**
 	 * Prevents exiled players from breaking blocks
 	 * @param e The event
@@ -238,6 +241,17 @@ public class ExileListener extends RuleListener implements Configurable {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent e) {
 		checkAndCancelRule(ExileRule.MINE, e, e.getPlayer());
+	}
+
+	/**
+	 * Prevents exiled players from collecting xp
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onCollectXp(PlayerExpChangeEvent e) {
+		if (isRuleActive(ExileRule.COLLECT_XP, e.getPlayer().getUniqueId())) {
+			e.setAmount(0);
+		}
 	}
 
 	@Override

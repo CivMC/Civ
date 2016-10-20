@@ -48,8 +48,9 @@ public class RuleListener implements Listener {
 	 * @param rule The rule to check
 	 * @param event The event
 	 * @param player The player to check
+	 * @param notify whether to notify the player
 	 */
-	protected void checkAndCancelRule(ExileRule rule, Cancellable event, Player player) {
+	protected void checkAndCancelRule(ExileRule rule, Cancellable event, Player player, boolean notify) {
 		if (event == null || player == null) {
 			return;
 		}
@@ -57,7 +58,20 @@ public class RuleListener implements Listener {
 		UUID playerId = player.getUniqueId();
 		if (isRuleActive(rule, playerId)) {
 			((Cancellable)event).setCancelled(true);
-			player.sendMessage(TextUtil.parse(Lang.ruleCantDoThat, rule.getActionString()));
+			if (notify) {
+				player.sendMessage(TextUtil.parse(Lang.ruleCantDoThat, rule.getActionString()));
+			}
 		}
+	}
+	
+	/**
+	 * Checks if a rule is active for a given player and cancels.
+	 * It also notifies the player.
+	 * @param rule The rule to check
+	 * @param event The event
+	 * @param player The player to check
+	 */
+	protected void checkAndCancelRule(ExileRule rule, Cancellable event, Player player) {
+		checkAndCancelRule(rule, event, player, true);
 	}
 }
