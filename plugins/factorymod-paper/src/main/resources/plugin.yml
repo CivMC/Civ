@@ -1,0 +1,18 @@
+name: ${project.name}
+main: com.github.igotyou.FactoryMod.FactoryMod
+author: Maxopoly, igotyou
+version: ${project.version}
+depend: [CivModCore]
+softdepend: [CivMenu, NameLayer, Citadel]
+commands:
+    fm:
+        permission: fm.public
+    fmc:
+        permission: fm.op
+    fmsrc:
+        permission: fm.op
+permissions:
+    fm.public:
+        default: true
+    fm.op:
+        default: op
