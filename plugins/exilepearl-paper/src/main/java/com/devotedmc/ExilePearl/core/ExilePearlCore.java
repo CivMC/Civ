@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -51,6 +52,8 @@ import com.devotedmc.ExilePearl.listener.WorldBorderListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
+import com.wimbli.WorldBorder.BorderData;
+import com.wimbli.WorldBorder.WorldBorder;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
@@ -539,5 +542,15 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public void setNaggable(boolean arg0) {
 		plugin.setNaggable(arg0);
+	}
+
+	@Override
+	public boolean isLocationInsideBorder(Location location) {
+		if (isWorldBorderEnabled()) {
+			WorldBorder wb = WorldBorder.plugin;
+			BorderData bd = wb.getWorldBorder(location.getWorld().getName());
+			return bd.insideBorder(location);
+		}
+		return true;
 	}
 }

@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl;
 
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
@@ -104,4 +105,11 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return True if it is enabled
 	 */
 	boolean isCombatTagEnabled();
+	
+	/**
+	 * Checks if a location is inside the world border
+	 * @param location the location to check
+	 * @return true if the location is inside the border
+	 */
+	boolean isLocationInsideBorder(Location location);
 }

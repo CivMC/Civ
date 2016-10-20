@@ -6,7 +6,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.UUID;
 
-import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -18,11 +17,14 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
+import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -43,6 +45,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 	public void setUp() throws Exception {
 		
 		pearlApi = mock(ExilePearlApi.class);
+		when(pearlApi.isLocationInsideBorder(any(Location.class))).thenReturn(true);
 		
 		config = mock(PearlConfig.class);
 		when(config.getRulePearlRadius()).thenReturn(RADIUS);
@@ -129,11 +132,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		dut.onPlayerJoin(joinEvent);
 		assertTrue(dut.isPlayerTracked(player));
 		
-		Chunk chunk = mock(Chunk.class);
-		when(chunk.isLoaded()).thenReturn(true);
-		
-		World world = getServer().getWorld("world");
-		when(world.getChunkAt(anyInt(), anyInt())).thenReturn(chunk);
+		World world = TestBukkit.worlds.get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 0);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
@@ -210,6 +209,65 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		when(player.getLocation()).thenReturn(teleportLoc);
 		dut.run();
 		verifyTeleport(6);
+		assertTrue(dut.isPlayerTracked(player));
+	}
+	
+	//@Ignore
+	@Test
+	public void testRunWorldBorder() {
+		ExilePearl pearl = mock(ExilePearl.class);
+		when(pearl.getPlayer()).thenReturn(player);
+		when(pearl.getPlayerId()).thenReturn(playerId);
+		when(pearlApi.getPlayer(playerId)).thenReturn(player);
+		when(pearlApi.getPearl(playerId)).thenReturn(pearl);
+		when(pearlApi.isPlayerExiled(player)).thenReturn(true);
+		when(player.isOnline()).thenReturn(true);
+		
+		PlayerJoinEvent joinEvent = new PlayerJoinEvent(player, null);
+		dut.onPlayerJoin(joinEvent);
+		assertTrue(dut.isPlayerTracked(player));
+		
+		World world = TestBukkit.worlds.get(0);
+		
+		Location pearlLocation = new Location(world, 0, 64, 50);
+		when(pearl.getLocation()).thenReturn(pearlLocation);
+		
+		PearlHolder holder = mock(PearlHolder.class);
+		when(holder.isBlock()).thenReturn(true);
+		when(pearl.getHolder()).thenReturn(holder);
+		
+		Location playerLocation = new Location(world, 0, 64, 75);
+		when(player.getLocation()).thenReturn(playerLocation);
+
+		// simulates a border of 100
+		// The pearl is at 0,50
+		// The player is at 0,75
+		// The normal algorithm would put the player at 0,153 but with the WB it will go to 0,-53
+		when(pearlApi.isLocationInsideBorder(any(Location.class))).thenAnswer(new Answer<Boolean>() {
+
+			@Override
+			public Boolean answer(InvocationOnMock invocation) throws Throwable {
+				try {
+					Location l = (Location)invocation.getArguments()[0];
+					
+					double radius = Math.sqrt(Math.pow(l.getX(), 2) + Math.pow(l.getZ(), 2));
+					if (radius > 100) {
+						return false;
+					}
+					return true;
+					
+				} catch (Exception ex) {
+					return true;
+				}
+			}
+		});
+
+		ArgumentCaptor<Location> arg = ArgumentCaptor.forClass(Location.class);
+		dut.start();
+		dut.run();
+		verify(player, times(1)).teleport(arg.capture(), any(TeleportCause.class));
+		Location teleportLoc = arg.getValue();
+		assertEquals(pearlLocation.getBlockZ() - RADIUS_KNOCK, teleportLoc.getBlockZ());
 	}
 	
 	private void verifyTeleport(int num) {

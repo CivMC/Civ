@@ -146,6 +146,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
+		
 		player.teleport(newLoc, TeleportCause.PLUGIN);
 		msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
@@ -175,6 +176,16 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		
 		int ixLoc = Location.locToBlock(xLoc);
 		int izLoc = Location.locToBlock(zLoc);
+		
+		Location wbTest = new Location(playerLocation.getWorld(), xLoc, yLoc, zLoc);
+		
+		// Jump to other side of circle if this location is outside the world border
+		if (!pearlApi.isLocationInsideBorder(wbTest)) {
+			xLoc = x - dX * f;
+			zLoc = z - dZ * f;
+			ixLoc = Location.locToBlock(xLoc);
+			izLoc = Location.locToBlock(zLoc);
+		}
 
 		// Make sure the chunk we're checking in is actually loaded
 		Chunk tChunk = pearlLocation.getWorld().getChunkAt(ixLoc >> 4, ixLoc >> 4);
@@ -186,7 +197,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (yLoc == -1)
 			return null;
 
-		return new Location(playerLocation.getWorld(), Math.floor(xLoc) + 0.5, yLoc, Math.floor(zLoc) + 0.5, playerLocation.getYaw(), playerLocation.getPitch());
+		return new Location(playerLocation.getWorld(), Math.round(xLoc) + 0.5, yLoc, Math.round(zLoc) + 0.5, playerLocation.getYaw(), playerLocation.getPitch());
 	}
 	
 	// find closest safe Y position from the starting position
