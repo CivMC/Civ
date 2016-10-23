@@ -37,6 +37,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
  *
  * Currently you can control the following:
  *  - BlockEntity limits per chunk
+ *  - Setting bed during the day instead of just at night
  */
 public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener {
 	public static final String NAME = "GameTuning";
@@ -86,6 +87,11 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			} else {
 				genStatus.append("  Chunk Limits are disabled\n");
 			}
+			if (config.areDaytimeBedsEnabled()) {
+				genStatus.append("  Daytime Beds are enabled\n");
+			} else {
+				genStatus.append("  Daytime Beds are disabled\n");
+			}
 			// more?
 		} else {
 			genStatus.append("inactive");
@@ -109,9 +115,8 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	 */
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void chunkLimits(BlockPlaceEvent event) {
+		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		try {
-			if (!config.isEnabled()) return;
-
 			Player player = event.getPlayer();
 			if (player == null) return;
 
@@ -146,6 +151,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	// If any limit at all, cancel the piston event.
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true) 
 	public void chunkLimitsExploitExtend(BlockPistonExtendEvent event) {
+		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		List<Block> blocks = event.getBlocks();
 		if (blocks != null && blocks.size() > 0) {
 			for (Block b : blocks) {
@@ -160,6 +166,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	// Yes, this is identical ...
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void chunkLimitsExploitRetract(BlockPistonRetractEvent event) {
+		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		List<Block> blocks = event.getBlocks();
 		if (blocks != null && blocks.size() > 0) {
 			for (Block b : blocks) {
@@ -174,7 +181,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void bedRClickToSetSpawn(PlayerInteractEvent event) {
-		if (!config.areDaytimeBedsEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.BED_BLOCK) {
+		if (!config.isEnabled() || !config.areDaytimeBedsEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.BED_BLOCK) {
 			return;
 		}
 

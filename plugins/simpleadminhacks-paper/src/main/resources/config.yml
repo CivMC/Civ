@@ -14,7 +14,8 @@ hacks:
       spy: true
       count: 10
   GameFeatures:
-    enabled: false
+    enabled: true
+	disablePotatoXP: false
     elytra: off
     chorus_fruit: off
   GameFixes:
@@ -22,8 +23,6 @@ hacks:
     nether_bed_placement: off
   GameTuning:
     enabled: true
-    str2: replace_str1ext
-    pearl_gravity: 0.3
     chunkLimits:
       enabled: true
       exceededMessage: '&9Limit reached for this chunk, you cannot place more of this type of block.'
