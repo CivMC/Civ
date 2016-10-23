@@ -66,7 +66,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 		return is;
 	}
 
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public void applyEffect(Inventory i, final FurnCraftChestFactory fccf) {
 		FactoryMod.getManager().removeFactory(fccf);
 		for (Block b : fccf.getMultiBlockStructure().getRelevantBlocks()) {
 			b.setType(Material.AIR);
