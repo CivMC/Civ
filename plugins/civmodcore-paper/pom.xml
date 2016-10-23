@@ -4,7 +4,7 @@
 
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
-  <version>1.5.05</version>
+  <version>1.5.06</version>
 
   <name>CivModCore</name>
   <url>https://github.com/Civcraft/CivModCore/</url>
@@ -69,6 +69,7 @@
             <includes>
               <include>org.mcstats.bukkit:metrics</include>
               <include>com.zaxxer:HikariCP</include>
+              <include>org.slf4j:slf4j-api</include>
             </includes>
           </artifactSet>
           <relocations>
