@@ -15,7 +15,7 @@ hacks:
       count: 10
   GameFeatures:
     enabled: true
-	disablePotatoXP: false
+    disablePotatoXP: false
     elytra: off
     chorus_fruit: off
   GameFixes:
