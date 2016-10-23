@@ -23,7 +23,7 @@ public class ReinforcedChestBreakConfig extends SimpleHackConfig{
     @Override
     protected void wireup(ConfigurationSection config) {
         this.delay = config.getInt("delay", 180);
-        this.message = config.getString("message", "&4%Player% is raiding a chest at %x% %y% %z%.");
+        this.message = config.getString("message", "&4%player% is raiding a chest at %x% %y% %z%.");
     }
 
     public int getDelay() {
