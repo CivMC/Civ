@@ -324,7 +324,7 @@ public class GroupManagerDao {
 					"groupName varchar(255) NOT NULL,"+
 					"role varchar(10) NOT NULL default 'MEMBERS'," +
 					"date datetime NOT NULL default NOW()," +
-					"constraint UQ_uuid_groupName unique(uuid, groupName))");
+					"constraint UQ_uuid_groupName unique(uuid, groupName)) charset=latin1;");
 
 		db.registerMigration(8, false,
 				"alter table faction add last_timestamp datetime NOT NULL default NOW();");
@@ -335,7 +335,7 @@ public class GroupManagerDao {
 				"alter table subgroup modify column group_id int, modify column sub_group_id int;");
 
 		db.registerMigration(10, false,
-				"create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null, primary key(uuid));");
+				"create table if not exists nameLayerNameChanges(uuid varchar(36) not null, oldName varchar(32) not null, newName varchar(32) not null, primary key(uuid)) charset=latin1;;");
 
 		db.registerMigration(11, false,
 				new Callable<Boolean>() {
