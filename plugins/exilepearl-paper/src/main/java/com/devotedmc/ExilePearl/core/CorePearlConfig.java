@@ -270,6 +270,9 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		case USE_ANVIL:
 			return doc.getBoolean("rules.use_anvil", true);
 			
+		case PLACE_TNT:
+			return doc.getBoolean("rules.place_tnt", false);
+			
 		default:
 			return false;
 		}
@@ -356,6 +359,10 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 			
 		case USE_ANVIL:
 			doc.append("rules.use_anvil", value);
+			break;
+			
+		case PLACE_TNT:
+			doc.append("rules.place_tnt", value);
 			break;
 			
 		default:

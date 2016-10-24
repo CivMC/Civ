@@ -103,6 +103,15 @@
 # rules.mine_blocks
 #  - When false, exiled players can't break any blocks
 # 
+# rules.collect_xp
+#  - When false, exiled players can't collect xp orbs
+# 
+# rules.use_anvil
+#  - When false, exiled players can't use anvils
+# 
+# rules.place_tnt
+#  - When false, exiled players can't place TNT
+# 
 # rules.chat_local
 #  - When false, exiled players can't chat locally.
 #  - Requires CivChat2 plugin
@@ -175,14 +184,15 @@ rules:
   brew: true
   suicide: true
   mine_blocks: true
+  collect_xp: true
+  use_anvil: true
+  place_tnt: false
   chat_local: false
   create_bastion: false
   damage_bastion: false
   enter_bastion: false
   damage_reinforcement: false
   place_snitch: false
-  collect_xp: true
-  use_anvil: true
   protected_mobs:
   - Sheep
   - Cow

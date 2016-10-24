@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl.listener;
 
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,12 +13,14 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
@@ -26,6 +30,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -251,6 +256,38 @@ public class ExileListener extends RuleListener implements Configurable {
 	public void onCollectXp(PlayerExpChangeEvent e) {
 		if (isRuleActive(ExileRule.COLLECT_XP, e.getPlayer().getUniqueId())) {
 			e.setAmount(0);
+		}
+	}
+	
+	/**
+	 * Prevents exiled players from placing certain blocks
+	 * @param e The event
+	 */
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onBlockPlaced(BlockPlaceEvent e) {
+		Material m = e.getBlockPlaced().getType();
+		if (m == Material.TNT) {
+			checkAndCancelRule(ExileRule.PLACE_TNT, e, e.getPlayer());
+		}
+	}
+	
+	/**
+	 * Prevent imprisoned players interacting with certain items
+	 * @param e The event
+	 */
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void onInventoryClick(InventoryClickEvent e) {
+		Player player = (Player) e.getWhoClicked();
+		Material m = e.getCurrentItem().getType();		
+		if (m == Material.TNT) {
+			checkAndCancelRule(ExileRule.PLACE_TNT, e, player, false);
+		}
+		else if (m == Material.LAVA_BUCKET || m == Material.WATER_BUCKET) {
+			checkAndCancelRule(ExileRule.USE_BUCKET, e, player, false);
+		}
+		
+		if (e.isCancelled()) {
+			msg(player, Lang.ruleCantDoThat, "do that");
 		}
 	}
 
