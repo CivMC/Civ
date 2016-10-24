@@ -270,7 +270,7 @@ public class GroupManagerDao {
 				"create table if not exists faction_id("
 					+ "group_id int not null AUTO_INCREMENT,"
 					+ "group_name varchar(255),"
-					+ "primary key(group_id));",
+					+ "primary key(group_id)) charset=latin1;",
 			/* In the faction table we use group names. This is important because when merging other groups
 			 * it will create multiple same group_names within the faction_id table. The benefits are that when other
 			 * tables come looking for a group they always find the right one due to their only being one group with a name.
@@ -286,10 +286,10 @@ public class GroupManagerDao {
 					"group_id int not null," +
 					"member_name varchar(36)," +
 					"role varchar(10) not null default 'MEMBERS'," +
-					"unique key (group_id, member_name));",
+					"unique key (group_id, member_name)) charset=latin1;",
 				"create table if not exists blacklist(" +
 					"member_name varchar(36) not null," +
-					"group_id varchar(255) not null);",
+					"group_id varchar(255) not null) charset=latin1;",
 				"create table if not exists permissions(" +
 					"group_id varchar(255) not null," +
 					"role varchar(40) not null," +
