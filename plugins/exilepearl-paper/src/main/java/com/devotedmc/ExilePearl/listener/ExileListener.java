@@ -92,7 +92,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	 * Prevent exiled players from using a bed
 	 * @param e The event
 	 */
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPlayerEnterBed(PlayerBedEnterEvent e) {
 		checkAndCancelRule(ExileRule.USE_BED, e, e.getPlayer());
 	}

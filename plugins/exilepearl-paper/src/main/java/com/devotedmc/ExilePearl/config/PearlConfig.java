@@ -92,4 +92,10 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	boolean canPerform(ExileRule rule);
 	
 	void setRule(ExileRule rule, boolean value);
+	
+	boolean getUseHelpItem();
+	
+	String getHelpItemName();
+	
+	List<String> getHelpItemText();
 }

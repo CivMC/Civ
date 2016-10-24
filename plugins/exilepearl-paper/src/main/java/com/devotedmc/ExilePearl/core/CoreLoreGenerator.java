@@ -153,18 +153,6 @@ final class CoreLoreGenerator implements LoreProvider {
 		return lore;
 	}
 
-	@Override
-	public List<String> generateHelpLore() {
-		List<String> lore = new ArrayList<String>();
-		
-		lore.add(parse("<a>You are exiled!"));
-		lore.add(parse("<reset>"));
-		lore.add(parse("Another player has imprisoned you in an exile pearl."));
-		lore.add(parse("Your in-game actions will be limited until you are freed."));
-		lore.add(parse("You can type <c>\\ep locate to see the location of your pearl."));
-		return lore;
-	}
-
 	protected static String parse(String str, Object... args) {
 		return TextUtil.parse(str, args);
 	}

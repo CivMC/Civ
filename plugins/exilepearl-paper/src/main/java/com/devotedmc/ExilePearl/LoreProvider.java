@@ -39,10 +39,4 @@ public interface LoreProvider {
 	 * @return The returned lore
 	 */
 	List<String> generatePearlInfo(ExilePearl pearl);
-	
-	/**
-	 * Generates the help lore for pearled players
-	 * @return The generated lore
-	 */
-	List<String> generateHelpLore();
 }

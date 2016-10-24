@@ -374,4 +374,19 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 			break;
 		}
 	}
+
+	@Override
+	public boolean getUseHelpItem() {
+		return doc.getBoolean("help.use_help_item", true);
+	}
+
+	@Override
+	public String getHelpItemName() {
+		return doc.getString("help.item_name", "You've been exiled!");
+	}
+
+	@Override
+	public List<String> getHelpItemText() {
+		return doc.getStringList("help.item_text");
+	}
 }

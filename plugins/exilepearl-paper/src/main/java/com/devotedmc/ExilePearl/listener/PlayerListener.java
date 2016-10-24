@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
@@ -70,6 +72,7 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
@@ -83,6 +86,11 @@ public class PlayerListener implements Listener, Configurable {
 	private final ExilePearlApi pearlApi;
 
 	private Set<RepairMaterial> repairMaterials = new HashSet<RepairMaterial>();
+	
+	
+	private boolean useHelpItem = false;
+	private String helpItemName = "";
+	private List<String> helpItemText = null;
 
 	/**
 	 * Creates a new PlayerListener instance
@@ -684,8 +692,6 @@ public class PlayerListener implements Listener, Configurable {
 
 		msg(imprisoner, Lang.pearlYouBound, imprisoned.getName());
 		msg(imprisoned, Lang.pearlYouWereBound, imprisoner.getName());
-		
-		giveHelpItem(imprisoned);
 	}
 	
 	
@@ -696,16 +702,20 @@ public class PlayerListener implements Listener, Configurable {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
 		Player player = e.getPlayer();
-		if (pearlApi.isPlayerExiled(player)) {
+		if (useHelpItem && pearlApi.isPlayerExiled(player)) {
 			giveHelpItem(player);
 		}
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onHelpItemDrop(ItemSpawnEvent e) {
-		ItemStack is = e.getEntity().getItemStack();
-		
-		if (is.getType() == Material.STONE_BUTTON && is.getItemMeta() != null && is.getDurability() == 2) {
+		if (isHelpItem(e.getEntity().getItemStack())) {
+			e.setCancelled(true);
+		}
+	}
+	
+	public void onHelpItemPlace(BlockPlaceEvent e) {
+		if (isHelpItem(e.getPlayer().getInventory().getItemInMainHand())) {
 			e.setCancelled(true);
 		}
 	}
@@ -957,24 +967,42 @@ public class PlayerListener implements Listener, Configurable {
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
 		}
+		
+		useHelpItem = config.getUseHelpItem();
+		helpItemName = config.getHelpItemName();
+		
+		List<String> itemText = new ArrayList<String>();
+		for(String s : config.getHelpItemText()) {
+			itemText.add(TextUtil.parse(s));
+		}
 	}
 	
-	
-	private ItemStack createHelpItem() {
-		List<String> lore = pearlApi.getLoreProvider().generateHelpLore();
-		ItemStack is = new ItemStack(Material.STONE_BUTTON, 1);
+	private boolean isHelpItem(ItemStack is) {
+		if (is.getType() != Material.STONE_BUTTON) {
+			return false;
+		}
+		
 		ItemMeta im = is.getItemMeta();
-		im.setDisplayName("You've been exiled!");
-		im.setLore(lore);
-		im.addEnchant(Enchantment.DURABILITY, 2, true);
-		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		is.setItemMeta(im);
-		return is;
+		if (im == null) {
+			return false;
+		}
+		
+		return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
 	}
 	
+	/**
+	 * Gives the help item to a player
+	 * @param player The player
+	 */
 	private void giveHelpItem(Player player) {
 		if (player.isOnline()) {
-			ItemStack helpItem = createHelpItem();
+			ItemStack helpItem = new ItemStack(Material.STONE_BUTTON, 1);
+			ItemMeta im = helpItem.getItemMeta();
+			im.setDisplayName(helpItemName);
+			im.setLore(helpItemText);
+			im.addEnchant(Enchantment.DURABILITY, 2, true);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			helpItem.setItemMeta(im);
 			player.getInventory().setItemInMainHand(helpItem);
 		}
 	}
