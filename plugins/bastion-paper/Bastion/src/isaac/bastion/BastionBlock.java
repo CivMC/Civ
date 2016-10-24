@@ -33,19 +33,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private BastionType type;
 
 	/**
-	 * constructor for new blocks. Reinforcement must be passed because it does not exist at the time of the reinforcement event.
-	 * @param location
-	 * @param reinforcement
-	 */
-	public BastionBlock(Location location, PlayerReinforcement reinforcement, BastionType type) {
-		this.location = location;
-		this.placed = System.currentTimeMillis();
-
-		this.health = reinforcement.getDurability();
-		setup();
-	}
-	
-	/**
 	 * constructor for blocks loaded from database
 	 * @param location
 	 * @param placed

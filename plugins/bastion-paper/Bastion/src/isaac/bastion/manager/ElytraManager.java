@@ -109,12 +109,14 @@ public class ElytraManager {
 		BastionType noImpact = null;
 		boolean breakElytra = false;
 		boolean damageElytra = false;
+		double explosionStrength = 0;
 		
 		// look through bastions
 		for(BastionBlock bastion : definiteCollide) {
 			BastionType type = bastion.getType();
 			breakElytra = breakElytra || type.isDestroyElytra();
 			damageElytra = damageElytra || type.isDamageElytra();
+			explosionStrength = Math.max(explosionStrength, type.getExplosionStrength());
 			Location bLoc = bastion.getLocation();
 			double testY = bLoc.getY() + ( type.isIncludeY() ? 0 : 1);
 			
@@ -148,7 +150,7 @@ public class ElytraManager {
 		
 		// Found a few hits, figure out who gets damaged.
 		if (impact != null && impact.size() > 0) {
-			doImpact(player, breakElytra, damageElytra);
+			doImpact(player, breakElytra, damageElytra, explosionStrength);
 			// handle breaking/damage to elytra
 			
 			HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
@@ -270,7 +272,7 @@ public class ElytraManager {
 		return false;
 	}
 	
-	private void doImpact(Player p, boolean breakElytra, boolean damageElytra) {
+	private void doImpact(Player p, boolean breakElytra, boolean damageElytra, double explosionStrength) {
 		p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
 		p.setVelocity(new Vector(0, 0, 0));
 		PlayerInventory inv = p.getInventory();
@@ -280,6 +282,9 @@ public class ElytraManager {
 			ItemStack elytra = inv.getChestplate();
 			elytra.setDurability((short)432);
 			inv.setChestplate(elytra);
+		}
+		if(explosionStrength > 0) {
+			p.getWorld().createExplosion(p.getLocation(), (float) explosionStrength);
 		}
 	}
 }

@@ -20,6 +20,7 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.events.BastionCreateEvent;
 import isaac.bastion.manager.EnderPearlManager;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
@@ -33,6 +34,7 @@ public class BastionBlockStorage {
 	private Set<BastionBlock> changed;
 	private Set<BastionBlock> bastions;
 	private int taskId;
+	private int ID = -1;
 	
 	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, balance) values (?,?,?,?,?,?,?);";
 	private static final String updateBastion = "update bastion_blocks set placed=?,balance=? where bastion_id=?;";
@@ -64,7 +66,7 @@ public class BastionBlockStorage {
 				+ "placed bigint(20) Unsigned,"
 				+ "fraction float(20) Unsigned,"
 				+ "PRIMARY_KEY (`bastion_id`));");
-		db.registerMigration(1, false, 
+		db.registerMigration(1, true, 
 				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEAULT '"
 				+ BastionType.getDefaultType() + "';");		
 	}
@@ -78,27 +80,28 @@ public class BastionBlockStorage {
 	}
 	
 	/**
-	 * Adds a bastion to the database
-	 * @param bastion The bastion to add
-	 * @return Whether or not the bastion was added
+	 * Creates a new bastion and adds it to the database
+	 * @param loc The location of the bastion
+	 * @param type The type of bastion
+	 * @return Whether or not the bastion was created successfully
 	 */
-	public boolean addBastion(BastionBlock bastion) {
+	public boolean createBastion(Location loc, BastionType type) {
+		long placed = System.currentTimeMillis();
+		BastionBlock bastion = new BastionBlock(loc, placed, 0, ++ID, type);
 		BastionCreateEvent event = new BastionCreateEvent(bastion, Bukkit.getPlayer(bastion.getOwner()));
 		Bukkit.getPluginManager().callEvent(event);
 		if(event.isCancelled()) return false;
 		try(Connection conn = db.getConnection();
 				PreparedStatement ps = conn.prepareStatement(addBastion)) {
-			ps.setString(1, bastion.getType().getName());
-			Location loc = bastion.getLocation();
+			ps.setString(1, type.getName());
 			ps.setInt(1, loc.getBlockX());
 			ps.setInt(2, loc.getBlockY());
 			ps.setInt(3, loc.getBlockZ());
 			ps.setString(2, loc.getWorld().getName());
-			ps.setLong(1, bastion.getPlaced());
-			ps.setDouble(1, bastion.getBalance());
-			ResultSet set = ps.executeQuery();
-			int id = set.next() ? set.getInt("bastion_id") : -1;
-			bastion.setId(id);
+			ps.setLong(1, placed);
+			ps.setDouble(1, 0);
+			ps.setInt(1, ID);
+			ps.executeUpdate();
 			bastions.add(bastion);
 			blocks.get(loc.getWorld()).add(bastion);
 		} catch (SQLException e) {
@@ -184,7 +187,12 @@ public class BastionBlockStorage {
 		return result;
 	}
 	
-	//TODO documentation, I don't know 100% how this works
+	/**
+	 * Retrieve possible blocking bastions for elytra flight
+	 * @param maxDistance The max distance you could be without collision
+	 * @param locs The locations the player is at while flying
+	 * @return A set of bastions a flying player could collide with
+	 */
 	public Set<BastionBlock> getPossibleFlightBlocking(double maxDistance, Location...locs) {
 		Set<QTBox> boxes = null;
 		Set<BastionBlock> result = new TreeSet<BastionBlock>();		
@@ -243,6 +251,7 @@ public class BastionBlockStorage {
 					int y = result.getInt("loc_y");
 					int z = result.getInt("loc_z");
 					int id = result.getInt("bastion_id");
+					if(id > ID) ID = id;
 					long placed = result.getLong("placed");
 					double balance = result.getDouble("fraction");
 					BastionType type = BastionType.getBastionType(result.getString("bastion_type"));
