@@ -815,23 +815,32 @@ public class ConfigParser {
 			result = new DummyParsingRecipe(identifier, name, productionTime, null);
 			break;
 		case "PRINTINGPLATE":
-			ItemMap printingPlateInput = parseItemMap(config.getConfigurationSection("input"));
-			ItemMap printingPlateOutput = parseItemMap(config.getConfigurationSection("output"));
-			result = new PrintingPlateRecipe(identifier, name, productionTime, printingPlateInput, printingPlateOutput);
+			ConfigurationSection printingPlateOutputSection = config.getConfigurationSection("output");
+			ItemMap printingPlateOutput;
+			if (printingPlateOutputSection == null) {
+				if (!(parentRecipe instanceof PrintingPlateRecipe)) {
+					printingPlateOutput = new ItemMap();
+				}
+				else {
+					printingPlateOutput = ((PrintingPlateRecipe) parentRecipe).getOutput();
+				}
+			}
+			else {
+				printingPlateOutput = parseItemMap(printingPlateOutputSection);
+			}
+			result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
 			break;
 		case "PRINTBOOK":
-			ItemMap printBookInput = parseItemMap(config.getConfigurationSection("input"));
 			ItemMap printBookPlate = parseItemMap(config.getConfigurationSection("printingplate"));
 			int printBookOutputAmount = config.getInt("outputamount", 1);
-			result = new PrintBookRecipe(identifier, name, productionTime, printBookInput, printBookPlate, printBookOutputAmount);
+			result = new PrintBookRecipe(identifier, name, productionTime, input, printBookPlate, printBookOutputAmount);
 			break;
 		case "PRINTNOTE":
-			ItemMap printNoteInput = parseItemMap(config.getConfigurationSection("input"));
 			ItemMap printNotePlate = parseItemMap(config.getConfigurationSection("printingplate"));
 			int printBookNoteAmount = config.getInt("outputamount", 1);
 			boolean secureNote = config.getBoolean("securenote", false);
 			String noteTitle = config.getString("title");
-			result = new PrintNoteRecipe(identifier, name, productionTime, printNoteInput, printNotePlate, printBookNoteAmount, secureNote, noteTitle);
+			result = new PrintNoteRecipe(identifier, name, productionTime, input, printNotePlate, printBookNoteAmount, secureNote, noteTitle);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

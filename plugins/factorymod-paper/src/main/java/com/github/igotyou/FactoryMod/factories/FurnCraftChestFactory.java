@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -441,7 +442,8 @@ public class FurnCraftChestFactory extends Factory {
 	}
 
 	public int getRecipeLevel(IRecipe r) {
-		return recipeLevel.get(r);
+		Integer level = recipeLevel.get(r);
+		return level != null ? level: 1;
 	}
 
 	private void sendActivatorMessage(String msg) {

@@ -3,8 +3,6 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -15,11 +13,11 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.TagReader;
+import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-public class PrintBookRecipe extends InputRecipe {
+public class PrintBookRecipe extends PrintingPressRecipe {
 	private ItemMap printingPlate;
 	private int outputAmount;
 	
@@ -46,13 +44,13 @@ public class PrintBookRecipe extends InputRecipe {
 	}	
 
 	public boolean enoughMaterialAvailable(Inventory i) {
-		return this.input.isContainedIn(i) && getPrintingPlate(i, this.printingPlate) != null;
+		return this.input.isContainedIn(i) && getPrintingPlateItemStack(i, this.printingPlate) != null;
 	}
 
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		
-		ItemStack printingPlateStack = getPrintingPlate(i, this.printingPlate);
+		ItemStack printingPlateStack = getPrintingPlateItemStack(i, this.printingPlate);
 		ItemMap toRemove = this.input.clone();
 
 		if (printingPlateStack != null
@@ -67,25 +65,20 @@ public class PrintBookRecipe extends InputRecipe {
 		logAfterRecipeRun(i, fccf);
 	}
 	
-	public static ItemStack createBook(ItemStack printingPlateStack, int amount) {
-		TagReader reader = new TagReader(printingPlateStack);
-		ItemStack book = new ItemStack(Material.WRITTEN_BOOK);
-
-		Map<String, Object> tags = new WeakHashMap<String, Object>();
-		tags.put("pages", reader.getStringList("Book.pages"));
-		tags.put("author", reader.getString("Book.author"));
-		tags.put("generation", reader.getInt("Book.generation"));
-		tags.put("resolved", reader.getByte("Book.resolved"));
-		tags.put("title", reader.getString("Book.title"));
+	protected ItemStack createBook(ItemStack printingPlateStack, int amount) {
+		TagManager printingPlateTag = new TagManager(printingPlateStack);
+		TagManager bookTag = printingPlateTag.getCompound("Book");
 		
-		return ItemMap.enrichWithNBT(book, amount, tags);
+		ItemStack book = new ItemStack(Material.WRITTEN_BOOK, amount);
+
+		return bookTag.enrichWithNBT(book);
 	}
 	
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 
 		if (i == null) {
-			ItemStack is = PrintingPlateRecipe.getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName);
+			ItemStack is = getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName);
 			
 			result.addAll(this.input.getItemStackRepresentation());
 			result.add(is);
@@ -94,7 +87,7 @@ public class PrintBookRecipe extends InputRecipe {
 		
 		result = createLoredStacksForInfo(i);
 		
-		ItemStack printingPlateStack = getPrintingPlate(i, this.printingPlate);
+		ItemStack printingPlateStack = getPrintingPlateItemStack(i, this.printingPlate);
 		
 		if(printingPlateStack != null) {
 			result.add(printingPlateStack.clone());
@@ -106,7 +99,7 @@ public class PrintBookRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
 		stacks.add(new ItemStack(Material.WRITTEN_BOOK, this.outputAmount));
-		stacks.add(PrintingPlateRecipe.getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName));
+		stacks.add(getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName));
 
 		if (i == null) {
 			return stacks;
@@ -130,7 +123,7 @@ public class PrintBookRecipe extends InputRecipe {
 		return res;
 	}
 	
-	public static ItemStack getPrintingPlate(Inventory i, ItemMap printingPlate) {
+	protected ItemStack getPrintingPlateItemStack(Inventory i, ItemMap printingPlate) {
 		ItemMap items = new ItemMap(i).getStacksByMaterial(printingPlate.getItemStackRepresentation().get(0).getType());
 		
 		for(ItemStack is : items.getItemStackRepresentation()) {

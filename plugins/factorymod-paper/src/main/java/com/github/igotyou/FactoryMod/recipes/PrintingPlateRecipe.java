@@ -8,9 +8,7 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,11 +19,11 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.TagReader;
+import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-public class PrintingPlateRecipe extends InputRecipe {
+public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
 	
 	private ItemMap output;
@@ -49,13 +47,14 @@ public class PrintingPlateRecipe extends InputRecipe {
 		ItemStack book = getBook(i);
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
 		String serialNumber = UUID.randomUUID().toString();
-		Map<String, Object> tags = createTags(i, serialNumber);
 		
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = output.clone();
 		
 		if (toRemove.isContainedIn(i) && toRemove.removeSafelyFrom(i)) {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
+				is = addTags(i, serialNumber, is);
+				
 				ISUtils.setName(is, itemName);
 				ISUtils.setLore(is,
 						serialNumber,
@@ -64,8 +63,6 @@ public class PrintingPlateRecipe extends InputRecipe {
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
 						);
 				
-				is = ItemMap.enrichWithNBT(is, is.getAmount(), tags);
-
 				i.addItem(is);
 			}
 		}
@@ -73,34 +70,17 @@ public class PrintingPlateRecipe extends InputRecipe {
 		logAfterRecipeRun(i, fccf);
 	}
 	
-	private Map<String, Object> createTags(Inventory i, String serialNumber) {
+	private ItemStack addTags(Inventory i, String serialNumber, ItemStack is) {
 		ItemStack book = getBook(i);
-		TagReader reader = new TagReader(book);
+		TagManager bookTag = new TagManager(book);
+		TagManager isTag = new TagManager(is);
 		
-		Map<String, Object> tags = new WeakHashMap<String, Object>();
+		isTag.setString("SN", serialNumber);
+		isTag.setCompound("Book", bookTag);
 		
-		tags.put("sn", serialNumber);
+		addEnchTag(isTag);
 		
-		tags.put("Book.pages", reader.getStringList("pages"));
-		tags.put("Book.author", reader.getString("author"));
-		tags.put("Book.generation", reader.getInt("generation"));
-		tags.put("Book.resolved", reader.getByte("resolved"));
-		tags.put("Book.title", reader.getString("title"));
-		
-		addEnchTag(tags);
-		
-		return tags;
-	}
-	
-	private static void addEnchTag(Map<String, Object> tags) {
-		Map<String, Object> unb = new WeakHashMap<String, Object>();
-		unb.put("id", (short)34);
-		unb.put("lvl", (short)1);
-		
-		List<Object> ench = new ArrayList<Object>();
-		ench.add(unb);
-		
-		tags.put("ench", ench);
+		return isTag.enrichWithNBT(is);
 	}
 	
 	private static String getGenerationName(Generation gen) {
@@ -154,20 +134,6 @@ public class PrintingPlateRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		return getPrintingPlateRepresentation(this.output, getName());
-	}
-	
-	public static ItemStack getPrintingPlateRepresentation(ItemMap printingPlate, String name) {
-		List<ItemStack> out = printingPlate.getItemStackRepresentation();
-		ItemStack res = out.size() == 0 ? new ItemStack(Material.STONE) : out.get(0);
-		
-		Map<String, Object> tags = new WeakHashMap<String, Object>();
-		addEnchTag(tags);
-		
-		res = ItemMap.enrichWithNBT(res, 1, tags);
-
-		ISUtils.setName(res, name);
-		
-		return res;
 	}
 	
 	private ItemStack getBook(Inventory i) {
