@@ -6,7 +6,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,6 +57,10 @@ import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.util.QTBox;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
 import vg.civcraft.mc.civmodcore.util.Guard;
@@ -552,5 +558,25 @@ final class ExilePearlCore implements ExilePearlApi {
 			return bd.insideBorder(location);
 		}
 		return true;
+	}
+
+	@Override
+	public boolean isPlayerInUnpermittedBastion(Player player) {
+		if (!isBastionEnabled()) {
+			return false;
+		}
+		try {
+			final BastionBlockManager manager = Bastion.getBastionManager();
+			
+			Set<? extends QTBox> possible  = manager.set.forLocation(player.getLocation());
+			@SuppressWarnings("unchecked")
+			List<BastionBlock> bastions = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+			for (BastionBlock bastion : bastions) {
+				if (!bastion.canPlace(player)) {
+					return true;
+				}
+			}
+		} catch(Exception ex) { }
+		return false;
 	}
 }

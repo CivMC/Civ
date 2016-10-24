@@ -42,6 +42,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	private Set<UUID> pearledPlayers = new HashSet<UUID>();
 	
 	private int radius = 1000;
+	private double bastionDamage = 1;
 	
 	public static final int KNOCKBACK = 3; 
 	
@@ -125,6 +126,8 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (pearl == null) {
 			return;
 		}
+		
+		checkBastion(player);
 
 		// Ignore non-block holders
 		if (!pearl.getHolder().isBlock()) {
@@ -322,6 +325,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	@Override
 	public void loadConfig(PearlConfig config) {
 		this.radius = config.getRulePearlRadius();
+		this.bastionDamage = config.getBastionDamage();
 	}
 	
 	/**
@@ -331,5 +335,16 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 */
 	public boolean isPlayerTracked(Player player) {
 		return pearledPlayers.contains(player.getUniqueId());
+	}
+	
+	/**
+	 * Checks whether the exiled player is inside any bastion fields they don't have
+	 * permission on and deals them damage if they are.
+	 * @param player The player to check
+	 */
+	private void checkBastion(Player player) {
+		if (pearlApi.isPlayerInUnpermittedBastion(player)) {
+			player.setHealth(player.getHealth() - bastionDamage);
+		}
 	}
 }

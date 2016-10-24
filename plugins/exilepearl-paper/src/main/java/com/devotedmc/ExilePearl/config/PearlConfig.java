@@ -58,6 +58,12 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	boolean getFreeByThrowing();
 	
 	/**
+	 * Gets how much to damage the players when they are inside a bastion field
+	 * @return The damage amount
+	 */
+	double getBastionDamage();
+	
+	/**
 	 * Gets the pearl repair materials
 	 * @return The pearl repair materials
 	 */

@@ -57,6 +57,10 @@
 # pearls.repair_materials
 #  - The materials used to repair pearls
 #  - The repair value is how many health points are repaired for each item 
+#
+# pearls.bastion_harm_amount
+#  - The amount of damage to deal to players when they are inside a
+#    bastion field they don't have perms on.
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -170,6 +174,7 @@ pearls:
     obsidian:
       material: OBSIDIAN
       repair: 3
+  bastion_harm_amount: 0.5
 rules:
   pearl_radius: 1000
   ignite: false

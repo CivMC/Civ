@@ -139,6 +139,11 @@ public class Document implements Map<String, Object> {
     public Double getDouble(final String key) {
         return (Double) get(key);
     }
+    
+    public Double getDouble(final String key, final double defaultValue) {
+        Object value = get(key);
+        return value == null ? defaultValue : (Double) value;
+    }
 
     /**
      * Gets the value of the given key as a String.

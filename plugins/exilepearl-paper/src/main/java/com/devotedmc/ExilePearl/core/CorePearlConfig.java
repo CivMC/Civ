@@ -163,6 +163,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public double getBastionDamage() {
+		return doc.getDouble("pearls.bastion_harm_amount", 0.5);
+	}
+
+	@Override
 	public Set<RepairMaterial> getRepairMaterials() {
 		Set<RepairMaterial> repairs = new HashSet<RepairMaterial>();
 		Document repairRecipes = doc.getDocument("pearls.repair_materials");
@@ -368,5 +373,5 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		default:
 			break;
 		}
-	}	
+	}
 }

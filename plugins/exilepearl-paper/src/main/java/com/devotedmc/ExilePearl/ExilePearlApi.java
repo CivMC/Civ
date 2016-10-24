@@ -3,6 +3,7 @@ package com.devotedmc.ExilePearl;
 import java.util.UUID;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
@@ -112,4 +113,11 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return true if the location is inside the border
 	 */
 	boolean isLocationInsideBorder(Location location);
+	
+	/**
+	 * Gets whether a player is in a non-permission bastion
+	 * @param player The player to check
+	 * @return true if the player is inside a non-permission bastion
+	 */
+	boolean isPlayerInUnpermittedBastion(Player player);
 }

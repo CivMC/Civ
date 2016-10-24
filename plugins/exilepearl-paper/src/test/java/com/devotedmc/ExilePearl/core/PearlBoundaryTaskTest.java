@@ -34,6 +34,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 	
 	private static int RADIUS = 100;
 	private static int RADIUS_KNOCK = RADIUS + PearlBoundaryTask.KNOCKBACK;
+	private static double BASTION_DAMAGE = 1.2;
 	
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
@@ -49,6 +50,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		
 		config = mock(PearlConfig.class);
 		when(config.getRulePearlRadius()).thenReturn(RADIUS);
+		when(config.getBastionDamage()).thenReturn(BASTION_DAMAGE);
 		
 		dut = new PearlBoundaryTask(pearlApi);
 		dut.loadConfig(config);
@@ -212,7 +214,6 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		assertTrue(dut.isPlayerTracked(player));
 	}
 	
-	//@Ignore
 	@Test
 	public void testRunWorldBorder() {
 		ExilePearl pearl = mock(ExilePearl.class);
@@ -272,5 +273,49 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 	
 	private void verifyTeleport(int num) {
 		verify(player, times(num)).teleport(any(Location.class), any(TeleportCause.class));
+	}
+	
+	@Test
+	public void testBastionDamage() {
+		ExilePearl pearl = mock(ExilePearl.class);
+		when(pearl.getPlayer()).thenReturn(player);
+		when(pearl.getPlayerId()).thenReturn(playerId);
+		when(pearlApi.getPlayer(playerId)).thenReturn(player);
+		when(pearlApi.getPearl(playerId)).thenReturn(pearl);
+		when(pearlApi.isPlayerExiled(player)).thenReturn(true);
+		when(player.isOnline()).thenReturn(true);
+		when(player.getHealth()).thenReturn(10.0);
+		
+		World world = TestBukkit.worlds.get(0);
+		
+		Location pearlLocation = new Location(world, 0, 64, 50);
+		when(pearl.getLocation()).thenReturn(pearlLocation);
+		
+		PearlHolder holder = mock(PearlHolder.class);
+		when(holder.isBlock()).thenReturn(true);
+		when(pearl.getHolder()).thenReturn(holder);
+		
+		Location playerLocation = new Location(world, 0, 64, 75);
+		when(player.getLocation()).thenReturn(playerLocation);
+		
+		PlayerJoinEvent joinEvent = new PlayerJoinEvent(player, null);
+		dut.onPlayerJoin(joinEvent);
+		assertTrue(dut.isPlayerTracked(player));
+		
+		when(pearlApi.isPlayerInUnpermittedBastion(player)).thenReturn(false);
+		
+		dut.start();
+		dut.run();
+		
+		verify(player, times(0)).setHealth(anyDouble());
+
+		when(pearlApi.isPlayerInUnpermittedBastion(player)).thenReturn(true);
+		dut.run();
+		verify(player, times(1)).setHealth(10.0 - BASTION_DAMAGE);
+		
+
+		when(pearlApi.isPlayerInUnpermittedBastion(player)).thenReturn(false);
+		dut.run();
+		verify(player, times(1)).setHealth(anyDouble());
 	}
 }
