@@ -1,13 +1,15 @@
 package com.devotedmc.ExilePearl;
 
 public enum PearlType {
-	EXILE(0),
-	PRISON(1);
+	EXILE(0, "Exile Pearl"),
+	PRISON(1, "Prison Pearl");
 
 	private final int value;
+	private final String title;
 
-	PearlType(int value) {
+	PearlType(int value, String title) {
 		this.value = value;
+		this.title = title;
 	}
 
 	public int toInt() {
@@ -23,5 +25,9 @@ public enum PearlType {
 		default:
 			return null;
 		}
+	}
+	
+	public String getTitle() {
+		return title;
 	}
 }

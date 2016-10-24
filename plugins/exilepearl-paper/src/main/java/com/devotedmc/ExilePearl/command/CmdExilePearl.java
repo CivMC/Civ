@@ -43,6 +43,7 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(new CmdAdminExileAny(plugin));
 		addSubCommand(new CmdAdminFreeAny(plugin));
 		addSubCommand(new CmdAdminSetHealth(plugin));
+		addSubCommand(new CmdAdminSetType(plugin));
 		addSubCommand(new CmdAdminCheckExiled(plugin));
 		addSubCommand(new CmdAdminListExiled(plugin));
 		addSubCommand(new CmdAdminReload(plugin));

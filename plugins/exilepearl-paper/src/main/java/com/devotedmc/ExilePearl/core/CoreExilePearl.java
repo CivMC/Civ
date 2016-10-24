@@ -43,7 +43,6 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  */
 final class CoreExilePearl implements ExilePearl {
 	private static final int HOLDER_COUNT = 5;
-	private static String ITEM_NAME = "Exile Pearl";
 	private static final int DEFAULT_HEALTH = 10;
 
 	// The player provider instance
@@ -261,7 +260,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public String getItemName() {
-		return ITEM_NAME;
+		return pearlType.getTitle();
 	}
 
 

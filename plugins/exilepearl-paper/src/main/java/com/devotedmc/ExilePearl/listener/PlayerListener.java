@@ -707,13 +707,24 @@ public class PlayerListener implements Listener, Configurable {
 		}
 	}
 	
+	
+	/**
+	 * Removes the help item when dropped
+	 * @param e The event args
+	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onHelpItemDrop(ItemSpawnEvent e) {
 		if (isHelpItem(e.getEntity().getItemStack())) {
 			e.setCancelled(true);
 		}
 	}
+
 	
+	/**
+	 * Prevents placing the help item
+	 * @param e The event args
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onHelpItemPlace(BlockPlaceEvent e) {
 		if (isHelpItem(e.getPlayer().getInventory().getItemInMainHand())) {
 			e.setCancelled(true);

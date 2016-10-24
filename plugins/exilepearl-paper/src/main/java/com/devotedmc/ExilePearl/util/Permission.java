@@ -10,6 +10,7 @@ public enum Permission
 	LIST("list"),
 	RELOAD("reload"),
 	SET_HEALTH("sethealth"),
+	SET_TYPE("settype"),
 	CONFIG("config")
 	;
 	

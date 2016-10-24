@@ -20,7 +20,7 @@ public class RandomSpawnListener extends RuleListener {
 	 * Prevents exiled players from random-spawning within their pearl radius
 	 * @param e The event args
 	 */
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onRandomSpawn(NewPlayerSpawn e) {
 		int radius = config.getRulePearlRadius();
 		if (radius <= 0) {

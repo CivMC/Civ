@@ -25,6 +25,8 @@ Exiled players can't come within a set radius of their pearl, so the only way th
     /ep decay                     Performs a decay operation on all pearls
     /ep exileany                  Exiles any player
     /ep freeany                   Frees any player
+    /ep sethealth                 Sets the health of a pearl
+    /ep settype                   Sets the type of a pearl
     /ep check                     Checks if a player is exiled
     /ep list                      Lists all the exiled players
     /ep reload                    Reloads the entire plugin
@@ -39,4 +41,5 @@ Exiled players can't come within a set radius of their pearl, so the only way th
     exilepearl.list               Grants access to '/ep list'
     exilepearl.reload             Grants access to '/ep reload'
     exilepearl.sethealth          Grants access to '/ep sethealth'
+    exilepearl.settype            Grants access to '/ep settype'
     exilepearl.config             Grants access to '/ep config'
