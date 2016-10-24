@@ -281,7 +281,7 @@ public class GroupManagerDao {
 					"password varchar(255) default null," +
 					"discipline_flags int(11) not null," +
 					"group_type varchar(40) not null default 'PRIVATE'," +
-					"primary key(group_name));",
+					"primary key(group_name)) charset=latin1;",
 				"create table if not exists faction_member(" +
 					"group_id int not null," +
 					"member_name varchar(36)," +
