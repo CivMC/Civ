@@ -34,10 +34,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		
 		msg("<g>Found exile pearl for player %s", name);
 
-		for (String s : plugin.getLoreProvider().generateLore(pearl)) {
-			if (s.contains("Commands")) {
-				return;
-			}
+		for (String s : plugin.getLoreProvider().generatePearlInfo(pearl)) {
 			msg(s);
 		}
 	}

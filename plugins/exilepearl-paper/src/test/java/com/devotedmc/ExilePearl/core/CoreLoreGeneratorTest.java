@@ -10,7 +10,9 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,6 +21,9 @@ import org.junit.Test;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CoreLoreGeneratorTest {
 	
@@ -86,5 +91,33 @@ public class CoreLoreGeneratorTest {
 		when(is.getType()).thenReturn(Material.ENDER_PEARL);
 		
 		assertEquals(legacyId, dut.getPlayerIdFromLegacyPearl(is));
+	}
+	
+	@Test
+	public void testGeneratePearlInfo() {
+		World w = mock(World.class);
+		when(w.getName()).thenReturn("test_world");
+		
+		Location l = new Location(w, 1, 2, 3);
+		PearlHolder holder = mock(PearlHolder.class);
+		when(holder.getName()).thenReturn("Player");
+		when(holder.getLocation()).thenReturn(l);
+		
+		when(pearl.getHolder()).thenReturn(holder);
+		
+		List<String> info = dut.generatePearlInfo(pearl);
+		
+		assertTrue(info.contains(TextUtil.parse("<a>Held by: <n>Player [1 2 3 test_world]")));
+		
+		ItemMeta im = mock(ItemMeta.class);
+		when(im.getLore()).thenReturn(info);
+		when(im.hasEnchants()).thenReturn(true);
+		when(im.hasItemFlag(ItemFlag.HIDE_ENCHANTS)).thenReturn(true);
+		
+		ItemStack is = mock(ItemStack.class);
+		when(is.getItemMeta()).thenReturn(im);
+		when(is.getType()).thenReturn(Material.ENDER_PEARL);
+		
+		assertEquals(pearlId, dut.getPearlIdFromItemStack(is));
 	}
 }

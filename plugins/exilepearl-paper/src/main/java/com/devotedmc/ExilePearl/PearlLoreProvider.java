@@ -9,6 +9,7 @@ public interface PearlLoreProvider {
 
 	/**
 	 * Generates the lore for the pearl
+	 * @param pearl The pearl instance
 	 * @return The pearl lore
 	 */
 	List<String> generateLore(ExilePearl pearl);
@@ -31,4 +32,11 @@ public interface PearlLoreProvider {
 	 * @return The player ID if it exists
 	 */
 	UUID getPlayerIdFromLegacyPearl(ItemStack is);
+	
+	/**
+	 * Generates the info for a pearl
+	 * @param pearl The pearl instance
+	 * @return The returned lore
+	 */
+	List<String> generatePearlInfo(ExilePearl pearl);
 }

@@ -7,6 +7,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +17,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlLoreProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
@@ -46,15 +48,15 @@ final class CoreLoreGenerator implements PearlLoreProvider {
 	 * @return The pearl lore
 	 */
 	public List<String> generateLore(ExilePearl pearl) {
-		return generateLoreInternal(pearl, pearl.getHealth());
+		return generateLoreInternal(pearl, pearl.getHealth(), true);
 	}
 
 	@Override
 	public List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue) {
-		return generateLoreInternal(pearl, healthValue);
+		return generateLoreInternal(pearl, healthValue, true);
 	}
 	
-	private List<String> generateLoreInternal(ExilePearl pearl, int health) {
+	private List<String> generateLoreInternal(ExilePearl pearl, int health, boolean addCommandHelp) {
 		List<String> lore = new ArrayList<String>();
 
 		Integer healthPercent = Math.min(100, Math.max(0, (int)Math.round(((double)health / config.getPearlHealthMaxValue()) * 100)));
@@ -64,13 +66,15 @@ final class CoreLoreGenerator implements PearlLoreProvider {
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
 		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
-		lore.add(parse(""));
 		
-		// Generate some helpful commands
-		CmdExilePearl cmd = CmdExilePearl.instance();
-		if (cmd != null) {
-			lore.add(parse("<l>Commands:"));
-			lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
+		if (addCommandHelp) {
+			// Generate some helpful commands
+			lore.add(parse(""));
+			CmdExilePearl cmd = CmdExilePearl.instance();
+			if (cmd != null) {
+				lore.add(parse("<l>Commands:"));
+				lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
+			}
 		}
 		return lore;
 	}
@@ -96,6 +100,15 @@ final class CoreLoreGenerator implements PearlLoreProvider {
 		}
 
 		return 0;
+	}
+
+	@Override
+	public List<String> generatePearlInfo(ExilePearl pearl) {
+		List<String> info = generateLoreInternal(pearl, pearl.getHealth(), false);
+		PearlHolder holder = pearl.getHolder();
+		Location l = holder.getLocation();
+		info.add(parse("<a>Held by: <n>%s [%d %d %d %s]", holder.getName(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName()));
+		return info;
 	}
 
 
