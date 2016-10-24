@@ -5,7 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.inventory.ItemStack;
 
-public interface PearlLoreProvider {
+public interface LoreProvider {
 
 	/**
 	 * Generates the lore for the pearl
@@ -39,4 +39,10 @@ public interface PearlLoreProvider {
 	 * @return The returned lore
 	 */
 	List<String> generatePearlInfo(ExilePearl pearl);
+	
+	/**
+	 * Generates the help lore for pearled players
+	 * @return The generated lore
+	 */
+	List<String> generateHelpLore();
 }

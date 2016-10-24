@@ -26,7 +26,7 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * Gets the pearl lore provider
 	 * @return The lore provider
 	 */
-	PearlLoreProvider getLoreProvider();
+	LoreProvider getLoreProvider();
 	
 	/**
 	 * Gets the storage provider

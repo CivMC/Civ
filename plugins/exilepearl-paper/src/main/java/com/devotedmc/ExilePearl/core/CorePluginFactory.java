@@ -12,7 +12,7 @@ import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
-import com.devotedmc.ExilePearl.PearlLoreProvider;
+import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.SuicideHandler;
@@ -108,7 +108,7 @@ public final class CorePluginFactory implements PearlFactory {
 		return new PearlBoundaryTask(pearlApi);
 	}
 
-	public PearlLoreProvider createLoreGenerator() {
+	public LoreProvider createLoreGenerator() {
 		return new CoreLoreGenerator(pearlApi.getPearlConfig());
 	}
 

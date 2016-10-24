@@ -22,7 +22,7 @@ import org.mockito.ArgumentCaptor;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlLoreProvider;
+import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -48,7 +48,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 	private PearlConfig pearlConfig;
 	private ExilePearlApi pearlApi;
 	private PlayerProvider nameProvider;
-	private PearlLoreProvider loreGenerator;
+	private LoreProvider loreGenerator;
 	
 
 	@Before
@@ -86,7 +86,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 		when(pearlApi.getRealPlayerName(playerId)).thenReturn(playerName);
 		when(pearlApi.getRealPlayerName(killerId)).thenReturn(killerName);
 		
-		loreGenerator = mock(PearlLoreProvider.class);
+		loreGenerator = mock(LoreProvider.class);
 		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 		
 		holder = new PlayerHolder(killer);

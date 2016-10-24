@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.listener;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -45,6 +46,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
@@ -682,6 +684,30 @@ public class PlayerListener implements Listener, Configurable {
 
 		msg(imprisoner, Lang.pearlYouBound, imprisoned.getName());
 		msg(imprisoned, Lang.pearlYouWereBound, imprisoner.getName());
+		
+		giveHelpItem(imprisoned);
+	}
+	
+	
+	/**
+	 * Handled exiled players re-spawning
+	 * @param e The event args
+	 */
+	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerRespawn(PlayerRespawnEvent e) {
+		Player player = e.getPlayer();
+		if (pearlApi.isPlayerExiled(player)) {
+			giveHelpItem(player);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onHelpItemDrop(ItemSpawnEvent e) {
+		ItemStack is = e.getEntity().getItemStack();
+		
+		if (is.getType() == Material.STONE_BUTTON && is.getItemMeta() != null && is.getDurability() == 2) {
+			e.setCancelled(true);
+		}
 	}
 
 
@@ -930,6 +956,26 @@ public class PlayerListener implements Listener, Configurable {
 			
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
+		}
+	}
+	
+	
+	private ItemStack createHelpItem() {
+		List<String> lore = pearlApi.getLoreProvider().generateHelpLore();
+		ItemStack is = new ItemStack(Material.STONE_BUTTON, 1);
+		ItemMeta im = is.getItemMeta();
+		im.setDisplayName("You've been exiled!");
+		im.setLore(lore);
+		im.addEnchant(Enchantment.DURABILITY, 2, true);
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		is.setItemMeta(im);
+		return is;
+	}
+	
+	private void giveHelpItem(Player player) {
+		if (player.isOnline()) {
+			ItemStack helpItem = createHelpItem();
+			player.getInventory().setItemInMainHand(helpItem);
 		}
 	}
 }

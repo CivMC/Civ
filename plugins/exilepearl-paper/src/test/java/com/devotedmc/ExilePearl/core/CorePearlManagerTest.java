@@ -24,7 +24,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlLoreProvider;
+import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
@@ -278,7 +278,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		ItemStack is = pearl.createItemStack();
 		
 		// Create mock lore generator
-		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
+		LoreProvider loreGenerator = mock(LoreProvider.class);
 		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 		
 		// Test fails when lore generator fails
@@ -308,7 +308,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		ItemStack is = mock(ItemStack.class);
 		
 		// Create mock lore generator
-		PearlLoreProvider loreGenerator = mock(PearlLoreProvider.class);
+		LoreProvider loreGenerator = mock(LoreProvider.class);
 		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 
 		manager.exilePlayer(player, killer);

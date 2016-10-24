@@ -32,7 +32,7 @@ import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.PearlLoreProvider;
+import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.SuicideHandler;
@@ -84,7 +84,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final PearlConfig pearlConfig;
 	private final CoreStorageProvider storageProvider;
 	private final PearlManager pearlManager;
-	private final PearlLoreProvider loreGenerator;
+	private final LoreProvider loreGenerator;
 	private final ExilePearlRunnable pearlDecayWorker;;
 	private final BorderHandler borderHandler;
 	private final SuicideHandler suicideHandler;
@@ -453,7 +453,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 
 	@Override
-	public PearlLoreProvider getLoreProvider() {
+	public LoreProvider getLoreProvider() {
 		return loreGenerator;
 	}
 

@@ -14,7 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
-import com.devotedmc.ExilePearl.PearlLoreProvider;
+import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -27,7 +27,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * 
  * @author Gordon
  */
-final class CoreLoreGenerator implements PearlLoreProvider {
+final class CoreLoreGenerator implements LoreProvider {
 	
 	// These need to match!
 	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";
@@ -150,6 +150,18 @@ final class CoreLoreGenerator implements PearlLoreProvider {
 		if (lore == null || lore.size() < 5) {
 			return null;
 		}
+		return lore;
+	}
+
+	@Override
+	public List<String> generateHelpLore() {
+		List<String> lore = new ArrayList<String>();
+		
+		lore.add(parse("<a>You are exiled!"));
+		lore.add(parse("<reset>"));
+		lore.add(parse("Another player has imprisoned you in an exile pearl."));
+		lore.add(parse("Your in-game actions will be limited until you are freed."));
+		lore.add(parse("You can type <c>\\ep locate to see the location of your pearl."));
 		return lore;
 	}
 
