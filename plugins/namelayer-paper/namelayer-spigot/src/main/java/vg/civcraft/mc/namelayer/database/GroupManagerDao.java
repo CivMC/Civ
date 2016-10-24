@@ -294,11 +294,11 @@ public class GroupManagerDao {
 					"group_id varchar(255) not null," +
 					"role varchar(40) not null," +
 					"tier varchar(255) not null," +
-					"unique key (group_id, role));",
+					"unique key (group_id, role)) charset=latin1;",
 				"create table if not exists subgroup(" +
 					"group_id varchar(255) not null," +
 					"sub_group_id varchar(255) not null," +
-					"unique key (group_id, sub_group_id));");
+					"unique key (group_id, sub_group_id)) charset=latin1;");
 			
 
 		db.registerMigration(3, false, 
