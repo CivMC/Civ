@@ -71,7 +71,7 @@ class FileStorage implements PluginStorage {
 	public void pearlInsert(ExilePearl pearl) {
 		Document insert = new Document()
 				.append("player_name", pearl.getPlayerName()) // Not needed, just makes it easier to search file
-				.append("killer_id", pearl.getKillerUniqueId().toString())
+				.append("killer_id", pearl.getKillerId().toString())
 				.append("pearl_id", pearl.getPearlId())
 				.append("type", pearl.getPearlType().toInt())
 				.append("location", pearl.getLocation())

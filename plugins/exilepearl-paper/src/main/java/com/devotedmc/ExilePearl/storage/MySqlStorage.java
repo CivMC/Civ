@@ -187,7 +187,7 @@ class MySqlStorage implements PluginStorage {
 			Location l = pearl.getLocation();
 
 			ps.setString(1, pearl.getPlayerId().toString());
-			ps.setString(2, pearl.getKillerUniqueId().toString());
+			ps.setString(2, pearl.getKillerId().toString());
 			ps.setInt(3, pearl.getPearlId());
 			ps.setInt(4, pearl.getPearlType().toInt());
 			ps.setString(5, l.getWorld().getName());

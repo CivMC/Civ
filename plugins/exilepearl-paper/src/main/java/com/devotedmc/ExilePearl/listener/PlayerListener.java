@@ -685,7 +685,7 @@ public class PlayerListener implements Listener, Configurable {
 	public void onPlayerPearled(PlayerPearledEvent e) {
 
 		Player imprisoned = e.getPearl().getPlayer();
-		Player imprisoner = pearlApi.getPlayer(e.getPearl().getKillerUniqueId());
+		Player imprisoner = pearlApi.getPlayer(e.getPearl().getKillerId());
 
 		// Log the capturing ExilePearl event.
 		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));

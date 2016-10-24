@@ -133,7 +133,7 @@ public class MockPearl implements ExilePearl {
 	}
 
 	@Override
-	public UUID getKillerUniqueId() {
+	public UUID getKillerId() {
 		return killedBy;
 	}
 

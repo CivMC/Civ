@@ -124,7 +124,7 @@ public interface ExilePearl {
 	 * Gets the ID of the killing player
 	 * @return The ID of the killing player
 	 */
-	UUID getKillerUniqueId();
+	UUID getKillerId();
 	
 	/**
 	 * Gets the name of the killing player

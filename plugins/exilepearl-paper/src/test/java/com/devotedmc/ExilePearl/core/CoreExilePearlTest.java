@@ -265,7 +265,7 @@ public class CoreExilePearlTest extends BukkitTestCase {
 
 	@Test
 	public void testGetKillerUniqueId() {
-		assertEquals(killerId, pearl.getKillerUniqueId());
+		assertEquals(killerId, pearl.getKillerId());
 	}
 
 	@Test
