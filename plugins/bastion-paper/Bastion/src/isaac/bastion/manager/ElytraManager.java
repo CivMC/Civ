@@ -109,14 +109,16 @@ public class ElytraManager {
 		BastionType noImpact = null;
 		boolean breakElytra = false;
 		boolean damageElytra = false;
-		double explosionStrength = 0;
+		double explosionStrength = -1;
 		
 		// look through bastions
 		for(BastionBlock bastion : definiteCollide) {
 			BastionType type = bastion.getType();
 			breakElytra = breakElytra || type.isDestroyElytra();
 			damageElytra = damageElytra || type.isDamageElytra();
-			explosionStrength = Math.max(explosionStrength, type.getExplosionStrength());
+			if(type.isExplodeOnBlock()) {
+				explosionStrength = Math.max(explosionStrength, type.getExplosionStrength());
+			}
 			Location bLoc = bastion.getLocation();
 			double testY = bLoc.getY() + ( type.isIncludeY() ? 0 : 1);
 			
@@ -283,7 +285,7 @@ public class ElytraManager {
 			elytra.setDurability((short)432);
 			inv.setChestplate(elytra);
 		}
-		if(explosionStrength > 0) {
+		if(explosionStrength >= 0) {
 			p.getWorld().createExplosion(p.getLocation(), (float) explosionStrength);
 		}
 	}

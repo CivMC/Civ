@@ -36,6 +36,7 @@ public class BastionType {
 	private boolean damageElytra;
 	private int elytraScale;
 	private boolean elytraRequireMature;
+	private boolean explodeOnBlock;
 	private double explodeOnBlockStrength;
 	private boolean damageFirstBastion;
 	private int regenTime;
@@ -44,8 +45,8 @@ public class BastionType {
 			boolean includeY, int startScaleFactor, double finalScaleFactor, long warmupTime,
 			int erosionTime, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
 			boolean blockMidair, int pearlScale, boolean pearlRequireMature, boolean consumeOnBlock, int blocksToErode,
-			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale,
-			boolean elytraRequireMature, double explodeOnBlockStrength, boolean damageFirstBastion, int regenTime) {
+			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale, boolean elytraRequireMature,
+			boolean explodeOnBlock, double explodeOnBlockStrength, boolean damageFirstBastion, int regenTime) {
 		this.name = name;
 		this.material = material;
 		this.lore = lore;
@@ -70,6 +71,7 @@ public class BastionType {
 		this.damageElytra = damageElytra;
 		this.elytraScale = elytraScale;
 		this.elytraRequireMature = elytraRequireMature;
+		this.explodeOnBlock = explodeOnBlock;
 		this.explodeOnBlockStrength = explodeOnBlockStrength;
 		this.damageFirstBastion = damageFirstBastion;
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
@@ -257,6 +259,14 @@ public class BastionType {
 	
 	/**
 	 * 
+	 * @return true if there should be an explosion on elytra colision
+	 */
+	public boolean isExplodeOnBlock() {
+		return explodeOnBlock;
+	}
+	
+	/**
+	 * 
 	 * @return the strength of the explosion on elytra collision
 	 */
 	public double getExplosionStrength() {
@@ -376,10 +386,11 @@ public class BastionType {
 		} else if(regenTime < 0) {
 			regenTime = 0;
 		}
+		boolean explodeOnBlock = config.getBoolean("elytra.explodeOnBlock");
 		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
 		return new BastionType(name, material, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
-				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlockStrength,
-				damageFirstBastion, regenTime);
+				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
+				explodeOnBlockStrength, damageFirstBastion, regenTime);
 	}
 }
