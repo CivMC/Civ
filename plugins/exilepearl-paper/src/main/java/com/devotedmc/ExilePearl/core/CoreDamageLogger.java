@@ -145,9 +145,9 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 		int newInterval = config.getDamageLogInterval();
 		algorithm = config.getDamageLogAlgorithm();
-		decayAmount = config.getDamageLogDecayAmount();
-		maxDamage = config.getDamageLogMaxDamage();
-		potionDamage = config.getDamageLogPotionDamage();
+		decayAmount = Math.max(0, config.getDamageLogDecayAmount());
+		maxDamage = Math.max(0, config.getDamageLogMaxDamage());
+		potionDamage = Math.max(0, config.getDamageLogPotionDamage());
 		
 		if (algorithm < 0 || algorithm > 1) {
 			algorithm = 0;
