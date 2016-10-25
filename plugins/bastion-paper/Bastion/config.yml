@@ -6,35 +6,62 @@ mysql:
   port: 3306
   prefix: ''
   savesPerDay: 64
-BastionBlock:
-  material: SPONGE
-  #If squarefield is set to false, the field will be a circle
-  squarefield: false
-  effectRadius: 10
-  includeYlevel: false
-  startScaleFactor: 100
-  finalScaleFactor: 0.2
-  warmUpTime: 86400000
-  maxBreaksPerMinute: 30
-  erosionRatePerDay: 0
-  destroyOnRemove: true
-  # Set to -1 to erode all overlapping bastions
-  blocksToErode: 1
-  EnderPearls:
-    preventEnderPearl: true 
-    block_midair: false
-    damage_first_bastion: true
-    scaleFac: 1
-    requireMaturity: true 
-    consumeOnBlock: false  
-  Elytra:
-    block: true
-    destroyOnBlock: false
-    # is the Elytra damaged when blocked?
-    damageOnBlock: true
-    # does it explode?!
-    explodeOnBlock: true
-    # explode strength -- 0 is no damage, 4 is TNT, etc.
-    explodeOnBlockStrength: 2.0
-    scaleFac: 0
-    requireMaturity: true
+bastions:
+  bastion:
+    block:
+      material: SPONGE
+      durability: 0
+      lore: 'This is a bastion'
+    squarefield: false
+    effectRadius: 10
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: true
+    pearls:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+  anotherbastion:
+    block:
+      material: SPONGE
+      durability: 0
+      lore: 'This is another bastion'
+    squarefield: true
+    effectRadius: 15
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: true
+    pearls:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0

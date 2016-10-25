@@ -1,13 +1,7 @@
 package isaac.bastion.manager;
 
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.event.BastionDamageEvent;
-import isaac.bastion.event.BastionDamageEvent.Cause;
-import isaac.bastion.storage.BastionBlockSet;
-
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +10,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -27,14 +20,21 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
+import isaac.bastion.storage.BastionBlockStorage;
+
 public class ElytraManager {
 
-	private BastionBlockSet bastions;
+	private BastionBlockStorage storage;
 	private Map<UUID, Long> throttle;
 	private Map<UUID, Long> lastMoves;
 	
 	public ElytraManager() {
-		bastions = Bastion.getBastionManager().set;
+		storage = Bastion.getBastionStorage();
 		throttle = new ConcurrentHashMap<UUID, Long>();
 		lastMoves = new ConcurrentHashMap<UUID, Long>();
 	}
@@ -47,31 +47,31 @@ public class ElytraManager {
 		lastMoves.remove(player);
 	}
 	
-	public boolean handleElytraMovement(Player p, Location to) {
+	public boolean handleElytraMovement(Player player, Location to) {
 		// We use movement data plus vector data to form correct movement projection vectors.
-		Long lastMove = lastMoves.get(p.getUniqueId());
+		Long lastMove = lastMoves.get(player.getUniqueId());
 		Long nowMove = System.currentTimeMillis();
-		lastMoves.put(p.getUniqueId(), nowMove);
+		lastMoves.put(player.getUniqueId(), nowMove);
 		if (lastMove == null) lastMove = nowMove - 50l; // assume 20/sec
 
 		// Throttle checks to no more then 10 a second.
-		Long lastCheck = throttle.get(p.getUniqueId());
+		Long lastCheck = throttle.get(player.getUniqueId());
 		if (lastCheck != null && nowMove - lastCheck.longValue() < 100l){
 			/*Bastion.getPlugin().getLogger().log(Level.INFO, "Throttled: {0} vs. {1}",
 					new Object[] {lastCheck, System.currentTimeMillis()});*/
 			return false;
 		}
-		throttle.put(p.getUniqueId(), System.currentTimeMillis());
+		throttle.put(player.getUniqueId(), System.currentTimeMillis());
 		//Bastion.getPlugin().getLogger().info("Not throttled");
 		
 		// collect to/from
-		Location from = p.getLocation();
+		Location from = player.getLocation();
 		if (to == null) {
-			to = p.getLocation();
+			to = player.getLocation();
 		}
 		
 		// fix vector
-		Vector pVec = p.getVelocity();
+		Vector pVec = player.getVelocity();
 		if (pVec == null || pVec.lengthSquared() == 0.0d) {
 			pVec = new Vector(to.getX() - from.getX(),
 					to.getY() - from.getY(),
@@ -89,8 +89,8 @@ public class ElytraManager {
 				new Object[] {from, newTo, pVec});*/
 		
 		// find maxset of bastions
-		Set<BastionBlock> possible = bastions.getPossibleFlightBlocking(
-				Bastion.getConfigManager().getBastionBlockEffectRadius() * 2,
+		Set<BastionBlock> possible = storage.getPossibleFlightBlocking(
+				BastionType.getMaxRadius() * 2,
 				from, newTo );
 		if (possible == null || possible.isEmpty()) {
 			//Bastion.getPlugin().getLogger().info("No interations");
@@ -98,23 +98,29 @@ public class ElytraManager {
 		}
 		
 		// find actual collisions
-		Set<BastionBlock> definiteCollide = simpleCollide(possible, pVec, from, newTo, p); //EnderPearlManager.staticSimpleCollide(possible, from, newTo, p);
+		Set<BastionBlock> definiteCollide = simpleCollide(possible, pVec, from, newTo, player); //EnderPearlManager.staticSimpleCollide(possible, from, newTo, p);
 		if (definiteCollide == null || definiteCollide.isEmpty()) {
 			//Bastion.getPlugin().getLogger().info("No definite collisions");
 			return false;
 		}
 		
 		// only allocate if we're going to use it.
-		Set<BastionBlock> impact = null;
-		if (Bastion.getConfigManager().getElytraErosionScale() > 0 && 
-				 Bastion.getConfigManager().getBastionBlocksToErode() != 0) {
-			impact = new TreeSet<BastionBlock>();
-		}
+		Set<BastionBlock> impact = new TreeSet<BastionBlock>();
+		BastionType noImpact = null;
+		boolean breakElytra = false;
+		boolean damageElytra = false;
+		double explosionStrength = -1;
 		
 		// look through bastions
 		for(BastionBlock bastion : definiteCollide) {
+			BastionType type = bastion.getType();
+			breakElytra = breakElytra || type.isDestroyElytra();
+			damageElytra = damageElytra || type.isDamageElytra();
+			if(type.isExplodeOnBlock()) {
+				explosionStrength = Math.max(explosionStrength, type.getExplosionStrength());
+			}
 			Location bLoc = bastion.getLocation();
-			double testY = bLoc.getY() + ( Bastion.getConfigManager().includeSameYLevel() ? 0 : 1);
+			double testY = bLoc.getY() + ( type.isIncludeY() ? 0 : 1);
 			
 			// Are we fully below the bastion?
 			if (testY > Math.max(from.getY(), newTo.getY())) continue;
@@ -136,46 +142,56 @@ public class ElytraManager {
 			// We're going to clip this bastion field.
 			if (hit) {
 				//Bastion.getPlugin().getLogger().log(Level.INFO, "  hit bastion at {0}", bLoc);
-				if (impact == null) { // we do no damage so just impact.
-					doImpact(p);
-					return true;
+				if (type.getElytraScale() > 0 && type.getBlocksToErode() != 0) { // we do no damage so just impact.
+					impact.add(bastion);
+				} else if(noImpact == null) {
+					noImpact = bastion.getType();
 				}
-				impact.add(bastion); // keep track of all intersections for overlapping fields
 			}
 		}
 		
 		// Found a few hits, figure out who gets damaged.
 		if (impact != null && impact.size() > 0) {
+			doImpact(player, breakElytra, damageElytra, explosionStrength);
 			// handle breaking/damage to elytra
-			doImpact(p);
 			
-			// now handle damage / breaking of bastions.  
-			if (!Bastion.getBastionManager().onCooldown(p)) {
-				int breakCount = Bastion.getConfigManager().getBastionBlocksToErode();
-				if (breakCount < 0 || impact.size() >= breakCount) { // break all
-					for (BastionBlock bastion : impact) {
-						BastionDamageEvent e = new BastionDamageEvent(bastion, p, Cause.ELYTRA);
-						Bukkit.getPluginManager().callEvent(e);
-
-						if (!e.isCancelled()) {
-							bastion.erode(bastion.erosionFromElytra());
-						}
-					}					
-				} else if (breakCount > 0) { // break some randomly
+			HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
+			for(BastionBlock block : impact) {
+				if(!block.getType().isDamageElytra()) continue;
+				if(!typeMap.containsKey(block.getType())) {
+					typeMap.put(block.getType(), new HashSet<BastionBlock>());
+				}
+				typeMap.get(block.getType()).add(block);
+			}
+			
+			for(BastionType type : typeMap.keySet()) {
+				if(Bastion.getBastionManager().onCooldown(player.getUniqueId(), type)) continue;
+				int breakCount = type.getBlocksToErode();
+				if(breakCount < 0 || impact.size() >= breakCount) {
+					for(BastionBlock bastion : typeMap.get(type)) {
+						double damage = bastion.getErosionFromElytra();
+						BastionDamageEvent event = new BastionDamageEvent(bastion, player, Cause.ELYTRA, damage);
+						Bukkit.getPluginManager().callEvent(event);
+						if(event.isCancelled()) continue;
+						bastion.erode(damage);
+					}
+				} else if (breakCount > 0) {
 					Random rng = new Random();
-					List<BastionBlock> ordered = new LinkedList<BastionBlock>(impact);
-					for (int i = 0;i < ordered.size() && (i < breakCount); ++i){
+					List<BastionBlock> ordered = new LinkedList<BastionBlock>(typeMap.get(type));
+					for(int i = 0; i < ordered.size() && (i < breakCount); i++) {
 						int erode = rng.nextInt(ordered.size());
 						BastionBlock toErode = ordered.get(erode);
-						BastionDamageEvent e = new BastionDamageEvent(toErode, p, Cause.ELYTRA);
-						Bukkit.getPluginManager().callEvent(e);
-						if (!e.isCancelled()) {
-							toErode.erode(toErode.erosionFromElytra());
-							ordered.remove(erode);
-						}
+						double damage = toErode.getErosionFromElytra();
+						BastionDamageEvent event = new BastionDamageEvent(toErode, player, Cause.ELYTRA, damage);
+						Bukkit.getPluginManager().callEvent(event);
+						if(event.isCancelled()) continue;
+						toErode.erode(damage);
+						ordered.remove(erode);
 					}
 				}
 			}
+			return true;
+		} else if (noImpact != null) {
 			return true;
 		}
 		
@@ -191,12 +207,12 @@ public class ElytraManager {
 			if (bastion.canPlace(player)) { // not blocked, continue
 				continue;
 			}
-			if (Bastion.getConfigManager().squareField()) {
-				if (hasCollisionPointsSquare(start, end, bastion.getLocation(), BastionBlock.getRadius())) {
+			if (bastion.getType().isSquare()) {
+				if (hasCollisionPointsSquare(start, end, bastion.getLocation(), bastion.getType().getEffectRadius())) {
 					couldCollide.add(bastion);
 				}
 			} else {
-				if (hasCollisionPointsCircle(velocity, start, bastion.getLocation(), BastionBlock.getRadius())) {
+				if (hasCollisionPointsCircle(velocity, start, bastion.getLocation(), bastion.getType().getEffectRadius())) {
 					couldCollide.add(bastion);
 				}
 			}
@@ -258,22 +274,19 @@ public class ElytraManager {
 		return false;
 	}
 	
-	private void doImpact(Player p) {
+	private void doImpact(Player p, boolean breakElytra, boolean damageElytra, double explosionStrength) {
+		p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
+		p.setVelocity(new Vector(0, 0, 0));
 		PlayerInventory inv = p.getInventory();
-		if (Bastion.getConfigManager().getElytraIsDestroyOnBlock()) {
+		if (breakElytra) {
 			inv.setChestplate(new ItemStack(Material.AIR));
-		} else if (Bastion.getConfigManager().getElytraIsDamagedOnBlock()){
+		} else if (damageElytra){
 			ItemStack elytra = inv.getChestplate();
 			elytra.setDurability((short)432);
 			inv.setChestplate(elytra);
 		}
-		p.setGliding(false);
-		p.setVelocity(p.getVelocity().multiply(-1.0d));
-		if (Bastion.getConfigManager().getElytraExplodesOnBlock()) {
-			p.sendMessage(ChatColor.RED+"You've been blown back by a Bastion Block");
-			p.getWorld().createExplosion(p.getLocation(), (float) Bastion.getConfigManager().getElytraExplosionStrength());
-		} else {
-			p.sendMessage(ChatColor.RED+"Elytra flight blocked by Bastion Block");
+		if(explosionStrength >= 0) {
+			p.getWorld().createExplosion(p.getLocation(), (float) explosionStrength);
 		}
 	}
 }

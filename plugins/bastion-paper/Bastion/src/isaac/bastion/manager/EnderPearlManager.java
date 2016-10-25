@@ -1,11 +1,5 @@
 package isaac.bastion.manager;
 
-import isaac.bastion.Bastion;
-import isaac.bastion.BastionBlock;
-import isaac.bastion.event.BastionDamageEvent;
-import isaac.bastion.event.BastionDamageEvent.Cause;
-import isaac.bastion.storage.BastionBlockSet;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -27,16 +21,27 @@ import org.bukkit.util.Vector;
 
 import com.untamedears.humbug.CustomNMSEntityEnderPearl;
 
+import isaac.bastion.Bastion;
+import isaac.bastion.BastionBlock;
+import isaac.bastion.BastionType;
+import isaac.bastion.storage.BastionBlockStorage;
+
+@SuppressWarnings("deprecation")
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT = 800;
-	private BastionBlockSet bastions;
+	private BastionBlockStorage storage;
+	private boolean humbugLoaded = true;
 	
 	private FlightTask task;
 	
 	public EnderPearlManager() {
-		bastions=Bastion.getBastionManager().set;
-
+		storage = Bastion.getBastionStorage();
 		task = new FlightTask();
+		try {
+			Class.forName("com.untamedears.humbug.CustomNMSEntityEnderPearl");
+		} catch (ClassNotFoundException e) {
+			humbugLoaded = false;
+		}
 	}
 
 	public void handlePearlLaunched(EnderPearl pearl) {
@@ -45,12 +50,8 @@ public class EnderPearlManager {
 
 	private void getBlocking(EnderPearl pearl) {
 		double gravity = 0.03F;
-		try {
-			if (pearl instanceof CustomNMSEntityEnderPearl) {
-				gravity = ((CustomNMSEntityEnderPearl) pearl ).y_adjust_;
-			} // else means humbug isn't adjusting.
-		} catch(NoClassDefFoundError e ) {
-			Bastion.getPlugin().getLogger().info("Humbug not found");
+		if(humbugLoaded && pearl instanceof CustomNMSEntityEnderPearl) {
+			gravity = ((CustomNMSEntityEnderPearl)pearl).y_adjust_;
 		}
 
 		Vector speed = pearl.getVelocity();
@@ -66,7 +67,7 @@ public class EnderPearlManager {
 		double maxDistance = getMaxDistance(horizontalSpeed, maxTicks);
 
 		//check if it has any possibility of going through a bastion 
-		if (!(maxDistance > Bastion.getConfigManager().getBastionBlockEffectRadius() / 2 
+		if (!(maxDistance > BastionType.getMaxRadius() / 2 
 				|| maxDistance < -1)) {
 			return;
 		}
@@ -76,7 +77,7 @@ public class EnderPearlManager {
 			threw = (Player) pearl.getShooter();
 		}
 
-		Set<BastionBlock> possible = bastions.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
+		Set<BastionBlock> possible = storage.getPossibleTeleportBlocking(pearl.getLocation(), maxDistance); //all the bastion blocks within range of the pearl
 
 		// no need to do anything if there aren't any bastions to run into.
 		if (possible.isEmpty()) {
@@ -110,39 +111,6 @@ public class EnderPearlManager {
 		}
 	}
 	
-	private static EnderPearlManager staticInstance;
-	
-	public static Set<BastionBlock> staticSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
-		if (staticInstance == null) {
-			staticInstance = new EnderPearlManager();
-		}
-		return staticInstance.alternateSimpleCollide(possible, start, end, player);
-	}
-
-	private Set<BastionBlock> alternateSimpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
-		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
-		for (BastionBlock bastion : possible) {
-			Location loc = bastion.getLocation().clone();
-			loc.setY(0);
-			
-			if (bastion.canPlace(player)) { // not blocked, continue
-				continue;
-			}
-			
-			if (Bastion.getConfigManager().squareField()) {
-				if (!getCollisionPointsSquare(start, end, loc, BastionBlock.getRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
-					couldCollide.add(bastion);
-				}
-			} else {
-				if (!getCollisionPoints(start, end, loc, BastionBlock.getRadiusSquared()).isEmpty()) {
-					couldCollide.add(bastion);
-				}
-			}
-		}
-
-		return couldCollide;
-	}
-	
 	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Location start, Location end, Player player) {
 		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
 		for (BastionBlock bastion : possible) {
@@ -153,12 +121,12 @@ public class EnderPearlManager {
 				continue;
 			}
 			
-			if (Bastion.getConfigManager().squareField()) {
-				if (!getCollisionPointsSquare(start, end, loc, BastionBlock.getRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
+			if (bastion.getType().isSquare()) {
+				if (!getCollisionPointsSquare(start, end, loc, bastion.getType().getEffectRadius()).isEmpty() ) { // TODO: reuse is good, doing the same thing twice is bad
 					couldCollide.add(bastion);
 				}
 			} else {
-				if (circleLineCollide(start, end, loc, BastionBlock.getRadiusSquared())) {
+				if (circleLineCollide(start, end, loc, bastion.getType().getRadiusSquared())) {
 					couldCollide.add(bastion);
 				}
 			}
@@ -170,10 +138,10 @@ public class EnderPearlManager {
 	double collidesBy(BastionBlock bastion, Location startLoc, Location endLoc, Vector speed, double gravity, double horizontalSpeed) {
 		//Get the points were our line crosses the circle
 		List<Location> collision_points = null;
-		if (Bastion.getConfigManager().squareField()) {
-			collision_points = getCollisionPointsSquare(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadius());
+		if (bastion.getType().isSquare()) {
+			collision_points = getCollisionPointsSquare(startLoc, endLoc, bastion.getLocation(), bastion.getType().getEffectRadius());
 		} else {
-			collision_points = getCollisionPoints(startLoc, endLoc, bastion.getLocation(), BastionBlock.getRadiusSquared());
+			collision_points = getCollisionPoints(startLoc, endLoc, bastion.getLocation(), bastion.getType().getRadiusSquared());
 		}
 		
 		if (collision_points.isEmpty()) {
@@ -181,7 +149,7 @@ public class EnderPearlManager {
 		}
 		
 		//solve the quadratic equation for the equation governing the pearls y height. See if it ever reaches (bastion.getLocation().getY()+1
-		List<Double> solutions = getSolutions(-gravity/2, speed.getY(), startLoc.getY() - (bastion.getLocation().getY() + (Bastion.getConfigManager().includeSameYLevel() ? 0 : 1) ));
+		List<Double> solutions = getSolutions(-gravity/2, speed.getY(), startLoc.getY() - (bastion.getLocation().getY() + (bastion.getType().isIncludeY() ? 0 : 1) ));
 		
 		//If there aren't any results we no there are no intersections
 		if (solutions.isEmpty()) {
@@ -491,25 +459,20 @@ public class EnderPearlManager {
 			if (pearl.getShooter() instanceof Player) {
 				Player player = (Player) pearl.getShooter();
 				
-				if (Bastion.getConfigManager().getDamageFirstBastion() && !Bastion.getBastionManager().onCooldown(player)) {
-					BastionDamageEvent e = new BastionDamageEvent(blocking, player, Cause.PEARL);
-					Bukkit.getPluginManager().callEvent(e);
-					
-					if (!e.isCancelled()) {
-						blocking.erode(blocking.erosionFromPearl());
-						pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
-					}
+				if (blocking.getType().damageFirstBastion() && !Bastion.getBastionManager().onCooldown(player.getUniqueId(), blocking.getType())) {
+					blocking.erode(blocking.getErosionFromPearl());
+					pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
 				}
 				
-				if (Bastion.getConfigManager().blockMidAir()) {
+				if (blocking.getType().isBlockMidair()) {
 					player.sendMessage(ChatColor.RED+"Ender pearl blocked by Bastion Block");
-					if (!Bastion.getConfigManager().getConsumePearlOnBlock()) {
+					if (!blocking.getType().isConsumeOnBlock()) {
 						player.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 						player.updateInventory();
 					}
 				}
 			}
-			if (Bastion.getConfigManager().blockMidAir()) {
+			if (blocking.getType().isBlockMidair()) {
 				pearl.remove();
 			}
 			

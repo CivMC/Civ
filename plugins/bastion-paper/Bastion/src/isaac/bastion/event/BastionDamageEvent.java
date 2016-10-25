@@ -16,6 +16,7 @@ public class BastionDamageEvent extends PlayerEvent implements Cancellable {
 	
 	private final BastionBlock bastion;
 	private final Cause cause;
+	private final double damage;
 	
 	private boolean cancelled;
 	
@@ -28,10 +29,11 @@ public class BastionDamageEvent extends PlayerEvent implements Cancellable {
 	 * @param player The damaging player
 	 * @param cause The damage cause
 	 */
-	public BastionDamageEvent(final BastionBlock bastion, final Player player, final Cause cause) {
+	public BastionDamageEvent(final BastionBlock bastion, final Player player, final Cause cause, final double damage) {
 		super(player);
 		this.bastion = bastion;
 		this.cause = cause;
+		this.damage = damage;
 	}
 	
 	/**
@@ -48,6 +50,14 @@ public class BastionDamageEvent extends PlayerEvent implements Cancellable {
 	 */
 	public Cause getCause() {
 		return cause;
+	}
+	
+	/**
+	* Gets the amount of damage to the bastion
+	* @return The amount of damage
+	*/
+	public double getDamage() {
+		return damage;
 	}
 	
 	/**

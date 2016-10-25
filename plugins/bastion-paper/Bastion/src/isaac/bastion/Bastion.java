@@ -1,62 +1,82 @@
 package isaac.bastion;
 
 import java.util.LinkedList;
-import java.util.logging.Level;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
-import isaac.bastion.listeners.BastionListener;
-import isaac.bastion.listeners.CommandListener;
-import isaac.bastion.listeners.EnderPearlListener;
-import isaac.bastion.listeners.ElytraListener;
+import isaac.bastion.listeners.BastionDamageListener;
+import isaac.bastion.listeners.BastionInteractListener;
 import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.ConfigManager;
 import isaac.bastion.storage.BastionBlockStorage;
-import isaac.bastion.storage.Database;
-
-import java.util.logging.Level;
-
-import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public final class Bastion extends JavaPlugin {
-	private static BastionListener listener; ///Main listener
-	private static Bastion plugin; ///Holds the plugin
-	private static BastionBlockManager bastionManager; ///Most of the direct interaction with Bastions
-	private static ConfigManager config; ///Holds the configuration
+public final class Bastion extends ACivMod {
+	private static Bastion plugin;
+	private static BastionBlockStorage storage;
+	private static BastionBlockManager manager;
 	
 	public void onEnable() 	{
-		//set the static variables
 		plugin = this;
-		config = new ConfigManager();
-		bastionManager = new BastionBlockManager();
-		listener = new BastionListener();
+		saveDefaultConfig();
+		reloadConfig();
+		BastionType.loadBastionTypes(getConfig().getConfigurationSection("bastions"));
+		setupDatabase();
 		registerNameLayerPermissions();
-		
-		removeGhostBlocks();
+		manager = new BastionBlockManager();
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
 		
 		registerListeners();
-		registerCommands();
+		setupCommands();
+	}
+	
+	public void onDisable() {
+		storage.close();
+	}
+	
+	public String getPluginName() {
+		return "Bastion";
 	}
 	
 	private void registerListeners() {
-		getServer().getPluginManager().registerEvents(listener, this);
-		getServer().getPluginManager().registerEvents(new CommandListener(), this);
-		if(config.getEnderPearlsBlocked()) { //currently everything to do with blocking pearls is part of EnderPearlListener. Needs changed
-			getServer().getPluginManager().registerEvents(new EnderPearlListener(), this);
-		}
-		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
+		getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
+		getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
 	}
 
+	private void setupDatabase() {
+		ConfigurationSection config = getConfig().getConfigurationSection("sql");
+		String host = config.getString("host");
+		int port = config.getInt("port");
+		String user = config.getString("user");
+		String pass = config.getString("pass");
+		String dbname = config.getString("dbname");
+		int poolsize = config.getInt("poolsize");
+		long connectionTimeout = config.getLong("connectionTimeout");
+		long idleTimeout = config.getLong("idleTimeout");
+		long maxLifetime = config.getLong("maxLifetime");
+		ManagedDatasource db = null;
+		try {
+			db = new ManagedDatasource(this, user, pass, host, port, dbname, poolsize, connectionTimeout, idleTimeout, maxLifetime);
+			db.getConnection().close();
+		} catch (Exception ex) {
+			warning("Could not connect to database, shutting down!");
+			Bukkit.shutdown();
+		}
+		storage = new BastionBlockStorage(db, getLogger());
+		storage.registerMigrations();
+		storage.loadBastions();
+	}
+	
 	//Sets up the command managers
-	private void registerCommands(){
+	private void setupCommands(){
 		getCommand("Bastion").setExecutor(new BastionCommandManager());
 		getCommand("bsi").setExecutor(new ModeChangeCommand(Mode.INFO));
 		getCommand("bsd").setExecutor(new ModeChangeCommand(Mode.DELETE));
@@ -66,39 +86,19 @@ public final class Bastion extends JavaPlugin {
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
 	}
 
-	public void onDisable() {
-		if(bastionManager != null) {
-			bastionManager.close(); //saves all Bastion Blocks
-		}
-	}
-
-	public static BastionBlockManager getBastionManager() {
-		return bastionManager;
-	}
 	public static Bastion getPlugin() {
 		return plugin;
 	}
-	public static BastionListener getBastionBlockListener() {
-		return listener;
-	}
-	public static ConfigManager getConfigManager() {
-		return config;
+	
+	public static BastionBlockManager getBastionManager() {
+		return manager;
 	}
 	
-	public void removeGhostBlocks(){
-		Database db = BastionBlockStorage.db;
-		Bukkit.getLogger().log(Level.INFO, "Bastion is beginning ghost block check.");
-		for (BastionBlock block: bastionManager.set) {
-			if (block.getLocation().getBlock().getType() != config.getBastionBlockMaterial()) {
-				Bukkit.getLogger().log(Level.INFO, "Bastion removed a block at: " + block.getLocation() + ". If it is still"
-						+ " there, there is a problem...");
-				block.delete(db);
-			}
-		}
-		Bukkit.getLogger().log(Level.INFO, "Bastion has ended ghost block check.");
+	public static BastionBlockStorage getBastionStorage() {
+		return storage;
 	}
 	
-	public void registerNameLayerPermissions() {
+	private void registerNameLayerPermissions() {
 		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
 		memberAndAbove.add(PlayerType.MEMBERS);
 		memberAndAbove.add(PlayerType.MODS);
