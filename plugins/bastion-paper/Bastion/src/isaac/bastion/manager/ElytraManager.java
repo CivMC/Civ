@@ -23,8 +23,8 @@ import org.bukkit.util.Vector;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.events.BastionDamagedEvent;
-import isaac.bastion.manager.BastionBlockManager.Cause;
+import isaac.bastion.event.BastionDamagedEvent;
+import isaac.bastion.event.BastionDamagedEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
 
 public class ElytraManager {

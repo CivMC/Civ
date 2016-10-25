@@ -1,4 +1,4 @@
-package isaac.bastion.events;
+package isaac.bastion.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -6,17 +6,14 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 import isaac.bastion.BastionBlock;
-import isaac.bastion.manager.BastionBlockManager.Cause;
 
 /**
- * Event that gets fired when a bastion is damaged
+ * Event that gets fired when a bastion is created
  * @author Gordon
  */
-public class BastionDamagedEvent extends PlayerEvent implements Cancellable {
+public class BastionCreateEvent extends PlayerEvent implements Cancellable {
 	
 	private final BastionBlock bastion;
-	private final Cause cause;
-	private final double damage;
 	
 	private boolean cancelled;
 	
@@ -24,40 +21,21 @@ public class BastionDamagedEvent extends PlayerEvent implements Cancellable {
 	private static final HandlerList handlers = new HandlerList();
 	
 	/**
-	 * Creates a new BastionDamageEvent instance
-	 * @param bastion The damaged bastion instance
-	 * @param player The damaging player
-	 * @param cause The damage cause
+	 * Creates a new BastionCreateEvent instance
+	 * @param bastion The bastion instance
+	 * @param player The player creating the bastion
 	 */
-	public BastionDamagedEvent(final BastionBlock bastion, final Player player, final Cause cause, final double damage) {
+	public BastionCreateEvent(final BastionBlock bastion, final Player player) {
 		super(player);
 		this.bastion = bastion;
-		this.cause = cause;
-		this.damage = damage;
 	}
 	
 	/**
-	 * Gets the damaged bastion
-	 * @return The damaged bastion
+	 * Gets the created bastion
+	 * @return The created bastion
 	 */
 	public BastionBlock getBastion() {
 		return bastion;
-	}
-	
-	/**
-	 * Gets the damage cause
-	 * @return The damage cause
-	 */
-	public Cause getCause() {
-		return cause;
-	}
-	
-	/**
-	 * Gets the amount of damage to the bastion
-	 * @return The amount of damage
-	 */
-	public double getDamage() {
-		return damage;
 	}
 	
 	/**

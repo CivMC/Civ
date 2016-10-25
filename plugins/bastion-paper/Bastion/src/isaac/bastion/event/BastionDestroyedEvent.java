@@ -1,4 +1,4 @@
-package isaac.bastion.events;
+package isaac.bastion.event;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
