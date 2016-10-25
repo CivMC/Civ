@@ -1,5 +1,8 @@
 package com.github.igotyou.FactoryMod;
 
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -16,8 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -33,6 +34,9 @@ import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.LoreEnchantRecipe;
+import com.github.igotyou.FactoryMod.recipes.PrintBookRecipe;
+import com.github.igotyou.FactoryMod.recipes.PrintNoteRecipe;
+import com.github.igotyou.FactoryMod.recipes.PrintingPlateRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
 import com.github.igotyou.FactoryMod.recipes.RandomOutputRecipe;
@@ -809,6 +813,34 @@ public class ConfigParser {
 			break;
 		case "DUMMY":
 			result = new DummyParsingRecipe(identifier, name, productionTime, null);
+			break;
+		case "PRINTINGPLATE":
+			ConfigurationSection printingPlateOutputSection = config.getConfigurationSection("output");
+			ItemMap printingPlateOutput;
+			if (printingPlateOutputSection == null) {
+				if (!(parentRecipe instanceof PrintingPlateRecipe)) {
+					printingPlateOutput = new ItemMap();
+				}
+				else {
+					printingPlateOutput = ((PrintingPlateRecipe) parentRecipe).getOutput();
+				}
+			}
+			else {
+				printingPlateOutput = parseItemMap(printingPlateOutputSection);
+			}
+			result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
+			break;
+		case "PRINTBOOK":
+			ItemMap printBookPlate = parseItemMap(config.getConfigurationSection("printingplate"));
+			int printBookOutputAmount = config.getInt("outputamount", 1);
+			result = new PrintBookRecipe(identifier, name, productionTime, input, printBookPlate, printBookOutputAmount);
+			break;
+		case "PRINTNOTE":
+			ItemMap printNotePlate = parseItemMap(config.getConfigurationSection("printingplate"));
+			int printBookNoteAmount = config.getInt("outputamount", 1);
+			boolean secureNote = config.getBoolean("securenote", false);
+			String noteTitle = config.getString("title");
+			result = new PrintNoteRecipe(identifier, name, productionTime, input, printNotePlate, printBookNoteAmount, secureNote, noteTitle);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type")

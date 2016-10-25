@@ -29,6 +29,7 @@ factories:
         amount: 1
     recipes:
     - Upgrade to Smelter
+    - Upgrade to Printing Press
     - Upgrade to First Vault Factory
     - Upgrade to First Pickaxe Factory
     - Upgrade to Potion Factory
@@ -62,7 +63,17 @@ factories:
     - Forge Rails
     - Forge Powered Rails
     - Create Claims Bastion
+    - Accident Repair
+  Printing_Press:
+    type: FCCUPGRADE
+    name: Printing Press
+    citadelBreakReduction: 1.0
+    recipes:
     - Bind Written Book
+    - Craft Printing Plate
+    - Print Book
+    - Print Pamphlet
+    - Print Secure Note
     - Accident Repair
   Vault_Factory_1:
     type: FCCUPGRADE
@@ -665,21 +676,6 @@ recipes:
         material: PRISMARINE
         durability: 1
         amount: 192
-  Bind Written Book:
-    type: PRODUCTION
-    name: Bind Written Book
-    production_time: 5s
-    input:
-      paper:
-        material: PAPER
-        amount: 18
-      ink:
-        material: INK_SACK
-        amount: 1
-    output:
-      stone:
-        material: BOOK_AND_QUILL
-        amount: 3
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
@@ -2254,6 +2250,82 @@ recipes:
             type: REGEN
             duration: 8m
             amplifier: 1
+  Bind Written Book:
+    type: PRODUCTION
+    name: Bind Written Book
+    production_time: 5s
+    input:
+      paper:
+        material: PAPER
+        amount: 18
+      ink:
+        material: INK_SACK
+        amount: 1
+    output:
+      stone:
+        material: BOOK_AND_QUILL
+        amount: 3
+  Craft Printing Plate:
+    type: PRINTINGPLATE
+    name: Craft Printing Plate
+    production_time: 5s
+    input:
+      trapdoor:
+        material: TRAP_DOOR
+        amount: 1
+      iron:
+        material: IRON_INGOT
+        amount: 1
+    output:
+      wood:
+        material: TRAP_DOOR
+        amount: 1
+  Print Book:
+    type: PRINTBOOK
+    name: Print Book
+    production_time: 5s
+    outputamount: 6
+    input:
+      paper:
+        material: PAPER
+        amount: 18
+      ink:
+        material: INK_SACK
+        amount: 1
+    printingplate:
+      trapdoor:
+        material: TRAP_DOOR
+        amount: 1
+  Print Pamphlet:
+    type: PRINTNOTE
+    name: Print Pamphlet
+    production_time: 5s
+    securenote: false
+    title: Pamphlet
+    outputamount: 3
+    input:
+      paper:
+        material: PAPER
+        amount: 5
+    printingplate:
+      trapdoor:
+        material: TRAP_DOOR
+        amount: 1
+  Print Secure Note:
+    type: PRINTNOTE
+    name: Print Secure Note
+    production_time: 5s
+    securenote: true
+    title: Secure Note
+    outputamount: 3
+    input:
+      paper:
+        material: PAPER
+        amount: 5
+    printingplate:
+      trapdoor:
+        material: TRAP_DOOR
+        amount: 1
   Placeholder:
     type: PRODUCTION
     name: Placeholder
@@ -2299,6 +2371,21 @@ recipes:
         material: COAL
         amount: 8
     factory: Smelter
+  Upgrade to Printing Press:
+    name: Upgrade to Printing Press
+    production_time: 10s
+    type: UPGRADE
+    input:
+      stone:
+        material: STONE
+        amount: 64
+      book:
+        material: BOOK
+        amount: 1
+      ink:
+        material: INK_SACK
+        amount: 1
+    factory: Printing Press
   Upgrade to First Vault Factory:
     name: Upgrade to First Vault Factory
     production_time: 10s
