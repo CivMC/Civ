@@ -20,8 +20,8 @@ import org.bukkit.entity.Player;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.event.BastionDamagedEvent;
-import isaac.bastion.event.BastionDamagedEvent.Cause;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -68,7 +68,7 @@ public class BastionBlockManager {
 			if(type.getBlocksToErode() < 0) {
 				for(BastionBlock bastion : bastions) {
 					double damage = cause == Cause.BLOCK_PLACED ? bastion.getErosionFromBlock() : bastion.getErosionFromPearl();
-					BastionDamagedEvent event = new BastionDamagedEvent(bastion, player, cause, damage);
+					BastionDamageEvent event = new BastionDamageEvent(bastion, player, cause, damage);
 					Bukkit.getPluginManager().callEvent(event);
 					if(event.isCancelled()) continue;
 					bastion.erode(damage);
@@ -79,7 +79,7 @@ public class BastionBlockManager {
 					int erode = rng.nextInt(ordered.size());
 					BastionBlock bastion = ordered.get(erode);
 					double damage = cause == Cause.BLOCK_PLACED ? bastion.getErosionFromBlock() : bastion.getErosionFromPearl();
-					BastionDamagedEvent event = new BastionDamagedEvent(bastion, player, cause, damage);
+					BastionDamageEvent event = new BastionDamageEvent(bastion, player, cause, damage);
 					Bukkit.getPluginManager().callEvent(event);
 					if(event.isCancelled()) continue;
 					bastion.erode(damage);

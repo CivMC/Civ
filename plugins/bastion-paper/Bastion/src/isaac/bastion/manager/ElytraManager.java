@@ -23,8 +23,8 @@ import org.bukkit.util.Vector;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.event.BastionDamagedEvent;
-import isaac.bastion.event.BastionDamagedEvent.Cause;
+import isaac.bastion.event.BastionDamageEvent;
+import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
 
 public class ElytraManager {
@@ -168,7 +168,7 @@ public class ElytraManager {
 				if(breakCount < 0 || impact.size() >= breakCount) {
 					for(BastionBlock bastion : typeMap.get(type)) {
 						double damage = bastion.getErosionFromElytra();
-						BastionDamagedEvent event = new BastionDamagedEvent(bastion, player, Cause.ELYTRA, damage);
+						BastionDamageEvent event = new BastionDamageEvent(bastion, player, Cause.ELYTRA, damage);
 						Bukkit.getPluginManager().callEvent(event);
 						if(event.isCancelled()) continue;
 						bastion.erode(damage);
@@ -180,7 +180,7 @@ public class ElytraManager {
 						int erode = rng.nextInt(ordered.size());
 						BastionBlock toErode = ordered.get(erode);
 						double damage = toErode.getErosionFromElytra();
-						BastionDamagedEvent event = new BastionDamagedEvent(toErode, player, Cause.ELYTRA, damage);
+						BastionDamageEvent event = new BastionDamageEvent(toErode, player, Cause.ELYTRA, damage);
 						Bukkit.getPluginManager().callEvent(event);
 						if(event.isCancelled()) continue;
 						toErode.erode(damage);
