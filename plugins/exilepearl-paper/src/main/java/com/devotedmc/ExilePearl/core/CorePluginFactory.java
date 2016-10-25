@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.BorderHandler;
+import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
@@ -114,5 +115,9 @@ public final class CorePluginFactory implements PearlFactory {
 
 	public PearlConfig createPearlConfig() {
 		return new CorePearlConfig(pearlApi, pearlApi);
+	}
+	
+	public DamageLogger createDamageLogger() {
+		return new CoreDamageLogger(pearlApi);
 	}
 }

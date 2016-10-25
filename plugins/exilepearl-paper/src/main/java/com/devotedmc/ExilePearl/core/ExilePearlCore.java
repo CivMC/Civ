@@ -29,6 +29,7 @@ import org.bukkit.plugin.PluginLoader;
 
 import com.avaje.ebean.EbeanServer;
 import com.devotedmc.ExilePearl.BorderHandler;
+import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
@@ -53,6 +54,7 @@ import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
 import com.devotedmc.ExilePearl.listener.WorldBorderListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
+import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
@@ -88,6 +90,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final ExilePearlRunnable pearlDecayWorker;;
 	private final BorderHandler borderHandler;
 	private final SuicideHandler suicideHandler;
+	private final DamageLogger damageLogger;
 	
 	private final PlayerListener playerListener;
 	private final ExileListener exileListener;
@@ -100,6 +103,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	
 	private final HashSet<BaseCommand<?>> commands;
 	private final CmdAutoHelp autoHelp;
+	private CoreClock clock;
 	
 	private PluginStorage storage;
 	private TagManager tagManager;
@@ -117,6 +121,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		pearlDecayWorker = pearlFactory.createPearlDecayWorker();
 		borderHandler = pearlFactory.createPearlBorderHandler();
 		suicideHandler = pearlFactory.createSuicideHandler();
+		damageLogger = pearlFactory.createDamageLogger();
 		
 		playerListener = new PlayerListener(this);
 		exileListener = new ExileListener(this);
@@ -129,6 +134,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		
 		commands = new HashSet<BaseCommand<?>>();
 		autoHelp = new CmdAutoHelp(this);
+		clock = new CoreClock();
 	}
 
 	@Override
@@ -148,6 +154,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		pearlConfig.addConfigurable(pearlDecayWorker);
 		pearlConfig.addConfigurable(borderHandler);
 		pearlConfig.addConfigurable(suicideHandler);
+		pearlConfig.addConfigurable(damageLogger);
 		
 		saveDefaultConfig();
 		pearlConfig.reload();
@@ -208,6 +215,12 @@ final class ExilePearlCore implements ExilePearlApi {
 		pearlDecayWorker.start();
 		borderHandler.start();
 		suicideHandler.start();
+		if (pearlConfig.getDamageLogEnabled()) {
+			damageLogger.start();
+			this.getServer().getPluginManager().registerEvents(damageLogger, this);
+		} else {
+			logIgnoringTask(damageLogger);
+		}
 		
 		if(Bukkit.getPluginManager().getPlugin("CombatTagPlus") != null) {
 			CombatTagPlus combat = (CombatTagPlus) Bukkit.getPluginManager().getPlugin("CombatTagPlus");
@@ -229,7 +242,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 	
 	private void logIgnoringHooks(String pluginName) {
-		log(Level.WARNING, "Ignoring hooks for %s since it's not enabled.", pluginName);
+		log(Level.WARNING, "Ignoring hooks for '%s' since it's not enabled.", pluginName);
+	}
+	
+	private void logIgnoringTask(ExilePearlRunnable task) {
+		log(Level.WARNING, "Ignoring the task '%s' since it's not enabled.", task.getTaskName());
 	}
 	
 	/**
@@ -257,6 +274,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public PearlManager getPearlManager() {
 		return pearlManager;
+	}
+
+	@Override
+	public DamageLogger getDamageLogger() {
+		return damageLogger;
 	}
 	
 	/**
@@ -578,5 +600,10 @@ final class ExilePearlCore implements ExilePearlApi {
 			}
 		} catch(Exception ex) { }
 		return false;
+	}
+
+	@Override
+	public Clock getClock() {
+		return clock;
 	}
 }

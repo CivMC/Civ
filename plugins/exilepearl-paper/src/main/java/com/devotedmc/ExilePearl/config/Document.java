@@ -137,12 +137,24 @@ public class Document implements Map<String, Object> {
      * @throws java.lang.ClassCastException if the value is not an double
      */
     public Double getDouble(final String key) {
-        return (Double) get(key);
+        Object value = get(key);
+        
+        if (value instanceof Integer) {
+        	return new Double((Integer)value);
+        }
+        return (Double) value;
     }
     
     public Double getDouble(final String key, final double defaultValue) {
         Object value = get(key);
-        return value == null ? defaultValue : (Double) value;
+        if (value == null) {
+        	return defaultValue;
+        }
+        
+        if (value instanceof Integer) {
+        	return new Double((Integer)value);
+        }
+        return (Double) value;
     }
 
     /**

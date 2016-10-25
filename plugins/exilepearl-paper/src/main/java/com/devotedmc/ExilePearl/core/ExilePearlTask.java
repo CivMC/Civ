@@ -82,7 +82,5 @@ abstract class ExilePearlTask implements ExilePearlRunnable {
 		
 	}
 	
-	public abstract String getTaskName();
-	
 	public abstract int getTickInterval();
 }

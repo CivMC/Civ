@@ -8,6 +8,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.util.Clock;
 
 /**
  * The API for the ExilePearl plugin.
@@ -45,6 +46,12 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return The pearl manager
 	 */
 	PearlManager getPearlManager();
+	
+	/**
+	 * Gets the damage logger
+	 * @return The damage logger
+	 */
+	DamageLogger getDamageLogger();
 	
 	/**
 	 * Gets the auto-help command
@@ -120,4 +127,10 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return true if the player is inside a non-permission bastion
 	 */
 	boolean isPlayerInUnpermittedBastion(Player player);
+	
+	/**
+	 * Gets the clock instance
+	 * @return
+	 */
+	Clock getClock();
 }

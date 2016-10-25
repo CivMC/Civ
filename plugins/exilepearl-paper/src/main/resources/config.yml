@@ -4,10 +4,10 @@
 # 
 # storage.type
 #  - What type of storage to use
-#  - Options: 
-#       0: File storage (default)
-#       1: MySQL storage
-#       2: RAM storage (dev use only)
+#      Options: 
+#        0: File storage (default)
+#        1: MySQL storage
+#        2: RAM storage (dev use only)
 # 
 # storage.mysql.x
 #  - Connection option for a MySQL database
@@ -67,18 +67,49 @@
 #                              HELP ITEM SETTINGS                             #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 # 
-# help.use_help_item
+# help_item.enabled
 #  - When true, a help item is generated for pearled players on respawn
 # 
-# 
-# help.item_name
+# help_item.item_name
 #  - The name given to the help item
 # 
-# 
-# help.item_text
+# help_item.item_text
 #  - The help item text
 # 
 # 
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+#                                  DAMAGE LOG                                 #
+# * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
+# 
+# damage_log.enabled
+#  - When true, the damage log task is enabled to track who is awarded pearls
+#
+# damage_log.algorithm
+#  - The algorithm type to use when awarding pearls
+#      Options: 
+#        0: Most Recent - Use most recent damager to award the pearl
+#        1: Most Damage - Use highest tracked damager to award the pearl# 
+#
+# damage_log.tick_interval
+#  - The interval in ticks for how often the damage tracking task runs
+#
+# damage_log.decay_amount
+#  - The damage amount to remove at each run interval.
+#     Example:
+#     If tick_interval=20 and decay_amount=1, a player dealing 10 damage will
+#     be tracked for 10 seconds. (20t/second)
+#
+# damage_log.max_amount
+#  - The maximum damage amount to track for a given damager.
+#
+# damage_log.potion_damge
+#  - The base damage to apply for a splash potions. This only applies to 
+#    harming, poison, and weakness splash potions.
+#    An extended or upgraded potion has a 2x multiplier of this value.
+#    The potion intensity (0 - 1.0) is also used as a multiplier, so a player
+#    may not always be dealt the full potion damage amount.
+#
+#
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                                  EXILE RULES                                #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -191,8 +222,8 @@ pearls:
       material: OBSIDIAN
       repair: 3
   bastion_harm_amount: 0.5
-help:
-  use_help_item: true
+help_item:
+  enabled: true
   item_name: "You've been exiled!"
   item_text:
   - "<a>You are exiled."
@@ -200,6 +231,13 @@ help:
   - "Another player has imprisoned you in an exile pearl."
   - "Your in-game actions will be limited until you are freed."
   - "You can type <c>\\ep locate to see the location of your pearl."
+damage_log:
+  enabled: true
+  algorithm: 0
+  tick_interval: 20
+  decay_amount: 1.0
+  max_amount: 30.0
+  potion_damge: 6.0
 rules:
   pearl_radius: 1000
   ignite: false

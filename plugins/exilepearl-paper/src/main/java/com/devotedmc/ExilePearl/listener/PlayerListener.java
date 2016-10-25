@@ -510,12 +510,25 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		Player imprisoned = (Player)e.getEntity();
-
-		Player killer = imprisoned.getKiller();
-		if (killer != null) {
+		Player player = (Player)e.getEntity();
+		
+		// These will be priority sorted according to the configured algorithm
+		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(player);
+		
+		// Check is player is already exiled
+		if (pearlApi.isPlayerExiled(player)) {
+			for(Player damager : damagers) {
+				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(player.getUniqueId()));
+			}
+			return;
+		}
+		
+		Player killer = null;
+		ExilePearl pearl = null;
+		
+		for(Player damager : damagers) {
 			int firstpearl = Integer.MAX_VALUE;
-			for (Entry<Integer, ? extends ItemStack> entry : killer.getInventory().all(Material.ENDER_PEARL).entrySet()) {
+			for (Entry<Integer, ? extends ItemStack> entry : damager.getInventory().all(Material.ENDER_PEARL).entrySet()) {
 
 				// Make sure we're holding a blank pearl
 				if (pearlApi.getPearlFromItemStack(entry.getValue()) == null) {
@@ -523,13 +536,30 @@ public class PlayerListener implements Listener, Configurable {
 				}
 			}
 
-			if (firstpearl ==  Integer.MAX_VALUE) {
-				return;
+			if (firstpearl == Integer.MAX_VALUE) {
+				continue;
 			}
-
-			ExilePearl pearl = pearlApi.exilePlayer(imprisoned.getUniqueId(), killer.getUniqueId());
+			
+			// Check if pearl in the hotbar
+			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 9) {
+				continue; 
+			}
+			
+			pearl = pearlApi.exilePlayer(player, damager);
 			if (pearl == null) {
-				return;
+				return; // The pearling failed for some reason
+			}
+			killer = damager;
+			break;
+		}
+		
+		if (killer != null) {
+			
+			// Notify other damagers if they were not awarded the pearl
+			for(Player damager : damagers) {
+				if (damager != killer) {
+					msg(damager, Lang.pearlYouDamagedNotAwarded, pearlApi.getRealPlayerName(player.getUniqueId()), pearlApi.getRealPlayerName(killer.getUniqueId()));
+				}
 			}
 
 			// Pearl succeeded

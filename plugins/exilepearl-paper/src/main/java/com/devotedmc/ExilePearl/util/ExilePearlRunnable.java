@@ -24,4 +24,10 @@ public interface ExilePearlRunnable extends Runnable, Configurable {
 	 * @return true if the task is running
 	 */
 	boolean isRunning();
+	
+	/**
+	 * Gets the task name
+	 * @return The task name
+	 */
+	String getTaskName();
 }

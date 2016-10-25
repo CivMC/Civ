@@ -81,9 +81,41 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 */
 	int getSuicideTimeoutSeconds();
 	
-	int getDamageLogMin();
+	/**
+	 * Gets whether the damage log is enabled
+	 * @return true if the damage log is enabled
+	 */
+	boolean getDamageLogEnabled();
 	
-	int getDamagelogTicks();
+	/**
+	 * Gets the damage log algorithm type
+	 * @return The algorithm type
+	 */
+	int getDamageLogAlgorithm();
+	
+	/**
+	 * Gets the damage log tick interval
+	 * @return The damage log tick interval
+	 */
+	int getDamageLogInterval();
+	
+	/**
+	 * Gets the damage log decay amount
+	 * @return The decay amount
+	 */
+	double getDamageLogDecayAmount();
+	
+	/**
+	 * Gets the max tracked damage
+	 * @return The max tracked damage
+	 */
+	double getDamageLogMaxDamage();
+	
+	/**
+	 * Gets the potion damage amount
+	 * @return The potion damage amount
+	 */
+	double getDamageLogPotionDamage();
 
 	int getRulePearlRadius();
 	

@@ -190,16 +190,6 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public int getDamageLogMin() {
-		return doc.getInteger("general.damage_log_min", 5);
-	}
-
-	@Override
-	public int getDamagelogTicks() {
-		return doc.getInteger("general.damage_log_min", 5);
-	}
-
-	@Override
 	public int getRulePearlRadius() {
 		return doc.getInteger("rules.pearl_radius", 1000);
 	}
@@ -377,16 +367,46 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 
 	@Override
 	public boolean getUseHelpItem() {
-		return doc.getBoolean("help.use_help_item", true);
+		return doc.getBoolean("help_item.enabled", true);
 	}
 
 	@Override
 	public String getHelpItemName() {
-		return doc.getString("help.item_name", "You've been exiled!");
+		return doc.getString("help_item.item_name", "You've been exiled!");
 	}
 
 	@Override
 	public List<String> getHelpItemText() {
-		return doc.getStringList("help.item_text");
+		return doc.getStringList("help_item.item_text");
+	}
+
+	@Override
+	public boolean getDamageLogEnabled() {
+		return doc.getBoolean("damage_log.enabled", true);
+	}
+
+	@Override
+	public int getDamageLogAlgorithm() {
+		return doc.getInteger("damage_log.algorithm", 0);
+	}
+
+	@Override
+	public int getDamageLogInterval() {
+		return doc.getInteger("damage_log.tick_interval", 20);
+	}
+
+	@Override
+	public double getDamageLogDecayAmount() {
+		return doc.getDouble("damage_log.decay_amount", 1.0);
+	}
+
+	@Override
+	public double getDamageLogMaxDamage() {
+		return doc.getDouble("damage_log.max_amount", 30);
+	}
+
+	@Override
+	public double getDamageLogPotionDamage() {
+		return doc.getDouble("damage_log.potion_damge", 6);
 	}
 }

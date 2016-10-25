@@ -17,7 +17,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
@@ -28,8 +27,6 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
-
-import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * The prison pearl manager implementation
@@ -92,7 +89,6 @@ final class CorePearlManager implements PearlManager {
 		final Player pKilledBy = pearlApi.getPlayer(killedById);
 		
 		if (pearlApi.isPlayerExiled(exiledId)) {
-			msg(pKilledBy, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(exiledId));
 			return null;
 		}
 		
