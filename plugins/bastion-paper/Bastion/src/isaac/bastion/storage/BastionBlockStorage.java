@@ -18,7 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
-import isaac.bastion.events.BastionCreateEvent;
+import isaac.bastion.event.BastionCreateEvent;
 import isaac.bastion.manager.EnderPearlManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
