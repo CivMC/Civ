@@ -63,3 +63,4 @@ bastions:
       requireMaturity: true
       destroyOnBlock: false
       damageOnBlock: true
+      explodeOnBlockStrength: 0

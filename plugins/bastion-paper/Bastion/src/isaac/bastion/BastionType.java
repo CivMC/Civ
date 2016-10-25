@@ -376,7 +376,7 @@ public class BastionType {
 		} else if(regenTime < 0) {
 			regenTime = 0;
 		}
-		double explodeOnBlockStrength = config.getDouble("elytra.explodOnBlockStrength");
+		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
 		return new BastionType(name, material, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlockStrength,

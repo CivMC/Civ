@@ -20,7 +20,6 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.events.BastionCreateEvent;
 import isaac.bastion.manager.EnderPearlManager;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
