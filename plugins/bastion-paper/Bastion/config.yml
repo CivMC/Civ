@@ -1,4 +1,5 @@
 mysql:
+  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
   plugin: Bastion
   user: ''
   password: ''
