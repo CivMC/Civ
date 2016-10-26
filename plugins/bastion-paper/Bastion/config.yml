@@ -1,4 +1,5 @@
 mysql:
+  plugin: Bastion
   user: ''
   password: ''
   host: localhost
@@ -14,6 +15,7 @@ bastions:
     block:
       material: BONE_BLOCK
       durability: 0
+      lore: This bastion will protect your claims
     squarefield: false
     effectRadius: 300
     includeY: true
@@ -43,6 +45,7 @@ bastions:
     block:
       material: NETHER_WART_BLOCK
       durability: 0
+      lore: This bastion will protect your plot
     squarefield: true
     effectRadius: 50
     includeY: true
@@ -68,10 +71,11 @@ bastions:
       damageOnBlock: true
       explodeOnBlock: true
       explodeOnBlockStrength: 0
-  citybastion:
+  bastion:
     block:
       material: SPONGE
       durability: 0
+      lore: this one is hellaz
     squarefield: false
     effectRadius: 10
     includeY: true
