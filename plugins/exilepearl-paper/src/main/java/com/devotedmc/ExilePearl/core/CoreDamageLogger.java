@@ -104,6 +104,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 			damageLogs.put(player.getUniqueId(), rec);
 		}
 
+		//pearlApi.log("Player %s dealt %f damage to player %s.", pearlApi.getRealPlayerName(damager.getUniqueId()), amount, pearlApi.getRealPlayerName(player.getUniqueId()));
 		rec.recordDamage(damager, amount, maxDamage);
 	}
 

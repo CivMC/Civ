@@ -21,6 +21,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
@@ -175,10 +176,10 @@ final class ExilePearlCore implements ExilePearlApi {
 		commands.add(new CmdSuicide(this));
 		
 		// Register events
-		this.getServer().getPluginManager().registerEvents(playerListener, this);
-		this.getServer().getPluginManager().registerEvents(suicideHandler, this);
-		this.getServer().getPluginManager().registerEvents(borderHandler, this);
-		this.getServer().getPluginManager().registerEvents(exileListener, this);
+		getServer().getPluginManager().registerEvents(playerListener, this);
+		getServer().getPluginManager().registerEvents(suicideHandler, this);
+		getServer().getPluginManager().registerEvents(borderHandler, this);
+		getServer().getPluginManager().registerEvents(exileListener, this);
 		if (isCitadelEnabled()) {
 			this.getServer().getPluginManager().registerEvents(citadelListener, this);
 		} else {
@@ -234,7 +235,8 @@ final class ExilePearlCore implements ExilePearlApi {
 	 * Spigot disable method
 	 */
 	@Override
-	public void onDisable() {		
+	public void onDisable() {
+		HandlerList.unregisterAll(this);
 		pearlDecayWorker.stop();
 		borderHandler.stop();
 		suicideHandler.stop();

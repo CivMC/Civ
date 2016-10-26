@@ -211,6 +211,7 @@ class MySqlStorage implements PluginStorage {
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("DELETE FROM exilepearls WHERE uid = ?"); ) {
 			ps.setString(1, pearl.getPlayerId().toString());
+			ps.executeUpdate();
 		}
 		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "delete record");

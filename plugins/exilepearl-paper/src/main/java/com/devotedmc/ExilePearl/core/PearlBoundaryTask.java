@@ -308,7 +308,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerPearled(PlayerPearledEvent e) {
 		Player p = e.getPearl().getPlayer();
-		if (p.isOnline()) {
+		if (p != null && p.isOnline()) {
 			pearledPlayers.add(e.getPearl().getPlayerId());
 		}
 	}
@@ -343,8 +343,9 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 * @param player The player to check
 	 */
 	private void checkBastion(Player player) {
-		if (pearlApi.isPlayerInUnpermittedBastion(player)) {
-			player.setHealth(player.getHealth() - bastionDamage);
+		if (pearlApi.isPlayerInUnpermittedBastion(player) && player.getHealth() > 0) {
+			player.setHealth(Math.max(0, player.getHealth() - bastionDamage));
+			msg(player, "<b>You aren't allowed in this bastion field when exiled.");
 		}
 	}
 }

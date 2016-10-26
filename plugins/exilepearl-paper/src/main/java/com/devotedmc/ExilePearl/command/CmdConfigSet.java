@@ -46,7 +46,7 @@ public class CmdConfigSet extends PearlCommand {
 			break;
 		}
 		
-		msg("<g>Rule <a>%s <g>updated to <a>%s", rule.toString(), argStr);
+		msg("<i>Updated the rule <a>%s <i>to <a>%s", rule.toString(), argStr);
 		msg("<i>Use <c>/ep config save <i>to save new values.");
 	}
 }

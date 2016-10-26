@@ -256,6 +256,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	public void onCollectXp(PlayerExpChangeEvent e) {
 		if (isRuleActive(ExileRule.COLLECT_XP, e.getPlayer().getUniqueId())) {
 			e.setAmount(0);
+			msg(e.getPlayer(), Lang.ruleCantDoThat, ExileRule.COLLECT_XP.getActionString());
 		}
 	}
 	
@@ -278,6 +279,11 @@ public class ExileListener extends RuleListener implements Configurable {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
+		
+		if (e.getCurrentItem() == null) {
+			return;
+		}
+		
 		Material m = e.getCurrentItem().getType();		
 		if (m == Material.TNT) {
 			checkAndCancelRule(ExileRule.PLACE_TNT, e, player, false);

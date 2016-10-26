@@ -20,7 +20,9 @@ import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
+import org.bukkit.block.Dropper;
 import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
@@ -90,7 +92,7 @@ public class PlayerListener implements Listener, Configurable {
 	
 	private boolean useHelpItem = false;
 	private String helpItemName = "";
-	private List<String> helpItemText = null;
+	private List<String> helpItemText = new ArrayList<String>();
 
 	/**
 	 * Creates a new PlayerListener instance
@@ -307,6 +309,10 @@ public class PlayerListener implements Listener, Configurable {
 			updatePearl(pearl, (Furnace) holder);
 		} else if (holder instanceof Dispenser) {
 			updatePearl(pearl, (Dispenser) holder);
+		} else if (holder instanceof Dropper) {
+			updatePearl(pearl, (Dropper) holder);
+		} else if (holder instanceof Hopper) {
+			updatePearl(pearl, (Hopper) holder);
 		} else if (holder instanceof BrewingStand) {
 			updatePearl(pearl, (BrewingStand) holder);
 		} else if (holder instanceof Player) {
@@ -718,10 +724,10 @@ public class PlayerListener implements Listener, Configurable {
 		Player imprisoner = pearlApi.getPlayer(e.getPearl().getKillerId());
 
 		// Log the capturing ExilePearl event.
-		pearlApi.log(String.format("%s has bound %s to a ExilePearl", imprisoner.getName(), imprisoned.getName()));
+		pearlApi.log(String.format("%s has bound %s to a ExilePearl", e.getPearl().getKillerName(), e.getPearl().getPlayerName()));
 
-		msg(imprisoner, Lang.pearlYouBound, imprisoned.getName());
-		msg(imprisoned, Lang.pearlYouWereBound, imprisoner.getName());
+		msg(imprisoner, Lang.pearlYouBound, e.getPearl().getPlayerName());
+		msg(imprisoned, Lang.pearlYouWereBound, e.getPearl().getKillerName());
 	}
 	
 	
@@ -1012,14 +1018,14 @@ public class PlayerListener implements Listener, Configurable {
 		useHelpItem = config.getUseHelpItem();
 		helpItemName = config.getHelpItemName();
 		
-		List<String> itemText = new ArrayList<String>();
+		helpItemText.clear();
 		for(String s : config.getHelpItemText()) {
-			itemText.add(TextUtil.parse(s));
+			helpItemText.add(TextUtil.parse(s));
 		}
 	}
 	
 	private boolean isHelpItem(ItemStack is) {
-		if (is.getType() != Material.STONE_BUTTON) {
+		if (is.getType() != Material.STICK) {
 			return false;
 		}
 		
@@ -1037,14 +1043,14 @@ public class PlayerListener implements Listener, Configurable {
 	 */
 	private void giveHelpItem(Player player) {
 		if (player.isOnline()) {
-			ItemStack helpItem = new ItemStack(Material.STONE_BUTTON, 1);
+			ItemStack helpItem = new ItemStack(Material.STICK, 1);
 			ItemMeta im = helpItem.getItemMeta();
 			im.setDisplayName(helpItemName);
 			im.setLore(helpItemText);
 			im.addEnchant(Enchantment.DURABILITY, 2, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			helpItem.setItemMeta(im);
-			player.getInventory().setItemInMainHand(helpItem);
+			player.getInventory().setItem(0, helpItem);
 		}
 	}
 }
