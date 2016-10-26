@@ -12,7 +12,8 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
+
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 public class RuleListener implements Listener {
 	
@@ -59,7 +60,7 @@ public class RuleListener implements Listener {
 		if (isRuleActive(rule, playerId)) {
 			((Cancellable)event).setCancelled(true);
 			if (notify) {
-				player.sendMessage(TextUtil.parse(Lang.ruleCantDoThat, rule.getActionString()));
+				msg(player, Lang.ruleCantDoThat, rule.getActionString());
 			}
 		}
 	}

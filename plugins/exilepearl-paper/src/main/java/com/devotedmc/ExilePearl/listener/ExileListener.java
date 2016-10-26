@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.Material;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Dropper;
+import org.bukkit.block.Hopper;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -20,6 +23,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -27,6 +31,8 @@ import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.event.player.PlayerExpChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
@@ -77,7 +83,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	 * @param e The event
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void exileRuleClearBed(PlayerPearledEvent e) {
+	public void onPlayerPearled(PlayerPearledEvent e) {
 		if (config.canPerform(ExileRule.USE_BED)) {
 			return;
 		}
@@ -273,18 +279,50 @@ public class ExileListener extends RuleListener implements Configurable {
 	}
 	
 	/**
-	 * Prevent imprisoned players interacting with certain items
+	 * Prevents exiled players from moving restricted items like lava and TNT
+	 * into dispensers, hoppers, and droppers
 	 * @param e The event
 	 */
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player player = (Player) e.getWhoClicked();
+
+		InventoryAction action = e.getAction();
+		ItemStack item;
+		InventoryHolder holder = null; 
 		
-		if (e.getCurrentItem() == null) {
+		if(action == InventoryAction.PLACE_ALL
+				|| action == InventoryAction.PLACE_SOME
+				|| action == InventoryAction.PLACE_ONE) {
+			item = e.getCursor();
+			boolean clickedTop = e.getView().convertSlot(e.getRawSlot()) == e.getRawSlot();
+			if (item == null || !clickedTop) {
+				return;
+			}
+			holder = e.getView().getTopInventory().getHolder();
+			
+		} else if(action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+			item = e.getCurrentItem();
+			boolean clickedTop = e.getView().convertSlot(e.getRawSlot()) == e.getRawSlot();
+			if (item == null || !clickedTop) {
+				return;
+			}
+			
+			holder = e.getView().getTopInventory().getHolder();
+			
+		} else {
+			return;
+		}
+			
+		if (item == null || holder == null) {
 			return;
 		}
 		
-		Material m = e.getCurrentItem().getType();		
+		if (!(holder instanceof Dispenser || holder instanceof Dropper || holder instanceof Hopper)) {
+			return;
+		}
+		
+		Material m = item.getType();
 		if (m == Material.TNT) {
 			checkAndCancelRule(ExileRule.PLACE_TNT, e, player, false);
 		}
