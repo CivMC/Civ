@@ -50,6 +50,12 @@ public final class Bastion extends ACivMod {
 
 	private void setupDatabase() {
 		ManagedDatasource db = (ManagedDatasource) getConfig().get("mysql");
+		try {
+			db.getConnection().close();
+		} catch(Exception e) {
+			warning("Could not connect to database, stopping bastion", e);
+			getServer().getPluginManager().disablePlugin(this);
+		}
 		storage = new BastionBlockStorage(db, getLogger());
 		storage.registerMigrations();
 		storage.loadBastions();
