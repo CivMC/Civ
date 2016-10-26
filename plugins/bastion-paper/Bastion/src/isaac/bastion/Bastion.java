@@ -2,9 +2,6 @@ package isaac.bastion;
 
 import java.util.LinkedList;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
-
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
@@ -52,24 +49,7 @@ public final class Bastion extends ACivMod {
 	}
 
 	private void setupDatabase() {
-		ConfigurationSection config = getConfig().getConfigurationSection("sql");
-		String host = config.getString("host");
-		int port = config.getInt("port");
-		String user = config.getString("user");
-		String pass = config.getString("pass");
-		String dbname = config.getString("dbname");
-		int poolsize = config.getInt("poolsize");
-		long connectionTimeout = config.getLong("connectionTimeout");
-		long idleTimeout = config.getLong("idleTimeout");
-		long maxLifetime = config.getLong("maxLifetime");
-		ManagedDatasource db = null;
-		try {
-			db = new ManagedDatasource(this, user, pass, host, port, dbname, poolsize, connectionTimeout, idleTimeout, maxLifetime);
-			db.getConnection().close();
-		} catch (Exception ex) {
-			warning("Could not connect to database, shutting down!");
-			Bukkit.shutdown();
-		}
+		ManagedDatasource db = (ManagedDatasource) getConfig().get("mysql");
 		storage = new BastionBlockStorage(db, getLogger());
 		storage.registerMigrations();
 		storage.loadBastions();

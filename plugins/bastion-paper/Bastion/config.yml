@@ -1,17 +1,77 @@
 mysql:
-  username: ''
+  user: ''
   password: ''
   host: localhost
   database: bukkit
   port: 3306
-  prefix: ''
+  poolsize: 10
+  connectionTimeout: 10000
+  idleTimout: 600000
+  maxLifetime: 7200000
   savesPerDay: 64
 bastions:
-  bastion:
+  claimbastion:
+    block:
+      material: BONE_BLOCK
+      durability: 0
+    squarefield: false
+    effectRadius: 300
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    pearls:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
+  citybastion:
+    block:
+      material: NETHER_WART_BLOCK
+      durability: 0
+    squarefield: true
+    effectRadius: 50
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    pearls:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: true
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
+  citybastion:
     block:
       material: SPONGE
       durability: 0
-      lore: 'This is a bastion'
     squarefield: false
     effectRadius: 10
     includeY: true
@@ -25,43 +85,15 @@ bastions:
     destroyOnRemove: true
     pearls:
       block: true
-      scaleFactor: 1
+      scaleFactor: 2
       requireMaturity: true
-      consumeOnBlock: false
+      consumeOnBlock: true
       damageFirstBastion: false
     elytra:
       block: true
       scaleFactor: 1
       requireMaturity: true
-      destroyOnBlock: false
-      damageOnBlock: true
-  anotherbastion:
-    block:
-      material: SPONGE
-      durability: 0
-      lore: 'This is another bastion'
-    squarefield: true
-    effectRadius: 15
-    includeY: true
-    startScaleFactor: 100
-    finalScaleFactor: 0.2
-    warmupTime: 86400000
-    erosionPerDay: 0
-    regenPerDay: 0
-    blocksToErode: 1
-    placementCooldown: 2000
-    destroyOnRemove: true
-    pearls:
-      block: true
-      scaleFactor: 1
-      requireMaturity: true
-      consumeOnBlock: false
-      damageFirstBastion: false
-    elytra:
-      block: true
-      scaleFactor: 1
-      requireMaturity: true
-      destroyOnBlock: false
-      damageOnBlock: true
+      destroyOnBlock: true
+      damageOnBlock: false
       explodeOnBlock: true
       explodeOnBlockStrength: 0
