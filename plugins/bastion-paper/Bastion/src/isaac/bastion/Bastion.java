@@ -55,6 +55,7 @@ public final class Bastion extends ACivMod {
 		} catch(Exception e) {
 			warning("Could not connect to database, stopping bastion", e);
 			getServer().getPluginManager().disablePlugin(this);
+			return;
 		}
 		storage = new BastionBlockStorage(db, getLogger());
 		storage.registerMigrations();
