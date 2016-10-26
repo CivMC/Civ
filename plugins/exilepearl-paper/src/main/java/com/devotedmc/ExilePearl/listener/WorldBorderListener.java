@@ -11,8 +11,6 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
-import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.WorldBorder;
 
 public class WorldBorderListener extends RuleListener {
 
@@ -29,10 +27,9 @@ public class WorldBorderListener extends RuleListener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPearlDecay(PearlDecayEvent e) {
-		WorldBorder wb = WorldBorder.plugin;
 		boolean autoFree = pearlApi.getPearlConfig().getShouldAutoFreeWorldBorder();
 		
-		if (!autoFree || e.getAction() != DecayAction.COMPLETE || wb == null) {
+		if (!autoFree || e.getAction() != DecayAction.COMPLETE) {
 			return;
 		}
 		
@@ -41,8 +38,7 @@ public class WorldBorderListener extends RuleListener {
 		// Free any pearls outside world border
 		for (ExilePearl pearl : pearlApi.getPearls()) {
 			Location l = pearl.getLocation();
-			BorderData border = wb.getWorldBorder(l.getWorld().getName());
-			if (!border.insideBorder(l)) {
+			if(!pearlApi.isLocationInsideBorder(l)) {
 				toFree.add(pearl);
 			}
 		}

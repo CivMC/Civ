@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.listener;
 
+import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
@@ -32,11 +33,16 @@ public class RandomSpawnListener extends RuleListener {
 			return;
 		}
 		
-		if (pearl.getLocation().getWorld() != e.getLocation().getWorld()) {
+		Location pearlLocation = pearl.getLocation();
+		Location playerLocation = e.getLocation();
+		
+		if (pearlLocation.getWorld() != playerLocation.getWorld()) {
 			return;
 		}
 		
-		if (pearl.getLocation().distance(e.getLocation()) < radius) {
+		double distance = Math.sqrt(Math.pow(pearlLocation.getX() - playerLocation.getX(), 2) + Math.pow(pearlLocation.getZ() - playerLocation.getZ(), 2));
+		
+		if (distance < radius) {
 			e.setCancelled(true);
 		}
 	}
