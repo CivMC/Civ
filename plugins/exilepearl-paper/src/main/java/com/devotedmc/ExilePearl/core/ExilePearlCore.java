@@ -223,8 +223,9 @@ final class ExilePearlCore implements ExilePearlApi {
 			logIgnoringTask(damageLogger);
 		}
 		
-		if(Bukkit.getPluginManager().getPlugin("CombatTagPlus") != null) {
-			CombatTagPlus combat = (CombatTagPlus) Bukkit.getPluginManager().getPlugin("CombatTagPlus");
+		Plugin combatPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
+		if(combatPlugin != null) {
+			CombatTagPlus combat = (CombatTagPlus)combatPlugin;
 			tagManager = combat.getTagManager();
 		}
 		

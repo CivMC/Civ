@@ -74,7 +74,13 @@ public class Document implements Map<String, Object> {
     	
     	Document doc = this;
     	for(int i = 0; i < keys.length - 1; i++) {
-    		doc = doc.getDocument(keys[i]);
+    		Document next = doc.getDocument(keys[i]);
+    		if (next == null) {
+    			next = new Document();
+    			doc.append(keys[i], next);
+    		}
+    		
+    		doc = next;
     	}
     	
     	doc = doc.append(keys[keys.length - 1], value);
