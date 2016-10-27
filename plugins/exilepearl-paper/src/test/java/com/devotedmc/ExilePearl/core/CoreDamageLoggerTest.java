@@ -12,7 +12,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Material;
-import org.bukkit.Server;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -85,10 +84,9 @@ public class CoreDamageLoggerTest extends BukkitTestCase {
 		when(d2.isOnline()).thenReturn(true);
 		when(d3.isOnline()).thenReturn(true);
 		
-		final Server server = getServer();
-		when(server.getPlayer(d1Id)).thenReturn(d1);
-		when(server.getPlayer(d2Id)).thenReturn(d2);
-		when(server.getPlayer(d3Id)).thenReturn(d3);
+		addPlayer(d1);
+		addPlayer(d2);
+		addPlayer(d3);
 	}
 	
 	@Test

@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.Util;
+package com.devotedmc.testbukkit;
 
 import static org.mockito.Mockito.mock;
 
@@ -16,7 +16,7 @@ import org.bukkit.block.Block;
 import org.mockito.Mockito;
 
 @SuppressWarnings("deprecation")
-public abstract class MockWorld implements World {
+public abstract class TestWorld implements World {
 
 	public String name;
 	public UUID uid;
@@ -25,18 +25,20 @@ public abstract class MockWorld implements World {
 	public File worldFolder;
 	
 	private HashMap<Location, Block> blocks;
-	public HashSet<MockChunk> loadedChunks;
+	public HashSet<TestChunk> loadedChunks;
 	
-	public static MockWorld create(String name, Environment env, WorldType type) {
-		MockWorld world = mock(MockWorld.class, Mockito.CALLS_REAL_METHODS);
+	public static TestWorld create(String name, Environment env, WorldType type) {
+		TestWorld world = mock(TestWorld.class, Mockito.CALLS_REAL_METHODS);
 		world.name = name;
 		world.uid = UUID.randomUUID();
 		world.env = env;
 		world.worldType = type;
 		world.blocks = new HashMap<Location, Block>();
-		world.loadedChunks = new HashSet<MockChunk>();
+		world.loadedChunks = new HashSet<TestChunk>();
 		return world;
 	}
+	
+	private TestWorld() { }
 	
 	@Override
 	public String getName() {
@@ -73,7 +75,7 @@ public abstract class MockWorld implements World {
                 blockType = Material.DIRT;
             }
             
-            b  = MockBlock.create(l, blockType);
+            b  = TestBlock.create(l, blockType);
 		}
 		
 		return b;
@@ -86,7 +88,7 @@ public abstract class MockWorld implements World {
 	
 	@Override
 	public Chunk getChunkAt(Location l) {
-		return MockChunk.create((MockWorld)l.getWorld(), l.getBlockX() >> 4, l.getBlockZ() >> 4);
+		return TestChunk.create((TestWorld)l.getWorld(), l.getBlockX() >> 4, l.getBlockZ() >> 4);
 	}
 	
 	@Override
@@ -96,7 +98,7 @@ public abstract class MockWorld implements World {
 	
 	@Override
 	public Chunk getChunkAt(int x, int z) {
-		return MockChunk.create(this, x, z);
+		return TestChunk.create(this, x, z);
 	}
 	
 	@Override
@@ -130,12 +132,12 @@ public abstract class MockWorld implements World {
 	}
 	
 	
-	public MockBlock addBlock(MockBlock b) {
+	public TestBlock addBlock(TestBlock b) {
 		blocks.put(b.getLocation(), b);
 		return b;
 	}
 	
-	public MockBlock removeBlock(MockBlock b) {
+	public TestBlock removeBlock(TestBlock b) {
 		blocks.remove(b.getLocation(), b);
 		return b;
 	}

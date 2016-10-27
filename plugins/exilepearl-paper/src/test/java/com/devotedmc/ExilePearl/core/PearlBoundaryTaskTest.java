@@ -24,7 +24,6 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.Util.BukkitTestCase;
-import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -134,7 +133,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		dut.onPlayerJoin(joinEvent);
 		assertTrue(dut.isPlayerTracked(player));
 		
-		World world = TestBukkit.worlds.get(0);
+		World world = getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 0);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
@@ -228,7 +227,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		dut.onPlayerJoin(joinEvent);
 		assertTrue(dut.isPlayerTracked(player));
 		
-		World world = TestBukkit.worlds.get(0);
+		World world = getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 50);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
@@ -286,7 +285,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		when(player.isOnline()).thenReturn(true);
 		when(player.getHealth()).thenReturn(10.0);
 		
-		World world = TestBukkit.worlds.get(0);
+		World world = getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 50);
 		when(pearl.getLocation()).thenReturn(pearlLocation);

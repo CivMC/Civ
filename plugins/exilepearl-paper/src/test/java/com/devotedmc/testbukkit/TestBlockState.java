@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.Util;
+package com.devotedmc.testbukkit;
 
 import static org.mockito.Mockito.mock;
 
@@ -11,19 +11,21 @@ import org.bukkit.block.BlockState;
 import org.bukkit.material.MaterialData;
 import org.mockito.Mockito;
 
-public abstract class MockBlockState implements BlockState {
+public abstract class TestBlockState implements BlockState {
 	
-	public MockBlock block;
+	public TestBlock block;
 	public MaterialData data;
 	public byte lightLevel;
 
-	public static MockBlockState create(MockBlock block) {
-		MockBlockState bs = mock(MockBlockState.class, Mockito.CALLS_REAL_METHODS);
+	public static TestBlockState create(TestBlock block) {
+		TestBlockState bs = mock(TestBlockState.class, Mockito.CALLS_REAL_METHODS);
 		bs.block = block;
 		bs.data = new MaterialData(bs.getType());
 		bs.lightLevel = 0;
 		return bs;
 	}
+	
+	private TestBlockState() { }
 	
 	@Override
     public Block getBlock() {

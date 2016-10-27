@@ -26,8 +26,8 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
-import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.core.MockPearl;
+import com.devotedmc.testbukkit.TestServer;
 import com.devotedmc.ExilePearl.config.Document;
 
 public class FileStorageIntegrationTest {
@@ -38,10 +38,9 @@ public class FileStorageIntegrationTest {
 	private static MockPearlLogger logger;
 	private static FileStorage storage;	
 	private static World world;
-
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		TestBukkit.create(true);
+		new TestServer(true);
 		logger = new MockPearlLogger(Bukkit.getServer().getLogger());
 
 		world = Bukkit.getWorld("world");

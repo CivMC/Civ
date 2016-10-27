@@ -11,7 +11,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
-import org.bukkit.plugin.java.TestPluginLoader;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -25,7 +24,6 @@ import net.minelink.ctplus.TagManager;
 
 public class ExilePearlCoreTest extends BukkitTestCase {
 	
-	private TestPluginLoader testLoader;
 	private Document configDoc; 
 	private FileConfiguration fileConfig;
 	private Plugin plugin;
@@ -49,7 +47,6 @@ public class ExilePearlCoreTest extends BukkitTestCase {
 		
 		core = new ExilePearlCore(plugin);
 		
-		testLoader = new TestPluginLoader(getServer());
 		pMan = getServer().getPluginManager();
 		scheduler = getServer().getScheduler();
 	}
@@ -197,7 +194,6 @@ public class ExilePearlCoreTest extends BukkitTestCase {
 		assertNull(tagManager);
 		assertFalse(core.isCombatTagEnabled());
 		
-		testLoader.loadTestPlugin("CombatTagPlus", "1.2.4", "net.minelink.ctplus.CombatTagPlus");
 		CombatTagPlus mockCombatPlugin = new CombatTagPlus();
 		TagManager mockCombatManager = mock(TagManager.class);
 		when(mockCombatPlugin.getTagManager()).thenReturn(mockCombatManager);

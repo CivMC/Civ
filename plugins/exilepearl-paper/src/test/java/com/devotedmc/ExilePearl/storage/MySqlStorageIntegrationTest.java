@@ -29,10 +29,10 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.Util.MockPearlLogger;
-import com.devotedmc.ExilePearl.Util.TestBukkit;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.devotedmc.ExilePearl.core.MockPearl;
+import com.devotedmc.testbukkit.TestServer;
 
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
@@ -48,7 +48,7 @@ public class MySqlStorageIntegrationTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		TestBukkit.create(true);
+		new TestServer(true);
 		logger = new MockPearlLogger(Bukkit.getServer().getLogger());
 
 		world = Bukkit.getWorld("world");

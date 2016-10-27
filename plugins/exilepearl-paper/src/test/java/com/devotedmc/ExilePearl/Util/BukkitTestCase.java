@@ -1,8 +1,10 @@
 package com.devotedmc.ExilePearl.Util;
 
-import org.bukkit.Server;
+import org.bukkit.entity.Player;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
+
+import com.devotedmc.testbukkit.TestServer;
 
 /**
  * Test classes should inherit from this if they reference any of the static Bukkit methods
@@ -11,16 +13,21 @@ import org.junit.Ignore;
 @Ignore
 public class BukkitTestCase {
 	
-	private static Server testBukkit = null;
+	private static TestServer testServer = null;
 
     @BeforeClass
     public static void setUpTestBukkit() {
-    	if (testBukkit == null) {
-    		testBukkit = TestBukkit.create();
+    	if (testServer == null) {
+    		testServer = new TestServer(false);
     	}
     }
     
-    public static Server getServer() {
-    	return testBukkit;
+    public static TestServer getServer() {
+    	return testServer;
     }
+    
+    public void addPlayer(Player p) {
+    	testServer.addPlayer(p);
+    }
+    
 }

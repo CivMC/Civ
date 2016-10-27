@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.Util;
+package com.devotedmc.testbukkit;
 
 import org.bukkit.Chunk;
 import org.bukkit.ChunkSnapshot;
@@ -7,20 +7,22 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Entity;
 
-public class MockChunk implements Chunk {
+public class TestChunk implements Chunk {
 	
-	public MockWorld world;
+	public TestWorld world;
 	public int X;
 	public int Z;
 	public boolean isLoaded;
 	
-	public static MockChunk create(MockWorld world, int X, int Z) {
-		MockChunk c = new MockChunk();
+	public static TestChunk create(TestWorld world, int X, int Z) {
+		TestChunk c = new TestChunk();
 		c.world = world;
 		c.X = X;
 		c.Z = Z;
 		return c;
 	}
+	
+	private TestChunk() { }
 	
 	@Override
 	public int getX() {

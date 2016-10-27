@@ -1,4 +1,4 @@
-package com.devotedmc.ExilePearl.Util;
+package com.devotedmc.testbukkit;
 
 import static org.mockito.Mockito.mock;
 
@@ -10,29 +10,31 @@ import org.bukkit.block.BlockState;
 import org.mockito.Mockito;
 
 @SuppressWarnings("deprecation")
-public abstract class MockBlock implements Block {
+public abstract class TestBlock implements Block {
 
 	public World world;
 	public int X;
 	public int Y;
 	public int Z;
 	public Material type;
-	public MockBlockState state;
+	public TestBlockState state;
 	
-	public static MockBlock create(World world, int x, int y, int z, Material type) {
-		MockBlock b = mock(MockBlock.class, Mockito.CALLS_REAL_METHODS);
+	public static TestBlock create(World world, int x, int y, int z, Material type) {
+		TestBlock b = mock(TestBlock.class, Mockito.CALLS_REAL_METHODS);
 		b.world = world;
 		b.X = x;
 		b.Y = y;
 		b.Z = z;
 		b.type = type;
-		b.state = MockBlockState.create(b);
+		b.state = TestBlockState.create(b);
 		return b;
 	}
 	
-	public static MockBlock create(Location l, Material type) {
+	public static TestBlock create(Location l, Material type) {
 		return create(l.getWorld(), l.getBlockX(), l.getBlockY(), l.getBlockZ(), type);
 	}
+	
+	private TestBlock() { }
 	
 	@Override
 	public Material getType() {
