@@ -42,7 +42,7 @@ public class BastionBlockStorage {
 	public BastionBlockStorage(ManagedDatasource db, Logger log) {
 		this.db = db;
 		this.log = log;
-		long saveDelay = 86400000 / Bastion.getPlugin().getConfig().getLong("sql.savesPerDay", 64);
+		long saveDelay = 86400000 / Bastion.getPlugin().getConfig().getLong("mysql.savesPerDay", 64);
 		taskId = new BukkitRunnable(){
 			public void run(){
 				update();
