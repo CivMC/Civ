@@ -26,8 +26,6 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private double balance = 0; //the amount remaining still to be eroded after the whole part has been removed
 	private int health; //current durability
 	private long placed; //time when the bastion block was created
-	private int erosionTask; //the id of the task associated with erosion
-	private int regenTask;
 	private BastionType type;
 
 	/**
@@ -468,14 +466,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	public void destroy() {
 		if (type.isDestroyOnRemove()) {
 			location.getBlock().setType(Material.AIR);
+			Bastion.getBastionStorage().deleteBastion(this);
+		} else {
+			Bastion.getBastionStorage().setBastionAsDead(this);
 		}
-		if (type.getErosionTime() != 0) {
-			Bukkit.getScheduler().cancelTask(erosionTask);
-		}
-		if(type.getRegenTime() != 0) {
-			Bukkit.getScheduler().cancelTask(regenTask);
-		}
-		Bastion.getBastionStorage().deleteBastion(this);
 	}
 
 }
