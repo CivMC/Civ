@@ -16,6 +16,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -94,7 +95,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 				public void run() {
 					Reinforcement reinf = getReinforcement();
 					if(reinf != null) {
-						reinf.setDurability(++health);
+						if(reinf instanceof PlayerReinforcement) {
+							PlayerReinforcement pr = (PlayerReinforcement) reinf;
+							int maxHealth = ReinforcementType.getReinforcementType(pr.getStackRepresentation()).getHitPoints();
+							reinf.setDurability(Math.min(health + 1, maxHealth));
+						} else {
+							destroy();
+						}
 					}
 				}
 			},
