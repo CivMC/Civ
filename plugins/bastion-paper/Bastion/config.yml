@@ -16,7 +16,8 @@ bastions:
     block:
       material: BONE_BLOCK
       durability: 0
-      lore: This bastion will protect your claims
+      lore: 
+        - This bastion will protect your claims
     squarefield: false
     effectRadius: 300
     includeY: true
@@ -46,7 +47,8 @@ bastions:
     block:
       material: NETHER_WART_BLOCK
       durability: 0
-      lore: This bastion will protect your plot
+      lore: 
+        - This bastion will protect your plot
     squarefield: true
     effectRadius: 50
     includeY: true
@@ -76,7 +78,8 @@ bastions:
     block:
       material: SPONGE
       durability: 0
-      lore: this one is hellaz
+      lore: 
+        - this one is hellaz
     squarefield: false
     effectRadius: 10
     includeY: true
