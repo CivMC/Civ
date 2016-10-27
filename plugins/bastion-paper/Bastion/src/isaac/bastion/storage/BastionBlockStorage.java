@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -365,5 +366,20 @@ public class BastionBlockStorage {
 	 */
 	public Set<BastionBlock> getAllBastions() {
 		return bastions;
+	}
+	
+	/**
+	 * Gets all bastions of a certain type
+	 * @param type The type of bastion you want
+	 * @return A set of bastions of that type
+	 */
+	public Set<BastionBlock> getBastionsForType(BastionType type) {
+		Set<BastionBlock> forType = new HashSet<BastionBlock>();
+		for(BastionBlock bastion : bastions) {
+			if(bastion.getType().equals(type)) {
+				forType.add(bastion);
+			}
+		}
+		return forType;
 	}
 }

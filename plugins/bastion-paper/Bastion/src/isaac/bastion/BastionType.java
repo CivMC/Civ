@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class BastionType {
 	
@@ -336,6 +337,29 @@ public class BastionType {
 			BastionType type = getBastionType(config.getConfigurationSection(key));
 			if(type != null) {
 				types.put(key, type);
+			}
+		}
+	}
+	
+	public static void startRegenAndErosionTasks() {
+		for(BastionType type : types.values()) {
+			if(type.erosionTime > 0) {
+				new BukkitRunnable() {
+					public void run() {
+						for(BastionBlock bastion : Bastion.getBastionStorage().getBastionsForType(type)) {
+							bastion.erode(1);
+						}
+					}
+				}.runTaskTimerAsynchronously(Bastion.getPlugin(), type.erosionTime, type.erosionTime);
+			}
+			if(type.regenTime > 0) {
+				new BukkitRunnable() {
+					public void run() {
+						for(BastionBlock bastion : Bastion.getBastionStorage().getBastionsForType(type)) {
+							bastion.regen();
+						}
+					}
+				}.runTaskTimerAsynchronously(Bastion.getPlugin(), type.regenTime, type.regenTime);
 			}
 		}
 	}

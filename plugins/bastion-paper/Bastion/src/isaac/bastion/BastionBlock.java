@@ -2,7 +2,6 @@ package isaac.bastion;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
@@ -11,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -22,7 +20,6 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlock implements QTBox, Comparable<BastionBlock> {	
-	private static Random random;
 
 	private Location location; 
 	private int id = -1;
@@ -51,63 +48,12 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		PlayerReinforcement reinforcement = getReinforcement();
 		if (reinforcement != null) {
 			this.health = reinforcement.getDurability();
-			setup();
 		} else{
 			this.health = 0;
 			destroy();
 		}
 
 	}
-
-	/**
-	 * called by both constructors to do the things they share
-	 */
-	private void setup() {
-		if(type.getErosionTime() != 0) {
-			erosionTask = registerErosionTask();
-		}
-		if(type.getRegenTime() != 0) {
-			regenTask = registerRegenTask();
-		}
-	}
-	
-	/**
-	 * called to register the erosion task
-	 * @return Task ID of the {@link BukkitRunnable} that results.
-	 */
-	private int registerErosionTask() {
-		return Bukkit.getScheduler().runTaskTimer(Bastion.getPlugin(), 
-			new Runnable() {
-				public void run() {
-					erode(1);
-				}
-			},
-		random.nextInt(type.getErosionTime()),type.getErosionTime()).getTaskId();
-	}
-	
-	/**
-	 * called to register regen task
-	 * @return Task ID of the {@link BukkitRunnable} that results.
-	 */
-	private int registerRegenTask() {
-		return Bukkit.getScheduler().runTaskTimer(Bastion.getPlugin(),
-			new Runnable() {
-				public void run() {
-					Reinforcement reinf = getReinforcement();
-					if(reinf != null) {
-						if(reinf instanceof PlayerReinforcement) {
-							PlayerReinforcement pr = (PlayerReinforcement) reinf;
-							int maxHealth = ReinforcementType.getReinforcementType(pr.getStackRepresentation()).getHitPoints();
-							reinf.setDurability(Math.min(health + 1, maxHealth));
-						} else {
-							destroy();
-						}
-					}
-				}
-			},
-		random.nextInt(type.getRegenTime()), type.getRegenTime()).getTaskId();
-	}
-
 
 	/**
 	 * @return The amount to erode from the bastion for a block place
@@ -248,6 +194,22 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 */
 	public boolean shouldCull() {
 		return health - balance <= 0;
+	}
+	
+	/**
+	 * Regenerates one hp on the bastion up to the cap based on reinforcement
+	 */
+	public void regen() {
+		Reinforcement reinf = getReinforcement();
+		if(reinf != null) {
+			if(reinf instanceof PlayerReinforcement) {
+				PlayerReinforcement pr = (PlayerReinforcement) reinf;
+				int maxHealth = ReinforcementType.getReinforcementType(pr.getStackRepresentation()).getHitPoints();
+				reinf.setDurability(Math.min(health + 1, maxHealth));
+			} else {
+				destroy();
+			}
+		}
 	}
 
 	/**

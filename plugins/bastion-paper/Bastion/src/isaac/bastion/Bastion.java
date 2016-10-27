@@ -33,6 +33,7 @@ public final class Bastion extends ACivMod {
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
 		
+		BastionType.startRegenAndErosionTasks();
 		registerListeners();
 		setupCommands();
 	}
