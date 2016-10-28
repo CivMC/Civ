@@ -57,7 +57,7 @@ public final class Bastion extends ACivMod {
 	}
 
 	private void setupDatabase() {
-		ConfigurationSection config = getConfig().getConfigurationSection("sql");
+		ConfigurationSection config = getConfig().getConfigurationSection("mysql");
 		String host = config.getString("host");
 		int port = config.getInt("port");
 		String user = config.getString("user");
