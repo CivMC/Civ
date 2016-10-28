@@ -321,7 +321,7 @@ public class BastionBlockStorage {
 		for(World world : Bukkit.getWorlds()) {
 			SparseQuadTree bastionsForWorld = new SparseQuadTree(enderSearchRadius);
 			try (Connection conn = db.getConnection();
-					PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where world_loc=?;")) {
+					PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
 				ps.setString(1, world.getName());
 				ResultSet result = ps.executeQuery();
 				while(result.next()) {
