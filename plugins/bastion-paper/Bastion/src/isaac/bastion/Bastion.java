@@ -5,8 +5,10 @@ import java.util.LinkedList;
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
+import isaac.bastion.listeners.BastionBreakListener;
 import isaac.bastion.listeners.BastionDamageListener;
 import isaac.bastion.listeners.BastionInteractListener;
+import isaac.bastion.listeners.ElytraListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -31,6 +33,7 @@ public final class Bastion extends ACivMod {
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
 		
+		BastionType.startRegenAndErosionTasks();
 		registerListeners();
 		setupCommands();
 	}
@@ -46,6 +49,8 @@ public final class Bastion extends ACivMod {
 	private void registerListeners() {
 		getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
 		getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
+		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
+		getServer().getPluginManager().registerEvents(new BastionBreakListener(storage), this);
 	}
 
 	private void setupDatabase() {

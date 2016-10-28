@@ -1,6 +1,7 @@
 package isaac.bastion.listeners;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -103,9 +104,9 @@ public class BastionInteractListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(!event.isCancelled()) {
 			MaterialData mat = new MaterialData(event.getBlock().getType(), event.getBlock().getData());
-			String lore = "";
+			List<String> lore = null;
 			if(event.getItemInHand() != null && event.getItemInHand().hasItemMeta() && event.getItemInHand().getItemMeta().hasLore()) {
-				lore = event.getItemInHand().getItemMeta().getLore().get(0);
+				lore = event.getItemInHand().getItemMeta().getLore();
 			}
 			BastionType type = BastionType.getBastionType(mat, lore);
 			if(type != null) pendingBastions.put(event.getBlock().getLocation(), type.getName());

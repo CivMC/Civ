@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -32,14 +34,22 @@ public class BastionBlockStorage {
 	private Map<World, SparseQuadTree> blocks;
 	private Set<BastionBlock> changed;
 	private Set<BastionBlock> bastions;
+	private Map<Location, String> dead;
 	private int taskId;
 	private int ID = -1;
 	
 	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, balance) values (?,?,?,?,?,?,?);";
 	private static final String updateBastion = "update bastion_blocks set placed=?,balance=? where bastion_id=?;";
 	private static final String deleteBastion = "delete from bastion_blocks where bastion_id=?;";
+	private static final String setDead = "update bastion_blocks set dead=1 where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
+	private static final String deleteDead = "delete from bastion_blocks where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
+	private static final String moveDead = "update bastion_blocks set loc_world=?, loc_x=?, loc_y=?, loc_z=? where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
 	
 	public BastionBlockStorage(ManagedDatasource db, Logger log) {
+		blocks = new HashMap<World, SparseQuadTree>();
+		changed = new TreeSet<BastionBlock>();
+		bastions = new TreeSet<BastionBlock>();
+		dead = new HashMap<Location, String>();
 		this.db = db;
 		this.log = log;
 		long saveDelay = 86400000 / Bastion.getPlugin().getConfig().getLong("mysql.savesPerDay", 64);
@@ -65,9 +75,11 @@ public class BastionBlockStorage {
 				+ "placed bigint(20) Unsigned,"
 				+ "fraction float(20) Unsigned,"
 				+ "PRIMARY_KEY (`bastion_id`));");
-		db.registerMigration(1, true, 
+		db.registerMigration(1, false, 
 				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEAULT '"
-				+ BastionType.getDefaultType() + "';");		
+				+ BastionType.getDefaultType() + "';");	
+		db.registerMigration(2, false, 
+				"ALTER TABLE bastion_blocks ADD COLUMN dead TINYINT(1) DEFAULT 0;");
 	}
 	
 	/**
@@ -125,6 +137,56 @@ public class BastionBlockStorage {
 		}
 	}
 	
+	/**
+	 * Sets a bastion as dead but still in the world
+	 * @param bastion The bastion that died
+	 */
+	public void setBastionAsDead(BastionBlock bastion) {
+		try (Connection conn = db.getConnection();
+				PreparedStatement ps = conn.prepareStatement(setDead)) {
+			ps.setInt(1, bastion.getId());
+			ps.executeUpdate();
+			bastions.remove(bastion);
+			blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+			dead.put(bastion.getLocation(), bastion.getType().getName());
+		} catch (SQLException e) {
+			log.log(Level.WARNING, "Failed to set bastion as dead at " + bastion.getLocation().toString(), e);
+		}
+	}
+	
+	public void deleteDeadBastion(Location loc) {
+		if(!dead.containsKey(loc)) return;
+		try (Connection conn = db.getConnection();
+				PreparedStatement ps = conn.prepareStatement(deleteDead)) {
+			ps.setString(1, loc.getWorld().getName());
+			ps.setInt(1, loc.getBlockX());
+			ps.setInt(2, loc.getBlockY());
+			ps.setInt(3, loc.getBlockZ());
+			ps.executeUpdate();
+			dead.remove(loc);
+		} catch (SQLException e) {
+			log.log(Level.WARNING, "Failed to delete dead bastion at " + loc.toString(), e);
+		}
+	}
+	
+	public void moveDeadBastion(Location from, Location to) {
+		try (Connection conn = db.getConnection();
+				PreparedStatement ps = conn.prepareStatement(moveDead)) {
+			ps.setString(1, to.getWorld().getName());
+			ps.setInt(1, to.getBlockX());
+			ps.setInt(2, to.getBlockY());
+			ps.setInt(3, to.getBlockZ());
+			ps.setString(2, from.getWorld().getName());
+			ps.setInt(4, from.getBlockX());
+			ps.setInt(5, from.getBlockY());
+			ps.setInt(6, from.getBlockZ());
+			ps.executeUpdate();
+			dead.put(to, dead.remove(from));
+		} catch (SQLException e) {
+			log.log(Level.WARNING, "Failed to move bastion at " + from.toString() + " to " + to.toString(), e);
+		}
+	}
+
 	/**
 	 * Updates a bastion in the database
 	 * @param bastion The bastion to update
@@ -234,6 +296,23 @@ public class BastionBlockStorage {
 	}
 	
 	/**
+	 * Gets the type of the bastion, dead or alive, at a location
+	 * @param loc Location of the bastion
+	 * @return The type of bastion, can be null
+	 */
+	public BastionType getTypeAtLocation(Location loc) {
+		BastionBlock bastion = getBastionBlock(loc);
+		if(bastion != null) {
+			return bastion.getType();
+		}
+		String type = dead.get(loc);
+		if(type != null) {
+			return BastionType.getBastionType(type);
+		}
+		return null;
+	}
+	
+	/**
 	 * Loads all bastions from the database
 	 */
 	@SuppressWarnings("deprecation")
@@ -287,5 +366,20 @@ public class BastionBlockStorage {
 	 */
 	public Set<BastionBlock> getAllBastions() {
 		return bastions;
+	}
+	
+	/**
+	 * Gets all bastions of a certain type
+	 * @param type The type of bastion you want
+	 * @return A set of bastions of that type
+	 */
+	public Set<BastionBlock> getBastionsForType(BastionType type) {
+		Set<BastionBlock> forType = new HashSet<BastionBlock>();
+		for(BastionBlock bastion : bastions) {
+			if(bastion.getType().equals(type)) {
+				forType.add(bastion);
+			}
+		}
+		return forType;
 	}
 }
