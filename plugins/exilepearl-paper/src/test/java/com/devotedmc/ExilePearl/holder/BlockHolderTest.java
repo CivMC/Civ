@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
@@ -95,7 +96,7 @@ public class BlockHolderTest {
 	}
 
 	@Test
-	public void testValidate() {
+	public void testValidate() throws Exception {
 		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), 1, loc);
 		
 		assertEquals(holder.validate(pearl), HolderVerifyResult.BLOCK_STATE_NULL);
@@ -107,8 +108,8 @@ public class BlockHolderTest {
 		when(b.getState()).thenReturn(bs);
 		assertEquals(holder.validate(pearl), HolderVerifyResult.NOT_BLOCK_INVENTORY);
 		
-		MockInventoryHolder invHolder = mock(MockInventoryHolder.class);
-		when(b.getState()).thenReturn(invHolder);
+		InventoryHolder invHolder = mock(InventoryHolder.class, withSettings().extraInterfaces(BlockState.class));
+		when(b.getState()).thenReturn((BlockState) invHolder);
 		
 		Inventory inv = mock(Inventory.class);
 		when(invHolder.getInventory()).thenReturn(inv);

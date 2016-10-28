@@ -16,7 +16,7 @@ public class BukkitTestCase {
 	private static TestServer testServer = null;
 
     @BeforeClass
-    public static void setUpTestBukkit() {
+    public static void setUpTestBukkit() {    	
     	if (testServer == null) {
     		testServer = new TestServer(false);
     	}

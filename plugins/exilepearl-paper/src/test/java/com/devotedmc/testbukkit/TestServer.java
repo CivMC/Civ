@@ -45,6 +45,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
@@ -58,19 +59,20 @@ import org.bukkit.inventory.Recipe;
 import org.bukkit.map.MapView;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
+import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginLoadOrder;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.SimpleServicesManager;
-import org.bukkit.plugin.java.JavaPluginLoader;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.messaging.Messenger;
 import org.bukkit.plugin.messaging.StandardMessenger;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitWorker;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.util.CachedServerIcon;
-import org.bukkit.util.permissions.DefaultPermissions;
 import org.mockito.Mockito;
 
 import com.avaje.ebean.config.ServerConfig;
@@ -96,6 +98,7 @@ public class TestServer implements Server {
     private YamlConfiguration configuration = new YamlConfiguration();
     private TestConsoleCommandSender consoleSender = new TestConsoleCommandSender();
 	private Set<Recipe> recipes = new HashSet<Recipe>();
+	private PluginLoader pluginLoader = Mockito.mock(PluginLoader.class);
     private int maxPlayers = 50;
     private int viewDistance = 4;
     private boolean allowNether = true;
@@ -122,6 +125,10 @@ public class TestServer implements Server {
         Bukkit.setServer(this);
     }
     
+    public TestServer() {
+    	this(false);
+    }
+    
     
     private void configureLogger() {		
 		// Format the logger output
@@ -129,7 +136,17 @@ public class TestServer implements Server {
 			private final DateFormat df = new SimpleDateFormat("hh:mm:ss");
 			@Override
 			public String format(LogRecord record) {
-				return String.format("[%s %s]: %s\n", df.format(new Date(record.getMillis())), record.getLevel().getLocalizedName(), formatMessage(record));
+				String level = record.getLevel().getLocalizedName().toUpperCase();
+				if (level.equals("WARNING")) {
+					level = "WARN";
+				}
+				
+				Throwable thrown = record.getThrown();
+				if (thrown != null) {
+					thrown.printStackTrace();
+				}
+				
+				return String.format("[%s %s]: %s\n", df.format(new Date(record.getMillis())), level, formatMessage(record));
 			}
 		};
 		
@@ -162,14 +179,11 @@ public class TestServer implements Server {
             ));
         }
         loadPlugins();
-        enablePlugins(PluginLoadOrder.STARTUP);
-        enablePlugins(PluginLoadOrder.POSTWORLD);
+        enablePlugins();
 
 	}
 	
     public void loadPlugins() {
-        pluginManager.registerInterface(JavaPluginLoader.class);
-
         Plugin[] plugins = pluginManager.loadPlugins();
         for (Plugin plugin : plugins) {
             try {
@@ -182,26 +196,13 @@ public class TestServer implements Server {
         }
     }
 
-    public void enablePlugins(PluginLoadOrder type) {
-        if (type == PluginLoadOrder.STARTUP) {
-            //helpMap.clear();
-            //helpMap.initializeGeneralTopics();
-        }
-
+    public void enablePlugins() {
         Plugin[] plugins = pluginManager.getPlugins();
 
         for (Plugin plugin : plugins) {
-            if ((!plugin.isEnabled()) && (plugin.getDescription().getLoad() == type)) {
+            if (!plugin.isEnabled()) {
                 enablePlugin(plugin);
             }
-        }
-
-        if (type == PluginLoadOrder.POSTWORLD) {
-            // Spigot start - Allow vanilla commands to be forced to be the main command
-            commandMap.setFallbackCommands();
-            // Spigot end
-            commandMap.registerServerAliases();
-            DefaultPermissions.registerCorePermissions();
         }
     }
     
@@ -851,12 +852,62 @@ public class TestServer implements Server {
     	return testWorld;
     }
     
-    public void addPlugin(String name, String version, String mainClass) {
-    	pluginManager.addPlugin(name, version, mainClass);
+    public TestPlugin addPlugin(Class<? extends JavaPlugin> clazz) throws Exception {
+    	return pluginManager.addPlugin(clazz);
     }
     
     public void addPlayer(Player p) {
     	this.onlinePlayers.add(p);
     }
-
+    
+    public PluginLoader getPluginLoader() {
+    	return pluginLoader;
+    }
+    
+    public PluginDescriptionFile getDescription(JavaPlugin plugin) throws InvalidDescriptionException {
+    	return pluginManager.createDescription(plugin);
+    }
+    
+    public FileConfiguration getPluginConfig(JavaPlugin plugin) {
+    	return pluginManager.getPluginConfig(plugin);
+    }
+    
+    public File getTestPluginDataFolder(JavaPlugin plugin) {
+    	String name = plugin.getName();
+    	File file = mock(File.class);
+    	when(file.getPath()).thenReturn("\\plugins\\" + name);
+    	when(file.getAbsolutePath()).thenReturn("\\plugins\\" + name);
+    	when(file.getName()).thenReturn("\\plugins\\" + name);
+    	when(file.getParent()).thenReturn("\\plugins\\");
+    	when(file.exists()).thenReturn(true);
+    	when(file.isFile()).thenReturn(false);
+    	when(file.isDirectory()).thenReturn(true);
+    	return file;
+    }
+    
+    public File getTestPluginFile(JavaPlugin plugin) {
+    	String name = plugin.getName() + ".jar";
+    	File file = mock(File.class);
+    	when(file.getPath()).thenReturn("\\plugins\\" + name);
+    	when(file.getAbsolutePath()).thenReturn("\\plugins\\" + name);
+    	when(file.getName()).thenReturn("\\plugins\\" + name);
+    	when(file.getParent()).thenReturn("\\plugins\\");
+    	when(file.exists()).thenReturn(true);
+    	when(file.isFile()).thenReturn(true);
+    	when(file.isDirectory()).thenReturn(false);
+    	return file;
+    }
+    
+    public File getTestPluginConfigFile(JavaPlugin plugin) {
+    	String name = plugin.getName();
+    	File file = mock(File.class);
+    	when(file.getPath()).thenReturn("\\plugins\\" + name + "\\config.yml");
+    	when(file.getAbsolutePath()).thenReturn("\\plugins\\" + name + "\\config.yml");
+    	when(file.getName()).thenReturn("\\plugins\\" + name + "\\config.yml");
+    	when(file.getParent()).thenReturn("\\plugins\\" + name);
+    	when(file.exists()).thenReturn(true);
+    	when(file.isFile()).thenReturn(true);
+    	when(file.isDirectory()).thenReturn(false);
+    	return file;
+    }
 }

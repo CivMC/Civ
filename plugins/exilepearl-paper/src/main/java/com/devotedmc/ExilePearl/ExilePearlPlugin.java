@@ -1,10 +1,13 @@
 package com.devotedmc.ExilePearl;
 
+import java.io.File;
 import java.util.List;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 
 import com.devotedmc.ExilePearl.core.CorePluginFactory;
 
@@ -27,6 +30,12 @@ public final class ExilePearlPlugin extends JavaPlugin {
 	public ExilePearlPlugin() {
 		core = CorePluginFactory.createCore(this);
 	}
+	
+	// Unit testing
+    protected ExilePearlPlugin(final JavaPluginLoader loader, final PluginDescriptionFile description, final File dataFolder, final File file) {
+    	super(loader, description, dataFolder, file);
+		core = CorePluginFactory.createCore(this);
+    }
 	
 	@Override
 	public void onLoad() { 

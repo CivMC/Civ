@@ -1,7 +1,7 @@
 package com.devotedmc.testbukkit;
 
 import java.io.File;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +18,14 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
@@ -31,12 +35,13 @@ import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.plugin.TimedRegisteredListener;
 import org.bukkit.plugin.UnknownDependencyException;
-import org.bukkit.plugin.java.PluginLoaderProxy;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.collect.ImmutableSet;
 
@@ -51,52 +56,20 @@ public class TestPluginManager implements PluginManager {
     private final Map<String, Map<Permissible, Boolean>> permSubs = new HashMap<String, Map<Permissible, Boolean>>();
     private final Map<Boolean, Map<Permissible, Boolean>> defSubs = new HashMap<Boolean, Map<Permissible, Boolean>>();
     private boolean useTimings = false;
-    private PluginLoaderProxy loaderProxy;
     
-    class PluginInfo {
-    	final String name;
-    	final String version;
-    	final String mainClass;
-    	
-    	public PluginInfo(String name, String version, String mainClass) {
-    		this.name = name;
-    		this.version = version;
-    		this.mainClass = mainClass;
-    	}
-    }
-    
-    private List<PluginInfo> pluginsToLoad = new ArrayList<PluginInfo>();
-    
-    
+    private static List<TestPlugin> pluginsToLoad = new ArrayList<TestPlugin>();    
     
     public TestPluginManager(Server server, SimpleCommandMap commandMap) {
     	this.server = server;
     	this.commandMap = commandMap;
+    	
+        defaultPerms.put(true, new HashSet<Permission>());
+        defaultPerms.put(false, new HashSet<Permission>());
     }
     
 
 	@Override
-	public void registerInterface(Class<? extends PluginLoader> loader) throws IllegalArgumentException {
-        PluginLoader instance;
-
-        if (PluginLoader.class.isAssignableFrom(loader)) {
-            Constructor<? extends PluginLoader> constructor;
-
-            try {
-                constructor = loader.getConstructor(Server.class);
-                instance = constructor.newInstance(server);
-            } catch (NoSuchMethodException ex) {
-                String className = loader.getName();
-
-                throw new IllegalArgumentException(String.format("Class %s does not have a public %s(Server) constructor", className, className), ex);
-            } catch (Exception ex) {
-                throw new IllegalArgumentException(String.format("Unexpected exception %s while attempting to construct a new instance of %s", ex.getClass().getName(), loader.getName()), ex);
-            }
-        } else {
-            throw new IllegalArgumentException(String.format("Class %s does not implement interface PluginLoader", loader.getName()));
-        }
-        loaderProxy = new PluginLoaderProxy(instance);
-	}
+	public void registerInterface(Class<? extends PluginLoader> loader) throws IllegalArgumentException { }
 
 	@Override
 	public Plugin getPlugin(String name) {
@@ -128,15 +101,20 @@ public class TestPluginManager implements PluginManager {
 		return null;
 	}
 	
-	public Plugin loadPlugin(String name, String version, String mainClass) throws InvalidPluginException, UnknownDependencyException {
-        Plugin result = loaderProxy.loadPlugin(name, version, mainClass);
+	public Plugin loadPlugin(TestPlugin p) throws InvalidPluginException, UnknownDependencyException {
+		final JavaPlugin plugin;
+		try {
+			plugin = (JavaPlugin)p.getPluginClass().newInstance();
+		} catch (Exception ex) {
+			throw new InvalidPluginException(ex);
+		}
 
-        if (result != null) {
-            plugins.add(result);
-            lookupNames.put(result.getDescription().getName(), result);
+        if (plugin != null) {
+            plugins.add(plugin);
+            lookupNames.put(plugin.getDescription().getName(), plugin);
         }
 
-        return result;
+        return plugin;
 	}
 
 	@Override
@@ -147,11 +125,12 @@ public class TestPluginManager implements PluginManager {
 	public Plugin[] loadPlugins() {
         List<Plugin> result = new ArrayList<Plugin>();
         
-		for(PluginInfo i : pluginsToLoad) {
+		for(TestPlugin p : pluginsToLoad) {
 			try {
-				result.add(loadPlugin(i.name, i.version, i.mainClass));
+				result.add(loadPlugin(p));
 			} catch (Exception ex) {
-                server.getLogger().log(Level.SEVERE, "Could not load plugin '" + i.name + "'", ex);
+                server.getLogger().log(Level.SEVERE, "Could not load plugin '" + p.getName() + "'", ex);
+                ex.printStackTrace();
 			}
 		}
 		return result.toArray(new Plugin[result.size()]);
@@ -289,13 +268,12 @@ public class TestPluginManager implements PluginManager {
 	public void enablePlugin(Plugin plugin) {
         if (!plugin.isEnabled()) {
             List<Command> pluginCommands = PluginCommandYamlParser.parse(plugin);
-
             if (!pluginCommands.isEmpty()) {
                 commandMap.registerAll(plugin.getDescription().getName(), pluginCommands);
             }
 
             try {
-                plugin.getPluginLoader().enablePlugin(plugin);
+            	loaderEnablePlugin(plugin);
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
@@ -308,7 +286,7 @@ public class TestPluginManager implements PluginManager {
 	public void disablePlugin(Plugin plugin) {
         if (plugin.isEnabled()) {
             try {
-                plugin.getPluginLoader().disablePlugin(plugin);
+            	loaderDisablePlugin(plugin);
             } catch (Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
@@ -337,6 +315,50 @@ public class TestPluginManager implements PluginManager {
             } catch(Throwable ex) {
                 server.getLogger().log(Level.SEVERE, "Error occurred (in the plugin loader) while unregistering plugin channels for " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
             }
+        }
+	}
+	
+	private void loaderEnablePlugin(Plugin plugin) {
+        if (!plugin.isEnabled()) {
+            plugin.getLogger().info("Enabling " + plugin.getDescription().getFullName());
+
+            JavaPlugin jPlugin = (JavaPlugin) plugin;
+
+            try {            	
+            	Field f = JavaPlugin.class.getDeclaredField("isEnabled");
+            	f.setAccessible(true);
+            	boolean enabled = f.getBoolean(jPlugin);
+            	if (!enabled) {
+            		f.setBoolean(jPlugin, true);
+            		jPlugin.onEnable();
+            	}
+            } catch (Throwable ex) {
+                server.getLogger().log(Level.SEVERE, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+            }
+
+            server.getPluginManager().callEvent(new PluginEnableEvent(plugin));
+        }
+	}
+	
+	private void loaderDisablePlugin(Plugin plugin) {
+        if (!plugin.isEnabled()) {
+            plugin.getLogger().info("Disabling " + plugin.getDescription().getFullName());
+
+            JavaPlugin jPlugin = (JavaPlugin) plugin;
+
+            try {
+            	Field f = JavaPlugin.class.getDeclaredField("isEnabled");
+            	f.setAccessible(true);
+            	boolean enabled = f.getBoolean(jPlugin);
+            	if (enabled) {
+            		f.setBoolean(jPlugin, false);
+            		jPlugin.onDisable();
+            	}
+            } catch (Throwable ex) {
+                server.getLogger().log(Level.SEVERE, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+            }
+
+            server.getPluginManager().callEvent(new PluginDisableEvent(plugin));
         }
 	}
 
@@ -496,7 +518,33 @@ public class TestPluginManager implements PluginManager {
     }
     
     
-    public void addPlugin(String name, String version, String mainClass) {
-    	pluginsToLoad.add(new PluginInfo(name, version, mainClass));
+    public TestPlugin addPlugin(Class<? extends JavaPlugin> clazz) throws Exception {
+    	try {
+        	TestPlugin p = new TestPlugin(clazz);
+        	pluginsToLoad.add(p);
+            server.getLogger().log(Level.INFO, "Registered test plugin '" + p.getDescription().getName() + "'");
+        	return p;
+    	} catch (Exception ex) {
+            server.getLogger().log(Level.SEVERE, "Could not register test plugin '" + clazz.getName() + "'", ex);
+            throw ex;
+    	}
+    }
+    
+    public PluginDescriptionFile createDescription(JavaPlugin plugin) throws InvalidDescriptionException {
+    	for (TestPlugin p : pluginsToLoad) {
+    		if (p.getPluginClass() == plugin.getClass()) {
+    			return p.getDescription();
+    		}
+    	}
+    	return null;
+    }
+    
+    public FileConfiguration getPluginConfig(JavaPlugin plugin) {
+    	for (TestPlugin p : pluginsToLoad) {
+    		if (p.getPluginClass() == plugin.getClass()) {
+    			return p.getConfig();
+    		}
+    	}
+    	return new YamlConfiguration();
     }
 }

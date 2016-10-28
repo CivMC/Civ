@@ -1,26 +1,32 @@
 package com.devotedmc.ExilePearl;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
 
+import static com.devotedmc.testbukkit.TestBukkitRunner.*;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.devotedmc.testbukkit.TestBukkitRunner;
 import com.devotedmc.testbukkit.TestServer;
 
-@Ignore
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+
+@RunWith(TestBukkitRunner.class)
 public class ExilePearlPluginIntegrationTest {
 	
-	private static TestServer server;
-	
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		server = new TestServer(true);
-		
-		server.addPlugin("CombatTagPlus", "1.2.4", "net.minelink.ctplus.CombatTagPlus");
-		server.loadPlugins();
-	}
+	private TestServer server;
 	
 	@Before
 	public void setUp() throws Exception {
+		server = getServer();
+		
+		server.addPlugin(CivModCorePlugin.class);
+		
+		server.addPlugin(ExilePearlPlugin.class)
+			.appendConfig("storage.type", 2); // Use RAM storage
+		
+		server.loadPlugins();
+		server.enablePlugins();
 	}
 
 	@Test
