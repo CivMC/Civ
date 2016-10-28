@@ -1,6 +1,4 @@
 mysql:
-  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
-  plugin: Bastion
   user: ''
   password: ''
   host: localhost
@@ -12,41 +10,14 @@ mysql:
   maxLifetime: 7200000
   savesPerDay: 64
 bastions:
-  claimbastion:
-    block:
-      material: BONE_BLOCK
-      durability: 0
-      lore: 
-        - This bastion will protect your claims
-    squarefield: false
-    effectRadius: 300
-    includeY: true
-    startScaleFactor: 100
-    finalScaleFactor: 0.2
-    warmupTime: 86400000
-    erosionPerDay: 0
-    regenPerDay: 0
-    blocksToErode: 1
-    placementCooldown: 2000
-    destroyOnRemove: false
-    pearls:
-      block: false
-      scaleFactor: 1
-      requireMaturity: true
-      consumeOnBlock: false
-      damageFirstBastion: false
-    elytra:
-      block: false
-      scaleFactor: 1
-      requireMaturity: true
-      destroyOnBlock: false
-      damageOnBlock: true
-      explodeOnBlock: true
-      explodeOnBlockStrength: 0
+#The first bastion in this list will be used as the default type
+#This only really matters the first time your start it up when converting from old bastion
+#All bastions in the db will be flagged as, in this instance, citybastion
   citybastion:
     block:
       material: NETHER_WART_BLOCK
       durability: 0
+      name: City Bastion
       lore: 
         - This bastion will protect your plot
     squarefield: true
@@ -74,10 +45,43 @@ bastions:
       damageOnBlock: true
       explodeOnBlock: true
       explodeOnBlockStrength: 0
+  claimbastion:
+    block:
+      material: BONE_BLOCK
+      durability: 0
+      name: Claim Bastion
+      lore: 
+        - This bastion will protect your claims
+    squarefield: false
+    effectRadius: 300
+    includeY: true
+    startScaleFactor: 100
+    finalScaleFactor: 0.2
+    warmupTime: 86400000
+    erosionPerDay: 0
+    regenPerDay: 0
+    blocksToErode: 1
+    placementCooldown: 2000
+    destroyOnRemove: false
+    pearls:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      consumeOnBlock: false
+      damageFirstBastion: false
+    elytra:
+      block: false
+      scaleFactor: 1
+      requireMaturity: true
+      destroyOnBlock: false
+      damageOnBlock: true
+      explodeOnBlock: true
+      explodeOnBlockStrength: 0
   bastion:
     block:
       material: SPONGE
       durability: 0
+      name: Bastion
       lore: 
         - this one is hellaz
     squarefield: false
