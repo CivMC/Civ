@@ -58,8 +58,6 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  *
  * That should cover most cases. Note that points 2 & 3 are critical. Point 1 is required. Point 4 and 5 are highly recommended.
  * 
- * TODO: Make this instantiable via ConfigurationSerializable interface.
- *
  * @author ProgrammerDan
  */
 public class ManagedDatasource implements ConfigurationSerializable {
@@ -161,8 +159,35 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 */
 	public ManagedDatasource(ACivMod plugin, String user, String pass, String host, int port, String database,
 			int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
+		internal(plugin, user, pass, host, port, database, poolSize, connectionTimeout, idleTimeout, maxLifetime);
+	}
+
+	public ManagedDatasource(Map<String, Object> data) {
+		ACivMod plugin = (ACivMod) Bukkit.getPluginManager().getPlugin((String) data.get("plugin"));
+		String user = (String) data.get("user");
+		String password = (String) data.get("password");
+		String host = (String) data.get("host");
+		int port = NumberConversions.toInt(data.get("port"));
+		String database = (String) data.get("database");
+		int maxPoolSize = NumberConversions.toInt(data.get("poolsize"));
+		long connectionTimeout = NumberConversions.toLong(data.get("connectionTimeout"));
+		long idleTimeout = NumberConversions.toLong(data.get("idleTimeout"));
+		long maxLifetime = NumberConversions.toLong(data.get("maxLifetime"));
+
+		internal(plugin, user, password, host, port, database, maxPoolSize, connectionTimeout, idleTimeout, maxLifetime);
+	}
+
+	private void internal(ACivMod plugin, String user, String pass, String host, int port, String database,
+			int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
 		this.plugin = plugin;
 		this.logger = plugin.getLogger();
+		if (logger != null && plugin != null) {
+			logger.log(Level.INFO, "Preparing to generate ConnectionPool for {0}.", plugin.getName());
+		} else {
+			System.err.println("Invalid plugin or logger, cannot safely generate Connection Pool!");
+			throw new IllegalArgumentException("Bad settings");
+		}
+		logger.log(Level.INFO, "Connecting to {0}@{1}:{2} using {3}", new Object[] {database, host, port, user});
 		this.connections = new ConnectionPool(logger, user, pass, host, port, database, poolSize, 
 				connectionTimeout, idleTimeout, maxLifetime);
 		
@@ -174,6 +199,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		
 		getReady();
 	}
+
 	
 	private final void getReady() {
 		try (Connection connection = connections.getConnection();) {
@@ -539,18 +565,12 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		return data;
 	}
 	
-	public ManagedDatasource deserialize(Map <String, Object> data) {
-		ACivMod plugin = (ACivMod) Bukkit.getPluginManager().getPlugin((String) data.get("plugin"));
-		String user = (String) data.get("user");
-		String password = (String) data.get("password");
-		String host = (String) data.get("host");
-		int port = NumberConversions.toInt(data.get("port"));
-		String database = (String) data.get("database");
-		int maxPoolSize = NumberConversions.toInt(data.get("poolsize"));
-		long connectionTimeout = NumberConversions.toLong(data.get("connectionTimeout"));
-		long idleTimeout = NumberConversions.toLong(data.get("idleTimeout"));
-		long maxLifetime = NumberConversions.toLong(data.get("maxLifetime"));
-		return new ManagedDatasource(plugin, user, password, host, port, database, maxPoolSize, connectionTimeout, idleTimeout, maxLifetime);
+	public static ManagedDatasource deserialize(Map<String, Object> data) {
+		return new ManagedDatasource(data);
+	}
+
+	public static ManagedDatasource valueOf(Map<String, Object> data) {
+		return ManagedDatasource.deserialize(data);
 	}
 	
 }
