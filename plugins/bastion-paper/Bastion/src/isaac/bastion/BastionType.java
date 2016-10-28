@@ -18,6 +18,7 @@ public class BastionType {
 
 	private String name;
 	private MaterialData material;
+	private String itemName;
 	private List<String> lore;
 	private boolean square;
 	private int effectRadius;
@@ -45,14 +46,15 @@ public class BastionType {
 	private boolean damageFirstBastion;
 	private int regenTime;
 	
-	public BastionType(String name, MaterialData material, List<String> lore, boolean square, int effectRadius,
-			boolean includeY, int startScaleFactor, double finalScaleFactor, long warmupTime,
+	public BastionType(String name, MaterialData material, String itemName, List<String> lore, boolean square, 
+			int effectRadius, boolean includeY, int startScaleFactor, double finalScaleFactor, long warmupTime,
 			int erosionTime, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
 			boolean blockMidair, int pearlScale, boolean pearlRequireMature, boolean consumeOnBlock, int blocksToErode,
 			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale, boolean elytraRequireMature,
 			boolean explodeOnBlock, double explodeOnBlockStrength, boolean damageFirstBastion, int regenTime) {
 		this.name = name;
 		this.material = material;
+		this.itemName = itemName;
 		this.lore = lore;
 		this.square = square;
 		this.effectRadius = effectRadius;
@@ -327,15 +329,18 @@ public class BastionType {
 				}
 			}
 			is.getItemMeta().setLore(lore);
+			if(itemName != null && itemName.trim().length() != 0) {
+				is.getItemMeta().setDisplayName(itemName);
+			}
 		}
 		return is;
 	}
 
 	public static void loadBastionTypes(ConfigurationSection config) {
 		for(String key : config.getKeys(false)) {
-			if(defaultType == null) defaultType = key;
 			BastionType type = getBastionType(config.getConfigurationSection(key));
 			if(type != null) {
+				if(defaultType == null) defaultType = key;
 				types.put(key, type);
 			}
 		}
@@ -398,6 +403,7 @@ public class BastionType {
 		if(!mat.isBlock()) return null;
 		byte data = config.contains("block.durability") ? (byte)config.getInt("block.durability") : 0;
 		MaterialData material = new MaterialData(mat, data);
+		String itemName = config.getString("block.name");
 		List<String> lore = config.getStringList("block.lore");
 		boolean square = config.getBoolean("squarefield");
 		int effectRadius = config.getInt("effectRadius");
@@ -433,7 +439,7 @@ public class BastionType {
 		}
 		boolean explodeOnBlock = config.getBoolean("elytra.explodeOnBlock");
 		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
-		return new BastionType(name, material, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
+		return new BastionType(name, material, itemName, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
 				explodeOnBlockStrength, damageFirstBastion, regenTime);
