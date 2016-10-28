@@ -81,7 +81,7 @@ public class MySqlStorageIntegrationTest {
 		when(config.getMySqlPort()).thenReturn(3306);
 		when(config.getMySqlUsername()).thenReturn("bukkit");
 		when(config.getMySqlPassword()).thenReturn("");
-		when(config.getMySqlPoolSize()).thenReturn(50);
+		when(config.getMySqlPoolSize()).thenReturn(5);
 		when(config.getMySqlConnectionTimeout()).thenReturn(5000);
 		when(config.getMySqlIdleTimeout()).thenReturn(5000);
 		when(config.getMySqlMaxLifetime()).thenReturn(5000);

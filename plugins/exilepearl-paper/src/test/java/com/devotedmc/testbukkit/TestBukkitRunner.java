@@ -1,5 +1,7 @@
 package com.devotedmc.testbukkit;
 
+import java.util.logging.Level;
+
 import org.bukkit.entity.Player;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
@@ -26,6 +28,11 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	}
 
 	
+	/**
+	 * Modifies the code for JavaPlugin so that it can actually 
+	 * be invoked outside of a Bukkit instance
+	 * @throws InitializationError
+	 */
     private void rewireJavaPlugin() throws InitializationError {
     	try {
 	    	ClassPool cp = new ClassPool(true);
@@ -55,16 +62,12 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	    	CtMethod ctSaveDefaultConfig = ctJavaPlugin.getDeclaredMethod("saveDefaultConfig");
 	    	ctSaveDefaultConfig.setBody("{ }");
 	    	
+	    	// Configuration gets pulled from the test server
 	    	CtMethod ctReloadConfig = ctJavaPlugin.getDeclaredMethod("reloadConfig");
 	    	ctReloadConfig.setBody("{ newConfig = com.devotedmc.testbukkit.TestBukkitRunner.getServer().getPluginConfig(this); }");
 	    	
+	    	// Compile
 	    	ctJavaPlugin.toClass();
-	    	
-	    	// Change the YamlConfiguration to just load a blank instance
-	    	CtClass ctYaml = cp.get("org.bukkit.configuration.file.YamlConfiguration");
-	    	CtMethod ctLoadConfiguration = ctYaml.getMethod("loadConfiguration", "(Ljava/io/File;)Lorg/bukkit/configuration/file/YamlConfiguration;");
-	    	ctLoadConfiguration.setBody("{ return new org.bukkit.configuration.file.YamlConfiguration(); }");
-	    	ctYaml.toClass();
 	    	
     	} catch (Exception ex) {
     		throw new InitializationError(ex);
@@ -75,7 +78,12 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
     	return testServer;
     }
     
-    public void addPlayer(Player p) {
+    public static void addPlayer(Player p) {
     	testServer.addPlayer(p);
+    }
+    
+    public static void runCommand(String commandLine) {
+    	testServer.getLogger().log(Level.INFO, String.format("Running console command '%s'", commandLine));
+    	getServer().dispatchCommand(getServer().getConsoleSender(), commandLine);
     }
 }

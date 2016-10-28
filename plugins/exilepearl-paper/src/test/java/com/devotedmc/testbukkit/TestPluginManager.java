@@ -341,7 +341,7 @@ public class TestPluginManager implements PluginManager {
 	}
 	
 	private void loaderDisablePlugin(Plugin plugin) {
-        if (!plugin.isEnabled()) {
+        if (plugin.isEnabled()) {
             plugin.getLogger().info("Disabling " + plugin.getDescription().getFullName());
 
             JavaPlugin jPlugin = (JavaPlugin) plugin;

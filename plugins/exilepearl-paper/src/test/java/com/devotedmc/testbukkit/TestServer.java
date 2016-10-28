@@ -96,7 +96,7 @@ public class TestServer implements Server {
     private List<Player> onlinePlayers = new LinkedList<Player>();
     private List<OfflinePlayer> offlinePlayers = new LinkedList<OfflinePlayer>();
     private YamlConfiguration configuration = new YamlConfiguration();
-    private TestConsoleCommandSender consoleSender = new TestConsoleCommandSender();
+    private TestConsoleCommandSender consoleSender;
 	private Set<Recipe> recipes = new HashSet<Recipe>();
 	private PluginLoader pluginLoader = Mockito.mock(PluginLoader.class);
     private int maxPlayers = 50;
@@ -123,6 +123,8 @@ public class TestServer implements Server {
         
         // Set the server instance
         Bukkit.setServer(this);
+        
+        consoleSender = new TestConsoleCommandSender();
     }
     
     public TestServer() {
