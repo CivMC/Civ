@@ -24,6 +24,7 @@ public final class Bastion extends ACivMod {
 	private static BastionBlockManager manager;
 	
 	public void onEnable() 	{
+		super.onEnable();
 		plugin = this;
 		saveDefaultConfig();
 		reloadConfig();
