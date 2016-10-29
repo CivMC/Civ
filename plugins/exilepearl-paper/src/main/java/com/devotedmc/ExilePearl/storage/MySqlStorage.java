@@ -142,7 +142,7 @@ class MySqlStorage implements PluginStorage {
 		logger.log("Loading ExilePearl pearls.");
 
 		try (Connection connection = db.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM ExilePearls"); ) {
+				PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM exilepearls"); ) {
 			ResultSet resultSet = preparedStatement.executeQuery();
 			ResultSetMetaData meta = resultSet.getMetaData();
 			while (resultSet.next()) {
@@ -411,7 +411,7 @@ class MySqlStorage implements PluginStorage {
 
 	private void setPluginSetting(final String setting, final String value) {
 		try (Connection connection = db.getConnection();
-				PreparedStatement stmt = connection.prepareStatement("INSERT INTO ExilePearlPlugin(setting, value) VALUES(?, ?) " + 
+				PreparedStatement stmt = connection.prepareStatement("INSERT INTO exilepearlplugin(setting, value) VALUES(?, ?) " + 
 						"ON DUPLICATE KEY UPDATE value = ?;");) {
 			stmt.setString(1, setting);
 			stmt.setString(2, value);
@@ -428,7 +428,7 @@ class MySqlStorage implements PluginStorage {
 		String value = null;
 
 		try (Connection connection = db.getConnection();
-				PreparedStatement stmt = connection.prepareStatement("SELECT * FROM ExilePearlPlugin where setting = ?;");) {
+				PreparedStatement stmt = connection.prepareStatement("SELECT * FROM exilepearlplugin where setting = ?;");) {
 			stmt.setString(1, setting);
 
 			ResultSet resultSet = stmt.executeQuery();
