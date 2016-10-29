@@ -311,7 +311,7 @@ class MySqlStorage implements PluginStorage {
 			try (Connection connection = migrateDb.getConnection();) {
 				DatabaseMetaData dbm = migrateDb.getConnection().getMetaData();
 
-				ResultSet tables = dbm.getTables(null, null, "prisonpearls", null);
+				ResultSet tables = dbm.getTables(null, null, "PrisonPearls", null);
 				if (!tables.next()) {
 					logger.log(Level.WARNING, "No PrisonPearl data was found.");
 					return;
