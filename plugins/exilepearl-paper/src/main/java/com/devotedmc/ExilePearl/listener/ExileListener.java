@@ -222,7 +222,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerThrowPotion(PotionSplashEvent e) {
-		if(e.getEntity().getShooter() instanceof Player) {
+		if(e.getEntity() != null && e.getEntity().getShooter() instanceof Player) {
 			checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 		}
 	}
@@ -233,7 +233,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerThrowLingeringPotion(LingeringPotionSplashEvent e) {
-		if(e.getEntity().getShooter() instanceof Player) {
+		if(e.getEntity() != null && e.getEntity().getShooter() instanceof Player) {
 			checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 		}
 	}
