@@ -10,7 +10,7 @@
 #        2: RAM storage (dev use only)
 # 
 # storage.mysql.x
-#  - Connection option for a MySQL database
+#  - Connection options for a MySQL database
 # 
 # storage.mysql.migrate_pp
 #  - When true, the MySQL storage will attempt to migrate PrisonPearl data 
@@ -83,6 +83,7 @@
 # 
 # damage_log.enabled
 #  - When true, the damage log task is enabled to track who is awarded pearls
+#    If this is disabled, a pearl will only be awarded by a direct kill.
 #
 # damage_log.algorithm
 #  - The algorithm type to use when awarding pearls
@@ -103,7 +104,7 @@
 #  - The maximum damage amount to track for a given damager.
 #
 # damage_log.potion_damge
-#  - The base damage to apply for a splash potions. This only applies to 
+#  - The base damage to apply for splash potions. This only applies to 
 #    harming, poison, and weakness splash potions.
 #    An extended or upgraded potion has a 2x multiplier of this value.
 #    The potion intensity (0 - 1.0) is also used as a multiplier, so a player
@@ -221,7 +222,7 @@ pearls:
     obsidian:
       material: OBSIDIAN
       repair: 3
-  bastion_harm_amount: 0.5
+  bastion_harm_amount: 2.0
 help_item:
   enabled: true
   item_name: "You've been exiled!"
