@@ -227,10 +227,10 @@ help_item:
   item_name: "You've been exiled!"
   item_text:
   - "<a>You are exiled."
-  - "<reset>"
-  - "Another player has imprisoned you in an exile pearl."
-  - "Your in-game actions will be limited until you are freed."
-  - "You can type <c>\\ep locate to see the location of your pearl."
+  - ""
+  - "<n>Another player has imprisoned you in an exile pearl."
+  - "<n>Your in-game actions will be limited until you are freed."
+  - "<n>You can type <c>\\ep locate to see the location of your pearl."
 damage_log:
   enabled: true
   algorithm: 0

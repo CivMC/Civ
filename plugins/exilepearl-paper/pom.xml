@@ -5,7 +5,7 @@
 	<groupId>com.devotedmc</groupId>
 	<artifactId>ExilePearl</artifactId>
 	<packaging>jar</packaging>
-	<version>0.3.0-SNAPSHOT</version>
+	<version>0.3.0</version>
 	<name>ExilePearl</name>
 	<url>https://github.com/DevotedMC/ExilePearl</url>
 
@@ -64,7 +64,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.5.03</version>
+			<version>1.5.09</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
