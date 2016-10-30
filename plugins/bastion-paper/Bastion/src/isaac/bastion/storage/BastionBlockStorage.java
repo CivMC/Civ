@@ -67,16 +67,16 @@ public class BastionBlockStorage {
 		db.registerMigration(0, false, 
 				"create table if not exists `bastion_blocks`("
 				+ "bastion_id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-				+ "bastion_type varchar(40) NOT NULL DEFAULT " + BastionType.getDefaultType()
+				+ "bastion_type varchar(40) NOT NULL DEFAULT '" + BastionType.getDefaultType() + "',"
 				+ "loc_x int(10),"
 				+ "loc_y int(10),"
 				+ "loc_z int(10),"
 				+ "loc_world varchar(40) NOT NULL,"
 				+ "placed bigint(20) Unsigned,"
 				+ "fraction float(20) Unsigned,"
-				+ "PRIMARY_KEY (`bastion_id`));");
+				+ "PRIMARY KEY (`bastion_id`));");
 		db.registerMigration(1, false, 
-				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEAULT '"
+				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEFAULT '"
 				+ BastionType.getDefaultType() + "';");	
 		db.registerMigration(2, false, 
 				"ALTER TABLE bastion_blocks ADD COLUMN dead TINYINT(1) DEFAULT 0;");
