@@ -53,7 +53,7 @@
     </repository>
     <repository>
       <id>civcraft-repo</id>
-      <url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
     </repository>
   </repositories>
 
