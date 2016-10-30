@@ -831,7 +831,8 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		if (result.getEnchantmentLevel(Enchantment.DURABILITY) != 1) {
-			inv.setResult(new ItemStack(Material.AIR));
+			//inv.setResult(new ItemStack(Material.AIR)); // Is preventing normal crafting of stone buttons.
+			// It would be better to trigger against something that does not get crafted, like spider eyes or something
 			return;
 		}
 
