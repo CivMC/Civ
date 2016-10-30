@@ -1,4 +1,0 @@
-name: ${project.name}
-version: ${project.version}
-author: rourke750
-main: vg.civcraft.mc.namelayer.bungee.NameLayerBungee
