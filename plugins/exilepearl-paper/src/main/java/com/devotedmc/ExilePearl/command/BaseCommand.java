@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -281,17 +282,35 @@ public abstract class BaseCommand<T extends Plugin> {
 		switch(name) {
 		case "player":
 			for (Player p: Bukkit.getOnlinePlayers()) {
-				if (p.getName().toLowerCase().startsWith(pattern.toLowerCase()))
+				if (p.getName().toLowerCase().startsWith(pattern.toLowerCase())) {
 					tabList.add(p.getName());
+				}
+			}
+			break;
+		case "uuid":
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getUniqueId().toString().toLowerCase().startsWith(pattern.toLowerCase())) {
+					tabList.add(p.getUniqueId().toString());
+				}
+			}
+			break;
+		case "player_uuid":
+			List<String> players = getAutoTab("player", pattern);
+			List<String> ids = getAutoTab("uuid", pattern);
+			
+			if (players != null) {
+				tabList.addAll(players);
+			}
+			
+			if (ids != null) {
+				tabList.addAll(ids);
 			}
 			break;
 		default:
-		{
 			List<String> customTab = getCustomAutoTab(name, pattern);
 			if (customTab != null) {
 				tabList.addAll(customTab);
 			}
-		}
 			break;
 		}
 		
@@ -734,6 +753,20 @@ public abstract class BaseCommand<T extends Plugin> {
 		return this.argAsBool(index, false);
 	}
 	
+	/**
+	 * Gets an argument as a UUID
+	 * @param index The index
+	 * @return The UUID argument
+	 */
+	protected UUID argAsUUID(int index) {
+		try {
+			UUID ret = UUID.fromString(argAsString(index));
+			return ret;
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
 	
 	/**
 	 * Gets the forbidden message for a command.
@@ -843,6 +876,10 @@ public abstract class BaseCommand<T extends Plugin> {
 		return required(name, autoTab("player", "No matching player found."));
 	}
 	
+	protected final static CommandArg requiredPlayerOrUUID(String name) {
+		return required(name, autoTab("player_uuid", "No matching player found."));
+	}
+	
 	protected final static CommandArg optional(String name, String defValue, AutoTab autoTab) {
 		return new OptionalCommandArg(name, defValue, autoTab);
 	}
@@ -861,5 +898,9 @@ public abstract class BaseCommand<T extends Plugin> {
 	
 	protected final static CommandArg optionalPlayer(String name) {
 		return optional(name, autoTab("player", "No matching player found."));
+	}
+	
+	protected final static CommandArg optionalPlayerOrUUID(String name) {
+		return optional(name, autoTab("player_uuid", "No matching player found."));
 	}
 }

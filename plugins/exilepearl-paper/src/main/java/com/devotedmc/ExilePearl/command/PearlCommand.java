@@ -3,6 +3,7 @@ package com.devotedmc.ExilePearl.command;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -15,6 +16,23 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlApi> {
 	
 	public PearlCommand(ExilePearlApi pearlApi) {
 		super(pearlApi);
+	}
+	
+
+	
+	/**
+	 * Gets an argument as a UUID
+	 * @param index The index
+	 * @return The UUID argument
+	 */
+	protected UUID argAsPlayerOrUUID(int index) {
+		final String arg = argAsString(index);
+		try {
+			UUID ret = UUID.fromString(arg);
+			return ret;
+		} catch (Exception e) {
+			return plugin.getUniqueId(arg);
+		}
 	}
 	
 	@Override
@@ -33,6 +51,9 @@ public abstract class PearlCommand extends BaseCommand<ExilePearlApi> {
 			for(ExilePearl pearl : plugin.getPearls()) {
 				if (pearl.getPlayerName().toLowerCase().startsWith(pattern.toLowerCase())) {
 					tabList.add(pearl.getPlayerName());
+				}
+				if (pearl.getPlayerId().toString().toLowerCase().startsWith(pattern.toLowerCase())) {
+					tabList.add(pearl.getPlayerId().toString());
 				}
 			}
 			break;

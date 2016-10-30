@@ -1,7 +1,10 @@
 package com.devotedmc.ExilePearl.command;
 
+import java.util.UUID;
+
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.util.Permission;
 
@@ -21,19 +24,25 @@ public class CmdAdminFreeAny extends PearlCommand {
 
 	@Override
 	public void perform() {
-		String name = argAsString(0);
+		UUID playerId = argAsPlayerOrUUID(0);
 		
-		ExilePearl pearl = plugin.getPearl(name);
+		if (playerId == null) {
+			msg(Lang.unknownPlayer);
+			return;
+		}
+		String playerName = plugin.getRealPlayerName(playerId);
+		
+		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl == null) {
-			msg("<i>No pearl was found with the name <c>%s", name);
+			msg("<i>The player <c>%s is not exiled.", playerName);
 			return;
 		}
 		
 		if (plugin.freePearl(pearl, PearlFreeReason.FREED_BY_ADMIN)) {
-			msg("<g>You freed <c>%s", name);
+			msg("<g>You freed <c>%s", playerName);
 			return;
 		}
 		
-		msg("<b>Tried to free <c>%s but the operation was cancelled.", name);
+		msg("<b>Tried to free <c>%s <b>but the event was cancelled.", playerName);
 	}
 }

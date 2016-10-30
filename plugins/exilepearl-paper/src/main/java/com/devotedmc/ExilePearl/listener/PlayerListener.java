@@ -547,11 +547,11 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			
 			// Check if pearl in the hotbar
-			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 9) {
+			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 8) {
 				continue; 
 			}
 			
-			pearl = pearlApi.exilePlayer(player, damager);
+			pearl = pearlApi.exilePlayer(player.getUniqueId(), damager);
 			if (pearl == null) {
 				return; // The pearling failed for some reason
 			}
@@ -817,7 +817,14 @@ public class PlayerListener implements Listener, Configurable {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPrepareCraftPearl(PrepareItemCraftEvent e) {
 		CraftingInventory inv = e.getInventory();
+		if (inv == null) {
+			return;
+		}
+		
 		ItemStack result = inv.getResult();
+		if (result == null) {
+			return;
+		}
 
 		if (result.getType() != Material.STONE_BUTTON) {
 			return;

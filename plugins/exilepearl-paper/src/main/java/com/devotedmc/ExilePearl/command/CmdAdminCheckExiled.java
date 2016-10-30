@@ -1,7 +1,10 @@
 package com.devotedmc.ExilePearl.command;
 
+import java.util.UUID;
+
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminCheckExiled extends PearlCommand {
@@ -20,19 +23,25 @@ public class CmdAdminCheckExiled extends PearlCommand {
 
 	@Override
 	public void perform() {
-		String name = argAsString(0);
+		UUID playerId = argAsPlayerOrUUID(0);
 		
-		ExilePearl pearl = plugin.getPearl(name);
+		if (playerId == null) {
+			msg(Lang.unknownPlayer);
+			return;
+		}
+		String playerName = plugin.getRealPlayerName(playerId);
+		
+		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl == null) {
-			msg("<i>No pearl was found with the name <c>%s", name);
+			msg("<i>The player <c>%s is not exiled.", playerName);
 			return;
 		}
 		if(pearl.getFreedOffline()) {
-			msg("<i>%s has been freed but hasn't logged in yet.", name);
+			msg("<i>%s has been freed but hasn't logged in yet.", playerName);
 			return;
 		}
 		
-		msg("<g>Found exile pearl for player %s", name);
+		msg("<g>Found exile pearl for player %s", playerName);
 
 		for (String s : plugin.getLoreProvider().generatePearlInfo(pearl)) {
 			msg(s);

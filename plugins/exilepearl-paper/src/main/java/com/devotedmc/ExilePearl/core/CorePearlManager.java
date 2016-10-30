@@ -12,7 +12,11 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -25,6 +29,9 @@ import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.holder.BlockHolder;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
@@ -82,17 +89,43 @@ final class CorePearlManager implements PearlManager {
 	
 	
 	@Override
-	public ExilePearl exilePlayer(final UUID exiledId, final UUID killedById) {
+	public ExilePearl exilePlayer(final UUID exiledId, final UUID killerId, Location location) {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
-		Guard.ArgumentNotNull(killedById, "killedById");
+		Guard.ArgumentNotNull(killerId, "killerId");
+		Guard.ArgumentNotNull(location, "location");
 		
-		final Player pKilledBy = pearlApi.getPlayer(killedById);
+		final Block block = location.getBlock();
+		final BlockState bs = block.getState();
+		if (bs == null || (!(bs instanceof InventoryHolder))) {
+			return null;
+		}
+		
+		return exilePlayer(exiledId, killerId, new BlockHolder(block));
+	}
+	
+	@Override
+	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
+		Guard.ArgumentNotNull(exiledId, "exiledId");
+		Guard.ArgumentNotNull(killer, "killer");
+		
+		if (!killer.isOnline()) {
+			return null;
+		}
+		
+		return exilePlayer(exiledId, killer.getUniqueId(), new PlayerHolder(killer));
+	}
+
+	@Override
+	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder) {
+		Guard.ArgumentNotNull(exiledId, "exiledId");
+		Guard.ArgumentNotNull(killerId, "killerId");
+		Guard.ArgumentNotNull(holder, "holder");
 		
 		if (pearlApi.isPlayerExiled(exiledId)) {
 			return null;
 		}
 		
-		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, pKilledBy, createUniquePearlId());
+		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, killerId, createUniquePearlId(), holder);
 
 		PlayerPearledEvent e = new PlayerPearledEvent(pearl);
 		Bukkit.getPluginManager().callEvent(e);
@@ -106,14 +139,6 @@ final class CorePearlManager implements PearlManager {
 		pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
 		
 		return pearl;
-	}
-	
-	@Override
-	public ExilePearl exilePlayer(Player exiled, Player killer) {
-		Guard.ArgumentNotNull(exiled, "exiled");
-		Guard.ArgumentNotNull(killer, "killer");
-		
-		return exilePlayer(exiled.getUniqueId(), killer.getUniqueId());
 	}
 	
 	

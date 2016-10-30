@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -33,6 +35,8 @@ import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
 
 public class CorePearlManagerTest extends BukkitTestCase {
@@ -57,10 +61,14 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		player = mock(Player.class);
 		when(player.getUniqueId()).thenReturn(playerId);
 		when(player.getName()).thenReturn(playerName);
+		when(player.isOnline()).thenReturn(true);
+		when(player.getLocation()).thenReturn(new Location(mock(World.class), 0, 0, 0));
 		
 		killer = mock(Player.class);
 		when(killer.getUniqueId()).thenReturn(killerId);
 		when(killer.getName()).thenReturn(killerName);
+		when(killer.isOnline()).thenReturn(true);
+		when(killer.getLocation()).thenReturn(new Location(mock(World.class), 0, 0, 0));
 		
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPlayer(playerName)).thenReturn(player);
@@ -84,6 +92,23 @@ public class CorePearlManagerTest extends BukkitTestCase {
 					Player p2 = (Player)invocation.getArguments()[1];
 					int pearlId = (int)invocation.getArguments()[2];
 					return new MockPearl(nameProvider, uid1, p2.getUniqueId(), pearlId, p2.getLocation());
+				} catch (Exception ex) {
+					return null;
+				}
+			}
+		});
+		
+		when(pearlFactory.createExilePearl(any(UUID.class), any(UUID.class), anyInt(), any(PearlHolder.class))).then(new Answer<ExilePearl>() {
+
+			@Override
+			public ExilePearl answer(InvocationOnMock invocation) throws Throwable {
+				
+				try {
+					UUID uid1 = (UUID)invocation.getArguments()[0];
+					UUID uid2 = (UUID)invocation.getArguments()[1];
+					int pearlId = (int)invocation.getArguments()[2];
+					PearlHolder holder = (PearlHolder)invocation.getArguments()[3];
+					return new MockPearl(nameProvider, uid1, uid2, pearlId, holder.getLocation());
 				} catch (Exception ex) {
 					return null;
 				}
@@ -159,7 +184,15 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		assertTrue(e instanceof NullArgumentException);
 
 		e = null;
-		try { manager.exilePlayer(player, null); } catch (Throwable ex) { e = ex; }
+		try { manager.exilePlayer(player.getUniqueId(), null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { manager.exilePlayer(player.getUniqueId(), killer.getUniqueId(), (Location)null); } catch (Throwable ex) { e = ex; }
+		assertTrue(e instanceof NullArgumentException);
+		
+		e = null;
+		try { manager.exilePlayer(player.getUniqueId(), killer.getUniqueId(), (PearlHolder)null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
 		
 		// This will cancel the new pearl event
@@ -181,14 +214,14 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		}).when(pluginManager).callEvent(any(Event.class));
 		
 	    // The pearl creation should fail
-		ExilePearl pearl = manager.exilePlayer(player, killer);
+		ExilePearl pearl = manager.exilePlayer(player.getUniqueId(), killer);
 		assertNull(pearl);
 		
 		// Now allow the event to pass
 		reset(pluginManager);
 		
 		// Now it should succeed
-		pearl = manager.exilePlayer(player, killer);
+		pearl = manager.exilePlayer(player.getUniqueId(), killer);
 		assertNotNull(pearl);
 		assertTrue(manager.isPlayerExiled(player));
 		assertEquals(pearl.getPlayerId(), player.getUniqueId());
@@ -202,7 +235,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 	@Test
 	public void testFreePearl() {
 		assertFalse(manager.isPlayerExiled(player));
-		ExilePearl pearl = manager.exilePlayer(player, killer);
+		ExilePearl pearl = manager.exilePlayer(player.getUniqueId(), killer);
 		assertTrue(manager.isPlayerExiled(player));
 		assertNotNull(pearl);
 		final PluginManager pluginManager = Bukkit.getPluginManager();
@@ -255,7 +288,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		assertNull(manager.getPearl(player.getName()));
 		assertNull(manager.getPearl(player.getUniqueId()));
 		
-		ExilePearl pearl = manager.exilePlayer(player, killer);
+		ExilePearl pearl = manager.exilePlayer(player.getUniqueId(), killer);
 		
 		assertEquals(pearl, manager.getPearl(player.getName()));
 		assertEquals(pearl, manager.getPearl(player.getUniqueId()));
@@ -266,7 +299,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		assertFalse(manager.isPlayerExiled(player));
 		assertFalse(manager.isPlayerExiled(player.getUniqueId()));
 		
-		manager.exilePlayer(player, killer);
+		manager.exilePlayer(player.getUniqueId(), killer);
 
 		assertTrue(manager.isPlayerExiled(player));
 		assertTrue(manager.isPlayerExiled(player.getUniqueId()));
@@ -274,7 +307,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 
 	@Test
 	public void testGetPearlFromItemStack() {
-		ExilePearl pearl = manager.exilePlayer(player, killer);
+		ExilePearl pearl = manager.exilePlayer(player.getUniqueId(), killer);
 		ItemStack is = pearl.createItemStack();
 		
 		// Create mock lore generator
@@ -311,7 +344,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		LoreProvider loreGenerator = mock(LoreProvider.class);
 		when(pearlApi.getLoreProvider()).thenReturn(loreGenerator);
 
-		manager.exilePlayer(player, killer);
+		manager.exilePlayer(player.getUniqueId(), killer);
 
 		// Test if legacy pearl has same ID as an already pearled player
 		when(loreGenerator.getPlayerIdFromLegacyPearl(is)).thenReturn(playerId);
@@ -330,7 +363,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		
 		legacyPearl = manager.getPearlFromItemStack(is);
 		assertNull(legacyPearl);
-		manager.exilePlayer(legacyId, killer.getUniqueId());
+		manager.exilePlayer(legacyId, killer.getUniqueId(), new PlayerHolder(killer));
 		
 		legacyPearl = manager.getPearlFromItemStack(is);
 		assertNotNull(legacyPearl);
@@ -347,7 +380,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		when(config.getPearlHealthStartValue()).thenReturn(10);
 		when(config.getPearlHealthDecayAmount()).thenReturn(1);
 		
-		ExilePearl pearl1 = manager.exilePlayer(player, killer);
+		ExilePearl pearl1 = manager.exilePlayer(player.getUniqueId(), killer);
 		assertEquals(pearl1.getHealth(), 10);
 		
 		reset(pluginManager);
@@ -391,7 +424,7 @@ public class CorePearlManagerTest extends BukkitTestCase {
 		assertEquals(pearl1.getHealth(), 9);
 		
 		// Now add a second pearl
-		ExilePearl pearl2 = manager.exilePlayer(killer, player);
+		ExilePearl pearl2 = manager.exilePlayer(killer.getUniqueId(), player);
 		assertEquals(pearl2.getHealth(), 10);
 
 		manager.decayPearls();

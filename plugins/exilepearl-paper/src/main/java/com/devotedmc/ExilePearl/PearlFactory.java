@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.entity.Player;
 
 import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 /**
  * Factory interface for creating concrete pearl classes
@@ -13,13 +14,23 @@ import com.devotedmc.ExilePearl.config.Document;
 public interface PearlFactory {
 	
 	/**
-	 * Creates an exile pearl instance from a player holder
+	 * Creates an exile pearl instance
 	 * @param uid The prisoner UUID
 	 * @param killedBy The killing player
-	 * @param pearlId The pearl Id
+	 * @param pearlId The pearl ID
 	 * @return The new exile pearl instance
 	 */
 	ExilePearl createExilePearl(UUID uid, Player killedBy, int pearlId);
+	
+	/**
+	 * Creates an exile pearl instance
+	 * @param uid The prisoner UUID
+	 * @param killedByIdThe killing player UUID
+	 * @param pearlId The pearl ID
+	 * @param holder
+	 * @return The new exile pearl instance
+	 */
+	ExilePearl createExilePearl(UUID uid, UUID killedById, int pearlId, PearlHolder holder);
 
 	/**
 	 * Creates an exile pearl instance from a location

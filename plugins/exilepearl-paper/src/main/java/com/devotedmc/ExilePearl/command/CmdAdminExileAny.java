@@ -14,6 +14,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.Permission;
 
 public class CmdAdminExileAny extends PearlCommand {
@@ -24,8 +25,8 @@ public class CmdAdminExileAny extends PearlCommand {
 
 		this.setHelpShort("Exiles a player.");
 		
-		this.commandArgs.add(requiredPlayer("player"));
-		this.commandArgs.add(requiredPlayer("killed by"));
+		this.commandArgs.add(requiredPlayerOrUUID("player"));
+		this.commandArgs.add(optionalPlayerOrUUID("killed by"));
 		this.commandArgs.add(optional("world"));
 		this.commandArgs.add(optional("x"));
 		this.commandArgs.add(optional("y"));
@@ -36,40 +37,52 @@ public class CmdAdminExileAny extends PearlCommand {
 	}
 
 	@Override
-	public void perform() {		
-		String name = argAsString(0);
-		String killedByName = argAsString(1);
+	public void perform() {
+		UUID playerId = argAsPlayerOrUUID(0);
+		UUID killerId = argAsPlayerOrUUID(1);
 		Inventory inv = null;
 		
-		ExilePearl pearl = plugin.getPearl(name);
+		if (playerId == null) {
+			msg(Lang.unknownPlayer);
+			return;
+		}
+		String playerName = plugin.getRealPlayerName(playerId);
+		
+		// Use the command sender as killer if none is specified
+		if(args.size() < 2) {
+			if(senderIsConsole) {
+				msg("<i>You must specify a killing player when performing this command from console.");
+				return;
+			} else {
+				killerId = player().getUniqueId();
+			}
+		}
+		
+		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl != null) {
-			
 			if(pearl.getFreedOffline()) {
 				// The player has been freed but the pearl still exists because they haven't logged in yet.
 				// This will force free the pearl so they can be re-pearled
 				plugin.freePearl(pearl, PearlFreeReason.FORCE_FREED_BY_ADMIN);
 			} else {
-				msg("<i>The player <c>%s <i>is already exiled and is %s.", name, pearl.getLocationDescription());
+				msg("<i>The player <c>%s <i>is already exiled and is %s.", pearl.getPlayerName(), pearl.getLocationDescription());
 				return;
 			}
 		}
 		
-		UUID playerId = plugin.getUniqueId(name);
-		if (playerId == null) {
+		if (killerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		
-		UUID killedById = plugin.getUniqueId(killedByName);
-		if (killedById == null) {
-			msg(Lang.unknownPlayer);
-			return;
-		}
-		
-		if (senderIsConsole) {
+		if (senderIsConsole || args.size() > 2) {
 			if (args.size() < 6) {
-				msg("<i>You must specify a location when performing this command from console.");
-				return;
+				if (senderIsConsole) {
+					msg("<i>You must specify a location when performing this command from console.");
+				} else {
+					msg("<i>Invalid location.");
+					return;
+				}
 			}
 			
 			World world = Bukkit.getWorld(argAsString(2));
@@ -95,21 +108,22 @@ public class CmdAdminExileAny extends PearlCommand {
 				msg("<i>That inventory is full.");
 				return;
 			}
-		}
-		
-		pearl = plugin.exilePlayer(playerId, killedById);
-		if (pearl == null) {
-			msg("<b>Tried to exile player <c>%s but the operation failed.", name);
-			return;
-		}
-		
-		if (!senderIsConsole) {
+			
+			pearl = plugin.exilePlayer(playerId, killerId, b.getLocation());
+		} else {
 			inv = player().getInventory();
 			
 			if (inv.firstEmpty() == -1) {
 				msg("<i>You need an open inventory slot to do that.");
 				return;
 			}
+			
+			pearl = plugin.exilePlayer(playerId, killerId, new PlayerHolder(player()));
+		}
+		
+		if (pearl == null) {
+			msg("<b>Tried to exile player <c>%s <b>but the operation failed.", playerName);
+			return;
 		}
 		
 		// Place the pearl in the inventory

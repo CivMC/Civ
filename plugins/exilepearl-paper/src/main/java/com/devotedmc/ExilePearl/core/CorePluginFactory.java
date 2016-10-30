@@ -20,6 +20,7 @@ import com.devotedmc.ExilePearl.SuicideHandler;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
@@ -80,6 +81,17 @@ public final class CorePluginFactory implements PearlFactory {
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
+		pearl.enableStorage();
+		return pearl;
+	}
+
+	@Override
+	public ExilePearl createExilePearl(UUID uid, UUID killedById, int pearlId, PearlHolder holder) {
+		Guard.ArgumentNotNull(uid, "uid");
+		Guard.ArgumentNotNull(killedById, "killedById");
+		Guard.ArgumentNotNull(holder, "holder");
+		
+		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedById, pearlId, holder);
 		pearl.enableStorage();
 		return pearl;
 	}

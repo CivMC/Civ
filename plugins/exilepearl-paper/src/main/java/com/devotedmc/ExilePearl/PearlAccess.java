@@ -3,26 +3,39 @@ package com.devotedmc.ExilePearl;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 public interface PearlAccess {
 	
 	/**
 	 * Binds a player to an exile pearl
-	 * @param exiledId The UUID of the player to exile
-	 * @param killedBy The killing player ID
+	 * @param exiledId The exiled player Id
+	 * @param killerId The killing player ID
+	 * @param holder The pearl holder
 	 * @return The new ExilePearl if the operation succeeds, otherwise null
 	 */
-	ExilePearl exilePlayer(UUID exiledId, UUID killedBy);
+	ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder);
 	
 	/**
 	 * Binds a player to an exile pearl
-	 * @param exiled The exiled player
+	 * @param exiledId The exiled player Id
+	 * @param killerId The killing player ID
+	 * @param location The location to place the pearl
+	 * @return The new ExilePearl if the operation succeeds, otherwise null
+	 */
+	ExilePearl exilePlayer(UUID exiledId, UUID killerId, Location location);
+	
+	/**
+	 * Binds a player to an exile pearl
+	 * @param exiled The exiled player Id
 	 * @param killer The killing player
 	 * @return The new ExilePearl if the operation succeeds, otherwise null
 	 */
-	ExilePearl exilePlayer(Player exiled, Player killer);
+	ExilePearl exilePlayer(UUID exiledId, Player killer);
 	
 	/**
 	 * Gets a pearl instance by name

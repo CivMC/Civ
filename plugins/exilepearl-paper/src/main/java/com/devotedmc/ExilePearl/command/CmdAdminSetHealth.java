@@ -12,7 +12,7 @@ public class CmdAdminSetHealth extends PearlCommand {
 
 		this.setHelpShort("Sets the health % value of a pearl.");
 		
-		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(requiredPearlPlayer());
 		this.commandArgs.add(required("health %", autoTab("", "Enter the desired health percent")));
 		
 		this.permission = Permission.SET_HEALTH.node;
@@ -22,7 +22,13 @@ public class CmdAdminSetHealth extends PearlCommand {
 	@Override
 	public void perform() {
 		String name = argAsString(0);
-		int percent = Math.min(100, Math.max(1, argAsInt(1)));
+		Integer arg = argAsInt(1);
+		if (arg == null) {
+			msg("<b>Pearl health must be an integer between 0 and 100.", name);
+			return;
+		}
+		
+		int percent = Math.min(100, Math.max(1, arg));
 		
 		ExilePearl pearl = plugin.getPearl(name);
 		if (pearl == null) {

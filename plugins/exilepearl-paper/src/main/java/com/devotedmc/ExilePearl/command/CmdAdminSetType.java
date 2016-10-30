@@ -13,7 +13,7 @@ public class CmdAdminSetType extends PearlCommand {
 
 		this.setHelpShort("Sets the type of a pearl.");
 		
-		this.commandArgs.add(requiredPlayer("player"));
+		this.commandArgs.add(requiredPearlPlayer());
 		this.commandArgs.add(required("type", autoTab("", "Enter the pearl type")));
 		
 		this.permission = Permission.SET_TYPE.node;

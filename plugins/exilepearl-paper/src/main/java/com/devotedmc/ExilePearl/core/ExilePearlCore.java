@@ -45,6 +45,7 @@ import com.devotedmc.ExilePearl.command.CmdLegacy;
 import com.devotedmc.ExilePearl.command.CmdSuicide;
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.listener.BastionListener;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.CivChatListener;
@@ -361,13 +362,18 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 
 	@Override
-	public ExilePearl exilePlayer(UUID exiledId, UUID killer) {
-		return pearlManager.exilePlayer(exiledId, killer);
+	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, PearlHolder holder) {
+		return pearlManager.exilePlayer(exiledId, killerId, holder);
+	}
+
+	@Override
+	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, Location location) {
+		return pearlManager.exilePlayer(exiledId, killerId, location);
 	}
 	
 	@Override
-	public ExilePearl exilePlayer(Player exiled, Player killer) {
-		return pearlManager.exilePlayer(exiled, killer);
+	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
+		return pearlManager.exilePlayer(exiledId, killer);
 	}
 
 	@Override
