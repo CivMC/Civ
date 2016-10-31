@@ -38,6 +38,10 @@ factories:
   Smelter:
     type: FCCUPGRADE
     name: Smelter
+    fuel:
+      coal:
+        material: COAL
+    fuel_consumption_intervall: 2s
     citadelBreakReduction: 1.0
     recipes:
     - Smelt Glass
@@ -1324,7 +1328,7 @@ recipes:
     output:
       Iron_Spike:
         material: IRON_INGOT
-        amount: 2
+        amount: 8
         lore:
         - Iron Reinforced Obsidian Spike
   Diamond Spike:
