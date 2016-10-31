@@ -70,7 +70,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.9.06</version>
+			<version>2.9.08</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -138,8 +138,8 @@
 
 	<repositories>
 		<repository>
-			<id>civcraft-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+			<id>devoted-repo</id>
+			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>minelink-releases</id>
