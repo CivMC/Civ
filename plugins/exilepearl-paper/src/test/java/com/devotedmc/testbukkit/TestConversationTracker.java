@@ -10,7 +10,7 @@ import org.bukkit.conversations.ManuallyAbandonedConversationCanceller;
 
 /**
  */
-public class ConversationTracker {
+public class TestConversationTracker {
 
     private LinkedList<Conversation> conversationQueue = new LinkedList<Conversation>();
 

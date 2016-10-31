@@ -17,15 +17,22 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 		
 		rewireJavaPlugin();
 		
+		Class<? extends TestServer> serverClass = TestServer.class;
 		boolean useLogger = false;
 		TestOptions testOptions = clazz.getDeclaredAnnotation(TestOptions.class);
 		if (testOptions != null) {
 			useLogger = testOptions.useLogger();
+			serverClass = testOptions.server();
 		}
 		
 		TestServer server = TestBukkit.getServer();
     	if (server == null) {
-    		TestBukkit.createServer(useLogger);
+    		try {
+        		serverClass.getConstructor(boolean.class).newInstance(useLogger);
+    		} catch (Exception ex) {
+    			throw new InitializationError("Failed to create the TestServer instance");
+    		}
+    		
     	} else {
     		server.configureLogger(useLogger);
     	}
@@ -78,7 +85,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	    	ctJavaPlugin.toClass();
 	    	
     	} catch (Exception ex) {
-    		throw new InitializationError(ex);
+    		throw new InitializationError("Failed to modify the JavaPlugin class.");
     	}
     }
     
@@ -91,7 +98,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
         	Object result = m.invoke(loader, "org.bukkit.plugin.java.JavaPlugin");
         	return (result == null);
     	} catch (Exception ex) {
-    		throw new InitializationError(ex);
+    		throw new InitializationError("Failed to check if JavaPlugin is loaded.");
     	}
     }
 }

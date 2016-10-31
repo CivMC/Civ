@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin;
 
 public class TestConsoleCommandSender implements ConsoleCommandSender {
 	
-    protected final ConversationTracker conversationTracker = new ConversationTracker();
+    protected final TestConversationTracker conversationTracker = new TestConversationTracker();
     private final PermissibleBase perm;
     
     public TestConsoleCommandSender() {

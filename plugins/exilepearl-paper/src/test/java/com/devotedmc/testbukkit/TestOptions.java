@@ -11,4 +11,5 @@ import java.lang.annotation.Target;
 @Inherited
 public @interface TestOptions {
 	boolean useLogger() default false;
+	Class<? extends TestServer> server() default TestServer.class;
 }

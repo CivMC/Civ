@@ -1,12 +1,13 @@
 package com.devotedmc.testbukkit;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.entity.Player;
-import org.mockito.Mockito;
 
 public abstract class TestPlayer implements Player {
 
@@ -16,12 +17,22 @@ public abstract class TestPlayer implements Player {
 	public boolean isOnline;
 	
 	public static TestPlayer create(String name, UUID uid) {
-		TestPlayer player = mock(TestPlayer.class, Mockito.CALLS_REAL_METHODS);
+		TestPlayer player = mock(TestPlayer.class);
+		when(player.getName()).thenCallRealMethod();
+		when(player.getUniqueId()).thenCallRealMethod();
+		when(player.isOnline()).thenCallRealMethod();
+		when(player.toString()).thenCallRealMethod();
+		when(player.getServer()).thenCallRealMethod();
+		when(player.runCommand(any())).thenCallRealMethod();
+		when(player.goOnline()).thenCallRealMethod();
+		when(player.goOffline()).thenCallRealMethod();		
+		
 		player.name = name;
 		player.uid = uid;
 		player.location = null;
 		player.isOnline = false;
 		return player;
+		
 	}
 
 	public static TestPlayer create(String name) {
@@ -50,13 +61,25 @@ public abstract class TestPlayer implements Player {
 		return String.format("TestPlayer{ name: %s, uid: %s }", name, uid.toString());
 	}
 	
-	public void goOnline() {
-		TestBukkit.getServer().addPlayer(this);
-		isOnline = true;
+	@Override
+	public Server getServer() {
+		return TestBukkit.getServer();
 	}
 	
-	public void goOffline() {
+	public boolean goOnline() {
+		TestBukkit.getServer().addPlayer(this);
+		isOnline = true;
+		return isOnline;
+	}
+	
+	public boolean goOffline() {
 		TestBukkit.getServer().getOnlinePlayers().remove(this);
 		isOnline = false;
+		return isOnline;
 	}
+	
+    public boolean runCommand(String commandLine) {
+    	getServer().getLogger().log(Level.INFO, String.format("Running player command '%s'", commandLine));
+    	return getServer().dispatchCommand(this, commandLine);
+    }
 }

@@ -5,8 +5,6 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 
-import com.devotedmc.testbukkit.v1_10_R1.TestServer_v1_10_R1;
-
 public final class TestBukkit {
     private static TestServer server;
 
@@ -22,15 +20,6 @@ public final class TestBukkit {
      */
     public static TestServer getServer() {
         return server;
-    }
-    
-    public static TestServer createServer(boolean useLogger) {
-    	new TestServer_v1_10_R1(useLogger);
-        return TestBukkit.server;
-    }
-    
-    public static TestServer createServer() {
-    	return createServer(false);
     }
     
     /**
@@ -63,8 +52,8 @@ public final class TestBukkit {
     	return p;
     }
     
-    public static void runCommand(String commandLine) {
+    public static boolean consoleCommand(String commandLine) {
     	server.getLogger().log(Level.INFO, String.format("Running console command '%s'", commandLine));
-    	getServer().dispatchCommand(getServer().getConsoleSender(), commandLine);
+    	return getServer().dispatchCommand(getServer().getConsoleSender(), commandLine);
     }
 }
