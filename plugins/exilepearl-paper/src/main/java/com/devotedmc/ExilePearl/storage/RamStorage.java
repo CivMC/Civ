@@ -40,6 +40,9 @@ class RamStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlType(ExilePearl pearl) { }
+	
+	@Override
+	public void updatePearlKiller(ExilePearl pearl) { }
 
 	@Override
 	public boolean connect() { return true; }

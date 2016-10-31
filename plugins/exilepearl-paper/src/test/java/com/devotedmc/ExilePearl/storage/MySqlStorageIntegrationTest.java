@@ -227,9 +227,9 @@ public class MySqlStorageIntegrationTest {
 		assertTrue(loadedPearls.contains(updatePearl));
 
 
-
-
-		// Change the location and verify that it no longer matches any loaded pearls
+		///
+		/// Test changing the location
+		///
 		logger.log("Verifying update pearl location");
 		Location l = new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt());
 		Item item = mock(Item.class);
@@ -247,8 +247,9 @@ public class MySqlStorageIntegrationTest {
 		assertTrue(loadedPearls.contains(updatePearl));
 
 
-
-		// Change the freed offline value and verify that it no longer matches any loaded pearls
+		///
+		/// Test changing the freed offline value
+		///
 		logger.log("Verifying update pearl offline status");
 		updatePearl.setFreedOffline(!updatePearl.getFreedOffline());
 		assertFalse(loadedPearls.contains(updatePearl));
@@ -262,7 +263,10 @@ public class MySqlStorageIntegrationTest {
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 		
-		// Change the type value and verify that it no longer matches any loaded pearls
+		
+		///
+		/// Test changing the type
+		///
 		logger.log("Verifying update pearl type");
 		updatePearl.setPearlType(PearlType.PRISON);
 		assertFalse(loadedPearls.contains(updatePearl));
@@ -273,6 +277,23 @@ public class MySqlStorageIntegrationTest {
 
 		// Perform the update and verify it now exists
 		storage.updatePearlType(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+		
+		///
+		/// Test changing the killer
+		///
+		logger.log("Verifying update pearl killer");
+		updatePearl.setKillerId(UUID.randomUUID());
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Perform the update and verify it now exists
+		storage.updatePearlKiller(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 	}

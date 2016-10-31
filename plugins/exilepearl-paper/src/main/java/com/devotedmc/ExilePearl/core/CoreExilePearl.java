@@ -52,8 +52,8 @@ final class CoreExilePearl implements ExilePearl {
 	private final PearlUpdateStorage storage;
 
 	private final UUID playerId;
-	private final UUID killedBy;
 	private final int pearlId;
+	private UUID killedBy;
 	private final Set<BroadcastListener> bcastListeners = new HashSet<BroadcastListener>();
 
 	private PearlType pearlType;
@@ -255,6 +255,12 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public Location getLocation() {
 		return this.holders.peekLast().getLocation();
+	}
+	
+
+	@Override
+	public void setKillerId(UUID killerId) {
+		this.killedBy = killerId;
 	}
 
 

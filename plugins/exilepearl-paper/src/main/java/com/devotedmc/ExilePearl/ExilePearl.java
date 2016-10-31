@@ -121,6 +121,12 @@ public interface ExilePearl {
 	Location getLocation();
 	
 	/**
+	 * Sets the killer ID
+	 * @param killerId The killer ID
+	 */
+	void setKillerId(UUID killerId);
+	
+	/**
 	 * Gets the ID of the killing player
 	 * @return The ID of the killing player
 	 */

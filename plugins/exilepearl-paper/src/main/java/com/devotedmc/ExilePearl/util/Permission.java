@@ -11,6 +11,7 @@ public enum Permission
 	RELOAD("reload"),
 	SET_HEALTH("sethealth"),
 	SET_TYPE("settype"),
+	SET_KILLER("setkiller"),
 	CONFIG("config")
 	;
 	

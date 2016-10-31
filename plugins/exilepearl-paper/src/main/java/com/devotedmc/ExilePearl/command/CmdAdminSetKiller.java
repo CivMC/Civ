@@ -4,21 +4,20 @@ import java.util.UUID;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.util.Permission;
 
-public class CmdAdminSetType extends PearlCommand {
+public class CmdAdminSetKiller extends PearlCommand {
 
-	public CmdAdminSetType(ExilePearlApi pearlApi) {
+	public CmdAdminSetKiller(ExilePearlApi pearlApi) {
 		super(pearlApi);
-		this.aliases.add("settype");
+		this.aliases.add("setkiller");
 
-		this.setHelpShort("Sets the type of a pearl.");
+		this.setHelpShort("Sets the killer of a pearl.");
 		
 		this.commandArgs.add(requiredPearlPlayer());
-		this.commandArgs.add(required("type", autoTab("", "Enter the pearl type")));
+		this.commandArgs.add(requiredPlayerOrUUID("killer"));
 		
-		this.permission = Permission.SET_TYPE.node;
+		this.permission = Permission.SET_KILLER.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
 
@@ -35,18 +34,14 @@ public class CmdAdminSetType extends PearlCommand {
 			msg("<i>No pearl was found matching <c>%s", argAsString(0));
 			return;
 		}
-		
-		PearlType type = PearlType.valueOf(argAsString(1));
-		if (type == null) {
-			type = PearlType.valueOf(argAsInt(1));
-		}
-		
-		if (type == null) {
-			msg("<i>Invalid type. Exile=0 or Prison=1");
+
+		UUID killerId = argAsPlayerOrUUID(1);
+		if (killerId == null) {
+			msg("<i>No player found matching <c>%s", argAsString(1));
 			return;
 		}
 		
-		pearl.setPearlType(type);
-		msg("<g>You updated the pearl type of player %s to %s", pearl.getPlayerName(), type.toString());
+		pearl.setKillerId(killerId);
+		msg("<g>You updated the pearl killer of player %s to %s", pearl.getPlayerName(), pearl.getKillerName());
 	}
 }

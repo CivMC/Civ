@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl.command;
 
+import java.util.UUID;
+
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.util.Permission;
@@ -21,20 +23,25 @@ public class CmdAdminSetHealth extends PearlCommand {
 
 	@Override
 	public void perform() {
-		String name = argAsString(0);
+		UUID playerId = argAsPlayerOrUUID(0);
+		if (playerId == null) {
+			msg("<i>No player was found matching <c>%s", argAsString(0));
+			return;
+		}
+		
+		ExilePearl pearl = plugin.getPearl(playerId);
+		if (pearl == null) {
+			msg("<i>No pearl was found matching <c>%s", argAsString(0));
+			return;
+		}
+		
 		Integer arg = argAsInt(1);
 		if (arg == null) {
-			msg("<b>Pearl health must be an integer between 0 and 100.", name);
+			msg("<b>Pearl health must be an integer between 0 and 100.");
 			return;
 		}
 		
 		int percent = Math.min(100, Math.max(1, arg));
-		
-		ExilePearl pearl = plugin.getPearl(name);
-		if (pearl == null) {
-			msg("<i>No pearl was found with the name <c>%s", name);
-			return;
-		}
 		
 		// calculate the actual value
 		int healthValue = (int)(plugin.getPearlConfig().getPearlHealthMaxValue() * ((double)percent / 100));

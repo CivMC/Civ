@@ -25,6 +25,7 @@ import org.mockito.stubbing.Answer;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 import com.devotedmc.ExilePearl.test.TestPearlLogger;
@@ -57,6 +58,7 @@ public class FileStorageIntegrationTest {
 					UUID uid1 = (UUID)invocation.getArguments()[0];
 					Document doc = (Document)invocation.getArguments()[1];
 					ExilePearl pearl = new MockPearl(mock(PlayerProvider.class), uid1, doc.getUUID("killer_id"), doc.getInteger("pearl_id"), doc.getLocation("location"));
+					pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
 					pearl.setHealth(doc.getInteger("health"));
 					pearl.setPearledOn(doc.getDate("pearled_on"));
 					pearl.setFreedOffline(doc.getBoolean("freed_offline"));
@@ -181,9 +183,9 @@ public class FileStorageIntegrationTest {
 		assertTrue(loadedPearls.contains(updatePearl));
 
 
-
-
-		// Change the location and verify that it no longer matches any loaded pearls
+		///
+		/// Test changing the location
+		///
 		Location l = new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt());
 		Item item = mock(Item.class);
 		when(item.getLocation()).thenReturn(l);
@@ -200,8 +202,9 @@ public class FileStorageIntegrationTest {
 		assertTrue(loadedPearls.contains(updatePearl));
 
 
-
-		// Change the freed offline value and verify that it no longer matches any loaded pearls
+		///
+		/// Test changing the freed offline
+		///
 		updatePearl.setFreedOffline(!updatePearl.getFreedOffline());
 		assertFalse(loadedPearls.contains(updatePearl));
 
@@ -211,6 +214,40 @@ public class FileStorageIntegrationTest {
 
 		// Perform the update and verify it now exists
 		storage.updatePearlFreedOffline(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+		
+		///
+		/// Test changing the type
+		///
+		logger.log("Verifying update pearl type");
+		updatePearl.setPearlType(PearlType.PRISON);
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Perform the update and verify it now exists
+		storage.updatePearlType(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
+		
+		
+		///
+		/// Test changing the killer
+		///
+		logger.log("Verifying update pearl killer");
+		updatePearl.setKillerId(UUID.randomUUID());
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Perform the update and verify it now exists
+		storage.updatePearlKiller(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
 	}

@@ -261,4 +261,9 @@ public class MockPearl implements ExilePearl {
 		return false;
 	}
 
+	@Override
+	public void setKillerId(UUID killerId) {
+		this.killedBy = killerId;
+	}
+
 }

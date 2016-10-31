@@ -27,4 +27,10 @@ public interface PearlUpdateStorage {
 	 * @param pearl The pearl instance to update
 	 */
 	void updatePearlType(ExilePearl pearl);
+	
+	/**
+	 * Updates the pearl killer
+	 * @param pearl The pearl instance to update
+	 */
+	void updatePearlKiller(ExilePearl pearl);
 }

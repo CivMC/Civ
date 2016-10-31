@@ -115,6 +115,12 @@ class FileStorage implements PluginStorage {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("type", pearl.getPearlType().toInt());
 		writeFile();
 	}
+
+	@Override
+	public void updatePearlKiller(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
+		writeFile();
+	}
 	
 	private void writeFile() {
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(pearlFile);

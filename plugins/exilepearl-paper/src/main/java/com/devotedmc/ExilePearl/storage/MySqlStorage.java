@@ -286,6 +286,22 @@ class MySqlStorage implements PluginStorage {
 		}
 	}
 
+	@Override
+	public void updatePearlKiller(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET killer_id = ? WHERE uid = ?"); ) {
+
+			ps.setString(1, pearl.getKillerId().toString());
+			ps.setString(2, pearl.getPlayerId().toString());
+			ps.executeUpdate();
+		}
+		catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update 'killer_id'");
+		}
+	}
+
 	/**
 	 * Migrate prison pearl data
 	 */

@@ -132,4 +132,24 @@ public class AsyncStorageWriterTest {
 		writer.updatePearlFreedOffline(pearl);
 		verify(storage, timeout(5000)).updatePearlFreedOffline(pearl);
 	}
+
+	@Test
+	public void testPearlUpdateType() throws Exception {
+		when(storage.connect()).thenReturn(true);
+		when(storage.isConnected()).thenReturn(true);
+		assertTrue(writer.connect());
+		
+		writer.updatePearlType(pearl);
+		verify(storage, timeout(5000)).updatePearlType(pearl);
+	}
+
+	@Test
+	public void testPearlUpdateKiller() throws Exception {
+		when(storage.connect()).thenReturn(true);
+		when(storage.isConnected()).thenReturn(true);
+		assertTrue(writer.connect());
+		
+		writer.updatePearlKiller(pearl);
+		verify(storage, timeout(5000)).updatePearlKiller(pearl);
+	}
 }
