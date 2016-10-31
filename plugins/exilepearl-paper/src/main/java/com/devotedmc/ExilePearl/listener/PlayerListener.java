@@ -55,7 +55,6 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -885,63 +884,6 @@ public class PlayerListener implements Listener, Configurable {
 
 		e.getInventory().setResult(resultStack);
 	}
-	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onRecipeUpdate(InventoryClickEvent e) {
-		InventoryView view = e.getView();
-		if (view == null) {
-			return;
-		}
-		
-		if (!(view.getTopInventory() instanceof CraftingInventory)) {
-			return;
-		}
-		CraftingInventory inv = (CraftingInventory)view.getTopInventory();
-		ItemStack result = inv.getResult();
-		if (result == null || result.getType() != Material.ENDER_PEARL) {
-			return;
-		}
-		
-		InventoryAction a = e.getAction();
-		if (a != InventoryAction.PLACE_ONE && a != InventoryAction.PLACE_SOME && a != InventoryAction.PLACE_ALL) {
-			return;
-		}
-		
-		ExilePearl pearl = pearlApi.getPearlFromItemStack(result);
-		if (pearl == null) {
-			return;
-		}
-		
-		ItemMap invItems = new ItemMap(inv);
-		RepairMaterial repairItem = null;
-		
-		// Find the repair material that is being used for crafting
-		for(RepairMaterial item : repairMaterials) {
-			if (invItems.getAmount(item.getStack()) > 0) {
-				repairItem = item;
-				break;
-			}
-		}
-		
-		// Quit if no repair item was found
-		if (repairItem == null) {
-			inv.setResult(new ItemStack(Material.AIR));
-			return;
-		}
-		
-		// Get the total possible repair amount. This doesn't need to be limited
-		// because the lore generator will cap at 100%
-		int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
-		pearlApi.log("Repair amount = %d", repairAmount);
-
-		// Generate a new item with the updated health value as the crafting result
-		ItemStack resultStack = pearl.createItemStack();
-		ItemMeta im = resultStack.getItemMeta();
-		im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedHealth(pearl, pearl.getHealth() + repairAmount));
-		resultStack.setItemMeta(im);
-
-		inv.setResult(resultStack);
-	}
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onCraftPearl(CraftItemEvent e) {
@@ -976,13 +918,30 @@ public class PlayerListener implements Listener, Configurable {
 		int repairMatsToUse = Math.min((int)Math.ceil((maxHealth - pearl.getHealth()) / (double)repairPerItem), repairMatsAvailable);
 		int repairAmount = repairMatsToUse * repairPerItem;
 
-		// Take away the consumed repair materials
-		ItemStack removeStack = repairItem.getStack().clone();
-		removeStack.setAmount(repairMatsToUse);
-		ItemMap removeItems = new ItemMap(removeStack);
-		removeItems.addItemStack(pearl.createItemStack());
-		removeItems.removeSafelyFrom(inv);
+		// Changing the value of the crafting items results in a dupe glitch so any remaining
+		// materials need to be placed back into the player's inventory.
 		inv.remove(Material.ENDER_PEARL);
+		if (repairMatsAvailable > repairMatsToUse) {
+			for (int i = 0; i < inv.getContents().length; i++) {
+				ItemStack is = inv.getItem(i);
+				if (is != null) {
+					int numLeft = repairMatsAvailable - repairMatsToUse;
+					Player player = (Player)(e.getWhoClicked());
+					int openSlot = player.getInventory().firstEmpty();
+					ItemStack giveBack = repairItem.getStack().clone();
+					giveBack.setAmount(numLeft);
+					if (openSlot > 0) {
+						player.getInventory().setItem(openSlot, giveBack);
+						msg(player, "<i>The remaining %d repair items were put back in your inventory.", numLeft);
+					} else {
+						player.getWorld().dropItem(player.getLocation().add(0, 0.5, 0), giveBack);
+						msg(player, "<i>The remaining %d repair items were dropped on the ground.", numLeft);
+					}
+					break;
+				}
+			}
+		}
+		inv.clear();
 
 		// Repair the pearl and update the item stack
 		pearl.setHealth(pearl.getHealth() + repairAmount);
