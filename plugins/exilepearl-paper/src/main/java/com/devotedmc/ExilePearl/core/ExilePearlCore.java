@@ -440,7 +440,11 @@ final class ExilePearlCore implements ExilePearlApi {
 		if (isNameLayerEnabled()) {
 			return NameAPI.getUUID(name);
 		}
-		return Bukkit.getOfflinePlayer(name).getUniqueId();
+		OfflinePlayer offline = Bukkit.getOfflinePlayer(name);
+		if (offline != null)  {
+			return offline.getUniqueId();
+		}
+		return null;
 	}
 
 	@Override

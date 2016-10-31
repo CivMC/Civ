@@ -18,21 +18,23 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 
-public class CoreExilePearlTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class CoreExilePearlTest {
 	
 	private CoreExilePearl pearl;
 	private PearlUpdateStorage storage;

@@ -1,15 +1,15 @@
-package com.devotedmc.ExilePearl.Util;
+package com.devotedmc.ExilePearl.test;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.devotedmc.ExilePearl.PearlLogger;
 
-public class MockPearlLogger implements PearlLogger {
+public class TestPearlLogger implements PearlLogger {
 	
 	private final Logger logger;
 	
-	public MockPearlLogger(final Logger logger) {
+	public TestPearlLogger(final Logger logger) {
 		this.logger = logger;
 	}
 	

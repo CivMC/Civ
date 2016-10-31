@@ -26,7 +26,6 @@ import java.util.logging.Logger;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
-import org.bukkit.Bukkit;
 import org.bukkit.BanList.Type;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
@@ -85,7 +84,7 @@ public class TestServer implements Server {
     private final String serverName = "TestBukkit";
     private final String serverVersion = "0.0.0";
     private final String bukkitVersion = "0.0.0";
-    private final Logger logger;
+    private Logger logger;
     private final ServicesManager servicesManager = new SimpleServicesManager();
     private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
     private final StandardMessenger messenger = new StandardMessenger();
@@ -93,7 +92,7 @@ public class TestServer implements Server {
     private final TestScheduler scheduler = spy(new TestScheduler());
     private final TestItemFactory itemFactory = spy(new TestItemFactory());
     private final Map<String, TestWorld> worlds = new LinkedHashMap<String, TestWorld>();
-    private List<Player> onlinePlayers = new LinkedList<Player>();
+    private List<TestPlayer> onlinePlayers = new LinkedList<TestPlayer>();
     private List<OfflinePlayer> offlinePlayers = new LinkedList<OfflinePlayer>();
     private YamlConfiguration configuration = new YamlConfiguration();
     private TestConsoleCommandSender consoleSender;
@@ -105,24 +104,21 @@ public class TestServer implements Server {
     private boolean allowEnd = true;
 	private boolean allowFlight = false;
 	private boolean isHardcore = false;
+	private boolean useLogger = false;;
     
-    
-    public TestServer(boolean useLogger) {
-    	
-    	if (useLogger) {
-    		logger = Logger.getLogger(serverName);
-    		configureLogger();
-    	} else {
-    		logger = Mockito.mock(Logger.class);
-    	}
+    /**
+     * Use @RunWith(TestBukkitRunner.class) to use this class
+     * @param useLogger
+     */
+    protected TestServer(boolean useLogger) {
+		configureLogger(useLogger);
         
         // Create default worlds
         createTestWorld(new WorldCreator("world"));
         createTestWorld(new WorldCreator("world_nether"));
         createTestWorld(new WorldCreator("world_the_end"));
         
-        // Set the server instance
-        Bukkit.setServer(this);
+        TestBukkit.setServer(this);
         
         consoleSender = new TestConsoleCommandSender();
     }
@@ -132,7 +128,19 @@ public class TestServer implements Server {
     }
     
     
-    private void configureLogger() {		
+    public void configureLogger(boolean useLogger) {
+    	if (this.useLogger != useLogger && logger != null) {
+    		return;
+    	}
+    	this.useLogger = useLogger;
+    	
+    	if (useLogger) {
+    		logger = Logger.getLogger(serverName);
+    	} else {
+    		logger = Mockito.mock(Logger.class);
+    		return;
+    	}
+    	
 		// Format the logger output
 		Formatter formatter = new Formatter() {
 			private final DateFormat df = new SimpleDateFormat("hh:mm:ss");
@@ -858,7 +866,7 @@ public class TestServer implements Server {
     	return pluginManager.addPlugin(clazz);
     }
     
-    public void addPlayer(Player p) {
+    public void addPlayer(TestPlayer p) {
     	this.onlinePlayers.add(p);
     }
     

@@ -15,14 +15,17 @@ import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.Document;
+import com.devotedmc.testbukkit.TestBukkit;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
 
-public class ExilePearlCoreTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class ExilePearlCoreTest {
 	
 	private Document configDoc; 
 	private FileConfiguration fileConfig;
@@ -43,12 +46,12 @@ public class ExilePearlCoreTest extends BukkitTestCase {
 		plugin = mock(Plugin.class);
 		when(plugin.getConfig()).thenReturn(fileConfig);
 		when(plugin.getLogger()).thenReturn(mock(Logger.class));
-		when(plugin.getServer()).thenReturn(getServer());
+		when(plugin.getServer()).thenReturn(TestBukkit.getServer());
 		
 		core = new ExilePearlCore(plugin);
 		
-		pMan = getServer().getPluginManager();
-		scheduler = getServer().getScheduler();
+		pMan = TestBukkit.getServer().getPluginManager();
+		scheduler = TestBukkit.getServer().getScheduler();
 	}
 	
 	@Test

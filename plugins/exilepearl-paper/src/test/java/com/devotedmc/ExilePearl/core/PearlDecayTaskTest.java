@@ -7,13 +7,16 @@ import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlManager;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.testbukkit.TestBukkit;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 
-public class PearlDecayTaskTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class PearlDecayTaskTest {
 	
 	private PearlConfig pearlConfig;
 	private PearlManager manager;
@@ -45,7 +48,7 @@ public class PearlDecayTaskTest extends BukkitTestCase {
 
 	@Test
 	public void testStartStop() {
-		final BukkitScheduler scheduler = getServer().getScheduler();
+		final BukkitScheduler scheduler = TestBukkit.getServer().getScheduler();
 		reset(scheduler);
 		
 		assertFalse(dut.isRunning());

@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -29,7 +30,6 @@ import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.LoreProvider;
 import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.StorageProvider;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
@@ -38,8 +38,10 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 
-public class CorePearlManagerTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class CorePearlManagerTest {
 	
 	private ExilePearlApi pearlApi;
 	private PearlFactory pearlFactory;

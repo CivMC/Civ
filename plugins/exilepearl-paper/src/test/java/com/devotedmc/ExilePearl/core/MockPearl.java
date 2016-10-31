@@ -211,6 +211,7 @@ public class MockPearl implements ExilePearl {
             .append(health)
             .append(pearledOn)
             .append(freedOffline)
+            .append(pearlType)
             .toHashCode();
     }
 	
@@ -232,6 +233,7 @@ public class MockPearl implements ExilePearl {
 				.append(health, other.health)
 				.append(pearledOn, other.pearledOn)
 				.append(freedOffline, other.freedOffline)
+				.append(pearlType, other.pearlType)
 				.isEquals();
     }
 

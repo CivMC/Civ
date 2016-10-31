@@ -3,12 +3,12 @@ package com.devotedmc.ExilePearl.core;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.*;
+import static com.devotedmc.testbukkit.TestBukkit.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Material;
@@ -28,15 +28,18 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.Clock;
+import com.devotedmc.testbukkit.TestBukkitRunner;
+import com.devotedmc.testbukkit.TestPlayer;
 
-public class CoreDamageLoggerTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class CoreDamageLoggerTest {
 	
 	private static final int INTERVAL = 20;
 	
@@ -45,15 +48,10 @@ public class CoreDamageLoggerTest extends BukkitTestCase {
 	private Clock clock;
 	private CoreDamageLogger dut;
 	
-	private UUID uid = UUID.randomUUID();
-	private UUID d1Id = UUID.randomUUID();
-	private UUID d2Id = UUID.randomUUID();
-	private UUID d3Id = UUID.randomUUID();
-	
-	private Player player = mock(Player.class);
-	private Player d1 = mock(Player.class);
-	private Player d2 = mock(Player.class);
-	private Player d3 = mock(Player.class);
+	private TestPlayer player = createOnlinePlayer("player");
+	private TestPlayer d1 = createOnlinePlayer("d1");
+	private TestPlayer d2 = createOnlinePlayer("d2");
+	private TestPlayer d3 = createOnlinePlayer("d3");
 
 	@Before
 	public void setUp() throws Exception {
@@ -73,20 +71,6 @@ public class CoreDamageLoggerTest extends BukkitTestCase {
 		
 		dut = new CoreDamageLogger(pearlApi);
 		dut.loadConfig(config);
-		
-		when(player.getUniqueId()).thenReturn(uid);
-		when(d1.getUniqueId()).thenReturn(d1Id);
-		when(d2.getUniqueId()).thenReturn(d2Id);
-		when(d3.getUniqueId()).thenReturn(d3Id);
-		
-		when(player.isOnline()).thenReturn(true);
-		when(d1.isOnline()).thenReturn(true);
-		when(d2.isOnline()).thenReturn(true);
-		when(d3.isOnline()).thenReturn(true);
-		
-		addPlayer(d1);
-		addPlayer(d2);
-		addPlayer(d3);
 	}
 	
 	@Test
@@ -332,7 +316,7 @@ public class CoreDamageLoggerTest extends BukkitTestCase {
 		assertEquals(d1, damagers.get(0));
 		
 		ExilePearl pearl = mock(ExilePearl.class);
-		when(pearl.getPlayerId()).thenReturn(uid);
+		when(pearl.getPlayerId()).thenReturn(player.uid);
 		
 		PlayerPearledEvent pearlEvent = new PlayerPearledEvent(pearl);
 		dut.onPlayerPearled(pearlEvent);

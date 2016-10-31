@@ -22,24 +22,29 @@ import org.bukkit.entity.Item;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.config.Document;
 import com.devotedmc.ExilePearl.config.MySqlConfig;
 import com.devotedmc.ExilePearl.core.MockPearl;
-import com.devotedmc.testbukkit.TestServer;
+import com.devotedmc.ExilePearl.test.TestPearlLogger;
+import com.devotedmc.testbukkit.TestBukkitRunner;
+import com.devotedmc.testbukkit.TestOptions;
 
 import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
+@RunWith(TestBukkitRunner.class)
+@TestOptions(useLogger = true)
 public class MySqlStorageIntegrationTest {
 
 	private static PearlFactory pearlFactory;
-	private static MockPearlLogger logger;
+	private static TestPearlLogger logger;
 	private static MySqlConfig config;
 	private static MySqlStorage storage;	
 	private static World world;
@@ -48,8 +53,7 @@ public class MySqlStorageIntegrationTest {
 
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		new TestServer(true);
-		logger = new MockPearlLogger(Bukkit.getServer().getLogger());
+		logger = new TestPearlLogger(Bukkit.getServer().getLogger());
 
 		world = Bukkit.getWorld("world");
 
@@ -64,6 +68,7 @@ public class MySqlStorageIntegrationTest {
 					UUID uid1 = (UUID)invocation.getArguments()[0];
 					Document doc = (Document)invocation.getArguments()[1];
 					ExilePearl pearl = new MockPearl(mock(PlayerProvider.class), uid1, doc.getUUID("killer_id"), doc.getInteger("pearl_id"), doc.getLocation("location"));
+					pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
 					pearl.setHealth(doc.getInteger("health"));
 					pearl.setPearledOn(doc.getDate("pearled_on"));
 					pearl.setFreedOffline(doc.getBoolean("freed_offline"));
@@ -87,27 +92,32 @@ public class MySqlStorageIntegrationTest {
 		when(config.getMySqlMaxLifetime()).thenReturn(5000);
 
 
-		db = new ConnectionPool(logger.getLogger(), 
-				config.getMySqlUsername(), 
-				config.getMySqlPassword(), 
-				config.getMySqlHost(), 
-				config.getMySqlPort(), 
-				config.getMySqlDatabaseName(), 
-				config.getMySqlPoolSize(), 
-				config.getMySqlConnectionTimeout(), 
-				config.getMySqlIdleTimeout(), 
-				config.getMySqlMaxLifetime());
+		try {
+			db = new ConnectionPool(logger.getLogger(), 
+					config.getMySqlUsername(), 
+					config.getMySqlPassword(), 
+					config.getMySqlHost(), 
+					config.getMySqlPort(), 
+					config.getMySqlDatabaseName(), 
+					config.getMySqlPoolSize(), 
+					config.getMySqlConnectionTimeout(), 
+					config.getMySqlIdleTimeout(), 
+					config.getMySqlMaxLifetime());
+		} catch (Exception ex) {
+			logger.log(Level.SEVERE, "Failed to create ConnectionPool instance.");
+			throw ex;
+		}
 
 		try (Connection connection = db.getConnection();) {
-			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS ExilePearlPlugin;"); ) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS exilepearlplugin;"); ) {
 				preparedStatement.execute();
 			}
 
-			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS ExilePearls;"); ) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS exilepearls;"); ) {
 				preparedStatement.execute();
 			}
 
-			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS PrisonPearls;"); ) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS prisonpearls;"); ) {
 				preparedStatement.execute();
 			}
 		}
@@ -128,6 +138,7 @@ public class MySqlStorageIntegrationTest {
 	public static void tearDownClass() throws Exception {
 		storage.disconnect();
 		db.close();
+		logger.log(Level.INFO, "MySql integration test complete.");
 	}
 
 	@Test
@@ -152,7 +163,7 @@ public class MySqlStorageIntegrationTest {
 		
 		// Clear out the existing values
 		try (Connection connection = db.getConnection();
-				PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM ExilePearls;"); ) {
+				PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM exilepearls;"); ) {
 			preparedStatement.execute();
 		}
 
@@ -190,16 +201,17 @@ public class MySqlStorageIntegrationTest {
 		assertEquals(numPearlsToAdd, loadedPearls.size());
 
 		// Verify that all the generated pearls exist in the loaded pearl collection
+
+		logger.log("Verifying all pearls are loaded.");
 		for(ExilePearl p : pearlsToAdd) {
 			assertTrue(loadedPearls.contains(p));
 		}
 
 		// Now we pick a pearl to update.
 		// Verify that it exists in the collection
+		logger.log("Verifying update pearl health");
 		ExilePearl updatePearl = pearlsToAdd.get(0);
 		assertTrue(loadedPearls.contains(updatePearl));
-
-
 
 		// Change the health and verify that it no longer matches any loaded pearls
 		updatePearl.setHealth(updatePearl.getHealth() + 1);
@@ -218,6 +230,7 @@ public class MySqlStorageIntegrationTest {
 
 
 		// Change the location and verify that it no longer matches any loaded pearls
+		logger.log("Verifying update pearl location");
 		Location l = new Location(world, rand.nextInt(), rand.nextInt(), rand.nextInt());
 		Item item = mock(Item.class);
 		when(item.getLocation()).thenReturn(l);
@@ -236,6 +249,7 @@ public class MySqlStorageIntegrationTest {
 
 
 		// Change the freed offline value and verify that it no longer matches any loaded pearls
+		logger.log("Verifying update pearl offline status");
 		updatePearl.setFreedOffline(!updatePearl.getFreedOffline());
 		assertFalse(loadedPearls.contains(updatePearl));
 
@@ -247,12 +261,26 @@ public class MySqlStorageIntegrationTest {
 		storage.updatePearlFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
+		
+		// Change the type value and verify that it no longer matches any loaded pearls
+		logger.log("Verifying update pearl type");
+		updatePearl.setPearlType(PearlType.PRISON);
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Even after reloading, it does not match
+		loadedPearls = storage.loadAllPearls();
+		assertFalse(loadedPearls.contains(updatePearl));
+
+		// Perform the update and verify it now exists
+		storage.updatePearlType(updatePearl);
+		loadedPearls = storage.loadAllPearls();
+		assertTrue(loadedPearls.contains(updatePearl));
 	}
 
-	private static String addPearlQuery = "insert into PrisonPearls(uuid, world, server, x, y, z, uq, motd, killer, pearlTime)"
+	private static String addPearlQuery = "insert into prisonpearls(uuid, world, server, x, y, z, uq, motd, killer, pearlTime)"
 			+ "values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
 
-	private static final String createPrisonPearlTable = "create table if not exists PrisonPearls( "
+	private static final String createPrisonPearlTable = "create table if not exists prisonpearls( "
 			+ "uuid varchar(36) not null,"
 			+ "world varchar(36) not null,"
 			+ "server varchar(255) not null,"
@@ -293,6 +321,5 @@ public class MySqlStorageIntegrationTest {
 				logger.log(Level.WARNING, "Failed to insert dummy pearl data.");
 			}
 		}
-
 	}
 }

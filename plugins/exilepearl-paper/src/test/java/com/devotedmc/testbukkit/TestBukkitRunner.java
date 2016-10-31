@@ -1,12 +1,9 @@
 package com.devotedmc.testbukkit;
 
-import java.util.logging.Level;
+import java.lang.reflect.Method;
 
-import org.bukkit.entity.Player;
 import org.junit.runners.BlockJUnit4ClassRunner;
 import org.junit.runners.model.InitializationError;
-
-import com.devotedmc.testbukkit.v1_10_R1.TestServer_v1_10_R1;
 
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -14,16 +11,23 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 
 public class TestBukkitRunner extends BlockJUnit4ClassRunner {
-	
-	private static TestServer testServer = null;
 
 	public TestBukkitRunner(Class<?> clazz) throws InitializationError {
 		super(clazz);
 		
 		rewireJavaPlugin();
 		
-    	if (testServer == null) {
-    		testServer = new TestServer_v1_10_R1(true);
+		boolean useLogger = false;
+		TestOptions testOptions = clazz.getDeclaredAnnotation(TestOptions.class);
+		if (testOptions != null) {
+			useLogger = testOptions.useLogger();
+		}
+		
+		TestServer server = TestBukkit.getServer();
+    	if (server == null) {
+    		TestBukkit.createServer(useLogger);
+    	} else {
+    		server.configureLogger(useLogger);
     	}
 	}
 
@@ -34,6 +38,10 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	 * @throws InitializationError
 	 */
     private void rewireJavaPlugin() throws InitializationError {
+    	if (!isJavaPluginLoaded()) {
+    		return;
+    	}
+    	
     	try {
 	    	ClassPool cp = new ClassPool(true);
 	    	CtClass ctJavaPlugin = cp.get("org.bukkit.plugin.java.JavaPlugin");
@@ -41,7 +49,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	    	// Change the default constructor
 	    	CtConstructor constructor = ctJavaPlugin.getConstructors()[0];
 	    	constructor.setBody("{"
-	    			+ "com.devotedmc.testbukkit.TestServer server = com.devotedmc.testbukkit.TestBukkitRunner.getServer();"
+	    			+ "com.devotedmc.testbukkit.TestServer server = com.devotedmc.testbukkit.TestBukkit.getServer();"
 	    			+ "this.server = server;"
 	    			+ "this.loader = server.getPluginLoader();"
 	    			+ "this.classLoader = getClass().getClassLoader();"
@@ -64,7 +72,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	    	
 	    	// Configuration gets pulled from the test server
 	    	CtMethod ctReloadConfig = ctJavaPlugin.getDeclaredMethod("reloadConfig");
-	    	ctReloadConfig.setBody("{ newConfig = com.devotedmc.testbukkit.TestBukkitRunner.getServer().getPluginConfig(this); }");
+	    	ctReloadConfig.setBody("{ newConfig = com.devotedmc.testbukkit.TestBukkit.getServer().getPluginConfig(this); }");
 	    	
 	    	// Compile
 	    	ctJavaPlugin.toClass();
@@ -74,16 +82,16 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
     	}
     }
     
-    public static TestServer getServer() {
-    	return testServer;
-    }
-    
-    public static void addPlayer(Player p) {
-    	testServer.addPlayer(p);
-    }
-    
-    public static void runCommand(String commandLine) {
-    	testServer.getLogger().log(Level.INFO, String.format("Running console command '%s'", commandLine));
-    	getServer().dispatchCommand(getServer().getConsoleSender(), commandLine);
+    private boolean isJavaPluginLoaded() throws InitializationError {
+    	try {
+    		// Method is protected, so make it public
+        	ClassLoader loader = getClass().getClassLoader();
+        	Method m = ClassLoader.class.getDeclaredMethod("findLoadedClass", String.class);
+        	m.setAccessible(true);
+        	Object result = m.invoke(loader, "org.bukkit.plugin.java.JavaPlugin");
+        	return (result == null);
+    	} catch (Exception ex) {
+    		throw new InitializationError(ex);
+    	}
     }
 }

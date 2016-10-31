@@ -19,29 +19,30 @@ import org.bukkit.entity.Item;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PlayerProvider;
-import com.devotedmc.ExilePearl.Util.MockPearlLogger;
 import com.devotedmc.ExilePearl.core.MockPearl;
-import com.devotedmc.testbukkit.TestServer;
+import com.devotedmc.ExilePearl.test.TestPearlLogger;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 import com.devotedmc.ExilePearl.config.Document;
 
+@RunWith(TestBukkitRunner.class)
 public class FileStorageIntegrationTest {
 
 	private static File testDir = new File("bin/test/server/plugins/ExilePearl");
 	private static File file = new File("bin/test/server/plugins/ExilePearl/pearls.yml");
 	private static PearlFactory pearlFactory;
-	private static MockPearlLogger logger;
+	private static TestPearlLogger logger;
 	private static FileStorage storage;	
 	private static World world;
 	@BeforeClass
 	public static void setUpClass() throws Exception {
-		new TestServer(true);
-		logger = new MockPearlLogger(Bukkit.getServer().getLogger());
+		logger = new TestPearlLogger(Bukkit.getServer().getLogger());
 
 		world = Bukkit.getWorld("world");
 

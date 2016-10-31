@@ -16,6 +16,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -23,13 +24,15 @@ import org.mockito.stubbing.Answer;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFreeReason;
-import com.devotedmc.ExilePearl.Util.BukkitTestCase;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.testbukkit.TestBukkit;
+import com.devotedmc.testbukkit.TestBukkitRunner;
 
-public class PearlBoundaryTaskTest extends BukkitTestCase {
+@RunWith(TestBukkitRunner.class)
+public class PearlBoundaryTaskTest {
 	
 	private static int RADIUS = 100;
 	private static int RADIUS_KNOCK = RADIUS + PearlBoundaryTask.KNOCKBACK;
@@ -61,7 +64,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 	
 	@Test
 	public void testStartStop() {
-		final BukkitScheduler scheduler = getServer().getScheduler();
+		final BukkitScheduler scheduler = TestBukkit.getServer().getScheduler();
 		reset(scheduler);
 		
 		assertFalse(dut.isRunning());
@@ -133,7 +136,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		dut.onPlayerJoin(joinEvent);
 		assertTrue(dut.isPlayerTracked(player));
 		
-		World world = getServer().getWorlds().get(0);
+		World world = TestBukkit.getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 0);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
@@ -227,7 +230,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		dut.onPlayerJoin(joinEvent);
 		assertTrue(dut.isPlayerTracked(player));
 		
-		World world = getServer().getWorlds().get(0);
+		World world = TestBukkit.getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 50);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
@@ -285,7 +288,7 @@ public class PearlBoundaryTaskTest extends BukkitTestCase {
 		when(player.isOnline()).thenReturn(true);
 		when(player.getHealth()).thenReturn(10.0);
 		
-		World world = getServer().getWorlds().get(0);
+		World world = TestBukkit.getServer().getWorlds().get(0);
 		
 		Location pearlLocation = new Location(world, 0, 64, 50);
 		when(pearl.getLocation()).thenReturn(pearlLocation);
