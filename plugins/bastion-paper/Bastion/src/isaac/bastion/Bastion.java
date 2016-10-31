@@ -78,6 +78,11 @@ public final class Bastion extends ACivMod {
 		}
 		storage = new BastionBlockStorage(db, getLogger());
 		storage.registerMigrations();
+		if(!db.updateDatabase()) {
+			warning("Failed to update database, stopping bastion");
+			getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 		storage.loadBastions();
 	}
 	
