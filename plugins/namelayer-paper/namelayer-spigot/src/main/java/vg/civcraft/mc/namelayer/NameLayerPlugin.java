@@ -49,9 +49,9 @@ public class NameLayerPlugin extends ACivMod{
 		saveDefaultConfig();
 		reloadConfig();
 		config = getConfig();
-		loadGroups = config.getBoolean("groups.enable");
-		groupLimit = config.getInt("groups.grouplimit");
-		createGroupOnFirstJoin = config.getBoolean("groups.creationOnFirstJoin");
+		loadGroups = config.getBoolean("groups.enable", true);
+		groupLimit = config.getInt("groups.grouplimit", 10);
+		createGroupOnFirstJoin = config.getBoolean("groups.creationOnFirstJoin", true);
 		instance = this;
 		mercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		loadDatabases();
@@ -110,15 +110,15 @@ public class NameLayerPlugin extends ACivMod{
 	}
 	
 	public void loadDatabases(){
-		String host = config.getString("sql.hostname");
-		int port = config.getInt("sql.port");
-		String dbname = config.getString("sql.dbname");
+		String host = config.getString("sql.hostname", "localhost");
+		int port = config.getInt("sql.port", 3306);
+		String dbname = config.getString("sql.dbname", "namelayer");
 		String username = config.getString("sql.username");
 		String password = config.getString("sql.password");
-		int poolsize = config.getInt("sql.poolsize");
-		long connectionTimeout = config.getLong("sql.connection_timeout");
-		long idleTimeout = config.getLong("sql.idle_timeout");
-		long maxLifetime = config.getLong("sql.max_lifetime");
+		int poolsize = config.getInt("sql.poolsize", 10);
+		long connectionTimeout = config.getLong("sql.connection_timeout", 10000l);
+		long idleTimeout = config.getLong("sql.idle_timeout", 600000l);
+		long maxLifetime = config.getLong("sql.max_lifetime", 7200000l);
 		try {
 			db = new ManagedDatasource(this, username, password, host, port, dbname,
 					poolsize, connectionTimeout, idleTimeout, maxLifetime);

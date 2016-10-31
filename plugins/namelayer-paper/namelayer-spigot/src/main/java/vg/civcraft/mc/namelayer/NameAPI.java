@@ -21,12 +21,11 @@ public class NameAPI {
 		loadAllPlayerInfo();
 	}
 	
-	@CivConfig(name = "persistance.forceloadnamecaching", def = "false", type = CivConfigType.Bool)
 	public void loadAllPlayerInfo(){
 		uuidsToName.clear();
 		nameToUUIDS.clear();
 		
-		boolean load = NameLayerPlugin.getInstance().GetConfig().get("persistance.forceloadnamecaching").getBool();
+		boolean load = NameLayerPlugin.getInstance().getConfig().getBoolean("persistance.forceloadnamecaching", false);
 		if (!load)
 			return;
 		AssociationList.PlayerMappingInfo pmi = associations.getAllPlayerInfo();
