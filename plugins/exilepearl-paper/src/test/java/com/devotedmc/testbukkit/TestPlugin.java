@@ -14,13 +14,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.base.Charsets;
 
-public class TestPlugin {
+public class TestPlugin<T extends JavaPlugin> {
 	
-	private final Class<? extends JavaPlugin> clazz;
+	private final Class<T> clazz;
 	private final PluginDescriptionFile description;
 	private YamlConfiguration config = new YamlConfiguration();
+	private JavaPlugin instance = null;
 	
-	public TestPlugin(final Class<? extends JavaPlugin> clazz) throws Exception {
+	public TestPlugin(final Class<T> clazz) throws Exception {
 		this.clazz = clazz;
 		
 		// Make sure the class is loaded
@@ -85,11 +86,20 @@ public class TestPlugin {
 	 * @param path The config item path
 	 * @param value The object value
 	 */
-	public TestPlugin appendConfig(String path, Object value) {
+	public TestPlugin<T> appendConfig(String path, Object value) {
 		config.set(path, value);
 		return this;
 	}
 	
+	
+	@SuppressWarnings("unchecked")
+	public T getInstance() {
+		return (T)instance;
+	}
+	
+	public void setInstance(JavaPlugin instance) {
+		this.instance = instance;
+	}
 	
 	/**
 	 * Gets a resource

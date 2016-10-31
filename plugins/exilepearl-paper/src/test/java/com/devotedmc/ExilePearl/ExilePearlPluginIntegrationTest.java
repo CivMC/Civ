@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 import static com.devotedmc.testbukkit.TestBukkit.*;
 
 import org.junit.AfterClass;
@@ -13,14 +14,19 @@ import org.junit.runner.RunWith;
 import com.devotedmc.testbukkit.TestBukkitRunner;
 import com.devotedmc.testbukkit.TestOptions;
 import com.devotedmc.testbukkit.TestPlayer;
+import com.devotedmc.testbukkit.TestPlugin;
 import com.devotedmc.testbukkit.TestServer;
 import com.devotedmc.testbukkit.v1_10_R1.TestServer_v1_10_R1;
 
+import vg.civcraft.mc.civmodcore.util.TextUtil;
+
+@SuppressWarnings("unused")
 @RunWith(TestBukkitRunner.class)
 @TestOptions(useLogger = true, server = TestServer_v1_10_R1.class)
 public class ExilePearlPluginIntegrationTest {
 	
 	private static TestServer server;
+	private static TestPlugin<ExilePearlPlugin> testPlugin;
 	
 	private TestPlayer player1;
 	
@@ -29,15 +35,18 @@ public class ExilePearlPluginIntegrationTest {
 		server = getServer();
 		
 		// Use MySQL for the integration test
-		server.addPlugin(ExilePearlPlugin.class)
+		testPlugin = server.addPlugin(ExilePearlPlugin.class)
 			.appendConfig("storage.type", 1) // MySQL type
 			.appendConfig("storage.mysql.host", "localhost")
 			.appendConfig("storage.mysql.dbname", "exilepearl")
-			.appendConfig("storage.mysql.username", "bukkit")
-		;
+			.appendConfig("storage.mysql.username", "bukkit");
 		
 		server.loadPlugins();
 		server.enablePlugins();
+		
+		ExilePearlPlugin plugin = testPlugin.getInstance();
+		
+		
 	}
 	
 	@AfterClass
@@ -51,6 +60,7 @@ public class ExilePearlPluginIntegrationTest {
 		player1 = createOnlinePlayer("player1");
 	}
 
+	@Ignore
 	@Test
 	public void testConsoleCommands() {
 		assertTrue(consoleCommand("ep"));
@@ -79,34 +89,72 @@ public class ExilePearlPluginIntegrationTest {
 		
 		assertTrue(consoleCommand("suicide"));
 	}
-
-	@Ignore
+	
+	/**
+	 * The command will always return true because it's being psuedo-executed
+	 */
 	@Test
 	public void testPlayerCommands() {
-		assertTrue(player1.runCommand("ep"));
+		assertTrue(player1.runCommand("ep reload"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "reload"));
 		
-		assertFalse(player1.runCommand("ep reload"));
-		assertFalse(player1.runCommand("ep check"));
-		assertFalse(player1.runCommand("ep decay"));
-		assertFalse(player1.runCommand("ep exileany"));
-		assertFalse(player1.runCommand("ep freeany"));
-		assertFalse(player1.runCommand("ep list"));
-		assertFalse(player1.runCommand("ep sethealth"));
-		assertFalse(player1.runCommand("ep setkiller"));
-		assertFalse(player1.runCommand("ep settype"));
+		assertTrue(player1.runCommand("ep check"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "check"));
 		
-		assertFalse(player1.runCommand("ep config"));
-		assertFalse(player1.runCommand("ep config list"));
-		assertFalse(player1.runCommand("ep config load"));
-		assertFalse(player1.runCommand("ep config save"));
-		assertFalse(player1.runCommand("ep config set"));
+		assertTrue(player1.runCommand("ep decay"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "decay"));
 		
+		assertTrue(player1.runCommand("ep exileany"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "exileany"));
+		
+		assertTrue(player1.runCommand("ep freeany"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "freeany"));
+		
+		assertTrue(player1.runCommand("ep list"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "list"));
+		
+		assertTrue(player1.runCommand("ep sethealth"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "sethealth"));
+		
+		assertTrue(player1.runCommand("ep setkiller"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "setkiller"));
+		
+		assertTrue(player1.runCommand("ep settype"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "settype"));
+		
+		assertTrue(player1.runCommand("ep config"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "config"));
+		
+		assertTrue(player1.runCommand("ep config list"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "config list"));
+		
+		assertTrue(player1.runCommand("ep config load"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "config load"));
+		
+		assertTrue(player1.runCommand("ep config save"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "config save"));
+		
+		assertTrue(player1.runCommand("ep config set"));
+		verify(player1).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "config set"));
+		
+		
+		// These should pass
 		assertTrue(player1.runCommand("ep broadcast"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "broadcast"));
+		
 		assertTrue(player1.runCommand("ep confirm"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "broadcast"));
+		
 		assertTrue(player1.runCommand("ep silence"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "broadcast"));
+		
 		assertTrue(player1.runCommand("ep free"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "broadcast"));
+		
 		assertTrue(player1.runCommand("ep locate"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "suicide"));
 		
 		assertTrue(player1.runCommand("suicide"));
+		verify(player1, times(0)).sendMessage(TextUtil.parse(Lang.commandToManyArgs, "broadcast"));
 	}
 }

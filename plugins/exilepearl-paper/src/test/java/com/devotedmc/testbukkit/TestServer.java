@@ -43,7 +43,6 @@ import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -62,7 +61,6 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginLoader;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.ServicesManager;
 import org.bukkit.plugin.SimpleServicesManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -86,7 +84,7 @@ public class TestServer implements Server {
     private final String bukkitVersion = "0.0.0";
     private Logger logger;
     private final ServicesManager servicesManager = new SimpleServicesManager();
-    private final SimpleCommandMap commandMap = new SimpleCommandMap(this);
+    private final TestCommandMap commandMap = new TestCommandMap(this);
     private final StandardMessenger messenger = new StandardMessenger();
     private final TestPluginManager pluginManager = spy(new TestPluginManager(this, commandMap));
     private final TestScheduler scheduler = spy(new TestScheduler());
@@ -110,7 +108,7 @@ public class TestServer implements Server {
      * Use @RunWith(TestBukkitRunner.class) to use this class
      * @param useLogger
      */
-    protected TestServer(boolean useLogger) {
+	public TestServer(boolean useLogger) {
 		configureLogger(useLogger);
         
         // Create default worlds
@@ -437,7 +435,7 @@ public class TestServer implements Server {
 	}
 
 	@Override
-	public PluginManager getPluginManager() {
+	public TestPluginManager getPluginManager() {
 		return pluginManager;
 	}
 
@@ -862,7 +860,7 @@ public class TestServer implements Server {
     	return testWorld;
     }
     
-    public TestPlugin addPlugin(Class<? extends JavaPlugin> clazz) throws Exception {
+    public <T extends JavaPlugin> TestPlugin<T> addPlugin(Class<T> clazz) throws Exception {
     	return pluginManager.addPlugin(clazz);
     }
     

@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.PlayerInventory;
 
 public abstract class TestPlayer implements Player {
 
@@ -15,9 +16,16 @@ public abstract class TestPlayer implements Player {
 	public UUID uid;
 	public Location location;
 	public boolean isOnline;
+	public PlayerInventory inventory;
 	
 	public static TestPlayer create(String name, UUID uid) {
 		TestPlayer player = mock(TestPlayer.class);
+		player.name = name;
+		player.uid = uid;
+		player.location = null;
+		player.isOnline = false;
+		player.inventory = mock(PlayerInventory.class);
+		
 		when(player.getName()).thenCallRealMethod();
 		when(player.getUniqueId()).thenCallRealMethod();
 		when(player.isOnline()).thenCallRealMethod();
@@ -25,12 +33,9 @@ public abstract class TestPlayer implements Player {
 		when(player.getServer()).thenCallRealMethod();
 		when(player.runCommand(any())).thenCallRealMethod();
 		when(player.goOnline()).thenCallRealMethod();
-		when(player.goOffline()).thenCallRealMethod();		
+		when(player.goOffline()).thenCallRealMethod();
+		when(player.getInventory()).thenReturn(player.inventory);
 		
-		player.name = name;
-		player.uid = uid;
-		player.location = null;
-		player.isOnline = false;
 		return player;
 		
 	}

@@ -11,6 +11,8 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 
 public class TestBukkitRunner extends BlockJUnit4ClassRunner {
+	
+	private static boolean modifiedJavaPlugin = false;
 
 	public TestBukkitRunner(Class<?> clazz) throws InitializationError {
 		super(clazz);
@@ -45,7 +47,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	 * @throws InitializationError
 	 */
     private void rewireJavaPlugin() throws InitializationError {
-    	if (!isJavaPluginLoaded()) {
+    	if (modifiedJavaPlugin && !isJavaPluginLoaded()) {
     		return;
     	}
     	
@@ -83,6 +85,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 	    	
 	    	// Compile
 	    	ctJavaPlugin.toClass();
+	    	modifiedJavaPlugin = true;
 	    	
     	} catch (Exception ex) {
     		throw new InitializationError("Failed to modify the JavaPlugin class.");

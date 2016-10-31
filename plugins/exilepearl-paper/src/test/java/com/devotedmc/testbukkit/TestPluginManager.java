@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
+import org.bukkit.command.CommandMap;
 import org.bukkit.command.PluginCommandYamlParser;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
@@ -50,16 +50,16 @@ public class TestPluginManager implements PluginManager {
     private final Server server;
     private final List<Plugin> plugins = new ArrayList<Plugin>();
     private final Map<String, Plugin> lookupNames = new HashMap<String, Plugin>();
-    private final SimpleCommandMap commandMap;
+    private final CommandMap commandMap;
     private final Map<String, Permission> permissions = new HashMap<String, Permission>();
     private final Map<Boolean, Set<Permission>> defaultPerms = new LinkedHashMap<Boolean, Set<Permission>>();
     private final Map<String, Map<Permissible, Boolean>> permSubs = new HashMap<String, Map<Permissible, Boolean>>();
     private final Map<Boolean, Map<Permissible, Boolean>> defSubs = new HashMap<Boolean, Map<Permissible, Boolean>>();
     private boolean useTimings = false;
     
-    private static List<TestPlugin> pluginsToLoad = new ArrayList<TestPlugin>();    
+    private static List<TestPlugin<?>> pluginsToLoad = new ArrayList<TestPlugin<?>>();    
     
-    public TestPluginManager(Server server, SimpleCommandMap commandMap) {
+    public TestPluginManager(Server server, CommandMap commandMap) {
     	this.server = server;
     	this.commandMap = commandMap;
     	
@@ -101,7 +101,7 @@ public class TestPluginManager implements PluginManager {
 		return null;
 	}
 	
-	public Plugin loadPlugin(TestPlugin p) throws InvalidPluginException, UnknownDependencyException {
+	public JavaPlugin loadPlugin(TestPlugin<?> p) throws InvalidPluginException, UnknownDependencyException {
 		final JavaPlugin plugin;
 		try {
 			plugin = (JavaPlugin)p.getPluginClass().newInstance();
@@ -125,11 +125,13 @@ public class TestPluginManager implements PluginManager {
 	public Plugin[] loadPlugins() {
         List<Plugin> result = new ArrayList<Plugin>();
         
-		for(TestPlugin p : pluginsToLoad) {
+		for(TestPlugin<?> toLoad : pluginsToLoad) {
 			try {
-				result.add(loadPlugin(p));
+				JavaPlugin p = loadPlugin(toLoad);
+				result.add(p);
+				toLoad.setInstance(p);
 			} catch (Exception ex) {
-                server.getLogger().log(Level.SEVERE, "Could not load plugin '" + p.getName() + "'", ex);
+                server.getLogger().log(Level.SEVERE, "Could not load plugin '" + toLoad.getName() + "'", ex);
                 ex.printStackTrace();
 			}
 		}
@@ -162,9 +164,6 @@ public class TestPluginManager implements PluginManager {
         if (event.isAsynchronous()) {
             if (Thread.holdsLock(this)) {
                 throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from inside synchronized code.");
-            }
-            if (server.isPrimaryThread()) {
-                throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from primary server thread.");
             }
             fireEvent(event);
         } else {
@@ -518,9 +517,9 @@ public class TestPluginManager implements PluginManager {
     }
     
     
-    public TestPlugin addPlugin(Class<? extends JavaPlugin> clazz) throws Exception {
+    public <T extends JavaPlugin> TestPlugin<T> addPlugin(Class<T> clazz) throws Exception {
     	try {
-        	TestPlugin p = new TestPlugin(clazz);
+        	TestPlugin<T> p = new TestPlugin<T>(clazz);
         	pluginsToLoad.add(p);
             server.getLogger().log(Level.INFO, "Registered test plugin '" + p.getDescription().getName() + "'");
         	return p;
@@ -531,7 +530,7 @@ public class TestPluginManager implements PluginManager {
     }
     
     public PluginDescriptionFile createDescription(JavaPlugin plugin) throws InvalidDescriptionException {
-    	for (TestPlugin p : pluginsToLoad) {
+    	for (TestPlugin<?> p : pluginsToLoad) {
     		if (p.getPluginClass() == plugin.getClass()) {
     			return p.getDescription();
     		}
@@ -540,7 +539,7 @@ public class TestPluginManager implements PluginManager {
     }
     
     public FileConfiguration getPluginConfig(JavaPlugin plugin) {
-    	for (TestPlugin p : pluginsToLoad) {
+    	for (TestPlugin<?> p : pluginsToLoad) {
     		if (p.getPluginClass() == plugin.getClass()) {
     			return p.getConfig();
     		}
