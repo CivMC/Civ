@@ -41,7 +41,7 @@ public class BastionBlockStorage {
 	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, balance) values (?,?,?,?,?,?,?);";
 	private static final String updateBastion = "update bastion_blocks set placed=?,balance=? where bastion_id=?;";
 	private static final String deleteBastion = "delete from bastion_blocks where bastion_id=?;";
-	private static final String setDead = "update bastion_blocks set dead=1 where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
+	private static final String setDead = "update bastion_blocks set dead=1 where bastion_id=?;";
 	private static final String deleteDead = "delete from bastion_blocks where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
 	private static final String moveDead = "update bastion_blocks set loc_world=?, loc_x=?, loc_y=?, loc_z=? where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
 	
@@ -67,7 +67,7 @@ public class BastionBlockStorage {
 		db.registerMigration(0, false, 
 				"create table if not exists `bastion_blocks`("
 				+ "bastion_id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-				+ "bastion_type varchar(40) NOT NULL DEFAULT '" + BastionType.getDefaultType() + "',"
+				+ "bastion_type varchar(40) DEFAULT '" + BastionType.getDefaultType() + "',"
 				+ "loc_x int(10),"
 				+ "loc_y int(10),"
 				+ "loc_z int(10),"
@@ -131,11 +131,11 @@ public class BastionBlockStorage {
 			ps.setInt(1, bastion.getId());
 			ps.executeUpdate();
 			try {
-				bastions.remove(bastion);
-				blocks.get(bastion.getLocation().getWorld()).remove(bastion);
-			} catch (NullPointerException npe) {
-				log.log(Level.WARNING, "Bastion wasn't in cache, or failed to remove from cache: " + bastion.getLocation().toString(), npe);
-			}
+ -				bastions.remove(bastion);
+ -				blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+ -			} catch (NullPointerException npe) {
+ -				log.log(Level.WARNING, "Bastion wasn't in cache, or failed to remove from cache: " + bastion.getLocation().toString(), npe);
+ -			}
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Failed to delete a bastion at " + bastion.getLocation().toString(), e);
 		}
@@ -352,6 +352,7 @@ public class BastionBlockStorage {
 				log.log(Level.SEVERE, "Error loading bastions from database, shutting down", e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Bastion.getPlugin());
 			}
+			blocks.put(world, bastionsForWorld);
 		}
 	}
 	
