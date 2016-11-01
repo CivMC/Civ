@@ -47,7 +47,7 @@ public class BiasedRandomPicker<E> {
 			if (chance == 0.0) {
 				continue;
 			}
-			chances.put(entry.getKey(), totalChance);
+			this.chances.put(totalChance, entry.getKey());
 			totalChance += chance;
 		}
 		if (Math.abs(totalChance - 1.0) > Math.pow(10, -6)) {
