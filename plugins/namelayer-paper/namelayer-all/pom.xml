@@ -36,6 +36,13 @@
           <include>LICENSE.txt</include>
         </includes>
       </resource>
+      <resource>
+        <directory>./</directory>
+        <includes>
+          <include>*.pom</include>
+        </includes>
+        <filtering>true</filtering>
+      </resource>
     </resources>
     <plugins>
       <plugin>
@@ -63,8 +70,8 @@
             <phase>install</phase>
             <configuration>
               <file>../target/${project.artifactId}-${releaseVersion}.jar</file>
-              <generatePom>true</generatePom>
-              <!--<pomFile>dependency-reduced-pom.xml</pomFile>-->
+              <!--<generatePom>true</generatePom>-->
+              <pomFile>../target/classes/${project.artifactId}.pom</pomFile>
 			  <groupId>${project.groupId}</groupId>
 			  <artifactId>${project.artifactId}</artifactId>
 			  <packaging>${project.packaging}</packaging>
