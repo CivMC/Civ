@@ -11,6 +11,8 @@
   </parent>
 
   <artifactId>NameLayer</artifactId>
+  <!-- My Mavenfu is weak, you must update in 2 places. -->
+  <version>2.9.08</version>
 
   <dependencies>
     <dependency>
@@ -27,7 +29,7 @@
 
   <build>
   	<!-- This allows us to avoid specifying versions in subprojects, made more difficult in M4 now that versions _must_ be literals -->
-    <finalName>${project.artifactId}-${releaseVersion}</finalName>
+    <!--<finalName>${project.artifactId}-${releaseVersion}</finalName>-->
     <directory>../target</directory>
     <resources>
       <resource>
@@ -36,13 +38,13 @@
           <include>LICENSE.txt</include>
         </includes>
       </resource>
-      <resource>
+      <!-- <resource>
         <directory>./</directory>
         <includes>
           <include>*.pom</include>
         </includes>
         <filtering>true</filtering>
-      </resource>
+      </resource>-->
     </resources>
     <plugins>
       <plugin>
@@ -58,7 +60,7 @@
           </execution>
         </executions>
       </plugin>
-      <plugin>
+      <!--<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-install-plugin</artifactId>
         <version>2.3.1</version>
@@ -70,7 +72,6 @@
             <phase>install</phase>
             <configuration>
               <file>../target/${project.artifactId}-${releaseVersion}.jar</file>
-              <!--<generatePom>true</generatePom>-->
               <pomFile>../target/classes/${project.artifactId}.pom</pomFile>
 			  <groupId>${project.groupId}</groupId>
 			  <artifactId>${project.artifactId}</artifactId>
@@ -80,7 +81,7 @@
             </configuration>
           </execution>
         </executions>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
 
