@@ -97,13 +97,17 @@
       <id>dmulloy2-repo</id>
       <url>http://repo.dmulloy2.net/content/groups/public/</url>
     </repository>
+    <repository>
+      <id>devoted-repo</id>
+      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
+    </repository>
   </repositories>
 
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>1.10</version>
+      <version>1.10.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -137,13 +141,13 @@
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>NameLayer</artifactId>
-      <version>2.9.06</version>
+      <version>2.9.08</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.citadel</groupId>
       <artifactId>Citadel</artifactId>
-      <version>3.6.2</version>
+      <version>3.7.02</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
