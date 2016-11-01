@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
   <version>2.0.2</version>
   <name>Bastion</name>
-  <url>https://github.com/Civcraft/Bastion</url>
+  <url>https://github.com/DevotedMC/Bastion</url>
   
   
    <properties>
@@ -17,16 +17,20 @@
     </properties>
   
   <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
     
     <resources>
       <resource>
-        <directory>${basedir}</directory>
+        <directory>${basedir}/src/main/resources/</directory>
         <includes>
           <include>*.yml</include>
-          <include>License.txt</include>
         </includes>
         <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}</directory>
+          <includes>
+            <include>License.txt</include>
+          </includes>
       </resource>
     </resources>
   </build>
@@ -66,8 +70,8 @@
   
   <repositories>
     <repository>
-    	<id>civcraft-repo</id>
-    	<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+    	<id>devoted-repo</id>
+    	<url>https://build.devotedmc.com/plugin/repository/everything/</url>
     </repository>
     <repository>
         <id>spigot-repo</id>
