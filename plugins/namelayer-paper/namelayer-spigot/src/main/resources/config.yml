@@ -1,0 +1,16 @@
+sql:
+  hostname: {{ central_db_location }}
+  port: 3306
+  dbname: {{ central_db_name }}
+  username: {{ central_db_user }}
+  password: {{ mysql_non_root_pass }}
+  poolsize: 10
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000
+groups:
+  enable: true
+  grouplimit: 25
+  creationOnFirstJoin: true
+persistance:
+  forceloadnamecaching: true
