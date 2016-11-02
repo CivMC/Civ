@@ -131,11 +131,11 @@ public class BastionBlockStorage {
 			ps.setInt(1, bastion.getId());
 			ps.executeUpdate();
 			try {
- -				bastions.remove(bastion);
- -				blocks.get(bastion.getLocation().getWorld()).remove(bastion);
- -			} catch (NullPointerException npe) {
- -				log.log(Level.WARNING, "Bastion wasn't in cache, or failed to remove from cache: " + bastion.getLocation().toString(), npe);
- -			}
+ 				bastions.remove(bastion);
+ 				blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+ 			} catch (NullPointerException npe) {
+ 				log.log(Level.WARNING, "Bastion wasn't in cache, or failed to remove from cache: " + bastion.getLocation().toString(), npe);
+ 			}
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Failed to delete a bastion at " + bastion.getLocation().toString(), e);
 		}
