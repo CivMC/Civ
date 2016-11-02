@@ -74,32 +74,32 @@ public class BastionListenerTest {
 
 	@Test
 	public void testOnBastionDamage() {
-		BastionDamageEvent e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED);
+		BastionDamageEvent e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED, 1.0);
 		when(config.canPerform(ExileRule.DAMAGE_BASTION)).thenReturn(true);
 		dut.onBastionDamage(e);
 		assertFalse(e.isCancelled());
 
-		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED);
+		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED, 1.0);
 		when(config.canPerform(ExileRule.DAMAGE_BASTION)).thenReturn(false);
 		dut.onBastionDamage(e);
 		assertFalse(e.isCancelled());
 
-		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED);
+		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED, 1.0);
 		when(config.canPerform(ExileRule.DAMAGE_BASTION)).thenReturn(true);
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onBastionDamage(e);
 		assertFalse(e.isCancelled());
 		
-		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED);
+		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED, 1.0);
 		when(config.canPerform(ExileRule.DAMAGE_BASTION)).thenReturn(false);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());
 		
-		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.PEARL);
+		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.PEARL, 1.0);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());
 		
-		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.ELYTRA);
+		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.ELYTRA, 1.0);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());
 	}

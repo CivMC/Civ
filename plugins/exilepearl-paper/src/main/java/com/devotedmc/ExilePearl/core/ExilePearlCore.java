@@ -603,7 +603,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		try {
 			final BastionBlockManager manager = Bastion.getBastionManager();
 			
-			Set<? extends QTBox> possible  = manager.set.forLocation(player.getLocation());
+			Set<? extends QTBox> possible  = manager.getBlockingBastions(player.getLocation());
 			@SuppressWarnings("unchecked")
 			List<BastionBlock> bastions = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
 			for (BastionBlock bastion : bastions) {
