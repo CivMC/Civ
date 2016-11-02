@@ -22,7 +22,7 @@ public class PearlMovedEvent extends Event {
 	 * Creates a new PlayerPearledEvent instance. Called when a player is freed.
 	 * @param pearl The pearl instance
 	 * @param from The source holder
-	 * @param from The destination holder
+	 * @param to The destination holder
 	 */
 	public PearlMovedEvent(final ExilePearl pearl, final PearlHolder from, final PearlHolder to) {
 		Guard.ArgumentNotNull(pearl, "pearl");

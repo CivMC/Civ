@@ -27,7 +27,7 @@ public interface PearlFactory {
 	 * @param uid The prisoner UUID
 	 * @param killedByIdThe killing player UUID
 	 * @param pearlId The pearl ID
-	 * @param holder
+	 * @param holder The pearl holder
 	 * @return The new exile pearl instance
 	 */
 	ExilePearl createExilePearl(UUID uid, UUID killedById, int pearlId, PearlHolder holder);

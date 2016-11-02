@@ -69,9 +69,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	
 	/**
 	 * Creates a new ExileListener instance
-	 * @param logger The logger instance
-	 * @param pearls The pearl manger
-	 * @param config The plugin configuration
+	 * @param pearlApi The PearlApi instance
 	 */
 	public ExileListener(final ExilePearlApi pearlApi) {
 		super(pearlApi);

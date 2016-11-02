@@ -26,7 +26,7 @@ public interface PlayerProvider {
 	
 	/**
 	 * Gets a player name from a UUID
-	 * @param uuid The given player UUID
+	 * @param uid The given player UUID
 	 * @return The matching player name
 	 */
 	String getRealPlayerName(UUID uid);

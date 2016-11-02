@@ -62,7 +62,7 @@ public abstract class BaseCommand<T extends Plugin> {
 	
 	/**
 	 * Creates a new SabreCommand instance
-	 * @param sabreApi The Sabre API
+	 * @param plugin The plugin instance
 	 */
 	public BaseCommand(T plugin) {
 		this.plugin = plugin;
@@ -99,7 +99,6 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * Executes the command
 	 * @param sender The command sender
 	 * @param args The command arguments
-	 * @param commandChain The command chain
 	 */
 	public final void execute(CommandSender sender, List<String> args) {
 		execute(sender, args, new ArrayList<BaseCommand<? extends Plugin>>());
@@ -323,7 +322,7 @@ public abstract class BaseCommand<T extends Plugin> {
 	
 	/**
 	 * Method that can be overridden for getting custom auto-tabs
-	 * @param tabArg The tab argument
+	 * @param tabName The tab argument
 	 * @param pattern The search pattern
 	 * @return The tab list if any results
 	 */
@@ -616,8 +615,8 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param index The index to check
 	 * @return true if the argument has a value
 	 */
-	protected boolean argIsSet(int idx) {
-		if (this.args.size() < idx+1) {
+	protected boolean argIsSet(int index) {
+		if (this.args.size() < index + 1) {
 			return false;
 		}
 		return true;
@@ -641,8 +640,8 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param index The index
 	 * @return The string argument
 	 */
-	protected String argAsString(int idx) {
-		return this.argAsString(idx, null);
+	protected String argAsString(int index) {
+		return this.argAsString(index, null);
 	}
 	
 	/**
@@ -702,8 +701,8 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param def The default value
 	 * @return The double argument
 	 */
-	protected Double argAsDouble(int idx, Double def) {
-		return strAsDouble(this.argAsString(idx), def);
+	protected Double argAsDouble(int index, Double def) {
+		return strAsDouble(this.argAsString(index), def);
 	}
 	
 	/**
@@ -711,8 +710,8 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param index The index
 	 * @return The double argument
 	 */
-	protected Double argAsDouble(int idx) {
-		return this.argAsDouble(idx, null);
+	protected Double argAsDouble(int index) {
+		return this.argAsDouble(index, null);
 	}
 	
 	/**
@@ -735,8 +734,8 @@ public abstract class BaseCommand<T extends Plugin> {
 	 * @param def The default value
 	 * @return The boolean argument
 	 */
-	protected Boolean argAsBool(int idx, Boolean def) {
-		String str = this.argAsString(idx);
+	protected Boolean argAsBool(int index, Boolean def) {
+		String str = this.argAsString(index);
 		if (str == null) {
 			return def;
 		}

@@ -24,7 +24,7 @@ public class BlockHolder implements PearlHolder {
 	
 	/**
 	 * Creates a new BlockHolder instance
-	 * @param b The block containing the pearl
+	 * @param block The block containing the pearl
 	 */
 	public BlockHolder(final Block block) {
 		Guard.ArgumentNotNull(block, "block");

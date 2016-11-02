@@ -31,7 +31,7 @@ public interface PearlAccess {
 	
 	/**
 	 * Binds a player to an exile pearl
-	 * @param exiled The exiled player Id
+	 * @param exiledId The exiled player Id
 	 * @param killer The killing player
 	 * @return The new ExilePearl if the operation succeeds, otherwise null
 	 */

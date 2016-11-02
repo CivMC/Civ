@@ -152,7 +152,7 @@ public interface ExilePearl {
 
 	/**
 	 * Gets whether the player was freed offline
-	 * @return true if the player was freed offline
+	 * @param freedOffline The freed offline value
 	 */
 	void setFreedOffline(boolean freedOffline);
 

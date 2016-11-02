@@ -21,7 +21,6 @@ public class PlayerPearledEvent extends Event implements Cancellable {
 	/**
 	 * Creates a new PlayerPearledEvent instance. Called when a new player is pearled.
 	 * @param pearl The pearl instance
-	 * @param imprisoner The imprisoner player
 	 */
 	public PlayerPearledEvent(final ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");

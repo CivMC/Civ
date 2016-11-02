@@ -344,7 +344,7 @@ public class PlayerListener implements Listener, Configurable {
 
 	/**
 	 * Prevent imprisoned players from placing ExilePearls in their inventory.
-	 * @param event
+	 * @param e The event args
 	 */
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onExilePearlClick(InventoryClickEvent e) {
@@ -507,7 +507,7 @@ public class PlayerListener implements Listener, Configurable {
 
 	/**
 	 * Imprison people upon death
-	 * @param event The event args
+	 * @param e The event args
 	 */
 	@EventHandler(priority=EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityDeath(EntityDeathEvent e) {

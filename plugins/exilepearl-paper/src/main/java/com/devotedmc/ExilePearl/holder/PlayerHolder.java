@@ -21,7 +21,7 @@ public class PlayerHolder implements PearlHolder {
 	
 	/**
 	 * Creates a new PlayerHolder instance
-	 * @param p The player holding the pearl
+	 * @param player The player holding the pearl
 	 */
 	public PlayerHolder(final Player player) {
 		Guard.ArgumentNotNull(player, "player");

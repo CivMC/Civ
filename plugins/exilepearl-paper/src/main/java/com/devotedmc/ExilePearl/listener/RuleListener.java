@@ -22,9 +22,7 @@ public class RuleListener implements Listener {
 	  
 	/**
 	 * Creates a new ExileListener instance
-	 * @param logger The logger instance
-	 * @param pearls The pearl manger
-	 * @param config The plugin configuration
+	 * @param pearlApi The PearlApi instance
 	 */
 	public RuleListener(final ExilePearlApi pearlApi) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");

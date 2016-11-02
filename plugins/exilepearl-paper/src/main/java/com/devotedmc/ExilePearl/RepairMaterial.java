@@ -58,8 +58,9 @@ public class RepairMaterial {
 	
 	/**
 	 * Creates a new RepairMaterial from a config document
-	 * @param doc
-	 * @return
+	 * @param The repair material name
+	 * @param doc The configuration document
+	 * @return The repair material instance
 	 */
 	public static RepairMaterial fromDocument(String name, Document doc) {
 		Guard.ArgumentNotNull(doc, "doc");
