@@ -290,6 +290,8 @@ public final class PlayerListener implements Listener {
         switch (event.getCause()) {
             case ENDER_PEARL:
                 return;
+            case COMMAND: // Essentials uses COMMAND instead of PLUGIN
+                          //  Thank you @ExoticCoding -- addresses #85
             case PLUGIN:
             case UNKNOWN:
                 // Optionally untag on PLUGIN or UNKNOWN
