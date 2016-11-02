@@ -64,9 +64,9 @@ import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.util.QTBox;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.TagManager;
+import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.namelayer.NameAPI;
 
