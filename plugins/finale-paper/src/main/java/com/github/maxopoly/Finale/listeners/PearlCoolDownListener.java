@@ -4,11 +4,13 @@ import java.text.DecimalFormat;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
@@ -22,12 +24,14 @@ public class PearlCoolDownListener implements Listener {
 	private TickCoolDownHandler<UUID> cds;
 	private CombatTagPlusManager ctpManager;
 	private boolean combatTag;
+	private boolean refundPearl;
 	
-	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager) {
+	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager, boolean refundPearl) {
 		instance = this;
 		this.cds = new TickCoolDownHandler<UUID>(Finale.getPlugin(), cooldown); 
 		this.ctpManager = ctpManager;
 		this.combatTag = combatTag;
+		this.refundPearl = refundPearl;
 	}
 	
 	@EventHandler
@@ -48,6 +52,10 @@ public class PearlCoolDownListener implements Listener {
 			DecimalFormat df = new DecimalFormat("#.##");
 			shooter.sendMessage(ChatColor.RED + "You may pearl again in "
 					+ df.format(((double) cd / 20.0))+  " seconds");
+			if (refundPearl) {
+				//cancelling the event will not give the pearl back, so we need to do this here
+				shooter.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
+			}
 			return;
 		}
 		//tag player if desired

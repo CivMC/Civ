@@ -16,6 +16,7 @@ pearls:
   enabled: true
   cooldown: 10s
   combatTag: true
+  refundBlockedPearls: true
   
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
