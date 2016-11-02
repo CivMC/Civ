@@ -17,6 +17,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.entity.Player;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
@@ -96,10 +97,10 @@ public class BastionBlockStorage {
 	 * @param type The type of bastion
 	 * @return Whether or not the bastion was created successfully
 	 */
-	public boolean createBastion(Location loc, BastionType type) {
+	public boolean createBastion(Location loc, BastionType type, Player owner) {
 		long placed = System.currentTimeMillis();
 		BastionBlock bastion = new BastionBlock(loc, placed, 0, -1, type);
-		BastionCreateEvent event = new BastionCreateEvent(bastion, Bukkit.getPlayer(bastion.getOwner()));
+		BastionCreateEvent event = new BastionCreateEvent(bastion, owner);
 		Bukkit.getPluginManager().callEvent(event);
 		if(event.isCancelled()) return false;
 		try(Connection conn = db.getConnection();
@@ -176,9 +177,9 @@ public class BastionBlockStorage {
 		try (Connection conn = db.getConnection();
 				PreparedStatement ps = conn.prepareStatement(deleteDead)) {
 			ps.setString(1, loc.getWorld().getName());
-			ps.setInt(1, loc.getBlockX());
-			ps.setInt(2, loc.getBlockY());
-			ps.setInt(3, loc.getBlockZ());
+			ps.setInt(2, loc.getBlockX());
+			ps.setInt(3, loc.getBlockY());
+			ps.setInt(4, loc.getBlockZ());
 			ps.executeUpdate();
 			dead.remove(loc);
 		} catch (SQLException e) {

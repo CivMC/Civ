@@ -18,6 +18,9 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public final class Bastion extends ACivMod {
 	private static Bastion plugin;
 	private static BastionBlockStorage storage;
@@ -50,6 +53,7 @@ public final class Bastion extends ACivMod {
 	}
 	
 	private void registerListeners() {
+		getLogger().log(Level.INFO, "Registering Listeners");
 		getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
 		getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
 		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
@@ -84,6 +88,7 @@ public final class Bastion extends ACivMod {
 			return;
 		}
 		storage.loadBastions();
+		getLogger().log(Level.INFO, "All Bastions loaded");
 	}
 	
 	//Sets up the command managers

@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
@@ -43,9 +44,8 @@ public class BastionBreakListener implements Listener {
 		storage.deleteDeadBastion(loc);
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
-		if(event.isCancelled()) return;
 		Block block = Utility.getRealBlock(event.getBlock());
 		if(storage.getTypeAtLocation(block.getLocation()) != null) {
 			block.getDrops().clear();
@@ -53,9 +53,8 @@ public class BastionBreakListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
-		if(event.isCancelled()) return;
 		Iterator<Block> iterator = event.blockList().iterator();
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		while(iterator.hasNext()) {
@@ -72,9 +71,8 @@ public class BastionBreakListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityDoorBreak(EntityBreakDoorEvent event) {
-		if(event.isCancelled()) return;
 		Block block = Utility.getRealBlock(event.getBlock());
 		if(storage.getTypeAtLocation(block.getLocation()) != null) {
 			block.getDrops().clear();
@@ -82,9 +80,8 @@ public class BastionBreakListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent event) {
-		if(event.isCancelled()) return;
 		for(Block block : event.getBlocks()) {
 			if(storage.getTypeAtLocation(block.getLocation()) != null) {
 				if(block.getPistonMoveReaction() == PistonMoveReaction.BREAK) {
@@ -98,9 +95,9 @@ public class BastionBreakListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPistonRetract(BlockPistonRetractEvent event) {
-		if(!event.isSticky() || event.isCancelled()) return;
+		if(!event.isSticky()) return;
 		for(Block block : event.getBlocks()) {
 			if(storage.getTypeAtLocation(block.getLocation()) != null) {
 				if(block.getPistonMoveReaction() == PistonMoveReaction.BREAK) {
@@ -114,9 +111,8 @@ public class BastionBreakListener implements Listener {
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockBurn(BlockBurnEvent event) {
-		if(event.isCancelled()) return;
 		Block block = Utility.getRealBlock(event.getBlock());
 		if(storage.getTypeAtLocation(block.getLocation()) != null) {
 			block.getDrops().clear();

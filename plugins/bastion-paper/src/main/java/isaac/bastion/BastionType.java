@@ -3,10 +3,13 @@ package isaac.bastion;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import java.util.logging.Level;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -95,6 +98,13 @@ public class BastionType {
 	 */
 	public List<String> getLore() {
 		return lore;
+	}
+
+	/**
+	 * @return The item / display name for this Bastion type
+	 */
+	public String getItemName() {
+		return itemName;
 	}
 
 	/**
@@ -314,34 +324,38 @@ public class BastionType {
 		return other.getName().equals(name);
 	}
 	
-	@SuppressWarnings("deprecation")
 	/**
 	 * Creates an item representation of the bastion type
 	 * @return The bastion item
 	 */
 	public ItemStack getItemRepresentation() {
-		ItemStack is = new ItemStack(material.getItemType(), 1, material.getData());
-		if(lore != null) {
-			if(!is.hasItemMeta()) {
-				is.setItemMeta(Bukkit.getItemFactory().getItemMeta(material.getItemType()));
-				if(!is.hasItemMeta()) {
-					return is;
-				}
-			}
-			is.getItemMeta().setLore(lore);
-			if(itemName != null && itemName.trim().length() != 0) {
-				is.getItemMeta().setDisplayName(itemName);
-			}
+		ItemStack is = material.toItemStack(1);
+		if ((lore == null || lore.size() == 0) && itemName == null) return is;
+
+		ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(material.getItemType());
+		if (im == null) {
+			Bastion.getPlugin().getLogger().log(Level.WARNING, "Invalid Bastion configuration, unable to represent as an item for {0}", name);
+			return is;
 		}
+		if (lore != null) {
+			im.setLore(lore);
+		}
+		if (itemName != null) {
+			im.setDisplayName(itemName);
+		}
+		is.setItemMeta(im);
+		Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion {0} represented as {1}", new Object[] {name, is.toString()});
 		return is;
 	}
 
 	public static void loadBastionTypes(ConfigurationSection config) {
 		for(String key : config.getKeys(false)) {
+			Bastion.getPlugin().getLogger().log(Level.INFO, "Loading Bastion type {0}", key);
 			BastionType type = getBastionType(config.getConfigurationSection(key));
 			if(type != null) {
 				if(defaultType == null) defaultType = key;
 				types.put(key, type);
+				Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion type {0} loaded: {1}", new Object[]{key, type});
 			}
 		}
 	}
@@ -373,9 +387,18 @@ public class BastionType {
 		return types.get(name);
 	}
 	
-	public static BastionType getBastionType(MaterialData mat, List<String> lore) {
-		for(BastionType type : types.values()) {
-			if(type.material.equals(mat) && ((lore == null && type.lore == null) || type.lore.equals(lore))) return type;
+	public static BastionType getBastionType(MaterialData mat, String itemName, List<String> lore) {
+		if (lore != null && lore.size() == 0) lore = null;
+		for (BastionType type : types.values()) {
+			StringBuilder sb = new StringBuilder();
+			boolean test = type.material.equals(mat);
+			sb.append(type.getName()).append(" is").append(test ? " " : "n't ").append(mat);
+			test &= ((itemName == null && type.itemName == null) || (type.itemName != null && type.itemName.equals(itemName)));
+			sb.append(" name is ").append(itemName).append(test ? " = " : " not ").append(type.itemName);
+			test &= ((lore == null && (type.lore == null || type.lore.size() == 0)) || (type.lore != null && type.lore.equals(lore)));
+			sb.append(" lore is ").append(lore).append(test ? " = " : " not ").append(type.lore);
+			Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType check {0}", sb);
+			if (test) return type;
 		}
 		return null;
 	}
@@ -443,5 +466,14 @@ public class BastionType {
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
 				explodeOnBlockStrength, damageFirstBastion, regenTime);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder(this.name);
+		sb.append(": ").append(material)
+			.append(" name:").append(itemName)
+			.append(" lore[").append(lore != null ? lore.size() : 0).append("]: ").append(lore);
+		return sb.toString();
 	}
 }
