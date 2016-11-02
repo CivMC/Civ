@@ -10,6 +10,8 @@ import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.util.Clock;
 
+import net.minelink.ctplus.compat.api.NpcIdentity;
+
 /**
  * The API for the ExilePearl plugin.
  * @author Gordon
@@ -65,6 +67,15 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return true if the player is tagged
 	 */
 	boolean isPlayerTagged(UUID uid);
+	
+	/**
+	 * Gets a player as a tagged NPC entity.
+	 * <p>
+	 * This will return null for a normal player.
+	 * @param player The player being referenced
+	 * @return The NPC entity instance
+	 */
+	NpcIdentity getPlayerAsTaggedNpc(Player player);
 	
 	/**
 	 * Gets whether NameLayer hooks are enabled

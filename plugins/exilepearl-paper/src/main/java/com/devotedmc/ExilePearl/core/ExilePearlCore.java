@@ -65,7 +65,7 @@ import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
 import net.minelink.ctplus.CombatTagPlus;
-import net.minelink.ctplus.TagManager;
+import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -108,7 +108,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private CoreClock clock;
 	
 	private PluginStorage storage;
-	private TagManager tagManager;
+	private CombatTagPlus combatTag;
 	
 	public ExilePearlCore(final Plugin plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
@@ -226,8 +226,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		
 		Plugin combatPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
 		if(combatPlugin != null) {
-			CombatTagPlus combat = (CombatTagPlus)combatPlugin;
-			tagManager = combat.getTagManager();
+			combatTag = (CombatTagPlus)combatPlugin;
 		}
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
@@ -484,7 +483,7 @@ final class ExilePearlCore implements ExilePearlApi {
 
 	@Override
 	public boolean isCombatTagEnabled() {
-		return tagManager != null;
+		return combatTag != null;
 	}
 
 	@Override
@@ -495,9 +494,17 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public boolean isPlayerTagged(UUID uid) {
 		if (isCombatTagEnabled()) {
-			return tagManager.isTagged(uid);
+			return combatTag.getTagManager().isTagged(uid);
 		}
 		return false;
+	}
+	
+	@Override
+	public NpcIdentity getPlayerAsTaggedNpc(Player player) {
+		if (isCombatTagEnabled()) {
+			return combatTag.getNpcPlayerHelper().getIdentity(player);
+		}
+		return null;
 	}
 
 	@Override

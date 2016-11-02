@@ -72,6 +72,7 @@ import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
+import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -515,15 +516,23 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		Player player = (Player)e.getEntity();
+		final UUID playerId;
+		
+		// If the player was an NPC, grab the ID from it
+		final NpcIdentity npcId = pearlApi.getPlayerAsTaggedNpc((Player)e.getEntity());
+		if (npcId != null) {
+			playerId = npcId.getId();
+		} else {
+			playerId = ((Player)e.getEntity()).getUniqueId();
+		}
 		
 		// These will be priority sorted according to the configured algorithm
-		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(player);
+		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
 		
 		// Check is player is already exiled
-		if (pearlApi.isPlayerExiled(player)) {
+		if (pearlApi.isPlayerExiled(playerId)) {
 			for(Player damager : damagers) {
-				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(player.getUniqueId()));
+				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
 			}
 			return;
 		}
@@ -550,7 +559,7 @@ public class PlayerListener implements Listener, Configurable {
 				continue; 
 			}
 			
-			pearl = pearlApi.exilePlayer(player.getUniqueId(), damager);
+			pearl = pearlApi.exilePlayer(playerId, damager);
 			if (pearl == null) {
 				return; // The pearling failed for some reason
 			}
@@ -563,7 +572,7 @@ public class PlayerListener implements Listener, Configurable {
 			// Notify other damagers if they were not awarded the pearl
 			for(Player damager : damagers) {
 				if (damager != killer) {
-					msg(damager, Lang.pearlYouDamagedNotAwarded, pearlApi.getRealPlayerName(player.getUniqueId()), pearlApi.getRealPlayerName(killer.getUniqueId()));
+					msg(damager, Lang.pearlYouDamagedNotAwarded, pearlApi.getRealPlayerName(playerId), pearlApi.getRealPlayerName(killer.getUniqueId()));
 				}
 			}
 
