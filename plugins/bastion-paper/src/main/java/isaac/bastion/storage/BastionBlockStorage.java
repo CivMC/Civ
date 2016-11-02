@@ -2,6 +2,7 @@ package isaac.bastion.storage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -36,7 +37,6 @@ public class BastionBlockStorage {
 	private Set<BastionBlock> bastions;
 	private Map<Location, String> dead;
 	private int taskId;
-	private int ID = -1;
 	
 	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, balance) values (?,?,?,?,?,?,?);";
 	private static final String updateBastion = "update bastion_blocks set placed=?,balance=? where bastion_id=?;";
@@ -79,7 +79,7 @@ public class BastionBlockStorage {
 				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEFAULT '"
 				+ BastionType.getDefaultType() + "';");	
 		db.registerMigration(2, false, 
-				"ALTER TABLE bastion_blocks ADD COLUMN dead TINYINT(1) DEFAULT 0;");
+				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS dead TINYINT(1) DEFAULT 0;");
 	}
 	
 	/**
@@ -98,25 +98,38 @@ public class BastionBlockStorage {
 	 */
 	public boolean createBastion(Location loc, BastionType type) {
 		long placed = System.currentTimeMillis();
-		BastionBlock bastion = new BastionBlock(loc, placed, 0, ++ID, type);
+		BastionBlock bastion = new BastionBlock(loc, placed, 0, -1, type);
 		BastionCreateEvent event = new BastionCreateEvent(bastion, Bukkit.getPlayer(bastion.getOwner()));
 		Bukkit.getPluginManager().callEvent(event);
 		if(event.isCancelled()) return false;
 		try(Connection conn = db.getConnection();
-				PreparedStatement ps = conn.prepareStatement(addBastion)) {
+				PreparedStatement ps = conn.prepareStatement(addBastion, Statement.RETURN_GENERATED_KEYS);) {
 			ps.setString(1, type.getName());
-			ps.setInt(1, loc.getBlockX());
-			ps.setInt(2, loc.getBlockY());
-			ps.setInt(3, loc.getBlockZ());
-			ps.setString(2, loc.getWorld().getName());
-			ps.setLong(1, placed);
-			ps.setDouble(1, 0);
-			ps.setInt(1, ID);
+			ps.setInt(2, loc.getBlockX());
+			ps.setInt(3, loc.getBlockY());
+			ps.setInt(4, loc.getBlockZ());
+			ps.setString(5, loc.getWorld().getName());
+			ps.setLong(6, placed);
+			ps.setDouble(7, 0);
 			ps.executeUpdate();
+			int id = -1;
+			try (ResultSet nid = ps.getGeneratedKeys();) {
+				if (nid.next()) {
+					id = nid.getInt(1);
+				}
+			}
+			if (id < 0) {
+				log.log(Level.WARNING, "Failed to get ID of bastion during insert at {0}, rolling back", loc);
+				dead.put(loc, bastion.getType().getName());
+				deleteDeadBastion(loc);
+				return false;
+			}
+			bastion.setId(id);
 			bastions.add(bastion);
 			blocks.get(loc.getWorld()).add(bastion);
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Problem saving bastion at " + bastion.getLocation().toString(), e);
+			return false;
 		}
 		return true;
 	}
@@ -177,13 +190,13 @@ public class BastionBlockStorage {
 		try (Connection conn = db.getConnection();
 				PreparedStatement ps = conn.prepareStatement(moveDead)) {
 			ps.setString(1, to.getWorld().getName());
-			ps.setInt(1, to.getBlockX());
-			ps.setInt(2, to.getBlockY());
-			ps.setInt(3, to.getBlockZ());
-			ps.setString(2, from.getWorld().getName());
-			ps.setInt(4, from.getBlockX());
-			ps.setInt(5, from.getBlockY());
-			ps.setInt(6, from.getBlockZ());
+			ps.setInt(2, to.getBlockX());
+			ps.setInt(3, to.getBlockY());
+			ps.setInt(4, to.getBlockZ());
+			ps.setString(5, from.getWorld().getName());
+			ps.setInt(6, from.getBlockX());
+			ps.setInt(7, from.getBlockY());
+			ps.setInt(8, from.getBlockZ());
 			ps.executeUpdate();
 			dead.put(to, dead.remove(from));
 		} catch (SQLException e) {
@@ -199,8 +212,8 @@ public class BastionBlockStorage {
 		try (Connection conn = db.getConnection();
 				PreparedStatement ps = conn.prepareStatement(updateBastion)) {
 			ps.setLong(1, bastion.getPlaced());
-			ps.setDouble(1, bastion.getBalance());
-			ps.setInt(1, bastion.getId());
+			ps.setDouble(2, bastion.getBalance());
+			ps.setInt(3, bastion.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Failed to update bastion at " + bastion.getLocation().toString(), e);
@@ -324,6 +337,7 @@ public class BastionBlockStorage {
 		int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
 		for(World world : Bukkit.getWorlds()) {
 			SparseQuadTree bastionsForWorld = new SparseQuadTree(enderSearchRadius);
+			blocks.put(world, bastionsForWorld);
 			try (Connection conn = db.getConnection();
 					PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
 				ps.setString(1, world.getName());
@@ -333,7 +347,6 @@ public class BastionBlockStorage {
 					int y = result.getInt("loc_y");
 					int z = result.getInt("loc_z");
 					int id = result.getInt("bastion_id");
-					if(id > ID) ID = id;
 					long placed = result.getLong("placed");
 					double balance = result.getDouble("fraction");
 					BastionType type = BastionType.getBastionType(result.getString("bastion_type"));
@@ -352,7 +365,6 @@ public class BastionBlockStorage {
 				log.log(Level.SEVERE, "Error loading bastions from database, shutting down", e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Bastion.getPlugin());
 			}
-			blocks.put(world, bastionsForWorld);
 		}
 	}
 	
