@@ -23,6 +23,7 @@ public class ConfigParser {
 	private boolean pearlEnabled;
 	private long pearlCooldown;
 	private boolean combatTagOnPearl;
+	private boolean refundPearls;
 
 	public ConfigParser(Finale plugin) {
 		this.plugin = plugin;
@@ -72,6 +73,7 @@ public class ConfigParser {
 		pearlCooldown = parseTime(config.getString("cooldown", "10s"));
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
+		refundPearls = config.getBoolean("refundBlockedPearls", true);
 		return true;
 	}
 
@@ -152,6 +154,10 @@ public class ConfigParser {
 
 	public boolean combatTagOnPearl() {
 		return combatTagOnPearl;
+	}
+	
+	public boolean refundBlockedPearls() {
+		return refundPearls;
 	}
 	
 	private Collection<Enchantment> parseDisableEnchantments(ConfigurationSection config) {

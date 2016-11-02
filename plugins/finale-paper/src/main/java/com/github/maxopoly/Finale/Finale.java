@@ -61,7 +61,7 @@ public class Finale extends ACivMod {
 		// So far the pearl listener, CTP manager and ProtocolLib manager are only needed if pearl cooldown changes are enabled.
 		if (config.isPearlEnabled()) {
 			Bukkit.getPluginManager().registerEvents(
-					new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(), ctpManager), this);
+					new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(), ctpManager, config.refundBlockedPearls()), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(), this);
