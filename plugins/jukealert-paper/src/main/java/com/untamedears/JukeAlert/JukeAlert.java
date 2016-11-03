@@ -40,7 +40,6 @@ public class JukeAlert extends ACivMod {
         handle.registerCommands();
         registerEvents();
         registerNameLayerPermissions();
-        registerCommands();
         snitchManager.initialize();
         RateLimiter.initialize(this);
     }
