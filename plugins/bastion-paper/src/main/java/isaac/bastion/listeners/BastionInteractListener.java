@@ -2,6 +2,7 @@ package isaac.bastion.listeners;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -14,6 +15,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -43,7 +45,7 @@ public class BastionInteractListener implements Listener {
 			return;
 		}
 
-		Player player = event.getPlayer();
+		final Player player = event.getPlayer();
 
 		if (PlayersStates.playerInMode(player, Mode.NORMAL)) {
 			return;
@@ -80,7 +82,7 @@ public class BastionInteractListener implements Listener {
 			bastionBlock.mature();
 			player.sendMessage(ChatColor.GREEN + "Matured");
 		} else if (PlayersStates.playerInMode(player, Mode.BASTION)) {
-			BastionType type = pendingBastions.get(block.getLocation());
+			final BastionType type = pendingBastions.get(block.getLocation());
 			if(type == null) return; //if it wasnt stored it cant have been a bastion
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
@@ -90,11 +92,17 @@ public class BastionInteractListener implements Listener {
 			}
 
 			if (reinforcement.canBypass(player)) {
-				if(Bastion.getBastionStorage().createBastion(block.getLocation(), type, player)) {
-					player.sendMessage(ChatColor.GREEN + "Bastion block created");
-				} else {
-					player.sendMessage(ChatColor.RED + "Failed to create bastion");
-				}
+				final Location loc = block.getLocation().clone();
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if(Bastion.getBastionStorage().createBastion(loc,  type, player)) {
+							player.sendMessage(ChatColor.GREEN + "Bastion block created");
+						} else {
+							player.sendMessage(ChatColor.RED + "Failed to create bastion");
+						}
+					}
+				}.runTask(Bastion.getPlugin());
 				PlayersStates.touchPlayer(player);
 			} else{
 				player.sendMessage(ChatColor.RED + "You don't have the right permission");
@@ -102,13 +110,48 @@ public class BastionInteractListener implements Listener {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		MaterialData mat = new MaterialData(event.getBlock().getType(), event.getBlock().getData());
+		ItemStack inHand = event.getItemInHand();
+		if (inHand == null) return;
+
+		BastionType type = blockToType(event.getBlock(), inHand);
+		if(type != null) {
+			Bastion.getPlugin().getLogger().log(Level.INFO, "Pending a bastion at {0}", event.getBlock().getLocation());
+			pendingBastions.put(event.getBlock().getLocation(), type);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onReinforcement(ReinforcementCreationEvent event) {
+		final BastionType type = pendingBastions.remove(event.getBlock().getLocation());
+		// TODO: It is possible that someone places a bastion but doesn't reinforce until after restart
+		//   currently, this will cause a failure. Pending needs to be saved.
+		if(type != null && 
+				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
+			PlayersStates.touchPlayer(event.getPlayer());
+			Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
+			final Location loc = event.getBlock().getLocation().clone();
+			final Player player = event.getPlayer();
+			// Can't do it immediately, as the reinforcement doesn't exist _during_ the create event.
+			new BukkitRunnable() {
+				@Override
+				public void run() {
+					if(Bastion.getBastionStorage().createBastion(loc,  type, player)) {
+						player.sendMessage(ChatColor.GREEN + "Bastion block created");
+					} else {
+						player.sendMessage(ChatColor.RED + "Failed to create bastion");
+					}
+				}
+			}.runTask(Bastion.getPlugin());
+		}
+	}
+
+	@SuppressWarnings("deprecation")
+	public BastionType blockToType(Block block, ItemStack inHand) {
+		MaterialData mat = new MaterialData(block.getType(), block.getData());
 		String displayName = null;
 		List<String> lore = null;
-		ItemStack inHand = event.getItemInHand();
 		if (inHand != null) {
 			ItemMeta im = inHand.getItemMeta();
 			if (im != null && im.hasLore()) {
@@ -119,21 +162,6 @@ public class BastionInteractListener implements Listener {
 			}
 		}
 		BastionType type = BastionType.getBastionType(mat, displayName, lore);
-		if(type != null) pendingBastions.put(event.getBlock().getLocation(), type);
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onReinforcement(ReinforcementCreationEvent event) {
-		BastionType type = pendingBastions.get(event.getBlock().getLocation());
-		pendingBastions.remove(event.getBlock().getLocation());
-		if(type != null && 
-				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
-			PlayersStates.touchPlayer(event.getPlayer());
-			if(Bastion.getBastionStorage().createBastion(event.getBlock().getLocation(),  type, event.getPlayer())) {
-				event.getPlayer().sendMessage(ChatColor.GREEN + "Bastion block created");
-			} else {
-				event.getPlayer().sendMessage(ChatColor.RED + "Failed to create bastion");
-			}
-		}
+		return type;
 	}
 }

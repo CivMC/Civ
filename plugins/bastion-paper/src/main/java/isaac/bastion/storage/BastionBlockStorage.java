@@ -39,8 +39,8 @@ public class BastionBlockStorage {
 	private Map<Location, String> dead;
 	private int taskId;
 	
-	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, balance) values (?,?,?,?,?,?,?);";
-	private static final String updateBastion = "update bastion_blocks set placed=?,balance=? where bastion_id=?;";
+	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, fraction) values (?,?,?,?,?,?,?);";
+	private static final String updateBastion = "update bastion_blocks set placed=?,fraction=? where bastion_id=?;";
 	private static final String deleteBastion = "delete from bastion_blocks where bastion_id=?;";
 	private static final String setDead = "update bastion_blocks set dead=1 where bastion_id=?;";
 	private static final String deleteDead = "delete from bastion_blocks where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
