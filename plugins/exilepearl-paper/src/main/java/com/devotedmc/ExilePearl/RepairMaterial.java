@@ -58,7 +58,7 @@ public class RepairMaterial {
 	
 	/**
 	 * Creates a new RepairMaterial from a config document
-	 * @param The repair material name
+	 * @param name The repair material name
 	 * @param doc The configuration document
 	 * @return The repair material instance
 	 */
