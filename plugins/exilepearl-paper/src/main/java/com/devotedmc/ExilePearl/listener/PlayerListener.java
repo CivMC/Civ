@@ -519,7 +519,10 @@ public class PlayerListener implements Listener, Configurable {
 		final UUID playerId;
 		
 		// If the player was an NPC, grab the ID from it
-		final NpcIdentity npcId = pearlApi.getPlayerAsTaggedNpc((Player)e.getEntity());
+		NpcIdentity npcId = null;
+		try {
+			npcId = pearlApi.getPlayerAsTaggedNpc((Player)e.getEntity());
+		} catch(Exception ex) { }
 		if (npcId != null) {
 			playerId = npcId.getId();
 		} else {
