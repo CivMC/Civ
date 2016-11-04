@@ -6,7 +6,7 @@
 	<version>1.0.5</version>
 	<packaging>jar</packaging>
 	<name>CivSpy</name>
-	<url>https://github.com/ProgrammerDan/CivSpy</url>
+	<url>https://github.com/DevotedMC/CivSpy</url>
 
 	<parent>
 		<groupId>com.programmerdan.minecraft</groupId>
@@ -102,7 +102,7 @@
 		<dependency>
 			<groupId>com.github.devotedmc</groupId>
 			<artifactId>hiddenore</artifactId>
-			<version>1.2.4</version>
+			<version>1.2.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Note: RecipeManager isn't distributed in POM form.
@@ -117,13 +117,13 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>3.5.91</version>
+			<version>3.7.02</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.9.03</version>
+			<version>2.9.08</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
