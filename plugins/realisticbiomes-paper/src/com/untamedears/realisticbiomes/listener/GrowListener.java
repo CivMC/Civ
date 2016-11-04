@@ -274,15 +274,25 @@ public class GrowListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!plugin.persistConfig.enabled)
 			return;
-		growFruit(event.getBlock(), true);
+		
+		if (MaterialAliases.isColumnBlock(event.getBlock().getType())) {
+			growColumnPlant(event.getBlock());
+		} else {
+			growFruit(event.getBlock(), true);
+		}
 	}
 	
 	@EventHandler
 	public void on(BlockPistonExtendEvent event) {
 		if (!plugin.persistConfig.enabled)
 			return;
+		
 		for (Block block: event.getBlocks()) {
-			growFruit(block, true);
+			if (MaterialAliases.isColumnBlock(event.getBlock().getType())) {
+				growColumnPlant(event.getBlock());
+			} else{
+				growFruit(block, true);
+			}
 		}
 	}
 	
@@ -290,7 +300,12 @@ public class GrowListener implements Listener {
 	public void on(BlockPistonRetractEvent event) {
 		if (!plugin.persistConfig.enabled)
 			return;
-		growFruit(event.getBlock(), true);
+		
+		if (MaterialAliases.isColumnBlock(event.getBlock().getType())) {
+			growColumnPlant(event.getBlock());
+		} else {
+			growFruit(event.getBlock(), true);
+		}
 	}
 	
 	/**
@@ -327,6 +342,17 @@ public class GrowListener implements Listener {
 			}
 		}
 		plugin.growAndPersistBlock(block, true, growthConfig, null, null);
+	}
+	
+	public void growColumnPlant(Block block) {
+		GrowthConfig growthConfig = plugin.materialGrowth.get(block.getType());
+		if (MaterialAliases.isColumnBlock(block.getType())) {
+			block = MaterialAliases.getOriginBlock(block, block.getType());
+			
+			if (block != null) {
+				plugin.growAndPersistBlock(block, false, growthConfig, null, null);
+			}
+		}
 	}
 
 	@EventHandler

@@ -37,6 +37,7 @@ public class RealisticBiomes extends JavaPlugin {
 	public GrowthMap materialGrowth;
 	public GrowthMap fishSpawn;
 	public boolean replaceFish;
+	public double fishXPChance;
 	public boolean allowTallPlantReplication;
 	public BlockGrower blockGrower;
 	public PersistConfig persistConfig;
@@ -71,6 +72,7 @@ public class RealisticBiomes extends JavaPlugin {
 		materialGrowth = loadGrowthConfigs(config.getConfigurationSection("growth"), null);
 		fishSpawn = loadGrowthConfigs(config.getConfigurationSection("fish_drops"), GrowthConfig.Type.FISHING_DROP);
 		replaceFish = config.getBoolean("replace_fishing", false);
+		fishXPChance  = config.getDouble("fish_xp_chance", 1.0);
 		allowTallPlantReplication = config.getBoolean("allow_tallplant_replication", true);
 
 		// load the max log level for our logging hack

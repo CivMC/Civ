@@ -16,7 +16,10 @@ import org.bukkit.util.Vector;
 
 public class GrowthConfig {
 	
-protected String name;
+	protected String name;
+	
+	// Material subtypes (if configured)
+	protected List<Integer> subtypes;
 	
 	// a rate of growth between 0 and 1
 	// this represents a chance,
@@ -121,6 +124,8 @@ protected String name;
 		soilLayerOffset = 1;
 		
 		treeType = null;
+		
+		subtypes = new ArrayList<Integer>();
 	}
 	
 	// make a copy of the given configuration and modify it by loading in a YML config section
@@ -190,6 +195,10 @@ protected String name;
 		if (config.isSet("biomes")) {
 			loadBiomes(config.getConfigurationSection("biomes"), biomeAliases);
 		}
+		
+		if (config.isSet("subtypes")) {
+			subtypes = config.getIntegerList("subtypes");
+		}
 	}
 	
 	public String getName() {
@@ -198,6 +207,10 @@ protected String name;
 	
 	public Type getType() {
 		return type;
+	}
+	
+	public List<Integer> getSubtypes() {
+		return subtypes;
 	}
 	
 	public void setName(Object name) {
@@ -214,6 +227,7 @@ protected String name;
 		
 		greenhouseRate = other.greenhouseRate;
 		isGreenhouseEnabled = other.isGreenhouseEnabled;
+		persistentRate = other.persistentRate;
 		
 		needsSunlight = other.needsSunlight;
 		
@@ -226,6 +240,8 @@ protected String name;
 		soilLayerOffset = other.soilLayerOffset;
 		
 		treeType = other.treeType;
+		
+		//subtypes = new ArrayList<Integer>(other.subtypes); subtypes do not inherit
 	}
 	
 	public void loadBiomes(ConfigurationSection config, HashMap<String, List<Biome>> biomeAliases) {

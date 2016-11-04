@@ -79,6 +79,12 @@ public class SpawnListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void fishing(PlayerFishEvent event) {
 		if(event.getState() == PlayerFishEvent.State.CAUGHT_FISH && event.getCaught() != null && event.getCaught() instanceof Item) {
+			if (RealisticBiomes.plugin.fishXPChance < 1.0) {
+				if (RealisticBiomes.plugin.fishXPChance == 0.0 || Math.random() >= RealisticBiomes.plugin.fishXPChance) {
+					event.setExpToDrop(0);
+				}
+			}
+				
 			Block block = event.getCaught().getLocation().getBlock();
 			if (!RealisticBiomes.plugin.replaceFish) {
 				ItemStack items = ((Item)event.getCaught()).getItemStack();
