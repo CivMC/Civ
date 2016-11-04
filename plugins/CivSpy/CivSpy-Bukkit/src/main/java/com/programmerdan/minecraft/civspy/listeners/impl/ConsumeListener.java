@@ -11,8 +11,6 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerFishEvent;
-import org.bukkit.event.player.PlayerFishEvent.State;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,6 +20,12 @@ import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 import com.programmerdan.minecraft.civspy.util.ItemStackToString;
 
+/**
+ * Contributes <code>player.consume</code> datapoints. What was consumed is the
+ * string value.
+ * 
+ * @author ProgrammerDan
+ */
 public class ConsumeListener extends ServerDataListener {
 
 	public ConsumeListener(DataManager target, Logger logger, String server) {
@@ -51,7 +55,7 @@ public class ConsumeListener extends ServerDataListener {
 			pickQ.setAmount(1);
 			DataSample rpick = new PointDataSample("player.consume", this.getServer(),
 					chunk.getWorld().getName(), uuid, chunk.getX(), chunk.getZ(), 
-					ItemStackToString.toString(pickQ), inItem.getAmount());
+					ItemStackToString.toString(pickQ));
 			this.record(rpick);
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Failed to track Consume Event in CivSpy", e);
