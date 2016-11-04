@@ -1,0 +1,34 @@
+mysql:
+  username: ''
+  host: localhost
+  enable: false
+  password: ''
+  database: minecraft
+  port: 3306
+  prefix: ''
+settings:
+  defaultCuboidSize: 11
+  logsPerPage: 10
+  daysFromLastAdminVisitForLoggedSnitchCulling: 0
+  daysFromLastAdminVisitForNonLoggedSnitchCulling: 0  
+  alertRateLimit: 70
+  allowTriggeringLevers: false
+  togglerestartgroupcheck: false
+  displayOwnerOnSnitchBreak: true
+  enableInvisibility: false
+  tax_reinforcement_per_alert: false
+  max_player_alert_count: 2147483647
+#  max_alert_distance:  
+#  max_alert_distance_ns:
+  softDelete: true
+  multipleWorldSupport: false
+entryculling:
+  enabled: true
+  maxcount: 200
+  minlifetime: 1
+  maxlifetime: 8
+snitchculling:
+  maxlifetime: 21
+  enabled: false
+mercury:
+  broadcastallservers: false
