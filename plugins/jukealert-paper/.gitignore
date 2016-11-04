@@ -5,3 +5,4 @@
 !citadel.jar
 *~
 /target/
+.settings/

@@ -5,30 +5,33 @@
 	<groupId>com.untamedears</groupId>
 	<artifactId>JukeAlert</artifactId>
 	<packaging>jar</packaging>
-	<version>1.4.2</version>
+	<version>1.4.3</version>
 	<name>JukeAlert</name>
-	<url>https://github.com/Civcraft/JukeAlert/</url>
+	<url>https://github.com/DevotedMC/JukeAlert/</url>
 
 
 	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
 	<build>
-		<sourceDirectory>${basedir}/src</sourceDirectory>
-
 		<resources>
 			<resource>
-				<directory>${basedir}</directory>
+				<directory>${basedir}/src/main/resources</directory>
 				<includes>
 					<include>*.yml</include>
-					<include>LICENSE.txt</include>
 				</includes>
 				<filtering>true</filtering>
 			</resource>
+            <resource>
+                <directory>${basedir}</directory>
+                <includes>
+                    <include>LICENSE.txt</include>
+                </includes>
+            </resource>
 		</resources>
 	</build>
 
@@ -36,45 +39,51 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.10-R0.1-SNAPSHOT</version>
+			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.7</version>
+			<version>2.9.08</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>3.5.0</version>
+			<version>3.7.02</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.kitteh</groupId>
-			<artifactId>VanishNoPacket</artifactId>
-			<version>3.20</version>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>org.kitteh</groupId>
+            <artifactId>VanishNoPacket</artifactId>
+            <version>3.20</version>
+            <scope>provided</scope>
+        </dependency>
 		<dependency>
 			<groupId>com.untamedears</groupId>
 			<artifactId>ItemExchange</artifactId>
-			<version>1.1</version>
+			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
 			<artifactId>Mercury</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.19</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			 <groupId>vg.civcraft.mc.civmodcore</groupId>
+	         <artifactId>CivModCore</artifactId>
+	         <version>1.5.09</version>
+	         <scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>civcraft-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+			<id>devoted-repo</id>
+			<url>http://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>kittehReleases</id>
