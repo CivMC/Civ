@@ -651,6 +651,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (pearl != null && pearl.getFreedOffline()) {
 			msg(pearl.getPlayer(), Lang.pearlYouWereFreed);
 			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
+			removeHelpItem(pearl.getPlayer());
 		}
 	}
 
@@ -785,7 +786,11 @@ public class PlayerListener implements Listener, Configurable {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerFreed(PlayerFreedEvent e) {
-		msg(e.getPearl().getPlayer(), Lang.pearlYouWereFreed);
+		Player player = e.getPearl().getPlayer();
+		if (player != null && player.isOnline()) {
+			msg(player, Lang.pearlYouWereFreed);
+			removeHelpItem(player);
+		}
 	}
 
 
@@ -1003,6 +1008,11 @@ public class PlayerListener implements Listener, Configurable {
 		}
 	}
 	
+	/**
+	 * Checks whether an item is the help item
+	 * @param is The item stack to check
+	 * @return true if the item is the help item
+	 */
 	private boolean isHelpItem(ItemStack is) {
 		if (is.getType() != Material.STICK) {
 			return false;
@@ -1014,6 +1024,20 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		
 		return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
+	}
+	
+	/**
+	 * Removes the item item from a player's inventory
+	 * @param player The player
+	 */
+	private void removeHelpItem(Player player) {
+		// Remove the help item
+		for (Entry<Integer, ? extends ItemStack> entry : player.getInventory().all(Material.STICK).entrySet()) {
+			if (isHelpItem(entry.getValue())) {
+				player.getInventory().setItem(entry.getKey(), new ItemStack(Material.AIR));
+				break;
+			}
+		}
 	}
 	
 	/**

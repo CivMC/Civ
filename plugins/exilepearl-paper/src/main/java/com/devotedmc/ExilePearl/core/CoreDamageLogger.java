@@ -30,6 +30,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
+import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
@@ -77,8 +78,10 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		Iterator<DamageLog> it = damageLogs.values().iterator();
 		while (it.hasNext()) {
 			DamageLog log = it.next();
-			if (!log.decayDamage(decayAmount)) {
+			UUID playerId = log.getPlayerId();
+			if (!log.decayDamage(decayAmount) && !pearlApi.isPlayerTagged(playerId)) {
 				it.remove();
+				pearlApi.log("Stopped tracking damage for player %s:{%s}", pearlApi.getRealPlayerName(playerId), playerId.toString());
 			}
 		}
 	}
@@ -94,18 +97,26 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 	}
 
 	@Override
+	public void recordDamage(UUID playerId, Player damager, double amount) {
+		Guard.ArgumentNotNull(playerId, "playerId");
+		Guard.ArgumentNotNull(damager, "damager");
+		
+		DamageLog rec = damageLogs.get(playerId);
+		if (rec == null) {
+			rec = new DamageLog(pearlApi.getClock(), playerId);
+			damageLogs.put(playerId, rec);
+			pearlApi.log("Started tracking damage for player %s:{%s}", pearlApi.getRealPlayerName(playerId), playerId.toString());
+		}
+
+		pearlApi.log("%s dealt %.1f damage to %s", pearlApi.getRealPlayerName(damager.getUniqueId()), amount, pearlApi.getRealPlayerName(playerId));
+		rec.recordDamage(damager, amount, maxDamage);
+	}
+	
+	@Override
 	public void recordDamage(Player player, Player damager, double amount) {
 		Guard.ArgumentNotNull(player, "player");
 		Guard.ArgumentNotNull(damager, "damager");
-		
-		DamageLog rec = damageLogs.get(player.getUniqueId());
-		if (rec == null) {
-			rec = new DamageLog(pearlApi.getClock(), player.getUniqueId());
-			damageLogs.put(player.getUniqueId(), rec);
-		}
-
-		//pearlApi.log("Player %s dealt %f damage to player %s.", pearlApi.getRealPlayerName(damager.getUniqueId()), amount, pearlApi.getRealPlayerName(player.getUniqueId()));
-		rec.recordDamage(damager, amount, maxDamage);
+		recordDamage(player.getUniqueId(), damager, amount);
 	}
 
 	@Override
@@ -218,6 +229,19 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		if (!(e.getEntity() instanceof Player)) {
 			return;
 		}
+		
+		final UUID playerId;
+		
+		// If the player was an NPC, grab the ID from it
+		NpcIdentity npcId = null;
+		try {
+			npcId = pearlApi.getPlayerAsTaggedNpc((Player)e.getEntity());
+		} catch(Exception ex) { }
+		if (npcId != null) {
+			playerId = npcId.getId();
+		} else {
+			playerId = ((Player)e.getEntity()).getUniqueId();
+		}
 
 		Player player = (Player) e.getEntity();
 
@@ -247,7 +271,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 			return;
 		}
 
-		recordDamage(player, damager, e.getDamage());
+		recordDamage(playerId, damager, e.getDamage());
 	}
 
 	/**
