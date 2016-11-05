@@ -72,7 +72,7 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		ItemMap currentOut = getGuaranteedOutput(fccf.getRecipeLevel(this), fccf.getRunCount(this));
 		List<ItemStack> stacks = currentOut.getItemStackRepresentation();
-		double factor = (modifier != null) ? (modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this)) : 1.0);
+		double factor = (modifier != null) ? (modifier.getFactor(fccf.getRecipeLevel(this), fccf.getRunCount(this))) : 1.0;
 		for(Entry<ItemStack, Integer> entry : output.getEntrySet()) {
 			double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
 			if (Math.abs(additionalChance) > 0.00000001) {
