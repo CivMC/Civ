@@ -38,6 +38,8 @@ import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.testbukkit.TestBukkitRunner;
 import com.devotedmc.testbukkit.TestPlayer;
 
+import net.minelink.ctplus.compat.api.NpcIdentity;
+
 @RunWith(TestBukkitRunner.class)
 public class CoreDamageLoggerTest {
 	
@@ -362,6 +364,25 @@ public class CoreDamageLoggerTest {
 		assertEquals(0, damagers.size());
 		
 		when(arrow.getShooter()).thenReturn(d1);
+		dut.onEntityDamageByEntity(damageEvent);
+		damagers = dut.getSortedDamagers(player);
+		assertEquals(1, damagers.size());
+		assertEquals(d1, damagers.get(0));
+	}
+	
+	@SuppressWarnings("deprecation")
+	@Test
+	public void testNpcDamage() {
+		dut.start();
+
+		List<Player> damagers = dut.getSortedDamagers(player);
+		assertEquals(0, damagers.size());
+		
+		Player npcPlayer = mock(Player.class);
+		NpcIdentity npcIdentity = new NpcIdentity(player);
+		when(pearlApi.getPlayerAsTaggedNpc(npcPlayer)).thenReturn(npcIdentity);
+		
+		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(d1, npcPlayer, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
