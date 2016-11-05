@@ -25,6 +25,13 @@
           <include>README.md</include>
         </includes>
       </resource>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+        <includes>
+          <include>*.csv</include>
+          <include>*.yml</include>
+        </includes>
+      </resource>
     </resources>
   </build>
 
