@@ -8,7 +8,6 @@ package com.aleksey.castlegates.bastion;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.util.QTBox;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -59,7 +59,7 @@ public class BastionManager implements IBastionManager {
 	private boolean hasBastionAccess(List<Player> players, Block block) {
 		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
 		Location loc = block.getLocation();
-		Set<? extends QTBox> boxes = this.manager.set.forLocation(loc);
+		Set<? extends QTBox> boxes = this.manager.getBlockingBastions(loc);
 		Set<BastionBlock> bastions = null;
 		
 		if (boxes.size() != 0) {
