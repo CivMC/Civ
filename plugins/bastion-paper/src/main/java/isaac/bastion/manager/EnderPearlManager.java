@@ -67,10 +67,10 @@ public class EnderPearlManager {
 		double maxDistance = getMaxDistance(horizontalSpeed, maxTicks);
 
 		//check if it has any possibility of going through a bastion 
-		if (!(maxDistance > BastionType.getMaxRadius() / 2 
+		/*if (!(maxDistance > BastionType.getMaxRadius() / 2 
 				|| maxDistance < -1)) {
 			return;
-		}
+		}*/
 		
 		Player threw = null;
 		if (pearl.getShooter() instanceof Player) {

@@ -39,6 +39,8 @@ public class BastionBlockStorage {
 	private Map<Location, String> dead;
 	private int taskId;
 	
+	private HashMap<Location, BastionType> pendingBastions;
+	
 	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, fraction) values (?,?,?,?,?,?,?);";
 	private static final String updateBastion = "update bastion_blocks set placed=?,fraction=? where bastion_id=?;";
 	private static final String deleteBastion = "delete from bastion_blocks where bastion_id=?;";
@@ -51,6 +53,7 @@ public class BastionBlockStorage {
 		changed = new TreeSet<BastionBlock>();
 		bastions = new TreeSet<BastionBlock>();
 		dead = new HashMap<Location, String>();
+		pendingBastions = new HashMap<Location, BastionType>();
 		this.db = db;
 		this.log = log;
 		long saveDelay = 86400000 / Bastion.getPlugin().getConfig().getLong("mysql.savesPerDay", 64);
@@ -256,6 +259,9 @@ public class BastionBlockStorage {
 			if(box instanceof BastionBlock) {
 				BastionBlock bastion = (BastionBlock) box;
 				BastionType type = bastion.getType();
+				// Skip bastions who don't do midair blocking.
+				if (!type.isBlockPearls() || !type.isBlockMidair()) continue;
+				// Check on other conditions.
 				if (((type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
 						(!type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
 						(!type.isRequireMaturity() || bastion.isMature())) {
@@ -285,6 +291,8 @@ public class BastionBlockStorage {
 				if (box instanceof BastionBlock) {
 					BastionBlock bastion = (BastionBlock)box;
 					BastionType type = bastion.getType();
+					// Don't add bastions that don't block flight
+					if (!type.isBlockElytra()) continue;
 					// Fixed for square field nearness, using diagonal distance as max -- (radius * sqrt(2)) ^ 2
 					if (((type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxBoxDistanceSquared) ||   
 								(!type.isSquare() && bastion.getLocation().distanceSquared(loc) <= maxDistanceSquared)) &&
@@ -399,5 +407,53 @@ public class BastionBlockStorage {
 			}
 		}
 		return forType;
+	}
+	
+	/**
+	 * Allows the Break Listener to properly handle unreinforced bastions, at least
+	 * until restart.
+	 * 
+	 * TODO: Add persistence of "pending" bastions.
+	 * 
+	 * @param loc The location to check for a pending bastion
+	 * @return True if a bastion was pending there.
+	 */
+	public boolean isPendingBastion(Location loc) {
+		return pendingBastions.containsKey(loc);
+	}
+	
+	/**
+	 * Remove from pending and return the type removed.
+	 * Used by external break handlers.
+	 * 
+	 * @param loc The location to get and return a pending bastion
+	 * @return The type of the bastion that was pended.
+	 */
+	public BastionType getAndRemovePendingBastion(Location loc) {
+		return pendingBastions.remove(loc);
+	}
+	
+	/**
+	 * Get from pending and return the type.
+	 * Used by external break handlers.
+	 * 
+	 * @param loc The location to get and return a pending bastion
+	 * @return The type of the bastion that is pended.
+	 */
+	public BastionType getPendingBastion(Location loc) {
+		return pendingBastions.get(loc);
+	}
+	
+	/**
+	 * Allows the Interact listener to register that a bastion block has been 
+	 * placed but is of yet unreinforced and not persisted by the database.
+	 * 
+	 * TODO: Add persistence.
+	 * 
+	 * @param loc The location to record a pended bastion
+	 * @param type The type of the bastion pended
+	 */
+	public void addPendingBastion(Location loc, BastionType type) {
+		pendingBastions.put(loc, type);
 	}
 }

@@ -52,20 +52,21 @@ public class BastionBlockManager {
 	 * Common handler for erosion.
 	 */
 	private void erodeFromAction(Player player, Set<BastionBlock> blocking, Cause cause) {
-		HashMap<String, Set<BastionBlock>> typeMap = new HashMap<String, Set<BastionBlock>>();
+		HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
 		for(BastionBlock block : blocking) {
 			if(cause == Cause.PEARL && !block.getType().isBlockPearls()) continue;
-			if(!typeMap.containsKey(block.getType().getName())) {
-				typeMap.put(block.getType().getName(), new HashSet<BastionBlock>());
+			Set<BastionBlock> set = typeMap.get(block.getType());
+			if(set == null) {
+				set = new HashSet<BastionBlock>();
+				typeMap.put(block.getType(), set); 
 			}
-			typeMap.get(block.getType().getName()).add(block);
+			set.add(block);
 		}
 		
-		for(String key : typeMap.keySet()) {
-			BastionType type = BastionType.getBastionType(key);
+		for(BastionType type : typeMap.keySet()) {
 			if(onCooldown(player.getUniqueId(), type)) continue;
-			Set<BastionBlock> bastions = typeMap.get(key);
-			if(type.getBlocksToErode() < 0) {
+			Set<BastionBlock> bastions = typeMap.get(type);
+			if(type.getBlocksToErode() < 0) { // erode all
 				for(BastionBlock bastion : bastions) {
 					double damage = cause == Cause.BLOCK_PLACED ? bastion.getErosionFromBlock() : bastion.getErosionFromPearl();
 					BastionDamageEvent event = new BastionDamageEvent(bastion, player, cause, damage);
@@ -73,7 +74,7 @@ public class BastionBlockManager {
 					if(event.isCancelled()) continue;
 					bastion.erode(damage);
 				}
-			} else {
+			} else if (type.getBlocksToErode() > 0) { // erode some
 				List<BastionBlock> ordered = new LinkedList<BastionBlock>(bastions);
 				for(int i = 0; i < ordered.size() && i < type.getBlocksToErode(); i++) {
 					int erode = rng.nextInt(ordered.size());
@@ -270,11 +271,15 @@ public class BastionBlockManager {
 				sb.append(ChatColor.YELLOW).append("No Bastion Block");
 			}
 		} else {
-			sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+			if (bastion.getType().isOnlyDirectDestruction()) {
+				sb.append(ChatColor.BLUE).append("Bastion ignores blocks");
+			} else {
+				sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+			}
 		}
 
 		if (dev && bastion != null) {
-			sb.append(ChatColor.BLACK).append("\n").append(bastion.toString());
+			sb.append(ChatColor.GRAY).append("\n").append(bastion.toString());
 		}
 
 		return sb.toString();

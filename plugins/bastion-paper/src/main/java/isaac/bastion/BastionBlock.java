@@ -48,6 +48,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		} else{
 			this.health = 0;
 			destroy();
+			Bastion.getPlugin().severe("Reinforcement removed during BastionBlock instantiation, removing");
 		}
 
 	}
@@ -64,7 +65,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		if(type.getWarmupTime() == 0) {
 			return scaleStart;
 		} else if(time < type.getWarmupTime()) {
-			return (((scaleEnd - scaleStart) / (float) type.getWarmupTime()) * time - scaleStart);
+			return (((scaleEnd - scaleStart) / (float) type.getWarmupTime()) * time + scaleStart);
 		} else {
 			return scaleEnd;
 		}
@@ -91,13 +92,14 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return true if in field
 	 */
 	public boolean inField(Location loc) {
-		return !(yLevelCheck(loc)) ||
+		return !(yLevelCheck(loc) || // don't add parens if you don't know why it wasn't there.
 				(type.isSquare() &&
 					(Math.abs(loc.getBlockX() - location.getBlockX()) > type.getEffectRadius() ||
-					Math.abs(loc.getBlockZ() - location.getBlockZ()) > type.getEffectRadius())) ||
+					Math.abs(loc.getBlockZ() - location.getBlockZ()) > type.getEffectRadius() ) ) ||
 				(!type.isSquare() &&
-				((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
-						(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= type.getEffectRadius()));
+					((loc.getBlockX() - location.getX()) * (float)(loc.getBlockX() - location.getX()) + 
+					(loc.getBlockZ() - location.getZ()) * (float)(loc.getBlockZ() - location.getZ()) >= type.getRadiusSquared() ) )
+				);
 	}
 	
 	public boolean yLevelCheck(Location loc) {
@@ -190,7 +192,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return true if the Bastion's strength is at zero and it should be removed
 	 */
 	public boolean shouldCull() {
-		return health - balance <= 0;
+		return (health - balance) <= 0;
 	}
 	
 	/**
@@ -205,6 +207,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 				reinf.setDurability(Math.min(health + 1, maxHealth));
 			} else {
 				destroy();
+				Bastion.getPlugin().severe("Reinforcement removed without removing bastion, fixed");
 			}
 		}
 	}
@@ -229,11 +232,14 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		health -= wholeToRemove;
 		balance = fractionToRemove;
+		
+		if (health <= 0) health = 0;
 
 		reinforcement.setDurability(health);
 
 		if (shouldCull()) {
 			destroy();
+			Bastion.getPlugin().severe("Reinforcement destroyed, removing bastion");
 		} else {
 			Bastion.getBastionStorage().updated(this);
 		}

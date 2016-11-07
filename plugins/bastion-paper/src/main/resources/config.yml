@@ -30,9 +30,11 @@ bastions:
     regenPerDay: 0
     blocksToErode: 1
     placementCooldown: 2000
-    destroyOnRemove: false
+    destroyOnRemove: true
+    onlyDirectDestroy: false
     pearls:
       block: false
+      blockMidair: fakse
       scaleFactor: 1
       requireMaturity: true
       consumeOnBlock: false
@@ -63,8 +65,10 @@ bastions:
     blocksToErode: 1
     placementCooldown: 2000
     destroyOnRemove: false
+    onlyDirectDestroy: true
     pearls:
       block: false
+      blockMidair: false
       scaleFactor: 1
       requireMaturity: true
       consumeOnBlock: false
@@ -95,12 +99,14 @@ bastions:
     blocksToErode: 1
     placementCooldown: 2000
     destroyOnRemove: true
+    onlyDirectDestroy: false
     pearls:
       block: true
+      blockMidair: true
       scaleFactor: 2
       requireMaturity: true
       consumeOnBlock: true
-      damageFirstBastion: false
+      damageFirstBastion: true
     elytra:
       block: true
       scaleFactor: 1

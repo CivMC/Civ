@@ -33,6 +33,7 @@ public class BastionType {
 	private int erosionTime;
 	private long placementCooldown;
 	private boolean destroyOnRemove;
+	private boolean onlyDirectDestruction;
 	private boolean blockPearls;
 	private boolean blockMidair;
 	private int pearlScale;
@@ -54,7 +55,8 @@ public class BastionType {
 			int erosionTime, long placementCooldown, boolean destroyOnRemove, boolean blockPearls,
 			boolean blockMidair, int pearlScale, boolean pearlRequireMature, boolean consumeOnBlock, int blocksToErode,
 			boolean blockElytra, boolean destroyOnBlockElytra, boolean damageElytra, int elytraScale, boolean elytraRequireMature,
-			boolean explodeOnBlock, double explodeOnBlockStrength, boolean damageFirstBastion, int regenTime) {
+			boolean explodeOnBlock, double explodeOnBlockStrength, boolean damageFirstBastion, int regenTime,
+			boolean onlyDirectDestruction) {
 		this.name = name;
 		this.material = material;
 		this.itemName = itemName;
@@ -69,6 +71,7 @@ public class BastionType {
 		this.erosionTime = erosionTime;
 		this.placementCooldown = placementCooldown;
 		this.destroyOnRemove = destroyOnRemove;
+		this.onlyDirectDestruction = onlyDirectDestruction;
 		this.blockPearls = blockPearls;
 		this.blockMidair = blockMidair;
 		this.pearlScale = pearlScale;
@@ -175,6 +178,14 @@ public class BastionType {
 	 */
 	public boolean isDestroyOnRemove() {
 		return destroyOnRemove;
+	}
+	
+	/**
+	 * 
+	 * @return true if a bastion can only be removed by destroying the block itself.
+	 */
+	public boolean isOnlyDirectDestruction() {
+		return onlyDirectDestruction;
 	}
 
 	/**
@@ -344,7 +355,7 @@ public class BastionType {
 			im.setDisplayName(itemName);
 		}
 		is.setItemMeta(im);
-		Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion {0} represented as {1}", new Object[] {name, is.toString()});
+		//Bastion.getPlugin().getLogger().log(Level.INFO, "Bastion {0} represented as {1}", new Object[] {name, is.toString()});
 		return is;
 	}
 
@@ -390,14 +401,14 @@ public class BastionType {
 	public static BastionType getBastionType(MaterialData mat, String itemName, List<String> lore) {
 		if (lore != null && lore.size() == 0) lore = null;
 		for (BastionType type : types.values()) {
-			StringBuilder sb = new StringBuilder();
+			//StringBuilder sb = new StringBuilder();
 			boolean test = type.material.equals(mat);
-			sb.append(type.getName()).append(" is").append(test ? " " : "n't ").append(mat);
+			//sb.append(type.getName()).append(" is").append(test ? " " : "n't ").append(mat);
 			test &= ((itemName == null && type.itemName == null) || (type.itemName != null && type.itemName.equals(itemName)));
-			sb.append(" name is ").append(itemName).append(test ? " = " : " not ").append(type.itemName);
+			//sb.append(" name is ").append(itemName).append(test ? " = " : " not ").append(type.itemName);
 			test &= ((lore == null && (type.lore == null || type.lore.size() == 0)) || (type.lore != null && type.lore.equals(lore)));
-			sb.append(" lore is ").append(lore).append(test ? " = " : " not ").append(type.lore);
-			Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType check {0}", sb);
+			//sb.append(" lore is ").append(lore).append(test ? " = " : " not ").append(type.lore);
+			//Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType check {0}", sb);
 			if (test) return type;
 		}
 		return null;
@@ -442,6 +453,7 @@ public class BastionType {
 		}
 		long placementCooldown = config.getLong("placementCooldown");
 		boolean destroyOnRemove = config.getBoolean("destroyOnRemove");
+		boolean onlyDirectDestroy = config.getBoolean("onlyDirectDestroy");
 		boolean blockPearls = config.getBoolean("pearls.block");
 		boolean blockMidair = config.getBoolean("pearls.blockMidair");
 		int scaleFactor = config.getInt("pearls.scaleFactor");
@@ -465,7 +477,7 @@ public class BastionType {
 		return new BastionType(name, material, itemName, lore, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
-				explodeOnBlockStrength, damageFirstBastion, regenTime);
+				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy);
 	}
 
 	@Override
@@ -473,7 +485,26 @@ public class BastionType {
 		StringBuilder sb = new StringBuilder(this.name);
 		sb.append(": ").append(material)
 			.append(" name:").append(itemName)
-			.append(" lore[").append(lore != null ? lore.size() : 0).append("]: ").append(lore);
+			.append(" lore[").append(lore != null ? lore.size() : 0).append("]: ").append(lore)
+			.append(" scale[").append(this.startScaleFactor).append("->").append(this.finalScaleFactor)
+			.append(" ").append(this.effectRadius).append(this.square ? "cb": "r")
+			.append(" wm").append(this.warmupTime).append(" cd").append(this.placementCooldown)
+			.append(" ed").append(this.erosionTime).append(" rd").append(this.regenTime)
+			.append(" iY").append(this.includeY).append(" bte").append(this.blocksToErode)
+			.append(" doR").append(this.destroyOnRemove).append(" oDD").append(this.onlyDirectDestruction)
+			.append(" pearls[").append(this.blockPearls);
+		if (this.blockPearls) {
+			sb.append(": mid").append(this.blockMidair).append(" rM").append(this.pearlRequireMature)
+				.append(" sc").append(this.pearlScale).append(" cob").append(this.consumeOnBlock)
+				.append(" dfB").append(this.damageFirstBastion);
+		}
+		sb.append("] elytra[").append(this.blockElytra);
+		if (this.blockElytra) {
+			sb.append(": rM").append(this.elytraRequireMature).append(" sc").append(this.elytraScale)
+				.append(" dob").append(this.damageElytra).append(" Dob").append(this.destroyElytra)
+				.append(" eob").append(this.explodeOnBlock).append(" eos").append(this.explodeOnBlockStrength);
+		}
+		sb.append("]");
 		return sb.toString();
 	}
 }
