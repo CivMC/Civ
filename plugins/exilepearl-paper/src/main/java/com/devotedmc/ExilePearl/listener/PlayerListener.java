@@ -590,7 +590,7 @@ public class PlayerListener implements Listener, Configurable {
 				inv.all(Material.ENDER_PEARL).entrySet()) {
 				ItemStack newstack = entry.getValue();
 				int newstacknum = entry.getKey();
-				if (newstack.getDurability() == 0) {
+				if (newstack.getEnchantmentLevel(Enchantment.DURABILITY) == 0) {
 					if (stack != null) {
 						// don't keep a stack bigger than the previous one
 						if (newstack.getAmount() > stack.getAmount()) {
