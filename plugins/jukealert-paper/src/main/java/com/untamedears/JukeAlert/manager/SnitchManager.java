@@ -57,12 +57,14 @@ public class SnitchManager {
                 Snitch snitch = se.nextElement();
                 snitchesById.put(snitch.getId(), snitch);
                 worldSnitches.add(snitch);
-                Set <Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
-                if (groupSet == null) {
-                	groupSet  = new HashSet<Snitch>();
-                	snitchesByGroup.put(snitch.getGroup().getName(), groupSet);
-                }
-                groupSet.add(snitch);
+				if (snitch.getGroup() != null) {
+					Set <Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
+					if (groupSet == null) {
+						groupSet  = new HashSet<Snitch>();
+						snitchesByGroup.put(snitch.getGroup().getName(), groupSet);
+					}
+					groupSet.add(snitch);
+				}
             }
             snitches.put(world, worldSnitches);
         }
