@@ -34,6 +34,7 @@ factories:
     - Upgrade to First Pickaxe Factory
     - Upgrade to Potion Factory
     - Upgrade to Lottery Factory
+    - Upgrade to Conversion Factory
     - Accident Repair
   Smelter:
     type: FCCUPGRADE
@@ -66,6 +67,7 @@ factories:
     - Create Redstone Lamp
     - Forge Rails
     - Forge Powered Rails
+    - Pull String from any Wool
     - Create Claims Bastion
     - Accident Repair
   Printing_Press:
@@ -352,6 +354,37 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Placeholder
+    - Accident Repair
+  Conversion_Factory:
+    type: FCCUPGRADE
+    name: Conversion Factory
+    fuel:
+      coal:
+        material: COAL
+    citadelBreakReduction: 1.0
+    recipes:
+    - Convert Copper Block T1
+    - Convert Brass Block T2
+    - Convert Graphite Block T3
+    - Convert Steel Block T1
+    - Convert Aluminum Block T2
+    - Convert Silicon Block T3
+    - Convert Silver Block T1
+    - Convert Pearl Block T2
+    - Convert Artifact Block T3
+    - Convert Mercury Block T1
+    - Convert Enderite Block T2
+    - Convert Uranium Block T3
+    - Convert Bronze Block T1
+    - Convert Pewter Block T2
+    - Convert Fiberglass Block T3
+    - Convert Lead Block T1
+    - Convert Nickel Block T2
+    - Convert Oil Block T3
+    - Convert Titanium Block T1
+    - Convert Platinum Block T2
+    - Convert Carbon Block T3
+    - Convert Charcoal Block
     - Accident Repair
 recipes:
   Accident Repair:
@@ -680,6 +713,447 @@ recipes:
         material: PRISMARINE
         durability: 1
         amount: 192
+  Pull String from any Wool:
+    type: PRODUCTION
+    name: Pull String from any Wool
+    production_time: 5s
+    input:
+      wool:
+        material: WOOL
+        durability: -1
+        amount: 4
+    output:
+      string:
+        material: STRING
+        amount: 16
+  Convert Copper Block T1:
+    type: PRODUCTION
+    name: Convert Copper Block T1
+    production_time: 5s
+    input:
+      copperblock:
+        material: REDSTONE_BLOCK
+        name: Copper Block
+        amount: 1
+        lore:
+        - Copper Block T1
+    output:
+      copper:
+        material: REDSTONE
+        amount: 9
+        name: Copper
+        lore:
+        - Copper T1
+  Convert Brass Block T2:
+    type: PRODUCTION
+    name: Convert Brass Block T2
+    production_time: 5s
+    input:
+      brassblock:
+        material: REDSTONE_BLOCK
+        name: Brass Block
+        amount: 1
+        lore:
+        - Brass Block T2
+    output:
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 9
+        lore:
+        - Brass T2
+  Convert Graphite Block T3:
+    type: PRODUCTION
+    name: Convert Graphite Block T3
+    production_time: 5s
+    input:
+      graphiteblock:
+        material: REDSTONE_BLOCK
+        name: Graphite Block
+        amount: 1
+        lore:
+        - Graphite Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 9
+        lore:
+        - Graphite T3
+  Convert Steel Block T1:
+    type: PRODUCTION
+    name: Convert Steel Block T1
+    production_time: 5s
+    input:
+      steelblock:
+        material: IRON_BLOCK
+        name: Steel Block
+        amount: 1
+        lore:
+        - Steel Block T1
+    output:
+      steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 9
+        lore:
+        - Steel T1
+  Convert Aluminum Block T2:
+    type: PRODUCTION
+    name: Convert Aluminum Block T2
+    production_time: 5s
+    input:
+      aluminiumblock:
+        material: IRON_BLOCK
+        name: Aluminum Block
+        amount: 1
+        lore:
+        - Aluminum Block T2
+    output:
+      aluminum:
+        material: IRON_INGOT
+        name: Aluminum
+        amount: 9
+        lore:
+        - Aluminum T2
+  Convert Silicon Block T3:
+    type: PRODUCTION
+    name: Convert Silicon Block T3
+    production_time: 5s
+    input:
+      siliconblock:
+        material: IRON_BLOCK
+        name: Silicon Block
+        amount: 1
+        lore:
+        - Silicon Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 9
+        lore:
+        - Silicon T3
+  Convert Silver Block T1:
+    type: PRODUCTION
+    name: Convert Silver Block T1
+    production_time: 5s
+    input:
+      silverblock:
+        material: GOLD_BLOCK
+        name: Silver Block
+        amount: 1
+        lore:
+        - Silver Block T1
+    output:
+      silver:
+        material: GOLD_INGOT
+        name: Silver
+        amount: 9
+        lore:
+        - Silver T1
+  Convert Pearl Block T2:
+    type: PRODUCTION
+    name: Convert Pearl Block T2
+    production_time: 5s
+    input:
+      pearlblock:
+        material: GOLD_BLOCK
+        name: Pearl Block
+        amount: 1
+        lore:
+        - Pearl Block T2
+    output:
+      pearl:
+        material: GOLD_INGOT
+        name: Pearl
+        amount: 9
+        lore:
+        - Pearl T2
+  Convert Artifact Block T3:
+    type: PRODUCTION
+    name: Convert Artifact Block T3
+    production_time: 5s
+    input:
+      artifactblock:
+        material: GOLD_BLOCK
+        name: Artifact Block
+        amount: 1
+        lore:
+        - Artifact Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      artifact:
+        material: GOLD_INGOT
+        name: Artifact
+        amount: 9
+        lore:
+        - Artifact T3
+  Convert Mercury Block T1:
+    type: PRODUCTION
+    name: Convert Mercury Block T1
+    production_time: 5s
+    input:
+      mercuryblock:
+        material: EMERALD_BLOCK
+        name: Mercury Block
+        amount: 1
+        lore:
+        - Mercury Block T1
+    output:
+      mercury:
+        material: EMERALD
+        name: Mercury
+        amount: 9
+        lore:
+        - Mercury T1
+  Convert Enderite Block T2:
+    type: PRODUCTION
+    name: Convert Enderite Block T2
+    production_time: 5s
+    input:
+      enderiteblock:
+        material: EMERALD_BLOCK
+        name: Enderite Block
+        amount: 1
+        lore:
+        - Enderite Block T2
+    output:
+      enderite:
+        material: EMERALD
+        name: Enderite
+        amount: 9
+        lore:
+        - Enderite T2
+  Convert Uranium Block T3:
+    type: PRODUCTION
+    name: Convert Uranium Block T3
+    production_time: 5s
+    input:
+      uraniumblock:
+        material: EMERALD_BLOCK
+        name: Uranium Block
+        amount: 1
+        lore:
+        - Uranium Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 9
+        lore:
+        - Uranium T3
+  Convert Bronze Block T1:
+    type: PRODUCTION
+    name: Convert Bronze Block T1
+    production_time: 5s
+    input:
+      bronzeblock:
+        material: STAINED_CLAY
+        name: Bronze Block
+        durability: 1
+        amount: 1
+        lore:
+        - Bronze Block T1
+    output:
+      bronze:
+        material: INK_SACK
+        durability: 14
+        amount: 9
+        name: Bronze
+        lore:
+        - Bronze T1
+  Convert Pewter Block T2:
+    type: PRODUCTION
+    name: Convert Pewter Block T2
+    production_time: 5s
+    input:
+      pewterblock:
+        material: STAINED_CLAY
+        name: Pewter Block
+        durability: 9
+        amount: 1
+        lore:
+        - Pewter Block T2
+    output:
+      pewter:
+        material: INK_SACK
+        durability: 8
+        amount: 9
+        name: Pewter
+        lore:
+        - Pewter T2
+  Convert Fiberglass Block T3:
+    type: PRODUCTION
+    name: Convert Fiberglass Block T3
+    production_time: 5s
+    input:
+      fiberglassblock:
+        material: STAINED_CLAY
+        name: Fiberglass Block
+        durability: 10
+        amount: 1
+        lore:
+        - Fiberglass Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      fiberglass:
+        material: INK_SACK
+        durability: 5
+        amount: 9
+        name: Fiberglass
+        lore:
+        - Fiberglass T3
+  Convert Lead Block T1:
+    type: PRODUCTION
+    name: Convert Lead Block T1
+    production_time: 5s
+    input:
+      leadblock:
+        material: COAL_BLOCK
+        name: Lead Block
+        amount: 1
+        lore:
+        - Lead Block T1
+    output:
+      lead:
+        material: COAL
+        name: Lead
+        amount: 9
+        lore:
+        - Lead T1
+  Convert Nickel Block T2:
+    type: PRODUCTION
+    name: Convert Nickel Block T2
+    production_time: 5s
+    input:
+      nickelblock:
+        material: COAL_BLOCK
+        name: Nickel Block
+        amount: 1
+        lore:
+        - Nickel Block T2
+    output:
+      nickel:
+        material: COAL
+        name: Nickel
+        amount: 9
+        lore:
+        - Nickel T2
+  Convert Oil Block T3:
+    type: PRODUCTION
+    name: Convert Oil Block T3
+    production_time: 5s
+    input:
+      oilblock:
+        material: COAL_BLOCK
+        name: Oil Block
+        amount: 1
+        lore:
+        - Oil Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 9
+        lore:
+        - Oil T3
+  Convert Titanium Block T1:
+    type: PRODUCTION
+    name: Convert Titanium Block T1
+    production_time: 5s
+    input:
+      titaniumblock:
+        material: DIAMOND_BLOCK
+        name: Titanium Block
+        amount: 1
+        lore:
+        - Titanium Block T1
+    output:
+      titanium:
+        material: DIAMOND
+        name: Titanium
+        amount: 9
+        lore:
+        - Titanium T1
+  Convert Platinum Block T2:
+    type: PRODUCTION
+    name: Convert Platinum Block T2
+    production_time: 5s
+    input:
+      platinumblock:
+        material: DIAMOND_BLOCK
+        name: Platinum Block
+        amount: 1
+        lore:
+        - Platinum Block T2
+    output:
+      platinum:
+        material: DIAMOND
+        name: Platinum
+        amount: 9
+        lore:
+        - Platinum T2
+  Convert Carbon Block T3:
+    type: PRODUCTION
+    name: Convert Carbon Block T3
+    production_time: 5s
+    input:
+      carbonblock:
+        material: DIAMOND_BLOCK
+        name: Carbon Block
+        amount: 1
+        lore:
+        - Carbon Block T3
+        enchants:
+          unbreaking:
+            enchant: DURABILITY
+            level: 1
+    output:
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 9
+        lore:
+        - Carbon T3
+  Convert Charcoal Block:
+    type: PRODUCTION
+    name: Convert Charcoal Block
+    production_time: 5s
+    input:
+      charcoalblock:
+        material: COAL_BLOCK
+        name: Charcoal Block
+        amount: 1
+        lore:
+        - Charcoal
+    output:
+      charcoal:
+        material: COAL
+        durability: 1
+        amount: 9
   Stone Obsidian:
     type: PRODUCTION
     name: Stone Obsidian
@@ -3412,3 +3886,12 @@ recipes:
         material: DIAMOND
         amount: 512
     factory: Lottery Factory
+  Upgrade to Conversion Factory:
+    name: Upgrade to Conversion Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      stone:
+        material: STONE
+        amount: 64
+    factory: Conversion Factory
