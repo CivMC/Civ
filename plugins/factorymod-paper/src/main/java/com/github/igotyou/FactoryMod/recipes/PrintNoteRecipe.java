@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftMetaBook;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -70,10 +71,10 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 				)
 		{
 			List<String> textLines = new ArrayList<String>();
+			TagManager printingPlateTag = new TagManager(printingPlateStack);
 			
-			if(this.secureNote) {			
-				TagManager tag = new TagManager(printingPlateStack);
-				String serialNumber = (String)tag.getString("SN");
+			if(this.secureNote) {
+				String serialNumber = printingPlateTag.getString("SN");
 				textLines.add(serialNumber);
 			}
 			
@@ -83,7 +84,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 			
 			ItemMeta paperMeta = paper.getItemMeta();
 			paperMeta.setLore(textLines);
-			paperMeta.setDisplayName(this.title);
+			paperMeta.setDisplayName(ChatColor.RESET + printingPlateTag.getCompound("Book").getString("title"));
 			paper.setItemMeta(paperMeta);
 
 			i.addItem(paper);
