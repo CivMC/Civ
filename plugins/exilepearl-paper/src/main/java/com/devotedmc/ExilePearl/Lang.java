@@ -7,10 +7,10 @@ public class Lang
 	public static final String pearlNotExiled = "<i>You are not exiled.";
 	public static final String pearlPearlIsHeld = "<i>Your pearl is held by <a>%s <n>[%d %d %d %s]";
 	public static final String pearlYouBound = "<g>You've bound <c>%s <g>to an exile pearl!";
-	public static final String pearlYouWereBound = "<b>You've been bound to an exile pearl by <c>%s<b>!";
+	public static final String pearlYouWereBound = "<b>You've been bound to an exile pearl by <c>%s";
 	public static final String pearlYouWereFreed = "<g>You've been freed!";
 	public static final String pearlYouFreed = "<g>You freed <c>%s<g>.";
-	public static final String pearlYouDamagedNotAwarded = "<c>%s <i>was bound to an exile pearl by <c>%s.";
+	public static final String pearlYouDamagedNotAwarded = "<c>%s <i>was bound to an exile pearl by <c>%s";
 	public static final String pearlMustBeHoldingPearl = "<b>You must be holding an exile pearl to do that.";
 	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by an exile pearl.";
 	public static final String pearlPlayerNotExiled = "<i>That player is not exiled.";
@@ -20,8 +20,8 @@ public class Lang
 	public static final String pearlBcastRequestSent = "<i>Broadcast request sent.";
 	public static final String pearlBcastRequest = "<c>%s <i>has requested to broadcast their pearl location.\nType <c>/ep confirm <i>to confirm";
 	public static final String pearlNoBcastRequest = "<i>You have no broadcast requests.";
-	public static final String pearlGettingBcasts = "<g>You have now receiving broadcasts from <c>%s.";
-	public static final String pearlNotGettingBcasts = "<i>You aren't getting broadcasts from <c>%s.";
+	public static final String pearlGettingBcasts = "<g>You have now receiving broadcasts from <c>%s";
+	public static final String pearlNotGettingBcasts = "<i>You aren't getting broadcasts from <c>%s";
 	public static final String pearlCantBcastSelf = "<i>You can't broadcast to yourself.";
 	public static final String pearlAlreadyBcasting = "<i>You're already broadcasting to that player.";
 	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
@@ -31,7 +31,7 @@ public class Lang
 	public static final String groupUnknown = "<i>That group doesn't exist.";
 	public static final String groupNoChatPermission = "<i>You don't have permission to chat in that group.";
 	public static final String groupAlreadyBcasting = "<i>You're already broadcasting to that group.";
-	public static final String groupNowBcasting = "<g>You're now broadcasting your pearl location to group <c>%s.";
+	public static final String groupNowBcasting = "<g>You're now broadcasting your pearl location to group <c>%s";
 	public static final String groupPearlBroadcast = "<gray>[%s]<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	
 	public static final String permForbidden = "<b>You don't have permission to %s.";
