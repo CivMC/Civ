@@ -120,6 +120,8 @@ hacks:
           x: 50.0
   InvControl:
     enabled: true
+  InvisibleFixTwo:
+    enabled: true
   InvisibleFix:
     enabled: true
     ignoreOps: true

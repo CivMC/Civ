@@ -146,7 +146,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			sb.append("\n      Feet: ").append(pl_inv.getBoots());
 			for (int slot = 0; slot < 36; slot++) {
 				final ItemStack it = pl_inv.getItem(slot);
-				sb.append("\n      ").append(slot).append(":").append(it);
+				sb.append("\n      ").append(slot).append(":").append(it).append(ChatColor.RESET);
 			}
 			sender.sendMessage(sb.toString());
 		} else {
