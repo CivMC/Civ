@@ -122,6 +122,10 @@ hacks:
     enabled: true
   InvisibleFixTwo:
     enabled: true
+    # in ticks -- ticks to wait after teleport to force update
+    teleportDelay: 5
+    # in milliseconds -- min time between forced updates if active
+    minInterval: 100
   InvisibleFix:
     enabled: true
     ignoreOps: true

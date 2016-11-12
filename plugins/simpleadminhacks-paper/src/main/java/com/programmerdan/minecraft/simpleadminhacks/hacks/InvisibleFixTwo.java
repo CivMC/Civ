@@ -1,47 +1,51 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
-import net.minecraft.server.v1_10_R1.EntityHuman;
 import net.minecraft.server.v1_10_R1.EntityTracker;
 import net.minecraft.server.v1_10_R1.EntityTrackerEntry;
 import net.minecraft.server.v1_10_R1.WorldServer;
+import net.minecraft.server.v1_10_R1.PacketPlayOutEntityTeleport;
 
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InvisibleFixTwoConfig;
 
 /**
- * Adapted wholesale from: https://gist.github.com/aadnk/3773860
- *
- * @author aadnk
+ * DISABLE WITH 1.11 -- This is for 1.10 only. Basically doing what Mojang was too
+ * busy / lazy to do before 1.11. Note this is not a perfect fix, but at least
+ * seems to deal with the largest areas of issue, namely, boats and horses,
+ * by forcing a location packet to be broadcast to other players that are tracking.
+ * 
+ * Portions adapted and heavily modified from code by aadnk: https://gist.github.com/aadnk/3773860
+ * 
  * @author ProgrammerDan
  */
 public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implements Listener {
 	public static final String NAME = "InvisibleFixTwo";
 
 	private Server server;
-	
-	// Try increasing this. May be dependent on lag.
-	private final int TELEPORT_FIX_DELAY = 15; // ticks
+	private Map<Integer, Long> updateMap;
 	
 	public InvisibleFixTwo(SimpleAdminHacks plugin, InvisibleFixTwoConfig config) {
 		super(plugin, config);
 		this.server = plugin.getServer();
-
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -49,69 +53,69 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		if (!config.isEnabled()) return; // ignore if off
 
 		final Player player = event.getPlayer();
-		final int visibleDistance = server.getViewDistance() * 16;
-		
-		// Fix the visibility issue one tick later
-		server.getScheduler().scheduleSyncDelayedTask(plugin(), new Runnable() {
+		server.getScheduler().runTaskLater(plugin(), new Runnable() {
 			@Override
 			public void run() {
-				// Refresh nearby clients
-				updateEntities(getPlayersWithin(player, visibleDistance));
-				
-				plugin().debug("Applying fix ... {0}", visibleDistance);
+				try {
+					forceUpdate(player);
+				} catch (NullPointerException npe) {
+					plugin().debug("Player offline, no forcefix");
+				}
 			}
-		}, TELEPORT_FIX_DELAY);
+		}, config.getTeleportFixDelay());
 	}
 	
-
-	public void updateEntities(List<Player> observers) {
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerVehicleMove(VehicleMoveEvent move) {
+		if (!config.isEnabled()) return; // ignore if off
 		
-		// Refresh every single player
-		for (Player player : observers) {
-			updateEntity(player, observers);
+		Vehicle vehicle = move.getVehicle();
+		if (vehicle == null) return;
+		Entity e = vehicle.getPassenger();
+		if (e == null) return;
+		forceUpdate(e);
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerMoveInVehicle(PlayerMoveEvent move) {
+		if (!config.isEnabled()) return; // ignore if off
+		
+		Player p = move.getPlayer();
+		if (p == null) return;
+		Entity vehicle = p.getVehicle();
+		if (vehicle == null) return;
+		forceUpdate(p);
+	}
+	
+	private void forceUpdate(Entity entity) {
+		Long last = updateMap.get(entity.getEntityId());
+		long now = System.currentTimeMillis();
+		if (last == null || last < now - config.getFixInterval()) {
+			updateEntities(entity);
+			updateMap.put(entity.getEntityId(), now);
+			//plugin().debug("Forcing packet-based update for {0}", entity);
 		}
 	}
 	
-	public void updateEntity(Entity entity, List<Player> observers) {
+	private void updateEntities(final Entity entity) {
 		World world = entity.getWorld();
 		WorldServer worldServer = ((CraftWorld) world).getHandle();
 
 		EntityTracker tracker = worldServer.tracker;
+		
 		EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities
 				.get(entity.getEntityId());
-
-		List<EntityHuman> nmsPlayers = getNmsPlayers(observers);
-
-		// Force Minecraft to resend packets to the affected clients
-		entry.trackedPlayers.removeAll(nmsPlayers);
-		entry.scanPlayers(nmsPlayers);
-	}
-
-	private List<EntityHuman> getNmsPlayers(List<Player> players) {
-		List<EntityHuman> nsmPlayers = new ArrayList<EntityHuman>();
-
-		for (Player bukkitPlayer : players) {
-			CraftPlayer craftPlayer = (CraftPlayer) bukkitPlayer;
-			nsmPlayers.add(craftPlayer.getHandle());
-		}
-
-		return nsmPlayers;
+		
+		net.minecraft.server.v1_10_R1.Entity eEntity = getNmsEntity(entity);
+		
+		entry.broadcast(new PacketPlayOutEntityTeleport(eEntity));
 	}
 	
-	private List<Player> getPlayersWithin(Player player, int distance) {
-		List<Player> res = new ArrayList<Player>();
-		int d2 = distance * distance;
-
-		for (Player p : server.getOnlinePlayers()) {
-			if (p.getWorld() == player.getWorld()
-					&& p.getLocation().distanceSquared(player.getLocation()) <= d2) {
-				res.add(p);
-			}
-		}
-
-		return res;
+	private net.minecraft.server.v1_10_R1.Entity getNmsEntity(final Entity entity) {
+		CraftEntity craftEntity = (CraftEntity) entity;
+		return craftEntity.getHandle();
 	}
-
+	
 	@Override
 	public void registerListeners() {
 		if (config.isEnabled()) {
@@ -126,6 +130,7 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 
 	@Override
 	public void dataBootstrap() {
+		updateMap = new HashMap<Integer, Long>();
 	}
 
 	@Override
@@ -138,6 +143,9 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 
 	@Override
 	public void dataCleanup() {
+		if (updateMap != null) {
+			updateMap.clear();
+		}
 	}
 
 	@Override
