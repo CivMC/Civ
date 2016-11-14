@@ -23,7 +23,7 @@ public class RunAmountSetterCommand extends PlayerCommand {
 		setIdentifier("fmsrc");
 		setDescription("Sets the amount of runs for the currently selected recipe in the factory you are looking at");
 		setUsage("/fmsrc <runCount>");
-		setArguments(0, 1);
+		setArguments(1, 1);
 	}
 
 	@Override
