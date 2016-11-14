@@ -17,7 +17,7 @@ public class Menu extends PlayerCommand {
 	public Menu(String name) {
 		super(name);
 		setIdentifier("fm");
-		setDescription("Opens up the factory brower");
+		setDescription("Opens up the factory browser");
 		setUsage("/fm");
 		setArguments(0, 10);
 	}
