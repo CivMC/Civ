@@ -2921,7 +2921,7 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 1024
+        amount: 640
         lore:
         - Nickel T2
       aluminum:
@@ -2970,7 +2970,7 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 1024
+        amount: 640
         lore:
         - Nickel T2
       aluminum:
@@ -3019,7 +3019,7 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 1024
+        amount: 640
         lore:
         - Nickel T2
       aluminum:
