@@ -36,7 +36,7 @@ public class CmdAdminSetType extends PearlCommand {
 			return;
 		}
 		
-		PearlType type = PearlType.valueOf(argAsString(1));
+		PearlType type = PearlType.fromString(argAsString(1));
 		if (type == null) {
 			type = PearlType.valueOf(argAsInt(1));
 		}

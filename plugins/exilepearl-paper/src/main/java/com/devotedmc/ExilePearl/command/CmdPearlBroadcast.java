@@ -45,7 +45,7 @@ public class CmdPearlBroadcast extends PearlCommand {
 			Group g = GroupManager.getGroup(argAsString(0));
 			
 			if (g != null) {
-				if (!gm.hasAccess(g.getName(), player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+				if (!gm.hasAccess(g, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 					msg(Lang.groupNoChatPermission);
 					return;
 				}

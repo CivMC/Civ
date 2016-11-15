@@ -3,7 +3,6 @@ package com.devotedmc.ExilePearl.command;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -71,6 +70,10 @@ public class CmdAdminExileAny extends PearlCommand {
 		}
 		
 		if (killerId == null) {
+			killerId = player().getUniqueId();
+		}
+		
+		if (killerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
@@ -95,7 +98,7 @@ public class CmdAdminExileAny extends PearlCommand {
 				return;
 			}
 			
-			Block b = new Location(world, x, y, z).getBlock();			
+			Block b = world.getBlockAt(x, y, z);
 			BlockState bs = b.getState();
 			if (bs == null || (!(bs instanceof InventoryHolder))) {
 				msg(Lang.locNotInventory);
