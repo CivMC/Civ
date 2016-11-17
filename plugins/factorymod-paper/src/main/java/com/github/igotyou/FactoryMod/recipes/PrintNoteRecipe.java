@@ -6,11 +6,11 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftMetaBook;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
@@ -23,8 +23,13 @@ import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
-	public static final String pamphletName = "Pamphlet";
-	public static final String secureNoteName = "Secure Note";
+	private static class BookInfo {
+		public String title;
+		public List<String> lines;
+	}
+	
+	private static final String pamphletName = "Pamphlet";
+	private static final String secureNoteName = "Secure Note";
 	
 	private boolean secureNote;
 	private String title;
@@ -70,21 +75,12 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 				&& toRemove.removeSafelyFrom(i)
 				)
 		{
-			List<String> textLines = new ArrayList<String>();
-			TagManager printingPlateTag = new TagManager(printingPlateStack);
-			
-			if(this.secureNote) {
-				String serialNumber = printingPlateTag.getString("SN");
-				textLines.add(serialNumber);
-			}
-			
-			addTextLines(printingPlateStack, textLines);
-
+			BookInfo info = getBookInfo(printingPlateStack);
 			ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 			
 			ItemMeta paperMeta = paper.getItemMeta();
-			paperMeta.setLore(textLines);
-			paperMeta.setDisplayName(ChatColor.RESET + printingPlateTag.getCompound("Book").getString("title"));
+			paperMeta.setLore(info.lines);
+			paperMeta.setDisplayName(ChatColor.RESET + info.title);
 			paper.setItemMeta(paperMeta);
 
 			i.addItem(paper);
@@ -93,21 +89,36 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		logAfterRecipeRun(i, fccf);
 	}
 	
-	private void addTextLines(ItemStack printingPlateStack, List<String> result) {
+	private BookInfo getBookInfo(ItemStack printingPlateStack) {
 		ItemStack book = createBook(printingPlateStack, 1);
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
 		String text = bookMeta.getPageCount() > 0 ? bookMeta.getPage(1): "";
-		String[] lines = text.split("§0\n");
+		String[] lines = text.split("\n");
+		List<String> fixedLines = new ArrayList<String>();
 		
-		for(int i = 0; i < lines.length; i++) {
-			String line = lines[i];
+		for(String line : lines) {
+			String fixedLine = line.replaceAll("§0", ChatColor.GRAY.toString());
 			
-			if(i > 0) {
-				line = line.substring(2);
+			if(fixedLines.size() == 0) {
+				fixedLine = ChatColor.GRAY + fixedLine;
 			}
 			
-			result.add(ChatColor.GRAY + line);
+			fixedLines.add(fixedLine);
 		}
+		
+		String bookTitle = bookMeta.getTitle();
+		
+		BookInfo info = new BookInfo();
+		info.lines = fixedLines;
+		info.title = bookTitle != null && bookTitle.length() > 0 ? bookTitle: this.title;
+		
+		if(this.secureNote) {
+			TagManager printingPlateTag = new TagManager(printingPlateStack);
+			String serialNumber = printingPlateTag.getString("SN");
+			info.lines.add(serialNumber);
+		}
+
+		return info;
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
