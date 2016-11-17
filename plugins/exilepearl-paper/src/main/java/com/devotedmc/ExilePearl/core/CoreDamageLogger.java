@@ -10,11 +10,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Snowball;
-import org.bukkit.entity.Wolf;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -29,6 +26,7 @@ import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
 
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.util.Guard;
@@ -245,28 +243,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 		Player player = (Player) e.getEntity();
 
-		Player damager = null;
-		if (e.getDamager() instanceof Player) {
-			damager = (Player) e.getDamager();
-		} else if (e.getDamager() instanceof Wolf) {
-			Wolf wolf = (Wolf) e.getDamager();
-			if (wolf.getOwner() instanceof Player) {
-				damager = (Player) wolf.getOwner();
-			}
-		} else if (e.getDamager() instanceof Arrow) {
-			Arrow arrow = (Arrow) e.getDamager();
-			if (!(arrow.getShooter() instanceof Player)) {
-				return;
-			}
-			damager = (Player) arrow.getShooter();
-		} else if (e.getDamager() instanceof Snowball) {
-			Snowball snowball = (Snowball)e.getDamager();
-			if (!(snowball.getShooter() instanceof Player)) {
-				return;
-			}
-			damager = (Player) snowball.getShooter();
-		}
-
+		Player damager = new EntityDamageEventWrapper(e).getPlayerDamager();
 		if (damager == null || damager == player) {
 			return;
 		}

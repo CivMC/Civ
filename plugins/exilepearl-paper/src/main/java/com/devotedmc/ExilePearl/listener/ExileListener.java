@@ -41,6 +41,7 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
 
 /**
  * Listener for disallowing certain actions of exiled players
@@ -178,10 +179,10 @@ public class ExileListener extends RuleListener implements Configurable {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerDamage(EntityDamageByEntityEvent e) {
-		if (!(e.getDamager() instanceof Player)) {
+		Player player = new EntityDamageEventWrapper(e).getPlayerDamager();
+		if (player == null) {
 			return;
 		}
-		Player player = (Player)e.getDamager();
 		
 		if (e.getEntity() instanceof Player) {
 			checkAndCancelRule(ExileRule.PVP, e, player);

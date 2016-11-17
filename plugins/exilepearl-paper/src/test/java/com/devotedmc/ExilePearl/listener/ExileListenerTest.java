@@ -18,13 +18,19 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.block.Hopper;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Egg;
 import org.bukkit.entity.EnderPearl;
+import org.bukkit.entity.Fireball;
+import org.bukkit.entity.FishHook;
 import org.bukkit.entity.LingeringPotion;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.entity.ThrownPotion;
+import org.bukkit.entity.Wolf;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
@@ -320,6 +326,91 @@ public class ExileListenerTest {
 		
 		e = new EntityDamageByEntityEvent(player, mock(Player.class), null, modifiers, modifierFunctions);
 		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+	}
+	
+	@Test
+	public void testOnPlayerDamagePlayerProjectile() {
+		Arrow arrow = mock(Arrow.class);
+		
+		EntityDamageByEntityEvent e = new EntityDamageByEntityEvent(arrow, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(true);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		e = new EntityDamageByEntityEvent(arrow, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		e = new EntityDamageByEntityEvent(arrow, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(true);
+		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+		
+		e = new EntityDamageByEntityEvent(arrow, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+		
+		when(arrow.getShooter()).thenReturn(player);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+		
+		// Snowball
+		Snowball snowball = mock(Snowball.class);
+		e = new EntityDamageByEntityEvent(snowball, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		when(snowball.getShooter()).thenReturn(player);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+		
+		// Egg
+		Egg egg = mock(Egg.class);
+		e = new EntityDamageByEntityEvent(egg, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		when(egg.getShooter()).thenReturn(player);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+		
+		// Wolf
+		Wolf wolf = mock(Wolf.class);
+		e = new EntityDamageByEntityEvent(wolf, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		when(wolf.getOwner()).thenReturn(player);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+		
+		// FishHook
+		FishHook fishHook = mock(FishHook.class);
+		e = new EntityDamageByEntityEvent(fishHook, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		when(fishHook.getShooter()).thenReturn(player);
+		dut.onPlayerDamage(e);
+		assertTrue(e.isCancelled());
+		
+		// Fireball
+		Fireball fireball = mock(Fireball.class);
+		e = new EntityDamageByEntityEvent(fireball, mock(Player.class), null, modifiers, modifierFunctions);
+		when(config.canPerform(ExileRule.PVP)).thenReturn(false);
+		dut.onPlayerDamage(e);
+		assertFalse(e.isCancelled());
+
+		when(fireball.getShooter()).thenReturn(player);
 		dut.onPlayerDamage(e);
 		assertTrue(e.isCancelled());
 	}
