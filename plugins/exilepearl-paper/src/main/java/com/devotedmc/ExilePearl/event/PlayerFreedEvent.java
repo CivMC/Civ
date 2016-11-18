@@ -9,6 +9,10 @@ import com.devotedmc.ExilePearl.PearlFreeReason;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
+/**
+ * Event that is called when an exiled player is being freed
+ * @author Gordon
+ */
 public class PlayerFreedEvent extends Event implements Cancellable {
 	
 	private final ExilePearl pearl;

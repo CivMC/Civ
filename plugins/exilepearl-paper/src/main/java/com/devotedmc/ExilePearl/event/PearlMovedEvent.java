@@ -8,6 +8,10 @@ import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
+/**
+ * Event that is called when a pearl is moved
+ * @author Gordon
+ */
 public class PearlMovedEvent extends Event {
 	
 	private final ExilePearl pearl;

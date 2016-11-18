@@ -6,6 +6,13 @@ import org.bukkit.event.HandlerList;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
+/**
+ * Event that is called when a decay operation occurs. 
+ * <p>
+ * This event is called twice for every decay operation. Once at the beginning
+ * and once when the decay is complete. The start operation can be cancelled.
+ * @author Gordon
+ */
 public class PearlDecayEvent extends Event implements Cancellable {
 	
 	public enum DecayAction { START, COMPLETE };

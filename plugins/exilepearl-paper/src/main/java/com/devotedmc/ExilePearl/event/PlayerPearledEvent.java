@@ -8,6 +8,10 @@ import com.devotedmc.ExilePearl.ExilePearl;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
+/**
+ * Event that is called when a player is being exiled
+ * @author Gordon
+ */
 public class PlayerPearledEvent extends Event implements Cancellable {
 	
 	private final ExilePearl pearl;

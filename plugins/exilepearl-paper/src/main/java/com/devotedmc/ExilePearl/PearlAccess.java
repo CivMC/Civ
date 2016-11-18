@@ -23,8 +23,10 @@ public interface PearlAccess {
 	 * should be checked for success. A non-null value indicates success.
 	 * <p>
 	 * An exile operation can fail and return null for several reasons:
+	 * <ul>
 	 * <li> The player to be exiled is already exiled
-	 * <li> The {@link PlayerPearledEvent} is canceled by another plugin
+	 * <li> The {@link com.devotedmc.ExilePearl.event.PlayerPearledEvent PlayerPearledEvent} is canceled by another plugin
+	 * </ul>
 	 * @param exiledId The exiled player ID
 	 * @param killerId The killing player ID
 	 * @param holder The pearl holder
@@ -115,7 +117,7 @@ public interface PearlAccess {
 	 * Frees an exile pearl
 	 * <p>
 	 * It's possible for the free operation to fail if the
-	 * {@link PlayerFreedEvent} is canceled.
+	 * {@link com.devotedmc.ExilePearl.event.PlayerFreedEvent PlayerFreedEvent} is canceled.
 	 * @param pearl The pearl instance to free
 	 * @param reason The reason that the pearl is being freed
 	 * @return true if the pearl is freed, otherwise false
