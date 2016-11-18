@@ -96,7 +96,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		List<String> fixedLines = new ArrayList<String>();
 		
 		for(String line : lines) {
-			String fixedLine = line.replaceAll("§0", ChatColor.GRAY.toString());
+			String fixedLine = line.replaceAll(ChatColor.BLACK.toString(), ChatColor.GRAY.toString());
 			
 			if(fixedLines.size() == 0) {
 				fixedLine = ChatColor.GRAY + fixedLine;
