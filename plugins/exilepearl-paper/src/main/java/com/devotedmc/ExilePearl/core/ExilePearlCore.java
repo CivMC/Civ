@@ -20,6 +20,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.generator.ChunkGenerator;
@@ -64,6 +65,7 @@ import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
+import net.elseland.xikage.MythicMobs.MythicMobs;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
@@ -487,6 +489,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 
 	@Override
+	public boolean isMythicMobsEnabled() {
+		return Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
+	}
+
+	@Override
 	public LoreProvider getLoreProvider() {
 		return loreGenerator;
 	}
@@ -619,6 +626,15 @@ final class ExilePearlCore implements ExilePearlApi {
 				}
 			}
 		} catch(Exception ex) { }
+		return false;
+	}
+	
+
+	@Override
+	public boolean isMythicMob(Entity entity) {
+		if (isMythicMobsEnabled()) {
+			return MythicMobs.inst().getAPI().getMobAPI().isMythicMob(entity);
+		}
 		return false;
 	}
 
