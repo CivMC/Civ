@@ -9,8 +9,7 @@ public class GlobalYLimitedArea extends AbstractYLimitedArea {
 
 	private World world;
 
-	public GlobalYLimitedArea(double lowerYBound, double upperYBound,
-			World world) {
+	public GlobalYLimitedArea(double lowerYBound, double upperYBound, World world) {
 		super(lowerYBound, upperYBound);
 		this.world = world;
 	}

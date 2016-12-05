@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class CommandHandler {
-	
+
 	private static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";
 
 	public Map<String, Command> commands = new HashMap<>();
@@ -29,17 +29,18 @@ public abstract class CommandHandler {
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
-			
+
 			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
 				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
 				return true;
 			}
-			
-			if (args.length < command.getMinArguments() || (command.getErrorOnTooManyArgs() && args.length > command.getMaxArguments())) {
+
+			if (args.length < command.getMinArguments()
+					|| (command.getErrorOnTooManyArgs() && args.length > command.getMaxArguments())) {
 				helpPlayer(command, sender);
 				return true;
 			}
-			
+
 			command.setSender(sender);
 			command.setArgs(args);
 			command.execute(sender, args);
@@ -50,7 +51,7 @@ public abstract class CommandHandler {
 	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
-			
+
 			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
 				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
 				return null;
@@ -58,29 +59,26 @@ public abstract class CommandHandler {
 
 			command.setSender(sender);
 			command.setArgs(args);
-			List <String> completes = command.tabComplete(sender, args);
+			List<String> completes = command.tabComplete(sender, args);
 			String completeArg;
 			if (args.length == 0) {
 				completeArg = "";
-			}
-			else {
-				completeArg = args [args.length - 1].toLowerCase();
+			} else {
+				completeArg = args[args.length - 1].toLowerCase();
 			}
 			if (completes == null) {
 				completes = new LinkedList<String>();
 				if (mercuryEnabled) {
 					return MercuryTabCompleter.complete(completeArg);
-				}
-				else {
-					for(Player p : Bukkit.getOnlinePlayers()) {
+				} else {
+					for (Player p : Bukkit.getOnlinePlayers()) {
 						if (p.getName().toLowerCase().startsWith(completeArg)) {
 							completes.add(p.getName());
 						}
 					}
 				}
 				return completes;
-			}
-			else {
+			} else {
 				return completes;
 			}
 		}
@@ -88,11 +86,9 @@ public abstract class CommandHandler {
 	}
 
 	protected void helpPlayer(Command command, CommandSender sender) {
-		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Command: ")
-				.append(command.getName()).toString());
-		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Description: ")
-				.append(command.getDescription()).toString());
-		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ")
-				.append(command.getUsage()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Command: ").append(command.getName()).toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Description: ").append(command.getDescription())
+				.toString());
+		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ").append(command.getUsage()).toString());
 	}
 }

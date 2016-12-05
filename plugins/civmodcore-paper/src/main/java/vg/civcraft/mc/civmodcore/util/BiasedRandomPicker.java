@@ -20,15 +20,13 @@ public class BiasedRandomPicker<E> {
 	/**
 	 * Constructor
 	 * 
-	 * The given map should contain all objects that should be available in this
-	 * instance, where each key is an object to pick and the respective value
-	 * for that key is the chance to pick that item. Chances must be within
-	 * [0,1], where 0 means 0 % chance to occur and 1 means 100 %. All chances
-	 * summed up must equal one with a maximum inaccuracy of 10^(-6)
+	 * The given map should contain all objects that should be available in this instance, where each key is an object
+	 * to pick and the respective value for that key is the chance to pick that item. Chances must be within [0,1],
+	 * where 0 means 0 % chance to occur and 1 means 100 %. All chances summed up must equal one with a maximum
+	 * inaccuracy of 10^(-6)
 	 * 
 	 * @param chances
-	 *            Map containing all available objects and their chances to
-	 *            occur
+	 *            Map containing all available objects and their chances to occur
 	 * 
 	 */
 	public BiasedRandomPicker(Map<E, Double> chances) {
@@ -56,10 +54,9 @@ public class BiasedRandomPicker<E> {
 	}
 
 	/**
-	 * Randomly picks an element according to the chances specified for this
-	 * instance. In the case of malformed configs, this method may be unable to
-	 * pick an element and return null, but the chance for that is guaranteed to
-	 * be less than 10^(-120)
+	 * Randomly picks an element according to the chances specified for this instance. In the case of malformed configs,
+	 * this method may be unable to pick an element and return null, but the chance for that is guaranteed to be less
+	 * than 10^(-120)
 	 * 
 	 * @return A randomly picked element
 	 */
@@ -77,8 +74,8 @@ public class BiasedRandomPicker<E> {
 	}
 
 	/**
-	 * Gets the chance for specific object to be picked by this instance. If
-	 * they object doesnt have an explicit chance set, 0.0 will be returned
+	 * Gets the chance for specific object to be picked by this instance. If they object doesnt have an explicit chance
+	 * set, 0.0 will be returned
 	 * 
 	 * @param e
 	 *            Object to check chance for

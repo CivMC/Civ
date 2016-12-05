@@ -23,9 +23,7 @@ public abstract class Dialog {
 		DialogManager.instance.registerDialog(player, this);
 		this.player = player;
 
-		convo = new ConversationFactory(plugin)
-				.withModality(false)
-				.withLocalEcho(false)
+		convo = new ConversationFactory(plugin).withModality(false).withLocalEcho(false)
 				.withFirstPrompt(new StringPrompt() {
 
 					@Override

@@ -8,8 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
 /**
- * Utility to automate creating views, which have multiple pages and
- * automatically adjust their size
+ * Utility to automate creating views, which have multiple pages and automatically adjust their size
  *
  */
 public class MultiPageView {
@@ -31,11 +30,9 @@ public class MultiPageView {
 	}
 
 	/**
-	 * Construct a clickable inventory containing the clickables given in the
-	 * constructor, split up on different pages. The view will also include bach
-	 * and forth buttons to navigate. This method should only be called
-	 * repeatedly to change pages, if the clickables need to change just make a
-	 * new instance
+	 * Construct a clickable inventory containing the clickables given in the constructor, split up on different pages.
+	 * The view will also include bach and forth buttons to navigate. This method should only be called repeatedly to
+	 * change pages, if the clickables need to change just make a new instance
 	 * 
 	 * @return ClickableInventory of the current page
 	 */
@@ -126,9 +123,8 @@ public class MultiPageView {
 	}
 
 	/**
-	 * Allows setting a menu slot at the bottom of the gui. The slot must be a
-	 * number between 0 and 6 (inclusive on both ends), because only 7 slots are
-	 * available
+	 * Allows setting a menu slot at the bottom of the gui. The slot must be a number between 0 and 6 (inclusive on both
+	 * ends), because only 7 slots are available
 	 * 
 	 * @param click
 	 *            Clickable to put in slot
@@ -143,8 +139,7 @@ public class MultiPageView {
 	}
 
 	/**
-	 * Force changes the page of this view. You will have to construct a new
-	 * inventory for this to apply
+	 * Force changes the page of this view. You will have to construct a new inventory for this to apply
 	 * 
 	 * @param page
 	 *            Page to set to

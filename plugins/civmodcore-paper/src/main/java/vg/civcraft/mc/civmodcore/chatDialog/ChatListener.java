@@ -15,8 +15,7 @@ public class ChatListener implements Listener {
 		if (dia != null) {
 			Collection<String> completes = e.getTabCompletions();
 			completes.clear();
-			completes.addAll(dia.onTabComplete(e.getLastToken(), e
-					.getChatMessage().split(" ")));
+			completes.addAll(dia.onTabComplete(e.getLastToken(), e.getChatMessage().split(" ")));
 		}
 	}
 

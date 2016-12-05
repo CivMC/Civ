@@ -12,7 +12,6 @@ public class AnimatedClickable implements IClickable {
 	private long timing;
 	private int currentPos;
 
-	
 	public AnimatedClickable(List<ItemStack> stacks, long timing) {
 		this.items = stacks;
 		this.timing = timing;
@@ -31,7 +30,8 @@ public class AnimatedClickable implements IClickable {
 	}
 
 	@Override
-	public void clicked(Player p){}
+	public void clicked(Player p) {
+	}
 
 	@Override
 	public ItemStack getItemStack() {
@@ -42,15 +42,15 @@ public class AnimatedClickable implements IClickable {
 	public void addedToInventory(final ClickableInventory inv, final int slot) {
 		// Schedule swapping out of item
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				inv.setItem(getNext(), slot);
 			}
 		}.runTaskTimer(CivModCorePlugin.getInstance(), timing, timing);
-		
+
 	}
-	
+
 	/**
 	 * @return How often this instance will switch it's item representation
 	 */

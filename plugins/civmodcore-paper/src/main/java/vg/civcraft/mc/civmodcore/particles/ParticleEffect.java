@@ -23,8 +23,8 @@ public class ParticleEffect {
 
 	private int viewDistance;
 
-	public ParticleEffect(Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ,
-			float speed, int particleCount, int viewDistance) {
+	public ParticleEffect(Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed,
+			int particleCount, int viewDistance) {
 		this.effect = effect;
 		this.id = id;
 		this.data = data;
@@ -102,20 +102,20 @@ public class ParticleEffect {
 	/**
 	 * Display an effect defined in the config around a reinforcement.
 	 *
-	 * @param location the location of the reinforcement.
+	 * @param location
+	 *            the location of the reinforcement.
 	 */
 	public void playEffect(Location location) {
-		location.getWorld().spigot().playEffect(location, effect, id, data, offsetX, offsetY, offsetZ, speed,
-				particleCount, viewDistance);
+		location.getWorld().spigot()
+				.playEffect(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, viewDistance);
 	}
 
 	@Override
 	public String toString() {
 		return String.format(
-				"  type: %s \n   id: %d \n   data: %d \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:" +
-						" " +
-						"%f \n   particleCount: %d \n   viewDistance: %d",
-				effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, viewDistance);
+				"  type: %s \n   id: %d \n   data: %d \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:"
+						+ " " + "%f \n   particleCount: %d \n   viewDistance: %d", effect, id, data, offsetX, offsetY,
+				offsetZ, speed, particleCount, viewDistance);
 	}
 
 }

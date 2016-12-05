@@ -11,6 +11,6 @@ public class DecorationStack extends Clickable {
 
 	@Override
 	public void clicked(Player p) {
-		//dont do anything here, it's supposed to be just decoration
+		// dont do anything here, it's supposed to be just decoration
 	}
 }

@@ -20,22 +20,18 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
- * Allows the storage and comparison of itemstacks while ignoring their maximum
- * possible stack sizes. This offers various tools to compare inventories, to
- * store recipe costs or to specify setupcosts. Take great care when dealing
- * with itemstacks with negative amounnts, while this implementation should be
- * consistent even with negative values, they create possibly unexpected
- * results. For example an empty inventory/itemmap will seem to contain items
- * when compared to a map containing negative values. Additionally this
- * implementation allows durability "wild cards", if you specify -1 as
- * durability it will count as any given durability. When working with multiple
- * ItemMaps this will only work if all methods are executed on the instance
- * containing items with a durability of -1.
+ * Allows the storage and comparison of itemstacks while ignoring their maximum possible stack sizes. This offers
+ * various tools to compare inventories, to store recipe costs or to specify setupcosts. Take great care when dealing
+ * with itemstacks with negative amounnts, while this implementation should be consistent even with negative values,
+ * they create possibly unexpected results. For example an empty inventory/itemmap will seem to contain items when
+ * compared to a map containing negative values. Additionally this implementation allows durability "wild cards", if you
+ * specify -1 as durability it will count as any given durability. When working with multiple ItemMaps this will only
+ * work if all methods are executed on the instance containing items with a durability of -1.
  */
 public class ItemMap {
 
 	private static final Logger log = Bukkit.getLogger();
-	
+
 	private HashMap<ItemStack, Integer> items;
 
 	private int totalItems;
@@ -49,11 +45,11 @@ public class ItemMap {
 	}
 
 	/**
-	 * Constructor to create an item map based on the content of an inventory.
-	 * The ItemMap will not be in sync with the inventory, it will only update
-	 * if it's explicitly told to do so
+	 * Constructor to create an item map based on the content of an inventory. The ItemMap will not be in sync with the
+	 * inventory, it will only update if it's explicitly told to do so
 	 *
-	 * @param inv Inventory to base the item map on
+	 * @param inv
+	 *            Inventory to base the item map on
 	 */
 	public ItemMap(Inventory inv) {
 		totalItems = 0;
@@ -63,7 +59,8 @@ public class ItemMap {
 	/**
 	 * Constructor to create an ItemMap based on a single ItemStack
 	 *
-	 * @param is ItemStack to start with
+	 * @param is
+	 *            ItemStack to start with
 	 */
 	public ItemMap(ItemStack is) {
 		items = new HashMap<>();
@@ -74,7 +71,8 @@ public class ItemMap {
 	/**
 	 * Constructor to create an item map based on a collection of ItemStacks
 	 *
-	 * @param stacks Stacks to add to the map
+	 * @param stacks
+	 *            Stacks to add to the map
 	 */
 	public ItemMap(Collection<ItemStack> stacks) {
 		items = new HashMap<>();
@@ -82,19 +80,18 @@ public class ItemMap {
 	}
 
 	/**
-	 * Clones the given itemstack, sets its amount to one and checks whether a
-	 * stack equaling the created one exists in the item map. If yes the amount
-	 * of the given stack (before the amount was set to 1) will be added to the
-	 * current amount in the item map, if not a new entry in the map with the
-	 * correct amount will be created
+	 * Clones the given itemstack, sets its amount to one and checks whether a stack equaling the created one exists in
+	 * the item map. If yes the amount of the given stack (before the amount was set to 1) will be added to the current
+	 * amount in the item map, if not a new entry in the map with the correct amount will be created
 	 *
-	 * @param input ItemStack to insert
+	 * @param input
+	 *            ItemStack to insert
 	 */
 	public void addItemStack(ItemStack input) {
 		if (input != null) {
-			//log().info("Adding {0} as ItemStack", input.toString());
+			// log().info("Adding {0} as ItemStack", input.toString());
 			ItemStack is = createMapConformCopy(input);
-			//log().info("  Conform Copy: {0}", is.toString());
+			// log().info("  Conform Copy: {0}", is.toString());
 			if (is == null) {
 				return;
 			}
@@ -109,12 +106,12 @@ public class ItemMap {
 	}
 
 	/**
-	 * Removes the given ItemStack from this map. Only the amount of the given
-	 * ItemStack will be removed, not all of them. If the amount of the given
-	 * itemstack is bigger than the existing ones in this map, not more than the
-	 * amount in this map will be removed
+	 * Removes the given ItemStack from this map. Only the amount of the given ItemStack will be removed, not all of
+	 * them. If the amount of the given itemstack is bigger than the existing ones in this map, not more than the amount
+	 * in this map will be removed
 	 *
-	 * @param input ItemStack to remove
+	 * @param input
+	 *            ItemStack to remove
 	 */
 	public void removeItemStack(ItemStack input) {
 		ItemStack is = createMapConformCopy(input);
@@ -133,10 +130,10 @@ public class ItemMap {
 	}
 
 	/**
-	 * Completly removes the given itemstack of this item map, completly
-	 * independent of its amount
+	 * Completly removes the given itemstack of this item map, completly independent of its amount
 	 *
-	 * @param input ItemStack to remove
+	 * @param input
+	 *            ItemStack to remove
 	 */
 	public void removeItemStackCompletly(ItemStack input) {
 		ItemStack is = createMapConformCopy(input);
@@ -157,7 +154,8 @@ public class ItemMap {
 	/**
 	 * Adds all the stacks given in the collection to this map
 	 *
-	 * @param stacks Stacks to add
+	 * @param stacks
+	 *            Stacks to add
 	 */
 	public void addAll(Collection<ItemStack> stacks) {
 		for (ItemStack is : stacks) {
@@ -170,7 +168,8 @@ public class ItemMap {
 	/**
 	 * Merges the given item map into this instance
 	 *
-	 * @param im ItemMap to merge
+	 * @param im
+	 *            ItemMap to merge
 	 */
 	public void merge(ItemMap im) {
 		for (Entry<ItemStack, Integer> entry : im.getEntrySet()) {
@@ -198,8 +197,10 @@ public class ItemMap {
 	/**
 	 * Utility method, which has the amount of items to add as parameter.
 	 *
-	 * @param input  ItemStack to sort into the map
-	 * @param amount Amount associated with the given ItemStack
+	 * @param input
+	 *            ItemStack to sort into the map
+	 * @param amount
+	 *            Amount associated with the given ItemStack
 	 */
 	public void addItemAmount(ItemStack input, int amount) {
 		ItemStack copy = createMapConformCopy(input);
@@ -211,12 +212,12 @@ public class ItemMap {
 	}
 
 	/**
-	 * Gets a submap of this instance which contains all stacks with the same
-	 * material as the given one and their respective amounts
+	 * Gets a submap of this instance which contains all stacks with the same material as the given one and their
+	 * respective amounts
 	 *
-	 * @param m Material to search for
-	 * @return New ItemMap with all ItemStack and their amount whose material
-	 * matches the given one
+	 * @param m
+	 *            Material to search for
+	 * @return New ItemMap with all ItemStack and their amount whose material matches the given one
 	 */
 	public ItemMap getStacksByMaterial(Material m) {
 		ItemMap result = new ItemMap();
@@ -233,13 +234,14 @@ public class ItemMap {
 	}
 
 	/**
-	 * Gets a submap of this instance which contains all stacks with the same
-	 * material and durability as the given one and their respective amounts
+	 * Gets a submap of this instance which contains all stacks with the same material and durability as the given one
+	 * and their respective amounts
 	 *
-	 * @param m          Material to search for
-	 * @param durability Durability to search for
-	 * @return New ItemMap with all ItemStack and their amount whose material
-	 * and durability matches the given one
+	 * @param m
+	 *            Material to search for
+	 * @param durability
+	 *            Durability to search for
+	 * @return New ItemMap with all ItemStack and their amount whose material and durability matches the given one
 	 */
 	public ItemMap getStacksByMaterialDurability(Material m, int durability) {
 		ItemMap result = new ItemMap();
@@ -256,22 +258,22 @@ public class ItemMap {
 	}
 
 	/**
-	 * Gets a submap of this instance which contains all stacks with the same
-	 * material, durability and enchants as the given one and their respective
-	 * amounts
+	 * Gets a submap of this instance which contains all stacks with the same material, durability and enchants as the
+	 * given one and their respective amounts
 	 *
-	 * @param m          Material to search for
-	 * @param durability Durability to search for
-	 * @param enchants   Enchants to search for
-	 * @return New ItemMap with all ItemStack and their amount whose material,
-	 * durability and enchants matches the given one
+	 * @param m
+	 *            Material to search for
+	 * @param durability
+	 *            Durability to search for
+	 * @param enchants
+	 *            Enchants to search for
+	 * @return New ItemMap with all ItemStack and their amount whose material, durability and enchants matches the given
+	 *         one
 	 */
-	public ItemMap getStacksByMaterialDurabilityEnchants(Material m,
-			int durability, Map<Enchantment, Integer> enchants) {
+	public ItemMap getStacksByMaterialDurabilityEnchants(Material m, int durability, Map<Enchantment, Integer> enchants) {
 		ItemMap result = new ItemMap();
 		for (ItemStack is : items.keySet()) {
-			if (is.getType() == m && is.getDurability() == durability
-					&& is.getItemMeta() != null
+			if (is.getType() == m && is.getDurability() == durability && is.getItemMeta() != null
 					&& is.getItemMeta().getEnchants().equals(enchants)) {
 				result.addItemAmount(is.clone(), items.get(is));
 			}
@@ -281,28 +283,26 @@ public class ItemMap {
 
 	public ItemMap getStacksByMaterialDurabilityEnchants(ItemStack is) {
 		if (is.getItemMeta() != null) {
-			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					is.getDurability(), is.getItemMeta().getEnchants());
+			return getStacksByMaterialDurabilityEnchants(is.getType(), is.getDurability(), is.getItemMeta()
+					.getEnchants());
 		} else {
-			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					is.getDurability(),
+			return getStacksByMaterialDurabilityEnchants(is.getType(), is.getDurability(),
 					new HashMap<Enchantment, Integer>());
 		}
 	}
 
 	/**
-	 * Gets a submap of this instance which contains all stacks with the same
-	 * lore as the given and their respective amount
+	 * Gets a submap of this instance which contains all stacks with the same lore as the given and their respective
+	 * amount
 	 *
-	 * @param lore Lore to search for
-	 * @return New ItemMap with all ItemStacks and their amount whose lore
-	 * matches the given one
+	 * @param lore
+	 *            Lore to search for
+	 * @return New ItemMap with all ItemStacks and their amount whose lore matches the given one
 	 */
 	public ItemMap getStacksByLore(List<String> lore) {
 		ItemMap result = new ItemMap();
 		for (ItemStack is : items.keySet()) {
-			if (is.getItemMeta() != null
-					&& is.getItemMeta().getLore().equals(lore)) {
+			if (is.getItemMeta() != null && is.getItemMeta().getLore().equals(lore)) {
 				result.addItemAmount(is.clone(), items.get(is));
 			}
 		}
@@ -310,11 +310,11 @@ public class ItemMap {
 	}
 
 	/**
-	 * Gets how many items of the given stack are in this map. Be aware that if
-	 * a stack doesnt equal with the given one, for example because of
-	 * mismatched NBT tags, it wont be included in the result
+	 * Gets how many items of the given stack are in this map. Be aware that if a stack doesnt equal with the given one,
+	 * for example because of mismatched NBT tags, it wont be included in the result
 	 *
-	 * @param is Exact ItemStack to search for
+	 * @param is
+	 *            Exact ItemStack to search for
 	 * @return amount of items like the given stack in this map
 	 */
 	public int getAmount(ItemStack is) {
@@ -322,8 +322,8 @@ public class ItemMap {
 		int amount = 0;
 		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
 			ItemStack current = entry.getKey();
-			if ((is.getDurability() == -1 || is.getDurability() == current
-					.getDurability()) && is.getItemMeta().equals(current.getItemMeta())) {
+			if ((is.getDurability() == -1 || is.getDurability() == current.getDurability())
+					&& is.getItemMeta().equals(current.getItemMeta())) {
 				amount += entry.getValue();
 			}
 		}
@@ -350,12 +350,11 @@ public class ItemMap {
 	}
 
 	/**
-	 * Checks whether an inventory contains exactly what's described in this
-	 * ItemMap
+	 * Checks whether an inventory contains exactly what's described in this ItemMap
 	 *
-	 * @param i Inventory to compare
-	 * @return True if the inventory is identical with this instance, false if
-	 * not
+	 * @param i
+	 *            Inventory to compare
+	 * @return True if the inventory is identical with this instance, false if not
 	 */
 	public boolean containedExactlyIn(Inventory i) {
 		ItemMap invMap = new ItemMap(i);
@@ -376,14 +375,13 @@ public class ItemMap {
 	}
 
 	/**
-	 * Checks whether this instance is completly contained in the given
-	 * inventory, which means every stack in this instance is also in the given
-	 * inventory and the amount in the given inventory is either the same or
-	 * bigger as in this instance
+	 * Checks whether this instance is completly contained in the given inventory, which means every stack in this
+	 * instance is also in the given inventory and the amount in the given inventory is either the same or bigger as in
+	 * this instance
 	 *
-	 * @param i inventory to check
-	 * @return true if this instance is completly contained in the given
-	 * inventory, false if not
+	 * @param i
+	 *            inventory to check
+	 * @return true if this instance is completly contained in the given inventory, false if not
 	 */
 	public boolean isContainedIn(Inventory i) {
 		ItemMap invMap = new ItemMap(i);
@@ -405,13 +403,12 @@ public class ItemMap {
 	}
 
 	/**
-	 * Checks how often this ItemMap is contained in the given ItemMap or how
-	 * often this ItemMap could be removed from the given one before creating
-	 * negative stacks
+	 * Checks how often this ItemMap is contained in the given ItemMap or how often this ItemMap could be removed from
+	 * the given one before creating negative stacks
 	 *
-	 * @param i ItemMap to check
-	 * @return How often this map is contained in the given one or
-	 * Integer.MAX_VALUE if this instance is empty
+	 * @param i
+	 *            ItemMap to check
+	 * @return How often this map is contained in the given one or Integer.MAX_VALUE if this instance is empty
 	 */
 	public int getMultiplesContainedIn(Inventory i) {
 		ItemMap invMap = new ItemMap(i);
@@ -427,7 +424,8 @@ public class ItemMap {
 	/**
 	 * Multiplies the whole content of this instance by the given multiplier
 	 *
-	 * @param multiplier Multiplier to scale the amount of the contained items with
+	 * @param multiplier
+	 *            Multiplier to scale the amount of the contained items with
 	 */
 	public void multiplyContent(double multiplier) {
 		totalItems = 0;
@@ -438,8 +436,8 @@ public class ItemMap {
 	}
 
 	/**
-	 * Turns this item map into a list of ItemStacks, with amounts that do not
-	 * surpass the maximum allowed stack size for each ItemStack
+	 * Turns this item map into a list of ItemStacks, with amounts that do not surpass the maximum allowed stack size
+	 * for each ItemStack
 	 *
 	 * @return List of stacksize conform ItemStacks
 	 */
@@ -452,7 +450,7 @@ public class ItemMap {
 				ItemStack toAdd = is.clone();
 				int addAmount = Math.min(amount, is.getMaxStackSize());
 				toAdd.setAmount(addAmount);
-				//log.info("Adding {0} as ItemStack", toAdd.toString());
+				// log.info("Adding {0} as ItemStack", toAdd.toString());
 				result.add(toAdd);
 				amount -= addAmount;
 			}
@@ -475,20 +473,19 @@ public class ItemMap {
 	/**
 	 * Checks whether this instance would completly fit into the given inventory
 	 *
-	 * @param i Inventory to check
-	 * @return True if this ItemMap's item representation would completly fit in
-	 * the inventory, false if not
+	 * @param i
+	 *            Inventory to check
+	 * @return True if this ItemMap's item representation would completly fit in the inventory, false if not
 	 */
 	public boolean fitsIn(Inventory i) {
 		int size;
 		if (i instanceof PlayerInventory) {
 			size = 36;
-		}
-		else {
+		} else {
 			size = i.getSize();
 		}
 		ItemMap invCopy = new ItemMap();
-		for(ItemStack is : i.getStorageContents()) {
+		for (ItemStack is : i.getStorageContents()) {
 			invCopy.addItemStack(is);
 		}
 		ItemMap instanceCopy = this.clone();
@@ -497,10 +494,8 @@ public class ItemMap {
 	}
 
 	/**
-	 * Instead of converting into many stacks of maximum size, this creates a
-	 * stack with an amount of one for each entry and adds the total item amount
-	 * and stack count as lore, which is needed to display larger ItemMaps in
-	 * inventories
+	 * Instead of converting into many stacks of maximum size, this creates a stack with an amount of one for each entry
+	 * and adds the total item amount and stack count as lore, which is needed to display larger ItemMaps in inventories
 	 *
 	 * @return UI representation of large ItemMap
 	 */
@@ -508,8 +503,7 @@ public class ItemMap {
 		List<ItemStack> items = new LinkedList<>();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			ItemStack is = entry.getKey().clone();
-			ISUtils.addLore(is,
-					ChatColor.GOLD + "Total item count: " + entry.getValue());
+			ISUtils.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
 			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
 				int stacks = entry.getValue() / is.getType().getMaxStackSize();
 				int extra = entry.getValue() % is.getType().getMaxStackSize();
@@ -529,10 +523,11 @@ public class ItemMap {
 	}
 
 	/**
-	 * Attempts to remove the content of this ItemMap from the given inventory.
-	 * If it fails to find all the required items it will stop and return false
+	 * Attempts to remove the content of this ItemMap from the given inventory. If it fails to find all the required
+	 * items it will stop and return false
 	 *
-	 * @param i Inventory to remove from
+	 * @param i
+	 *            Inventory to remove from
 	 * @return True if everything was successfully removed, false if not
 	 */
 	public boolean removeSafelyFrom(Inventory i) {
@@ -545,8 +540,7 @@ public class ItemMap {
 				}
 				if (inventoryStack.getType() == is.getType()) {
 					ItemMap compareMap = new ItemMap(inventoryStack);
-					int removeAmount = Math.min(amountToRemove,
-							compareMap.getAmount(is));
+					int removeAmount = Math.min(amountToRemove, compareMap.getAmount(is));
 					if (removeAmount != 0) {
 						ItemStack cloneStack = inventoryStack.clone();
 						cloneStack.setAmount(removeAmount);
@@ -582,14 +576,14 @@ public class ItemMap {
 	/**
 	 * Utility to not mess with stacks directly taken from inventories
 	 *
-	 * @param is Template ItemStack
+	 * @param is
+	 *            Template ItemStack
 	 * @return Cloned ItemStack with its amount set to 1
 	 */
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack
-				.asNMSCopy(copy);
+		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		if (s == null) {
 			log.info("Attempted to create map conform copy of " + copy.toString()
 					+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8");
@@ -603,9 +597,12 @@ public class ItemMap {
 	/**
 	 * Utility to add NBT tags to an item and produce a custom stack size
 	 *
-	 * @param is  Template Bukkit ItemStack
-	 * @param amt Output Stack Size
-	 * @param map Java Maps and Lists representing NBT data
+	 * @param is
+	 *            Template Bukkit ItemStack
+	 * @param amt
+	 *            Output Stack Size
+	 * @param map
+	 *            Java Maps and Lists representing NBT data
 	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
 	 */
 	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
@@ -629,11 +626,11 @@ public class ItemMap {
 		copy = CraftItemStack.asBukkitCopy(s);
 		return copy;
 	}
-	
+
 	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
 		return TagManager.mapToNBT(base, map);
 	}
-	
+
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		return TagManager.listToNBT(base, list);
 	}

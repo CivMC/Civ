@@ -22,7 +22,7 @@ public abstract class PlayerCommand implements Command {
 	public PlayerCommand(String name) {
 		this.name = name;
 	}
-	
+
 	@Override
 	public String getName() {
 		return name;
@@ -57,12 +57,12 @@ public abstract class PlayerCommand implements Command {
 	public boolean getSenderMustBePlayer() {
 		return senderMustBePlayer;
 	}
-	
+
 	@Override
 	public boolean getErrorOnTooManyArgs() {
 		return this.errorOnTooManyArgs;
 	}
-	
+
 	@Override
 	public void setSender(CommandSender sender) {
 		this.sender = sender;
@@ -72,7 +72,7 @@ public abstract class PlayerCommand implements Command {
 	public void setArgs(String[] args) {
 		this.args = args;
 	}
-	
+
 	public String[] getArgs() {
 		return args;
 	}
@@ -85,7 +85,6 @@ public abstract class PlayerCommand implements Command {
 			cmd.setUsage(this.usage);
 		}
 	}
-
 
 	public void setName(String name) {
 		this.name = name;
@@ -114,31 +113,31 @@ public abstract class PlayerCommand implements Command {
 		p.sendMessage(m);
 		return flag;
 	}
-	
+
 	public void setSenderMustBePlayer(boolean senderMustBeConsole) {
 		this.senderMustBePlayer = senderMustBeConsole;
 	}
-	
+
 	public void setErrorOnTooManyArgs(boolean errorOnTooManyArgs) {
 		this.errorOnTooManyArgs = errorOnTooManyArgs;
 	}
-	
+
 	public Player player() {
-		return (Player)sender;
+		return (Player) sender;
 	}
-	
+
 	public void msg(String msg) {
 		sender.sendMessage(parse(msg));
 	}
-	
+
 	public void msg(String msg, Object... args) {
 		sender.sendMessage(parse(msg, args));
 	}
-	
+
 	public String parse(String text) {
 		return TextUtil.parse(text);
 	}
-	
+
 	public String parse(String text, Object... args) {
 		return TextUtil.parse(text, args);
 	}

@@ -24,26 +24,26 @@ import org.bukkit.inventory.ItemStack;
 
 public class TagManager {
 	private static final Logger log = Bukkit.getLogger();
-	
+
 	private NBTTagCompound tag;
-	
+
 	public TagManager() {
 		this.tag = new NBTTagCompound();
 	}
-	
+
 	public TagManager(ItemStack is) {
-		if(is == null) {
+		if (is == null) {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
-		
+
 		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 		this.tag = s.getTag();
-		
-		if(this.tag == null) {
+
+		if (this.tag == null) {
 			this.tag = new NBTTagCompound();
 		}
 	}
-	
+
 	private TagManager(NBTTagCompound tag) {
 		this.tag = tag;
 	}
@@ -51,15 +51,15 @@ public class TagManager {
 	public String getString(String key) {
 		return this.tag.getString(key);
 	}
-	
+
 	public void setString(String key, String value) {
 		this.tag.setString(key, value);
 	}
-	
+
 	public int getInt(String key) {
 		return this.tag.getInt(key);
 	}
-	
+
 	public void setInt(String key, int value) {
 		this.tag.setInt(key, value);
 	}
@@ -67,7 +67,7 @@ public class TagManager {
 	public short getShort(String key) {
 		return this.tag.getShort(key);
 	}
-	
+
 	public void setShort(String key, short value) {
 		this.tag.setShort(key, value);
 	}
@@ -75,7 +75,7 @@ public class TagManager {
 	public byte getByte(String key) {
 		return this.tag.getByte(key);
 	}
-	
+
 	public void setByte(String key, byte value) {
 		this.tag.setByte(key, value);
 	}
@@ -83,92 +83,92 @@ public class TagManager {
 	public List<String> getStringList(String key) {
 		NBTTagList tagList = this.tag.getList(key, 8);
 		List<String> list = new ArrayList<String>();
-		
-		for(int i = 0; i < tagList.size(); i++) {
+
+		for (int i = 0; i < tagList.size(); i++) {
 			list.add(tagList.getString(i));
 		}
-		
+
 		return list;
 	}
-	
+
 	public void setStringList(String key, List<String> list) {
 		NBTTagList tagList = new NBTTagList();
-		
+
 		for (String s : list) {
 			tagList.add(new NBTTagString(s));
 		}
-		
+
 		this.tag.set(key, tagList);
 	}
-	
+
 	public List<Integer> getIntList(String key) {
 		NBTTagList tagList = this.tag.getList(key, 3);
 		List<Integer> list = new ArrayList<Integer>();
-		
-		for(int i = 0; i < tagList.size(); i++) {
+
+		for (int i = 0; i < tagList.size(); i++) {
 			list.add(tagList.c(i));
 		}
-		
+
 		return list;
 	}
-	
+
 	public void setIntList(String key, List<Integer> list) {
 		NBTTagList tagList = new NBTTagList();
-		
+
 		for (Integer i : list) {
 			tagList.add(new NBTTagInt(i));
 		}
-		
+
 		this.tag.set(key, tagList);
 	}
-	
+
 	public List<Short> getShortList(String key) {
 		NBTTagList tagList = this.tag.getList(key, 2);
 		List<Short> list = new ArrayList<Short>();
-		
-		for(int i = 0; i < tagList.size(); i++) {
-			list.add(((NBTTagShort)tagList.h(i)).f());
+
+		for (int i = 0; i < tagList.size(); i++) {
+			list.add(((NBTTagShort) tagList.h(i)).f());
 		}
-		
+
 		return list;
 	}
-	
+
 	public void setShortList(String key, List<Short> list) {
 		NBTTagList tagList = new NBTTagList();
-		
+
 		for (Short s : list) {
 			tagList.add(new NBTTagShort(s));
 		}
-		
+
 		this.tag.set(key, tagList);
 	}
 
 	public TagManager getCompound(String key) {
 		return new TagManager(this.tag.getCompound(key));
 	}
-	
+
 	public void setCompound(String key, TagManager tag) {
 		this.tag.set(key, tag.tag);
 	}
-	
+
 	public ItemStack enrichWithNBT(ItemStack is) {
 
 		net.minecraft.server.v1_10_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
-		
+
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());
 			return null;
 		}
 
 		s.setTag(this.tag);
-		
+
 		return CraftItemStack.asBukkitCopy(s);
 	}
-	
+
 	public void setMap(Map<String, Object> map) {
 		mapToNBT(this.tag, map);
 	}
-	
+
 	public void setList(String key, List<Object> list) {
 		this.tag.set(key, listToNBT(new NBTTagList(), list));
 	}
@@ -232,7 +232,7 @@ public class TagManager {
 		}
 		return base;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		log.info("Representing list --> NBTTagList");

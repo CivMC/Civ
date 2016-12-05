@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Cooldown implementation that keeps track of objects in milliseconds. The
- * value given in the constructor is assumed to be in milliseconds and time
- * stamps are stored as unix timestamp
+ * Cooldown implementation that keeps track of objects in milliseconds. The value given in the constructor is assumed to
+ * be in milliseconds and time stamps are stored as unix timestamp
  *
- * @param <E> Object that cooldowns are assigned to
+ * @param <E>
+ *            Object that cooldowns are assigned to
  * @author Maxopoly
  */
 public class MilliSecCoolDownHandler<E> implements ICoolDownHandler<E> {
@@ -30,8 +30,7 @@ public class MilliSecCoolDownHandler<E> implements ICoolDownHandler<E> {
 	@Override
 	public boolean onCoolDown(E e) {
 		Long lastUsed = cds.get(e);
-		if (lastUsed == null
-				|| (System.currentTimeMillis() - lastUsed) > cooldown) {
+		if (lastUsed == null || (System.currentTimeMillis() - lastUsed) > cooldown) {
 			return false;
 		}
 		return true;
