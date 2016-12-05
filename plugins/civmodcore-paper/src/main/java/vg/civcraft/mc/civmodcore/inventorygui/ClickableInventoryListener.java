@@ -8,9 +8,8 @@ import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
- * The listener which makes ClickableInventories work. To use this either
- * register it as a listener in your plugin or extend your plugin class from
- * ACivMod, DONT DO BOTH
+ * The listener which makes ClickableInventories work. To use this either register it as a listener in your plugin or
+ * extend your plugin class from ACivMod, DONT DO BOTH
  *
  * @author Maxopoly
  */
@@ -24,7 +23,7 @@ public class ClickableInventoryListener implements Listener {
 		Player p = (Player) e.getWhoClicked();
 		ClickableInventory ci = ClickableInventory.getOpenInventory(p);
 		if (ci != null) {
-			e.setCancelled(true);  //always cancel first to prevent dupes
+			e.setCancelled(true); // always cancel first to prevent dupes
 			ci.itemClick(p, e.getRawSlot());
 		}
 	}

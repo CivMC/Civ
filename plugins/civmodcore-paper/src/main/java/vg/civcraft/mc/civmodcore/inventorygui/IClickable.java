@@ -14,14 +14,12 @@ public interface IClickable {
 	void clicked(Player p);
 
 	/**
-	 * @return Which item stack represents this clickable when it is initially
-	 *         loaded into the inventory
+	 * @return Which item stack represents this clickable when it is initially loaded into the inventory
 	 */
 	ItemStack getItemStack();
 
 	/**
-	 * Called when this instance is added to an inventory so it can do something
-	 * if desired
+	 * Called when this instance is added to an inventory so it can do something if desired
 	 * 
 	 * @param inv
 	 *            Inventory it was added to

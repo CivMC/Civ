@@ -16,11 +16,7 @@ public class SparseQuadTree {
 	public final int MAX_NODE_SIZE = 32;
 
 	public enum Quadrant {
-		Root,
-		NW,
-		SW,
-		NE,
-		SE
+		Root, NW, SW, NE, SE
 	}
 
 	public SparseQuadTree() {
@@ -32,8 +28,7 @@ public class SparseQuadTree {
 	public SparseQuadTree(Integer borderSize) {
 		boxes_ = new TreeSet<>();
 		if (borderSize == null || borderSize < 0) {
-			throw new IllegalArgumentException(
-					"borderSize == null || borderSize < 0");
+			throw new IllegalArgumentException("borderSize == null || borderSize < 0");
 		}
 		borderSize_ = borderSize;
 		quadrant_ = Quadrant.Root;
@@ -128,18 +123,17 @@ public class SparseQuadTree {
 		if (boxes_ != null) {
 			Set<QTBox> result = new TreeSet<>();
 			// These two loops are the same except for the second doesn't include the
-			//  border adjustment for a little added performance.
+			// border adjustment for a little added performance.
 			if (includeBorder) {
 				for (QTBox box : boxes_) {
-					if (box.qtXMin() - border <= x && box.qtXMax() + border >= x
-							&& box.qtZMin() - border <= y && box.qtZMax() + border >= y) {
+					if (box.qtXMin() - border <= x && box.qtXMax() + border >= x && box.qtZMin() - border <= y
+							&& box.qtZMax() + border >= y) {
 						result.add(box);
 					}
 				}
 			} else {
 				for (QTBox box : boxes_) {
-					if (box.qtXMin() <= x && box.qtXMax() >= x
-							&& box.qtZMin() <= y && box.qtZMax() >= y) {
+					if (box.qtXMin() <= x && box.qtXMax() >= x && box.qtZMin() <= y && box.qtZMax() >= y) {
 						result.add(box);
 					}
 				}
@@ -233,12 +227,10 @@ public class SparseQuadTree {
 				}
 			}
 		}
-		if (nw_.size() == boxes_.size()
-				|| sw_.size() == boxes_.size()
-				|| ne_.size() == boxes_.size()
+		if (nw_.size() == boxes_.size() || sw_.size() == boxes_.size() || ne_.size() == boxes_.size()
 				|| se_.size() == boxes_.size()) {
 			// Splitting failed as we split into an identically sized quadrent. Update
-			//  this nodes max size for next time and throw away the work we did.
+			// this nodes max size for next time and throw away the work we did.
 			maxNodeSize_ = boxes_.size() * 2;
 			return;
 		}
@@ -273,8 +265,7 @@ public class SparseQuadTree {
 	}
 
 	public String boxCoord(QTBox box) {
-		return String.format("(%d,%d %d,%d)",
-				box.qtXMin(), box.qtZMin(), box.qtXMax(), box.qtZMax());
+		return String.format("(%d,%d %d,%d)", box.qtXMin(), box.qtZMin(), box.qtXMax(), box.qtZMax());
 	}
 
 	@Override

@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.areas;
 
 import java.util.Collection;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -10,8 +9,7 @@ public class GlobalYLimitedArea extends AbstractYLimitedArea {
 
 	private World world;
 
-	public GlobalYLimitedArea(double lowerYBound, double upperYBound,
-			World world) {
+	public GlobalYLimitedArea(double lowerYBound, double upperYBound, World world) {
 		super(lowerYBound, upperYBound);
 		this.world = world;
 	}

@@ -1,8 +1,7 @@
 package vg.civcraft.mc.civmodcore.command;
 
-import org.bukkit.command.CommandSender;
-
 import java.util.List;
+import org.bukkit.command.CommandSender;
 
 public interface Command {
 
@@ -23,13 +22,13 @@ public interface Command {
 	int getMinArguments();
 
 	void postSetup();
-	
+
 	boolean getSenderMustBePlayer();
-	
+
 	boolean getErrorOnTooManyArgs();
-	
+
 	void setSender(CommandSender sender);
-	
+
 	void setArgs(String[] args);
 
 }

@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.areas;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -15,8 +14,7 @@ public class RectangleArea extends AbstractYLimitedArea {
 
 	private double zSize;
 
-	public RectangleArea(double lowerYBound, double upperYBound,
-			Location center, double xSize, double zSize) {
+	public RectangleArea(double lowerYBound, double upperYBound, Location center, double xSize, double zSize) {
 		super(lowerYBound, upperYBound);
 		this.center = center;
 		this.xSize = xSize;
@@ -30,7 +28,7 @@ public class RectangleArea extends AbstractYLimitedArea {
 			for (double z = center.getZ() - zSize; z <= center.getZ() + zSize; z += 16) {
 				chunks.add(new Location(center.getWorld(), x, center.getY(), z).getChunk());
 			}
-			//last one might have been skipped
+			// last one might have been skipped
 			chunks.add(new Location(center.getWorld(), x, center.getY(), center.getZ() + zSize).getChunk());
 		}
 		return chunks;
@@ -40,9 +38,8 @@ public class RectangleArea extends AbstractYLimitedArea {
 	public boolean isInArea(Location loc) {
 		double x = loc.getX();
 		double z = loc.getZ();
-		return loc.getWorld().getUID().equals(getWorld().getUID()) && (center.getX() - xSize) <= x && (center.getX() +
-				xSize) >= x
-				&& (center.getZ() - zSize) <= z && (center.getZ() + zSize) >= z
+		return loc.getWorld().getUID().equals(getWorld().getUID()) && (center.getX() - xSize) <= x
+				&& (center.getX() + xSize) >= x && (center.getZ() - zSize) <= z && (center.getZ() + zSize) >= z
 				&& super.isInArea(loc);
 	}
 
@@ -77,7 +74,7 @@ public class RectangleArea extends AbstractYLimitedArea {
 			for (int z = (int) (center.getZ() - zSize); z <= center.getZ() + zSize; z += 16) {
 				chunks.add(new PseudoChunk(center.getWorld(), x / 16, z / 16));
 			}
-			//last one might have been skipped
+			// last one might have been skipped
 			chunks.add(new PseudoChunk(center.getWorld(), x / 16, ((int) (center.getZ() + zSize)) / 16));
 		}
 		return chunks;

@@ -1,10 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.logging.Logger;
-
-import com.google.common.collect.Lists;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -22,23 +20,21 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
 import vg.civcraft.mc.civmodcore.areas.EllipseArea;
 import vg.civcraft.mc.civmodcore.areas.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.areas.IArea;
 import vg.civcraft.mc.civmodcore.areas.RectangleArea;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
-
 public class ConfigParsing {
-	
+
 	private static final Logger log = Bukkit.getLogger();
 
 	/**
-	 * Creates an itemmap containing all the items listed in the given config
-	 * section
+	 * Creates an itemmap containing all the items listed in the given config section
 	 *
-	 * @param config ConfigurationSection to parse the items from
+	 * @param config
+	 *            ConfigurationSection to parse the items from
 	 * @return The item map created
 	 */
 	public static ItemMap parseItemMap(ConfigurationSection config) {
@@ -89,27 +85,22 @@ public class ConfigParsing {
 				meta.spigot().setUnbreakable(current.getBoolean("unbreakable"));
 			}
 			if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
-				for(ItemFlag flag : ItemFlag.values()) {
+				for (ItemFlag flag : ItemFlag.values()) {
 					meta.addItemFlags(flag);
 				}
 			}
 			if (current.contains("enchants")) {
-				for (String enchantKey : current.getConfigurationSection(
-						"enchants").getKeys(false)) {
-					ConfigurationSection enchantConfig = current
-							.getConfigurationSection("enchants")
+				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
+					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
 							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByName(enchantConfig
-							.getString("enchant"));
+					Enchantment enchant = Enchantment.getByName(enchantConfig.getString("enchant"));
 					int level = enchantConfig.getInt("level", 1);
 					meta.addEnchant(enchant, level, true);
 				}
 			}
-			if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE
-					|| m == Material.LEATHER_HELMET
+			if (m == Material.LEATHER_BOOTS || m == Material.LEATHER_CHESTPLATE || m == Material.LEATHER_HELMET
 					|| m == Material.LEATHER_LEGGINGS) {
-				ConfigurationSection color = current
-						.getConfigurationSection("color");
+				ConfigurationSection color = current.getConfigurationSection("color");
 				Color leatherColor = null;
 				if (color != null) {
 					int red = color.getInt("red");
@@ -130,49 +121,38 @@ public class ConfigParsing {
 				}
 			}
 			if (m == Material.ENCHANTED_BOOK) {
-				ConfigurationSection storedEnchantSection = current
-						.getConfigurationSection("stored_enchants");
+				ConfigurationSection storedEnchantSection = current.getConfigurationSection("stored_enchants");
 				if (storedEnchantSection != null) {
 					EnchantmentStorageMeta enchantMeta = (EnchantmentStorageMeta) meta;
 					for (String sEKey : storedEnchantSection.getKeys(false)) {
 						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
 								.getConfigurationSection(sEKey);
 						if (currentStoredEnchantSection != null) {
-							Enchantment enchant = Enchantment
-									.getByName(currentStoredEnchantSection
-											.getString("enchant"));
-							int level = currentStoredEnchantSection.getInt(
-									"level", 1);
+							Enchantment enchant = Enchantment.getByName(currentStoredEnchantSection
+									.getString("enchant"));
+							int level = currentStoredEnchantSection.getInt("level", 1);
 							enchantMeta.addStoredEnchant(enchant, level, true);
 						}
 					}
 				}
 			}
-			if (m == Material.POTION || m == Material.SPLASH_POTION
-					|| m == Material.LINGERING_POTION
+			if (m == Material.POTION || m == Material.SPLASH_POTION || m == Material.LINGERING_POTION
 					|| m == Material.TIPPED_ARROW) {
-				ConfigurationSection potion = current
-						.getConfigurationSection("potion_effects");
+				ConfigurationSection potion = current.getConfigurationSection("potion_effects");
 				if (potion != null) {
 					PotionType potType;
 					try {
-						potType = PotionType.valueOf(potion.getString("type",
-								"AWKWARD"));
+						potType = PotionType.valueOf(potion.getString("type", "AWKWARD"));
 					} catch (IllegalArgumentException e) {
-						log.warning(
-								"Expected potion type at "
-										+ potion.getCurrentPath() + ", but "
-										+ potion.getString("type")
-										+ " is not a valid potion type");
+						log.warning("Expected potion type at " + potion.getCurrentPath() + ", but "
+								+ potion.getString("type") + " is not a valid potion type");
 						potType = PotionType.AWKWARD;
 					}
 					boolean upgraded = potion.getBoolean("upgraded", false);
 					boolean extended = potion.getBoolean("extended", false);
 					PotionMeta potMeta = (PotionMeta) meta;
-					potMeta.setBasePotionData(new PotionData(potType, extended,
-							upgraded));
-					ConfigurationSection customEffects = potion
-							.getConfigurationSection("custom_effects");
+					potMeta.setBasePotionData(new PotionData(potType, extended, upgraded));
+					ConfigurationSection customEffects = potion.getConfigurationSection("custom_effects");
 					if (customEffects != null) {
 						List<PotionEffect> pots = parsePotionEffects(potion);
 						for (PotionEffect pe : pots) {
@@ -184,8 +164,7 @@ public class ConfigParsing {
 			}
 			toAdd.setItemMeta(meta);
 			if (current.contains("nbt")) {
-				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current
-						.getConfigurationSection("nbt").getValues(true));
+				toAdd = ItemMap.enrichWithNBT(toAdd, 1, current.getConfigurationSection("nbt").getValues(true));
 			}
 		}
 		// Setting amount must be last just in cast enrichWithNBT is called,
@@ -198,20 +177,17 @@ public class ConfigParsing {
 	}
 
 	/**
-	 * Parses a time value specified in a config. This allows to specify human
-	 * readable time values easily, instead of having to specify every amount in
-	 * ticks or seconds. The unit of a number specifed by the letter added after
-	 * it, for example 5h means 5 hours or 34s means 34 seconds. Possible
-	 * modifiers are: t (ticks), s (seconds), m (minutes), h (hours) and d
-	 * (days). If no letter is added the value will be parsed as ticks.
+	 * Parses a time value specified in a config. This allows to specify human readable time values easily, instead of
+	 * having to specify every amount in ticks or seconds. The unit of a number specifed by the letter added after it,
+	 * for example 5h means 5 hours or 34s means 34 seconds. Possible modifiers are: t (ticks), s (seconds), m
+	 * (minutes), h (hours) and d (days). If no letter is added the value will be parsed as ticks.
 	 * <p>
-	 * Additionally you can combine those amounts in any way you want, for
-	 * example you can specify 3h5m43s as 3 hours, 5 minutes and 43 seconds.
-	 * This doesn't have to be sorted and may even list the same unit multiple
-	 * times for different values, but the values are not allowed to be
-	 * separated by anything
+	 * Additionally you can combine those amounts in any way you want, for example you can specify 3h5m43s as 3 hours, 5
+	 * minutes and 43 seconds. This doesn't have to be sorted and may even list the same unit multiple times for
+	 * different values, but the values are not allowed to be separated by anything
 	 *
-	 * @param arg Parsed string containing the time format
+	 * @param arg
+	 *            Parsed string containing the time format
 	 * @return How many ticks the given time value is
 	 */
 	public static long parseTime(String arg) {
@@ -280,35 +256,29 @@ public class ConfigParsing {
 	/**
 	 * Parses a potion effect
 	 *
-	 * @param configurationSection ConfigurationSection to parse the effect from
+	 * @param configurationSection
+	 *            ConfigurationSection to parse the effect from
 	 * @return The potion effect parsed
 	 */
-	public static List<PotionEffect> parsePotionEffects(
-			ConfigurationSection configurationSection) {
+	public static List<PotionEffect> parsePotionEffects(ConfigurationSection configurationSection) {
 		List<PotionEffect> potionEffects = Lists.newArrayList();
 		if (configurationSection != null) {
 			for (String name : configurationSection.getKeys(false)) {
-				ConfigurationSection configEffect = configurationSection
-						.getConfigurationSection(name);
+				ConfigurationSection configEffect = configurationSection.getConfigurationSection(name);
 				String type = configEffect.getString("type");
 				if (type == null) {
-					log.severe(
-							"Expected potion type to be specified, but found no \"type\" option at "
-									+ configEffect.getCurrentPath());
+					log.severe("Expected potion type to be specified, but found no \"type\" option at "
+							+ configEffect.getCurrentPath());
 					continue;
 				}
 				PotionEffectType effect = PotionEffectType.getByName(type);
 				if (effect == null) {
-					log.severe(
-							"Expected potion type to be specified at "
-									+ configEffect.getCurrentPath()
-									+ " but found " + type
-									+ " which is no valid type");
+					log.severe("Expected potion type to be specified at " + configEffect.getCurrentPath()
+							+ " but found " + type + " which is no valid type");
 				}
 				int duration = configEffect.getInt("duration", 200);
 				int amplifier = configEffect.getInt("amplifier", 0);
-				potionEffects
-						.add(new PotionEffect(effect, duration, amplifier));
+				potionEffects.add(new PotionEffect(effect, duration, amplifier));
 			}
 		}
 		return potionEffects;
@@ -366,8 +336,7 @@ public class ConfigParsing {
 					log.warning("Found no zSize for area at " + config.getCurrentPath());
 					return null;
 				}
-				area = new EllipseArea(lowerYBound, upperYBound, center, xSize,
-						zSize);
+				area = new EllipseArea(lowerYBound, upperYBound, center, xSize, zSize);
 				break;
 			case "RECTANGLE":
 				if (center == null) {
@@ -382,8 +351,7 @@ public class ConfigParsing {
 					log.warning("Found no zSize for area at " + config.getCurrentPath());
 					return null;
 				}
-				area = new RectangleArea(lowerYBound, upperYBound, center, xSize,
-						zSize);
+				area = new RectangleArea(lowerYBound, upperYBound, center, xSize, zSize);
 				break;
 			default:
 				log.warning("Invalid area type " + type + " at " + config.getCurrentPath());

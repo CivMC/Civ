@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.chatDialog;
 
 import java.util.Collection;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,8 +15,7 @@ public class ChatListener implements Listener {
 		if (dia != null) {
 			Collection<String> completes = e.getTabCompletions();
 			completes.clear();
-			completes.addAll(dia.onTabComplete(e.getLastToken(), e
-					.getChatMessage().split(" ")));
+			completes.addAll(dia.onTabComplete(e.getLastToken(), e.getChatMessage().split(" ")));
 		}
 	}
 

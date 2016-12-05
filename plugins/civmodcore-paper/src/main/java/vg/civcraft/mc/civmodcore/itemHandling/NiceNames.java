@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -36,18 +35,18 @@ public class NiceNames {
 		}
 
 		private NameSearchObject(ItemStack is) {
-			this(is.getType(), is.getDurability(),
-					is.getItemMeta().hasLore() ? is.getItemMeta().getLore()
-							: new LinkedList<String>());
+			this(is.getType(), is.getDurability(), is.getItemMeta().hasLore() ? is.getItemMeta().getLore()
+					: new LinkedList<String>());
 		}
 
+		@Override
 		public int hashCode() {
 			return data.hashCode();
 		}
 
+		@Override
 		public boolean equals(Object o) {
-			return o instanceof NameSearchObject
-					&& ((NameSearchObject) o).getData().equals(data);
+			return o instanceof NameSearchObject && ((NameSearchObject) o).getData().equals(data);
 		}
 
 		private String getData() {
@@ -71,16 +70,13 @@ public class NiceNames {
 		// item aliases
 		items = new HashMap<>();
 		try {
-			InputStream in = getClass().getResourceAsStream(
-					"/materials.csv");
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(in));
+			InputStream in = getClass().getResourceAsStream("/materials.csv");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String line = reader.readLine();
 			while (line != null) {
 				String[] content = line.split(",");
-				NameSearchObject nso = new NameSearchObject(
-						Material.valueOf(content[1]),
-						Short.valueOf(content[3]), new LinkedList<String>());
+				NameSearchObject nso = new NameSearchObject(Material.valueOf(content[1]), Short.valueOf(content[3]),
+						new LinkedList<String>());
 				items.put(nso, content[0]);
 				line = reader.readLine();
 			}
@@ -93,10 +89,8 @@ public class NiceNames {
 		enchants = new HashMap<>();
 		enchantAcronyms = new HashMap<>();
 		try {
-			InputStream in = getClass().getResourceAsStream(
-					"/enchantments.csv");
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(in));
+			InputStream in = getClass().getResourceAsStream("/enchantments.csv");
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String line = reader.readLine();
 			while (line != null) {
 				String[] content = line.split(",");
