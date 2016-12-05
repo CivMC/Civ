@@ -1,9 +1,9 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import net.minecraft.server.v1_10_R1.IChatBaseComponent;
-import net.minecraft.server.v1_10_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_10_R1.PlayerConnection;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_11_R1.IChatBaseComponent;
+import net.minecraft.server.v1_11_R1.PacketPlayOutTitle;
+import net.minecraft.server.v1_11_R1.PlayerConnection;
+import org.bukkit.craftbukkit.v1_11_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -106,6 +106,12 @@ public class Title {
 		return fadeOut;
 	}
 
+	/**
+	 * Sets how long it takes for the title to fade out
+	 * 
+	 * @param fadeOut
+	 *            Fade out time in ticks
+	 */
 	public void setFadeOut(int fadeOut) {
 		this.fadeOut = fadeOut;
 	}

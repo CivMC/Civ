@@ -14,7 +14,9 @@ import java.util.TreeMap;
 public class BiasedRandomPicker<E> {
 
 	private Map<E, Double> originalChances;
+
 	private TreeMap<Double, E> chances;
+
 	private Random rng;
 
 	/**

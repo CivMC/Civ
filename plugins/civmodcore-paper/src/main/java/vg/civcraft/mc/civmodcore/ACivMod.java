@@ -57,6 +57,7 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new ChatListener(), this);
 	}
 
+	@Deprecated
 	public boolean toBool(String value) {
 		if (value.equals("1") || value.equalsIgnoreCase("true")) {
 			return true;
