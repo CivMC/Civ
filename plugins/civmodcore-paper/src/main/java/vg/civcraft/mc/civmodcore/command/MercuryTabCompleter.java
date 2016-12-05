@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.command;
 
 import java.util.LinkedList;
 import java.util.List;
-
 import vg.civcraft.mc.mercury.MercuryAPI;
 
 public class MercuryTabCompleter {

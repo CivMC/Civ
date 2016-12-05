@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-
 import net.minecraft.server.v1_10_R1.NBTBase;
 import net.minecraft.server.v1_10_R1.NBTTagByte;
 import net.minecraft.server.v1_10_R1.NBTTagByteArray;
@@ -18,7 +17,6 @@ import net.minecraft.server.v1_10_R1.NBTTagList;
 import net.minecraft.server.v1_10_R1.NBTTagLong;
 import net.minecraft.server.v1_10_R1.NBTTagShort;
 import net.minecraft.server.v1_10_R1.NBTTagString;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.craftbukkit.v1_10_R1.inventory.CraftItemStack;
@@ -178,7 +176,9 @@ public class TagManager {
 	@SuppressWarnings("unchecked")
 	public static NBTTagCompound mapToNBT(NBTTagCompound base, Map<String, Object> map) {
 		log.info("Representing map --> NBTTagCompound");
-		if (map == null || base == null) return base;
+		if (map == null || base == null) {
+			return base;
+		}
 		for (Map.Entry<String, Object> entry : map.entrySet()) {
 			Object object = entry.getValue();
 			if (object instanceof Map) {
@@ -236,7 +236,9 @@ public class TagManager {
 	@SuppressWarnings("unchecked")
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		log.info("Representing list --> NBTTagList");
-		if (list == null || base == null) return base;
+		if (list == null || base == null) {
+			return base;
+		}
 		for (Object object : list) {
 			if (object instanceof Map) {
 				log.info("Adding map to list");

@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.chatDialog;
 
 import java.util.Collection;
-
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;

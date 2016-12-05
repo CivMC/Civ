@@ -1,9 +1,5 @@
 package vg.civcraft.mc.civmodcore.dao;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Future;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -16,14 +12,16 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 /**
@@ -236,8 +234,12 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 */
 	public void registerMigration(int migration, boolean ignoreErrors, Callable<Boolean> postCall, String...query) {
 		this.migrations.put(migration, new Migration(ignoreErrors, postCall, query));
-		if (migration > lastMigration) lastMigration = migration;
-		if (migration < firstMigration) firstMigration = migration;
+		if (migration > lastMigration) {
+			lastMigration = migration;
+		}
+		if (migration < firstMigration) {
+			firstMigration = migration;
+		}
 	}
 	
 	/**
@@ -326,7 +328,10 @@ public class ManagedDatasource implements ConfigurationSerializable {
 			for (Integer next : newApply.keySet()) {
 				logger.log(Level.INFO, "Migration {0} ] Applying", next);
 				Migration toDo = newApply.get(next);
-				if (toDo == null) continue; // huh?
+				if (toDo == null)
+				 {
+					continue; // huh?
+				}
 				if (doMigration(next, toDo.migrations, toDo.ignoreErrors, toDo.postMigration)) {
 					logger.log(Level.INFO, "Migration {0} ] Successful", next);
 
@@ -483,7 +488,9 @@ public class ManagedDatasource implements ConfigurationSerializable {
 				throw failToAcquire; // let the exception continue so we return right away; only errors we'd encounter here are terminal.
 			}
 			
-			if (System.currentTimeMillis() - start > MAX_WAIT_FOR_LOCK) break;
+			if (System.currentTimeMillis() - start > MAX_WAIT_FOR_LOCK) {
+				break;
+			}
 
 			try {
 				Thread.sleep(WAIT_PERIOD);

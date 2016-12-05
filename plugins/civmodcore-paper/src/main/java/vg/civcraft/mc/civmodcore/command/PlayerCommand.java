@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore.command;
 
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-import vg.civcraft.mc.civmodcore.util.TextUtil;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
+import org.bukkit.entity.Player;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class PlayerCommand implements Command {
 
@@ -79,6 +77,7 @@ public abstract class PlayerCommand implements Command {
 		return args;
 	}
 
+	@Override
 	public void postSetup() {
 		PluginCommand cmd = Bukkit.getPluginCommand(identifier);
 		if (cmd != null) {

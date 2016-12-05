@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.interfaces;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.bukkit.entity.Player;
 
 public class ApiManager {

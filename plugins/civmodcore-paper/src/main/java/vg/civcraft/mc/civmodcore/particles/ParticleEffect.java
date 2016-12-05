@@ -109,6 +109,7 @@ public class ParticleEffect {
 				particleCount, viewDistance);
 	}
 
+	@Override
 	public String toString() {
 		return String.format(
 				"  type: %s \n   id: %d \n   data: %d \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:" +

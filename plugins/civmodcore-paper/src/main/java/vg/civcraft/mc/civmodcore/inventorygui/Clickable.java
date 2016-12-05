@@ -19,10 +19,12 @@ public abstract class Clickable implements IClickable {
 	/**
 	 * @return Which item stack represents this clickable
 	 */
+	@Override
 	public ItemStack getItemStack() {
 		return item;
 	}
 	
+	@Override
 	public void addedToInventory(ClickableInventory inv, int slot) {
 		//dont need anything for static representation		
 	}

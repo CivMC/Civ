@@ -1,11 +1,9 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.List;
-
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class AnimatedClickable implements IClickable {
@@ -32,6 +30,7 @@ public class AnimatedClickable implements IClickable {
 		return items.get(currentPos);
 	}
 
+	@Override
 	public void clicked(Player p){}
 
 	@Override

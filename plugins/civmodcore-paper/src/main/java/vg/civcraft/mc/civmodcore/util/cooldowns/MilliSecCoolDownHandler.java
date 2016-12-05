@@ -22,10 +22,12 @@ public class MilliSecCoolDownHandler<E> implements ICoolDownHandler<E> {
 		cds = new HashMap<>();
 	}
 
+	@Override
 	public void putOnCoolDown(E e) {
 		cds.put(e, System.currentTimeMillis());
 	}
 
+	@Override
 	public boolean onCoolDown(E e) {
 		Long lastUsed = cds.get(e);
 		if (lastUsed == null
@@ -35,6 +37,7 @@ public class MilliSecCoolDownHandler<E> implements ICoolDownHandler<E> {
 		return true;
 	}
 
+	@Override
 	public long getRemainingCoolDown(E e) {
 		Long lastUsed = cds.get(e);
 		if (lastUsed == null) {
@@ -47,6 +50,7 @@ public class MilliSecCoolDownHandler<E> implements ICoolDownHandler<E> {
 		return 0;
 	}
 
+	@Override
 	public long getTotalCoolDown() {
 		return cooldown;
 	}

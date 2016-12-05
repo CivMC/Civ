@@ -1,9 +1,11 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -135,8 +137,11 @@ public class TextUtil
 	
 	public static String repeat(String string, int times) {
 		Guard.ArgumentNotNull(string, "string");
-		if (times <= 0) return "";
-		else return string + repeat(string, times-1);
+		if (times <= 0) {
+			return "";
+		} else {
+			return string + repeat(string, times-1);
+		}
 	}
 	
 	public static String implode(List<String> list, String glue) {
@@ -156,8 +161,12 @@ public class TextUtil
 	
 	public static String implodeCommaAnd(List<String> list, String comma, String and)
 	{
-		if (list.size() == 0) return "";
-		if (list.size() == 1) return list.get(0);
+		if (list.size() == 0) {
+			return "";
+		}
+		if (list.size() == 1) {
+			return list.get(0);
+		}
 		
 		String lastItem = list.get(list.size()-1);
 		String nextToLastItem = list.get(list.size()-2);
@@ -189,10 +198,11 @@ public class TextUtil
 		int eatLeft = (centerlen / 2) - titleizeBalance;
 		int eatRight = (centerlen - eatLeft) + titleizeBalance;
 
-		if (eatLeft < pivot)
+		if (eatLeft < pivot) {
 			return parseTags(colorCode)+titleizeLine.substring(0, pivot - eatLeft) + center + titleizeLine.substring(pivot + eatRight);
-		else
+		} else {
 			return parseTags(colorCode)+center;
+		}
 	}
 	
 	public static ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title) {

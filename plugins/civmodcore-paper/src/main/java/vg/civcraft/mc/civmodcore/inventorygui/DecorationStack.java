@@ -9,6 +9,7 @@ public class DecorationStack extends Clickable {
 		super(item);
 	}
 
+	@Override
 	public void clicked(Player p) {
 		//dont do anything here, it's supposed to be just decoration
 	}

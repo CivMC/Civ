@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -41,10 +40,12 @@ public class NiceNames {
 							: new LinkedList<String>());
 		}
 
+		@Override
 		public int hashCode() {
 			return data.hashCode();
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			return o instanceof NameSearchObject
 					&& ((NameSearchObject) o).getData().equals(data);

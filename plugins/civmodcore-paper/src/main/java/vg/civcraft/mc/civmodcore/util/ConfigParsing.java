@@ -1,10 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.logging.Logger;
-
-import com.google.common.collect.Lists;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -22,7 +20,6 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-
 import vg.civcraft.mc.civmodcore.areas.EllipseArea;
 import vg.civcraft.mc.civmodcore.areas.GlobalYLimitedArea;
 import vg.civcraft.mc.civmodcore.areas.IArea;

@@ -3,13 +3,11 @@ package vg.civcraft.mc.civmodcore;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
-
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -30,7 +28,7 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-			return handle == null ? false : handle.execute(sender, command, args);
+		return handle == null ? false : handle.execute(sender, command, args);
 	}
 
 	@Override
@@ -112,7 +110,7 @@ public abstract class ACivMod extends JavaPlugin {
 	/**
 	 * Simple WARNING level logging with ellipsis notation shortcut for defered injection argument array.
 	 */
-	public void warning(String message, Object...vars) {
+	public void warning(String message, Object... vars) {
 		getLogger().log(Level.WARNING, message, vars);
 	}
 
@@ -126,7 +124,7 @@ public abstract class ACivMod extends JavaPlugin {
 	/**
 	 * Simple INFO level logging with ellipsis notation shortcut for defered injection argument array.
 	 */
-	public void info(String message, Object...vars) {
+	public void info(String message, Object... vars) {
 		getLogger().log(Level.INFO, message, vars);
 	}
 
@@ -142,12 +140,12 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level
-	 * with ellipsis notation shorcut for defered injection argument array.
+	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level with ellipsis notation
+	 * shorcut for defered injection argument array.
 	 *
 	 * Skipped if DebugLog is false.
 	 */
-	public void debug(String message, Object...vars) {
+	public void debug(String message, Object... vars) {
 		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message, vars);
 		}

@@ -8,10 +8,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
-
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 import net.minecraft.server.v1_10_R1.NBTTagList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -147,6 +145,7 @@ public class ItemMap {
 		}
 	}
 
+	@Override
 	public int hashCode() {
 		int res = 0;
 		for (Entry<ItemStack, Integer> entry : items.entrySet()) {
@@ -283,10 +282,10 @@ public class ItemMap {
 	public ItemMap getStacksByMaterialDurabilityEnchants(ItemStack is) {
 		if (is.getItemMeta() != null) {
 			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					(int) is.getDurability(), is.getItemMeta().getEnchants());
+					is.getDurability(), is.getItemMeta().getEnchants());
 		} else {
 			return getStacksByMaterialDurabilityEnchants(is.getType(),
-					(int) is.getDurability(),
+					is.getDurability(),
 					new HashMap<Enchantment, Integer>());
 		}
 	}
@@ -396,6 +395,7 @@ public class ItemMap {
 		return true;
 	}
 
+	@Override
 	public String toString() {
 		String res = "";
 		for (ItemStack is : getItemStackRepresentation()) {
@@ -463,6 +463,7 @@ public class ItemMap {
 	/**
 	 * Clones this map
 	 */
+	@Override
 	public ItemMap clone() {
 		ItemMap clone = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
@@ -567,6 +568,7 @@ public class ItemMap {
 		return true;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof ItemMap) {
 			ItemMap im = (ItemMap) o;

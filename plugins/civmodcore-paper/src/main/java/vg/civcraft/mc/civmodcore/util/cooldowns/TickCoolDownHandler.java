@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.util.cooldowns;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,10 +35,12 @@ public class TickCoolDownHandler<E> implements ICoolDownHandler<E> {
 				}, 1L, 1L);
 	}
 
+	@Override
 	public void putOnCoolDown(E e) {
 		cds.put(e, tickCounter);
 	}
 
+	@Override
 	public boolean onCoolDown(E e) {
 		Long lastUsed = cds.get(e);
 		if (lastUsed == null || (tickCounter - lastUsed) > cooldown) {
@@ -48,6 +49,7 @@ public class TickCoolDownHandler<E> implements ICoolDownHandler<E> {
 		return true;
 	}
 
+	@Override
 	public long getRemainingCoolDown(E e) {
 		Long lastUsed = cds.get(e);
 		if (lastUsed == null) {
@@ -60,6 +62,7 @@ public class TickCoolDownHandler<E> implements ICoolDownHandler<E> {
 		return 0L;
 	}
 
+	@Override
 	public long getTotalCoolDown() {
 		return cooldown;
 	}
