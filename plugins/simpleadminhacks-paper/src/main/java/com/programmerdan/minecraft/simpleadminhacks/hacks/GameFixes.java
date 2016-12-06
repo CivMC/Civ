@@ -8,6 +8,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.inventory.InventoryHolder;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -77,6 +79,13 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				&& config.isBlockElytraBreakBug()) {
 			event.setCancelled(true);
 			player.damage(config.getDamageOnElytraBreakBug());
+		}
+	}
+	
+	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	public void onEntityTeleport(EntityTeleportEvent event) {
+		if(!config.canStorageTeleport() && event.getEntity() instanceof InventoryHolder) {
+			event.setCancelled(true);
 		}
 	}
 	

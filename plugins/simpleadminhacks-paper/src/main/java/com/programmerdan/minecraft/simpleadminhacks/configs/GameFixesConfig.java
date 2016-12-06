@@ -9,6 +9,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	private boolean blockElytraBreakBug;
 	private double damageOnElytraBreakBug;
+	private boolean canStorageTeleport;
 	
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -17,6 +18,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 	protected void wireup(ConfigurationSection config) {
 		blockElytraBreakBug = config.getBoolean("blockElytraBreakBug", true);
 		damageOnElytraBreakBug = config.getDouble("damageOnElytraBreakBug", 0.0d);
+		canStorageTeleport = config.getBoolean("canStorageTeleport");
 	}
 	
 	public boolean isBlockElytraBreakBug() {
@@ -25,5 +27,9 @@ public class GameFixesConfig extends SimpleHackConfig {
 	
 	public double getDamageOnElytraBreakBug() {
 		return damageOnElytraBreakBug;
+	}
+	
+	public boolean canStorageTeleport() {
+		return canStorageTeleport;
 	}
 }
