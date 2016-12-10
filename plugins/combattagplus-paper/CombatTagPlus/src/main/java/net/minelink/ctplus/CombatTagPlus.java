@@ -18,7 +18,6 @@ import net.minelink.ctplus.task.ForceFieldTask;
 import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.BarUtils;
-import net.minelink.ctplus.util.DurationUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
 
 import org.bukkit.Bukkit;
@@ -274,7 +273,7 @@ public final class CombatTagPlus extends JavaPlugin {
                 return true;
             }
 
-            String duration = DurationUtils.format(tag.getTagDuration());
+            String duration = settings.formatDuration(tag.getTagDuration());
             sender.sendMessage(getSettings().getCommandTagMessage().replace("{time}", duration));
         } else if (cmd.getName().equals("ctpluslogout")) {
             if (!(sender instanceof Player)) return false;

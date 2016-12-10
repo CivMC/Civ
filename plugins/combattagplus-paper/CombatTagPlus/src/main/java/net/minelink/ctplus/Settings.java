@@ -12,12 +12,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.Configuration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import static java.util.concurrent.TimeUnit.*;
 
 public final class Settings {
 
@@ -436,4 +440,28 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("command-tag-message"));
     }
 
+    public String formatDuration(long seconds) {
+        List<String> parts = new ArrayList<>();
+        for (TimeUnit timeUnit : new TimeUnit[] { DAYS, HOURS, MINUTES, SECONDS }) {
+            long duration = seconds / SECONDS.convert(1, timeUnit);
+            if (duration > 0) {
+                seconds -= SECONDS.convert(duration, timeUnit);
+                String englishWord = timeUnit.name().toLowerCase(Locale.ENGLISH);
+                if (duration > 1) {
+                    // Make it plural
+                    englishWord += "s";
+                }
+                String durationWord = plugin.getConfig().getString("duration-words." + englishWord, englishWord);
+                parts.add(duration + " " + durationWord);
+            }
+        }
+        String formatted = StringUtils.join(parts, ", ");
+        if (formatted.contains(", ")) {
+            int index = formatted.lastIndexOf(", ");
+            StringBuilder builder = new StringBuilder(formatted);
+            formatted = builder.replace(index, index + 2, " and ").toString();
+        }
+
+        return formatted;
+    }
 }

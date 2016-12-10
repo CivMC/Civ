@@ -166,6 +166,17 @@ disabled-command-message: '&b{command}&c is disabled in combat.'
 command-blacklist:
   - '*'
 
+# Customize the words used to describe durations (both singular and plural)
+duration-words:
+  day: "day"
+  days: "days"
+  hour: "hour"
+  hours: "hours"
+  minute: "minute"
+  minutes: "minutes"
+  second: "second"
+  seconds: "seconds"
+
 # These commands are exceptions to the blacklist.
 command-whitelist:
   - ct

@@ -3,7 +3,7 @@ package net.minelink.ctplus.task;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.util.BarUtils;
-import net.minelink.ctplus.util.DurationUtils;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -59,7 +59,7 @@ public final class TagUpdateTask extends BukkitRunnable {
             int remainingDuration = tag.getTagDuration();
             int tagDuration = plugin.getSettings().getTagDuration();
             float percent = ((float) remainingDuration / tagDuration) * 100;
-            String remaining = DurationUtils.format(remainingDuration);
+            String remaining = plugin.getSettings().formatDuration(remainingDuration);
 
             // Display remaining timer in boss bar
             String message = plugin.getSettings().getBarApiCountdownMessage().replace("{remaining}", remaining);
