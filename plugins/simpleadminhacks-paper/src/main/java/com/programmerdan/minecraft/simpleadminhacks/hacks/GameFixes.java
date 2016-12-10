@@ -9,7 +9,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Hopper;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -87,6 +91,19 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if(!config.canStorageTeleport() && event.getEntity() instanceof InventoryHolder) {
 			event.setCancelled(true);
 		}
+	}
+	
+	@EventHandler
+	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
+		if(!config.isStopHopperDupe() || !(event.getDestination().getType() == InventoryType.HOPPER)
+				|| !(event.getSource().getType() == InventoryType.HOPPER)) return;
+		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getState().getData();
+		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getState().getData();
+		if(source.getFacing().getOppositeFace() == dest.getFacing()) {
+			//They're pointing into each other and will eventually dupe
+			event.setCancelled(true);
+		}
+		
 	}
 	
 	public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {

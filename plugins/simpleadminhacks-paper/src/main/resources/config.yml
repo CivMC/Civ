@@ -147,3 +147,4 @@ hacks:
     blockElytraBreakBug: true
     damageOnElytraBreakBug: 1.0
     canStorageTeleport: false
+    stopHopperDupe: true
