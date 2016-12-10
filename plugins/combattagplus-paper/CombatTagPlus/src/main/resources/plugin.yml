@@ -20,6 +20,11 @@ commands:
     description: Logs out the player without spawning an NPC or killing them
     permission: ctplus.logout
     permission-message: '§cYou do not have permission to use that command.'
+  ctplusuntag:
+    aliases: [ctuntag, untag]
+    description: Untags the specified player
+    permission: ctplus.untag
+    permission-message: '§cYou do not have permission to use that command.'
 permissions:
   ctplus.reload: {default: op}
   ctplus.bypass.tag: {default: op}
@@ -32,4 +37,5 @@ permissions:
   ctplus.bypass.craft: {default: op}
   ctplus.check: {default: true}
   ctplus.logout: {default: true}
+  ctplus.check: {default: op}
   ctplus.notify.kill: {default: true}
