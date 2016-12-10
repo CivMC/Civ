@@ -65,6 +65,11 @@ disable-block-edit: false
 # This message is displayed when a player attempts to edit blocks within pvp if block editing is disabled in pvp.
 disable-block-edit-message: '&bBlock editing &cis disabled in combat.'
 
+# Disable a player from accessing storage (like chests and brewing stands) in combat
+disable-storage-access: false
+
+disable-storage-access-message: '&bAccess to storage &cis disabled in combat'
+
 # Prevent players in creative from getting tagged.
 disable-creative-tags: true
 

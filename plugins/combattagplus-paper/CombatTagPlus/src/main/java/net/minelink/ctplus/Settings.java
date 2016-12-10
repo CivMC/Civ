@@ -264,6 +264,15 @@ public final class Settings {
         return ChatColor.translateAlternateColorCodes('&', message);
     }
 
+    public boolean disableStorageAccess() {
+        return plugin.getConfig().getBoolean("disable-storage-access");
+    }
+
+    public String getDisableStorageAccessMessage() {
+        String message = plugin.getConfig().getString("disable-storage-access-message", "");
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+
     public boolean disableCreativeTags() {
         return plugin.getConfig().getBoolean("disable-creative-tags");
     }

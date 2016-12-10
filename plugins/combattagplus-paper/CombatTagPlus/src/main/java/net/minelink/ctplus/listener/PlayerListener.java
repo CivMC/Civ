@@ -1,5 +1,8 @@
 package net.minelink.ctplus.listener;
 
+import java.util.UUID;
+import javax.annotation.Nullable;
+
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Tag;
 import net.minelink.ctplus.event.CombatLogEvent;
@@ -19,16 +22,15 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
-import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-
-import java.util.UUID;
 
 public final class PlayerListener implements Listener {
 
@@ -200,6 +202,64 @@ public final class PlayerListener implements Listener {
         event.setCancelled(true);
         if (!plugin.getSettings().getDisableBlockEditMessage().isEmpty()) {
             player.sendMessage(plugin.getSettings().getDisableBlockEditMessage());
+        }
+    }
+
+
+    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    public void disableStorageAccess(PlayerCombatTagEvent event) {
+        // Do nothing if storage access is allowed in combat
+        if (!plugin.getSettings().disableStorageAccess()) return;
+
+        // Disable storage access for victim
+        if (event.getVictim() != null) {
+            tryDisableStorageAccess(event.getVictim(), null);
+        }
+
+        // Disable storage access for attacker
+        if (event.getAttacker() != null) {
+            tryDisableStorageAccess(event.getAttacker(), null);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+    public void disableStorageAccess(InventoryOpenEvent event) {
+        if (!(event.getPlayer() instanceof Player)) return;
+        Player player = (Player) event.getPlayer();
+
+        // Do nothing if player isn't even combat tagged
+        if (!plugin.getTagManager().isTagged(player.getUniqueId())) return;
+
+        // Cancel inventory interaction
+        if (tryDisableStorageAccess(player, event.getView())) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean tryDisableStorageAccess(Player player, @Nullable InventoryView view) {
+        // Do nothing if storage access is allowed in combat
+        if (!plugin.getSettings().disableStorageAccess()) {
+            return false;
+        }
+
+        // Do nothing if player has bypass permission
+        if (player.hasPermission("ctplus.bypass.storageaccess")) {
+            return false;
+        }
+
+        if (view == null) view = player.getOpenInventory();
+        switch (view.getType()) {
+            case PLAYER:
+            case CREATIVE:
+                // Ignore interaction with the player's own inventory
+                return false;
+            default:
+                view.close();
+                String message = plugin.getSettings().getDisableStorageAccessMessage();
+                if (!message.isEmpty()) {
+                    player.sendMessage(message);
+                }
+                return true;
         }
     }
 

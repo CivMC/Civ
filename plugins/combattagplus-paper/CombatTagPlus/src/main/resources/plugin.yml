@@ -25,6 +25,7 @@ permissions:
   ctplus.bypass.tag: {default: op}
   ctplus.bypass.command: {default: op}
   ctplus.bypass.blockedit: {default: op}
+  ctplus.bypass.storageaccess: {default: op}
   ctplus.bypass.enderpearl: {default: op}
   ctplus.bypass.flying: {default: op}
   ctplus.bypass.teleport: {default: op}
