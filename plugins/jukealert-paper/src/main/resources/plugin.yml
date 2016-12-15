@@ -18,6 +18,9 @@ commands:
   jalist:
     description: Displays Juke List Information
     usage: /jalist
+  jalistlong:
+    description: Displays Juke List Information with full-length Snitch names
+    usage: /jalistlong
   jagroup:
     description: Display information from a group
     usage: /jagroup <group> <page>
@@ -34,10 +37,10 @@ commands:
     permission: jukealert.jalookup
   jamute:
     description:  Adds or removes from a snitch notification ignore list.
-    usage: /jamute <group> 
+    usage: /jamute <group>
   jaconfig:
     description: Run-time configuration
-    usage: /jaconfig <option> <value> 
+    usage: /jaconfig <option> <value>
     permission: jukealert.admin.jaconfig
   jatogglelevers:
     description:  Sets flag that indicates if a juke should trigger a lever.
@@ -67,4 +70,4 @@ permissions:
     default: true
   jukealert.vanish:
     description: Ability to avoid snitches.
-    default: op  
+    default: op
