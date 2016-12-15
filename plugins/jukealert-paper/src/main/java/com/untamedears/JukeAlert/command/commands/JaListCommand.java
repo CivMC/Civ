@@ -35,7 +35,7 @@ public class JaListCommand extends PlayerCommand {
             if (offset < 1) {
                 offset = 1;
             }
-            sendSnitchList(sender, offset);
+            sendSnitchList(sender, offset, true);
             return true;
         } else {
             sender.sendMessage(ChatColor.RED + " You do not have access to snitches!");
@@ -43,11 +43,10 @@ public class JaListCommand extends PlayerCommand {
         }
     }
 
-    private void sendSnitchList(CommandSender sender, int offset) {
+    private void sendSnitchList(CommandSender sender, int offset, boolean truncateName) {
         Player player = (Player) sender;
-        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player);
+        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player, truncateName);
         Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
-
     }
 
 	@Override
