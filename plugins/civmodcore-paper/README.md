@@ -1,6 +1,16 @@
 CivModCore
 ===========
 
+Versions:
+
+* 1.5.10 - Spigot 1.11 or higher.
+
+* 1.5.9 - Spigot 1.10 / 1.10.x
+
+No explicit backwards support is offered.
+
+-------
+
 Common Plugin Core derived from Humbug
 
 To use CivModCore, your Main Plugin class must extend ACivMod:
