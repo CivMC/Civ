@@ -447,10 +447,6 @@ public final class Settings {
             if (duration > 0) {
                 seconds -= SECONDS.convert(duration, timeUnit);
                 String englishWord = timeUnit.name().toLowerCase(Locale.ENGLISH);
-                if (duration > 1) {
-                    // Make it plural
-                    englishWord += "s";
-                }
                 String durationWord = plugin.getConfig().getString("duration-words." + englishWord, englishWord);
                 parts.add(duration + " " + durationWord);
             }

@@ -285,10 +285,9 @@ public final class CombatTagPlus extends JavaPlugin {
             // Attempt to start a new logout task
             SafeLogoutTask.run(this, player);
         } else if (cmd.getName().equals("ctplusuntag")) {
-            if (!(sender instanceof Player)) return false;
 
             if (args.length < 1) {
-                sender.sendMessage(RED + " Please specify a player to untag");
+                sender.sendMessage(RED + "Please specify a player to untag");
                 return true;
             }
 
