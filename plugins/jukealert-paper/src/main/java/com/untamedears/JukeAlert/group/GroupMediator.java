@@ -38,7 +38,7 @@ public class GroupMediator {
 				returnValue.add(f.getName());
 			}
 		}
-    	
+
     	return returnValue;
     }
 }

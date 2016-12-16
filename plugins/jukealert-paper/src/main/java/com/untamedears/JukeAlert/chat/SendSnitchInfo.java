@@ -36,33 +36,33 @@ public class SendSnitchInfo implements Runnable {
         }
         this.isGroup = isGroup;
     }
-	
+
     public void run() {
 		if (info != null && !info.isEmpty()) {
 			String output = "";
-			
+
             if (this.snitchName != null) {
 			    output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
                        + ChatColor.DARK_GRAY + "-----------------------------------".substring(this.snitchName.length()) + "\n";
             } else {
 			    output += ChatColor.WHITE + " Snitch Log " + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
             }
-            
-            try {            
+
+            try {
                 TimeZone timeZone = Calendar.getInstance().getTimeZone();
                 Date now = Calendar.getInstance().getTime();
                 boolean daylightTime = timeZone.inDaylightTime(now);
                 int offsetMinutes = timeZone.getOffset(now.getTime()) / 60000;
                 int offsetHours = offsetMinutes/60;
-                offsetMinutes %= 60;                        
+                offsetMinutes %= 60;
                 output += ChatColor.DARK_AQUA + " All times are " + timeZone.getDisplayName(daylightTime, TimeZone.SHORT) +
                             String.format(" (UTC%s%02d:%02d)", offsetHours>0?"+":"-", Math.abs(offsetHours), offsetMinutes) + "\n";
             }
             catch (IllegalArgumentException iae){
-                JukeAlert.getInstance().getLogger().log(Level.WARNING, "Illegal Argument Exception while crafting " + 
+                JukeAlert.getInstance().getLogger().log(Level.WARNING, "Illegal Argument Exception while crafting " +
                                                         "timezone header in SendSnitchInfo", iae);
             }
-            
+
             // Build ID header line
             String id = " ";
             Map<Integer, String> materials = new TreeMap<Integer, String>();
@@ -80,7 +80,7 @@ public class SendSnitchInfo implements Runnable {
                 id += String.format(ChatColor.WHITE + ", $" + ChatColor.RED + "%d " + ChatColor.WHITE + "= " + ChatColor.RED + "%s", entry.getKey(), entry.getValue());
             }
             output += id.replaceFirst(",", "") + (id.length() > 1 ? "\n" : "");
-            
+
             // Build table of entries
 			output += ChatColor.GRAY + String.format("  %s %s %s", ChatFiller.fillString("Name", (double) 22), ChatFiller.fillString("Reason", (double) 22), ChatFiller.fillString("Details", (double) 30)) + "\n";
 			for (SnitchAction entry : info){

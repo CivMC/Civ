@@ -23,17 +23,17 @@ import com.untamedears.JukeAlert.util.Utility;
 public class MercuryListener implements Listener{
 
 	private List<String> channels = new ArrayList<String>();
-	
+
 	public MercuryListener(){
 		MercuryAPI.addChannels(Mercury.getChannels());
 		for (String x: Mercury.getChannels()) {
 			channels.add(x);
 		}
 	}
-	
+
     private long failureReportDelay = 10000l;
 	private long lastAsyncMessageFailure = System.currentTimeMillis() - failureReportDelay;
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void asyncMercuryMessageEvent(AsyncPluginBroadcastMessageEvent event){
 		String channel = event.getChannel();
@@ -54,7 +54,7 @@ public class MercuryListener implements Listener{
 			message.append(comp[x]+" ");
 		}*/
 		new BukkitRunnable() {
-			
+
 			@Override
 			public void run() {
 				try {

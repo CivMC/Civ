@@ -6,19 +6,19 @@ import org.bukkit.configuration.file.FileConfiguration;
 
 import com.untamedears.JukeAlert.JukeAlert;
 
-public class ConfigManager 
+public class ConfigManager
 {
 	private JukeAlert plugin;
-	
+
 	private String username;
 	private String host;
 	private String password;
 	private String database;
 	private String prefix;
 	private int port;
-	
+
 	private int defaultCuboidSize;
-	
+
 	private int logsPerPage;
 	private int daysFromLastAdminVisitForLoggedSnitchCulling;
 	private int daysFromLastAdminVisitForNonLoggedSnitchCulling;
@@ -39,11 +39,11 @@ public class ConfigManager
     private boolean displayOwnerOnBreak;
     private boolean softDelete;
     private boolean multipleWorldSupport = false;
-    
+
     private boolean broadcastAllServers;
 
 	private FileConfiguration config;
-	
+
 	public ConfigManager()
 	{
 		this.plugin = JukeAlert.getInstance();
@@ -58,14 +58,14 @@ public class ConfigManager
 	 * Load configuration
 	 */
 	private void load()
-	{        
+	{
         username = config.getString("mysql.username");
         host     = config.getString("mysql.host");
         password = config.getString("mysql.password");
         database = config.getString("mysql.database");
         prefix   = config.getString("mysql.prefix");
         port     = config.getInt("mysql.port");
-        
+
         setDefaultCuboidSize(config.getInt("settings.defaultCuboidSize"));
         logsPerPage = config.getInt("settings.logsPerPage");
 		daysFromLastAdminVisitForLoggedSnitchCulling = config.getInt("settings.daysFromLastAdminVisitForLoggedSnitchCulling");
@@ -152,19 +152,19 @@ public class ConfigManager
 	public void setDefaultCuboidSize(int defaultCuboidSize) {
 		this.defaultCuboidSize = defaultCuboidSize;
 	}
-	
+
 	public int getLogsPerPage() {
 		return logsPerPage;
 	}
-	
+
 	public int getDaysFromLastAdminVisitForNonLoggedSnitchCulling() {
 		return daysFromLastAdminVisitForNonLoggedSnitchCulling;
 	}
-	
+
 	public int getDaysFromLastAdminVisitForLoggedSnitchCulling() {
 		return daysFromLastAdminVisitForLoggedSnitchCulling;
 	}
-	
+
 	public Boolean getAllowTriggeringLevers() {
 		return allowTriggeringLevers;
 	}
@@ -216,7 +216,7 @@ public class ConfigManager
     public int getAlertRateLimit() {
         return alertRateLimit;
     }
-    
+
     public boolean getInvisibilityEnabled(){
     	return enableInvisibility;
     }
@@ -224,15 +224,15 @@ public class ConfigManager
     public boolean isDisplayOwnerOnBreak() {
         return displayOwnerOnBreak;
     }
-    
+
     public boolean isSoftDelete() {
     	return softDelete;
     }
-    
+
     public boolean getMultipleWorldSupport() {
         return multipleWorldSupport;
     }
-    
+
     public boolean getToggleRestartCheckGroup(){
     	return toggleRestartCheckGroup;
     }

@@ -106,11 +106,11 @@ public class JukeAlertListener implements Listener {
                 snitch.imposeSnitchTax();
                 inList.add(snitch);
                 try {
-                String message = " * " + player.getDisplayName() + " logged in to snitch at " 
-				        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+                String message = " * " + player.getDisplayName() + " logged in to snitch at "
+				        + snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() +
 				        " " + snitch.getY() + " " + snitch.getZ() + "]";
                 notifyGroup(snitch, ChatColor.AQUA+message);
-                                
+
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
                 	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-login");
                 } catch (SQLException e) {
@@ -142,11 +142,11 @@ public class JukeAlertListener implements Listener {
             if (!immuneToSnitch(snitch, accountId)) {
                 snitch.imposeSnitchTax();
                 try {
-                String message = " * " + player.getDisplayName() + " logged out in snitch at " 
-		        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() + 
+                String message = " * " + player.getDisplayName() + " logged out in snitch at "
+		        		+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() +
 		                " " + snitch.getY() + " " + snitch.getZ() + "]";
                 notifyGroup(snitch, ChatColor.AQUA+message);
-                
+
                 if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers())
                 	mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-logout");
                 } catch (SQLException e) {
@@ -274,7 +274,7 @@ public class JukeAlertListener implements Listener {
             snitchManager.removeSnitch(snitch);
         }
     }
-    
+
     @EventHandler
     public void onGroupEvent(GroupInvalidationEvent event) {
     	String reason = event.getReason();
@@ -319,7 +319,7 @@ public class JukeAlertListener implements Listener {
             }
     	}
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onGroupMergeEvent(GroupMergeEvent event){
     	Group g1 = event.getMergingInto();
@@ -348,7 +348,7 @@ public class JukeAlertListener implements Listener {
             Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
             if(snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
                 Location loc = snitch.getLoc();
-        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by " 
+        	event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName() + " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by "
                 + NameAPI.getCurrentName(snitch.getGroup().getOwner()) + " and is on group: " + snitch.getGroup().getName());
        	    }
         }
@@ -370,7 +370,7 @@ public class JukeAlertListener implements Listener {
 
     private long failureReportDelay = 10000l;
     private long lastNotifyMoveFailure = System.currentTimeMillis() - failureReportDelay;
-    
+
     @EventHandler(priority = EventPriority.HIGH)
     public void enterSnitchProximity(PlayerMoveEvent event) {
     	try {
@@ -383,7 +383,7 @@ public class JukeAlertListener implements Listener {
 	        	}
 	        	return;
 	        }
-	
+
 	        if (from.getBlockX() == to.getBlockX()
 	                && from.getBlockY() == to.getBlockY()
 	                && from.getBlockZ() == to.getBlockZ()
@@ -404,17 +404,17 @@ public class JukeAlertListener implements Listener {
         	if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
         		JukeAlert.getInstance().getLogger().log(Level.SEVERE, "MoveEvent generated an NPE", npe);
         		lastNotifyMoveFailure = System.currentTimeMillis();
-        	}    		
+        	}
     	}
     }
-    
+
     //Because teleporting doesn't trigger a movement event :/
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
     	Player player = event.getPlayer();
         handleSnitchEntry(player);
     }
-    
+
 	private void handleSnitchEntry(Player player) {
 		if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
 			return;
@@ -492,7 +492,7 @@ public class JukeAlertListener implements Listener {
 					}
 				} catch (NullPointerException npe) {
 					if (System.currentTimeMillis() - lastNotifyMoveFailure > failureReportDelay) {
-						JukeAlert.getInstance().getLogger().log(Level.SEVERE, 
+						JukeAlert.getInstance().getLogger().log(Level.SEVERE,
 								"handleSnitchEntry isOnSnitch or contained generated an exception", npe);
 						lastNotifyMoveFailure = System.currentTimeMillis();
 					}
@@ -509,7 +509,7 @@ public class JukeAlertListener implements Listener {
 		}
 		inList.removeAll(rmList);
 	}
-    
+
     // Exceptions:  No exceptions must be raised from this for any reason.
     private void toggleLeverIfApplicable(final Snitch snitch, final Location blockToPossiblyToggle, final Boolean leverShouldEnable)
     {
@@ -517,7 +517,7 @@ public class JukeAlertListener implements Listener {
     	{
     		if(!JukeAlert.getInstance().getConfigManager().getAllowTriggeringLevers()) return;
 	    	if (null == snitch) return;
-	    	
+
 	    	World world = snitch.getLoc().getWorld();
 	    	if(snitch.shouldToggleLevers())
 	        {
@@ -525,7 +525,7 @@ public class JukeAlertListener implements Listener {
 	        	{
 	        		BlockState leverState = world.getBlockAt(blockToPossiblyToggle).getState();
 	        		Lever lever = ((Lever)leverState.getData());
-	        		
+
 	        		if(leverShouldEnable && !lever.isPowered())
 	        		{
 	        			lever.setPowered(true);
@@ -538,7 +538,7 @@ public class JukeAlertListener implements Listener {
 		        		leverState.setData(lever);
 		        		leverState.update();
 	        		}
-	        		
+
 	        		if (leverShouldEnable)
 	        		{
 		        		BukkitScheduler scheduler = plugin.getServer().getScheduler();
@@ -583,7 +583,7 @@ public class JukeAlertListener implements Listener {
             if (!immuneToSnitch(snitch, accountId) || isDebugging()) {
                 if (checkProximity(snitch, accountId)) {
                     plugin.getJaLogger().logUsed(snitch, player, block);
-                    
+
                 	Location south = new Location(block.getWorld(), snitch.getX(), snitch.getY(), snitch.getZ()+1);
                 	toggleLeverIfApplicable(snitch, south, true);
                 }
@@ -618,7 +618,7 @@ public class JukeAlertListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH)
     public void playerDestroyCart(VehicleDestroyEvent event) {
         Vehicle vehicle = event.getVehicle();
@@ -643,7 +643,7 @@ public class JukeAlertListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler (priority = EventPriority.HIGH)
     public void playerMountEntity(EntityMountEvent e) {
     	if (e.getEntityType() != EntityType.PLAYER) {
@@ -667,7 +667,7 @@ public class JukeAlertListener implements Listener {
              }
          }
     }
-    
+
     @EventHandler (priority = EventPriority.HIGH)
     public void playerDismountEntity(EntityDismountEvent e) {
     	if (e.getEntityType() != EntityType.PLAYER) {
@@ -691,7 +691,7 @@ public class JukeAlertListener implements Listener {
              }
          }
     }
-    
+
 
     @EventHandler(priority = EventPriority.HIGH)
     public void playerKillPlayer(PlayerDeathEvent event) {

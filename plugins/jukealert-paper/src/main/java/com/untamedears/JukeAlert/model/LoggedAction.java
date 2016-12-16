@@ -30,7 +30,7 @@ public enum LoggedAction {
     VEHICLE_DESTROY(13, "Destroyed", ChatColor.DARK_RED, 3),
     ENTITY_MOUNT(14, "Mount", ChatColor.RED, 3),
     ENTITY_DISMOUNT(15, "Dismount", ChatColor.GOLD, 3);
-    
+
     private int value;
     private String actionString;
     private ChatColor actionColor;
@@ -47,15 +47,15 @@ public enum LoggedAction {
     public int getLoggedActionId() {
         return this.value;
     }
-    
+
     public String getActionString(){
         return this.actionString;
     }
-    
+
     public ChatColor getActionColor(){
         return this.actionColor;
     }
-    
+
     public int getActionTextType(){
         return this.actionTextType;
     }
@@ -81,15 +81,15 @@ public enum LoggedAction {
             default: return UNKNOWN;
         }
     }
-    
+
     /**
      * Attempts to match a string to one of the LoggedAction actions
-     * @param action - string representation of the action (case insensitive). 
+     * @param action - string representation of the action (case insensitive).
      *                 Either human-friendly (e.g. "Buket Fill") or one of the enum names (e.g. "BLOCK_BURN")
      * @return matching LoggedAction
      * @throws ParseException if the string couldn't be decoded to a LoggedAction
      */
-    public static LoggedAction fromString(String action) throws ParseException{        
+    public static LoggedAction fromString(String action) throws ParseException{
         for (LoggedAction a : LoggedAction.values()){
             String actionName = a.toString();
             String actionDisp = a.actionString;

@@ -167,11 +167,11 @@ public class Snitch implements QTBox, Comparable {
     public void setShouldLog(boolean shouldLog) {
         this.shouldLog = shouldLog;
     }
-    
+
     public boolean shouldToggleLevers() {
     	return shouldToggleLevers;
     }
-    
+
     public void setShouldToggleLevers(boolean shouldToggleLevers) {
     	this.shouldToggleLevers = shouldToggleLevers;
     }

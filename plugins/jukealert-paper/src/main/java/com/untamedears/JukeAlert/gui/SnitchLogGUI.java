@@ -51,7 +51,7 @@ public class SnitchLogGUI {
 		view.setMenuSlot(constructInfoStack(), 3);
 		view.showScreen();
 	}
-	
+
 	private IClickable constructInfoStack() {
 		ItemStack is = new ItemStack(Material.PAPER);
 		ISUtils.setName(is, ChatColor.GOLD + "Logs for " + snitch.getName());
@@ -59,16 +59,16 @@ public class SnitchLogGUI {
 		ISUtils.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
 		return new DecorationStack(is);
 	}
-	
+
 	public static IClickable constructExitClick() {
 		ItemStack is = new ItemStack(Material.WOOD_DOOR);
 		ISUtils.setName(is, ChatColor.GOLD + "Exit");
 		ISUtils.addLore(is, ChatColor.AQUA + "Click to exit GUI");
 		return new Clickable(is) {
-			
+
 			@Override
 			public void clicked(Player p) {
-				ClickableInventory.forceCloseInventory(p);				
+				ClickableInventory.forceCloseInventory(p);
 			}
 		};
 	}

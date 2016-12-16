@@ -95,7 +95,7 @@ public class SnitchManager {
         		}
         		if (snitchGroup == null || !reinfGroup.getName().equals(snitchGroup.getName())){
         			plugin.getLogger().log(Level.INFO, "Found mismatched juke at {0} correcting from {1} to {2}",
-        					new Object[] { snitch.getLoc(), (snitchGroup != null ? snitchGroup.getName() : null), 
+        					new Object[] { snitch.getLoc(), (snitchGroup != null ? snitchGroup.getName() : null),
         							reinfGroup.getName()});
         			snitch.setGroup(reinfGroup);
         		}
@@ -242,7 +242,7 @@ public class SnitchManager {
         }
         return results;
     }
-    
+
     public Set <Snitch> getSnitchesForGroup(String groupName) {
     	return snitchesByGroup.get(groupName);
     }
