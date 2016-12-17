@@ -42,6 +42,36 @@ reinforcements:
    type: FLYING_GLYPH
    speed: 0.5
    particleCount: 50
+ iron_tier:
+  material: IRON_INGOT
+  requirements: 1
+  return: 1
+  percent_chance: 100
+  hit_points: 300
+# mature time is in minutes
+  mature_time: 60
+  acid_time: 90
+  scale_amount: 1
+  lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
+ diamond_tier:
+  material: DIAMOND
+  requirements: 1
+  return: 1
+  percent_chance: 100
+  hit_points: 2000
+# mature time is in minutes
+  mature_time: 1440
+  acid_time: 2880
+  scale_amount: 1
+  lore:
+  effect:
+   type: FLYING_GLYPH
+   speed: 0.5
+   particleCount: 50
 # Delete the comment char to use lore.  Three spaces are required 
 # after lore. You can add multiple lines by adding -
 #   - Some string representation required for this reinforcement.
@@ -109,9 +139,9 @@ reinforcement_damageMultiplier: 365
 mysql:
  hostname: "localhost"
  port: 3306
- dbname: "bukkit"
- username: "bukkit"
- password: ""
+ dbname: "civclassic"
+ username: "root"
+ password: "thisisnotourpassword"
 # Shows reinforcement information as percentile value
 show_health_as_percent: true
 # Whether players are automatically put in reinforcement bypass mode on login
