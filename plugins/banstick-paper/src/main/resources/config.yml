@@ -1,0 +1,14 @@
+database:
+ host:
+ port:
+ database:
+ user:
+ password:
+ poolsize: 10
+ connectionTimeout: 10000
+ idleTimeout: 600000
+ maxLifetime: 7200000
+vpn:
+ check: true
+ autoban: true
+ delayrange: 10,1000

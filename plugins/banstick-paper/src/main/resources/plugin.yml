@@ -1,0 +1,57 @@
+name: ${project.name}
+version: ${project.version}
+author: [ProgrammerDan]
+depend: [CivModCore]
+main: com.programmerdan.minecraft.banstick.BanStick
+description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
+commands:
+ banstick:
+  description: Swing that banstick, send nerds flying.
+  aliases: [bst, stickofdoom]
+  permission: banstick.ban
+  usage:
+   - /<command> [ip]
+   - /<command> [ip]/[CIDR]
+   - /<command> [name/uuid]
+   - /<command> [name/uuid]/[CIDR]
+ lovetap:
+  description: Investigate a user / show information. Also give banstick.ips to show IP info during check.
+  alias: bstl
+  permission: banstick.lovetap
+  usage: /<command> [name/uuid]
+ forgive:
+  description: Ignore a warning / alert for a user
+  alias: bstf
+  permission: banstick.forgive
+  usage: /<command> [name/uuid] [VPN|SHARED]
+ lovetaps:
+  description: Show list of users with warning flags
+  alias: bstls
+  permission: banstick.lovetap
+  usage: /<command> [offline] [sortby=CONFIDENCE|LASTONLINE|PLAYTIME]
+ taphistory:
+  description: Show full log of user, with session length details, IP details, and flag details per session.
+  alias: bsth
+  permission: banstick.ips
+  usage: /<command> [name/uuid]
+permissions:
+ banstick.ban:
+  description: Allows delivery of justice
+  default: op
+ banstick.lovetap:
+  description: Basic info on a user
+  default: op
+ banstick.forgive:
+  description: Allows delivery of mercy
+  default: op
+ banstick.ips:
+  description: Allows full investigation of all data
+  default: op
+ banstick.*:
+  description: Superpowered justice
+  default: op
+  children:
+   banstick.ban: true
+   banstick.lovetap: true
+   banstick.forgive: true
+   banstick.ips: true
