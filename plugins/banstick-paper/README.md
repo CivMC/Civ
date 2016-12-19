@@ -27,3 +27,11 @@ Supports range-bans, auto-VPN flagging, and other forms of IP identification and
 **Check for users sharing a CIDR range** Use /sharedlove xXsickVPNsXx/16 or 12.1.0.0/16 (or use UUID)
 
 **Forgive a user** Use /forgive xXsickVPNsXx VPN or SHARED
+
+=== Compiling
+
+This uses the IPAddress library: https://seancfoley.github.io/IPAddress/
+
+As of this writing it lacks a Maven resource, so I'm installing it manually like so:
+
+mvn install:install-file -Dfile=IPAddress.jar -Dpackaging=jar -DgroupId=inet.ipaddr -DartifactId=IPAddress -Dversion=1.0.0
