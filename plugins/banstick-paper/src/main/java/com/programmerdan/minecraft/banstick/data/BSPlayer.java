@@ -102,25 +102,21 @@ public class BSPlayer {
 	public void startSession(final Player player, Date sessionStart) {
 		BSSession latest = this.allSessions.getLatest();
 		if (latest != null && !latest.isEnded()) {
-			latest.end(sessionStart);
+			latest.setLeaveTime(sessionStart);
 		}
 		BSIP ip = BanStickDatabaseHandler.getInstance().getOrCreateIP(player.getAddress().getAddress());
+		this.allIPs.setLatest(ip);
 		latest = this.allSessions.startNew(ip, sessionStart);
 		this.allShareds.check(latest);
 	}
 	
 	/**
-	 * Ends the latest session for this player.
+	 * Ends the latest session for this player. Player-centric exposed focus for BSSessions's endLatest
 	 * 
 	 * @param sessionEnd
 	 */
 	public void endSession(Date sessionEnd) {
-		BSSession latest = this.allSessions.getLatest();
-		if (latest == null) {
-			BanStick.getPlugin().warning("Call to end a session, but no active session: " + pid);
-			return;
-		}
-		latest.end(sessionEnd);
+		this.allSessions.endLatest(sessionEnd);
 	}
 	
 	/**

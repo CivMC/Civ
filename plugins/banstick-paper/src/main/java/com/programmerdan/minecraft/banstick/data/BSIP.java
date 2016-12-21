@@ -281,6 +281,7 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
+					return newIP;
 				} else {
 					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + netAddress.getHostAddress());
 					return null;
@@ -329,6 +330,7 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
+					return newIP;
 				} else {
 					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + netAddress.getHostAddress() + "/" + CIDR);
 					return null;
