@@ -35,12 +35,12 @@ public class SendSnitchList implements Runnable {
             if (worldName != null && !worldName.isEmpty()){
                 topLine += "for " + worldName + " ";
             }
-
-            topLine = ChatColor.WHITE + topLine + ChatColor.DARK_GRAY
+        
+            topLine = ChatColor.WHITE + topLine + ChatColor.DARK_GRAY 
                     + "--------------------------------------------------------".substring(topLine.length()) + "\n";
-
-            String columnNames = ChatColor.GRAY + String.format("    %s %s %s", ChatFiller.fillString("Location", locationColWidth),
-                                                                ChatFiller.fillString("Cull (h)", cullColWidth),
+            
+            String columnNames = ChatColor.GRAY + String.format("    %s %s %s", ChatFiller.fillString("Location", locationColWidth), 
+                                                                ChatFiller.fillString("Cull (h)", cullColWidth), 
                                                                 ChatFiller.fillString("Group", groupColWidth) + "Name\n")
                                                 + ChatColor.WHITE;
             TextComponent output = new TextComponent(topLine);
@@ -48,7 +48,7 @@ public class SendSnitchList implements Runnable {
             for (TextComponent dataEntry : info){
                 output.addExtra(dataEntry);
             }
-
+            
             String bottomLine = ChatColor.DARK_GRAY + " * Page " + offset + " ";
             bottomLine = bottomLine + "-------------------------------------------------------".substring(bottomLine.length());
             output.addExtra(bottomLine);

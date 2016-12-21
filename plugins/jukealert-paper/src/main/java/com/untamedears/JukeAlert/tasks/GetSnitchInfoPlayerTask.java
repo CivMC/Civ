@@ -41,7 +41,7 @@ public class GetSnitchInfoPlayerTask implements Runnable {
         this.filterAction = null;
         this.filterPlayer = "";
     }
-
+    
     public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, int offset, Player player, boolean shouldCensor,
             LoggedAction filterAction, String filterPlayer) {
         this.snitchId = snitchId;

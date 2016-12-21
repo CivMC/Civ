@@ -10,9 +10,9 @@ Breaking that down:
 1: New block (let's use a Sea Lantern for development) that is required to be on a group with a snitch before sending snitch 'entry' alerts:
 
    public void playerJoinEvent(PlayerJoinEvent event)
-
+   
    public void handlePlayerExit(PlayerEvent event)
-
+   
    private void handleSnitchEntry(Player player)
 
 2: If a snitch is broken and a relay is reinforced on that group, it will display the following in the player who broke the snitch's chat:

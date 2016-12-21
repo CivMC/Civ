@@ -21,7 +21,7 @@ public class ItemExchangeListener implements Listener{
 
 	private final JukeAlert plugin = JukeAlert.getInstance();
 	SnitchManager snitchManager = plugin.getSnitchManager();
-
+	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void exchangeEvent(IETransactionEvent event){
 		Player player = event.getPlayer();

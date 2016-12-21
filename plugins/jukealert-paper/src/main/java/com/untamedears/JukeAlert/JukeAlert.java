@@ -57,7 +57,7 @@ public class JukeAlert extends ACivMod {
         if (pm.isPluginEnabled("Mercury"))
 			pm.registerEvents(new MercuryListener(), this);
     }
-
+    
     private void registerNameLayerPermissions() {
     	LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
     	LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
