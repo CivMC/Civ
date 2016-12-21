@@ -44,7 +44,7 @@ public class BSPlayer {
 	
 	private transient BSSessions allSessions;
 	private transient BSIPs allIPs;
-	private transient BSShareds allShareds;
+	private transient BSShares allShares;
 	
 	public long getId() {
 		return pid;
@@ -107,7 +107,7 @@ public class BSPlayer {
 		BSIP ip = BanStickDatabaseHandler.getInstance().getOrCreateIP(player.getAddress().getAddress());
 		this.allIPs.setLatest(ip);
 		latest = this.allSessions.startNew(ip, sessionStart);
-		this.allShareds.check(latest);
+		this.allShares.check(latest);
 	}
 	
 	/**
@@ -201,7 +201,7 @@ public class BSPlayer {
 		}
 		BSSessions.release(this.allSessions);
 		BSIPs.release(this.allIPs);
-		BSShareds.release(this.allShareds);
+		BSShares.release(this.allShares);
 		allPlayersUUID.remove(this.uuid);
 		allPlayersID.remove(this.pid);
 	}
@@ -237,7 +237,7 @@ public class BSPlayer {
 			
 			newPlayer.allSessions = BSSessions.onlyFor(newPlayer);
 			newPlayer.allIPs = BSIPs.onlyFor(newPlayer);
-			newPlayer.allShareds = BSShareds.onlyFor(newPlayer);
+			newPlayer.allShares = BSShares.onlyFor(newPlayer);
 			
 			allPlayersID.put(newPlayer.pid, newPlayer);
 			allPlayersUUID.put(newPlayer.uuid, newPlayer);
@@ -271,7 +271,7 @@ public class BSPlayer {
 						player.pid = pid;
 						player.allSessions = BSSessions.onlyFor(player);
 						player.allIPs = BSIPs.onlyFor(player);
-						player.allShareds = BSShareds.onlyFor(player);
+						player.allShares = BSShares.onlyFor(player);
 					}
 					player.dirty = false;
 					player.name = rs.getString(2);
@@ -316,7 +316,7 @@ public class BSPlayer {
 					player.pid = pid;
 					player.allSessions = BSSessions.onlyFor(player);
 					player.allIPs = BSIPs.onlyFor(player);
-					player.allShareds = BSShareds.onlyFor(player);
+					player.allShares = BSShares.onlyFor(player);
 					player.name = rs.getString(2);
 					player.uuid = UUID.fromString(rs.getString(3));
 					player.firstAdd = rs.getTimestamp(4);
