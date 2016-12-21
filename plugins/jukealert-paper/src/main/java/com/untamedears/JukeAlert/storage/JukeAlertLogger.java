@@ -119,7 +119,7 @@ public class JukeAlertLogger {
         maxEntryCount = configManager.getMaxSnitchEntryCount();
         minEntryLifetimeDays = configManager.getMinSnitchEntryLifetime();
         maxEntryLifetimeDays = configManager.getMaxSnitchEntryLifetime();
-        
+
         daysFromLastAdminVisitForLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForLoggedSnitchCulling();
         daysFromLastAdminVisitForNonLoggedSnitchCulling = configManager.getDaysFromLastAdminVisitForNonLoggedSnitchCulling();
         softDelete = configManager.isSoftDelete();
@@ -193,9 +193,9 @@ public class JukeAlertLogger {
                 + "INDEX `idx_snitch_id` (`snitch_id` ASC),"
                 + "CONSTRAINT `fk_snitchs_snitch_id` FOREIGN KEY (`snitch_id`)"
                 + "  REFERENCES `" + snitchsTbl + "` (`snitch_id`) ON DELETE CASCADE ON UPDATE CASCADE);");
-        
+
         //Snitch Mute Table
-        //Small table to contain User and the muted groups, 2 columns 
+        //Small table to contain User and the muted groups, 2 columns
         // column1 = uuid varchar(40) (no null)
         // column2 = mutedgroups varchar(255) can be null (no groups to ignore)
         db.execute("CREATE TABLE IF NOT EXISTS `" + mutedGroupsTbl +"`("
@@ -205,7 +205,7 @@ public class JukeAlertLogger {
 
         db.silentExecute(String.format(
             "ALTER TABLE %s ADD INDEX idx_log_time (snitch_log_time ASC);", snitchDetailsTbl));
-        
+
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (last_semi_owner_visit_date DATETIME, INDEX idx_last_visit(last_semi_owner_visit_date, snitch_should_log));", snitchsTbl));
         db.silentExecute(String.format("UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE last_semi_owner_visit_date IS NULL;", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN last_semi_owner_visit_date DATETIME NOT NULL;", snitchsTbl));
@@ -213,10 +213,10 @@ public class JukeAlertLogger {
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (allow_triggering_lever bit);", snitchsTbl));
         db.silentExecute(String.format("UPDATE %s SET allow_triggering_lever = 0 WHERE allow_triggering_lever IS NULL;", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s MODIFY COLUMN allow_triggering_lever bit NOT NULL;", snitchsTbl));
-        
+
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (soft_delete BOOL NOT NULL DEFAULT 0);", snitchsTbl));
         db.silentExecute(String.format("ALTER TABLE %s ADD COLUMN (soft_delete BOOL NOT NULL DEFAULT 0);", snitchDetailsTbl));
-        
+
         try {
 
             this.plugin.getLogger().log(Level.INFO, "Adding the log_hour column");
@@ -228,7 +228,7 @@ public class JukeAlertLogger {
             db.executeLoud(MessageFormat.format(
                 "UPDATE {0} SET log_hour = TIMESTAMPDIFF(HOUR, ''2013-01-01 00:00:00'', snitch_log_time);",
                 snitchDetailsTbl));
-        	
+
             db.executeLoud(MessageFormat.format(
                 " CREATE DEFINER=CURRENT_USER PROCEDURE CullSnitches( "
                 + " IN minDays INT, IN maxDays INT, IN maxEntries INT) SQL SECURITY INVOKER BEGIN\n"
@@ -419,35 +419,35 @@ public class JukeAlertLogger {
 
         getLastSnitchID = db.prepareStatement(String.format(
                 "SHOW TABLE STATUS LIKE '%s'", snitchsTbl));
-        
+
         // statement to get LIMIT entries OFFSET from a number from the snitchesDetailsTbl based on a snitch_id from the main snitchesTbl
         // LIMIT ?,? means offset followed by max rows to return
         getSnitchLogStmt = String.format(
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? AND soft_delete = 0 ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl);
-        
+
         // This is the same as getSnitchLogStmt, but with an extra parameter for action type (byte)
         getSnitchLogFilterActionStmt = String.format(
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? AND snitch_logged_action=? AND soft_delete = 0"
                 + " ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl);
-        
+
         // This is the same as getSnitchLogStmt, but with an extra parameter for the initiating user (string)
         getSnitchLogFilterPlayerStmt = String.format(
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? AND snitch_logged_initiated_user LIKE ? AND soft_delete = 0"
                 + " ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl);
-        
+
         // This is the same as getSnitchLogStmt, but with extra parameters for both action type (byte) and initiating user (string)
         getSnitchLogFilterActionAndPlayerStmt = String.format(
                 "SELECT * FROM %s"
                 + " WHERE snitch_id=? AND snitch_logged_action=? AND snitch_logged_initiated_user LIKE ? AND soft_delete = 0"
                 + " ORDER BY snitch_log_time DESC LIMIT ?,?",
                 snitchDetailsTbl);
-        
+
         //get all entries for a snitch
         getAllSnitchLogs = db.prepareStatement(String.format("select * from %s where snitch_id = ? AND soft_delete = 0 order by snitch_log_time desc;", snitchDetailsTbl));
 
@@ -456,7 +456,7 @@ public class JukeAlertLogger {
             + " FROM {1} INNER JOIN {0} ON {0}.snitch_id = {1}.snitch_id"
             + " WHERE {0}.snitch_group=? AND {0}.soft_delete = 0 AND {1}.soft_delete = 0 ORDER BY {1}.snitch_log_time DESC LIMIT ?,{2}",
             snitchsTbl, snitchDetailsTbl, logsPerPage));
-        
+
         getSnitchListStmt = db.prepareStatement(MessageFormat.format(
         		"Call GetJukeboxListForDelimitedGroup(?, ?, {0}, {1}, ?, {2});"
         		, daysFromLastAdminVisitForLoggedSnitchCulling
@@ -482,7 +482,7 @@ public class JukeAlertLogger {
         softDeleteSnitchLogStmt = db.prepareStatement(String.format(
         		"UPDATE %s SET soft_delete = 1 WHERE snitch_id=?",
         		snitchDetailsTbl));
-        
+
         //
         deleteSnitchStmt = db.prepareStatement(String.format(
                 "DELETE FROM %s WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
@@ -492,7 +492,7 @@ public class JukeAlertLogger {
         softDeleteSnitchStmt = db.prepareStatement(String.format(
         		"UPDATE %s SET soft_delete = 1 WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
         		snitchsTbl));
-        
+
         //
         updateGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=? WHERE snitch_world=? AND snitch_x=? AND snitch_y=? AND snitch_z=?",
@@ -515,7 +515,7 @@ public class JukeAlertLogger {
                 "UPDATE %s SET allow_triggering_lever=?"
                 + " WHERE snitch_id=?",
                 snitchsTbl));
-        
+
         //
         updateSnitchGroupStmt = db.prepareStatement(String.format(
                 "UPDATE %s SET snitch_group=?"
@@ -530,23 +530,23 @@ public class JukeAlertLogger {
         cullSnitchEntriesStmt = db.prepareStatement(MessageFormat.format(
             "CALL CullSnitches({0}, {1}, {2});",
             minEntryLifetimeDays, maxEntryLifetimeDays, maxEntryCount));
-        
+
         cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt = db.prepareStatement(MessageFormat.format(
         		"Call CullSnitchesBasedOnLastVisitDate({0},{1});"
         		, daysFromLastAdminVisitForLoggedSnitchCulling,daysFromLastAdminVisitForNonLoggedSnitchCulling));
-        
+
         muteGroupsStmt = db.prepareStatement(String.format("INSERT INTO %s values(?,?);", mutedGroupsTbl));
-        
+
         getMutedGroupsStmt = db.prepareStatement(String.format("SELECT muted_groups FROM %s WHERE uuid=?;", mutedGroupsTbl));
-        
+
         updateMutedGroupsStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid =? ;", mutedGroupsTbl));
-        
+
         getIgnoreUUIDSStmt = db.prepareStatement(String.format("SELECT * FROM %s WHERE muted_groups LIKE ? ;", mutedGroupsTbl));
-        
-        removeIgnoredGroupStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid=?;", mutedGroupsTbl)); 
-        
+
+        removeIgnoredGroupStmt = db.prepareStatement(String.format("UPDATE %s SET muted_groups=? WHERE uuid=?;", mutedGroupsTbl));
+
         removeUUIDMutedStmt = db.prepareStatement(String.format("DELETE FROM %s WHERE uuid=? ;", mutedGroupsTbl));
-        
+
     }
 
     private void initializeLastSnitchId() {
@@ -704,7 +704,7 @@ public class JukeAlertLogger {
         if (filterPlayer.length() > 16){
             filterPlayer = filterPlayer.substring(0, 16);
         }
-        
+
         List<SnitchAction> info = new ArrayList<SnitchAction>();
         try {
             PreparedStatement ps;
@@ -736,7 +736,7 @@ public class JukeAlertLogger {
                 ps.setInt(2, offset);
                 ps.setInt(3, logsPerPage);
             }
-            
+
             ResultSet set = ps.executeQuery();
             if (set != null && set.isBeforeFirst()) {
                 while (set.next()) {
@@ -752,12 +752,12 @@ public class JukeAlertLogger {
 
         return info;
     }
-    
-    public synchronized SendSnitchList getSnitchList(Player player, int offset) {
-        
+
+    public synchronized SendSnitchList getSnitchList(Player player, int offset, boolean truncateName) {
+
         final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
         final boolean showWorldColumn = plugin.getConfigManager().getMultipleWorldSupport();
-        
+
         double worldColWidth = (double)0;
         double locationColWidth = (double)26;
         double cullColWidth = (double)10;
@@ -768,7 +768,11 @@ public class JukeAlertLogger {
             groupColWidth = (double)17;
             nameColWidth = (double)15;
         }
-        
+        if (!truncateName) {
+            // The name is limited to 40 by the database.
+            nameColWidth = (double)40;
+        }
+
         List<TextComponent> info = new ArrayList<TextComponent>();
         String worldName = "";
         offset = (offset-1)*10;
@@ -777,17 +781,17 @@ public class JukeAlertLogger {
             String uuidString = java.util.UUID.randomUUID().toString();
             UUID accountId = player.getUniqueId();
             List<String> groups = groupMediator.getGroupsWithPermission(accountId, PermissionType.getPermission("LIST_SNITCHES"));
-            
+
             StringBuilder sb = new StringBuilder();
             for(String group : groups) {
                 sb.append(group);
                 sb.append(uuidString);
             }
-            
+
             getSnitchListStmt.setString(1, sb.toString());
             getSnitchListStmt.setString(2, uuidString);
             getSnitchListStmt.setInt(3, offset);
-            
+
             ResultSet set = getSnitchListStmt.executeQuery();
             if (set.isBeforeFirst()) {
                 while (set.next()) {
@@ -799,14 +803,14 @@ public class JukeAlertLogger {
                     String snitchName = set.getString("SnitchName");
                     String snitchCullTime = "";
                     String snitchLocation = "[" + snitchX + " " + snitchY + " " + snitchZ + "]";
-                    
+
                     if (snitchWorld == null){
                         snitchWorld = "";
                     }
                     if (worldName == null || worldName.isEmpty()){
                         worldName = snitchWorld;
                     }
-                    if ((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1) || 
+                    if ((set.getInt("DoesSnitchRegisterEvents") == 1 && daysFromLastAdminVisitForLoggedSnitchCulling >= 1) ||
                             (set.getInt("DoesSnitchRegisterEvents") == 0 && daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)){
                         snitchCullTime = String.format("%.2f", ((set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds")) / 3600.0));
                     }
@@ -819,7 +823,7 @@ public class JukeAlertLogger {
                     if (snitchCullTime == null){
                         snitchCullTime = "";
                     }
-                    
+
                     // Building each line like this is a little ugly to look at, but it avoids compounding position errors
                     String currLine = ChatColor.WHITE.toString();
                     if (showWorldColumn){
@@ -830,7 +834,7 @@ public class JukeAlertLogger {
                     currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth + cullColWidth + groupColWidth, truncateChars);
                     currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth + cullColWidth + groupColWidth + nameColWidth, truncateChars);
                     currLine += "\n";
-                    
+
                     TextComponent lineText = new TextComponent(currLine);
                     String hoverText = String.format("World: %s\nLocation: %s\nHours to cull: %s\n", snitchWorld, snitchLocation, snitchCullTime)
                                      + String.format("Group: %s\nName: %s", snitchGroup, snitchName);
@@ -841,7 +845,7 @@ public class JukeAlertLogger {
         } catch (SQLException ex) {
             this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername " + player.getDisplayName(), ex);
         }
-        
+
         if (showWorldColumn == true){
             return new SendSnitchList(info, "", player, (offset/10)+1);
         }
@@ -924,7 +928,7 @@ public class JukeAlertLogger {
     }
 
     public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
-    
+
     public void logSnitchVisit(Snitch snitch) {
     	jukeinfobatch.addLastVisitData(snitch);
     }
@@ -1016,7 +1020,7 @@ public class JukeAlertLogger {
     public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
         this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL, player.getPlayerListName(), entity.getType().toString());
     }
-    
+
     public void logSnitchExchangeEvent(Snitch snitch, Player player, Location loc){
     	this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.EXCHANGE, player.getPlayerListName(), null);
     }
@@ -1120,10 +1124,10 @@ public class JukeAlertLogger {
         // no victim user in this event
         this.logSnitchInfo(snitch, item, loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
     }
-    
+
     /**
      * Logs a message that someone destroyed a cart within the snitch's field
-     * 
+     *
      * @param snitch - the snitch that recorded this event
      * @param player - the player that destroyed the cart
      * @param vehicle - the vehicle destroyed
@@ -1131,11 +1135,11 @@ public class JukeAlertLogger {
     public void logSnitchCartDestroyed(Snitch snitch, Player player,Vehicle vehicle) {
     	this.logSnitchInfo(snitch, null, vehicle.getLocation(), new Date(),LoggedAction.VEHICLE_DESTROY,player.getPlayerListName(),vehicle.getType().toString());
     }
-    
+
     public void logSnitchMount(Snitch snitch, Player player, Entity mount) {
     	this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_MOUNT, player.getPlayerListName(), mount.getType().toString());
     }
-    
+
     public void logSnitchDismount(Snitch snitch, Player player, Entity mount) {
     	this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_DISMOUNT, player.getPlayerListName(), mount.getType().toString());
     }
@@ -1204,7 +1208,7 @@ public class JukeAlertLogger {
 	                        softDeleteSnitchStmt.setInt(2, (int) Math.floor(x));
 	                        softDeleteSnitchStmt.setInt(3, (int) Math.floor(y));
 	                        softDeleteSnitchStmt.setInt(4, (int) Math.floor(z));
-	                        softDeleteSnitchStmt.execute();                    		
+	                        softDeleteSnitchStmt.execute();
                     	}
                     } else {
 	                    synchronized (deleteSnitchStmt) {
@@ -1331,7 +1335,7 @@ public class JukeAlertLogger {
     public void logSnitchBlockBurn(Snitch snitch, Block block) {
         this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, "", snitchDetailsTbl);
     }
-    
+
     public List<SnitchAction> getAllSnitchLogs(Snitch snitch) {
     	try {
             synchronized (updateSnitchGroupStmt) {
@@ -1357,10 +1361,10 @@ public class JukeAlertLogger {
             return null;
         }
     }
-    
+
     public static String createInfoString(SnitchAction entry, boolean censorLocations, boolean group) {
         String resultString = ChatColor.RED + "Error!";
-       
+
         final int snitchID = entry.getSnitchId();
 
         final Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
@@ -1377,24 +1381,24 @@ public class JukeAlertLogger {
         final int z = entry.getZ();
 
         final String timestamp = new SimpleDateFormat("MM-dd HH:mm").format(entry.getDate());
-        
+
         String coords = String.format("[%d %d %d]", x, y, z);
         if (censorLocations){
             coords = "[*** *** ***]";
         }
-        
+
         if (action == LoggedAction.UNKNOWN){
             JukeAlert.getInstance().getLogger().log(Level.SEVERE, String.format(
                 "Unknown LoggedAction: {0}", actionValue));
         }
-        
+
         String actionString = action.getActionString();
         ChatColor actionColor = action.getActionColor();
         int actionTextType = action.getActionTextType();
         if (group) {
             actionTextType = 4;
         }
-        
+
         String actionText = "";
         switch(actionTextType) {
             default:
@@ -1429,7 +1433,7 @@ public class JukeAlertLogger {
 
     public SnitchAction resultToSnitchAction(ResultSet set, boolean isGroup) {
         SnitchAction output = null;
-        try {            
+        try {
             int snitchActionId = set.getInt("snitch_details_id");
             int snitchId = set.getInt("snitch_id");
             Date date = new Date(set.getTimestamp("snitch_log_time").getTime());
@@ -1484,17 +1488,17 @@ public class JukeAlertLogger {
                 Level.SEVERE, String.format("Could not entry cull: %s", ex.toString()));
         }
     }
-    
+
     public boolean muteGroups(UUID uuid, String group2Mute){
 		try {
 			muteGroupsStmt.setString(1, uuid.toString());
 			muteGroupsStmt.setString(2, group2Mute);
 			if(muteGroupsStmt.execute()) return true;
 		} catch (SQLException e) {
-			this.plugin.getLogger().log(Level.SEVERE, 
+			this.plugin.getLogger().log(Level.SEVERE,
 					String.format("Could not add muted_group: %s", e.toString()));
 		}
-    	
+
     	return false;
     }
 
@@ -1505,28 +1509,28 @@ public class JukeAlertLogger {
     		if(!set.next()) return null;
     		return set.getString(1);
     	} catch (SQLException e){
-    		this.plugin.getLogger().log(Level.SEVERE, 
+    		this.plugin.getLogger().log(Level.SEVERE,
 					String.format("Could not retreive muted_group: %s", e.toString()));
     	}
 		return null;
     }
-	
+
 	public boolean updateMutedGroups(UUID uuid, String group2Mute){
 		String curGroups = getMutedGroups(uuid);
 		String newGroups = curGroups + " " + group2Mute;
 		try{
 			updateMutedGroupsStmt.setString(1, newGroups);
 			updateMutedGroupsStmt.setString(2, uuid.toString());
-			if(updateMutedGroupsStmt.execute()){ 
+			if(updateMutedGroupsStmt.execute()){
 				return true;
 				}
 		}catch (SQLException e){
-    		this.plugin.getLogger().log(Level.SEVERE, 
+    		this.plugin.getLogger().log(Level.SEVERE,
 					String.format("Could not update muted_groups: %s", e.toString()));
 		}
 		return false;
 	}
-   
+
 	public Set<String> getIgnoreUUIDs(String ignoredGroup) throws SQLException{
 		Set<String> ignoringUsers = new HashSet<String>();
 		String sql = "%" + ignoredGroup + "%";
@@ -1547,7 +1551,7 @@ public class JukeAlertLogger {
 		}
 		return ignoringUsers;
 	}
-	
+
 	public boolean removeIgnoredGroup(String removeGroup, UUID uuid){
 		String curGroups = getMutedGroups(uuid);
 		if(curGroups.equals(removeGroup)){
@@ -1566,19 +1570,19 @@ public class JukeAlertLogger {
 				return true;
 			}
 		}catch (SQLException e){
-			this.plugin.getLogger().log(Level.SEVERE, 
+			this.plugin.getLogger().log(Level.SEVERE,
 					String.format("Could not remove Ignored Group: %s", e.toString()));
 		}
 		return false;
 	}
-	
-	 
+
+
 	 public void removeUUIDMuted(UUID uuid){
 		 try{
 			 removeUUIDMutedStmt.setString(1, uuid.toString());
 			 removeUUIDMutedStmt.execute();
 		 }catch (SQLException e){
-			 this.plugin.getLogger().log(Level.SEVERE, 
+			 this.plugin.getLogger().log(Level.SEVERE,
 						String.format("Could not remove UUID Row: %s", e.toString()));
 		 }
 		 return;

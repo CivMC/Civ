@@ -7,6 +7,7 @@ import com.untamedears.JukeAlert.command.commands.HelpCommand;
 import com.untamedears.JukeAlert.command.commands.InfoCommand;
 import com.untamedears.JukeAlert.command.commands.GUICommand;
 import com.untamedears.JukeAlert.command.commands.JaListCommand;
+import com.untamedears.JukeAlert.command.commands.JaListLongCommand;
 import com.untamedears.JukeAlert.command.commands.JaMuteCommand;
 import com.untamedears.JukeAlert.command.commands.JaToggleLeversCommand;
 import com.untamedears.JukeAlert.command.commands.LookupCommand;
@@ -20,6 +21,7 @@ public class JukeAlertCommandHandler extends CommandHandler {
 	public void registerCommands() {
 		addCommands(new InfoCommand());
 		addCommands(new JaListCommand());
+		addCommands(new JaListLongCommand());
 		addCommands(new NameCommand());
 		addCommands(new ClearCommand());
 		addCommands(new HelpCommand());
@@ -29,6 +31,5 @@ public class JukeAlertCommandHandler extends CommandHandler {
 		addCommands(new JaMuteCommand());
 		addCommands(new ConfigCommand());
 		addCommands(new JaToggleLeversCommand());
-
 	}
 }
