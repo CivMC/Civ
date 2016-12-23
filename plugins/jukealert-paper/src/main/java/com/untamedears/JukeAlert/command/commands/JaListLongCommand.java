@@ -15,7 +15,7 @@ import com.untamedears.JukeAlert.tasks.GetSnitchListPlayerTask;
 public class JaListLongCommand extends PlayerCommand {
 	public JaListCommand() {
 		super("jalistlong");
-		setDescription("Displays Juke List Information with full-length Snitch names");
+		setDescription("Displays Juke List information with full-length Snitch and group names");
 		setUsage("/jalistlong <page number>");
 		setArguments(0,1);
 		setIdentifier("jalistlong");
@@ -43,9 +43,9 @@ public class JaListLongCommand extends PlayerCommand {
         }
     }
 
-    private void sendSnitchList(CommandSender sender, int offset, boolean truncateName) {
+    private void sendSnitchList(CommandSender sender, int offset, boolean truncateNames) {
         Player player = (Player) sender;
-        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player, truncateName);
+        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player, truncateNames);
         Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
     }
 

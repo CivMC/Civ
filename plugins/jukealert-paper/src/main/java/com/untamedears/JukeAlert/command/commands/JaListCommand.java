@@ -43,9 +43,9 @@ public class JaListCommand extends PlayerCommand {
         }
     }
 
-    private void sendSnitchList(CommandSender sender, int offset, boolean truncateName) {
+    private void sendSnitchList(CommandSender sender, int offset, boolean truncateNames) {
         Player player = (Player) sender;
-        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player, truncateName);
+        GetSnitchListPlayerTask task = new GetSnitchListPlayerTask(JukeAlert.getInstance(), offset, player, truncateNames);
         Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
     }
 
