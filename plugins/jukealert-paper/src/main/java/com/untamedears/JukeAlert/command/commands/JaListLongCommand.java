@@ -12,13 +12,13 @@ import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.tasks.GetSnitchListPlayerTask;
 
-public class JaListCommand extends PlayerCommand {
-	public JaListCommand() {
-		super("jalist");
-		setDescription("Displays Juke List Information");
-		setUsage("/jalist <page number>");
+public class JaListLongCommand extends PlayerCommand {
+	public JaListLongCommand() {
+		super("jalistlong");
+		setDescription("Displays Juke List information with full-length Snitch and group names");
+		setUsage("/jalistlong <page number>");
 		setArguments(0,1);
-		setIdentifier("jalist");
+		setIdentifier("jalistlong");
 	}
 
     @Override
@@ -35,7 +35,7 @@ public class JaListCommand extends PlayerCommand {
             if (offset < 1) {
                 offset = 1;
             }
-            sendSnitchList(sender, offset, true);
+            sendSnitchList(sender, offset, false);
             return true;
         } else {
             sender.sendMessage(ChatColor.RED + " You do not have access to snitches!");

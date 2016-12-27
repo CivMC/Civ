@@ -753,7 +753,7 @@ public class JukeAlertLogger {
         return info;
     }
 
-    public synchronized SendSnitchList getSnitchList(Player player, int offset, boolean truncateName) {
+    public synchronized SendSnitchList getSnitchList(Player player, int offset, boolean truncateNames) {
 
         final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
         final boolean showWorldColumn = plugin.getConfigManager().getMultipleWorldSupport();
@@ -768,7 +768,9 @@ public class JukeAlertLogger {
             groupColWidth = (double)17;
             nameColWidth = (double)15;
         }
-        if (!truncateName) {
+        if (!truncateNames) {
+            // The name is limited to 32 by the database.
+            groupColWidth = (double)32;
             // The name is limited to 40 by the database.
             nameColWidth = (double)40;
         }
