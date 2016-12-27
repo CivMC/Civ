@@ -15,6 +15,7 @@ public class GetSnitchListPlayerTask implements Runnable {
     private final int offset;
     private final Player player;
     private final JukeAlert plugin;
+	private final boolean truncateNames;
 
     public GetSnitchListPlayerTask(JukeAlert plugin, int offset, Player player, boolean truncateNames) {
         this.offset = offset;

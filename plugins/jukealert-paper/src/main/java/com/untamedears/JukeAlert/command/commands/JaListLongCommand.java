@@ -13,7 +13,7 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.tasks.GetSnitchListPlayerTask;
 
 public class JaListLongCommand extends PlayerCommand {
-	public JaListCommand() {
+	public JaListLongCommand() {
 		super("jalistlong");
 		setDescription("Displays Juke List information with full-length Snitch and group names");
 		setUsage("/jalistlong <page number>");
