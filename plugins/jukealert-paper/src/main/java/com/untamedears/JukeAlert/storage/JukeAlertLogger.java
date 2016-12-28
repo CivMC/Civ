@@ -768,12 +768,6 @@ public class JukeAlertLogger {
             groupColWidth = (double)17;
             nameColWidth = (double)15;
         }
-        if (!truncateNames) {
-            // The name is limited to 32 by the database.
-            groupColWidth = (double)32;
-            // The name is limited to 40 by the database.
-            nameColWidth = (double)40;
-        }
 
         List<TextComponent> info = new ArrayList<TextComponent>();
         String worldName = "";
@@ -833,6 +827,13 @@ public class JukeAlertLogger {
                     }
                     currLine = ChatFiller.fillString(currLine + snitchLocation, worldColWidth + locationColWidth);
                     currLine = ChatFiller.fillString(currLine + snitchCullTime, worldColWidth + locationColWidth + cullColWidth, truncateChars);
+                    if (truncateNames) {
+                        currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth + cullColWidth + groupColWidth, truncateChars);
+                        currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth + cullColWidth + groupColWidth + nameColWidth, truncateChars);
+                    } else {
+                        currLine = currLine + snitchGroup;
+                        currLine = currLine + snitchName;
+                    }
                     currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth + cullColWidth + groupColWidth, truncateChars);
                     currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth + cullColWidth + groupColWidth + nameColWidth, truncateChars);
                     currLine += "\n";
