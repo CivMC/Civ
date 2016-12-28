@@ -32,7 +32,7 @@ public class NameCommand extends PlayerCommand {
 
             String name = "";
             if (args[0].length() > 40) {
-                name = args[0].substring(0, 39);
+                name = args[0].substring(0, 40);
             } else {
             	name = args[0];
             }
