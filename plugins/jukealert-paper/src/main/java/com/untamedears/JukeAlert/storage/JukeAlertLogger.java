@@ -834,8 +834,6 @@ public class JukeAlertLogger {
                         currLine = currLine + snitchGroup;
                         currLine = currLine + snitchName;
                     }
-                    currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth + cullColWidth + groupColWidth, truncateChars);
-                    currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth + cullColWidth + groupColWidth + nameColWidth, truncateChars);
                     currLine += "\n";
 
                     TextComponent lineText = new TextComponent(currLine);
