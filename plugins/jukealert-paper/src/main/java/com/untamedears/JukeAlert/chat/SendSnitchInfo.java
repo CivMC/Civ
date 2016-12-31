@@ -31,9 +31,6 @@ public class SendSnitchInfo implements Runnable {
 		this.offset = offset;
         this.snitchName = snitchName;
 		this.shouldCensor = shouldCensor;
-        if (this.snitchName != null && this.snitchName.length() > 32) {
-            this.snitchName = this.snitchName.substring(0, 32);
-        }
         this.isGroup = isGroup;
     }
 	

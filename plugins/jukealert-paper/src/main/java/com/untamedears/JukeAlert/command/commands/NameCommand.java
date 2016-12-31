@@ -8,6 +8,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -32,16 +36,34 @@ public class NameCommand extends PlayerCommand {
 
             String name = "";
             if (args[0].length() > 40) {
-                name = args[0].substring(0, 39);
+                name = args[0].substring(0, 40);
             } else {
             	name = args[0];
             }
             Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("RENAME_SNITCH"));
             if (snitch != null) {
-            	JukeAlert plugin = JukeAlert.getInstance();
-            	plugin.getJaLogger().updateSnitchName(snitch, name);
-            	snitch.setName(name);
-            	sender.sendMessage(ChatColor.AQUA + " Changed snitch name to " + name);
+                String prevName = snitch.getName();
+                if (prevName == null) {
+                    prevName = "";
+                }
+                JukeAlert plugin = JukeAlert.getInstance();
+                plugin.getJaLogger().updateSnitchName(snitch, name);
+                snitch.setName(name);
+
+                String snitchWorld = "";
+                if (snitch.getLoc() != null && snitch.getLoc().getWorld() != null && snitch.getLoc().getWorld().getName() != null) {
+                    snitchWorld = snitch.getLoc().getWorld().getName();
+                }
+                String snitchGroup = "";
+                if (snitch.getGroup() != null && snitch.getGroup().getName() != null) {
+                    snitchGroup = snitch.getGroup().getName();
+                }
+                String snitchLocation = "[" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]";
+                TextComponent lineText = new TextComponent(ChatColor.AQUA + " Changed snitch name to " + name);
+                String hoverText = String.format("World: %s\nLocation: %s\nGroup: %s\nPrevious name:\n  %s\nNew name:\n  %s",
+                    snitchWorld, snitchLocation, snitchGroup, prevName, name);
+                lineText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+                player.spigot().sendMessage(lineText);
             }
             return true;
         } else {
