@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import vg.civcraft.mc.civmodcore.annotations.CivConfig;
-import vg.civcraft.mc.civmodcore.annotations.CivConfigType;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 
 public class NameAPI {

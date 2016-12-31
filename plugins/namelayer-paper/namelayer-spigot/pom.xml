@@ -33,13 +33,13 @@
     <dependency>
       <groupId>vg.civcraft.mc.mercury</groupId>
       <artifactId>Mercury</artifactId>
-      <version>1.2.0</version>
+      <version>1.2.19</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.civmodcore</groupId>
       <artifactId>CivModCore</artifactId>
-      <version>1.5.01</version>
+      <version>1.5.09</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
