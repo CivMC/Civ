@@ -216,6 +216,10 @@ public class JukeAlertListener implements Listener {
 			return;
 		}
 		boolean isJukebox = block.getType().equals(Material.JUKEBOX);
+		boolean isNoteblock = block.getType().equals(Material.NOTE_BLOCK);
+		if (!isJukebox || !isNoteblock) {
+			return;
+		}
 		Player player = event.getPlayer();
 		if (player == null) {
 			return;
