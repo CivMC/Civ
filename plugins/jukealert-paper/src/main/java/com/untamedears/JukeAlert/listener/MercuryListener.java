@@ -20,22 +20,24 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.external.Mercury;
 import com.untamedears.JukeAlert.util.Utility;
 
-public class MercuryListener implements Listener{
+public class MercuryListener implements Listener {
 
 	private List<String> channels = new ArrayList<String>();
-	
-	public MercuryListener(){
+
+	public MercuryListener() {
 		MercuryAPI.addChannels(Mercury.getChannels());
 		for (String x: Mercury.getChannels()) {
 			channels.add(x);
 		}
 	}
-	
-    private long failureReportDelay = 10000l;
+
+	private long failureReportDelay = 10000l;
+
 	private long lastAsyncMessageFailure = System.currentTimeMillis() - failureReportDelay;
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
-	public void asyncMercuryMessageEvent(AsyncPluginBroadcastMessageEvent event){
+	public void asyncMercuryMessageEvent(AsyncPluginBroadcastMessageEvent event) {
+
 		String channel = event.getChannel();
 		if (!channels.contains(channel)) {
 			return;
@@ -44,32 +46,25 @@ public class MercuryListener implements Listener{
 		int spc = m.indexOf(" ");
 		final String message = m.substring(spc + 1);
 		final String grp = m.substring(0, spc);
-		// don't split if you can just use index ops
-		/*String[] comp = m.split(" ");
-		grp = comp[0];
-		// split the message into the different parts.
-		// They are all realistically the same effect except that how it gets sent to player.
-		StringBuilder message = new StringBuilder();
-		for (int x = 1; x < comp.length; x++) {
-			message.append(comp[x]+" ");
-		}*/
 		new BukkitRunnable() {
-			
 			@Override
 			public void run() {
 				try {
 					Group g = GroupManager.getGroup(grp);
 					if (g != null) {
-						Utility.notifyGroup(g, ChatColor.AQUA+message.toString());
+						Utility.notifyGroup(g, ChatColor.AQUA + message.toString());
 					} else {
 						if (System.currentTimeMillis() - lastAsyncMessageFailure > failureReportDelay) {
-							JukeAlert.getInstance().getLogger().log(Level.WARNING, "asyncMercuryMessageEvent encountered a null group when looking up {0}", grp);
+							JukeAlert.getInstance().getLogger().log(
+								Level.WARNING, "asyncMercuryMessageEvent encountered a null group when looking up {0}",
+								grp);
 							lastAsyncMessageFailure = System.currentTimeMillis();
 						}
 					}
 				} catch (SQLException | NullPointerException e) {
 					if (System.currentTimeMillis() - lastAsyncMessageFailure > failureReportDelay) {
-						JukeAlert.getInstance().getLogger().log(Level.WARNING, "asyncMercuryMessageEvent generated an exception", e);
+						JukeAlert.getInstance().getLogger().log(
+							Level.WARNING, "asyncMercuryMessageEvent generated an exception", e);
 						lastAsyncMessageFailure = System.currentTimeMillis();
 					}
 				}

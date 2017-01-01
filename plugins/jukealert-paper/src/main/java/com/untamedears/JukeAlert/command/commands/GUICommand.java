@@ -20,7 +20,9 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class GUICommand extends PlayerCommand {
+
 	public GUICommand() {
+
 		super("JaGUI");
 		setDescription("Opens the JukeAlert GUI");
 		setUsage("/ja");
@@ -30,6 +32,7 @@ public class GUICommand extends PlayerCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
+
 		if (!(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.AQUA + "The technology is not there yet");
 			return true;
@@ -37,28 +40,29 @@ public class GUICommand extends PlayerCommand {
 		Player player = (Player) sender;
 		Snitch cursorSnitch = Utility.getSnitchUnderCursor(player);
 		if (cursorSnitch != null
-				&& Utility.doesSnitchExist(cursorSnitch, true)
-				&& NameAPI.getGroupManager().hasAccess(cursorSnitch.getGroup(), player.getUniqueId(),
-						PermissionType.getPermission("READ_SNITCHLOG"))) {
+		                 && Utility.doesSnitchExist(cursorSnitch, true)
+		                 && NameAPI.getGroupManager().hasAccess(cursorSnitch.getGroup(), player.getUniqueId(),
+		                                                        PermissionType.getPermission("READ_SNITCHLOG"))) {
 			SnitchLogGUI gui = new SnitchLogGUI(player, cursorSnitch);
 			gui.showScreen();
 			return true;
 		}
-		// no snitch under cursor, so search around player
-		Set<Snitch> snitches = JukeAlert.getInstance().getSnitchManager()
-				.findSnitches(player.getWorld(), player.getLocation());
-		// remove the ones the player has no perms for
+		// No snitch under cursor, so search around player
+		Set<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().findSnitches(
+			player.getWorld(), player.getLocation());
+		// Remove the ones the player has no perms for
 		Iterator<Snitch> iter = snitches.iterator();
 		while (iter.hasNext()) {
 			Snitch s = iter.next();
-			if (!NameAPI.getGroupManager().hasAccess(s.getGroup(), player.getUniqueId(),
-					PermissionType.getPermission("READ_SNITCHLOG"))) {
+			if (!NameAPI.getGroupManager().hasAccess(
+					s.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"))) {
 				iter.remove();
 			}
 		}
 		if (snitches.size() == 0) {
-			player.sendMessage(ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
-            return true;
+			player.sendMessage(
+				ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
+			return true;
 		}
 		if (snitches.size() == 1) {
 			SnitchLogGUI gui = new SnitchLogGUI(player, snitches.iterator().next());
@@ -72,6 +76,7 @@ public class GUICommand extends PlayerCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
+
 		return null;
 	}
 }

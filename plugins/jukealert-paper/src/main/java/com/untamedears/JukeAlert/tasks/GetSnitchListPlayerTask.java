@@ -11,28 +11,35 @@ import org.bukkit.entity.Player;
 
 public class GetSnitchListPlayerTask implements Runnable {
 
-    private final List<String> info = new ArrayList<String>();
-    private final int offset;
-    private final Player player;
-    private final JukeAlert plugin;
+	private final List<String> info = new ArrayList<String>();
+
+	private final int offset;
+
+	private final Player player;
+
+	private final JukeAlert plugin;
+
 	private final boolean truncateNames;
 
-    public GetSnitchListPlayerTask(JukeAlert plugin, int offset, Player player, boolean truncateNames) {
-        this.offset = offset;
-        this.player = player;
-        this.plugin = plugin;
-        this.truncateNames = truncateNames;
-    }
+	public GetSnitchListPlayerTask(JukeAlert plugin, int offset, Player player, boolean truncateNames) {
+
+		this.offset = offset;
+		this.player = player;
+		this.plugin = plugin;
+		this.truncateNames = truncateNames;
+	}
 
 	@Override
-    public void run() {
-		SendSnitchList sendSnitchList = plugin.getJaLogger().getSnitchList(player, offset, truncateNames);
-        if (sendSnitchList != null){
-            sendSnitchList.run();
-        }
-    }
+	public void run() {
 
-    public List<String> getInfo() {
-        return info;
-    }
+		SendSnitchList sendSnitchList = plugin.getJaLogger().getSnitchList(player, offset, truncateNames);
+		if (sendSnitchList != null) {
+			sendSnitchList.run();
+		}
+	}
+
+	public List<String> getInfo() {
+
+		return info;
+	}
 }

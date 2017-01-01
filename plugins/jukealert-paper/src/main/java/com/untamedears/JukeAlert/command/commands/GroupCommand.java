@@ -17,57 +17,60 @@ import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 
 public class GroupCommand extends PlayerCommand {
 
-    public GroupCommand() {
-        super("Group");
-        setDescription("Displays information from a group");
-        setUsage("/jagroup <group> <page>");
-        setArguments(1, 2);
-        setIdentifier("jagroup");
-    }
+	public GroupCommand() {
 
-    @Override
-    public boolean execute(CommandSender sender, String[] args) {
-        if (sender instanceof Player) {
-            Player player = (Player)sender;
-            int offset = 1;
-            if (args.length > 1) {
-                try {
-                    offset = Integer.parseInt(args[1]);
-                } catch(NumberFormatException e) {
-                    offset = 1;
-                }
-            }
-            if (offset < 1) {
-                offset = 1;
-            }
-            if (!sender.hasPermission("jukealert.admin.jagroup")) {
-                Group group = GroupManager.getGroup(args[0]);
-                if (group == null) {
-                    sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
-                    return true;
-                }
-                UUID accountId = player.getUniqueId();
-                if (!group.isMember(accountId))
-                {
-                    sender.sendMessage(ChatColor.RED + "You are not part of that group!");
-                    return true;
-                }
-            }
-            sendLog(sender, args[0], offset);
-        } else {
-            sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
-        }
-        return true;
-    }
+		super("Group");
+		setDescription("Displays information from a group");
+		setUsage("/jagroup <group> <page>");
+		setArguments(1, 2);
+		setIdentifier("jagroup");
+	}
 
-    private void sendLog(CommandSender sender, String group, int offset) {
-        Player player = (Player) sender;
-        GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), group, offset, player);
-        Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
-    }
+	@Override
+	public boolean execute(CommandSender sender, String[] args) {
+
+		if (sender instanceof Player) {
+			Player player = (Player) sender;
+			int offset = 1;
+			if (args.length > 1) {
+				try {
+					offset = Integer.parseInt(args[1]);
+				} catch (NumberFormatException e) {
+					offset = 1;
+				}
+			}
+			if (offset < 1) {
+				offset = 1;
+			}
+			if (!sender.hasPermission("jukealert.admin.jagroup")) {
+				Group group = GroupManager.getGroup(args[0]);
+				if (group == null) {
+					sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
+					return true;
+				}
+				UUID accountId = player.getUniqueId();
+				if (!group.isMember(accountId)) {
+					sender.sendMessage(ChatColor.RED + "You are not part of that group!");
+					return true;
+				}
+			}
+			sendLog(sender, args[0], offset);
+		} else {
+			sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
+		}
+		return true;
+	}
+
+	private void sendLog(CommandSender sender, String group, int offset) {
+
+		Player player = (Player) sender;
+		GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), group, offset, player);
+		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
+	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
+
 		return null;
 	}
 }

@@ -14,205 +14,253 @@ import com.untamedears.JukeAlert.manager.ConfigManager;
 
 public class Snitch implements QTBox, Comparable {
 
-    private int snitchId;
-    private String name;
-    private Location location;
-    private Group group;
-    private boolean shouldLog;
-    private boolean shouldToggleLevers;
-    private int minx, maxx, miny, maxy, minz, maxz, radius;
+	private int snitchId;
 
-    public Snitch(Location loc, Group group, boolean shouldLog, boolean shouldToggleLevers) {
-        this.group = group;
-        this.shouldLog = shouldLog;
-        this.location = loc;
-        this.shouldToggleLevers = shouldToggleLevers;
-        this.name = "";
-        radius = 11;
-        calculateDimensions();
-    }
+	private String name;
 
-    public int getX() {
-        return location.getBlockX();
-    }
+	private Location location;
 
-    public int getY() {
-        return location.getBlockY();
-    }
+	private Group group;
 
-    public int getZ() {
-        return location.getBlockZ();
-    }
+	private boolean shouldLog;
 
-    // interface QTBox
-    @Override
-    public int qtXMin() {
-        return this.minx;
-    }
+	private boolean shouldToggleLevers;
 
-    @Override
-    public int qtXMid() {
-        return this.getX();
-    }
+	private int minx;
 
-    @Override
-    public int qtXMax() {
-        return this.maxx;
-    }
+	private int maxx;
 
-    @Override
-    public int qtZMin() {
-        return this.minz;
-    }
+	private int miny;
 
-    @Override
-    public int qtZMid() {
-        return this.getZ();
-    }
+	private int maxy;
 
-    @Override
-    public int qtZMax() {
-        return this.maxz;
-    }
-    // end interface QTBox
+	private int minz;
 
-    // interface Comparable
-    @Override
-    public int compareTo(Object o) {
-      // This assumes that only a single snitch can exist at a given (x,y,z)
-      // Compare centers
-      // TODO: Deal with volume changes when applicable
-      // 1. Test X relationship
-      // 2. Test Z relationship
-      // 3. Test Y relationship
-      Snitch other = (Snitch)o;
-      int tx = this.getX();
-      int ty = this.getY();
-      int tz = this.getZ();
-      int ox = other.getX();
-      int oy = other.getY();
-      int oz = other.getZ();
-      if (tx < ox) {
-        return -1;
-      }
-      if (tx > ox) {
-        return 1;
-      }
-      if (tz < oz) {
-        return -1;
-      }
-      if (tz > oz) {
-        return 1;
-      }
-      if (ty < oy) {
-        return -1;
-      }
-      if (ty > oy) {
-        return 1;
-      }
-      return 0;  // equal
-    }
-    // end interface Comparable
+	private int maxz;
 
-    public void calculateDimensions() {
-        this.minx = getX() - radius;
-        this.maxx = getX() + radius;
-        this.minz = getZ() - radius;
-        this.maxz = getZ() + radius;
-        this.miny = getY() - radius;
-        this.maxy = getY() + radius;
-    }
+	private int radius;
 
-    public int getId() {
-        return this.snitchId;
-    }
+	public Snitch(Location loc, Group group, boolean shouldLog, boolean shouldToggleLevers) {
 
-    public String getName() {
-        return this.name;
-    }
+		this.group = group;
+		this.shouldLog = shouldLog;
+		this.location = loc;
+		this.shouldToggleLevers = shouldToggleLevers;
+		this.name = "";
+		radius = 11;
+		calculateDimensions();
+	}
 
-    public void setId(int newId) {
-        this.snitchId = newId;
-    }
+	public int getX() {
 
-    public void setName(String name) {
-        this.name = name;
-    }
+		return location.getBlockX();
+	}
 
-    public Group getGroup() {
-        if (group != null && !group.isValid()) {
-            group = GroupManager.getGroup(group.getName());
-        }
-        return group;
-    }
+	public int getY() {
 
-    public void setGroup(Group group) {
-        this.group = group;
-        JukeAlert.getInstance().getJaLogger().updateSnitchGroup(this, group.getName());
-    }
+		return location.getBlockY();
+	}
 
-    public Location getLoc() {
-        return location;
-    }
+	public int getZ() {
 
-    public void setLoc(Location loc) {
-        this.location = loc;
-        calculateDimensions();
-    }
+		return location.getBlockZ();
+	}
 
-    public boolean shouldLog() {
-        return shouldLog;
-    }
+	// Interface QTBox
+	@Override
+	public int qtXMin() {
 
-    public void setShouldLog(boolean shouldLog) {
-        this.shouldLog = shouldLog;
-    }
-    
-    public boolean shouldToggleLevers() {
-    	return shouldToggleLevers;
-    }
-    
-    public void setShouldToggleLevers(boolean shouldToggleLevers) {
-    	this.shouldToggleLevers = shouldToggleLevers;
-    }
+		return this.minx;
+	}
 
-    //Checks if the location is within the cuboid.
-    public boolean isWithinCuboid(Location loc) {
-        return isWithinCuboid(new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
-    }
+	@Override
+	public int qtXMid() {
 
-    //Checks if the block is within the cuboid.
-    public boolean isWithinCuboid(Block block) {
-        return isWithinCuboid(new Vector(block.getX(), block.getY(), block.getZ()));
-    }
+		return this.getX();
+	}
 
-    //Checks if the vector is within the cuboid.
-    public boolean isWithinCuboid(Vector vec) {
-        int vX = vec.getBlockX();
-        int vY = vec.getBlockY();
-        int vZ = vec.getBlockZ();
-        if (vX >= minx && vX <= maxx && vY >= miny && vY <= maxy && vZ >= minz && vZ <= maxz) {
-            return true;
-        }
+	@Override
+	public int qtXMax() {
 
-        return false;
-    }
+		return this.maxx;
+	}
 
-    public boolean isWithinHeight(int y) {
-        return y >= miny && y <= maxy;
-    }
+	@Override
+	public int qtZMin() {
 
-    public boolean at(Location loc) {
-        return this.location.getWorld() == loc.getWorld()
-                && this.location.getBlockX() == loc.getBlockX()
-                && this.location.getBlockY() == loc.getBlockY()
-                && this.location.getBlockZ() == loc.getBlockZ();
-    }
+		return this.minz;
+	}
 
-    public void imposeSnitchTax() {
-        ConfigManager config = JukeAlert.getInstance().getConfigManager();
-        if (config.getTaxReinforcementPerAlert()) {
-            Utility.maybeReinforcementDamaged(location.getBlock());
-        }
-    }
+	@Override
+	public int qtZMid() {
+
+		return this.getZ();
+	}
+
+	@Override
+	public int qtZMax() {
+
+		return this.maxz;
+	}
+	// End interface QTBox
+
+	// Interface Comparable
+	@Override
+	public int compareTo(Object o) {
+
+	  // This assumes that only a single snitch can exist at a given (x, y, z)
+	  // Compare centers
+	  // TODO: Deal with volume changes when applicable
+	  // 1. Test X relationship
+	  // 2. Test Z relationship
+	  // 3. Test Y relationship
+	  Snitch other = (Snitch) o;
+	  int tx = this.getX();
+	  int ty = this.getY();
+	  int tz = this.getZ();
+	  int ox = other.getX();
+	  int oy = other.getY();
+	  int oz = other.getZ();
+	  if (tx < ox) {
+		return -1;
+	  }
+	  if (tx > ox) {
+		return 1;
+	  }
+	  if (tz < oz) {
+		return -1;
+	  }
+	  if (tz > oz) {
+		return 1;
+	  }
+	  if (ty < oy) {
+		return -1;
+	  }
+	  if (ty > oy) {
+		return 1;
+	  }
+	  return 0;  // Equal
+	}
+	// End interface Comparable
+
+	public void calculateDimensions() {
+
+		this.minx = getX() - radius;
+		this.maxx = getX() + radius;
+		this.minz = getZ() - radius;
+		this.maxz = getZ() + radius;
+		this.miny = getY() - radius;
+		this.maxy = getY() + radius;
+	}
+
+	public int getId() {
+
+		return this.snitchId;
+	}
+
+	public String getName() {
+
+		return this.name;
+	}
+
+	public void setId(int newId) {
+
+		this.snitchId = newId;
+	}
+
+	public void setName(String name) {
+
+		this.name = name;
+	}
+
+	public Group getGroup() {
+
+		if (group != null && !group.isValid()) {
+			group = GroupManager.getGroup(group.getName());
+		}
+		return group;
+	}
+
+	public void setGroup(Group group) {
+
+		this.group = group;
+		JukeAlert.getInstance().getJaLogger().updateSnitchGroup(this, group.getName());
+	}
+
+	public Location getLoc() {
+
+		return location;
+	}
+
+	public void setLoc(Location loc) {
+
+		this.location = loc;
+		calculateDimensions();
+	}
+
+	public boolean shouldLog() {
+
+		return shouldLog;
+	}
+
+	public void setShouldLog(boolean shouldLog) {
+
+		this.shouldLog = shouldLog;
+	}
+
+	public boolean shouldToggleLevers() {
+
+		return shouldToggleLevers;
+	}
+
+	public void setShouldToggleLevers(boolean shouldToggleLevers) {
+
+		this.shouldToggleLevers = shouldToggleLevers;
+	}
+
+	// Checks if the location is within the cuboid
+	public boolean isWithinCuboid(Location loc) {
+
+		return isWithinCuboid(new Vector(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+	}
+
+	// Checks if the block is within the cuboid
+	public boolean isWithinCuboid(Block block) {
+
+		return isWithinCuboid(new Vector(block.getX(), block.getY(), block.getZ()));
+	}
+
+	// Checks if the vector is within the cuboid
+	public boolean isWithinCuboid(Vector vec) {
+
+		int vX = vec.getBlockX();
+		int vY = vec.getBlockY();
+		int vZ = vec.getBlockZ();
+		if (vX >= minx && vX <= maxx && vY >= miny && vY <= maxy && vZ >= minz && vZ <= maxz) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isWithinHeight(int y) {
+
+		return y >= miny && y <= maxy;
+	}
+
+	public boolean at(Location loc) {
+
+		return this.location.getWorld() == loc.getWorld()
+			&& this.location.getBlockX() == loc.getBlockX()
+			&& this.location.getBlockY() == loc.getBlockY()
+			&& this.location.getBlockZ() == loc.getBlockZ();
+	}
+
+	public void imposeSnitchTax() {
+
+		ConfigManager config = JukeAlert.getInstance().getConfigManager();
+		if (config.getTaxReinforcementPerAlert()) {
+			Utility.maybeReinforcementDamaged(location.getBlock());
+		}
+	}
 }

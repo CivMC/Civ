@@ -1,4 +1,4 @@
-//Adapted from https://github.com/andfRa/Saga
+// Adapted from https://github.com/andfRa/Saga
 
 package com.untamedears.JukeAlert.chat;
 
@@ -9,7 +9,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 
 public class ChatFiller {
-
 
 	/**
 	 * Default character length.
@@ -31,11 +30,10 @@ public class ChatFiller {
 	 */
 	public final static Double CHAT_WIDTH = 80.0;
 
-
 	/**
 	 * Size map.
 	 */
-	private final static HashMap<Character, Double> SIZE_MAP = new HashMap<Character, Double>(){
+	private final static HashMap<Character, Double> SIZE_MAP = new HashMap<Character, Double>() {
 
 		/**
 		 * Serial version UID.
@@ -72,148 +70,131 @@ public class ChatFiller {
 			put('`', 0.5);
 			put('\0', 0.0);
 
-			//put('\u278A', 0.5);
-			//put('\u278B', 3.0/4.0);
 			put(' ', 1.0);
-			//put('\u278C', 5.0/4.0);
 
-			put('\u2500', 5.0/4.0);
-			put('\u2502', 1.0/4.0);
-			put('\u250C', 3.0/4.0);
-			put('\u2510', 3.0/4.0);
-			put('\u2514', 3.0/4.0);
-			put('\u2518', 3.0/4.0);
+			put('\u2500', 5.0 / 4.0);
+			put('\u2502', 1.0 / 4.0);
+			put('\u250C', 3.0 / 4.0);
+			put('\u2510', 3.0 / 4.0);
+			put('\u2514', 3.0 / 4.0);
+			put('\u2518', 3.0 / 4.0);
 
-			put('\u2550', 5.0/4.0);
-			put('\u2551', 1.0/2.0);
+ 			put('\u2550', 5.0 / 4.0);
+			put('\u2551', 1.0 / 2.0);
 
-			put('\u2554', 3.0/4.0);
-			put('\u2560', 3.0/4.0);
-			put('\u255A', 3.0/4.0);
+ 			put('\u2554', 3.0 / 4.0);
+			put('\u2560', 3.0 / 4.0);
+			put('\u255A', 3.0 / 4.0);
 
-			put('\u2557', 4.0/4.0);
-			put('\u2563', 4.0/4.0);
-			put('\u255D', 4.0/4.0);
+ 			put('\u2557', 4.0 / 4.0);
+			put('\u2563', 4.0 / 4.0);
+			put('\u255D', 4.0 / 4.0);
 
 			put('\u2591', 2.0);
-
-			//put(CustomColour.PREVIOUS_COLOR.getChar(), 0.0);
-			//put(CustomColour.NORMAL_FORMAT.getChar(), 0.0);
-
 		}
 	};
-
 
 	/**
 	 * Gap fill chars.
 	 */
-	private final static HashSet<Character> FILL_CHARS = new HashSet<Character>(){
+	private final static HashSet<Character> FILL_CHARS = new HashSet<Character>() {
+
 		private static final long serialVersionUID = 1L;
 		{
-			//add('\u278A');
-			//add('\u278B');
 			add(' ');
-			//add('\u278C');
 		}
 	};
 
+	/**
+	 * Trims and/or fills a string to be as close to the required length without exceeding it.
+	 * If the string is trimmed, the supplied suffix is added (provided that won't exceed reqLength)
+	 * @param str string to trim/fill
+	 * @param reqLength required length
+	 * @return the trimmed/filled string
+	 */
+	public static String fillString(String str, Double reqLength, String suffix) {
 
-    /**
-     * Trims and/or fills a string to be as close to the required length without exceeding it.
-     * If the string is trimmed, the supplied suffix is added (provided that won't exceed reqLength)
-     * @param str string to trim/fill
-     * @param reqLength required length
-     * @return the trimmed/filled string
-     */
-    public static String fillString(String str, Double reqLength, String suffix) {
-        
-        double suffixLength = calcLength(suffix);
-        char[] chars = str.toCharArray();
-        StringBuffer result = new StringBuffer();
-        StringBuffer suffixResult = new StringBuffer();
-        Double length = 0.0;
-        
-        // Cut size and add suffix if necessary
-        boolean suffixFilled = false;
-        for (int i = 0; i < chars.length; i++) {
-            
-            Double charLength = SIZE_MAP.get(chars[i]);
-            if(charLength == null) charLength = DEFAULT_LENGTH;
-            
-            if (!suffixFilled && length + charLength + suffixLength > reqLength){
-                suffixFilled = true;
-                suffixResult.append(suffix);
-            }
+		double suffixLength = calcLength(suffix);
+		char[] chars = str.toCharArray();
+		StringBuffer result = new StringBuffer();
+		StringBuffer suffixResult = new StringBuffer();
+		Double length = 0.0;
 
-            if(length + charLength > reqLength){
-                result = suffixResult;
-                break;
-            }
-            
-            result.append(chars[i]);
-            if (!suffixFilled){
-                suffixResult.append(chars[i]);
-            }
+		// Cut size and add suffix if necessary
+		boolean suffixFilled = false;
+		for (int i = 0; i < chars.length; i++) {
+			Double charLength = SIZE_MAP.get(chars[i]);
+			if (charLength == null) {
+				charLength = DEFAULT_LENGTH;
+			}
 
-            if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR))){
-                length += charLength;
-            }
-        }
-        
-        // Add spaces:
-        Character fillChar = ' ';
-        Double fillLength = 1.0;
-        while(true){
+			if (!suffixFilled && length + charLength + suffixLength > reqLength) {
+				suffixFilled = true;
+				suffixResult.append(suffix);
+			}
 
-            Double gapLength = reqLength - length;
+			if (length + charLength > reqLength) {
+				result = suffixResult;
+				break;
+			}
 
-            // Gap filled:
-            if(gapLength <= 0) break;
+			result.append(chars[i]);
+			if (!suffixFilled) {
+				suffixResult.append(chars[i]);
+			}
 
-            // Add custom fillers: 
-            if(gapLength <= MAX_GAP){
+			if (!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i - 1] == ChatColor.COLOR_CHAR))) {
+				length += charLength;
+			}
+		}
 
-                fillChar = findCustom(gapLength, reqLength);
-                if(fillChar != null){
-                    result.append(fillChar);
-                    fillLength = SIZE_MAP.get(fillChar);
-                }
+		// Add spaces:
+		Character fillChar = ' ';
+		Double fillLength = 1.0;
+		while (true) {
+			Double gapLength = reqLength - length;
 
-                break;
+			// Gap filled:
+			if (gapLength <= 0) {
+				break;
+			}
 
-            }
+			// Add custom fillers:
+			if (gapLength <= MAX_GAP) {
 
-            result.append(fillChar);
-            length += fillLength;
+				fillChar = findCustom(gapLength, reqLength);
+				if (fillChar != null) {
+					result.append(fillChar);
+					fillLength = SIZE_MAP.get(fillChar);
+				}
+				break;
+			}
+			result.append(fillChar);
+			length += fillLength;
+		}
+		return result.toString();
+	}
 
-        }
+	/**
+	 * Trims and/or fills a string to be as close to the required length without exceeding it.
+	 * If the string is trimmed, no suffix is added
+	 * @param str string to trim/fill
+	 * @param reqLength required length
+	 * @return the trimmed/filled string <= required length
+	 */
+	public static String fillString(String str, Double reqLength) {
 
-        return result.toString();
-
-    }
-    
-    
-    /**
-     * Trims and/or fills a string to be as close to the required length without exceeding it.
-     * If the string is trimmed, no suffix is added
-     * @param str string to trim/fill
-     * @param reqLength required length
-     * @return the trimmed/filled string <= required length
-     */
-    public static String fillString(String str, Double reqLength) {
-        return fillString(str, reqLength, "");
-    }
-    
+		return fillString(str, reqLength, "");
+	}
 
 	/**
 	 * Finds a custom character with the best fit.
-	 * 
+	 *
 	 * @param gapLen gap length
 	 * @param reqLength required length
 	 * @return char that best fits the gap, null if none
 	 */
 	private static Character findCustom(Double gapLen, Double reqLength) {
-
 
 		Set<Character> gapStrs = new HashSet<Character>(FILL_CHARS);
 		Double bestFitLen = -1.0;
@@ -223,71 +204,52 @@ public class ChatFiller {
 
 			Double gapStrLen = SIZE_MAP.get(gapStr);
 
-			if(gapLen - gapStrLen >= 0 && gapStrLen > bestFitLen){
+			if (gapLen - gapStrLen >= 0 && gapStrLen > bestFitLen) {
 				bestFitLen = gapStrLen;
 				bestFitStr = gapStr;
 			}
-
 		}
-
 		return bestFitStr;
-
-
 	}
-
 
 	/**
 	 * Calculates the length of a string.
-	 * 
+	 *
 	 * @param str string
 	 * @return string length
 	 */
 	public static Double calcLength(String str) {
-
 
 		char[] chars = str.toCharArray();
 
 		Double length = 0.0;
 
 		for (int i = 0; i < chars.length; i++) {
-
 			Double charLength = SIZE_MAP.get(chars[i]);
-			if(charLength == null) charLength = DEFAULT_LENGTH;
+			if (charLength == null) {
+				charLength = DEFAULT_LENGTH;
+			}
 
-			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
-			length += charLength;
-
+			if (!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i - 1] == ChatColor.COLOR_CHAR))) {
+				length += charLength;
+			}
 		}
-
 		return length;
-
-
 	}
-
 
 	/**
 	 * Adjusts filler characters.
-	 * 
+	 *
 	 * @param str string
 	 * @return adjusted string
 	 */
 	public static String adjustFillers(String str) {
 
-//		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
-//		str = str.replace("\u278B", ChatColor.DARK_GRAY + "\'");
-//		str = str.replace("\u278C", ChatColor.DARK_GRAY + "\"");
-
 		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
-		
-		//str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.NORMAL_FORMAT);
-		//str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.NORMAL_FORMAT);
 
 		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`");
 		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " ");
 
 		return str;
-
 	}
-
-
 }
