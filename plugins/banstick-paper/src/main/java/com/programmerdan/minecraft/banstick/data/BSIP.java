@@ -61,6 +61,15 @@ public class BSIP {
 	 */
 	public static List<BSIP> allMatching(InetAddress netAddress) {
 		IPAddress lookup = IPAddress.from(netAddress);
+		return allMatching(lookup);
+	}
+	
+	/**
+	 * @see #allMatching(InetAddress)
+	 * @param lookup
+	 * @return
+	 */
+	public static List<BSIP> allMatching(IPAddress lookup) {
 		List<BSIP> matches = new ArrayList<BSIP>();
 		if (lookup.isIPv4()) {
 			fillFromCIDRs(lookup, 32, matches);
@@ -70,6 +79,23 @@ public class BSIP {
 		return matches;
 	}
 	
+	/**
+	 * @see #allMatching(InetAddress)
+	 * 
+	 * Expands CIDR restrictions for subnet matching.
+	 * 
+	 * @param lookup
+	 * @return
+	 */
+	public static List<BSIP> allMatching(IPAddress lookup, int CIDR) {
+		List<BSIP> matches = new ArrayList<BSIP>();
+		if (lookup.isIPv4()) {
+			fillFromCIDRs(lookup, CIDR, matches);
+		} else if (lookup.isIPv6()) {
+			fillFromCIDRs(lookup, CIDR, matches);
+		}
+		return matches;
+	}	
 	/**
 	 * Starting at max CIDR passed in and moving towards lowest, check for host matches.
 	 * These can then be used to check for bans on those matching host networks.
@@ -149,19 +175,23 @@ public class BSIP {
 	 */
 	public static BSIP byInetAddress(InetAddress netAddress) {
 		IPAddress lookup = IPAddress.from(netAddress);
+		return byIPAddress(lookup);
+	}
+	
+	public static BSIP byIPAddress(IPAddress lookup) {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();) {
 			PreparedStatement getIP = null;
-			if (netAddress instanceof Inet4Address) {
+			if (lookup.isIPv4()) {
 				getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip4 = ? and ip4cidr = 32");
-				getIP.setString(1, ((Inet4Address) netAddress).getHostAddress());
-			} else if (netAddress instanceof Inet6Address) {
+				getIP.setString(1, lookup.toString());
+			} else if (lookup.isIPv6()) {
 				getIP = connection.prepareStatement("SELECT * FROM bs_ip WHERE ip6 = ? and ip6cidr = 128");
-				getIP.setString(1,  ((Inet6Address) netAddress).getHostAddress());
+				getIP.setString(1,  lookup.toString());
 			} else { 
-				BanStick.getPlugin().severe("Unknown Inet address type: " + netAddress.toString());
+				BanStick.getPlugin().severe("Unknown Inet address type: " + lookup.toString());
 				return null;
 			}
 			BSIP bsip = null;
@@ -171,7 +201,7 @@ public class BSIP {
 			getIP.close();
 			return bsip;
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to execute query to get IP: " + netAddress.getHostAddress(), se);
+			BanStick.getPlugin().severe("Failed to execute query to get IP: " + lookup.toString(), se);
 		}
 		
 		return null;
@@ -247,6 +277,10 @@ public class BSIP {
 
 	public static BSIP create(InetAddress netAddress) {
 		IPAddress lookup = IPAddress.from(netAddress);
+		return create(lookup);
+	}
+	
+	public static BSIP create(IPAddress lookup) {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
@@ -272,7 +306,7 @@ public class BSIP {
 			
 			int ins = statement.executeUpdate();
 			if (ins < 1) {
-				BanStick.getPlugin().warning("Insert reported nothing inserted? " + netAddress.getHostAddress());
+				BanStick.getPlugin().warning("Insert reported nothing inserted? " + lookup.toString());
 			}
 			
 			try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -283,18 +317,22 @@ public class BSIP {
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
 					return newIP;
 				} else {
-					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + netAddress.getHostAddress());
+					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString());
 					return null;
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to create IP from " + netAddress.getHostAddress(), se);
+			BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString(), se);
 		}
 		return null;
 	}
 	
 	public static BSIP create(InetAddress netAddress, int CIDR) {
 		IPAddress lookup = IPAddress.from(netAddress).toSubnet(CIDR).getLowest();
+		return create(lookup, CIDR);
+	}
+	
+	public static BSIP create(IPAddress lookup, int CIDR) {
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
@@ -321,7 +359,7 @@ public class BSIP {
 			
 			int ins = statement.executeUpdate();
 			if (ins < 1) {
-				BanStick.getPlugin().warning("Insert reported nothing inserted? " + netAddress.getHostAddress() + "/" + CIDR);
+				BanStick.getPlugin().warning("Insert reported nothing inserted? " + lookup.toString() + "/" + CIDR);
 			}
 			
 			try (ResultSet rs = statement.getGeneratedKeys()) {
@@ -332,12 +370,12 @@ public class BSIP {
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
 					return newIP;
 				} else {
-					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + netAddress.getHostAddress() + "/" + CIDR);
+					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString() + "/" + CIDR);
 					return null;
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to create IP from " + netAddress.getHostAddress() + "/" + CIDR, se);
+			BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString() + "/" + CIDR, se);
 		}
 		return null;
 	}
