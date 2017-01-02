@@ -1,22 +1,69 @@
 package com.programmerdan.minecraft.banstick.containers;
 
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 
 import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSShare;
+import com.programmerdan.minecraft.banstick.data.BSVPN;
 
+/**
+ * Used to store bans issued and then transmit the results to various parties.
+ * Basically a logic wrapper.
+ * 
+ * @author ProgrammerDan
+ *
+ */
 public class BanResult {
-	private Map<BSPlayer, BSBan> banned;
+	private Set<BSPlayer> playerBans;
+	private Set<BSBan> bans;
+	
+	public static SimpleDateFormat usualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public void informCommandSender(CommandSender sender) {
-		
-		for (Map.Entry<BSPlayer, BSBan> entry : banned.entrySet()) {
-			
-			
+		if (bans.size() == 0 && playerBans.size() == 0) {
+			sender.sendMessage("No bans issued.");
 		}
+		StringBuilder sb = new StringBuilder();
+		if (playerBans.size() > 1) {
+			sb.append(playerBans.size()).append(" player bans issued.\n");
+		}
+		for (BSPlayer banned : playerBans) {
+			BSBan ban = banned.getBan();
+			sb.append(" Banned ").append(banned.getName()).append(" for ").append(ban.getMessage());
+			if (ban.getBanEndTime() != null) {
+				sb.append(" until ").append(usualDateTime.format(ban.getBanEndTime())).append("\n");
+			} else {
+				sb.append(" forever\n");
+			}	
+		}
+		if (bans.size() > 1) {
+			sb.append(bans.size()).append(" other bans issued.\n");
+		}
+		for (BSBan banned : bans) {
+			sb.append(" Banned ");
+			BSIP bip = banned.getIPBan();
+			if (bip != null) {
+				sb.append(" IP ").append(bip.toString());
+			}
+			BSVPN vip = banned.getVPNBan();
+			if (vip != null) {
+				sb.append(" VPN ").append(vip.toString());
+			}
+			BSShare sid = banned.getShareBan();
+			if (sid != null) {
+				sb.append(" Share ").append(sid.toString());
+			}
+			if (banned.getBanEndTime() != null) {
+				sb.append(" until ").append(usualDateTime.format(banned.getBanEndTime())).append("\n");
+			} else {
+				sb.append(" forever\n");
+			}
+		}
+		sender.sendMessage(sb.toString());
 	}
-	
-	
 }

@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
 
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;

@@ -132,7 +132,7 @@ public class BanStickDatabaseHandler {
 		data.registerMigration(0,  false, 
 					"CREATE TABLE IF NOT EXISTS bs_player (" +
 					" pid BIGINT AUTOINCREMENT PRIMARY KEY," +
-					" name VARCHAR(16) NOT NULL," +
+					" name VARCHAR(16)," +
 					" uuid CHAR(36) NOT NULL UNIQUE," +
 					" first_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" bid REFERENCES bs_ban(bid)," +
