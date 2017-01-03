@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.banstick.containers;
 
 import java.text.SimpleDateFormat;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.command.CommandSender;
@@ -21,6 +22,11 @@ import com.programmerdan.minecraft.banstick.data.BSVPN;
 public class BanResult {
 	private Set<BSPlayer> playerBans;
 	private Set<BSBan> bans;
+	
+	public BanResult() {
+		playerBans = new HashSet<BSPlayer>();
+		bans = new HashSet<BSBan>();
+	}
 	
 	public static SimpleDateFormat usualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -65,5 +71,13 @@ public class BanResult {
 			}
 		}
 		sender.sendMessage(sb.toString());
+	}
+
+	public void addPlayer(BSPlayer player) {
+		playerBans.add(player);
+	}
+	
+	public void addBan(BSBan ban) {
+		bans.add(ban);
 	}
 }

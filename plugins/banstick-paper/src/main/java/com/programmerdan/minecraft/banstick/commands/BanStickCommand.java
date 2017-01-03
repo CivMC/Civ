@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
 
 import inet.ipaddr.IPAddress;
@@ -13,7 +12,9 @@ import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
 
 import java.net.InetAddress;
-import java.util.List;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -37,8 +38,6 @@ public class BanStickCommand implements CommandExecutor {
 	 * Behavior: If given a name or uuid, bans that uuid with a new ban if none exists for that uuid.
 	 *   Returns ban details.
 	 *   
-	 *   TODO: allow message setting for ban.
-	 *   
 	 *   If name or uuid with a CIDR postfix, bans that uuid, AND issues a ban against their IP address / subnet.
 	 *   
 	 *   If IP, bans that IP and all players who have used it.
@@ -48,10 +47,10 @@ public class BanStickCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		/*
-		 *    - /<command> [ip]
-   - /<command> [ip]/[CIDR]
-   - /<command> [name/uuid]
-   - /<command> [name/uuid]/[CIDR]
+		 *    - /<command> [ip] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
+   - /<command> [ip]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
+   - /<command> [name/uuid] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
+   - /<command> [name/uuid]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
 		 */
 		// Check if name. Check if uuid. Check if ip-ipv4 vs. ipv6.
 		if (arguments.length < 1) return false;
@@ -61,6 +60,35 @@ public class BanStickCommand implements CommandExecutor {
 		Boolean hasCIDR = locCIDR > -1; 
 		Integer CIDR = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR) + 1) : null;
 		String toBan = (hasCIDR) ? preBan.substring(0, locCIDR) : preBan;
+		String message = (arguments.length >= 2 ? arguments[1] : null);
+		String endDate = (arguments.length >= 3 ? arguments[2] : null);
+		String endTime = (arguments.length >= 4 ? arguments[3] : null);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		SimpleDateFormat combinedFormat = new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
+		Date banEndDate = null;
+		Date banEndTime = null;
+		Date banEnd = null;
+		
+		if (endDate != null) {
+				
+			try {
+				banEndDate = dateFormat.parse(endDate); 
+				banEnd = banEndDate;
+			} catch (ParseException pe) {
+				sender.sendMessage("Unrecognized end date. Ignoring " + endDate);
+				banEndDate = null;
+			}
+
+			if (banEndDate != null && endTime != null) {
+				try {
+					banEndTime = combinedFormat.parse(endDate + " " + endTime); 
+					banEnd = banEndTime;
+				} catch (ParseException pe) {
+					sender.sendMessage("Unrecognized end time. Ignoring " + endTime);
+					banEndTime = null;
+				}
+			}
+		}
 		
 		try {
 			IPAddress ipcheck = new IPAddressString(toBan).toAddress();
@@ -71,19 +99,8 @@ public class BanStickCommand implements CommandExecutor {
 				exact = hasCIDR ? BSIP.create(ipcheck, CIDR) : BSIP.create(ipcheck);
 			}
 			
-			//BSBan ban = BSBan.createIPBan(exact);
-			BanResult result = hasCIDR ? BanHandler.doCIDRBan(exact) : BanHandler.doIPBan(exact);
-			
-			//if (hasCIDR) {
-				// look for other IPs in this subnet, within the db.
-				// then find sessions that use then.
-				// Ban those users.
-			//	BanResult result = BanHandler.doCIDRBan(exact);
-			//} else {
-				// find sessions that use this IP. 
-				// Ban those users.
-			//	BanResult result = BanHandler.doIPBan(exact);
-			//}
+			BanResult result = hasCIDR ? BanHandler.doCIDRBan(exact, message, banEnd, true, false) : 
+					BanHandler.doIPBan(exact, message, banEnd, true, false);
 			
 			result.informCommandSender(sender);
 			
@@ -129,14 +146,15 @@ public class BanStickCommand implements CommandExecutor {
 							exact = hasCIDR ? BSIP.create(na, CIDR) : BSIP.create(na);
 						}
 						
-						result = hasCIDR ? BanHandler.doCIDRBan(exact) : BanHandler.doIPBan(exact);
+						result = hasCIDR ? BanHandler.doCIDRBan(exact, message, banEnd, true, false) : 
+								BanHandler.doIPBan(exact, message, banEnd, true, false);
 						result.informCommandSender(sender);
 					}
 				} else {
 					sender.sendMessage(ChatColor.RED + "Unable to find " + ChatColor.DARK_RED + toBan);
 				}
 				
-				result = BanHandler.doUUIDBan(playerId);
+				result = BanHandler.doUUIDBan(playerId, message, banEnd, true);
 				result.informCommandSender(sender);
 				return true;
 			}

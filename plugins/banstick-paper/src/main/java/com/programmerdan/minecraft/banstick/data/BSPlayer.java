@@ -126,6 +126,15 @@ public class BSPlayer {
 	}
 	
 	/**
+	 * Gets the latest session for this player.
+	 * 
+	 * @return
+	 */
+	public BSSession getLatestSession() {
+		return this.allSessions.getLatest();
+	}
+	
+	/**
 	 * This leverages a fun queue of WeakReferences, where if a player is forcibly flush()'d we don't care, or if a player is in the queue more then once
 	 * we don't care, b/c we only save a dirty player once; and since we all store references and no copies, everything is nice and synchronized.
 	 * 

@@ -169,4 +169,48 @@ public class BSBan {
 		}
 		return null;
 	}
+
+	public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
+		// TODO: Check if this IP is already actively banned!
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+			BSBan newBan = new BSBan();
+			newBan.dirty = false;
+			newBan.ipBan = exactIP;
+			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
+			newBan.message = message;
+			newBan.isAdminBan = adminBan;
+			
+			try (PreparedStatement insertBan = connection.prepareStatement("INSERT INTO bs_ban(ban_time, message, ban_end, admin_ban, ip_ban) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+				insertBan.setTimestamp(1, newBan.banTime);
+				if (newBan.message != null) {
+					insertBan.setString(2, newBan.message);
+				} else {
+					insertBan.setNull(2, Types.VARCHAR);
+				}
+				if (newBan.banEnd != null) {
+					insertBan.setTimestamp(3, newBan.banEnd);
+				} else {
+					insertBan.setNull(3, Types.TIMESTAMP);
+				}
+				insertBan.setBoolean(4, adminBan);
+				insertBan.setLong(5,  newBan.ipBan.getId());
+				insertBan.execute();
+				try (ResultSet rs = insertBan.getGeneratedKeys()) {
+					if (rs.next()) { 
+						newBan.bid = rs.getLong(1);
+					} else {
+						BanStick.getPlugin().severe("No BID returned on ban insert?!");
+						return null; // no bid? error.
+					}
+				}
+			}
+			
+			allBanID.put(newBan.bid, newBan);
+			return newBan;
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to create a new ban record: ", se);
+		}
+		return null;
+	}
 }
