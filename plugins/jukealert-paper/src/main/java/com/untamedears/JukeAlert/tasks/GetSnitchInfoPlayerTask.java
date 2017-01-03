@@ -91,8 +91,8 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 		} else {
 			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset - 1) * 10),
 				this.player, offset, null, false, true);
-			sendSnitchInfo.run();
 		}
+		sendSnitchInfo.run();
 	}
 
 	public List<String> getInfo() {
