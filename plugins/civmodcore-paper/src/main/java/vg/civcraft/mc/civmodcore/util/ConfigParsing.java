@@ -82,7 +82,7 @@ public class ConfigParsing {
 				meta.setLore(lore);
 			}
 			if (current.isBoolean("unbreakable")) {
-				meta.spigot().setUnbreakable(current.getBoolean("unbreakable"));
+				meta.setUnbreakable(current.getBoolean("unbreakable"));
 			}
 			if (current.isBoolean("hideFlags") && current.getBoolean("hideFlags")) {
 				for (ItemFlag flag : ItemFlag.values()) {

@@ -1,15 +1,11 @@
 package vg.civcraft.mc.civmodcore.particles;
 
-import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 
 public class ParticleEffect {
 
-	private Effect effect;
-
-	private int id;
-
-	private int data;
+	private Particle particle;
 
 	private float offsetX;
 
@@ -21,40 +17,20 @@ public class ParticleEffect {
 
 	private int particleCount;
 
-	private int viewDistance;
-
-	public ParticleEffect(Effect effect, int id, int data, float offsetX, float offsetY, float offsetZ, float speed,
-			int particleCount, int viewDistance) {
-		this.effect = effect;
-		this.id = id;
-		this.data = data;
+	public ParticleEffect(Particle particle, float offsetX, float offsetY, float offsetZ, float speed, int particleCount) {
+		this.particle = particle;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
 		this.offsetZ = offsetZ;
 		this.speed = speed;
 		this.particleCount = particleCount;
-		this.viewDistance = viewDistance;
 	}
 
 	/**
 	 * @return the type of particle used in this effect
 	 */
-	public Effect getEffect() {
-		return effect;
-	}
-
-	/**
-	 * @return the item/block/data id for the effect
-	 */
-	public int getId() {
-		return id;
-	}
-
-	/**
-	 * @return the data value of the block/item for the effect
-	 */
-	public int getData() {
-		return data;
+	public Particle getParticle() {
+		return particle;
 	}
 
 	/**
@@ -93,29 +69,19 @@ public class ParticleEffect {
 	}
 
 	/**
-	 * @return the distance from which players will be able to see the effect.
-	 */
-	public int getViewDistance() {
-		return viewDistance;
-	}
-
-	/**
 	 * Display an effect defined in the config around a reinforcement.
 	 *
 	 * @param location
 	 *            the location of the reinforcement.
 	 */
 	public void playEffect(Location location) {
-		location.getWorld().spigot()
-				.playEffect(location, effect, id, data, offsetX, offsetY, offsetZ, speed, particleCount, viewDistance);
+		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
 	}
 
 	@Override
 	public String toString() {
-		return String.format(
-				"  type: %s \n   id: %d \n   data: %d \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:"
-						+ " " + "%f \n   particleCount: %d \n   viewDistance: %d", effect, id, data, offsetX, offsetY,
-				offsetZ, speed, particleCount, viewDistance);
+		return String.format("  type: %s \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed:"
+						+ " " + "%f \n   particleCount: %d", particle, offsetX, offsetY, offsetZ, speed, particleCount);
 	}
 
 }
