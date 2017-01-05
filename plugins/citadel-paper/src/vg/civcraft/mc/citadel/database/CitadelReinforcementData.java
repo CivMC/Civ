@@ -600,7 +600,6 @@ public class CitadelReinforcementData {
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void insertReinforcement(Reinforcement rein, boolean retry){
 		if (rein == null){
 			logger.log(Level.WARNING, "CitadelReinforcementData insertReinforcement called with null");

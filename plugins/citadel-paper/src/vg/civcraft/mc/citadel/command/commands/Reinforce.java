@@ -46,7 +46,7 @@ public class Reinforce extends PlayerCommandMiddle {
 		else{
 			groupName = args[0];
 		}
-		Group g = gm.getGroup(groupName);
+		Group g = GroupManager.getGroup(groupName);
 		if (g == null){
 			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;

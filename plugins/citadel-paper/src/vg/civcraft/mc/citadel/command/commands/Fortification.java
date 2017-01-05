@@ -3,15 +3,14 @@ package vg.civcraft.mc.citadel.command.commands;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.PlayerState;
-import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -22,7 +21,6 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Fortification extends PlayerCommandMiddle{
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private GroupManager gm = NameAPI.getGroupManager();
 
 	public Fortification(String name) {
@@ -52,7 +50,7 @@ public class Fortification extends PlayerCommandMiddle{
 		else{
 			groupName = args[0];
 		}
-		Group g = gm.getGroup(groupName);	
+		Group g = GroupManager.getGroup(groupName);	
 		if (g == null){
 			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
@@ -68,7 +66,7 @@ public class Fortification extends PlayerCommandMiddle{
 					+ "place a reinforcement on this group.");
 			return true;
 		}
-		ItemStack stack = p.getItemInHand();
+		ItemStack stack = p.getInventory().getItemInMainHand();
 		PlayerState state = PlayerState.get(p);
 		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
 		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){

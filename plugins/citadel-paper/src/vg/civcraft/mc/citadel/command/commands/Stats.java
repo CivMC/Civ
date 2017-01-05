@@ -17,7 +17,6 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class Stats extends PlayerCommandMiddle{
 
 	private List<Group> run = new ArrayList<Group>();
-	private GroupManager gm = NameAPI.getGroupManager();
 	
 	public Stats(String name) {
 		super(name);
@@ -42,7 +41,7 @@ public class Stats extends PlayerCommandMiddle{
 			Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new StatsMessageAllGroups(p));
 			return true;
 		}
-		Group g = gm.getGroup(args[0]);
+		Group g = GroupManager.getGroup(args[0]);
 		
 		if (g == null){
 			sendAndLog(p, ChatColor.RED, "This group does not exist.");

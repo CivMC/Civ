@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.configuration.file.FileConfiguration;
 
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementEffect;
@@ -97,23 +97,21 @@ public class CitadelConfigManager {
 	}
 	
 	public static ReinforcementEffect getReinforcementEffect(String type){
-		Effect effect = null;
+		Particle effect = null;
 		if (config.getString("reinforcements." + type + ".effect.type") != null) {
 			try {
-				effect = Effect.valueOf(config.getString("reinforcements." + type + ".effect.type"));
+				String effectName = config.getString("reinforcements." + type + ".effect.type");
+				effect = effectName.equals("FLYING_GLYPH") ? Particle.ENCHANTMENT_TABLE: Particle.valueOf(effectName);
 			} catch (IllegalArgumentException e) {
 				Citadel.getInstance().getLogger().log(Level.WARNING, "Invalid effect at: " + config.getCurrentPath());
 				return null;
 			}
-			int id = config.getInt("reinforcements." + type + ".effect.id", 0);
-			int data = config.getInt("reinforcements." + type + ".effect.data", 0);
 			float offsetX = (float) config.getDouble("reinforcements." + type + ".effect.offsetX", 0);
 			float offsetY = (float) config.getDouble("reinforcements." + type + ".effect.offsetY", 0);
 			float offsetZ = (float) config.getDouble("reinforcements." + type + ".effect.offsetZ", 0);
 			float speed = (float) config.getDouble("reinforcements." + type + ".effect.speed", 1);
 			int amount = config.getInt("reinforcements." + type + ".effect.particleCount", 1);
-			int viewDistance = config.getInt("reinforcements." + type + ".effect.view_distance", 16);
-			return new ReinforcementEffect(effect, id, data, offsetX, offsetY, offsetZ, speed, amount, viewDistance);
+			return new ReinforcementEffect(effect, offsetX, offsetY, offsetZ, speed, amount);
 		}
 		return null;
 	}

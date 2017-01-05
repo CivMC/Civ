@@ -46,8 +46,9 @@ public class AreaReinforce extends PlayerCommandMiddle {
 			sendAndLog(p, ChatColor.RED, "Nice try");
 			return true;
 		}
-		ReinforcementType rt = ReinforcementType.getReinforcementType(p
-				.getItemInHand());
+
+		ReinforcementType rt = ReinforcementType.getReinforcementType(p.getInventory().getItemInMainHand());
+
 		if (rt == null) {
 			sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
 			return true;
@@ -62,7 +63,7 @@ public class AreaReinforce extends PlayerCommandMiddle {
 		} else {
 			groupName = args[0];
 		}
-		Group g = gm.getGroup(groupName);
+		Group g = GroupManager.getGroup(groupName);
 		if (g == null) {
 			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;

@@ -313,23 +313,23 @@ public class BlockListener implements Listener {
 			Block block = bbe.getBlock();
 			// Basic essential fire protection
 			if (block.getRelative(0, 1, 0).getType() == matfire) {
-				block.getRelative(0, 1, 0).setTypeId(0);
+				block.getRelative(0, 1, 0).setType(Material.AIR);
 			} // Essential
 			// Extended fire protection (recommend)
 			if (block.getRelative(1, 0, 0).getType() == matfire) {
-				block.getRelative(1, 0, 0).setTypeId(0);
+				block.getRelative(1, 0, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(-1, 0, 0).getType() == matfire) {
-				block.getRelative(-1, 0, 0).setTypeId(0);
+				block.getRelative(-1, 0, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(0, -1, 0).getType() == matfire) {
-				block.getRelative(0, -1, 0).setTypeId(0);
+				block.getRelative(0, -1, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(0, 0, 1).getType() == matfire) {
-				block.getRelative(0, 0, 1).setTypeId(0);
+				block.getRelative(0, 0, 1).setType(Material.AIR);
 			}
 			if (block.getRelative(0, 0, -1).getType() == matfire) {
-				block.getRelative(0, 0, -1).setTypeId(0);
+				block.getRelative(0, 0, -1).setType(Material.AIR);
 			}
 			// Aggressive fire protection (would seriously reduce effectiveness
 			// of flint down to near the "you'd have to use it 25 times"

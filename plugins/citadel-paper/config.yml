@@ -39,7 +39,7 @@ reinforcements:
   scale_amount: 1
   lore:
   effect:
-   type: FLYING_GLYPH
+   type: ENCHANTMENT_TABLE
    speed: 0.5
    particleCount: 50
 # Delete the comment char to use lore.  Three spaces are required 
