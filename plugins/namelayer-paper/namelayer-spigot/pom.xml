@@ -17,15 +17,15 @@
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>namelayer-nms-v1_10_R1</artifactId>
-      <version>1.0.0</version>
+      <artifactId>namelayer-nms-v1_11_R1</artifactId>
+      <version>1_11_R1</version>
     </dependency>
 
     <!-- Spigot -->
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.10-R0.1-SNAPSHOT</version>
+      <version>1.11-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
 
@@ -39,7 +39,7 @@
     <dependency>
       <groupId>vg.civcraft.mc.civmodcore</groupId>
       <artifactId>CivModCore</artifactId>
-      <version>1.5.09</version>
+      <version>1.5.11</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

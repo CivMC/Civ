@@ -13,14 +13,14 @@
 
   <modules>
     <module>nms/interface</module>
-    <module>nms/v1_10_R1</module>
+    <module>nms/v1_11_R1</module>
     <module>namelayer-spigot</module>
     <module>namelayer-bungee</module>
     <module>namelayer-all</module>
   </modules>
   
   <properties>
-    <releaseVersion>2.9.08</releaseVersion>
+    <releaseVersion>2.10.0</releaseVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -76,6 +76,7 @@
         <module>nms/v1_8_R3</module>
         <module>nms/v1_9_R1</module>
         <module>nms/v1_9_R2</module>
+		<module>nms/v1_10_R1</module>
       </modules>
     </profile>
   </profiles>
