@@ -341,8 +341,10 @@ public class FileHandler {
 				}
 				for (String face : current.getConfigurationSection("faces")
 						.getKeys(false)) {
-					List<ItemStack> stacks = (List<ItemStack>) current
-							.getConfigurationSection("faces").get(face);
+					
+					@SuppressWarnings("unchecked")
+					List<ItemStack> stacks = (List<ItemStack>) current.getConfigurationSection("faces").get(face);
+					
 					// it works, okay?
 					ItemMap map = new ItemMap(stacks);
 					assignments.put(BlockFace.valueOf(face), map);

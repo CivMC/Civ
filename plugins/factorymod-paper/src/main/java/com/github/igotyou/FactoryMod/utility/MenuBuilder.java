@@ -30,7 +30,6 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
-import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 

@@ -177,6 +177,7 @@ public class FactoryModListener implements Listener {
 	 * 
 	 * @param e
 	 */
+	@SuppressWarnings("deprecation")
 	@EventHandler
 	public void onSpecialBlockUse(BlockPlaceEvent e) {
 		org.bukkit.inventory.ItemStack is = e.getItemInHand();

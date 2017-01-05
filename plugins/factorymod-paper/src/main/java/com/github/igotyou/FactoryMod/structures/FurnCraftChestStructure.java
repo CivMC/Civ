@@ -68,6 +68,8 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 								.getLocation();
 					}
 					break;
+				default:
+					break;
 				}
 
 			}

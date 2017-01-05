@@ -5,7 +5,7 @@
 	<groupId>com.github.igotyou</groupId>
 	<artifactId>FactoryMod</artifactId>
 	<packaging>jar</packaging>
-	<version>2.2.25</version>
+	<version>2.3.0</version>
 	<name>FactoryMod</name>
 	<url>https://github.com/Civcraft/FactoryMod</url>
 
@@ -34,31 +34,31 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.10.2-R0.1-SNAPSHOT</version>
+			<version>1.11-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.9.08</version>
+			<version>2.10.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>3.7.02</version>
+			<version>3.8.00</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.5.09</version>
+			<version>1.5.11</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc</groupId>
 			<artifactId>CivMenu</artifactId>
-			<version>1.4.5</version>
+			<version>1.4.6</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

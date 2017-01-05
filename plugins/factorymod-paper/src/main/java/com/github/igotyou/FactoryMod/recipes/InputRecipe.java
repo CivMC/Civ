@@ -3,19 +3,17 @@ package com.github.igotyou.FactoryMod.recipes;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
-
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * A recipe with any form of item input to run it

@@ -17,7 +17,6 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
-import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class Upgraderecipe extends InputRecipe {
