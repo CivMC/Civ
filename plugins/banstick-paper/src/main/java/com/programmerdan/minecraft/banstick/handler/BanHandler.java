@@ -156,6 +156,9 @@ public class BanHandler {
 	 */
 	public static BanResult doIPBan(BSIP exactIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {
 		try {
+			if (message == null || message.trim().equals("")) {
+				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+			}
 			BSBan ban = BSBan.create(exactIP, message, banEnd, adminBan); // general ban.
 			BanResult result = new BanResult();
 			result.addBan(ban);
@@ -198,6 +201,9 @@ public class BanHandler {
 	 */
 	public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {
 		try {
+			if (message == null || message.trim().equals("")) {
+				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+			}
 			BSBan ban = BSBan.create(cidrIP, message, banEnd, adminBan); // general ban.
 			BanResult result = new BanResult();
 			result.addBan(ban);

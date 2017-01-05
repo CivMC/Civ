@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -98,27 +100,7 @@ public class BSBan {
 			getId.setLong(1, bid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
-					BSBan nS = new BSBan();
-					nS.bid = bid;
-					// TODO: refactor to avoid recursive lookups.
-					nS.banTime = rs.getTimestamp(2);
-					long iid = rs.getLong(3);
-					if (!rs.wasNull()) {
-						nS.ipBan = BSIP.byId(iid);
-					}
-					long vid = rs.getLong(4);
-					if (!rs.wasNull()) {
-						nS.vpnBan = BSVPN.byId(vid);
-					}
-					long sid = rs.getLong(5);
-					if (!rs.wasNull()) {
-						nS.shareBan = BSShare.byId(sid);
-					}
-					nS.isAdminBan = rs.getBoolean(6);
-					nS.message = rs.getString(7);
-					nS.banEnd = rs.getTimestamp(8);
-					nS.dirty = false;
-					return nS;
+					return extractBan(rs);
 				} else {
 					BanStick.getPlugin().warning("Failed to retrieve Ban by id: " + bid + " - not found");
 				}
@@ -169,6 +151,24 @@ public class BSBan {
 		}
 		return null;
 	}
+	
+	public static List<BSBan> byIP(BSIP exactIP, boolean includeExpired) {
+		List<BSBan> results = new ArrayList<BSBan>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement findBans = connection.prepareStatement(
+						includeExpired?"SELECT * FROM bs_ban WHERE ip_ban = ? ORDER BY ban_time":
+							"SELECT * FROM bs_ban WHERE ip_ban = ? AND (ban_end = NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
+			findBans.setLong(1, exactIP.getId());
+			try (ResultSet rs = findBans.executeQuery()) {
+				while(rs.next()) {
+					results.add(extractBan(rs));
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to lookup bans by IP: ", se);
+		}
+		return results;
+	}
 
 	public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this IP is already actively banned!
@@ -212,5 +212,29 @@ public class BSBan {
 			BanStick.getPlugin().severe("Failed to create a new ban record: ", se);
 		}
 		return null;
+	}
+	
+	private static BSBan extractBan(ResultSet rs) throws SQLException {
+		BSBan nS = new BSBan();
+		nS.bid = rs.getLong(1);
+		// TODO: refactor to avoid recursive lookups.
+		nS.banTime = rs.getTimestamp(2);
+		long iid = rs.getLong(3);
+		if (!rs.wasNull()) {
+			nS.ipBan = BSIP.byId(iid);
+		}
+		long vid = rs.getLong(4);
+		if (!rs.wasNull()) {
+			nS.vpnBan = BSVPN.byId(vid);
+		}
+		long sid = rs.getLong(5);
+		if (!rs.wasNull()) {
+			nS.shareBan = BSShare.byId(sid);
+		}
+		nS.isAdminBan = rs.getBoolean(6);
+		nS.message = rs.getString(7);
+		nS.banEnd = rs.getTimestamp(8);
+		nS.dirty = false;
+		return nS;
 	}
 }

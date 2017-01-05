@@ -14,6 +14,7 @@ import inet.ipaddr.IPAddressStringException;
 import java.net.InetAddress;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,10 +48,10 @@ public class BanStickCommand implements CommandExecutor {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		/*
-		 *    - /<command> [ip] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [ip]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [name/uuid] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [name/uuid]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
+		 *    - /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
 		 */
 		// Check if name. Check if uuid. Check if ip-ipv4 vs. ipv6.
 		if (arguments.length < 1) return false;
@@ -60,22 +61,21 @@ public class BanStickCommand implements CommandExecutor {
 		Boolean hasCIDR = locCIDR > -1; 
 		Integer CIDR = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR) + 1) : null;
 		String toBan = (hasCIDR) ? preBan.substring(0, locCIDR) : preBan;
-		String message = (arguments.length >= 2 ? arguments[1] : null);
-		String endDate = (arguments.length >= 3 ? arguments[2] : null);
-		String endTime = (arguments.length >= 4 ? arguments[3] : null);
+		String endDate = (arguments.length >= 2 ? arguments[1] : null);
+		String endTime = (arguments.length >= 3 ? arguments[2] : null);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 		SimpleDateFormat combinedFormat = new SimpleDateFormat("MM/dd/yyyy HH:mms:ss");
 		Date banEndDate = null;
 		Date banEndTime = null;
 		Date banEnd = null;
+		int mStart = 1;
 		
 		if (endDate != null) {
-				
 			try {
 				banEndDate = dateFormat.parse(endDate); 
 				banEnd = banEndDate;
+				mStart ++;
 			} catch (ParseException pe) {
-				sender.sendMessage("Unrecognized end date. Ignoring " + endDate);
 				banEndDate = null;
 			}
 
@@ -83,12 +83,14 @@ public class BanStickCommand implements CommandExecutor {
 				try {
 					banEndTime = combinedFormat.parse(endDate + " " + endTime); 
 					banEnd = banEndTime;
+					mStart ++;
 				} catch (ParseException pe) {
-					sender.sendMessage("Unrecognized end time. Ignoring " + endTime);
 					banEndTime = null;
 				}
 			}
 		}
+		
+		String message = (arguments.length >= mStart ? String.join(" ", Arrays.copyOfRange(arguments, mStart, arguments.length)) : null);
 		
 		try {
 			IPAddress ipcheck = new IPAddressString(toBan).toAddress();

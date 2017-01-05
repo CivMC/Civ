@@ -10,10 +10,10 @@ commands:
   aliases: [bst, stickofdoom]
   permission: banstick.ban
   usage:
-   - /<command> [ip] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [ip]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [name/uuid] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
-   - /<command> [name/uuid]/[CIDR] [message] [banend: mm/dd/yyyy [hh:mm:ss]]
+   - /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   - /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
  lovetap:
   description: Investigate a user / show information. Also give banstick.ips to show IP info during check.
   alias: bstl
