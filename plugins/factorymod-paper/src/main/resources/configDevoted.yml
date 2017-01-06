@@ -91,6 +91,7 @@ factories:
     - Iron Door
     - Iron Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Second Vault Factory Part 1
     - Accident Repair
   Vault_Factory_2_Part_1:
@@ -103,6 +104,7 @@ factories:
     - Iron Door
     - Iron Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Second Vault Factory Part 2
     - Accident Repair
   Vault_Factory_2_Part_2:
@@ -115,6 +117,7 @@ factories:
     - Iron Door
     - Iron Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Second Vault Factory Final
     - Accident Repair
   Vault_Factory_2:
@@ -131,6 +134,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Part 1
     - Accident Repair
   Vault_Factory_3_Part_1:
@@ -147,6 +151,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Part 2
     - Accident Repair
   Vault_Factory_3_Part_2:
@@ -163,6 +168,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Part 3
     - Accident Repair
   Vault_Factory_3_Part_3:
@@ -179,6 +185,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Part 4
     - Accident Repair
   Vault_Factory_3_Part_4:
@@ -195,6 +202,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Part 5
     - Accident Repair
   Vault_Factory_3_Part_5:
@@ -211,6 +219,7 @@ factories:
     - Iron Spike
     - Diamond Spike
     - City Bastion
+    - Return Factory Materials
     - Upgrade to Third Vault Factory Final
     - Accident Repair
   Vault_Factory_3:
@@ -232,6 +241,7 @@ factories:
     - Emerald Spike
     - City Bastion
     - Vault Bastion
+    - Return Factory Materials
     - Accident Repair
   Pickaxe_Factory_1:
     type: FCCUPGRADE
@@ -2821,7 +2831,7 @@ recipes:
         amount: 1
   Return Factory Materials:
     type: COSTRETURN
-    production_time: 2d
+    production_time: 5s
     name: Destroy Factory
     factor: 1.0
     input:
