@@ -82,6 +82,7 @@ public class FactoryModManager {
 			modAndAbove.add(PlayerType.OWNER);
 			PermissionType.registerPermission("USE_FACTORY", memberAndAbove);
 			PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove);
+			// TODO: "REFUND_FACTORY", ownerAndAbove
 		}
 
 		factoryCreationRecipes = new HashMap<Class<? extends MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();

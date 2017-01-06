@@ -22,6 +22,8 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -30,6 +32,7 @@ import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
+import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
@@ -198,6 +201,24 @@ public class FurnCraftChestFactory extends Factory {
 				}
 			}
 		}
+		// ---- INJECT: Check if person attempting to run the factory return is the owner of the group.
+		if (currentRecipe instanceof FactoryMaterialReturnRecipe) {
+			ReinforcementManager rm = Citadel.getReinforcementManager();
+			PlayerReinforcement rein = (PlayerReinforcement) rm.getReinforcement(mbs.getCenter());
+			if (rein != null) {
+				if (p == null) {
+					LoggingUtils.log("Preventing unattended activation of material return recipe");
+					return;
+				} else {
+					Group activeGroup = rein.getGroup();
+					if (activeGroup == null || !(activeGroup.isMember(p.getUniqueId(), PlayerType.OWNER) || activeGroup.isOwner(p.getUniqueId()))) {
+						p.sendMessage(ChatColor.RED + "You dont have permission to refund this factory");
+						return;
+					}
+				}
+			}
+		}
+		// ----- DONE INJECT
 		FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 		Bukkit.getPluginManager().callEvent(fae);
 		if (fae.isCancelled()) {

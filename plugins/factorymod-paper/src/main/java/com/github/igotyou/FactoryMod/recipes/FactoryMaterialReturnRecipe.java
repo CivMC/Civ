@@ -10,8 +10,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -48,10 +50,17 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 			stacks.add(is);
 			return stacks;
 		}
-		BlockState bs = (BlockState) i.getHolder();
-		Location loc = bs.getLocation();
-		FurnCraftChestFactory fcc = (FurnCraftChestFactory) FactoryMod
-				.getManager().getFactoryAt(loc);
+		InventoryHolder ih = i.getHolder();
+		Location loc = null;
+		if (ih instanceof BlockState) {
+			BlockState bs = (BlockState) ih;
+			loc = bs.getLocation();
+		} else if (ih instanceof DoubleChest) {
+			DoubleChest dc = (DoubleChest) ih;
+			loc = dc.getLocation();
+		}
+		FurnCraftChestFactory fcc = (loc != null ? (FurnCraftChestFactory) FactoryMod
+				.getManager().getFactoryAt(loc) : fccf);
 		return FactoryMod.getManager().getTotalSetupCost(fcc)
 				.getItemStackRepresentation();
 	}
