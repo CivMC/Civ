@@ -80,6 +80,12 @@ public class GearManager {
 		this.dataWorker.addChangedGearblock(gearblock);
 	}
 	
+	public void clearGearblockTimer(Gearblock gearblock) {
+		gearblock.setTimer(null, null);
+		
+		this.dataWorker.addChangedGearblock(gearblock);
+	}
+
 	public SearchBridgeBlockResult searchBridgeBlock(BlockCoord coord) {
 		int maxLen = CastleGates.getConfigManager().getMaxBridgeLength();
 		

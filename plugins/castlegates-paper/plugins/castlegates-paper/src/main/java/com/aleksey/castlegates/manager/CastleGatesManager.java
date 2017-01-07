@@ -395,24 +395,17 @@ public class CastleGatesManager {
 			return true;
 		}
 		
-		if(state.timer < CastleGates.getConfigManager().getTimerMin()
-				|| state.timer > CastleGates.getConfigManager().getTimerMax()
-				)
-		{
-			String errorMessage = "Timer interval is limited to the value between "
-					+ CastleGates.getConfigManager().getTimerMin()
-					+ " and "
-					+ CastleGates.getConfigManager().getTimerMax()
-					+ " sec";
-					
-			player.sendMessage(ChatColor.RED + errorMessage);
+		String message;
+		
+		if(gearblock.getTimer() == null) {
+			this.gearManager.setGearblockTimer(gearblock, state.timer, state.timerOperation);
+			message = ChatColor.GREEN + "Timer for gearblock has been set to " + state.timer + " sec to process operation " + state.timerOperation;
+		} else {
+			this.gearManager.clearGearblockTimer(gearblock);
+			message = ChatColor.YELLOW + "Timer has been removed from gearblock";
 		}
 		
-		this.gearManager.setGearblockTimer(gearblock, state.timer, state.timerOperation);
-
-		String message = "Timer for gearblock has been set to " + state.timer + " sec to process operation " + state.timerOperation;
-		
-		player.sendMessage(ChatColor.GREEN + message);
+		player.sendMessage(message);
 
 		ParticleHelper.spawn(player, gearblock, ParticleHelper.Type.Info);
 		
