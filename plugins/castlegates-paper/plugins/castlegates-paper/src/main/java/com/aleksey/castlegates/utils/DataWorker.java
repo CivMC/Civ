@@ -28,8 +28,13 @@ import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.types.GearblockForUpdate;
 import com.aleksey.castlegates.types.GearblockLink;
 import com.aleksey.castlegates.types.LinkForUpdate;
+import com.aleksey.castlegates.types.TimerOperation;
 
 public class DataWorker extends Thread implements Runnable {
+	private static final int DRAW_CODE = 0;
+	private static final int UNDRAW_CODE = 1;
+	private static final int REVERT_CODE = 2;
+	
 	private SqlDatabase db;
 	private GearblockSource gearblockSource;
 	private LinkSource linkSource;
@@ -82,7 +87,24 @@ public class DataWorker extends Thread implements Runnable {
 			BlockCoord location = new BlockCoord(world, info.location_x, info.location_y, info.location_z);
 			Gearblock gearblock = new Gearblock(location);
 			
+			TimerOperation timerOperation = null;
+			
+			if(info.timerOperation != null) {
+				switch(info.timerOperation) {
+				case DRAW_CODE:
+					timerOperation = TimerOperation.DRAW;
+					break;
+				case UNDRAW_CODE:
+					timerOperation = TimerOperation.UNDRAW;
+					break;
+				case REVERT_CODE:
+					timerOperation = TimerOperation.REVERT;
+					break;
+				}
+			}
+			
 			gearblock.setId(info.gearblock_id);
+			gearblock.setTimer(info.timer, timerOperation);
 			
 			gearblocks.put(location, gearblock);
 			gearblocksById.put(info.gearblock_id, gearblock);
@@ -262,6 +284,21 @@ public class DataWorker extends Thread implements Runnable {
 			info.location_x = location.getX();
 			info.location_y = location.getY();
 			info.location_z = location.getZ();
+			info.timer = gearblock.getTimer();
+			
+			if(gearblock.getTimerOperation() != null) {
+				switch(gearblock.getTimerOperation()) {
+				case DRAW:
+					info.timerOperation = DRAW_CODE;
+					break;
+				case UNDRAW:
+					info.timerOperation = UNDRAW_CODE;
+					break;
+				case REVERT:
+					info.timerOperation = REVERT_CODE;
+					break;
+				}
+			}
 		}
 		
 		GearblockForUpdate gearForUpdate = new GearblockForUpdate();

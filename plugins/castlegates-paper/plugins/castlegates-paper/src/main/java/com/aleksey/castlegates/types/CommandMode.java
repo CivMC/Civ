@@ -10,5 +10,6 @@ public enum CommandMode {
 	NORMAL,
 	CREATE,
 	LINK,
-	INFO
+	INFO,
+	TIMER
 }

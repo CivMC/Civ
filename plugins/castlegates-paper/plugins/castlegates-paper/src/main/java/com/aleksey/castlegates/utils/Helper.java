@@ -20,8 +20,26 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import com.aleksey.castlegates.CastleGates;
+import com.aleksey.castlegates.types.TimerOperation;
 
 public class Helper {
+	public static TimerOperation parseTimerOperation(String name) {
+		if(name == null) {
+			return null;
+		}
+		
+		switch(name.toLowerCase()) {
+		case "draw":
+			return TimerOperation.DRAW;
+		case "undraw":
+			return TimerOperation.UNDRAW;
+		case "revert":
+			return TimerOperation.REVERT;
+		default:
+			return null;
+		}
+	}
+	
 	public static String getLore(ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		

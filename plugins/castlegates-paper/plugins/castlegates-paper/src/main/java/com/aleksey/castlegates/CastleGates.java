@@ -75,7 +75,7 @@ public class CastleGates extends JavaPlugin {
     public void onEnable() {
     	instance = this;
         manager = new CastleGatesManager();
-        configManager = new ConfigManager();
+        configManager = new ConfigManager(getLogger());
         
         if(getServer().getPluginManager().getPlugin("Citadel") != null) {
         	citadelManager = new CitadelManager();
@@ -182,5 +182,9 @@ public class CastleGates extends JavaPlugin {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         return CastleGatesCommand.onCommand(sender, command, label, args);
+    }
+    
+    public static void runTask(Runnable task) {
+        instance.getServer().getScheduler().runTask(instance, task);
     }
 }

@@ -14,10 +14,13 @@ import org.bukkit.entity.Player;
 
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.types.CommandMode;
+import com.aleksey.castlegates.types.TimerOperation;
 
 public class PlayerStateManager {
-	private static class PlayerState {
+	public static class PlayerState {
 		public CommandMode mode;
+		public Integer timer;
+		public TimerOperation timerOperation;
 		public long lastInteracted;
 	}
 	
@@ -42,12 +45,11 @@ public class PlayerStateManager {
 		}
 	}
 	
-	public CommandMode getPlayerMode(Player player) {
-		PlayerState state = this.states.get(player);
-		return state != null ? state.mode: CommandMode.OFF;
+	public PlayerState getPlayerState(Player player) {
+		return this.states.get(player);
 	}
 	
-	public void setPlayerMode(Player player, CommandMode mode) {
+	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation) {
 		if(mode == CommandMode.OFF) {
 			clearPlayerMode(player);
 			return;
@@ -69,6 +71,8 @@ public class PlayerStateManager {
 		}
 		
 		state.mode = mode;
+		state.timer = timer;
+		state.timerOperation = timerOperation;
 		state.lastInteracted = System.currentTimeMillis();
 
 		addTask(player);

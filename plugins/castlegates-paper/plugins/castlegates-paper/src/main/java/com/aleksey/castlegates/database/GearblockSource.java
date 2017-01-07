@@ -8,13 +8,14 @@ package com.aleksey.castlegates.database;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
 public class GearblockSource {
 	private static final String selectAllScript = "SELECT * FROM cg_gearblock";
-	private static final String insertScript = "INSERT INTO cg_gearblock (location_worlduid, location_x, location_y, location_z) VALUES (?, ?, ?, ?)";
-	private static final String updateScript = "UPDATE cg_gearblock SET location_worlduid = ?, location_x = ?, location_y = ?, location_z = ? WHERE gearblock_id = ?";
+	private static final String insertScript = "INSERT INTO cg_gearblock (location_worlduid, location_x, location_y, location_z, timer, timer_operation) VALUES (?, ?, ?, ?, ?, ?)";
+	private static final String updateScript = "UPDATE cg_gearblock SET location_worlduid = ?, location_x = ?, location_y = ?, location_z = ?, timer = ?, timer_operation = ? WHERE gearblock_id = ?";
 	private static final String deleteScript = "DELETE FROM cg_gearblock WHERE gearblock_id = ?";
 	
 	private SqlDatabase db;
@@ -32,12 +33,19 @@ public class GearblockSource {
 		try {
 			while(rs.next()) {
 				GearblockInfo info = new GearblockInfo();
+				
 				info.gearblock_id = rs.getInt("gearblock_id");
 				info.location_worlduid = rs.getString("location_worlduid");
 				info.location_x = rs.getInt("location_x");
 				info.location_y = rs.getInt("location_y");
 				info.location_z = rs.getInt("location_z");
 				
+				info.timer = rs.getInt("timer");
+				if(rs.wasNull()) info.timer = null;
+				
+				info.timerOperation = rs.getInt("timer_operation");
+				if(rs.wasNull()) info.timerOperation = null;
+
 				list.add(info);
 			}
 		} finally {
@@ -54,6 +62,16 @@ public class GearblockSource {
 		sql.setInt(3, info.location_y);
 		sql.setInt(4, info.location_z);
 		
+		if(info.timer != null)
+			sql.setInt(5, info.timer);
+		else
+			sql.setNull(5, Types.INTEGER);
+		
+		if(info.timerOperation != null)
+			sql.setInt(6, info.timerOperation);
+		else
+			sql.setNull(6, Types.INTEGER);
+
 		sql.executeUpdate();
 		
 		ResultSet rs = sql.getGeneratedKeys();
@@ -72,8 +90,19 @@ public class GearblockSource {
 		sql.setInt(2, info.location_x);
 		sql.setInt(3, info.location_y);
 		sql.setInt(4, info.location_z);
-		sql.setInt(5, info.gearblock_id);
 		
+		if(info.timer != null)
+			sql.setInt(5, info.timer);
+		else
+			sql.setNull(5, Types.INTEGER);
+		
+		if(info.timerOperation != null)
+			sql.setInt(6, info.timerOperation);
+		else
+			sql.setNull(6, Types.INTEGER);
+
+		sql.setInt(7, info.gearblock_id);
+
 		sql.executeUpdate();
 	}
 	

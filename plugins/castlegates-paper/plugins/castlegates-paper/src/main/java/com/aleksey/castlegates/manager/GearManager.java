@@ -28,7 +28,11 @@ import com.aleksey.castlegates.types.BlockState;
 import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.types.GearblockLink;
 import com.aleksey.castlegates.types.PowerResult;
+import com.aleksey.castlegates.types.TimerBatch;
+import com.aleksey.castlegates.types.TimerLink;
+import com.aleksey.castlegates.types.TimerOperation;
 import com.aleksey.castlegates.utils.DataWorker;
+import com.aleksey.castlegates.utils.TimerWorker;
 
 public class GearManager {
 	public static final BlockFace[] faces = new BlockFace[] {
@@ -46,6 +50,7 @@ public class GearManager {
 
 	private Map<BlockCoord, Gearblock> gearblocks;
 	private DataWorker dataWorker;
+	private TimerWorker timerWorker;
 	
 	public void init(SqlDatabase db) throws SQLException {
 		this.dataWorker = new DataWorker(db,  CastleGates.getConfigManager().getLogChanges());
@@ -54,12 +59,25 @@ public class GearManager {
 		CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gearblocks.size() + " gearblocks");
 		
 		this.dataWorker.startThread();
+
+		this.timerWorker = new TimerWorker(this);
+		this.timerWorker.startThread();
 	}
 	
 	public void close() {
 		if(this.dataWorker != null) {
 			this.dataWorker.close();
 		}
+
+		if(this.timerWorker != null) {
+			this.timerWorker.terminateThread();
+		}
+	}
+	
+	public void setGearblockTimer(Gearblock gearblock, Integer timer, TimerOperation timerOperation) {
+		gearblock.setTimer(timer, timerOperation);
+		
+		this.dataWorker.addChangedGearblock(gearblock);
 	}
 	
 	public SearchBridgeBlockResult searchBridgeBlock(BlockCoord coord) {
@@ -274,12 +292,14 @@ public class GearManager {
 	}
 	
 	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
+		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock) : null;
+		
 		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
 		gearblocks.add(gearblock);
 		
-		PowerResult result = transferPower(world, gearblock, isPowered, players, gearblocks);
+		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, gearblocks);
 		
-		if(result != PowerResult.Allowed) return result;
+		if(transferResult != PowerResult.Allowed) return transferResult;
 
 		Boolean draw = null;
 
@@ -299,11 +319,47 @@ public class GearManager {
 			}
 			
 			this.dataWorker.addChangedLink(linkFromList);
+			
+			if(timerBatch != null) {
+				timerBatch.addLink(linkFromList);
+			}
 		}
 		
 		if(draw == null) return PowerResult.Unchanged;
 		
-		return draw ? PowerResult.Drawn : PowerResult.Undrawn;
+		PowerResult result = draw ? PowerResult.Drawn : PowerResult.Undrawn;
+
+		if(timerBatch != null) {
+			timerBatch.setProcessStatus(result.status);			
+			this.timerWorker.addBatch(timerBatch);
+		}
+		
+		return result;
+	}
+	
+	public boolean processTimerBatch(TimerBatch timerBatch) {
+		boolean result = false;
+		World world = timerBatch.getWorld();
+		
+		for(TimerLink timerLink : timerBatch.getLinks()) {
+			GearblockLink link = timerLink.getLink();
+			
+			if(link.isRemoved() || link.isBroken() || link.isDrawn() == timerLink.isMustDraw()) {
+				continue;
+			}
+			
+			if(!link.isDrawn()) {
+				draw(world, link);
+			} else {
+				undraw(world, link);
+			}
+			
+			this.dataWorker.addChangedLink(link);
+			
+			result = true;
+		}
+		
+		return result;
 	}
 	
 	private PowerResult transferPower(
