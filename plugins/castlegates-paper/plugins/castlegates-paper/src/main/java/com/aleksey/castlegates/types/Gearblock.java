@@ -13,6 +13,8 @@ public class Gearblock {
 	private boolean removed;
 	private GearblockLink link;
 	private long lastSwitchTime;
+	private Integer timer;
+	private TimerOperation timerOperation;
 	
 	public Gearblock(BlockCoord coord) {
 		this.coord = coord;
@@ -35,6 +37,13 @@ public class Gearblock {
 	
 	public long getLastSwitchTime() { return this.lastSwitchTime; }
 	public void setLastSwitchTime() { this.lastSwitchTime = System.currentTimeMillis(); }
+	
+	public Integer getTimer() { return this.timer; }
+	public TimerOperation getTimerOperation() { return this.timerOperation; }
+	public void setTimer(Integer timer, TimerOperation timerOperation) {
+		this.timer = timer;
+		this.timerOperation = timerOperation;
+	}
 
 	@Override
 	public boolean equals(Object other) {

@@ -11,4 +11,6 @@ public class GearblockInfo {
 	public int location_x;
 	public int location_y;
 	public int location_z;
+	public Integer timer;
+	public Integer timerOperation;
 }

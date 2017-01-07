@@ -29,8 +29,9 @@ import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.types.PowerResult;
-import com.aleksey.castlegates.utils.EffectHelper;
+import com.aleksey.castlegates.types.TimerOperation;
 import com.aleksey.castlegates.utils.Helper;
+import com.aleksey.castlegates.utils.ParticleHelper;
 import com.aleksey.castlegates.utils.PowerResultHelper;
 
 public class CastleGatesManager {
@@ -71,8 +72,8 @@ public class CastleGatesManager {
 		}
 	}
 	
-	public void setPlayerMode(Player player, CommandMode mode) {
-		stateManager.setPlayerMode(player, mode);
+	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation) {
+		stateManager.setPlayerMode(player, mode, timer, timerOperation);
 	}
 	
 	public void handlePlayerJoin(PlayerJoinEvent event) {
@@ -86,8 +87,9 @@ public class CastleGatesManager {
 	public void handleBlockClicked(PlayerInteractEvent event) {
 		boolean interacted = false;
 		ConfigManager configManager = CastleGates.getConfigManager();
-		CommandMode mode = this.stateManager.getPlayerMode(event.getPlayer());
-		
+		PlayerStateManager.PlayerState state = this.stateManager.getPlayerState(event.getPlayer());		
+		CommandMode mode = state != null ? state.mode: CommandMode.OFF;
+
 		if(configManager.getAllowAutoCreate()
 				&& configManager.isCreationConsumeItem(event.getItem()))
 		{
@@ -97,8 +99,11 @@ public class CastleGatesManager {
 			showGearInfo(event);
 			interacted = true;
 		}
+		else if(mode == CommandMode.TIMER) {
+			interacted = setGearblockTimer(event, state);
+		}
 		else if(configManager.isStickItem(event.getItem())) {
-			switch(this.stateManager.getPlayerMode(event.getPlayer())) {
+			switch(mode) {
 			case CREATE:
 				interacted = createGearblock(event);
 				break;
@@ -221,7 +226,7 @@ public class CastleGatesManager {
 			
 		player.sendMessage(ChatColor.GREEN + "Gearblock has been created.");
 		
-		EffectHelper.play(block, EffectHelper.Type.Info);
+		ParticleHelper.spawn(block, ParticleHelper.Type.Info);
 		
 		return true;
 	}
@@ -275,7 +280,7 @@ public class CastleGatesManager {
 		if(result.gearblock.getLink() != null) {
 			if(showError) {
 				player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " already has link. Remove it before creating this link.");
-				EffectHelper.play(player, result.gearblock, EffectHelper.Type.Warning);
+				ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 			}
 			
 			return false;
@@ -283,14 +288,14 @@ public class CastleGatesManager {
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
 			player.sendMessage(ChatColor.GREEN + "Gearblock has been linked with gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
-			EffectHelper.play(player, gearblock1, EffectHelper.Type.Info);
-			EffectHelper.play(player, result.gearblock, EffectHelper.Type.Info);
+			ParticleHelper.spawn(player, gearblock1, ParticleHelper.Type.Info);
+			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Info);
 			return true;
 		}
 
 		if(showError) {
 			player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has broken link and it cannot be restored using clicked gearblock because of location is wrong.");
-			EffectHelper.play(player, result.gearblock, EffectHelper.Type.Warning);
+			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 		}
 		
 		return false;
@@ -359,7 +364,51 @@ public class CastleGatesManager {
 				player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
 			}
 			
-			EffectHelper.play(player, gearblock2, EffectHelper.Type.Info);
+			ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);
 		}
+		
+		if(gearblock.getTimer() != null) {
+			String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation();
+			player.sendMessage(ChatColor.GREEN + message);
+		}
+	}
+	
+	private boolean setGearblockTimer(PlayerInteractEvent event, PlayerStateManager.PlayerState state) {
+		Player player = event.getPlayer();
+
+		if(!CastleGates.getConfigManager().isTimerEnabled()) {
+			player.sendMessage(ChatColor.RED + "Timer function is disabled on the server.");
+			return true;
+		}
+		
+		Block block = event.getClickedBlock();
+		BlockCoord blockCoord = new BlockCoord(block);
+		Gearblock gearblock = this.gearManager.getGearblock(blockCoord);
+		
+		if(gearblock == null) {
+			player.sendMessage(ChatColor.RED + "This is not gearblock.");
+			return true;
+		}
+		
+		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
+			player.sendMessage(ChatColor.RED + "Citadel preventing this operation.");
+			return true;
+		}
+		
+		String message;
+		
+		if(gearblock.getTimer() == null) {
+			this.gearManager.setGearblockTimer(gearblock, state.timer, state.timerOperation);
+			message = ChatColor.GREEN + "Timer for gearblock has been set to " + state.timer + " sec to process operation " + state.timerOperation;
+		} else {
+			this.gearManager.clearGearblockTimer(gearblock);
+			message = ChatColor.YELLOW + "Timer has been removed from gearblock";
+		}
+		
+		player.sendMessage(message);
+
+		ParticleHelper.spawn(player, gearblock, ParticleHelper.Type.Info);
+		
+		return true;
 	}
 }

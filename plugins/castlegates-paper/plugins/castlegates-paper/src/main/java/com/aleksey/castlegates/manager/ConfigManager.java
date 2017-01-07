@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,6 +18,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
 import com.aleksey.castlegates.DeprecatedMethods;
+import com.aleksey.castlegates.types.TimerOperation;
 import com.aleksey.castlegates.utils.Helper;
 
 public class ConfigManager {
@@ -45,6 +48,7 @@ public class ConfigManager {
 		}
 	}
 
+	private Logger logger;
 	private FileConfiguration file;
 	private Database database;
 	private HashSet<Material> gearMaterials;
@@ -59,6 +63,15 @@ public class ConfigManager {
 	private boolean allowAutoCreate;
 	private boolean interactWithSnitches;
 	private boolean logChanges;
+	private boolean timerEnabled;
+	private int timerMin;
+	private int timerMax;
+	private int timerDefault;
+	private TimerOperation timerDefaultOperation;
+	
+	public ConfigManager(Logger logger) {
+		this.logger = logger;
+	}
 	
 	public void load(FileConfiguration file) {
 		this.file = file;
@@ -78,6 +91,11 @@ public class ConfigManager {
 		this.switchTimeout = getInt("Settings.SwitchTimeout", 1000, 500, 100000);
 		this.maxRedstoneDistance = getInt("Settings.MaxRedstoneDistance", 7);
 		this.logChanges = getBoolean("Settings.LogChanges", true);
+		this.timerEnabled = getBoolean("Settings.Timer.Enabled", true);
+		this.timerMin = getInt("Settings.Timer.Min", 1);
+		this.timerMax = getInt("Settings.Timer.Max", 60);
+		this.timerDefault = getInt("Settings.Timer.DefaultInterval", 5);
+		this.timerDefaultOperation = getTimerOperation("Settings.Timer.DefaultOperation", TimerOperation.UNDRAW);
 		
 		this.gearMaterials = getBlockMaterials("Blocks.GearMaterials", ConfigDefaults.gearMaterials);
 		this.bridgeMaterials = getBlockMaterials("Blocks.BridgeMaterials", ConfigDefaults.bridgeMaterials);
@@ -95,6 +113,26 @@ public class ConfigManager {
 		}
 	}
 	
+	public boolean isTimerEnabled() {
+		return this.timerEnabled;
+	}
+	
+	public int getTimerMin() {
+		return this.timerMin;
+	}
+
+	public int getTimerMax() {
+		return this.timerMax;
+	}
+	
+	public int getTimerDefault() {
+		return this.timerDefault;
+	}
+
+	public TimerOperation getTimerDefaultOperation() {
+		return this.timerDefaultOperation;
+	}
+
 	public Database getDatabase() {
 		return this.database;
 	}
@@ -160,6 +198,10 @@ public class ConfigManager {
 		return 500;
 	}
 	
+	public int getTimerWorkerRate() {
+		return 500;
+	}
+
 	public int getMaxPowerTransfers() {
 		return this.maxPowerTransfers;
 	}
@@ -190,6 +232,21 @@ public class ConfigManager {
 
 	public boolean getLogChanges() {
 		return this.logChanges;
+	}
+	
+	private TimerOperation getTimerOperation(String path, TimerOperation defaultData) {
+        if (this.file.get(path) == null)
+        	this.file.set(path, defaultData.name());
+        
+        String name = this.file.getString(path, defaultData.name());
+        TimerOperation result = Helper.parseTimerOperation(name);
+        
+        if(result == null) {
+        	this.logger.log(Level.WARNING, "'" + name + "' is invalid timer operation, will be used '" + defaultData.name() + "'");
+        	result = defaultData;
+        }
+        
+        return result;
 	}
 
 	private String getString(String path, String defaultData) {

@@ -41,16 +41,20 @@ public class PowerResultHelper {
 			}
 		}
 		else if(result.status == PowerResult.Status.Drawn || result.status == PowerResult.Status.Undrawn){
-			Sound sound = result.status == PowerResult.Status.Drawn
-					? Sound.BLOCK_PISTON_CONTRACT
-					: Sound.BLOCK_PISTON_EXTEND;
-			
-			location.getWorld().playSound(location, sound, 0.7f, 1);
+			playSound(location, result.status);
 		}
 		
 		if(result.block != null) {
-			EffectHelper.play(result.block, EffectHelper.Type.Warning);
+			ParticleHelper.spawn(result.block, ParticleHelper.Type.Warning);
 		}
+	}
+	
+	public static void playSound(Location location, PowerResult.Status status) {
+		Sound sound = status == PowerResult.Status.Drawn
+				? Sound.BLOCK_PISTON_CONTRACT
+				: Sound.BLOCK_PISTON_EXTEND;
+		
+		location.getWorld().playSound(location, sound, 0.7f, 1);
 	}
 	
 	private static String getBlockedMessage(PowerResult result) {
