@@ -19,8 +19,11 @@ hacks:
     elytra: off
     chorus_fruit: off
   GameFixes:
-    enabled: false
-    nether_bed_placement: off
+    enabled: true
+    blockElytraBreakBug: true
+    damageOnElytraBreakBug: 1.0
+    canStorageTeleport: false
+    stopHopperDupe: true
   GameTuning:
     enabled: true
     chunkLimits:
@@ -142,9 +145,3 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
-  GameFixes:
-    enabled: true
-    blockElytraBreakBug: true
-    damageOnElytraBreakBug: 1.0
-    canStorageTeleport: false
-    stopHopperDupe: true

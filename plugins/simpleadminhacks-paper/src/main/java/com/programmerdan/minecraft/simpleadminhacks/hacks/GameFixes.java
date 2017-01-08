@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import org.bukkit.Material;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -29,7 +30,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@Override
 	public void registerListeners() {
 		if(config != null && config.isEnabled()) {
-			plugin().log("Regsitering GameFixes listeners");
+			plugin().log("Registering GameFixes listeners");
 			plugin().registerListener(this);
 		}
 	}
@@ -45,6 +46,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@Override
 	public void unregisterListeners() {
 		//Bukkit does this for us (why is this a method then?)
+		// incase your listener semantics include things beyond the default
+		//  like maybe alerting bungee of a connected listener to disable, etc.
 	}
 
 	@Override
@@ -60,15 +63,31 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		StringBuilder genStatus = new StringBuilder();
 		genStatus.append("GameFixes is ");
 		if(config != null && config.isEnabled()) {
-			genStatus.append("active\n");
+			genStatus.append(ChatColor.GREEN).append("active\n").append(ChatColor.RESET);
 			if(config.isBlockElytraBreakBug()) {
-				genStatus.append("   Block eltra break bug is enabled\n");
+				genStatus.append("   Block elytra break bug is ").append(ChatColor.GREEN).append("enabled\n")
+					.append(ChatColor.RESET);
 				genStatus.append("   Will deal " + config.getDamageOnElytraBreakBug() + " damage to players\n");
 			} else {
-				genStatus.append("   Block elytra break bug is disabled\n");
+				genStatus.append("   Block elytra break bug is ").append(ChatColor.RED).append("disabled\n")
+					.append(ChatColor.RESET);
+			}
+			if(config.canStorageTeleport()) {
+				genStatus.append("   Block storage items from teleporting to prevents exploits ")
+					.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append("   Block storage items from teleporting to prevents exploits ")
+					.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			if(config.isStopHopperDupe()) {
+				genStatus.append("   Hopper self-feed duplication exploit fix ")
+					.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append("   Hopper self-feed duplication exploit fix ")
+					.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
 		} else {
-			genStatus.append("inactive");
+			genStatus.append(ChatColor.RED).append("inactive").append(ChatColor.RESET);
 		}
 		return genStatus.toString();
 	}

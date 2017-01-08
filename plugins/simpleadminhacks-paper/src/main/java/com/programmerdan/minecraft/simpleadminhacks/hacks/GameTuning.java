@@ -10,8 +10,10 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
+import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Block;
 
@@ -187,6 +189,13 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 		if (event.getPlayer() == null) return;
 		if (event.getClickedBlock() == null) return;
+
+		// Let plugins that already watch for and cancel this event have a turn, like ExilePearl
+		PlayerBedEnterEvent pbee = new PlayerBedEnterEvent(event.getPlayer(), event.getClickedBlock());
+		Bukkit.getServer().getPluginManager().callEvent(pbee);
+		if (pbee.isCancelled()) {
+			return;
+		}
 
 		event.getPlayer().setBedSpawnLocation(event.getClickedBlock().getLocation());
 		event.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
