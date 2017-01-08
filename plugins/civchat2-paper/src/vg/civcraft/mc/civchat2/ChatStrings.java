@@ -3,7 +3,7 @@ package vg.civcraft.mc.civchat2;
 public class ChatStrings {
 	
 	public final static String chatPlayerIsOffline = "<i>That player is offline.";
-	public final static String chatNoOneToReplyTo = "<i>You have no one to reply too.";
+	public final static String chatNoOneToReplyTo = "<i>You have no one to reply to.";
 	public final static String chatCantMessageSelf = "<i>You can't message yourself.";
 	public final static String chatCantIgnoreSelf = "<i>You can't ignore yourself.";
 	public final static String chatNowChattingWith = "<g>You are now chatting with <c>%s.";
