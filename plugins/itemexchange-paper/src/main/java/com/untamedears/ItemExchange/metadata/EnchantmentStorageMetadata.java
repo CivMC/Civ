@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.utility.ExchangeRule;
 
@@ -34,8 +35,9 @@ public class EnchantmentStorageMetadata implements AdditionalMetadata {
 		
 		while(iterator.hasNext()) {
 			Enchantment enchantment = iterator.next();
+			int enchantmentId = DeprecatedMethods.getEnchantmentId(enchantment);
 			
-			serialized.append(enchantment.getId()).append(ExchangeRule.tertiarySpacer).append(enchantments.get(enchantment));
+			serialized.append(enchantmentId).append(ExchangeRule.tertiarySpacer).append(enchantments.get(enchantment));
 			
 			if(iterator.hasNext())
 				serialized.append(ExchangeRule.secondarySpacer);
@@ -106,7 +108,7 @@ public class EnchantmentStorageMetadata implements AdditionalMetadata {
 			int id = Integer.parseInt(parts[0]);
 			int level = Integer.parseInt(parts[1]);
 			
-			metadata.enchantments.put(Enchantment.getById(id), level);
+			metadata.enchantments.put(DeprecatedMethods.getEnchantmentById(id), level);
 		}
 		
 		return metadata;

@@ -1,8 +1,5 @@
 package com.untamedears.ItemExchange.command.commands;
 
-import java.util.HashSet;
-import java.util.List;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -47,7 +44,7 @@ public class CreateCommand extends PlayerCommand {
 			while(iter.hasNext()) {
 				Block block = iter.next();	
 				if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(block.getState().getType())) {
-					PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getItemInHand(), block, BlockFace.UP);
+					PlayerInteractEvent event = new PlayerInteractEvent(player, Action.RIGHT_CLICK_BLOCK, player.getInventory().getItemInMainHand(), block, BlockFace.UP);
 					
 					Bukkit.getPluginManager().callEvent(event);
 					
@@ -73,7 +70,7 @@ public class CreateCommand extends PlayerCommand {
 						ruleType = ExchangeRule.RuleType.OUTPUT;
 					}
 					if (ruleType != null) {
-						ItemStack inHand = player.getItemInHand();
+						ItemStack inHand = player.getInventory().getItemInMainHand();
 						
 						if(inHand == null || inHand.getType() == Material.AIR) {
 							player.sendMessage(ChatColor.RED + "You are not holding anything in your hand!");

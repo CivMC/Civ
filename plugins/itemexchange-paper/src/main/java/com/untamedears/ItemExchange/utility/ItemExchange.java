@@ -22,6 +22,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.events.IETransactionEvent;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
@@ -323,7 +324,7 @@ public class ItemExchange {
 			return;
 		}
 		
-		byte data = b.getData();
+		byte data = DeprecatedMethods.getBlockMeta(b);
 		
 		BlockFace face;
 		
@@ -350,7 +351,7 @@ public class ItemExchange {
 		
 		if(type2 == Material.STONE_BUTTON || type2 == Material.WOOD_BUTTON) {
 			BlockFace face2;
-			byte data2 = b2.getData();
+			byte data2 = DeprecatedMethods.getBlockMeta(b2);
 			
 			if((data2 & 0x4) == 4) {
 				face2 = BlockFace.NORTH;
@@ -370,7 +371,7 @@ public class ItemExchange {
 			
 			if(face2 == face) {
 				BlockState pressed = b2.getState();
-				pressed.setRawData((byte) (pressed.getRawData() | 0x8));
+				DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) | 0x8));
 				pressed.update();
 				
 				Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
@@ -382,7 +383,7 @@ public class ItemExchange {
 							return;
 						}
 						
-						pressed.setRawData((byte) (pressed.getRawData() & ~0x8));
+						DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) & ~0x8));
 						pressed.update();
 					}
 				}, 30);

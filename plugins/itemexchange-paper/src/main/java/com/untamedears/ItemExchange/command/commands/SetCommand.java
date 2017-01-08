@@ -10,9 +10,10 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.command.PlayerCommand;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
@@ -35,8 +36,8 @@ public class SetCommand extends PlayerCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		try {
-			ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(((Player) sender).getItemInHand());
-			int itemAmount = ((Player) sender).getItemInHand().getAmount();
+			ExchangeRule exchangeRule = ExchangeRule.parseRuleBlock(((Player) sender).getInventory().getItemInMainHand());
+			int itemAmount = ((Player) sender).getInventory().getItemInMainHand().getAmount();
 			if ((args[0].equalsIgnoreCase("commonname") || args[0].equalsIgnoreCase("c"))) {
 				if(args.length == 2) {
 					if(!ItemExchangePlugin.NAME_MATERIAL.containsKey(args[1])) {
@@ -63,7 +64,7 @@ public class SetCommand extends PlayerCommand {
 
 					if(m == null) {
 						try {
-							m = Material.getMaterial(Integer.parseInt(args[1]));
+							m = DeprecatedMethods.getMaterialById(Integer.parseInt(args[1]));
 						}
 						catch(NumberFormatException e) {}
 					}
@@ -256,7 +257,7 @@ public class SetCommand extends PlayerCommand {
 				}
 
 				if(args.length == 2) {
-					Group group = NameAPI.getGroupManager().getGroup(args[1]);
+					Group group = GroupManager.getGroup(args[1]);
 
 					if(group != null) {
 						exchangeRule.setCitadelGroup(group);
@@ -291,7 +292,7 @@ public class SetCommand extends PlayerCommand {
 			
 			ItemStack itemstack = exchangeRule.toItemStack();
 			itemstack.setAmount(itemAmount);
-			((Player) sender).setItemInHand(itemstack);
+			((Player) sender).getInventory().setItemInMainHand(itemstack);
 		}
 		catch (ExchangeRuleParseException e) {
 			sender.sendMessage(ChatColor.RED + "You are not holding an exchange rule.");
