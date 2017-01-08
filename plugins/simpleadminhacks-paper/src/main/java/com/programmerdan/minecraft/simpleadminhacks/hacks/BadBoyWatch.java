@@ -22,6 +22,8 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.BadBoyWatchConfig;
 
 /**
  * Watches for bad boys by tracking block breaks.
+ * FIRST HIT will also catch breaks that block protection plugins cancel, which if you skip 
+ * can lead to confusion
  * 
  * @author ProgrammerDan
  *
@@ -32,11 +34,28 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	 *  tracking cache, persists and ignores logouts.
 	 */
 	private Map<UUID, BadBoyRecord> boys = null;
+	private Map<UUID, BadBoyRecord> lowBoys = null;
 	
 	public BadBoyWatch(SimpleAdminHacks plugin, BadBoyWatchConfig config) {
 		super(plugin, config);
 	}
 	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
+	public void breakListenLow(BlockBreakEvent bbe) {
+		if (!config.isEnabled()) return;
+		try {
+			Player player = bbe.getPlayer();
+			Block block = bbe.getBlock();
+			BlockState bs = block.getState();
+			Material material = bs.getType();
+			
+			lowTrackAndReport(player.getUniqueId(), block.getLocation(), material);
+		} catch (Exception e) {
+			// insane catchall
+			plugin().log(Level.WARNING, "Failed to track a low break for badboy", e);
+		}
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
 	public void breakListen(BlockBreakEvent bbe) {
 		if (!config.isEnabled()) return;
@@ -68,6 +87,21 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		}
 	}
 
+	private void lowTrackAndReport(UUID uuid, Location location, Material material) {
+		if (uuid == null || location == null || material == null) return;
+		
+		BadBoyRecord record = lowBoys.get(uuid);
+		if (record == null) {
+			record = new BadBoyRecord(config);
+			lowBoys.put(uuid, record);
+		}
+		
+		String report = record.registerBreak(location, material);
+		if (report != null) {
+			plugin().log(uuid.toString() + "} FIRST HITS " + report);
+		}
+	}
+
 	@Override
 	public void registerListeners() {
 		if (config.isEnabled()) {
@@ -79,6 +113,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	@Override
 	public void dataBootstrap() {
 		boys = new ConcurrentHashMap<UUID, BadBoyRecord>();
+		lowBoys = new ConcurrentHashMap<UUID, BadBoyRecord>();
 	}
 
 	@Override
@@ -92,6 +127,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	@Override
 	public void dataCleanup() {
 		boys.clear();
+		lowBoys.clear();
 	}
 
 	@Override
@@ -102,6 +138,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		StringBuffer status = new StringBuffer("Listening for bad boy breaks");
 		
 		status.append("\n  Currently watching ").append(boys.size()).append(" players.");
+		status.append("\n  Currently watching LOW ").append(lowBoys.size()).append(" players.");
 		return status.toString();
 	}
 

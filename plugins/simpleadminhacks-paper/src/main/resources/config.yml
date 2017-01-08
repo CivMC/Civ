@@ -145,3 +145,20 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
+  BadBoyWatch:
+    enabled: true
+    trackingDepth: 16
+    clearOnMatch: true
+    watchedMaterials:
+     - CHEST
+     - FURNACE
+     - DROPPER
+     - DISPENSER
+     - JUKEBOX
+     - NOTE_BLOCK
+     - BEACON
+     - ENDER_CHEST
+     - SPONGE
+     - HOPPER
+     - PISTON_BASE
+     - STICKY_PISTON_BASE
