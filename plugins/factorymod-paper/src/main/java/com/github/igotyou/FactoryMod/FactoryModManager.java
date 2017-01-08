@@ -56,6 +56,7 @@ public class FactoryModManager {
 	private int redstonePowerOn;
 	private int redstoneRecipeChange;
 	private Set<String> compactLore;
+	private Set<String> forceInclude;
 
 	public FactoryModManager(FactoryMod plugin,
 			Material factoryInteractionMaterial, boolean citadelEnabled,
@@ -94,6 +95,7 @@ public class FactoryModManager {
 		totalSetupCosts = new HashMap<IFactoryEgg, ItemMap>();
 		recipes = new HashMap<String, IRecipe>();
 		compactLore = new HashSet<String>();
+		forceInclude = new HashSet<String>();
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.WORKBENCH);
@@ -625,5 +627,13 @@ public class FactoryModManager {
 	 */
 	public void registerRecipe(IRecipe recipe) {
 		recipes.put(recipe.getIdentifier(), recipe);
+	}
+
+	public void setForceInclude(HashSet<String> forceRecipes) {
+		this.forceInclude.addAll(forceRecipes);
+	}
+
+	public boolean isForceInclude(String identifier) {
+		return this.forceInclude.contains(identifier);
 	}
 } 

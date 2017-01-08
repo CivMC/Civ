@@ -430,6 +430,7 @@ factories:
 #   type: PRODUCTION
 #   name: Productionrecipeexample
 #   production_time: 10s
+#   forceInclude: false
 #   input:
 #       item1:
 #           material: STONE
@@ -448,6 +449,10 @@ factories:
 #output is a list of items that will get returned after the the input materials were consumed.
 # FOR MINECRAFT 1.9:
 # For a particular item you can now specify custom NBT data to be attached. This should only be used for output (currently) as it is not checked when comparing item stacks on input.
+
+#forceInclude allows you to indicate that whereever it is used, to force a _new_ recipe to be added to existing factories.
+# this is recipe wide, and can't be changed factory to factory. 
+# This might be replaced by something else later on. 
 
 #2. Compactionrecipe
 
@@ -680,6 +685,13 @@ factories:
 
 #appliedLore is the lore which is applied as replacement for the removed lore. This list may not be empty, but it may contain multiple entries
 
+#GENERAL NOTE:
+
+# Every recipe type can include at the same level as "name: " the following, although only FCC's will respect it currently:
+
+#forceInclude allows you to indicate that whereever it is used, to force a _new_ recipe to be added to existing factories.
+# this is recipe wide, and can't be changed factory to factory. 
+# This might be replaced by something else later on. 
 
 recipes:
 

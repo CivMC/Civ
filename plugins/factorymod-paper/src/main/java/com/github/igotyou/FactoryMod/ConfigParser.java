@@ -65,6 +65,7 @@ public class ConfigParser {
 	private int defaultDamagePerBreakPeriod;
 	private boolean useYamlIdentifers;
 	private int defaultHealth;
+	private HashSet<String> forceRecipes;
 
 	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
@@ -136,6 +137,7 @@ public class ConfigParser {
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		Map <String,String> factoryRenames = parseRenames(config.getConfigurationSection("renames"));
+		
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, nameLayerEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, factoryRenames);
@@ -144,6 +146,7 @@ public class ConfigParser {
 		recipeScalingUpgradeMapping = new HashMap<RecipeScalingUpgradeRecipe, String[]>();
 		parseFactories(config.getConfigurationSection("factories"));
 		parseRecipes(config.getConfigurationSection("recipes"));
+		manager.setForceInclude(forceRecipes);
 		assignRecipeScalingRecipes();
 		assignRecipesToFactories();
 		enableFactoryDecay(config);
@@ -166,6 +169,7 @@ public class ConfigParser {
 	 */
 	private void parseRecipes(ConfigurationSection config) {
 		recipes = new HashMap<String, IRecipe>();
+		forceRecipes = new HashSet<String>();
 		List <String> recipeKeys = new LinkedList<String>();
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
@@ -535,6 +539,11 @@ public class ConfigParser {
 		if (type == null) {
 			plugin.warning("No type specified for recipe at " + config.getCurrentPath() +". Skipping the recipe.");
 			return null;
+		}
+		// Force This Recipe to Show Up Even on Existing Factories (idempotently, ish)
+		boolean forceAddExisting = config.getBoolean("forceInclude", false);
+		if (forceAddExisting) {
+			this.forceRecipes.add(identifier);
 		}
 		ConfigurationSection inputSection = config.getConfigurationSection("input");
 		ItemMap input;

@@ -246,6 +246,19 @@ public class FileHandler {
 				long breakTime = current.getLong("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				List <String> recipes = current.getStringList("recipes");
+				
+				// Now check for recipes marked as force include that should be on this list.
+				for (IRecipe irecipe : egg.getRecipes()) {
+					if (manager.isForceInclude(irecipe.getIdentifier())) {
+						if (!recipes.contains(irecipe.getIdentifier())) { // it's not there, add it.
+							plugin.info("Augmenting prior " + name + " factory at " + 
+									blocks.get(0).toString() + " with force include recipe " +
+									irecipe.getName());
+							recipes.add(irecipe.getIdentifier());
+						}
+					}
+				}
+				
 				boolean autoSelect = current.getBoolean("autoSelect", false);
 				if (recipes == null) {
 					recipes = new LinkedList<String>();
