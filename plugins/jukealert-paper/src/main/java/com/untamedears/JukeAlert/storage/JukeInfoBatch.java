@@ -7,6 +7,7 @@ import java.util.Date;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import com.untamedears.JukeAlert.DeprecatedMethods;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 
@@ -96,7 +97,7 @@ public class JukeInfoBatch {
 					currentSet.setNull(8, java.sql.Types.INTEGER);
 				}
 				if (material != null) {
-					currentSet.setShort(9, (short) material.getId());
+					currentSet.setShort(9, (short)DeprecatedMethods.getMaterialId(material));
 				} else {
 					currentSet.setNull(9, java.sql.Types.SMALLINT);
 				}

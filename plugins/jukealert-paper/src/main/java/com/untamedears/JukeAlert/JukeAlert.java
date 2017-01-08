@@ -68,6 +68,7 @@ public class JukeAlert extends ACivMod {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void registerNameLayerPermissions() {
 
 		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();

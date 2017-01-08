@@ -35,6 +35,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
+import com.untamedears.JukeAlert.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
 import com.untamedears.JukeAlert.chat.SendSnitchList;
@@ -1424,7 +1425,7 @@ public class JukeAlertLogger {
 					int x = rs.getInt("snitch_logged_x");
 					int y = rs.getInt("snitch_logged_y");
 					int z = rs.getInt("snitch_logged_z");
-					Material mat = Material.getMaterial(rs.getInt("snitch_logged_materialid"));
+					Material mat = DeprecatedMethods.getMaterialById(rs.getInt("snitch_logged_materialid"));
 					log.add(new SnitchAction(snitchActionId, snitch.getId(), date, action, initiatedUser, victim,
 						x, y, z, mat));
 				}
@@ -1483,13 +1484,13 @@ public class JukeAlertLogger {
 				actionText = timestamp;
 				break;
 			case 2:
-				actionText = String.format("%d %s", material.getId(), coords);
+				actionText = String.format("%d %s", DeprecatedMethods.getMaterialId(material), coords);
 				break;
 			case 3:
 				actionText = victim;
 				// Add location data (if possible)
 				if (material != null && action != LoggedAction.KILL) {
-					int victim_id = material.getId();
+					int victim_id = DeprecatedMethods.getMaterialId(material);
 					if (victim_id >= 0) {
 						actionText = String.format("%d %s", victim_id, coords);
 					}
@@ -1520,7 +1521,7 @@ public class JukeAlertLogger {
 			int x = set.getInt("snitch_logged_x");
 			int y = set.getInt("snitch_logged_y");
 			int z = set.getInt("snitch_logged_z");
-			Material mat = Material.getMaterial(set.getInt("snitch_logged_materialid"));
+			Material mat = DeprecatedMethods.getMaterialById(set.getInt("snitch_logged_materialid"));
 			if (victim != null && !victim.isEmpty()) {
 				Material victim_material = Material.matchMaterial(victim);
 				if (mat.equals(Material.AIR) && victim_material != null && action != LoggedAction.KILL) {

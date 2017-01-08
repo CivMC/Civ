@@ -12,7 +12,7 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.manager.ConfigManager;
 
-public class Snitch implements QTBox, Comparable {
+public class Snitch implements QTBox, Comparable<Snitch> {
 
 	private int snitchId;
 
@@ -106,7 +106,7 @@ public class Snitch implements QTBox, Comparable {
 
 	// Interface Comparable
 	@Override
-	public int compareTo(Object o) {
+	public int compareTo(Snitch other) {
 
 	  // This assumes that only a single snitch can exist at a given (x, y, z)
 	  // Compare centers
@@ -114,7 +114,6 @@ public class Snitch implements QTBox, Comparable {
 	  // 1. Test X relationship
 	  // 2. Test Z relationship
 	  // 3. Test Y relationship
-	  Snitch other = (Snitch) o;
 	  int tx = this.getX();
 	  int ty = this.getY();
 	  int tz = this.getZ();
