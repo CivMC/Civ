@@ -4,7 +4,7 @@ public class ChatStrings {
 
 	public final static String chatPlayerIsOffline = "<i>That player is offline.";
 
-	public final static String chatNoOneToReplyTo = "<i>You have no one to reply too.";
+	public final static String chatNoOneToReplyTo = "<i>You have no one to reply to.";
 
 	public final static String chatCantMessageSelf = "<i>You can't message yourself.";
 
