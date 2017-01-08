@@ -142,3 +142,9 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
+  GameFixes:
+    enabled: true
+    blockElytraBreakBug: true
+    damageOnElytraBreakBug: 1.0
+    canStorageTeleport: false
+    stopHopperDupe: true
