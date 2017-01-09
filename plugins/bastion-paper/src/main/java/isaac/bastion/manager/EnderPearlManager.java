@@ -51,7 +51,7 @@ public class EnderPearlManager {
 	private void getBlocking(EnderPearl pearl) {
 		double gravity = 0.03F;
 		if(humbugLoaded && pearl instanceof CustomNMSEntityEnderPearl) {
-			gravity = ((CustomNMSEntityEnderPearl)pearl).y_adjust_;
+			gravity = ((CustomNMSEntityEnderPearl)pearl).getYAdjust();
 		}
 
 		Vector speed = pearl.getVelocity();
