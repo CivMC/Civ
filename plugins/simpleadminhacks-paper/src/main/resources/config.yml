@@ -32,7 +32,7 @@ hacks:
       tileEntities:
         HOPPER: 4
         PISTON_BASE: 4
-        STICKY_PISTON_BASE: 4
+        PISTON_STICKY_BASE: 4
         DISPENSER: 4
         DROPPER: 4
         REDSTONE_COMPARATOR: 4
@@ -161,4 +161,4 @@ hacks:
      - SPONGE
      - HOPPER
      - PISTON_BASE
-     - STICKY_PISTON_BASE
+     - PISTON_STICKY_BASE

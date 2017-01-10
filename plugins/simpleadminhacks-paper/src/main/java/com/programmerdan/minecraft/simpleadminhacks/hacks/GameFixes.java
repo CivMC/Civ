@@ -72,11 +72,11 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				genStatus.append("   Block elytra break bug is ").append(ChatColor.RED).append("disabled\n")
 					.append(ChatColor.RESET);
 			}
-			if(config.canStorageTeleport()) {
-				genStatus.append("   Block storage items from teleporting to prevents exploits ")
+			if(!config.canStorageTeleport()) {
+				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
 					.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
-				genStatus.append("   Block storage items from teleporting to prevents exploits ")
+				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
 					.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
 			if(config.isStopHopperDupe()) {
@@ -94,12 +94,13 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent event) {
+		if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
+		if (block == null || player == null) return;
 		
 		if(!player.getLocation().equals(block.getLocation())
-				&& player.getEyeLocation().getBlock().getType() != Material.AIR
-				&& config.isBlockElytraBreakBug()) {
+				&& player.getEyeLocation().getBlock().getType() != Material.AIR) {
 			event.setCancelled(true);
 			player.damage(config.getDamageOnElytraBreakBug());
 		}
@@ -107,15 +108,18 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	public void onEntityTeleport(EntityTeleportEvent event) {
-		if(!config.canStorageTeleport() && event.getEntity() instanceof InventoryHolder) {
+		if (!config.isEnabled() || config.canStorageTeleport()) return;
+		if (event.getEntity() instanceof InventoryHolder) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-		if(!config.isStopHopperDupe() || !(event.getDestination().getType() == InventoryType.HOPPER)
-				|| !(event.getSource().getType() == InventoryType.HOPPER)) return;
+		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
+		if((event.getDestination() == null) || (event.getSource() == null) ||
+				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
+				!(InventoryType.HOPPER.equals(event.getSource().getType()))) return;
 		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getState().getData();
 		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getState().getData();
 		if(source.getFacing().getOppositeFace() == dest.getFacing()) {
