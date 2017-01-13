@@ -204,7 +204,13 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 			if(reinf instanceof PlayerReinforcement) {
 				PlayerReinforcement pr = (PlayerReinforcement) reinf;
 				int maxHealth = ReinforcementType.getReinforcementType(pr.getStackRepresentation()).getHitPoints();
-				reinf.setDurability(Math.min(health + 1, maxHealth));
+				
+				if(maxHealth > health) {
+					reinf.setDurability(health + 1);
+				} else if(balance != 0) {
+					balance = 0;
+					Bastion.getBastionStorage().updated(this);
+				}
 			} else {
 				destroy();
 				Bastion.getPlugin().severe("Reinforcement removed without removing bastion, fixed");
@@ -380,7 +386,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 			result.append("Which means ").append(getErosionFromBlock())
 					.append(" will removed after every blocked placement\n");
-
+			
 			result.append("Placed on ").append(dateFormator.format(new Date(placed))).append('\n');
 			result.append("by group ").append(reinforcement.getGroup().getName()).append('\n');
 			result.append("At: ").append(location.toString());

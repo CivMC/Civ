@@ -86,6 +86,8 @@ public class BastionType {
 		this.explodeOnBlock = explodeOnBlock;
 		this.explodeOnBlockStrength = explodeOnBlockStrength;
 		this.damageFirstBastion = damageFirstBastion;
+		this.regenTime = regenTime;
+		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
 
