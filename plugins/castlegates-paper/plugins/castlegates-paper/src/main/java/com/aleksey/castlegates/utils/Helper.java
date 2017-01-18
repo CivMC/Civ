@@ -12,6 +12,8 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -23,6 +25,17 @@ import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.types.TimerOperation;
 
 public class Helper {
+	public static boolean isEmptyBlock(Block block) {
+		Material material = block.getType();
+		
+		return material == Material.AIR
+				|| material == Material.WATER
+				|| material == Material.STATIONARY_WATER
+				|| material == Material.LAVA
+				|| material == Material.STATIONARY_LAVA
+				;
+	}
+	
 	public static TimerOperation parseTimerOperation(String name) {
 		if(name == null) {
 			return null;

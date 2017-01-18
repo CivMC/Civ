@@ -14,6 +14,7 @@ public class PowerResult {
 		CannotDrawGear,
 		NotInCitadelGroup,
 		BastionBlocked,
+		Locked,
 		Allowed
 		}
 	
@@ -33,4 +34,5 @@ public class PowerResult {
 	public static final PowerResult NotInCitadelGroup = new PowerResult(Status.NotInCitadelGroup, null);
 	public static final PowerResult BastionBlocked = new PowerResult(Status.BastionBlocked, null);
 	public static final PowerResult Allowed = new PowerResult(Status.Allowed, null);
+	public static final PowerResult Locked = new PowerResult(Status.Locked, null);
 }

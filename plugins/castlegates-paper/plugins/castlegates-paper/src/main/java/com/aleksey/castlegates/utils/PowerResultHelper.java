@@ -30,6 +30,9 @@ public class PowerResultHelper {
 		case BastionBlocked:
 			message = ChatColor.RED + "Bastion prevent undrawing";
 			break;
+		case Locked:
+			message = ChatColor.RED + "Gearblock locked";
+			break;
 		default:
 			message = null;
 			break;
