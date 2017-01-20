@@ -396,4 +396,42 @@ public class BSPlayer {
 			return null;
 		}
 	}
+	
+	public static long preload(long offset, int limit) {
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement loadPlayers = connection.prepareStatement("SELECT * FROM bs_player ORDER BY bid OFFSET ? LIMIT ?");) {
+			loadPlayers.setLong(1, offset);
+			loadPlayers.setInt(2, limit);
+			try (ResultSet rs = loadPlayers.executeQuery()) {
+				long maxId = -1;
+				while (rs.next()) {
+					BSPlayer player = new BSPlayer();
+					player.dirty = false;
+					player.pid = rs.getLong(1);
+					player.allSessions = BSSessions.onlyFor(player);
+					player.allIPs = BSIPs.onlyFor(player);
+					player.allShares = BSShares.onlyFor(player);
+					player.name = rs.getString(2);
+					player.uuid = UUID.fromString(rs.getString(3));
+					player.firstAdd = rs.getTimestamp(4);
+					long bid = rs.getLong(5);
+					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+					player.vpnPardonTime = rs.getTimestamp(6);
+					player.sharedPardonTime = rs.getTimestamp(7);
+					if (!allPlayersID.containsKey(player.pid)) {
+						allPlayersID.put(player.pid, player);
+					}
+					if (!allPlayersUUID.containsKey(player.pid)) {
+						allPlayersUUID.put(player.uuid, player);
+					}
+					
+					if (player.pid > maxId) maxId = player.pid;
+				}
+				return maxId;
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
+		}
+		return -1;
+	}
 }

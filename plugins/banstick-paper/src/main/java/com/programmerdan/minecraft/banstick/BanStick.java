@@ -26,12 +26,13 @@ public class BanStick extends ACivMod {
 		reloadConfig();
 		
 		BanStick.instance = this;
+		connectDatabase();
+		if (!this.isEnabled()) return;
+
 		registerEventHandler();
 		registerCheckHandler();
 		registerCommandHandler();
-		if (!this.isEnabled()) return;
-		connectDatabase();
-		
+
 		
 	}
 	

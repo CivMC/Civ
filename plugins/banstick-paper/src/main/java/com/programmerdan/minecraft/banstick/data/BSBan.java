@@ -91,6 +91,92 @@ public class BSBan {
 		dirtyBans.offer(new WeakReference<BSBan>(this));
 	}
 	
+	public boolean isAdminBan() {
+		return isAdminBan;
+	}
+	
+	public void setAdminBan(boolean isAdminBan) {
+		this.isAdminBan = isAdminBan;
+	}
+	
+	/**
+	 * This leverages a fun queue of WeakReferences, where if a player is forcibly flush()'d we don't care, or if a player is in the queue more then once
+	 * we don't care, b/c we only save a dirty player once; and since we all store references and no copies, everything is nice and synchronized.
+	 * 
+	 */
+	public static void saveDirty() {
+		int batchSize = 0;
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement save = connection.prepareStatement("UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
+			while (!dirtyBans.isEmpty()) {
+				WeakReference<BSBan> rban = dirtyBans.poll();
+				BSBan ban = rban.get();
+				if (ban != null && ban.dirty) {
+					ban.saveToStatement(save);
+					save.addBatch();
+					batchSize ++;
+				}
+				if (batchSize % 100 == 0) {
+					int[] batchRun = save.executeBatch();
+					if (batchRun.length != batchSize) {
+						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					}
+					batchSize = 0;
+				}
+			}
+			if (batchSize % 100 > 0) {
+				int[] batchRun = save.executeBatch();
+				if (batchRun.length != batchSize) {
+					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Save of BSBan dirty batch failed!: ", se);
+		}
+	}
+	
+	/**
+	 * Saves the BSBan; only for internal use. Outside code must use Flush();
+	 */
+	private void save() {
+		if (!dirty) return;
+		this.dirty = false; // don't let anyone else in!
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement save = connection.prepareStatement("UPDATE bs_ban SET admin_ban = ?, message = ?, ban_end = ? WHERE bid = ?");) {
+			saveToStatement(save);
+			int effects = save.executeUpdate();
+			if (effects == 0) {
+				BanStick.getPlugin().severe("Failed to save BSBan or no update? " + this.bid);
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Save of BSBan failed!: ", se);
+		}
+	}
+	
+	private void saveToStatement(PreparedStatement save) throws SQLException {
+		save.setBoolean(1, this.isAdminBan);
+		save.setString(2, this.message);
+		if (this.banEnd == null) {
+			save.setNull(3, Types.TIMESTAMP);
+		} else {
+			save.setTimestamp(3, this.banEnd);
+		}
+		save.setLong(4, this.bid);
+	}
+	
+	/**
+	 * Cleanly saves this player if necessary, and removes it from the references lists.
+	 */
+	public void flush() {
+		if (dirty) {
+			save();
+		}
+		allBanID.remove(this.bid);
+		this.ipBan = null;
+		this.vpnBan = null;
+		this.shareBan = null;
+	}
+	
 	public static BSBan byId(long bid) {
 		if (allBanID.containsKey(bid)) {
 			return allBanID.get(bid);
@@ -236,5 +322,29 @@ public class BSBan {
 		nS.banEnd = rs.getTimestamp(8);
 		nS.dirty = false;
 		return nS;
+	}
+	
+	public static long preload(long offset, int limit, boolean includeExpired) {
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement loadBans = connection.prepareStatement(
+						includeExpired?"SELECT * FROM bs_ban ORDER BY bid OFFSET ? LIMIT ?":
+							"SELECT * FROM bs_ban WHERE ban_end = NULL OR ban_end >= CURRENT_TIMESTAMP ORDER BY bid OFFSET ? LIMIT ?");) {
+			loadBans.setLong(1, offset);
+			loadBans.setInt(2, limit);
+			try (ResultSet rs = loadBans.executeQuery()) {
+				long maxId = -1;
+				while (rs.next()) {
+					BSBan ban = extractBan(rs);
+					if (!allBanID.containsKey(ban.bid)) {
+						allBanID.put(ban.bid, ban);
+					}
+					if (ban.bid > maxId) maxId = ban.bid;
+				}
+				return maxId;
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed during Ban preload, offset " + offset + " limit " + limit, se);
+		}
+		return -1;
 	}
 }

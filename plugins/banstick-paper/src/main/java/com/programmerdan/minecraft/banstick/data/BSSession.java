@@ -11,6 +11,7 @@ import java.sql.Types;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.programmerdan.minecraft.banstick.BanStick;
@@ -202,5 +203,35 @@ public class BSSession {
 			BanStick.getPlugin().severe("Failed to insert new session for " + pid.getName(), se);
 		}
 		return null;
+	}
+	
+	public static long preload(long offset, int limit) {
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session ORDER BY sid OFFSET ? LIMIT ?");) {
+			loadSessions.setLong(1, offset);
+			loadSessions.setInt(2, limit);
+			try (ResultSet rs = loadSessions.executeQuery()) {
+				long maxId = -1;
+				while (rs.next()) {
+					BSSession session = new BSSession();
+					session.dirty = false;
+					session.sid = rs.getLong(1);
+					session.pid = BSPlayer.byId(rs.getLong(2));
+					session.joinTime = rs.getTimestamp(3);
+					session.leaveTime = rs.getTimestamp(4);
+					session.iid = BSIP.byId(rs.getLong(5));
+
+					if (!allSessionID.containsKey(session.sid)) {
+						allSessionID.put(session.sid, session);
+					}
+					
+					if (session.sid > maxId) maxId = session.sid;
+				}
+				return maxId;
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
+		}
+		return -1;
 	}
 }

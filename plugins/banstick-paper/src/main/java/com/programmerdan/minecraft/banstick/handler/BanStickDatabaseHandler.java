@@ -10,13 +10,19 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.data.BSShare;
+import com.programmerdan.minecraft.banstick.data.BSVPN;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
@@ -87,6 +93,9 @@ public class BanStickDatabaseHandler {
 		}
 
 		BanStick.getPlugin().info(String.format("Database update took %d seconds", (System.currentTimeMillis() - begin_time) / 1000));
+		
+		activatePreload(config.getConfigurationSection("preload"));
+		activateDirtySave(config.getConfigurationSection("dirtysave"));
 		return true;
 	}
 
@@ -124,6 +133,121 @@ public class BanStickDatabaseHandler {
 	 *   message TEXT
 	 *   
 	 */
+
+	private void activateDirtySave(ConfigurationSection config) {
+		long period = 5*60*1000l;
+		long delay = 5*60*1000l;
+		if (config != null) {
+			period = config.getLong("period", period);
+			delay = config.getLong("delay", delay);
+		}
+		
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				BSPlayer.saveDirty();
+			}
+		}, delay, period);
+
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				BSBan.saveDirty();
+			}
+		}, delay + (period / 5), period);
+		
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				BSSession.saveDirty();
+			}
+		}, delay + ((period * 2) / 5), period);
+
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				BSShare.saveDirty();
+			}
+		}, delay + ((period * 3) / 5), period);
+
+		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
+			@Override
+			public void run() {
+				BSVPN.saveDirty();
+			}
+		}, delay + ((period * 4) / 5), period);
+
+		BanStick.getPlugin().info("Dirty save tasks started.");
+	}
+
+	private void activatePreload(ConfigurationSection config) {
+		if (config != null && config.getBoolean("enabled")) {
+			long period = 5*60*1000l;
+			long delay = 5*60*1000l;
+			if (config != null) {
+				period = config.getLong("period", period);
+				delay = config.getLong("delay", delay);
+			}
+			final int batchsize = config.getInt("batch", 100);
+			
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSIP.preload(lastId, batchsize);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay, period);
+			
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSVPN.preload(lastId, batchsize);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + (period / 6), period);
+			
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSBan.preload(lastId, batchsize, false);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 2) / 6), period);
+			
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSPlayer.preload(lastId, batchsize);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 3) / 6), period);
+
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSSession.preload(lastId, batchsize);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 4) / 6), period);
+			
+			new BukkitRunnable() {
+				private long lastId = 0l;
+				@Override
+				public void run() {
+					lastId = BSShare.preload(lastId, batchsize);
+					if (lastId < 0) this.cancel();
+				}
+			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 5) / 6), period);
+		} else {
+			BanStick.getPlugin().info("Preloading is disabled. Expect more lag on joins, lookups, and bans.");
+		}
+		
+	}
 
 	/**
 	 * Basic method to set up data model v1.
@@ -232,4 +356,5 @@ public class BanStickDatabaseHandler {
 	}
 	
 	// ===== TODO: dirty save schedulers
+	
 }

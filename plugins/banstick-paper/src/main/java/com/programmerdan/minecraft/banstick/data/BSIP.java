@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -302,7 +300,8 @@ public class BSIP {
 				statement.setInt(4, 128);
 				newIP.basev6 = lookup.toIPv6();
 			}
-			statement.setTimestamp(5, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			newIP.createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			statement.setTimestamp(5, newIP.createTime);
 			
 			int ins = statement.executeUpdate();
 			if (ins < 1) {
@@ -354,8 +353,8 @@ public class BSIP {
 				statement.setInt(4, CIDR);
 				newIP.basev6 = lookup.toIPv6();
 			}
-			
-			statement.setTimestamp(5, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+			newIP.createTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			statement.setTimestamp(5, newIP.createTime);
 			
 			int ins = statement.executeUpdate();
 			if (ins < 1) {
@@ -378,5 +377,67 @@ public class BSIP {
 			BanStick.getPlugin().severe("Failed to create IP from " + lookup.toString() + "/" + CIDR, se);
 		}
 		return null;
+	}
+	
+	public static long preload(long offset, int limit) {
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip ORDER BY bid OFFSET ? LIMIT ?");) {
+			loadIPs.setLong(1, offset);
+			loadIPs.setInt(2, limit);
+			try (ResultSet rs = loadIPs.executeQuery()) {
+				long maxId = -1;
+				while (rs.next()) {
+					BSIP bsip = new BSIP();
+					bsip.iid = rs.getLong(1);
+					bsip.createTime = rs.getTimestamp(2);
+					String ipv4 = rs.getString(3);
+					int ipv4cidr = rs.getInt(4);
+					if (rs.wasNull()) ipv4cidr = 32;
+					
+					String ipv6 = rs.getString(5);
+					int ipv6cidr = rs.getInt(6);
+					if (rs.wasNull()) ipv6cidr = 128;
+					
+					if (ipv4 != null) { // ipv4 specific entry. Typical for player-entries.
+						IPAddressString ips = new IPAddressString(ipv4 + "/" + ipv4cidr);
+						if (ips.isIPv4()) {
+							bsip.basev4 = ips.getAddress().toIPv4();
+							if (!BSIP.allIPNA.containsKey(bsip.basev4)) {
+								BSIP.allIPNA.put(bsip.basev4, bsip);
+							}
+						} else {
+							BanStick.getPlugin().warning("Conversion of ipv4 address to ipv4 failed??: " + bsip.iid + " - " + ipv4);
+							continue;
+							// TODO: exception
+						}
+					} else if (ipv6 != null) { //ipv6 specific entry.
+						IPAddressString ips = new IPAddressString(ipv6 + "/" + ipv6cidr);
+						if (ips.isIPv6()) {
+							bsip.basev6 = ips.getAddress().toIPv6();
+							if (!BSIP.allIPNA.containsKey(bsip.basev6)) {
+								BSIP.allIPNA.put(bsip.basev6, bsip);
+							}
+						} else {
+							BanStick.getPlugin().warning("Conversion of ipv6 address to ipv6 failed??: " + bsip.iid + " - " + ipv6);
+							continue;
+							// TODO: exception
+						}
+					} else {
+						BanStick.getPlugin().warning("Empty ip entry?!: " + bsip.iid);
+						continue;
+						// TODO: exception
+					}
+					
+					if (BSIP.allIPId.containsKey(bsip.iid)) {
+						BSIP.allIPId.put(bsip.iid, bsip);
+					}
+					if (bsip.iid > maxId) maxId = bsip.iid;
+				}
+				return maxId;
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed during IP preload, offset " + offset + " limit " + limit, se);
+		}
+		return -1;
 	}
 }

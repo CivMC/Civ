@@ -7,13 +7,16 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
@@ -101,8 +104,65 @@ public class BanStickEventHandler implements Listener {
 		
 	}
 	
-	@EventHandler(priority=EventPriority.HIGHEST)
-	public void joinHighest(PlayerJoinEvent joinEvent) {
-		
+	/**
+	 * This handler deals with registering the player if they are new, starting their session, and triggering
+	 * session sharing and vpn warning checks.
+	 * 
+	 * @param joinEvent
+	 */
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void joinMonitor(PlayerJoinEvent joinEvent) {
+		final Player player = joinEvent.getPlayer();
+		final Date playerNow = new Date();
+		Bukkit.getScheduler().runTaskAsynchronously(BanStick.getPlugin(), new Runnable() {
+
+			@Override
+			public void run() {
+				// Get or create player.
+				if (player == null) return;
+				
+				BSPlayer bsPlayer = BanStickDatabaseHandler.getInstance().getOrCreatePlayer(player);
+				bsPlayer.startSession(player, playerNow);
+				// The above does all the Shared Session checks, so check result here:
+				// if (!bsPlayer.sharedPardon) {
+				// 		BSShare = bsPlayer.getShared();
+				// }
+				// etc.
+				// Then do VPN checks
+				// if (!bsPlayer.vpnPardon) {
+				// 		BSVPN = check check
+				// }
+				// etc.
+			}
+			
+		}); 
+	}
+	
+	/**
+	 * Calls {@link #disconnectEvent(Player)}
+	 * @param quitEvent
+	 */
+	@EventHandler(priority=EventPriority.MONITOR) 
+	public void quitMonitor(PlayerQuitEvent quitEvent) {
+		disconnectEvent(quitEvent.getPlayer());
+	}
+	
+	/**
+	 * Calls {@link #disconnectEvent(Player)}
+	 * @param kickEvent
+	 */
+	@EventHandler(priority=EventPriority.MONITOR)
+	public void kickMonitor(PlayerKickEvent kickEvent) {
+		disconnectEvent(kickEvent.getPlayer());
+	}
+	
+	/**
+	 * Ends the player's session.
+	 * 
+	 * @param player
+	 */
+	private void disconnectEvent(final Player player) {
+		BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
+		bsPlayer.endSession(new Date());
 	}
 }
