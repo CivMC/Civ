@@ -272,8 +272,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * @return The reinforcement for this bastion
 	 */
 	private PlayerReinforcement getReinforcement() {
-		Reinforcement reinforcement = Citadel.getReinforcementManager().
-				getReinforcement(location.getBlock());
+		Reinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location);
 		if(reinforcement != null && reinforcement instanceof PlayerReinforcement) {
 			return (PlayerReinforcement) reinforcement;
 		} else {
