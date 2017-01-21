@@ -9,16 +9,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import com.aleksey.castlegates.CastleGates;
 
-public class EventListener implements Listener {
+public class EntityListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
     	CastleGates.getManager().handlePlayerJoin(event);
@@ -39,18 +38,13 @@ public class EventListener implements Listener {
     	}    	
     }
     
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		CastleGates.getManager().handleBlockBreak(event);
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onEntityExplode(EntityExplodeEvent event) {
+		CastleGates.getManager().handleEntityExplode(event);
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
-    public void onBlockRedstone(BlockRedstoneEvent event) {
-		CastleGates.getManager().handleBlockRedstone(event);
-	}
-
-	@EventHandler(priority=EventPriority.NORMAL, ignoreCancelled=true)
-	public void onBlockPhysics(BlockPhysicsEvent event) {
-		CastleGates.getManager().handleBlockPhysics(event);
+    @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
+		CastleGates.getManager().handleEntityChangeBlock(event);
 	}
 }

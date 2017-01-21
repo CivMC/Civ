@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -169,6 +171,28 @@ public class CastleGatesManager {
 			PowerResultHelper.showStatus(block.getLocation(), players, result);
 		} finally {
 			this.processingBlocks.remove(block);
+		}
+	}
+	
+	public void handleEntityExplode(EntityExplodeEvent event) {
+		for (Block block : event.blockList()) {
+			this.gearManager.removeGear(new BlockCoord(block));
+		}
+	}
+	
+	public void handleEntityChangeBlock(EntityChangeBlockEvent event) {
+		this.gearManager.removeGear(new BlockCoord(event.getBlock()));
+	}
+	
+	public void handlePistonEvent(List<Block> blocks) {
+		ItemStack dropItem = CastleGates.getConfigManager().getCreationConsumeItem();
+		
+		for (Block block : blocks) {
+			GearManager.RemoveResult result = this.gearManager.removeGear(new BlockCoord(block));
+			
+			if(result == GearManager.RemoveResult.Removed || result == GearManager.RemoveResult.RemovedWithLink) {
+				Helper.putItemToInventoryOrDrop(null, block.getLocation(), dropItem);
+			}
 		}
 	}
 	
