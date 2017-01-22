@@ -60,7 +60,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			return true;
 		}
 		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
-			s.sendMessage(ChatColor.RED + "Player is already a member."
+			s.sendMessage(ChatColor.RED + "Player is already a member. "
 					+ "Use /promoteplayer to change their PlayerType.");
 			return true;
 		}
@@ -78,7 +78,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			return true;
 		}
 		if (pType == PlayerType.NOT_BLACKLISTED) {
-			p.sendMessage(ChatColor.RED + "I think we both know that this shouldnt be possible");
+			p.sendMessage(ChatColor.RED + "I think we both know that this shouldn't be possible.");
 			return true;
 		}
 		if (!isAdmin) {
