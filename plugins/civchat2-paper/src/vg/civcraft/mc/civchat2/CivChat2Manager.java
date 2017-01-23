@@ -217,7 +217,7 @@ public class CivChat2Manager {
 
 		ChatColor color = ChatColor.valueOf(defaultColor);
 
-		Set<String> recivers = new HashSet<String>();
+		Set<String> receivers = new HashSet<String>();
 		// Loop through players and send to those that are close enough
 		for (Player receiver : recipients) {
 			if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
@@ -237,11 +237,11 @@ public class CivChat2Manager {
 							newColor + chatMessage));
 					}
 				}
-				recivers.add(receiver.getName());
+				receivers.add(receiver.getName());
 			}
 		}
-		recivers.remove(sender.getName());
-		chatLog.logGlobalMessage(sender, chatMessage, recivers);
+		receivers.remove(sender.getName());
+		chatLog.logGlobalMessage(sender, chatMessage, receivers);
 	}
 
 	/**
