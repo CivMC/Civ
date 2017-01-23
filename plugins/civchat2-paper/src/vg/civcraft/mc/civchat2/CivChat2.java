@@ -23,24 +23,32 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * @author jjj5311
  *
  */
-public class CivChat2 extends ACivMod{
+public class CivChat2 extends ACivMod {
 
 	private static CivChat2 instance;
+
 	private static CivChat2Log log_;
+
 	private static boolean groupsEnabled;
+
 	private static CivChat2Config config_;
+
 	private static CivChat2Manager chatMan;
+
 	private CivChat2Listener chatListener;
+
 	private CivChat2FileLogger fileLog;
+
 	private DatabaseManager DBM;
 
-	public void onEnable(){
+	public void onEnable() {
+
 		//onEnable stuff
 		StringBuilder sb = new StringBuilder();
 		instance = this;
 		config_ = new CivChat2Config();
 		config_.setConfigOptions(getConfig());
-		if(!new File(sb.append(this.getDataFolder()).append("config.yml").toString()).exists()){
+		if (!new File(sb.append(this.getDataFolder()).append("config.yml").toString()).exists()) {
 			//config.yml does not exist save the default
 			this.saveDefaultConfig();
 		}
@@ -53,8 +61,8 @@ public class CivChat2 extends ACivMod{
 		chatMan = new CivChat2Manager(instance);
 		groupsEnabled = config_.getGroupsEnabled();
 		log_.info(sb.append("groupsEnabled is set to: ")
-					.append(groupsEnabled)
-					.toString());
+			.append(groupsEnabled)
+			.toString());
 		sb.delete(0, sb.length());
 		log_.debug("Debug Enabled");
 		handle = new CivChat2CommandHandler();
@@ -65,84 +73,102 @@ public class CivChat2 extends ACivMod{
 		registerEvents();
 	}
 
-	public void onDisable(){
+	public void onDisable() {
+
 		//onDisable stuff
 	}
 
-	public CivChat2Manager getCivChat2Manager(){
+	public CivChat2Manager getCivChat2Manager() {
+
 		return CivChat2.chatMan;
 	}
 
 	public static boolean debugEnabled() {
+
 		return config_.getDebug();
 	}
 
-	public static void debugmessage(String msg){
+	public static void debugmessage(String msg) {
+
 		log_.debug(msg);
 	}
 
 	public static CivChat2Log getCivChat2Log() {
+
 		return log_;
 	}
 
-	public void registerEvents(){
+	public void registerEvents() {
+
 		getServer().getPluginManager().registerEvents(chatListener, instance);
 	}
 
 	@SuppressWarnings("unchecked")
 	public void registerNameLayerPermissions() {
+
 		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();
 		memberAndAbove.add(PlayerType.MEMBERS);
 		memberAndAbove.add(PlayerType.MODS);
 		memberAndAbove.add(PlayerType.ADMINS);
 		memberAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission("READ_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
-		PermissionType.registerPermission("WRITE_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
+		PermissionType.registerPermission("READ_CHAT", (LinkedList<PlayerType>) memberAndAbove.clone());
+		PermissionType.registerPermission("WRITE_CHAT", (LinkedList<PlayerType>) memberAndAbove.clone());
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+
 		return handle.execute(sender, cmd, args);
 	}
 
 	public CommandHandler getCivChat2CommandHandler() {
+
 		return handle;
 	}
 
 	public static void warningMessage(String errorMsg) {
+
 		log_.warning(errorMsg);
 	}
 
-	public static void infoMessage(String infoMsg){
+	public static void infoMessage(String infoMsg) {
+
 		log_.info(infoMsg);
 	}
 
 	public static CivChat2 getInstance() {
+
 		return instance;
 	}
 
 	public static void severeMessage(String severeMsg) {
+
 		log_.severe(severeMsg);
 	}
 
 	public CivChat2Config getPluginConfig() {
+
 		return config_;
 	}
 
 	public CivChat2FileLogger getCivChat2FileLogger() {
+
 		return fileLog;
 	}
 
-	public DatabaseManager getDatabaseManager(){
+	public DatabaseManager getDatabaseManager() {
+
 		return this.DBM;
 	}
 
 	@Override
 	protected String getPluginName() {
+
 		return "CivChat2";
 	}
 
-	 @Override
-	 public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
-		 return handle == null ? null : handle.complete(sender, cmd, args);
-	 }
+	@Override
+	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
+
+		return handle == null ? null : handle.complete(sender, cmd, args);
+	}
 }

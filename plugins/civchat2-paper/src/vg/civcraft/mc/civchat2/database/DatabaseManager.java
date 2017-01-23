@@ -15,19 +15,37 @@ import vg.civcraft.mc.civchat2.utility.CivChat2Log;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class DatabaseManager {
+
 	private CivChat2 plugin = CivChat2.getInstance();
+
 	private CivChat2Config config = plugin.getPluginConfig();
+
 	private CivChat2Log logger = CivChat2.getCivChat2Log();
+
 	private Database db;
 
 	private HashMap<UUID, List<UUID>> ignoredPlayers = new HashMap<UUID, List<UUID>>();
+
 	private HashMap<UUID, List<String>> ignoredGroups = new HashMap<UUID, List<String>>();
 
-	private String addIgnoredPlayer, getIgnoredPlayers, removeIgnoredPlayer;
-	private String addIgnoredGroup, getIgnoredGroups, removeIgnoredGroup;
-	private String loadIgnoredPlayersList, loadIgnoredGroupsList;
+	private String addIgnoredPlayer;
 
-	public DatabaseManager(){
+	private String getIgnoredPlayers;
+
+	private String removeIgnoredPlayer;
+
+	private String addIgnoredGroup;
+
+	private String getIgnoredGroups;
+
+	private String removeIgnoredGroup;
+
+	private String loadIgnoredPlayersList;
+
+	private String loadIgnoredGroupsList;
+
+	public DatabaseManager() {
+
 		if (!isValidConnection())
 			return;
 		executeDatabaseStatements();
@@ -36,7 +54,8 @@ public class DatabaseManager {
 		loadIgnoredGroupsList();
 	}
 
-	public boolean isValidConnection(){
+	public boolean isValidConnection() {
+
 		String username = config.getMysqlUsername();
 		String host = config.getMysqlHost();
 		int port = config.getMysqlPort();
@@ -47,6 +66,7 @@ public class DatabaseManager {
 	}
 
 	private void executeDatabaseStatements() {
+
 		db.execute("create table if not exists PlayersIgnoreList("
 				+ "player varchar(36) not null,"
 				+ "ignoredPlayer varchar(36) not null);");
@@ -56,10 +76,12 @@ public class DatabaseManager {
 	}
 
 	public boolean isConnected() {
+
 		return db.isConnected();
 	}
 
-	private void loadPreparedStatements(){
+	private void loadPreparedStatements() {
+
 		addIgnoredPlayer = "insert into PlayersIgnoreList(player, ignoredPlayer) values(?,?);";
 		getIgnoredPlayers = "select * from PlayersIgnoreList where player = ?;";
 		removeIgnoredPlayer = "delete from PlayersIgnoreList where player = ? and ignoredPlayer = ?;";
@@ -70,12 +92,12 @@ public class DatabaseManager {
 
 		loadIgnoredPlayersList = "select * from PlayersIgnoreList";
 		loadIgnoredGroupsList = "select * from GroupsIgnoreList";
-
 	}
 
-	private boolean addIgnoredPlayerToMap(UUID playerUUID, UUID ignoredPlayerUUID){
-		if(ignoredPlayers.containsKey(playerUUID)){
-			if(ignoredPlayers.get(playerUUID).contains(ignoredPlayerUUID)){
+	private boolean addIgnoredPlayerToMap(UUID playerUUID, UUID ignoredPlayerUUID) {
+
+		if (ignoredPlayers.containsKey(playerUUID)) {
+			if (ignoredPlayers.get(playerUUID).contains(ignoredPlayerUUID)) {
 				return false;
 			}
 			ignoredPlayers.get(playerUUID).add(ignoredPlayerUUID);
@@ -87,10 +109,11 @@ public class DatabaseManager {
 		return true;
 	}
 
-	private boolean removeIgnoredPlayerFromMap(UUID playerUUID, UUID ignoredPlayerUUID){
-		if(ignoredPlayers.containsKey(playerUUID)){
+	private boolean removeIgnoredPlayerFromMap(UUID playerUUID, UUID ignoredPlayerUUID) {
+
+		if (ignoredPlayers.containsKey(playerUUID)) {
 			ignoredPlayers.get(playerUUID).remove(ignoredPlayerUUID);
-			if(ignoredPlayers.get(playerUUID).isEmpty()){
+			if (ignoredPlayers.get(playerUUID).isEmpty()) {
 				ignoredPlayers.remove(playerUUID);
 			}
 			return true;
@@ -98,22 +121,23 @@ public class DatabaseManager {
 		return false;
 	}
 
-	public void loadIgnoredPlayersList(){
+	public void loadIgnoredPlayersList() {
+
 		PreparedStatement loadIgnoredPlayersList = db.prepareStatement(this.loadIgnoredPlayersList);
 		try {
 			ResultSet rs = loadIgnoredPlayersList.executeQuery();
-			while(rs.next()){
+			while (rs.next()) {
 				addIgnoredPlayerToMap(UUID.fromString(rs.getString("player")), UUID.fromString(rs.getString("ignoredPlayer")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	private boolean addIgnoredGroupToMap(UUID playerUUID, String group){
-		if(ignoredGroups.containsKey(playerUUID)){
-			if(ignoredGroups.get(playerUUID).contains(group)){
+	private boolean addIgnoredGroupToMap(UUID playerUUID, String group) {
+
+		if (ignoredGroups.containsKey(playerUUID)) {
+			if (ignoredGroups.get(playerUUID).contains(group)) {
 				return false;
 			}
 			ignoredGroups.get(playerUUID).add(group);
@@ -125,10 +149,11 @@ public class DatabaseManager {
 		return true;
 	}
 
-	private boolean removeIgnoredGroupFromMap(UUID playerUUID, String group){
-		if(ignoredGroups.containsKey(playerUUID)){
+	private boolean removeIgnoredGroupFromMap(UUID playerUUID, String group) {
+
+		if (ignoredGroups.containsKey(playerUUID)) {
 			ignoredGroups.get(playerUUID).remove(group);
-			if(ignoredGroups.get(playerUUID).isEmpty()){
+			if (ignoredGroups.get(playerUUID).isEmpty()) {
 				ignoredGroups.remove(playerUUID);
 			}
 			return true;
@@ -136,21 +161,22 @@ public class DatabaseManager {
 		return false;
 	}
 
-	public void loadIgnoredGroupsList(){
+	public void loadIgnoredGroupsList() {
+
 		PreparedStatement loadIgnoredGroupsList = db.prepareStatement(this.loadIgnoredGroupsList);
 		try {
 			ResultSet rs = loadIgnoredGroupsList.executeQuery();
-			while(rs.next()){
+			while (rs.next()) {
 				addIgnoredGroupToMap(UUID.fromString(rs.getString("player")), rs.getString("ignoredGroup"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-
 	}
 
-	public boolean addIgnoredPlayer(UUID playerUUID, UUID ignoredPlayerUUID){
-		if(!addIgnoredPlayerToMap(playerUUID, ignoredPlayerUUID)){
+	public boolean addIgnoredPlayer(UUID playerUUID, UUID ignoredPlayerUUID) {
+
+		if (!addIgnoredPlayerToMap(playerUUID, ignoredPlayerUUID)) {
 			return false;
 		}
 		PreparedStatement addIgnoredPlayer = db.prepareStatement(this.addIgnoredPlayer);
@@ -164,17 +190,19 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public boolean addIgnoredPlayer(String player, String ignoredPlayer){
+	public boolean addIgnoredPlayer(String player, String ignoredPlayer) {
+
 		try {
 			return addIgnoredPlayer(NameAPI.getUUID(player), NameAPI.getUUID(ignoredPlayer));
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			logger.warning("Error while trying to ignore a player: Player does not exist.");
 			return false;
 		}
 	}
 
-	public List<UUID> getIgnoredPlayers(UUID playerUUID){
-		if (ignoredPlayers.containsKey(playerUUID)){
+	public List<UUID> getIgnoredPlayers(UUID playerUUID) {
+
+		if (ignoredPlayers.containsKey(playerUUID)) {
 			return ignoredPlayers.get(playerUUID);
 		}
 		List<UUID> ignoredPlayersList = new LinkedList<UUID>();
@@ -193,8 +221,9 @@ public class DatabaseManager {
 		return null;
 	}
 
-	public boolean removeIgnoredPlayer(UUID playerUUID, UUID ignoredPlayerUUID){
-		if(!removeIgnoredPlayerFromMap(playerUUID, ignoredPlayerUUID)){
+	public boolean removeIgnoredPlayer(UUID playerUUID, UUID ignoredPlayerUUID) {
+
+		if (!removeIgnoredPlayerFromMap(playerUUID, ignoredPlayerUUID)) {
 			return false;
 		}
 		PreparedStatement removeIgnoredPlayer = db.prepareStatement(this.removeIgnoredPlayer);
@@ -208,17 +237,19 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public boolean removeIgnoredPlayer(String player, String ignoredPlayer){
+	public boolean removeIgnoredPlayer(String player, String ignoredPlayer) {
+
 		try {
 			return removeIgnoredPlayer(NameAPI.getUUID(player), NameAPI.getUUID(ignoredPlayer));
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			logger.warning("Error while trying to unignore a player: Player does not exist.");
 			return false;
 		}
 	}
 
-	public boolean addIgnoredGroup(UUID playerUUID, String group){
-		if(!addIgnoredGroupToMap(playerUUID, group)){
+	public boolean addIgnoredGroup(UUID playerUUID, String group) {
+
+		if (!addIgnoredGroupToMap(playerUUID, group)) {
 			return false;
 		}
 		PreparedStatement addIgnoredGroup = db.prepareStatement(this.addIgnoredGroup);
@@ -232,17 +263,19 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public boolean addIgnoredGroup(String player, String group){
+	public boolean addIgnoredGroup(String player, String group)  {
+
 		try {
 			return addIgnoredGroup(NameAPI.getUUID(player), group);
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			logger.warning("Error while trying to ignore a group: Playeror group does not exist.");
 			return false;
 		}
 	}
 
-	public List<String> getIgnoredGroups(UUID playerUUID){
-		if (ignoredGroups.containsKey(playerUUID)){
+	public List<String> getIgnoredGroups(UUID playerUUID) {
+
+		if (ignoredGroups.containsKey(playerUUID)) {
 			return ignoredGroups.get(playerUUID);
 		}
 		List<String> ignoredGroupsList = new LinkedList<String>();
@@ -261,8 +294,9 @@ public class DatabaseManager {
 		return null;
 	}
 
-	public boolean removeIgnoredGroup(UUID playerUUID, String group){
-		if(!removeIgnoredGroupFromMap(playerUUID, group)){
+	public boolean removeIgnoredGroup(UUID playerUUID, String group) {
+
+		if (!removeIgnoredGroupFromMap(playerUUID, group)) {
 			return false;
 		}
 		PreparedStatement removeIgnoredGroup = db.prepareStatement(this.removeIgnoredGroup);
@@ -276,40 +310,46 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public boolean removeIgnoredGroup(String player, String group){
+	public boolean removeIgnoredGroup(String player, String group) {
+
 		try {
 			return removeIgnoredGroup(NameAPI.getUUID(player), group);
-		} catch(NullPointerException e){
+		} catch (NullPointerException e) {
 			logger.warning("Error while trying to unignore a group: Playeror group does not exist.");
 			return false;
 		}
 	}
 
-	public boolean isIgnoringPlayer(UUID playerUUID, UUID ignoredPlayerUUID){
+	public boolean isIgnoringPlayer(UUID playerUUID, UUID ignoredPlayerUUID) {
+
 		return getIgnoredPlayers(playerUUID).contains(ignoredPlayerUUID);
 	}
 
-	public boolean isIgnoringPlayer(String player, String ignoredPlayer){
+	public boolean isIgnoringPlayer(String player, String ignoredPlayer) {
+
 		return isIgnoringPlayer(NameAPI.getUUID(player), NameAPI.getUUID(ignoredPlayer));
 	}
 
-	public boolean isIgnoringGroup(UUID playerUUID, String group){
+	public boolean isIgnoringGroup(UUID playerUUID, String group) {
+
 		return getIgnoredGroups(playerUUID).contains(group);
 	}
 
-	public boolean isIgnoringGroup(String player, String group){
+	public boolean isIgnoringGroup(String player, String group) {
+
 		return isIgnoringGroup(NameAPI.getUUID(player), group);
 	}
 
-	public void processMercuryInfo(String[] message){
-		if(message[0].equalsIgnoreCase("ignore")){
-			if(message[1].equalsIgnoreCase("player")){
+	public void processMercuryInfo(String[] message) {
+
+		if (message[0].equalsIgnoreCase("ignore")) {
+			if (message[1].equalsIgnoreCase("player")) {
 				addIgnoredPlayerToMap(UUID.fromString(message[2]), UUID.fromString(message[3]));
 			} else {
 				addIgnoredGroupToMap(UUID.fromString(message[2]), message[3]);
 			}
-		} else if(message[0].equalsIgnoreCase("unignore")){
-			if(message[1].equalsIgnoreCase("player")){
+		} else if (message[0].equalsIgnoreCase("unignore")) {
+			if (message[1].equalsIgnoreCase("player")) {
 				removeIgnoredPlayerFromMap(UUID.fromString(message[2]), UUID.fromString(message[3]));
 			} else {
 				removeIgnoredGroupFromMap(UUID.fromString(message[2]), message[3]);

@@ -8,14 +8,16 @@ import org.bukkit.event.player.PlayerEvent;
 public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 
 	private final String message;
+
 	private final String format;
+
 	private boolean cancelled;
 
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
 
-
 	public GlobalChatEvent(final Player player, final String message, final String format) {
+
 		super(player);
 
 		this.message = message;
@@ -27,25 +29,30 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 	 * @return The chat message
 	 */
 	public String getMessage() {
+
 		return message;
 	}
 
 	@Override
 	public HandlerList getHandlers() {
+
 	    return handlers;
 	}
 
 	public static HandlerList getHandlerList() {
+
 	    return handlers;
 	}
 
 	@Override
 	public boolean isCancelled() {
+
 		return cancelled;
 	}
 
 	@Override
 	public void setCancelled(boolean cancelled) {
+
 		this.cancelled = cancelled;
 	}
 
@@ -54,6 +61,7 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 	 * @return The message format
 	 */
 	public String getFormat() {
+
 		return format;
 	}
 }

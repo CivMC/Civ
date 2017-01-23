@@ -23,36 +23,35 @@ public class Tell extends ChatCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 
-		if (args.length == 0){
+		if (args.length == 0) {
 			UUID chattingWith = chatMan.getChannel(player());
 			if (chattingWith != null) {
 				chatMan.removeChannel(player());
 				msg(ChatStrings.chatRemovedFromChat);
-			}
-			else {
+			} else {
 				msg(ChatStrings.chatNotInPrivateChat);
 			}
 			return true;
 		}
 
 		Player receiver = argAsPlayer(0);
-		if(receiver == null) {
+		if (receiver == null) {
 			msg(ChatStrings.chatPlayerNotFound);
 			return true;
 		}
 
-		if(! (receiver.isOnline())) {
+		if (! (receiver.isOnline())) {
 			msg(ChatStrings.chatPlayerIsOffline);
 			logger.debug(parse(ChatStrings.chatPlayerIsOffline));
 			return true;
 		}
 
-		if(player().equals(receiver)) {
+		if (player().equals(receiver)) {
 			msg(ChatStrings.chatCantMessageSelf);
 			return true;
 		}
 
-		if(args.length >= 2) {
+		if (args.length >= 2) {
 			//player and message
 			StringBuilder builder = new StringBuilder();
 			for (int x = 1; x < args.length; x++)
@@ -60,8 +59,7 @@ public class Tell extends ChatCommand {
 
 			chatMan.sendPrivateMsg(player(), receiver, builder.toString());
 			return true;
-		}
-		else if(args.length == 1) {
+		} else if (args.length == 1) {
 			if (DBM.isIgnoringPlayer(player().getUniqueId(), receiver.getUniqueId())) {
 				msg(ChatStrings.chatNeedToUnignore, getRealName(receiver));
 				return true;
@@ -80,10 +78,10 @@ public class Tell extends ChatCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
+
 		if (args.length != 1) {
 			return null;
 		}
-
 		return findPlayers(args[0]);
 	}
 }

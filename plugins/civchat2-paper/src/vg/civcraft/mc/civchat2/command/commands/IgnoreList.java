@@ -12,11 +12,12 @@ import vg.civcraft.mc.namelayer.NameAPI;
 public class IgnoreList extends ChatCommand {
 
 	public IgnoreList(String name) {
+
 		super(name);
 		setIdentifier("ignorelist");
 		setDescription("Lists the players & groups you are ignoring");
 		setUsage("/ignorelist");
-		setArguments(0,0);
+		setArguments(0, 0);
 		setSenderMustBePlayer(true);
 		setErrorOnTooManyArgs(false);
 	}
@@ -27,43 +28,41 @@ public class IgnoreList extends ChatCommand {
 		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
 		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
 
-		if(players == null || players.size() == 0) {
+		if (players == null || players.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyPlayers);
 		} else {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<a>Ignored Players: \n<n>");
-			for(UUID playerUUID : players){
+			for (UUID playerUUID : players) {
 				String playerName = NameAPI.getCurrentName(playerUUID);
-				if(playerName != null){
+				if (playerName != null) {
 					sb.append(playerName);
 					sb.append(", ");
 				}
 			}
 			String msg = sb.toString();
 			if (msg.endsWith(", ")) {
-				msg = msg.substring(0, msg.length() -2);
+				msg = msg.substring(0, msg.length() - 2);
 			}
-
 			msg(msg);
 		}
 
-		if(groups == null || groups.size() == 0) {
+		if (groups == null || groups.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyGroups);
 			return true;
 		} else {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<a>Ignored Groups: \n<n>");
-			for(String s : groups){
+			for (String s : groups) {
 				sb.append(s);
 				sb.append(", ");
 			}
 			String msg = sb.toString();
 			if (msg.endsWith(", ")) {
-				msg = msg.substring(0, msg.length() -2);
+				msg = msg.substring(0, msg.length() - 2);
 			}
-
 			msg(msg);
 			return true;
 		}

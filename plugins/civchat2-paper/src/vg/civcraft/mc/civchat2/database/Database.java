@@ -8,16 +8,25 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
+
 public class Database {
+
 	private String host;
+
     private int port;
+
     private String db;
+
     private String user;
+
     private String password;
+
     private Logger logger;
+
     private Connection connection;
 
     public Database(String host, int port, String db, String user, String password, Logger logger) {
+
         this.host = host;
         this.port = port;
         this.db = db;
@@ -27,18 +36,22 @@ public class Database {
     }
 
     public String getDb() {
+
         return db;
     }
 
     public String getHost() {
+
         return host;
     }
 
     public String getPassword() {
+
         return password;
     }
 
     public String getUser() {
+
         return user;
     }
 
@@ -48,6 +61,7 @@ public class Database {
      * @since 0.1
      */
     public boolean connect() {
+
         String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + password;
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
@@ -70,6 +84,7 @@ public class Database {
      * @since 0.1
      */
     public void close() {
+
         try {
             connection.close();
         } catch (SQLException ex) {
@@ -84,6 +99,7 @@ public class Database {
      * @throws SQLException
      */
     public boolean isConnected() {
+
         try {
             return connection.isValid(5);
         } catch (SQLException ex) {
@@ -99,8 +115,9 @@ public class Database {
      * @throws SQLException
      */
     public PreparedStatement prepareStatement(String sqlStatement) {
+
         try {
-        	if(!isConnected()){
+        	if (!isConnected()) {
         		connect();
         	}
             return connection.prepareStatement(sqlStatement);
@@ -111,6 +128,7 @@ public class Database {
     }
 
     public void execute(String sql) {
+
         try {
             if (isConnected()) {
                 connection.prepareStatement(sql).executeUpdate();

@@ -8,6 +8,7 @@ import vg.civcraft.mc.civchat2.command.ChatCommand;
 public class Afk extends ChatCommand {
 
 	public Afk(String name) {
+
 		super(name);
 		setIdentifier("afk");
 		setDescription("Sets your afk status.");

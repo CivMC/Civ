@@ -28,10 +28,12 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class CivChat2Manager {
 
 	private CivChat2Config config;
-	private CivChat2FileLogger chatLog;
-	private CivChat2 instance;
-	private DatabaseManager DBM;
 
+	private CivChat2FileLogger chatLog;
+
+	private CivChat2 instance;
+
+	private DatabaseManager DBM;
 
 	//chatChannels in hashmap with (Player 1 name, player 2 name)
 	private HashMap<UUID, UUID> chatChannels;
@@ -49,8 +51,8 @@ public class CivChat2Manager {
 
 	private String defaultColor;
 
-
 	public CivChat2Manager(CivChat2 pluginInstance) {
+
 		instance = pluginInstance;
 		config = instance.getPluginConfig();
 		chatLog = instance.getCivChat2FileLogger();
@@ -68,8 +70,8 @@ public class CivChat2Manager {
 	 * @param name    Player name of the channel
 	 * @return        Returns a String of channel name, null if doesn't exist
 	 */
-
 	public UUID getChannel(Player player) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		return chatChannels.get(player.getUniqueId());
@@ -81,6 +83,7 @@ public class CivChat2Manager {
 	 *
 	 */
 	public void removeChannel(Player player) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		chatChannels.remove(player.getUniqueId());
@@ -93,18 +96,17 @@ public class CivChat2Manager {
 	 * @param player2   Receiver's name
 	 */
 	public void addChatChannel(Player player1, Player player2) {
+
 		Guard.ArgumentNotNull(player1, "player1");
 		Guard.ArgumentNotNull(player2, "player2");
 
-		if(getChannel(player1) != null) {
+		if (getChannel(player1) != null) {
+			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
+			CivChat2.debugmessage("addChatChannel adding channel for P1: " + player1 + " P2: " + player2);
+		} else {
 			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
 			CivChat2.debugmessage("addChatChannel adding channel for P1: " + player1 + " P2: " + player2);
 		}
-		else{
-			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
-			CivChat2.debugmessage("addChatChannel adding channel for P1: " + player1 + " P2: " + player2);
-		}
-
 	}
 
 	/**
@@ -114,6 +116,7 @@ public class CivChat2Manager {
 	 * @param chatMessage Message to send from sender to receive
 	 */
 	public void sendPrivateMsg(Player sender, Player receiver, String chatMessage) {
+
 		PrivateMessageEvent event = new PrivateMessageEvent(sender, receiver, chatMessage);
 		Bukkit.getPluginManager().callEvent(event);
 
@@ -151,16 +154,15 @@ public class CivChat2Manager {
 								.toString());
 		sb.delete(0, sb.length());
 
-		if(isPlayerAfk(receiver)){
+		if (isPlayerAfk(receiver)) {
 			receiver.sendMessage(receiverMessage);
 			sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
 			return;
-		}
-		else if(DBM.isIgnoringPlayer(receiverName, senderName)){
+		} else if (DBM.isIgnoringPlayer(receiverName, senderName))  {
 			//player is ignoring the sender
 			sender.sendMessage(parse(ChatStrings.chatPlayerIgnoringYou));
 			return;
-		} else if (DBM.isIgnoringPlayer(senderName, receiverName)){
+		} else if (DBM.isIgnoringPlayer(senderName, receiverName)) {
 			sender.sendMessage(parse(ChatStrings.chatNeedToUnignore, receiverName));
 			return;
 		}
@@ -179,6 +181,7 @@ public class CivChat2Manager {
 	 * @param recipients Players in range to receive the message
 	 */
 	public void broadcastMessage(Player sender, String chatMessage, String messageFormat, Set<Player> recipients) {
+
 		Guard.ArgumentNotNull(sender, "sender");
 		Guard.ArgumentNotNull(chatMessage, "chatMessage");
 		Guard.ArgumentNotNullOrEmpty(messageFormat, "messageFormat");
@@ -195,16 +198,16 @@ public class CivChat2Manager {
 		int height = config.getYInc();
 		Location location = sender.getLocation();
 		int y = location.getBlockY();
-		double scale = (config.getYScale())/1000;
+		double scale = (config.getYScale()) / 1000;
 
 		StringBuilder sb = new StringBuilder();
 
 		//do height check
-		if(y > height){
+		if (y > height) {
 			//player is above chat increase range
 			CivChat2.debugmessage("Player is above Y chat increase range");
 			int above = y - height;
-			int newRange = (int) (range + (range * (scale*above)));
+			int newRange = (int) (range + (range * (scale * above)));
 			range = newRange;
 			CivChat2.debugmessage(sb.append("New chatrange = [" )
 									.append(range)
@@ -216,13 +219,13 @@ public class CivChat2Manager {
 		ChatColor color = ChatColor.valueOf(defaultColor);
 
 		Set<String> recivers = new HashSet<String>();
-		for (Player receiver : recipients){
+		for (Player receiver : recipients) {
 			if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
 				//loop through players and send to those that are close enough
-				if(receiver.getWorld().equals(sender.getWorld())){
+				if (receiver.getWorld().equals(sender.getWorld())) {
 					//reciever is in same world so send
 					double receiverDistance = location.distance(receiver.getLocation());
-					if(receiverDistance <= range){
+					if (receiverDistance <= range) {
 						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
 						newColor = newColor != null ? newColor : color;
 
@@ -233,7 +236,7 @@ public class CivChat2Manager {
 							newColor.name()));*/
 
 						receiver.sendMessage(String.format(messageFormat, newColor + NameAPI.getCurrentName(sender.getUniqueId()),
-								newColor + chatMessage));
+							newColor + chatMessage));
 					}
 				}
 				recivers.add(receiver.getName());
@@ -249,6 +252,7 @@ public class CivChat2Manager {
 	 * @return true if the player is AFK
 	 */
 	public boolean isPlayerAfk(Player player) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		return afkPlayers.contains(player.getUniqueId());
@@ -260,6 +264,7 @@ public class CivChat2Manager {
 	 * @return The player AFK status
 	 */
 	public boolean setPlayerAfk(Player player, boolean afkStatus) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		if (afkStatus) {
@@ -276,6 +281,7 @@ public class CivChat2Manager {
 	 * @return the UUID of the person to reply to, null if none
 	 */
 	public UUID getPlayerReply(Player sender) {
+
 		Guard.ArgumentNotNull(sender, "sender");
 
 		return replyList.get(sender.getUniqueId());
@@ -287,6 +293,7 @@ public class CivChat2Manager {
 	 * @param replyPlayer The the player that will receive the reply
 	 */
 	public void addPlayerReply(Player player, Player replyPlayer) {
+
 		Guard.ArgumentNotNull(player, "player");
 		Guard.ArgumentNotNull(replyPlayer, "replyPlayer");
 
@@ -299,6 +306,7 @@ public class CivChat2Manager {
 	 * @param group Group sending the message to
 	 */
 	public void addGroupChat(Player player, Group group) {
+
 		Guard.ArgumentNotNull(player, "player");
 		Guard.ArgumentNotNull(group, "group");
 
@@ -312,6 +320,7 @@ public class CivChat2Manager {
 	 * @param groupMsg Message to send to the group
 	 */
 	public void sendGroupMsg(Player sender, Group group, String message) {
+
 		Guard.ArgumentNotNull(sender, "sender");
 		Guard.ArgumentNotNull(group, "group");
 		Guard.ArgumentNotNullOrEmpty(message, "message");
@@ -325,11 +334,11 @@ public class CivChat2Manager {
 
 		List<Player> members = new ArrayList<Player>();
 		List<UUID> membersUUID = group.getAllMembers();
-		for(UUID uuid : membersUUID){
+		for (UUID uuid : membersUUID) {
 			//only add online players to members
 			Player toAdd = Bukkit.getPlayer(uuid);
-			if(toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
-					group, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT"))){
+			if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
+					group, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT")))  {
 				members.add(toAdd);
 			}
 		}
@@ -337,18 +346,18 @@ public class CivChat2Manager {
 		String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), sender.getName(), message);
 		String senderName = NameAPI.getCurrentName(sender.getUniqueId());
 
-		for(Player receiver : members) {
-			if(DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())){
+		for (Player receiver : members) {
+			if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {
 				continue;
 			}
-			if(DBM.isIgnoringPlayer(receiver.getName(), senderName)) {
+			if (DBM.isIgnoringPlayer(receiver.getName(), senderName)) {
 				continue;
 			}
 			receiver.sendMessage(formatted);
 		}
 
 		Set<String> players = new HashSet<String>();
-		for(UUID uuid : membersUUID) {
+		for (UUID uuid : membersUUID) {
 			players.add(NameAPI.getCurrentName(uuid));
 		}
 		players.remove(senderName); //remove the sender from the list
@@ -360,6 +369,7 @@ public class CivChat2Manager {
 	 * @param player The player to remove from chat
 	 */
 	public void removeGroupChat(Player player) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		groupChatChannels.remove(player.getUniqueId());
@@ -371,16 +381,19 @@ public class CivChat2Manager {
 	 * @return Group they are currently chatting in
 	 */
 	public Group getGroupChatting(Player player) {
+
 		Guard.ArgumentNotNull(player, "player");
 
 		return groupChatChannels.get(player.getUniqueId());
 	}
 
 	public String parse(String text) {
+
 		return TextUtil.parse(text);
 	}
 
 	public String parse(String text, Object... args) {
+
 		return TextUtil.parse(text, args);
 	}
 }

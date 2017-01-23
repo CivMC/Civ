@@ -8,6 +8,7 @@ import vg.civcraft.mc.civchat2.command.ChatCommand;
 public class Exit extends ChatCommand {
 
 	public Exit(String name) {
+
 		super(name);
 		setIdentifier("exit");
 		setDescription("Moves to global chat");
@@ -18,6 +19,7 @@ public class Exit extends ChatCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
+
 		chatMan.removeChannel(player());
 		chatMan.removeGroupChat(player());
 		msg(ChatStrings.chatMovedToGlobal);

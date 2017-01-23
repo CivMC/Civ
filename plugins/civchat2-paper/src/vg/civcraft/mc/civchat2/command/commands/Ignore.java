@@ -11,11 +11,12 @@ import vg.civcraft.mc.civchat2.command.ChatCommand;
 public class Ignore extends ChatCommand {
 
 	public Ignore(String name) {
+
 		super(name);
 		setIdentifier("ignore");
 		setDescription("Toggles ignoring a player");
 		setUsage("/ignore <player>");
-		setArguments(1,1);
+		setArguments(1, 1);
 		setSenderMustBePlayer(true);
 	}
 
@@ -30,11 +31,11 @@ public class Ignore extends ChatCommand {
 
 		String ignoreName = getRealName(ignore);
 		String name = getRealName(player());
-		if(ignoreName == name) {
+		if (ignoreName == name) {
 			msg(ChatStrings.chatCantIgnoreSelf);
 			return true;
 		}
-		if(!DBM.isIgnoringPlayer(name, ignoreName)) {
+		if (!DBM.isIgnoringPlayer(name, ignoreName)) {
 			//Player added to list
 			DBM.addIgnoredPlayer(name, ignoreName);
 			String debugMessage = "Player ignored another Player, Player: " + name + " IgnoredPlayer: " + ignoreName;
@@ -53,11 +54,10 @@ public class Ignore extends ChatCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
+
 		if (args.length != 1) {
 			return null;
 		}
-
 		return findPlayers(args[0]);
 	}
-
 }
