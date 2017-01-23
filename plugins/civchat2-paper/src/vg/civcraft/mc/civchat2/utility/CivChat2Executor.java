@@ -42,7 +42,7 @@ public class CivChat2Executor implements CommandExecutor {
 				return true;
 			}
 			Player player = (Player) sender;
-			if ((player.hasPermission("bukkit.command.say") || (player.isOp()))) {
+			if (player.hasPermission("bukkit.command.say") || player.isOp()) {
 				this.plugin.getServer().broadcastMessage(sayChat + "[Server] " + msgString);
 				StringBuilder result = new StringBuilder();
 				result.append("Player had good permissions, bukkit.command.say or OP");
