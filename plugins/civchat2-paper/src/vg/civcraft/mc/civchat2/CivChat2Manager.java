@@ -226,13 +226,6 @@ public class CivChat2Manager {
 					if (receiverDistance <= range) {
 						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
 						newColor = newColor != null ? newColor : color;
-
-						/*CivChat2.debugmessage(String.format("%s to %s dist %s color %s",
-							NameAPI.getCurrentName(sender.getUniqueId()),
-							NameAPI.getCurrentName(receiver.getUniqueId()),
-							receiverDistance,
-							newColor.name()));*/
-
 						receiver.sendMessage(String.format(messageFormat, newColor + NameAPI.getCurrentName(sender.getUniqueId()),
 							newColor + chatMessage));
 					}
