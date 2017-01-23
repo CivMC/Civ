@@ -80,6 +80,7 @@ factories:
     - Print Book
     - Print Pamphlet
     - Print Secure Note
+    - Tan Leather
     - Accident Repair
   Vault_Factory_1:
     type: FCCUPGRADE
@@ -2738,6 +2739,18 @@ recipes:
             type: REGEN
             duration: 8m
             amplifier: 1
+  Tan Leather:
+    type: PRODUCTION
+    name: Tan Leather
+    production_time: 5s
+    input:
+      rottenflesh:
+        material: ROTTEN_FLESH
+        amount: 64
+    output:
+     leather:
+      material: LEATHER
+      amount: 1
   Bind Written Book:
     type: PRODUCTION
     name: Bind Written Book
