@@ -10,7 +10,7 @@ import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.command.ChatCommand;
 
 public class Tell extends ChatCommand {
-	
+
 	public Tell(String name) {
 		super(name);
 		setIdentifier("tell");
@@ -51,7 +51,7 @@ public class Tell extends ChatCommand {
 			msg(ChatStrings.chatCantMessageSelf);
 			return true;
 		}
-		
+
 		if(args.length >= 2) {
 			//player and message
 			StringBuilder builder = new StringBuilder();
@@ -66,7 +66,7 @@ public class Tell extends ChatCommand {
 				msg(ChatStrings.chatNeedToUnignore, getRealName(receiver));
 				return true;
 			}
-			
+
 			if (DBM.isIgnoringPlayer(receiver.getUniqueId(), player().getUniqueId())) {
 				msg(ChatStrings.chatPlayerIgnoringYou);
 				return true;
@@ -85,5 +85,5 @@ public class Tell extends ChatCommand {
 		}
 
 		return findPlayers(args[0]);
-	}	
+	}
 }

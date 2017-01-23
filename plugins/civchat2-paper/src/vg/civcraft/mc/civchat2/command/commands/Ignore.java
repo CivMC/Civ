@@ -9,7 +9,7 @@ import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.command.ChatCommand;
 
 public class Ignore extends ChatCommand {
-	
+
 	public Ignore(String name) {
 		super(name);
 		setIdentifier("ignore");
@@ -18,16 +18,16 @@ public class Ignore extends ChatCommand {
 		setArguments(1,1);
 		setSenderMustBePlayer(true);
 	}
-	
+
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		
+
 		Player ignore = argAsPlayer(0);
 		if (ignore == null) {
 			msg(ChatStrings.chatPlayerNotFound);
 			return true;
 		}
-		
+
 		String ignoreName = getRealName(ignore);
 		String name = getRealName(player());
 		if(ignoreName == name) {
@@ -48,7 +48,7 @@ public class Ignore extends ChatCommand {
 			logger.debug(debugMessage);
 			msg(ChatStrings.chatStoppedIgnoring, ignoreName);
 			return true;
-		}		
+		}
 	}
 
 	@Override
@@ -56,8 +56,8 @@ public class Ignore extends ChatCommand {
 		if (args.length != 1) {
 			return null;
 		}
-		
+
 		return findPlayers(args[0]);
-	}	
+	}
 
 }

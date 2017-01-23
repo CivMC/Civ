@@ -1,7 +1,7 @@
 package vg.civcraft.mc.civchat2;
 
 public class ChatStrings {
-	
+
 	public final static String chatPlayerIsOffline = "<i>That player is offline.";
 	public final static String chatNoOneToReplyTo = "<i>You have no one to reply too.";
 	public final static String chatCantMessageSelf = "<i>You can't message yourself.";
@@ -24,7 +24,7 @@ public class ChatStrings {
 	public final static String chatAfk = "<blue>You are now AFK, type /afk to remove AFK status.";
 	public final static String chatNotAfk = "<blue>You are no longer AFK.";
 	public final static String chatPlayerAfk = "<aqua>That player is currently AFK.";
-	
+
 	public final static String chatGroupMessage = "<gray>[%s] %s: <white>%s";
 
 }

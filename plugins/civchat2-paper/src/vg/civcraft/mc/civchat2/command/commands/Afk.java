@@ -18,9 +18,9 @@ public class Afk extends ChatCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		
+
 		Boolean isAfk = chatMan.setPlayerAfk(player(), !chatMan.isPlayerAfk(player()));
-		
+
 		if (isAfk) {
 			msg(ChatStrings.chatAfk);
 		} else {

@@ -66,7 +66,7 @@ public class GroupChat extends ChatCommand {
 			msg(ChatStrings.chatNeedToUnignore, group.getName());
 			return true;
 		}
-		if(args.length == 1) {	
+		if(args.length == 1) {
 			if(isGroupChatting) {
 				//player already groupchatting check if its this group
 				Group curGroup = chatMan.getGroupChatting(player());
@@ -129,7 +129,7 @@ public class GroupChat extends ChatCommand {
 		if (arg1.length == 0) {
 			return null;
 		}
-		
-		return findGroups(arg1[0]);	
+
+		return findGroups(arg1[0]);
 	}
 }

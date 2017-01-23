@@ -10,7 +10,7 @@ import vg.civcraft.mc.civchat2.command.ChatCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class IgnoreList extends ChatCommand {
-	
+
 	public IgnoreList(String name) {
 		super(name);
 		setIdentifier("ignorelist");
@@ -20,13 +20,13 @@ public class IgnoreList extends ChatCommand {
 		setSenderMustBePlayer(true);
 		setErrorOnTooManyArgs(false);
 	}
-	
+
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		
+
 		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
 		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
-		
+
 		if(players == null || players.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyPlayers);
@@ -44,10 +44,10 @@ public class IgnoreList extends ChatCommand {
 			if (msg.endsWith(", ")) {
 				msg = msg.substring(0, msg.length() -2);
 			}
-			
+
 			msg(msg);
 		}
-		
+
 		if(groups == null || groups.size() == 0) {
 			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyGroups);
@@ -63,7 +63,7 @@ public class IgnoreList extends ChatCommand {
 			if (msg.endsWith(", ")) {
 				msg = msg.substring(0, msg.length() -2);
 			}
-			
+
 			msg(msg);
 			return true;
 		}

@@ -11,7 +11,7 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.command.ChatCommand;
 
 public class Reply extends ChatCommand {
-	
+
 	public Reply(String name) {
 		super(name);
 		setIdentifier("reply");
@@ -20,33 +20,33 @@ public class Reply extends ChatCommand {
 		setSenderMustBePlayer(true);
 		setErrorOnTooManyArgs(false);
 	}
-	
+
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		
+
 		Player player = (Player) sender;
 		String senderName = player.getName();
 		UUID receiverUUID = chatMan.getPlayerReply(player);
-		
+
 		Player receiver = Bukkit.getPlayer(receiverUUID);
 		if(receiver == null) {
 			msg(ChatStrings.chatNoOneToReplyTo);
 			return true;
 		}
-		
+
 		if(!(receiver.isOnline())) {
 			msg(ChatStrings.chatPlayerIsOffline);
 			logger.debug(parse(ChatStrings.chatPlayerIsOffline));
 			return true;
 		}
-		
+
 		if(player.getName().equals(receiver.getName())){
 			CivChat2.warningMessage("Reply Command, Player Replying to themself??? Player: [" + senderName +"]");
 			msg(ChatStrings.chatCantMessageSelf);
 			return true;
 		}
-		
-		if(args.length > 0) {			
+
+		if(args.length > 0) {
 			StringBuilder sb = new StringBuilder();
 			for(String s: args){
 				sb.append(s + " ");
@@ -61,8 +61,8 @@ public class Reply extends ChatCommand {
 			msg(ChatStrings.chatNowChattingWith, receiver.getName());
 			return true;
 		}
-		
+
 		return false;
-		
+
 	}
 }

@@ -48,7 +48,7 @@ public class IgnoreGroup extends ChatCommand {
 			logger.debug(debugMessage);
 			msg(ChatStrings.chatStoppedIgnoring, ignore);
 			return true;
-		}		
+		}
 	}
 
 	@Override
@@ -57,7 +57,7 @@ public class IgnoreGroup extends ChatCommand {
 			return null;
 		}
 
-		return findGroups(arg1[0]);	
-	}	
+		return findGroups(arg1[0]);
+	}
 
 }

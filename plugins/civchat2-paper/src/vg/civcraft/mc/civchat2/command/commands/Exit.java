@@ -21,6 +21,6 @@ public class Exit extends ChatCommand {
 		chatMan.removeChannel(player());
 		chatMan.removeGroupChat(player());
 		msg(ChatStrings.chatMovedToGlobal);
-		return true;	
+		return true;
 	}
 }

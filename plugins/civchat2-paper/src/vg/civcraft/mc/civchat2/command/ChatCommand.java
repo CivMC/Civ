@@ -17,7 +17,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public abstract class ChatCommand extends PlayerCommand {
-	
+
 	protected CivChat2 plugin = CivChat2.getInstance();
 	protected CivChat2Manager chatMan = plugin.getCivChat2Manager();
 	protected CivChat2Log logger = CivChat2.getCivChat2Log();
@@ -32,7 +32,7 @@ public abstract class ChatCommand extends PlayerCommand {
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
 		return null;
 	}
-	
+
 	protected Player argAsPlayer(int index) {
 		try {
 			return Bukkit.getPlayer(NameAPI.getUUID(getArgs()[index].trim()));
@@ -40,7 +40,7 @@ public abstract class ChatCommand extends PlayerCommand {
 			return null;
 		}
 	}
-	
+
 	protected Group argAsGroup(int index) {
 		try {
 			return GroupManager.getGroup(getArgs()[index].trim());
@@ -48,7 +48,7 @@ public abstract class ChatCommand extends PlayerCommand {
 			return null;
 		}
 	}
-	
+
 	protected String getRealName(Player player) {
 		try {
 			return NameAPI.getCurrentName(player.getUniqueId());
@@ -56,7 +56,7 @@ public abstract class ChatCommand extends PlayerCommand {
 			return null;
 		}
 	}
-	
+
 	protected String getRealName(String name) {
 		try {
 			return NameAPI.getCurrentName(NameAPI.getUUID(name));
@@ -64,7 +64,7 @@ public abstract class ChatCommand extends PlayerCommand {
 			return null;
 		}
 	}
-	
+
 	protected List<String> findPlayers(String pattern) {
 		List<String> players = new ArrayList<String>();
 		for (Player p: Bukkit.getOnlinePlayers()) {
@@ -73,7 +73,7 @@ public abstract class ChatCommand extends PlayerCommand {
 		}
 		return players;
 	}
-	
+
 	protected List<String> findGroups(String pattern) {
 		List<String> groupsToReturn = new ArrayList<String>();
 		GroupManager gm = NameAPI.getGroupManager();

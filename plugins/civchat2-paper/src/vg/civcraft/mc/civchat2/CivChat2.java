@@ -24,7 +24,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  *
  */
 public class CivChat2 extends ACivMod{
-	
+
 	private static CivChat2 instance;
 	private static CivChat2Log log_;
 	private static boolean groupsEnabled;
@@ -33,7 +33,7 @@ public class CivChat2 extends ACivMod{
 	private CivChat2Listener chatListener;
 	private CivChat2FileLogger fileLog;
 	private DatabaseManager DBM;
-	
+
 	public void onEnable(){
 		//onEnable stuff
 		StringBuilder sb = new StringBuilder();
@@ -59,16 +59,16 @@ public class CivChat2 extends ACivMod{
 		log_.debug("Debug Enabled");
 		handle = new CivChat2CommandHandler();
 		handle.registerCommands();
-		
+
 		chatListener = new CivChat2Listener(chatMan);
 		registerNameLayerPermissions();
 		registerEvents();
 	}
-	
+
 	public void onDisable(){
 		//onDisable stuff
 	}
-	
+
 	public CivChat2Manager getCivChat2Manager(){
 		return CivChat2.chatMan;
 	}
@@ -76,7 +76,7 @@ public class CivChat2 extends ACivMod{
 	public static boolean debugEnabled() {
 		return config_.getDebug();
 	}
-	
+
 	public static void debugmessage(String msg){
 		log_.debug(msg);
 	}
@@ -84,11 +84,11 @@ public class CivChat2 extends ACivMod{
 	public static CivChat2Log getCivChat2Log() {
 		return log_;
 	}
-	
+
 	public void registerEvents(){
 		getServer().getPluginManager().registerEvents(chatListener, instance);
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public void registerNameLayerPermissions() {
 		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();
@@ -99,7 +99,7 @@ public class CivChat2 extends ACivMod{
 		PermissionType.registerPermission("READ_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
 		PermissionType.registerPermission("WRITE_CHAT", (LinkedList<PlayerType>)memberAndAbove.clone());
 	}
-	
+
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args){
 		return handle.execute(sender, cmd, args);
 	}
@@ -109,9 +109,9 @@ public class CivChat2 extends ACivMod{
 	}
 
 	public static void warningMessage(String errorMsg) {
-		log_.warning(errorMsg);		
+		log_.warning(errorMsg);
 	}
-	
+
 	public static void infoMessage(String infoMsg){
 		log_.info(infoMsg);
 	}
@@ -131,16 +131,16 @@ public class CivChat2 extends ACivMod{
 	public CivChat2FileLogger getCivChat2FileLogger() {
 		return fileLog;
 	}
-	
+
 	public DatabaseManager getDatabaseManager(){
 		return this.DBM;
 	}
-	
+
 	@Override
 	protected String getPluginName() {
 		return "CivChat2";
 	}
-	
+
 	 @Override
 	 public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
 		 return handle == null ? null : handle.complete(sender, cmd, args);
