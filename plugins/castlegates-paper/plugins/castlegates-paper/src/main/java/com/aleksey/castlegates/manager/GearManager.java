@@ -32,6 +32,7 @@ import com.aleksey.castlegates.types.TimerBatch;
 import com.aleksey.castlegates.types.TimerLink;
 import com.aleksey.castlegates.types.TimerOperation;
 import com.aleksey.castlegates.utils.DataWorker;
+import com.aleksey.castlegates.utils.Helper;
 import com.aleksey.castlegates.utils.TimerWorker;
 
 public class GearManager {
@@ -160,6 +161,12 @@ public class GearManager {
 		
 		RemoveResult result = RemoveResult.Removed;
 		
+		if(gear.getLockGearblock() != null) {
+			unlock(gear.getLockGearblock());
+		} else {
+			unlock(gear);
+		}
+		
 		if(gear.getBrokenLink() != null) {
 			removeLink(gear.getBrokenLink());
 			result = RemoveResult.RemovedWithLink;
@@ -192,12 +199,28 @@ public class GearManager {
 		
 		link.setRemoved();
 		
-		if(link.getGearblock1() != null) {
-			link.getGearblock1().setLink(null);
+		Gearblock gearblock1 = link.getGearblock1(); 
+		
+		if(gearblock1 != null) {
+			if(gearblock1.getLockGearblock() != null) {
+				unlock(gearblock1.getLockGearblock());
+			} else {
+				unlock(gearblock1);
+			}
+			
+			gearblock1.setLink(null);
 		}
 		
-		if(link.getGearblock2() != null) {
-			link.getGearblock2().setLink(null);
+		Gearblock gearblock2 = link.getGearblock2();
+		
+		if(gearblock2 != null) {
+			if(gearblock2.getLockGearblock() != null) {
+				unlock(gearblock2.getLockGearblock());
+			} else {
+				unlock(gearblock2);
+			}
+			
+			gearblock2.setLink(null);
 		}
 
 		this.dataWorker.addChangedLink(link);
@@ -263,6 +286,7 @@ public class GearManager {
 		if(gearblock.isPowered() == isPowered) return PowerResult.Unchanged;
 		
 		if(!isPowered) {
+			unlock(gearblock);
 			gearblock.setPowered(false);
 			return PowerResult.Unpowered;
 		}
@@ -273,6 +297,10 @@ public class GearManager {
 		
 		if(!canAccessDoors(players, world, gearblock.getCoord())) {
 			return PowerResult.NotInCitadelGroup;
+		}
+		
+		if(!unlock(gearblock)) {
+			return PowerResult.Locked;
 		}
 		
 		gearblock.setPowered(true);
@@ -298,15 +326,39 @@ public class GearManager {
 	}
 	
 	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
-		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock) : null;
-		
 		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
 		gearblocks.add(gearblock);
 		
 		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, gearblocks);
 		
 		if(transferResult != PowerResult.Allowed) return transferResult;
+		
+		if(isLocked(gearblocks)) return PowerResult.Locked;
 
+		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock) : null;
+		Boolean draw = powerGearList(world, gearblocks, isPowered, players, timerBatch);
+		
+		lock(gearblock, gearblocks);
+		
+		if(draw == null) return PowerResult.Unchanged;
+		
+		PowerResult result = draw ? PowerResult.Drawn : PowerResult.Undrawn;
+
+		if(timerBatch != null) {
+			timerBatch.setProcessStatus(result.status);			
+			this.timerWorker.addBatch(timerBatch);
+		}
+		
+		return result;
+	}
+	
+	private Boolean powerGearList(
+			World world,
+			HashSet<Gearblock> gearblocks,
+			boolean isPowered,
+			List<Player> players,
+			TimerBatch timerBatch)
+	{
 		Boolean draw = null;
 
 		for(Gearblock gearFromList : gearblocks) {
@@ -331,16 +383,66 @@ public class GearManager {
 			}
 		}
 		
-		if(draw == null) return PowerResult.Unchanged;
-		
-		PowerResult result = draw ? PowerResult.Drawn : PowerResult.Undrawn;
-
-		if(timerBatch != null) {
-			timerBatch.setProcessStatus(result.status);			
-			this.timerWorker.addBatch(timerBatch);
+		return draw;
+	}
+	
+	private boolean unlock(Gearblock gearblock) {
+		if(gearblock.getLockGearblock() != null) {
+			return false;
 		}
 		
-		return result;
+		if(gearblock.getLockedGearblocks() == null) {
+			return true;
+		}
+		
+		for(Gearblock lockedGearblock : gearblock.getLockedGearblocks()) {
+			lockedGearblock.setLockGearblock(null);
+		}
+		
+		gearblock.setLockedGearblocks(null);
+		
+		return true;
+	}
+	
+	private void lock(Gearblock gearblock, HashSet<Gearblock> gearblocks) {
+		List<Gearblock> lockedGearblocks = new ArrayList<Gearblock>();
+		
+		for(Gearblock lockedGearblock : gearblocks) {
+			GearblockLink link = lockedGearblock.getLink(); 
+			
+			if(lockedGearblock != gearblock) {
+				if(link != null) {
+					lockedGearblocks.add(link.getGearblock1());
+					lockedGearblocks.add(link.getGearblock2());
+					
+					link.getGearblock1().setLockGearblock(gearblock);
+					link.getGearblock2().setLockGearblock(gearblock);
+				} else {
+					lockedGearblocks.add(lockedGearblock);
+					lockedGearblock.setLockGearblock(gearblock);
+				}
+			} else if(link != null) {
+				if(link.getGearblock1() != lockedGearblock) {
+					lockedGearblocks.add(link.getGearblock1());					
+					link.getGearblock1().setLockGearblock(gearblock);
+				} else {
+					lockedGearblocks.add(link.getGearblock2());					
+					link.getGearblock2().setLockGearblock(gearblock);
+				}
+			}
+		}
+		
+		gearblock.setLockedGearblocks(lockedGearblocks);
+	}
+	
+	private boolean isLocked(HashSet<Gearblock> gearblocks) {
+		for(Gearblock lockedGearblock : gearblocks) {
+			if(lockedGearblock.getLockGearblock() != null) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	public boolean processTimerBatch(TimerBatch timerBatch) {
@@ -518,7 +620,7 @@ public class GearManager {
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1); 
 			
-			if(block.getType() != Material.AIR) return new PowerResult(PowerResult.Status.Blocked, block);
+			if(!Helper.isEmptyBlock(block)) return new PowerResult(PowerResult.Status.Blocked, block);
 			
 			bridgeBlocks.add(block);
 			

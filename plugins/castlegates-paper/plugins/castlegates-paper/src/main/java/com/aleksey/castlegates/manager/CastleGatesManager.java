@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -169,6 +171,28 @@ public class CastleGatesManager {
 			PowerResultHelper.showStatus(block.getLocation(), players, result);
 		} finally {
 			this.processingBlocks.remove(block);
+		}
+	}
+	
+	public void handleEntityExplode(EntityExplodeEvent event) {
+		for (Block block : event.blockList()) {
+			this.gearManager.removeGear(new BlockCoord(block));
+		}
+	}
+	
+	public void handleEntityChangeBlock(EntityChangeBlockEvent event) {
+		this.gearManager.removeGear(new BlockCoord(event.getBlock()));
+	}
+	
+	public void handlePistonEvent(List<Block> blocks) {
+		ItemStack dropItem = CastleGates.getConfigManager().getCreationConsumeItem();
+		
+		for (Block block : blocks) {
+			GearManager.RemoveResult result = this.gearManager.removeGear(new BlockCoord(block));
+			
+			if(result == GearManager.RemoveResult.Removed || result == GearManager.RemoveResult.RemovedWithLink) {
+				Helper.putItemToInventoryOrDrop(null, block.getLocation(), dropItem);
+			}
 		}
 	}
 	
@@ -349,27 +373,33 @@ public class CastleGatesManager {
 		if(!CastleGates.getCitadelManager().canViewInformation(player, block.getLocation())) {
 			player.sendMessage(ChatColor.RED + "Gearblock");
 		}
-		else if(gearblock.getLink() == null) {
-			player.sendMessage(ChatColor.GREEN + "Gearblock not linked");
-			
-			if(gearblock.getBrokenLink() != null) {
-				player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
-			}
-		}
 		else {
-			Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
-			player.sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
-			
-			if(gearblock.getLink().isDrawn()) {
-				player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
+			if(gearblock.getLink() == null) {
+				player.sendMessage(ChatColor.GREEN + "Gearblock not linked");
+				
+				if(gearblock.getBrokenLink() != null) {
+					player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
+				}
+			}
+			else {
+				Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
+				player.sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
+				
+				if(gearblock.getLink().isDrawn()) {
+					player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
+				}
+				
+				ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);
 			}
 			
-			ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);
-		}
-		
-		if(gearblock.getTimer() != null) {
-			String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation();
-			player.sendMessage(ChatColor.GREEN + message);
+			if(gearblock.getTimer() != null) {
+				String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation();
+				player.sendMessage(ChatColor.GREEN + message);
+			}
+			
+			if(gearblock.getLockedGearblocks() != null || gearblock.getLockGearblock() != null) {
+				player.sendMessage(ChatColor.YELLOW + "Locked");
+			}
 		}
 	}
 	

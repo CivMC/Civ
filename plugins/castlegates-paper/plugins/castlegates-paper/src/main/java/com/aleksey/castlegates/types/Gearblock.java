@@ -5,6 +5,8 @@
 
 package com.aleksey.castlegates.types;
 
+import java.util.List;
+
 
 public class Gearblock {
 	private int id;
@@ -12,9 +14,11 @@ public class Gearblock {
 	private boolean powered;
 	private boolean removed;
 	private GearblockLink link;
-	private long lastSwitchTime;
 	private Integer timer;
 	private TimerOperation timerOperation;
+	private long lastSwitchTime;
+	private Gearblock lockGearblock;
+	private List<Gearblock> lockedGearblocks;
 	
 	public Gearblock(BlockCoord coord) {
 		this.coord = coord;
@@ -35,15 +39,21 @@ public class Gearblock {
 	public GearblockLink getBrokenLink() { return this.link != null && this.link.isBroken() ? this.link: null; }
 	public void setLink(GearblockLink link) { this.link = link; }
 	
-	public long getLastSwitchTime() { return this.lastSwitchTime; }
-	public void setLastSwitchTime() { this.lastSwitchTime = System.currentTimeMillis(); }
-	
 	public Integer getTimer() { return this.timer; }
 	public TimerOperation getTimerOperation() { return this.timerOperation; }
 	public void setTimer(Integer timer, TimerOperation timerOperation) {
 		this.timer = timer;
 		this.timerOperation = timerOperation;
 	}
+
+	public long getLastSwitchTime() { return this.lastSwitchTime; }
+	public void setLastSwitchTime() { this.lastSwitchTime = System.currentTimeMillis(); }
+	
+	public void setLockGearblock(Gearblock lockGearblock) { this.lockGearblock = lockGearblock; }
+	public Gearblock getLockGearblock() { return this.lockGearblock; }
+	
+	public void setLockedGearblocks(List<Gearblock> lockedGearblocks) { this.lockedGearblocks = lockedGearblocks; }
+	public List<Gearblock> getLockedGearblocks() { return this.lockedGearblocks; }
 
 	@Override
 	public boolean equals(Object other) {

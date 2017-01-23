@@ -24,7 +24,8 @@ import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.jukealert.IJukeAlertManager;
 import com.aleksey.castlegates.jukealert.JukeAlertManager;
 import com.aleksey.castlegates.jukealert.NoJukeAlertManager;
-import com.aleksey.castlegates.listener.EventListener;
+import com.aleksey.castlegates.listener.BlockListener;
+import com.aleksey.castlegates.listener.EntityListener;
 import com.aleksey.castlegates.manager.CastleGatesManager;
 import com.aleksey.castlegates.manager.ConfigManager;
 import com.aleksey.castlegates.orebfuscator.IOrebfuscatorManager;
@@ -117,7 +118,8 @@ public class CastleGates extends JavaPlugin {
         citadelManager.init();
         
         // register events
-        getServer().getPluginManager().registerEvents(new EventListener(), this);
+        getServer().getPluginManager().registerEvents(new EntityListener(), this);
+        getServer().getPluginManager().registerEvents(new BlockListener(), this);
     }
     
     private void createOrebfuscatorManager() {
