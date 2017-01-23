@@ -78,8 +78,9 @@ public abstract class ChatCommand extends PlayerCommand {
 
 		List<String> players = new ArrayList<String>();
 		for (Player p: Bukkit.getOnlinePlayers()) {
-			if (p.getName().toLowerCase().startsWith(pattern.toLowerCase()))
+			if (p.getName().toLowerCase().startsWith(pattern.toLowerCase())) {
 				players.add(p.getName());
+			}
 		}
 		return players;
 	}

@@ -54,8 +54,9 @@ public class Tell extends ChatCommand {
 		if (args.length >= 2) {
 			//player and message
 			StringBuilder builder = new StringBuilder();
-			for (int x = 1; x < args.length; x++)
+			for (int x = 1; x < args.length; x++) {
 				builder.append(args[x] + " ");
+			}
 
 			chatMan.sendPrivateMsg(player(), receiver, builder.toString());
 			return true;

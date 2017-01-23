@@ -46,8 +46,9 @@ public class DatabaseManager {
 
 	public DatabaseManager() {
 
-		if (!isValidConnection())
+		if (!isValidConnection()) {
 			return;
+		}
 		executeDatabaseStatements();
 		loadPreparedStatements();
 		loadIgnoredPlayersList();
