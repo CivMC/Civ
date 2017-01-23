@@ -212,7 +212,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
 	if (b.equals(((FurnCraftChestStructure) fccf.getMultiBlockStructure())
 		.getCraftingTable())) { // crafting table interaction
-	    int rows = (fccf.getRecipes().size() / 9) + 1;
+	    int rows = ((fccf.getRecipes().size() + 2) / 9) + 1;
 	    if (fccf.getRecipes().size() > 52 || rows > 6) {
 		p.sendMessage(ChatColor.RED
 			+ "This factory has more than 52 recipes and the GUI for it can't be opened. Either complain to "
