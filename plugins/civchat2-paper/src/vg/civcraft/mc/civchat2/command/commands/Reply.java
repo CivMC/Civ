@@ -55,7 +55,7 @@ public class Reply extends ChatCommand {
 			chatMan.sendPrivateMsg(player, receiver, sb.toString());
 			return true;
 		} else if (args.length == 0) {
-			//player to chat with reply user
+			// Player to chat with reply user
 			chatMan.removeChannel(player());
 			chatMan.addChatChannel(player(), receiver);
 			msg(ChatStrings.chatNowChattingWith, receiver.getName());

@@ -35,16 +35,15 @@ public class CivChat2Manager {
 
 	private DatabaseManager DBM;
 
-	//chatChannels in hashmap with (Player 1 name, player 2 name)
+	// chatChannels in hashmap with (Player 1 name, player 2 name)
 	private HashMap<UUID, UUID> chatChannels;
 
-	//groupChatChannels have (Player, Group)
+	// groupChatChannels have (Player, Group)
 	private final HashMap<UUID, Group> groupChatChannels;
 
-	//replyList has (playerName, whotoreplyto)
+	// replyList has (playerName, whotoreplyto)
 	private final HashMap<UUID, UUID> replyList;
 
-	// Contains the players who are currently AFK
 	private final Set<UUID> afkPlayers;
 
 	protected static final GroupManager GM = NameAPI.getGroupManager();
@@ -158,8 +157,8 @@ public class CivChat2Manager {
 			receiver.sendMessage(receiverMessage);
 			sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
 			return;
+		// Player is ignoring the sender
 		} else if (DBM.isIgnoringPlayer(receiverName, senderName))  {
-			//player is ignoring the sender
 			sender.sendMessage(parse(ChatStrings.chatPlayerIgnoringYou));
 			return;
 		} else if (DBM.isIgnoringPlayer(senderName, receiverName)) {
@@ -202,9 +201,9 @@ public class CivChat2Manager {
 
 		StringBuilder sb = new StringBuilder();
 
-		//do height check
+		// Do height check
+		// Player is above chat increase range
 		if (y > height) {
-			//player is above chat increase range
 			CivChat2.debugmessage("Player is above Y chat increase range");
 			int above = y - height;
 			int newRange = (int) (range + (range * (scale * above)));
@@ -219,11 +218,10 @@ public class CivChat2Manager {
 		ChatColor color = ChatColor.valueOf(defaultColor);
 
 		Set<String> recivers = new HashSet<String>();
+		// Loop through players and send to those that are close enough
 		for (Player receiver : recipients) {
 			if (!DBM.isIgnoringPlayer(receiver.getUniqueId(), sender.getUniqueId())) {
-				//loop through players and send to those that are close enough
 				if (receiver.getWorld().equals(sender.getWorld())) {
-					//reciever is in same world so send
 					double receiverDistance = location.distance(receiver.getLocation());
 					if (receiverDistance <= range) {
 						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
@@ -242,7 +240,7 @@ public class CivChat2Manager {
 				recivers.add(receiver.getName());
 			}
 		}
-		recivers.remove(sender.getName()); //remove the sender from the list
+		recivers.remove(sender.getName());
 		chatLog.logGlobalMessage(sender, chatMessage, recivers);
 	}
 
@@ -335,7 +333,7 @@ public class CivChat2Manager {
 		List<Player> members = new ArrayList<Player>();
 		List<UUID> membersUUID = group.getAllMembers();
 		for (UUID uuid : membersUUID) {
-			//only add online players to members
+			// Only add online players to members
 			Player toAdd = Bukkit.getPlayer(uuid);
 			if (toAdd != null && toAdd.isOnline() && NameAPI.getGroupManager().hasAccess(
 					group, toAdd.getUniqueId(), PermissionType.getPermission("READ_CHAT")))  {
@@ -360,7 +358,7 @@ public class CivChat2Manager {
 		for (UUID uuid : membersUUID) {
 			players.add(NameAPI.getCurrentName(uuid));
 		}
-		players.remove(senderName); //remove the sender from the list
+		players.remove(senderName);
 		chatLog.logGroupMessage(sender, message, group.getName(), players);
 	}
 

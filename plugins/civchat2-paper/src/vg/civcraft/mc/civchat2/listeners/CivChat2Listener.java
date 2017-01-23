@@ -68,7 +68,7 @@ public class CivChat2Listener implements Listener {
 	public void PlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent) {
 
 		asyncPlayerChatEvent.setCancelled(true);
-		//this needs to be done sync to avoid rare deadlock due to minecraft internals
+		// This needs to be done sync to avoid a rare deadlock due to minecraft internals
 		new BukkitRunnable() {
 
 		    @Override
@@ -98,11 +98,11 @@ public class CivChat2Listener implements Listener {
 					}
 				}
 				if (groupChat != null) {
-					//player is group chatting
+					// Player is group chatting
 					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 						chatman.sendGroupMsg(sender, groupChat, chatMessage);
 						return;
-					//player lost perm to write in the chat
+					// Player lost perm to write in the chat
 					} else {
 						chatman.removeGroupChat(sender);
 						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");

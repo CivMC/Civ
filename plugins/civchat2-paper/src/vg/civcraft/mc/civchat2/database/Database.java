@@ -72,7 +72,7 @@ public class Database {
             connection = DriverManager.getConnection(jdbc);
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
-        } catch (SQLException ex) { //Error handling below:
+        } catch (SQLException ex) {
             this.logger.log(Level.SEVERE, "Could not connnect to the database!", ex);
             return false;
         }

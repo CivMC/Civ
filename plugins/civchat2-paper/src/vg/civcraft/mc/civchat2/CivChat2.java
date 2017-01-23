@@ -43,13 +43,13 @@ public class CivChat2 extends ACivMod {
 
 	public void onEnable() {
 
-		//onEnable stuff
+		// onEnable stuff
 		StringBuilder sb = new StringBuilder();
 		instance = this;
 		config_ = new CivChat2Config();
 		config_.setConfigOptions(getConfig());
 		if (!new File(sb.append(this.getDataFolder()).append("config.yml").toString()).exists()) {
-			//config.yml does not exist save the default
+			// config.yml does not exist, save the default
 			this.saveDefaultConfig();
 		}
 		sb.delete(0, sb.length());
@@ -75,7 +75,7 @@ public class CivChat2 extends ACivMod {
 
 	public void onDisable() {
 
-		//onDisable stuff
+		// onDisable stuff
 	}
 
 	public CivChat2Manager getCivChat2Manager() {

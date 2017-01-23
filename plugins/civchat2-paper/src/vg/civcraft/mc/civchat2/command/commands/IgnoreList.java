@@ -28,8 +28,8 @@ public class IgnoreList extends ChatCommand {
 		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
 		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
 
+		// No players ignored
 		if (players == null || players.size() == 0) {
-			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyPlayers);
 		} else {
 			StringBuilder sb = new StringBuilder();
@@ -48,8 +48,8 @@ public class IgnoreList extends ChatCommand {
 			msg(msg);
 		}
 
+		// No groups ignored
 		if (groups == null || groups.size() == 0) {
-			//no players ignored
 			msg(ChatStrings.chatNotIgnoringAnyGroups);
 			return true;
 		} else {

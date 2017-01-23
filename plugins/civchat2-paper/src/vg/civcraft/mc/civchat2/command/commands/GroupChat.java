@@ -35,7 +35,7 @@ public class GroupChat extends ChatCommand {
 		Group group;
 		boolean defGroup = false;
 		if (args.length < 1) {
-			//check if player is in groupchat and move them to normal chat
+			// Check if player is in groupchat and move them to normal chat
 			if (isGroupChatting) {
 				msg(ChatStrings.chatMovedToGlobal);
 				chatMan.removeGroupChat(player());
@@ -66,7 +66,7 @@ public class GroupChat extends ChatCommand {
 		}
 		if (args.length == 1) {
 			if (isGroupChatting) {
-				//player already groupchatting check if its this group
+				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player());
 				if (curGroup == group) {
 					msg(ChatStrings.chatGroupAlreadyChatting);
@@ -92,7 +92,7 @@ public class GroupChat extends ChatCommand {
 				chatMsg.append(" ");
 			}
 			if (isGroupChatting) {
-				//player already groupchatting check if its this group
+				// Player already groupchatting check if it's this group
 				Group curGroup = chatMan.getGroupChatting(player());
 				if (curGroup == group) {
 					chatMan.sendGroupMsg(player(), group, chatMsg.toString());

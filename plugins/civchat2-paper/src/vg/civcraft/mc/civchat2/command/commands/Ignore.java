@@ -35,15 +35,15 @@ public class Ignore extends ChatCommand {
 			msg(ChatStrings.chatCantIgnoreSelf);
 			return true;
 		}
+		// Player added to the list
 		if (!DBM.isIgnoringPlayer(name, ignoreName)) {
-			//Player added to list
 			DBM.addIgnoredPlayer(name, ignoreName);
 			String debugMessage = "Player ignored another Player, Player: " + name + " IgnoredPlayer: " + ignoreName;
 			logger.debug(debugMessage);
 			msg(ChatStrings.chatNowIgnoring, ignoreName);
 			return true;
+		// Player removed from the list
 		} else {
-			//player removed from list
 			DBM.removeIgnoredPlayer(name, ignoreName);
 			String debugMessage = "Player un-ignored another Player, Player: " + name + " IgnoredPlayer: " + ignoreName;
 			logger.debug(debugMessage);
