@@ -276,15 +276,15 @@ public class Database {
 				}
 			}
 			statement.setTimestamp(1, new Timestamp(time));
-			statement.setString(2, key);
+			statement.setString(2, key.substring(0, Math.min(64, key.length())));
 
 			if (server != null) {
-				statement.setString(3 + o, server);
+				statement.setString(3 + o, server.substring(0, Math.min(64, server.length())));
 			} else {
 				statement.setNull(3 + o, Types.VARCHAR);
 			}
 			if (world != null) {
-				statement.setString(4 + o, world);
+				statement.setString(4 + o, world.substring(0, Math.min(100, world.length())));
 			} else {
 				statement.setNull(4 + o, Types.VARCHAR);
 			}
@@ -363,7 +363,7 @@ public class Database {
 			statement = newState ? connection.prepareStatement(Database.INSERT_COMBINED) : statement;
 		
 			statement.setTimestamp(1, new Timestamp(time));
-			statement.setString(2, key);
+			statement.setString(2, key.substring(0, Math.min(64, key.length())));
 			if (sValue != null) {
 				statement.setString(3, sValue);
 			} else {
@@ -375,12 +375,12 @@ public class Database {
 				statement.setNull(4, Types.NUMERIC);
 			}
 			if (server != null) {
-				statement.setString(5, server);
+				statement.setString(5, server.substring(0, Math.min(64, server.length())));
 			} else {
 				statement.setNull(5, Types.VARCHAR);
 			}
 			if (world != null) {
-				statement.setString(6, world);
+				statement.setString(6, world.substring(0, Math.min(100, world.length())));
 			} else {
 				statement.setNull(6, Types.VARCHAR);
 			}

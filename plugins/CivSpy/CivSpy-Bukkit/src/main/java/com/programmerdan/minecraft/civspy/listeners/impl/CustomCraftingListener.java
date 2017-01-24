@@ -55,9 +55,23 @@ public final class CustomCraftingListener extends ServerDataListener {
 			Chunk chunk = location.getChunk();
 			
 			WorkbenchRecipe recipe = event.getRecipe();
+			if (recipe == null) return;
+			
 			ItemResult result = event.getResult();
+			if (result == null) {
+				logger.log(Level.INFO, "Result was null on a custom crafting event : " + recipe.getName());
+				return;
+			}
 			
 			ItemStack stack = result.toItemStack();
+			if (stack == null) {
+				logger.log(Level.INFO, "Result stack was null on a crafting event  : " + recipe.getName());
+				return;
+			}
+			
+			stack = stack.clone(); 
+			// to be safe.
+			
 			stack.setAmount(1);
 			
 			DataSample recipeGen = new PointDataSample("player.craft", this.getServer(),
