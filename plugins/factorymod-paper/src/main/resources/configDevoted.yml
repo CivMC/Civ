@@ -11,9 +11,9 @@ default_fuel:
 default_fuel_consumption_intervall: 2s
 default_menu_factory: Workshop
 default_return_rate: 0.5
-break_grace_period: 100d
+default_break_grace_period: 100d
 decay_intervall: 1h
-decay_amount: 0
+default_decay_amount: 0
 disable_nether: true
 default_update_time: 1s
 use_recipe_yamlidentifiers: true
