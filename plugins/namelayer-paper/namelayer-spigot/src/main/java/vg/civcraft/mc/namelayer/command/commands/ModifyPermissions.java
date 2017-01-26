@@ -67,7 +67,7 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 				sb.append(" ");
 			}
 			p.sendMessage(ChatColor.RED 
-						+ "That PermissionType does not exists.\n"
+						+ "That PermissionType does not exist.\n"
 						+ "The current types are: " + sb.toString());
 			return true;
 		}

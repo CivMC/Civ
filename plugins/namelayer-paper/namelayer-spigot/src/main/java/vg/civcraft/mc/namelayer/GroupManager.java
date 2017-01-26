@@ -610,7 +610,7 @@ public class GroupManager{
 		
 		public static void displayPlayerTypes(Player p) {
 			p.sendMessage(ChatColor.RED 
-					+ "That PlayerType does not exists.\n"
+					+ "That PlayerType does not exist.\n"
 					+ "The current types are: " + getStringOfTypes());
 		}
 		
