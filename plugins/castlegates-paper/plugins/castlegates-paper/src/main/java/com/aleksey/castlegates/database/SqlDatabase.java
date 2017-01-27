@@ -47,7 +47,7 @@ public class SqlDatabase {
         try {
             this.connection = DriverManager.getConnection(jdbc);
 
-            this.logger.log(Level.INFO, "Connected to database!");
+            this.logger.log(Level.INFO, "Connected to the database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
             this.logger.log(Level.SEVERE, "Could not connnect to the database! Connection string: " + jdbc, ex);

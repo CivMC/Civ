@@ -50,7 +50,7 @@ public class CastleGatesCommand {
     				: CastleGates.getConfigManager().getTimerDefaultOperation();
 
 			if(timerOperation == null) {
-				player.sendMessage(ChatColor.RED + "Allowed timer operations are draw, undraw or revert.");
+				player.sendMessage(ChatColor.RED + "Allowed timer operations are draw, undraw and revert.");
 				return true;
 			}
     	} else if (args.length != 1) {
