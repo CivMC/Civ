@@ -17,15 +17,15 @@ public class PowerResult {
 		Locked,
 		Allowed
 		}
-	
+
 	public Status status;
 	public Block block;
-	
+
 	public PowerResult(Status status, Block block) {
 		this.status = status;
 		this.block = block;
 	}
-	
+
 	public static final PowerResult NotLinked = new PowerResult(Status.NotLinked, null);
 	public static final PowerResult Unchanged = new PowerResult(Status.Unchanged, null);
 	public static final PowerResult Unpowered = new PowerResult(Status.Unpowered, null);

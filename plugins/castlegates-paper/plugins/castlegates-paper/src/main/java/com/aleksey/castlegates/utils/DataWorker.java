@@ -34,7 +34,7 @@ public class DataWorker extends Thread implements Runnable {
 	private static final int DRAW_CODE = 0;
 	private static final int UNDRAW_CODE = 1;
 	private static final int REVERT_CODE = 2;
-	
+
 	private SqlDatabase db;
 	private GearblockSource gearblockSource;
 	private LinkSource linkSource;
@@ -57,38 +57,38 @@ public class DataWorker extends Thread implements Runnable {
 		this.reinforcementSource = new ReinforcementSource(db);
 		this.changeLogger = logChanges ? new ChangeLogger(): null;
 	}
-	
+
 	public void close() {
 		terminateThread();
-		
+
 		if(this.changeLogger != null) {
 			this.changeLogger.close();
 			this.changeLogger = null;
 		}
 	}
-	
+
 	public Map<BlockCoord, Gearblock> load() throws SQLException {
 		Map<BlockCoord, Gearblock> gearblocks = new WeakHashMap<BlockCoord, Gearblock>();
 		Map<Integer, Gearblock> gearblocksById = new WeakHashMap<Integer, Gearblock>();
 		Map<Integer, GearblockLink> linksById = new WeakHashMap<Integer, GearblockLink>();
-		
+
 		loadGears(gearblocks, gearblocksById);
 		loadLinks(linksById, gearblocksById);
 		loadReinforcements(linksById);
-		
+
 		return gearblocks;
 	}
-	
+
 	private void loadGears(Map<BlockCoord, Gearblock> gearblocks, Map<Integer, Gearblock> gearblocksById) throws SQLException {
 		List<GearblockInfo> gearData = this.gearblockSource.selectAll();
-		
+
 		for(GearblockInfo info : gearData) {
 			UUID world = UUID.fromString(info.location_worlduid);
 			BlockCoord location = new BlockCoord(world, info.location_x, info.location_y, info.location_z);
 			Gearblock gearblock = new Gearblock(location);
-			
+
 			TimerOperation timerOperation = null;
-			
+
 			if(info.timerOperation != null) {
 				switch(info.timerOperation) {
 				case DRAW_CODE:
@@ -102,27 +102,27 @@ public class DataWorker extends Thread implements Runnable {
 					break;
 				}
 			}
-			
+
 			gearblock.setId(info.gearblock_id);
 			gearblock.setTimer(info.timer, timerOperation);
-			
+
 			gearblocks.put(location, gearblock);
 			gearblocksById.put(info.gearblock_id, gearblock);
 		}
 	}
-	
+
 	private void loadLinks(Map<Integer, GearblockLink> linksById, Map<Integer, Gearblock> gearblocksById) throws SQLException {
 		List<LinkInfo> linkData = this.linkSource.selectAll();
-		
+
 		for(LinkInfo info : linkData) {
 			Gearblock gearblock1 = info.gearblock1_id != null ? gearblocksById.get(info.gearblock1_id) : null;
 			Gearblock gearblock2 = info.gearblock2_id != null ? gearblocksById.get(info.gearblock2_id) : null;
 			List<BlockState> blocks = deserializeBlocks(info.blocks);
 			GearblockLink link = new GearblockLink(gearblock1, gearblock2);
-			
+
 			link.setId(info.link_id);
 			link.setBlocks(blocks);
-			
+
 			if(gearblock1 != null) {
 				gearblock1.setLink(link);
 			}
@@ -130,37 +130,37 @@ public class DataWorker extends Thread implements Runnable {
 			if(gearblock2 != null) {
 				gearblock2.setLink(link);
 			}
-			
+
 			linksById.put(link.getId(), link);
 		}
 	}
-	
+
 	private void loadReinforcements(Map<Integer, GearblockLink> linksById) throws SQLException {
 		List<ReinforcementInfo> reinforcementData = this.reinforcementSource.selectAll();
 		GearblockLink link = null;
-		
+
 		for(ReinforcementInfo info : reinforcementData) {
 			if(link == null || link.getId() != info.link_id) {
 				link = linksById.get(info.link_id);
 			}
-			
+
 			BlockState blockState = link.getBlocks().get(info.block_no);
 			blockState.reinforcement = info;
 		}
 	}
-	
+
     public void startThread() {
         setName("CastleGates DataWorker Thread");
         setPriority(Thread.MIN_PRIORITY);
         start();
-        
+
         CastleGates.getPluginLogger().log(Level.INFO, "DataWorker thread started");
     }
 
     public void terminateThread() {
         this.kill.set(true);
     }
-		
+
     public void run() {
         while (!this.isInterrupted() && !this.kill.get()) {
             try {
@@ -169,7 +169,7 @@ public class DataWorker extends Thread implements Runnable {
                 if (timeWait > 0) {
                     Thread.sleep(timeWait);
                 }
-                
+
                 synchronized (this.changedGearblocks) {
                 	for(GearblockForUpdate gearForUpdate : this.changedGearblocks.values()) {
                 		this.localChangedGearblocks.add(gearForUpdate);
@@ -177,7 +177,7 @@ public class DataWorker extends Thread implements Runnable {
 
                 	this.changedGearblocks.clear();
                 }
-                
+
                 synchronized (this.changedLinks) {
                 	for(LinkForUpdate linkForUpdate : this.changedLinks.values()) {
                 		this.localChangedLinks.add(linkForUpdate);
@@ -185,13 +185,13 @@ public class DataWorker extends Thread implements Runnable {
 
                 	this.changedLinks.clear();
                 }
-                
+
                 if(this.localChangedGearblocks.size() > 0 || this.localChangedLinks.size() > 0) {
                 	if(this.db.checkConnection()) {
 		                try {
 			                updateGears();
 			                updateLinks();
-			                
+
 			                if(this.changeLogger != null) {
 			                	this.changeLogger.flush();
 			                }
@@ -206,13 +206,13 @@ public class DataWorker extends Thread implements Runnable {
             }
         }
     }
-    
+
     private void updateGears() throws SQLException {
     	for(GearblockForUpdate gearForUpdate : this.localChangedGearblocks) {
     		if(this.changeLogger != null) {
     			this.changeLogger.write(gearForUpdate);
     		}
-    		
+
     		if(gearForUpdate.original.isRemoved()) {
     			if(gearForUpdate.original.getId() != 0) {
     				this.gearblockSource.delete(gearForUpdate.original.getId());
@@ -227,13 +227,13 @@ public class DataWorker extends Thread implements Runnable {
     		}
     	}
     }
-    
+
     private void updateLinks() throws SQLException {
     	for(LinkForUpdate linkForUpdate : this.localChangedLinks) {
     		if(this.changeLogger != null) {
     			this.changeLogger.write(linkForUpdate);
     		}
-    		
+
     		if(linkForUpdate.original.isRemoved()) {
     			if(linkForUpdate.original.getId() != 0) {
     				this.reinforcementSource.deleteByLinkId(linkForUpdate.original.getId());
@@ -245,10 +245,10 @@ public class DataWorker extends Thread implements Runnable {
 	    		info.gearblock1_id = linkForUpdate.gearblock1 != null ? linkForUpdate.gearblock1.getId(): null;
 	    		info.gearblock2_id = linkForUpdate.gearblock2 != null ? linkForUpdate.gearblock2.getId(): null;
 	    		info.blocks = linkForUpdate.blocks;
-	    		
+
 	    		if(info.link_id != 0) {
 	    			this.linkSource.update(info);
-	    			
+
 	    			if(info.blocks == null) {
 	    				this.reinforcementSource.deleteByLinkId(info.link_id);
 	    			}
@@ -256,13 +256,13 @@ public class DataWorker extends Thread implements Runnable {
 		    		this.linkSource.insert(info);
 		    		linkForUpdate.original.setId(info.link_id);
 	    		}
-	    		
+
 	    		if(linkForUpdate.reinforcements != null) {
 		    		for(ReinforcementInfo reinforcement : linkForUpdate.reinforcements) {
 		    			if(reinforcement.link_id != 0) continue;
-		    			
+
 		    			reinforcement.link_id = info.link_id;
-		    			
+
 		    			this.reinforcementSource.insert(reinforcement);
 		    		}
 	    		}
@@ -272,7 +272,7 @@ public class DataWorker extends Thread implements Runnable {
 
     public void addChangedGearblock(Gearblock gearblock) {
 		GearblockInfo info;
-		
+
 		if(gearblock.isRemoved()) {
 			info = null;
 		} else {
@@ -285,7 +285,7 @@ public class DataWorker extends Thread implements Runnable {
 			info.location_y = location.getY();
 			info.location_z = location.getZ();
 			info.timer = gearblock.getTimer();
-			
+
 			if(gearblock.getTimerOperation() != null) {
 				switch(gearblock.getTimerOperation()) {
 				case DRAW:
@@ -300,7 +300,7 @@ public class DataWorker extends Thread implements Runnable {
 				}
 			}
 		}
-		
+
 		GearblockForUpdate gearForUpdate = new GearblockForUpdate();
 		gearForUpdate.original = gearblock;
 		gearForUpdate.info = info;
@@ -309,22 +309,22 @@ public class DataWorker extends Thread implements Runnable {
 			this.changedGearblocks.put(gearblock, gearForUpdate);
 		}
 	}
-	
+
 	public void addChangedLink(GearblockLink link) {
 		LinkForUpdate linkForUpdate = new LinkForUpdate();
 		linkForUpdate.original = link;
-		
+
 		if(!link.isRemoved()) {
 			linkForUpdate.gearblock1 = link.getGearblock1();
 			linkForUpdate.gearblock2 = link.getGearblock2();
 			linkForUpdate.blocks = serializeBlocks(link);
-			
+
 			if(link.getBlocks() != null) {
 				linkForUpdate.reinforcements = new ArrayList<ReinforcementInfo>();
-				
+
 				for(int i = 0; i < link.getBlocks().size(); i++) {
 					ReinforcementInfo reinforcement = link.getBlocks().get(i).reinforcement;
-					
+
 					if(reinforcement != null && reinforcement.link_id == 0) {
 						reinforcement.block_no = i;
 						linkForUpdate.reinforcements.add(reinforcement);
@@ -332,39 +332,39 @@ public class DataWorker extends Thread implements Runnable {
 				}
 			}
 		}
-		
+
 		synchronized(this.changedLinks) {
 			this.changedLinks.put(link, linkForUpdate);
 		}
 	}
-	
+
 	private static byte[] serializeBlocks(GearblockLink link) {
 		if(link.getBlocks() == null) return null;
-		
+
 		byte[] data = new byte[BlockState.BytesPerBlock * link.getBlocks().size()];
 		int offset = 0;
-		
+
 		for(BlockState block : link.getBlocks()) {
 			offset = block.serialize(data, offset);
 		}
-		
+
 		return data;
 	}
-	
+
 	public static List<BlockState> deserializeBlocks(byte[] blockBytes) {
 		if(blockBytes == null || blockBytes.length == 0) return null;
-		
+
 		List<BlockState> blocks = new ArrayList<BlockState>();
 		int offset = 0;
-			
+
 		while(offset < blockBytes.length) {
 			BlockState block = new BlockState();
-			
+
 			offset = BlockState.deserialize(blockBytes, offset, block);
-			
+
 			blocks.add(block);
 		}
-		
+
 		return blocks;
 	}
 }

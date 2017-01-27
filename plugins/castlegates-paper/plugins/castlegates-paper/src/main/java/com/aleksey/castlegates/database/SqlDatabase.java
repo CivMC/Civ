@@ -26,7 +26,7 @@ public class SqlDatabase {
     private String password;
     private Logger logger;
     private Connection connection;
-    
+
     public SqlDatabase(String host, int port, String db, String user, String password, Logger logger) {
         this.host = host;
         this.port = port;
@@ -35,10 +35,10 @@ public class SqlDatabase {
         this.password = password;
         this.logger = logger;
     }
-    
+
     public boolean connect() {
         String jdbc = "jdbc:mysql://" + host + ":" + port + "/" + db + "?user=" + user + "&password=" + password;
-        
+
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception ex) {
@@ -46,7 +46,7 @@ public class SqlDatabase {
         }
         try {
             this.connection = DriverManager.getConnection(jdbc);
-            
+
             this.logger.log(Level.INFO, "Connected to database!");
             return true;
         } catch (SQLException ex) { //Error handling below:
@@ -54,7 +54,7 @@ public class SqlDatabase {
             return false;
         }
     }
-    
+
     public void close() {
         try {
             this.connection.close();
@@ -62,7 +62,7 @@ public class SqlDatabase {
             this.logger.log(Level.SEVERE, "An error occured while closing the connection.", ex);
         }
     }
-    
+
     public boolean isConnected() {
         try {
             return this.connection.isValid(5);
@@ -71,15 +71,15 @@ public class SqlDatabase {
         }
         return false;
     }
-    
+
     public boolean checkConnection() {
     	if(isConnected()) return true;
-    	
+
 		this.logger.log(Level.INFO, "Database went away, reconnecting.");
-		
+
 		return connect();
     }
-    
+
     public PreparedStatement prepareStatement(String sqlStatement) throws SQLException {
         return this.connection.prepareStatement(sqlStatement);
     }
@@ -87,12 +87,12 @@ public class SqlDatabase {
     public PreparedStatement prepareStatementWithReturn(String sqlStatement) throws SQLException {
         return this.connection.prepareStatement(sqlStatement, Statement.RETURN_GENERATED_KEYS);
     }
-    
+
     public boolean initDb() {
     	this.logger.log(Level.INFO, "Database initialization started...");
-    	
+
     	ArrayList<String> list = ResourceHelper.readScriptList("/create_db.txt");
-    	
+
 		for(String script : list) {
 			try {
 				prepareStatement(script).execute();
@@ -103,11 +103,11 @@ public class SqlDatabase {
 				return false;
 			}
 		}
-		
+
 		this.logger.log(Level.INFO, "Database initialized.");
-		
+
 		this.logger.log(Level.INFO, "Applying patches to database...");
-		
+
 		try {
 			applyPatches();
     	} catch (SQLException e) {
@@ -115,39 +115,39 @@ public class SqlDatabase {
 			e.printStackTrace();
 			return false;
 		}
-		
+
 		this.logger.log(Level.INFO, "Patches applied to database.");
-		
+
 		return true;
     }
-    
+
     private void applyPatches() throws SQLException {
     	int patchIndex = 1;
     	String patchName = String.format("patch_%03d.txt", patchIndex);
     	ArrayList<String> scripts;
     	PatchSource source = new PatchSource(this);
-    	
+
     	while((scripts = ResourceHelper.readScriptList("/" + patchName)) != null) {
     		this.logger.log(Level.INFO, "Found patch " + patchName);
-    		
+
     		if(source.isExist(patchName)) {
     			this.logger.log(Level.INFO, "Skipping patch.");
     		} else {
 	    		this.logger.log(Level.INFO, "Applying patch...");
-	    		
+
 	    		for(String script : scripts) {
 	    			prepareStatement(script).execute();
 	    		}
-	    		
+
 	    		PatchInfo patchInfo = new PatchInfo();
 	    		patchInfo.patchName = patchName;
 	    		patchInfo.appliedDate = new Timestamp(System.currentTimeMillis());
-	    		
+
 	    		source.insert(patchInfo);
-	    		
+
 	    		this.logger.log(Level.INFO, "Patch applied.");
     		}
-    		
+
     		patchName = String.format("patch_%03d.txt", ++patchIndex);
     	}
     }

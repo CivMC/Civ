@@ -23,12 +23,12 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionManager implements IBastionManager {
 	private static final String PERMISSION_UNDRAW = "BASTION_BRIDGE_UNDRAW";
-	
-	private BastionBlockManager manager;	
-	
+
+	private BastionBlockManager manager;
+
 	public void init() {
 		this.manager = Bastion.getBastionManager();
-		
+
 		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
 		memberAndAbove.add(PlayerType.MEMBERS);
 		memberAndAbove.add(PlayerType.MODS);
@@ -36,7 +36,7 @@ public class BastionManager implements IBastionManager {
 		memberAndAbove.add(PlayerType.OWNER);
 		PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridge/gates above bastion");
 	}
-	
+
 	public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks) {
 		if (players != null) {
 			for(Player player : players) {
@@ -45,23 +45,23 @@ public class BastionManager implements IBastionManager {
 				}
 			}
 		}
-		
+
 		for(Block block : bridgeBlocks) {
 			if(!hasBastionAccess(players, block)) {
 				return false;
 			}
 		}
-		
+
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	private boolean hasBastionAccess(List<Player> players, Block block) {
 		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
 		Location loc = block.getLocation();
 		Set<? extends QTBox> boxes = this.manager.getBlockingBastions(loc);
 		Set<BastionBlock> bastions = null;
-		
+
 		if (boxes.size() != 0) {
 			bastions = (Set<BastionBlock>) boxes;
 		}
@@ -69,27 +69,27 @@ public class BastionManager implements IBastionManager {
 		if (bastions == null) {
 			return true;
 		}
-		
+
 		boolean hasAccess = true;
-		
+
 		for(BastionBlock bastion : bastions) {
 			if(!bastion.inField(loc)) {
 				continue;
 			}
-			
+
 			if(players == null) {
 				return false;
 			}
-			
+
 			for(Player player : players) {
 				if (bastion.permAccess(player, perm)) {
 					return true;
 				}
 			}
-			
+
 			hasAccess = false;
 		}
-		
+
 		return hasAccess;
 	}
 }

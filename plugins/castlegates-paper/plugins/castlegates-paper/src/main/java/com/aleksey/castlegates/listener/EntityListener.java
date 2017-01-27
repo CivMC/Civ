@@ -22,12 +22,12 @@ public class EntityListener implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
     	CastleGates.getManager().handlePlayerJoin(event);
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
     	CastleGates.getManager().handlePlayerQuit(event);
     }
-	
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
     	if(event.getClickedBlock() != null
@@ -35,14 +35,14 @@ public class EntityListener implements Listener {
     			)
     	{
     		CastleGates.getManager().handleBlockClicked(event);
-    	}    	
+    	}
     }
-    
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		CastleGates.getManager().handleEntityExplode(event);
 	}
-	
+
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		CastleGates.getManager().handleEntityChangeBlock(event);
