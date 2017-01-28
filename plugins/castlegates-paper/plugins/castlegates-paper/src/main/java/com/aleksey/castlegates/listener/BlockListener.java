@@ -21,7 +21,7 @@ public class BlockListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		CastleGates.getManager().handleBlockBreak(event);
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled=true)
     public void onBlockRedstone(BlockRedstoneEvent event) {
 		CastleGates.getManager().handleBlockRedstone(event);
@@ -31,7 +31,7 @@ public class BlockListener implements Listener {
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		CastleGates.getManager().handleBlockPhysics(event);
 	}
-	
+
 	@EventHandler(priority=EventPriority.HIGH, ignoreCancelled=true)
 	public void onBlockPistonExtend(BlockPistonExtendEvent event) {
 		CastleGates.getManager().handlePistonEvent(event.getBlocks());

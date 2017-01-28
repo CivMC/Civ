@@ -16,19 +16,19 @@ public class ReinforcementSource {
 	private static final String selectAllScript = "SELECT * FROM cg_reinforcement ORDER BY link_id, block_no";
 	private static final String insertScript = "INSERT INTO cg_reinforcement (link_id, block_no, material_id, durability, insecure, group_id, maturation_time, lore, acid_time) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 	private static final String deleteScript = "DELETE FROM cg_reinforcement WHERE link_id = ?";
-	
+
 	private SqlDatabase db;
-	
+
 	public ReinforcementSource(SqlDatabase db) {
 		this.db = db;
 	}
-	
+
 	public List<ReinforcementInfo> selectAll() throws SQLException {
 		ArrayList<ReinforcementInfo> list = new ArrayList<ReinforcementInfo>();
 		PreparedStatement sql = this.db.prepareStatement(selectAllScript);
-		
+
 		ResultSet rs = sql.executeQuery();
-		
+
 		try {
 			while(rs.next()) {
 				ReinforcementInfo info = new ReinforcementInfo();
@@ -41,16 +41,16 @@ public class ReinforcementSource {
 				info.maturation_time = rs.getInt("maturation_time");
 				info.lore = rs.getString("lore");
 				info.acid_time = rs.getInt("acid_time");
-				
+
 				list.add(info);
 			}
 		} finally {
 			rs.close();
 		}
-		
+
 		return list;
 	}
-	
+
 	public void insert(ReinforcementInfo info) throws SQLException {
 		PreparedStatement sql = this.db.prepareStatement(insertScript);
 		sql.setInt(1, info.link_id);
@@ -60,22 +60,22 @@ public class ReinforcementSource {
 		sql.setBoolean(5, info.insecure);
 		sql.setInt(6, info.group_id);
 		sql.setInt(7, info.maturation_time);
-		
+
 		if(info.lore == null || info.lore.length() == 0) {
 			sql.setNull(8, Types.VARCHAR);
 		} else {
 			sql.setString(8, info.lore);
 		}
-		
+
 		sql.setInt(9, info.acid_time);
-		
+
 		sql.executeUpdate();
 	}
-	
+
 	public void deleteByLinkId(int link_id) throws SQLException {
 		PreparedStatement sql = this.db.prepareStatement(deleteScript);
 		sql.setInt(1, link_id);
-		
+
 		sql.executeUpdate();
 	}
 }

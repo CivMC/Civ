@@ -21,34 +21,34 @@ public class CastleGatesCommand {
 		if (!(sender instanceof Player)) {
 			return false;
 		}
-		
+
 		Player player = (Player)sender;
-		
+
         CommandMode mode;
         Integer timer = null;
         TimerOperation timerOperation = null;
-        
+
         if(Objects.equal(command.getName(), "gear")) {
         	mode = CommandMode.CREATE;
         } else if(Objects.equal(command.getName(), "link")) {
         	mode = CommandMode.LINK;
         } else if(args.length > 0 && Objects.equal(args[0], "timer")) {
         	if(args.length > 3) return false;
-        	
+
     		mode = CommandMode.TIMER;
-    		
+
     		timer = args.length > 1
     				? parseTimer(args[1], player)
     				: (Integer)CastleGates.getConfigManager().getTimerDefault();
-    		
+
     		if(timer == null) {
     			return true;
     		}
-    		
+
     		timerOperation = args.length == 3
     				? Helper.parseTimerOperation(args[2])
     				: CastleGates.getConfigManager().getTimerDefaultOperation();
-    		
+
 			if(timerOperation == null) {
 				player.sendMessage(ChatColor.RED + "Allowed timer operations are draw, undraw or revert.");
 				return true;
@@ -74,22 +74,22 @@ public class CastleGatesCommand {
 		        	return false;
 	        }
     	}
-		
+
 		CastleGates.getManager().setPlayerMode((Player) sender, mode, timer, timerOperation);
-			
+
 		return true;
 	}
-	
+
 	private static Integer parseTimer(String text, Player player) {
 		int timer;
-		
+
 		try {
 			timer = Integer.parseInt(text);
 		}
 		catch(NumberFormatException ex) {
 			return null;
 		}
-		
+
 		if(timer < CastleGates.getConfigManager().getTimerMin()
 				|| timer > CastleGates.getConfigManager().getTimerMax()
 				)
@@ -99,12 +99,12 @@ public class CastleGatesCommand {
 					+ " and "
 					+ CastleGates.getConfigManager().getTimerMax()
 					+ " sec";
-					
+
 			player.sendMessage(ChatColor.RED + errorMessage);
-			
+
 			return null;
 		}
-		
+
 		return timer;
 	}
 }

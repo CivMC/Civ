@@ -13,7 +13,7 @@ import com.aleksey.castlegates.types.PowerResult;
 public class PowerResultHelper {
 	public static void showStatus(Location location, List<Player> players, PowerResult result) {
 		String message;
-		
+
 		switch(result.status) {
 		case Blocked:
 			message = getBlockedMessage(result);
@@ -37,7 +37,7 @@ public class PowerResultHelper {
 			message = null;
 			break;
 		}
-		
+
 		if(message != null) {
 			for(Player player : players) {
 				player.sendMessage(message);
@@ -46,23 +46,23 @@ public class PowerResultHelper {
 		else if(result.status == PowerResult.Status.Drawn || result.status == PowerResult.Status.Undrawn){
 			playSound(location, result.status);
 		}
-		
+
 		if(result.block != null) {
 			ParticleHelper.spawn(result.block, ParticleHelper.Type.Warning);
 		}
 	}
-	
+
 	public static void playSound(Location location, PowerResult.Status status) {
 		Sound sound = status == PowerResult.Status.Drawn
 				? Sound.BLOCK_PISTON_CONTRACT
 				: Sound.BLOCK_PISTON_EXTEND;
-		
+
 		location.getWorld().playSound(location, sound, 0.7f, 1);
 	}
-	
+
 	private static String getBlockedMessage(PowerResult result) {
 		Location location = result.block.getLocation();
-		
+
 		return ChatColor.RED +
 			"Undraw path is blocked at x = " + location.getBlockX() +
 			", y = " + location.getBlockY() +
@@ -72,7 +72,7 @@ public class PowerResultHelper {
 
 	private static String getBrokenMessage(PowerResult result) {
 		Location location = result.block.getLocation();
-		
+
 		if(result.block.getType() == Material.AIR) {
 			return ChatColor.RED +
 					"Bridge/gates is broken at x = " + location.getBlockX() +
@@ -80,7 +80,7 @@ public class PowerResultHelper {
 					", z = " + location.getBlockZ()
 					;
 		}
-		
+
 		return ChatColor.RED +
 			"Material " + result.block.getType() + " at x = " + location.getBlockX() +
 			", y = " + location.getBlockY() +
@@ -91,7 +91,7 @@ public class PowerResultHelper {
 
 	private static String getCannotDrawGearMessage(PowerResult result) {
 		Location location = result.block.getLocation();
-		
+
 		return ChatColor.RED +
 			"Gearblock is placed as part of bridge/gates at x = " + location.getBlockX() +
 			", y = " + location.getBlockY() +

@@ -13,15 +13,15 @@ public class DeprecatedMethods {
 	public static Material getMaterial(int materialId) {
 		return Material.getMaterial(materialId);
 	}
-	
+
 	public static int getMaterialId(Material material) {
 		return material.getId();
 	}
-	
+
 	public static int getTypeId(Block block) {
 		return block.getTypeId();
 	}
-	
+
 	public static byte getMeta(Block block) {
 		return block.getData();
 	}

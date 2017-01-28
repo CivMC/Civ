@@ -12,5 +12,5 @@ import org.bukkit.entity.Player;
 
 public interface IBastionManager {
 	void init();
-	boolean canUndraw(List<Player> players, List<Block> bridgeBlocks); 
+	boolean canUndraw(List<Player> players, List<Block> bridgeBlocks);
 }

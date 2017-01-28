@@ -16,17 +16,17 @@ import com.aleksey.castlegates.CastleGates;
 public class ResourceHelper {
 	public static ArrayList<String> readScriptList(String resourcePath) {
 		InputStream stream = CastleGates.class.getResourceAsStream(resourcePath);
-		
+
 		if(stream == null) return null;
-		
+
     	StringBuilder script = new StringBuilder("");
-    	ArrayList<String> list = new ArrayList<String>(); 
-    	
+    	ArrayList<String> list = new ArrayList<String>();
+
     	try {
     		BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
     		String line;
-    		
-            while ((line = reader.readLine()) != null) { 
+
+            while ((line = reader.readLine()) != null) {
             	if(line.endsWith(";")) {
             		script.append(line.substring(0, line.length() - 1));
             		list.add(script.toString());
@@ -37,14 +37,14 @@ public class ResourceHelper {
                 	script.append("\n");
             	}
             }
-            
+
             if(script.length() > 0) {
             	list.add(script.toString());
             }
     	} catch (IOException e) {
     		e.printStackTrace();
     	}
-    	
+
     	return list;
 	}
 }
