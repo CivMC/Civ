@@ -28,7 +28,7 @@ public class PowerResultHelper {
 			message = ChatColor.RED + "Citadel has prevented that operation";
 			break;
 		case BastionBlocked:
-			message = ChatColor.RED + "A bastion has prevented the bridge/gates from undrawing";
+			message = ChatColor.RED + "A bastion has prevented the bridge/gate from undrawing";
 			break;
 		case Locked:
 			message = ChatColor.RED + "The gearblock is locked";
@@ -64,7 +64,7 @@ public class PowerResultHelper {
 		Location location = result.block.getLocation();
 
 		return ChatColor.RED +
-			"The bridge/gates undraw path is blocked at x = " + location.getBlockX() +
+			"The bridge/gate undraw path is blocked at x = " + location.getBlockX() +
 			", y = " + location.getBlockY() +
 			", z = " + location.getBlockZ()
 			;
@@ -75,7 +75,7 @@ public class PowerResultHelper {
 
 		if(result.block.getType() == Material.AIR) {
 			return ChatColor.RED +
-					"The bridge/gates are broken at x = " + location.getBlockX() +
+					"The bridge/gate is broken at x = " + location.getBlockX() +
 					", y = " + location.getBlockY() +
 					", z = " + location.getBlockZ()
 					;

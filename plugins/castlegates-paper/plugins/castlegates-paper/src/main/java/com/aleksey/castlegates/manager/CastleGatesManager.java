@@ -270,10 +270,10 @@ public class CastleGatesManager {
 
 		if(gearblock1.getLink() != null) {
 			if(gearblock1.getLink().isDrawn()) {
-				player.sendMessage(ChatColor.RED + "Cannot remove a link from a gearblock in a drawn state.");
+				player.sendMessage(ChatColor.RED + "Cannot unlink gearblocks in a drawn bridge/gate.");
 			} else {
 				this.gearManager.removeLink(gearblock1.getLink());
-				player.sendMessage(ChatColor.GREEN + "The gearblock's link has been removed.");
+				player.sendMessage(ChatColor.GREEN + "The gearblocks have been unlinked.");
 			}
 
 			return true;
@@ -318,7 +318,7 @@ public class CastleGatesManager {
 		}
 
 		if(showError) {
-			player.sendMessage(ChatColor.RED + "The gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has a broken link which cannot be restored by using the clicked gearblock because its location is wrong.");
+			player.sendMessage(ChatColor.RED + "The gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has a broken link which cannot be restored by using the clicked block. Click the block where the other gearblock used to be.");
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 		}
 
@@ -361,7 +361,7 @@ public class CastleGatesManager {
 				player.sendMessage("Bridge block");
 				break;
 			case Gates:
-				player.sendMessage("Gates block");
+				player.sendMessage("Gate block");
 				break;
 			default:
 				break;
@@ -386,7 +386,7 @@ public class CastleGatesManager {
 				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
 
 				if(gearblock.getLink().isDrawn()) {
-					player.sendMessage(ChatColor.GREEN + "The gearblock is in a drawn state");
+					player.sendMessage(ChatColor.GREEN + "The bridge/gate is drawn");
 				}
 
 				ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);

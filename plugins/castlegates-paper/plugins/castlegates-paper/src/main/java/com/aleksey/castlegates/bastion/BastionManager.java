@@ -34,7 +34,7 @@ public class BastionManager implements IBastionManager {
 		memberAndAbove.add(PlayerType.MODS);
 		memberAndAbove.add(PlayerType.ADMINS);
 		memberAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridge/gates above bastions");
+		PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridges/gates above bastions");
 	}
 
 	public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks) {
