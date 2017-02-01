@@ -303,7 +303,7 @@ public class CastleGatesManager {
 
 		if(result.gearblock.getLink() != null) {
 			if(showError) {
-				player.sendMessage(ChatColor.RED + "The gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " already has a link. Remove it before creating a new one.");
+				player.sendMessage(ChatColor.RED + "The gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "] already has a link. Remove it before creating a new one.");
 				ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 			}
 
@@ -311,14 +311,14 @@ public class CastleGatesManager {
 		}
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
-			player.sendMessage(ChatColor.GREEN + "The gearblock has been linked with the gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
+			player.sendMessage(ChatColor.GREEN + "The gearblock has been linked with the gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "]");
 			ParticleHelper.spawn(player, gearblock1, ParticleHelper.Type.Info);
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Info);
 			return true;
 		}
 
 		if(showError) {
-			player.sendMessage(ChatColor.RED + "The gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has a broken link which cannot be restored by using the clicked block. Click the block where the other gearblock used to be.");
+			player.sendMessage(ChatColor.RED + "The gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "] has a broken link which cannot be restored by using the clicked block. Click the block where the other gearblock used to be.");
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 		}
 
@@ -383,7 +383,7 @@ public class CastleGatesManager {
 			}
 			else {
 				Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
-				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
+				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at [" + gearblock2.getCoord().getX() + " " + gearblock2.getCoord().getY() + " " + gearblock2.getCoord().getZ() + "]");
 
 				if(gearblock.getLink().isDrawn()) {
 					player.sendMessage(ChatColor.GREEN + "The bridge/gate is drawn");

@@ -64,9 +64,10 @@ public class PowerResultHelper {
 		Location location = result.block.getLocation();
 
 		return ChatColor.RED +
-			"The bridge/gate undraw path is blocked at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ()
+			"The bridge/gate undraw path is blocked at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"]"
 			;
 	}
 
@@ -75,17 +76,18 @@ public class PowerResultHelper {
 
 		if(result.block.getType() == Material.AIR) {
 			return ChatColor.RED +
-					"The bridge/gate is broken at x = " + location.getBlockX() +
-					", y = " + location.getBlockY() +
-					", z = " + location.getBlockZ()
+					"The bridge/gate is broken at [" + location.getBlockX() +
+					" " + location.getBlockY() +
+					" " + location.getBlockZ() +
+					"]"
 					;
 		}
 
 		return ChatColor.RED +
-			"The " + result.block.getType() + " block at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ() +
-			" is not allowed to be used as a part of bridges/gates"
+			"The " + result.block.getType() + " block at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"] is not allowed to be used as a part of bridges/gates"
 			;
 	}
 
@@ -93,10 +95,10 @@ public class PowerResultHelper {
 		Location location = result.block.getLocation();
 
 		return ChatColor.RED +
-			"The gearblock at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ() +
-			" is not allowed to be used as a part of bridges/gates"
+			"The gearblock at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"] is not allowed to be used as a part of bridges/gates"
 			;
 	}
 }
