@@ -25,13 +25,13 @@ public class PowerResultHelper {
 			message = getCannotDrawGearMessage(result);
 			break;
 		case NotInCitadelGroup:
-			message = ChatColor.RED + "Citadel has prevented that operation";
+			message = ChatColor.RED + "Citadel has prevented that operation.";
 			break;
 		case BastionBlocked:
-			message = ChatColor.RED + "A bastion has prevented the bridge/gate from undrawing";
+			message = ChatColor.RED + "A bastion has prevented the bridge/gate from undrawing.";
 			break;
 		case Locked:
-			message = ChatColor.RED + "The gearblock is locked";
+			message = ChatColor.RED + "The gearblock is locked.";
 			break;
 		default:
 			message = null;
@@ -67,7 +67,7 @@ public class PowerResultHelper {
 			"The bridge/gate undraw path is blocked at [" + location.getBlockX() +
 			" " + location.getBlockY() +
 			" " + location.getBlockZ() +
-			"]"
+			"]."
 			;
 	}
 
@@ -79,7 +79,7 @@ public class PowerResultHelper {
 					"The bridge/gate is broken at [" + location.getBlockX() +
 					" " + location.getBlockY() +
 					" " + location.getBlockZ() +
-					"]"
+					"]."
 					;
 		}
 
@@ -87,7 +87,7 @@ public class PowerResultHelper {
 			"The " + result.block.getType() + " block at [" + location.getBlockX() +
 			" " + location.getBlockY() +
 			" " + location.getBlockZ() +
-			"] is not allowed to be used as a part of bridges/gates"
+			"] is not allowed to be used as a part of bridges/gates."
 			;
 	}
 
@@ -98,7 +98,7 @@ public class PowerResultHelper {
 			"The gearblock at [" + location.getBlockX() +
 			" " + location.getBlockY() +
 			" " + location.getBlockZ() +
-			"] is not allowed to be used as a part of bridges/gates"
+			"] is not allowed to be used as a part of bridges/gates."
 			;
 	}
 }

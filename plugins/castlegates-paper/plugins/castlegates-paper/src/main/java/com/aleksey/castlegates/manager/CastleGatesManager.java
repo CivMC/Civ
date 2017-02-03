@@ -282,7 +282,7 @@ public class CastleGatesManager {
 		FindGearResult result = findEndGear(block, event.getBlockFace());
 
 		if(result == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
+			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks.");
 		} else {
 			linkGearblocks(player, gearblock1, result, true);
 		}
@@ -311,7 +311,7 @@ public class CastleGatesManager {
 		}
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
-			player.sendMessage(ChatColor.GREEN + "The gearblock has been linked with the gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "]");
+			player.sendMessage(ChatColor.GREEN + "The gearblock has been linked with the gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "].");
 			ParticleHelper.spawn(player, gearblock1, ParticleHelper.Type.Info);
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Info);
 			return true;
@@ -375,25 +375,25 @@ public class CastleGatesManager {
 		}
 		else {
 			if(gearblock.getLink() == null) {
-				player.sendMessage(ChatColor.GREEN + "The gearblock is not linked");
+				player.sendMessage(ChatColor.GREEN + "The gearblock is not linked.");
 
 				if(gearblock.getBrokenLink() != null) {
-					player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
+					player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks.");
 				}
 			}
 			else {
 				Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
-				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at [" + gearblock2.getCoord().getX() + " " + gearblock2.getCoord().getY() + " " + gearblock2.getCoord().getZ() + "]");
+				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at [" + gearblock2.getCoord().getX() + " " + gearblock2.getCoord().getY() + " " + gearblock2.getCoord().getZ() + "].");
 
 				if(gearblock.getLink().isDrawn()) {
-					player.sendMessage(ChatColor.GREEN + "The bridge/gate is drawn");
+					player.sendMessage(ChatColor.GREEN + "The bridge/gate is drawn.");
 				}
 
 				ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);
 			}
 
 			if(gearblock.getTimer() != null) {
-				String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation();
+				String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation() + ".";
 				player.sendMessage(ChatColor.GREEN + message);
 			}
 
@@ -429,10 +429,10 @@ public class CastleGatesManager {
 
 		if(gearblock.getTimer() == null) {
 			this.gearManager.setGearblockTimer(gearblock, state.timer, state.timerOperation);
-			message = ChatColor.GREEN + "The gearblock's timer has been set to " + state.timer + " sec to process operation " + state.timerOperation;
+			message = ChatColor.GREEN + "The gearblock's timer has been set to " + state.timer + " sec to process operation " + state.timerOperation + ".";
 		} else {
 			this.gearManager.clearGearblockTimer(gearblock);
-			message = ChatColor.YELLOW + "The gearblock's timer has been removed";
+			message = ChatColor.YELLOW + "The gearblock's timer has been removed.";
 		}
 
 		player.sendMessage(message);
