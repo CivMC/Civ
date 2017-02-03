@@ -242,7 +242,7 @@ public class ConfigManager {
         TimerOperation result = Helper.parseTimerOperation(name);
 
         if(result == null) {
-        	this.logger.log(Level.WARNING, "'" + name + "' is invalid timer operation, will be used '" + defaultData.name() + "'");
+        	this.logger.log(Level.WARNING, "'" + name + "' is an invalid timer operation, '" + defaultData.name() + "'" + " will be used instead.");
         	result = defaultData;
         }
 

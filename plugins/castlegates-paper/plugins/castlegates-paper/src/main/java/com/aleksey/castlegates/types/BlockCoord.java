@@ -66,6 +66,6 @@ public class BlockCoord {
 
 	@Override
 	public String toString() {
-		return "World UUID = " + this.world + ", x = " + this.x + ", y = " + this.y + ", z = " + this.z;
+		return "World UUID = " + this.world + ", [" + this.x + " " + this.y + " " + this.z + "]";
 	}
 }

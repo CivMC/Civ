@@ -80,27 +80,27 @@ public class CastleGates extends JavaPlugin {
 
         if(getServer().getPluginManager().getPlugin("Citadel") != null) {
         	citadelManager = new CitadelManager();
-        	getLogger().log(Level.INFO, "Citadel plugin is found");
+        	getLogger().log(Level.INFO, "Citadel plugin found.");
         } else {
         	citadelManager = new NoCitadelManager();
-        	getLogger().log(Level.INFO, "Citadel plugin is NOT found");
+        	getLogger().log(Level.INFO, "Citadel plugin NOT found.");
         }
 
         if(getServer().getPluginManager().getPlugin("Bastion") != null) {
         	bastionManager = new BastionManager();
         	bastionManager.init();
-        	getLogger().log(Level.INFO, "Bastion plugin is found");
+        	getLogger().log(Level.INFO, "Bastion plugin found.");
         } else {
         	bastionManager = new NoBastionManager();
-        	getLogger().log(Level.INFO, "Bastion plugin is NOT found");
+        	getLogger().log(Level.INFO, "Bastion plugin NOT found.");
         }
 
         if(getServer().getPluginManager().getPlugin("JukeAlert") != null) {
         	jukeAlertManager = new JukeAlertManager();
-        	getLogger().log(Level.INFO, "JukeAlert plugin is found");
+        	getLogger().log(Level.INFO, "JukeAlert plugin found.");
         } else {
         	jukeAlertManager = new NoJukeAlertManager();
-        	getLogger().log(Level.INFO, "JukeAlert plugin is NOT found");
+        	getLogger().log(Level.INFO, "JukeAlert plugin NOT found.");
         }
 
         createOrebfuscatorManager();
@@ -127,7 +127,7 @@ public class CastleGates extends JavaPlugin {
 
         if(plugin == null) {
         	orebfuscatorManager = new NoOrebfuscatorManager();
-        	getLogger().log(Level.INFO, "Orebfuscator plugin is NOT found");
+        	getLogger().log(Level.INFO, "Orebfuscator plugin NOT found.");
         	return;
         }
 
@@ -143,14 +143,14 @@ public class CastleGates extends JavaPlugin {
 	        		)
 	        {
 	        	orebfuscatorManager = new OrebfuscatorManager();
-	        	getLogger().log(Level.INFO, "Orebfuscator plugin is found");
+	        	getLogger().log(Level.INFO, "Orebfuscator plugin found.");
 	        } else {
 	        	orebfuscatorManager = new NoOrebfuscatorManager();
-	        	getLogger().log(Level.INFO, "Orebfuscator plugin is found but old versions are NOT supported. You need to use 4.1.1 version or newer.");
+	        	getLogger().log(Level.INFO, "Orebfuscator plugin found but old versions are NOT supported. You need to use the 4.1.1 version or newer.");
 	        }
         } catch (Exception e) {
         	orebfuscatorManager = new NoOrebfuscatorManager();
-        	getLogger().log(Level.INFO, "Orebfuscator plugin is found but this version is NOT supported.");
+        	getLogger().log(Level.INFO, "Orebfuscator plugin found but this version is NOT supported.");
         }
     }
 

@@ -224,7 +224,7 @@ public class CastleGatesManager {
 		Block block = event.getClickedBlock();
 
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
-			player.sendMessage(ChatColor.RED + "Citadel preventing creation of gearblock.");
+			player.sendMessage(ChatColor.RED + "Citadel has prevented the creation of a gearblock.");
 			return false;
 		}
 
@@ -232,23 +232,23 @@ public class CastleGatesManager {
 		List<Integer> consumeSlots = Helper.getConsumeSlots(player, consumeItem);
 
 		if(consumeSlots == null && consumeItem != null) {
-			player.sendMessage(ChatColor.RED + "Not enough material to create gearblock.");
+			player.sendMessage(ChatColor.RED + "Not enough material left to create a gearblock.");
 			return false;
 		}
 
 		GearManager.CreateResult result = this.gearManager.createGear(block);
 
 		if(result == GearManager.CreateResult.NotCreated) {
-			player.sendMessage(ChatColor.RED + block.getType().toString() + " cannot be used as gearblock.");
+			player.sendMessage(ChatColor.RED + block.getType().toString() + " cannot be used as a gearblock.");
 			return false;
 		} else if(result == GearManager.CreateResult.AlreadyExist) {
-			player.sendMessage(ChatColor.RED + "Gearblock already exist.");
+			player.sendMessage(ChatColor.RED + "That block is already a gearblock.");
 			return true;
 		}
 
 		Helper.consumeItem(player, consumeItem, consumeSlots);
 
-		player.sendMessage(ChatColor.GREEN + "Gearblock has been created.");
+		player.sendMessage(ChatColor.GREEN + "A gearblock has been created.");
 
 		ParticleHelper.spawn(block, ParticleHelper.Type.Info);
 
@@ -264,16 +264,16 @@ public class CastleGatesManager {
 		if(gearblock1 == null) return false;
 
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
-			player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
+			player.sendMessage(ChatColor.RED + "Citadel has prevented the creation of a link.");
 			return false;
 		}
 
 		if(gearblock1.getLink() != null) {
 			if(gearblock1.getLink().isDrawn()) {
-				player.sendMessage(ChatColor.RED + "Link in drawn state cannot be removed.");
+				player.sendMessage(ChatColor.RED + "Cannot unlink gearblocks in a drawn bridge/gate.");
 			} else {
 				this.gearManager.removeLink(gearblock1.getLink());
-				player.sendMessage(ChatColor.GREEN + "Gearblock's link has been removed.");
+				player.sendMessage(ChatColor.GREEN + "The gearblocks have been unlinked.");
 			}
 
 			return true;
@@ -282,7 +282,7 @@ public class CastleGatesManager {
 		FindGearResult result = findEndGear(block, event.getBlockFace());
 
 		if(result == null) {
-			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock is not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks");
+			event.getPlayer().sendMessage(ChatColor.RED + "End gearblock not found. Link distance is limited to " + CastleGates.getConfigManager().getMaxBridgeLength() + " blocks.");
 		} else {
 			linkGearblocks(player, gearblock1, result, true);
 		}
@@ -295,7 +295,7 @@ public class CastleGatesManager {
 
 		if(!CastleGates.getCitadelManager().canBypass(player, loc)) {
 			if(showError) {
-				player.sendMessage(ChatColor.RED + "Citadel preventing creation of link.");
+				player.sendMessage(ChatColor.RED + "Citadel has prevented the creation of a link.");
 			}
 
 			return false;
@@ -303,7 +303,7 @@ public class CastleGatesManager {
 
 		if(result.gearblock.getLink() != null) {
 			if(showError) {
-				player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " already has link. Remove it before creating this link.");
+				player.sendMessage(ChatColor.RED + "The gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "] already has a link. Remove it before creating a new one.");
 				ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 			}
 
@@ -311,14 +311,14 @@ public class CastleGatesManager {
 		}
 
 		if(this.gearManager.createLink(gearblock1, result.gearblock, result.distance)) {
-			player.sendMessage(ChatColor.GREEN + "Gearblock has been linked with gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ());
+			player.sendMessage(ChatColor.GREEN + "The gearblock has been linked with the gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "].");
 			ParticleHelper.spawn(player, gearblock1, ParticleHelper.Type.Info);
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Info);
 			return true;
 		}
 
 		if(showError) {
-			player.sendMessage(ChatColor.RED + "Gearblock at x = " + result.gearblock.getCoord().getX() + ", y = " + result.gearblock.getCoord().getY() + ", z = " + result.gearblock.getCoord().getZ() + " has broken link and it cannot be restored using clicked gearblock because of location is wrong.");
+			player.sendMessage(ChatColor.RED + "The gearblock at [" + result.gearblock.getCoord().getX() + " " + result.gearblock.getCoord().getY() + " " + result.gearblock.getCoord().getZ() + "] has a broken link which cannot be restored by using the clicked block. Click the block where the other gearblock used to be.");
 			ParticleHelper.spawn(player, result.gearblock, ParticleHelper.Type.Warning);
 		}
 
@@ -361,7 +361,7 @@ public class CastleGatesManager {
 				player.sendMessage("Bridge block");
 				break;
 			case Gates:
-				player.sendMessage("Gates block");
+				player.sendMessage("Gate block");
 				break;
 			default:
 				break;
@@ -375,25 +375,25 @@ public class CastleGatesManager {
 		}
 		else {
 			if(gearblock.getLink() == null) {
-				player.sendMessage(ChatColor.GREEN + "Gearblock not linked");
+				player.sendMessage(ChatColor.GREEN + "The gearblock is not linked.");
 
 				if(gearblock.getBrokenLink() != null) {
-					player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks");
+					player.sendMessage(ChatColor.GREEN + "But contains " + gearblock.getBrokenLink().getBlocks().size() + " drawn blocks.");
 				}
 			}
 			else {
 				Gearblock gearblock2 = gearblock.getLink().getGearblock1() == gearblock ? gearblock.getLink().getGearblock2(): gearblock.getLink().getGearblock1();
-				player.sendMessage(ChatColor.GREEN + "Gearblock linked to gearblock at x = " + gearblock2.getCoord().getX() + ", y = " +  + gearblock2.getCoord().getY() + ", z = " +  + gearblock2.getCoord().getZ());
+				player.sendMessage(ChatColor.GREEN + "The gearblock has been linked to the gearblock at [" + gearblock2.getCoord().getX() + " " + gearblock2.getCoord().getY() + " " + gearblock2.getCoord().getZ() + "].");
 
 				if(gearblock.getLink().isDrawn()) {
-					player.sendMessage(ChatColor.GREEN + "Link is in drawn state");
+					player.sendMessage(ChatColor.GREEN + "The bridge/gate is drawn.");
 				}
 
 				ParticleHelper.spawn(player, gearblock2, ParticleHelper.Type.Info);
 			}
 
 			if(gearblock.getTimer() != null) {
-				String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation();
+				String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation() + ".";
 				player.sendMessage(ChatColor.GREEN + message);
 			}
 
@@ -407,7 +407,7 @@ public class CastleGatesManager {
 		Player player = event.getPlayer();
 
 		if(!CastleGates.getConfigManager().isTimerEnabled()) {
-			player.sendMessage(ChatColor.RED + "Timer function is disabled on the server.");
+			player.sendMessage(ChatColor.RED + "The timer function is disabled on this server.");
 			return true;
 		}
 
@@ -416,12 +416,12 @@ public class CastleGatesManager {
 		Gearblock gearblock = this.gearManager.getGearblock(blockCoord);
 
 		if(gearblock == null) {
-			player.sendMessage(ChatColor.RED + "This is not gearblock.");
+			player.sendMessage(ChatColor.RED + "That block is not a gearblock.");
 			return true;
 		}
 
 		if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
-			player.sendMessage(ChatColor.RED + "Citadel preventing this operation.");
+			player.sendMessage(ChatColor.RED + "Citadel has prevented that operation.");
 			return true;
 		}
 
@@ -429,10 +429,10 @@ public class CastleGatesManager {
 
 		if(gearblock.getTimer() == null) {
 			this.gearManager.setGearblockTimer(gearblock, state.timer, state.timerOperation);
-			message = ChatColor.GREEN + "Timer for gearblock has been set to " + state.timer + " sec to process operation " + state.timerOperation;
+			message = ChatColor.GREEN + "The gearblock's timer has been set to " + state.timer + " sec to process operation " + state.timerOperation + ".";
 		} else {
 			this.gearManager.clearGearblockTimer(gearblock);
-			message = ChatColor.YELLOW + "Timer has been removed from gearblock";
+			message = ChatColor.YELLOW + "The gearblock's timer has been removed.";
 		}
 
 		player.sendMessage(message);

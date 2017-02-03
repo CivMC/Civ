@@ -25,13 +25,13 @@ public class PowerResultHelper {
 			message = getCannotDrawGearMessage(result);
 			break;
 		case NotInCitadelGroup:
-			message = ChatColor.RED + "Citadel prevent this operation";
+			message = ChatColor.RED + "Citadel has prevented that operation.";
 			break;
 		case BastionBlocked:
-			message = ChatColor.RED + "Bastion prevent undrawing";
+			message = ChatColor.RED + "A bastion has prevented the bridge/gate from undrawing.";
 			break;
 		case Locked:
-			message = ChatColor.RED + "Gearblock locked";
+			message = ChatColor.RED + "The gearblock is locked.";
 			break;
 		default:
 			message = null;
@@ -64,9 +64,10 @@ public class PowerResultHelper {
 		Location location = result.block.getLocation();
 
 		return ChatColor.RED +
-			"Undraw path is blocked at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ()
+			"The bridge/gate undraw path is blocked at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"]."
 			;
 	}
 
@@ -75,17 +76,18 @@ public class PowerResultHelper {
 
 		if(result.block.getType() == Material.AIR) {
 			return ChatColor.RED +
-					"Bridge/gates is broken at x = " + location.getBlockX() +
-					", y = " + location.getBlockY() +
-					", z = " + location.getBlockZ()
+					"The bridge/gate is broken at [" + location.getBlockX() +
+					" " + location.getBlockY() +
+					" " + location.getBlockZ() +
+					"]."
 					;
 		}
 
 		return ChatColor.RED +
-			"Material " + result.block.getType() + " at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ() +
-			" is not allowed to use as part of bridge/gates"
+			"The " + result.block.getType() + " block at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"] is not allowed to be used as a part of bridges/gates."
 			;
 	}
 
@@ -93,10 +95,10 @@ public class PowerResultHelper {
 		Location location = result.block.getLocation();
 
 		return ChatColor.RED +
-			"Gearblock is placed as part of bridge/gates at x = " + location.getBlockX() +
-			", y = " + location.getBlockY() +
-			", z = " + location.getBlockZ() +
-			" but this is not allowed"
+			"The gearblock at [" + location.getBlockX() +
+			" " + location.getBlockY() +
+			" " + location.getBlockZ() +
+			"] is not allowed to be used as a part of bridges/gates."
 			;
 	}
 }
