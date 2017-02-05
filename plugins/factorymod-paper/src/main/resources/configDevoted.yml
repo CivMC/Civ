@@ -3987,44 +3987,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 12
@@ -4036,44 +4036,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 13
@@ -4085,44 +4085,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 14
@@ -4134,44 +4134,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 15
@@ -4183,44 +4183,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 16
@@ -4232,44 +4232,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 17
@@ -4281,44 +4281,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 18
@@ -4330,44 +4330,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 19
@@ -4379,44 +4379,44 @@ recipes:
       nickel:
         material: COAL
         name: Nickel
-        amount: 256
+        amount: 768
         lore:
         - Nickel T2
       Aluminum:
         material: IRON_INGOT
         name: Aluminum
-        amount: 192
+        amount: 576
         lore:
         - Aluminum T2
       pewter:
         material: INK_SACK
         name: Pewter
         durability: 8
-        amount: 48
+        amount: 144
         lore:
         - Pewter T2
       pearl:
         material: GOLD_INGOT
         name: Pearl
-        amount: 48
+        amount: 144
         lore:
         - Pearl T2
       brass:
         material: REDSTONE
         name: Brass
-        amount: 48
+        amount: 144
         lore:
         - Brass T2
       platinum:
         material: DIAMOND
         name: Platinum
-        amount: 24
+        amount: 72
         lore:
         - Platinum T2
       enderite:
         material: EMERALD
         name: Enderite
-        amount: 24
+        amount: 72
         lore:
         - Enderite T2
     factory: Vault Factory 20
@@ -4428,44 +4428,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 21
@@ -4477,44 +4477,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 22
@@ -4526,44 +4526,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 23
@@ -4575,44 +4575,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 24
@@ -4624,44 +4624,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 25
@@ -4673,44 +4673,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 26
@@ -4722,44 +4722,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 27
@@ -4771,44 +4771,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 28
@@ -4820,44 +4820,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 192
+        amount: 384
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 192
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 48
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 48
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 48
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 24
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 24
         lore:
         - Uranium T3
     factory: Vault Factory 29
