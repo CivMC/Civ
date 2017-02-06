@@ -271,11 +271,11 @@ public class JukeAlertListener implements Listener {
 
 		String message;
 		if (isJukebox) {
-			message = (ChatColor.AQUA + "You've created a snitch block registered to the group " + snitchGroupName
-				+ ".  To name your snitch, type /janame.");
+			message = (ChatColor.AQUA + "You've created a snitch registered to the group " + snitchGroupName
+				+ ". To name it, type /janame.");
 		} else {
 			message = (ChatColor.AQUA + "You've created an entry snitch registered to the group " + snitchGroupName
-				+ ".  To name your entry snitch, type /janame.");
+				+ ". To name it, type /janame.");
 		}
 		TextComponent lineText = new TextComponent(message);
 		lineText.setHoverEvent(
