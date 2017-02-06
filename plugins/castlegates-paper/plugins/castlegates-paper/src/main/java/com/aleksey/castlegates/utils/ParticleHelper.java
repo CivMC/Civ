@@ -10,14 +10,14 @@ import com.aleksey.castlegates.types.Gearblock;
 
 public class ParticleHelper {
 	public static enum Type { Info, Warning }
-	
+
 	public static void spawn(Player player, Gearblock gearblock, Type type) {
 		BlockCoord coord = gearblock.getCoord();
 		Location location = new Location(player.getWorld(), 0.5 + coord.getX(), 0.5 + coord.getY(), 0.5 + coord.getZ());
 
 		spawn(location, type);
 	}
-	
+
 	public static void spawn(Block block, Type type) {
 		Location location = new Location(block.getWorld(), 0.5 + block.getX(), 0.5 + block.getY(), 0.5 + block.getZ());
 
@@ -31,7 +31,7 @@ public class ParticleHelper {
 		final float offsetZ = 0;
 		final float speed = 0.5f;
 		final int particleCount = 80;
-		
+
 		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
 	}
 }

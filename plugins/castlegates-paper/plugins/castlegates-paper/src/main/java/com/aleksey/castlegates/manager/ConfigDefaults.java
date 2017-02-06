@@ -81,7 +81,7 @@ public class ConfigDefaults {
 		"RED_NETHER_BRICK",
 		"BONE_BLOCK",
 	};
-	
+
 	public static final String[] bridgeMaterials = new String[] {
 		Material.STONE.name(),
 		Material.DIRT.name(),
