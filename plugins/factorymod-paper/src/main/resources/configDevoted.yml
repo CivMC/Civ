@@ -3488,6 +3488,103 @@ recipes:
         amount: 80
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 1
   Upgrade to Vault Factory 2:
     name: Upgrade to Vault Factory 2
@@ -3537,6 +3634,103 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 2
   Upgrade to Vault Factory 3:
     name: Upgrade to Vault Factory 3
@@ -3586,6 +3780,103 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 3
   Upgrade to Vault Factory 4:
     name: Upgrade to Vault Factory 4
@@ -3635,6 +3926,103 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 4
   Upgrade to Vault Factory 5:
     name: Upgrade to Vault Factory 5
@@ -3684,6 +4072,103 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 5
   Upgrade to Vault Factory 6:
     name: Upgrade to Vault Factory 6
@@ -3733,6 +4218,103 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 4
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 4
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 4
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 4
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 4
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 4
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 4
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 4
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 4
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 4
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 4
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 4
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 4
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 4
+        lore:
+        - Turf T1
     factory: Vault Factory 6
   Upgrade to Vault Factory 7:
     name: Upgrade to Vault Factory 7
@@ -3782,6 +4364,103 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
+        lore:
+        - Turf T1
     factory: Vault Factory 7
   Upgrade to Vault Factory 8:
     name: Upgrade to Vault Factory 8
@@ -3831,6 +4510,103 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
+        lore:
+        - Turf T1
     factory: Vault Factory 8
   Upgrade to Vault Factory 9:
     name: Upgrade to Vault Factory 9
@@ -3880,6 +4656,103 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
+        lore:
+        - Turf T1
     factory: Vault Factory 9
   Upgrade to Vault Factory 10:
     name: Upgrade to Vault Factory 10
@@ -3929,6 +4802,103 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
+        lore:
+        - Turf T1
     factory: Vault Factory 10
   Upgrade to Vault Factory 11:
     name: Upgrade to Vault Factory 11
@@ -3978,6 +4948,103 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
+        lore:
+        - Turf T1
     factory: Vault Factory 11
   Upgrade to Vault Factory 12:
     name: Upgrade to Vault Factory 12
@@ -4027,6 +5094,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 12
   Upgrade to Vault Factory 13:
     name: Upgrade to Vault Factory 13
@@ -4076,6 +5240,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 13
   Upgrade to Vault Factory 14:
     name: Upgrade to Vault Factory 14
@@ -4125,6 +5386,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 14
   Upgrade to Vault Factory 15:
     name: Upgrade to Vault Factory 15
@@ -4174,6 +5532,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 15
   Upgrade to Vault Factory 16:
     name: Upgrade to Vault Factory 16
@@ -4223,6 +5678,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 16
   Upgrade to Vault Factory 17:
     name: Upgrade to Vault Factory 17
@@ -4272,6 +5824,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 17
   Upgrade to Vault Factory 18:
     name: Upgrade to Vault Factory 18
@@ -4321,6 +5970,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 18
   Upgrade to Vault Factory 19:
     name: Upgrade to Vault Factory 19
@@ -4370,6 +6116,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 19
   Upgrade to Vault Factory 20:
     name: Upgrade to Vault Factory 20
@@ -4419,6 +6262,103 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
     factory: Vault Factory 20
   Upgrade to Vault Factory 21:
     name: Upgrade to Vault Factory 21
@@ -4468,6 +6408,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 21
   Upgrade to Vault Factory 22:
     name: Upgrade to Vault Factory 22
@@ -4517,6 +6554,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 22
   Upgrade to Vault Factory 23:
     name: Upgrade to Vault Factory 23
@@ -4566,6 +6700,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 23
   Upgrade to Vault Factory 24:
     name: Upgrade to Vault Factory 24
@@ -4615,6 +6846,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 24
   Upgrade to Vault Factory 25:
     name: Upgrade to Vault Factory 25
@@ -4664,6 +6992,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 25
   Upgrade to Vault Factory 26:
     name: Upgrade to Vault Factory 26
@@ -4713,6 +7138,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 26
   Upgrade to Vault Factory 27:
     name: Upgrade to Vault Factory 27
@@ -4762,6 +7284,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 27
   Upgrade to Vault Factory 28:
     name: Upgrade to Vault Factory 28
@@ -4811,6 +7430,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 28
   Upgrade to Vault Factory 29:
     name: Upgrade to Vault Factory 29
@@ -4860,6 +7576,103 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
     factory: Vault Factory 29
   Upgrade to Lottery Factory:
     name: Upgrade to Lottery Factory
