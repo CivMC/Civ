@@ -26,7 +26,7 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
 /**
  * Base handler for setting up event captures. Like people logging in who are about to get BanSticked.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickEventHandler implements Listener {

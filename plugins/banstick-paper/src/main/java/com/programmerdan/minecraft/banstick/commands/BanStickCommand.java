@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.banstick.commands;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
@@ -28,7 +29,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 /**
  * BanStick! BanStick! Ban all the nerds by name, CIDR, IP, or some combo.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickCommand implements CommandExecutor {
@@ -69,6 +70,9 @@ public class BanStickCommand implements CommandExecutor {
 		Date banEndTime = null;
 		Date banEnd = null;
 		int mStart = 1;
+
+		BanStick.getPlugin().debug("preBan: {0}, CIDR? {1}, toBan: {2}, endDate: {3}, endTime: {4}", 
+				preBan, CIDR, toBan, endDate, endTime);
 		
 		if (endDate != null) {
 			try {
@@ -91,6 +95,8 @@ public class BanStickCommand implements CommandExecutor {
 		}
 		
 		String message = (arguments.length >= mStart ? String.join(" ", Arrays.copyOfRange(arguments, mStart, arguments.length)) : null);
+		
+		BanStick.getPlugin().debug("message: {0}", message);
 		
 		try {
 			IPAddress ipcheck = new IPAddressString(toBan).toAddress();
@@ -123,7 +129,7 @@ public class BanStickCommand implements CommandExecutor {
 				} catch (Exception ee) {
 					sender.sendMessage(ChatColor.RED + "Unable to find player " + ChatColor.DARK_RED + toBan);
 				}
-			} if (toBan.length() == 36) {
+			} else if (toBan.length() == 36) {
 				try {
 					playerId = UUID.fromString(toBan);
 				} catch (IllegalArgumentException iae) {

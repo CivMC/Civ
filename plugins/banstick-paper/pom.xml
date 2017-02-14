@@ -47,7 +47,7 @@
 				<configuration>
 					<filters>
 						<filter>
-							<artifact>inet.ipaddr:IPAddress</artifact>
+							<artifact>inet.ipaddr:*</artifact>
 							<includes>
 								<include>**</include>
 							</includes>
@@ -106,7 +106,7 @@
 			<groupId>inet.ipaddr</groupId>
 			<artifactId>IPAddress</artifactId>
 			<version>1.0.0</version>
-			<scope>provided</scope>
+			<!-- <scope>provided</scope> -->
 		</dependency>
 	</dependencies>
 	

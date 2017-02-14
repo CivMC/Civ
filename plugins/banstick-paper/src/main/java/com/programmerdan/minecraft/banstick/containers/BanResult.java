@@ -16,7 +16,7 @@ import com.programmerdan.minecraft.banstick.data.BSVPN;
  * Used to store bans issued and then transmit the results to various parties.
  * Basically a logic wrapper.
  * 
- * @author ProgrammerDan
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanResult {

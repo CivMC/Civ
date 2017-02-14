@@ -29,7 +29,7 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 /**
  * Ties into the managed datasource processes of the CivMod core plugin.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickDatabaseHandler {
@@ -60,7 +60,7 @@ public class BanStickDatabaseHandler {
 	private boolean configureData(ConfigurationSection config) {
 		String host = config.getString("host", "localhost");
 		int port = config.getInt("port", 3306);
-		String dbname = config.getString("datadase", "banstick");
+		String dbname = config.getString("database", "banstick");
 		String username = config.getString("user");
 		String password = config.getString("password");
 		int poolsize = config.getInt("poolsize", 5);
@@ -255,11 +255,11 @@ public class BanStickDatabaseHandler {
 	private void initializeTables() {
 		data.registerMigration(0,  false, 
 					"CREATE TABLE IF NOT EXISTS bs_player (" +
-					" pid BIGINT AUTOINCREMENT PRIMARY KEY," +
+					" pid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" name VARCHAR(16)," +
 					" uuid CHAR(36) NOT NULL UNIQUE," +
 					" first_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" bid REFERENCES bs_ban(bid)," +
+					" bid BIGINT REFERENCES bs_ban(bid)," +
 					" vpn_pardon_time TIMESTAMP," +
 					" shared_pardon_time TIMESTAMP," +
 					" INDEX bs_player_name (name)," +
@@ -268,30 +268,30 @@ public class BanStickDatabaseHandler {
 					" INDEX bs_player_join (first_add)" +
 					");",
 					"CREATE TABLE IF NOT EXISTS bs_session (" +
-					" sid BIGINT AUTOINCREMENT PRIMARY KEY," +
+					" sid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" pid BIGINT REFERENCES bs_player(pid)," +
 					" join_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" leave_time TIMSTAMP," +
+					" leave_time TIMESTAMP," +
 					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
 					" INDEX bs_session_pids (pid, join_time, leave_time)" +
 					");",
 					"CREATE TABLE IF NOT EXISTS bs_ban (" +
-					" bid BIGINT AUTOINCREMENT PRIMARY KEY," +
+					" bid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" ban_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" ip_ban REFERENCES bs_ip(iid)," +
-					" vpn_ban REFERENCES bs_vpn(vid)," +
-					" share_ban REFERENCES bs_share(sid)," +
+					" ip_ban BIGINT REFERENCES bs_ip(iid)," +
+					" vpn_ban BIGINT REFERENCES bs_vpn(vid)," +
+					" share_ban BIGINT REFERENCES bs_share(sid)," +
 					" admin_ban BOOLEAN," +
 					" message TEXT," +
 					" ban_end TIMESTAMP," +
 					" INDEX bs_ban_time (ban_time)," +
-					" INDEX bs_ban_ip (ip_ban)" +
+					" INDEX bs_ban_ip (ip_ban)," +
 					" INDEX bs_ban_vpn (vpn_ban)," +
 					" INDEX bs_ban_share (share_ban)," +
 					" INDEX bs_ban_end (ban_end)" +
 					");",
 					"CREATE TABLE IF NOT EXISTS bs_share (" +
-					" sid BIGINT AUTOINCREMENT PRIMARY KEY," +
+					" sid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" first_pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
 					" second_pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
@@ -299,11 +299,11 @@ public class BanStickDatabaseHandler {
 					" second_sid BIGINT NOT NULL REFERENCES bs_session(sid)," +
 					" pardon BOOLEAN," +
 					" pardon_time TIMESTAMP," +
-					" INDEX bs_share (first_pid, second_pid),",
-					" INDEX bs_pardon (pardon_time)",
+					" INDEX bs_share (first_pid, second_pid)," +
+					" INDEX bs_pardon (pardon_time)" +
 					");",
 					"CREATE TABLE IF NOT EXISTS bs_ip (" +
-					" iid BIGINT AUTOINCREMENT PRIMARY KEY," +
+					" iid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" ip4 CHAR(15)," +
 					" ip4cidr SMALLINT," +
@@ -354,7 +354,4 @@ public class BanStickDatabaseHandler {
 	public List<BSIP> getAllByIP(final InetAddress netAddress) {
 		return BSIP.allMatching(netAddress);
 	}
-	
-	// ===== TODO: dirty save schedulers
-	
 }

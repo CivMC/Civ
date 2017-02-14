@@ -1,7 +1,7 @@
 /**
  * All the commands!
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 package com.programmerdan.minecraft.banstick.commands;

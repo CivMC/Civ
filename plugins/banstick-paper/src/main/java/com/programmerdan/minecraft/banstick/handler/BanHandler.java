@@ -17,7 +17,7 @@ import com.programmerdan.minecraft.banstick.data.BSSession;
 /**
  * A series of static utility classes to facilitate issuing bans.
  * 
- * @author ProgrammerDan
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanHandler {
@@ -141,7 +141,7 @@ public class BanHandler {
 	 * After the ban is created, finds all accounts that are using the IP address and bans them, unless
 	 * already banned or pardoned.
 	 * 
-	 * @param playerIP
+	 * @param exactIP
 	 * 	The IP address to ban.
 	 * @param message
 	 * 	The message to use as a ban message; is also sent to all players who are online and caught in the ban.
@@ -193,10 +193,15 @@ public class BanHandler {
 	 * Does a ban against a CIDR range.
 	 * 
 	 * @param cidrIP
+	 * 	cidr IP range to ban
 	 * @param message
+	 *  Message to record as ban reason
 	 * @param banEnd
+	 *  The time to end the ban
 	 * @param adminBan
+	 *  Is this an administrative ban?
 	 * @param includeHistoric
+	 *  Should we include all historic occurances of this IP in the ban? (TODO)
 	 * @return
 	 */
 	public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {

@@ -8,7 +8,7 @@ import com.programmerdan.minecraft.banstick.commands.BanStickCommand;
 /**
  * Handles Commands for this plugin. Check plugin.yml for details!
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickCommandHandler {

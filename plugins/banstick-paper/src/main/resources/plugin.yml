@@ -9,11 +9,11 @@ commands:
   description: Swing that banstick, send nerds flying.
   aliases: [bst, stickofdoom]
   permission: banstick.ban
-  usage:
-   - /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   - /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   - /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-   - /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+  usage: |
+   /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
+   /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
+   /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
+   /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
  lovetap:
   description: Investigate a user / show information. Also give banstick.ips to show IP info during check.
   alias: bstl

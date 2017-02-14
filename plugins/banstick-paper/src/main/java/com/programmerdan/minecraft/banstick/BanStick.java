@@ -1,15 +1,11 @@
 package com.programmerdan.minecraft.banstick;
 
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-
 import com.programmerdan.minecraft.banstick.handler.BanStickCheckHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class BanStick extends ACivMod {
 	private static BanStick instance;

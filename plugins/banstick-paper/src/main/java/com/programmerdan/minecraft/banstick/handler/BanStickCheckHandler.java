@@ -6,7 +6,7 @@ import org.bukkit.configuration.file.FileConfiguration;
  * 
  * Handles all checks and monitoring tasks, including deferred bans.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickCheckHandler {

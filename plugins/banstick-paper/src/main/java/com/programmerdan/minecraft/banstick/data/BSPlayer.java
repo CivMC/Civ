@@ -23,7 +23,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 /**
  * Represents player DAO logic.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BSPlayer {
