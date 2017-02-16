@@ -49,6 +49,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -451,6 +452,15 @@ public class JukeAlertListener implements Listener {
 			}
 		}
 	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onVehicleMovement(VehicleMoveEvent event) {
+			Entity e = event.getVehicle().getPassenger();
+			// TODO: apparently there's no way to get the second passenger? wtf, bukkit
+			if (e instanceof Player) {
+				enterSnitchProximity(new PlayerMoveEvent((Player) e, event.getFrom(), event.getTo()));
+			}
+		}
 
 	// Because teleporting doesn't trigger a movement event :/
 	@EventHandler(priority = EventPriority.HIGHEST)
