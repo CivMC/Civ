@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -248,18 +249,18 @@ public class InventoryListener extends ServerDataListener {
 			case NOTHING:
 			case UNKNOWN:
 			default:
-				logger.log(Level.WARNING, "Detected unknown inventory action!");
+				logger.log(Level.FINE, "Detected unknown inventory action!");
 				slotAction = "UNKNOWN_SLOT";
 				slotItem = inInv;
-				doSlot = (inInv != null);
+				doSlot = (inInv != null && Material.AIR.equals(inInv.getType()));
 				cursorAction = "UNKNOWN_CURSOR";
 				cursorItem = inHand;
-				doCursor = (inHand != null);
+				doCursor = (inHand != null && Material.AIR.equals(inHand.getType()));
 				break;
 			}
 
 			if (doSlot) {
-				logger.log(Level.INFO, "Slot Action {0} holds {1}", new Object[]{slotAction, ItemStackToString.toString(slotItem)});
+				//logger.log(Level.FINER, "Slot Action {0} holds {1}", new Object[]{slotAction, ItemStackToString.toString(slotItem)});
 				ItemStack cloneItem = slotItem.clone();
 				cloneItem.setAmount(1);
 				DataSample slotData = new PointDataSample("player.slot." + sourcePicker + "." + slotAction, this.getServer(),
@@ -269,7 +270,7 @@ public class InventoryListener extends ServerDataListener {
 			}
 			
 			if (doCursor) {
-				logger.log(Level.INFO, "Cursor Action {0} holds {1}", new Object[]{cursorAction, ItemStackToString.toString(cursorItem)});
+				//logger.log(Level.FINER, "Cursor Action {0} holds {1}", new Object[]{cursorAction, ItemStackToString.toString(cursorItem)});
 				ItemStack cloneItem = cursorItem.clone();
 				cloneItem.setAmount(1);
 				DataSample cursorData = new PointDataSample("player.cursor." + sourcePicker + "." + cursorAction, this.getServer(),
