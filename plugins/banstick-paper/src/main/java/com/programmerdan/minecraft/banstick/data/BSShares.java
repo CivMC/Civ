@@ -15,8 +15,7 @@ public class BSShares {
 		BSShares shares = new BSShares();
 		shares.forPlayer = player;
 		shares.shareList = null;
-		// TODO: all of this.
-		return null;
+		return shares;
 	}
 	
 	public static void release(BSShares shares) {

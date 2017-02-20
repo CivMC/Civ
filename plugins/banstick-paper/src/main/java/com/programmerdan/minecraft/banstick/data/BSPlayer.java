@@ -38,6 +38,7 @@ public class BSPlayer {
 	private UUID uuid;
 	private Timestamp firstAdd;
 	private BSBan bid;
+	private Timestamp ipPardonTime;
 	private Timestamp vpnPardonTime;
 	private Timestamp sharedPardonTime;
 	private boolean dirty;
@@ -66,6 +67,16 @@ public class BSPlayer {
 	
 	public Date getFirstAdd() {
 		return firstAdd;
+	}
+	
+	public Date getIPPardonTime() {
+		return ipPardonTime;
+	}
+	
+	public void setIPPardonTime(Date pardon) {
+		this.ipPardonTime = pardon != null ? new Timestamp(pardon.getTime()) : null;
+		this.dirty = true;
+		dirtyPlayers.offer(new WeakReference<BSPlayer>(this));
 	}
 	
 	public Date getVpnPardonTime() {
@@ -142,7 +153,7 @@ public class BSPlayer {
 	public static void saveDirty() {
 		int batchSize = 0;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement savePlayer = connection.prepareStatement("UPDATE bs_player SET vpn_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
+				PreparedStatement savePlayer = connection.prepareStatement("UPDATE bs_player SET ip_pardon_time = ?, vpn_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
 			while (!dirtyPlayers.isEmpty()) {
 				WeakReference<BSPlayer> rplayer = dirtyPlayers.poll();
 				BSPlayer player = rplayer.get();
@@ -155,6 +166,8 @@ public class BSPlayer {
 					int[] batchRun = savePlayer.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? " + batchSize + " vs " + batchRun.length);
+					} else {
+						BanStick.getPlugin().debug("Player batch: {0} saves", batchRun.length);
 					}
 					batchSize = 0;
 				}
@@ -163,6 +176,8 @@ public class BSPlayer {
 				int[] batchRun = savePlayer.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? " + batchSize + " vs " + batchRun.length);
+				} else {
+					BanStick.getPlugin().debug("Player batch: {0} saves", batchRun.length);
 				}
 			}
 		} catch (SQLException se) {
@@ -177,7 +192,7 @@ public class BSPlayer {
 		if (!dirty) return;
 		this.dirty = false; // don't let anyone else in!
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement savePlayer = connection.prepareStatement("UPDATE bs_player SET vpn_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
+				PreparedStatement savePlayer = connection.prepareStatement("UPDATE bs_player SET ip_pardon_time = ?, vpn_pardon_time = ?, shared_pardon_time = ?, bid = ?, name = ? WHERE pid = ?");) {
 			saveToStatement(savePlayer);
 			int effects = savePlayer.executeUpdate();
 			if (effects == 0) {
@@ -189,27 +204,32 @@ public class BSPlayer {
 	}
 	
 	private void saveToStatement(PreparedStatement savePlayer) throws SQLException {
-		if (this.vpnPardonTime == null) {
-			savePlayer.setNull(1, Types.TIMESTAMP);
+		if (this.ipPardonTime == null) {
+			savePlayer.setNull(1,  Types.TIMESTAMP);
 		} else {
-			savePlayer.setTimestamp(1, this.vpnPardonTime);
+			savePlayer.setTimestamp(1,  this.ipPardonTime);
 		}
-		if (this.sharedPardonTime == null) {
+		if (this.vpnPardonTime == null) {
 			savePlayer.setNull(2, Types.TIMESTAMP);
 		} else {
-			savePlayer.setTimestamp(2, this.sharedPardonTime);
+			savePlayer.setTimestamp(2, this.vpnPardonTime);
+		}
+		if (this.sharedPardonTime == null) {
+			savePlayer.setNull(3, Types.TIMESTAMP);
+		} else {
+			savePlayer.setTimestamp(3, this.sharedPardonTime);
 		}
 		if (this.bid == null) {
-			savePlayer.setNull(3, Types.BIGINT);
+			savePlayer.setNull(4, Types.BIGINT);
 		} else {
-			savePlayer.setLong(3,  this.bid.getId());
+			savePlayer.setLong(4,  this.bid.getId());
 		}
 		if (this.name == null) {
-			savePlayer.setNull(4,  Types.VARCHAR);
+			savePlayer.setNull(5,  Types.VARCHAR);
 		} else {
-			savePlayer.setString(4, this.name);
+			savePlayer.setString(5, this.name);
 		}
-		savePlayer.setLong(5, this.pid);
+		savePlayer.setLong(6, this.pid);
 	}
 	
 	/**
@@ -299,8 +319,21 @@ public class BSPlayer {
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
 					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
-					player.vpnPardonTime = rs.getTimestamp(6);
-					player.sharedPardonTime = rs.getTimestamp(7);
+					try {
+						player.ipPardonTime = rs.getTimestamp(6);
+					} catch (SQLException te) {
+						player.ipPardonTime = null;
+					}
+					try {
+						player.vpnPardonTime = rs.getTimestamp(7);
+					} catch (SQLException te) {
+						player.vpnPardonTime = null;
+					}
+					try {
+						player.sharedPardonTime = rs.getTimestamp(8);
+					} catch (SQLException te) {
+						player.sharedPardonTime = null;
+					}
 					allPlayersID.put(pid, player);
 					allPlayersUUID.put(player.uuid, player);
 					return player;
@@ -342,8 +375,21 @@ public class BSPlayer {
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
 					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
-					player.vpnPardonTime = rs.getTimestamp(6);
-					player.sharedPardonTime = rs.getTimestamp(7);
+					try {
+						player.ipPardonTime = rs.getTimestamp(6);
+					} catch (SQLException te) {
+						player.ipPardonTime = null;
+					}
+					try {
+						player.vpnPardonTime = rs.getTimestamp(7);
+					} catch (SQLException te) {
+						player.vpnPardonTime = null;
+					}
+					try {
+						player.sharedPardonTime = rs.getTimestamp(8);
+					} catch (SQLException te) {
+						player.sharedPardonTime = null;
+					}
 					allPlayersID.put(pid, player);
 					allPlayersUUID.put(player.uuid, player);
 					return player;
@@ -399,9 +445,9 @@ public class BSPlayer {
 	
 	public static long preload(long offset, int limit) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadPlayers = connection.prepareStatement("SELECT * FROM bs_player ORDER BY bid OFFSET ? LIMIT ?");) {
-			loadPlayers.setLong(1, offset);
-			loadPlayers.setInt(2, limit);
+				PreparedStatement loadPlayers = connection.prepareStatement("SELECT * FROM bs_player ORDER BY bid LIMIT ? OFFSET ? ");) {
+			loadPlayers.setLong(2, offset);
+			loadPlayers.setInt(1, limit);
 			try (ResultSet rs = loadPlayers.executeQuery()) {
 				long maxId = -1;
 				while (rs.next()) {
@@ -416,12 +462,25 @@ public class BSPlayer {
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
 					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
-					player.vpnPardonTime = rs.getTimestamp(6);
-					player.sharedPardonTime = rs.getTimestamp(7);
+					try {
+						player.ipPardonTime = rs.getTimestamp(6);
+					} catch (SQLException te) {
+						player.ipPardonTime = null;
+					}
+					try {
+						player.vpnPardonTime = rs.getTimestamp(7);
+					} catch (SQLException te) {
+						player.vpnPardonTime = null;
+					}
+					try {
+						player.sharedPardonTime = rs.getTimestamp(8);
+					} catch (SQLException te) {
+						player.sharedPardonTime = null;
+					}
 					if (!allPlayersID.containsKey(player.pid)) {
 						allPlayersID.put(player.pid, player);
 					}
-					if (!allPlayersUUID.containsKey(player.pid)) {
+					if (!allPlayersUUID.containsKey(player.uuid)) {
 						allPlayersUUID.put(player.uuid, player);
 					}
 					
@@ -433,5 +492,24 @@ public class BSPlayer {
 			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
 		}
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(this.name);
+		if (this.getBan() != null) {
+			sb.append(" [Banned]");
+		}
+		if (this.ipPardonTime != null) {
+			sb.append(" [IP Pardoned]");
+		}
+		if (this.vpnPardonTime != null) {
+			sb.append(" [VPN Pardoned]");
+		}
+		if (this.sharedPardonTime != null) {
+			sb.append(" [Share Pardoned]");
+		}
+		return sb.toString();
 	}
 }

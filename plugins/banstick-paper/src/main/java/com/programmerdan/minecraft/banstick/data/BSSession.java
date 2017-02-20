@@ -8,10 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.programmerdan.minecraft.banstick.BanStick;
@@ -88,6 +89,8 @@ public class BSSession {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					} else {
+						BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
 					}
 					batchSize = 0;
 				}
@@ -96,6 +99,8 @@ public class BSSession {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+				} else {
+					BanStick.getPlugin().debug("Session batch: {0} saves", batchRun.length);
 				}
 			}
 		} catch (SQLException se) {
@@ -151,14 +156,8 @@ public class BSSession {
 			getId.setLong(1, sid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
-					BSSession nS = new BSSession();
-					nS.sid = sid;
-					// TODO: refactor to avoid recursive lookups.
-					nS.pid = BSPlayer.byId(rs.getLong(2));
-					nS.joinTime = rs.getTimestamp(3);
-					nS.leaveTime = rs.getTimestamp(4);
-					nS.iid = BSIP.byId(rs.getLong(5));
-					nS.dirty = false;
+					BSSession nS = internalGetSession(rs);
+					allSessionID.put(sid, nS);
 					return nS;
 				} else {
 					BanStick.getPlugin().warning("Failed to retrieve Session by id: " + sid + " - not found");
@@ -168,6 +167,46 @@ public class BSSession {
 			BanStick.getPlugin().severe("Retrieval of session by ID failed: " + sid, se);
 		}
 		return null;
+	}
+
+	private static BSSession internalGetSession(ResultSet rs) throws SQLException {
+		BSSession nS = new BSSession();
+		nS.sid = rs.getLong(1);
+		// TODO: refactor to avoid recursive lookups.
+		nS.pid = BSPlayer.byId(rs.getLong(2));
+		nS.joinTime = rs.getTimestamp(3);
+		try {
+			nS.leaveTime = rs.getTimestamp(4);
+		} catch (SQLException se) {
+			nS.leaveTime = null;
+		}
+		nS.iid = BSIP.byId(rs.getLong(5));
+		nS.dirty = false;
+		return nS;
+	}
+	
+	public static List<BSSession> byIP(BSIP iid) {
+		ArrayList<BSSession> sessions = new ArrayList<BSSession>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
+			getIds.setLong(1, iid.getId());
+			try (ResultSet rs = getIds.executeQuery();) {
+				while (rs.next()) {
+					long sid = rs.getLong(1);
+					if (allSessionID.containsKey(sid)) {
+						sessions.add(allSessionID.get(sid));
+						continue;
+					}
+					
+					BSSession nS = internalGetSession(rs);
+					sessions.add(nS);
+					allSessionID.put(nS.sid, nS);
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Retrieval of sessions by IP failed: " + iid.toString(), se);
+		}
+		return sessions;
 	}
 
 	public static BSSession create(BSPlayer pid, Date sessionStart, BSIP iid) {
@@ -207,9 +246,9 @@ public class BSSession {
 	
 	public static long preload(long offset, int limit) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session ORDER BY sid OFFSET ? LIMIT ?");) {
-			loadSessions.setLong(1, offset);
-			loadSessions.setInt(2, limit);
+				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session ORDER BY sid LIMIT ? OFFSET ?");) {
+			loadSessions.setLong(2, offset);
+			loadSessions.setInt(1, limit);
 			try (ResultSet rs = loadSessions.executeQuery()) {
 				long maxId = -1;
 				while (rs.next()) {
@@ -218,7 +257,11 @@ public class BSSession {
 					session.sid = rs.getLong(1);
 					session.pid = BSPlayer.byId(rs.getLong(2));
 					session.joinTime = rs.getTimestamp(3);
-					session.leaveTime = rs.getTimestamp(4);
+					try {
+						session.leaveTime = rs.getTimestamp(4);
+					} catch (SQLException se) {
+						session.leaveTime = null;
+					}
 					session.iid = BSIP.byId(rs.getLong(5));
 
 					if (!allSessionID.containsKey(session.sid)) {
@@ -233,5 +276,17 @@ public class BSSession {
 			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
 		}
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(getPlayer().getName()).append(": ");
+		sb.append(getJoinTime().toString());
+		if (isEnded()) {
+			sb.append(" - ").append(getLeaveTime());
+		}
+		
+		return sb.toString();
 	}
 }

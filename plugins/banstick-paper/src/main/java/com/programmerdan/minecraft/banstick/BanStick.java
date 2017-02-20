@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickCheckHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -13,6 +14,7 @@ public class BanStick extends ACivMod {
 	private BanStickCheckHandler checkHandler;
 	private BanStickEventHandler eventHandler;
 	private BanStickDatabaseHandler databaseHandler;
+	private BanStickTorUpdater torUpdater;
 	
 	@Override
 	public void onEnable() {
@@ -28,8 +30,15 @@ public class BanStick extends ACivMod {
 		registerEventHandler();
 		registerCheckHandler();
 		registerCommandHandler();
-
+		registerTorHandler();
 		
+	}
+	
+	@Override
+	public void onDisable() {
+		super.onDisable();
+		
+		databaseHandler.doShutdown();
 	}
 	
 	private void connectDatabase() {
@@ -70,6 +79,15 @@ public class BanStick extends ACivMod {
 			this.setEnabled(false);
 		}	
 	}
+	
+	private void registerTorHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.torUpdater = new BanStickTorUpdater(getConfig());
+		} catch (Exception e) {
+			this.severe("Failed to set up TOR updater!", e);
+		}
+	}
 
 	/**
 	 * 
@@ -86,6 +104,10 @@ public class BanStick extends ACivMod {
 	@Override
 	protected String getPluginName() {
 		return "BanStick";
+	}
+
+	public void saveCache() {
+		this.databaseHandler.doShutdown();
 	}
 
 }

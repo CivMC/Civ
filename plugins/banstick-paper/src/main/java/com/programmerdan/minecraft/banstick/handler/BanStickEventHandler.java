@@ -51,12 +51,17 @@ public class BanStickEventHandler implements Listener {
 		if (player != null) {
 			BSBan ban = player.getBan();
 			if (ban != null) {
-				if (ban.getBanEndTime().before(new Date())) { // ban has ended.
+				if (ban.getBanEndTime() != null && ban.getBanEndTime().before(new Date())) { // ban has ended.
 					player.setBan(null);
 				} else {
+					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + ban.toString());
 					asyncEvent.disallow(Result.KICK_BANNED, ban.getMessage());
 					return;
 				}
+			}
+			if (player.getIPPardonTime() != null) {
+				BanStick.getPlugin().info("Skipping IP checks due to pardon for player " + player.getName());
+				return;
 			}
 		}
 		
@@ -64,13 +69,17 @@ public class BanStickEventHandler implements Listener {
 		BSIP ip = BSIP.byInetAddress(preJoinAddress);
 		if (ip != null) {
 			List<BSBan> ipBans = BSBan.byIP(ip, false);
-			if (!ipBans.isEmpty()) {
+			for (int i = ipBans.size() - 1 ; i >= 0; i-- ) {
 				//TODO: Can I have better selectivity here? What are the rules?
-				BSBan pickOne = ipBans.get(ipBans.size() - 1);
+				BSBan pickOne = ipBans.get(i);
+				if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+					continue; // skip expired ban.
+				}
 				if (player != null) {
 					// associate! 
 					player.setBan(pickOne); // get most recent matching IP ban and use it.
 				}
+				BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
 				asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 				return;
 			}
@@ -79,14 +88,19 @@ public class BanStickEventHandler implements Listener {
 		// Finally, trigger a CIDR lookup. This will continue until done; it does not tie into login or async join events.
 		List<BSIP> subnets = BSIP.allMatching(preJoinAddress);
 		for (BSIP sip : subnets) {
+			BanStick.getPlugin().debug("Check for bans on IP: {0}", sip.getId());
 			List<BSBan> sipBans = BSBan.byIP(sip, false);
-			if (!sipBans.isEmpty()) {
+			for (int i = sipBans.size() - 1 ; i >= 0; i-- ) {
 				//TODO: Can I have better selectivity here? What are the rules?
-				BSBan pickOne = sipBans.get(sipBans.size() - 1);
+				BSBan pickOne = sipBans.get(i);
+				if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+					continue; // skip expired ban.
+				}
 				if (player != null) {
 					// associate! 
 					player.setBan(pickOne); // get most recent matching subnet ban and use it.
 				}
+				BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
 				asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 				return;
 			}			

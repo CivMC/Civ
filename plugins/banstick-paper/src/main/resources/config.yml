@@ -8,15 +8,37 @@ database:
  connectionTimeout: 3000
  idleTimeout: 600000
  maxLifetime: 7200000
-preload:
- enabled: true
- batch: 50
- period: 300
- delay: 1200
-dirtysave: 
- period: 12000
- delay: 6000
+ preload:
+  enabled: true
+  batch: 50
+  period: 300
+  delay: 1200
+ dirtysave: 
+  period: 12000
+  delay: 6000
 vpn:
  check: true
  autoban: true
  delayrange: 10,1000
+tor:
+ check: true
+ autoban: true
+ lists:
+  danxxx:
+   ban:
+    length: 86400000
+    message: TOR node use is prohibited. Please use residential connection.
+   address: https://www.dan.me.uk/torlist/?exit
+   period: 36000
+   delay: 3000
+   cidr: false
+  torproject:
+   ban:
+    length: 86400000
+    message: TOR node use is prohibited. Please use residential connection.
+   address: https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=8.26.94.198&port=25565
+   period: 72000
+   delay: 3600
+   cidr: false
+  
+ 

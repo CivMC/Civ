@@ -60,7 +60,7 @@ public class BanStickCommand implements CommandExecutor {
 		String preBan = arguments[0];
 		int locCIDR = preBan.indexOf('/');
 		Boolean hasCIDR = locCIDR > -1; 
-		Integer CIDR = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR) + 1) : null;
+		Integer CIDR = (hasCIDR) ? Integer.valueOf(preBan.substring(locCIDR + 1)) : null;
 		String toBan = (hasCIDR) ? preBan.substring(0, locCIDR) : preBan;
 		String endDate = (arguments.length >= 2 ? arguments[1] : null);
 		String endTime = (arguments.length >= 3 ? arguments[2] : null);
@@ -158,13 +158,13 @@ public class BanStickCommand implements CommandExecutor {
 								BanHandler.doIPBan(exact, message, banEnd, true, false);
 						result.informCommandSender(sender);
 					}
-				} else {
-					sender.sendMessage(ChatColor.RED + "Unable to find " + ChatColor.DARK_RED + toBan);
 				}
 				
 				result = BanHandler.doUUIDBan(playerId, message, banEnd, true);
 				result.informCommandSender(sender);
 				return true;
+			} else {
+				sender.sendMessage(ChatColor.RED + "Unable to find " + ChatColor.DARK_RED + toBan);
 			}
 		}
 		return false;

@@ -2,6 +2,7 @@ package com.programmerdan.minecraft.banstick.handler;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -159,12 +160,14 @@ public class BanHandler {
 			if (message == null || message.trim().equals("")) {
 				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
 			}
+			// TODO: match with existing ban for this IP.
 			BSBan ban = BSBan.create(exactIP, message, banEnd, adminBan); // general ban.
 			BanResult result = new BanResult();
 			result.addBan(ban);
 			
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
+				if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
 				BSSession active = banPlayer.getLatestSession();
 				if (active.getIP().getId() == exactIP.getId() && banPlayer.getBan() == null) { // TODO replace with equality check.
 					banPlayer.setBan(ban);
@@ -178,8 +181,15 @@ public class BanHandler {
 			}
 				
 			if (includeHistoric) {
-				// also search Sessions, and ban everyone who ever used it.
-				// TODO
+				List<BSSession> sessions = BSSession.byIP(exactIP);
+				for (BSSession session : sessions) {
+					BSPlayer banPlayer = session.getPlayer();
+					if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+					if (session.getPlayer().getBan() == null) {
+						banPlayer.setBan(ban);
+						result.addPlayer(banPlayer);
+					}
+				}
 			}
 			
 			return result;
@@ -216,6 +226,7 @@ public class BanHandler {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				BSPlayer banPlayer = BSPlayer.byUUID(player.getUniqueId());
 				if (banPlayer.getBan() != null) continue; // already banned.
+				if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
 				
 				BSSession active = banPlayer.getLatestSession();
 				BSIP activeIP = active.getIP();
@@ -243,6 +254,8 @@ public class BanHandler {
 			}
 				
 			if (includeHistoric) {
+				// This is hard. For the CIDR, need to find all IPs within the CIDR, then check all session for those IPs.
+				
 				// also search Sessions, and ban everyone who ever used it.
 				// TODO
 			}

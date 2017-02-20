@@ -120,6 +120,8 @@ public class BSBan {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+					} else {
+						BanStick.getPlugin().debug("Ban batch: {0} saves", batchRun.length);
 					}
 					batchSize = 0;
 				}
@@ -128,6 +130,8 @@ public class BSBan {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
+				} else {
+					BanStick.getPlugin().debug("Ban batch: {0} saves", batchRun.length);
 				}
 			}
 		} catch (SQLException se) {
@@ -186,7 +190,9 @@ public class BSBan {
 			getId.setLong(1, bid);
 			try (ResultSet rs = getId.executeQuery();) {
 				if (rs.next()) {
-					return extractBan(rs);
+					BSBan ban = extractBan(rs);
+					allBanID.put(bid,  ban);
+					return ban;
 				} else {
 					BanStick.getPlugin().warning("Failed to retrieve Ban by id: " + bid + " - not found");
 				}
@@ -243,11 +249,17 @@ public class BSBan {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement findBans = connection.prepareStatement(
 						includeExpired?"SELECT * FROM bs_ban WHERE ip_ban = ? ORDER BY ban_time":
-							"SELECT * FROM bs_ban WHERE ip_ban = ? AND (ban_end = NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
+							"SELECT * FROM bs_ban WHERE ip_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
 			findBans.setLong(1, exactIP.getId());
 			try (ResultSet rs = findBans.executeQuery()) {
 				while(rs.next()) {
-					results.add(extractBan(rs));
+					BSBan ban = extractBan(rs);
+					if (allBanID.containsKey(ban.bid)) {
+						results.add(allBanID.get(ban.bid));
+					} else {
+						results.add(ban);
+						allBanID.put(ban.bid, ban);
+					}
 				}
 			}
 		} catch (SQLException se) {
@@ -319,7 +331,11 @@ public class BSBan {
 		}
 		nS.isAdminBan = rs.getBoolean(6);
 		nS.message = rs.getString(7);
-		nS.banEnd = rs.getTimestamp(8);
+		try {
+			nS.banEnd = rs.getTimestamp(8);
+		} catch (SQLException se) {
+			nS.banEnd = null;
+		}
 		nS.dirty = false;
 		return nS;
 	}
@@ -328,9 +344,9 @@ public class BSBan {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement loadBans = connection.prepareStatement(
 						includeExpired?"SELECT * FROM bs_ban ORDER BY bid OFFSET ? LIMIT ?":
-							"SELECT * FROM bs_ban WHERE ban_end = NULL OR ban_end >= CURRENT_TIMESTAMP ORDER BY bid OFFSET ? LIMIT ?");) {
-			loadBans.setLong(1, offset);
-			loadBans.setInt(2, limit);
+							"SELECT * FROM bs_ban WHERE ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP ORDER BY bid LIMIT ? OFFSET ?");) {
+			loadBans.setLong(2, offset);
+			loadBans.setInt(1, limit);
 			try (ResultSet rs = loadBans.executeQuery()) {
 				long maxId = -1;
 				while (rs.next()) {
@@ -346,5 +362,36 @@ public class BSBan {
 			BanStick.getPlugin().severe("Failed during Ban preload, offset " + offset + " limit " + limit, se);
 		}
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuffer sb = new StringBuffer();
+		if (ipBan != null) {
+			sb.append("IP Ban: ").append(ipBan.toString());
+		} else if (vpnBan != null) {
+			sb.append("VPN Ban: ").append(vpnBan.toString());
+		} else if (shareBan != null) {
+			sb.append("Share Ban: ").append(shareBan.toString());
+		} else {
+			sb.append("Player Ban");
+		}
+		
+		if (isAdminBan()) {
+			sb.append(" (administrative)");
+		}
+		
+		if (getBanEndTime() != null) {
+			if ((new Date()).after(getBanEndTime())) { // passed
+				sb.append(" - Expired");
+			} else {
+				sb.append(" - Until ").append(getBanEndTime());
+			}
+		} else {
+			sb.append(" - Forever");
+		}
+		
+		sb.append(" with message \"").append(message).append("\"");
+		return sb.toString();
 	}
 }

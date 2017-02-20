@@ -10,9 +10,9 @@ commands:
   aliases: [bst, stickofdoom]
   permission: banstick.ban
   usage: |
-   /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
-   /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
-   /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message] |
+   /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+   /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
    /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
  lovetap:
   description: Investigate a user / show information. Also give banstick.ips to show IP info during check.
@@ -20,10 +20,19 @@ commands:
   permission: banstick.lovetap
   usage: /<command> [name/uuid]
  forgive:
-  description: Ignore a warning / alert for a user
+  description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
   alias: bstf
   permission: banstick.forgive
-  usage: /<command> [name/uuid] [VPN|SHARED]
+  usage: |
+   /<command> [ip]
+   /<command> [ip]/[CIDR]
+   /<command> [name/uuid]
+   /<command> [name/uuid] [BAN] [IP] [VPN] [SHARED]
+ bansave:
+  description: Flush cached changes straight to DB.
+  alias: bsbs
+  permission: banstick.ips
+  usage: /<command>
  lovetaps:
   description: Show list of users with warning flags
   alias: bstls

@@ -135,16 +135,18 @@ public class BanStickDatabaseHandler {
 	 */
 
 	private void activateDirtySave(ConfigurationSection config) {
-		long period = 5*60*1000l;
-		long delay = 5*60*1000l;
+		long period = 5*60*50l;
+		long delay = 5*60*50l;
 		if (config != null) {
 			period = config.getLong("period", period);
 			delay = config.getLong("delay", delay);
 		}
+		BanStick.getPlugin().debug("DirtySave Period {0} Delay {1}", period, delay);
 		
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
+				BanStick.getPlugin().debug("Player dirty save");
 				BSPlayer.saveDirty();
 			}
 		}, delay, period);
@@ -152,6 +154,7 @@ public class BanStickDatabaseHandler {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
+				BanStick.getPlugin().debug("Ban dirty save");
 				BSBan.saveDirty();
 			}
 		}, delay + (period / 5), period);
@@ -159,6 +162,7 @@ public class BanStickDatabaseHandler {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
+				BanStick.getPlugin().debug("Session dirty save");
 				BSSession.saveDirty();
 			}
 		}, delay + ((period * 2) / 5), period);
@@ -166,6 +170,7 @@ public class BanStickDatabaseHandler {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
+				BanStick.getPlugin().debug("Share dirty save");
 				BSShare.saveDirty();
 			}
 		}, delay + ((period * 3) / 5), period);
@@ -173,6 +178,7 @@ public class BanStickDatabaseHandler {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
+				BanStick.getPlugin().debug("VPN dirty save");
 				BSVPN.saveDirty();
 			}
 		}, delay + ((period * 4) / 5), period);
@@ -182,18 +188,21 @@ public class BanStickDatabaseHandler {
 
 	private void activatePreload(ConfigurationSection config) {
 		if (config != null && config.getBoolean("enabled")) {
-			long period = 5*60*1000l;
-			long delay = 5*60*1000l;
+			long period = 5*60*50l;
+			long delay = 5*60*50l;
 			if (config != null) {
 				period = config.getLong("period", period);
 				delay = config.getLong("delay", delay);
 			}
 			final int batchsize = config.getInt("batch", 100);
 			
+			BanStick.getPlugin().debug("Preload Period {0} Delay {1} batch {2}", period, delay, batchsize);
+			
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("IP preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSIP.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
@@ -203,6 +212,7 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("VPN preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSVPN.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
@@ -212,6 +222,7 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("Ban preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSBan.preload(lastId, batchsize, false);
 					if (lastId < 0) this.cancel();
 				}
@@ -221,6 +232,7 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("Player preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSPlayer.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
@@ -230,6 +242,7 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("Session preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSSession.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
@@ -239,6 +252,7 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
+					BanStick.getPlugin().debug("Share preload {0}, lim {1}", lastId, batchsize);
 					lastId = BSShare.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
@@ -260,9 +274,11 @@ public class BanStickDatabaseHandler {
 					" uuid CHAR(36) NOT NULL UNIQUE," +
 					" first_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" bid BIGINT REFERENCES bs_ban(bid)," +
-					" vpn_pardon_time TIMESTAMP," +
-					" shared_pardon_time TIMESTAMP," +
+					" ip_pardon_time TIMESTAMP NULL, " +
+					" vpn_pardon_time TIMESTAMP NULL," +
+					" shared_pardon_time TIMESTAMP NULL," +
 					" INDEX bs_player_name (name)," +
+					" INDEX bs_player_ip_pardons (ip_pardon_time)," +
 					" INDEX bs_player_vpn_pardons (vpn_pardon_time)," +
 					" INDEX bs_player_shared_pardons (shared_pardon_time)," +
 					" INDEX bs_player_join (first_add)" +
@@ -271,7 +287,7 @@ public class BanStickDatabaseHandler {
 					" sid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" pid BIGINT REFERENCES bs_player(pid)," +
 					" join_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" leave_time TIMESTAMP," +
+					" leave_time TIMESTAMP NULL," +
 					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
 					" INDEX bs_session_pids (pid, join_time, leave_time)" +
 					");",
@@ -283,7 +299,7 @@ public class BanStickDatabaseHandler {
 					" share_ban BIGINT REFERENCES bs_share(sid)," +
 					" admin_ban BOOLEAN," +
 					" message TEXT," +
-					" ban_end TIMESTAMP," +
+					" ban_end TIMESTAMP NULL," +
 					" INDEX bs_ban_time (ban_time)," +
 					" INDEX bs_ban_ip (ip_ban)," +
 					" INDEX bs_ban_vpn (vpn_ban)," +
@@ -298,7 +314,7 @@ public class BanStickDatabaseHandler {
 					" first_sid BIGINT NOT NULL REFERENCES bs_session(sid)," +
 					" second_sid BIGINT NOT NULL REFERENCES bs_session(sid)," +
 					" pardon BOOLEAN," +
-					" pardon_time TIMESTAMP," +
+					" pardon_time TIMESTAMP NULL," +
 					" INDEX bs_share (first_pid, second_pid)," +
 					" INDEX bs_pardon (pardon_time)" +
 					");",
@@ -321,6 +337,24 @@ public class BanStickDatabaseHandler {
 	 */
 	private void stageUpdates() {
 		
+	}
+	
+	public void doShutdown() {
+
+		BanStick.getPlugin().debug("Player dirty save");
+		BSPlayer.saveDirty();
+
+		BanStick.getPlugin().debug("Ban dirty save");
+		BSBan.saveDirty();
+
+		BanStick.getPlugin().debug("Session dirty save");
+		BSSession.saveDirty();
+
+		BanStick.getPlugin().debug("Share dirty save");
+		BSShare.saveDirty();
+
+		BanStick.getPlugin().debug("VPN dirty save");
+		BSVPN.saveDirty();
 	}
 	
 	// ============ QUERIES =============

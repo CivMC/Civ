@@ -136,6 +136,7 @@ public class BSIP {
 	 */
 	public static BSIP byCIDR(String netAddress, int CIDR) {
 		IPAddressString ips = new IPAddressString(netAddress + "/" + CIDR);
+		BanStick.getPlugin().debug("Check for CIDR IP: {0}", ips.toString());
 		IPAddress lookup = ips.getAddress();
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
@@ -177,6 +178,7 @@ public class BSIP {
 	}
 	
 	public static BSIP byIPAddress(IPAddress lookup) {
+		BanStick.getPlugin().debug("Check for IP: {0}", lookup.toString());
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
@@ -284,7 +286,7 @@ public class BSIP {
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement statement = connection.prepareStatement(
-						"INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, createTime) VALUES (?, ?, ?, ?, ?);",
+						"INSERT INTO bs_ip(ip4, ip4cidr, ip6, ip6cidr, create_time) VALUES (?, ?, ?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS);) {
 			BSIP newIP = new BSIP();
 			if (lookup.isIPv4()) {
@@ -381,9 +383,9 @@ public class BSIP {
 	
 	public static long preload(long offset, int limit) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip ORDER BY bid OFFSET ? LIMIT ?");) {
-			loadIPs.setLong(1, offset);
-			loadIPs.setInt(2, limit);
+				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip ORDER BY iid LIMIT ? OFFSET ?");) {
+			loadIPs.setLong(2, offset);
+			loadIPs.setInt(1, limit);
 			try (ResultSet rs = loadIPs.executeQuery()) {
 				long maxId = -1;
 				while (rs.next()) {
@@ -439,5 +441,14 @@ public class BSIP {
 			BanStick.getPlugin().severe("Failed during IP preload, offset " + offset + " limit " + limit, se);
 		}
 		return -1;
+	}
+	
+	@Override
+	public String toString() {
+		if (basev4 != null) {
+			return basev4.toString();
+		} else {
+			return basev6.toString();
+		}
 	}
 }
