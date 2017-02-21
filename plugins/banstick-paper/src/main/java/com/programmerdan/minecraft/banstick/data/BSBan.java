@@ -31,7 +31,7 @@ public class BSBan {
 	 * 					" bid BIGINT AUTOINCREMENT PRIMARY KEY," +
 					" ban_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" ip_ban REFERENCES bs_ip(iid)," +
-					" vpn_ban REFERENCES bs_vpn(vid)," +
+					" proxy_ban REFERENCES bs_ip_data(idid)," +
 					" share_ban REFERENCES bs_share(sid)," +
 					" admin_ban BOOLEAN," +
 					" message TEXT," +
@@ -41,7 +41,7 @@ public class BSBan {
 	private long bid; 
 	private Timestamp banTime;
 	private BSIP ipBan;
-	private BSVPN vpnBan;
+	private BSIPData proxyBan;
 	private BSShare shareBan;
 	private boolean isAdminBan;
 	private String message; //mutable
@@ -59,8 +59,8 @@ public class BSBan {
 		return ipBan;
 	}
 	
-	public BSVPN getVPNBan() {
-		return vpnBan;
+	public BSIPData getProxyBan() {
+		return proxyBan;
 	}
 	
 	public BSShare getShareBan() {
@@ -112,6 +112,7 @@ public class BSBan {
 				WeakReference<BSBan> rban = dirtyBans.poll();
 				BSBan ban = rban.get();
 				if (ban != null && ban.dirty) {
+					ban.dirty = false;
 					ban.saveToStatement(save);
 					save.addBatch();
 					batchSize ++;
@@ -169,7 +170,7 @@ public class BSBan {
 	}
 	
 	/**
-	 * Cleanly saves this player if necessary, and removes it from the references lists.
+	 * Cleanly saves this ban if necessary, and removes it from the references lists.
 	 */
 	public void flush() {
 		if (dirty) {
@@ -177,7 +178,7 @@ public class BSBan {
 		}
 		allBanID.remove(this.bid);
 		this.ipBan = null;
-		this.vpnBan = null;
+		this.proxyBan = null;
 		this.shareBan = null;
 	}
 	
@@ -263,11 +264,35 @@ public class BSBan {
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to lookup bans by IP: ", se);
+			BanStick.getPlugin().severe("Failed to lookup bans by IP: " + exactIP, se);
 		}
 		return results;
 	}
 
+	public static List<BSBan> byProxy(BSIPData data, boolean includeExpired) {
+		List<BSBan> results = new ArrayList<BSBan>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement findBans = connection.prepareStatement(
+						includeExpired?"SELECT * FROM bs_ban WHERE proxy_ban = ? ORDER BY ban_time":
+							"SELECT * FROM bs_ban WHERE proxy_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
+			findBans.setLong(1, data.getId());
+			try (ResultSet rs = findBans.executeQuery()) {
+				while(rs.next()) {
+					BSBan ban = extractBan(rs);
+					if (allBanID.containsKey(ban.bid)) {
+						results.add(allBanID.get(ban.bid));
+					} else {
+						results.add(ban);
+						allBanID.put(ban.bid, ban);
+					}
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to lookup bans by IP Data: " + data, se);
+		}
+		return results;
+	}
+	
 	public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this IP is already actively banned!
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
@@ -307,7 +332,51 @@ public class BSBan {
 			allBanID.put(newBan.bid, newBan);
 			return newBan;
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed to create a new ban record: ", se);
+			BanStick.getPlugin().severe("Failed to create a new ip ban record: ", se);
+		}
+		return null;
+	}
+
+	public static BSBan create(BSIPData proxy, String message, Date banEnd, boolean adminBan) {
+		// TODO: Check if this IP is already actively banned!
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+			BSBan newBan = new BSBan();
+			newBan.dirty = false;
+			newBan.proxyBan = proxy;
+			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
+			newBan.message = message;
+			newBan.isAdminBan = adminBan;
+			
+			try (PreparedStatement insertBan = connection.prepareStatement("INSERT INTO bs_ban(ban_time, message, ban_end, admin_ban, proxy_ban) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+				insertBan.setTimestamp(1, newBan.banTime);
+				if (newBan.message != null) {
+					insertBan.setString(2, newBan.message);
+				} else {
+					insertBan.setNull(2, Types.VARCHAR);
+				}
+				if (newBan.banEnd != null) {
+					insertBan.setTimestamp(3, newBan.banEnd);
+				} else {
+					insertBan.setNull(3, Types.TIMESTAMP);
+				}
+				insertBan.setBoolean(4, adminBan);
+				insertBan.setLong(5,  newBan.proxyBan.getId());
+				insertBan.execute();
+				try (ResultSet rs = insertBan.getGeneratedKeys()) {
+					if (rs.next()) { 
+						newBan.bid = rs.getLong(1);
+					} else {
+						BanStick.getPlugin().severe("No BID returned on ban insert?!");
+						return null; // no bid? error.
+					}
+				}
+			}
+			
+			allBanID.put(newBan.bid, newBan);
+			return newBan;
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to create a new proxy ban record: ", se);
 		}
 		return null;
 	}
@@ -323,7 +392,7 @@ public class BSBan {
 		}
 		long vid = rs.getLong(4);
 		if (!rs.wasNull()) {
-			nS.vpnBan = BSVPN.byId(vid);
+			nS.proxyBan = BSIPData.byId(vid);
 		}
 		long sid = rs.getLong(5);
 		if (!rs.wasNull()) {
@@ -340,15 +409,23 @@ public class BSBan {
 		return nS;
 	}
 	
+	/**
+	 * Preloads a segment of ban data. Depending on parameters, loads only active bans or loads all bans.
+	 * 
+	 * @param offset Offset to begin at
+	 * @param limit How many to load
+	 * @param includeExpired Include old (expired) bans or no
+	 * @return last ID encountered, or -1 if none.
+	 */
 	public static long preload(long offset, int limit, boolean includeExpired) {
+		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement loadBans = connection.prepareStatement(
-						includeExpired?"SELECT * FROM bs_ban ORDER BY bid OFFSET ? LIMIT ?":
-							"SELECT * FROM bs_ban WHERE ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP ORDER BY bid LIMIT ? OFFSET ?");) {
-			loadBans.setLong(2, offset);
-			loadBans.setInt(1, limit);
+						includeExpired?"SELECT * FROM bs_ban WHERE bid > ? ORDER BY bid LIMIT ?":
+							"SELECT * FROM bs_ban WHERE bid > ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP ) ORDER BY bid LIMIT ? ");) {
+			loadBans.setLong(1, offset);
+			loadBans.setInt(2, limit);
 			try (ResultSet rs = loadBans.executeQuery()) {
-				long maxId = -1;
 				while (rs.next()) {
 					BSBan ban = extractBan(rs);
 					if (!allBanID.containsKey(ban.bid)) {
@@ -356,12 +433,11 @@ public class BSBan {
 					}
 					if (ban.bid > maxId) maxId = ban.bid;
 				}
-				return maxId;
 			}
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Failed during Ban preload, offset " + offset + " limit " + limit, se);
 		}
-		return -1;
+		return maxId;
 	}
 	
 	@Override
@@ -369,8 +445,8 @@ public class BSBan {
 		StringBuffer sb = new StringBuffer();
 		if (ipBan != null) {
 			sb.append("IP Ban: ").append(ipBan.toString());
-		} else if (vpnBan != null) {
-			sb.append("VPN Ban: ").append(vpnBan.toString());
+		} else if (proxyBan != null) {
+			sb.append("Proxy Ban: ").append(proxyBan.toString());
 		} else if (shareBan != null) {
 			sb.append("Share Ban: ").append(shareBan.toString());
 		} else {

@@ -1,6 +1,8 @@
 package com.programmerdan.minecraft.banstick.commands;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,7 +34,7 @@ public class ForgiveCommand implements CommandExecutor {
 		   /<command> [ip]
 		   /<command> [ip]/[CIDR]
 		   /<command> [name/uuid]
-		   /<command> [name/uuid] [IP|VPN|SHARED]
+		   /<command> [name/uuid] [BAN] [IP] [PROXY] [SHARED]
 		*/
 		
 		String preForgive = arguments[0];
@@ -40,10 +42,10 @@ public class ForgiveCommand implements CommandExecutor {
 		Boolean hasCIDR = locCIDR > -1; 
 		Integer CIDR = (hasCIDR) ? Integer.valueOf(preForgive.substring(locCIDR + 1)) : null;
 		String toForgive = (hasCIDR) ? preForgive.substring(0, locCIDR) : preForgive;
-		String pardon = (arguments.length >= 2 ? arguments[1] : null);
+		List<String> pardons = (arguments.length > 1) ? Arrays.asList(Arrays.copyOfRange(arguments, 1, arguments.length)) : null;
 
-		BanStick.getPlugin().debug("preForgive: {0}, CIDR? {1}, toForgive: {2}, pardon: {3}", 
-				preForgive, CIDR, toForgive, pardon);
+		BanStick.getPlugin().debug("preForgive: {0}, CIDR? {1}, toForgive: {2}, pardons: {3}", 
+				preForgive, CIDR, toForgive, pardons);
 				
 		try {
 			IPAddress ipcheck = new IPAddressString(toForgive).toAddress();
@@ -94,7 +96,7 @@ public class ForgiveCommand implements CommandExecutor {
 			if (playerId != null) {
 				BSPlayer player = BSPlayer.byUUID(playerId);
 				
-				if (pardon == null) { // unban
+				if (pardons == null) { // unban
 					if (player.getBan() != null) {
 						player.setBan(null);
 						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is unbanned.");
@@ -102,40 +104,54 @@ public class ForgiveCommand implements CommandExecutor {
 						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is not banned.");
 					}
 					return true;
-				}
-				
-				if ("IP".equalsIgnoreCase(pardon)) {
-					if (player.getIPPardonTime() == null) {
-						player.setIPPardonTime(new Date());
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future IP bans. Existing bans aren't impacted.");
-					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from IP bans.");
+				} else {
+					boolean match = false;
+					for (String pardon : pardons) {
+						if ("BAN".equalsIgnoreCase(pardon)) {
+							if (player.getBan() != null) {
+								player.setBan(null);
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is unbanned.");
+							} else {
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is not banned.");
+							}
+						}
+						
+						if ("IP".equalsIgnoreCase(pardon)) {
+							if (player.getIPPardonTime() == null) {
+								player.setIPPardonTime(new Date());
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future IP bans. Existing bans aren't impacted.");
+							} else {
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from IP bans.");
+							}
+							match = true;
+						}
+						
+						if ("PROXY".equalsIgnoreCase(pardon)) {
+							if (player.getProxyPardonTime() == null) {
+								player.setProxyPardonTime(new Date());
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future Proxy bans. Existing warnings aren't impacted.");
+							} else {
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from Proxy bans.");
+							}
+							match = true;
+						}
+						
+						if ("SHARED".equalsIgnoreCase(pardon)) {
+							if (player.getSharedPardonTime() == null) {
+								player.setSharedPardonTime(new Date());
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future Share warnings/bans. Existing warning/bans aren't impacted.");
+							} else {
+								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from Share warnings/bans.");
+							}
+							match = true;
+						}
+						
 					}
-					return true;
-				}
-				
-				if ("VPN".equalsIgnoreCase(pardon)) {
-					if (player.getVpnPardonTime() == null) {
-						player.setVpnPardonTime(new Date());
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future Vpn warning. Existing warnings aren't impacted.");
-					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from Vpn warnings.");
+					if (match) {
+						return true;
 					}
-					return true;
+					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Pleaes use BAN, IP, PROXY, or SHARED. Or none to just unban.");
 				}
-				
-				if ("SHARED".equalsIgnoreCase(pardon)) {
-					if (player.getSharedPardonTime() == null) {
-						player.setSharedPardonTime(new Date());
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is pardoned from future Share warnings/bans. Existing warning/bans aren't impacted.");
-					} else {
-						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is already pardoned from Share warnings/bans.");
-					}
-					return true;
-				}
-				
-				sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardon + ". Pleaes use IP, VPN, or SHARED. Or none to just unban.");
-				
 				return false;
 			} else {
 				sender.sendMessage(ChatColor.RED + "Unable to find " + ChatColor.DARK_RED + toForgive);

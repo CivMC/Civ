@@ -81,6 +81,7 @@ public class BSSession {
 				WeakReference<BSSession> rsession = dirtySessions.poll();
 				BSSession session = rsession.get();
 				if (session != null && session.dirty) {
+					session.dirty = false;
 					session.saveToStatement(save);
 					save.addBatch();
 					batchSize ++;
@@ -244,13 +245,20 @@ public class BSSession {
 		return null;
 	}
 	
+	/**
+	 * Preloads a block of session data.
+	 * 
+ 	 * @param offset (not included) ID to retrieve after
+	 * @param limit how many to retrieve
+	 * @return last ID encountered or -1 if none.
+	 */
 	public static long preload(long offset, int limit) {
+		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session ORDER BY sid LIMIT ? OFFSET ?");) {
-			loadSessions.setLong(2, offset);
-			loadSessions.setInt(1, limit);
+				PreparedStatement loadSessions = connection.prepareStatement("SELECT * FROM bs_session WHERE sid > ? ORDER BY sid LIMIT ?");) {
+			loadSessions.setLong(1, offset);
+			loadSessions.setInt(2, limit);
 			try (ResultSet rs = loadSessions.executeQuery()) {
-				long maxId = -1;
 				while (rs.next()) {
 					BSSession session = new BSSession();
 					session.dirty = false;
@@ -270,12 +278,11 @@ public class BSSession {
 					
 					if (session.sid > maxId) maxId = session.sid;
 				}
-				return maxId;
 			}
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
 		}
-		return -1;
+		return maxId;
 	}
 	
 	@Override

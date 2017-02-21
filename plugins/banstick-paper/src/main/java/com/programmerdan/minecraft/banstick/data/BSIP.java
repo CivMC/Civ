@@ -52,6 +52,23 @@ public class BSIP {
 	}
 	
 	/**
+	 * Gets either the v4 or v6 address.
+	 * 
+	 * @return either v4 or v6 address
+	 */
+	public IPAddress getIPAddress() {
+		return basev4 != null ? basev4 : basev6;
+	}
+	
+	public boolean isIPv4() {
+		return basev4 != null;
+	}
+	
+	public boolean isIPv6() {
+		return basev6 != null;
+	}
+	
+	/**
 	 * Basically, this method finds all records for which this exact address is a member, based on subnet.
 	 * 
 	 * @param netAddress
@@ -382,12 +399,12 @@ public class BSIP {
 	}
 	
 	public static long preload(long offset, int limit) {
+		long maxId = -1;
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip ORDER BY iid LIMIT ? OFFSET ?");) {
-			loadIPs.setLong(2, offset);
-			loadIPs.setInt(1, limit);
+				PreparedStatement loadIPs = connection.prepareStatement("SELECT * FROM bs_ip WHERE iid > ? ORDER BY iid LIMIT ?");) {
+			loadIPs.setLong(1, offset);
+			loadIPs.setInt(2, limit);
 			try (ResultSet rs = loadIPs.executeQuery()) {
-				long maxId = -1;
 				while (rs.next()) {
 					BSIP bsip = new BSIP();
 					bsip.iid = rs.getLong(1);
@@ -435,12 +452,11 @@ public class BSIP {
 					}
 					if (bsip.iid > maxId) maxId = bsip.iid;
 				}
-				return maxId;
 			}
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Failed during IP preload, offset " + offset + " limit " + limit, se);
 		}
-		return -1;
+		return maxId;
 	}
 	
 	@Override

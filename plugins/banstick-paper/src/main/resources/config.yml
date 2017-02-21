@@ -16,6 +16,13 @@ database:
  dirtysave: 
   period: 12000
   delay: 6000
+events:
+ proxyThreshold: 2.0
+ enable:
+  ipBans: true
+  subnetBans: true
+  proxyBans: true
+  newProxyBans: true
 vpn:
  check: true
  autoban: true

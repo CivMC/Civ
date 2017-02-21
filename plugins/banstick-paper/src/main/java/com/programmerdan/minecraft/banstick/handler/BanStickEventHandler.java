@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -21,6 +22,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 
 /**
@@ -30,13 +32,27 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
  *
  */
 public class BanStickEventHandler implements Listener {
+	private float proxyThreshold = 2.0f;
+	private boolean enableIPBans = true;
+	private boolean enableSubnetBans = true;
+	private boolean enableProxyBans = false;
+	private boolean enableNewProxyBans = false;
+	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
-		
+		configureEvents(config.getConfigurationSection("events")); 
 		registerEvents();
 	}
 	
-	public void registerEvents() {
+	private void configureEvents(ConfigurationSection config) {
+		this.proxyThreshold = (float) config.getDouble("proxyThreshold", proxyThreshold);
+		this.enableIPBans = config.getBoolean("enable.ipBans", true);
+		this.enableSubnetBans = config.getBoolean("enable.subnetBans", true);
+		this.enableProxyBans = config.getBoolean("enable.proxyBans", false);
+		this.enableNewProxyBans = config.getBoolean("enable.newProxyBans", false);
+	}
+	
+	private void registerEvents() {
 		Bukkit.getPluginManager().registerEvents(this, BanStick.getPlugin());
 	}
 	
@@ -65,45 +81,49 @@ public class BanStickEventHandler implements Listener {
 			}
 		}
 		
-		// Second, trigger an exact IP based lookup.
-		BSIP ip = BSIP.byInetAddress(preJoinAddress);
-		if (ip != null) {
-			List<BSBan> ipBans = BSBan.byIP(ip, false);
-			for (int i = ipBans.size() - 1 ; i >= 0; i-- ) {
-				//TODO: Can I have better selectivity here? What are the rules?
-				BSBan pickOne = ipBans.get(i);
-				if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
-					continue; // skip expired ban.
+		if (this.enableIPBans) {
+			// Second, trigger an exact IP based lookup.
+			BSIP ip = BSIP.byInetAddress(preJoinAddress);
+			if (ip != null) {
+				List<BSBan> ipBans = BSBan.byIP(ip, false);
+				for (int i = ipBans.size() - 1 ; i >= 0; i-- ) {
+					//TODO: Can I have better selectivity here? What are the rules?
+					BSBan pickOne = ipBans.get(i);
+					if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+						continue; // skip expired ban.
+					}
+					if (player != null) {
+						// associate! 
+						player.setBan(pickOne); // get most recent matching IP ban and use it.
+					}
+					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
+					return;
 				}
-				if (player != null) {
-					// associate! 
-					player.setBan(pickOne); // get most recent matching IP ban and use it.
-				}
-				BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-				asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
-				return;
 			}
 		}
 		
-		// Finally, trigger a CIDR lookup. This will continue until done; it does not tie into login or async join events.
-		List<BSIP> subnets = BSIP.allMatching(preJoinAddress);
-		for (BSIP sip : subnets) {
-			BanStick.getPlugin().debug("Check for bans on IP: {0}", sip.getId());
-			List<BSBan> sipBans = BSBan.byIP(sip, false);
-			for (int i = sipBans.size() - 1 ; i >= 0; i-- ) {
-				//TODO: Can I have better selectivity here? What are the rules?
-				BSBan pickOne = sipBans.get(i);
-				if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
-					continue; // skip expired ban.
-				}
-				if (player != null) {
-					// associate! 
-					player.setBan(pickOne); // get most recent matching subnet ban and use it.
-				}
-				BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
-				asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
-				return;
-			}			
+		if (this.enableSubnetBans) {
+			// Third, trigger a CIDR lookup. This will continue until done; it does not tie into login or async join events.
+			List<BSIP> subnets = BSIP.allMatching(preJoinAddress);
+			for (BSIP sip : subnets) {
+				BanStick.getPlugin().debug("Check for bans on IP: {0}", sip.getId());
+				List<BSBan> sipBans = BSBan.byIP(sip, false);
+				for (int i = sipBans.size() - 1 ; i >= 0; i-- ) {
+					//TODO: Can I have better selectivity here? What are the rules?
+					BSBan pickOne = sipBans.get(i);
+					if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+						continue; // skip expired ban.
+					}
+					if (player != null) {
+						// associate! 
+						player.setBan(pickOne); // get most recent matching subnet ban and use it.
+					}
+					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
+					return;
+				}			
+			}
 		}
 	}
 	
@@ -142,10 +162,47 @@ public class BanStickEventHandler implements Listener {
 				// 		BSShare = bsPlayer.getShared();
 				// }
 				// etc.
+				
 				// Then do VPN checks
-				// if (!bsPlayer.vpnPardon) {
-				// 		BSVPN = check check
-				// }
+				if (enableProxyBans) {
+					if (bsPlayer.getProxyPardonTime() == null) {
+						List<BSIPData> proxyChecks = BSIPData.allByIP(bsPlayer.getLatestSession().getIP());
+						for (BSIPData proxyCheck : proxyChecks) {
+							BanStick.getPlugin().debug("Check for bans on Proxy: {0}", proxyCheck.getId());
+							List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
+							for (int i = proxyBans.size() - 1 ; i >= 0; i-- ) {
+								BSBan pickOne = proxyBans.get(i);
+								if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().before(new Date())) {
+									continue; // skip expired ban.
+								}
+								if (player != null) {
+									// associate! 
+									player.kickPlayer(pickOne.getMessage());
+									BanStick.getPlugin().info("Removing " + bsPlayer.getName() + " due to " + pickOne.toString());
+								} else {
+									BanStick.getPlugin().info("On return, banning " + bsPlayer.getName() + " due to " + pickOne.toString());
+								}
+								
+								bsPlayer.setBan(pickOne); // get most recent matching proxy ban and use it.
+								
+								return;
+							}
+							// no ban yet; check if proxy meets /exceeds threshold for banning and new proxy bans are enabled.
+							if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
+								BSBan newBan = BSBan.create(proxyCheck, "Use of Proxies to disguish connection source is prohibited.", null, false);
+								if (player != null) {
+									// associate! 
+									player.kickPlayer(newBan.getMessage());
+									BanStick.getPlugin().info("Removing " + bsPlayer.getName() + " due to " + newBan.toString());
+								} else {
+									BanStick.getPlugin().info("On return, banning " + bsPlayer.getName() + " due to " + newBan.toString());
+								}
+								
+								bsPlayer.setBan(newBan);								
+							}
+						}
+					}
+				}
 				// etc.
 			}
 			

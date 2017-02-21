@@ -10,7 +10,7 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-import com.programmerdan.minecraft.banstick.data.BSVPN;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
 
 /**
  * Used to store bans issued and then transmit the results to various parties.
@@ -56,7 +56,7 @@ public class BanResult {
 			if (bip != null) {
 				sb.append(" IP ").append(bip.toString());
 			}
-			BSVPN vip = banned.getVPNBan();
+			BSIPData vip = banned.getProxyBan();
 			if (vip != null) {
 				sb.append(" VPN ").append(vip.toString());
 			}

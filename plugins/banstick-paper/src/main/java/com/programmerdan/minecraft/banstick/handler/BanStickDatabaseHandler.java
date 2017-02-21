@@ -22,7 +22,7 @@ import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-import com.programmerdan.minecraft.banstick.data.BSVPN;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
@@ -178,8 +178,8 @@ public class BanStickDatabaseHandler {
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
-				BanStick.getPlugin().debug("VPN dirty save");
-				BSVPN.saveDirty();
+				BanStick.getPlugin().debug("Proxy dirty save");
+				BSIPData.saveDirty();
 			}
 		}, delay + ((period * 4) / 5), period);
 
@@ -212,8 +212,8 @@ public class BanStickDatabaseHandler {
 				private long lastId = 0l;
 				@Override
 				public void run() {
-					BanStick.getPlugin().debug("VPN preload {0}, lim {1}", lastId, batchsize);
-					lastId = BSVPN.preload(lastId, batchsize);
+					BanStick.getPlugin().debug("Proxy preload {0}, lim {1}", lastId, batchsize);
+					lastId = BSIPData.preload(lastId, batchsize);
 					if (lastId < 0) this.cancel();
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + (period / 6), period);
@@ -275,11 +275,11 @@ public class BanStickDatabaseHandler {
 					" first_add TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" bid BIGINT REFERENCES bs_ban(bid)," +
 					" ip_pardon_time TIMESTAMP NULL, " +
-					" vpn_pardon_time TIMESTAMP NULL," +
+					" proxy_pardon_time TIMESTAMP NULL," +
 					" shared_pardon_time TIMESTAMP NULL," +
 					" INDEX bs_player_name (name)," +
 					" INDEX bs_player_ip_pardons (ip_pardon_time)," +
-					" INDEX bs_player_vpn_pardons (vpn_pardon_time)," +
+					" INDEX bs_player_proxy_pardons (proxy_pardon_time)," +
 					" INDEX bs_player_shared_pardons (shared_pardon_time)," +
 					" INDEX bs_player_join (first_add)" +
 					");",
@@ -295,14 +295,14 @@ public class BanStickDatabaseHandler {
 					" bid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" ban_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" ip_ban BIGINT REFERENCES bs_ip(iid)," +
-					" vpn_ban BIGINT REFERENCES bs_vpn(vid)," +
+					" proxy_ban BIGINT REFERENCES bs_ip_data(idid)," +
 					" share_ban BIGINT REFERENCES bs_share(sid)," +
-					" admin_ban BOOLEAN," +
+					" admin_ban BOOLEAN DEFAULT FALSE," +
 					" message TEXT," +
 					" ban_end TIMESTAMP NULL," +
 					" INDEX bs_ban_time (ban_time)," +
 					" INDEX bs_ban_ip (ip_ban)," +
-					" INDEX bs_ban_vpn (vpn_ban)," +
+					" INDEX bs_ban_proxy (proxy_ban)," +
 					" INDEX bs_ban_share (share_ban)," +
 					" INDEX bs_ban_end (ban_end)" +
 					");",
@@ -313,7 +313,7 @@ public class BanStickDatabaseHandler {
 					" second_pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
 					" first_sid BIGINT NOT NULL REFERENCES bs_session(sid)," +
 					" second_sid BIGINT NOT NULL REFERENCES bs_session(sid)," +
-					" pardon BOOLEAN," +
+					" pardon BOOLEAN DEFAULT FALSE," +
 					" pardon_time TIMESTAMP NULL," +
 					" INDEX bs_share (first_pid, second_pid)," +
 					" INDEX bs_pardon (pardon_time)" +
@@ -327,6 +327,27 @@ public class BanStickDatabaseHandler {
 					" ip6cidr SMALLINT," +
 					" INDEX bs_session_ip4 (ip4, ip4cidr)," +
 					" INDEX bs_session_ip6 (ip6, ip6cidr)" +
+					");",
+					"CREATE TABLE IF NOT EXISTS bs_ip_data (" +
+					" idid BIGINT AUTO_INCREMENT PRIMARY KEY," +
+					" iid BIGINT NOT NULL REFERENCE bs_ip(iid)," +
+					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+					" valid BOOLEAN DEFAULT TRUE," +
+					" continent TEXT," + 
+					" country TEXT," +
+					" region TEXT," +
+					" city TEXT," +
+					" postal TEXT," +
+					" domain TEXT," +
+					" provider TEXT," +
+					" registered_as TEXT," +
+					" connection TEXT," +
+					" proxy FLOAT," +
+					" source TEXT," +
+					" comment TEXT," + 
+					" INDEX bs_ip_data_iid (iid)," +
+					" INDEX bs_ip_data_valid (valid, create_time DESC)," +
+					" INDEX bs_ip_data_proxy (proxy)" +
 					");"
 				);
 		
@@ -353,8 +374,8 @@ public class BanStickDatabaseHandler {
 		BanStick.getPlugin().debug("Share dirty save");
 		BSShare.saveDirty();
 
-		BanStick.getPlugin().debug("VPN dirty save");
-		BSVPN.saveDirty();
+		BanStick.getPlugin().debug("Proxy dirty save");
+		BSIPData.saveDirty();
 	}
 	
 	// ============ QUERIES =============

@@ -16,7 +16,7 @@ public class BanSaveCommand  implements CommandExecutor{
 		
 		BanStick.getPlugin().saveCache();
 		
-		return false;
+		return true;
 	}
 
 }

@@ -27,7 +27,7 @@ commands:
    /<command> [ip]
    /<command> [ip]/[CIDR]
    /<command> [name/uuid]
-   /<command> [name/uuid] [BAN] [IP] [VPN] [SHARED]
+   /<command> [name/uuid] [BAN] [IP] [PROXY] [SHARED]
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs
