@@ -1,10 +1,13 @@
 package isaac.bastion.listeners;
 
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -30,15 +33,15 @@ import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 public class BastionInteractListener implements Listener {
-	
+
 	private BastionBlockManager manager;
 	private BastionBlockStorage storage;
-	
+
 	public BastionInteractListener() {
 		manager = Bastion.getBastionManager();
 		storage = Bastion.getBastionStorage();
 	}
-	
+
 	@EventHandler(ignoreCancelled=true)
 	public void onBlockClicked(PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -46,6 +49,26 @@ public class BastionInteractListener implements Listener {
 		}
 
 		final Player player = event.getPlayer();
+
+		//Stop boat places in bastions
+		if(player.getInventory().getItemInMainHand().getType() == Material.BOAT ||
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_ACACIA ||
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_BIRCH ||
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_DARK_OAK ||
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_JUNGLE ||
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_SPRUCE )
+		{
+			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
+			blocks.add(event.getClickedBlock());
+			Set<BastionBlock> blocking = manager.shouldStopBlock(null, blocks, player.getUniqueId());
+
+			if(blocking != null && blocking.size() > 0)
+			{
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
+				return;
+			}
+		}
 
 		if (PlayersStates.playerInMode(player, Mode.NORMAL)) {
 			return;
@@ -90,7 +113,7 @@ public class BastionInteractListener implements Listener {
 			if (!(reinforcement instanceof PlayerReinforcement)) {
 				return;
 			}
-			
+
 			if (reinforcement.canBypass(player)) {
 				final Location loc = block.getLocation().clone();
 				new BukkitRunnable() {
@@ -109,7 +132,7 @@ public class BastionInteractListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
@@ -121,11 +144,11 @@ public class BastionInteractListener implements Listener {
 			storage.addPendingBastion(event.getBlock().getLocation(), type);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onReinforcement(ReinforcementCreationEvent event) {
 		final BastionType type = storage.getAndRemovePendingBastion(event.getBlock().getLocation());
-		if(type != null && 
+		if(type != null &&
 				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
 			PlayersStates.touchPlayer(event.getPlayer());
 			Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
@@ -154,7 +177,7 @@ public class BastionInteractListener implements Listener {
 			ItemMeta im = inHand.getItemMeta();
 			if (im != null && im.hasLore()) {
 				lore = im.getLore();
-			} 
+			}
 			if (im != null && im.hasDisplayName()) {
 				displayName = im.getDisplayName();
 			}
