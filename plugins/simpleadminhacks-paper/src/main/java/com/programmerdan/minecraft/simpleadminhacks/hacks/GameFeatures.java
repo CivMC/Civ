@@ -138,7 +138,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-    @EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW)
 	public void disableVillagerTrading(PlayerInteractEntityEvent event)
 	{
 		if (!config.isVillagerTrading())
