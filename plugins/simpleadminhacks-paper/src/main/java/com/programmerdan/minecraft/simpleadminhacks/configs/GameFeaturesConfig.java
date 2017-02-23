@@ -25,6 +25,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 public class GameFeaturesConfig extends SimpleHackConfig {
 
 	private boolean potatoXPEnabled;
+	private boolean villagerTrading;
+	private boolean witherSpawning;
+	private boolean enderChestPlacement;
 
 	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -35,6 +38,14 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		this.potatoXPEnabled = !config.getBoolean("disablePotatoXP", false);
 		if (!this.potatoXPEnabled) plugin().log("  Potato XP Disabled");
 
+		this.villagerTrading = config.getBoolean("villagerTrading", false);
+		if(!villagerTrading) plugin().log("VillagerTrading is disabled");
+
+		this.witherSpawning = config.getBoolean("witherSpawning", false);
+		if (!this.witherSpawning) plugin().log("Wither Spawning is disabled");
+
+		this.enderChestPlacement = config.getBoolean("enderChestPlacement", false);
+		if (!this.enderChestPlacement) plugin().log("Placeing EnderChests is disabled");
 		/* Add additional feature config grabs here. */
 	}
 
@@ -43,6 +54,21 @@ public class GameFeaturesConfig extends SimpleHackConfig {
      */
 	public boolean isPotatoXPEnabled() {
 		return this.potatoXPEnabled;
+	}
+
+	public boolean isVillagerTrading()
+	{
+		return this.villagerTrading;
+	}
+
+	public boolean isWitherSpawning()
+	{
+		return this.witherSpawning;
+	}
+
+	public boolean isEnderChestPlacement()
+	{
+		return this.enderChestPlacement;
 	}
 }
 

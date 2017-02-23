@@ -3,9 +3,14 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import java.util.logging.Level;
 import java.util.List;
 
+import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.Material;
 
@@ -17,6 +22,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the 
@@ -79,6 +85,28 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("  Potato XP is disabled\n");
 			}
+
+			genStatus.append(" Villager Trading is ");
+			if (config.isVillagerTrading()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append(" Wither Spawning is ");
+			if (config.isWitherSpawning()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append(" Ender Chest placement is ");
+			if(config.isEnderChestPlacement()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
 			// more?
 		} else {
 			genStatus.append("inactive");
@@ -109,5 +137,46 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			plugin().log(Level.WARNING, "Failed to stop potato XP", e);	
 		}
 	}
-}
 
+	@EventHandler(priority = EventPriority.LOW)
+	public void disableVillagerTrading(PlayerInteractEntityEvent event)
+	{
+		if (!config.isVillagerTrading())
+		{
+			Entity npc = event.getRightClicked();
+
+			if (npc != null)
+			{
+				if (npc.getType().equals(EntityType.VILLAGER))
+				{
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void disableWitherSpawning(CreatureSpawnEvent event)
+	{
+		if (!config.isWitherSpawning())
+		{
+			if (event.getEntityType().equals(EntityType.WITHER))
+			{
+			   event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOW)
+	public void disableEnderChestPlacement(BlockPlaceEvent event)
+	{
+		if (!config.isEnderChestPlacement())
+		{
+			if (event.getBlock().getType().equals(Material.ENDER_CHEST))
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
+
+}
