@@ -86,26 +86,26 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				genStatus.append("  Potato XP is disabled\n");
 			}
 
-            genStatus.append(" Villager Trading is ");
-            if (config.isVillagerTrading()){
-                genStatus.append("enabled\n");
-            } else {
-                genStatus.append("disabled\n");
-            }
+			genStatus.append(" Villager Trading is ");
+			if (config.isVillagerTrading()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
 
-            genStatus.append(" Wither Spawning is ");
-            if (config.isWitherSpawning()){
-                genStatus.append("enabled\n");
-            } else {
-                genStatus.append("disabled\n");
-            }
+			genStatus.append(" Wither Spawning is ");
+			if (config.isWitherSpawning()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
 
-            genStatus.append(" Ender Chest placement is ");
-            if(config.isEnderChestPlacement()){
-                genStatus.append("enabled\n");
-            } else {
-                genStatus.append("disabled\n");
-            }
+			genStatus.append(" Ender Chest placement is ");
+			if(config.isEnderChestPlacement()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
 
 			// more?
 		} else {
@@ -139,45 +139,44 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	}
 
     @EventHandler(priority = EventPriority.LOW)
-    public void disableVillagerTrading(PlayerInteractEntityEvent event)
-    {
-        if (!config.isVillagerTrading())
-        {
-            Entity npc = event.getRightClicked();
+	public void disableVillagerTrading(PlayerInteractEntityEvent event)
+	{
+		if (!config.isVillagerTrading())
+		{
+			Entity npc = event.getRightClicked();
 
-            if (npc != null)
-            {
-                if (npc.getType().equals(EntityType.VILLAGER))
-                {
-                    event.setCancelled(true);
-                }
-            }
-        }
-    }
+			if (npc != null)
+			{
+				if (npc.getType().equals(EntityType.VILLAGER))
+				{
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void disableWitherSpawning(CreatureSpawnEvent event)
-    {
-        if (!config.isWitherSpawning())
-        {
-            if (event.getEntityType().equals(EntityType.WITHER))
-            {
-               event.setCancelled(true);
-            }
-        }
-    }
+	@EventHandler(priority = EventPriority.LOW)
+	public void disableWitherSpawning(CreatureSpawnEvent event)
+	{
+		if (!config.isWitherSpawning())
+		{
+			if (event.getEntityType().equals(EntityType.WITHER))
+			{
+			   event.setCancelled(true);
+			}
+		}
+	}
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void disableEnderChestPlacement(BlockPlaceEvent event)
-    {
-        if (!config.isEnderChestPlacement())
-        {
-            if (event.getBlock().getType().equals(Material.ENDER_CHEST))
-            {
-                event.setCancelled(true);
-            }
-        }
-    }
+	@EventHandler(priority = EventPriority.LOW)
+	public void disableEnderChestPlacement(BlockPlaceEvent event)
+	{
+		if (!config.isEnderChestPlacement())
+		{
+			if (event.getBlock().getType().equals(Material.ENDER_CHEST))
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
 
 }
-
