@@ -85,6 +85,28 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("  Potato XP is disabled\n");
 			}
+
+            genStatus.append(" Villager Trading is ");
+            if (config.isVillagerTrading()){
+                genStatus.append("enabled\n");
+            } else {
+                genStatus.append("disabled\n");
+            }
+
+            genStatus.append(" Wither Spawning is ");
+            if (config.isWitherSpawning()){
+                genStatus.append("enabled\n");
+            } else {
+                genStatus.append("disabled\n");
+            }
+
+            genStatus.append(" Ender Chest placement is ");
+            if(config.isEnderChestPlacement()){
+                genStatus.append("enabled\n");
+            } else {
+                genStatus.append("disabled\n");
+            }
+
 			// more?
 		} else {
 			genStatus.append("inactive");
