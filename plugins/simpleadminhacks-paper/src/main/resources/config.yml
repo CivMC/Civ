@@ -16,6 +16,12 @@ hacks:
   GameFeatures:
     enabled: true
     disablePotatoXP: false
+    # Villager trading is not like above and true = able to trade and false = not able
+    villagerTrading: false
+    # Wither spawn is also true = enabled and false = disabled
+    witherSpawning: false
+    # Enderchests is also true = enabled and false = disabled
+    enderChestPlacement: false
     elytra: off
     chorus_fruit: off
   GameFixes:
