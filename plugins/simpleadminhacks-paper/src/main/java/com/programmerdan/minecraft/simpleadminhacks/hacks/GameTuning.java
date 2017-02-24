@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import java.util.logging.Level;
 import java.util.List;
 
+import org.bukkit.Location;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,6 +11,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
@@ -26,6 +28,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.world.PortalCreateEvent;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the 
@@ -94,6 +99,20 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			} else {
 				genStatus.append("  Daytime Beds are disabled\n");
 			}
+
+			genStatus.append("  One To One Nether is ");
+			if (config.isOneToOneNether()) {
+				genStatus.append("enabled\n");
+			}
+			else
+			{
+				genStatus.append("disabled\n");
+			}
+
+
+
+
+
 			// more?
 		} else {
 			genStatus.append("inactive");
@@ -199,5 +218,39 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 		event.getPlayer().setBedSpawnLocation(event.getClickedBlock().getLocation());
 		event.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPortalTravel(EntityPortalEvent event)
+	{
+		if (config.isOneToOneNether())
+		{
+			Location newLoc = event.getFrom();
+			newLoc.setWorld(event.getTo().getWorld());
+			event.setTo(newLoc);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerPortalTravel(PlayerPortalEvent event)
+	{
+		if (config.isOneToOneNether() && event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL)
+		{
+			Location newLoc = event.getFrom();
+			newLoc.setWorld(event.getTo().getWorld());
+			event.setTo(newLoc);
+		}
+	}
+
+	@EventHandler(priority =  EventPriority.LOWEST)
+	public void onPortalCreate(PortalCreateEvent event)
+	{
+		if (!config.isReturnNetherPortal())
+		{
+			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getName().equals("world_nether"))
+			{
+				event.setCancelled(true);
+			}
+		}
 	}
 }

@@ -32,6 +32,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 	private boolean daytimeBedEnabled;
 	private String daytimeBedSpawnSetMessage;
 
+	private boolean oneToOneNether;
+	private boolean returnNetherPortal;
+
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -43,6 +46,12 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		ConfigurationSection daytimeBed = config.getConfigurationSection("daytimeBed");
 		wireupDaytimeBed(daytimeBed);
+
+		this.oneToOneNether = config.getBoolean("oneToOneNether", false);
+		if (oneToOneNether) plugin().log("One to One Nether is enabled.");
+
+		this.returnNetherPortal = config.getBoolean("returnNetherPortal", true);
+		if (!returnNetherPortal) plugin().log("Return Nether Portals disabled.");
 
 		/* Add additional tuning config grabs here. */
 	}
@@ -103,7 +112,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 * Wireup for enabling setting your spawn during the day.
 	 *
 	 * @author Amelorate
-     */
+	 */
 	private void wireupDaytimeBed(ConfigurationSection config) {
 		if (config == null) {
 			this.daytimeBedEnabled = false;
@@ -154,15 +163,31 @@ public class GameTuningConfig extends SimpleHackConfig {
 	/**
 	 * @return The message that is sent to the player if they right click on a bed and set their spawn.
 	 * Empty string if there should not be a message, and null if daytime beds are disabled.
-     */
+	 */
 	public String getDaytimeBedSpawnSetMessage() {
 		return daytimeBedEnabled ? daytimeBedSpawnSetMessage : null;
 	}
 
 	/**
 	 * @return If setting your spawn with a bed during the daytime is enabled.
-     */
+ 	*/
 	public boolean areDaytimeBedsEnabled() {
 		return daytimeBedEnabled;
+	}
+
+	/**
+	 * @return If one to one nether is enabled.
+	 */
+	public boolean isOneToOneNether()
+	{
+		return oneToOneNether;
+	}
+
+	/**
+	 * @return If return portals are enabled.
+	 */
+	public boolean isReturnNetherPortal()
+	{
+		return returnNetherPortal;
 	}
 }
