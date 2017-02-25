@@ -6,6 +6,7 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.commands.BanSaveCommand;
 import com.programmerdan.minecraft.banstick.commands.BanStickCommand;
 import com.programmerdan.minecraft.banstick.commands.ForgiveCommand;
+import com.programmerdan.minecraft.banstick.commands.LoveTapCommand;
 
 /**
  * Handles Commands for this plugin. Check plugin.yml for details!
@@ -23,6 +24,7 @@ public class BanStickCommandHandler {
 		BanStick.getPlugin().getCommand(BanStickCommand.name).setExecutor(new BanStickCommand());
 		BanStick.getPlugin().getCommand(ForgiveCommand.name).setExecutor(new ForgiveCommand());
 		BanStick.getPlugin().getCommand(BanSaveCommand.name).setExecutor(new BanSaveCommand());
+		BanStick.getPlugin().getCommand(LoveTapCommand.name).setExecutor(new LoveTapCommand());
 	}
 
 }

@@ -11,6 +11,7 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -143,6 +144,15 @@ public class BSPlayer {
 	 */
 	public BSSession getLatestSession() {
 		return this.allSessions.getLatest();
+	}
+	
+	/**
+	 * Gets all sessions for this player
+	 * 
+	 * @return
+	 */
+	public List<BSSession> getAllSessions() {
+		return this.allSessions.getAll();
 	}
 	
 	/**

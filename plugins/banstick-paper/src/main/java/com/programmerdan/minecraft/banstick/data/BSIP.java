@@ -153,7 +153,7 @@ public class BSIP {
 	 */
 	public static BSIP byCIDR(String netAddress, int CIDR) {
 		IPAddressString ips = new IPAddressString(netAddress + "/" + CIDR);
-		BanStick.getPlugin().debug("Check for CIDR IP: {0}", ips.toString());
+		//BanStick.getPlugin().debug("Check for CIDR IP: {0}", ips.toString());
 		IPAddress lookup = ips.getAddress();
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
@@ -195,7 +195,7 @@ public class BSIP {
 	}
 	
 	public static BSIP byIPAddress(IPAddress lookup) {
-		BanStick.getPlugin().debug("Check for IP: {0}", lookup.toString());
+		//BanStick.getPlugin().debug("Check for IP: {0}", lookup.toString());
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
@@ -287,7 +287,7 @@ public class BSIP {
 			
 			return bsip;
 		} else {
-			BanStick.getPlugin().warning("Failed to find IP"); 
+			//BanStick.getPlugin().warning("Failed to find IP"); 
 			return null; // TODO: exception 
 		}
 	}
@@ -462,9 +462,9 @@ public class BSIP {
 	@Override
 	public String toString() {
 		if (basev4 != null) {
-			return basev4.toString();
+			return basev4.toCanonicalString();
 		} else {
-			return basev6.toString();
+			return basev6.toCanonicalString();
 		}
 	}
 }

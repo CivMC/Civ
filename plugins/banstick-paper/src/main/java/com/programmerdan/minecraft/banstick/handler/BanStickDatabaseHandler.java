@@ -1,12 +1,6 @@
 package com.programmerdan.minecraft.banstick.handler;
 
-import java.net.Inet4Address;
-import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,41 +92,6 @@ public class BanStickDatabaseHandler {
 		activateDirtySave(config.getConfigurationSection("dirtysave"));
 		return true;
 	}
-
-	/*
-	 * Rough data model:
-	 * 
-	 * [playerrecord]:
-	 *   pid BIGINT
-	 *   name VARCHAR(16)
-	 *   uuid VARCHAR(36)
-	 *   vpn_pardon_time TIMESTAMP
-	 *   shared_pardon_time TIMESTAMP
-	 * 
-	 * [sessionrecords]:
-	 *   join_time TIMESTAMP
-	 *   leave_time TIMESTAMP
-	 *   pid BIGINT
-	 *   ip4 VARCHAR(15) -- fixed
-	 *   ip4cidr24 VARCHAR(15) -- fixed
-	 *   ip4cidr20 VARCHAR(15) -- fixed
-	 *   ip4cidr16 VARCHAR(15) -- fixed
-	 *   ip6 VARCHAR(39) -- fixed, if available.
-	 *   ip6cidr98 VARCHAR(39) -- fixed
-	 *  
-	 * [banrecords]:
-	 *   event_time TIMESTAMP 
-	 *   pid BIGINT
-	 *   ip4 VARCHAR(15)
-	 *   ip4cidr24 VARCHAR(15) -- fixed
-	 *   ip4cidr20 VARCHAR(15) -- fixed
-	 *   ip4cidr16 VARCHAR(15) -- fixed
-	 *   ip6 VARCHAR(39)
-	 *   ip6cidr98 VARCHAR(39)
-	 *   ban_end TIMESTAMP
-	 *   message TEXT
-	 *   
-	 */
 
 	private void activateDirtySave(ConfigurationSection config) {
 		long period = 5*60*50l;
@@ -291,6 +250,14 @@ public class BanStickDatabaseHandler {
 					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
 					" INDEX bs_session_pids (pid, join_time, leave_time)" +
 					");",
+					"CREATE TABLE IF NOT EXISTS bs_ban_log (" +
+					" lid BIGINT AUTO_INCREMENT PRIMARY KEY," +
+					" pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
+					" bid BIGINT NOT NULL REFERENCES bs_ban(bid)," +
+					" action_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
+					" action VARCHAR(40) NOT NULL," +
+					" INDEX bs_ban_log_time (pid, action_time DESC)" +
+					");", // TODO: Whenever a ban is given or removed from a player, record.
 					"CREATE TABLE IF NOT EXISTS bs_ban (" +
 					" bid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" ban_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
@@ -330,7 +297,7 @@ public class BanStickDatabaseHandler {
 					");",
 					"CREATE TABLE IF NOT EXISTS bs_ip_data (" +
 					" idid BIGINT AUTO_INCREMENT PRIMARY KEY," +
-					" iid BIGINT NOT NULL REFERENCE bs_ip(iid)," +
+					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
 					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" valid BOOLEAN DEFAULT TRUE," +
 					" continent TEXT," + 

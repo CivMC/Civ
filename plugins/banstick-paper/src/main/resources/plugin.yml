@@ -18,7 +18,10 @@ commands:
   description: Investigate a user / show information. Also give banstick.ips to show IP info during check.
   alias: bstl
   permission: banstick.lovetap
-  usage: /<command> [name/uuid]
+  usage: |
+   /<command> [name/uuid]
+   /<command> [ip]
+   /<command> [ip]/[CIDR]
  forgive:
   description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
   alias: bstf

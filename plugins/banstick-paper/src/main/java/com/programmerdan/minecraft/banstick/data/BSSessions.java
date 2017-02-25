@@ -44,6 +44,22 @@ public class BSSessions {
 		return BSSession.byId(sessionList.get(sessionList.size() - 1));
 	}
 	
+	public List<BSSession> getAll() {
+		if (sessionList == null) {
+			fill();
+		}
+		
+		List<BSSession> all = new ArrayList<BSSession>();
+		
+		if (sessionList != null && sessionList.size() > 0) {
+			for (Long sid : sessionList) {
+				all.add(BSSession.byId(sid));
+			}
+		}
+		
+		return all;
+	}
+	
 	private void fill() {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by join time.

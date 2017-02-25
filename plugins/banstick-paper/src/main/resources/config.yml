@@ -10,9 +10,9 @@ database:
  maxLifetime: 7200000
  preload:
   enabled: true
-  batch: 50
-  period: 300
-  delay: 1200
+  batch: 100
+  period: 50
+  delay: 100
  dirtysave: 
   period: 12000
   delay: 6000
@@ -23,10 +23,18 @@ events:
   subnetBans: true
   proxyBans: true
   newProxyBans: true
-vpn:
- check: true
- autoban: true
- delayrange: 10,1000
+ proxyBanMessage: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
+proxy:
+ enable: true
+ cloud9:
+  enable: true
+  defaultScore: 3.0
+  ban:
+   length: 163800000
+   message: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
+  url: https://raw.githubusercontent.com/client9/ipcat/master/datacenters.csv
+  period: 576000
+  delay: 4200
 tor:
  check: true
  autoban: true
@@ -34,15 +42,15 @@ tor:
   danxxx:
    ban:
     length: 86400000
-    message: TOR node use is prohibited. Please use residential connection.
+    message: TOR node use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
    address: https://www.dan.me.uk/torlist/?exit
-   period: 36000
+   period: 72000
    delay: 3000
    cidr: false
   torproject:
    ban:
     length: 86400000
-    message: TOR node use is prohibited. Please use residential connection.
+    message: TOR node use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
    address: https://check.torproject.org/cgi-bin/TorBulkExitList.py?ip=8.26.94.198&port=25565
    period: 72000
    delay: 3600

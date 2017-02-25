@@ -47,7 +47,7 @@ tor:
 
 	public BanStickTorUpdater(FileConfiguration config) {
 		if (!configureTor(config.getConfigurationSection("tor"))) {
-			throw new RuntimeException("Failed to configure Tor lists for BanStick!");
+			return;
 		}
 		
 		activateTor();
@@ -89,11 +89,17 @@ tor:
 				@Override
 				public void run() {
 					try {
+						BanStick.getPlugin().info("Tor capture for " + torSave.address);
 						URL connection = new URL(torSave.address);
 						InputStream readIn = connection.openStream();
 						BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
 						String line = in.readLine();
+						int errors = 0;
 						while (line != null) {
+							if (errors > 10) {
+								BanStick.getPlugin().warning("Cancelling this Tor capture run, too many errors.");
+								break;
+							}
 							try {
 								IPAddressString address = new IPAddressString(line);
 								address.validate();
@@ -113,20 +119,24 @@ tor:
 								}
 								
 								if (banNewNodes) {
+									boolean wasmatch = false;
 									List<BSBan> ban = BSBan.byIP(found, true);
-									if (ban == null || ban.size() == 0) { 
-										BSBan.create(found, torSave.banMessage, 
-												torSave.endlessBan ? null : new Date(System.currentTimeMillis() + torSave.banLength), false);
-									} else {
+									
+									if (!(ban == null || ban.size() == 0)) { 
 										// look for match; if unexpired, extend.
 										for (int i = ban.size() - 1 ; i >= 0; i-- ) {
 											BSBan pickOne = ban.get(i);
 											if (pickOne.isAdminBan()) continue; // skip admin entered bans.
 											if (pickOne.getBanEndTime() != null && pickOne.getBanEndTime().after(new Date())) {
 												pickOne.setBanEndTime(torSave.endlessBan ? null : new Date(System.currentTimeMillis() + torSave.banLength));
+												wasmatch = true;
 												break;
 											}
 										}
+									}
+									if (!wasmatch) {
+										BSBan.create(found, torSave.banMessage, 
+												torSave.endlessBan ? null : new Date(System.currentTimeMillis() + torSave.banLength), false);
 									}
 								}
 								
@@ -137,6 +147,7 @@ tor:
 						}
 					} catch (IOException  e) {
 						BanStick.getPlugin().debug("Failed reading from TOR list: " + torSave.address);
+						BanStick.getPlugin().warning("  Exception:", e);
 					}
 				}
 			};

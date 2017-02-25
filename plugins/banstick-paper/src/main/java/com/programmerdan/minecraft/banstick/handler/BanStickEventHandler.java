@@ -37,6 +37,7 @@ public class BanStickEventHandler implements Listener {
 	private boolean enableSubnetBans = true;
 	private boolean enableProxyBans = false;
 	private boolean enableNewProxyBans = false;
+	private String proxyBanMessage = null;
 	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
@@ -50,6 +51,7 @@ public class BanStickEventHandler implements Listener {
 		this.enableSubnetBans = config.getBoolean("enable.subnetBans", true);
 		this.enableProxyBans = config.getBoolean("enable.proxyBans", false);
 		this.enableNewProxyBans = config.getBoolean("enable.newProxyBans", false);
+		this.proxyBanMessage = config.getString("proxyBanMessage", null);
 	}
 	
 	private void registerEvents() {
@@ -189,7 +191,7 @@ public class BanStickEventHandler implements Listener {
 							}
 							// no ban yet; check if proxy meets /exceeds threshold for banning and new proxy bans are enabled.
 							if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
-								BSBan newBan = BSBan.create(proxyCheck, "Use of Proxies to disguish connection source is prohibited.", null, false);
+								BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 								if (player != null) {
 									// associate! 
 									player.kickPlayer(newBan.getMessage());
@@ -235,5 +237,15 @@ public class BanStickEventHandler implements Listener {
 	private void disconnectEvent(final Player player) {
 		BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
 		bsPlayer.endSession(new Date());
+	}
+	
+	/**
+	 * 
+	 * Attempts to ensure that regardless of shutdown order, captures session end.
+	 */
+	public void shutdown() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			disconnectEvent(player); // ensure some kind of session end is captured on orderly shutdown.
+		}
 	}
 }

@@ -54,8 +54,10 @@ public class BSIPData {
 	private String continent;
 	private String country;
 	private String region;
+	private String city;
 	private String postal;
 	private String domain;
+	private String provider;
 	private String registeredAs;
 	private String connection;
 	private float proxy; // mutable
@@ -97,12 +99,20 @@ public class BSIPData {
 		return this.region;
 	}
 	
+	public String getCity() {
+		return this.city;
+	}
+	
 	public String getPostal() {
 		return this.postal;
 	}
 	
 	public String getDomain() {
 		return this.domain;
+	}
+	
+	public String getProvider() {
+		return this.provider;
 	}
 	
 	public String getRegisteredAs() {
@@ -172,13 +182,15 @@ public class BSIPData {
 		data.continent = rs.getString(5);
 		data.country = rs.getString(6);
 		data.region = rs.getString(7);
-		data.postal = rs.getString(8);
-		data.domain = rs.getString(9);
-		data.registeredAs = rs.getString(10);
-		data.connection = rs.getString(11);
-		data.proxy = rs.getFloat(12);
-		data.source = rs.getString(13);
-		data.comment = rs.getString(14);
+		data.city = rs.getString(8);
+		data.postal = rs.getString(9);
+		data.domain = rs.getString(10);
+		data.provider = rs.getString(11);
+		data.registeredAs = rs.getString(12);
+		data.connection = rs.getString(13);
+		data.proxy = rs.getFloat(14);
+		data.source = rs.getString(15);
+		data.comment = rs.getString(16);
 		data.dirty = false;
 		return data;
 	}
@@ -254,14 +266,16 @@ public class BSIPData {
 	}
 	
 	/**
-	 * This does NOT check for prior existance. Must be managed elsewhere.
+	 * This does NOT check for prior existence. Must be managed elsewhere.
 	 * 
 	 * @param ip
 	 * @param continent
 	 * @param country
 	 * @param region
+	 * @param city
 	 * @param postal
 	 * @param domain
+	 * @param provider
 	 * @param registeredAs
 	 * @param _connection
 	 * @param proxy
@@ -269,7 +283,7 @@ public class BSIPData {
 	 * @param comment
 	 * @return
 	 */
-	public static BSIPData create(BSIP ip, String continent, String country, String region, String postal, String domain, String registeredAs, String _connection, float proxy, String source, String comment) {
+	public static BSIPData create(BSIP ip, String continent, String country, String region, String city, String postal, String domain, String provider, String registeredAs, String _connection, float proxy, String source, String comment) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSIPData newData = new BSIPData();
 			newData.dirty = false;
@@ -277,15 +291,17 @@ public class BSIPData {
 			newData.iid = ip;
 			newData.country = country;
 			newData.region = region;
+			newData.city = city;
 			newData.postal = postal;
 			newData.domain = domain;
+			newData.provider = provider;
 			newData.registeredAs = registeredAs;
 			newData.connection = _connection;
 			newData.proxy = proxy;
 			newData.source = source;
 			newData.comment = comment;
 			
-			try (PreparedStatement insertData = connection.prepareStatement("INSERT INTO bs_ip_data(iid, continent, country, region, postal, domain, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+			try (PreparedStatement insertData = connection.prepareStatement("INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
 				insertData.setLong(1, newData.iid.getId());
 				if (newData.continent == null) {
 					insertData.setNull(2, Types.VARCHAR);
@@ -302,36 +318,46 @@ public class BSIPData {
 				} else {
 					insertData.setString(4, newData.region);
 				}
-				if (newData.postal == null) {
+				if (newData.region == null) {
 					insertData.setNull(5, Types.VARCHAR);
 				} else {
-					insertData.setString(5, newData.postal);
+					insertData.setString(5, newData.city);
 				}
-				if (newData.domain == null) {
+				if (newData.postal == null) {
 					insertData.setNull(6, Types.VARCHAR);
 				} else {
-					insertData.setString(6, newData.domain);
+					insertData.setString(6, newData.postal);
 				}
-				if (newData.registeredAs == null) {
+				if (newData.domain == null) {
 					insertData.setNull(7, Types.VARCHAR);
 				} else {
-					insertData.setString(7, newData.registeredAs);
+					insertData.setString(7, newData.domain);
 				}
-				if (newData.connection == null) {
+				if (newData.domain == null) {
 					insertData.setNull(8, Types.VARCHAR);
 				} else {
-					insertData.setString(8, newData.connection);
+					insertData.setString(8, newData.provider);
 				}
-				insertData.setFloat(9, newData.proxy);
-				if (newData.source == null) {
+				if (newData.registeredAs == null) {
+					insertData.setNull(9, Types.VARCHAR);
+				} else {
+					insertData.setString(9, newData.registeredAs);
+				}
+				if (newData.connection == null) {
 					insertData.setNull(10, Types.VARCHAR);
 				} else {
-					insertData.setString(10, newData.source);
+					insertData.setString(10, newData.connection);
+				}
+				insertData.setFloat(11, newData.proxy);
+				if (newData.source == null) {
+					insertData.setNull(12, Types.VARCHAR);
+				} else {
+					insertData.setString(12, newData.source);
 				}
 				if (newData.comment == null) {
-					insertData.setNull(11, Types.VARCHAR);
+					insertData.setNull(13, Types.VARCHAR);
 				} else {
-					insertData.setString(11, newData.comment);
+					insertData.setString(13, newData.comment);
 				}
 				insertData.execute();
 				try (ResultSet rs = insertData.getGeneratedKeys()) {
@@ -486,6 +512,9 @@ public class BSIPData {
 		if (region != null) {
 			sb.append(region).append(" ");
 		}
+		if (city != null) {
+			sb.append(city).append(" ");
+		}
 		if (postal != null) {
 			sb.append(postal).append(" ");
 		}
@@ -494,6 +523,9 @@ public class BSIPData {
 		}
 		if (domain != null) {
 			sb.append("(").append(domain).append(") ");
+		}
+		if (provider != null) {
+			sb.append(provider).append(" ");
 		}
 		if (registeredAs != null) {
 			sb.append(registeredAs).append(" ");

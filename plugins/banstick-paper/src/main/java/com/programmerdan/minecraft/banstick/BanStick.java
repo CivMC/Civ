@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickCheckHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickProxyHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -15,6 +16,7 @@ public class BanStick extends ACivMod {
 	private BanStickEventHandler eventHandler;
 	private BanStickDatabaseHandler databaseHandler;
 	private BanStickTorUpdater torUpdater;
+	private BanStickProxyHandler proxyHandler;
 	
 	@Override
 	public void onEnable() {
@@ -31,6 +33,7 @@ public class BanStick extends ACivMod {
 		registerCheckHandler();
 		registerCommandHandler();
 		registerTorHandler();
+		registerProxyHandler();
 		
 	}
 	
@@ -38,7 +41,8 @@ public class BanStick extends ACivMod {
 	public void onDisable() {
 		super.onDisable();
 		
-		databaseHandler.doShutdown();
+		this.databaseHandler.doShutdown();
+		this.eventHandler.shutdown();
 	}
 	
 	private void connectDatabase() {
@@ -86,6 +90,15 @@ public class BanStick extends ACivMod {
 			this.torUpdater = new BanStickTorUpdater(getConfig());
 		} catch (Exception e) {
 			this.severe("Failed to set up TOR updater!", e);
+		}
+	}
+	
+	private void registerProxyHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.proxyHandler = new BanStickProxyHandler(getConfig(), getPlugin().getClassLoader());
+		} catch (Exception e) {
+			this.severe("Failed to set up Proxy updaters!", e);
 		}
 	}
 

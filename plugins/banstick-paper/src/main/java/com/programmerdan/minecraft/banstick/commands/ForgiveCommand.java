@@ -114,6 +114,7 @@ public class ForgiveCommand implements CommandExecutor {
 							} else {
 								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is not banned.");
 							}
+							match = true;
 						}
 						
 						if ("IP".equalsIgnoreCase(pardon)) {

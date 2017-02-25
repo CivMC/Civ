@@ -296,4 +296,25 @@ public class BSSession {
 		
 		return sb.toString();
 	}
+	
+	/**
+	 * Shows IP
+	 * 
+	 * @param showIP determines if to show IP or not
+	 * @return
+	 */
+	public String toFullDisplayString(boolean showIP) {
+		StringBuffer sb = new StringBuffer();
+		if (showIP) {
+			sb.append(this.iid.toString());
+		} else {
+			sb.append(this.sid);
+		}
+		sb.append(": ");
+		sb.append(getJoinTime().toString());
+		if (isEnded()) {
+			sb.append(" - ").append(getLeaveTime());
+		}
+		return sb.toString();
+	}
 }
