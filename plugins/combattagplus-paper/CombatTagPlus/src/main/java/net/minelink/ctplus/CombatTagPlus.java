@@ -19,6 +19,7 @@ import net.minelink.ctplus.task.SafeLogoutTask;
 import net.minelink.ctplus.task.TagUpdateTask;
 import net.minelink.ctplus.util.BarUtils;
 import net.minelink.ctplus.util.ReflectionUtils;
+import net.minelink.ctplus.util.Version;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -185,14 +186,25 @@ public final class CombatTagPlus extends JavaPlugin {
             return;
         }
 
-        String[] v = plugin.getDescription().getVersion().split("\\.");
-        String version = v[0] + "_" + v[1];
+        Version v;
 
-        // Special case for HCF. Use FactionsUUID 1.6 hook
-        if (version.compareTo("1_6") < 0) {
+        try {
+            v = new Version(plugin.getDescription().getVersion());
+        } catch (IllegalArgumentException e) {
+            v = new Version("0.0");
+        }
+
+        String version = null;
+
+        if (v.compareTo(new Version("1.6")) < 0) {
             version = "1_6";
-        } else if (version.compareTo("2_7") > 0) {
+        } else if (v.compareTo(new Version("2.7")) > 0) {
             version = "2_7";
+        }
+
+        if (version == null) {
+            String[] parts = v.toString().split("\\.");
+            version = parts[0] + "_" + parts[1];
         }
 
         // Determine which hook implementation to use
