@@ -30,7 +30,7 @@ public class Lang
 	
 	public static final String groupUnknown = "<i>That group doesn't exist.";
 	public static final String groupNoChatPermission = "<i>You don't have permission to chat in that group.";
-	public static final String groupAlreadyBcasting = "<i>You're already broadcasting to that group.";
+	public static final String groupStoppedBcasting = "<g>You've stopped broadcasting your pearl location to group <c>%s";
 	public static final String groupNowBcasting = "<g>You're now broadcasting your pearl location to group <c>%s";
 	public static final String groupPearlBroadcast = "<gray>[%s]<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	

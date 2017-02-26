@@ -397,7 +397,6 @@ final class CoreExilePearl implements ExilePearl {
 	/**
 	 * Verifies the holder of a pearl
 	 * @param holder The holder to check
-	 * @param feedback The feedback string
 	 * @return true if the pearl was found in a valid location
 	 */
 	private HolderVerifyResult verifyHolder(PearlHolder holder) {
@@ -473,12 +472,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	@Override
 	public void removeBroadcastListener(Object o) {
-		for(BroadcastListener b : bcastListeners) {
-			if (b.contains(o)) {
-				bcastListeners.remove(b);
-				return;
-			}
-		}
+		bcastListeners.remove(o);
 	}
 
 
