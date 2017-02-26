@@ -14,7 +14,13 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 * @return The storage type
 	 */
 	StorageType getStorageType();
-	
+
+	/**
+	 * Gets a set of worlds that pearls can not be stored in
+	 * @return a set of names of worlds pearls can't be stored in
+	 */
+	Set<String> getDisallowedWorlds();
+
 	/**
 	 * Gets the pearl decay minute interval
 	 * @return the pearl decay minute interval

@@ -256,6 +256,7 @@ final class CorePearlManager implements PearlManager {
 
 		final Collection<ExilePearl> pearls = getPearls();
 		final int decayAmount = pearlApi.getPearlConfig().getPearlHealthDecayAmount();
+		final Set<String> disallowedWorlds = pearlApi.getPearlConfig().getDisallowedWorlds();
 		final HashSet<ExilePearl> pearlsToFree = new HashSet<ExilePearl>();
 
 		// Iterate through all the pearls and reduce the health
@@ -265,7 +266,13 @@ final class CorePearlManager implements PearlManager {
 			if (pearl.getFreedOffline()) {
 				continue;
 			}
-			
+
+			PearlHolder holder = pearl.getHolder();
+			if(holder.isBlock() && disallowedWorlds.contains(holder.getLocation().getWorld().getName())) {
+				pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
+				pearlsToFree.add(pearl);
+			}
+
 			pearl.setHealth(pearl.getHealth() - decayAmount);
 			
 			if (pearl.getHealth() == 0) {

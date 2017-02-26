@@ -29,7 +29,7 @@
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                                PEARL SETTINGS                               #
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
-# 
+#
 # pearls.autofree_worldborder
 #  - When true, pearls that are outside world-border will be freed during a 
 #    decay operation
@@ -192,7 +192,10 @@
 # rules.protected_mobs
 #  - Mobs that are protected when rules.kill_mobs is set to false
 # 
-# 
+# rules.disallowed_worlds
+#  - Worlds that pearls are not allowed to be stored in
+#
+#
 # Start Config
 storage:
   type: 0
@@ -267,3 +270,5 @@ rules:
   - Cow
   - Pig
   - Horse
+  disallowed_worlds:
+
