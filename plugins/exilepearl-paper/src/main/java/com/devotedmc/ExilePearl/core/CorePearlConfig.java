@@ -180,6 +180,14 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public Set<String> getDisallowedWorlds() {
+		HashSet<String> worlds = new HashSet<>();
+		for(String str : doc.getStringList("rules.disallowed_worlds"))
+			worlds.add(str);
+		return worlds;
+	}
+
+	@Override
 	public List<String> getProtectedAnimals() {
 		return doc.getStringList("rules.protected_mobs");
 	}

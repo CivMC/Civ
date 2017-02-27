@@ -49,9 +49,11 @@ public class CmdPearlBroadcast extends PearlCommand {
 					msg(Lang.groupNoChatPermission);
 					return;
 				}
-				
+
+				//If they are already broadcasting to group then remove the listener for that group
 				if (pearl.isBroadcastingTo(g)) {
-					msg(Lang.groupAlreadyBcasting);
+					pearl.removeBroadcastListener(new NLGroupBroadcastListener(g));
+					msg(Lang.groupStoppedBcasting, g.getName());
 					return;
 				}
 				
