@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickCheckHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickIPDataHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickProxyHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
 
@@ -17,6 +18,7 @@ public class BanStick extends ACivMod {
 	private BanStickDatabaseHandler databaseHandler;
 	private BanStickTorUpdater torUpdater;
 	private BanStickProxyHandler proxyHandler;
+	private BanStickIPDataHandler ipdataUpdater;
 	
 	@Override
 	public void onEnable() {
@@ -34,15 +36,15 @@ public class BanStick extends ACivMod {
 		registerCommandHandler();
 		registerTorHandler();
 		registerProxyHandler();
-		
+		registerIPDataHandler();
 	}
 	
 	@Override
 	public void onDisable() {
 		super.onDisable();
 		
-		this.databaseHandler.doShutdown();
 		this.eventHandler.shutdown();
+		this.databaseHandler.doShutdown();
 	}
 	
 	private void connectDatabase() {
@@ -52,6 +54,10 @@ public class BanStick extends ACivMod {
 			this.severe("Failed to establish database", e);
 			this.setEnabled(false);
 		}
+	}
+	
+	public BanStickIPDataHandler getIPDataHandler() {
+		return this.ipdataUpdater;
 	}
 
 	private void registerCommandHandler() {
@@ -99,6 +105,15 @@ public class BanStick extends ACivMod {
 			this.proxyHandler = new BanStickProxyHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
 			this.severe("Failed to set up Proxy updaters!", e);
+		}
+	}
+	
+	private void registerIPDataHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.ipdataUpdater = new BanStickIPDataHandler(getConfig());
+		} catch (Exception e) {
+			this.severe("Failed to set up dynamic IPData updater!", e);
 		}
 	}
 

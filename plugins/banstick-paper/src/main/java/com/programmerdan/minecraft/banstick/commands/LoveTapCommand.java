@@ -1,8 +1,11 @@
 package com.programmerdan.minecraft.banstick.commands;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -49,10 +52,58 @@ public class LoveTapCommand  implements CommandExecutor {
 				
 		try {
 			IPAddress ipcheck = new IPAddressString(toTap).toAddress();
+			if (ipcheck == null) {
+				throw new IPAddressStringException("Null -- but no error?");
+			}
+			if (hasCIDR) { // MOAR, but aggregates.
+				sender.sendMessage(ChatColor.GREEN + "Please wait, searching for all contained IP records");
+				Bukkit.getScheduler().runTaskAsynchronously(BanStick.getPlugin(), new Runnable() {
+					@Override
+					public void run() {
+						if (sender == null) return;
+						List<BSIP> contains = BSIP.allContained(ipcheck, CIDR);
+						if (contains != null && !contains.isEmpty()) {
+							sender.sendMessage(ChatColor.GREEN + "Found " + contains.size() + " contained by " + ChatColor.WHITE + ipcheck.toString() + "/" + CIDR);
+							for (BSIP bsip : contains) {
+								List<BSBan> bans = BSBan.byIP(bsip, false);
+								List<BSSession> sessions = BSSession.byIP(bsip);
+								Set<Long> playerIds = new HashSet<Long>();
+								List<BSPlayer> players = new ArrayList<BSPlayer>();
+								List<BSBan> playerBans = new ArrayList<BSBan>();
+								for (BSSession session : sessions) {
+									BSPlayer player = session.getPlayer();
+									if (playerIds.contains(player.getId())) {
+										continue;
+									}
+									playerIds.add(player.getId());
+									players.add(player);
+									if (player.getBan() != null) {
+										playerBans.add(player.getBan());
+									}
+								}
+								BSIPData proxy = BSIPData.byExactIP(bsip);
+								
+								StringBuilder sb = new StringBuilder();
+								sb.append(ChatColor.BLUE).append("IP ").append(ChatColor.WHITE).append(bsip.toString());
+								sb.append(ChatColor.AQUA).append(" IPBans: ").append(ChatColor.WHITE).append(bans == null ? 0 : bans.size());
+								sb.append(ChatColor.AQUA).append(" Sessions: ").append(ChatColor.WHITE).append(sessions == null ? 0 : sessions.size());
+								sb.append(ChatColor.AQUA).append(" Players: ").append(ChatColor.WHITE).append(players == null ? 0 : players.size());
+								sb.append(ChatColor.AQUA).append(" PlayerBans: ").append(ChatColor.WHITE).append(playerBans == null ? 0 : playerBans.size());
+								if (proxy != null) sb.append("\n   ").append(proxy.toString());
+								
+								sender.sendMessage(sb.toString());
+							}
+						} else {
+							sender.sendMessage(ChatColor.RED + "No IPs found contained by " + ChatColor.WHITE + ipcheck.toString() + "/" + CIDR);
+						}
+					}
+				});
+			}
+			// LESS, but details
 			
 			BSIP exact = !hasCIDR ? BSIP.byIPAddress(ipcheck) : BSIP.byCIDR(ipcheck.toString(), CIDR);
 			if (exact == null) {
-				sender.sendMessage(ChatColor.RED + "Can't find " + (hasCIDR ? ipcheck.toString() + "/" + CIDR : ipcheck.toString()));
+				sender.sendMessage(ChatColor.RED + "Can't find exact " + (hasCIDR ? ipcheck.toString() + "/" + CIDR : ipcheck.toString()));
 				return true;
 			}
 			
@@ -63,7 +114,7 @@ public class LoveTapCommand  implements CommandExecutor {
 			StringBuilder sb = new StringBuilder();
 			sb.append(ChatColor.BLUE).append("Data for IP ").append(ChatColor.WHITE).append(exact.toString());
 			sb.append('\n');
-			sb.append(ChatColor.BLUE).append("\nProxies: \n");
+			sb.append(ChatColor.BLUE).append("\nDetail Data: \n");
 			if (proxies == null || proxies.isEmpty()) {
 				sb.append(ChatColor.AQUA).append("  None.\n");
 			} else {
@@ -125,6 +176,22 @@ public class LoveTapCommand  implements CommandExecutor {
 				if (player == null) {
 					sender.sendMessage("No Player records for " + toTap);
 				}
+
+				if (hasCIDR) {
+					BSSession latest = player.getLatestSession();
+					if (latest != null) {
+						BSIP latestIP = latest.getIP();
+						if (latestIP == null) {
+							sender.sendMessage("CIDR " + CIDR + " of latest IP requested but player has no latest IP");
+							return true;
+						}
+						String ipRequest = latestIP.toString();
+						if (ipRequest.indexOf('/') > -1) {
+							ipRequest = ipRequest.substring(0, ipRequest.indexOf('/'));
+						}
+						return onCommand(sender, cmd, cmdString, new String[] {ipRequest + "/" + CIDR});
+					}
+				}
 				
 				BSBan ban = player.getBan();
 				List<BSSession> history = player.getAllSessions();
@@ -133,13 +200,18 @@ public class LoveTapCommand  implements CommandExecutor {
 				BSIPData latestProxy = BSIPData.byContainsIP(latest.getIP());
 				
 				StringBuffer sb = new StringBuffer();
-				sb.append(ChatColor.BLUE + "Session History: " + ChatColor.DARK_BLUE + "(First Join: " + ChatColor.WHITE + player.getFirstAdd() + ")\n");
-				for (BSSession histRecord : history) {
-					sb.append(ChatColor.WHITE + "  " + histRecord.toFullDisplayString(true) + "\n");
+				if (history != null) {
+					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA).append("(First Join: ")
+						.append(ChatColor.WHITE).append(player.getFirstAdd()).append(ChatColor.DARK_AQUA).append(")\n");
+					for (BSSession histRecord : history) {
+						sb.append(ChatColor.WHITE + "  " + histRecord.toFullDisplayString(true) + "\n");
+					}
+					sb.append("\n");
 				}
-				sb.append("\n");
-				sb.append(ChatColor.GREEN + "Most Recent Session: \n");
-				sb.append(ChatColor.WHITE + "  " + latest.toFullDisplayString(true) + "\n");
+				if (latest != null) {
+					sb.append(ChatColor.GREEN + "Most Recent Session: \n");
+					sb.append(ChatColor.WHITE + "  " + latest.toFullDisplayString(true) + "\n");
+				}
 				if (latestProxy != null) {
 					sb.append(ChatColor.GRAY + "  Network: " + ChatColor.WHITE + latestProxy.toString() + "\n");
 				}

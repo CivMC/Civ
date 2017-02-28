@@ -55,5 +55,10 @@ tor:
    period: 72000
    delay: 3600
    cidr: false
-  
+iplookup:
+ enable: true
+ maxBatch: 50
+ period: 120
+ failureCap: 5
+ cooldownTicks: 72000
  

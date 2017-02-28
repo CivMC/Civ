@@ -305,6 +305,8 @@ public class BanStickDatabaseHandler {
 					" region TEXT," +
 					" city TEXT," +
 					" postal TEXT," +
+					" lat DOUBLE DEFAULT NULL," +
+					" lon DOUBLE DEFAULT NULL," +
 					" domain TEXT," +
 					" provider TEXT," +
 					" registered_as TEXT," +
@@ -364,6 +366,7 @@ public class BanStickDatabaseHandler {
 	public BSIP getOrCreateIP(final InetAddress netAddress) {
 		BSIP bsIP = getIP(netAddress);
 		if (bsIP == null) {
+			BanStick.getPlugin().debug("Creating IP address: {0}", netAddress);
 			bsIP = BSIP.create(netAddress);
 		}
 		return bsIP;

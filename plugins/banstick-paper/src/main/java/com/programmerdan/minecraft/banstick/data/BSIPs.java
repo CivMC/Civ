@@ -84,14 +84,20 @@ public class BSIPs {
 	}
 	
 	private void fill() {
+		if (ipList == null) {
+			ipList = new ArrayList<Long>();
+		}
+		if (ipSet == null) {
+			ipSet = new HashSet<Long>();
+		}
+
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by join time.
 					"SELECT DISTINCT i.iid FROM bs_ip i JOIN bs_session s ON i.iid = s.iid WHERE s.pid = ? ORDER BY s.join_time;");) {
 				// TODO: replace statement w/ view.
 			getIDs.setLong(1, forPlayer.getId());
+			BanStick.getPlugin().debug("Filling IPs for {0}", forPlayer.getUUID());
 			try (ResultSet rs = getIDs.executeQuery()) {
-				ipList = new ArrayList<Long>();
-				ipSet = new HashSet<Long>();
 				while (rs.next()) {
 					Long id = rs.getLong(1);
 					if (ipSet.add(id)) {

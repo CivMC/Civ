@@ -66,6 +66,7 @@ public abstract class ProxyLoader extends BukkitRunnable {
 	 * the instantiation.
 	 * 
 	 * @param config 
+	 * The config to use to set up the proxy loader
 	 */
 	public abstract void setup(ConfigurationSection config);
 	

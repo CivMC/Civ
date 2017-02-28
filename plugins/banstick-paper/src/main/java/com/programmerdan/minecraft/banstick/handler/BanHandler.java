@@ -15,6 +15,8 @@ import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+
 /**
  * A series of static utility classes to facilitate issuing bans.
  * 
@@ -114,7 +116,7 @@ public class BanHandler {
 				if (spigotPlayer != null) {
 					player = BSPlayer.create(spigotPlayer);
 				} else {
-					player = BSPlayer.create(playerId);
+					player = BSPlayer.create(playerId, NameAPI.getCurrentName(playerId));
 				}
 			}
 			BSBan ban = BSBan.create(message, banEnd, adminBan); // general ban.
@@ -211,8 +213,9 @@ public class BanHandler {
 	 * @param adminBan
 	 *  Is this an administrative ban?
 	 * @param includeHistoric
-	 *  Should we include all historic occurances of this IP in the ban? (TODO)
+	 *  Should we include all historic occurrences of this IP in the ban? (TODO)
 	 * @return
+	 *  A BanResult with the bans issued, if any
 	 */
 	public static BanResult doCIDRBan(BSIP cidrIP, String message, Date banEnd, boolean adminBan, boolean includeHistoric) {
 		try {

@@ -120,7 +120,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 						
 						BSIPData data = BSIPData.byExactIP(found);
 						if (data == null) {
-							data = BSIPData.create(found, null, null, null, null, null, domain, null, registeredAs, null, proxyScore, this.loadUrl, "Cloud9ProxyLoader");
+							data = BSIPData.create(found, null, null, null, null, null, null, null, domain, null, registeredAs, null, proxyScore, "Cloud9 Proxy Loader", null);
 						}
 						
 						if (autoBan) {

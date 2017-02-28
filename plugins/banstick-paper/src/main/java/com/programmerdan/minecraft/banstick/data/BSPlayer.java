@@ -114,8 +114,8 @@ public class BSPlayer {
 	 * This is the heart of the tracking. If a session is already active, ends it; Starts a session for this player, associates that session with the current IP data,
 	 * checks for new shares and any other stuff like that.
 	 * 
-	 * @param player
-	 * @param sessionStart
+	 * @param player The player whose session to start
+	 * @param sessionStart The Date that the session began
 	 */
 	public void startSession(final Player player, Date sessionStart) {
 		BSSession latest = this.allSessions.getLatest();
@@ -131,7 +131,7 @@ public class BSPlayer {
 	/**
 	 * Ends the latest session for this player. Player-centric exposed focus for BSSessions's endLatest
 	 * 
-	 * @param sessionEnd
+	 * @param sessionEnd Date to end this player's current session.
 	 */
 	public void endSession(Date sessionEnd) {
 		this.allSessions.endLatest(sessionEnd);
@@ -140,7 +140,7 @@ public class BSPlayer {
 	/**
 	 * Gets the latest session for this player.
 	 * 
-	 * @return
+	 * @return The latest BSSession object
 	 */
 	public BSSession getLatestSession() {
 		return this.allSessions.getLatest();
@@ -149,7 +149,7 @@ public class BSPlayer {
 	/**
 	 * Gets all sessions for this player
 	 * 
-	 * @return
+	 * @return A list of all BSSessions for this player
 	 */
 	public List<BSSession> getAllSessions() {
 		return this.allSessions.getAll();
@@ -258,7 +258,10 @@ public class BSPlayer {
 	}
 	
 	/**
+	 * Create a new player from the Bukkit object
 	 * 
+	 * @param player The player object to use
+	 * @return the BSPlayer created from the player, or null
 	 */
 	public static BSPlayer create(final Player player) {
 		if (allPlayersUUID.containsKey(player.getUniqueId())) {
@@ -301,6 +304,8 @@ public class BSPlayer {
 	
 	/**
 	 * Get player by UUID, pull from DB if not cached already.
+	 * @param uuid Gets a BSPlayer record by uuid.
+	 * @return BSPlayer matching the uuid or null if not found
 	 */
 	public static BSPlayer byUUID(final UUID uuid) {
 		if (allPlayersUUID.containsKey(uuid)) {
@@ -360,10 +365,12 @@ public class BSPlayer {
 	}
 	
 	/**
-	 * Assume rs is from bs_player, and that next() has been called once.
-	 * @throws SQLException 
+	 * Direct lookup for a BSPlayer by database ID
+	 * 
+	 * @param pid The Player ID to use in the lookup
+	 * @return The Player found, or null if not found
 	 */
-	public static BSPlayer byId(final long pid) throws SQLException {
+	public static BSPlayer byId(final long pid) {
 		if (allPlayersID.containsKey(pid)) {
 			return allPlayersID.get(pid);
 		}
@@ -414,20 +421,28 @@ public class BSPlayer {
 		}
 		return null; // TODO: exception
 	}
-
+	
 	public static BSPlayer create(UUID playerId) {
+		return null;
+	}
+
+	public static BSPlayer create(UUID playerId, String name) {
 		if (allPlayersUUID.containsKey(playerId)) {
 			return allPlayersUUID.get(playerId);
 		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSPlayer newPlayer = new BSPlayer();
 			newPlayer.dirty = false;
-			newPlayer.name = null;
+			newPlayer.name = name;
 			newPlayer.uuid = playerId;
 			newPlayer.firstAdd = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			
 			try (PreparedStatement insertPlayer = connection.prepareStatement("INSERT INTO bs_player(name, uuid, first_add) VALUES (?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
-				insertPlayer.setNull(1, Types.VARCHAR);
+				if (newPlayer.name == null) {
+					insertPlayer.setNull(1, Types.VARCHAR);
+				} else {
+					insertPlayer.setString(1, newPlayer.name);
+				}
 				insertPlayer.setString(2, newPlayer.uuid.toString());
 				insertPlayer.setTimestamp(3, newPlayer.firstAdd);
 				insertPlayer.execute();
@@ -469,6 +484,11 @@ public class BSPlayer {
 			loadPlayers.setInt(2, limit);
 			try (ResultSet rs = loadPlayers.executeQuery()) {
 				while (rs.next()) {
+					long nPid = rs.getLong(1);
+					if (nPid > maxId) maxId = nPid;
+					if (allPlayersID.containsKey(nPid)) {
+						continue; // skip those we know.
+					}
 					BSPlayer player = new BSPlayer();
 					player.dirty = false;
 					player.pid = rs.getLong(1);
@@ -495,14 +515,17 @@ public class BSPlayer {
 					} catch (SQLException te) {
 						player.sharedPardonTime = null;
 					}
+					
+					player.allSessions = BSSessions.onlyFor(player);
+					player.allIPs = BSIPs.onlyFor(player);
+					player.allShares = BSShares.onlyFor(player);
+					
 					if (!allPlayersID.containsKey(player.pid)) {
 						allPlayersID.put(player.pid, player);
 					}
 					if (!allPlayersUUID.containsKey(player.uuid)) {
 						allPlayersUUID.put(player.uuid, player);
 					}
-					
-					if (player.pid > maxId) maxId = player.pid;
 				}
 			}
 		} catch (SQLException se) {

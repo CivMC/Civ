@@ -19,8 +19,6 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 
 import inet.ipaddr.IPAddressString;
-import inet.ipaddr.ipv4.IPv4Address;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class BanStickTorUpdater {
 	
@@ -94,8 +92,13 @@ tor:
 						InputStream readIn = connection.openStream();
 						BufferedReader in = new BufferedReader(new InputStreamReader(readIn));
 						String line = in.readLine();
+						long lines = 0l;
 						int errors = 0;
 						while (line != null) {
+							lines ++;
+							if (lines % 50 == 0) {
+								BanStick.getPlugin().info("Processed {0} records from {1} so far", lines, torSave.address);
+							}
 							if (errors > 10) {
 								BanStick.getPlugin().warning("Cancelling this Tor capture run, too many errors.");
 								break;
@@ -142,6 +145,7 @@ tor:
 								
 							} catch (Exception e) {
 								// quiet.
+								errors ++;
 							}
 							line = in.readLine();
 						}

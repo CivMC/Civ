@@ -19,6 +19,7 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 import inet.ipaddr.IPAddress;
+import net.md_5.bungee.api.ChatColor;
 
 public class BSIPData {
 	private static Map<Long, BSIPData> allIPDataID = new HashMap<Long, BSIPData>();
@@ -38,6 +39,8 @@ public class BSIPData {
 					" region TEXT," +
 					" city TEXT," +
 					" postal TEXT," +
+					" lat DOUBLE," +
+					" lon DOUBLE," +
 					" domain TEXT," +
 					" provider TEXT," +
 					" registered_as TEXT," +
@@ -56,6 +59,8 @@ public class BSIPData {
 	private String region;
 	private String city;
 	private String postal;
+	private Double lat;
+	private Double lon;
 	private String domain;
 	private String provider;
 	private String registeredAs;
@@ -105,6 +110,14 @@ public class BSIPData {
 	
 	public String getPostal() {
 		return this.postal;
+	}
+	
+	public Double getLat() {
+		return this.lat;
+	}
+	
+	public Double getLon() {
+		return this.lon;
 	}
 	
 	public String getDomain() {
@@ -184,23 +197,35 @@ public class BSIPData {
 		data.region = rs.getString(7);
 		data.city = rs.getString(8);
 		data.postal = rs.getString(9);
-		data.domain = rs.getString(10);
-		data.provider = rs.getString(11);
-		data.registeredAs = rs.getString(12);
-		data.connection = rs.getString(13);
-		data.proxy = rs.getFloat(14);
-		data.source = rs.getString(15);
-		data.comment = rs.getString(16);
+		data.lat = rs.getDouble(10);
+		if (rs.wasNull()) {
+			data.lat = null;
+		}
+		data.lon = rs.getDouble(11);
+		if (rs.wasNull()) {
+			data.lon = null;
+		}
+		data.domain = rs.getString(12);
+		data.provider = rs.getString(13);
+		data.registeredAs = rs.getString(14);
+		data.connection = rs.getString(15);
+		data.proxy = rs.getFloat(16);
+		data.source = rs.getString(17);
+		data.comment = rs.getString(18);
 		data.dirty = false;
 		return data;
 	}
 
 	/**
 	 * Returns only the latest valid BSIPData records by exact match with the IP
-	 * @param ip
-	 * @return
+	 * @param ip The BSIP record to use for IPData retrieval
+	 * @return the matching BSIPData or null if no match
 	 */
 	public static BSIPData byExactIP(BSIP ip) {
+		if (ip == null) {
+			BanStick.getPlugin().warning("Weird failure, byExactIP with null IP");
+			return null;
+		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE iid = ? and valid = true ORDER BY create_time DESC LIMIT 1");) {
 			getId.setLong(1, ip.getId());
@@ -223,44 +248,80 @@ public class BSIPData {
 	}
 	
 	/**
-	 * Returns the smallest (most bits) BSIPData that contains the given IP/CIDR.
+	 * Finds the first subnet that fully contains the given BSIP's IP/CIDR, if any.
 	 * 
-	 * @param ip
-	 * @return
+	 * @param ip The BSIP record to base the lookup on
+	 * @return The BSIPData record that contains the IP/CIDR, or null if none found.
 	 */
 	public static BSIPData byContainsIP(BSIP ip) {
-		IPAddress address = ip.getIPAddress();
-		List<BSIP> knownContains = BSIP.allMatching(address, address.getNetworkPrefixLength());
-		
-		for (BSIP maybe : knownContains) {
-			BSIPData data = byExactIP(maybe);
-			if (data != null) {
-				return data;
+		try {
+			if (ip == null) {
+				BanStick.getPlugin().warning("Weird failure, byContainsIP with null IP");
+				return null;
 			}
+			IPAddress address = ip.getIPAddress();
+			if (address == null) {
+				BanStick.getPlugin().warning("Weird failure, no ip _in_ {0}", ip.toString());
+				return null;
+			}
+			Integer cidr = address.getNetworkPrefixLength();
+			if (cidr == null) {
+				cidr = address.isIPv4() ? 32 : 128;
+			}
+			List<BSIP> knownContains = BSIP.allMatching(address, cidr);
+			
+			if (knownContains != null) {
+				for (BSIP maybe : knownContains) {
+					BSIPData data = byExactIP(maybe);
+					if (data != null) {
+						return data;
+					}
+				}
+			}
+			BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
+		} catch (Exception e) {
+			BanStick.getPlugin().warning("Failure during IPData retrieval", e);
 		}
-		BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
 		return null;
 	}
 	
 	/**
 	 * Returns all BSIPData that relate to or contain the given IP/CIDR.
 	 * 
-	 * @param ip
+	 * @param ip The BSIP to use for matching.
 	 * @return a list; empty if nothing found.
 	 */
 	public static List<BSIPData> allByIP(BSIP ip) {
 		List<BSIPData> returns = new ArrayList<BSIPData>();
-		IPAddress address = ip.getIPAddress();
-		List<BSIP> knownContains = BSIP.allMatching(address, address.getNetworkPrefixLength());
-		
-		for (BSIP maybe : knownContains) {
-			BSIPData data = byExactIP(maybe);
-			if (data != null) {
-				returns.add(data);
+		try {
+			if (ip == null) {
+				BanStick.getPlugin().warning("Weird failure, allByIP with null IP");
+				return returns;
 			}
-		}
-		if (returns.isEmpty()) {
-			BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
+			IPAddress address = ip.getIPAddress();
+			if (address == null) {
+				BanStick.getPlugin().warning("Weird failure, no ip _in_ {0}", ip.toString());
+				return returns;
+			}
+			Integer cidr = address.getNetworkPrefixLength();
+			if (cidr == null) {
+				cidr = address.isIPv4() ? 32 : 128;
+			}
+			List<BSIP> knownContains = BSIP.allMatching(address, cidr);
+			
+			if (knownContains != null) {
+				for (BSIP maybe : knownContains) {
+					BSIPData data = byExactIP(maybe);
+					if (data != null) {
+						returns.add(data);
+					}
+				}
+			}
+			if (returns.isEmpty()) {
+				BanStick.getPlugin().warning("No IPData records contain IP {0}", ip);
+			}
+		} catch (Exception e) {
+			BanStick.getPlugin().warning("Failure during IPData retrieval", e);
 		}
 		return returns;
 	}
@@ -268,24 +329,27 @@ public class BSIPData {
 	/**
 	 * This does NOT check for prior existence. Must be managed elsewhere.
 	 * 
-	 * @param ip
-	 * @param continent
-	 * @param country
-	 * @param region
-	 * @param city
-	 * @param postal
-	 * @param domain
-	 * @param provider
-	 * @param registeredAs
-	 * @param _connection
-	 * @param proxy
-	 * @param source
-	 * @param comment
-	 * @return
+	 * @param ip The BSIP record to bind to. Must not be null.
+	 * @param continent The continent where this IP is registered to
+	 * @param country The country where this IP is registered to
+	 * @param region The region where this IP is registered to
+	 * @param city The city where this IP is registered to
+	 * @param postal The postal / zip code where this IP is registered to
+	 * @param lat The latitude
+	 * @param lon The longitude
+	 * @param domain The domain that maps to this IP / range
+	 * @param provider The provider for this IP / range
+	 * @param registeredAs Any registration information for this IP / range
+	 * @param _connection The connection source for this IP / range
+	 * @param proxy The likelihood this is a proxy -- higher number for more likelihood. Assumes 0 - no, 3 - likely, 4 - definite
+	 * @param source The source of this record (Cloud9? Tor? IP-API?)
+	 * @param comment Any comments recorded against the BSIPData.
+	 * @return The new BSIPData if successful
 	 */
-	public static BSIPData create(BSIP ip, String continent, String country, String region, String city, String postal, String domain, String provider, String registeredAs, String _connection, float proxy, String source, String comment) {
+	public static BSIPData create(BSIP ip, String continent, String country, String region, String city, String postal, Double lat, Double lon, String domain, String provider, String registeredAs, String _connection, float proxy, String source, String comment) {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSIPData newData = new BSIPData();
+			newData.valid = true;
 			newData.dirty = false;
 			newData.continent = continent;
 			newData.iid = ip;
@@ -293,6 +357,8 @@ public class BSIPData {
 			newData.region = region;
 			newData.city = city;
 			newData.postal = postal;
+			newData.lat = lat;
+			newData.lon = lon;
 			newData.domain = domain;
 			newData.provider = provider;
 			newData.registeredAs = registeredAs;
@@ -301,7 +367,7 @@ public class BSIPData {
 			newData.source = source;
 			newData.comment = comment;
 			
-			try (PreparedStatement insertData = connection.prepareStatement("INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+			try (PreparedStatement insertData = connection.prepareStatement("INSERT INTO bs_ip_data(iid, continent, country, region, city, postal, lat, lon, domain, provider, registered_as, connection, proxy, source, comment) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
 				insertData.setLong(1, newData.iid.getId());
 				if (newData.continent == null) {
 					insertData.setNull(2, Types.VARCHAR);
@@ -328,36 +394,46 @@ public class BSIPData {
 				} else {
 					insertData.setString(6, newData.postal);
 				}
-				if (newData.domain == null) {
-					insertData.setNull(7, Types.VARCHAR);
+				if (newData.lat == null) {
+					insertData.setNull(7, Types.DOUBLE);
 				} else {
-					insertData.setString(7, newData.domain);
+					insertData.setDouble(7, newData.lat);
+				}
+				if (newData.lon == null) {
+					insertData.setNull(8, Types.DOUBLE);
+				} else {
+					insertData.setDouble(8, newData.lon);
 				}
 				if (newData.domain == null) {
-					insertData.setNull(8, Types.VARCHAR);
-				} else {
-					insertData.setString(8, newData.provider);
-				}
-				if (newData.registeredAs == null) {
 					insertData.setNull(9, Types.VARCHAR);
 				} else {
-					insertData.setString(9, newData.registeredAs);
+					insertData.setString(9, newData.domain);
 				}
-				if (newData.connection == null) {
+				if (newData.domain == null) {
 					insertData.setNull(10, Types.VARCHAR);
 				} else {
-					insertData.setString(10, newData.connection);
+					insertData.setString(10, newData.provider);
 				}
-				insertData.setFloat(11, newData.proxy);
-				if (newData.source == null) {
+				if (newData.registeredAs == null) {
+					insertData.setNull(11, Types.VARCHAR);
+				} else {
+					insertData.setString(11, newData.registeredAs);
+				}
+				if (newData.connection == null) {
 					insertData.setNull(12, Types.VARCHAR);
 				} else {
-					insertData.setString(12, newData.source);
+					insertData.setString(12, newData.connection);
+				}
+				insertData.setFloat(13, newData.proxy);
+				if (newData.source == null) {
+					insertData.setNull(14, Types.VARCHAR);
+				} else {
+					insertData.setString(14, newData.source);
 				}
 				if (newData.comment == null) {
-					insertData.setNull(13, Types.VARCHAR);
+					insertData.setNull(15, Types.VARCHAR);
 				} else {
-					insertData.setString(13, newData.comment);
+					insertData.setString(15, newData.comment);
 				}
 				insertData.execute();
 				try (ResultSet rs = insertData.getGeneratedKeys()) {
@@ -498,45 +574,62 @@ public class BSIPData {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(iid.toString()).append(" - ");
+		sb.append(ChatColor.WHITE).append(iid.toString()).append(" - ");
 		if (!valid) {
-			sb.append("[Invalid] ");
+			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
 		}
-		
+		if (continent != null || country != null || region != null || city != null || postal != null || lat != null || lon != null) {
+			sb.append(ChatColor.AQUA).append("Location: ").append(ChatColor.WHITE);
+		}
 		if (continent != null) {
-			sb.append(continent).append(" ");
+			sb.append(continent).append(", ");
 		}
 		if (country != null) {
-			sb.append(country).append(" ");
+			sb.append(country).append(", ");
 		}
 		if (region != null) {
-			sb.append(region).append(" ");
+			sb.append(region).append(", ");
 		}
 		if (city != null) {
-			sb.append(city).append(" ");
+			sb.append(city).append(", ");
 		}
 		if (postal != null) {
-			sb.append(postal).append(" ");
+			sb.append(postal).append(", ");
+		}
+		if (lat != null || lon != null) {
+			sb.append(ChatColor.GRAY).append("[").append(ChatColor.WHITE).append(lat)
+				.append(ChatColor.GRAY).append(',').append(ChatColor.WHITE).append(lon)
+				.append(ChatColor.GRAY).append("] ").append(ChatColor.WHITE);
 		}
 		if (connection != null) {
-			sb.append(connection).append(" ");
+			sb.append(ChatColor.GRAY).append("Connection: ").append(ChatColor.WHITE).append(connection).append(" ");
 		}
 		if (domain != null) {
 			sb.append("(").append(domain).append(") ");
 		}
 		if (provider != null) {
-			sb.append(provider).append(" ");
+			sb.append(ChatColor.GRAY).append("Provider: ").append(ChatColor.WHITE).append(provider).append(" ");
 		}
 		if (registeredAs != null) {
-			sb.append(registeredAs).append(" ");
+			sb.append(ChatColor.GRAY).append("Reg. As: ").append(ChatColor.WHITE).append(registeredAs).append(" ");
 		}
 		if (source != null) {
-			sb.append("from ").append(source).append(" ");
+			sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
 		}
 		if (comment != null) {
-			sb.append(":").append(comment).append(" ");
+			sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE).append(comment).append(" ");
 		}
-		sb.append("[pli: ").append(proxy).append("]");
+		sb.append(ChatColor.DARK_AQUA).append("[pli: ");
+		if (proxy < 1.0) {
+			sb.append(ChatColor.GREEN);
+		} else if (proxy < 2.0) {
+			sb.append(ChatColor.GOLD);
+		} else if (proxy < 3.0) {
+			sb.append(ChatColor.YELLOW);
+		} else {
+			sb.append(ChatColor.RED);
+		}
+		sb.append(proxy).append(ChatColor.DARK_AQUA).append("]").append(ChatColor.RESET);
 		
 		return sb.toString();
 	}
