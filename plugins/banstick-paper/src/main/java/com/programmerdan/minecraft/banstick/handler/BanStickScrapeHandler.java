@@ -27,7 +27,6 @@ import com.programmerdan.minecraft.banstick.BanStick;
 public class BanStickScrapeHandler {
 
 	ArrayList<ScraperWorker> workers;
-	ArrayList<BukkitTask> workerTasks;
 	
 	public BanStickScrapeHandler(FileConfiguration config, ClassLoader classes) {
 		setup(config.getConfigurationSection("scrapers"), classes);
@@ -40,8 +39,6 @@ public class BanStickScrapeHandler {
 		}
 		
 		workers = new ArrayList<ScraperWorker>();
-		workerTasks = new ArrayList<BukkitTask>();
-		
 		
 		// now load all configured proxy list loaders.
 		// Build using constructor then launch repeating task
@@ -66,8 +63,8 @@ public class BanStickScrapeHandler {
 
 					if (loader != null) {
 						try {
-							BukkitTask loaderTask = loader.runTaskLaterAsynchronously(BanStick.getPlugin(), loader.getDelay());
-							workerTasks.add(loaderTask);
+							BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), loader, loader.getDelay());
+							loader.setTask(task);
 						} catch (Exception e) {
 							BanStick.getPlugin().warning("Failed to activate scraper worker of type {0}", clazz.getName());
 							BanStick.getPlugin().warning("  Failure message: ", e);
@@ -78,15 +75,6 @@ public class BanStickScrapeHandler {
 		} catch (IOException ioe) {
 			BanStick.getPlugin().warning("Failed to load any scraper workers, due to IO error", ioe);
 		}
-	}
-	
-	public static void scheduleNext(ScraperWorker worker, long delay) {
-		Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), new Runnable() {
-			@Override
-			public void run() {
-				worker.runTaskLaterAsynchronously(BanStick.getPlugin(), delay);
-			}
-		}, 1l);
 	}
 	
 	public void shutdown() {

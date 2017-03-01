@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.banstick.handler;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 
 import com.programmerdan.minecraft.banstick.BanStick;
 
@@ -15,8 +16,9 @@ import com.programmerdan.minecraft.banstick.BanStick;
  * @author ProgrammerDan
  *
  */
-public abstract class ScraperWorker extends BukkitRunnable {
+public abstract class ScraperWorker implements Runnable {
 
+	private BukkitTask currentTask = null;
 	private boolean enabled = false;
 	private long delay = 4200l;
 	private long period = 576000l;
@@ -170,17 +172,23 @@ public abstract class ScraperWorker extends BukkitRunnable {
 			
 			if (this.errorCooldown > 0) {
 				BanStick.getPlugin().warning("Error threshold exceeded; cooldown engaged for {0}.", name());
-				BanStickScrapeHandler.scheduleNext(this, jitter(this.errorCooldown));
+				this.currentTask = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), this, jitter(this.errorCooldown));
 			} else {
 				this.enabled = false;
 				BanStick.getPlugin().warning("Error threshold exceeded; {0} disabled.", name());
 			}
 		} else {
-			BanStickScrapeHandler.scheduleNext(this, jitter(delay));
+			this.currentTask = Bukkit.getScheduler().runTaskLaterAsynchronously(BanStick.getPlugin(), this, jitter(this.delay));
 		}
 	}
 	
 	public void shutdown() {
-		this.cancel();
+		if (this.currentTask != null) {
+			this.currentTask.cancel();
+		}
+	}
+	
+	public void setTask(BukkitTask task) {
+		this.currentTask = task;
 	}
 }
