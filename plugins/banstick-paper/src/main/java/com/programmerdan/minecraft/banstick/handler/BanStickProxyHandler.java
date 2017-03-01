@@ -22,7 +22,7 @@ public class BanStickProxyHandler {
 	}
 	
 	private void setup(ConfigurationSection config, ClassLoader classes) {
-		if (!config.getBoolean("enable")) {
+		if (config == null || !config.getBoolean("enable")) {
 			BanStick.getPlugin().warning("All Proxy List Loaders disabled");
 			return;
 		}
@@ -55,6 +55,7 @@ public class BanStickProxyHandler {
 					if (loader != null) {
 						try {
 							BukkitTask loaderTask = loader.runTaskTimerAsynchronously(BanStick.getPlugin(), loader.getDelay(), loader.getPeriod());
+							loaderTasks.add(loaderTask);
 						} catch (Exception e) {
 							BanStick.getPlugin().warning("Failed to activate proxy loader of type {0}", clazz.getName());
 							BanStick.getPlugin().warning("  Failure message: ", e);
@@ -65,6 +66,14 @@ public class BanStickProxyHandler {
 		} catch (IOException ioe) {
 			BanStick.getPlugin().warning("Failed to load any proxy loaders, due to IO error", ioe);
 		}
-
+	}
+	
+	public void shutdown() {
+		if (loaderTasks == null) return;
+		for (BukkitTask task : loaderTasks) {
+			try {
+				task.cancel();
+			} catch (Exception e) {}
+		}
 	}
 }

@@ -301,7 +301,7 @@ public class BSSession {
 	 * Shows IP
 	 * 
 	 * @param showIP determines if to show IP or not
-	 * @return
+	 * @return the display string
 	 */
 	public String toFullDisplayString(boolean showIP) {
 		StringBuffer sb = new StringBuffer();

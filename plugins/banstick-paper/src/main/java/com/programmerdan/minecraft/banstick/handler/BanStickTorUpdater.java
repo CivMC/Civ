@@ -52,7 +52,7 @@ tor:
 	}
 	
 	private boolean configureTor(ConfigurationSection config) {
-		if (!config.getBoolean("check", false)) {
+		if (config == null || !config.getBoolean("check", false)) {
 			BanStick.getPlugin().info("TOR exit node checks disabled.");
 			return false;
 		}
@@ -157,6 +157,15 @@ tor:
 			};
 			
 			torListUpdaters.add(run.runTaskTimerAsynchronously(BanStick.getPlugin(), tor.delay, tor.period));
+		}
+	}
+	
+	public void shutdown() {
+		if (torListUpdaters == null) return;
+		for (BukkitTask task : torListUpdaters) {
+			try {
+				task.cancel();
+			} catch (Exception e) {}
 		}
 	}
 

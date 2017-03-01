@@ -61,4 +61,15 @@ iplookup:
  period: 120
  failureCap: 5
  cooldownTicks: 72000
- 
+scrapers:
+ enable: true
+ freeproxylist:
+  enable: true
+  delay: 3300
+  period: 72000
+  jitter: 12000
+  maxErrors: 10
+  errorCooldown: 144000
+  ban:
+   length: 86400000
+   message: Anonymous Proxy connections are generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss

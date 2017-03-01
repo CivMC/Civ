@@ -1,11 +1,11 @@
 package com.programmerdan.minecraft.banstick;
 
-import com.programmerdan.minecraft.banstick.handler.BanStickCheckHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickIPDataHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickProxyHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickScrapeHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -13,12 +13,12 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 public class BanStick extends ACivMod {
 	private static BanStick instance;
 	private BanStickCommandHandler commandHandler;
-	private BanStickCheckHandler checkHandler;
 	private BanStickEventHandler eventHandler;
 	private BanStickDatabaseHandler databaseHandler;
 	private BanStickTorUpdater torUpdater;
 	private BanStickProxyHandler proxyHandler;
 	private BanStickIPDataHandler ipdataUpdater;
+	private BanStickScrapeHandler scrapeHandler;
 	
 	@Override
 	public void onEnable() {
@@ -32,19 +32,23 @@ public class BanStick extends ACivMod {
 		if (!this.isEnabled()) return;
 
 		registerEventHandler();
-		registerCheckHandler();
 		registerCommandHandler();
 		registerTorHandler();
 		registerProxyHandler();
 		registerIPDataHandler();
+		registerScrapeHandler();
 	}
 	
 	@Override
 	public void onDisable() {
 		super.onDisable();
 		
-		this.eventHandler.shutdown();
-		this.databaseHandler.doShutdown();
+		if (this.eventHandler != null) this.eventHandler.shutdown();
+		if (this.proxyHandler != null) this.proxyHandler.shutdown();
+		if (this.scrapeHandler != null) this.scrapeHandler.shutdown();
+		if (this.ipdataUpdater != null) this.ipdataUpdater.end();
+		if (this.torUpdater != null) this.torUpdater.shutdown();
+		if (this.databaseHandler != null) this.databaseHandler.doShutdown();
 	}
 	
 	private void connectDatabase() {
@@ -66,16 +70,6 @@ public class BanStick extends ACivMod {
 			this.commandHandler = new BanStickCommandHandler(getConfig());
 		} catch (Exception e) {
 			this.severe("Failed to set up command handling", e);
-			this.setEnabled(false);
-		}
-	}
-
-	private void registerCheckHandler() {
-		if (!this.isEnabled()) return;
-		try {
-			this.checkHandler = new BanStickCheckHandler(getConfig());
-		} catch (Exception e) {
-			this.severe("Failed to set up VPN/VPS check and delayed ban handling", e);
 			this.setEnabled(false);
 		}
 	}
@@ -114,6 +108,15 @@ public class BanStick extends ACivMod {
 			this.ipdataUpdater = new BanStickIPDataHandler(getConfig());
 		} catch (Exception e) {
 			this.severe("Failed to set up dynamic IPData updater!", e);
+		}
+	}
+	
+	private void registerScrapeHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getPlugin().getClassLoader());
+		} catch (Exception e) {
+			this.severe("Failed to set up anonymous proxy scrapers", e);
 		}
 	}
 

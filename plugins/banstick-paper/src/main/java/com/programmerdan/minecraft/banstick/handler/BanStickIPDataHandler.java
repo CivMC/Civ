@@ -63,7 +63,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		begin();
 	}
 	private boolean configure(ConfigurationSection config) {
-		if (config.getBoolean("enable")) {
+		if (config != null && config.getBoolean("enable")) {
 			enabled = true;
 		} else {
 			return false;
@@ -86,6 +86,12 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 			selfTask = this.runTaskTimerAsynchronously(BanStick.getPlugin(), period, period);
 			BanStick.getPlugin().warning("Dynamic IP Data lookup task started.");
 		}
+	}
+	
+	public void end() {
+		this.enabled = false;
+		if (this.selfTask == null) return;
+		this.selfTask.cancel();
 	}
 	
 	public void offer(BSIP toCheck) {
