@@ -54,15 +54,15 @@ public class BanResult {
 			sb.append(" Banned ");
 			BSIP bip = banned.getIPBan();
 			if (bip != null) {
-				sb.append(" IP ").append(bip.toString());
+				sb.append(" IP ").append(bip.toFullString(sender.hasPermission("banstick.ips")));
 			}
 			BSIPData vip = banned.getProxyBan();
 			if (vip != null) {
-				sb.append(" VPN ").append(vip.toString());
+				sb.append(" VPN ").append(vip.toFullString(sender.hasPermission("banstick.ips")));
 			}
 			BSShare sid = banned.getShareBan();
 			if (sid != null) {
-				sb.append(" Share ").append(sid.toString());
+				sb.append(" Share ").append(sid.toFullString(sender.hasPermission("banstick.ips")));
 			}
 			if (banned.getBanEndTime() != null) {
 				sb.append(" until ").append(usualDateTime.format(banned.getBanEndTime())).append("\n");

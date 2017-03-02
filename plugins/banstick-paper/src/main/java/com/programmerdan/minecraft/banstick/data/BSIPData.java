@@ -517,7 +517,7 @@ public class BSIPData {
 					save.addBatch();
 					batchSize ++;
 				}
-				if (batchSize % 100 == 0) {
+				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -527,7 +527,7 @@ public class BSIPData {
 					batchSize = 0;
 				}
 			}
-			if (batchSize % 100 > 0) {
+			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -613,6 +613,37 @@ public class BSIPData {
 		if (registeredAs != null) {
 			sb.append(ChatColor.GRAY).append("Reg. As: ").append(ChatColor.WHITE).append(registeredAs).append(" ");
 		}
+		if (source != null) {
+			sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
+		}
+		if (comment != null) {
+			sb.append(ChatColor.GRAY).append("Comments:").append(ChatColor.WHITE).append(comment).append(" ");
+		}
+		sb.append(ChatColor.DARK_AQUA).append("[pli: ");
+		if (proxy < 1.0) {
+			sb.append(ChatColor.GREEN);
+		} else if (proxy < 2.0) {
+			sb.append(ChatColor.GOLD);
+		} else if (proxy < 3.0) {
+			sb.append(ChatColor.YELLOW);
+		} else {
+			sb.append(ChatColor.RED);
+		}
+		sb.append(proxy).append(ChatColor.DARK_AQUA).append("]").append(ChatColor.RESET);
+		
+		return sb.toString();
+	}
+
+	public String toFullString(boolean showIPs) {
+		if (showIPs) {
+			return toString();
+		}
+		StringBuffer sb = new StringBuffer();
+		sb.append(ChatColor.WHITE).append(iid.toString()).append(" - ");
+		if (!valid) {
+			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
+		}
+		sb.append("Proxy #").append(this.idid).append(" ");
 		if (source != null) {
 			sb.append(ChatColor.DARK_PURPLE).append("from ").append(ChatColor.WHITE).append(source).append(" ");
 		}

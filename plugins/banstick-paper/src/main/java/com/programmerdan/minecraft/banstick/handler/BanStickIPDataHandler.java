@@ -189,6 +189,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				String continent = null;
 				String domain = null;
 				String comment = null;
+				String sauce = "IP-API batch";
 				float proxy = 0.0f;
 				if (dataMatch != null) {
 					if (reply.hasChanged(dataMatch)) { // is old outdated?
@@ -197,13 +198,18 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 						domain = dataMatch.getDomain();
 						comment = dataMatch.getComment();
 						proxy = dataMatch.getProxy();
+						if (dataMatch.getSource() != null && dataMatch.getSource().contains(sauce)) {
+							sauce = dataMatch.getSource();
+						} else {
+							sauce = dataMatch.getSource() != null ? dataMatch.getSource() + " aug. by IP-API batch" : "IP-API batch";
+						}
 					} else {
 						continue; // just move on, no changes.
 					}
 				}
 				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), reply.getCity(), 
 						reply.getZip(), reply.getLat(), reply.getLon(), domain, reply.getOrg(), reply.getAs(), reply.getIsp(),
-						proxy, "IP-API batch", comment);
+						proxy, sauce, comment);
 			}
 		} catch (MalformedURLException mue) {
 			enabled = false;

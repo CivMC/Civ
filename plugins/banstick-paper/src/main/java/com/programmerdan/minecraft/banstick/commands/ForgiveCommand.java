@@ -49,6 +49,10 @@ public class ForgiveCommand implements CommandExecutor {
 				
 		try {
 			IPAddress ipcheck = new IPAddressString(toForgive).toAddress();
+			if (!sender.hasPermission("banstick.ips")) {
+				sender.sendMessage(ChatColor.RED + "You don't have permission to use / view IPs");
+				return true;
+			}
 			
 			BSIP exact = !hasCIDR ? BSIP.byIPAddress(ipcheck) : BSIP.byCIDR(ipcheck.toString(), CIDR);
 			if (exact == null) {

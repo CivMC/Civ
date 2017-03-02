@@ -470,6 +470,9 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
+					if (BanStick.getPlugin().getIPDataHandler() != null) {
+						BanStick.getPlugin().getIPDataHandler().offer(newIP);
+					}
 					return newIP;
 				} else {
 					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString() + "/" + CIDR);
@@ -553,5 +556,9 @@ public class BSIP {
 		} else {
 			return basev6.toCanonicalString();
 		}
+	}
+	
+	public String toFullString(boolean showIPs) {
+		return showIPs ? toString() : String.valueOf(this.iid);
 	}
 }

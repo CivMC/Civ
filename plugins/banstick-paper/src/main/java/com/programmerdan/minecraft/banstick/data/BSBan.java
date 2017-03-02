@@ -117,7 +117,7 @@ public class BSBan {
 					save.addBatch();
 					batchSize ++;
 				}
-				if (batchSize % 100 == 0) {
+				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -127,7 +127,7 @@ public class BSBan {
 					batchSize = 0;
 				}
 			}
-			if (batchSize % 100 > 0) {
+			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -451,6 +451,48 @@ public class BSBan {
 			sb.append("Share Ban: ").append(shareBan.toString());
 		} else {
 			sb.append("Player Ban");
+		}
+		
+		if (isAdminBan()) {
+			sb.append(" (administrative)");
+		}
+		
+		if (getBanEndTime() != null) {
+			if ((new Date()).after(getBanEndTime())) { // passed
+				sb.append(" - Expired");
+			} else {
+				sb.append(" - Until ").append(getBanEndTime());
+			}
+		} else {
+			sb.append(" - Forever");
+		}
+		
+		sb.append(" with message \"").append(message).append("\"");
+		return sb.toString();
+	}
+	
+	public String toFullString(boolean showIPs) {
+		StringBuffer sb = new StringBuffer();
+		if (showIPs) {
+			if (ipBan != null) {
+				sb.append("IP Ban: ").append(ipBan.toString());
+			} else if (proxyBan != null) {
+				sb.append("Proxy Ban: ").append(proxyBan.toString());
+			} else if (shareBan != null) {
+				sb.append("Share Ban: ").append(shareBan.toString());
+			} else {
+				sb.append("Player Ban");
+			}
+		} else {
+			if (ipBan != null) {
+				sb.append("IP Ban: ").append(ipBan.getId());
+			} else if (proxyBan != null) {
+				sb.append("Proxy Ban: ").append(proxyBan.getId());
+			} else if (shareBan != null) {
+				sb.append("Share Ban: ").append(shareBan.toFullString(showIPs));
+			} else {
+				sb.append("Player Ban");
+			}			
 		}
 		
 		if (isAdminBan()) {

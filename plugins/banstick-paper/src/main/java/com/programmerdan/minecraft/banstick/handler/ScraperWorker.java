@@ -2,7 +2,6 @@ package com.programmerdan.minecraft.banstick.handler;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import com.programmerdan.minecraft.banstick.BanStick;

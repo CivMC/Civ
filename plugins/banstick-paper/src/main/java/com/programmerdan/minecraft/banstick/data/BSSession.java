@@ -86,7 +86,7 @@ public class BSSession {
 					save.addBatch();
 					batchSize ++;
 				}
-				if (batchSize % 100 == 0) {
+				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = save.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -96,7 +96,7 @@ public class BSSession {
 					batchSize = 0;
 				}
 			}
-			if (batchSize % 100 > 0) {
+			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = save.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirty batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -303,12 +303,12 @@ public class BSSession {
 	 * @param showIP determines if to show IP or not
 	 * @return the display string
 	 */
-	public String toFullDisplayString(boolean showIP) {
+	public String toFullString(boolean showIP) {
 		StringBuffer sb = new StringBuffer();
 		if (showIP) {
 			sb.append(this.iid.toString());
 		} else {
-			sb.append(this.sid);
+			sb.append(this.iid.getId());
 		}
 		sb.append(": ");
 		sb.append(getJoinTime().toString());

@@ -31,12 +31,6 @@ public class LoveTapCommand  implements CommandExecutor {
 
 	public static String name = "lovetap";
 	
-	/*
-	 *    /<command> [name/uuid]
-   /<command> [ip]
-   /<command> [ip]/[CIDR]
-	 */
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		if (arguments.length < 1) return false;
@@ -54,6 +48,10 @@ public class LoveTapCommand  implements CommandExecutor {
 			IPAddress ipcheck = new IPAddressString(toTap).toAddress();
 			if (ipcheck == null) {
 				throw new IPAddressStringException("Null -- but no error?");
+			}
+			if (!sender.hasPermission("banstick.ips")) {
+				sender.sendMessage(ChatColor.RED + "You don't have permission to use / view IPs");
+				return true;
 			}
 			if (hasCIDR) { // MOAR, but aggregates.
 				sender.sendMessage(ChatColor.GREEN + "Please wait, searching for all contained IP records");
@@ -178,6 +176,11 @@ public class LoveTapCommand  implements CommandExecutor {
 				}
 
 				if (hasCIDR) {
+					if (!sender.hasPermission("banstick.ips")) {
+						sender.sendMessage(ChatColor.RED + "You don't have permission to use / view IPs");
+						return true;
+					}
+					
 					BSSession latest = player.getLatestSession();
 					if (latest != null) {
 						BSIP latestIP = latest.getIP();
@@ -204,15 +207,15 @@ public class LoveTapCommand  implements CommandExecutor {
 					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA).append("(First Join: ")
 						.append(ChatColor.WHITE).append(player.getFirstAdd()).append(ChatColor.DARK_AQUA).append(")\n");
 					for (BSSession histRecord : history) {
-						sb.append(ChatColor.WHITE + "  " + histRecord.toFullDisplayString(true) + "\n");
+						sb.append(ChatColor.WHITE + "  " + histRecord.toFullString(true) + "\n");
 					}
 					sb.append("\n");
 				}
 				if (latest != null) {
 					sb.append(ChatColor.GREEN + "Most Recent Session: \n");
-					sb.append(ChatColor.WHITE + "  " + latest.toFullDisplayString(true) + "\n");
+					sb.append(ChatColor.WHITE + "  " + latest.toFullString(sender.hasPermission("banstick.ips")) + "\n");
 				}
-				if (latestProxy != null) {
+				if (latestProxy != null && sender.hasPermission("banstick.ips")) {
 					sb.append(ChatColor.GRAY + "  Network: " + ChatColor.WHITE + latestProxy.toString() + "\n");
 				}
 				sb.append("\n");

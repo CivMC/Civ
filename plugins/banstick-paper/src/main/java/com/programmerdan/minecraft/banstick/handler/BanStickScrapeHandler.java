@@ -19,7 +19,8 @@ import com.programmerdan.minecraft.banstick.BanStick;
  * pretty lists that Tor publishes.
  * 
  * This is set up to be auto-loading modular like BanStickProxyHandler, so if you want to register
- * more scrapers just code 'm up and add them to the .scraper package. Be sure they extend {@link com.programmerdan.minecraft.banstick.handler.ScraperWorker} class.
+ * more scrapers just code 'm up and add them to the .scraper package. Be sure they extend
+ * {@link com.programmerdan.minecraft.banstick.handler.ScraperWorker} class.
  * 
  * @author ProgrammerDan
  *

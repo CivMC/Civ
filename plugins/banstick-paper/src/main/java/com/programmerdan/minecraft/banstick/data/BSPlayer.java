@@ -173,7 +173,7 @@ public class BSPlayer {
 					savePlayer.addBatch();
 					batchSize ++;
 				}
-				if (batchSize % 100 == 0) {
+				if (batchSize > 0 && batchSize % 100 == 0) {
 					int[] batchRun = savePlayer.executeBatch();
 					if (batchRun.length != batchSize) {
 						BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? " + batchSize + " vs " + batchRun.length);
@@ -183,7 +183,7 @@ public class BSPlayer {
 					batchSize = 0;
 				}
 			}
-			if (batchSize % 100 > 0) {
+			if (batchSize > 0 && batchSize % 100 > 0) {
 				int[] batchRun = savePlayer.executeBatch();
 				if (batchRun.length != batchSize) {
 					BanStick.getPlugin().severe("Some elements of the dirt batch didn't save? " + batchSize + " vs " + batchRun.length);
