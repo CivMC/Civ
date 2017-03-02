@@ -110,7 +110,7 @@ public class BSSession {
 	}
 	
 	/**
-	 * Saves the BSPlayer; only for internal use. Outside code must use Flush();
+	 * Saves the BSSession; only for internal use. Outside code must use Flush();
 	 */
 	private void save() {
 		if (!dirty) return;
@@ -280,7 +280,7 @@ public class BSSession {
 				}
 			}
 		} catch (SQLException se) {
-			BanStick.getPlugin().severe("Failed during Player preload, offset " + offset + " limit " + limit, se);
+			BanStick.getPlugin().severe("Failed during Session preload, offset " + offset + " limit " + limit, se);
 		}
 		return maxId;
 	}

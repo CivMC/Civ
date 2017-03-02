@@ -134,7 +134,7 @@ public class BSShares {
 		// If new, create a new share.
 		List<BSSession> allSessions = BSSession.byIP(overlap.getIP());
 		for (BSSession session : allSessions) {
-			if (!overlaps.contains(session.getPlayer().getId())) {// we know. We only record first overlap.
+			if (forPlayer.getId() != session.getPlayer().getId() && !overlaps.contains(session.getPlayer().getId())) {// we know. We only record first overlap.
 				BSShare newOverlap = BSShare.create(overlap, session);
 				if (newOverlap != null) {
 					this.shareList.add(newOverlap.getId());
