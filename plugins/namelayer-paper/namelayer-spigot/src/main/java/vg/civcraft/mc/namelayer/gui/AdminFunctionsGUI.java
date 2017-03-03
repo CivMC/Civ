@@ -38,19 +38,25 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ItemStack linkStack = new ItemStack(Material.GOLD_INGOT);
 		ISUtils.setName(linkStack, ChatColor.GOLD + "Link group");
 		Clickable linkClick;
-		if (gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("LINKING"))) {
-			linkClick = new Clickable(linkStack) {
-				@Override
-				public void clicked(Player p) {
-					showLinkingMenu();
-				}
-			};
-		} else {
-			ISUtils.addLore(linkStack, ChatColor.RED
-					+ "You don't have permission to do this");
-			linkClick = new DecorationStack(linkStack);
-		}
+		//Linking is currently disabled
+//		if (gm.hasAccess(g, p.getUniqueId(),
+//				PermissionType.getPermission("LINKING"))) {
+//			linkClick = new Clickable(linkStack) {
+//				@Override
+//				public void clicked(Player p) {
+//					showLinkingMenu();
+//				}
+//			};
+//		} else {
+//			ISUtils.addLore(linkStack, ChatColor.RED
+//					+ "You don't have permission to do this");
+//			linkClick = new DecorationStack(linkStack);
+//		}
+
+		ISUtils.addLore(linkStack, ChatColor.RED
+									+ "Sorry, group linking is not a currently supported feature.");
+							linkClick = new DecorationStack(linkStack);
+
 		ci.setSlot(linkClick, 10);
 		// merging
 		ItemStack mergeStack = new ItemStack(Material.SPONGE);
@@ -120,10 +126,10 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ci.showInventory(p);
 	}
 
-	private void showLinkingMenu() {
-		LinkingGUI lgui = new LinkingGUI(g, p, this);
-		lgui.showScreen();
-	}
+//	private void showLinkingMenu() {
+//		LinkingGUI lgui = new LinkingGUI(g, p, this);
+//		lgui.showScreen();
+//	}
 
 	private void showMergingMenu() {
 		MergeGUI mGui = new MergeGUI(g, p, this);

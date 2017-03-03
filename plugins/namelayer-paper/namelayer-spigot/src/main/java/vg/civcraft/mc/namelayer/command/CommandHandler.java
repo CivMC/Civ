@@ -48,9 +48,9 @@ public class CommandHandler {
 	
 	public void registerCommands(){
 		addCommands(new AcceptInvite("AcceptInvite"));
-		addCommands(new LinkGroups("LinkGroups"));
-		addCommands(new UnlinkGroups("UnlinkGroups"));
-		addCommands(new ListSubGroups("ListSubGroups"));
+		//addCommands(new LinkGroups("LinkGroups"));
+		//addCommands(new UnlinkGroups("UnlinkGroups"));
+		//addCommands(new ListSubGroups("ListSubGroups"));
 		addCommands(new CreateGroup("CreateGroup"));
 		addCommands(new DeleteGroup("DeleteGroup"));
 		addCommands(new DisciplineGroup("DisiplineGroup"));
