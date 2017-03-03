@@ -1,20 +1,16 @@
 package com.programmerdan.minecraft.banstick.data;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import com.programmerdan.minecraft.banstick.data.BSLog.Action;
-
-import inet.ipaddr.IPAddress;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
  * TODO: Make accessors
@@ -26,7 +22,31 @@ import inet.ipaddr.IPAddress;
  */
 public class BSLog extends BukkitRunnable{
 
+	public BSLog(FileConfiguration config) {
+		super();
+		config(config.getConfigurationSection("log"));
+	}
+	
+	private void config(ConfigurationSection config) {
+		if (config == null) {
+			return;
+		}
+		maxBatch = config.getInt("maxBatch", maxBatch);
+		delay = config.getLong("delay", delay);
+		period = config.getLong("period", period);
+	}
+	
 	private int maxBatch = 100;
+	private long delay = 100l;
+	private long period = 1200l;
+	
+	public long getDelay() {
+		return delay;
+	}
+	
+	public long getPeriod() {
+		return period;
+	}
 	
 	static enum Action {
 		BAN,
@@ -54,19 +74,29 @@ public class BSLog extends BukkitRunnable{
 	public void run() {
 		// drain the queue into the DB in batches
 		if (toSave.isEmpty()) return;
-		try (// do connection) {
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement saveEm = connection.prepareStatement("INSERT INTO bs_ban_log (pid, bid, action) VALUES (?, ?, ?);");) {
 			int cBatch = 0;
 			while (cBatch < this.maxBatch && !toSave.isEmpty()) {
 				LogEntry nextCheck = toSave.poll();
 				if (nextCheck == null) break; // we're somehow empty already
-
+				saveEm.setLong(1, nextCheck.player);
+				saveEm.setLong(2, nextCheck.ban);
+				saveEm.setString(3, nextCheck.action.toString());
+				saveEm.addBatch();
+				cBatch ++;
 			}
+			int[] batchRun = saveEm.executeBatch();
+			if (batchRun.length != cBatch) {
+				BanStick.getPlugin().severe("Some elements of the log batch didn't save? " + cBatch + " vs " + batchRun.length);
+			} else {
+				BanStick.getPlugin().debug("Log batch: {0} saves", batchRun.length);
+			}
+
 		} catch (Exception e) {
-			//ok
+			BanStick.getPlugin().severe("Warning, lost elements, some log entries failed to save!", e);
 		}
 	}
-
-
 
 	public static void register(Action action, BSPlayer bsPlayer, BSBan...bid) {
 		switch(action) {
@@ -79,6 +109,11 @@ public class BSLog extends BukkitRunnable{
 			if (bid.length > 1) toSave.offer(new LogEntry(Action.BAN, bsPlayer, bid[1]));
 			break;
 		}
-		
+	}
+	
+	public void disable() {
+		while (!toSave.isEmpty()) {
+			run();
+		}
 	}
 }

@@ -1,5 +1,8 @@
 package com.programmerdan.minecraft.banstick;
 
+import org.bukkit.Bukkit;
+
+import com.programmerdan.minecraft.banstick.data.BSLog;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
@@ -19,6 +22,7 @@ public class BanStick extends ACivMod {
 	private BanStickProxyHandler proxyHandler;
 	private BanStickIPDataHandler ipdataUpdater;
 	private BanStickScrapeHandler scrapeHandler;
+	private BSLog logHandler;
 	
 	@Override
 	public void onEnable() {
@@ -37,6 +41,7 @@ public class BanStick extends ACivMod {
 		registerProxyHandler();
 		registerIPDataHandler();
 		registerScrapeHandler();
+		registerLogHandler();
 	}
 	
 	@Override
@@ -49,6 +54,7 @@ public class BanStick extends ACivMod {
 		if (this.ipdataUpdater != null) this.ipdataUpdater.end();
 		if (this.torUpdater != null) this.torUpdater.shutdown();
 		if (this.databaseHandler != null) this.databaseHandler.doShutdown();
+		if (this.logHandler != null) this.logHandler.disable();
 	}
 	
 	private void connectDatabase() {
@@ -117,6 +123,16 @@ public class BanStick extends ACivMod {
 			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
 			this.severe("Failed to set up anonymous proxy scrapers", e);
+		}
+	}
+	
+	private void registerLogHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.logHandler = new BSLog(getConfig());
+			this.logHandler.runTaskTimerAsynchronously(this, this.logHandler.getDelay(), this.logHandler.getPeriod());
+		} catch (Exception e) {
+			this.severe("Failed to set up ban log handler", e);
 		}
 	}
 
