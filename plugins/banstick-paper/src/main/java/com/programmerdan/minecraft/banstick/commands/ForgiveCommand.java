@@ -17,6 +17,7 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
@@ -154,8 +155,66 @@ public class ForgiveCommand implements CommandExecutor {
 					}
 					if (match) {
 						return true;
+					} else if (pardons.size() > 0) {
+						toForgive = pardons.get(0);
+						UUID playerId2 = null;
+						if (toForgive.length() <= 16) {
+							try {
+								playerId2 = NameAPI.getUUID(toForgive);
+								
+								if (playerId2 == null) {
+									Player mcatch = Bukkit.getPlayer(toForgive);
+									if (mcatch != null) {
+										playerId2 = mcatch.getUniqueId();
+									}
+								}
+							} catch (Exception ee) {
+								sender.sendMessage(ChatColor.RED + "Unable to find player " + ChatColor.DARK_RED + toForgive);
+							}
+						} else if (toForgive.length() == 36) {
+							try {
+								playerId2 = UUID.fromString(toForgive);
+							} catch (IllegalArgumentException iae) {
+								sender.sendMessage(ChatColor.RED + "Unable to process uuid " + ChatColor.DARK_RED + toForgive);
+							}
+						} else {
+							sender.sendMessage(ChatColor.RED + "Unable to interpret " + ChatColor.DARK_RED + toForgive);
+						}
+						if (playerId2 != null) {
+							BSPlayer player2 = BSPlayer.byUUID(playerId2);
+							List<BSShare> shares = player.sharesWith(player2);
+							int banLifted = 0;
+							int pardonsGranted = 0;
+							if (shares != null && shares.size() > 0) {
+								boolean alsoPardon = pardons.size() > 1 && "PARDON".equalsIgnoreCase(pardons.get(1));
+								for (BSShare share : shares) {
+									List<BSBan> bans = BSBan.byShare(share, false);
+									for (BSBan ban : bans) {
+										ban.setBanEndTime(new Date());
+										banLifted ++;
+									}
+									
+									if (alsoPardon && !share.isPardoned()) {
+										share.setPardonTime(new Date());
+										pardonsGranted++;
+									}
+								}
+								if (banLifted > 0) {
+									sender.sendMessage(ChatColor.GREEN + "Forgave " + banLifted + " active bans");
+								} else {
+									sender.sendMessage(ChatColor.YELLOW + "Found no bans due to shared sessions to forgive");
+								}
+								if (alsoPardon && pardonsGranted > 0) {
+									sender.sendMessage(ChatColor.GREEN + "Pardoned " + pardonsGranted + " shared sessions");
+								} else if (alsoPardon) {
+									sender.sendMessage(ChatColor.YELLOW + "Found no shared sessions still needing pardon");
+								}
+							} else {
+								sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() + " does not share any connections with " + player2.getName());
+							}
+						}
 					}
-					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Pleaes use BAN, IP, PROXY, or SHARED. Or none to just unban.");
+					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Please use BAN, IP, PROXY, or SHARED. Or, another user / PARDON. Or none to just unban.");
 				}
 				return false;
 			} else {

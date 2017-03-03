@@ -57,10 +57,17 @@ public class BSShare {
 		this.pardonTime = pardonTime;
 		this.dirty = true;
 		dirtyShares.offer(new WeakReference<BSShare>(this));
+		if (isPardoned()) {
+			firstPlayer.pardonShare(this);
+			secondPlayer.pardonShare(this);
+		} else {
+			firstPlayer.unpardonShare(this);
+			secondPlayer.unpardonShare(this);
+		}
 	}
 	
 	public boolean isPardoned() {
-		return this.pardonTime != null;
+		return this.pardonTime != null && this.pardonTime.compareTo(new Date()) <= 0;
 	}
 	
 	public BSPlayer getFirstPlayer() {

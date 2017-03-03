@@ -105,9 +105,17 @@ public class BSPlayer {
 	}
 
 	public void setBan(BSBan bid) {
+		if (bid == null && this.bid != null) {
+			BSLog.register(BSLog.Action.UNBAN, this, this.bid);
+		} else if (bid != null && this.bid == null) {
+			BSLog.register(BSLog.Action.BAN, this, bid);
+		} else if (bid != null && this.bid != null && bid.getId() != this.bid.getId()) {
+			BSLog.register(BSLog.Action.CHANGE, this, this.bid, bid);
+		}
 		this.bid = bid;
 		this.dirty = true;
 		dirtyPlayers.offer(new WeakReference<BSPlayer>(this));
+
 	}
 	
 	/**
@@ -551,5 +559,37 @@ public class BSPlayer {
 			sb.append(" [Share Pardoned]");
 		}
 		return sb.toString();
+	}
+
+	public void pardonShare(BSShare share) {
+		this.allShares.markPardoned(share);		
+	}
+	
+	public void unpardonShare(BSShare share) {
+		this.allShares.markUnpardoned(share);
+	}
+	
+	public int getUnpardonedShareCardinality() {
+		return this.allShares.unpardonedOrdinality();
+	}
+	
+	public int getTotalShareCardinality() {
+		return this.allShares.shareOrdinality();
+	}
+	
+	public BSShare getLatestShare() {
+		return this.allShares.getLatest();
+	}
+	
+	public List<BSShare> getUnpardonedShares() {
+		return this.allShares.getUnpardoned();
+	}
+	
+	public List<BSShare> sharesWith(BSPlayer player) {
+		if (this.allShares.getSharesWith().contains(player.getId())) {
+			return this.allShares.getSharesWith(player);
+		} else {
+			return null;
+		}
 	}
 }

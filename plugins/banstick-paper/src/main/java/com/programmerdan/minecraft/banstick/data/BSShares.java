@@ -92,6 +92,18 @@ public class BSShares {
 		return players;
 	}
 	
+	public List<BSShare> getSharesWith(BSPlayer player) {
+		if (shareList == null) { fill(); }
+		List<BSShare> returns = new ArrayList<BSShare>();
+		for (Long id : shareList) {
+			BSShare share = BSShare.byId(id);
+			if (share != null && (player.getId() == share.getFirstPlayer().getId() || player.getId() == share.getSecondPlayer().getId())) {
+				returns.add(share);
+			}
+		}
+		return returns;
+	}
+	
 	private void fill() {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by create time.
@@ -156,5 +168,43 @@ public class BSShares {
 	public int unpardonedOrdinality() {
 		if (shareList == null) { fill(); }
 		return unpardonedList.size();
+	}
+	
+	public void markPardoned(BSShare share) {
+		if (shareList == null) { fill(); }
+		// Check if a share of this Player
+		// Then check if the Share is actually marked pardoned
+		// Then shift out of unpardoned list if pardoned.
+		// Otherwise, correct.
+		if (shareList.contains(share.getId())) {
+			if (share.isPardoned()) {
+				unpardonedList.remove(share.getId());
+			} else {
+				markUnpardoned(share);
+			}
+		}
+	}
+	
+	public void markUnpardoned(BSShare share) {
+		if (shareList == null) { fill(); }
+		// Check if a share of this Player
+		// Then check if Share is actually unpardoned
+		// Then shift into the unpardoned list is unpardoned.
+		// Otherwise, correct.
+		if (shareList.contains(share.getId())) {
+			if (!share.isPardoned()) {
+				unpardonedList.add(share.getId());
+			} else {
+				markPardoned(share);
+			}
+		}
+	}
+
+	public BSShare getLatest() {
+		if (shareList == null) { fill(); }
+		if (shareList.size() > 0) {
+			return BSShare.byId(shareList.get(shareList.size() - 1));
+		}
+		return null;
 	}
 }

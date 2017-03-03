@@ -17,13 +17,18 @@ database:
   period: 12000
   delay: 6000
 events:
- proxyThreshold: 2.0
+ proxy:
+  threshold: 2.0
+  banMessage: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
+ share:
+  threshold: 1
+  banMessage: Multiaccounting is not generally allowed. To discuss or if in error, modmail www.reddit.com/r/Devoted
  enable:
   ipBans: true
   subnetBans: true
   proxyBans: true
   newProxyBans: true
- proxyBanMessage: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
+  shareBans: true
 proxy:
  enable: true
  cloud9:

@@ -24,6 +24,7 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -39,7 +40,10 @@ public class BanStickEventHandler implements Listener {
 	private boolean enableSubnetBans = true;
 	private boolean enableProxyBans = false;
 	private boolean enableNewProxyBans = false;
+	private boolean enableShareBans = false;
 	private String proxyBanMessage = null;
+	private int shareThreshold = 0;
+	private String shareBanMessage = null;
 	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
@@ -48,12 +52,15 @@ public class BanStickEventHandler implements Listener {
 	}
 	
 	private void configureEvents(ConfigurationSection config) {
-		this.proxyThreshold = (float) config.getDouble("proxyThreshold", proxyThreshold);
+		this.proxyThreshold = (float) config.getDouble("proxy.threshold", proxyThreshold);
 		this.enableIPBans = config.getBoolean("enable.ipBans", true);
 		this.enableSubnetBans = config.getBoolean("enable.subnetBans", true);
 		this.enableProxyBans = config.getBoolean("enable.proxyBans", false);
 		this.enableNewProxyBans = config.getBoolean("enable.newProxyBans", false);
-		this.proxyBanMessage = config.getString("proxyBanMessage", null);
+		this.enableShareBans = config.getBoolean("enable.shareBans", false);
+		this.proxyBanMessage = config.getString("proxy.banMessage", null);
+		this.shareThreshold = config.getInt("share.threshold", shareThreshold);
+		this.shareBanMessage = config.getString("share.banMessage", null);
 	}
 	
 	private void registerEvents() {
@@ -186,10 +193,60 @@ public class BanStickEventHandler implements Listener {
 				}
 				bsPlayer.startSession(player, playerNow);
 				// The above does all the Shared Session checks, so check result here:
-				// if (!bsPlayer.sharedPardon) {
-				// 		BSShare = bsPlayer.getShared();
-				// }
-				// etc.
+				if (enableShareBans && bsPlayer.getSharedPardonTime() == null ) { // no blank check
+					try {
+						// Check if any shares have an active ban.
+						List<BSShare> shares = bsPlayer.getUnpardonedShares();
+						BSBan pickOne = null;
+						for (BSShare activeShare: shares) {
+							List<BSBan> findBan = BSBan.byShare(activeShare, false);
+							if (findBan != null && !findBan.isEmpty()) {
+								pickOne = findBan.get(findBan.size() - 1);
+								break;
+							}
+						}
+						if (pickOne == null) { // this means that no share has an active ban.
+							// Check if newly above threshold (or pardon has been removed and above threshold) and
+							// create a ban for every Share that isn't pardoned.
+							int cardinality = shares.size();
+							if (cardinality > shareThreshold && shareThreshold > 0) { // are we multiaccount banning & are we above threshold?
+								// Issue share bans for _all_ shares unpardoned.
+								for (BSShare latest : shares) {
+									BSBan pickTwo = BSBan.create(latest, shareBanMessage, null, false);
+									if (pickTwo != null) {
+										pickOne = pickTwo;
+									}
+								}
+							}
+						}
+						
+						if (pickOne != null) {
+							bsPlayer.setBan(pickOne);
+	
+							final BSBan picked = pickOne;
+							final UUID puuid = player.getUniqueId();
+							Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
+
+								@Override
+								public void run() {
+									Player player = Bukkit.getPlayer(puuid);
+									if (player != null) {
+										player.kickPlayer(picked.getMessage());
+										BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+									} else {
+										BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+									}
+								}
+								
+							}, 1L);
+	
+							return;
+						}
+					} catch (Exception e) {
+						BanStick.getPlugin().warning("Failure during Share checks: ", e);
+					}
+				}
+				
 				
 				// Then do VPN checks
 				if (enableProxyBans) {
@@ -216,22 +273,22 @@ public class BanStickEventHandler implements Listener {
 										
 										bsPlayer.setBan(pickOne); // get most recent matching proxy ban and use it.
 										
-										if (player != null) {
-											Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
+										final BSBan picked = pickOne;
+										final UUID puuid = player.getUniqueId();										
+										Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
 
-												@Override
-												public void run() {
-													if (player != null) {
-														player.kickPlayer(pickOne.getMessage());
-														BanStick.getPlugin().info("Removing " + bsPlayer.getName() + " due to " + pickOne.toString());
-													}
+											@Override
+											public void run() {
+												Player player = Bukkit.getPlayer(puuid);
+												if (player != null) {
+													player.kickPlayer(picked.getMessage());
+													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+												} else {
+													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
 												}
-												
-											}, 1l);
-
-										} else {
-											BanStick.getPlugin().info("On return, banning " + bsPlayer.getName() + " due to " + pickOne.toString());
-										}
+											}
+											
+										}, 1l);
 																		
 										return;
 									}
@@ -240,26 +297,25 @@ public class BanStickEventHandler implements Listener {
 										BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 										
 										bsPlayer.setBan(newBan);
+										
+										final BSBan picked = newBan;
+										final UUID puuid = player.getUniqueId();
+										Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
 
-										if (player != null) {
-											Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
-
-												@Override
-												public void run() {
-													if (player != null) {
-														player.kickPlayer(newBan.getMessage());
-														BanStick.getPlugin().info("Removing " + bsPlayer.getName() + " due to " + newBan.toString());
-													}
+											@Override
+											public void run() {
+												Player player = Bukkit.getPlayer(puuid);
+												if (player != null) {
+													player.kickPlayer(picked.getMessage());
+													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+												} else {
+													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
 												}
-												
-											}, 1L);
-
-											// associate! 
-											player.kickPlayer(newBan.getMessage());
-											BanStick.getPlugin().info("Removing " + bsPlayer.getName() + " due to " + newBan.toString());
-										} else {
-											BanStick.getPlugin().info("On return, banning " + bsPlayer.getName() + " due to " + newBan.toString());
-										}
+											}
+											
+										}, 1L);
+									
+										return;
 									}
 								}
 							}

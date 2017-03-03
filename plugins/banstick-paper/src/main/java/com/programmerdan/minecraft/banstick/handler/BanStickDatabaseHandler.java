@@ -255,7 +255,7 @@ public class BanStickDatabaseHandler {
 					" pid BIGINT NOT NULL REFERENCES bs_player(pid)," +
 					" bid BIGINT NOT NULL REFERENCES bs_ban(bid)," +
 					" action_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
-					" action VARCHAR(40) NOT NULL," +
+					" action VARCHAR(10) NOT NULL," +
 					" INDEX bs_ban_log_time (pid, action_time DESC)" +
 					");", // TODO: Whenever a ban is given or removed from a player, record.
 					"CREATE TABLE IF NOT EXISTS bs_ban (" +

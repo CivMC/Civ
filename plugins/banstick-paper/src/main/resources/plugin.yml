@@ -7,7 +7,7 @@ description: A plugin focused on better IP / VPN / CIDR tracking and justice del
 commands:
  banstick:
   description: Swing that banstick, send nerds flying.
-  aliases: [bst, stickofdoom]
+  aliases: [bst, stickofdoom, banhammer]
   permission: banstick.ban
   usage: |
    /<command> [ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
@@ -29,9 +29,18 @@ commands:
   permission: banstick.forgive
   usage: |
    /<command> [ip]
+     Immediately expires all bans for this IP
    /<command> [ip]/[CIDR]
+     Immediately expires all bans for this specific subnet
    /<command> [name/uuid]
+     Unlinks this player from any active bans. Does not expire the ban.
    /<command> [name/uuid] [BAN] [IP] [PROXY] [SHARED]
+     BAN - Unlinks this player from active bans.
+     IP - Prevents new bans on this player due to IP matches
+     PROXY - Prevents new bans on this player due to IPData ban matches
+     SHARED - Prevents new bans on this player due to Share connection ban matches
+   /<command> [name/uuid] [name/uuid] [PARDON]
+     Immediately expires all bans for all shares between these two players; if PARDON also pardons the underlying shares. 
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs

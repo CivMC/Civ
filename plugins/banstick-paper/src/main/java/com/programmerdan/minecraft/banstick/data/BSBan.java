@@ -292,6 +292,30 @@ public class BSBan {
 		}
 		return results;
 	}
+
+	public static List<BSBan> byShare(BSShare data, boolean includeExpired) {
+		List<BSBan> results = new ArrayList<BSBan>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement findBans = connection.prepareStatement(
+						includeExpired?"SELECT * FROM bs_ban WHERE share_ban = ? ORDER BY ban_time":
+							"SELECT * FROM bs_ban WHERE share_ban = ? AND (ban_end IS NULL OR ban_end >= CURRENT_TIMESTAMP) ORDER BY ban_time");) {
+			findBans.setLong(1, data.getId());
+			try (ResultSet rs = findBans.executeQuery()) {
+				while(rs.next()) {
+					BSBan ban = extractBan(rs);
+					if (allBanID.containsKey(ban.bid)) {
+						results.add(allBanID.get(ban.bid));
+					} else {
+						results.add(ban);
+						allBanID.put(ban.bid, ban);
+					}
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to lookup bans by Share: " + data, se);
+		}
+		return results;
+	}
 	
 	public static BSBan create(BSIP exactIP, String message, Date banEnd, boolean adminBan) {
 		// TODO: Check if this IP is already actively banned!
@@ -381,6 +405,49 @@ public class BSBan {
 		return null;
 	}
 	
+	public static BSBan create(BSShare share, String message, Date banEnd, boolean adminBan) {
+		// TODO: Check if this share is already actively banned!
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
+			BSBan newBan = new BSBan();
+			newBan.dirty = false;
+			newBan.shareBan = share;
+			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
+			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
+			newBan.message = message;
+			newBan.isAdminBan = adminBan;
+			
+			try (PreparedStatement insertBan = connection.prepareStatement("INSERT INTO bs_ban(ban_time, message, ban_end, admin_ban, share_ban) VALUES (?, ?, ?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
+				insertBan.setTimestamp(1, newBan.banTime);
+				if (newBan.message != null) {
+					insertBan.setString(2, newBan.message);
+				} else {
+					insertBan.setNull(2, Types.VARCHAR);
+				}
+				if (newBan.banEnd != null) {
+					insertBan.setTimestamp(3, newBan.banEnd);
+				} else {
+					insertBan.setNull(3, Types.TIMESTAMP);
+				}
+				insertBan.setBoolean(4, adminBan);
+				insertBan.setLong(5,  newBan.shareBan.getId());
+				insertBan.execute();
+				try (ResultSet rs = insertBan.getGeneratedKeys()) {
+					if (rs.next()) { 
+						newBan.bid = rs.getLong(1);
+					} else {
+						BanStick.getPlugin().severe("No BID returned on ban insert?!");
+						return null; // no bid? error.
+					}
+				}
+			}
+			
+			allBanID.put(newBan.bid, newBan);
+			return newBan;
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to create a new share ban record: ", se);
+		}
+		return null;
+	}
 	private static BSBan extractBan(ResultSet rs) throws SQLException {
 		BSBan nS = new BSBan();
 		nS.bid = rs.getLong(1);
