@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -109,6 +111,30 @@ public class BSShare {
 		return null;
 	}
 
+
+	public static List<BSShare> bySession(BSSession session) {
+		List<BSShare> shares = new ArrayList<BSShare>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
+			getId.setLong(1, session.getId());
+			getId.setLong(2, session.getId());
+			try (ResultSet rs = getId.executeQuery();) {
+				while(rs.next()) {
+					if (allShareID.containsKey(rs.getLong(1))) {
+						shares.add(allShareID.get(rs.getLong(1)));
+						continue;
+					}
+					BSShare nS = internalGetShare(rs);
+					allShareID.put(rs.getLong(1), nS);
+					shares.add(nS);
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Retrieval of Shares by Session failed: " + session.toString(), se);
+		}
+		return shares;
+	}
+	
 	private static BSShare internalGetShare(ResultSet rs) throws SQLException {
 		BSShare nS = new BSShare();
 		nS.sid = rs.getLong(1);
@@ -238,6 +264,9 @@ public class BSShare {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
+		if (this.isPardoned()) {
+			sb.append(ChatColor.GREEN).append("[Pardoned] ");
+		}
 		sb.append(ChatColor.DARK_PURPLE).append("Share by ")
 			.append(ChatColor.WHITE).append(firstPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" and ")
 			.append(ChatColor.WHITE).append(secondPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" via ")
@@ -251,6 +280,9 @@ public class BSShare {
 			return toString();
 		} else {
 			StringBuffer sb = new StringBuffer();
+			if (this.isPardoned()) {
+				sb.append(ChatColor.GREEN).append("[Pardoned] ");
+			}
 			sb.append(ChatColor.DARK_PURPLE).append("Share by ")
 				.append(ChatColor.WHITE).append(firstPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" and ")
 				.append(ChatColor.WHITE).append(secondPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" via ")
@@ -302,5 +334,4 @@ public class BSShare {
 		}
 		return null;
 	}
-	
 }

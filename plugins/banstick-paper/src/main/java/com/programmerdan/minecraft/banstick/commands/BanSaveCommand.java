@@ -12,8 +12,6 @@ public class BanSaveCommand  implements CommandExecutor{
 		
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
-		if (arguments.length < 1) return false;
-		
 		BanStick.getPlugin().saveCache();
 		
 		return true;

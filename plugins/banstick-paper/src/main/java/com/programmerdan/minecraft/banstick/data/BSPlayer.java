@@ -19,6 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.bukkit.entity.Player;
 
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.commands.BSShare;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
@@ -591,5 +592,9 @@ public class BSPlayer {
 		} else {
 			return null;
 		}
+	}
+
+	public List<BSShare> getAllShares() {
+		return this.allShares.getAll();
 	}
 }

@@ -16,6 +16,12 @@ database:
  dirtysave: 
   period: 12000
   delay: 6000
+import: 
+ enable: true
+log:
+ maxBatch: 100
+ delay: 120
+ period: 1200
 events:
  proxy:
   threshold: 2.0

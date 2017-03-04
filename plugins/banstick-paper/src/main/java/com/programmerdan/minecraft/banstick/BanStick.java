@@ -1,7 +1,5 @@
 package com.programmerdan.minecraft.banstick;
 
-import org.bukkit.Bukkit;
-
 import com.programmerdan.minecraft.banstick.data.BSLog;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
@@ -134,6 +132,10 @@ public class BanStick extends ACivMod {
 		} catch (Exception e) {
 			this.severe("Failed to set up ban log handler", e);
 		}
+	}
+	
+	public BSLog getLogHandler() {
+		return this.logHandler;
 	}
 
 	/**

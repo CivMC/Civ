@@ -1,8 +1,12 @@
 package com.programmerdan.minecraft.banstick.handler;
 
 import java.net.InetAddress;
+import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -195,56 +199,98 @@ public class BanStickEventHandler implements Listener {
 				// The above does all the Shared Session checks, so check result here:
 				if (enableShareBans && bsPlayer.getSharedPardonTime() == null ) { // no blank check
 					try {
-						// Check if any shares have an active ban.
-						List<BSShare> shares = bsPlayer.getUnpardonedShares();
-						BSBan pickOne = null;
-						for (BSShare activeShare: shares) {
-							List<BSBan> findBan = BSBan.byShare(activeShare, false);
-							if (findBan != null && !findBan.isEmpty()) {
-								pickOne = findBan.get(findBan.size() - 1);
-								break;
-							}
-						}
-						if (pickOne == null) { // this means that no share has an active ban.
-							// Check if newly above threshold (or pardon has been removed and above threshold) and
-							// create a ban for every Share that isn't pardoned.
-							int cardinality = shares.size();
-							if (cardinality > shareThreshold && shareThreshold > 0) { // are we multiaccount banning & are we above threshold?
-								// Issue share bans for _all_ shares unpardoned.
-								for (BSShare latest : shares) {
-									BSBan pickTwo = BSBan.create(latest, shareBanMessage, null, false);
-									if (pickTwo != null) {
-										pickOne = pickTwo;
-									}
-								}
-							}
-						}
+						// New approach: unpardoned shares count against your shareThreshold. If you're above shareThreshold,
+						// order accounts by join date and ban all unbanned accounts using Share Ban assignments that are newest 
+						// and that exceed the shareThreshold.
 						
-						if (pickOne != null) {
-							bsPlayer.setBan(pickOne);
-	
-							final BSBan picked = pickOne;
-							final UUID puuid = player.getUniqueId();
-							Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
+						// Don't apply share bans bidirectionally / automatically.
+						List<BSShare> shares = bsPlayer.getUnpardonedShares();
+						
+						int cardinality = shares.size();
+						if (cardinality > shareThreshold && shareThreshold > 0) { // are we multiaccount banning & are we above threshold?
+							// Find the Shares above the threshold for newest accounts by create age. Ban them (might be this one).
+							// For each you ban, check if online / kick.
+							BanStick.getPlugin().info("Player {0} has exceeding the shared account threshold. Banning the newest accounts that exceed the Threshold.", bsPlayer.getName());
+							int bansIssued = 0;
+							
+							Set<Long> joinNoted = new HashSet<Long>();
+							TreeMap<Long, BSPlayer> joinTimes = new TreeMap<Long, BSPlayer>();
+							for (BSShare latest : shares) {
+								BSPlayer one = latest.getFirstPlayer();
+								if (!joinNoted.contains(one.getId())) {
+									joinNoted.add(one.getId());
+									joinTimes.put(one.getFirstAdd().getTime(), one);
+								}
+								BSPlayer two = latest.getSecondPlayer();
+								if (!joinNoted.contains(two.getId())) {
+									joinNoted.add(two.getId());
+									joinTimes.put(two.getFirstAdd().getTime(), two);
+								}
 
-								@Override
-								public void run() {
-									Player player = Bukkit.getPlayer(puuid);
-									if (player != null) {
-										player.kickPlayer(picked.getMessage());
-										BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
-									} else {
-										BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+							}
+							
+							// A shareThreshold of 0 means you can't Alt; so we ban all but the oldest account.
+							// Similarly a shareThreshold of 2 means you can have 2 alts; we ban all but the 3 oldest accounts.
+							// TreeMaps naturally order smallest to largest, so:
+							int skips = shareThreshold + 1;
+							for (BSPlayer banPlayer : joinTimes.values()) {
+								if (skips > 0) {
+									skips --;
+									continue;
+								}
+								if (banPlayer.getBan() != null || banPlayer.getSharedPardonTime() != null) {
+									continue; // already banned, or spared from Share bans.
+								}
+								// Bannerino using latest unpardoned.
+								BSShare useForBan = null;
+								if (banPlayer.getId() == bsPlayer.getId()) { // ban person joining.
+									useForBan = bsPlayer.getLatestShare();
+								} else {
+									List<BSShare> banShares = bsPlayer.sharesWith(banPlayer);
+									Collections.reverse(banShares); // by default list is oldest to newest 
+									for (BSShare testShare : banShares) { // we want newest to oldest
+										if (!testShare.isPardoned()) {
+											useForBan = testShare;
+											break;
+										}
+									}
+									if (useForBan == null) {
+										BanStick.getPlugin().warning("Something went wrong! Claim was that the connection of {0} shared with {1} unpardoned, yet only pardoned shares found.", banPlayer.getName(), bsPlayer.getName());
+										continue;
 									}
 								}
-								
-							}, 1L);
-	
-							return;
+								BSBan doTheBan = BSBan.create(useForBan, shareBanMessage, null, false);
+								banPlayer.setBan(doTheBan);
+								bansIssued++;
+
+								// now schedule a task to kick out the trash.
+								final BSBan picked = doTheBan;
+								final UUID puuid = banPlayer.getUUID();
+								Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
+
+									@Override
+									public void run() {
+										Player player = Bukkit.getPlayer(puuid);
+										if (player != null) {
+											player.kickPlayer(picked.getMessage());
+											BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+										} else {
+											BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+										}
+									}
+									
+								}, 1L);
+							}
+							BanStick.getPlugin().info("Player {0}'s exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
 						}
 					} catch (Exception e) {
 						BanStick.getPlugin().warning("Failure during Share checks: ", e);
 					}
+				}
+				
+				if (bsPlayer.getBan() != null) {
+					BanStick.getPlugin().debug("Player {0} is now banned, skipping proxy checks.", bsPlayer.getName());
+					return;
 				}
 				
 				

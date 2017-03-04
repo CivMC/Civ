@@ -17,6 +17,7 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.data.BSLog;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
@@ -331,20 +332,24 @@ public class BanStickDatabaseHandler {
 	
 	public void doShutdown() {
 
-		BanStick.getPlugin().debug("Player dirty save");
+		BanStick.getPlugin().info("Player dirty save");
 		BSPlayer.saveDirty();
 
-		BanStick.getPlugin().debug("Ban dirty save");
+		BanStick.getPlugin().info("Ban dirty save");
 		BSBan.saveDirty();
 
-		BanStick.getPlugin().debug("Session dirty save");
+		BanStick.getPlugin().info("Session dirty save");
 		BSSession.saveDirty();
 
-		BanStick.getPlugin().debug("Share dirty save");
+		BanStick.getPlugin().info("Share dirty save");
 		BSShare.saveDirty();
 
-		BanStick.getPlugin().debug("Proxy dirty save");
+		BanStick.getPlugin().info("Proxy dirty save");
 		BSIPData.saveDirty();
+		
+		BanStick.getPlugin().info("Ban Log save");
+		BSLog log = BanStick.getPlugin().getLogHandler();
+		if (log != null) log.disable();
 	}
 	
 	// ============ QUERIES =============

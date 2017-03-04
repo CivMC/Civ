@@ -14,6 +14,18 @@ commands:
    /<command> [ip]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
    /<command> [name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
    /<command> [name/uuid]/[CIDR] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+    For all, optionally include a date and time of unban using the format indicated, and optionally a message to display to player on ban
+ doubletap:
+  description: Handle unpardoning shares between two players; optionally ban one or both
+  aliases: [bdt, doublebladedaxe]
+  permission: banstick.ban
+  usage: |
+   /<command> [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+     Finds all sessions that use this IP, finds all Shares connected to those Sessions, unpardons any pardoned shares.
+     If [+] before the IP, also Share-bans all non-pardoned players.
+   /<command> [+][name/uuid] [+][name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
+     Finds all Shares between the two named players, unpardons them if pardoned.
+     If [+] before a name, also Share-bans that player, removing any Share pardons if they existed.
  lovetap:
   description: Investigate a user / show history / log information. Also give banstick.ips to show IP info during check.
   alias: bstl
@@ -25,7 +37,7 @@ commands:
    /<command> [ip]/[CIDR]
  forgive:
   description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
-  alias: bstf
+  aliases: [bstf, showmercy]
   permission: banstick.forgive
   usage: |
    /<command> [ip]
@@ -39,8 +51,19 @@ commands:
      IP - Prevents new bans on this player due to IP matches
      PROXY - Prevents new bans on this player due to IPData ban matches
      SHARED - Prevents new bans on this player due to Share connection ban matches
-   /<command> [name/uuid] [name/uuid] [PARDON]
-     Immediately expires all bans for all shares between these two players; if PARDON also pardons the underlying shares. 
+   /<command> [name/uuid] [name/uuid] [BAN]
+     Immediately pardons all shares between these two players. If BAN also expires all bans for all shares between these two players.
+ takeitback:
+  description: Remove exemptions/ignores with this command.
+  aliases: [unforgive, buryhim]
+  permission: banstick.forgive
+  usage: |
+   /<command> [name/uuid] [IP] [PROXY] [SHARED]
+     IP - Allows new bans on this player due to IP matches
+     PROXY - Allows new bans on this player due to IPData ban matches
+     SHARED - Allows new bans on this player due to Share connection ban matches
+   /<command> [name/uuid] [name/uuid]
+     Immediately unpardons all shares between these two players.
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs

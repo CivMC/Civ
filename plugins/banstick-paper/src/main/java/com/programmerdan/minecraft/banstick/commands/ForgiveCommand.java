@@ -2,7 +2,6 @@ package com.programmerdan.minecraft.banstick.commands;
 
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
@@ -186,27 +185,29 @@ public class ForgiveCommand implements CommandExecutor {
 							int banLifted = 0;
 							int pardonsGranted = 0;
 							if (shares != null && shares.size() > 0) {
-								boolean alsoPardon = pardons.size() > 1 && "PARDON".equalsIgnoreCase(pardons.get(1));
+								boolean alsoUnban = pardons.size() > 1 && "BAN".equalsIgnoreCase(pardons.get(1));
 								for (BSShare share : shares) {
-									List<BSBan> bans = BSBan.byShare(share, false);
-									for (BSBan ban : bans) {
-										ban.setBanEndTime(new Date());
-										banLifted ++;
+									if (alsoUnban) {
+										List<BSBan> bans = BSBan.byShare(share, false);
+										for (BSBan ban : bans) {
+											ban.setBanEndTime(new Date());
+											banLifted ++;
+										}
 									}
 									
-									if (alsoPardon && !share.isPardoned()) {
+									if (!share.isPardoned()) {
 										share.setPardonTime(new Date());
 										pardonsGranted++;
 									}
 								}
-								if (banLifted > 0) {
+								if (alsoUnban && banLifted > 0) {
 									sender.sendMessage(ChatColor.GREEN + "Forgave " + banLifted + " active bans");
-								} else {
+								} else if (alsoUnban) {
 									sender.sendMessage(ChatColor.YELLOW + "Found no bans due to shared sessions to forgive");
 								}
-								if (alsoPardon && pardonsGranted > 0) {
+								if (pardonsGranted > 0) {
 									sender.sendMessage(ChatColor.GREEN + "Pardoned " + pardonsGranted + " shared sessions");
-								} else if (alsoPardon) {
+								} else {
 									sender.sendMessage(ChatColor.YELLOW + "Found no shared sessions still needing pardon");
 								}
 							} else {
@@ -214,7 +215,7 @@ public class ForgiveCommand implements CommandExecutor {
 							}
 						}
 					}
-					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Please use BAN, IP, PROXY, or SHARED. Or, another user / PARDON. Or none to just unban.");
+					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Please use BAN, IP, PROXY, or SHARED. Or, another user / BAN. Or none to just unban.");
 				}
 				return false;
 			} else {

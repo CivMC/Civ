@@ -1,8 +1,6 @@
 package com.programmerdan.minecraft.banstick.commands;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,6 +19,7 @@ import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
@@ -58,7 +57,6 @@ public class LoveTapCommand  implements CommandExecutor {
 				Bukkit.getScheduler().runTaskAsynchronously(BanStick.getPlugin(), new Runnable() {
 					@Override
 					public void run() {
-						if (sender == null) return;
 						List<BSIP> contains = BSIP.allContained(ipcheck, CIDR);
 						if (contains != null && !contains.isEmpty()) {
 							sender.sendMessage(ChatColor.GREEN + "Found " + contains.size() + " contained by " + ChatColor.WHITE + ipcheck.toString() + "/" + CIDR);
@@ -202,12 +200,14 @@ public class LoveTapCommand  implements CommandExecutor {
 				
 				BSIPData latestProxy = BSIPData.byContainsIP(latest.getIP());
 				
+				List<BSShare> shares = player.getAllShares();
+				
 				StringBuffer sb = new StringBuffer();
 				if (history != null) {
 					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA).append("(First Join: ")
 						.append(ChatColor.WHITE).append(player.getFirstAdd()).append(ChatColor.DARK_AQUA).append(")\n");
 					for (BSSession histRecord : history) {
-						sb.append(ChatColor.WHITE + "  " + histRecord.toFullString(true) + "\n");
+						sb.append(ChatColor.WHITE + "  " + histRecord.toFullString(sender.hasPermission("banstick.ips")) + "\n");
 					}
 					sb.append("\n");
 				}
@@ -215,6 +215,15 @@ public class LoveTapCommand  implements CommandExecutor {
 					sb.append(ChatColor.GREEN + "Most Recent Session: \n");
 					sb.append(ChatColor.WHITE + "  " + latest.toFullString(sender.hasPermission("banstick.ips")) + "\n");
 				}
+				
+				if (shares != null && !shares.isEmpty()) {
+					sb.append(ChatColor.BLUE).append("Share History: ").append("\n");
+					for (BSShare histShare : shares) {
+						sb.append(ChatColor.WHITE + "  " + histShare.toFullString(sender.hasPermission("banstick.ips")) + "\n");
+					}
+					sb.append("\n");					
+				}
+				
 				if (latestProxy != null && sender.hasPermission("banstick.ips")) {
 					sb.append(ChatColor.GRAY + "  Network: " + ChatColor.WHITE + latestProxy.toString() + "\n");
 				}

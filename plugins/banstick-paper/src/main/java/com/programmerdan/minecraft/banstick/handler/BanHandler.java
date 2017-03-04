@@ -14,6 +14,7 @@ import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -257,10 +258,18 @@ public class BanHandler {
 			}
 				
 			if (includeHistoric) {
-				// This is hard. For the CIDR, need to find all IPs within the CIDR, then check all session for those IPs.
-				
-				// also search Sessions, and ban everyone who ever used it.
-				// TODO
+				List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLowest(), cidrIP.getIPAddress().getNetworkPrefixLength());
+				for (BSIP exactIP : ipsIn) {
+					List<BSSession> sessions = BSSession.byIP(exactIP);
+					for (BSSession session : sessions) {
+						BSPlayer banPlayer = session.getPlayer();
+						if (banPlayer.getIPPardonTime() != null) continue; // pardoned from IP match bans.
+						if (session.getPlayer().getBan() == null) {
+							banPlayer.setBan(ban);
+							result.addPlayer(banPlayer);
+						}
+					}
+				}
 			}
 			
 			return result;
@@ -268,5 +277,41 @@ public class BanHandler {
 			BanStick.getPlugin().warning("Failed to issue CIDR ban: ", e);
 			return new BanResult();
 		}	
+	}
+
+	public static BanResult doShareBan(BSShare share, BSPlayer limitBanTo, String message, Date banEnd, boolean adminBan) {
+		try {
+			if (message == null || message.trim().equals("")) {
+				message = adminBan ? "Administrative Ban" : "Automatic Ban"; // TODO: config!
+			}
+			BSBan ban = BSBan.create(share, message, banEnd, adminBan); // share ban
+			BanResult result = new BanResult();
+			result.addBan(ban);
+			if (limitBanTo == null) { // do both
+				if (share.getFirstPlayer().getSharedPardonTime() == null && share.getFirstPlayer().getBan() == null) {
+					share.getFirstPlayer().setBan(ban);
+					result.addPlayer(share.getFirstPlayer());
+				}
+				if (share.getSecondPlayer().getSharedPardonTime() == null && share.getSecondPlayer().getBan() == null) {
+					share.getSecondPlayer().setBan(ban);
+					result.addPlayer(share.getSecondPlayer());
+				}
+			} else {
+				if (share.getFirstPlayer().getId() == limitBanTo.getId() &&
+						share.getFirstPlayer().getSharedPardonTime() == null && share.getFirstPlayer().getBan() == null) {
+					share.getFirstPlayer().setBan(ban);
+					result.addPlayer(share.getFirstPlayer());
+				}
+				if (share.getSecondPlayer().getId() == limitBanTo.getId() &&
+						share.getSecondPlayer().getSharedPardonTime() == null && share.getSecondPlayer().getBan() == null) {
+					share.getSecondPlayer().setBan(ban);
+					result.addPlayer(share.getSecondPlayer());
+				}
+			}
+			return result;
+		} catch (Exception e) {
+			BanStick.getPlugin().warning("Failed to issue Share ban: ", e);
+			return new BanResult();
+		}
 	}
 }
