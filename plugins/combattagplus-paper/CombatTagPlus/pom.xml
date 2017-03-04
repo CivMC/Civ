@@ -69,7 +69,7 @@
         </repository>
         <repository>
             <id>confuser-repo</id>
-            <url>http://ci.frostcast.net/plugin/repository/everything</url>
+            <url>https://ci.frostcast.net/plugin/repository/everything</url>
         </repository>
     </repositories>
 
@@ -191,7 +191,7 @@
         <dependency>
             <groupId>me.confuser</groupId>
             <artifactId>BarAPI</artifactId>
-            <version>3.4-SNAPSHOT</version>
+            <version>3.5</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
