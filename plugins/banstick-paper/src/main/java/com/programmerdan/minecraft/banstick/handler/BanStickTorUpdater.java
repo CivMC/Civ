@@ -108,13 +108,13 @@ tor:
 								address.validate();
 								BSIP found = null;
 								if (torSave.cidr) {
-									found = BSIP.byCIDR(address.toAddress().toSupernet().toString(), address.getNetworkPrefixLength());
+									found = BSIP.byCIDR(address.toAddress().getLowest().toString(), address.getNetworkPrefixLength());
 								} else {
 									found = BSIP.byIPAddress(address.toAddress());
 								}
 								if (found == null) {
 									if (torSave.cidr) {
-										found = BSIP.create(address.toAddress().toSupernet(), address.getNetworkPrefixLength());
+										found = BSIP.create(address.toAddress().getLowest(), address.getNetworkPrefixLength());
 									} else {
 										found = BSIP.create(address.toAddress());
 									}

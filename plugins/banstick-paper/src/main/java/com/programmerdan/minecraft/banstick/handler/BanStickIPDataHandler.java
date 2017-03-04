@@ -118,6 +118,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				BanStick.getPlugin().severe("Too many failures; permanently disabling BanStickIPData updater.");
 				selfTask.cancel();
 			}
+			return;
 		}
 		if (this.toCheck.isEmpty()) return;
 		try {
@@ -142,6 +143,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				Map<String, String> newEntry = new HashMap<String, String>();
 				newEntry.put("query", address.toString());
 				source.add(newEntry);
+				cBatch ++;
 			}
 			
 			if (source.size() == 0) return;

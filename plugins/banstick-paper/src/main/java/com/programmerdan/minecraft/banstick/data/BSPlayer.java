@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import org.bukkit.entity.Player;
 
 import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.commands.BSShare;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**

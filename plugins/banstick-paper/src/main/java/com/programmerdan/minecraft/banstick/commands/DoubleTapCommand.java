@@ -41,12 +41,13 @@ public class DoubleTapCommand implements CommandExecutor {
 	public static String name = "doubletap";
 	
 	/**
-   /<command> [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-     Finds all sessions that use this IP, finds all Shares connected to those Sessions, unpardons any pardoned shares.
-     If [+] before the IP, also Share-bans all non-pardoned players.
-   /<command> [+][name/uuid] [+][name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]
-     Finds all Shares between the two named players, unpardons them if pardoned.
-     If [+] before a name, also Share-bans that player, removing any Share pardons if they existed.
+     * <b>doubletap [+][ip] [banend: mm/dd/yyyy [hh:mm:ss]] [message]</b>
+     * Finds all sessions that use this IP, finds all Shares connected to those Sessions, unpardons any pardoned shares.
+     * If [+] before the IP, also Share-bans all non-pardoned players.
+     * <br>
+     * <b>doubletap [+][name/uuid] [+][name/uuid] [banend: mm/dd/yyyy [hh:mm:ss]] [message]</b>
+     * Finds all Shares between the two named players, unpardons them if pardoned.
+     * If [+] before a name, also Share-bans that player, removing any Share pardons if they existed.
 	 *   
 	 */
 	@Override

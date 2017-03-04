@@ -22,17 +22,18 @@ public class TakeItBackCommand implements CommandExecutor {
 
 	public static String name = "takeitback";
 	
+	/**
+	 *  <b>takeitback [name/uuid] [IP] [PROXY] [SHARED]</b>
+	 *    IP - Allows new bans on this player due to IP matches
+	 *    PROXY - Allows new bans on this player due to IPData ban matches
+	 *    SHARED - Allows new bans on this player due to Share connection ban matches
+	 *   <br>
+	 *   <b>takeitback [name/uuid] [name/uuid]</b>
+	 *    Immediately unpardons all shares between these two players.
+	 */
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		if (arguments.length < 2) return false;
-		/*
-   /<command> [name/uuid] [IP] [PROXY] [SHARED]
-     IP - Allows new bans on this player due to IP matches
-     PROXY - Allows new bans on this player due to IPData ban matches
-     SHARED - Allows new bans on this player due to Share connection ban matches
-   /<command> [name/uuid] [name/uuid]
-     Immediately unpardons all shares between these two players.
-		*/
 		
 		String toRevoke = arguments[0];
 		String secRevoke = arguments[1];

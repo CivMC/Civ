@@ -1,3 +1,8 @@
+# Define here the database connection primitives.
+#  poolsize: How many connections to maintain at maximum
+#  connectionTimeout: In milliseconds, how long to wait for replies before timing out
+#  idleTimeout: In milliseconds, how long to let a connection stay open, idle
+#  maxLifetime: In milliseconds, how long to keep a connection in the pool
 database:
  host:
  port:
@@ -8,26 +13,47 @@ database:
  connectionTimeout: 3000
  idleTimeout: 600000
  maxLifetime: 7200000
+# Do we want to preload all data into memory (recommended) or if enabled: false, wait for on-demand?
+#  Batch: Size of batch (usually limited by DB software)
+#  Period: in ticks, how long inbetween batches, shared evenly across all data types
+#  Delay: in ticks, how long to wait until first batch, shared evenly across all data types
  preload:
   enabled: true
   batch: 100
   period: 50
   delay: 100
+# This is always enabled. Updates to data are done batch-wise; period and delay are in ticks and define how long to wait inbetween update saves
  dirtysave: 
   period: 12000
   delay: 6000
+# For any imports enabled, be absolutely certain the credentials previously supplied have read access
 import: 
  enable: true
+# All bans and unbans are separately logged in an audit-log fashion. They are batched for insertion.
+#  maxBatch: maximum batch size to use
+#  delay: delay in ticks before beginning after server start
+#  period: time in ticks between commits
 log:
  maxBatch: 100
  delay: 120
  period: 1200
+# Event based checks and autoban configuration
+#  proxy - threshold: value in the database above which an IP Data record is considered a proxy source
+#  proxy - banMessage: if proxy bans enabled, the message to use
+#  share - threshold: How many accounts in addition to a player's main account are they allowed to connect with? 0 for no alts, 1 for one alt, etc.
+#  share - banMessage: if share bans enabled, the message to use
+#  enable:
+#   - ipBans: If banstick should autoban players for existing, standing IP bans.
+#   - subnetBans: If banstick should autoban players for existing, standing bans on subnets containing the connecting IP
+#   - proxyBans: If banstick should autoban players for existing, standing bans of known proxies
+#   - newProxyBans: If banstick should check the proxy threshold and create new bans for proxies if non already exists
+#   - shareBans: If banstick should enforce the share threshold with bans.
 events:
  proxy:
   threshold: 2.0
   banMessage: VPS / VPN Proxy use is generally prohibited. Modmail to www.reddit.com/r/Devoted to discuss
  share:
-  threshold: 1
+  threshold: 0
   banMessage: Multiaccounting is not generally allowed. To discuss or if in error, modmail www.reddit.com/r/Devoted
  enable:
   ipBans: true
@@ -35,6 +61,11 @@ events:
   proxyBans: true
   newProxyBans: true
   shareBans: true
+# Configure the data source for VPS / VPN proxy list grabs.
+# For cloud9:
+#  ban.length is in millisecond
+#  period and delay are in ticks
+#  defaultScore is the proxy threshold value to assign by default
 proxy:
  enable: true
  cloud9:
@@ -46,9 +77,12 @@ proxy:
   url: https://raw.githubusercontent.com/client9/ipcat/master/datacenters.csv
   period: 576000
   delay: 4200
+# Configure the tor check source; set autoban to true to not only track tor usage but also pre-set bans for tor users
 tor:
  check: true
  autoban: true
+# A number of flat lists exists. For each, you can define a ban message and ban length in milliseconds. Indicate
+#  if its a CIDR ban or specific IP ban list. The period and delay are in ticks, as discussed previously
  lists:
   danxxx:
    ban:
@@ -66,12 +100,22 @@ tor:
    period: 72000
    delay: 3600
    cidr: false
+# Configure the IP-API lookup for geoip data. By specs maxBatch must not exceed 100; don't exceed a total
+#  request count of more then 120 / min. Period is in ticks as is cooldownTicks.
+#  FailureCap defines how many errors from IP-API to ignore before coolingdown / stopped
+#  Set cooldownTicks to 0 to disable cooldown
 iplookup:
  enable: true
  maxBatch: 50
  period: 120
  failureCap: 5
  cooldownTicks: 72000
+# Configure the Scrapers to harvest public or anonymous proxies to prevent use in connecting
+#  freeproxylist binds to the ScrapeFreeProxyList scraper; delay, period, jitter, and errorCooldown are in ticks.
+#   jitter randomizes a bit the length of time inbetween requests, to reduce likelihood of your server being
+#    blacklisted
+#   maxErrors configures how many errors to ignore before engaging errorCooldown time (0 to just stop trying on errors)
+#   ban: fields define ban length in milliseconds and a ban message to use. 
 scrapers:
  enable: true
  freeproxylist:

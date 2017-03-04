@@ -417,6 +417,9 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
+					if (BanStick.getPlugin().getIPDataHandler() != null) {
+						BanStick.getPlugin().getIPDataHandler().offer(newIP);
+					}
 					return newIP;
 				} else {
 					BanStick.getPlugin().severe("Failed to get ID from inserted record!? " + lookup.toString());
@@ -435,6 +438,8 @@ public class BSIP {
 	}
 	
 	public static BSIP create(IPAddress lookup, int CIDR) {
+		// TODO: reconsider the CIDR handling in the caching and saving and such.
+		//   might not be necessary to separate out the CIDR like I am here.
 		if (allIPNA.containsKey(lookup)) {
 			return allIPNA.get(lookup);
 		}
@@ -470,7 +475,7 @@ public class BSIP {
 					newIP.iid = iid;
 					BSIP.allIPId.put(iid, newIP);
 					BSIP.allIPNA.put((newIP.basev4 == null ? newIP.basev6 : newIP.basev4), newIP);
-					if (BanStick.getPlugin().getIPDataHandler() != null) {
+					if (BanStick.getPlugin().getIPDataHandler() != null && (newIP.basev4 == null ? CIDR == 128 : CIDR == 32)) {
 						BanStick.getPlugin().getIPDataHandler().offer(newIP);
 					}
 					return newIP;

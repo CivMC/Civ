@@ -68,7 +68,7 @@ public class BSShares {
 		
 		List<BSShare> unpardoned = new ArrayList<BSShare>();
 		
-		if (unpardoned != null && unpardoned.size() > 0) {
+		if (unpardonedList != null && unpardonedList.size() > 0) {
 			for (Long sid : unpardonedList) {
 				unpardoned.add(BSShare.byId(sid));
 			}
@@ -81,7 +81,6 @@ public class BSShares {
 		if (shareList == null) { fill(); }
 		
 		List<BSPlayer> players = new ArrayList<BSPlayer>();
-		
 		if (overlaps != null && overlaps.size() > 0) {
 			for (Long pid : overlaps) {
 				players.add(BSPlayer.byId(pid));
@@ -94,6 +93,7 @@ public class BSShares {
 	public List<BSShare> getSharesWith(BSPlayer player) {
 		if (shareList == null) { fill(); }
 		List<BSShare> returns = new ArrayList<BSShare>();
+		if (shareList != null && shareList.isEmpty()) return returns;
 		for (Long id : shareList) {
 			BSShare share = BSShare.byId(id);
 			if (share != null && (player.getId() == share.getFirstPlayer().getId() || player.getId() == share.getSecondPlayer().getId())) {
