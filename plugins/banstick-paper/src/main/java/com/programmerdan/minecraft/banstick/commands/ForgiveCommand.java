@@ -185,7 +185,8 @@ public class ForgiveCommand implements CommandExecutor {
 							int banLifted = 0;
 							int pardonsGranted = 0;
 							if (shares != null && shares.size() > 0) {
-								boolean alsoUnban = pardons.size() > 1 && "BAN".equalsIgnoreCase(pardons.get(1));
+								sender.sendMessage(ChatColor.GREEN + "Checking " + shares.size() + " shared sessions for ones needing pardon");
+								boolean alsoUnban = pardons.size() > 1 && "ALL".equalsIgnoreCase(pardons.get(1));
 								for (BSShare share : shares) {
 									if (alsoUnban) {
 										List<BSBan> bans = BSBan.byShare(share, false);
@@ -213,6 +214,7 @@ public class ForgiveCommand implements CommandExecutor {
 							} else {
 								sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() + " does not share any connections with " + player2.getName());
 							}
+							return true;
 						}
 					}
 					sender.sendMessage(ChatColor.RED + "Unrecognized forgiveness: " + pardons + ". Please use BAN, IP, PROXY, or SHARED. Or, another user / BAN. Or none to just unban.");

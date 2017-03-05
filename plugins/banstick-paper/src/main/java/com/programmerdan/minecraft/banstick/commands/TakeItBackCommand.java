@@ -156,8 +156,8 @@ public class TakeItBackCommand implements CommandExecutor {
 			} else {
 				sender.sendMessage(ChatColor.YELLOW + "Player " + player.getName() + " does not share any connections with " + player2.getName());
 			}
+			return true;
 		}
-		return false;
 	}
 
 }

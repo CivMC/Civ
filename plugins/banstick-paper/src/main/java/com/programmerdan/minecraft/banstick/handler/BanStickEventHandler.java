@@ -207,7 +207,7 @@ public class BanStickEventHandler implements Listener {
 						List<BSShare> shares = bsPlayer.getUnpardonedShares();
 						
 						int cardinality = shares.size();
-						if (cardinality > shareThreshold && shareThreshold > 0) { // are we multiaccount banning & are we above threshold?
+						if (cardinality > shareThreshold && shareThreshold > -1) { // are we multiaccount banning & are we above threshold?
 							// Find the Shares above the threshold for newest accounts by create age. Ban them (might be this one).
 							// For each you ban, check if online / kick.
 							BanStick.getPlugin().info("Player {0} has exceeding the shared account threshold. Banning the newest accounts that exceed the Threshold.", bsPlayer.getName());
@@ -247,6 +247,7 @@ public class BanStickEventHandler implements Listener {
 									useForBan = bsPlayer.getLatestShare();
 								} else {
 									List<BSShare> banShares = bsPlayer.sharesWith(banPlayer);
+									if (banShares == null) continue;
 									Collections.reverse(banShares); // by default list is oldest to newest 
 									for (BSShare testShare : banShares) { // we want newest to oldest
 										if (!testShare.isPardoned()) {
@@ -281,7 +282,7 @@ public class BanStickEventHandler implements Listener {
 									
 								}, 1L);
 							}
-							BanStick.getPlugin().info("Player {0}'s exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
+							BanStick.getPlugin().info("Player {0} exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
 						}
 					} catch (Exception e) {
 						BanStick.getPlugin().warning("Failure during Share checks: ", e);

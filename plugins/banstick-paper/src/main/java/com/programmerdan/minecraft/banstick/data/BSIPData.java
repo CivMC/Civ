@@ -51,6 +51,7 @@ public class BSIPData {
 	 */
 	
 	private long idid;
+	private Long deferIid;
 	private BSIP iid;
 	private Timestamp createTime;
 	private boolean valid; // mutable
@@ -89,6 +90,9 @@ public class BSIPData {
 	}
 	
 	public BSIP getIP() {
+		if (this.iid == null && this.deferIid != null) {
+			this.iid = BSIP.byId(this.deferIid);
+		}
 		return this.iid;
 	}
 	
@@ -189,7 +193,8 @@ public class BSIPData {
 	private static BSIPData extractData(ResultSet rs) throws SQLException {
 		BSIPData data = new BSIPData();
 		data.idid = rs.getLong(1);
-		data.iid = BSIP.byId(rs.getLong(2));
+		data.deferIid = rs.getLong(2);
+		//data.iid = BSIP.byId(rs.getLong(2));
 		data.createTime = rs.getTimestamp(3);
 		data.valid = rs.getBoolean(4);
 		data.continent = rs.getString(5);
@@ -352,6 +357,7 @@ public class BSIPData {
 			newData.valid = true;
 			newData.dirty = false;
 			newData.continent = continent;
+			newData.deferIid = ip.getId();
 			newData.iid = ip;
 			newData.country = country;
 			newData.region = region;
@@ -496,6 +502,7 @@ public class BSIPData {
 			save();
 		}
 		allIPDataID.remove(this.idid);
+		this.deferIid = null;
 		this.iid = null;
 	}
 
@@ -574,7 +581,7 @@ public class BSIPData {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(ChatColor.WHITE).append(iid.toString()).append(" - ");
+		sb.append(ChatColor.WHITE).append(getIP().toString()).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
 		}
@@ -639,7 +646,7 @@ public class BSIPData {
 			return toString();
 		}
 		StringBuffer sb = new StringBuffer();
-		sb.append(ChatColor.WHITE).append(iid.toString()).append(" - ");
+		sb.append(ChatColor.WHITE).append(getIP().toFullString(showIPs)).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
 		}

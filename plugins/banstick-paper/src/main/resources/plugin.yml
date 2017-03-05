@@ -51,8 +51,8 @@ commands:
      IP - Prevents new bans on this player due to IP matches
      PROXY - Prevents new bans on this player due to IPData ban matches
      SHARED - Prevents new bans on this player due to Share connection ban matches
-   /<command> [name/uuid] [name/uuid] [BAN]
-     Immediately pardons all shares between these two players. If BAN also expires all bans for all shares between these two players.
+   /<command> [name/uuid] [name/uuid] [ALL]
+     Immediately pardons all shares between these two players. If ALL also expires all bans for all shares between these two players.
  takeitback:
   description: Remove exemptions/ignores with this command.
   aliases: [unforgive, buryhim]

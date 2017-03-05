@@ -40,8 +40,11 @@ public class BSBan {
 	
 	private long bid; 
 	private Timestamp banTime;
+	private Long deferIpBan;
 	private BSIP ipBan;
+	private Long deferProxyBan;
 	private BSIPData proxyBan;
+	private Long deferShareBan;
 	private BSShare shareBan;
 	private boolean isAdminBan;
 	private String message; //mutable
@@ -56,14 +59,23 @@ public class BSBan {
 	}
 	
 	public BSIP getIPBan() {
+		if (ipBan == null && deferIpBan != null) {
+			ipBan = BSIP.byId(deferIpBan);
+		}
 		return ipBan;
 	}
 	
 	public BSIPData getProxyBan() {
+		if (proxyBan == null && deferProxyBan != null) {
+			proxyBan = BSIPData.byId(deferProxyBan);
+		}
 		return proxyBan;
 	}
 	
 	public BSShare getShareBan() {
+		if (shareBan == null && deferShareBan != null) {
+			shareBan = BSShare.byId(deferShareBan);
+		}
 		return shareBan;
 	}
 	
@@ -177,8 +189,11 @@ public class BSBan {
 			save();
 		}
 		allBanID.remove(this.bid);
+		this.deferIpBan = null;
 		this.ipBan = null;
+		this.deferProxyBan = null;
 		this.proxyBan = null;
+		this.deferShareBan = null;
 		this.shareBan = null;
 	}
 	
@@ -322,6 +337,7 @@ public class BSBan {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
+			newBan.deferIpBan = exactIP.getId();
 			newBan.ipBan = exactIP;
 			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
@@ -366,6 +382,7 @@ public class BSBan {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
+			newBan.deferProxyBan = proxy.getId();
 			newBan.proxyBan = proxy;
 			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
@@ -410,6 +427,7 @@ public class BSBan {
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection()) {
 			BSBan newBan = new BSBan();
 			newBan.dirty = false;
+			newBan.deferShareBan = share.getId();
 			newBan.shareBan = share;
 			newBan.banTime = new Timestamp(Calendar.getInstance().getTimeInMillis());
 			newBan.banEnd = banEnd != null ? new Timestamp(banEnd.getTime()) : null;
@@ -455,15 +473,18 @@ public class BSBan {
 		nS.banTime = rs.getTimestamp(2);
 		long iid = rs.getLong(3);
 		if (!rs.wasNull()) {
-			nS.ipBan = BSIP.byId(iid);
+			nS.deferIpBan = iid;
+			//nS.ipBan = BSIP.byId(iid);
 		}
 		long vid = rs.getLong(4);
 		if (!rs.wasNull()) {
-			nS.proxyBan = BSIPData.byId(vid);
+			nS.deferProxyBan = vid;
+			//nS.proxyBan = BSIPData.byId(vid);
 		}
 		long sid = rs.getLong(5);
 		if (!rs.wasNull()) {
-			nS.shareBan = BSShare.byId(sid);
+			nS.deferShareBan = sid;
+			//nS.shareBan = BSShare.byId(sid);
 		}
 		nS.isAdminBan = rs.getBoolean(6);
 		nS.message = rs.getString(7);
@@ -510,11 +531,11 @@ public class BSBan {
 	@Override
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		if (ipBan != null) {
+		if (getIPBan() != null) {
 			sb.append("IP Ban: ").append(ipBan.toString());
-		} else if (proxyBan != null) {
+		} else if (getProxyBan() != null) {
 			sb.append("Proxy Ban: ").append(proxyBan.toString());
-		} else if (shareBan != null) {
+		} else if (getShareBan() != null) {
 			sb.append("Share Ban: ").append(shareBan.toString());
 		} else {
 			sb.append("Player Ban");
@@ -541,21 +562,21 @@ public class BSBan {
 	public String toFullString(boolean showIPs) {
 		StringBuffer sb = new StringBuffer();
 		if (showIPs) {
-			if (ipBan != null) {
+			if (getIPBan() != null) {
 				sb.append("IP Ban: ").append(ipBan.toString());
-			} else if (proxyBan != null) {
+			} else if (getProxyBan() != null) {
 				sb.append("Proxy Ban: ").append(proxyBan.toString());
-			} else if (shareBan != null) {
+			} else if (getShareBan() != null) {
 				sb.append("Share Ban: ").append(shareBan.toString());
 			} else {
 				sb.append("Player Ban");
 			}
 		} else {
-			if (ipBan != null) {
+			if (getIPBan() != null) {
 				sb.append("IP Ban: ").append(ipBan.getId());
-			} else if (proxyBan != null) {
+			} else if (getProxyBan() != null) {
 				sb.append("Proxy Ban: ").append(proxyBan.getId());
-			} else if (shareBan != null) {
+			} else if (getShareBan() != null) {
 				sb.append("Share Ban: ").append(shareBan.toFullString(showIPs));
 			} else {
 				sb.append("Player Ban");

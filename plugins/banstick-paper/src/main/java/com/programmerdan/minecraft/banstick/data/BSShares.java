@@ -90,10 +90,15 @@ public class BSShares {
 		return players;
 	}
 	
+	public boolean doesShareWith(Long playerId) {
+		if (shareList == null) { fill(); }
+		return overlaps.contains(playerId);
+	}
+	
 	public List<BSShare> getSharesWith(BSPlayer player) {
 		if (shareList == null) { fill(); }
 		List<BSShare> returns = new ArrayList<BSShare>();
-		if (shareList != null && shareList.isEmpty()) return returns;
+		if (shareList == null || shareList.isEmpty()) return returns;
 		for (Long id : shareList) {
 			BSShare share = BSShare.byId(id);
 			if (share != null && (player.getId() == share.getFirstPlayer().getId() || player.getId() == share.getSecondPlayer().getId())) {
@@ -145,18 +150,30 @@ public class BSShares {
 		// If new, create a new share.
 		List<BSSession> allSessions = BSSession.byIP(overlap.getIP());
 		for (BSSession session : allSessions) {
-			if (forPlayer.getId() != session.getPlayer().getId() && !overlaps.contains(session.getPlayer().getId())) {// we know. We only record first overlap.
+			if (forPlayer.getId() == session.getPlayer().getId() || session.getId() == overlap.getId()) continue;
+			
+			if (!overlaps.contains(session.getPlayer().getId())) {// we know. We only record first overlap.
 				BSShare newOverlap = BSShare.create(overlap, session);
 				if (newOverlap != null) {
-					this.shareList.add(newOverlap.getId());
-					this.overlaps.add(session.getPlayer().getId());
-					this.unpardonedList.add(newOverlap.getId());
-					BanStick.getPlugin().info("Found new overlap between {0} and {1}", forPlayer.getName(), session.getPlayer().getName());
+					addNew(newOverlap, session.getPlayer());
+					session.getPlayer().addShare(newOverlap, forPlayer);
 				} else {
 					BanStick.getPlugin().debug("Failed while generating share/overlap?");
 				}
 			}
 		}
+	}
+	
+	public void addNew(BSShare share, BSPlayer player) {
+		if (shareList == null) { fill(); }
+		
+		this.shareList.add(share.getId());
+		this.overlaps.add(player.getId());
+		this.unpardonedList.add(share.getId());
+		// be sure it gets promoted to the opposing record
+		
+		BanStick.getPlugin().info("Found new overlap between {0} and {1}", forPlayer.getName(), player.getName());
+
 	}
 	
 	public int shareOrdinality() {

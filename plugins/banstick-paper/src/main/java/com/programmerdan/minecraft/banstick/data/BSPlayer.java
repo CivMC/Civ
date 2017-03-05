@@ -39,6 +39,7 @@ public class BSPlayer {
 	private String name;
 	private UUID uuid;
 	private Timestamp firstAdd;
+	private Long deferBid;
 	private BSBan bid;
 	private Timestamp ipPardonTime;
 	private Timestamp proxyPardonTime;
@@ -102,6 +103,9 @@ public class BSPlayer {
 	}
 	
 	public BSBan getBan() {
+		if (this.bid == null && this.deferBid != null) {
+			this.bid = BSBan.byId(this.deferBid);
+		}
 		return this.bid;
 	}
 
@@ -114,6 +118,7 @@ public class BSPlayer {
 			BSLog.register(BSLog.Action.CHANGE, this, this.bid, bid);
 		}
 		this.bid = bid;
+		this.deferBid = (bid == null ? null : bid.getId());
 		this.dirty = true;
 		dirtyPlayers.offer(new WeakReference<BSPlayer>(this));
 
@@ -239,7 +244,7 @@ public class BSPlayer {
 		} else {
 			savePlayer.setTimestamp(3, this.sharedPardonTime);
 		}
-		if (this.bid == null) {
+		if (this.getBan() == null) {
 			savePlayer.setNull(4, Types.BIGINT);
 		} else {
 			savePlayer.setLong(4,  this.bid.getId());
@@ -264,6 +269,8 @@ public class BSPlayer {
 		BSShares.release(this.allShares);
 		allPlayersUUID.remove(this.uuid);
 		allPlayersID.remove(this.pid);
+		this.bid = null;
+		this.deferBid = null;
 	}
 	
 	/**
@@ -331,6 +338,7 @@ public class BSPlayer {
 					BSPlayer player = null;
 					if (allPlayersID.containsKey(pid)) {
 						player = allPlayersID.get(pid);
+						return player;
 					} else {
 						player = new BSPlayer();
 						player.pid = pid;
@@ -343,7 +351,11 @@ public class BSPlayer {
 					player.uuid = UUID.fromString(rs.getString(3));
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
-					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+					if (!rs.wasNull()) {
+						player.deferBid = bid;
+						player.bid = null;
+					}
+					//player.bid = rs.wasNull() ? null : BSBan.byId(bid);
 					try {
 						player.ipPardonTime = rs.getTimestamp(6);
 					} catch (SQLException te) {
@@ -401,7 +413,11 @@ public class BSPlayer {
 					player.uuid = UUID.fromString(rs.getString(3));
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
-					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+					if (!rs.wasNull()) {
+						player.deferBid = bid;
+						player.bid = null;
+					}
+					//player.bid = rs.wasNull() ? null : BSBan.byId(bid);
 					try {
 						player.ipPardonTime = rs.getTimestamp(6);
 					} catch (SQLException te) {
@@ -508,7 +524,11 @@ public class BSPlayer {
 					player.uuid = UUID.fromString(rs.getString(3));
 					player.firstAdd = rs.getTimestamp(4);
 					long bid = rs.getLong(5);
-					player.bid = rs.wasNull() ? null : BSBan.byId(bid);
+					if (!rs.wasNull()) {
+						player.deferBid = bid;
+						player.bid = null;
+					}
+					//player.bid = rs.wasNull() ? null : BSBan.byId(bid);
 					try {
 						player.ipPardonTime = rs.getTimestamp(6);
 					} catch (SQLException te) {
@@ -587,7 +607,7 @@ public class BSPlayer {
 	}
 	
 	public List<BSShare> sharesWith(BSPlayer player) {
-		if (this.allShares.getSharesWith().contains(player.getId())) {
+		if (this.allShares.doesShareWith(player.getId())) {
 			return this.allShares.getSharesWith(player);
 		} else {
 			return null;
@@ -596,5 +616,9 @@ public class BSPlayer {
 
 	public List<BSShare> getAllShares() {
 		return this.allShares.getAll();
+	}
+
+	public void addShare(BSShare share, BSPlayer player) {
+		this.allShares.addNew(share, player);
 	}
 }

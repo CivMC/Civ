@@ -28,10 +28,14 @@ public class BSShare {
 	private boolean dirty;
 	
 	private long sid;
+	private Long deferFirstPlayer;
 	private BSPlayer firstPlayer;
+	private Long deferSecondPlayer;
 	private BSPlayer secondPlayer;
 	
+	private Long deferFirstSession;
 	private BSSession firstSession;
+	private Long deferSecondSession;
 	private BSSession secondSession;
 	
 	private Timestamp createTime;
@@ -73,18 +77,30 @@ public class BSShare {
 	}
 	
 	public BSPlayer getFirstPlayer() {
+		if (firstPlayer == null && deferFirstPlayer != null) {
+			firstPlayer = BSPlayer.byId(deferFirstPlayer);
+		}
 		return firstPlayer;
 	}
 	
 	public BSPlayer getSecondPlayer() {
+		if (secondPlayer == null && deferSecondPlayer != null) {
+			secondPlayer = BSPlayer.byId(deferSecondPlayer);
+		}
 		return secondPlayer;
 	}
 
 	public BSSession getFirstSession() {
+		if (firstSession == null && deferFirstSession != null) {
+			firstSession = BSSession.byId(deferFirstSession);
+		}
 		return firstSession;
 	}
 	
 	public BSSession getSecondSession() {
+		if (secondSession == null && deferSecondSession != null) {
+			secondSession = BSSession.byId(deferSecondSession);
+		}
 		return secondSession;
 	}
 	
@@ -138,13 +154,16 @@ public class BSShare {
 	private static BSShare internalGetShare(ResultSet rs) throws SQLException {
 		BSShare nS = new BSShare();
 		nS.sid = rs.getLong(1);
-		// TODO: refactor to avoid recursive lookups.
 		nS.dirty = false;
 		nS.createTime = rs.getTimestamp(2);
-		nS.firstPlayer = BSPlayer.byId(rs.getLong(3));
-		nS.secondPlayer = BSPlayer.byId(rs.getLong(4));
-		nS.firstSession = BSSession.byId(rs.getLong(5));
-		nS.secondSession = BSSession.byId(rs.getLong(6));
+		nS.deferFirstPlayer = rs.getLong(3);
+		//nS.firstPlayer = BSPlayer.byId(rs.getLong(3));
+		nS.deferSecondPlayer = rs.getLong(4);
+		//nS.secondPlayer = BSPlayer.byId(rs.getLong(4));
+		nS.deferFirstSession = rs.getLong(5);
+		//nS.firstSession = BSSession.byId(rs.getLong(5));
+		nS.deferSecondSession = rs.getLong(6);
+		//nS.secondSession = BSSession.byId(rs.getLong(6));
 		if (rs.getBoolean(7)) {
 			try {
 				nS.pardonTime = rs.getTimestamp(8);
@@ -232,9 +251,13 @@ public class BSShare {
 			save();
 		}
 		allShareID.remove(this.sid);
+		this.deferFirstPlayer = null;
 		this.firstPlayer = null;
+		this.deferSecondPlayer = null;
 		this.secondPlayer = null;
+		this.deferFirstSession = null;
 		this.firstSession = null;
+		this.deferSecondPlayer = null;
 		this.secondSession = null;
 	}
 
@@ -268,10 +291,10 @@ public class BSShare {
 			sb.append(ChatColor.GREEN).append("[Pardoned] ");
 		}
 		sb.append(ChatColor.DARK_PURPLE).append("Share by ")
-			.append(ChatColor.WHITE).append(firstPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-			.append(ChatColor.WHITE).append(secondPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" via ")
-			.append(ChatColor.WHITE).append(firstSession.toString()).append(ChatColor.DARK_PURPLE).append(" with ")
-			.append(ChatColor.WHITE).append(secondSession.toString());	
+			.append(ChatColor.WHITE).append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
+			.append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" via ")
+			.append(ChatColor.WHITE).append(getFirstSession().toString()).append(ChatColor.DARK_PURPLE).append(" with ")
+			.append(ChatColor.WHITE).append(getSecondSession().toString());	
 		return sb.toString();
 	}
 	
@@ -284,10 +307,10 @@ public class BSShare {
 				sb.append(ChatColor.GREEN).append("[Pardoned] ");
 			}
 			sb.append(ChatColor.DARK_PURPLE).append("Share by ")
-				.append(ChatColor.WHITE).append(firstPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" and ")
-				.append(ChatColor.WHITE).append(secondPlayer.getName()).append(ChatColor.DARK_PURPLE).append(" via ")
-				.append(ChatColor.WHITE).append(firstSession.toFullString(showIPs)).append(ChatColor.DARK_PURPLE).append(" with ")
-				.append(ChatColor.WHITE).append(secondSession.toFullString(showIPs));
+				.append(ChatColor.WHITE).append(getFirstPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" and ")
+				.append(ChatColor.WHITE).append(getSecondPlayer().getName()).append(ChatColor.DARK_PURPLE).append(" via ")
+				.append(ChatColor.WHITE).append(getFirstSession().toFullString(showIPs)).append(ChatColor.DARK_PURPLE).append(" with ")
+				.append(ChatColor.WHITE).append(getSecondSession().toFullString(showIPs));
 			return sb.toString();
 		}
 	}
@@ -298,9 +321,13 @@ public class BSShare {
 						"INSERT INTO bs_share(create_time, first_pid, second_pid, first_sid, second_sid, pardon, pardon_time) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);) {
 			BSShare share = new BSShare();
 			share.createTime =  new Timestamp(Calendar.getInstance().getTimeInMillis());
+			share.deferFirstPlayer = overlap.getPlayer().getId();
 			share.firstPlayer = overlap.getPlayer();
+			share.deferSecondPlayer = session.getPlayer().getId();
 			share.secondPlayer = session.getPlayer();
+			share.deferFirstSession = overlap.getId();
 			share.firstSession = overlap;
+			share.deferSecondSession = session.getId();
 			share.secondSession = session;
 			share.pardonTime = null;
 			

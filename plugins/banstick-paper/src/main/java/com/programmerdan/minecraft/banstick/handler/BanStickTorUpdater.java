@@ -17,6 +17,7 @@ import org.bukkit.scheduler.BukkitTask;
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
 
 import inet.ipaddr.IPAddressString;
 
@@ -119,6 +120,12 @@ tor:
 										found = BSIP.create(address.toAddress());
 									}
 									// TODO: CREATE A VPN RECORD
+									BSIPData dataMatch = BSIPData.byExactIP(found);
+									if (dataMatch == null) {
+										dataMatch = BSIPData.create(found, null, null, null, null, 
+												null, null, null, null, null, null, null,
+												1.9f, torSave.address, "Tor exit node");
+									}
 								}
 								
 								if (banNewNodes) {

@@ -25,11 +25,13 @@ public class BSSession {
 	private boolean dirty;
 	
 	private long sid;
+	private Long deferPid;
 	private BSPlayer pid;
 	
 	private Timestamp joinTime;
 	private Timestamp leaveTime;
 
+	private Long deferIid;
 	private BSIP iid;
 	
 	private BSSession() {}
@@ -57,10 +59,16 @@ public class BSSession {
 	}
 	
 	public BSPlayer getPlayer() {
+		if (pid == null && deferPid != null) {
+			pid = BSPlayer.byId(deferPid);
+		}
 		return pid;
 	}
 	
 	public BSIP getIP() {
+		if (iid == null && deferIid != null) {
+			iid = BSIP.byId(deferIid);
+		}
 		return iid;
 	}
 	
@@ -145,7 +153,9 @@ public class BSSession {
 		}
 		allSessionID.remove(this.sid);
 		this.pid = null;
+		this.deferPid = null;
 		this.iid = null;
+		this.deferIid = null;
 	}
 	
 	public static BSSession byId(long sid) {
@@ -173,15 +183,16 @@ public class BSSession {
 	private static BSSession internalGetSession(ResultSet rs) throws SQLException {
 		BSSession nS = new BSSession();
 		nS.sid = rs.getLong(1);
-		// TODO: refactor to avoid recursive lookups.
-		nS.pid = BSPlayer.byId(rs.getLong(2));
+		nS.deferPid = rs.getLong(2);
+		//nS.pid = BSPlayer.byId(rs.getLong(2));
 		nS.joinTime = rs.getTimestamp(3);
 		try {
 			nS.leaveTime = rs.getTimestamp(4);
 		} catch (SQLException se) {
 			nS.leaveTime = null;
 		}
-		nS.iid = BSIP.byId(rs.getLong(5));
+		nS.deferIid = rs.getLong(5);
+		//nS.iid = BSIP.byId(rs.getLong(5));
 		nS.dirty = false;
 		return nS;
 	}
@@ -216,8 +227,10 @@ public class BSSession {
 						"INSERT INTO bs_session(pid, join_time, iid) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);) {
 			BSSession session = new BSSession();
 			session.pid = pid;
+			session.deferPid = pid.getId();
 			session.joinTime = new Timestamp(sessionStart.getTime());
 			session.iid = iid;
+			session.deferIid = iid.getId();
 			
 			newSession.setLong(1, pid.getId());
 			newSession.setTimestamp(2, session.joinTime);
@@ -263,14 +276,16 @@ public class BSSession {
 					BSSession session = new BSSession();
 					session.dirty = false;
 					session.sid = rs.getLong(1);
-					session.pid = BSPlayer.byId(rs.getLong(2));
+					session.deferPid = rs.getLong(2);
+					//session.pid = BSPlayer.byId(rs.getLong(2));
 					session.joinTime = rs.getTimestamp(3);
 					try {
 						session.leaveTime = rs.getTimestamp(4);
 					} catch (SQLException se) {
 						session.leaveTime = null;
 					}
-					session.iid = BSIP.byId(rs.getLong(5));
+					session.deferIid = rs.getLong(5);
+					//session.iid = BSIP.byId(rs.getLong(5));
 
 					if (!allSessionID.containsKey(session.sid)) {
 						allSessionID.put(session.sid, session);
@@ -306,9 +321,9 @@ public class BSSession {
 	public String toFullString(boolean showIP) {
 		StringBuffer sb = new StringBuffer();
 		if (showIP) {
-			sb.append(this.iid.toString());
+			sb.append(getIP().toString());
 		} else {
-			sb.append(this.iid.getId());
+			sb.append(getIP().getId());
 		}
 		sb.append(": ");
 		sb.append(getJoinTime().toString());
