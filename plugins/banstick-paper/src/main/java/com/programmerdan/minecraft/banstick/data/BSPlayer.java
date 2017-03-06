@@ -143,6 +143,23 @@ public class BSPlayer {
 	}
 	
 	/**
+	 * If session is active, end it. Starts a new session, when IP is known.
+	 * Checks for new shares.
+	 * 
+	 * @param ip The exact IP to use
+	 * @param sessionStart the session start time
+	 */
+	public void startSession(BSIP ip, Date sessionStart) {
+		BSSession latest = this.allSessions.getLatest();
+		if (latest != null && !latest.isEnded()) {
+			latest.setLeaveTime(sessionStart);
+		}
+		this.allIPs.setLatest(ip);
+		latest = this.allSessions.startNew(ip, sessionStart);
+		this.allShares.check(latest);
+	}
+	
+	/**
 	 * Ends the latest session for this player. Player-centric exposed focus for BSSessions's endLatest
 	 * 
 	 * @param sessionEnd Date to end this player's current session.

@@ -26,9 +26,22 @@ database:
  dirtysave: 
   period: 12000
   delay: 6000
-# For any imports enabled, be absolutely certain the credentials previously supplied have read access
-import: 
+import:
  enable: true
+# IP-Check import. Delay to set how long in ticks to wait after startup to import. Should be idempotent, _no_ guarantee whatsoever.
+ ipcheck:
+  delay: 1000
+  enable: true
+  database:
+   host: localhost
+   port:
+   database: ipcheck
+   user:
+   password:
+   poolsize: 3
+   connectionTimeout: 3000
+   idleTimeout: 600000
+   maxLifetime: 7200000
 # All bans and unbans are separately logged in an audit-log fashion. They are batched for insertion.
 #  maxBatch: maximum batch size to use
 #  delay: delay in ticks before beginning after server start
