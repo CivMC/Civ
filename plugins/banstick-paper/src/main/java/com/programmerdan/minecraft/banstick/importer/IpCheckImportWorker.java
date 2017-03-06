@@ -181,7 +181,7 @@ public class IpCheckImportWorker extends ImportWorker {
 							}
 						}
 						if (uuid == null) {
-							BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", uuid);
+							BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", username);
 							continue;
 						}
 						BSPlayer player = BSPlayer.byUUID(uuid);
@@ -242,7 +242,7 @@ public class IpCheckImportWorker extends ImportWorker {
 					while (rs.next()) {
 						String ip = rs.getString(1);
 						String username = rs.getString(2);
-						Timestamp sessionStart = rs.getTimestamp(2);
+						Timestamp sessionStart = rs.getTimestamp(3);
 						
 						try {
 							IPAddressString address = new IPAddressString(ip);
@@ -256,7 +256,7 @@ public class IpCheckImportWorker extends ImportWorker {
 								}
 							}
 							if (uuid == null) {
-								BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", uuid);
+								BanStick.getPlugin().warning("Unable to find UUID for player {0} while importing IPCheck", username);
 								continue;
 							}
 							BSPlayer player = BSPlayer.byUUID(uuid);

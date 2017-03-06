@@ -34,7 +34,7 @@ public class BanStickScrapeHandler {
 	}
 	
 	private void setup(ConfigurationSection config, ClassLoader classes) {
-		if (config == null || !config.getBoolean("enable")) {
+		if (config == null || !config.getBoolean("enable", false)) {
 			BanStick.getPlugin().warning("All Scraper Workers disabled");
 			return;
 		}

@@ -63,7 +63,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		begin();
 	}
 	private boolean configure(ConfigurationSection config) {
-		if (config != null && config.getBoolean("enable")) {
+		if (config != null && config.getBoolean("enable", false)) {
 			enabled = true;
 		} else {
 			return false;

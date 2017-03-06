@@ -302,14 +302,7 @@ public class BSSession {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(getPlayer().getName()).append(": ");
-		sb.append(getJoinTime().toString());
-		if (isEnded()) {
-			sb.append(" - ").append(getLeaveTime());
-		}
-		
-		return sb.toString();
+		return toFullString(true);
 	}
 	
 	/**
@@ -320,12 +313,13 @@ public class BSSession {
 	 */
 	public String toFullString(boolean showIP) {
 		StringBuffer sb = new StringBuffer();
+		sb.append(getPlayer().getName()).append(" [");
 		if (showIP) {
 			sb.append(getIP().toString());
 		} else {
 			sb.append(getIP().getId());
 		}
-		sb.append(": ");
+		sb.append("]: ");
 		sb.append(getJoinTime().toString());
 		if (isEnded()) {
 			sb.append(" - ").append(getLeaveTime());

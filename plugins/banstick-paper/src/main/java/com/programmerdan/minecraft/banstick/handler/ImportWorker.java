@@ -20,7 +20,7 @@ public abstract class ImportWorker implements Runnable {
 	private boolean setup(ConfigurationSection config) {
 		if (config == null) return false;
 		delay = config.getLong("delay", delay);
-		return config.getBoolean("enable");
+		return config.getBoolean("enable", enable);
 	}
 	
 	@Override

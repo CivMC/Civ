@@ -32,7 +32,7 @@ public class BanStickImportHandler {
 	}
 	
 	private void setup(ConfigurationSection config, ClassLoader classes) {
-		if (config == null || !config.getBoolean("enable")) {
+		if (config == null || !config.getBoolean("enable", false)) {
 			BanStick.getPlugin().warning("All Import Workers disabled");
 			return;
 		}
