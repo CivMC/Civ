@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickIPDataHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickImportHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickProxyHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickScrapeHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickTorUpdater;
@@ -20,6 +21,7 @@ public class BanStick extends ACivMod {
 	private BanStickProxyHandler proxyHandler;
 	private BanStickIPDataHandler ipdataUpdater;
 	private BanStickScrapeHandler scrapeHandler;
+	private BanStickImportHandler importHandler;
 	private BSLog logHandler;
 	
 	@Override
@@ -39,6 +41,7 @@ public class BanStick extends ACivMod {
 		registerProxyHandler();
 		registerIPDataHandler();
 		registerScrapeHandler();
+		registerImportHandler();
 		registerLogHandler();
 	}
 	
@@ -51,8 +54,9 @@ public class BanStick extends ACivMod {
 		if (this.scrapeHandler != null) this.scrapeHandler.shutdown();
 		if (this.ipdataUpdater != null) this.ipdataUpdater.end();
 		if (this.torUpdater != null) this.torUpdater.shutdown();
-		if (this.databaseHandler != null) this.databaseHandler.doShutdown();
+		if (this.importHandler != null) this.importHandler.shutdown();
 		if (this.logHandler != null) this.logHandler.disable();
+		if (this.databaseHandler != null) this.databaseHandler.doShutdown();
 	}
 	
 	private void connectDatabase() {
@@ -121,6 +125,15 @@ public class BanStick extends ACivMod {
 			this.scrapeHandler = new BanStickScrapeHandler(getConfig(), getPlugin().getClassLoader());
 		} catch (Exception e) {
 			this.severe("Failed to set up anonymous proxy scrapers", e);
+		}
+	}
+	
+	private void registerImportHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.importHandler = new BanStickImportHandler(getConfig(), getPlugin().getClassLoader());
+		} catch (Exception e) {
+			this.severe("Failed to set up data imports", e);
 		}
 	}
 	
