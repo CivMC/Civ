@@ -48,12 +48,13 @@ public class AssociationListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void OnPlayerLogin(PlayerLoginEvent event) {
-		final String name = associations.getCurrentName(event.getPlayer().getUniqueId());
+		String name = associations.getCurrentName(event.getPlayer().getUniqueId());
 		if (name == null)
 		{
 			associations.addPlayer(event.getPlayer().getName(), event.getPlayer().getUniqueId());
-			return;
+			name = associations.getCurrentName(event.getPlayer().getUniqueId());
 		}
+
 		if (game != null)
 			game.setPlayerProfle(event.getPlayer(), name);
 	}
