@@ -96,6 +96,7 @@ public class BanStickEventHandler implements Listener {
 					player.setBan(null);
 				} else {
 					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + ban.toString());
+					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + ban.toString(), "banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, ban.getMessage());
 					return;
 				}
@@ -121,6 +122,7 @@ public class BanStickEventHandler implements Listener {
 						player.setBan(pickOne); // get most recent matching IP ban and use it.
 					}
 					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 					return;
 				}
@@ -144,6 +146,7 @@ public class BanStickEventHandler implements Listener {
 						player.setBan(pickOne); // get most recent matching subnet ban and use it.
 					}
 					BanStick.getPlugin().info("Preventing login by " + player.getName() + " due to " + pickOne.toString());
+					Bukkit.broadcast("Preventing login by " + player.getName() + " due to " + pickOne.toString(), "banstick.ips");
 					asyncEvent.disallow(Result.KICK_BANNED, pickOne.getMessage());
 					return;
 				}			
@@ -271,8 +274,10 @@ public class BanStickEventHandler implements Listener {
 										if (player != null) {
 											player.kickPlayer(picked.getMessage());
 											BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+											Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
 										} else {
 											BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+											Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
 										}
 									}
 									
@@ -326,8 +331,10 @@ public class BanStickEventHandler implements Listener {
 												if (player != null) {
 													player.kickPlayer(picked.getMessage());
 													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+													Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
 												} else {
 													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+													Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
 												}
 											}
 											
@@ -351,8 +358,10 @@ public class BanStickEventHandler implements Listener {
 												if (player != null) {
 													player.kickPlayer(picked.getMessage());
 													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+													Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
 												} else {
 													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+													Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
 												}
 											}
 											
