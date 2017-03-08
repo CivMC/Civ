@@ -373,6 +373,9 @@ public class BanStickDatabaseHandler {
 		if (bsIP == null) {
 			BanStick.getPlugin().debug("Creating IP address: {0}", netAddress);
 			bsIP = BSIP.create(netAddress);
+		} else {
+			BanStick.getPlugin().info("Registering future retrieval of IPData for {0}", bsIP.toString());
+			BanStick.getPlugin().getIPDataHandler().offer(bsIP);
 		}
 		return bsIP;
 	}

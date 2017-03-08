@@ -24,6 +24,8 @@ public class BanStick extends ACivMod {
 	private BanStickImportHandler importHandler;
 	private BSLog logHandler;
 	
+	private boolean slaveMode = false;
+	
 	@Override
 	public void onEnable() {
 		super.onEnable();
@@ -34,6 +36,10 @@ public class BanStick extends ACivMod {
 		BanStick.instance = this;
 		connectDatabase();
 		if (!this.isEnabled()) return;
+		
+		if (getConfig().getBoolean("slaveMode", false)) {
+			slaveMode = true;
+		}
 
 		registerEventHandler();
 		registerCommandHandler();
@@ -170,6 +176,10 @@ public class BanStick extends ACivMod {
 
 	public void saveCache() {
 		this.databaseHandler.doShutdown();
+	}
+	
+	public static boolean slave() {
+		return BanStick.instance.slaveMode;
 	}
 
 }

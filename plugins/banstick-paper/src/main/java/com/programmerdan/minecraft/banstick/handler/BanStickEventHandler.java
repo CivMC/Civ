@@ -105,10 +105,6 @@ public class BanStickEventHandler implements Listener {
 				return;
 			}
 		}
-		if (ip != null) {
-			BanStick.getPlugin().info("Registering future retrieval of IPData for {0}", ip.toString());
-			BanStick.getPlugin().getIPDataHandler().offer(ip);
-		}
 		
 		if (this.enableIPBans) {
 			// Second, trigger an exact IP based lookup.
@@ -280,7 +276,7 @@ public class BanStickEventHandler implements Listener {
 										}
 									}
 									
-								}, 1L);
+								}, 5L);
 							}
 							BanStick.getPlugin().info("Player {0} exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
 						}
@@ -335,7 +331,7 @@ public class BanStickEventHandler implements Listener {
 												}
 											}
 											
-										}, 1l);
+										}, 5l);
 																		
 										return;
 									}
@@ -360,7 +356,7 @@ public class BanStickEventHandler implements Listener {
 												}
 											}
 											
-										}, 1L);
+										}, 5L);
 									
 										return;
 									}

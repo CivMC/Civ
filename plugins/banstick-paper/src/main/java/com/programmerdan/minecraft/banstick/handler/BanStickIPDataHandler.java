@@ -366,7 +366,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		
 		public boolean hasChanged(BSIPData data) {
 			if (isEqual(data.getCountry(), this.country) &&
-				isEqual(data.getRegion(), this.region) &&
+				isEqual(data.getRegion(), this.regionName) &&
 				isEqual(data.getCity(), this.city) &&
 				isEqual(data.getPostal(), this.zip) &&
 				isEqual(data.getLat(), this.lat) &&

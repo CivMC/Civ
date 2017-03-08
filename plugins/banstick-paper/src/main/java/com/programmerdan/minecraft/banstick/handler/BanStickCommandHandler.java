@@ -6,6 +6,8 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.commands.BanSaveCommand;
 import com.programmerdan.minecraft.banstick.commands.BanStickCommand;
 import com.programmerdan.minecraft.banstick.commands.DoubleTapCommand;
+import com.programmerdan.minecraft.banstick.commands.DowsingRodCommand;
+import com.programmerdan.minecraft.banstick.commands.DrillDownCommand;
 import com.programmerdan.minecraft.banstick.commands.ForgiveCommand;
 import com.programmerdan.minecraft.banstick.commands.LoveTapCommand;
 import com.programmerdan.minecraft.banstick.commands.TakeItBackCommand;
@@ -29,6 +31,8 @@ public class BanStickCommandHandler {
 		BanStick.getPlugin().getCommand(BanSaveCommand.name).setExecutor(new BanSaveCommand());
 		BanStick.getPlugin().getCommand(LoveTapCommand.name).setExecutor(new LoveTapCommand());
 		BanStick.getPlugin().getCommand(TakeItBackCommand.name).setExecutor(new TakeItBackCommand());
+		BanStick.getPlugin().getCommand(DowsingRodCommand.name).setExecutor(new DowsingRodCommand());
+		BanStick.getPlugin().getCommand(DrillDownCommand.name).setExecutor(new DrillDownCommand());
 	}
 
 }

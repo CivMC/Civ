@@ -35,6 +35,23 @@ commands:
    /<command> [name/uuid]/[CIDR]
    /<command> [ip]
    /<command> [ip]/[CIDR]
+ dowsingrod:
+  description: Investigate breakdown of networks by up to three attributes
+  aliases: [bsdr, diviningrod]
+  permission: banstick.lovetap
+  usage: |
+   /<command> [CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] pagenum perpage
+    Up to three of the above; pagenum, perpage self-explain.
+    If none, defaults to provider / 0 / 20
+    Always does largest >>> smallest in ordering.
+    Use with care, can be Database intensive.
+ drilldown:
+  description: Investigate the IPs and IP Networks based on specific values (like, find all networks in China)
+  aliases: [bsdd, deepdive]
+  permission: banstick.lovetap
+  useage: |
+   /<command> [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
+    Up to three of the above; unpaginated, so this could get very long
  forgive:
   description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
   aliases: [bstf, showmercy]
