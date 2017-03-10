@@ -220,6 +220,39 @@ public class BSIPData {
 		data.dirty = false;
 		return data;
 	}
+	
+	/**
+	 * As described in method header; finds the other non-same IPData records that geolocate to the same country/region/city pairing.
+	 * 
+	 * @param source The IPData to use to seed the search
+	 * @return A list of IPDatas in the same region, or nothing if none found.
+	 */
+	public static List<BSIPData> bySameCity(BSIPData source) {
+		List<BSIPData> found = new ArrayList<BSIPData>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getSame = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
+			getSame.setString(1, source.getCountry());
+			getSame.setString(2, source.getRegion());
+			getSame.setString(3, source.getCity());
+			getSame.setLong(4, source.getId());
+			try (ResultSet rs = getSame.executeQuery();) {
+				while (rs.next()) {
+					if (allIPDataID.containsKey(rs.getLong(1))) {
+						found.add(allIPDataID.get(rs.getLong(1)));
+					}
+					BSIPData data = extractData(rs);
+					allIPDataID.put(data.idid,  data);
+					found.add(data);
+				}
+				if (found.isEmpty()) {
+					BanStick.getPlugin().debug("Found no other IP Data in same city as {0}", source);
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Retrieval of same-city IP Data by IP Data failed: " + source, se);
+		}
+		return found;
+	}
 
 	/**
 	 * Returns only the latest valid BSIPData records by exact match with the IP

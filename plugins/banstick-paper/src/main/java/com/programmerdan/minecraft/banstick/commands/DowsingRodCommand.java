@@ -113,7 +113,7 @@ public class DowsingRodCommand  implements CommandExecutor {
 				ResultSet results = complex.executeQuery()) {
 			while(results.next()) {
 				String[] storage = new String[sorts.size() + 2];
-				StringBuilder detailCmd = new StringBuilder("/drilldown ");
+				StringBuilder detailCmd = new StringBuilder("/drilldown SUMMARY ");
 				for (int i = 0; i <= sorts.size(); i++) {
 					storage[i] = i < sorts.size() ? results.getString(i + 1) : Integer.toString(results.getInt(i + 1));
 					if (results.wasNull()) {

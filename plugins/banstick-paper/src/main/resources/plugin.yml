@@ -50,8 +50,13 @@ commands:
   aliases: [bsdd, deepdive]
   permission: banstick.lovetap
   useage: |
-   /<command> [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
+   /<command> SUMMARY|PLAYER|IP|IPDATA|IPDATASUMMARY [[CONTINENT|COUNTRY|REGION|STATE|CITY|POSTAL|ZIP|DOMAIN|PROVIDER|REGISTEREDAS|CONNECTION] "value"]x3
     Up to three of the above; unpaginated, so this could get very long
+    SUMMARY just shows a top-level summary
+    PLAYER shows all players using IPs in the IPs and Networks captured
+    IP shows all IPs in the IPs and Networks captured
+    IPDATA shows all IP/IPData records matching
+    IPDATASUMMARY shows all IPData records, all IPs in them, and all Players that use them. It will be slow probably.
  forgive:
   description: Remove specific IP / CIDR bans, unban specific individuals, or grant exemptions/ignores for a user
   aliases: [bstf, showmercy]

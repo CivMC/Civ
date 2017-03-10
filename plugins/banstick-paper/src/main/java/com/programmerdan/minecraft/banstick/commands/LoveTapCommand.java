@@ -24,6 +24,10 @@ import com.programmerdan.minecraft.banstick.data.BSShare;
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoveTapCommand  implements CommandExecutor {
@@ -66,28 +70,84 @@ public class LoveTapCommand  implements CommandExecutor {
 								Set<Long> playerIds = new HashSet<Long>();
 								List<BSPlayer> players = new ArrayList<BSPlayer>();
 								List<BSBan> playerBans = new ArrayList<BSBan>();
+								StringBuffer playerList = new StringBuffer();
+								StringBuffer playerBanList = new StringBuffer();
 								for (BSSession session : sessions) {
 									BSPlayer player = session.getPlayer();
 									if (playerIds.contains(player.getId())) {
 										continue;
 									}
 									playerIds.add(player.getId());
+									playerList.append(player.getName()).append(", ");
 									players.add(player);
 									if (player.getBan() != null) {
 										playerBans.add(player.getBan());
+										playerBanList.append(player.getName()).append(", ");
 									}
 								}
 								BSIPData proxy = BSIPData.byExactIP(bsip);
 								
-								StringBuilder sb = new StringBuilder();
-								sb.append(ChatColor.BLUE).append("IP ").append(ChatColor.WHITE).append(bsip.toString());
-								sb.append(ChatColor.AQUA).append(" IPBans: ").append(ChatColor.WHITE).append(bans == null ? 0 : bans.size());
-								sb.append(ChatColor.AQUA).append(" Sessions: ").append(ChatColor.WHITE).append(sessions == null ? 0 : sessions.size());
-								sb.append(ChatColor.AQUA).append(" Players: ").append(ChatColor.WHITE).append(players == null ? 0 : players.size());
-								sb.append(ChatColor.AQUA).append(" PlayerBans: ").append(ChatColor.WHITE).append(playerBans == null ? 0 : playerBans.size());
-								if (proxy != null) sb.append("\n   ").append(proxy.toString());
+								TextComponent ipBase = new TextComponent("IP ");
+									ipBase.setColor(net.md_5.bungee.api.ChatColor.BLUE);
+								TextComponent ipStr = new TextComponent(bsip.toString());
+									ipStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+									ipStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to lovetap this IP").create()));
+									ipStr.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lovetap " + bsip.toString()));
+								ipBase.addExtra(ipStr);
+										// TODO: Add a hover and clickable that issues a lovetap for this IP specifically. 
+										//sb.append(ChatColor.BLUE).append("IP ").append(ChatColor.WHITE).append(bsip.toString()).toString());
 								
-								sender.sendMessage(sb.toString());
+								TextComponent ipBanBase = new TextComponent(" IPBans: ");
+									ipBanBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+								TextComponent ipBanStr = new TextComponent(Integer.toString(bans == null ? 0 : bans.size()));
+									ipBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+								ipBanBase.addExtra(ipBanStr);
+								ipBase.addExtra(ipBanBase);
+								//sb.append(ChatColor.AQUA).append(" IPBans: ").append(ChatColor.WHITE).append(bans == null ? 0 : bans.size());
+								
+								TextComponent sessionBase = new TextComponent(" Sessions: ");
+									sessionBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+								TextComponent sessionStr = new TextComponent(Integer.toString(sessions == null ? 0 : sessions.size()));
+									sessionStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+								sessionBase.addExtra(sessionStr);
+								ipBase.addExtra(sessionBase);
+								//sb.append(ChatColor.AQUA).append(" Sessions: ").append(ChatColor.WHITE).append(sessions == null ? 0 : sessions.size());
+								
+								// TODO: Add a hover showing all the player's names
+								TextComponent playerBase = new TextComponent(" Players: ");
+									playerBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+								TextComponent playerStr = new TextComponent(Integer.toString(players == null ? 0 : players.size()));
+									playerStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+									playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
+								playerBase.addExtra(playerStr);
+								ipBase.addExtra(playerBase);
+								//sb.append(ChatColor.AQUA).append(" Players: ").append(ChatColor.WHITE).append(players == null ? 0 : players.size());
+
+								TextComponent pBanBase = new TextComponent(" PlayerBans: ");
+									pBanBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
+								TextComponent pBanStr = new TextComponent(Integer.toString(playerBans == null ? 0 : playerBans.size()));
+									pBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+									pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
+								pBanBase.addExtra(pBanStr);
+								ipBase.addExtra(pBanBase);
+								//sb.append(ChatColor.AQUA).append(" PlayerBans: ").append(ChatColor.WHITE).append(playerBans == null ? 0 : playerBans.size());
+								
+								// TODO: Add a hover and clickable that results in a search for all players in same city.
+								if (proxy != null) {
+									TextComponent proxyBase = new TextComponent("\n   " + proxy.toString());
+										proxyBase.setColor(net.md_5.bungee.api.ChatColor.WHITE);
+										proxyBase.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View other players in same city").create()));
+										proxyBase.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown PLAYER country \"" + proxy.getCountry() + "\" region \"" + proxy.getRegion() + "\" city \"" + proxy.getCity() + "\""));
+									ipBase.addExtra(proxyBase);
+								}
+								//if (proxy != null) sb.append("\n   ").append(proxy.toString());
+								
+								if (sender instanceof Player) {
+									((Player) sender).spigot().sendMessage(ipBase);
+								} else {
+									sender.sendMessage(ipBase.toLegacyText());
+								}
+								//sender.sendMessage(sb.toString());
 							}
 						} else {
 							sender.sendMessage(ChatColor.RED + "No IPs found contained by " + ChatColor.WHITE + ipcheck.toString() + "/" + CIDR);
@@ -251,6 +311,12 @@ public class LoveTapCommand  implements CommandExecutor {
 				sb.append(ChatColor.WHITE + player.getName() + " [" + player.getUUID() + "]");
 				
 				sender.sendMessage(sb.toString());
+				if (latestProxy != null && sender instanceof Player) {
+					TextComponent proxyBase = new TextComponent("\n   View other players in same city");
+						proxyBase.setColor(net.md_5.bungee.api.ChatColor.GOLD);
+						proxyBase.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown PLAYER country \"" + latestProxy.getCountry() + "\" region \"" + latestProxy.getRegion() + "\" city \"" + latestProxy.getCity() + "\""));
+					((Player) sender).spigot().sendMessage(proxyBase);
+				}
 				
 				return true;
 			} else {
