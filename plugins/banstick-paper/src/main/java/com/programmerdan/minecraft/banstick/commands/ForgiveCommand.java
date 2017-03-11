@@ -7,6 +7,8 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.BanList;
+import org.bukkit.BanList.Type;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -27,6 +29,7 @@ public class ForgiveCommand implements CommandExecutor {
 
 	public static String name = "forgive";
 	
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		if (arguments.length < 1) return false;
@@ -70,6 +73,13 @@ public class ForgiveCommand implements CommandExecutor {
 			
 			sender.sendMessage(ChatColor.GREEN + "Forgave " + banLifted + " active bans");
 			
+			try {
+				Bukkit.unbanIP(toForgive);
+				BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on IP");
+			} catch (Exception e) {
+				BanStick.getPlugin().debug("Failed to forgive any underlying bukkit ban on IP");
+			}
+			
 			return true;
 		} catch (IPAddressStringException e) {
 			// Not an IP address!
@@ -107,6 +117,20 @@ public class ForgiveCommand implements CommandExecutor {
 					} else {
 						sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is not banned.");
 					}
+					
+					try {
+						Player underlyingUnban = Bukkit.getPlayer(playerId);
+						if (underlyingUnban.isBanned()) {
+							underlyingUnban.setBanned(false);
+							BanList legacyBans = Bukkit.getBanList(Type.NAME);
+							legacyBans.pardon(playerId.toString());
+							legacyBans.pardon(player.getName());
+						}
+						BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
+					} catch (Exception q) {
+						BanStick.getPlugin().debug("Failed to forgive any underlying bukkit ban on uuid / player name");
+					}
+
 					return true;
 				} else {
 					boolean match = false;
@@ -117,6 +141,19 @@ public class ForgiveCommand implements CommandExecutor {
 								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is unbanned.");
 							} else {
 								sender.sendMessage(ChatColor.GREEN + "Player " + player.getName() + " is not banned.");
+							}
+
+							try {
+								Player underlyingUnban = Bukkit.getPlayer(playerId);
+								if (underlyingUnban.isBanned()) {
+									underlyingUnban.setBanned(false);
+									BanList legacyBans = Bukkit.getBanList(Type.NAME);
+									legacyBans.pardon(playerId.toString());
+									legacyBans.pardon(player.getName());
+								}
+								BanStick.getPlugin().debug("Also forgave any underlying bukkit ban on uuid / player name");
+							} catch (Exception q) {
+								BanStick.getPlugin().debug("Failed to forgive any underlying bukkit ban on uuid / player name");
 							}
 							match = true;
 						}

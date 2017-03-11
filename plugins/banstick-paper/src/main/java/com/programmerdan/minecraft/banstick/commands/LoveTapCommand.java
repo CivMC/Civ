@@ -118,7 +118,9 @@ public class LoveTapCommand  implements CommandExecutor {
 									playerBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent playerStr = new TextComponent(Integer.toString(players == null ? 0 : players.size()));
 									playerStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
+									if (players.size() > 0) {
+										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
+									}
 								playerBase.addExtra(playerStr);
 								ipBase.addExtra(playerBase);
 								//sb.append(ChatColor.AQUA).append(" Players: ").append(ChatColor.WHITE).append(players == null ? 0 : players.size());
@@ -127,7 +129,9 @@ public class LoveTapCommand  implements CommandExecutor {
 									pBanBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent pBanStr = new TextComponent(Integer.toString(playerBans == null ? 0 : playerBans.size()));
 									pBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
+									if (playerBans.size() > 0) {
+										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
+									}
 								pBanBase.addExtra(pBanStr);
 								ipBase.addExtra(pBanBase);
 								//sb.append(ChatColor.AQUA).append(" PlayerBans: ").append(ChatColor.WHITE).append(playerBans == null ? 0 : playerBans.size());
