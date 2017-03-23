@@ -29,6 +29,10 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean witherSpawning;
 	private boolean enderChestPlacement;
 
+	private boolean weepingAngel;
+	private int weepingAngelEnv;
+	private int weepingAngelPlayer;
+
 	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -46,6 +50,17 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 		this.enderChestPlacement = config.getBoolean("enderChestPlacement", false);
 		if (!this.enderChestPlacement) plugin().log("Placeing EnderChests is disabled");
+
+		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
+		if(this.weepingAngel)
+		{
+			this.weepingAngelEnv = config.getInt("weepingAngel.enviorment", 1);
+			this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
+
+			plugin().log("Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");
+		}
+
+
 		/* Add additional feature config grabs here. */
 	}
 
@@ -70,5 +85,21 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	{
 		return this.enderChestPlacement;
 	}
+
+	public boolean isWeepingAngel()
+	{
+		return this.weepingAngel;
+	}
+
+	public int getWeepingAngelEnv()
+	{
+		return this.weepingAngelEnv;
+	}
+
+	public int getWeepingAngelPlayer()
+	{
+		return this.weepingAngelPlayer;
+	}
+
 }
 

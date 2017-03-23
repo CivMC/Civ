@@ -1,16 +1,21 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.List;
 
+import org.apache.commons.lang.time.DateUtils;
+import org.bukkit.BanList;
+import org.bukkit.Bukkit;
 import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
+import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.Material;
 
@@ -25,9 +30,9 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 
 /**
- * This is a grab-bag class to hold any _features_ related configurations that impact the 
+ * This is a grab-bag class to hold any _features_ related configurations that impact the
  * game, server-wide. Mostly focused on turning things on or off.
- * 
+ *
  * It's part of a series of focused hacks.
  *
  * {@link GameFixes} is focused on things that are broken or don't work, and attempts to fix them.
@@ -117,7 +122,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public static GameFeaturesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new GameFeaturesConfig(plugin, config);
 	}
-	
+
 	/* From here on, the actual meat of the hack. Above is basically boilerplate for micro-plugins.*/
 
 	/**
@@ -134,7 +139,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				event.setExpToDrop(0);
 			}
 		} catch (Exception e) {
-			plugin().log(Level.WARNING, "Failed to stop potato XP", e);	
+			plugin().log(Level.WARNING, "Failed to stop potato XP", e);
 		}
 	}
 
@@ -177,6 +182,71 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				event.setCancelled(true);
 			}
 		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void weepingAngelListener(PlayerDeathEvent event)
+	{
+		if(!config.isWeepingAngel())
+		{
+			return;
+		}
+
+		if(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
+		{
+			EntityDamageByEntityEvent evt = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause());
+			LivingEntity killer = null;
+
+			if (evt.getDamager() instanceof LivingEntity)
+			{
+				killer = (LivingEntity) evt.getDamager();
+			}
+			else if (evt.getDamager() instanceof Projectile)
+			{
+				Projectile projectile = (Projectile) evt.getDamager();
+
+				if (projectile.getShooter() instanceof LivingEntity)
+				{
+					killer = (LivingEntity) projectile.getShooter();
+				}
+			}
+
+			if (killer != null)
+			{
+				if (killer instanceof Player)
+				{
+					banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelPlayer());
+				}
+				else
+				{
+					banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelEnv());
+				}
+			}
+		}
+		else
+		{
+			banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelEnv());
+		}
+	}
+
+	private void banPlayer(Player p, int minutes)
+	{
+		if(!config.isWeepingAngel())
+		{
+			return;
+		}
+
+		Date exp = DateUtils.addMinutes(new Date(), minutes);
+		Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(p.getName(), "You've been banned for " + minutes +
+				" minutes due to your death.", exp, "weepingAngel");
+
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), new Runnable()
+		{
+			public void run()
+			{
+				p.kickPlayer("You've been banned for " + minutes + " minutes due to your death.");
+			}
+		}, 2L);
 	}
 
 }

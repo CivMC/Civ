@@ -24,6 +24,10 @@ hacks:
     enderChestPlacement: false
     elytra: off
     chorus_fruit: off
+    weepingAngel:
+      enabled: false
+      enviorment: 1
+      playerKill: 5
   GameFixes:
     enabled: true
     blockElytraBreakBug: true
