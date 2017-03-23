@@ -112,6 +112,13 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				genStatus.append("disabled\n");
 			}
 
+			genStatus.append(" WeepAngel is ");
+			if(config.isWeepingAngel()){
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
 			// more?
 		} else {
 			genStatus.append("inactive");

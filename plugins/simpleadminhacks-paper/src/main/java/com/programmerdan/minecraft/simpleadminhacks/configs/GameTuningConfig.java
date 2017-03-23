@@ -35,6 +35,8 @@ public class GameTuningConfig extends SimpleHackConfig {
 	private boolean oneToOneNether;
 	private boolean returnNetherPortal;
 
+	private boolean chestedMinecartInventory;
+
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -52,6 +54,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		this.returnNetherPortal = config.getBoolean("returnNetherPortal", true);
 		if (!returnNetherPortal) plugin().log("Return Nether Portals disabled.");
+
+		this.chestedMinecartInventory = config.getBoolean("chestedMinecartInventory", false);
+		if (!chestedMinecartInventory) plugin().log("Chested Minecart Inventories are disabled.");
 
 		/* Add additional tuning config grabs here. */
 	}
@@ -189,5 +194,13 @@ public class GameTuningConfig extends SimpleHackConfig {
 	public boolean isReturnNetherPortal()
 	{
 		return returnNetherPortal;
+	}
+
+	/**
+	 * @return If return 
+	 */
+	public boolean isChestedMinecartInventory()
+	{
+		return chestedMinecartInventory;
 	}
 }
