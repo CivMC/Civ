@@ -754,22 +754,6 @@ factories:
     recipes:
     - Placeholder
     - Accident Repair
-  Potion_Factory:
-    type: FCCUPGRADE
-    name: Potion Factory
-    citadelBreakReduction: 1.0
-    recipes:
-    - Brew Strength II Extra Ext
-    - Brew Speed II Extra Ext
-    - Brew Regen Extra Ext
-    - Accident Repair
-  Lottery_Factory:
-    type: FCCUPGRADE
-    name: Lottery Factory
-    citadelBreakReduction: 1.0
-    recipes:
-    - Placeholder
-    - Accident Repair
   Conversion_Factory:
     type: FCCUPGRADE
     name: Conversion Factory
@@ -7674,18 +7658,6 @@ recipes:
         lore:
         - Pasture T3
     factory: Vault Factory 29
-  Upgrade to Lottery Factory:
-    name: Upgrade to Lottery Factory
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Lottery Factory
   Upgrade to Conversion Factory:
     name: Upgrade to Conversion Factory
     production_time: 10s
