@@ -7,9 +7,9 @@ import java.util.concurrent.Future;
 
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.Npc;
+import net.minelink.ctplus.event.CombatLogEvent;
 import net.minelink.ctplus.event.NpcDespawnEvent;
 import net.minelink.ctplus.event.NpcDespawnReason;
-import net.minelink.ctplus.event.CombatLogEvent;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -20,6 +20,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public final class NpcListener implements Listener {
 
@@ -165,7 +167,7 @@ public final class NpcListener implements Listener {
         player.setMaximumAir(npcPlayer.getMaximumAir());
         player.setRemainingAir(npcPlayer.getRemainingAir());
         player.setHealthScale(npcPlayer.getHealthScale());
-        player.setMaxHealth(npcPlayer.getMaxHealth());
+        player.setMaxHealth(getRealMaxHealth(npcPlayer));
         player.setHealth(npcPlayer.getHealth());
         player.setTotalExperience(npcPlayer.getTotalExperience());
         player.setFoodLevel(npcPlayer.getFoodLevel());
@@ -177,4 +179,21 @@ public final class NpcListener implements Listener {
         player.addPotionEffects(npcPlayer.getActivePotionEffects());
     }
 
+    /*
+     * This is to prevent players with the health boost potion effect getting increased max-health.
+     * Player.getMaxHealth() returns the player's health including temporary boosts from potions.
+     * If we apply this to the new player with Player.setMaxHealth(), the previously temporary boost becomes permanent.
+     * Players can abuse this glitch repeatedly to get infinite amounts of max-health.
+     * To fix this, we simply remove any health boosts granted by potions.
+     */
+    @SuppressWarnings("deprecation")
+    private static double getRealMaxHealth(Player npcPlayer) {
+        double health = npcPlayer.getMaxHealth();
+        for (PotionEffect p : npcPlayer.getActivePotionEffects()) {
+            if (p.getType().equals(PotionEffectType.HEALTH_BOOST)) {
+                health -= (p.getAmplifier() + 1) * 4;
+            }
+        }
+        return health;
+    }
 }
