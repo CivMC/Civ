@@ -81,22 +81,28 @@ public class BlockListener implements Listener {
 	public void comparatorPlaceCheck(BlockPlaceEvent event)
 	{
 		//We only care if they are placing a comparator
-		if(event.getBlockPlaced().getType() == Material.REDSTONE_COMPARATOR_OFF)
-		{
-			Comparator comparator = (Comparator)event.getBlockPlaced().getState().getData();
-			Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
-			//We only care if the comparator is going placed against something with an inventory
-			if(block.getState() instanceof InventoryHolder)
-			{
-				Reinforcement rein = rm.getReinforcement(block);
-				if (rein != null && rein instanceof PlayerReinforcement)
-				{
-					PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
-					if (!playerReinforcement.isInsecure()) //Only let them place against /ctinsecure
-						event.setCancelled(true);
+		if(event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) return;
+	
+		Comparator comparator = (Comparator)event.getBlockPlaced().getState().getData();
+		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
+		//We only care if the comparator is going placed against something with an inventory
+		if(block.getState() instanceof InventoryHolder) {
+			Reinforcement rein = rm.getReinforcement(block);
+			if (rein != null && rein instanceof PlayerReinforcement) {
+				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
+				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
+					Player player = event.getPlayer();
+					if (player != null) {
+						if (playerReinforcement.canAccessChests(player)) { 
+							return; // We also allow players to place against chests they can access
+						}
+						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+					}
+					event.setCancelled(true);
 				}
 			}
 		}
+		
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
