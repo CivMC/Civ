@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.8.01</version>
+	<version>3.8.02</version>
 	<name>Citadel</name>
 	<url>https://github.com/Civcraft/Citadel</url>
 
@@ -57,8 +57,8 @@
         </dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.bettershards</groupId>
-			<artifactId>BetterShards</artifactId>
-			<version>1.4</version>
+			<artifactId>BetterShardsBukkit</artifactId>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
