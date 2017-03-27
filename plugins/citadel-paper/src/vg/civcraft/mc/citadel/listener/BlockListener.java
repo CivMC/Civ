@@ -87,7 +87,7 @@ public class BlockListener implements Listener {
 		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
 		//We only care if the comparator is going placed against something with an inventory
 		if(block.getState() instanceof InventoryHolder) {
-			Reinforcement rein = rm.getReinforcement(block);
+			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
 			if (rein != null && rein instanceof PlayerReinforcement) {
 				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
 				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
