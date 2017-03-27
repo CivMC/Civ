@@ -114,6 +114,11 @@
           <artifactId>namelayer-nms-v1_9_R2</artifactId>
           <version>1.0.0</version>
         </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_10_R1</artifactId>
+          <version>1.0.0</version>
+        </dependency>
       </dependencies>
     </profile>
   </profiles>

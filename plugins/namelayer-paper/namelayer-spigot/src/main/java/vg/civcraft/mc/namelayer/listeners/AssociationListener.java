@@ -13,6 +13,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.AssociationList;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
+import vg.civcraft.mc.namelayer.misc.NameCleanser;
 import vg.civcraft.mc.namelayer.misc.ProfileInterface;
 
 public class AssociationListener implements Listener {
@@ -41,6 +42,18 @@ public class AssociationListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void OnPlayerJoin(PlayerJoinEvent event) {
 		String playername = event.getPlayer().getName();
+		if(NameCleanser.isDirty(playername)) {
+			if(NameCleanser.isAlertOps()) {
+				String msg = playername + " has a dirty name";
+				if(NameCleanser.isCleanNames()) {
+					msg += ", this will be fixed";
+				}
+				Bukkit.broadcast(msg, NameCleanser.getAlertPerm());
+			}
+			if(NameCleanser.isCleanNames()) {
+				playername = NameCleanser.cleanName(playername);
+			}
+		}
 		UUID uuid = event.getPlayer().getUniqueId();
 		associations.addPlayer(playername, uuid);
 		event.setJoinMessage(ChatColor.YELLOW + NameAPI.getCurrentName(uuid) + " joined the game");

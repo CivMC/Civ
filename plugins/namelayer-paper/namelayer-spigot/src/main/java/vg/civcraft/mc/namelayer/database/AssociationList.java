@@ -19,7 +19,7 @@ public class AssociationList {
 	private static final String addPlayer = "call addplayertotable(?, ?)"; // order player name, uuid
 	private static final String getUUIDfromPlayer = "select uuid from Name_player where player=?"; 
 	private static final String getPlayerfromUUID = "select player from Name_player where uuid=?";
-	private static final String changePlayerName = "delete from Name_player where uuid=?";
+	private static final String changePlayerName = "update Name_player set player=? where uuid=?";
 	private static final String getAllPlayerInfo = "select * from Name_player";
 	
 	public AssociationList(Logger logger, ManagedDatasource db){
@@ -147,7 +147,8 @@ public class AssociationList {
 	public void changePlayer(String newName, UUID uuid) {
 		try (Connection connection = db.getConnection();
 				PreparedStatement changePlayerName = connection.prepareStatement(AssociationList.changePlayerName);) {
-			changePlayerName.setString(1, uuid.toString());
+			changePlayerName.setString(1, newName);
+			changePlayerName.setString(2, uuid.toString());
 			changePlayerName.execute();
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Failed to change player name mapping {0} <==> {1}, due to {2}", 
@@ -155,8 +156,6 @@ public class AssociationList {
 			logger.log(Level.WARNING, "Change player failure: ", e);
 			return; // don't add on failure
 		}
-		// wait to close prior connection and such before add player with new name.
-		addPlayer(newName, uuid);
 	}
 	
 	/**

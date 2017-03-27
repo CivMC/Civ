@@ -1,5 +1,9 @@
 package vg.civcraft.mc.namelayer;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -20,12 +24,8 @@ import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
+import vg.civcraft.mc.namelayer.misc.NameCleanser;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 
 public class NameLayerPlugin extends ACivMod{
@@ -57,6 +57,7 @@ public class NameLayerPlugin extends ACivMod{
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
+		NameCleanser.load(config.getConfigurationSection("name_cleanser"));
 		registerListeners();
 		if (loadGroups){
 			PermissionType.initialize();
