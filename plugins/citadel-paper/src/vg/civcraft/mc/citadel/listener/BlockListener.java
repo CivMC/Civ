@@ -101,6 +101,26 @@ public class BlockListener implements Listener {
 					event.setCancelled(true);
 				}
 			}
+			return;
+		}
+
+		// So apparently read-through state can pass through an intermediary block, so lets check that too.
+		block = block.getRelative(comparator.getFacing().getOppositeFace());
+		if(block.getState() instanceof InventoryHolder) {
+			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+			if (rein != null && rein instanceof PlayerReinforcement) {
+				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
+				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
+					Player player = event.getPlayer();
+					if (player != null) {
+						if (playerReinforcement.canAccessChests(player)) { 
+							return; // We also allow players to place against chests they can access
+						}
+						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+					}
+					event.setCancelled(true);
+				}
+			}
 		}
 		
 	}
