@@ -127,7 +127,29 @@ public class BSShare {
 		return null;
 	}
 
-
+	public static List<BSShare> byPlayer(BSPlayer player) {
+		List<BSShare> shares = new ArrayList<BSShare>();
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
+			getId.setLong(1, player.getId());
+			getId.setLong(2, player.getId());
+			try (ResultSet rs = getId.executeQuery();) {
+				while(rs.next()) {
+					if (allShareID.containsKey(rs.getLong(1))) {
+						shares.add(allShareID.get(rs.getLong(1)));
+						continue;
+					}
+					BSShare nS = internalGetShare(rs);
+					allShareID.put(rs.getLong(1), nS);
+					shares.add(nS);
+				}
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Retrieval of Shares by Player failed: " + player.toString(), se);
+		}
+		return shares;
+	}
+	
 	public static List<BSShare> bySession(BSSession session) {
 		List<BSShare> shares = new ArrayList<BSShare>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();

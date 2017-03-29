@@ -18,6 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent.Result;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -263,25 +264,7 @@ public class BanStickEventHandler implements Listener {
 								banPlayer.setBan(doTheBan);
 								bansIssued++;
 
-								// now schedule a task to kick out the trash.
-								final BSBan picked = doTheBan;
-								final UUID puuid = banPlayer.getUUID();
-								Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
-
-									@Override
-									public void run() {
-										Player player = Bukkit.getPlayer(puuid);
-										if (player != null) {
-											player.kickPlayer(picked.getMessage());
-											BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
-											Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
-										} else {
-											BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
-											Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
-										}
-									}
-									
-								}, 5L);
+								doKickWithCheckup(banPlayer.getUUID(), doTheBan);
 							}
 							BanStick.getPlugin().info("Player {0} exceeding the shared account threshold resulted in {1} bans.", bsPlayer.getName(), bansIssued);
 						}
@@ -321,24 +304,7 @@ public class BanStickEventHandler implements Listener {
 										
 										bsPlayer.setBan(pickOne); // get most recent matching proxy ban and use it.
 										
-										final BSBan picked = pickOne;
-										final UUID puuid = player.getUniqueId();										
-										Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
-
-											@Override
-											public void run() {
-												Player player = Bukkit.getPlayer(puuid);
-												if (player != null) {
-													player.kickPlayer(picked.getMessage());
-													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
-													Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
-												} else {
-													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
-													Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
-												}
-											}
-											
-										}, 5l);
+										doKickWithCheckup(player.getUniqueId(), pickOne);
 																		
 										return;
 									}
@@ -348,24 +314,7 @@ public class BanStickEventHandler implements Listener {
 										
 										bsPlayer.setBan(newBan);
 										
-										final BSBan picked = newBan;
-										final UUID puuid = player.getUniqueId();
-										Bukkit.getScheduler().runTaskLater(BanStick.getPlugin(), new Runnable() {
-
-											@Override
-											public void run() {
-												Player player = Bukkit.getPlayer(puuid);
-												if (player != null) {
-													player.kickPlayer(picked.getMessage());
-													BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
-													Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
-												} else {
-													BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
-													Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
-												}
-											}
-											
-										}, 5L);
+										doKickWithCheckup(player.getUniqueId(), newBan);
 									
 										return;
 									}
@@ -381,7 +330,44 @@ public class BanStickEventHandler implements Listener {
 			
 		}); 
 	}
-	
+
+	private void doKickWithCheckup(final UUID puuid, final BSBan picked) {
+		// now schedule a task to kick out the trash.
+		Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
+
+			@Override
+			public void run() {
+				Player player = Bukkit.getPlayer(puuid);
+				if (player != null) {
+					player.kickPlayer(picked.getMessage());
+					BanStick.getPlugin().info("Removing " + player.getDisplayName() + " due to " + picked.toString());
+					Bukkit.broadcast("Removing " + player.getDisplayName() + " due to " + picked.toString(), "banstick.ips");
+					
+					new BukkitRunnable() {
+						private int recheck = 0;
+						@Override
+						public void run() {
+							// let's keep checking to make sure they are gone
+							recheck ++;
+							if (recheck % 10 == 9) {
+								BanStick.getPlugin().warning("Trying to kick {0} due to {1}, on {2}th retry.", puuid, picked, recheck);
+							}
+							Player player = Bukkit.getPlayer(puuid);
+							if (player != null) {
+								player.kickPlayer(picked.getMessage());
+							} else {
+								this.cancel();
+							}
+						}
+					}.runTaskTimer(BanStick.getPlugin(), 10l, 10l);
+				} else {
+					BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
+					Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");
+				}
+			}
+			
+		});
+	}
 	/**
 	 * Calls {@link #disconnectEvent(Player)}
 	 * @param quitEvent

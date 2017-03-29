@@ -4,7 +4,7 @@
 
 	<groupId>com.programmerdan.minecraft</groupId>
 	<artifactId>banstick</artifactId>
-	<version>0.3.3</version>
+	<version>0.3.4</version>
 	<packaging>jar</packaging>
 	<name>BanStick</name>
 	<url>https://github.com/DevotedMC/BanStick</url>
