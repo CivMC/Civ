@@ -208,7 +208,7 @@ public final class BastionDamageListener implements Listener {
 		}
 	}
 	
-	private Set<BastionBlock> clearNonBlocking(Set<BastionBlock> preblocking) {
+	public static Set<BastionBlock> clearNonBlocking(Set<BastionBlock> preblocking) {
 		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
 		for (BastionBlock bastion : preblocking) {
 			if (!bastion.getType().isOnlyDirectDestruction()) {
