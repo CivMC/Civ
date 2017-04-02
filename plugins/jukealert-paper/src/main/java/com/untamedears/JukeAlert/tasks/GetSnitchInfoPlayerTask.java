@@ -30,6 +30,8 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
 	private String snitchName;
 
+	private boolean isJukebox;
+
 	private String group;
 
 	private LoggedAction filterAction;
@@ -40,11 +42,12 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
 	private final JukeAlert plugin;
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, int offset, Player player,
-			boolean shouldCensor) {
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, boolean isJukebox, int offset,
+			Player player, boolean shouldCensor) {
 
 		this.snitchId = snitchId;
 		this.snitchName = snitchName;
+		this.isJukebox = isJukebox;
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
@@ -54,11 +57,12 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 		this.filterPlayer = "";
 	}
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, int offset, Player player,
-			boolean shouldCensor, LoggedAction filterAction, String filterPlayer) {
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, boolean isJukebox, int offset,
+			Player player, boolean shouldCensor, LoggedAction filterAction, String filterPlayer) {
 
 		this.snitchId = snitchId;
 		this.snitchName = snitchName;
+		this.isJukebox = isJukebox;
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
@@ -76,6 +80,7 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 		this.plugin = plugin;
 		this.snitchId = -1;
 		this.snitchName = null;
+		this.isJukebox = true;
 		this.shouldCensor = false;
 		this.filterAction = null;
 		this.filterPlayer = "";
@@ -87,10 +92,11 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 		SendSnitchInfo sendSnitchInfo;
 		if (group == null) {
 			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset - 1) * 10,
-				this.filterAction, this.filterPlayer), this.player, offset, this.snitchName, shouldCensor, false);
+				this.filterAction, this.filterPlayer), this.player, offset, this.snitchName, this.isJukebox,
+				shouldCensor, false);
 		} else {
 			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset - 1) * 10),
-				this.player, offset, null, false, true);
+				this.player, offset, null, this.isJukebox, false, true);
 		}
 		sendSnitchInfo.run();
 	}

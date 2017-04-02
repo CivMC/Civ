@@ -171,7 +171,7 @@ public class InfoCommand extends PlayerCommand {
 
 		Player player = (Player) sender;
 		GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), snitch.getId(),
-			snitch.getName(), offset, player, shouldCensor, filterAction, filterPlayer);
+			snitch.getName(), snitch.shouldLog(), offset, player, shouldCensor, filterAction, filterPlayer);
 		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
 	}
 
