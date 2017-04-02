@@ -1,30 +1,17 @@
-JukeAlert
-=========
+# JukeAlert
 
-Additional updates requested for Devoted:
+A plugin for Minecraft 1.10 that turns Noteblocks and Jukeboxes into snitches that record player entries and actions.
 
-Snitch network command and control block. Essentially a change to jukealert requiring a stationary block that will relay snitch entries. Until that is set up on the snitch group jukeboxes will only record actions by /jainfo, breaking snitches will reveal parts of the 'relay's' location, allowing you to find an enemy's relay (and destroy it) after breaking a couple snitches.
+## Usage
 
-Breaking that down:
+- Reinforce a **Noteblock** with a [Citadel](https://github.com/DevotedMC/Citadel) reinforcement to create an entry snitch. The snitch will send a notification to everyone on the Citadel group its reinforced to when other players enter its field - an 11 block cube centered on the snitch.
 
-1: New block (let's use a Sea Lantern for development) that is required to be on a group with a snitch before sending snitch 'entry' alerts:
+- Reinforce a **Jukebox** with a [Citadel](https://github.com/DevotedMC/Citadel) reinforcement to create a snitch. The snitch will send a notification to everyone on the Citadel group its reinforced to when other players enter its field - an 11 block cube centered on the snitch. It will also record player actions that occur within the field, e.g. block placement and destruction. Type `/jainfo` to check what players did in the snitched area while you were gone.
 
-   public void playerJoinEvent(PlayerJoinEvent event)
-   
-   public void handlePlayerExit(PlayerEvent event)
-   
-   private void handleSnitchEntry(Player player)
+Wiki: https://github.com/Civcraft/JukeAlert/wiki
 
-2: If a snitch is broken and a relay is reinforced on that group, it will display the following in the player who broke the snitch's chat:
+Getting started with Devoted: https://www.reddit.com/r/Devoted/wiki/help
 
-"Relayed snitch broken. Relay located at [world XXX XXX XXX]"
-
-With 5 of the X's randomly revealed. So for instance:
-
-"Relayed snitch broken. Relay located at [world X3X 21 1X2]"
-
-This allows players to track down Relays, if they break enough snitches.
-
----
-
-Additionally, a change to allow players with invisibility potions to not trip entry alerts. /jainfo alerts are fine, but no chat alerts.
+## Contributing
+- Style guide: https://github.com/DevotedMC/style-guide
+- Build server: https://build.civcraft.co/job/JukeAlert-master/
