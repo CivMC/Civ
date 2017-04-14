@@ -2,4 +2,5 @@ name: ${project.name}
 main: com.untamedears.realisticbiomes.RealisticBiomes
 load: STARTUP
 version: ${project.version}
+authors: [mgrandi, gispy-king, jacobcole2000, WildWeazel, ProgrammerDan, Numrufus, Erocs, danquist, pruby, Maxopoly, BlackXnt]
 description: RealisticBiomes makes farming harder by limiting growth rates of crops and making them only grow well in certain biomes.
