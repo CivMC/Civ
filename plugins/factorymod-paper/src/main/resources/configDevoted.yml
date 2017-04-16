@@ -3472,54 +3472,6 @@ recipes:
         amount: 80
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -3618,54 +3570,6 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -3764,54 +3668,6 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -3910,54 +3766,6 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4056,54 +3864,6 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4202,54 +3962,6 @@ recipes:
         amount: 8
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 4
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 4
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 4
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 4
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 4
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 4
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 4
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4348,54 +4060,6 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 8
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 8
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 8
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 8
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 8
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 8
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 8
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4494,54 +4158,6 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 8
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 8
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 8
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 8
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 8
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 8
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 8
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4640,54 +4256,6 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 8
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 8
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 8
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 8
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 8
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 8
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 8
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4786,54 +4354,6 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 8
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 8
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 8
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 8
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 8
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 8
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 8
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -4932,54 +4452,6 @@ recipes:
         amount: 16
         lore:
         - Mercury T1
-      oaktwig:
-        material: LOG
-        durability: 0
-        name: Oak Twig
-        amount: 8
-        lore:
-        - Oak Twig T1
-      sprucetwig:
-        material: LOG
-        durability: 1
-        name: Spruce Twig
-        amount: 8
-        lore:
-        - Spruce Twig T1
-      birchtwig:
-        material: LOG
-        durability: 2
-        name: Birch Twig
-        amount: 8
-        lore:
-        - Birch Twig T1
-      jungletwig:
-        material: LOG
-        durability: 3
-        name: Jungle Twig
-        amount: 8
-        lore:
-        - Jungle Twig T1
-      acaciatwig:
-        material: LOG_2
-        durability: 0
-        name: Acacia Twig
-        amount: 8
-        lore:
-        - Acacia Twig T1
-      darkoaktwig:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Twig
-        amount: 8
-        lore:
-        - Dark Oak Twig T1
-      mixedtwig:
-        material: DEAD_BUSH
-        name: Mixed Twig
-        amount: 8
-        lore:
-        - Mixed Twig T1
       snowflake:
         material: STAINED_CLAY
         durability: 0
@@ -5078,54 +4550,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5224,54 +4648,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5370,54 +4746,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5516,54 +4844,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5662,54 +4942,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5808,54 +5040,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -5954,54 +5138,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -6100,54 +5236,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -6246,54 +5334,6 @@ recipes:
         amount: 72
         lore:
         - Enderite T2
-      oakbark:
-        material: LOG
-        durability: 0
-        name: Oak Bark
-        amount: 48
-        lore:
-        - Oak Bark T2
-      sprucebark:
-        material: LOG
-        durability: 1
-        name: Spruce Bark
-        amount: 48
-        lore:
-        - Spruce Bark T2
-      birchbark:
-        material: LOG
-        durability: 2
-        name: Birch Bark
-        amount: 48
-        lore:
-        - Birch Bark T2
-      junglebark:
-        material: LOG
-        durability: 3
-        name: Jungle Bark
-        amount: 48
-        lore:
-        - Jungle Bark T2
-      acaciabark:
-        material: LOG_2
-        durability: 0
-        name: Acacia Bark
-        amount: 48
-        lore:
-        - Acacia Bark T2
-      darkoakbark:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Bark
-        amount: 48
-        lore:
-        - Dark Oak Bark T2
-      uncommonbark:
-        material: DEAD_BUSH
-        name: Uncommon Bark
-        amount: 48
-        lore:
-        - Uncommon Bark T2
       snowball:
         material: STAINED_CLAY
         durability: 0
@@ -6392,54 +5432,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -6538,54 +5530,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -6684,54 +5628,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -6830,54 +5726,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -6976,54 +5824,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -7122,54 +5922,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -7268,54 +6020,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -7414,54 +6118,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
@@ -7560,54 +6216,6 @@ recipes:
         amount: 24
         lore:
         - Uranium T3
-      oaktrunk:
-        material: LOG
-        durability: 0
-        name: Oak Trunk
-        amount: 16
-        lore:
-        - Oak Trunk T3
-      sprucetrunk:
-        material: LOG
-        durability: 1
-        name: Spruce Trunk
-        amount: 16
-        lore:
-        - Spruce Trunk T3
-      birchtrunk:
-        material: LOG
-        durability: 2
-        name: Birch Trunk
-        amount: 16
-        lore:
-        - Birch Trunk T3
-      jungletrunk:
-        material: LOG
-        durability: 3
-        name: Jungle Trunk
-        amount: 16
-        lore:
-        - Jungle Trunk T3
-      acaciatrunk:
-        material: LOG_2
-        durability: 0
-        name: Acacia Trunk
-        amount: 16
-        lore:
-        - Acacia Trunk T3
-      darkoaktrunk:
-        material: LOG_2
-        durability: 1
-        name: Dark Oak Trunk
-        amount: 16
-        lore:
-        - Dark Oak Trunk T3
-      raretrunk:
-        material: DEAD_BUSH
-        name: Rare Trunk
-        amount: 16
-        lore:
-        - Rare Trunk T3
       icicle:
         material: STAINED_CLAY
         durability: 0
