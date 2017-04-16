@@ -32,7 +32,6 @@ factories:
     - Upgrade to Printing Press
     - Upgrade to Vault Factory 1
     - Upgrade to Pickaxe Factory 1
-    - Upgrade to Lottery Factory
     - Upgrade to Conversion Factory
     - Accident Repair
   Smelter:
@@ -752,7 +751,743 @@ factories:
     name: Pickaxe Factory 1
     citadelBreakReduction: 1.0
     recipes:
-    - Placeholder
+    - Lapis Pickaxe
+    - Upgrade to Pickaxe Factory 2
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_2:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 2
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Upgrade to Pickaxe Factory 3
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_3:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 3
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Upgrade to Pickaxe Factory 4
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_4:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 4
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Upgrade to Pickaxe Factory 5
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_5:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 5
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Upgrade to Pickaxe Factory 6
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_6:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 6
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Upgrade to Pickaxe Factory 7
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_7:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 7
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Upgrade to Pickaxe Factory 8
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_8:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 8
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Upgrade to Pickaxe Factory 9
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_9:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 9
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Upgrade to Pickaxe Factory 10
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_10:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 10
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Upgrade to Pickaxe Factory 11
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_11:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 11
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Upgrade to Pickaxe Factory 12
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_12:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 12
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Upgrade to Pickaxe Factory 13
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_13:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 13
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Upgrade to Pickaxe Factory 14
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_14:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 14
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Upgrade to Pickaxe Factory 15
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_15:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 15
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Upgrade to Pickaxe Factory 16
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_16:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 16
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Upgrade to Pickaxe Factory 17
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_17:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 17
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Upgrade to Pickaxe Factory 18
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_18:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 18
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Upgrade to Pickaxe Factory 19
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_19:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 19
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Upgrade to Pickaxe Factory 20
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_20:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 20
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Upgrade to Pickaxe Factory 21
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_21:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 21
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Upgrade to Pickaxe Factory 22
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_22:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 22
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Upgrade to Pickaxe Factory 23
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_23:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 23
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Upgrade to Pickaxe Factory 24
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_24:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 24
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Upgrade to Pickaxe Factory 25
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_25:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 25
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Upgrade to Pickaxe Factory 26
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_26:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 26
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Upgrade to Pickaxe Factory 27
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_27:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 27
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Upgrade to Pickaxe Factory 28
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_28:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 28
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Upgrade to Pickaxe Factory 29
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_29:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 29
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Uranium Pickaxe
+    - Upgrade to Pickaxe Factory 30
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_30:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 30
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Uranium Pickaxe
+    - Efficiency VI Axe
+    - Upgrade to Pickaxe Factory 31
+    - Return Factory Materials
+    - Accident Repair
+  Pickaxe_Factory_31:
+    type: FCCUPGRADE
+    name: Pickaxe Factory 31
+    citadelBreakReduction: 1.0
+    recipes:
+    - Lapis Pickaxe
+    - Redstone Pickaxe
+    - Gold Pickaxe
+    - Iron Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Lead Pickaxe
+    - Steel Pickaxe
+    - Bronze Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Uranium Pickaxe
+    - Efficiency VI Axe
+    - Efficiency VIII Pickaxe
+    - Return Factory Materials
     - Accident Repair
   Conversion_Factory:
     type: FCCUPGRADE
@@ -3111,6 +3846,492 @@ recipes:
         amount: 8
         lore:
         - Emerald Vault Bastion
+  Lapis Pickaxe:
+    type: PRODUCTION
+    name: Lapis Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      lapispick:
+        material: DIAMOND_PICKAXE
+        name: Lapis Pickaxe
+        amount: 1
+        lore:
+        - Attracts Lapis
+  Redstone Pickaxe:
+    type: PRODUCTION
+    name: Redstone Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      redstonepick:
+        material: DIAMOND_PICKAXE
+        name: Redstone Pickaxe
+        amount: 1
+        lore:
+        - Attracts Redstone
+  Gold Pickaxe:
+    type: PRODUCTION
+    name: Gold Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      goldpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Gold Pickaxe
+        amount: 1
+        lore:
+        - Attracts Gold
+  Iron Pickaxe:
+    type: PRODUCTION
+    name: Iron Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      ironpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Iron Pickaxe
+        amount: 1
+        lore:
+        - Attracts Iron
+  Emerald Pickaxe:
+    type: PRODUCTION
+    name: Emerald Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      emeraldpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Emerald Pickaxe
+        amount: 1
+        lore:
+        - Attracts Emeralds
+  Diamond Pickaxe:
+    type: PRODUCTION
+    name: Diamond Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      diamondpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Diamond Pickaxe
+        amount: 1
+        lore:
+        - Attracts Diamonds
+  Lead Pickaxe:
+    type: PRODUCTION
+    name: Lead Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      leadpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Lead Pickaxe
+        amount: 1
+        lore:
+        - Attracts Lead
+  Steel Pickaxe:
+    type: PRODUCTION
+    name: Steel Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      steelpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Steel Pickaxe
+        amount: 1
+        lore:
+        - Attracts Steel
+  Bronze Pickaxe:
+    type: PRODUCTION
+    name: Bronze Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      bronzepickaxe:
+        material: DIAMOND_PICKAXE
+        name: Bronze Pickaxe
+        amount: 1
+        lore:
+        - Attracts Bronze
+  Silver Pickaxe:
+    type: PRODUCTION
+    name: Silver Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      silverpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Silver Pickaxe
+        amount: 1
+        lore:
+        - Attracts Silver
+  Copper Pickaxe:
+    type: PRODUCTION
+    name: Copper Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      copperpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Copper Pickaxe
+        amount: 1
+        lore:
+        - Attracts Copper
+  Titanium Pickaxe:
+    type: PRODUCTION
+    name: Titanium Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      titaniumpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Titanium Pickaxe
+        amount: 1
+        lore:
+        - Attracts Titanium
+  Mercury Pickaxe:
+    type: PRODUCTION
+    name: Mercury Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      mercurypickaxe:
+        material: DIAMOND_PICKAXE
+        name: Mercury Pickaxe
+        amount: 1
+        lore:
+        - Attracts Mercury
+  Nickel Pickaxe:
+    type: PRODUCTION
+    name: Nickel Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      nickelpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Nickel Pickaxe
+        amount: 1
+        lore:
+        - Attracts Nickel
+  Aluminum Pickaxe:
+    type: PRODUCTION
+    name: Aluminum Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      aluminumpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Aluminum Pickaxe
+        amount: 1
+        lore:
+        - Attracts Aluminum
+  Pewter Pickaxe:
+    type: PRODUCTION
+    name: Pewter Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      pewterpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Pewter Pickaxe
+        amount: 1
+        lore:
+        - Attracts Pewter
+  Pearl Pickaxe:
+    type: PRODUCTION
+    name: Pearl Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      pearlpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Pearl Pickaxe
+        amount: 1
+        lore:
+        - Attracts Pearl
+  Brass Pickaxe:
+    type: PRODUCTION
+    name: Brass Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      brasspickaxe:
+        material: DIAMOND_PICKAXE
+        name: Brass Pickaxe
+        amount: 1
+        lore:
+        - Attracts Brass
+  Platinum Pickaxe:
+    type: PRODUCTION
+    name: Platinum Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      platinumpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Platinum Pickaxe
+        amount: 1
+        lore:
+        - Attracts Platinum
+  Enderite Pickaxe:
+    type: PRODUCTION
+    name: Enderite Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      enderitepickaxe:
+        material: DIAMOND_PICKAXE
+        name: Enderite Pickaxe
+        amount: 1
+        lore:
+        - Attracts Enderite
+  Oil Pickaxe:
+    type: PRODUCTION
+    name: Oil Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      oilpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Oil Pickaxe
+        amount: 1
+        lore:
+        - Attracts Oil
+  Silicon Pickaxe:
+    type: PRODUCTION
+    name: Silicon Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      siliconpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Silicon Pickaxe
+        amount: 1
+        lore:
+        - Attracts Silicon
+  Fiberglass Pickaxe:
+    type: PRODUCTION
+    name: Fiberglass Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      fiberglasspickaxe:
+        material: DIAMOND_PICKAXE
+        name: Fiberglass Pickaxe
+        amount: 1
+        lore:
+        - Attracts Fiberglass
+  Artifact Pickaxe:
+    type: PRODUCTION
+    name: Artifact Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      artifactpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Artifact Pickaxe
+        amount: 1
+        lore:
+        - Attracts Artifact
+  Graphite Pickaxe:
+    type: PRODUCTION
+    name: Graphite Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      graphitepickaxe:
+        material: DIAMOND_PICKAXE
+        name: Graphite Pickaxe
+        amount: 1
+        lore:
+        - Attracts Graphite
+  Carbon Pickaxe:
+    type: PRODUCTION
+    name: Carbon Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      carbonpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Carbon Pickaxe
+        amount: 1
+        lore:
+        - Attracts Carbon
+  Uranium Pickaxe:
+    type: PRODUCTION
+    name: Uranium Pickaxe
+    production_time: 5s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      uraniumpickaxe:
+        material: DIAMOND_PICKAXE
+        name: Uranium Pickaxe
+        amount: 1
+        lore:
+        - Attracts Uranium
   Efficiency VI Pickaxe:
     type: PRODUCTION
     name: Efficiency VI Pickaxe
@@ -3198,72 +4419,6 @@ recipes:
             level: 6
         nbt:
           RepairCost: 5000
-  Brew Strength II Extra Ext:
-    type: PRODUCTION
-    name: Brew Strength II Extra Ext
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      effects:
-        material: POTION
-        type: STRENGTH
-        upgraded: true
-        extended: false
-        custom_effects:
-          strengthIIext:
-            type: STRENGTH
-            duration: 8m
-            amplifier: 2
-  Brew Speed II Extra Ext:
-    type: PRODUCTION
-    name: Brew Speed II Extra Ext
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      effects:
-        material: POTION
-        type: SPEED
-        upgraded: true
-        extended: false
-        custom_effects:
-          speedIIext:
-            type: SPEED
-            duration: 8m
-            amplifier: 2
-  Brew Regen Extra Ext:
-    type: PRODUCTION
-    name: Brew Regen Extra Ext
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      effects:
-        material: POTION
-        type: REGEN
-        upgraded: false
-        extended: true
-        custom_effects:
-          regenext:
-            type: REGEN
-            duration: 8m
-            amplifier: 1
   Tan Leather:
     type: PRODUCTION
     name: Tan Leather
@@ -3424,6 +4579,366 @@ recipes:
         lore:
         - Recipe coming soon!
     factory: Pickaxe Factory 1
+  Upgrade to Pickaxe Factory 2:
+    name: Upgrade to Pickaxe Factory 2
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 2
+  Upgrade to Pickaxe Factory 3:
+    name: Upgrade to Pickaxe Factory 3
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 3
+  Upgrade to Pickaxe Factory 4:
+    name: Upgrade to Pickaxe Factory 4
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 4
+  Upgrade to Pickaxe Factory 5:
+    name: Upgrade to Pickaxe Factory 5
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 5
+  Upgrade to Pickaxe Factory 6:
+    name: Upgrade to Pickaxe Factory 6
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 6
+  Upgrade to Pickaxe Factory 7:
+    name: Upgrade to Pickaxe Factory 7
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 7
+  Upgrade to Pickaxe Factory 8:
+    name: Upgrade to Pickaxe Factory 8
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 8
+  Upgrade to Pickaxe Factory 9:
+    name: Upgrade to Pickaxe Factory 9
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 9
+  Upgrade to Pickaxe Factory 10:
+    name: Upgrade to Pickaxe Factory 10
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 10
+  Upgrade to Pickaxe Factory 11:
+    name: Upgrade to Pickaxe Factory 11
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 11
+  Upgrade to Pickaxe Factory 12:
+    name: Upgrade to Pickaxe Factory 12
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 12
+  Upgrade to Pickaxe Factory 13:
+    name: Upgrade to Pickaxe Factory 13
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 13
+  Upgrade to Pickaxe Factory 14:
+    name: Upgrade to Pickaxe Factory 14
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 14
+  Upgrade to Pickaxe Factory 15:
+    name: Upgrade to Pickaxe Factory 15
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 15
+  Upgrade to Pickaxe Factory 16:
+    name: Upgrade to Pickaxe Factory 16
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 16
+  Upgrade to Pickaxe Factory 17:
+    name: Upgrade to Pickaxe Factory 17
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 17
+  Upgrade to Pickaxe Factory 18:
+    name: Upgrade to Pickaxe Factory 18
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 18
+  Upgrade to Pickaxe Factory 19:
+    name: Upgrade to Pickaxe Factory 19
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 19
+  Upgrade to Pickaxe Factory 20:
+    name: Upgrade to Pickaxe Factory 20
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 20
+  Upgrade to Pickaxe Factory 21:
+    name: Upgrade to Pickaxe Factory 21
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 21
+  Upgrade to Pickaxe Factory 22:
+    name: Upgrade to Pickaxe Factory 22
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 22
+  Upgrade to Pickaxe Factory 23:
+    name: Upgrade to Pickaxe Factory 23
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 23
+  Upgrade to Pickaxe Factory 24:
+    name: Upgrade to Pickaxe Factory 24
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 24
+  Upgrade to Pickaxe Factory 25:
+    name: Upgrade to Pickaxe Factory 25
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 25
+  Upgrade to Pickaxe Factory 26:
+    name: Upgrade to Pickaxe Factory 26
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 26
+  Upgrade to Pickaxe Factory 27:
+    name: Upgrade to Pickaxe Factory 27
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 27
+  Upgrade to Pickaxe Factory 28:
+    name: Upgrade to Pickaxe Factory 28
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 28
+  Upgrade to Pickaxe Factory 29:
+    name: Upgrade to Pickaxe Factory 29
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 29
+  Upgrade to Pickaxe Factory 30:
+    name: Upgrade to Pickaxe Factory 30
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 30
+  Upgrade to Pickaxe Factory 31:
+    name: Upgrade to Pickaxe Factory 31
+    production_time: 10s
+    type: UPGRADE
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    factory: Pickaxe Factory 31
   Upgrade to Vault Factory 1:
     name: Upgrade to Vault Factory 1
     production_time: 10s
