@@ -751,7 +751,7 @@ factories:
     name: Pickaxe Factory 1
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
+    - Iron Pickaxe
     - Upgrade to Pickaxe Factory 2
     - Return Factory Materials
     - Accident Repair
@@ -760,8 +760,8 @@ factories:
     name: Pickaxe Factory 2
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
+    - Iron Pickaxe
+    - Silver Pickaxe
     - Upgrade to Pickaxe Factory 3
     - Return Factory Materials
     - Accident Repair
@@ -770,9 +770,9 @@ factories:
     name: Pickaxe Factory 3
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
+    - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
     - Upgrade to Pickaxe Factory 4
     - Return Factory Materials
     - Accident Repair
@@ -781,10 +781,10 @@ factories:
     name: Pickaxe Factory 4
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Upgrade to Pickaxe Factory 5
     - Return Factory Materials
     - Accident Repair
@@ -793,10 +793,10 @@ factories:
     name: Pickaxe Factory 5
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Upgrade to Pickaxe Factory 6
     - Return Factory Materials
@@ -806,10 +806,10 @@ factories:
     name: Pickaxe Factory 6
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Diamond Pickaxe
     - Upgrade to Pickaxe Factory 7
@@ -820,13 +820,13 @@ factories:
     name: Pickaxe Factory 7
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Diamond Pickaxe
-    - Lead Pickaxe
+    - Titanium Pickaxe
     - Upgrade to Pickaxe Factory 8
     - Return Factory Materials
     - Accident Repair
@@ -835,14 +835,14 @@ factories:
     name: Pickaxe Factory 8
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
     - Upgrade to Pickaxe Factory 9
     - Return Factory Materials
     - Accident Repair
@@ -851,15 +851,15 @@ factories:
     name: Pickaxe Factory 9
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
     - Upgrade to Pickaxe Factory 10
     - Return Factory Materials
     - Accident Repair
@@ -868,16 +868,16 @@ factories:
     name: Pickaxe Factory 10
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
+    - Silver Pickaxe
+    - Copper Pickaxe
+    - Bronze Pickaxe
     - Emerald Pickaxe
     - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Aluminum Pickaxe
     - Upgrade to Pickaxe Factory 11
     - Return Factory Materials
     - Accident Repair
@@ -886,17 +886,17 @@ factories:
     name: Pickaxe Factory 11
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
+    - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
     - Upgrade to Pickaxe Factory 12
     - Return Factory Materials
     - Accident Repair
@@ -905,18 +905,18 @@ factories:
     name: Pickaxe Factory 12
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
+    - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
     - Upgrade to Pickaxe Factory 13
     - Return Factory Materials
     - Accident Repair
@@ -925,19 +925,19 @@ factories:
     name: Pickaxe Factory 13
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
+    - Efficiency VI Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
     - Upgrade to Pickaxe Factory 14
     - Return Factory Materials
     - Accident Repair
@@ -946,20 +946,20 @@ factories:
     name: Pickaxe Factory 14
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
     - Upgrade to Pickaxe Factory 15
     - Return Factory Materials
     - Accident Repair
@@ -968,21 +968,21 @@ factories:
     name: Pickaxe Factory 15
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
+    - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
     - Upgrade to Pickaxe Factory 16
     - Return Factory Materials
     - Accident Repair
@@ -991,22 +991,22 @@ factories:
     name: Pickaxe Factory 16
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
+    - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
     - Upgrade to Pickaxe Factory 17
     - Return Factory Materials
     - Accident Repair
@@ -1015,23 +1015,23 @@ factories:
     name: Pickaxe Factory 17
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
+    - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Silicon Pickaxe
     - Upgrade to Pickaxe Factory 18
     - Return Factory Materials
     - Accident Repair
@@ -1040,24 +1040,24 @@ factories:
     name: Pickaxe Factory 18
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
+    - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
     - Upgrade to Pickaxe Factory 19
     - Return Factory Materials
     - Accident Repair
@@ -1066,25 +1066,25 @@ factories:
     name: Pickaxe Factory 19
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
     - Brass Pickaxe
+    - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
     - Upgrade to Pickaxe Factory 20
     - Return Factory Materials
     - Accident Repair
@@ -1093,26 +1093,26 @@ factories:
     name: Pickaxe Factory 20
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
     - Brass Pickaxe
     - Platinum Pickaxe
+    - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
     - Upgrade to Pickaxe Factory 21
     - Return Factory Materials
     - Accident Repair
@@ -1121,27 +1121,27 @@ factories:
     name: Pickaxe Factory 21
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
     - Brass Pickaxe
     - Platinum Pickaxe
     - Enderite Pickaxe
+    - Efficiency VII Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
     - Upgrade to Pickaxe Factory 22
     - Return Factory Materials
     - Accident Repair
@@ -1150,21 +1150,15 @@ factories:
     name: Pickaxe Factory 22
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
@@ -1172,6 +1166,12 @@ factories:
     - Platinum Pickaxe
     - Enderite Pickaxe
     - Efficiency VII Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Uranium Pickaxe
     - Upgrade to Pickaxe Factory 23
     - Return Factory Materials
     - Accident Repair
@@ -1180,21 +1180,15 @@ factories:
     name: Pickaxe Factory 23
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
@@ -1202,7 +1196,13 @@ factories:
     - Platinum Pickaxe
     - Enderite Pickaxe
     - Efficiency VII Pickaxe
-    - Oil Pickaxe
+    - Silicon Pickaxe
+    - Fiberglass Pickaxe
+    - Artifact Pickaxe
+    - Graphite Pickaxe
+    - Carbon Pickaxe
+    - Uranium Pickaxe
+    - Efficiency VI Axe
     - Upgrade to Pickaxe Factory 24
     - Return Factory Materials
     - Accident Repair
@@ -1211,21 +1211,15 @@ factories:
     name: Pickaxe Factory 24
     citadelBreakReduction: 1.0
     recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
     - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
     - Silver Pickaxe
     - Copper Pickaxe
+    - Bronze Pickaxe
+    - Emerald Pickaxe
+    - Diamond Pickaxe
     - Titanium Pickaxe
     - Mercury Pickaxe
     - Efficiency VI Pickaxe
-    - Nickel Pickaxe
     - Aluminum Pickaxe
     - Pewter Pickaxe
     - Pearl Pickaxe
@@ -1233,252 +1227,6 @@ factories:
     - Platinum Pickaxe
     - Enderite Pickaxe
     - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Upgrade to Pickaxe Factory 25
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_25:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 25
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Upgrade to Pickaxe Factory 26
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_26:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 26
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Artifact Pickaxe
-    - Upgrade to Pickaxe Factory 27
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_27:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 27
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Artifact Pickaxe
-    - Graphite Pickaxe
-    - Upgrade to Pickaxe Factory 28
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_28:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 28
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Artifact Pickaxe
-    - Graphite Pickaxe
-    - Carbon Pickaxe
-    - Upgrade to Pickaxe Factory 29
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_29:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 29
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Artifact Pickaxe
-    - Graphite Pickaxe
-    - Carbon Pickaxe
-    - Uranium Pickaxe
-    - Upgrade to Pickaxe Factory 30
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_30:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 30
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
-    - Silicon Pickaxe
-    - Fiberglass Pickaxe
-    - Artifact Pickaxe
-    - Graphite Pickaxe
-    - Carbon Pickaxe
-    - Uranium Pickaxe
-    - Efficiency VI Axe
-    - Upgrade to Pickaxe Factory 31
-    - Return Factory Materials
-    - Accident Repair
-  Pickaxe_Factory_31:
-    type: FCCUPGRADE
-    name: Pickaxe Factory 31
-    citadelBreakReduction: 1.0
-    recipes:
-    - Lapis Pickaxe
-    - Redstone Pickaxe
-    - Gold Pickaxe
-    - Iron Pickaxe
-    - Emerald Pickaxe
-    - Diamond Pickaxe
-    - Lead Pickaxe
-    - Steel Pickaxe
-    - Bronze Pickaxe
-    - Silver Pickaxe
-    - Copper Pickaxe
-    - Titanium Pickaxe
-    - Mercury Pickaxe
-    - Efficiency VI Pickaxe
-    - Nickel Pickaxe
-    - Aluminum Pickaxe
-    - Pewter Pickaxe
-    - Pearl Pickaxe
-    - Brass Pickaxe
-    - Platinum Pickaxe
-    - Enderite Pickaxe
-    - Efficiency VII Pickaxe
-    - Oil Pickaxe
     - Silicon Pickaxe
     - Fiberglass Pickaxe
     - Artifact Pickaxe
@@ -3846,71 +3594,102 @@ recipes:
         amount: 8
         lore:
         - Emerald Vault Bastion
-  Lapis Pickaxe:
-    type: PRODUCTION
-    name: Lapis Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      lapispick:
-        material: DIAMOND_PICKAXE
-        name: Lapis Pickaxe
-        amount: 1
-        lore:
-        - Attracts Lapis
-  Redstone Pickaxe:
-    type: PRODUCTION
-    name: Redstone Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      redstonepick:
-        material: DIAMOND_PICKAXE
-        name: Redstone Pickaxe
-        amount: 1
-        lore:
-        - Attracts Redstone
-  Gold Pickaxe:
-    type: PRODUCTION
-    name: Gold Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      goldpickaxe:
-        material: DIAMOND_PICKAXE
-        name: Gold Pickaxe
-        amount: 1
-        lore:
-        - Attracts Gold
   Iron Pickaxe:
     type: PRODUCTION
     name: Iron Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     output:
       ironpickaxe:
         material: DIAMOND_PICKAXE
@@ -3923,12 +3702,97 @@ recipes:
     name: Emerald Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 24
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 48
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 48
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 48
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 48
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 48
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     output:
       emeraldpickaxe:
         material: DIAMOND_PICKAXE
@@ -3941,12 +3805,97 @@ recipes:
     name: Diamond Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 48
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 48
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 96
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 96
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 96
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 96
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 96
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 32
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 32
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 32
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 32
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 32
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 32
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 32
+        lore:
+        - Mixed Twig T1
     output:
       diamondpickaxe:
         material: DIAMOND_PICKAXE
@@ -3954,53 +3903,102 @@ recipes:
         amount: 1
         lore:
         - Attracts Diamonds
-  Lead Pickaxe:
-    type: PRODUCTION
-    name: Lead Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      leadpickaxe:
-        material: DIAMOND_PICKAXE
-        name: Lead Pickaxe
-        amount: 1
-        lore:
-        - Attracts Lead
-  Steel Pickaxe:
-    type: PRODUCTION
-    name: Steel Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      steelpickaxe:
-        material: DIAMOND_PICKAXE
-        name: Steel Pickaxe
-        amount: 1
-        lore:
-        - Attracts Steel
   Bronze Pickaxe:
     type: PRODUCTION
     name: Bronze Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     output:
       bronzepickaxe:
         material: DIAMOND_PICKAXE
@@ -4013,12 +4011,97 @@ recipes:
     name: Silver Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     output:
       silverpickaxe:
         material: DIAMOND_PICKAXE
@@ -4031,12 +4114,97 @@ recipes:
     name: Copper Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     output:
       copperpickaxe:
         material: DIAMOND_PICKAXE
@@ -4049,12 +4217,97 @@ recipes:
     name: Titanium Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 48
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 48
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 96
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 96
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 96
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 96
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 96
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 32
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 32
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 32
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 32
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 32
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 32
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 32
+        lore:
+        - Mixed Twig T1
     output:
       titaniumpickaxe:
         material: DIAMOND_PICKAXE
@@ -4067,12 +4320,97 @@ recipes:
     name: Mercury Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 48
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 48
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 96
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 96
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 96
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 96
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 96
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 32
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 32
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 32
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 32
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 32
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 32
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 32
+        lore:
+        - Mixed Twig T1
     output:
       mercurypickaxe:
         material: DIAMOND_PICKAXE
@@ -4080,35 +4418,102 @@ recipes:
         amount: 1
         lore:
         - Attracts Mercury
-  Nickel Pickaxe:
-    type: PRODUCTION
-    name: Nickel Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      nickelpickaxe:
-        material: DIAMOND_PICKAXE
-        name: Nickel Pickaxe
-        amount: 1
-        lore:
-        - Attracts Nickel
   Aluminum Pickaxe:
     type: PRODUCTION
     name: Aluminum Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 64
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 64
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     output:
       aluminumpickaxe:
         material: DIAMOND_PICKAXE
@@ -4121,12 +4526,97 @@ recipes:
     name: Pewter Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 64
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 64
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     output:
       pewterpickaxe:
         material: DIAMOND_PICKAXE
@@ -4139,12 +4629,97 @@ recipes:
     name: Pearl Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 64
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 64
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     output:
       pearlpickaxe:
         material: DIAMOND_PICKAXE
@@ -4157,12 +4732,97 @@ recipes:
     name: Brass Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 64
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 64
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     output:
       brasspickaxe:
         material: DIAMOND_PICKAXE
@@ -4175,12 +4835,97 @@ recipes:
     name: Platinum Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 192
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 192
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 192
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 192
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 192
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 64
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 64
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 64
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 64
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 64
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 64
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 64
+        lore:
+        - Uncommon Bark T2
     output:
       platinumpickaxe:
         material: DIAMOND_PICKAXE
@@ -4193,12 +4938,97 @@ recipes:
     name: Enderite Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 192
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 192
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 192
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 192
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 192
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 64
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 64
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 64
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 64
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 64
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 64
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 64
+        lore:
+        - Uncommon Bark T2
     output:
       enderitepickaxe:
         material: DIAMOND_PICKAXE
@@ -4206,35 +5036,102 @@ recipes:
         amount: 1
         lore:
         - Attracts Enderite
-  Oil Pickaxe:
-    type: PRODUCTION
-    name: Oil Pickaxe
-    production_time: 5s
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    output:
-      oilpickaxe:
-        material: DIAMOND_PICKAXE
-        name: Oil Pickaxe
-        amount: 1
-        lore:
-        - Attracts Oil
   Silicon Pickaxe:
     type: PRODUCTION
     name: Silicon Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     output:
       siliconpickaxe:
         material: DIAMOND_PICKAXE
@@ -4247,12 +5144,97 @@ recipes:
     name: Fiberglass Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     output:
       fiberglasspickaxe:
         material: DIAMOND_PICKAXE
@@ -4265,12 +5247,97 @@ recipes:
     name: Artifact Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     output:
       artifactpickaxe:
         material: DIAMOND_PICKAXE
@@ -4283,12 +5350,97 @@ recipes:
     name: Graphite Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     output:
       graphitepickaxe:
         material: DIAMOND_PICKAXE
@@ -4301,12 +5453,97 @@ recipes:
     name: Carbon Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 32
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 64
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 64
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 64
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 64
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 64
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 32
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 32
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 32
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 32
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 32
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 32
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 32
+        lore:
+        - Rare Trunk T3
     output:
       carbonpickaxe:
         material: DIAMOND_PICKAXE
@@ -4319,12 +5556,97 @@ recipes:
     name: Uranium Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 32
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 64
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 64
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 64
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 64
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 64
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 32
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 32
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 32
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 32
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 32
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 32
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 32
+        lore:
+        - Rare Trunk T3
     output:
       uraniumpickaxe:
         material: DIAMOND_PICKAXE
@@ -4338,11 +5660,97 @@ recipes:
     production_time: 5s
     input:
       barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 64
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 64
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 128
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 128
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 128
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 128
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 128
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 48
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 48
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 48
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 48
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 48
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 48
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 48
+        lore:
+        - Mixed Twig T1
     output:
       diamondpick:
         material: DIAMOND_PICKAXE
@@ -4359,12 +5767,97 @@ recipes:
     name: Efficiency VII Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 128
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 128
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 256
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 256
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 256
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 256
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 256
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 96
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 96
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 96
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 96
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 96
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 96
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 96
+        lore:
+        - Uncommon Bark T2
     output:
       diamondpick:
         material: DIAMOND_PICKAXE
@@ -4381,12 +5874,97 @@ recipes:
     name: Efficiency VIII Pickaxe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 48
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 48
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 96
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 96
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 96
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 96
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 96
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 48
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 48
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 48
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 48
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 48
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 48
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 48
+        lore:
+        - Rare Trunk T3
     output:
       diamondpick:
         material: DIAMOND_PICKAXE
@@ -4403,12 +5981,97 @@ recipes:
     name: Efficiency VI Axe
     production_time: 5s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 48
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      ripepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 48
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 96
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 96
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 96
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 96
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 96
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 48
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 48
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 48
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 48
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 48
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 48
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 48
+        lore:
+        - Rare Trunk T3
     output:
       goldaxe:
         material: GOLD_AXE
@@ -4572,373 +6235,2329 @@ recipes:
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 1
   Upgrade to Pickaxe Factory 2:
     name: Upgrade to Pickaxe Factory 2
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 2
   Upgrade to Pickaxe Factory 3:
     name: Upgrade to Pickaxe Factory 3
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 3
   Upgrade to Pickaxe Factory 4:
     name: Upgrade to Pickaxe Factory 4
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 4
   Upgrade to Pickaxe Factory 5:
     name: Upgrade to Pickaxe Factory 5
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 32
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 32
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 32
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 32
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 8
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 8
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 8
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 8
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 8
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 8
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 8
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 5
   Upgrade to Pickaxe Factory 6:
     name: Upgrade to Pickaxe Factory 6
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 32
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 64
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 64
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 64
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 64
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 6
   Upgrade to Pickaxe Factory 7:
     name: Upgrade to Pickaxe Factory 7
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 32
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 64
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 64
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 64
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 64
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 7
   Upgrade to Pickaxe Factory 8:
     name: Upgrade to Pickaxe Factory 8
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 32
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 64
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 64
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 64
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 64
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 8
   Upgrade to Pickaxe Factory 9:
     name: Upgrade to Pickaxe Factory 9
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 32
         lore:
-        - Recipe coming soon!
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 32
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 64
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 64
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 64
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 64
+        lore:
+        - Withered Cocoa Beans T1
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 16
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 16
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 16
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 16
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 16
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 16
+        lore:
+        - Mixed Twig T1
     factory: Pickaxe Factory 9
   Upgrade to Pickaxe Factory 10:
     name: Upgrade to Pickaxe Factory 10
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 10
   Upgrade to Pickaxe Factory 11:
     name: Upgrade to Pickaxe Factory 11
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 11
   Upgrade to Pickaxe Factory 12:
     name: Upgrade to Pickaxe Factory 12
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 12
   Upgrade to Pickaxe Factory 13:
     name: Upgrade to Pickaxe Factory 13
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 13
   Upgrade to Pickaxe Factory 14:
     name: Upgrade to Pickaxe Factory 14
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 14
   Upgrade to Pickaxe Factory 15:
     name: Upgrade to Pickaxe Factory 15
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 15
   Upgrade to Pickaxe Factory 16:
     name: Upgrade to Pickaxe Factory 16
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      averagecactus:
+        material: CACTUS
+        name: Average Cactus
+        amount: 96
         lore:
-        - Recipe coming soon!
+        - Average Cactus T2
+      averagepumpkin:
+        material: PUMPKIN
+        name: Average Pumpkin
+        amount: 96
+        lore:
+        - Average Pumpkin T2
+      averagesugarcane:
+        material: SUGAR_CANE
+        name: Average Sugar Cane
+        amount: 128
+        lore:
+        - Average Sugar Cane T2
+      averagepotato:
+        material: POTATO_ITEM
+        name: Average Potato
+        amount: 128
+        lore:
+        - Average Potato T2
+      averagecarrot:
+        material: CARROT_ITEM
+        name: Average Carrot
+        amount: 128
+        lore:
+        - Average Carrot T2
+      averagebeetroot:
+        material: BEETROOT
+        name: Average Beetroot
+        amount: 128
+        lore:
+        - Average Beetroot T2
+      averagecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Average Cocoa Beans
+        amount: 128
+        lore:
+        - Average Cocoa Beans T2
+      oakbark:
+        material: LOG
+        durability: 0
+        name: Oak Bark
+        amount: 48
+        lore:
+        - Oak Bark T2
+      sprucebark:
+        material: LOG
+        durability: 1
+        name: Spruce Bark
+        amount: 48
+        lore:
+        - Spruce Bark T2
+      birchbark:
+        material: LOG
+        durability: 2
+        name: Birch Bark
+        amount: 48
+        lore:
+        - Birch Bark T2
+      junglebark:
+        material: LOG
+        durability: 3
+        name: Jungle Bark
+        amount: 48
+        lore:
+        - Jungle Bark T2
+      acaciabark:
+        material: LOG_2
+        durability: 0
+        name: Acacia Bark
+        amount: 48
+        lore:
+        - Acacia Bark T2
+      darkoakbark:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Bark
+        amount: 48
+        lore:
+        - Dark Oak Bark T2
+      uncommonbark:
+        material: DEAD_BUSH
+        name: Uncommon Bark
+        amount: 48
+        lore:
+        - Uncommon Bark T2
     factory: Pickaxe Factory 16
   Upgrade to Pickaxe Factory 17:
     name: Upgrade to Pickaxe Factory 17
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 17
   Upgrade to Pickaxe Factory 18:
     name: Upgrade to Pickaxe Factory 18
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 18
   Upgrade to Pickaxe Factory 19:
     name: Upgrade to Pickaxe Factory 19
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 19
   Upgrade to Pickaxe Factory 20:
     name: Upgrade to Pickaxe Factory 20
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 20
   Upgrade to Pickaxe Factory 21:
     name: Upgrade to Pickaxe Factory 21
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 21
   Upgrade to Pickaxe Factory 22:
     name: Upgrade to Pickaxe Factory 22
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 22
   Upgrade to Pickaxe Factory 23:
     name: Upgrade to Pickaxe Factory 23
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 23
   Upgrade to Pickaxe Factory 24:
     name: Upgrade to Pickaxe Factory 24
     production_time: 10s
     type: UPGRADE
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      ripecactus:
+        material: CACTUS
+        name: Ripe Cactus
+        amount: 24
         lore:
-        - Recipe coming soon!
+        - Ripe Cactus T3
+      averagepumpkin:
+        material: PUMPKIN
+        name: Ripe Pumpkin
+        amount: 24
+        lore:
+        - Ripe Pumpkin T3
+      ripesugarcane:
+        material: SUGAR_CANE
+        name: Ripe Sugar Cane
+        amount: 48
+        lore:
+        - Ripe Sugar Cane T3
+      ripepotato:
+        material: POTATO_ITEM
+        name: Ripe Potato
+        amount: 48
+        lore:
+        - Ripe Potato T3
+      ripecarrot:
+        material: CARROT_ITEM
+        name: Ripe Carrot
+        amount: 48
+        lore:
+        - Ripe Carrot T3
+      ripebeetroot:
+        material: BEETROOT
+        name: Ripe Beetroot
+        amount: 48
+        lore:
+        - Ripe Beetroot T3
+      ripecocoa:
+        material: INK_SACK
+        durability: 3
+        name: Ripe Cocoa Beans
+        amount: 48
+        lore:
+        - Ripe Cocoa Beans T3
+      oaktrunk:
+        material: LOG
+        durability: 0
+        name: Oak Trunk
+        amount: 16
+        lore:
+        - Oak Trunk T3
+      sprucetrunk:
+        material: LOG
+        durability: 1
+        name: Spruce Trunk
+        amount: 16
+        lore:
+        - Spruce Trunk T3
+      birchtrunk:
+        material: LOG
+        durability: 2
+        name: Birch Trunk
+        amount: 16
+        lore:
+        - Birch Trunk T3
+      jungletrunk:
+        material: LOG
+        durability: 3
+        name: Jungle Trunk
+        amount: 16
+        lore:
+        - Jungle Trunk T3
+      acaciatrunk:
+        material: LOG_2
+        durability: 0
+        name: Acacia Trunk
+        amount: 16
+        lore:
+        - Acacia Trunk T3
+      darkoaktrunk:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Trunk
+        amount: 16
+        lore:
+        - Dark Oak Trunk T3
+      raretrunk:
+        material: DEAD_BUSH
+        name: Rare Trunk
+        amount: 16
+        lore:
+        - Rare Trunk T3
     factory: Pickaxe Factory 24
-  Upgrade to Pickaxe Factory 25:
-    name: Upgrade to Pickaxe Factory 25
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 25
-  Upgrade to Pickaxe Factory 26:
-    name: Upgrade to Pickaxe Factory 26
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 26
-  Upgrade to Pickaxe Factory 27:
-    name: Upgrade to Pickaxe Factory 27
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 27
-  Upgrade to Pickaxe Factory 28:
-    name: Upgrade to Pickaxe Factory 28
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 28
-  Upgrade to Pickaxe Factory 29:
-    name: Upgrade to Pickaxe Factory 29
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 29
-  Upgrade to Pickaxe Factory 30:
-    name: Upgrade to Pickaxe Factory 30
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 30
-  Upgrade to Pickaxe Factory 31:
-    name: Upgrade to Pickaxe Factory 31
-    production_time: 10s
-    type: UPGRADE
-    input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
-        lore:
-        - Recipe coming soon!
-    factory: Pickaxe Factory 31
   Upgrade to Vault Factory 1:
     name: Upgrade to Vault Factory 1
     production_time: 10s
