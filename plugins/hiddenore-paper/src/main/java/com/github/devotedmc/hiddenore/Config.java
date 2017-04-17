@@ -211,8 +211,8 @@ public final class Config {
 			xpc.chance = xp.getDouble("chance", parent.xp != null ? parent.xp.chance : 0.0d);
 			Double xpamount = xp.isSet("amount") ? xp.getDouble("amount") : null;
 			if (xpamount != null) {
-				xpc.minAmount = amount;
-				xpc.maxAmount = amount;
+				xpc.minAmount = xpamount;
+				xpc.maxAmount = xpamount;
 			} else {
 				xpc.minAmount = xp.getDouble("minAmount", parent.xp != null ? parent.xp.minAmount : 0.0d);
 				xpc.maxAmount = xp.getDouble("maxAmount", parent.xp != null ? parent.xp.maxAmount : 0.0d);
