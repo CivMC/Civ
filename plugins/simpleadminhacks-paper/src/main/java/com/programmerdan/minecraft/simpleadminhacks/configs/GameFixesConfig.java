@@ -11,6 +11,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private double damageOnElytraBreakBug;
 	private boolean canStorageTeleport;
 	private boolean stopHopperDupe;
+	private boolean stopRailDupe;
 	
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -21,6 +22,9 @@ public class GameFixesConfig extends SimpleHackConfig {
 		damageOnElytraBreakBug = config.getDouble("damageOnElytraBreakBug", 0.0d);
 		canStorageTeleport = config.getBoolean("canStorageTeleport");
 		stopHopperDupe = config.getBoolean("stopHopperDupe");
+
+		stopRailDupe = config.getBoolean("stopRailDupe", true);
+		if(stopRailDupe) plugin().log("Stop Rail Dupe is enabled");
 	}
 	
 	public boolean isBlockElytraBreakBug() {
@@ -37,5 +41,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 	
 	public boolean isStopHopperDupe() {
 		return stopHopperDupe;
+	}
+
+	public boolean isStopRailDupe()
+	{
+		return stopRailDupe;
 	}
 }

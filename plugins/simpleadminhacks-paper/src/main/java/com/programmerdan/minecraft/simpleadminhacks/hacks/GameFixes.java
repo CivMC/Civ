@@ -3,12 +3,15 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -137,7 +140,66 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 		
 	}
-	
+
+	//This is to stop rail dupe glitch via pistons
+	private static final BlockFace[] faces_ = new BlockFace[]
+	{
+		BlockFace.NORTH,
+		BlockFace.SOUTH,
+		BlockFace.EAST,
+		BlockFace.WEST,
+		BlockFace.UP,
+		BlockFace.DOWN
+	};
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPistonPushRail(BlockPistonExtendEvent event)
+	{
+		if(config.isStopRailDupe())
+		{
+			for (Block block : event.getBlocks())
+			{
+				Material type = block.getType();
+				if(type == Material.RAILS ||
+					type == Material.ACTIVATOR_RAIL ||
+					type == Material.DETECTOR_RAIL ||
+					type == Material.POWERED_RAIL)
+				{
+					event.setCancelled(true);
+				}
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onRailPlace(BlockPlaceEvent event)
+	{
+		if(config.isStopRailDupe())
+		{
+			Block block = event.getBlock();
+			Material type = block.getType();
+
+			if(type == Material.RAILS ||
+				type == Material.ACTIVATOR_RAIL ||
+				type == Material.DETECTOR_RAIL ||
+				type == Material.POWERED_RAIL)
+			{
+				for (BlockFace face : faces_)
+				{
+					type = block.getRelative(face).getType();
+
+					if(type == Material.PISTON_BASE ||
+						type == Material.PISTON_EXTENSION ||
+						type == Material.PISTON_MOVING_PIECE ||
+						type == Material.PISTON_STICKY_BASE)
+					{
+						event.setCancelled(true);
+					}
+				}
+			}
+		}
+	}
+
 	public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new GameFixesConfig(plugin, config);
 	}
