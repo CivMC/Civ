@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
@@ -108,6 +109,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	public void onEntityTeleport(EntityTeleportEvent event) {
+		if (!config.isEnabled() || config.canStorageTeleport()) return;
+		if (event.getEntity() instanceof InventoryHolder) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	public void onEntityPortal(EntityPortalEvent event) {
 		if (!config.isEnabled() || config.canStorageTeleport()) return;
 		if (event.getEntity() instanceof InventoryHolder) {
 			event.setCancelled(true);
