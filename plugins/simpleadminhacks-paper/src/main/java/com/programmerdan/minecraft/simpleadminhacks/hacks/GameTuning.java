@@ -17,7 +17,13 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
-import org.bukkit.event.player.*;
+
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
 import org.bukkit.Bukkit;
@@ -199,7 +205,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	}
 
 	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void bedRClickToSetSpawn(PlayerInteractEvent event) {
 		if (!config.isEnabled() || !config.areDaytimeBedsEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.BED_BLOCK) {
 			return;
