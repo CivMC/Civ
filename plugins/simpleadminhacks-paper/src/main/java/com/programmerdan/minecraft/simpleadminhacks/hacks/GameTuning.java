@@ -108,11 +108,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			{
 				genStatus.append("disabled\n");
 			}
-
-
-
-
-
+			
 			// more?
 		} else {
 			genStatus.append("inactive");
