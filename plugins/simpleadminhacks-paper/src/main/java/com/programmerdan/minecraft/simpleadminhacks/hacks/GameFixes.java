@@ -10,14 +10,16 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.event.player.PlayerLoginEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Dispenser;
 import org.bukkit.material.Hopper;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -196,6 +198,40 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 						event.setCancelled(true);
 					}
 				}
+			}
+		}
+	}
+
+	//Trying to stop players from deleting end portals
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event)
+	{
+		if(config.isStopEndPortalDeletion())
+		{
+			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+
+			if(block.getType() == Material.ENDER_PORTAL)
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onDispenseEvent(BlockDispenseEvent event)
+	{
+		if(config.isStopEndPortalDeletion())
+		{
+			if(event.getBlock().getType() == Material.DISPENSER)
+			{
+				Dispenser disp = (Dispenser)event.getBlock().getState().getData();
+				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
+
+				if(type == Material.ENDER_PORTAL)
+				{
+					event.setCancelled(true);
+				}
+
 			}
 		}
 	}

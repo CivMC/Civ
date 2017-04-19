@@ -12,6 +12,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private boolean canStorageTeleport;
 	private boolean stopHopperDupe;
 	private boolean stopRailDupe;
+	private boolean stopEndPortalDeletion;
 	
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -24,7 +25,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 		stopHopperDupe = config.getBoolean("stopHopperDupe");
 
 		stopRailDupe = config.getBoolean("stopRailDupe", true);
-		if(stopRailDupe) plugin().log("Stop Rail Dupe is enabled");
+		if(stopRailDupe) plugin().log("Stop Rail Dupe is enabled.");
+
+		stopEndPortalDeletion = config.getBoolean("stopEndPortalDeletion", true);
+		if (stopEndPortalDeletion) plugin().log("Stop End Portal Deletion is enabled.");
 	}
 	
 	public boolean isBlockElytraBreakBug() {
@@ -46,5 +50,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 	public boolean isStopRailDupe()
 	{
 		return stopRailDupe;
+	}
+
+	public boolean isStopEndPortalDeletion()
+	{
+		return stopEndPortalDeletion;
 	}
 }
