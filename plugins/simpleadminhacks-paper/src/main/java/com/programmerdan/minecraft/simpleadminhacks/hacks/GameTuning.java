@@ -4,6 +4,10 @@ import java.util.logging.Level;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.minecart.HopperMinecart;
+import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,7 +16,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.player.PlayerBedEnterEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.entity.Player;
 import org.bukkit.Material;
 import org.bukkit.Bukkit;
@@ -27,10 +32,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.PortalCreateEvent;
+import org.bukkit.inventory.InventoryHolder;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the 
@@ -108,7 +111,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			{
 				genStatus.append("disabled\n");
 			}
-			
+
 			// more?
 		} else {
 			genStatus.append("inactive");
@@ -249,4 +252,44 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			}
 		}
 	}
+
+	//Trying to stop dupe bugs via minecart inventories
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onEntityRightClick(PlayerInteractEntityEvent event)
+	{
+		if (!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories())
+		{
+			Entity target = event.getRightClicked();
+
+			if (target.getType().equals(EntityType.MINECART_CHEST) && !config.isChestedMinecartInventories())
+			{
+				event.setCancelled(true);
+			}
+
+			if (target.getType().equals(EntityType.MINECART_HOPPER) && !config.isHopperMinecartInventories())
+			{
+				event.setCancelled(true);
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event)
+	{
+		if(!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories())
+		{
+			InventoryHolder holder = event.getDestination().getHolder();
+			if(holder instanceof StorageMinecart && !config.isChestedMinecartInventories())
+			{
+				event.setCancelled(true);
+			}
+
+			if(holder instanceof HopperMinecart && !config.isHopperMinecartInventories())
+			{
+				event.setCancelled(true);
+			}
+
+		}
+	}
+
 }

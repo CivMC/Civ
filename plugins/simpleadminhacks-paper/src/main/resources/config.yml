@@ -55,8 +55,12 @@ hacks:
       spawnSetMessage: '&7Your spawn has been set.'
     # Makes nether ratio 1 to 1
     oneToOneNether: false
-    #Return nether portal, true = enabled    false = disabled
+    # Return nether portal, true = enabled    false = disabled
     returnNetherPortal: true
+    # Disables minecart inventories (trying to fix dupe issues)
+    # enabled = able to right click   disabled = not able to right click
+    chestedMinecartInventories: true
+    hopperMinecartInventories: true
   CTAnnounce:
     enabled: false
     delay: 10000
