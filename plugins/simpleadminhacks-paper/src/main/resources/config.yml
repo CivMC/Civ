@@ -36,7 +36,7 @@ hacks:
     canStorageTeleport: false
     stopHopperDupe: true
     stopRailDupe: true
-    stopEndPortalDeltion: true
+    stopEndPortalDeletion: true
   GameTuning:
     enabled: true
     chunkLimits:

@@ -26,6 +26,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 
+import java.util.HashMap;
+import java.util.HashSet;
+
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	public static final String NAME = "GameFixes";
 	
@@ -154,6 +157,15 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		BlockFace.DOWN
 	};
 
+	private static final Material[] stopDupes_ = new Material[]
+	{
+		Material.RAILS,
+		Material.ACTIVATOR_RAIL,
+		Material.DETECTOR_RAIL,
+		Material.POWERED_RAIL,
+		Material.CARPET
+	};
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPistonPushRail(BlockPistonExtendEvent event)
 	{
@@ -162,12 +174,13 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			for (Block block : event.getBlocks())
 			{
 				Material type = block.getType();
-				if(type == Material.RAILS ||
-					type == Material.ACTIVATOR_RAIL ||
-					type == Material.DETECTOR_RAIL ||
-					type == Material.POWERED_RAIL)
+				for (Material mat : stopDupes_)
 				{
-					event.setCancelled(true);
+					if (type == mat)
+					{
+						event.setCancelled(true);
+						return;
+					}
 				}
 			}
 		}
@@ -181,21 +194,22 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			Block block = event.getBlock();
 			Material type = block.getType();
 
-			if(type == Material.RAILS ||
-				type == Material.ACTIVATOR_RAIL ||
-				type == Material.DETECTOR_RAIL ||
-				type == Material.POWERED_RAIL)
+			for (Material mat : stopDupes_)
 			{
-				for (BlockFace face : faces_)
+				if (type == mat)
 				{
-					type = block.getRelative(face).getType();
-
-					if(type == Material.PISTON_BASE ||
-						type == Material.PISTON_EXTENSION ||
-						type == Material.PISTON_MOVING_PIECE ||
-						type == Material.PISTON_STICKY_BASE)
+					for (BlockFace face : faces_)
 					{
-						event.setCancelled(true);
+						type = block.getRelative(face).getType();
+
+						if(type == Material.PISTON_BASE ||
+								type == Material.PISTON_EXTENSION ||
+								type == Material.PISTON_MOVING_PIECE ||
+								type == Material.PISTON_STICKY_BASE)
+						{
+							event.setCancelled(true);
+							return;
+						}
 					}
 				}
 			}
