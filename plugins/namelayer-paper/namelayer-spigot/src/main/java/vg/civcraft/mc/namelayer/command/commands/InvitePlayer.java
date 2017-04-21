@@ -195,7 +195,7 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			}
 			else {
 				for (Player p: Bukkit.getOnlinePlayers()) {
-					if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+					if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
 						namesToReturn.add(p.getName());
 				}
 			}
