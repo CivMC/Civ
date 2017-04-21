@@ -95,7 +95,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 3
     - Accident Repair
@@ -105,7 +105,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Return Factory Materials
     - Upgrade to Vault Factory 4
@@ -116,7 +116,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Return Factory Materials
@@ -128,7 +128,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -141,7 +141,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -155,7 +155,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -170,7 +170,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -186,7 +186,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -203,7 +203,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -221,7 +221,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -240,7 +240,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -250,7 +250,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 13
     - Accident Repair
@@ -260,7 +260,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -270,7 +270,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Return Factory Materials
     - Upgrade to Vault Factory 14
@@ -281,7 +281,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -291,7 +291,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Return Factory Materials
@@ -303,7 +303,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -313,7 +313,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -326,7 +326,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -336,7 +336,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -350,7 +350,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -360,7 +360,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -375,7 +375,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -385,7 +385,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -401,7 +401,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -411,7 +411,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -428,7 +428,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -438,7 +438,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -456,7 +456,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -466,7 +466,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -475,7 +475,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 22
     - Accident Repair
@@ -485,7 +485,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -495,7 +495,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -504,7 +504,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Return Factory Materials
     - Upgrade to Vault Factory 23
@@ -515,7 +515,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -525,7 +525,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -534,7 +534,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Return Factory Materials
@@ -546,7 +546,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -556,7 +556,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -565,7 +565,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -578,7 +578,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -588,7 +588,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -597,7 +597,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -611,7 +611,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -621,7 +621,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -630,7 +630,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -645,7 +645,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -655,7 +655,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -664,7 +664,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -680,7 +680,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -690,7 +690,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -699,7 +699,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -716,7 +716,7 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
-    - Weak City Bastion
+    - City Bastion
     - Stone Beacon
     - Iron Chest
     - Iron Glass
@@ -726,7 +726,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
-    - Medium City Bastion
+    - Better City Bastion
     - Diamond Chest
     - Diamond Glass
     - Gold Vault Bastion
@@ -735,7 +735,7 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
-    - Strong City Bastion
+    - Best City Bastion
     - Emerald Chest
     - Emerald Glass
     - Diamond Vault Bastion
@@ -2735,9 +2735,9 @@ recipes:
         amount: 1
         lore:
         - Claims Bastion
-  Weak City Bastion:
+  City Bastion:
     type: PRODUCTION
-    name: Weak City Bastion
+    name: City Bastion
     production_time: 5s
     input:
       lead:
@@ -2784,15 +2784,15 @@ recipes:
         lore:
         - Mercury T1
     output:
-      Weak_City_Bastion:
+      citybastion:
         material: SPONGE
-        name: Weak City Bastion
+        name: City Bastion
         amount: 1
         lore:
         - Weak City Bastion
-  Medium City Bastion:
+  Better City Bastion:
     type: PRODUCTION
-    name: Medium City Bastion
+    name: Better City Bastion
     production_time: 5s
     input:
       nickel:
@@ -2839,15 +2839,15 @@ recipes:
         lore:
         - Enderite T2
     output:
-      Medium_City_Bastion:
+      bettercitybastion:
         material: SPONGE
-        name: Medium City Bastion
+        name: Better City Bastion
         amount: 2
         lore:
-        - Medium City Bastion
-  Strong City Bastion:
+        - Better City Bastion
+  Best City Bastion:
     type: PRODUCTION
-    name: Strong City Bastion
+    name: Best City Bastion
     production_time: 5s
     input:
       oil:
@@ -2894,12 +2894,12 @@ recipes:
         lore:
         - Uranium T3
     output:
-      Strong_City_Bastion:
+      bestcitybastion:
         material: SPONGE
-        name: Strong City Bastion
+        name: Best City Bastion
         amount: 4
         lore:
-        - Strong City Bastion
+        - Best City Bastion
   Iron Glass:
     type: PRODUCTION
     name: Iron Glass
