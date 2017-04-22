@@ -3327,44 +3327,44 @@ recipes:
       lead:
         material: COAL
         name: Lead
-        amount: 32
+        amount: 48
         lore:
         - Lead T1
       steel:
         material: IRON_INGOT
         name: Steel
-        amount: 32
+        amount: 48
         lore:
         - Steel T1
       bronze:
         material: INK_SACK
         name: Bronze
         durability: 14
-        amount: 16
+        amount: 24
         lore:
         - Bronze T1
       silver:
         material: GOLD_INGOT
         name: Silver
-        amount: 16
+        amount: 24
         lore:
         - Silver T1
       copper:
         material: REDSTONE
         name: Copper
-        amount: 16
+        amount: 24
         lore:
         - Copper T1
       titanium:
         material: DIAMOND
         name: Titanium
-        amount: 16
+        amount: 24
         lore:
         - Titanium T1
       mercury:
         material: EMERALD
         name: Mercury
-        amount: 16
+        amount: 24
         lore:
         - Mercury T1
     output:
@@ -3547,44 +3547,44 @@ recipes:
       oil:
         material: COAL
         name: Oil
-        amount: 128
+        amount: 192
         lore:
         - Oil T3
       silicon:
         material: IRON_INGOT
         name: Silicon
-        amount: 96
+        amount: 144
         lore:
         - Silicon T3
       fiberglass:
         material: INK_SACK
         name: Fiberglass
-        amount: 24
+        amount: 36
         durability: 5
         lore:
         - Fiberglass T3
       artifact:
         material: EYE_OF_ENDER
         name: Artifact
-        amount: 24
+        amount: 36
         lore:
         - Artifact T3
       graphite:
         material: REDSTONE
         name: Graphite
-        amount: 24
+        amount: 36
         lore:
         - Graphite T3
       carbon:
         material: DIAMOND
         name: Carbon
-        amount: 12
+        amount: 18
         lore:
         - Carbon T3
       uranium:
         material: EMERALD
         name: Uranium
-        amount: 12
+        amount: 18
         lore:
         - Uranium T3
     output:
