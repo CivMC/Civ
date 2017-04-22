@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>civspy</artifactId>
-	<version>1.0.9</version>
+	<version>1.1.0</version>
 	<packaging>jar</packaging>
 	<name>CivSpy</name>
 	<url>https://github.com/DevotedMC/CivSpy</url>
@@ -103,6 +103,12 @@
 			<groupId>com.github.devotedmc</groupId>
 			<artifactId>hiddenore</artifactId>
 			<version>1.2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.programmerdan.minecraft</groupId>
+			<artifactId>cropcontrol</artifactId>
+			<version>1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Note: RecipeManager isn't distributed in POM form.
