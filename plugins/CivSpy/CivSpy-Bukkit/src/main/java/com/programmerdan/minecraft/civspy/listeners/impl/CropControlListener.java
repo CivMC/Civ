@@ -18,6 +18,14 @@ import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 import com.programmerdan.minecraft.civspy.util.ItemStackToString;
 
+/**
+ * Contributes <code>cropcontrol.drop.TYPE</code> stats when crop control triggers a drop.
+ * Covers all types of drops including player sponsored. Records which item(s) were dropped in the string
+ * value field. TYPE is the kind of break -- check the crop control documentation for which values are valid.
+ * 
+ * @author ProgrammerDan
+ *
+ */
 public class CropControlListener extends ServerDataListener {
 
 	public CropControlListener(DataManager target, Logger logger, String server) {

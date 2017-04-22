@@ -1,4 +1,7 @@
 .git
 target/
 **/target/
-
+**/apidocs/
+**/.settings/
+**/.project
+**/.classpath

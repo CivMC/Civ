@@ -36,7 +36,7 @@ public final class PlaceListener extends ServerDataListener {
 	}
 	
 	/**
-	 * Generates: <code>player.blockbreak</code> stat_key data. Block serialization
+	 * Generates: <code>player.blockplace</code> stat_key data. Block serialization
 	 * is stored in the string value field.
 	 * 
 	 * @param event The BlockBreakEvent

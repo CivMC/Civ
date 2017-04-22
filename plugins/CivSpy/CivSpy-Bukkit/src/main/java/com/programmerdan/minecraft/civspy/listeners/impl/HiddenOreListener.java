@@ -23,6 +23,17 @@ import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 import com.programmerdan.minecraft.civspy.util.ItemStackToString;
 
+/**
+ * Contributes <code>hiddenore.drop</code> stats when a person triggers a drop from hiddenore
+ * <br><br>
+ * Contributes <code>hiddenore.gen</code> and <code>hiddenore.replace</code> when mining triggers
+ * a generation task. Both what was generated (.gen) and what it replaced (.replace) are recorded.
+ * 
+ * In both cases the string value is the item dropped. As many stats are recorded as items dropped.
+ * 
+ * @author ProgrammerDan
+ *
+ */
 public class HiddenOreListener extends ServerDataListener {
 
 	public HiddenOreListener(DataManager target, Logger logger, String server) {
