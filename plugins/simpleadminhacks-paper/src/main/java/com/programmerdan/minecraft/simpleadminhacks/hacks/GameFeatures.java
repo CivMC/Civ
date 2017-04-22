@@ -32,13 +32,13 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
  * game, server-wide. Mostly focused on turning things on or off.
- * <p/>
+ *
  * It's part of a series of focused hacks.
- * <p/>
+ *
  * {@link GameFixes} is focused on things that are broken or don't work, and attempts to fix them.
  * {@link GameFeatures} focuses on enabling and disabling features, like elytra, various potion states.
  * {@link GameTuning} neither fixes nor disables, but rather adjusts and reconfigures.
- * <p/>
+ *
  * Currently you can control the following:
  * - Disable Potato XP
  */

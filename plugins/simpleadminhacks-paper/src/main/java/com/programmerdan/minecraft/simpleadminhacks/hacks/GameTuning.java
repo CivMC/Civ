@@ -44,13 +44,13 @@ import org.bukkit.inventory.InventoryHolder;
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the
  * game, server-wide.
- * <p/>
+ *
  * It's part of a series of focused hacks.
- * <p/>
+ *
  * {@link GameFixes} is focused on things that are broken or don't work, and attempts to fix them.
  * {@link GameFeatures} focuses on enabling and disabling features, like elytra, various potion states.
  * {@link GameTuning} neither fixes nor disables, but rather adjusts and reconfigures.
- * <p/>
+ *
  * Currently you can control the following:
  * - BlockEntity limits per chunk
  * - Setting bed during the day instead of just at night
@@ -126,12 +126,12 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	public static GameTuningConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new GameTuningConfig(plugin, config);
 	}
-	
+
 	/* From here on, the actual meat of the hack. Above is basically boilerplate for micro-plugins.*/
 
 	/**
 	 * Many thanks to BlackXNT for his work on this event in Humbug, which I have largely copied and expanded.
-	 * <p/>
+	 *
 	 * This tracks block placements, and if a limit is configured and the block is a TileEntity w/ state,
 	 * will reject the placement if otherwise it would exceed limits for the Chunk.
 	 *
