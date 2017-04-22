@@ -103,45 +103,78 @@ As of April 22, 2017:
 ##### Aggregate Statistics
 
 `player.blockbreak` - Breaks down based on string_value of encoded block attributes and count within aggregation period.
+
 `player.blockplace` - When a player places a block. UUID is recorded, and Block serialization is stored in the string value field.s
+
 `block.drop.TYPE` - When the block broken drops items. TYPE is the material type of the block that is dropping stuff.
+
 `player.craft` - When player crafts something. What was crafted size stored in number value, serialized string in string value.
+
 `player.craft.custom` - For RecipeManager unique crafting with recipe name as string value.
+
 `player.movement` - Breaks down based on string_value of movement type (walking, sneaking, vehicle, etc.) within aggregation period. Includes Vehicle movement, and resets prior location on teleport.
+
 `player.drop` - Records item dropped when a person drops something
+
 `player.consume` - Records when a player eats / consumes something.
+
 `block.dispense.TYPE` - When a dispenser/dropper launches an item. TYPE is the material type of the block that is dispensing.
+
 `entity.death.TYPE`
 `entity.death.drop.TYPE`
 `entity.death.xp.TYPE` - where TYPE is the EntityType.name() of what died; If killer is a player and isn't empty, UUID is filled for all. Otherwise is null. If creature has a custom name, recorded in string value field for death and XP; not for drop (itemstack serialized recorded there).
+
 `player.fishing` - records fishing data, records location, player, and item / amount retrieved.
+
 `player.killed` - used for PVP kills or death by entities, the UUID of the player or TYPE/Name of the entity responsible for killing is in the string value field. The UUID field holds the player killed in all cases.
+
 `player.killed.drop` - the serialized items dropped by player on death
+
 `player.died` - records player deaths when killed by some non-strictly-entity cause (drowning, etc.). The `drop` contributions are similar to entity death, but the UUID recorded is the player that died.
+
 `player.died.drop` - The serialized items dropped by player on death 
+
 `player.damage.TYPE` - Damage from PVP, where TYPE is nature of damage dealt, as discernable. Uuid is the player delivering the damage; string\_value is the player or entity receiving the damage; and numeric\_value is the damage dealt.
+
 `player.damaged` - Damage from PVE, with string\_value being the nature of the damage received, and numeric\_value the damage amount.
+
 `player.pickup` - Records when a person picks up something
+
 `inventory.pickup.TYPE` - An inventory holder picks up an item. TYPE is the Hopper or HopperMinecart that picked up the item.
+
 `player.bucket.empty`
 `player.bucket.fill` - Records when a bucket is emptied or filled, and who did it.
+
 `inventory.moveto.TYPE` - Records when items move to an inventory, paired with...
+
 `inventory.movefrom.TYPE` - Records when items leaves an inventory. String value is the item moved, Numeric Value is how many.
+
 `player.INV.slot.ACTION` - Records when a player interacts with an inventory slot.
+
 `player.INV.cursor.ACTION` - Records when a player interacts with their cursor. For both, INV is source inventory type; ACTION is the nature of the interaction. String value is the item moved, Numeric Value is how many.
+
 `player.open` - when a player opens an inventory holder. String value is the TYPE of inventory opened.
+
 `player.citadel.damage.group`
 `player.citadel.damage.TYPE` - When a Citadel reinforcement is damaged, records what kind was damaged and what group was damaged. Also records who did it and what kind of block the citadel reinforcement is defending.
+
 `player.citadel.create.group`
 `player.citadel.create.TYPE` - When a Citadel reinforcement is created, records what kind it is and to what group it is bound. Also records who did it and what kind of block is now being protected
+
 `player.citadel.change.group`
 `player.citadel.change.TYPE` - Reinforcements can be "swapped" which triggers a change event. This captures the new group, the TYPE form captures the old reinf as TYPE and the new reinf as string_value
+
 `player.citadel.acid.TYPE` - Records as TYPE the acid type and in string_value the reinforcement destroyed.
+
 `player.citadel.acid.destroyed.group` - Records the group whose reinforcement was destroyed.
+
 `cropcontrol.drop.TYPE` - Records when crop control triggers a drop. Covers all types of drops including player sponsored. Records which item(s) were dropped in the string value field. TYPE is the kind of break -- check the crop control documentation for which values are valid.
+
 `hiddenore.drop` - Records when a person triggers a drop from hiddenore
+
 `hiddenore.gen`
 `hiddenore.replace` - When mining triggers a generation task. Both what was generated (.gen) and what it replaced (.replace) are recorded.
+
 `redstone.current.increase`
 `redstone.current.decrease`
 `redstone.current.stable` - Track Redstone changes by location and motion. String_value is the redstone item that activated.
@@ -150,7 +183,11 @@ As of April 22, 2017:
 ##### Periodic Statistics
 
 `server.playercount` - default sampling period of every minute, records players online the server.
+
 `world.playercount` - default sampling period of every minute, records players online per world on the server.
+
 `server.tick.min` - In sampling period, the minimum tick in milliseconds (shortest observed).
+
 `server.tick.max` - In sampling period, the maximum tick in milliseconds (longest observed).
+
 `server.tick.average` - In sampling period, the average tick in milliseconds.

@@ -19,7 +19,10 @@ Having trouble loading the javadocs? Clone this repository locally and you'll ha
 As of Sept 2 2016:
 
 `bungee.playercount` - Periodic count of players online. Period controlled by 'interval' in config.
+
 `bungee.login` - Point data on players joining the network
+
 `bungee.logout` - Point data on players leaving the network
+
 `bungee.session` - Point data on how long inbetween join and leave (session length). Recorded at leave or shutdown.
 
