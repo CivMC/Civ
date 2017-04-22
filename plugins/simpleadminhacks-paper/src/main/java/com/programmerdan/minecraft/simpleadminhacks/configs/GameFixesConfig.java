@@ -19,7 +19,8 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private boolean stopEndPortalDeletion;
 
 	private ArrayList<BlockFace> bfArray;
-	private ArrayList<Material> matArray;
+	private ArrayList<Material> railArray;
+	private ArrayList<Material> pistonArray;
 
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -41,13 +42,14 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	private void wireUpArrays() {
 		bfArray = new ArrayList<BlockFace>();
-		matArray = new ArrayList<Material>();
+		railArray = new ArrayList<Material>();
+		pistonArray = new ArrayList<Material>();
 
-		matArray.add(Material.RAILS);
-		matArray.add(Material.ACTIVATOR_RAIL);
-		matArray.add(Material.DETECTOR_RAIL);
-		matArray.add(Material.POWERED_RAIL);
-		matArray.add(Material.CARPET);
+		railArray.add(Material.RAILS);
+		railArray.add(Material.ACTIVATOR_RAIL);
+		railArray.add(Material.DETECTOR_RAIL);
+		railArray.add(Material.POWERED_RAIL);
+		railArray.add(Material.CARPET);
 
 		bfArray.add(BlockFace.NORTH);
 		bfArray.add(BlockFace.SOUTH);
@@ -55,6 +57,11 @@ public class GameFixesConfig extends SimpleHackConfig {
 		bfArray.add(BlockFace.WEST);
 		bfArray.add(BlockFace.UP);
 		bfArray.add(BlockFace.DOWN);
+
+		pistonArray.add(Material.PISTON_BASE);
+		pistonArray.add(Material.PISTON_EXTENSION);
+		pistonArray.add(Material.PISTON_MOVING_PIECE);
+		pistonArray.add(Material.PISTON_STICKY_BASE);
 	}
 
 	public boolean isBlockElytraBreakBug() {
@@ -85,7 +92,11 @@ public class GameFixesConfig extends SimpleHackConfig {
 		return bfArray;
 	}
 
-	public ArrayList<Material> getMatArray() {
-		return matArray;
+	public ArrayList<Material> getRailArray() {
+		return railArray;
+	}
+
+	public ArrayList<Material> getPistonArray() {
+		return pistonArray;
 	}
 }

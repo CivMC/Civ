@@ -26,9 +26,6 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 
-import java.util.HashMap;
-import java.util.HashSet;
-
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	public static final String NAME = "GameFixes";
 
@@ -152,7 +149,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			for (Block block : event.getBlocks()) {
 				Material type = block.getType();
 
-				if (config.getMatArray().contains(type)) {
+				if (config.getRailArray().contains(type)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -166,11 +163,11 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			Block block = event.getBlock();
 			Material type = block.getType();
 
-			if (config.getMatArray().contains(type)) {
+			if (config.getRailArray().contains(type)) {
 				for (BlockFace face : config.getBfArray()) {
 					type = block.getRelative(face).getType();
 
-					if (config.getMatArray().contains(type)) {
+					if (config.getPistonArray().contains(type)) {
 						event.setCancelled(true);
 						return;
 					}
