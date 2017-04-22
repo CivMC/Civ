@@ -32,15 +32,15 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
  * game, server-wide. Mostly focused on turning things on or off.
- *
+ * <p/>
  * It's part of a series of focused hacks.
- *
+ * <p/>
  * {@link GameFixes} is focused on things that are broken or don't work, and attempts to fix them.
  * {@link GameFeatures} focuses on enabling and disabling features, like elytra, various potion states.
  * {@link GameTuning} neither fixes nor disables, but rather adjusts and reconfigures.
- *
+ * <p/>
  * Currently you can control the following:
- *  - Disable Potato XP
+ * - Disable Potato XP
  */
 public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements Listener {
 	public static final String NAME = "GameFeatures";
@@ -92,28 +92,28 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 
 			genStatus.append(" Villager Trading is ");
-			if (config.isVillagerTrading()){
+			if (config.isVillagerTrading()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
 			genStatus.append(" Wither Spawning is ");
-			if (config.isWitherSpawning()){
+			if (config.isWitherSpawning()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
 			genStatus.append(" Ender Chest placement is ");
-			if(config.isEnderChestPlacement()){
+			if (config.isEnderChestPlacement()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
 			genStatus.append(" WeepAngel is ");
-			if(config.isWeepingAngel()){
+			if (config.isWeepingAngel()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
@@ -135,7 +135,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	/**
 	 * Perhaps eventually generalize?
 	 */
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void potatoXP(FurnaceExtractEvent event) {
 		if (!config.isEnabled() || config.isPotatoXPEnabled()) return;
 		try {
@@ -151,16 +151,12 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void disableVillagerTrading(PlayerInteractEntityEvent event)
-	{
-		if (!config.isVillagerTrading())
-		{
+	public void disableVillagerTrading(PlayerInteractEntityEvent event) {
+		if (!config.isVillagerTrading()) {
 			Entity npc = event.getRightClicked();
 
-			if (npc != null)
-			{
-				if (npc.getType().equals(EntityType.VILLAGER))
-				{
+			if (npc != null) {
+				if (npc.getType().equals(EntityType.VILLAGER)) {
 					event.setCancelled(true);
 				}
 			}
@@ -168,78 +164,57 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void disableWitherSpawning(CreatureSpawnEvent event)
-	{
-		if (!config.isWitherSpawning())
-		{
-			if (event.getEntityType().equals(EntityType.WITHER))
-			{
-			   event.setCancelled(true);
+	public void disableWitherSpawning(CreatureSpawnEvent event) {
+		if (!config.isWitherSpawning()) {
+			if (event.getEntityType().equals(EntityType.WITHER)) {
+				event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.LOW)
-	public void disableEnderChestPlacement(BlockPlaceEvent event)
-	{
-		if (!config.isEnderChestPlacement())
-		{
-			if (event.getBlock().getType().equals(Material.ENDER_CHEST))
-			{
+	public void disableEnderChestPlacement(BlockPlaceEvent event) {
+		if (!config.isEnderChestPlacement()) {
+			if (event.getBlock().getType().equals(Material.ENDER_CHEST)) {
 				event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGH)
-	public void weepingAngelListener(PlayerDeathEvent event)
-	{
-		if(!config.isWeepingAngel())
-		{
+	public void weepingAngelListener(PlayerDeathEvent event) {
+		if (!config.isWeepingAngel()) {
 			return;
 		}
 
-		if(event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent)
-		{
+		if (event.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) {
 			EntityDamageByEntityEvent evt = ((EntityDamageByEntityEvent) event.getEntity().getLastDamageCause());
 			LivingEntity killer = null;
 
-			if (evt.getDamager() instanceof LivingEntity)
-			{
+			if (evt.getDamager() instanceof LivingEntity) {
 				killer = (LivingEntity) evt.getDamager();
-			}
-			else if (evt.getDamager() instanceof Projectile)
-			{
+			} else if (evt.getDamager() instanceof Projectile) {
 				Projectile projectile = (Projectile) evt.getDamager();
 
-				if (projectile.getShooter() instanceof LivingEntity)
-				{
+				if (projectile.getShooter() instanceof LivingEntity) {
 					killer = (LivingEntity) projectile.getShooter();
 				}
 			}
 
-			if (killer != null)
-			{
-				if (killer instanceof Player)
-				{
+			if (killer != null) {
+				if (killer instanceof Player) {
 					banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelPlayer());
-				}
-				else
-				{
+				} else {
 					banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelEnv());
 				}
 			}
-		}
-		else
-		{
+		} else {
 			banPlayer(event.getEntity().getPlayer(), config.getWeepingAngelEnv());
 		}
 	}
 
-	private void banPlayer(Player p, int minutes)
-	{
-		if(!config.isWeepingAngel())
-		{
+	private void banPlayer(Player p, int minutes) {
+		if (!config.isWeepingAngel()) {
 			return;
 		}
 
@@ -247,10 +222,8 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		Bukkit.getServer().getBanList(BanList.Type.NAME).addBan(p.getName(), "You've been banned for " + minutes +
 				" minutes due to your death.", exp, "weepingAngel");
 
-		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), new Runnable()
-		{
-			public void run()
-			{
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), new Runnable() {
+			public void run() {
 				p.kickPlayer("You've been banned for " + minutes + " minutes due to your death.");
 			}
 		}, 2L);

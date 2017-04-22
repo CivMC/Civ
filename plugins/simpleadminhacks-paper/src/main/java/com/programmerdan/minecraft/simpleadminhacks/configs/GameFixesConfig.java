@@ -33,14 +33,13 @@ public class GameFixesConfig extends SimpleHackConfig {
 		stopHopperDupe = config.getBoolean("stopHopperDupe");
 
 		stopRailDupe = config.getBoolean("stopRailDupe", true);
-		if(stopRailDupe) plugin().log("Stop Rail Dupe is enabled.");
+		if (stopRailDupe) plugin().log("Stop Rail Dupe is enabled.");
 
 		stopEndPortalDeletion = config.getBoolean("stopEndPortalDeletion", true);
 		if (stopEndPortalDeletion) plugin().log("Stop End Portal Deletion is enabled.");
 	}
 
-	private void wireUpArrays()
-	{
+	private void wireUpArrays() {
 		bfArray = new ArrayList<BlockFace>();
 		matArray = new ArrayList<Material>();
 
@@ -74,23 +73,19 @@ public class GameFixesConfig extends SimpleHackConfig {
 		return stopHopperDupe;
 	}
 
-	public boolean isStopRailDupe()
-	{
+	public boolean isStopRailDupe() {
 		return stopRailDupe;
 	}
 
-	public boolean isStopEndPortalDeletion()
-	{
+	public boolean isStopEndPortalDeletion() {
 		return stopEndPortalDeletion;
 	}
 
-	public ArrayList<BlockFace> getBfArray()
-	{
+	public ArrayList<BlockFace> getBfArray() {
 		return bfArray;
 	}
 
-	public ArrayList<Material> getMatArray()
-	{
+	public ArrayList<Material> getMatArray() {
 		return matArray;
 	}
 }

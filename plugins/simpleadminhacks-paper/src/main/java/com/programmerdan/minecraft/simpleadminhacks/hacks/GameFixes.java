@@ -38,7 +38,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@Override
 	public void registerListeners() {
-		if(config != null && config.isEnabled()) {
+		if (config != null && config.isEnabled()) {
 			plugin().log("Registering GameFixes listeners");
 			plugin().registerListener(this);
 		}
@@ -71,29 +71,29 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	public String status() {
 		StringBuilder genStatus = new StringBuilder();
 		genStatus.append("GameFixes is ");
-		if(config != null && config.isEnabled()) {
+		if (config != null && config.isEnabled()) {
 			genStatus.append(ChatColor.GREEN).append("active\n").append(ChatColor.RESET);
-			if(config.isBlockElytraBreakBug()) {
+			if (config.isBlockElytraBreakBug()) {
 				genStatus.append("   Block elytra break bug is ").append(ChatColor.GREEN).append("enabled\n")
-					.append(ChatColor.RESET);
+						.append(ChatColor.RESET);
 				genStatus.append("   Will deal " + config.getDamageOnElytraBreakBug() + " damage to players\n");
 			} else {
 				genStatus.append("   Block elytra break bug is ").append(ChatColor.RED).append("disabled\n")
-					.append(ChatColor.RESET);
+						.append(ChatColor.RESET);
 			}
-			if(!config.canStorageTeleport()) {
+			if (!config.canStorageTeleport()) {
 				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
-					.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+						.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
 				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
-					.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+						.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
-			if(config.isStopHopperDupe()) {
+			if (config.isStopHopperDupe()) {
 				genStatus.append("   Hopper self-feed duplication exploit fix ")
-					.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+						.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
 				genStatus.append("   Hopper self-feed duplication exploit fix ")
-					.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+						.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
 		} else {
 			genStatus.append(ChatColor.RED).append("inactive").append(ChatColor.RESET);
@@ -101,21 +101,21 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		return genStatus.toString();
 	}
 
-	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 		if (block == null || player == null) return;
 
-		if(!player.getLocation().equals(block.getLocation())
+		if (!player.getLocation().equals(block.getLocation())
 				&& player.getEyeLocation().getBlock().getType() != Material.AIR) {
 			event.setCancelled(true);
 			player.damage(config.getDamageOnElytraBreakBug());
 		}
 	}
 
-	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityTeleport(EntityTeleportEvent event) {
 		if (!config.isEnabled() || config.canStorageTeleport()) return;
 		if (event.getEntity() instanceof InventoryHolder) {
@@ -123,7 +123,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 	}
 
-	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityPortal(EntityPortalEvent event) {
 		if (!config.isEnabled() || config.canStorageTeleport()) return;
 		if (event.getEntity() instanceof InventoryHolder) {
@@ -134,12 +134,12 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@EventHandler
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
-		if((event.getDestination() == null) || (event.getSource() == null) ||
+		if ((event.getDestination() == null) || (event.getSource() == null) ||
 				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
 				!(InventoryType.HOPPER.equals(event.getSource().getType()))) return;
 		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getState().getData();
 		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getState().getData();
-		if(source.getFacing().getOppositeFace() == dest.getFacing()) {
+		if (source.getFacing().getOppositeFace() == dest.getFacing()) {
 			//They're pointing into each other and will eventually dupe
 			event.setCancelled(true);
 		}
@@ -147,16 +147,12 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPistonPushRail(BlockPistonExtendEvent event)
-	{
-		if(config.isStopRailDupe())
-		{
-			for (Block block : event.getBlocks())
-			{
+	public void onPistonPushRail(BlockPistonExtendEvent event) {
+		if (config.isStopRailDupe()) {
+			for (Block block : event.getBlocks()) {
 				Material type = block.getType();
 
-				if (config.getMatArray().contains(type))
-				{
+				if (config.getMatArray().contains(type)) {
 					event.setCancelled(true);
 					return;
 				}
@@ -165,21 +161,16 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onRailPlace(BlockPlaceEvent event)
-	{
-		if(config.isStopRailDupe())
-		{
+	public void onRailPlace(BlockPlaceEvent event) {
+		if (config.isStopRailDupe()) {
 			Block block = event.getBlock();
 			Material type = block.getType();
 
-			if (config.getMatArray().contains(type))
-			{
-				for (BlockFace face : config.getBfArray())
-				{
+			if (config.getMatArray().contains(type)) {
+				for (BlockFace face : config.getBfArray()) {
 					type = block.getRelative(face).getType();
 
-					if (config.getMatArray().contains(type))
-					{
+					if (config.getMatArray().contains(type)) {
 						event.setCancelled(true);
 						return;
 					}
@@ -190,31 +181,24 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	//Trying to stop players from deleting end portals
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event)
-	{
-		if(config.isStopEndPortalDeletion())
-		{
+	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+		if (config.isStopEndPortalDeletion()) {
 			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 
-			if(block.getType() == Material.ENDER_PORTAL)
-			{
+			if (block.getType() == Material.ENDER_PORTAL) {
 				event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
-	public void onDispenseEvent(BlockDispenseEvent event)
-	{
-		if(config.isStopEndPortalDeletion())
-		{
-			if(event.getBlock().getType() == Material.DISPENSER)
-			{
-				Dispenser disp = (Dispenser)event.getBlock().getState().getData();
+	public void onDispenseEvent(BlockDispenseEvent event) {
+		if (config.isStopEndPortalDeletion()) {
+			if (event.getBlock().getType() == Material.DISPENSER) {
+				Dispenser disp = (Dispenser) event.getBlock().getState().getData();
 				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
 
-				if(type == Material.ENDER_PORTAL)
-				{
+				if (type == Material.ENDER_PORTAL) {
 					event.setCancelled(true);
 				}
 

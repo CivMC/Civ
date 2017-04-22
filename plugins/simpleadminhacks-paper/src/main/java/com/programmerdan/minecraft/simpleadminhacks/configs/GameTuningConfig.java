@@ -67,10 +67,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	/**
 	 * Wireup for Chunk Limits configuration
-	 * 
-	 * @author ProgrammerDan
 	 *
-	 */ 
+	 * @author ProgrammerDan
+	 */
 	private void wireupChunkLimits(ConfigurationSection config) {
 		this.blockEntityLimits = new HashMap<Material, Integer>();
 		this.exemptFromLimits = new HashSet<UUID>();
@@ -79,7 +78,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		this.chunkLimitsEnabled = config.getBoolean("enabled", false);
 		this.chunkLimitsExceededMessage = ChatColor.translateAlternateColorCodes('&',
-				config.getString("exceededMessage", 
+				config.getString("exceededMessage",
 						ChatColor.RED + "Limit for this chunk reached, you cannot place that! Use a different block."));
 
 		// for each "chunkLimits.tileEntities: " entry, record limit.
@@ -92,7 +91,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 			this.blockEntityLimits.put(toBlock, limit);
 			plugin().log(Level.INFO, " Limiting {0} to {1} per chunk", toBlock.toString(), limit);
 		}
-		
+
 		// for each "chunkLimits.exempt: " entry, record limit.
 		List<String> exempts = config.getStringList("exempt");
 		for (String exempt : exempts) {
@@ -179,7 +178,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	/**
 	 * @return If setting your spawn with a bed during the daytime is enabled.
- 	*/
+	 */
 	public boolean areDaytimeBedsEnabled() {
 		return daytimeBedEnabled;
 	}
@@ -187,26 +186,22 @@ public class GameTuningConfig extends SimpleHackConfig {
 	/**
 	 * @return If one to one nether is enabled.
 	 */
-	public boolean isOneToOneNether()
-	{
+	public boolean isOneToOneNether() {
 		return oneToOneNether;
 	}
 
 	/**
 	 * @return If return portals are enabled.
 	 */
-	public boolean isReturnNetherPortal()
-	{
+	public boolean isReturnNetherPortal() {
 		return returnNetherPortal;
 	}
 
-	public boolean isChestedMinecartInventories()
-	{
+	public boolean isChestedMinecartInventories() {
 		return chestedMinecartInventories;
 	}
 
-	public boolean isHopperMinecartInventories()
-	{
+	public boolean isHopperMinecartInventories() {
 		return hopperMinecartInventories;
 	}
 
