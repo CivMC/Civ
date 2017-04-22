@@ -54,7 +54,7 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
 		if(this.weepingAngel)
 		{
-			this.weepingAngelEnv = config.getInt("weepingAngel.enviorment", 1);
+			this.weepingAngelEnv = config.getInt("weepingAngel.environment", 1);
 			this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
 
 			plugin().log("Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");

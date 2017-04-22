@@ -31,7 +31,7 @@ import java.util.HashSet;
 
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	public static final String NAME = "GameFixes";
-	
+
 	public GameFixes(SimpleAdminHacks plugin, GameFixesConfig config) {
 		super(plugin, config);
 	}
@@ -100,21 +100,21 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 		return genStatus.toString();
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 		if (block == null || player == null) return;
-		
+
 		if(!player.getLocation().equals(block.getLocation())
 				&& player.getEyeLocation().getBlock().getType() != Material.AIR) {
 			event.setCancelled(true);
 			player.damage(config.getDamageOnElytraBreakBug());
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST, ignoreCancelled=true)
 	public void onEntityTeleport(EntityTeleportEvent event) {
 		if (!config.isEnabled() || config.canStorageTeleport()) return;
@@ -130,7 +130,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
@@ -143,28 +143,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			//They're pointing into each other and will eventually dupe
 			event.setCancelled(true);
 		}
-		
+
 	}
-
-	//This is to stop rail dupe glitch via pistons
-	private static final BlockFace[] faces_ = new BlockFace[]
-	{
-		BlockFace.NORTH,
-		BlockFace.SOUTH,
-		BlockFace.EAST,
-		BlockFace.WEST,
-		BlockFace.UP,
-		BlockFace.DOWN
-	};
-
-	private static final Material[] stopDupes_ = new Material[]
-	{
-		Material.RAILS,
-		Material.ACTIVATOR_RAIL,
-		Material.DETECTOR_RAIL,
-		Material.POWERED_RAIL,
-		Material.CARPET
-	};
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPistonPushRail(BlockPistonExtendEvent event)
@@ -174,13 +154,11 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			for (Block block : event.getBlocks())
 			{
 				Material type = block.getType();
-				for (Material mat : stopDupes_)
+
+				if (config.getMatArray().contains(type))
 				{
-					if (type == mat)
-					{
-						event.setCancelled(true);
-						return;
-					}
+					event.setCancelled(true);
+					return;
 				}
 			}
 		}
@@ -194,22 +172,16 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			Block block = event.getBlock();
 			Material type = block.getType();
 
-			for (Material mat : stopDupes_)
+			if (config.getMatArray().contains(type))
 			{
-				if (type == mat)
+				for (BlockFace face : config.getBfArray())
 				{
-					for (BlockFace face : faces_)
-					{
-						type = block.getRelative(face).getType();
+					type = block.getRelative(face).getType();
 
-						if(type == Material.PISTON_BASE ||
-								type == Material.PISTON_EXTENSION ||
-								type == Material.PISTON_MOVING_PIECE ||
-								type == Material.PISTON_STICKY_BASE)
-						{
-							event.setCancelled(true);
-							return;
-						}
+					if (config.getMatArray().contains(type))
+					{
+						event.setCancelled(true);
+						return;
 					}
 				}
 			}

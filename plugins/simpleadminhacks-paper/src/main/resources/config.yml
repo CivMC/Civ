@@ -27,7 +27,7 @@ hacks:
     # WeepingAngel bans people when they die, the numbers are in minutes.
     weepingAngel:
       enabled: false
-      enviorment: 1
+      environment: 1
       playerKill: 5
   GameFixes:
     enabled: true
