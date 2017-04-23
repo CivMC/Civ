@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,6 +24,8 @@ import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.DeprecatedMethods;
 import com.aleksey.castlegates.citadel.ICitadelManager;
 import com.aleksey.castlegates.database.SqlDatabase;
+import com.aleksey.castlegates.events.CastleGatesDrawGateEvent;
+import com.aleksey.castlegates.events.CastleGatesUndrawGateEvent;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.BlockState;
 import com.aleksey.castlegates.types.Gearblock;
@@ -599,8 +602,10 @@ public class GearManager {
 		}
 
 		CastleGates.getOrebfuscatorManager().update(locations);
-
+		
 		link.setBlocks(blockStates);
+
+		Bukkit.getPluginManager().callEvent(new CastleGatesDrawGateEvent(locations));
 	}
 
 	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players) {
@@ -650,12 +655,17 @@ public class GearManager {
 		List<BlockState> blocks = link.getBlocks();
 		int i = 0;
 
+		ArrayList<Location> locations = new ArrayList<Location>();
+
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			BlockState blockState = blocks.get(i++);
 
 			Block block = world.getBlockAt(x1, y1, z1);
+			Location location = block.getLocation();
+
+			locations.add(location);
 			DeprecatedMethods.setTypeIdAndData(block, blockState.id, blockState.meta);
-			citadelManager.createReinforcement(blockState.reinforcement, block.getLocation());
+			citadelManager.createReinforcement(blockState.reinforcement, location);
 
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
@@ -663,6 +673,7 @@ public class GearManager {
 		}
 
 		link.setBlocks(null);
+		Bukkit.getPluginManager().callEvent(new CastleGatesUndrawGateEvent(locations));
 	}
 
 	private static boolean canAccessDoors(List<Player> players, Location location) {
