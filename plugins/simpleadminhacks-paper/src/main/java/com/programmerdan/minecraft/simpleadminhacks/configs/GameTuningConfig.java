@@ -32,6 +32,12 @@ public class GameTuningConfig extends SimpleHackConfig {
 	private boolean daytimeBedEnabled;
 	private String daytimeBedSpawnSetMessage;
 
+	private boolean oneToOneNether;
+	private boolean returnNetherPortal;
+
+	private boolean chestedMinecartInventories;
+	private boolean hopperMinecartInventories;
+
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -44,15 +50,26 @@ public class GameTuningConfig extends SimpleHackConfig {
 		ConfigurationSection daytimeBed = config.getConfigurationSection("daytimeBed");
 		wireupDaytimeBed(daytimeBed);
 
+		this.oneToOneNether = config.getBoolean("oneToOneNether", false);
+		if (oneToOneNether) plugin().log("One to One Nether is enabled.");
+
+		this.returnNetherPortal = config.getBoolean("returnNetherPortal", true);
+		if (!returnNetherPortal) plugin().log("Return Nether Portals disabled.");
+
+		this.chestedMinecartInventories = config.getBoolean("chestedMinecartInventories", true);
+		if (!chestedMinecartInventories) plugin().log("Chested Minecart Inventories are disabled.");
+
+		this.hopperMinecartInventories = config.getBoolean("hopperMinecartInventories", true);
+		if (!hopperMinecartInventories) plugin().log("Hopper Minecart Inventories are disabled.");
+
 		/* Add additional tuning config grabs here. */
 	}
 
 	/**
 	 * Wireup for Chunk Limits configuration
-	 * 
-	 * @author ProgrammerDan
 	 *
-	 */ 
+	 * @author ProgrammerDan
+	 */
 	private void wireupChunkLimits(ConfigurationSection config) {
 		this.blockEntityLimits = new HashMap<Material, Integer>();
 		this.exemptFromLimits = new HashSet<UUID>();
@@ -61,7 +78,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		this.chunkLimitsEnabled = config.getBoolean("enabled", false);
 		this.chunkLimitsExceededMessage = ChatColor.translateAlternateColorCodes('&',
-				config.getString("exceededMessage", 
+				config.getString("exceededMessage",
 						ChatColor.RED + "Limit for this chunk reached, you cannot place that! Use a different block."));
 
 		// for each "chunkLimits.tileEntities: " entry, record limit.
@@ -74,7 +91,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 			this.blockEntityLimits.put(toBlock, limit);
 			plugin().log(Level.INFO, " Limiting {0} to {1} per chunk", toBlock.toString(), limit);
 		}
-		
+
 		// for each "chunkLimits.exempt: " entry, record limit.
 		List<String> exempts = config.getStringList("exempt");
 		for (String exempt : exempts) {
@@ -103,7 +120,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 * Wireup for enabling setting your spawn during the day.
 	 *
 	 * @author Amelorate
-     */
+	 */
 	private void wireupDaytimeBed(ConfigurationSection config) {
 		if (config == null) {
 			this.daytimeBedEnabled = false;
@@ -154,15 +171,38 @@ public class GameTuningConfig extends SimpleHackConfig {
 	/**
 	 * @return The message that is sent to the player if they right click on a bed and set their spawn.
 	 * Empty string if there should not be a message, and null if daytime beds are disabled.
-     */
+	 */
 	public String getDaytimeBedSpawnSetMessage() {
 		return daytimeBedEnabled ? daytimeBedSpawnSetMessage : null;
 	}
 
 	/**
 	 * @return If setting your spawn with a bed during the daytime is enabled.
-     */
+	 */
 	public boolean areDaytimeBedsEnabled() {
 		return daytimeBedEnabled;
 	}
+
+	/**
+	 * @return If one to one nether is enabled.
+	 */
+	public boolean isOneToOneNether() {
+		return oneToOneNether;
+	}
+
+	/**
+	 * @return If return portals are enabled.
+	 */
+	public boolean isReturnNetherPortal() {
+		return returnNetherPortal;
+	}
+
+	public boolean isChestedMinecartInventories() {
+		return chestedMinecartInventories;
+	}
+
+	public boolean isHopperMinecartInventories() {
+		return hopperMinecartInventories;
+	}
+
 }

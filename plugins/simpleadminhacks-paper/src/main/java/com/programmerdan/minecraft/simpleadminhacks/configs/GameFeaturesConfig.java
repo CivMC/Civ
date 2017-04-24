@@ -29,6 +29,10 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean witherSpawning;
 	private boolean enderChestPlacement;
 
+	private boolean weepingAngel;
+	private int weepingAngelEnv;
+	private int weepingAngelPlayer;
+
 	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -39,36 +43,56 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		if (!this.potatoXPEnabled) plugin().log("  Potato XP Disabled");
 
 		this.villagerTrading = config.getBoolean("villagerTrading", false);
-		if(!villagerTrading) plugin().log("VillagerTrading is disabled");
+		if (!villagerTrading) plugin().log("VillagerTrading is disabled");
 
 		this.witherSpawning = config.getBoolean("witherSpawning", false);
 		if (!this.witherSpawning) plugin().log("Wither Spawning is disabled");
 
 		this.enderChestPlacement = config.getBoolean("enderChestPlacement", false);
 		if (!this.enderChestPlacement) plugin().log("Placeing EnderChests is disabled");
+
+		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
+		if (this.weepingAngel) {
+			this.weepingAngelEnv = config.getInt("weepingAngel.environment", 1);
+			this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
+
+			plugin().log("Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");
+		}
+
+
 		/* Add additional feature config grabs here. */
 	}
 
 	/**
 	 * @return If getting XP from potatos is enabled.
-     */
+	 */
 	public boolean isPotatoXPEnabled() {
 		return this.potatoXPEnabled;
 	}
 
-	public boolean isVillagerTrading()
-	{
+	public boolean isVillagerTrading() {
 		return this.villagerTrading;
 	}
 
-	public boolean isWitherSpawning()
-	{
+	public boolean isWitherSpawning() {
 		return this.witherSpawning;
 	}
 
-	public boolean isEnderChestPlacement()
-	{
+	public boolean isEnderChestPlacement() {
 		return this.enderChestPlacement;
 	}
+
+	public boolean isWeepingAngel() {
+		return this.weepingAngel;
+	}
+
+	public int getWeepingAngelEnv() {
+		return this.weepingAngelEnv;
+	}
+
+	public int getWeepingAngelPlayer() {
+		return this.weepingAngelPlayer;
+	}
+
 }
 
