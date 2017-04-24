@@ -8,10 +8,10 @@ broadcast_permission: simpleadmin.broadcast
 hacks:
   Experimental:
     enabled: true
-    combatspy: true
-    teleportspy: true
+    combatspy: false
+    teleportspy: false
     postteleport:
-      spy: true
+      spy: false
       count: 10
   GameFeatures:
     enabled: true
@@ -69,6 +69,8 @@ hacks:
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
+  CrazyCratesAnnounce:
+    enabled: false
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
@@ -121,7 +123,7 @@ hacks:
        - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
        - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
   HackBot:
-    enabled: true
+    enabled: false
     bots:
       Rando:
         name: Rando4800xXx
