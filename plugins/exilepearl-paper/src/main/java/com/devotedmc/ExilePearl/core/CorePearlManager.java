@@ -268,7 +268,7 @@ final class CorePearlManager implements PearlManager {
 			}
 
 			PearlHolder holder = pearl.getHolder();
-			if(holder.isBlock() && disallowedWorlds.contains(holder.getLocation().getWorld().getName())) {
+			if(holder != null && holder.isBlock() && disallowedWorlds.contains(holder.getLocation().getWorld().getName())) {
 				pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
 				pearlsToFree.add(pearl);
 			}

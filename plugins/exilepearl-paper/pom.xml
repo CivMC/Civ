@@ -5,7 +5,7 @@
 	<groupId>com.devotedmc</groupId>
 	<artifactId>ExilePearl</artifactId>
 	<packaging>jar</packaging>
-	<version>0.5.9-SNAPSHOT</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>ExilePearl</name>
 	<url>https://github.com/DevotedMC/ExilePearl</url>
 
@@ -124,7 +124,7 @@
 		<dependency>
 			<groupId>io.lumine.xikage</groupId>
 			<artifactId>MythicLib</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>1.0.1</version>
 			<scope>provided</scope>
 		</dependency>
 
