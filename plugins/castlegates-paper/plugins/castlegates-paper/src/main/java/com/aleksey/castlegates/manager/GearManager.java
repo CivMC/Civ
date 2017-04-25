@@ -582,6 +582,7 @@ public class GearManager {
 		ICitadelManager citadelManager = CastleGates.getCitadelManager();
 		ArrayList<BlockState> blockStates = new ArrayList<BlockState>();
 		ArrayList<Location> locations = new ArrayList<Location>();
+		ArrayList<org.bukkit.block.BlockState> states = new ArrayList<org.bukkit.block.BlockState>();
 
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			Block block = world.getBlockAt(x1, y1, z1);
@@ -593,19 +594,28 @@ public class GearManager {
 			blockState.reinforcement = citadelManager.removeReinforcement(location);
 
 			blockStates.add(blockState);
-
-			DeprecatedMethods.setTypeIdAndData(block, Material.AIR, (byte)0);
+			
+			org.bukkit.block.BlockState state = block.getState();
+			
+			state.setType(Material.AIR);
+			states.add(state);
 
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
 			z1 += blockFace.getModZ();
 		}
 
+		// Call our event before committing world changes.
+		Bukkit.getPluginManager().callEvent(new CastleGatesDrawGateEvent(locations));
+
+		// commit world changes
+		for (org.bukkit.block.BlockState state : states) {
+			state.update(true, true);
+		}
+		
 		CastleGates.getOrebfuscatorManager().update(locations);
 		
 		link.setBlocks(blockStates);
-
-		Bukkit.getPluginManager().callEvent(new CastleGatesDrawGateEvent(locations));
 	}
 
 	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players) {
@@ -656,6 +666,7 @@ public class GearManager {
 		int i = 0;
 
 		ArrayList<Location> locations = new ArrayList<Location>();
+		ArrayList<org.bukkit.block.BlockState> states = new ArrayList<org.bukkit.block.BlockState>();
 
 		while(x1 != x2 || y1 != y2 || z1 != z2) {
 			BlockState blockState = blocks.get(i++);
@@ -664,16 +675,23 @@ public class GearManager {
 			Location location = block.getLocation();
 
 			locations.add(location);
-			DeprecatedMethods.setTypeIdAndData(block, blockState.id, blockState.meta);
+
+			// stage world changes
+			states.add(DeprecatedMethods.toCraftBukkit(block, blockState));
 			citadelManager.createReinforcement(blockState.reinforcement, location);
 
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
 			z1 += blockFace.getModZ();
 		}
-
-		link.setBlocks(null);
 		Bukkit.getPluginManager().callEvent(new CastleGatesUndrawGateEvent(locations));
+		
+		// post-event, commit world changes.
+		for (org.bukkit.block.BlockState state : states) {
+			DeprecatedMethods.commitCraftBukkit(state);
+		}
+		
+		link.setBlocks(null);
 	}
 
 	private static boolean canAccessDoors(List<Player> players, Location location) {
