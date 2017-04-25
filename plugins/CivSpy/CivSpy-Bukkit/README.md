@@ -175,6 +175,11 @@ As of April 22, 2017:
 `hiddenore.gen`
 `hiddenore.replace` - When mining triggers a generation task. Both what was generated (.gen) and what it replaced (.replace) are recorded.
 
+`crazycrates.crate.TYPE` 
+`crazycrates.prize.TYPE`
+`crazycrates.drop.TYPE` - When crazy crates awards a prize. Covers all types of crates. Records which item(s) were given out in the string
+ value field for .drop, .crate stores crate name, .prize records prize name. TYPE is the kind of crate -- check the CrazyCrates documentation for which values are valid.
+
 `redstone.current.increase`
 `redstone.current.decrease`
 `redstone.current.stable` - Track Redstone changes by location and motion. String_value is the redstone item that activated.

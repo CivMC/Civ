@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>civspy</artifactId>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<packaging>jar</packaging>
 	<name>CivSpy</name>
 	<url>https://github.com/DevotedMC/CivSpy</url>
@@ -109,6 +109,27 @@
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>cropcontrol</artifactId>
 			<version>1.0.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.devotedmc</groupId>
+			<artifactId>ExilePearl</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.aleksey</groupId>
+			<artifactId>castlegates</artifactId>
+			<version>1.0.12-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--  Note: CrazyCrates isn't distributed in POM form.
+					For this to build successfully, use install:install-file with
+					attributes as below. -->
+		<dependency>
+			<groupId>me.badbones69</groupId>
+			<artifactId>CrazyCrates</artifactId>
+			<version>1.7.1.5</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Note: RecipeManager isn't distributed in POM form.
