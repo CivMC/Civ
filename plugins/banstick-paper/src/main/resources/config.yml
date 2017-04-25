@@ -27,11 +27,11 @@ database:
   period: 12000
   delay: 6000
 import:
- enable: true
+ enable: false
 # IP-Check import. Delay to set how long in ticks to wait after startup to import. Should be idempotent, _no_ guarantee whatsoever.
  ipcheck:
   delay: 1000
-  enable: true
+  enable: false
   database:
    host: localhost
    port:
