@@ -51,12 +51,10 @@ public class BastionInteractListener implements Listener {
 		final Player player = event.getPlayer();
 
 		//Stop boat places in bastions
-		if(player.getInventory().getItemInMainHand().getType() == Material.BOAT ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_ACACIA ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_BIRCH ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_DARK_OAK ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_JUNGLE ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_SPRUCE ) {
+		Material isBoat = player.getInventory().getItemInMainHand().getType();
+		if(isBoat == Material.BOAT || isBoat == Material.BOAT_ACACIA ||
+			isBoat == Material.BOAT_BIRCH || isBoat == Material.BOAT_DARK_OAK ||
+			isBoat == Material.BOAT_JUNGLE || isBoat == Material.BOAT_SPRUCE ) {
 			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 			blocks.add(event.getClickedBlock());
 			Set<BastionBlock> blocking = manager.shouldStopBlock(null, blocks, player.getUniqueId());
