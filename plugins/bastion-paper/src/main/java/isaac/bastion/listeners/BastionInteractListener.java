@@ -56,17 +56,18 @@ public class BastionInteractListener implements Listener {
 			player.getInventory().getItemInMainHand().getType() == Material.BOAT_BIRCH ||
 			player.getInventory().getItemInMainHand().getType() == Material.BOAT_DARK_OAK ||
 			player.getInventory().getItemInMainHand().getType() == Material.BOAT_JUNGLE ||
-			player.getInventory().getItemInMainHand().getType() == Material.BOAT_SPRUCE )
-		{
+			player.getInventory().getItemInMainHand().getType() == Material.BOAT_SPRUCE ) {
 			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 			blocks.add(event.getClickedBlock());
 			Set<BastionBlock> blocking = manager.shouldStopBlock(null, blocks, player.getUniqueId());
 
-			if(blocking != null && blocking.size() > 0)
-			{
-				event.setCancelled(true);
-				player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
-				return;
+			if(blocking != null && blocking.size() > 0) {
+				blocking = BastionDamageListener.clearNonBlocking(blocking);
+				if (blocking.size() > 0) {
+					event.setCancelled(true);
+					player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
+					return;
+				}
 			}
 		}
 
