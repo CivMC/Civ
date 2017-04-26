@@ -2,7 +2,7 @@ name: NameLayer
 main: vg.civcraft.mc.namelayer.NameLayerPlugin
 version: ${releaseVersion}
 author: Rourke750
-authors: [BlackXnt, Maxopoly, ProgrammerDan, Tyrothalos, Scuwr]
+authors: [BlackXnt, Maxopoly, ProgrammerDan, Tyrothalos, Scuwr, Mr_Little_Kitty]
 depend: [CivModCore]
 softdepend: [Mercury]
 description: NameLayer handles groups creation and management, in addition to name changes. Once you have connected to Civcraft with a name, it is permanently yours. If a name is already taken, then NameLayer will add a number to the name.
@@ -43,9 +43,9 @@ commands:
     aliases: [nlremovemember, nlremove, nlkick, kickmember, removemember, remove, kickmember, ctremove, ctkick]
    nlri:
     aliases: [nlrevokeinvite, nluninvite, revoke, uninvite, revokeinvite, uninvite]
-   nllink:
-   nlunlink:
-   nllsg:
+   #nllink:
+   #nlunlink:
+   #nllsg:
    nlsp:
     aliases: [nlsetpassword, nlsetpass, setpass, setpassword]
    nltg:
