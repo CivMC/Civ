@@ -49,7 +49,7 @@ public class CrazyCratesListener extends ServerDataListener {
 				location = player.getLocation();
 			}
 			
-			Chunk chunk = player != null ? location.getChunk() : null;
+			Chunk chunk = location != null ? location.getChunk() : null;
 			
 			// record Crate
 			// record Prize

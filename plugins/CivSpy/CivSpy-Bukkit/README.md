@@ -179,6 +179,12 @@ As of April 22, 2017:
 `crazycrates.prize.TYPE`
 `crazycrates.drop.TYPE` - When crazy crates awards a prize. Covers all types of crates. Records which item(s) were given out in the string
  value field for .drop, .crate stores crate name, .prize records prize name. TYPE is the kind of crate -- check the CrazyCrates documentation for which values are valid.
+ 
+`exilepearl.pearl` - Records a player was pearled. The player data field is the player pearled, the String field is the player doing the pearling.
+
+`exilepearl.moveto` - The pearl was moved to a new contained. String field is the name of the container.
+
+`exilepearl.freed` - The pearl was freed. String field is the reason for freeing.
 
 `redstone.current.increase`
 `redstone.current.decrease`

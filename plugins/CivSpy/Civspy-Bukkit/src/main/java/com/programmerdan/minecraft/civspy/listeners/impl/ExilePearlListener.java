@@ -76,7 +76,7 @@ public class ExilePearlListener extends ServerDataListener {
 			
 			Chunk chunk = pearl.getLocation() != null ? pearl.getLocation().getChunk() : null;
 						
-			DataSample rfree = new PointDataSample("exilepearl.pearl", this.getServer(),
+			DataSample rfree = new PointDataSample("exilepearl.freed", this.getServer(),
 					chunk != null ? chunk.getWorld().getName() : null, pearl.getPlayerId(), 
 					chunk != null ? chunk.getX() : null,  chunk != null ? chunk.getZ() : null, 
 					event.getReason().toString());
