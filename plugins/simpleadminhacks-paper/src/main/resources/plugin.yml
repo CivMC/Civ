@@ -47,6 +47,10 @@ commands:
       /<command> all spawn
       /<command> [status|list]
     permission: simpleadmin.bots
+  showtimings:
+    description: Get an in-game map that shows tick length and distribution over time (2 mins, updated continuously)
+    usage: /<command>
+    permission: simpleadmin.hacks
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands

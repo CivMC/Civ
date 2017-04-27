@@ -169,6 +169,8 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
+  TimingsHack:
+    enabled: true
   BadBoyWatch:
     enabled: true
     trackingDepth: 16
