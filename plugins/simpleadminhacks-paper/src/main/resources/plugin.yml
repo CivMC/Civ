@@ -50,7 +50,23 @@ commands:
   showtimings:
     description: Get an in-game map that shows tick length and distribution over time (2 mins, updated continuously)
     usage: /<command>
-    permission: simpleadmin.hacks
+    permission: simpleadmin.timings
+  bindtimings:
+    description: Get an in-game map that shows relative tick usage by a targetted class
+    usage: /<command> classname
+    permission: simpleadmin.timings
+  thresholdtimings:
+    description: Get periodic reports on misbehaving classes using a lot of tick time, based on a threshold (as a factor * avg tick)
+    usage: /<command> threshold
+    permission: simpleadmin.timings
+  listtimings:
+    description: Show all Classes that can be used with bindtimings; this is a progressive report function that continues until nothing new is seen
+    usage: /<command>
+    permission: simpleadmin.timings
+  stoptimings:
+    description: Stop any advanced timing tracking. Does not stop /showtimings reults.
+    usage: /<command>
+    permission: simpleadmin.timings
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -65,6 +81,7 @@ permissions:
       simpleadmin.book: true
       simpleadmin.broadcast: true
       simpleadmin.bots: true
+      simpleadmin.timings: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -91,4 +108,7 @@ permissions:
       default: op
     simpleadmin.bots:
       description: Gives the ability to create NPCs (bots)
+      default: op
+    simpleadmin.timings:
+      description: Gives the ability to view and manage /...timings commands
       default: op
