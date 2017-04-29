@@ -5,6 +5,7 @@ import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -12,10 +13,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -24,8 +23,13 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerItemHeldEvent;
+import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
@@ -43,7 +47,7 @@ import net.md_5.bungee.api.ChatColor;
 public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "TimingsHack";
-	private static final int DEPTH_MAX = 30;
+	private static final int DEPTH_MAX = 60;
 	private static final int HQ_CYCLES = 120000;
 	private static final int LQ_CYCLES = 12000;
 	
@@ -111,7 +115,8 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	private BukkitTask listTask = null;
 	private BukkitTask thresholdTask = null;
 
-	TimingsMap tickVisualize = null;
+	private TimingsMap tickVisualize = null;
+	private Map<String, BindTimingMap> bindVisualizers = null;
 	
 	private long rootThread = -1;
 	
@@ -125,6 +130,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		super(plugin, config);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!config.isEnabled()) return true;
@@ -188,30 +194,145 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}
 		Player player = (Player) sender;
 		if (command.getName().equalsIgnoreCase("showtimings")) {
-			MapView view = Bukkit.createMap(player.getWorld());
+			MapView view = null;
+			if (config.getTimingsMap() != null) {
+				view = Bukkit.getMap(config.getTimingsMap());
+			} else {
+				view = Bukkit.createMap(player.getWorld());
+				config.setTimingsMap(view.getId());
+				plugin().saveConfig();
+			}
 			view.getRenderers().forEach(view::removeRenderer);
 			view.addRenderer(this.tickVisualize);
 			
 			ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+			
+			ItemMeta mapMeta = viewMap.getItemMeta();
+			mapMeta.setDisplayName("Tick Health Monitor");
+			mapMeta.setLore(Arrays.asList(
+					"TPS",
+					"Top line - Avg Tick / s vs. Lifetime Avg",
+					"Middle - Heightmap of per-tick-time",
+					"Bottom - Heatmap of per-tick-time"
+					));
+			viewMap.setItemMeta(mapMeta);
 			
 			player.getInventory().addItem(viewMap);
 			
 			player.sendMessage("Check your inventory for a TPS visualization Map");
 		} else if (command.getName().equalsIgnoreCase("bindtimings")) {
 			if (args.length < 1) {
-				player.sendMessage("You need to tell us what to bind to. Use listtimings if you don't know what is possible.");
+				player.sendMessage("You need to tell us what to bind to. Use listtimings if you don't know what is possible. Will be substring match. Don't use spaces.");
 				return true;
 			}
 			// show map with graph for a specific limited element
 			startHq();
 			
+			player.sendMessage("Request received to bind to " + args[0] + " tick time utilization");
+			
 			// Delay a few ticks, then give into inventory a map that shows the class % of TPS use
+			MapView view = null;
+			Short mapId = config.getBindMap(args[0]);
+			if (mapId != null) {
+				view = Bukkit.getMap(config.getBindMap(args[0]));
+				if (!bindVisualizers.containsKey(args[0])) {
+					// should exist..
+					bindVisualizers.put(args[0], new BindTimingMap(args[0]));
+				}
+			} else {
+				view = Bukkit.createMap(player.getWorld());
+				config.setBindMap(args[0], view.getId());
+				plugin().saveConfig();
+				bindVisualizers.put(args[0], new BindTimingMap(args[0]));
+			}
+			view.getRenderers().forEach(view::removeRenderer);
+			view.addRenderer(this.bindVisualizers.get(args[0]));
+			
+			ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+			
+			ItemMeta mapMeta = viewMap.getItemMeta();
+			mapMeta.setDisplayName(args[0] + " Utilization Monitor");
+			mapMeta.setLore(Arrays.asList(
+					args[0],
+					"Top line - CPU Util vs. Tick Avg",
+					"Middle - Heightmap of per-tick-time",
+					"Bottom - Heatmap of per-tick-time"
+					));
+			viewMap.setItemMeta(mapMeta);
+			
+			player.getInventory().addItem(viewMap);
+			
+			player.sendMessage("Check your inventory for a " + args[0] + " binding TPS visualization Map");
+
 		}
 		return true;
 	}
 	
 	@Override
 	public void registerListeners() {
+		if (!config.isEnabled()) return;
+		
+		plugin().log("Registering listeners");
+		plugin().registerListener(this);
+	}
+	
+	@SuppressWarnings("deprecation")
+	@EventHandler
+	public void onMapInit(MapInitializeEvent event) {
+		MapView view = event.getMap();
+		if (config.getTimingsMap() != null && view.getId() == config.getTimingsMap().shortValue()) { 
+			view.getRenderers().forEach(view::removeRenderer);
+			view.addRenderer(this.tickVisualize);
+		} else {
+			String bind = config.getBindFromId(view.getId());
+			if (bind != null) {
+				view.getRenderers().forEach(view::removeRenderer);
+				if (!this.bindVisualizers.containsKey(bind)) {
+					bindVisualizers.put(bind, new BindTimingMap(bind)); // on demand binding.
+				}
+				view.addRenderer(this.bindVisualizers.get(bind));
+				
+			}
+		}
+	}
+	
+	@EventHandler
+	public void onItemHeldChange(PlayerItemHeldEvent event) {
+		Player player = event.getPlayer();
+		PlayerInventory inventory = player.getInventory();
+		ItemStack newHeld = inventory.getItem(event.getNewSlot());
+		if (newHeld != null && newHeld.getType().equals(Material.MAP)) {
+			ItemMeta baseMeta = newHeld.getItemMeta();
+			if (baseMeta.hasLore()) {
+				try {
+					String ID = baseMeta.getLore().get(0);
+					
+					if (ID.equals("TPS")) {
+						MapView view = Bukkit.getMap(newHeld.getDurability());
+						if (view.getRenderers().size() == 1 && !view.getRenderers().get(0).equals(this.tickVisualize)) {
+							view.getRenderers().forEach(view::removeRenderer);
+							view.addRenderer(this.tickVisualize);
+						}
+					} else {
+						String bind = config.getBindFromId(newHeld.getDurability());
+						if (bind.equalsIgnoreCase(ID)) {
+							MapView view = Bukkit.getMap(newHeld.getDurability());
+							BindTimingMap bindViz = null;
+							if (!this.bindVisualizers.containsKey(bind)) {
+								bindVisualizers.put(bind, new BindTimingMap(bind)); // on demand binding.
+							}
+							bindViz = this.bindVisualizers.get(bind);
+							if (view.getRenderers().size() == 1 && !view.getRenderers().get(0).equals(bindViz)) {
+								view.getRenderers().forEach(view::removeRenderer);
+								view.addRenderer(bindViz);
+							}
+						}
+					}
+				} catch (Exception e) {
+					// no-op, quiet failure.
+				}
+			}
+		}
 	}
 
 	@Override
@@ -251,6 +372,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}, 0l, 1l);
 		
 		tickVisualize = new TimingsMap();
+		bindVisualizers = new ConcurrentHashMap<String, BindTimingMap>();
 		
 		rootThread = Thread.currentThread().getId();
 		threadBean = ManagementFactory.getThreadMXBean();
@@ -436,6 +558,22 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	 */
 	class TimingsMap extends MapRenderer {
 
+		/**
+		 * A neat little shapefitting function from 0 to 34 done partwise
+		 * @param avgSec
+		 * @param avgTick
+		 * @return
+		 */
+		private int resolveY(long avgSec, long avgTick) {
+			if (avgSec == avgTick) {
+				return 12;
+			} else if (avgSec < avgTick) {
+				return (int) Math.floor(((double) avgSec / (double) avgTick) * 12d);
+			} else { //if (avgSec > avgTick) {
+				return 12 + (int) Math.floor(1d - ((double) avgTick / (double) avgSec) * 22d);
+			}
+		}
+		
 		@SuppressWarnings("deprecation")
 		private byte resolveColor(long tickLength) {
 			if (tickLength <= 10000l) {
@@ -453,9 +591,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return MapPalette.matchColor(255, 0, 255 - redShade);
 			} else if (tickLength < 216400000l) {
 				int whiteShade = (int) Math.floorDiv((tickLength - 114000000l), 4000000l);
-				return MapPalette.matchColor(255, whiteShade, whiteShade);
+				return MapPalette.matchColor(255 - whiteShade, 0, 0); //, whiteShade, whiteShade);
 			} else {
-				return MapPalette.WHITE;
+				return MapPalette.matchColor(0, 0, 0); //.WHITE;
 			}
 		}
 		
@@ -478,12 +616,16 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			if (!isEnabled()) return;
 			try {
 				int storeStart = tickRecord;
+				if (storeStart % 20 != 19) return; // skip this render
 				storeStart = storeStart - (storeStart % 20); // pin it to the nearest second
 				if (storeStart < 0) storeStart += LQ_CYCLES;
 				int lastRow = 128;
 				int newRow = 127;
-				int nextCol = 100;
-				int downCol = 102;
+				int nextCol = 105;
+				int downCol = 107;
+				
+				long tickAvg = 0l;
+				
 				for (int displace = 0; displace < 2560; displace++) {
 					if (newRow != lastRow) {
 						// clear row
@@ -495,16 +637,27 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					int activeIdx = storeStart - displace;
 					if (activeIdx < 0) activeIdx += LQ_CYCLES;
 					long recorded = ticks[activeIdx];
+					tickAvg += recorded;
+					
 					byte color = resolveColor(recorded);
 					for (int j = 0; j < resolveWidth(recorded);j++,nextCol--) {
 						canvas.setPixel(newRow, nextCol, color);
 					}
-					canvas.setPixel(newRow, 101, MapPalette.DARK_GRAY);
 					canvas.setPixel(newRow, downCol++, color);
+					
 					if (displace % 20 == 19) {
+						long localAvg = Math.floorDiv(tickAvg, 20l);
+						canvas.setPixel(newRow, resolveY(localAvg, (long)avgTick), resolveColor(localAvg));
+						
+						if (canvas.getPixel(newRow, 12) == 0) canvas.setPixel(newRow, 12, MapPalette.LIGHT_GRAY);
+						if (canvas.getPixel(newRow, 85) == 0) canvas.setPixel(newRow, 85, MapPalette.DARK_GRAY);
+						if (canvas.getPixel(newRow, 86) == 0) canvas.setPixel(newRow, 86, MapPalette.DARK_GRAY);
+						if (canvas.getPixel(newRow, 106) == 0) canvas.setPixel(newRow, 106, MapPalette.DARK_GRAY);
+						
+						tickAvg = 0l;
 						newRow--;
-						nextCol = 100;
-						downCol = 101;
+						nextCol = 105;
+						downCol = 107;
 					}
 				}
 			} catch (Exception e) {
@@ -516,19 +669,27 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	class BindTimingMap extends MapRenderer {
 
 		private String regex;
+		private int errorCount = 0;
 		
 		public BindTimingMap(String regex) {
 			super();
 			this.regex = regex;
+			this.errorCount = 0;
 		}
 		
+		/**
+		 * A neat little shapefitting function from 0 to 34 done partwise
+		 * @param avgSec
+		 * @param avgTick
+		 * @return
+		 */
 		private int resolveY(long avgSec, long avgTick) {
-			if (avgSec == 0) {
+			if (avgSec == avgTick) {
 				return 22;
 			} else if (avgSec < avgTick) {
 				return (int) Math.floor(((double) avgSec / (double) avgTick) * 22d);
 			} else { //if (avgSec > avgTick) {
-				return 23 + (int) Math.floor(1d - ((double) avgTick / (double) avgSec) * 11d);
+				return 22 + (int) Math.floor(1d - ((double) avgTick / (double) avgSec) * 12d);
 			}
 		}
 		
@@ -555,37 +716,42 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return MapPalette.matchColor(255, 0, 255 - redShade);
 			} else if (tickLength < 21640000l) {
 				int whiteShade = (int) Math.floorDiv((tickLength - 11400000l), 400000l);
-				return MapPalette.matchColor(255, whiteShade, whiteShade);
+				return MapPalette.matchColor(255-whiteShade,0,0);//, whiteShade, whiteShade);
 			} else {
-				return MapPalette.WHITE;
+				return MapPalette.matchColor(0,0,0); //WHITE;
 			}
 		}
 		
 		private int resolveWidth(long tickLength) {
-			if (tickLength <= 50000000l){
+			if (tickLength <= 5000000l){
 				return 1;
-			} else if (tickLength <= 75600000l) {
+			} else if (tickLength <= 7560000l) {
+				return 1;
+			} else if (tickLength <= 8840000l) {
+				return 1;
+			} else if (tickLength <= 11400000l) {
 				return 2;
-			} else if (tickLength <= 88400000l) {
-				return 3;
-			} else if (tickLength <= 114000000l) {
-				return 4;
 			} else {
-				return 5;
+				return 3;
 			}
 		}
 		
 		@Override
 		public void render(MapView view, MapCanvas canvas, Player player) {
-			if (!isEnabled()) return;
+			if (!isEnabled() || !hqActive) return;
 			try {
 				int storeStart = tickRecord;
+				if (storeStart % 20 != 19) return; // skip this render
 				storeStart = storeStart - (storeStart % 20); // pin it to the nearest second
 				if (storeStart < 0) storeStart += LQ_CYCLES;
 				int lastRow = 128;
 				int newRow = 127;
-				int nextCol = 100;
-				int downCol = 102;
+				int nextCol = 105;
+				int downCol = 107;
+				
+				long avgUtil = 0l;
+				long avgTick = 0l;
+				
 				for (int displace = 0; displace < 2560; displace++) {
 					if (newRow != lastRow) {
 						// clear row
@@ -596,21 +762,60 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					}
 					int activeIdx = storeStart - displace;
 					if (activeIdx < 0) activeIdx += LQ_CYCLES;
+					
+					Long binding = hqTickMap[activeIdx].reduceValues(10000, (ClassMethod v) -> {
+						if (v != null && v.matches(regex)) {
+							return Long.valueOf(v.max());
+						}
+						return 0l;
+					}, (Long x, Long y) -> {
+						if (x > y) {
+							return x;
+						} else {
+							return y;
+						}
+					}); // quick mapreduce to determine longest time spend across matching bindings that tick.
+					if(binding == null) {
+						binding = 0l;
+					}
+					
 					long recorded = ticks[activeIdx];
-					byte color = resolveColor(recorded);
-					for (int j = 0; j < resolveWidth(recorded);j++,nextCol--) {
+					
+					avgTick += recorded;
+					avgUtil += binding;
+					
+					byte color = resolveColor(binding);
+					for (int j = 0; j < resolveWidth(binding);j++,nextCol--) {
 						canvas.setPixel(newRow, nextCol, color);
 					}
-					canvas.setPixel(newRow, 101, MapPalette.DARK_GRAY);
 					canvas.setPixel(newRow, downCol++, color);
+					
 					if (displace % 20 == 19) {
+						// now draw avg ratio up top.
+						long tAvg = Math.floorDiv(avgUtil, 20l);
+						canvas.setPixel(newRow, resolveY(tAvg, Math.floorDiv(avgTick, 20l)), resolveColor(tAvg));
+						
+						if (canvas.getPixel(newRow, 22) == 0) canvas.setPixel(newRow, 22, MapPalette.LIGHT_GRAY);
+						if (canvas.getPixel(newRow, 85) == 0) canvas.setPixel(newRow, 85, MapPalette.DARK_GRAY);
+						if (canvas.getPixel(newRow, 86) == 0) canvas.setPixel(newRow, 86, MapPalette.DARK_GRAY);
+						if (canvas.getPixel(newRow, 106) == 0) canvas.setPixel(newRow, 106, MapPalette.DARK_GRAY);
+						
+						// then reset
+						avgUtil = 0l;
+						avgTick = 0l;
+						
 						newRow--;
-						nextCol = 100;
-						downCol = 101;
+						nextCol = 105;
+						downCol = 107;
 					}
 				}
 			} catch (Exception e) {
-				SimpleAdminHacks.instance().log(Level.WARNING, "TimingsMap Render failure ", e);
+				SimpleAdminHacks.instance().log(Level.WARNING, "BindTimingMap " + regex + " Render failure ", e);
+				errorCount++;
+				if (errorCount > 10) {
+					stopHq();
+					errorCount = 0;
+				}
 			}
 		}
 	}
@@ -674,7 +879,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}
 		
 		public boolean matches(String regex) {
-			return clazz.matches(regex);
+			return clazz.contains(regex); //.matches(regex);
 		}
 	}
 	
