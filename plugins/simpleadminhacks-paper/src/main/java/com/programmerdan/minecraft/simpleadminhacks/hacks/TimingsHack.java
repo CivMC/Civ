@@ -44,6 +44,50 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.TimingsHackConfig;
 
 import net.md_5.bungee.api.ChatColor;
 
+/**
+ * This crazy hack is focused on filling a gap left by /timings and warmroast and frankly, most
+ * supposed diagnostic tooling. They work on "over all time averages" which doesn't reveal _why_
+ * you've got high point tick events, just that they happen and _maybe_ if you're lucky, who dun it.
+ * But they give you nothing to capture and diagnose problems as they are happening.
+ * 
+ * This tool seeks to fix that.
+ * 
+ * It runs a quiet tick tracker in the background that identifies extralong ticks. If a high fidelity
+ * monitor is on (activate it using any advanced command -- /thresholdtimings is my recommendation)
+ * then millisecond-level sampling is done of the mainthread active stack, giving some insight into
+ * what class could be causing your problem.
+ * 
+ * Future tooling will include the ability to view the method time allocations; it's tracked, but
+ * atm is not accessible to prevent overwhelming data explosion / overload. I might just add a thing
+ * to allow expansion for select named sourceclasses.
+ * <br/>
+ * Commands:
+ * <br/>
+ * <b>showtimings</b> Can only be run as a player, gives the running player a map object that persistently
+ *   displays the TPS with a per-tick heatmap organized into second, per-tick heightmap organized into
+ *   vertical slices of "relatively sized and colored" time, and a line graph showing longer term tick
+ *   problems where sets of ticks begin to drift far above the average.<br/>
+ * <b>bindtimings</b> Can only be run as a player. Starts the HQ data collector, and gives the running player
+ *   a map that displays the fractional tick impact of any Class that contains the argument passed into
+ *   bindtimings. Also shows a per-tick heatmap of time utilization organized into seconds, per-tick
+ *   heightmap organized into vertical slices of "relatively sized and colored" time, and a line graph showing
+ *   relative fraction of Tick time vs. Avg Tick Time (basically, time spent in matching Class methods vs.
+ *   per-second average tick). VERY useful.<br/>
+ *  <b>thresholdtimings</b> This is the premier function for HQ. Starts the HQ data collector, and uses
+ *   the passed in "threshold factor" to dump Class-level inspection of time-spent on problem ticks.
+ *   Basically, if the threshold is passed by any specific tick, dumps a sorted list of "where time was spent"
+ *   during that problem tick. This is extremely helpful and can be used to identify things that need monitoring 
+ *   via bindtimings.<br/>
+ *  <b>listtimings</b> This gets _very_ spammy. It starts the HQ data collector, and sends to the requester
+ *   all new Classes encountered each tick that hasn't been announced. After nothing new is encountered for a
+ *   while, this shuts itself off.<br/>
+ *  <b>stoptimings</b> This just shuts of all HQ data collection.<br/>
+ * <br/>
+ * In all cases if errors begin to be encountered, various portions will shut itself off. HQ can be restarted
+ * after automatic shutdown, normal tick tracking cannot. 
+ * 
+ * @author ProgrammerDan
+ */
 public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "TimingsHack";
@@ -111,6 +155,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	private ConcurrentHashMap<String, ClassMethod>[] hqTickMap = null;
 
 	private int tickTask = 0;
+	
+	private int tickErrors = 0;
+	private int hqTickErrors = 0;
 	
 	private BukkitTask listTask = null;
 	private BukkitTask thresholdTask = null;
@@ -277,7 +324,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	}
 	
 	@SuppressWarnings("deprecation")
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onMapInit(MapInitializeEvent event) {
 		MapView view = event.getMap();
 		if (config.getTimingsMap() != null && view.getId() == config.getTimingsMap().shortValue()) { 
@@ -296,7 +343,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onItemHeldChange(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
 		PlayerInventory inventory = player.getInventory();
@@ -357,6 +404,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		hqToLqElapsedTime = new long[LQ_CYCLES];
 		hqTickMap = new ConcurrentHashMap[LQ_CYCLES];
 		hqActive = false;
+		tickErrors = 0;
 		
 		for (int i = 0; i < LQ_CYCLES; i++) {
 			hqTickMap[i] = new ConcurrentHashMap<String, ClassMethod>(100);
@@ -386,6 +434,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		hqElapsedTime = new long[HQ_CYCLES];
 		hqTickRecord = 0;
 		hqToLqTickRecord = 0; // tails behind hqTickRecord
+		hqTickErrors = 0;
 		
 		hqCpuTime[0] = threadBean.getThreadCpuTime(rootThread);
 		hqLastTick = System.nanoTime();
@@ -414,84 +463,105 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	}
 	
 	private void tick() {
-		long newTick = System.nanoTime();
-		long tickTime = newTick - lastTick;
-		int tempTickRecord = tickRecord;
-		int ePoint = hqTickRecord; // ignore _current_ as its unfilled.
-		if (++tickRecord >= LQ_CYCLES) { // TODO race condition fault state, time between inc and reset could result in HQ Index bound error
-			tickRecord = 0;
-		}
-		hqTickMap[tickRecord].clear(); // prepare future tickmap.
-		
-		ticks[tempTickRecord] = tickTime;
-		
-		sumTicks += tickTime - ticks[tickRecord]; // new record - outgoing record.
-		cntTicks = (cntTicks == LQ_CYCLES) ? LQ_CYCLES : cntTicks + 1;
-		avgTick = (double) sumTicks / (double) cntTicks;
-		
-		if (hqActive) {
-			// now do Hq tick time summary
-			hqToLqCpuTime[tempTickRecord] = 0l;
-			hqToLqElapsedTime[tempTickRecord] = 0l;
-			for (;hqToLqTickRecord != ePoint; hqToLqTickRecord++) {
-				if (hqToLqTickRecord >= HQ_CYCLES) {
-					hqToLqTickRecord = 0;
-					if (hqToLqTickRecord == ePoint) break;
+		if (!isEnabled()) return;
+		try {
+			long newTick = System.nanoTime();
+			long tickTime = newTick - lastTick;
+			int tempTickRecord = tickRecord;
+			int ePoint = hqTickRecord; // ignore _current_ as its unfilled.
+			if (++tickRecord >= LQ_CYCLES) { // TODO race condition fault state, time between inc and reset could result in HQ Index bound error
+				tickRecord = 0;
+			}
+			hqTickMap[tickRecord].clear(); // prepare future tickmap.
+			
+			ticks[tempTickRecord] = tickTime;
+			
+			sumTicks += tickTime - ticks[tickRecord]; // new record - outgoing record.
+			cntTicks = (cntTicks == LQ_CYCLES) ? LQ_CYCLES : cntTicks + 1;
+			avgTick = (double) sumTicks / (double) cntTicks;
+			
+			if (hqActive) {
+				// now do Hq tick time summary
+				hqToLqCpuTime[tempTickRecord] = 0l;
+				hqToLqElapsedTime[tempTickRecord] = 0l;
+				for (;hqToLqTickRecord != ePoint; hqToLqTickRecord++) {
+					if (hqToLqTickRecord >= HQ_CYCLES) {
+						hqToLqTickRecord = 0;
+						if (hqToLqTickRecord == ePoint) break;
+					}
+					hqToLqCpuTime[tempTickRecord] += hqCpuTime[hqToLqTickRecord]; // sum up CPU time from hq slices into tick slices.
+					hqToLqElapsedTime[tempTickRecord] += hqElapsedTime[hqToLqTickRecord];
 				}
-				hqToLqCpuTime[tempTickRecord] += hqCpuTime[hqToLqTickRecord]; // sum up CPU time from hq slices into tick slices.
-				hqToLqElapsedTime[tempTickRecord] += hqElapsedTime[hqToLqTickRecord];
+			}
+			
+			if (tickRecord % 1000 == 999) {
+				SimpleAdminHacks.instance().log(Level.INFO, "Recorded 1000 ticks so far, avg: {0}", avgTick);
+			}
+			
+			lastTick = newTick;
+		} catch (Exception e) {
+			plugin().log(Level.WARNING, "Tick tracking encountered an error", e);
+			tickErrors ++;
+			if (tickErrors > 10) {
+				stopHq();
+				this.softDisable();
+				this.disable();
+				plugin().log(Level.WARNING, "Too many errors encountered, Tick tracking shut down.");
 			}
 		}
-		
-		if (tickRecord % 1000 == 999) {
-			SimpleAdminHacks.instance().log(Level.INFO, "Recorded 1000 ticks so far, avg: {0}", avgTick);
-		}
-		
-		lastTick = newTick;
 	}
 	
 	private void hqTick() {
-		long newTick = System.nanoTime();
-		long tickTime = newTick - hqLastTick;
-		int nextHqTick = hqTickRecord >= HQ_CYCLES - 1 ? 0 : hqTickRecord + 1;
-		
-		hqCpuTime[nextHqTick] = threadBean.getThreadCpuTime(rootThread); // "start" of next record stored now.
-		hqCpuTime[hqTickRecord] = hqCpuTime[nextHqTick] - hqCpuTime[hqTickRecord]; // diff against old start.
-		hqElapsedTime[hqTickRecord] = tickTime; // tick over tick time too, not just cpu time. Evals drift / co-sharing issues.
-		if (hqCpuTime[hqTickRecord] == 0) {
-			hqCpuTime[hqTickRecord] = tickTime;
+		try {
+			long newTick = System.nanoTime();
+			long tickTime = newTick - hqLastTick;
+			int nextHqTick = hqTickRecord >= HQ_CYCLES - 1 ? 0 : hqTickRecord + 1;
+			
+			hqCpuTime[nextHqTick] = threadBean.getThreadCpuTime(rootThread); // "start" of next record stored now.
+			hqCpuTime[hqTickRecord] = hqCpuTime[nextHqTick] - hqCpuTime[hqTickRecord]; // diff against old start.
+			hqElapsedTime[hqTickRecord] = tickTime; // tick over tick time too, not just cpu time. Evals drift / co-sharing issues.
+			if (hqCpuTime[hqTickRecord] == 0) {
+				hqCpuTime[hqTickRecord] = tickTime;
+			}
+			
+			ThreadInfo threadInfo = threadBean.getThreadInfo(rootThread, DEPTH_MAX);
+			
+			StackTraceElement[] stack = threadInfo.getStackTrace(); 
+			
+			//SimpleAdminHacks.instance().log(Level.INFO, "HQTick: {0} {1} {2}", hqTickRecord, tickTime, stack.length);
+			int tmpTickRecord = tickRecord;
+			if (tmpTickRecord >= LQ_CYCLES) tmpTickRecord = 0;
+			for (StackTraceElement frame: stack) {
+				String className = frame.getClassName();
+				String methodName = frame.getMethodName();
+				hqTickMap[tmpTickRecord].compute(className, (clz, clzMethod) -> { // If we have one, atomically increment the corresponding method.
+					if (clzMethod == null) {
+						clzMethod = new ClassMethod(clz);
+					}
+					clzMethod.inc(methodName, hqCpuTime[hqTickRecord]);
+					return clzMethod;
+				});
+			}
+			
+			
+			hqTickRecord++;
+			if (hqTickRecord >= HQ_CYCLES) {
+				hqTickRecord = 0;
+			}
+			
+			if (hqTickRecord % 10000 == 9999) {
+				SimpleAdminHacks.instance().log("Recorded 10000 hq ticks so far");
+			}
+			
+			hqLastTick = newTick;
+		} catch (Exception e) {
+			plugin().log(Level.WARNING, "HQ Tick tracking encountered an error", e);
+			hqTickErrors ++;
+			if (hqTickErrors > 10) {
+				stopHq();
+				plugin().log(Level.WARNING, "Too many errors encountered, HQ Tick tracking shut down.");
+			}
 		}
-		
-		ThreadInfo threadInfo = threadBean.getThreadInfo(rootThread, DEPTH_MAX);
-		
-		StackTraceElement[] stack = threadInfo.getStackTrace(); 
-		
-		//SimpleAdminHacks.instance().log(Level.INFO, "HQTick: {0} {1} {2}", hqTickRecord, tickTime, stack.length);
-		int tmpTickRecord = tickRecord;
-		if (tmpTickRecord >= LQ_CYCLES) tmpTickRecord = 0;
-		for (StackTraceElement frame: stack) {
-			String className = frame.getClassName();
-			String methodName = frame.getMethodName();
-			hqTickMap[tmpTickRecord].compute(className, (clz, clzMethod) -> { // If we have one, atomically increment the corresponding method.
-				if (clzMethod == null) {
-					clzMethod = new ClassMethod(clz);
-				}
-				clzMethod.inc(methodName, hqCpuTime[hqTickRecord]);
-				return clzMethod;
-			});
-		}
-		
-		
-		hqTickRecord++;
-		if (hqTickRecord >= HQ_CYCLES) {
-			hqTickRecord = 0;
-		}
-		
-		if (hqTickRecord % 10000 == 9999) {
-			SimpleAdminHacks.instance().log("Recorded 10000 hq ticks so far");
-		}
-		
-		hqLastTick = newTick;
 	}
 	
 	@Override
@@ -504,6 +574,8 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 
 	@Override
 	public void dataCleanup() {
+		stopHq();
+		
 		if (tickTask > 0) {
 			Bukkit.getScheduler().cancelTask(tickTask);
 		}
@@ -522,7 +594,6 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				
 			}
 		}
-		stopHq();
 	}
 
 	@Override
@@ -911,8 +982,6 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			if (checkTick < 0) {
 				checkTick += TimingsHack.LQ_CYCLES;
 			}
-			
-			//SimpleAdminHacks.instance().log(Level.INFO, "Checking new class options {0}, {1}", checkTick, hqTickMap[checkTick].size());
 			
 			ArrayList<String> keys = new ArrayList<String>(hqTickMap[checkTick].keySet());
 			
