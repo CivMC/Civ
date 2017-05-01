@@ -120,7 +120,7 @@ factories:
     - Stone Beacon
     - Iron Chest
     - Return Factory Materials
-    - Upgrade to Vault Factory 6
+    - Upgrade to Vault Factory 5
     - Accident Repair
   Vault_Factory_5:
     type: FCCUPGRADE
