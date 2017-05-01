@@ -122,6 +122,19 @@ factories:
     - Return Factory Materials
     - Upgrade to Vault Factory 6
     - Accident Repair
+  Vault_Factory_5:
+    type: FCCUPGRADE
+    name: Vault Factory 5
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - City Bastion
+    - Stone Beacon
+    - Iron Chest
+    - Wood Vault Bastion
+    - Return Factory Materials
+    - Upgrade to Vault Factory 6
+    - Accident Repair
   Vault_Factory_6:
     type: FCCUPGRADE
     name: Vault Factory 6
@@ -132,6 +145,7 @@ factories:
     - Stone Beacon
     - Iron Chest
     - Wood Vault Bastion
+    - Iron Door
     - Return Factory Materials
     - Upgrade to Vault Factory 7
     - Accident Repair
@@ -146,6 +160,7 @@ factories:
     - Iron Chest
     - Wood Vault Bastion
     - Iron Door
+    - Iron Obsidian
     - Return Factory Materials
     - Upgrade to Vault Factory 8
     - Accident Repair
@@ -161,6 +176,7 @@ factories:
     - Wood Vault Bastion
     - Iron Door
     - Iron Obsidian
+    - Iron Beacon
     - Return Factory Materials
     - Upgrade to Vault Factory 9
     - Accident Repair
@@ -177,6 +193,7 @@ factories:
     - Iron Door
     - Iron Obsidian
     - Iron Beacon
+    - Iron Spike
     - Return Factory Materials
     - Upgrade to Vault Factory 10
     - Accident Repair
@@ -194,6 +211,7 @@ factories:
     - Iron Obsidian
     - Iron Beacon
     - Iron Spike
+    - Redstone Vault Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 11
     - Accident Repair
@@ -212,6 +230,7 @@ factories:
     - Iron Beacon
     - Iron Spike
     - Redstone Vault Bastion
+    - Better City Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 12
     - Accident Repair
@@ -231,6 +250,7 @@ factories:
     - Iron Spike
     - Redstone Vault Bastion
     - Better City Bastion
+    - Diamond Chest
     - Return Factory Materials
     - Upgrade to Vault Factory 13
     - Accident Repair
@@ -251,6 +271,29 @@ factories:
     - Redstone Vault Bastion
     - Better City Bastion
     - Diamond Chest
+    - Gold Vault Bastion
+    - Return Factory Materials
+    - Upgrade to Vault Factory 14
+    - Accident Repair
+  Vault_Factory_14:
+    type: FCCUPGRADE
+    name: Vault Factory 14
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - City Bastion
+    - Stone Beacon
+    - Iron Chest
+    - Wood Vault Bastion
+    - Iron Door
+    - Iron Obsidian
+    - Iron Beacon
+    - Iron Spike
+    - Redstone Vault Bastion
+    - Better City Bastion
+    - Diamond Chest
+    - Gold Vault Bastion
+    - Diamond Door
     - Return Factory Materials
     - Upgrade to Vault Factory 15
     - Accident Repair
@@ -272,6 +315,8 @@ factories:
     - Better City Bastion
     - Diamond Chest
     - Gold Vault Bastion
+    - Diamond Door
+    - Diamond Obsidian
     - Return Factory Materials
     - Upgrade to Vault Factory 16
     - Accident Repair
@@ -294,6 +339,8 @@ factories:
     - Diamond Chest
     - Gold Vault Bastion
     - Diamond Door
+    - Diamond Obsidian
+    - Diamond Beacon
     - Return Factory Materials
     - Upgrade to Vault Factory 17
     - Accident Repair
@@ -317,6 +364,8 @@ factories:
     - Gold Vault Bastion
     - Diamond Door
     - Diamond Obsidian
+    - Diamond Beacon
+    - Diamond Spike
     - Return Factory Materials
     - Upgrade to Vault Factory 18
     - Accident Repair
@@ -341,6 +390,8 @@ factories:
     - Diamond Door
     - Diamond Obsidian
     - Diamond Beacon
+    - Diamond Spike
+    - Iron Vault Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 19
     - Accident Repair
@@ -366,6 +417,8 @@ factories:
     - Diamond Obsidian
     - Diamond Beacon
     - Diamond Spike
+    - Iron Vault Bastion
+    - Best City Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 20
     - Accident Repair
@@ -392,6 +445,8 @@ factories:
     - Diamond Beacon
     - Diamond Spike
     - Iron Vault Bastion
+    - Best City Bastion
+    - Emerald Chest
     - Return Factory Materials
     - Upgrade to Vault Factory 21
     - Accident Repair
@@ -419,6 +474,8 @@ factories:
     - Diamond Spike
     - Iron Vault Bastion
     - Best City Bastion
+    - Emerald Chest
+    - Diamond Vault Bastion
     - Return Factory Materials
     - Upgrade to Vault Factory 22
     - Accident Repair
@@ -447,6 +504,39 @@ factories:
     - Iron Vault Bastion
     - Best City Bastion
     - Emerald Chest
+    - Diamond Vault Bastion
+    - Emerald Door
+    - Return Factory Materials
+    - Upgrade to Vault Factory 23
+    - Accident Repair
+  Vault_Factory_23:
+    type: FCCUPGRADE
+    name: Vault Factory 23
+    citadelBreakReduction: 1.0
+    recipes:
+    - Stone Obsidian
+    - City Bastion
+    - Stone Beacon
+    - Iron Chest
+    - Wood Vault Bastion
+    - Iron Door
+    - Iron Obsidian
+    - Iron Beacon
+    - Iron Spike
+    - Redstone Vault Bastion
+    - Better City Bastion
+    - Diamond Chest
+    - Gold Vault Bastion
+    - Diamond Door
+    - Diamond Obsidian
+    - Diamond Beacon
+    - Diamond Spike
+    - Iron Vault Bastion
+    - Best City Bastion
+    - Emerald Chest
+    - Diamond Vault Bastion
+    - Emerald Door
+    - Emerald Obsidian
     - Return Factory Materials
     - Upgrade to Vault Factory 24
     - Accident Repair
@@ -476,6 +566,9 @@ factories:
     - Best City Bastion
     - Emerald Chest
     - Diamond Vault Bastion
+    - Emerald Door
+    - Emerald Obsidian
+    - Emerald Beacon
     - Return Factory Materials
     - Upgrade to Vault Factory 25
     - Accident Repair
@@ -506,108 +599,15 @@ factories:
     - Emerald Chest
     - Diamond Vault Bastion
     - Emerald Door
+    - Emerald Obsidian
+    - Emerald Beacon
+    - Emerald Spike
     - Return Factory Materials
     - Upgrade to Vault Factory 26
     - Accident Repair
   Vault_Factory_26:
     type: FCCUPGRADE
     name: Vault Factory 26
-    citadelBreakReduction: 1.0
-    recipes:
-    - Stone Obsidian
-    - City Bastion
-    - Stone Beacon
-    - Iron Chest
-    - Wood Vault Bastion
-    - Iron Door
-    - Iron Obsidian
-    - Iron Beacon
-    - Iron Spike
-    - Redstone Vault Bastion
-    - Better City Bastion
-    - Diamond Chest
-    - Gold Vault Bastion
-    - Diamond Door
-    - Diamond Obsidian
-    - Diamond Beacon
-    - Diamond Spike
-    - Iron Vault Bastion
-    - Best City Bastion
-    - Emerald Chest
-    - Diamond Vault Bastion
-    - Emerald Door
-    - Emerald Obsidian
-    - Return Factory Materials
-    - Upgrade to Vault Factory 27
-    - Accident Repair
-  Vault_Factory_27:
-    type: FCCUPGRADE
-    name: Vault Factory 27
-    citadelBreakReduction: 1.0
-    recipes:
-    - Stone Obsidian
-    - City Bastion
-    - Stone Beacon
-    - Iron Chest
-    - Wood Vault Bastion
-    - Iron Door
-    - Iron Obsidian
-    - Iron Beacon
-    - Iron Spike
-    - Redstone Vault Bastion
-    - Better City Bastion
-    - Diamond Chest
-    - Gold Vault Bastion
-    - Diamond Door
-    - Diamond Obsidian
-    - Diamond Beacon
-    - Diamond Spike
-    - Iron Vault Bastion
-    - Best City Bastion
-    - Emerald Chest
-    - Diamond Vault Bastion
-    - Emerald Door
-    - Emerald Obsidian
-    - Emerald Beacon
-    - Return Factory Materials
-    - Upgrade to Vault Factory 28
-    - Accident Repair
-  Vault_Factory_28:
-    type: FCCUPGRADE
-    name: Vault Factory 28
-    citadelBreakReduction: 1.0
-    recipes:
-    - Stone Obsidian
-    - City Bastion
-    - Stone Beacon
-    - Iron Chest
-    - Wood Vault Bastion
-    - Iron Door
-    - Iron Obsidian
-    - Iron Beacon
-    - Iron Spike
-    - Redstone Vault Bastion
-    - Better City Bastion
-    - Diamond Chest
-    - Gold Vault Bastion
-    - Diamond Door
-    - Diamond Obsidian
-    - Diamond Beacon
-    - Diamond Spike
-    - Iron Vault Bastion
-    - Best City Bastion
-    - Emerald Chest
-    - Diamond Vault Bastion
-    - Emerald Door
-    - Emerald Obsidian
-    - Emerald Beacon
-    - Emerald Spike
-    - Return Factory Materials
-    - Upgrade to Vault Factory 29
-    - Accident Repair
-  Vault_Factory_29:
-    type: FCCUPGRADE
-    name: Vault Factory 29
     citadelBreakReduction: 1.0
     recipes:
     - Stone Obsidian
@@ -2681,7 +2681,7 @@ recipes:
         name: City Bastion
         amount: 1
         lore:
-        - Weak City Bastion
+        - City Bastion
   Better City Bastion:
     type: PRODUCTION
     name: Better City Bastion
@@ -8677,8 +8677,8 @@ recipes:
         lore:
         - Turf T1
     factory: Vault Factory 4
-  Upgrade to Vault Factory 6:
-    name: Upgrade to Vault Factory 6
+  Upgrade to Vault Factory 5:
+    name: Upgrade to Vault Factory 5
     production_time: 10s
     type: UPGRADE
     input:
@@ -8772,6 +8772,104 @@ recipes:
         durability: 13
         name: Turf
         amount: 4
+        lore:
+        - Turf T1
+    factory: Vault Factory 5
+  Upgrade to Vault Factory 6:
+    name: Upgrade to Vault Factory 6
+    production_time: 10s
+    type: UPGRADE
+    input:
+      lead:
+        material: COAL
+        name: Lead
+        amount: 96
+        lore:
+        - Lead T1
+      steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 64
+        lore:
+        - Steel T1
+      bronze:
+        material: INK_SACK
+        name: Bronze
+        amount: 32
+        durability: 14
+        lore:
+        - Bronze T1
+      silver:
+        material: GOLD_INGOT
+        name: Silver
+        amount: 32
+        lore:
+        - Silver T1
+      copper:
+        material: REDSTONE
+        name: Copper
+        amount: 32
+        lore:
+        - Copper T1
+      titanium:
+        material: DIAMOND
+        name: Titanium
+        amount: 16
+        lore:
+        - Titanium T1
+      mercury:
+        material: EMERALD
+        name: Mercury
+        amount: 16
+        lore:
+        - Mercury T1
+      snowflake:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowflake
+        amount: 8
+        lore:
+        - Snowflake T1
+      muck:
+        material: STAINED_CLAY
+        durability: 7
+        name: Muck
+        amount: 8
+        lore:
+        - Muck T1
+      grit:
+        material: STAINED_CLAY
+        durability: 4
+        name: Grit
+        amount: 8
+        lore:
+        - Grit T1
+      porcelain:
+        material: STAINED_CLAY
+        durability: 11
+        name: Porcelain
+        amount: 8
+        lore:
+        - Porcelain T1
+      silt:
+        material: STAINED_CLAY
+        durability: 1
+        name: Silt
+        amount: 8
+        lore:
+        - Silt T1
+      rock:
+        material: STAINED_CLAY
+        durability: 9
+        name: Rock
+        amount: 8
+        lore:
+        - Rock T1
+      turf:
+        material: STAINED_CLAY
+        durability: 13
+        name: Turf
+        amount: 8
         lore:
         - Turf T1
     factory: Vault Factory 6
@@ -9172,98 +9270,98 @@ recipes:
     production_time: 10s
     type: UPGRADE
     input:
-      lead:
+      nickel:
         material: COAL
-        name: Lead
-        amount: 96
+        name: Nickel
+        amount: 768
         lore:
-        - Lead T1
-      steel:
+        - Nickel T2
+      Aluminum:
         material: IRON_INGOT
-        name: Steel
-        amount: 64
+        name: Aluminum
+        amount: 576
         lore:
-        - Steel T1
-      bronze:
+        - Aluminum T2
+      pewter:
         material: INK_SACK
-        name: Bronze
-        amount: 32
-        durability: 14
+        name: Pewter
+        durability: 8
+        amount: 144
         lore:
-        - Bronze T1
-      silver:
+        - Pewter T2
+      pearl:
         material: GOLD_INGOT
-        name: Silver
-        amount: 32
+        name: Pearl
+        amount: 144
         lore:
-        - Silver T1
-      copper:
+        - Pearl T2
+      brass:
         material: REDSTONE
-        name: Copper
-        amount: 32
+        name: Brass
+        amount: 144
         lore:
-        - Copper T1
-      titanium:
+        - Brass T2
+      platinum:
         material: DIAMOND
-        name: Titanium
-        amount: 16
+        name: Platinum
+        amount: 72
         lore:
-        - Titanium T1
-      mercury:
+        - Platinum T2
+      enderite:
         material: EMERALD
-        name: Mercury
-        amount: 16
+        name: Enderite
+        amount: 72
         lore:
-        - Mercury T1
-      snowflake:
+        - Enderite T2
+      snowball:
         material: STAINED_CLAY
         durability: 0
-        name: Snowflake
-        amount: 8
+        name: Snowball
+        amount: 48
         lore:
-        - Snowflake T1
-      muck:
+        - Snowball T2
+      mud:
         material: STAINED_CLAY
         durability: 7
-        name: Muck
-        amount: 8
+        name: Mud
+        amount: 48
         lore:
-        - Muck T1
-      grit:
+        - Mud T2
+      dust:
         material: STAINED_CLAY
         durability: 4
-        name: Grit
-        amount: 8
+        name: Dust
+        amount: 48
         lore:
-        - Grit T1
-      porcelain:
+        - Dust T2
+      adobe:
         material: STAINED_CLAY
         durability: 11
-        name: Porcelain
-        amount: 8
+        name: Adobe
+        amount: 48
         lore:
-        - Porcelain T1
-      silt:
+        - Adobe T2
+      cob:
         material: STAINED_CLAY
         durability: 1
-        name: Silt
-        amount: 8
+        name: Cob
+        amount: 48
         lore:
-        - Silt T1
-      rock:
+        - Cob T2
+      pebbles:
         material: STAINED_CLAY
         durability: 9
-        name: Rock
-        amount: 8
+        name: Pebbles
+        amount: 48
         lore:
-        - Rock T1
-      turf:
+        - Pebbles T2
+      meadow:
         material: STAINED_CLAY
         durability: 13
-        name: Turf
-        amount: 8
+        name: Meadow
+        amount: 48
         lore:
-        - Turf T1
+        - Meadow T2
     factory: Vault Factory 11
   Upgrade to Vault Factory 12:
     name: Upgrade to Vault Factory 12
@@ -9461,6 +9559,104 @@ recipes:
         lore:
         - Meadow T2
     factory: Vault Factory 13
+  Upgrade to Vault Factory 14:
+    name: Upgrade to Vault Factory 14
+    production_time: 10s
+    type: UPGRADE
+    input:
+      nickel:
+        material: COAL
+        name: Nickel
+        amount: 768
+        lore:
+        - Nickel T2
+      Aluminum:
+        material: IRON_INGOT
+        name: Aluminum
+        amount: 576
+        lore:
+        - Aluminum T2
+      pewter:
+        material: INK_SACK
+        name: Pewter
+        durability: 8
+        amount: 144
+        lore:
+        - Pewter T2
+      pearl:
+        material: GOLD_INGOT
+        name: Pearl
+        amount: 144
+        lore:
+        - Pearl T2
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 144
+        lore:
+        - Brass T2
+      platinum:
+        material: DIAMOND
+        name: Platinum
+        amount: 72
+        lore:
+        - Platinum T2
+      enderite:
+        material: EMERALD
+        name: Enderite
+        amount: 72
+        lore:
+        - Enderite T2
+      snowball:
+        material: STAINED_CLAY
+        durability: 0
+        name: Snowball
+        amount: 48
+        lore:
+        - Snowball T2
+      mud:
+        material: STAINED_CLAY
+        durability: 7
+        name: Mud
+        amount: 48
+        lore:
+        - Mud T2
+      dust:
+        material: STAINED_CLAY
+        durability: 4
+        name: Dust
+        amount: 48
+        lore:
+        - Dust T2
+      adobe:
+        material: STAINED_CLAY
+        durability: 11
+        name: Adobe
+        amount: 48
+        lore:
+        - Adobe T2
+      cob:
+        material: STAINED_CLAY
+        durability: 1
+        name: Cob
+        amount: 48
+        lore:
+        - Cob T2
+      pebbles:
+        material: STAINED_CLAY
+        durability: 9
+        name: Pebbles
+        amount: 48
+        lore:
+        - Pebbles T2
+      meadow:
+        material: STAINED_CLAY
+        durability: 13
+        name: Meadow
+        amount: 48
+        lore:
+        - Meadow T2
+    factory: Vault Factory 14
   Upgrade to Vault Factory 15:
     name: Upgrade to Vault Factory 15
     production_time: 10s
@@ -9858,196 +10054,196 @@ recipes:
     production_time: 10s
     type: UPGRADE
     input:
-      nickel:
+      oil:
         material: COAL
-        name: Nickel
-        amount: 768
+        name: Oil
+        amount: 384
         lore:
-        - Nickel T2
-      Aluminum:
+        - Oil T3
+      silicon:
         material: IRON_INGOT
-        name: Aluminum
-        amount: 576
+        name: Silicon
+        amount: 192
         lore:
-        - Aluminum T2
-      pewter:
+        - Silicon T3
+      fiberglass:
         material: INK_SACK
-        name: Pewter
-        durability: 8
-        amount: 144
+        name: Fiberglass
+        amount: 48
+        durability: 5
         lore:
-        - Pewter T2
-      pearl:
-        material: GOLD_INGOT
-        name: Pearl
-        amount: 144
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 48
         lore:
-        - Pearl T2
-      brass:
+        - Artifact T3
+      graphite:
         material: REDSTONE
-        name: Brass
-        amount: 144
+        name: Graphite
+        amount: 48
         lore:
-        - Brass T2
-      platinum:
+        - Graphite T3
+      carbon:
         material: DIAMOND
-        name: Platinum
-        amount: 72
+        name: Carbon
+        amount: 24
         lore:
-        - Platinum T2
-      enderite:
+        - Carbon T3
+      uranium:
         material: EMERALD
-        name: Enderite
-        amount: 72
+        name: Uranium
+        amount: 24
         lore:
-        - Enderite T2
-      snowball:
+        - Uranium T3
+      icicle:
         material: STAINED_CLAY
         durability: 0
-        name: Snowball
-        amount: 48
+        name: Icicle
+        amount: 16
         lore:
-        - Snowball T2
-      mud:
+        - Icicle T3
+      soil:
         material: STAINED_CLAY
         durability: 7
-        name: Mud
-        amount: 48
+        name: Soil
+        amount: 16
         lore:
-        - Mud T2
-      dust:
+        - Soil T3
+      Powder:
         material: STAINED_CLAY
         durability: 4
-        name: Dust
-        amount: 48
+        name: Powder
+        amount: 16
         lore:
-        - Dust T2
-      adobe:
+        - Powder T3
+      daub:
         material: STAINED_CLAY
         durability: 11
-        name: Adobe
-        amount: 48
+        name: Daub
+        amount: 16
         lore:
-        - Adobe T2
-      cob:
+        - Daub T3
+      mortar:
         material: STAINED_CLAY
         durability: 1
-        name: Cob
-        amount: 48
+        name: Mortar
+        amount: 16
         lore:
-        - Cob T2
-      pebbles:
+        - Mortar T3
+      cement:
         material: STAINED_CLAY
         durability: 9
-        name: Pebbles
-        amount: 48
+        name: Cement
+        amount: 16
         lore:
-        - Pebbles T2
-      meadow:
+        - Cement T3
+      pasture:
         material: STAINED_CLAY
         durability: 13
-        name: Meadow
-        amount: 48
+        name: Pasture
+        amount: 16
         lore:
-        - Meadow T2
+        - Pasture T3
     factory: Vault Factory 19
   Upgrade to Vault Factory 20:
     name: Upgrade to Vault Factory 20
     production_time: 10s
     type: UPGRADE
     input:
-      nickel:
+      oil:
         material: COAL
-        name: Nickel
-        amount: 768
+        name: Oil
+        amount: 384
         lore:
-        - Nickel T2
-      Aluminum:
+        - Oil T3
+      silicon:
         material: IRON_INGOT
-        name: Aluminum
-        amount: 576
+        name: Silicon
+        amount: 192
         lore:
-        - Aluminum T2
-      pewter:
+        - Silicon T3
+      fiberglass:
         material: INK_SACK
-        name: Pewter
-        durability: 8
-        amount: 144
+        name: Fiberglass
+        amount: 48
+        durability: 5
         lore:
-        - Pewter T2
-      pearl:
-        material: GOLD_INGOT
-        name: Pearl
-        amount: 144
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 48
         lore:
-        - Pearl T2
-      brass:
+        - Artifact T3
+      graphite:
         material: REDSTONE
-        name: Brass
-        amount: 144
+        name: Graphite
+        amount: 48
         lore:
-        - Brass T2
-      platinum:
+        - Graphite T3
+      carbon:
         material: DIAMOND
-        name: Platinum
-        amount: 72
+        name: Carbon
+        amount: 24
         lore:
-        - Platinum T2
-      enderite:
+        - Carbon T3
+      uranium:
         material: EMERALD
-        name: Enderite
-        amount: 72
+        name: Uranium
+        amount: 24
         lore:
-        - Enderite T2
-      snowball:
+        - Uranium T3
+      icicle:
         material: STAINED_CLAY
         durability: 0
-        name: Snowball
-        amount: 48
+        name: Icicle
+        amount: 16
         lore:
-        - Snowball T2
-      mud:
+        - Icicle T3
+      soil:
         material: STAINED_CLAY
         durability: 7
-        name: Mud
-        amount: 48
+        name: Soil
+        amount: 16
         lore:
-        - Mud T2
-      dust:
+        - Soil T3
+      Powder:
         material: STAINED_CLAY
         durability: 4
-        name: Dust
-        amount: 48
+        name: Powder
+        amount: 16
         lore:
-        - Dust T2
-      adobe:
+        - Powder T3
+      daub:
         material: STAINED_CLAY
         durability: 11
-        name: Adobe
-        amount: 48
+        name: Daub
+        amount: 16
         lore:
-        - Adobe T2
-      cob:
+        - Daub T3
+      mortar:
         material: STAINED_CLAY
         durability: 1
-        name: Cob
-        amount: 48
+        name: Mortar
+        amount: 16
         lore:
-        - Cob T2
-      pebbles:
+        - Mortar T3
+      cement:
         material: STAINED_CLAY
         durability: 9
-        name: Pebbles
-        amount: 48
+        name: Cement
+        amount: 16
         lore:
-        - Pebbles T2
-      meadow:
+        - Cement T3
+      pasture:
         material: STAINED_CLAY
         durability: 13
-        name: Meadow
-        amount: 48
+        name: Pasture
+        amount: 16
         lore:
-        - Meadow T2
+        - Pasture T3
     factory: Vault Factory 20
   Upgrade to Vault Factory 21:
     name: Upgrade to Vault Factory 21
@@ -10245,6 +10441,104 @@ recipes:
         lore:
         - Pasture T3
     factory: Vault Factory 22
+  Upgrade to Vault Factory 23:
+    name: Upgrade to Vault Factory 23
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oil:
+        material: COAL
+        name: Oil
+        amount: 384
+        lore:
+        - Oil T3
+      silicon:
+        material: IRON_INGOT
+        name: Silicon
+        amount: 192
+        lore:
+        - Silicon T3
+      fiberglass:
+        material: INK_SACK
+        name: Fiberglass
+        amount: 48
+        durability: 5
+        lore:
+        - Fiberglass T3
+      artifact:
+        material: EYE_OF_ENDER
+        name: Artifact
+        amount: 48
+        lore:
+        - Artifact T3
+      graphite:
+        material: REDSTONE
+        name: Graphite
+        amount: 48
+        lore:
+        - Graphite T3
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 24
+        lore:
+        - Carbon T3
+      uranium:
+        material: EMERALD
+        name: Uranium
+        amount: 24
+        lore:
+        - Uranium T3
+      icicle:
+        material: STAINED_CLAY
+        durability: 0
+        name: Icicle
+        amount: 16
+        lore:
+        - Icicle T3
+      soil:
+        material: STAINED_CLAY
+        durability: 7
+        name: Soil
+        amount: 16
+        lore:
+        - Soil T3
+      Powder:
+        material: STAINED_CLAY
+        durability: 4
+        name: Powder
+        amount: 16
+        lore:
+        - Powder T3
+      daub:
+        material: STAINED_CLAY
+        durability: 11
+        name: Daub
+        amount: 16
+        lore:
+        - Daub T3
+      mortar:
+        material: STAINED_CLAY
+        durability: 1
+        name: Mortar
+        amount: 16
+        lore:
+        - Mortar T3
+      cement:
+        material: STAINED_CLAY
+        durability: 9
+        name: Cement
+        amount: 16
+        lore:
+        - Cement T3
+      pasture:
+        material: STAINED_CLAY
+        durability: 13
+        name: Pasture
+        amount: 16
+        lore:
+        - Pasture T3
+    factory: Vault Factory 23
   Upgrade to Vault Factory 24:
     name: Upgrade to Vault Factory 24
     production_time: 10s
@@ -10539,300 +10833,6 @@ recipes:
         lore:
         - Pasture T3
     factory: Vault Factory 26
-  Upgrade to Vault Factory 27:
-    name: Upgrade to Vault Factory 27
-    production_time: 10s
-    type: UPGRADE
-    input:
-      oil:
-        material: COAL
-        name: Oil
-        amount: 384
-        lore:
-        - Oil T3
-      silicon:
-        material: IRON_INGOT
-        name: Silicon
-        amount: 192
-        lore:
-        - Silicon T3
-      fiberglass:
-        material: INK_SACK
-        name: Fiberglass
-        amount: 48
-        durability: 5
-        lore:
-        - Fiberglass T3
-      artifact:
-        material: EYE_OF_ENDER
-        name: Artifact
-        amount: 48
-        lore:
-        - Artifact T3
-      graphite:
-        material: REDSTONE
-        name: Graphite
-        amount: 48
-        lore:
-        - Graphite T3
-      carbon:
-        material: DIAMOND
-        name: Carbon
-        amount: 24
-        lore:
-        - Carbon T3
-      uranium:
-        material: EMERALD
-        name: Uranium
-        amount: 24
-        lore:
-        - Uranium T3
-      icicle:
-        material: STAINED_CLAY
-        durability: 0
-        name: Icicle
-        amount: 16
-        lore:
-        - Icicle T3
-      soil:
-        material: STAINED_CLAY
-        durability: 7
-        name: Soil
-        amount: 16
-        lore:
-        - Soil T3
-      Powder:
-        material: STAINED_CLAY
-        durability: 4
-        name: Powder
-        amount: 16
-        lore:
-        - Powder T3
-      daub:
-        material: STAINED_CLAY
-        durability: 11
-        name: Daub
-        amount: 16
-        lore:
-        - Daub T3
-      mortar:
-        material: STAINED_CLAY
-        durability: 1
-        name: Mortar
-        amount: 16
-        lore:
-        - Mortar T3
-      cement:
-        material: STAINED_CLAY
-        durability: 9
-        name: Cement
-        amount: 16
-        lore:
-        - Cement T3
-      pasture:
-        material: STAINED_CLAY
-        durability: 13
-        name: Pasture
-        amount: 16
-        lore:
-        - Pasture T3
-    factory: Vault Factory 27
-  Upgrade to Vault Factory 28:
-    name: Upgrade to Vault Factory 28
-    production_time: 10s
-    type: UPGRADE
-    input:
-      oil:
-        material: COAL
-        name: Oil
-        amount: 384
-        lore:
-        - Oil T3
-      silicon:
-        material: IRON_INGOT
-        name: Silicon
-        amount: 192
-        lore:
-        - Silicon T3
-      fiberglass:
-        material: INK_SACK
-        name: Fiberglass
-        amount: 48
-        durability: 5
-        lore:
-        - Fiberglass T3
-      artifact:
-        material: EYE_OF_ENDER
-        name: Artifact
-        amount: 48
-        lore:
-        - Artifact T3
-      graphite:
-        material: REDSTONE
-        name: Graphite
-        amount: 48
-        lore:
-        - Graphite T3
-      carbon:
-        material: DIAMOND
-        name: Carbon
-        amount: 24
-        lore:
-        - Carbon T3
-      uranium:
-        material: EMERALD
-        name: Uranium
-        amount: 24
-        lore:
-        - Uranium T3
-      icicle:
-        material: STAINED_CLAY
-        durability: 0
-        name: Icicle
-        amount: 16
-        lore:
-        - Icicle T3
-      soil:
-        material: STAINED_CLAY
-        durability: 7
-        name: Soil
-        amount: 16
-        lore:
-        - Soil T3
-      Powder:
-        material: STAINED_CLAY
-        durability: 4
-        name: Powder
-        amount: 16
-        lore:
-        - Powder T3
-      daub:
-        material: STAINED_CLAY
-        durability: 11
-        name: Daub
-        amount: 16
-        lore:
-        - Daub T3
-      mortar:
-        material: STAINED_CLAY
-        durability: 1
-        name: Mortar
-        amount: 16
-        lore:
-        - Mortar T3
-      cement:
-        material: STAINED_CLAY
-        durability: 9
-        name: Cement
-        amount: 16
-        lore:
-        - Cement T3
-      pasture:
-        material: STAINED_CLAY
-        durability: 13
-        name: Pasture
-        amount: 16
-        lore:
-        - Pasture T3
-    factory: Vault Factory 28
-  Upgrade to Vault Factory 29:
-    name: Upgrade to Vault Factory 29
-    production_time: 10s
-    type: UPGRADE
-    input:
-      oil:
-        material: COAL
-        name: Oil
-        amount: 384
-        lore:
-        - Oil T3
-      silicon:
-        material: IRON_INGOT
-        name: Silicon
-        amount: 192
-        lore:
-        - Silicon T3
-      fiberglass:
-        material: INK_SACK
-        name: Fiberglass
-        amount: 48
-        durability: 5
-        lore:
-        - Fiberglass T3
-      artifact:
-        material: EYE_OF_ENDER
-        name: Artifact
-        amount: 48
-        lore:
-        - Artifact T3
-      graphite:
-        material: REDSTONE
-        name: Graphite
-        amount: 48
-        lore:
-        - Graphite T3
-      carbon:
-        material: DIAMOND
-        name: Carbon
-        amount: 24
-        lore:
-        - Carbon T3
-      uranium:
-        material: EMERALD
-        name: Uranium
-        amount: 24
-        lore:
-        - Uranium T3
-      icicle:
-        material: STAINED_CLAY
-        durability: 0
-        name: Icicle
-        amount: 16
-        lore:
-        - Icicle T3
-      soil:
-        material: STAINED_CLAY
-        durability: 7
-        name: Soil
-        amount: 16
-        lore:
-        - Soil T3
-      Powder:
-        material: STAINED_CLAY
-        durability: 4
-        name: Powder
-        amount: 16
-        lore:
-        - Powder T3
-      daub:
-        material: STAINED_CLAY
-        durability: 11
-        name: Daub
-        amount: 16
-        lore:
-        - Daub T3
-      mortar:
-        material: STAINED_CLAY
-        durability: 1
-        name: Mortar
-        amount: 16
-        lore:
-        - Mortar T3
-      cement:
-        material: STAINED_CLAY
-        durability: 9
-        name: Cement
-        amount: 16
-        lore:
-        - Cement T3
-      pasture:
-        material: STAINED_CLAY
-        durability: 13
-        name: Pasture
-        amount: 16
-        lore:
-        - Pasture T3
-    factory: Vault Factory 29
   Upgrade to Conversion Factory:
     name: Upgrade to Conversion Factory
     production_time: 10s
