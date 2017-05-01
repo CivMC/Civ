@@ -8,6 +8,8 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import com.google.common.base.Strings;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -59,8 +61,7 @@ public class SendSnitchInfo implements Runnable {
 
 			if (this.snitchName != null) {
 				output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
-				        + ChatColor.DARK_GRAY
-				        + "-----------------------------------".substring(this.snitchName.length()) + "\n";
+				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitchName.length()) + "\n";
 			} else {
 				output += ChatColor.WHITE + " Snitch Log "
 				        + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
