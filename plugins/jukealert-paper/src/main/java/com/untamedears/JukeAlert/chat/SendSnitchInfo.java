@@ -47,7 +47,7 @@ public class SendSnitchInfo implements Runnable {
 	public void run() {
 
 		if (!isJukebox) {
-			if (this.snitchName == null) {
+			if (this.snitchName == null || this.snitchName.trim().isEmpty()) {
 				player.sendMessage(ChatColor.AQUA + " * Unnamed entry snitch");
 			} else {
 				player.sendMessage(ChatColor.AQUA + " * Entry snitch " + this.snitchName);
@@ -57,7 +57,7 @@ public class SendSnitchInfo implements Runnable {
 		if (info != null && !info.isEmpty()) {
 			String output = "";
 
-			if (this.snitchName != null) {
+			if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
 				output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
 				        + ChatColor.DARK_GRAY
 				        + "-----------------------------------".substring(this.snitchName.length()) + "\n";
@@ -113,7 +113,7 @@ public class SendSnitchInfo implements Runnable {
 			output += "\n";
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
 			player.sendMessage(output);
-		} else if (this.snitchName != null) {
+		} else if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitchName);
 		} else {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for unnamed snitch");
