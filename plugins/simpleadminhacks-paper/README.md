@@ -95,6 +95,50 @@ are actively breaking reinforced containers.
 This one is pretty Devoted iteration 3 specific. Allows tracking server wide of
 all breaks or builds under a specific y level.
 
+### TimingsHack
+
+This is mature enough to be its own plugin now, but for the moment I'm leaving it in
+because IMHO it is an essential component for debugging and maintaining your server.
+
+This hack begins where /timings and warmroast end. It generates in-game visualizations
+of per-tick time utilization, and allows you to investigate with extreme effectiveness
+exactly what is causing instantaneous or irregular lag. Things that average out, but lead
+to bad experiences for players.
+
+To use it, there are a number of important commands.
+
+First:
+
+ * `/showtimings` This gives the requester a "map" object that paints a heatmap, heightmap,
+    and linegraph of TPS. Each vertical pixel is a full 20 ticks; each dot in the heatmap
+    is a single tick. The heightmap above the heatmap (heatmap is on the bottom) is both
+    colored and sized based on time-in-tick. At the very top is line graph of relative "health"
+    of the tick. The closer to the grey line the better; the closer to the top, the worse.
+ * `/thresholdtimings` This starts a very high resolution (1ms) stack inspection tracker.
+    It keeps track _per tick_ with usually 50 samples per tick of which methods and classes
+    are being taking up time within the tick. Give it a threshold factor -- please, something more
+    then 1, 5 to 10 works well -- where any tick that takes longer then threshold factor * average
+    tick length, dumps the class/method list to requestor (either console or in-game character).
+    The list is in sorted order of class where most time is spent down to class where least time
+    is spent. 
+ * `/listtimings` In you already suspect something, you can use this command to begin a spammy
+    dump of all classes encountered during high-resolution tracking. Only new classes are printed,
+    and it shuts itself off if nothing new has been printed for a full second.
+ * `/bindtimings` This generates an in-game map displaying (like `/showtimings`) a heatmap, heightmap,
+    and line graph of per-tick utilization of any Classes that _contain_ whatever is passed in after 
+    bindtimings. Note this is saved, and on reload of the server if HQ timings are restarted those
+    maps will re-bind to the saved bindings. This is a massively useful deep inspection tool;
+    you can put the "based" class of a suspect plugin as the parameter, and watch its actual per-tick
+    time utilization in real-time. Destroy the map object to release the drain on overall TPS that
+    results from the comparison functions used to update the map.
+ * `/stoptimings` This turns off any HQ functions. Has the impact of _pausing_ any bindtimings maps, 
+    and releasing all HQ functions from impacting Tick (also stops tracking data, so data tracking will
+    reset if HQ restarted by calling any other HQ-tagged command).
+
+In game example with some descriptions:
+
+ * From live server: http://imgur.com/a/zWNWo
+
 ## Conclusion
 
 There is room for many more hacks and the list grows regularly. The pattern is simple; 

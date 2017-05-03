@@ -84,7 +84,10 @@ import net.md_5.bungee.api.ChatColor;
  *  <b>stoptimings</b> This just shuts of all HQ data collection.<br/>
  * <br/>
  * In all cases if errors begin to be encountered, various portions will shut itself off. HQ can be restarted
- * after automatic shutdown, normal tick tracking cannot. 
+ * after automatic shutdown, normal tick tracking cannot.
+ * <br/>
+ * From live server: http://imgur.com/a/zWNWo
+ * <br/> 
  * 
  * @author ProgrammerDan
  */

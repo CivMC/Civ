@@ -115,6 +115,12 @@
       <artifactId>CombatTagPlus</artifactId>
       <version>1.2.4-SNAPSHOT</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.mcstats.bukkit</groupId>
+          <artifactId>metrics-lite</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.inventivetalent.npclib</groupId>
