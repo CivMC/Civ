@@ -60,10 +60,10 @@ public class SendSnitchInfo implements Runnable {
 			String output = "";
 
 			if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
-				output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
+				output += ChatColor.WHITE + " Log for snitch " + this.snitchName + " "
 				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitchName.length()) + "\n";
 			} else {
-				output += ChatColor.WHITE + " Snitch Log "
+				output += ChatColor.WHITE + " Log for unnamed snitch "
 				        + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
 			}
 
