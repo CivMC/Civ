@@ -47,6 +47,11 @@ public class SignListener implements Listener {
 						
 						final Location spawnLocation = plugin.chooseSpawn(world);
 						
+						if (spawnLocation == null) {
+							plugin.logDebug(player.getName() + " got unlucky and was not successfully randomspawned. Default behavior will apply");
+							return;
+						}
+						
 						plugin.sendGround(player, spawnLocation);
 						
 						player.teleport(spawnLocation.add(0, 5, 0));

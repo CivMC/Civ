@@ -91,6 +91,11 @@ public class RespawnListener implements Listener{
 			
 			Location spawnLocation = plugin.chooseSpawn(world);
 			
+			if (spawnLocation == null) {
+				plugin.logDebug(playerName + " got unlucky and was not successfully randomspawned. Default behavior will apply");
+				return;
+			}
+			
 			plugin.sendGround(player, spawnLocation);
 			
 			event.setRespawnLocation(spawnLocation);

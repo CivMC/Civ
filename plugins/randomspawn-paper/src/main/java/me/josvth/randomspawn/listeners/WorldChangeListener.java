@@ -43,6 +43,11 @@ public class WorldChangeListener implements Listener {
 		if(randomSpawnFlags.contains("teleport-from-" + from.getName())){
 						
 			Location spawnLocation = plugin.chooseSpawn(to);
+			
+			if (spawnLocation == null) {
+				plugin.logDebug(playerName + " got unlucky and was not successfully randomspawned. Default behavior will apply");
+				return;
+			}
 						
 			plugin.sendGround(player, spawnLocation);
 			

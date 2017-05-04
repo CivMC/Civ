@@ -151,6 +151,14 @@ public class RandomSpawn extends JavaPlugin{
 	private Location chooseSpawn(double radius, double exclusionRadius, Location center, List<Integer> blacklist) {
 		Location result = new Location(center.getWorld(), center.getX(), center.getY(), center.getZ());
 		
+		int maxTries = 50 * (int) radius;
+		if (maxTries < 50) {
+			maxTries = 50;
+		}
+		if (maxTries > 1000) {
+			maxTries = 1000; // sensible limits plz
+		}
+		
 		do {
 			double r = exclusionRadius + Math.random() * (radius - exclusionRadius);
 			double phi = Math.random() * 2d * Math.PI;
@@ -161,7 +169,7 @@ public class RandomSpawn extends JavaPlugin{
 			result.setX(x);
 			result.setZ(z);
 			result.setY(getValidHighestY(center.getWorld(), x, z, blacklist));
-		} while (result.getY() == -1); // TODO this should never loop forever.
+		} while (result.getY() == -1 && --maxTries >= 0); 
 		return result;
 	}
 	
@@ -300,7 +308,9 @@ public class RandomSpawn extends JavaPlugin{
 			if (!skip) {
 				// Now pick a location to spawn the player.
 				Location derive = chooseSpawn(spawnpoint.getDouble("radius"), spawnpoint.getDouble("exclusion"), location, blacklist);
-				spawnLocs.add(derive);
+				if (derive != null) {
+					spawnLocs.add(derive);
+				}
 			}
 		}
 		

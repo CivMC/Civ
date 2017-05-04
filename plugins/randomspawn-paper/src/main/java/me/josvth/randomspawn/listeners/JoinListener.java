@@ -92,8 +92,12 @@ public class JoinListener implements Listener{
 		}
 
 		if (randomSpawnFlags.contains("firstjoin")) {
-			plugin.logDebug(playerName + "First Join random spawning");
+			plugin.logDebug(playerName + " First Join random spawning");
 			Location spawnLocation = plugin.chooseSpawn(world);
+			if (spawnLocation == null) {
+				plugin.logDebug(playerName + " got unlucky and was not successfully randomspawned. Default behavior will apply");
+				return;
+			}
 		
 			plugin.sendGround(player, spawnLocation);
 			
