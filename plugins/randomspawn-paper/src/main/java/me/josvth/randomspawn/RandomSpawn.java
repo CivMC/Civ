@@ -163,8 +163,8 @@ public class RandomSpawn extends JavaPlugin{
 			double r = exclusionRadius + Math.random() * (radius - exclusionRadius);
 			double phi = Math.random() * 2d * Math.PI;
 
-			double x = center.getX() + Math.cos(phi) * r;
-			double z = center.getZ() + Math.sin(phi) * r;
+			double x = Math.round(center.getX() + Math.cos(phi) * r);
+			double z = Math.round(center.getZ() + Math.sin(phi) * r);
 
 			result.setX(x);
 			result.setZ(z);
@@ -238,6 +238,7 @@ public class RandomSpawn extends JavaPlugin{
 				blockid = world.getBlockTypeIdAt((int) x, (int) y, (int) z);
 			}
 			if(y == 0) return -1;
+                        y++;
 		}
 
 		if (blacklist.contains(blockid)) return -1;
