@@ -31,7 +31,16 @@ public class SetFirstSpawnCommand extends AbstractCommand{
 		plugin.yamlHandler.worlds.set(worldname+".firstspawn.yaw", yaw);
 		plugin.yamlHandler.worlds.set(worldname+".firstspawn.pitch", pitch);
 		
-		plugin.yamlHandler.worlds.set(worldname+".randomspawnonfirstjoin", false);
+		List<String> randomSpawnOn = plugin.yamlHandler.worlds.getStringList(worldname+".randomspawnon");
+		if (randomSpawnOn != null && randomSpawnOn.contains("firstjoin")) {
+			randomSpawnOn.remove("firstjoin");
+			plugin.yamlHandler.worlds.set(worldname+".randomspawnon", randomSpawnOn);
+		}
+		List<String> spawnPointsOn = plugin.yamlHandler.worlds.getStringList(worldname+".spawnpointson");
+		if (spawnPointsOn != null && spawnPointsOn.contains("firstjoin")) {
+			spawnPointsOn.remove("firstjoin");
+			plugin.yamlHandler.worlds.set(worldname+".spawnpointson", spawnPointsOn);
+		}
 		
 		plugin.yamlHandler.saveWorlds();
 		
