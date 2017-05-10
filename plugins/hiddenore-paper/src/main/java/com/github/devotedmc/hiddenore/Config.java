@@ -274,4 +274,8 @@ public final class Config {
 	public static int getTransformAttemptMultiplier() {
 		return instance.transformAttemptMultiplier;
 	}
+	
+	public ConfigurationSection getWorldGenerations() {
+		return file.getConfigurationSection("clear_ores");
+	}
 }

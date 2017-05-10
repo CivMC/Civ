@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -24,9 +25,18 @@ import com.github.devotedmc.hiddenore.HiddenOre;
 
 public class BreakTracking {
 	Map<UUID, Map<Long, short[]>> track;
+	
+	// Now for one small data structures that will let us keep track of most-recent-breaks to directly
+	// prevent gaming.
+	
+	private static final int RECENT_MAX = 512;
+	private int recentPtr;
+	private Location[] recent;
 
 	public BreakTracking() {
 		track = new HashMap<UUID, Map<Long, short[]>>();
+		recent = new Location[RECENT_MAX];
+		recentPtr = 0;
 	}
 
 	public void load() {
@@ -177,6 +187,27 @@ public class BreakTracking {
 			layers[Y]++; // represent new break in layer.
 			ret = true;
 		}
+		if (ret) { 
+			boolean shallow = false;
+			int j = recentPtr;
+			for (int i = 0; i < RECENT_MAX; i++) {
+				j = (recentPtr + i) % RECENT_MAX;
+				if (recent[j] == null) break; // anything null means we're done here
+				if (loc.equals(recent[j])) {
+					ret = false;
+					shallow = true;
+					break;
+				}
+			}
+			
+			if (!shallow) { // we add to the "end" of a circular list. 
+				if (--recentPtr < 0) {
+					recentPtr += RECENT_MAX;
+				}
+				recent[recentPtr] = loc;
+			}
+		}
+		
 		if (Config.isDebug) {
 			HiddenOre.getPlugin().getLogger()
 					.info("now world " + world + " chunk " + chunk_id + " layersum " + layers[Y]);

@@ -56,3 +56,7 @@ Supports saving and loading of the tracking database, and fully adheres to /relo
 
 I'm probably missing some other details but that's it for now.
 
+### Feature Augment List:
+
+**v1.2.7** Experimental feature to allow stripping a world of ores during the generation phase. Fully configurable per-world by name; you can
+  set it to replace any set of materials with a single material. Also includes a new anti-bypass method to directly target that "initial return" that can still occur from generators and place-break-place-break cycles. 
