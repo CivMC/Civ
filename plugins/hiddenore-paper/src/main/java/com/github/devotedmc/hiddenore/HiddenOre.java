@@ -2,9 +2,14 @@ package com.github.devotedmc.hiddenore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -57,9 +62,18 @@ public class HiddenOre extends JavaPlugin {
 		ConfigurationSection worldGenConfig = Config.instance.getWorldGenerations();
 		if (worldGenConfig != null) {
 			for (String key : worldGenConfig.getKeys(false)) {
+				this.getLogger().log(Level.INFO, "Registered Generation Listener for World {0}", key);
 				WorldGenerationListener list = new WorldGenerationListener(worldGenConfig.getConfigurationSection(key));
 				this.getServer().getPluginManager().registerEvents(list, this);
+				worldGen.add(list);
 			}
+			
+			/*this.getServer().getPluginManager().registerEvents(new Listener() {
+				@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+				public void worldInit(WorldInitEvent event) {
+					event.getWorld().getPopulators().addAll(worldGen); // add all, they will sort themselves out.
+				}
+			}, this);*/
 		}
 	}
 

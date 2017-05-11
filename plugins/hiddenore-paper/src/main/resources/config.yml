@@ -8,7 +8,7 @@ ignore_silktouch: true
 transform_attempt_multiplier: 3
 clear_ores:
  main_world:
-  world: the_world
+  world: world
   replace:
   - IRON_ORE
   - REDSTONE_ORE
