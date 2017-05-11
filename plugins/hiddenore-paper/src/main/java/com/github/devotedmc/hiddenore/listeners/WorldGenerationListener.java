@@ -10,14 +10,13 @@ import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
-import org.bukkit.generator.BlockPopulator;
 
+import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
 
 /**
@@ -25,7 +24,7 @@ import com.github.devotedmc.hiddenore.HiddenOre;
  * 
  * @author ProgrammerDan
  */
-public class WorldGenerationListener extends BlockPopulator implements Listener {
+public class WorldGenerationListener implements Listener {
 
 	Set<Material> toReplace = null;
 	Material replaceWith = null;
@@ -94,7 +93,8 @@ public class WorldGenerationListener extends BlockPopulator implements Listener 
 		int x = chunk.getX();
 		int z = chunk.getZ();
 		
-		// check adjacent chunks.
+		// check adjacent chunks, which by contract
+		// might have been updated.
 		if (world.isChunkLoaded(x - 1, z) ) {
 			chunk = world.getChunkAt(x - 1, z);
 			clear(chunk);
@@ -116,19 +116,6 @@ public class WorldGenerationListener extends BlockPopulator implements Listener 
 		}
 	}
 
-	@Override
-	public void populate(World world, Random random, Chunk source) {
-		if (toReplace == null || replaceWith == null || worldName == null) {
-			return;
-		}
-		
-		if (!world.getName().equalsIgnoreCase(worldName)) {
-			return;
-		}
-		
-		clear(source);
-	}
-	
 	private void clear(Chunk chunk) {
 		int rep = 0;
 		
@@ -141,16 +128,13 @@ public class WorldGenerationListener extends BlockPopulator implements Listener 
 					
 					if (toReplace.contains(mat)) {
 						rep++;
-						block.setType(replaceWith, true);
-						/*BlockState bs = block.getState();
-						bs.setType(mat);
-						bs.update(true, true);*/
+						block.setType(replaceWith, false);
 					}
 				}
 			}
 		}
 		
-		if (rep > 0) {
+		if (rep > 0 && Config.isDebug) {
 			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Replaced {0} blocks at {1}, {2}", new Object[]{rep, chunk.getX(), chunk.getZ()});
 		}
 	}
