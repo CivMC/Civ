@@ -13,6 +13,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
@@ -68,6 +69,28 @@ public class BastionBreakListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
+		Iterator<Block> iterator = event.blockList().iterator();
+		HashSet<Block> blocks = new HashSet<Block>();
+		while(iterator.hasNext()) {
+			Block block = Utility.getRealBlock(iterator.next());
+			BastionType type = storage.getTypeAtLocation(block.getLocation());
+			if (type == null) {
+				type = storage.getAndRemovePendingBastion(block.getLocation());
+			}
+			if( type != null) {
+				if(blocks.contains(block)) {
+					continue;
+				}
+				blocks.add(block);
+				block.setType(Material.AIR);
+				dropBastionItem(block.getLocation(), type);
+				iterator.remove(); // don't explode it, we've got it covered now.
+			}
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onBlockExplode(BlockExplodeEvent event) {
 		Iterator<Block> iterator = event.blockList().iterator();
 		HashSet<Block> blocks = new HashSet<Block>();
 		while(iterator.hasNext()) {

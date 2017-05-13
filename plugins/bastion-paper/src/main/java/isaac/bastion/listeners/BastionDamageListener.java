@@ -66,7 +66,7 @@ public final class BastionDamageListener implements Listener {
 	public void onWaterFlow(BlockFromToEvent  event){
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getToBlock());
-		Set<BastionBlock> blocking = manager.shouldStopBlock(event.getBlock(),blocks, null);
+		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(event.getBlock(),blocks, null));
 		
 		if(blocking.size() != 0){
 			event.setCancelled(true);
@@ -111,7 +111,7 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
 		
-		Set<BastionBlock> blocking = manager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId()));
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -209,6 +209,7 @@ public final class BastionDamageListener implements Listener {
 	}
 	
 	public static Set<BastionBlock> clearNonBlocking(Set<BastionBlock> preblocking) {
+		if (preblocking == null || preblocking.size() == 0) return preblocking; // don't allocate if nothing to do.
 		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
 		for (BastionBlock bastion : preblocking) {
 			if (!bastion.getType().isOnlyDirectDestruction()) {

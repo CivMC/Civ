@@ -121,6 +121,7 @@ public class BastionInteractListener implements Listener {
 						if(storage.createBastion(loc,  type, player)) {
 							player.sendMessage(ChatColor.GREEN + "Bastion block created");
 						} else {
+							storage.addPendingBastion(loc, type);
 							player.sendMessage(ChatColor.RED + "Failed to create bastion");
 						}
 					}
@@ -160,6 +161,7 @@ public class BastionInteractListener implements Listener {
 					if(storage.createBastion(loc,  type, player)) {
 						player.sendMessage(ChatColor.GREEN + "Bastion block created");
 					} else {
+						storage.addPendingBastion(loc, type);
 						player.sendMessage(ChatColor.RED + "Failed to create bastion");
 					}
 				}
