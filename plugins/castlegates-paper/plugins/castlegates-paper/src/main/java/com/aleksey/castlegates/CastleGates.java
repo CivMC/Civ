@@ -8,29 +8,29 @@ package com.aleksey.castlegates;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.aleksey.castlegates.engine.CastleGatesManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.aleksey.castlegates.bastion.BastionManager;
-import com.aleksey.castlegates.bastion.IBastionManager;
-import com.aleksey.castlegates.bastion.NoBastionManager;
-import com.aleksey.castlegates.citadel.CitadelManager;
-import com.aleksey.castlegates.citadel.ICitadelManager;
-import com.aleksey.castlegates.citadel.NoCitadelManager;
+import com.aleksey.castlegates.plugins.bastion.BastionManager;
+import com.aleksey.castlegates.plugins.bastion.IBastionManager;
+import com.aleksey.castlegates.plugins.bastion.NoBastionManager;
+import com.aleksey.castlegates.plugins.citadel.CitadelManager;
+import com.aleksey.castlegates.plugins.citadel.ICitadelManager;
+import com.aleksey.castlegates.plugins.citadel.NoCitadelManager;
 import com.aleksey.castlegates.command.CastleGatesCommand;
 import com.aleksey.castlegates.database.SqlDatabase;
-import com.aleksey.castlegates.jukealert.IJukeAlertManager;
-import com.aleksey.castlegates.jukealert.JukeAlertManager;
-import com.aleksey.castlegates.jukealert.NoJukeAlertManager;
+import com.aleksey.castlegates.plugins.jukealert.IJukeAlertManager;
+import com.aleksey.castlegates.plugins.jukealert.JukeAlertManager;
+import com.aleksey.castlegates.plugins.jukealert.NoJukeAlertManager;
 import com.aleksey.castlegates.listener.BlockListener;
 import com.aleksey.castlegates.listener.EntityListener;
-import com.aleksey.castlegates.manager.CastleGatesManager;
-import com.aleksey.castlegates.manager.ConfigManager;
-import com.aleksey.castlegates.orebfuscator.IOrebfuscatorManager;
-import com.aleksey.castlegates.orebfuscator.NoOrebfuscatorManager;
-import com.aleksey.castlegates.orebfuscator.OrebfuscatorManager;
+import com.aleksey.castlegates.config.ConfigManager;
+import com.aleksey.castlegates.plugins.orebfuscator.IOrebfuscatorManager;
+import com.aleksey.castlegates.plugins.orebfuscator.NoOrebfuscatorManager;
+import com.aleksey.castlegates.plugins.orebfuscator.OrebfuscatorManager;
 
 public class CastleGates extends JavaPlugin {
     private static CastleGates instance;

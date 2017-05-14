@@ -1,4 +1,4 @@
-package com.aleksey.castlegates.jukealert;
+package com.aleksey.castlegates.plugins.jukealert;
 
 import java.util.Set;
 

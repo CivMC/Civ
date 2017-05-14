@@ -3,7 +3,7 @@
  *
  */
 
-package com.aleksey.castlegates.bastion;
+package com.aleksey.castlegates.plugins.bastion;
 
 import java.util.List;
 

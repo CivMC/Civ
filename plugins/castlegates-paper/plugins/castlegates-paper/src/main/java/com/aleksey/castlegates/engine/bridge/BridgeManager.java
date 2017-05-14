@@ -3,7 +3,7 @@
  *
  */
 
-package com.aleksey.castlegates.manager;
+package com.aleksey.castlegates.engine.bridge;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 
+import com.aleksey.castlegates.config.ConfigManager;
+import com.aleksey.castlegates.engine.StorageManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -22,7 +24,7 @@ import org.bukkit.entity.Player;
 
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.DeprecatedMethods;
-import com.aleksey.castlegates.citadel.ICitadelManager;
+import com.aleksey.castlegates.plugins.citadel.ICitadelManager;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.events.CastleGatesDrawGateEvent;
 import com.aleksey.castlegates.events.CastleGatesUndrawGateEvent;
@@ -38,7 +40,7 @@ import com.aleksey.castlegates.utils.DataWorker;
 import com.aleksey.castlegates.utils.Helper;
 import com.aleksey.castlegates.utils.TimerWorker;
 
-public class GearManager {
+public class BridgeManager {
 	public static final BlockFace[] faces = new BlockFace[] {
 			BlockFace.EAST,
 			BlockFace.WEST,
@@ -52,42 +54,20 @@ public class GearManager {
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
 	public static enum SearchBridgeBlockResult { NotFound, Bridge, Gates }
 
-	private Map<BlockCoord, Gearblock> gearblocks;
-	private DataWorker dataWorker;
+	private StorageManager storage;
 	private TimerWorker timerWorker;
 
-	public void init(SqlDatabase db) throws SQLException {
-		this.dataWorker = new DataWorker(db,  CastleGates.getConfigManager().getLogChanges());
-		this.gearblocks = this.dataWorker.load();
-
-		CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gearblocks.size() + " gearblocks");
-
-		this.dataWorker.startThread();
+	public void init(StorageManager storage) {
+		this.storage = storage;
 
 		this.timerWorker = new TimerWorker(this);
 		this.timerWorker.startThread();
 	}
 
 	public void close() {
-		if(this.dataWorker != null) {
-			this.dataWorker.close();
-		}
-
 		if(this.timerWorker != null) {
 			this.timerWorker.terminateThread();
 		}
-	}
-
-	public void setGearblockTimer(Gearblock gearblock, Integer timer, TimerOperation timerOperation) {
-		gearblock.setTimer(timer, timerOperation);
-
-		this.dataWorker.addChangedGearblock(gearblock);
-	}
-
-	public void clearGearblockTimer(Gearblock gearblock) {
-		gearblock.setTimer(null, null);
-
-		this.dataWorker.addChangedGearblock(gearblock);
 	}
 
 	public SearchBridgeBlockResult searchBridgeBlock(BlockCoord coord) {
@@ -99,7 +79,7 @@ public class GearManager {
 			for(int i = 0; i < maxLen; i++) {
 				current.increment(face);
 
-				Gearblock gearblock = this.gearblocks.get(current);
+				Gearblock gearblock = this.storage.getGearblock(current);
 
 				if(gearblock != null) {
 					if(isBridgeBlock(gearblock, face)) {
@@ -146,19 +126,15 @@ public class GearManager {
 		BlockCoord location = new BlockCoord(block);
 
 		if(!CastleGates.getConfigManager().isGearBlockType(block)) return CreateResult.NotCreated;
-		if(this.gearblocks.containsKey(location)) return CreateResult.AlreadyExist;
+		if(this.storage.hasGearblock(location)) return CreateResult.AlreadyExist;
 
-		Gearblock gear = new Gearblock(location);
-
-		this.gearblocks.put(location, gear);
-
-		this.dataWorker.addChangedGearblock(gear);
+		this.storage.addGearblock(location);
 
 		return CreateResult.Created;
 	}
 
 	public RemoveResult removeGear(BlockCoord location) {
-		Gearblock gear = this.gearblocks.get(location);
+		Gearblock gear = this.storage.getGearblock(location);
 
 		if(gear == null) return RemoveResult.NotExist;
 
@@ -176,31 +152,20 @@ public class GearManager {
 		}
 		else if (gear.getLink() != null) {
 			if(gear.getLink().isDrawn()) {
-				gear.getLink().setBroken(gear);
-				this.dataWorker.addChangedLink(gear.getBrokenLink());
+				this.storage.setLinkBroken(gear);
 			} else {
 				removeLink(gear.getLink());
 				result = RemoveResult.RemovedWithLink;
 			}
 		}
 
-		this.gearblocks.remove(location);
-
-		gear.setRemoved();
-
-		this.dataWorker.addChangedGearblock(gear);
+		this.storage.removeGearblock(gear);
 
 		return result;
 	}
 
-	public Gearblock getGearblock(BlockCoord location) {
-		return this.gearblocks.get(location);
-	}
-
 	public void removeLink(GearblockLink link) {
 		if(link == null) return;
-
-		link.setRemoved();
 
 		Gearblock gearblock1 = link.getGearblock1();
 
@@ -210,8 +175,6 @@ public class GearManager {
 			} else {
 				unlock(gearblock1);
 			}
-
-			gearblock1.setLink(null);
 		}
 
 		Gearblock gearblock2 = link.getGearblock2();
@@ -222,11 +185,9 @@ public class GearManager {
 			} else {
 				unlock(gearblock2);
 			}
-
-			gearblock2.setLink(null);
 		}
 
-		this.dataWorker.addChangedLink(link);
+		this.storage.removeLink(link);
 	}
 
 	public boolean createLink(Gearblock gearblock1, Gearblock gearblock2, int distance) {
@@ -234,24 +195,7 @@ public class GearManager {
 
 		if(gearblock1.getLink() != null) return true;
 
-		GearblockLink link = new GearblockLink(gearblock1, gearblock2);
-
-		if(gearblock1.getBrokenLink() != null) {
-			link = gearblock1.getBrokenLink();
-			link.setRestored(gearblock2);
-		}
-		else if(gearblock2.getBrokenLink() != null) {
-			link = gearblock2.getBrokenLink();
-			link.setRestored(gearblock1);
-		}
-		else {
-			link = new GearblockLink(gearblock1, gearblock2);
-		}
-
-		gearblock1.setLink(link);
-		gearblock2.setLink(link);
-
-		this.dataWorker.addChangedLink(link);
+		this.storage.addLink(gearblock1, gearblock2);
 
 		return true;
 	}
@@ -273,13 +217,11 @@ public class GearManager {
 		if(link1 != null && link1.isDrawn() || link2 != null && link2.isDrawn()) return false;
 
 		if(link1 != null) {
-			link1.setRemoved();
-			this.dataWorker.addChangedLink(link1);
+			this.storage.removeLink(link1);
 		}
 
 		if(link2 != null) {
-			link2.setRemoved();
-			this.dataWorker.addChangedLink(link1);
+			this.storage.removeLink(link2);
 		}
 
 		return true;
@@ -379,8 +321,6 @@ public class GearManager {
 				undraw(world, linkFromList);
 			}
 
-			this.dataWorker.addChangedLink(linkFromList);
-
 			if(timerBatch != null) {
 				timerBatch.addLink(linkFromList);
 			}
@@ -465,8 +405,6 @@ public class GearManager {
 				undraw(world, link);
 			}
 
-			this.dataWorker.addChangedLink(link);
-
 			result = true;
 		}
 
@@ -487,7 +425,7 @@ public class GearManager {
 		for(int i = 0; i < faces.length && gearblocks.size() <= configManager.getMaxPowerTransfers(); i++) {
 			BlockFace face = faces[i];
 			BlockCoord loc = new BlockCoord(world.getUID(), gearLoc.getX() + face.getModX(), gearLoc.getY() + face.getModY(), gearLoc.getZ() + face.getModZ());
-			Gearblock to = this.gearblocks.get(loc);
+			Gearblock to = this.storage.getGearblock(loc);
 
 			if(to == null || to.isPowered() == isPowered || gearblocks.contains(to)) continue;
 
@@ -555,7 +493,7 @@ public class GearManager {
 
 			if(!configManager.isBridgeMaterial(block)) return new PowerResult(PowerResult.Status.Broken, block);
 
-			if(this.gearblocks.containsKey(new BlockCoord(block))) return new PowerResult(PowerResult.Status.CannotDrawGear, block);
+			if(this.storage.hasGearblock(new BlockCoord(block))) return new PowerResult(PowerResult.Status.CannotDrawGear, block);
 
 			if(!canAccessDoors(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
 
@@ -614,8 +552,8 @@ public class GearManager {
 		}
 		
 		CastleGates.getOrebfuscatorManager().update(locations);
-		
-		link.setBlocks(blockStates);
+
+		this.storage.setLinkBlocks(link, blockStates);
 	}
 
 	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players) {
@@ -690,8 +628,8 @@ public class GearManager {
 		for (org.bukkit.block.BlockState state : states) {
 			DeprecatedMethods.commitCraftBukkit(state);
 		}
-		
-		link.setBlocks(null);
+
+		this.storage.setLinkBlocks(link, null);
 	}
 
 	private static boolean canAccessDoors(List<Player> players, Location location) {

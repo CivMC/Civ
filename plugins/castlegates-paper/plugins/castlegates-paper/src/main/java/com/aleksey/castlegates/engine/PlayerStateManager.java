@@ -3,16 +3,16 @@
  *
  */
 
-package com.aleksey.castlegates.manager;
+package com.aleksey.castlegates.engine;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.aleksey.castlegates.CastleGates;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.TimerOperation;
 

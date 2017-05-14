@@ -3,7 +3,7 @@
  *
  */
 
-package com.aleksey.castlegates.bastion;
+package com.aleksey.castlegates.plugins.bastion;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;

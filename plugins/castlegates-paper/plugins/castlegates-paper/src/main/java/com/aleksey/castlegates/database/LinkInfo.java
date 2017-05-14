@@ -10,4 +10,5 @@ public class LinkInfo {
 	public Integer gearblock1_id;
 	public Integer gearblock2_id;
 	public byte[] blocks;
+	public String subtype;
 }

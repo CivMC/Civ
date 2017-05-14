@@ -1,4 +1,4 @@
-package com.aleksey.castlegates.orebfuscator;
+package com.aleksey.castlegates.plugins.orebfuscator;
 
 import java.util.List;
 

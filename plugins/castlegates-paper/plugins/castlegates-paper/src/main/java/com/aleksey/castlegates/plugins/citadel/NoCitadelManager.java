@@ -3,7 +3,7 @@
  *
  */
 
-package com.aleksey.castlegates.citadel;
+package com.aleksey.castlegates.plugins.citadel;
 
 import java.util.List;
 
