@@ -149,28 +149,33 @@ public class BlockGrower {
 			}
 		}
 		
-		StructureGrowDelegate sgd = new StructureGrowDelegate(((CraftWorld) block.getWorld()).getHandle());
-		if (block.getWorld().generateTree(block.getLocation(), type, sgd)) {
-			
-			// Call wrapper event.
-			RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesStructureGrowEvent(
-					block.getLocation(), type, false, null, sgd.getBlocks()));
-			for (BlockState state : sgd.getBlocks()) {
-				// Since we're using the delegate, we need to force the update ourselves.
-				state.update(true, false);
+		try {
+			StructureGrowDelegate sgd = new StructureGrowDelegate(((CraftWorld) block.getWorld()).getHandle());
+			if (block.getWorld().generateTree(block.getLocation(), type, sgd)) {
+				
+				// Call wrapper event.
+				RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesStructureGrowEvent(
+						block.getLocation(), type, false, null, sgd.getBlocks()));
+				for (BlockState state : sgd.getBlocks()) {
+					// Since we're using the delegate, we need to force the update ourselves.
+					state.update(true, false);
+				}
+				
+				// remove affected 2x2 saplings
+				for (int i = 1; i < states.size(); i++) {
+					plantManager.removePlant(states.get(i).getBlock());
+				}
+				return false;
+			} else {
+				RealisticBiomes.doLog(Level.FINER, "generateTree reset data: " + states.size());
+				for (BlockState state: states) {
+					state.update(true, false);
+				}
+				return true;
 			}
-			
-			// remove affected 2x2 saplings
-			for (int i = 1; i < states.size(); i++) {
-				plantManager.removePlant(states.get(i).getBlock());
-			}
-			return false;
-		} else {
-			RealisticBiomes.doLog(Level.FINER, "generateTree reset data: " + states.size());
-			for (BlockState state: states) {
-				state.update(true, false);
-			}
-			return true;
+		} catch (Exception e) {
+			RealisticBiomes.LOG.log(Level.SEVERE, "generateTree has failed", e);
+			return false; // we don't know what happened.
 		}
 	}
 
