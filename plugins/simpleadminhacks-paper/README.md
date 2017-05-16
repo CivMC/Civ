@@ -16,81 +16,81 @@ for game problems or simple heuristic loggers.
 Making a new "Hack" is always an option, but take a look at this list of active
 Hacks and see if your contribution might fit with an existing module.
 
-##Active Hacks
+## Active Hacks
 
-###BadBoyWatch
+### BadBoyWatch
 
 This hack keeps track of who breaks what, and what they broke to get there. I've got
 bigger plans for more heuristics but for now, that's it. Please, feel free to improve
 on this.
 
-###CTAnnounce
+### CTAnnounce
 
 An integration into CombatTagPlus, this announces to in-game operators when combat
 is under way. Invaluable when you like your admins to monitor in-game fights.
 
-###Experimental
+### Experimental
 
 This is a catch-all for anything micro that has no other home. Useful features like
 `/serialize` command live here too, but mostly its logging trackers that are great
 for debugging edge cases and useless for normal runtime.
 
-###GameFeatures
+### GameFeatures
 
 The principle focus here is on enabling and disabling game features, like elytra or
 skulker boxes or those sorts of things. Try to keep the focus on boolean or otherwise
 simple on / off or discrete state options that relate to existing Minecraft game 
 mechanics.
 
-###GameFixes
+### GameFixes
 
 Sometimes things in Minecraft just... don't work. Or don't work the way you want them
 to. Put those fixes here.
 
-###GameTuning
+### GameTuning
 
 Similar to Game Fixes, but distinct in that the intent here is on hacks that _tune_
 or alter existing mechanics without fully disabling them or without fixing them. 
 Things like altering armor damage reduction or tool impact would be good fits.
 
-###HackBot
+### HackBot
 
 An experimental module whose complexity is approaching divorce from SAH, this is
 a bit of mid-work code that allows operators to define static Bots that show up
 like "real" players but aren't.
 
-###Introbook
+### Introbook
 
 Allows the creation of customizeable, helpful first join books that are distributed
 to players when they first join the server. Safe to turn off but super useful
 if you have a core set of additional "good to know" information or introductory
 material you'd like players to receive.
 
-###InvControl
+### InvControl
 
 Host of the `/invsee` command, gives insight into active player inventory, armor,
 health and more. I hope / intend to add another portion to this that allows online
 and offline inventory management via `/invmod` but this is as of now not started.
 
-###InvisibleFix and InvisibleFixTwo
+### InvisibleFix and InvisibleFixTwo
 
 My hope is to remove these in time, but for 1.9 and 1.10 minecraft players
 go invisible all the time. Both of these hacks use different approaches to help
 preserve the visiblity of players. The second hack is the more invasive, sending
 explicit location packets when the situation indicates its usefulness.
 
-###NewfriendAssist
+### NewfriendAssist
 
 A new join tracker, that also doubles as an introkit delivery mechanism.
 It also exposes the `introkit` command you can use to send specific people a new
 introkit if they lost theirs.
 
-###ReinforcedChestBreak
+### ReinforcedChestBreak
 
 Another useful alerting hack, sends a message to online operators when players
 are actively breaking reinforced containers. 
 
-###SanityHack
+### SanityHack
 
 This one is pretty Devoted iteration 3 specific. Allows tracking server wide of
 all breaks or builds under a specific y level.
