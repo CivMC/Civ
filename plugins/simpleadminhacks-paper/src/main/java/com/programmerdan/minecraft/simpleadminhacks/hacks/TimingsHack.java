@@ -252,24 +252,28 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				config.setTimingsMap(view.getId());
 				plugin().saveConfig();
 			}
-			view.getRenderers().forEach(view::removeRenderer);
-			view.addRenderer(this.tickVisualize);
-			
-			ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
-			
-			ItemMeta mapMeta = viewMap.getItemMeta();
-			mapMeta.setDisplayName("Tick Health Monitor");
-			mapMeta.setLore(Arrays.asList(
-					"TPS",
-					"Top line - Avg Tick / s vs. Lifetime Avg",
-					"Middle - Heightmap of per-tick-time",
-					"Bottom - Heatmap of per-tick-time"
-					));
-			viewMap.setItemMeta(mapMeta);
-			
-			player.getInventory().addItem(viewMap);
-			
-			player.sendMessage("Check your inventory for a TPS visualization Map");
+			if (view != null) {
+				view.getRenderers().forEach(view::removeRenderer);
+				view.addRenderer(this.tickVisualize);
+				
+				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+				
+				ItemMeta mapMeta = viewMap.getItemMeta();
+				mapMeta.setDisplayName("Tick Health Monitor");
+				mapMeta.setLore(Arrays.asList(
+						"TPS",
+						"Top line - Avg Tick / s vs. Lifetime Avg",
+						"Middle - Heightmap of per-tick-time",
+						"Bottom - Heatmap of per-tick-time"
+						));
+				viewMap.setItemMeta(mapMeta);
+				
+				player.getInventory().addItem(viewMap);
+				
+				player.sendMessage("Check your inventory for a TPS visualization Map");
+			} else {
+				player.sendMessage("Unable to generate TPS visualization map. Are you in Gamemode 3?");
+			}
 		} else if (command.getName().equalsIgnoreCase("bindtimings")) {
 			if (args.length < 1) {
 				player.sendMessage("You need to tell us what to bind to. Use listtimings if you don't know what is possible. Will be substring match. Don't use spaces.");
@@ -295,24 +299,28 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				plugin().saveConfig();
 				bindVisualizers.put(args[0], new BindTimingMap(args[0]));
 			}
-			view.getRenderers().forEach(view::removeRenderer);
-			view.addRenderer(this.bindVisualizers.get(args[0]));
-			
-			ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
-			
-			ItemMeta mapMeta = viewMap.getItemMeta();
-			mapMeta.setDisplayName(args[0] + " Utilization Monitor");
-			mapMeta.setLore(Arrays.asList(
-					args[0],
-					"Top line - CPU Util vs. Tick Avg",
-					"Middle - Heightmap of per-tick-time",
-					"Bottom - Heatmap of per-tick-time"
-					));
-			viewMap.setItemMeta(mapMeta);
-			
-			player.getInventory().addItem(viewMap);
-			
-			player.sendMessage("Check your inventory for a " + args[0] + " binding TPS visualization Map");
+			if (view != null) {
+				view.getRenderers().forEach(view::removeRenderer);
+				view.addRenderer(this.bindVisualizers.get(args[0]));
+				
+				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+				
+				ItemMeta mapMeta = viewMap.getItemMeta();
+				mapMeta.setDisplayName(args[0] + " Utilization Monitor");
+				mapMeta.setLore(Arrays.asList(
+						args[0],
+						"Top line - CPU Util vs. Tick Avg",
+						"Middle - Heightmap of per-tick-time",
+						"Bottom - Heatmap of per-tick-time"
+						));
+				viewMap.setItemMeta(mapMeta);
+				
+				player.getInventory().addItem(viewMap);
+				
+				player.sendMessage("Check your inventory for a " + args[0] + " binding TPS visualization Map");
+			} else {
+				player.sendMessage("Unable to generate TPS visualization map. Are you in Gamemode 3?");
+			}
 
 		}
 		return true;
