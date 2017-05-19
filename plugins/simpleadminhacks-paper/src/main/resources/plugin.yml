@@ -67,6 +67,18 @@ commands:
     description: Stop any advanced timing tracking. Does not stop /showtimings reults.
     usage: /<command>
     permission: simpleadmin.timings
+  insight:
+    description: Event insights. Passively tracks stuff, or actively represents events for players.
+    usage: |
+      /<command> on
+      /<command> active - Activates active monitoring of events. For continuous events, pings you with a summary update every 5 seconds. For initiated events, pings you immediately.
+      /<command> off
+      /<command> inactive - Deactivates active monitoring.
+      /<command> list - Shows all monitored events and some stats about each
+      /<command> list <event> - Shows all monitored events that match the passed param <event>
+      /<command> periodic <time> - Shows a color differentiated summary of monitored events and counts that have changed, with <time> as ticks inbetween display
+      /<command> periodic <event> <time> - Shows a color differentiated summary of monitored evenst that match the passed param <event>, with <time> as ticks inbetween display
+      /<command> - Just shows this description  
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands

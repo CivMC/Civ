@@ -188,3 +188,5 @@ hacks:
      - HOPPER
      - PISTON_BASE
      - PISTON_STICKY_BASE
+  Insight:
+    enabled: true
