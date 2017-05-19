@@ -330,5 +330,13 @@ public class SimpleAdminHacks extends JavaPlugin {
 			log(Level.WARNING, "Failed to register Executor for {0}, please define that command in the plugin.yml first.", command);
 		}
 	}
+	
+	/**
+	 * Definitely not safe. Used for Insight hack.
+	 * @return the ClassLoader for this plugin.
+	 */
+	public ClassLoader exposeClassLoader() {
+		return this.getClassLoader();
+	}
 		
 }

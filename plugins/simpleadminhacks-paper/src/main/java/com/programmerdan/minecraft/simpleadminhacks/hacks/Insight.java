@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -19,48 +21,57 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventException;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockCanBuildEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockExpEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockMultiPlaceEvent;
-import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.block.CauldronLevelChangeEvent;
-import org.bukkit.event.block.EntityBlockFormEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
-import org.bukkit.event.block.NotePlayEvent;
-import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.server.PluginEnableEvent;
+import org.bukkit.plugin.EventExecutor;
+import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InsightConfig;
 
+/**
+ * Config example:
+ * <code>
+ *   Insight:
+ *     enabled: true
+ *     into:
+ *     - org.bukkit.event.player
+ *     - org.bukkit.event.block
+ *     - org.bukkit.event.inventory
+ * 
+ * This "into" list defines event classpaths. Events found in that classpath are 
+ * instrumented; listeners are reordered to put _this_ hack's listeners as first and last to run.
+ * 
+ * These listeners bypass safe bukkit convention, Timings, and can handle
+ * async or sync events.
+ * 
+ * Can monitor not only bukkit events but also plugin / custom events; just give the
+ * valid classpath.
+ * 
+ * This bypasses the "safe" bukkit way of registering listeners for events. So it
+ * also bypasses Timings.
+ * 
+ * This is the only warning I'll give. Be careful with this and prefer to leave it off.
+ * 
+ * Wireups only happen on restart, I'm dubious about injecting live for now.
+ *
+ * @author ProgrammerDan
+ */
 public class Insight extends SimpleHack<InsightConfig> implements CommandExecutor, Listener {
 
 	public static final String NAME = "Insight";
 	
 	private Map<String, InsightStat> tracking;
+	private List<Class<? extends Event>> rebounders;
 	
 	public Insight(SimpleAdminHacks plugin, InsightConfig config) {
 		super(plugin, config);
@@ -77,11 +88,70 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 	}
 	
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void registerListeners() {
 		if (config.isEnabled()) {
-			plugin().log("Registering Insight listeners");
+			plugin().log("Registering Insight reordering hack");
 			plugin().registerListener(this);
+			
+			plugin().log("Registering Insight event instrumentations");
+			
+			if (config.getInsightOn() == null) {
+				plugin().log("No instrumentations defined, disabling.");
+				this.softDisable();
+				return;
+			}
+			try {
+				ClassPath getSamplersPath = ClassPath.from(plugin().exposeClassLoader());
+	
+				for (String clsPackage : config.getInsightOn()) {
+					ImmutableSet<ClassPath.ClassInfo> clsInfoSet = getSamplersPath.getTopLevelClasses(clsPackage);
+					if (clsInfoSet == null || clsInfoSet.isEmpty()) {
+						plugin().log(Level.INFO, "Package {0} doesn't exist or is empty.", clsPackage);
+						continue;
+					}
+					plugin().log(Level.INFO, "Scanning package {0} for events.", clsPackage);
+					for (ClassPath.ClassInfo clsInfo : clsInfoSet) {
+						try {
+							Class<?> clazz = clsInfo.load();
+							if (clazz != null && Event.class.isAssignableFrom(clazz)) {
+								plugin().log(Level.INFO, "...Found event {0}, registering", clazz.getName());
+								// This is some advanced shit. It also bypasses the timings, so, be careful, ok?
+								plugin().getServer().getPluginManager().registerEvent((Class<? extends Event>) clazz, this, EventPriority.LOWEST, new EventExecutor() {
+									@Override
+									public void execute(Listener arg0, Event arg1) throws EventException {
+										try {
+											((Insight) arg0).start(arg1);
+										} catch (Exception e) {
+											// no-op, we were never here
+										}
+									}
+								}, plugin(), true);
+								plugin().getServer().getPluginManager().registerEvent((Class<? extends Event>) clazz, this, EventPriority.MONITOR, new EventExecutor() {
+									@Override
+									public void execute(Listener arg0, Event arg1) throws EventException {
+										try {
+											((Insight) arg0).end(arg1);
+										} catch (Exception e) {
+											// no-op, we were never here
+										}
+									}
+								}, plugin(), true);
+								rebounders.add((Class<? extends Event>) clazz);
+							}
+						} catch (NoClassDefFoundError e) {
+							plugin().log(Level.INFO, "Unable to register event {0} due to dependency failure", clsInfo.getName());
+						} catch (IllegalPluginAccessException ipae) {
+							plugin().log(Level.INFO, "Unable to register event {0}; abstract or uninstanced event", clsInfo.getName());
+						} catch (Exception e) {
+							plugin().log(Level.WARNING, "Failed to complete event registration for " + clsInfo.getName(), e);
+						}
+					}
+				}
+			} catch (IOException ioe) {
+				plugin().log(Level.WARNING, "Failed to register event classes", ioe);
+			}
 		}
 	}
 
@@ -99,39 +169,18 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		remap = Bukkit.getScheduler().runTaskLater(plugin(), new Runnable(){
 			@Override
 			public void run() {
-				reboundHandlers(BlockBreakEvent.class);
-				reboundHandlers(BlockBurnEvent.class);
-				reboundHandlers(BlockCanBuildEvent.class);
-				reboundHandlers(BlockDamageEvent.class);
-				reboundHandlers(BlockExpEvent.class);
-				reboundHandlers(BlockExplodeEvent.class);
-				reboundHandlers(BlockFadeEvent.class);
-				reboundHandlers(BlockFormEvent.class);
-				reboundHandlers(BlockFromToEvent.class);
-				reboundHandlers(BlockGrowEvent.class);
-				reboundHandlers(BlockIgniteEvent.class);
-				reboundHandlers(BlockMultiPlaceEvent.class);
-				reboundHandlers(BlockPhysicsEvent.class);
-				reboundHandlers(BlockPistonExtendEvent.class);
-				reboundHandlers(BlockPistonRetractEvent.class);
-				reboundHandlers(BlockPlaceEvent.class);
-				reboundHandlers(BlockRedstoneEvent.class);
-				reboundHandlers(BlockSpreadEvent.class);
-				reboundHandlers(CauldronLevelChangeEvent.class);
-				reboundHandlers(EntityBlockFormEvent.class);
-				reboundHandlers(LeavesDecayEvent.class);
-				reboundHandlers(NotePlayEvent.class);
-				reboundHandlers(SignChangeEvent.class);
+				//event.block
+				rebounders.forEach(e -> reboundHandlers(e));
 			}
 		}, 60l); // 3 seconds
 	}
 	
 	/**
-	 * TODO for tracked events consider hijacking priority ordering insertions... not sure how
-	 * but it'd be hella cool if these handlers could be injected to bound the listeners.
-	 *   one thought would be to grab the registeredlistener array, remove all listeners
-	 *   then readd, forcing _this_ plugin for _that_ even to be first and last in the list.
-	 * @param handler
+	 * For tracked events we hijack priority ordering insertions
+	 * We to grab the registeredlistener array, remove all listeners
+	 *   then readd, forcing _this_ plugin for _that_ event to be first(s) and last(s) in the list.
+	 *   
+	 * @param clazz The Event class whose handlers we want to reorder
 	 */
 	private <T extends Event> void reboundHandlers(Class<T> clazz) {
 		try {
@@ -191,6 +240,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 	public void dataBootstrap() {
 		if (config.isEnabled()) {
 			this.tracking = new ConcurrentHashMap<String, InsightStat>();
+			this.rebounders = new ArrayList<Class<? extends Event>>();
 		}
 	}
 
@@ -207,6 +257,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		if (config.isEnabled() || this.tracking != null) {
 			this.tracking.clear();
 			this.tracking = null;
+			this.rebounders = null;
 		}
 	}
 
@@ -265,226 +316,6 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		return color((long) microseconds);
 	}
 
-	// -- LISTENERS --
-	
-	// --- BLOCKS ---
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockBreakEvent(BlockBreakEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockBreakEvent(BlockBreakEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockBurnEvent(BlockBurnEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockBurnEvent(BlockBurnEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockCanBuildEvent(BlockCanBuildEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockCanBuildEvent(BlockCanBuildEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockDamageEvent(BlockDamageEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockDamageEvent(BlockDamageEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockDispenseEvent(BlockDispenseEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockDispenseEvent(BlockDispenseEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockExpEvent(BlockExpEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockExpEvent(BlockExpEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockExplodeEvent(BlockExplodeEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockExplodeEvent(BlockExplodeEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockFadeEvent(BlockFadeEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockFadeEvent(BlockFadeEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockFormEvent(BlockFormEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockFormEvent(BlockFormEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockFromToEvent(BlockFromToEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockFromToEvent(BlockFromToEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockGrowEvent(BlockGrowEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockGrowEvent(BlockGrowEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockIgniteEvent(BlockIgniteEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockIgniteEvent(BlockIgniteEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockMultiPlaceEvent(BlockMultiPlaceEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockMultiPlaceEvent(BlockMultiPlaceEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockPhysicsEvent(BlockPhysicsEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockPhysicsEvent(BlockPhysicsEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockPistonExtendEvent(BlockPistonExtendEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockPistonExtendEvent(BlockPistonExtendEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockPistonRetractEvent(BlockPistonRetractEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockPistonRetractEent(BlockPistonRetractEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockPlaceEvent(BlockPlaceEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockPlaceEvent(BlockPlaceEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockRedstoneEvent(BlockRedstoneEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockRedstoneEvent(BlockRedstoneEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowBlockSpreadEvent(BlockSpreadEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highBlockSpreadEvent(BlockSpreadEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowCauldronLevelChangeEvent(CauldronLevelChangeEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highCauldronLevelChangeEvent(CauldronLevelChangeEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowEntityBlockFormEvent(EntityBlockFormEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highEntityBlockFormEvent(EntityBlockFormEvent event) {
-		end(event);
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowLeavesDecayEvent(LeavesDecayEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highLeavesDecayEvent(LeavesDecayEvent event) {
-		end(event);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowNotePlayEvent(NotePlayEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highNotePlayEvent(NotePlayEvent event) {
-		end(event);
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
-	public void lowSignChangeEvent(SignChangeEvent event) {
-		start(event);
-	}
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
-	public void highSignChangeEvent(SignChangeEvent event) {
-		end(event);
-	}
-
-	
 	// -- SUPPORT
 	
 	public void start(Event event) {
