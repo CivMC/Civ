@@ -56,6 +56,7 @@ import org.bukkit.inventory.ItemStack;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
@@ -182,27 +183,52 @@ public class ExileListenerTest {
 	@Test
 	public void testOnPlayerFillBucket() {
 		PlayerBucketFillEvent e = new PlayerBucketFillEvent(player, null, null, null, null);
-		when(config.canPerform(ExileRule.USE_BUCKET)).thenReturn(true);
+		when(config.canPerform(ExileRule.FILL_BUCKET)).thenReturn(true);
 		dut.onPlayerFillBucket(e);
 		assertFalse(e.isCancelled());
 
 		e = new PlayerBucketFillEvent(player, null, null, null, null);
-		when(config.canPerform(ExileRule.USE_BUCKET)).thenReturn(false);
+		when(config.canPerform(ExileRule.FILL_BUCKET)).thenReturn(false);
 		dut.onPlayerFillBucket(e);
 		assertFalse(e.isCancelled());
 
 		e = new PlayerBucketFillEvent(player, null, null, null, null);
-		when(config.canPerform(ExileRule.USE_BUCKET)).thenReturn(true);
+		when(config.canPerform(ExileRule.FILL_BUCKET)).thenReturn(true);
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onPlayerFillBucket(e);
 		assertFalse(e.isCancelled());
 		
 		e = new PlayerBucketFillEvent(player, null, null, null, null);
-		when(config.canPerform(ExileRule.USE_BUCKET)).thenReturn(false);
+		when(config.canPerform(ExileRule.FILL_BUCKET)).thenReturn(false);
 		dut.onPlayerFillBucket(e);
 		assertTrue(e.isCancelled());
 	}
 
+	@Test
+	public void testOnPlayerMilkCow() {
+		ItemStack milkBucket = new ItemStack(Material.MILK_BUCKET, 1);
+		PlayerBucketFillEvent e = new PlayerBucketFillEvent(player, null, null, null, milkBucket);
+		when(config.canPerform(ExileRule.MILK_COWS)).thenReturn(true);
+		dut.onPlayerFillBucket(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerBucketFillEvent(player, null, null, null, milkBucket);
+		when(config.canPerform(ExileRule.MILK_COWS)).thenReturn(false);
+		dut.onPlayerFillBucket(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerBucketFillEvent(player, null, null, null, milkBucket);
+		when(config.canPerform(ExileRule.MILK_COWS)).thenReturn(true);
+		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
+		dut.onPlayerFillBucket(e);
+		assertFalse(e.isCancelled());
+		
+		e = new PlayerBucketFillEvent(player, null, null, null, milkBucket);
+		when(config.canPerform(ExileRule.MILK_COWS)).thenReturn(false);
+		dut.onPlayerFillBucket(e);
+		assertTrue(e.isCancelled());
+	}
+	
 	@Test
 	public void testOnPlayerEmptyBucket() {
 		PlayerBucketEmptyEvent e = new PlayerBucketEmptyEvent(player, null, null, null, null);
@@ -227,6 +253,32 @@ public class ExileListenerTest {
 		assertTrue(e.isCancelled());
 	}
 
+	@Test
+	public void testOnPlayerFillCauldron() {
+		Block block = mock(Block.class);
+		when(block.getType()).thenReturn(Material.CAULDRON);
+		PlayerBucketEmptyEvent e = new PlayerBucketEmptyEvent(player, block, null, null, null);
+		when(config.canPerform(ExileRule.FILL_CAULDRON)).thenReturn(true);
+		dut.onPlayerEmptyBucket(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerBucketEmptyEvent(player, block, null, null, null);
+		when(config.canPerform(ExileRule.FILL_CAULDRON)).thenReturn(false);
+		dut.onPlayerEmptyBucket(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerBucketEmptyEvent(player, block, null, null, null);
+		when(config.canPerform(ExileRule.FILL_CAULDRON)).thenReturn(true);
+		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
+		dut.onPlayerEmptyBucket(e);
+		assertFalse(e.isCancelled());
+		
+		e = new PlayerBucketEmptyEvent(player, block, null, null, null);
+		when(config.canPerform(ExileRule.FILL_CAULDRON)).thenReturn(false);
+		dut.onPlayerEmptyBucket(e);
+		assertTrue(e.isCancelled());
+	}
+	
 	@Test
 	public void testOnPlayerInteractBrewing() {
 		Block block = mock(Block.class);
@@ -487,6 +539,13 @@ public class ExileListenerTest {
 
 	@Test
 	public void testOnPlayerDrinkPotion() {
+		// enforce not a brew here.
+		BrewHandler bh = mock(BrewHandler.class);
+		when(bh.isBrew(any(ItemStack.class))).thenReturn(false);
+		when(pearlApi.getBrewHandler()).thenReturn(bh);
+		
+		when(config.canPerform(ExileRule.DRINK_BREWS)).thenReturn(false);
+		
 		PlayerItemConsumeEvent e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
 		when(config.canPerform(ExileRule.USE_POTIONS)).thenReturn(true);
 		dut.onPlayerDrinkPotion(e);
@@ -505,6 +564,41 @@ public class ExileListenerTest {
 		
 		e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
 		when(config.canPerform(ExileRule.USE_POTIONS)).thenReturn(false);
+		dut.onPlayerDrinkPotion(e);
+		assertTrue(e.isCancelled());
+		
+		e = new PlayerItemConsumeEvent(player, new ItemStack(Material.BAKED_POTATO, 1));
+		dut.onPlayerDrinkPotion(e);
+		assertFalse(e.isCancelled());
+	}
+
+	@Test
+	public void testOnPlayerDrinkBrew() {
+		// enforce is a brew here.
+		BrewHandler bh = mock(BrewHandler.class);
+		when(bh.isBrew(any(ItemStack.class))).thenReturn(true);
+		when(pearlApi.getBrewHandler()).thenReturn(bh);
+		
+		when(config.canPerform(ExileRule.USE_POTIONS)).thenReturn(false);
+		
+		PlayerItemConsumeEvent e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
+		when(config.canPerform(ExileRule.DRINK_BREWS)).thenReturn(true);
+		dut.onPlayerDrinkPotion(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
+		when(config.canPerform(ExileRule.DRINK_BREWS)).thenReturn(false);
+		dut.onPlayerDrinkPotion(e);
+		assertFalse(e.isCancelled());
+
+		e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
+		when(config.canPerform(ExileRule.DRINK_BREWS)).thenReturn(true);
+		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
+		dut.onPlayerDrinkPotion(e);
+		assertFalse(e.isCancelled());
+		
+		e = new PlayerItemConsumeEvent(player, new ItemStack(Material.POTION, 1));
+		when(config.canPerform(ExileRule.DRINK_BREWS)).thenReturn(false);
 		dut.onPlayerDrinkPotion(e);
 		assertTrue(e.isCancelled());
 		

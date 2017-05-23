@@ -158,4 +158,11 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return the clock instance
 	 */
 	Clock getClock();
+
+	/**
+	 * Gets the Brew handler for brew checking, if any.
+	 * 
+	 * @return a Brew Handler appropriate for the server.
+	 */
+	BrewHandler getBrewHandler();
 }

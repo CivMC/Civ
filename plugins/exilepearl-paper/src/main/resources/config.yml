@@ -126,7 +126,16 @@
 #  - When false, exiled players can't use beds
 # 
 # rules.use_bucket
-#  - When false, exiled players can't use buckets
+#  - When false, exiled players can't empty buckets or move them to other inventories
+#
+# rules.fill_bucket
+#  - When false, exiled players can't fill buckets (unless milk_cows is true)
+#
+# rules.milk_cows
+#  - When false, exiled players can't milk cows
+#
+# rules.fill_cauldron
+#  - When false, exiled players can't fill cauldrons from water buckets
 # 
 # rules.use_potions
 #  - When false, exiled players can't use potions
@@ -148,6 +157,9 @@
 # 
 # rules.brew
 #  - When false, exiled players can't brew potions
+#
+# rules.drink_brews
+#  - When false, exiled players can't drink brewery brews
 # 
 # rules.suicide
 #  - When true, exiled players can use the /suicide command
@@ -247,7 +259,11 @@ rules:
   ignite: false
   use_bed: false
   use_bucket: false
+  fill_bucket: false
+  milk_cows: true
   use_potions: false
+  drink_brews: true
+  fill_cauldron: true
   throw_pearl: false
   pvp: false
   kill_pets: false

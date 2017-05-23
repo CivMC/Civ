@@ -51,6 +51,10 @@ public class CmdConfigList extends PearlCommand {
 		appendBooleanRule(sb, ExileRule.COLLECT_XP);
 		appendBooleanRule(sb, ExileRule.USE_ANVIL);
 		appendBooleanRule(sb, ExileRule.PLACE_TNT);
+		appendBooleanRule(sb, ExileRule.FILL_BUCKET);
+		appendBooleanRule(sb, ExileRule.FILL_CAULDRON);
+		appendBooleanRule(sb, ExileRule.DRINK_BREWS);
+		appendBooleanRule(sb, ExileRule.MILK_COWS);
 		sb.setLength(sb.length() - 2);
 		
 		msg(sb.toString());

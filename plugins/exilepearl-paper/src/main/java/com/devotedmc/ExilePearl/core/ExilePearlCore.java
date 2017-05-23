@@ -31,6 +31,7 @@ import org.bukkit.plugin.PluginLoader;
 
 import com.avaje.ebean.EbeanServer;
 import com.devotedmc.ExilePearl.BorderHandler;
+import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -95,6 +96,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final BorderHandler borderHandler;
 	private final SuicideHandler suicideHandler;
 	private final DamageLogger damageLogger;
+	private BrewHandler brewHandler;
 	
 	private final PlayerListener playerListener;
 	private final ExileListener exileListener;
@@ -213,7 +215,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		} else {
 			logIgnoringHooks("WorldBorder");
 		}
-		
+		brewHandler = pearlFactory.createBrewHandler();		
 		
 		// Start tasks
 		pearlDecayWorker.start();
@@ -641,5 +643,10 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public Clock getClock() {
 		return clock;
+	}
+
+	@Override
+	public BrewHandler getBrewHandler() {
+		return this.brewHandler;
 	}
 }

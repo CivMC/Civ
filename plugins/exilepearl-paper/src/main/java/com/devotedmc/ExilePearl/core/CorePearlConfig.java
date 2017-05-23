@@ -275,6 +275,18 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 			
 		case PLACE_TNT:
 			return doc.getBoolean("rules.place_tnt", false);
+		
+		case DRINK_BREWS:
+			return doc.getBoolean("rules.drink_brews", true);
+		
+		case FILL_CAULDRON:
+			return doc.getBoolean("rules.fill_cauldron", true);
+			
+		case FILL_BUCKET:
+			return doc.getBoolean("rules.fill_bucket", false);
+			
+		case MILK_COWS:
+			return doc.getBoolean("rules.milk_cows", true);
 			
 		default:
 			return false;
@@ -366,6 +378,22 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 			
 		case PLACE_TNT:
 			doc.append("rules.place_tnt", value);
+			break;
+
+		case DRINK_BREWS:
+			doc.append("rules.drink_brews", value);
+			break;
+			
+		case FILL_CAULDRON:
+			doc.append("rules.fill_cauldron", value);
+			break;
+			
+		case FILL_BUCKET:
+			doc.append("rules.fill_bucket", value);
+			break;
+			
+		case MILK_COWS:
+			doc.append("rules.milk_cows", value);
 			break;
 			
 		default:

@@ -57,7 +57,7 @@ import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
  * Cannot light TNT.
  * Cannot chat in local chat. Given a message suggesting chatting in a group chat in Citadel.
  * Cannot use water or lava buckets.
- * Cannot use any potions.
+ * Cannot use any potions. (Supports Bypass for Brewery "potions")
  * Cannot set a bed.
  * Cannot enter within 1k of their ExilePearl. Same teleport back feature as world border.
  * Can use a /suicide command after a 180 second timeout. (In case they get stuck in a reinforced box).
@@ -136,7 +136,11 @@ public class ExileListener extends RuleListener implements Configurable {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerFillBucket(PlayerBucketFillEvent e) {
-		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
+		if (e.getItemStack() != null && Material.MILK_BUCKET.equals(e.getItemStack().getType())) {
+			checkAndCancelRule(ExileRule.MILK_COWS, e, e.getPlayer());
+		} else {
+			checkAndCancelRule(ExileRule.FILL_BUCKET, e, e.getPlayer());
+		}
 	}
 
 	/**
@@ -145,7 +149,11 @@ public class ExileListener extends RuleListener implements Configurable {
 	 */
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerEmptyBucket(PlayerBucketEmptyEvent e) {
-		checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
+		if (e.getBlockClicked() != null && Material.CAULDRON.equals(e.getBlockClicked().getType())) {
+			checkAndCancelRule(ExileRule.FILL_CAULDRON, e, e.getPlayer());
+		} else {
+			checkAndCancelRule(ExileRule.USE_BUCKET, e, e.getPlayer());
+		}
 	}
 
 	/**
@@ -233,7 +241,11 @@ public class ExileListener extends RuleListener implements Configurable {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void onPlayerDrinkPotion(PlayerItemConsumeEvent e) {
 		if(e.getItem().getType() == Material.POTION) {
-			checkAndCancelRule(ExileRule.USE_POTIONS, e, e.getPlayer());
+			if (pearlApi.getBrewHandler().isBrew(e.getItem())) {
+				checkAndCancelRule(ExileRule.DRINK_BREWS, e, e.getPlayer());
+			} else {
+				checkAndCancelRule(ExileRule.USE_POTIONS, e, e.getPlayer());
+			}
 		}
 	}
 

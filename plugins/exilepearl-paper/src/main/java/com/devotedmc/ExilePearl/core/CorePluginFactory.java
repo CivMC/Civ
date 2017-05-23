@@ -4,11 +4,13 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.BorderHandler;
+import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.DamageLogger;
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -119,6 +121,15 @@ public final class CorePluginFactory implements PearlFactory {
 
 	public BorderHandler createPearlBorderHandler() {
 		return new PearlBoundaryTask(pearlApi);
+	}
+	
+	public BrewHandler createBrewHandler() {
+		if (Bukkit.getPluginManager().isPluginEnabled("Brewery")) {
+			return new BreweryHandler(pearlApi);
+		} else {
+			pearlApi.log("Brewery not found, defaulting to no-brew handler");
+			return new NoBrewHandler(pearlApi);
+		}
 	}
 
 	public LoreProvider createLoreGenerator() {

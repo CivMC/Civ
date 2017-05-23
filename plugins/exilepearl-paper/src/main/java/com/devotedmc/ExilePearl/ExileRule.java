@@ -15,6 +15,7 @@ public enum ExileRule {
 	KILL_MOBS("KILL_MOBS", "kill that creature"),
 	IGNITE("IGNITE", "start fire"),
 	USE_BUCKET("USE_BUCKET", "use buckets"),
+	FILL_BUCKET("FILL_BUCKET", "fill buckets"),
 	USE_POTIONS("USE_POTIONS", "use potions"),
 	USE_BED("USE_BED", "use beds"),
 	SUICIDE("SUICIDE", "commit suicide"),
@@ -24,7 +25,10 @@ public enum ExileRule {
 	ENCHANT("ENCHANT", "enchant items"),
 	COLLECT_XP("COLLECT_XP", "collect xp"),
 	USE_ANVIL("USE_ANVIL", "repair items"),
-	PLACE_TNT("PLACE_TNT", "use TNT")
+	PLACE_TNT("PLACE_TNT", "use TNT"),
+	DRINK_BREWS("DRINK_BREWS", "Drink Brewery Brews"),
+	MILK_COWS("MILK_COWS", "Milk Cows using Bucket"),
+	FILL_CAULDRON("FILL_CAULDRON", "Fill Cauldron using Bucket")
 	;
 	
 	private final String text;
