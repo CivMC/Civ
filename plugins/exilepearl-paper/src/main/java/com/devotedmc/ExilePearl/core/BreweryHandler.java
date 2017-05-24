@@ -14,7 +14,6 @@ public class BreweryHandler implements BrewHandler {
 	
 	@Override
 	public boolean isBrew(ItemStack item) {
-		pearlApi.log("Testing {0} found {1} uid {2}", item, Brew.get(item), Brew.getUID(item));
 		return Brew.get(item) != null;
 	}
 
