@@ -412,7 +412,7 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCursor());
 
 			if(pearl != null) {
-				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 				if (holder != null) {
@@ -424,7 +424,7 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
-				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
 				InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 				if(holder != null && holder.getInventory().firstEmpty() >= 0) {
@@ -437,7 +437,7 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(playerInventory.getItem(event.getHotbarButton()));
 
 			if(pearl != null) {
-				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 
@@ -457,7 +457,7 @@ public class PlayerListener implements Listener, Configurable {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCursor());
 
 			if(pearl != null) {
-				boolean clickedTop = event.getView().convertSlot(event.getRawSlot()) == event.getRawSlot();
+				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 
