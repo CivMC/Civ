@@ -16,6 +16,7 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Chunk;
+import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -24,6 +25,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.World;
 
 import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
@@ -345,6 +347,8 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	private void checkBastion(Player player) {
 		if (pearlApi.isPlayerInUnpermittedBastion(player) && player.getHealth() > 0) {
 			player.setHealth(Math.max(0, player.getHealth() - bastionDamage));
+			player.playSound(player.getLocation(), Sound.ENTITY_GENERIC_HURT, 1.0F, 1.0F);
+			player.playEffect(EntityEffect.HURT);
 			msg(player, "<b>You aren't allowed in this bastion field when exiled.");
 		}
 	}

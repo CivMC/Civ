@@ -19,6 +19,8 @@ import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.enchantment.EnchantItemEvent;
+import org.bukkit.event.entity.EntityCombustByEntityEvent;
+import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -41,6 +43,7 @@ import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.EntityCombustEventWrapper;
 import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
 
 /**
@@ -234,6 +237,57 @@ public class ExileListener extends RuleListener implements Configurable {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void onPlayerCombust(EntityCombustByEntityEvent e) {
+		Player player = new EntityCombustEventWrapper(e).getPlayerDamager();
+		if (player == null) {
+			return;
+		}
+		
+		if (e.getEntity() instanceof Player) {
+			checkAndCancelRule(ExileRule.PVP, e, player);
+			return;
+		}
+		
+		if (!(e.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		
+		// Let players kill mythic mobs
+		if (pearlApi.isMythicMob(e.getEntity())) {
+			return;
+		}
+		
+		LivingEntity living = (LivingEntity)e.getEntity();
+		String name = living.getCustomName();
+		
+		if (name != null && name != "") {
+			checkAndCancelRule(ExileRule.KILL_PETS, e, player);
+			return;
+		}
+		
+		if (!isRuleActive(ExileRule.KILL_MOBS, player.getUniqueId())) {
+			return;
+		}
+		
+		for(String animal : protectedAnimals) {
+			Class<?> clazz = null;
+			
+			try {
+				clazz = Class.forName("org.bukkit.entity." + animal);
+			} catch (Exception ex) {
+				continue;
+			}
+			
+			if (clazz != null && clazz.isInstance(living)) {
+				checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
+				return;
+			}
+		}
+	}
+
+
+	
 	/**
 	 * Prevent exiled players from drinking potions
 	 * @param e The event
