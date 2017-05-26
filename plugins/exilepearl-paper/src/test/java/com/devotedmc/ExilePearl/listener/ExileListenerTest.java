@@ -41,6 +41,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.entity.EntityDamageEvent.DamageModifier;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -778,6 +779,7 @@ public class ExileListenerTest {
 		when(top.getSize()).thenReturn(9);
 		
 		Inventory bottom = mock(Inventory.class);
+		when(bottom.getHolder()).thenReturn(mock(Player.class));
 		when(bottom.getSize()).thenReturn(45);
 		
 		InventoryView view = mock(InventoryView.class);
@@ -785,7 +787,8 @@ public class ExileListenerTest {
 		when(view.getTopInventory()).thenReturn(top);
 		when(view.getBottomInventory()).thenReturn(bottom);
 		when(view.getCursor()).thenReturn(item);
-		when(view.getItem(5)).thenReturn(item);
+		when(view.getItem(eq(5))).thenReturn(item);
+		when(view.getItem(eq(40))).thenReturn(item);
 		
 		InventoryClickEvent e = new InventoryClickEvent(view, null, 5, ClickType.LEFT, InventoryAction.PLACE_SOME);
 		when(config.canPerform(ExileRule.PLACE_TNT)).thenReturn(true);
@@ -823,12 +826,19 @@ public class ExileListenerTest {
 		dut.onInventoryClick(e);
 		assertTrue(e.isCancelled());
 		
-		e = new InventoryClickEvent(view, null, 5, ClickType.LEFT, InventoryAction.MOVE_TO_OTHER_INVENTORY);
+		e = new InventoryClickEvent(view, null, 5, ClickType.SHIFT_LEFT, InventoryAction.MOVE_TO_OTHER_INVENTORY);
 		dut.onInventoryClick(e);
-		assertTrue(e.isCancelled());
-		
+		assertFalse(e.isCancelled());
+
 		e = new InventoryClickEvent(view, null, 40, ClickType.LEFT, InventoryAction.PLACE_SOME);
 		dut.onInventoryClick(e);
 		assertFalse(e.isCancelled());
+		
+		e = new InventoryClickEvent(view, null, 40, ClickType.SHIFT_LEFT, InventoryAction.MOVE_TO_OTHER_INVENTORY);
+		when(view.getType()).thenReturn(InventoryType.DISPENSER);
+		assertEquals(e.getCurrentItem(), item);
+		dut.onInventoryClick(e);
+		assertTrue(e.isCancelled());
+
 	}
 }

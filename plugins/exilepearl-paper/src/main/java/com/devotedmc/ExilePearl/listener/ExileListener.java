@@ -332,7 +332,7 @@ public class ExileListener extends RuleListener implements Configurable {
 				|| action == InventoryAction.PLACE_SOME
 				|| action == InventoryAction.PLACE_ONE) {
 			item = e.getCursor();
-			boolean clickedTop = e.getView().convertSlot(e.getRawSlot()) == e.getRawSlot();
+			boolean clickedTop = e.getRawSlot() < e.getView().getTopInventory().getSize(); // bukkit API has bad advice
 			if (item == null || !clickedTop) {
 				return;
 			}
@@ -340,13 +340,13 @@ public class ExileListener extends RuleListener implements Configurable {
 			
 		} else if(action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 			item = e.getCurrentItem();
-			boolean clickedTop = e.getView().convertSlot(e.getRawSlot()) == e.getRawSlot();
-			if (item == null || !clickedTop) {
+			boolean clickedTop = e.getRawSlot() < e.getView().getTopInventory().getSize();
+			if (item == null || clickedTop) { // allow remove from top but not shift INTO top
 				return;
 			}
 			
-			holder = e.getView().getTopInventory().getHolder();
-			
+			holder = e.getView().getTopInventory().getHolder(); // we're canceling bottom
+			// inventory click but only if _top_ inventory is specific type.
 		} else {
 			return;
 		}
