@@ -1,4 +1,4 @@
-#Item Exchange
+# Item Exchange
  
 Item Exchange is a Minecraft server mod that allows players to set up chests and dispensers as shops. It is intended to be used in conjunction with Citadel to lock the container that is being used this way. With a few exceptions for technical reasons, any item can be set up to be traded for any item. A single shop can offer multiple exchanges, for customers to choose between.
  
@@ -6,13 +6,13 @@ Chests, double chests, trapped chests, double trapped chests and dispensers can 
  
 **[Video tutorial of the basics](http://www.youtube.com/watch?v=uLIy3UlvAz0)**
  
-##Using a shop as a customer
+## Using a shop as a customer
  
 To see the input and output of the first exchange a chest or dispenser offers, just left click it. If the shop offers more exchanges (it will say so), you can click it with an empty hand to cycle through them. To complete a trade, cycle to the exchange you want, then left click the shop with the input item in hand
  
 ![Image showing the message a shop displays when you left click it.](http://i.imgur.com/gP4Rjfa.png)
  
-##Creating a shop
+## Creating a shop
  
 An Item Exchange shop is any chest or dispenser with exchange rules inside. Exchange rules consist of stone buttons that Item Exchange has attached extra information to. Anyone can use Item Exchange to generate these buttons, to make their own shop with.
  
@@ -33,7 +33,7 @@ For the second and third options, you need to make sure you have both an input a
  
 Remember to reinforce your shop!
  
-##Editing an exchange rule
+## Editing an exchange rule
  
 An existing exchange rule can be edited using the **/ieset** (or **/ies**) command. This is the only way to access some advanced features. Using this command will edit the exchange rule held in hand.
  
@@ -76,7 +76,7 @@ An existing exchange rule can be edited using the **/ieset** (or **/ies**) comma
  
 The amount of an item specified in an exchange rule can also be increased or decreased by shift left clicking or shift right clicking on the exchange rule respectively.
  
-##Bulk exchange rules
+## Bulk exchange rules
  
 It is possible to merge multiple exchange rules into one item by putting them in a crafting grid together. This will create a bulk exchange rule. Bulk exchange rules can have more exchange rules merged into them, including other bulk exchange rules. This means any number of exchanges can be stored in a single item, which in turn allows a shop to hold any number of exchanges while only using one inventory slot.
  
@@ -88,7 +88,7 @@ As an example of that, a chest containing only an input rule for 1 stone, and a 
  
 When a bulk exchange rule is dropped onto the ground, it splits into its component exchange rules.
  
-##Redstone support
+## Redstone support
 If there is a button attached to the block behind the chest, it will emit a redstone signal on a successful transaction. This currently only works for chests.
 ![Image showing a button on a block behind a chest.](http://imgur.com/OQaoaVu.png)
 ![Another image showing a button on a block behind a chest.](http://imgur.com/nGnu83v.png)
