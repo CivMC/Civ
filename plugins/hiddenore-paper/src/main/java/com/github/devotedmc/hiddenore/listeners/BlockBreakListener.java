@@ -133,7 +133,8 @@ public class BlockBreakListener implements Listener {
 				ToolConfig dropModifier = dc.dropsWithToolConfig(biomeName, inMainHand);
 
 				double dropChance = dc.getChance(biomeName) 
-						* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier());
+						* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier())
+						* dc.getStateChance(biomeName, p);
 
 				// Random check to decide whether or not the special drop should be dropped
 				if (dropChance > Math.random()) {
@@ -143,13 +144,13 @@ public class BlockBreakListener implements Listener {
 						// Core of event cancelled!
 						return;
 					} else {
-						doXP(dc, biomeName, dropModifier, b.getLocation());
+						doXP(dc, biomeName, dropModifier, b.getLocation(), p);
 					}
 				}
 			}
 		} else {
 			String drop = bc.getDropConfig(Math.random(), biomeName, inMainHand, 
-					b.getLocation().getBlockY());
+					p, b.getLocation().getBlockY());
 
 			if (drop != null) {
 				DropConfig dc = bc.getDropConfig(drop);
@@ -161,7 +162,7 @@ public class BlockBreakListener implements Listener {
 					// Core of event cancelled!
 					return;
 				} else {
-					doXP(dc, biomeName, tc, b.getLocation());
+					doXP(dc, biomeName, tc, b.getLocation(), p);
 				}
 			}
 		}
@@ -174,9 +175,10 @@ public class BlockBreakListener implements Listener {
 		}
 	}
 
-	private void doXP(DropConfig dc, String biomeName, ToolConfig dropModifier, Location loc) {
+	private void doXP(DropConfig dc, String biomeName, ToolConfig dropModifier, Location loc, Player p) {
 		double xpChance = dc.getXPChance(biomeName) 
-				* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier());
+				* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier())
+				* dc.getStateChance(biomeName, p);
 		if (xpChance > Math.random()) {
 			int toXP = dc.renderXP(biomeName, dropModifier);
 			if (toXP > 0) {

@@ -134,6 +134,18 @@ tools:
    dropChance: 1.0
    minAmount: 0.0
    maxAmount: 0.0
+states:
+ hasteDebuff:
+  haste: [0.8, 0.5]
+ fatigueBuff:
+  fatigue: [1.2, 1.5]
+ generalRebalance:
+  haste: [0.9, 0.7]
+  fatigue: [1.1, 1.3]
+  nausea: [0.5, 0.3, 0.1]
+  luck: [2.0, 3.0, 4.0]
+  badluck: [0.1, 0.01, 0.002]
+  blindness: [0.0, 0.0, 0.0]
 blocks:
  # This defines for which types of things drops are possible. Give each "block config" a friendly name.
  stone:
@@ -196,6 +208,8 @@ blocks:
     # If we do use normal drop behavior, what's the maximum drop size (after being constrained by maxAmount above)
     # Default is 1.
     transformMaxDropsIfFails: 1
+    # Describes which state by name to use from the `states` section above.
+    state: generalRebalance
    iron_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -218,6 +232,7 @@ blocks:
     chance: 0.007
     minAmount: 1
     maxAmount: 4
+    state: hasteDebuff
    gold_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -231,6 +246,7 @@ blocks:
     chance: 0.001437
     minAmount: 1
     maxAmount: 4
+    state: generalRebalance
    diamond_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -244,6 +260,7 @@ blocks:
     chance: 0.0005427
     minAmount: 1
     maxAmount: 3
+    state: generalRebalance
    redstone_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -257,6 +274,7 @@ blocks:
     chance: 0.01025
     minAmount: 1
     maxAmount: 4
+    state: generalRebalance
    lapis_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -271,6 +289,7 @@ blocks:
     chance: 0.000597
     minAmount: 1
     maxAmount: 3
+    state: fatigueBuff
    emerald_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
@@ -284,13 +303,17 @@ blocks:
     chance: 0.0
     minAmount: 1
     maxAmount: 2
+    state: generalRebalance
     # Biomes can modify the chance rate. Anything specified in biome _replaces_ the base chance or min/max amounts,
     #  unlike tools which modify those values after biome is resolved.
+    # States can be defined per biome as well, and similarly replaces base state assignment when within that biome.
     biomes:
      EXTREME_HILLS:
       chance: 0.001437
+      state: fatigueBuff
      MUTATED_EXTREME_HILLS:
       chance: 0.001437
+      state: hasteDebuff
      EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
      MUTATED_EXTREME_HILLS_WITH_TREES:

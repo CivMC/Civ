@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockConfig {
@@ -88,7 +89,7 @@ public class BlockConfig {
 		return dropConfigs.get(drop);
 	}
 
-	public String getDropConfig(double dice, String biome, ItemStack tool, int blockY) {
+	public String getDropConfig(double dice, String biome, ItemStack tool, Player player, int blockY) {
 		// accrue possible drops based on biome / tool
 		// check dice against stacked probabilities
 
@@ -101,7 +102,7 @@ public class BlockConfig {
 					&& blockY >= dc.getValue().getMinY(biome)) {
 				
 				ToolConfig tc = dc.getValue().dropsWithToolConfig(biome, tool);
-				localChance = dc.getValue().getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier());
+				localChance = dc.getValue().getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier()) * dc.getValue().getStateChance(biome, player);
 				
 				/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger()
 						.log(Level.INFO, "Base chance {0}| tool mod {1}| totalChance {2}| tc {3}",

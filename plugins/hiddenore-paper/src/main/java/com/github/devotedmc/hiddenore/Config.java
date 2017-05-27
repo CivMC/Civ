@@ -23,6 +23,7 @@ public final class Config {
 	public boolean ignoreSilktouch;
 	public Map<String, List<BlockConfig>> blockConfigs;
 	public Map<String, NameConfig> prettyNames;
+	public Map<String, PlayerStateConfig> stateMasterList;
 
 	private static FileConfiguration file;
 
@@ -35,6 +36,7 @@ public final class Config {
 	private Config() {
 		blockConfigs = new HashMap<String, List<BlockConfig>>();
 		prettyNames = new HashMap<String, NameConfig>();
+		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
 		trackSave = 90000l;
 		alertUser = false;
@@ -114,6 +116,36 @@ public final class Config {
 			}
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No tool configurations specified. This might cause issues.");
+		}
+		
+		ConfigurationSection states = file.getConfigurationSection("states");
+		if (states != null) {
+			for (String state : states.getKeys(false)) {
+				if (states.isConfigurationSection(state)) {
+					ConfigurationSection stateConfig = states.getConfigurationSection(state);
+					PlayerStateConfig pstateConfig = new PlayerStateConfig();
+					if (stateConfig.contains("haste")) {
+						pstateConfig.hasteRates = stateConfig.getDoubleList("haste");
+					}
+					if (stateConfig.contains("fatigue" )) {
+						pstateConfig.fatigueRates = stateConfig.getDoubleList("fatigue");
+					}
+					if (stateConfig.contains("nausea")) { 
+						pstateConfig.nauseaRates = stateConfig.getDoubleList("nausea");
+					}
+					if (stateConfig.contains("luck")) {
+						pstateConfig.luckRates = stateConfig.getDoubleList("luck");
+					}
+					if (stateConfig.contains("blindness")) {
+						pstateConfig.blindnessRates = stateConfig.getDoubleList("blindness");
+					}
+					if (stateConfig.contains("badluck")) {
+						pstateConfig.badluckRates = stateConfig.getDoubleList("badluck");
+					}
+					i.stateMasterList.put(state, pstateConfig);
+					HiddenOre.getPlugin().getLogger().info("State " + state + " initialized");
+				}
+			}
 		}
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
@@ -220,9 +252,12 @@ public final class Config {
 			dlc.xp = xpc;
 		}
 		
+		String state = drop.isSet("state") ? drop.getString("state", parent.state) : parent.state;
+		dlc.state = state;
+		
 		HiddenOre.getPlugin().getLogger()
-				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4} with {5} tools",
-						new Object[] {dlc.chance*100.0, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY, dlc.tools.size()});
+				.log(Level.INFO, "   loading drop config {0}% {1}-{2} {3}-{4} with {5} tools and {6} state",
+						new Object[] {dlc.chance*100.0, dlc.minAmount, dlc.maxAmount, dlc.minY, dlc.maxY, dlc.tools.size(), dlc.state});
 		HiddenOre.getPlugin().getLogger().log(Level.INFO, "     tools: {0}", dlc.tools);
 		if (dlc.xp != null) {
 			HiddenOre.getPlugin().getLogger().log(Level.INFO, "     xp: {0}", dlc.xp.toString());
@@ -277,5 +312,9 @@ public final class Config {
 	
 	public ConfigurationSection getWorldGenerations() {
 		return file.getConfigurationSection("clear_ores");
+	}
+	
+	public static PlayerStateConfig getState(String state) {
+		return instance.stateMasterList.get(state);
 	}
 }

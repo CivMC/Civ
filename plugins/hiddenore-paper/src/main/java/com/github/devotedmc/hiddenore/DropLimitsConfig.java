@@ -12,6 +12,7 @@ public class DropLimitsConfig {
 	public double minAmount;
 	public double maxAmount;
 	public XPConfig xp;
+	public String state;
 
 	public DropLimitsConfig() {
 		tools = new LinkedList<String>();
@@ -21,6 +22,7 @@ public class DropLimitsConfig {
 		minAmount = 0.0;
 		maxAmount = 0.0;
 		xp = null;
+		state = null;
 	}
 
 	public void setTools(Collection<String> tools) {

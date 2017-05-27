@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class DropConfig {
@@ -95,6 +96,20 @@ public class DropConfig {
 
 	private XPConfig getBiomeXP(String biome) {
 		return biomeLimits.containsKey(biome) ? biomeLimits.get(biome).xp : limits.xp;
+	}
+
+	/**
+	 * Based on the player and potentially modified per biome, indicate the drop chance rate change for this player.
+	 *  
+	 * @param biome the biome the player is in or that you want to test against
+	 * @param player Used to read active potion / status effects
+	 * @return 0..? double value
+	 */
+	public double getStateChance(String biome, Player player) {
+		String namedState = biomeLimits.containsKey(biome) ? biomeLimits.get(biome).state : limits.state;
+		PlayerStateConfig sConfig = Config.getState(namedState);
+		
+		return (sConfig != null) ? sConfig.statusRate(player) : 1.0;
 	}
 	
 	public double getXPChance(String biome) {
