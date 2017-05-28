@@ -44,6 +44,13 @@ public class BlockCoord {
 		this.z += face.getModZ();
 	}
 
+	public BlockCoord getForward() { return new BlockCoord(this.world, this.x, this.y, this.z - 1); }
+	public BlockCoord getBackward() { return new BlockCoord(this.world, this.x, this.y, this.z + 1); }
+	public BlockCoord getRight() { return new BlockCoord(this.world, this.x - 1, this.y, this.z); }
+	public BlockCoord getLeft() { return new BlockCoord(this.world, this.x + 1, this.y, this.z); }
+	public BlockCoord getTop() { return new BlockCoord(this.world, this.x, this.y + 1, this.z); }
+	public BlockCoord getBottom() { return new BlockCoord(this.world, this.x, this.y - 1, this.z); }
+
 	@Override
 	public boolean equals(Object other) {
 		if (other == null || !(other instanceof BlockCoord)) {

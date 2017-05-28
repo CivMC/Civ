@@ -28,7 +28,14 @@ public class TimerBatch {
 	public long getRunTimeMillis() {
 		return this.runTimeMillis;
 	}
-	public void resetRunTime() { this.runTimeMillis = System.currentTimeMillis() + this.gearblock.getTimer() * 1000; }
+
+	public boolean resetRunTime() {
+		if(this.gearblock.getTimer() == null) return false;
+
+		this.runTimeMillis = System.currentTimeMillis() + this.gearblock.getTimer() * 1000;
+
+		return true;
+	}
 
 	public void setProcessStatus(PowerResult.Status processStatus) {
 		this.processStatus = processStatus;

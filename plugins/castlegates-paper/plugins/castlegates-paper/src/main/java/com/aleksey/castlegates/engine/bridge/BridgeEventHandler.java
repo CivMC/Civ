@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
@@ -59,6 +60,13 @@ public class BridgeEventHandler {
     }
 
     public boolean handleBlockClicked(PlayerInteractEvent event, PlayerStateManager.PlayerState state) {
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            simpleActivate(event);
+            return false;
+        }
+
+        if(event.getAction() != Action.LEFT_CLICK_BLOCK) return false;
+
         boolean interacted = false;
         ConfigManager configManager = CastleGates.getConfigManager();
         CommandMode mode = state != null ? state.mode: CommandMode.OFF;
@@ -116,32 +124,8 @@ public class BridgeEventHandler {
     public void handleBlockPhysics(BlockPhysicsEvent event) {
         Block block = event.getBlock();
 
-        if(!this.waitingBlocks.remove(block) || this.processingBlocks.contains(block)) return;
-
-        Gearblock gearblock = this.storage.getGearblock(new BlockCoord(block));
-
-        if(gearblock == null || gearblock.isPowered() == block.isBlockPowered()) return;
-
-        this.processingBlocks.add(block);
-
-        try
-        {
-            List<Player> players = Helper.getNearbyPlayers(block.getLocation());
-
-            PowerResult result = this.bridgeManager.processGearblock(
-                    block.getWorld(),
-                    gearblock,
-                    block.isBlockPowered(),
-                    players
-            );
-
-            if(result.status == PowerResult.Status.Locked && gearblock.getTimerMode() == TimerMode.DOOR) {
-                result.status = PowerResult.Status.Unchanged;
-            }
-
-            PowerResultHelper.showStatus(block.getLocation(), players, result);
-        } finally {
-            this.processingBlocks.remove(block);
+        if(this.waitingBlocks.remove(block)) {
+            processBlock(block, block.isBlockPowered());
         }
     }
 
@@ -374,6 +358,38 @@ public class BridgeEventHandler {
         }
     }
 
+    private boolean processBlock(Block block, boolean isPowered) {
+        if(this.processingBlocks.contains(block)) return false;
+
+        Gearblock gearblock = this.storage.getGearblock(new BlockCoord(block));
+
+        if(gearblock == null || gearblock.isPowered() == isPowered) return false;
+
+        this.processingBlocks.add(block);
+
+        try
+        {
+            List<Player> players = Helper.getNearbyPlayers(block.getLocation());
+
+            PowerResult result = this.bridgeManager.processGearblock(
+                    block.getWorld(),
+                    gearblock,
+                    isPowered,
+                    players
+            );
+
+            if(result.status == PowerResult.Status.Locked && gearblock.getTimerMode() == TimerMode.DOOR) {
+                result.status = PowerResult.Status.Unchanged;
+            }
+
+            PowerResultHelper.showStatus(block.getLocation(), players, result);
+        } finally {
+            this.processingBlocks.remove(block);
+        }
+
+        return true;
+    }
+
     private boolean setGearblockTimer(PlayerInteractEvent event, PlayerStateManager.PlayerState state) {
         Player player = event.getPlayer();
 
@@ -412,5 +428,50 @@ public class BridgeEventHandler {
         ParticleHelper.spawn(player, gearblock, ParticleHelper.Type.Info);
 
         return true;
+    }
+
+    private boolean simpleActivate(PlayerInteractEvent event) {
+        Block block = event.getClickedBlock();
+        BlockCoord blockCoord = new BlockCoord(block);
+        Gearblock gearblock = this.storage.getGearblock(blockCoord);
+
+        if(gearblock != null) return false;
+
+        GearblockLink link = null;
+
+        if((link = getLink(blockCoord.getForward(), blockCoord.getBackward())) == null
+                && (link = getLink(blockCoord.getRight(), blockCoord.getLeft())) == null
+                && (link = getLink(blockCoord.getTop(), blockCoord.getBottom())) == null
+            )
+        {
+            return false;
+        }
+
+        BlockCoord processCoord = link.getGearblock1().getCoord();
+        Block processBlock = block.getWorld().getBlockAt(processCoord.getX(), processCoord.getY(), processCoord.getZ());
+
+        if(this.waitingBlocks.contains(processBlock)) return false;
+
+        processBlock(processBlock, true);
+        processBlock(processBlock, false);
+
+        return true;
+    }
+
+    private GearblockLink getLink(BlockCoord start, BlockCoord end) {
+        Gearblock gearblock = this.storage.getGearblock(start);
+        GearblockLink link = gearblock != null ? gearblock.getLink() : null;
+
+        if(link != null &&
+                (
+                    link.getGearblock1().getCoord().equals(start) && link.getGearblock2().getCoord().equals(end)
+                    || link.getGearblock1().getCoord().equals(end) && link.getGearblock2().getCoord().equals(start)
+                )
+            )
+        {
+            return link;
+        }
+
+        return null;
     }
 }

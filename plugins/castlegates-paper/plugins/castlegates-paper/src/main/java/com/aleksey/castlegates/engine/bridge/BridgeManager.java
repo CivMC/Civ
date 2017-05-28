@@ -267,8 +267,9 @@ public class BridgeManager {
 		TimerBatch timerBatch = this.pendingTimerBatches.get(gearblock);
 
 		if(timerBatch != null) {
-			timerBatch.resetRunTime();
-			this.timerWorker.addBatch(timerBatch);
+			if(timerBatch.resetRunTime()) {
+				this.timerWorker.addBatch(timerBatch);
+			}
 		}
 	}
 

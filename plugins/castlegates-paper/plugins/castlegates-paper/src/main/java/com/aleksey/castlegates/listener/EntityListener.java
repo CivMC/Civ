@@ -30,10 +30,7 @@ public class EntityListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-    	if(event.getClickedBlock() != null
-    			&& event.getAction() == Action.LEFT_CLICK_BLOCK
-    			)
-    	{
+    	if(event.getClickedBlock() != null) {
     		CastleGates.getManager().handleBlockClicked(event);
     	}
     }
