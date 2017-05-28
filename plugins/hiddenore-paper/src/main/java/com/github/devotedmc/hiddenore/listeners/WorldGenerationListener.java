@@ -1,21 +1,22 @@
 package com.github.devotedmc.hiddenore.listeners;
 
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkPopulateEvent;
+import org.bukkit.inventory.ItemStack;
 
+import com.github.devotedmc.hiddenore.BlockConfig;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
 
@@ -114,6 +115,9 @@ public class WorldGenerationListener implements Listener {
 			chunk = world.getChunkAt(x, z + 1);
 			clear(chunk);
 		}
+		if(Config.caveOres) {
+			generateCaveOres(chunk);
+		}
 	}
 
 	private void clear(Chunk chunk) {
@@ -136,6 +140,25 @@ public class WorldGenerationListener implements Listener {
 		
 		if (rep > 0 && Config.isDebug) {
 			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Replaced {0} blocks at {1}, {2}", new Object[]{rep, chunk.getX(), chunk.getZ()});
+		}
+	}
+		
+	static BlockFace[] faces = new BlockFace[] {BlockFace.UP,BlockFace.DOWN,BlockFace.NORTH,BlockFace.SOUTH,BlockFace.EAST,BlockFace.WEST};
+	private void generateCaveOres(Chunk chunk) {
+		for(int x = 0; x < 16; x++) {
+			for(int z = 0; z < 16; z++) {
+				for(int y = 0; y < chunk.getWorld().getMaxHeight(); y++) {
+					Block block = chunk.getBlock(x, y, z);
+					BlockConfig bc = Config.isDropBlock(block.getType().name(), block.getData());
+					if(bc == null) continue;
+					for(BlockFace face : faces) {
+						if(block.getRelative(face).getType() == Material.AIR) {
+							BlockBreakListener.spoofBlockBreak(block.getLocation(), block, new ItemStack(Material.DIAMOND_PICKAXE));
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }
