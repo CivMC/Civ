@@ -32,6 +32,8 @@ public final class Config {
 	public static long trackSave;
 	
 	public int transformAttemptMultiplier = 3;
+	
+	public static boolean caveOres = false;
 
 	private Config() {
 		blockConfigs = new HashMap<String, List<BlockConfig>>();
@@ -60,6 +62,7 @@ public final class Config {
 		Config i = new Config();
 
 		isDebug = file.getBoolean("debug", isDebug);
+		caveOres = file.getBoolean("caveOres", caveOres);
 
 		trackFileName = file.getString("track_file", trackFileName);
 		trackFile = new File(HiddenOre.getPlugin().getDataFolder(), trackFileName);
