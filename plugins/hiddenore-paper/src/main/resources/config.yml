@@ -3,6 +3,7 @@ alert_user: true
 list_drops: true
 debug: false
 ignore_silktouch: true
+caveOres: false
 # For each potential transformation in a generate event, how many attempts at most will be made?
 # Keep this value small, or performance _will_ suffer.
 transform_attempt_multiplier: 3
