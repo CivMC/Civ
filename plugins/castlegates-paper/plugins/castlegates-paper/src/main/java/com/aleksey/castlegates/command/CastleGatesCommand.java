@@ -5,6 +5,7 @@
 
 package com.aleksey.castlegates.command;
 
+import com.aleksey.castlegates.types.TimerMode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -25,39 +26,15 @@ public class CastleGatesCommand {
 		Player player = (Player)sender;
 
         CommandMode mode;
-        Integer timer = null;
-        TimerOperation timerOperation = null;
 
-        if(Objects.equal(command.getName(), "gear")) {
+        if(command.getName().equalsIgnoreCase("gear")) {
         	mode = CommandMode.CREATE;
-        } else if(Objects.equal(command.getName(), "link")) {
+        } else if(command.getName().equalsIgnoreCase("link")) {
         	mode = CommandMode.LINK;
-        } else if(args.length > 0 && Objects.equal(args[0], "timer")) {
-        	if(args.length > 3) return false;
-
-    		mode = CommandMode.TIMER;
-
-    		timer = args.length > 1
-    				? parseTimer(args[1], player)
-    				: (Integer)CastleGates.getConfigManager().getTimerDefault();
-
-    		if(timer == null) {
-    			return true;
-    		}
-
-    		timerOperation = args.length == 3
-    				? Helper.parseTimerOperation(args[2])
-    				: CastleGates.getConfigManager().getTimerDefaultOperation();
-
-			if(timerOperation == null) {
-				player.sendMessage(ChatColor.RED + "Allowed timer operations are draw, undraw and revert.");
-				return true;
-			}
-    	} else if (args.length != 1) {
-    		return false;
-    	}
-    	else {
+        } else {
 	        switch(args[0].toLowerCase()) {
+				case "timer":
+					return setTimeMode(player, args);
 		        case "normal":
 		        	mode = CommandMode.NORMAL;
 		        	break;
@@ -73,14 +50,67 @@ public class CastleGatesCommand {
 		        default:
 		        	return false;
 	        }
+
+			if (args.length != 1) return false;
     	}
 
-		CastleGates.getManager().setPlayerMode((Player) sender, mode, timer, timerOperation);
+		CastleGates.getManager().setPlayerMode(player, mode, null, null, null);
 
 		return true;
 	}
 
-	private static Integer parseTimer(String text, Player player) {
+	private static boolean setTimeMode(Player player, String[] args) {
+		if(args.length > 4) return false;
+
+		Integer timer;
+		TimerOperation timerOperation;
+		TimerMode timerMode;
+
+		if(args.length == 2 && args[1].equalsIgnoreCase("door")) {
+			timer = 1;
+			timerOperation = TimerOperation.UNDRAW;
+			timerMode = TimerMode.DOOR;
+		} else {
+			timer = args.length > 1
+					? parseTimerTimeout(args[1], player)
+					: (Integer) CastleGates.getConfigManager().getTimerDefault();
+
+			if (timer == null)  return true;
+
+			timerOperation = CastleGates.getConfigManager().getTimerDefaultOperation();
+			timerMode = TimerMode.DEFAULT;
+
+			if(args.length > 2) {
+				if(args.length == 4 || !args[2].equalsIgnoreCase("door")) {
+					timerOperation = Helper.parseTimerOperation(args[2]);
+
+					if (timerOperation == null) {
+						player.sendMessage(ChatColor.RED + "Allowed timer operations are draw, undraw and revert.");
+						return true;
+					}
+				}
+
+				if(args.length == 4 || args[2].equalsIgnoreCase("door")) {
+					if(args.length == 4) {
+						if(!args[3].equalsIgnoreCase("door")) {
+							player.sendMessage(ChatColor.RED + "Allowed timer mode is door.");
+							return true;
+						}
+					} else {
+						timerOperation = TimerOperation.UNDRAW;
+					}
+
+					timerMode = TimerMode.DOOR;
+				}
+			}
+		}
+
+		CastleGates.getManager().setPlayerMode(player, CommandMode.TIMER, timer, timerOperation, timerMode);
+
+		return true;
+	}
+
+	private static Integer parseTimerTimeout(String text, Player player) {
 		int timer;
 
 		try {

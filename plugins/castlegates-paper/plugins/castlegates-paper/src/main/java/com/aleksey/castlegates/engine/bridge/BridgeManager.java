@@ -6,14 +6,12 @@
 package com.aleksey.castlegates.engine.bridge;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 
 import com.aleksey.castlegates.config.ConfigManager;
 import com.aleksey.castlegates.engine.StorageManager;
+import com.aleksey.castlegates.types.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,14 +26,6 @@ import com.aleksey.castlegates.plugins.citadel.ICitadelManager;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.events.CastleGatesDrawGateEvent;
 import com.aleksey.castlegates.events.CastleGatesUndrawGateEvent;
-import com.aleksey.castlegates.types.BlockCoord;
-import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.Gearblock;
-import com.aleksey.castlegates.types.GearblockLink;
-import com.aleksey.castlegates.types.PowerResult;
-import com.aleksey.castlegates.types.TimerBatch;
-import com.aleksey.castlegates.types.TimerLink;
-import com.aleksey.castlegates.types.TimerOperation;
 import com.aleksey.castlegates.utils.DataWorker;
 import com.aleksey.castlegates.utils.Helper;
 import com.aleksey.castlegates.utils.TimerWorker;
@@ -55,10 +45,12 @@ public class BridgeManager {
 	public static enum SearchBridgeBlockResult { NotFound, Bridge, Gates }
 
 	private StorageManager storage;
+	private Map<Gearblock, TimerBatch> pendingTimerBatches;
 	private TimerWorker timerWorker;
 
 	public void init(StorageManager storage) {
 		this.storage = storage;
+		this.pendingTimerBatches = new WeakHashMap<>();
 
 		this.timerWorker = new TimerWorker(this);
 		this.timerWorker.startThread();
@@ -233,6 +225,7 @@ public class BridgeManager {
 		if(!isPowered) {
 			unlock(gearblock);
 			gearblock.setPowered(false);
+			addPendingTimerBatch(gearblock);
 			return PowerResult.Unpowered;
 		}
 
@@ -270,6 +263,15 @@ public class BridgeManager {
 		return result;
 	}
 
+	private void addPendingTimerBatch(Gearblock gearblock) {
+		TimerBatch timerBatch = this.pendingTimerBatches.get(gearblock);
+
+		if(timerBatch != null) {
+			timerBatch.resetRunTime();
+			this.timerWorker.addBatch(timerBatch);
+		}
+	}
+
 	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
 		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
 		gearblocks.add(gearblock);
@@ -291,7 +293,12 @@ public class BridgeManager {
 
 		if(timerBatch != null) {
 			timerBatch.setProcessStatus(result.status);
-			this.timerWorker.addBatch(timerBatch);
+
+			if(gearblock.getTimerMode() == TimerMode.DEFAULT) {
+				this.timerWorker.addBatch(timerBatch);
+			} else {
+				this.pendingTimerBatches.put(gearblock, timerBatch);
+			}
 		}
 
 		return result;

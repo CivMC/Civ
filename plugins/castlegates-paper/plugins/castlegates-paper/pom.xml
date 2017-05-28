@@ -6,7 +6,7 @@
   <groupId>com.aleksey</groupId>
   <artifactId>castlegates</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.13-SNAPSHOT</version>
+  <version>1.0.14-SNAPSHOT</version>
   <name>CastleGates</name>
   <url>https://github.com/DevotedMC/CastleGates</url>
   

@@ -22,18 +22,14 @@ import com.aleksey.castlegates.database.LinkSource;
 import com.aleksey.castlegates.database.ReinforcementInfo;
 import com.aleksey.castlegates.database.ReinforcementSource;
 import com.aleksey.castlegates.database.SqlDatabase;
-import com.aleksey.castlegates.types.BlockCoord;
-import com.aleksey.castlegates.types.BlockState;
-import com.aleksey.castlegates.types.Gearblock;
-import com.aleksey.castlegates.types.GearblockForUpdate;
-import com.aleksey.castlegates.types.GearblockLink;
-import com.aleksey.castlegates.types.LinkForUpdate;
-import com.aleksey.castlegates.types.TimerOperation;
+import com.aleksey.castlegates.types.*;
 
 public class DataWorker extends Thread implements Runnable {
 	private static final int DRAW_CODE = 0;
 	private static final int UNDRAW_CODE = 1;
 	private static final int REVERT_CODE = 2;
+	private static final int OPERATION_MASK = 3;
+	private static final int MODE_MASK = 4;
 
 	private SqlDatabase db;
 	private GearblockSource gearblockSource;
@@ -88,9 +84,12 @@ public class DataWorker extends Thread implements Runnable {
 			Gearblock gearblock = new Gearblock(location);
 
 			TimerOperation timerOperation = null;
+			TimerMode timerMode = null;
 
 			if(info.timerOperation != null) {
-				switch(info.timerOperation) {
+				timerMode = (info.timerOperation & MODE_MASK) != 0 ? TimerMode.DOOR : TimerMode.DEFAULT;
+
+				switch(info.timerOperation & OPERATION_MASK) {
 				case DRAW_CODE:
 					timerOperation = TimerOperation.DRAW;
 					break;
@@ -104,7 +103,7 @@ public class DataWorker extends Thread implements Runnable {
 			}
 
 			gearblock.setId(info.gearblock_id);
-			gearblock.setTimer(info.timer, timerOperation);
+			gearblock.setTimer(info.timer, timerOperation, timerMode);
 
 			gearblocks.put(location, gearblock);
 			gearblocksById.put(info.gearblock_id, gearblock);
@@ -297,6 +296,10 @@ public class DataWorker extends Thread implements Runnable {
 				case REVERT:
 					info.timerOperation = REVERT_CODE;
 					break;
+				}
+
+				if(gearblock.getTimerMode() == TimerMode.DOOR) {
+					info.timerOperation |= MODE_MASK;
 				}
 			}
 		}

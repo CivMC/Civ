@@ -135,6 +135,10 @@ public class BridgeEventHandler {
                     players
             );
 
+            if(result.status == PowerResult.Status.Locked && gearblock.getTimerMode() == TimerMode.DOOR) {
+                result.status = PowerResult.Status.Unchanged;
+            }
+
             PowerResultHelper.showStatus(block.getLocation(), players, result);
         } finally {
             this.processingBlocks.remove(block);
@@ -360,7 +364,7 @@ public class BridgeEventHandler {
             }
 
             if(gearblock.getTimer() != null) {
-                String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation() + ".";
+                String message = "Timer: " + gearblock.getTimer() + " sec to process operation " + gearblock.getTimerOperation() + " in " + gearblock.getTimerMode() + " mode.";
                 player.sendMessage(ChatColor.GREEN + message);
             }
 
@@ -395,8 +399,9 @@ public class BridgeEventHandler {
         String message;
 
         if(gearblock.getTimer() == null) {
-            this.storage.setGearblockTimer(gearblock, state.timer, state.timerOperation);
-            message = ChatColor.GREEN + "The gearblock's timer has been set to " + state.timer + " sec to process operation " + state.timerOperation + ".";
+            this.storage.setGearblockTimer(gearblock, state.timer, state.timerOperation, state.timerMode);
+            String modeText = state.timerMode == TimerMode.DEFAULT ? "DEFAULT" : "DOOR";
+            message = ChatColor.GREEN + "The gearblock's timer has been set to " + state.timer + " sec to process operation " + state.timerOperation + " in " + modeText + " mode.";
         } else {
             this.storage.clearGearblockTimer(gearblock);
             message = ChatColor.YELLOW + "The gearblock's timer has been removed.";

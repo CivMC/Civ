@@ -102,14 +102,14 @@ public class StorageManager {
         this.dataWorker.addChangedLink(gearblock.getBrokenLink());
     }
 
-    public void setGearblockTimer(Gearblock gearblock, Integer timer, TimerOperation timerOperation) {
-        gearblock.setTimer(timer, timerOperation);
+    public void setGearblockTimer(Gearblock gearblock, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
+        gearblock.setTimer(timer, timerOperation, timerMode);
 
         this.dataWorker.addChangedGearblock(gearblock);
     }
 
     public void clearGearblockTimer(Gearblock gearblock) {
-        gearblock.setTimer(null, null);
+        gearblock.setTimer(null, null, null);
 
         this.dataWorker.addChangedGearblock(gearblock);
     }

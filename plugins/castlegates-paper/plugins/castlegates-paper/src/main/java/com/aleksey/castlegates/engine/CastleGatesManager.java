@@ -8,6 +8,7 @@ package com.aleksey.castlegates.engine;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.engine.bridge.BridgeEventHandler;
 import com.aleksey.castlegates.types.CommandMode;
+import com.aleksey.castlegates.types.TimerMode;
 import com.aleksey.castlegates.types.TimerOperation;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -62,8 +63,8 @@ public class CastleGatesManager {
 		}
 	}
 
-	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation) {
-		stateManager.setPlayerMode(player, mode, timer, timerOperation);
+	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
+		stateManager.setPlayerMode(player, mode, timer, timerOperation, timerMode);
 	}
 
 	public void handlePlayerJoin(PlayerJoinEvent event) {
