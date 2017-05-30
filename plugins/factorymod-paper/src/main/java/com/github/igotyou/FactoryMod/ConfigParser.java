@@ -290,6 +290,7 @@ public class ConfigParser {
 			if (setupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 						setupCost, egg);
+				upgradeEggs.put(egg.getName(), egg);
 			} else {
 				plugin.warning(String.format("FCC %s specified with no setup cost, skipping",
 						egg.getName()));
