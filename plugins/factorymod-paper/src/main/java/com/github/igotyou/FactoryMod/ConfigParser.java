@@ -290,6 +290,9 @@ public class ConfigParser {
 			if (setupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 						setupCost, egg);
+				//This is a placeholder to allow for FCC factories to be shown in /fm as upgrades from a base factory
+				//Just until /fm can be improved to show all FCCs outright
+				upgradeEggs.put(egg.getName(), egg);
 			} else {
 				plugin.warning(String.format("FCC %s specified with no setup cost, skipping",
 						egg.getName()));
