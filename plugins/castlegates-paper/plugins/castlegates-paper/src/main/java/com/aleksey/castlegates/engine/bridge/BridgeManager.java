@@ -11,6 +11,7 @@ import java.util.logging.Level;
 
 import com.aleksey.castlegates.config.ConfigManager;
 import com.aleksey.castlegates.engine.StorageManager;
+import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import com.aleksey.castlegates.types.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -233,7 +234,9 @@ public class BridgeManager {
 			return PowerResult.Unchanged;
 		}
 
-		if(!canAccessDoors(players, world, gearblock.getCoord())) {
+		IJukeAlert jukeAlert = getJukeAlert(world, gearblock);
+
+		if(!canAccessDoors(players, world, gearblock.getCoord(), jukeAlert)) {
 			return PowerResult.NotInCitadelGroup;
 		}
 
@@ -248,15 +251,15 @@ public class BridgeManager {
 			PowerResult result;
 
 			if(!gearblock.getLink().isDrawn()) {
-				result = canDraw(world, gearblock.getLink(), players);
+				result = canDraw(world, gearblock.getLink(), players, jukeAlert);
 			} else {
-				result = canUndraw(world, gearblock.getLink(), players);
+				result = canUndraw(world, gearblock.getLink(), players, jukeAlert);
 			}
 
 			if(result != PowerResult.Allowed) return result;
 		}
 
-		PowerResult result = powerGear(world, gearblock, isPowered, players);
+		PowerResult result = powerGear(world, gearblock, isPowered, players, jukeAlert);
 
 		gearblock.setLastSwitchTime();
 
@@ -273,11 +276,11 @@ public class BridgeManager {
 		}
 	}
 
-	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players) {
+	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players, IJukeAlert jukeAlert) {
 		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
 		gearblocks.add(gearblock);
 
-		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, gearblocks);
+		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, jukeAlert, gearblocks);
 
 		if(transferResult != PowerResult.Allowed) return transferResult;
 
@@ -424,6 +427,7 @@ public class BridgeManager {
 			Gearblock gearblock,
 			boolean isPowered,
 			List<Player> players,
+			IJukeAlert jukeAlert,
 			HashSet<Gearblock> gearblocks
 			)
 	{
@@ -437,7 +441,7 @@ public class BridgeManager {
 
 			if(to == null || to.isPowered() == isPowered || gearblocks.contains(to)) continue;
 
-			if(!canAccessDoors(players, world, loc)) return PowerResult.NotInCitadelGroup;
+			if(!canAccessDoors(players, world, loc, jukeAlert)) return PowerResult.NotInCitadelGroup;
 
 			if(isPowered) {
 				GearblockLink link = to.getLink();
@@ -446,9 +450,9 @@ public class BridgeManager {
 					PowerResult result;
 
 					if(!link.isDrawn()) {
-						result = canDraw(world, link, players);
+						result = canDraw(world, link, players, jukeAlert);
 					} else {
-						result = canUndraw(world, link, players);
+						result = canUndraw(world, link, players, jukeAlert);
 					}
 
 					if(result != PowerResult.Allowed) return result;
@@ -457,7 +461,7 @@ public class BridgeManager {
 				gearblocks.add(to);
 			}
 
-			PowerResult result = transferPower(world, to, isPowered, players, gearblocks);
+			PowerResult result = transferPower(world, to, isPowered, players, jukeAlert, gearblocks);
 
 			if(result != PowerResult.Allowed) return result;
 		}
@@ -482,7 +486,7 @@ public class BridgeManager {
 		return null;
 	}
 
-	private PowerResult canDraw(World world, GearblockLink link, List<Player> players) {
+	private PowerResult canDraw(World world, GearblockLink link, List<Player> players, IJukeAlert jukeAlert) {
 		ConfigManager configManager = CastleGates.getConfigManager();
 
 		BlockFace blockFace = getLinkFace(link);;
@@ -503,7 +507,7 @@ public class BridgeManager {
 
 			if(this.storage.hasGearblock(new BlockCoord(block))) return new PowerResult(PowerResult.Status.CannotDrawGear, block);
 
-			if(!canAccessDoors(players, block.getLocation())) return PowerResult.NotInCitadelGroup;
+			if(!canAccessDoors(players, block.getLocation(), jukeAlert)) return PowerResult.NotInCitadelGroup;
 
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
@@ -564,7 +568,7 @@ public class BridgeManager {
 		this.storage.setLinkBlocks(link, blockStates);
 	}
 
-	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players) {
+	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players, IJukeAlert jukeAlert) {
 		BlockFace blockFace = getLinkFace(link);
 		BlockCoord loc1 = link.getGearblock1().getCoord();
 		BlockCoord loc2 = link.getGearblock2().getCoord();
@@ -590,7 +594,7 @@ public class BridgeManager {
 			z1 += blockFace.getModZ();
 		}
 
-		return CastleGates.getBastionManager().canUndraw(players, bridgeBlocks)
+		return CastleGates.getBastionManager().canUndraw(players, bridgeBlocks, jukeAlert)
 				? PowerResult.Allowed
 				: PowerResult.BastionBlocked;
 	}
@@ -640,12 +644,20 @@ public class BridgeManager {
 		this.storage.setLinkBlocks(link, null);
 	}
 
-	private static boolean canAccessDoors(List<Player> players, Location location) {
-		return CastleGates.getCitadelManager().canAccessDoors(players, location);
+	private static boolean canAccessDoors(List<Player> players, Location location, IJukeAlert jukeAlert) {
+		return CastleGates.getCitadelManager().canAccessDoors(players, location, jukeAlert);
 	}
 
-	private static boolean canAccessDoors(List<Player> players, World world, BlockCoord coord) {
+	private static boolean canAccessDoors(List<Player> players, World world, BlockCoord coord, IJukeAlert jukeAlert) {
 		Location location = new Location(world, coord.getX(), coord.getY(), coord.getZ());
-		return CastleGates.getCitadelManager().canAccessDoors(players, location);
+		return CastleGates.getCitadelManager().canAccessDoors(players, location, jukeAlert);
+	}
+
+	private static IJukeAlert getJukeAlert(World world, Gearblock gearblock) {
+		BlockCoord coord = gearblock.getCoord();
+		Location location = new Location(world, coord.getX(), coord.getY(), coord.getZ());
+		int groupId = CastleGates.getCitadelManager().getGroupId(location);
+
+		return CastleGates.getJukeAlertManager().getJukeAlert(location, groupId);
 	}
 }

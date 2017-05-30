@@ -3,7 +3,5 @@ package com.aleksey.castlegates.plugins.jukealert;
 import org.bukkit.Location;
 
 public class NoJukeAlertManager implements IJukeAlertManager {
-	public boolean hasToggleLeverSnitchInRadius(Location loc, int groupId) {
-		return false;
-	}
+	public IJukeAlert getJukeAlert(Location loc, int groupId) { return new NoJukeAlert(); }
 }
