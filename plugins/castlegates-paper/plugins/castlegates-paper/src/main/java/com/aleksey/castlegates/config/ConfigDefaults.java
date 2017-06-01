@@ -3,7 +3,7 @@
  *
  */
 
-package com.aleksey.castlegates.manager;
+package com.aleksey.castlegates.config;
 
 import org.bukkit.Material;
 

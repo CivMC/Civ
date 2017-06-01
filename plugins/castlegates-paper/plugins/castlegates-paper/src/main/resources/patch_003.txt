@@ -1,0 +1,1 @@
+ALTER TABLE cg_link ADD subtype VARCHAR(50);

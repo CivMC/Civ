@@ -16,6 +16,7 @@ public class Gearblock {
 	private GearblockLink link;
 	private Integer timer;
 	private TimerOperation timerOperation;
+	private TimerMode timerMode;
 	private long lastSwitchTime;
 	private Gearblock lockGearblock;
 	private List<Gearblock> lockedGearblocks;
@@ -41,9 +42,11 @@ public class Gearblock {
 
 	public Integer getTimer() { return this.timer; }
 	public TimerOperation getTimerOperation() { return this.timerOperation; }
-	public void setTimer(Integer timer, TimerOperation timerOperation) {
+	public TimerMode getTimerMode() { return this.timerMode; }
+	public void setTimer(Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
 		this.timer = timer;
 		this.timerOperation = timerOperation;
+		this.timerMode = timerMode;
 	}
 
 	public long getLastSwitchTime() { return this.lastSwitchTime; }

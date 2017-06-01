@@ -14,8 +14,8 @@ import java.util.List;
 
 public class LinkSource {
 	private static final String selectAllScript = "SELECT * FROM cg_link";
-	private static final String insertScript = "INSERT INTO cg_link (gearblock1_id, gearblock2_id, blocks) VALUES (?, ?, ?)";
-	private static final String updateScript = "UPDATE cg_link SET gearblock1_id = ?, gearblock2_id = ?, blocks = ? WHERE link_id = ?";
+	private static final String insertScript = "INSERT INTO cg_link (gearblock1_id, gearblock2_id, blocks, subtype) VALUES (?, ?, ?, ?)";
+	private static final String updateScript = "UPDATE cg_link SET gearblock1_id = ?, gearblock2_id = ?, blocks = ?, subtype = ? WHERE link_id = ?";
 	private static final String deleteScript = "DELETE FROM cg_link WHERE link_id = ?";
 
 	private SqlDatabase db;
@@ -42,6 +42,7 @@ public class LinkSource {
 				if(rs.wasNull()) info.gearblock2_id = null;
 
 				info.blocks = rs.getBytes("blocks");
+				info.subtype = rs.getString("subtype");
 
 				list.add(info);
 			}
@@ -71,6 +72,12 @@ public class LinkSource {
 			sql.setBytes(3, info.blocks);
 		} else {
 			sql.setNull(3, Types.VARBINARY);
+		}
+
+		if(info.subtype != null) {
+			sql.setString(4, info.subtype);
+		} else {
+			sql.setNull(4, Types.VARCHAR);
 		}
 
 		sql.executeUpdate();
@@ -106,7 +113,13 @@ public class LinkSource {
 			sql.setNull(3, Types.VARBINARY);
 		}
 
-		sql.setInt(4, info.link_id);
+		if(info.subtype != null) {
+			sql.setString(4, info.subtype);
+		} else {
+			sql.setNull(4, Types.VARCHAR);
+		}
+
+		sql.setInt(5, info.link_id);
 
 		sql.executeUpdate();
 	}

@@ -3,13 +3,14 @@
  *
  */
 
-package com.aleksey.castlegates.citadel;
+package com.aleksey.castlegates.plugins.citadel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
+import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -54,7 +55,15 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 
-	public boolean canAccessDoors(List<Player> players, Location loc) {
+	public int getGroupId(Location loc) {
+		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+
+		if(rein == null || !(rein instanceof PlayerReinforcement)) return -1;
+
+		return ((PlayerReinforcement)rein).getGroupId();
+    }
+
+	public boolean canAccessDoors(List<Player> players, Location loc, IJukeAlert jukeAlert) {
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
 
 		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
@@ -62,7 +71,6 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
 
 		if(players != null && players.size() > 0) {
-
 			for(Player player : players) {
 				if(playerRein.canAccessDoors(player)
 						|| player.hasPermission("citadel.admin")
@@ -73,7 +81,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 			}
 		}
 
-		return CastleGates.getJukeAlertManager().hasToggleLeverSnitchInRadius(loc, playerRein.getGroupId());
+		return playerRein.getGroupId() == jukeAlert.getJukeAlertGroupId();
 	}
 
 	public boolean canBypass(Player player, Location loc) {

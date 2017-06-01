@@ -3,10 +3,11 @@
  *
  */
 
-package com.aleksey.castlegates.citadel;
+package com.aleksey.castlegates.plugins.citadel;
 
 import java.util.List;
 
+import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -16,7 +17,8 @@ public interface ICitadelManager {
 	void init();
 	void close();
 	double getMaxRedstoneDistance();
-	boolean canAccessDoors(List<Player> players, Location loc);
+	int getGroupId(Location loc);
+	boolean canAccessDoors(List<Player> players, Location loc, IJukeAlert jukeAlert);
 	boolean canBypass(Player player, Location loc);
 	boolean canViewInformation(Player player, Location loc);
 	ReinforcementInfo removeReinforcement(Location loc);

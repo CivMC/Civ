@@ -15,20 +15,20 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 
 import com.aleksey.castlegates.CastleGates;
-import com.aleksey.castlegates.manager.GearManager;
+import com.aleksey.castlegates.engine.bridge.BridgeManager;
 import com.aleksey.castlegates.types.BlockCoord;
 import com.aleksey.castlegates.types.Gearblock;
 import com.aleksey.castlegates.types.TimerBatch;
 
 public class TimerWorker extends Thread implements Runnable {
-	private GearManager gearManager;
+	private BridgeManager bridgeManager;
 	private List<TimerBatch> batches;
 
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
 
-    public TimerWorker(GearManager gearManager) {
-    	this.gearManager = gearManager;
+    public TimerWorker(BridgeManager bridgeManager) {
+    	this.bridgeManager = bridgeManager;
     	this.batches = new ArrayList<TimerBatch>();
 	}
 
@@ -85,11 +85,11 @@ public class TimerWorker extends Thread implements Runnable {
     }
 
     private void runBatch(final TimerBatch batch) {
-    	final GearManager gearManager = this.gearManager;
+    	final BridgeManager bridgeManager = this.bridgeManager;
 
 		CastleGates.runTask(new Runnable() {
             public void run() {
-            	if(gearManager.processTimerBatch(batch)) {
+            	if(bridgeManager.processTimerBatch(batch)) {
 	            	BlockCoord blockCoord = batch.getGearblock().getCoord();
 	            	Location location = new Location(batch.getWorld(), blockCoord.getX(), blockCoord.getY(), blockCoord.getZ());
 

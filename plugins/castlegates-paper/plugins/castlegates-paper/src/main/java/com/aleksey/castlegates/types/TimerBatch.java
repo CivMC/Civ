@@ -29,6 +29,14 @@ public class TimerBatch {
 		return this.runTimeMillis;
 	}
 
+	public boolean resetRunTime() {
+		if(this.gearblock.getTimer() == null) return false;
+
+		this.runTimeMillis = System.currentTimeMillis() + this.gearblock.getTimer() * 1000;
+
+		return true;
+	}
+
 	public void setProcessStatus(PowerResult.Status processStatus) {
 		this.processStatus = processStatus;
 	}
@@ -40,8 +48,9 @@ public class TimerBatch {
 	public TimerBatch(World world, Gearblock gearblock) {
 		this.world = world;
 		this.gearblock = gearblock;
-		this.runTimeMillis = System.currentTimeMillis() + gearblock.getTimer() * 1000;
 		this.timerOperation = gearblock.getTimerOperation();
+
+		resetRunTime();
 	}
 
 	public void addLink(GearblockLink link) {

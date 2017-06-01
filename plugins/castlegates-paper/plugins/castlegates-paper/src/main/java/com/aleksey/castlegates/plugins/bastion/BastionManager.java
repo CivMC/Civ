@@ -3,8 +3,10 @@
  *
  */
 
-package com.aleksey.castlegates.bastion;
+package com.aleksey.castlegates.plugins.bastion;
 
+import com.aleksey.castlegates.CastleGates;
+import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -17,6 +19,10 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import org.slf4j.event.Level;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -37,7 +43,7 @@ public class BastionManager implements IBastionManager {
 		PermissionType.registerPermission(PERMISSION_UNDRAW, memberAndAbove, "Allows undrawing bridges/gates above bastions");
 	}
 
-	public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks) {
+	public boolean canUndraw(List<Player> players, List<Block> bridgeBlocks, IJukeAlert jukeAlert) {
 		if (players != null) {
 			for(Player player : players) {
 				if(player.hasPermission("Bastion.bypass")) {
@@ -47,7 +53,7 @@ public class BastionManager implements IBastionManager {
 		}
 
 		for(Block block : bridgeBlocks) {
-			if(!hasBastionAccess(players, block)) {
+			if(!hasBastionAccess(players, block, jukeAlert)) {
 				return false;
 			}
 		}
@@ -56,7 +62,7 @@ public class BastionManager implements IBastionManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	private boolean hasBastionAccess(List<Player> players, Block block) {
+	private boolean hasBastionAccess(List<Player> players, Block block, IJukeAlert jukeAlert) {
 		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
 		Location loc = block.getLocation();
 		Set<? extends QTBox> boxes = this.manager.getBlockingBastions(loc);
@@ -66,10 +72,9 @@ public class BastionManager implements IBastionManager {
 			bastions = (Set<BastionBlock>) boxes;
 		}
 
-		if (bastions == null) {
-			return true;
-		}
+		if (bastions == null)  return true;
 
+		ReinforcementManager reinManager = Citadel.getReinforcementManager();
 		boolean hasAccess = true;
 
 		for(BastionBlock bastion : bastions) {
@@ -77,14 +82,14 @@ public class BastionManager implements IBastionManager {
 				continue;
 			}
 
-			if(players == null) {
-				return false;
-			}
+			if(players == null)  return false;
 
 			for(Player player : players) {
-				if (bastion.permAccess(player, perm)) {
-					return true;
-				}
+				if (bastion.permAccess(player, perm)) return true;
+
+				PlayerReinforcement rein = (PlayerReinforcement)reinManager.getReinforcement(bastion.getLocation());
+
+				if(rein.getGroupId() == jukeAlert.getJukeAlertGroupId()) return true;
 			}
 
 			hasAccess = false;

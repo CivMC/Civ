@@ -3,16 +3,17 @@
  *
  */
 
-package com.aleksey.castlegates.manager;
+package com.aleksey.castlegates.engine;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import com.aleksey.castlegates.CastleGates;
+import com.aleksey.castlegates.types.TimerMode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.TimerOperation;
 
@@ -21,6 +22,7 @@ public class PlayerStateManager {
 		public CommandMode mode;
 		public Integer timer;
 		public TimerOperation timerOperation;
+		public TimerMode timerMode;
 		public long lastInteracted;
 	}
 
@@ -49,7 +51,7 @@ public class PlayerStateManager {
 		return this.states.get(player);
 	}
 
-	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation) {
+	public void setPlayerMode(Player player, CommandMode mode, Integer timer, TimerOperation timerOperation, TimerMode timerMode) {
 		if(mode == CommandMode.OFF) {
 			clearPlayerMode(player);
 			return;
@@ -73,6 +75,7 @@ public class PlayerStateManager {
 		state.mode = mode;
 		state.timer = timer;
 		state.timerOperation = timerOperation;
+		state.timerMode = timerMode;
 		state.lastInteracted = System.currentTimeMillis();
 
 		addTask(player);

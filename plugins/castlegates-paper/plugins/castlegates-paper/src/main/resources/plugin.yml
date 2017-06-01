@@ -11,7 +11,7 @@ commands:
            /<command> normal - Normal mode
            /<command> create - Create gear block mode
            /<command> link - Link gears mode
-           /<command> timer [<period in seconds> [<draw | undraw | revert>]] - Set timer mode
+           /<command> timer [<period in seconds> [<draw | undraw | revert>]] [door] - Set timer mode
            /<command> info - Information mode
   gear:
     description: Create gear block mode
