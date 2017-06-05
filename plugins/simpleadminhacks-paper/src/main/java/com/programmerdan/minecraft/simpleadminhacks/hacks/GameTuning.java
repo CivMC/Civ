@@ -241,7 +241,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPortalCreate(PortalCreateEvent event) {
 		if (!config.isReturnNetherPortal()) {
 			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getName().equals("world_nether")) {
@@ -251,7 +251,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	}
 
 	//Trying to stop dupe bugs via minecart inventories
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityRightClick(PlayerInteractEntityEvent event) {
 		if (!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories()) {
 			Entity target = event.getRightClicked();
@@ -266,7 +266,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		if (!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories()) {
 			InventoryHolder holder = event.getDestination().getHolder();

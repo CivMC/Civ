@@ -153,6 +153,8 @@ hacks:
     teleportDelay: 5
     # in milliseconds -- min time between forced updates if active
     minInterval: 100
+    ignoreOps: true
+    ignorePermission: sah.allowInvisible
   InvisibleFix:
     enabled: true
     ignoreOps: true

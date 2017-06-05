@@ -53,6 +53,11 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		if (!config.isEnabled()) return; // ignore if off
 
 		final Player player = event.getPlayer();
+		
+		if (player.isOp() && config.getIgnoreOps()) return;
+		String tPerm = config.getIgnorePermission();
+		if (tPerm != null && player.hasPermission(tPerm)) return;
+		
 		server.getScheduler().runTaskLater(plugin(), new Runnable() {
 			@Override
 			public void run() {
@@ -73,6 +78,11 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		if (vehicle == null) return;
 		Entity e = vehicle.getPassenger();
 		if (e == null) return;
+
+		if (e.isOp() && config.getIgnoreOps()) return;
+		String tPerm = config.getIgnorePermission();
+		if (tPerm != null && e.hasPermission(tPerm)) return;
+		
 		forceUpdate(e);
 	}
 	
@@ -82,6 +92,11 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		
 		Player p = move.getPlayer();
 		if (p == null) return;
+
+		if (p.isOp() && config.getIgnoreOps()) return;
+		String tPerm = config.getIgnorePermission();
+		if (tPerm != null && p.hasPermission(tPerm)) return;
+		
 		Entity vehicle = p.getVehicle();
 		if (vehicle == null) return;
 		forceUpdate(p);

@@ -128,12 +128,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
 		if ((event.getDestination() == null) || (event.getSource() == null) ||
 				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
-				!(InventoryType.HOPPER.equals(event.getSource().getType()))) return;
+				!(InventoryType.HOPPER.equals(event.getSource().getType())) ||
+				!(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) || 
+				!(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) return;
 		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getState().getData();
 		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getState().getData();
 		if (source.getFacing().getOppositeFace() == dest.getFacing()) {
@@ -143,7 +145,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPistonPushRail(BlockPistonExtendEvent event) {
 		if (config.isStopRailDupe()) {
 			for (Block block : event.getBlocks()) {
@@ -157,7 +159,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onRailPlace(BlockPlaceEvent event) {
 		if (config.isStopRailDupe()) {
 			Block block = event.getBlock();
@@ -177,7 +179,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	}
 
 	//Trying to stop players from deleting end portals
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
 		if (config.isStopEndPortalDeletion()) {
 			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
@@ -188,7 +190,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onDispenseEvent(BlockDispenseEvent event) {
 		if (config.isStopEndPortalDeletion()) {
 			if (event.getBlock().getType() == Material.DISPENSER) {

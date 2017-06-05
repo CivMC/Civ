@@ -150,7 +150,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableVillagerTrading(PlayerInteractEntityEvent event) {
 		if (!config.isVillagerTrading()) {
 			Entity npc = event.getRightClicked();
@@ -163,7 +163,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableWitherSpawning(CreatureSpawnEvent event) {
 		if (!config.isWitherSpawning()) {
 			if (event.getEntityType().equals(EntityType.WITHER)) {
@@ -172,7 +172,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderChestPlacement(BlockPlaceEvent event) {
 		if (!config.isEnderChestPlacement()) {
 			if (event.getBlock().getType().equals(Material.ENDER_CHEST)) {

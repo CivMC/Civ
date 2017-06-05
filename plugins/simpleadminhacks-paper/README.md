@@ -18,6 +18,18 @@ Hacks and see if your contribution might fit with an existing module.
 
 ## Active Hacks
 
+Any hack can be theoretically live-disabled and enabled using:
+  `hacks <hackname> enable` or `hacks <hackname> disable` where the hackname is
+  as listed.
+
+Type `hacks` to see what the current enable/disable status of all loaded hacks is.
+
+Type `hacks <hackname>` to see a readout of that particular hack's status or config.
+
+Type `hacks <hackname> get <configitem>` to see the current configuration setting for that config element in that hack.
+
+Type `hacks <hackname> set <configitem> <new value>` to set a new configuratoin value for that config element in that hack. Not all hacks support this. 
+
 ### BadBoyWatch
 
 This hack keeps track of who breaks what, and what they broke to get there. I've got

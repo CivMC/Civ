@@ -22,6 +22,9 @@ public class InvisibleFixTwoConfig extends SimpleHackConfig {
 	 */
 	private long fixInterval;
 	
+	private boolean ignoreOps;
+	private String ignorePermission;
+	
 	public InvisibleFixTwoConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -30,6 +33,9 @@ public class InvisibleFixTwoConfig extends SimpleHackConfig {
 	protected void wireup(ConfigurationSection config) {
 		this.teleportFixDelay = config.getLong("teleportDelay", 5l);
 		this.fixInterval = config.getLong("minInterval", 100l);
+		this.ignoreOps = config.getBoolean("ignoreOps", true);
+		this.ignorePermission = config.getString("ignorePermission", "sah.allowInvisible");
+		if (this.ignorePermission.equals("")) this.ignorePermission = null;
 	}
 	
 	public long getTeleportFixDelay() {
@@ -38,6 +44,14 @@ public class InvisibleFixTwoConfig extends SimpleHackConfig {
 	
 	public long getFixInterval() {
 		return this.fixInterval;
+	}
+	
+	public boolean getIgnoreOps() {
+		return this.ignoreOps;
+	}
+	
+	public String getIgnorePermission() {
+		return this.ignorePermission;
 	}
 }
 

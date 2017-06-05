@@ -141,11 +141,11 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 								rebounders.add((Class<? extends Event>) clazz);
 							}
 						} catch (NoClassDefFoundError e) {
-							plugin().log(Level.INFO, "Unable to register event {0} due to dependency failure", clsInfo.getName());
+							plugin().log(Level.INFO, "...Unable to register event {0} due to dependency failure", clsInfo.getName());
 						} catch (IllegalPluginAccessException ipae) {
-							plugin().log(Level.INFO, "Unable to register event {0}; abstract or uninstanced event", clsInfo.getName());
+							plugin().log(Level.INFO, "...Unable to register event {0}; abstract or uninstanced event", clsInfo.getName());
 						} catch (Exception e) {
-							plugin().log(Level.WARNING, "Failed to complete event registration for " + clsInfo.getName(), e);
+							plugin().log(Level.WARNING, "...Failed to complete event registration for " + clsInfo.getName(), e);
 						}
 					}
 				}
