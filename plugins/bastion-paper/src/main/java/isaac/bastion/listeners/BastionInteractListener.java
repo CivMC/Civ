@@ -44,7 +44,7 @@ public class BastionInteractListener implements Listener {
 
 	@EventHandler(ignoreCancelled=true)
 	public void onBlockClicked(PlayerInteractEvent event) {
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
 
@@ -72,6 +72,10 @@ public class BastionInteractListener implements Listener {
 		if (PlayersStates.playerInMode(player, Mode.NORMAL)) {
 			return;
 		}
+		
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}		
 
 		Block block = event.getClickedBlock();
 
