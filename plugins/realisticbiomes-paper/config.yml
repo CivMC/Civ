@@ -510,6 +510,17 @@ realistic_biomes:
     mountain: 0.5
     cold: 0.25
     hot_dry: 0.25
+    
+  LLAMA:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    cold: 0.25
+    hot_rainy: 0.1
+    mushroom: 1.0
+
   #---------------------------------------
 
  fish_drops:
