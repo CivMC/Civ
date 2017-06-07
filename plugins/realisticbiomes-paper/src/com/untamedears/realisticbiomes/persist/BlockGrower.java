@@ -13,6 +13,8 @@ import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_10_R1.util.StructureGrowDelegate;
 import org.bukkit.material.CocoaPlant;
 import org.bukkit.material.CocoaPlant.CocoaPlantSize;
 import org.bukkit.material.Crops;
@@ -23,6 +25,9 @@ import org.bukkit.util.Vector;
 import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthMap;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.events.RealisticBiomesBlockBreakEvent;
+import com.untamedears.realisticbiomes.events.RealisticBiomesBlockGrowEvent;
+import com.untamedears.realisticbiomes.events.RealisticBiomesStructureGrowEvent;
 import com.untamedears.realisticbiomes.utils.Fruits;
 import com.untamedears.realisticbiomes.utils.Trees;
 
@@ -105,7 +110,10 @@ public class BlockGrower {
 		} else {
 			data.setData(stage);
 		}
+		// Call wrapper event for growth
 		state.setData(data);
+		RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesBlockGrowEvent(block, state));
+		
 		state.update(true, false);
 		
 		if (fruitGrowth != -1.0) {
@@ -141,18 +149,33 @@ public class BlockGrower {
 			}
 		}
 		
-		if (block.getWorld().generateTree(block.getLocation(), type)) {
-			// remove affected 2x2 saplings
-			for (int i = 1; i < states.size(); i++) {
-				plantManager.removePlant(states.get(i).getBlock());
+		try {
+			StructureGrowDelegate sgd = new StructureGrowDelegate(((CraftWorld) block.getWorld()).getHandle());
+			if (block.getWorld().generateTree(block.getLocation(), type, sgd)) {
+				
+				// Call wrapper event.
+				RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesStructureGrowEvent(
+						block.getLocation(), type, false, null, sgd.getBlocks()));
+				for (BlockState state : sgd.getBlocks()) {
+					// Since we're using the delegate, we need to force the update ourselves.
+					state.update(true, false);
+				}
+				
+				// remove affected 2x2 saplings
+				for (int i = 1; i < states.size(); i++) {
+					plantManager.removePlant(states.get(i).getBlock());
+				}
+				return false;
+			} else {
+				RealisticBiomes.doLog(Level.FINER, "generateTree reset data: " + states.size());
+				for (BlockState state: states) {
+					state.update(true, false);
+				}
+				return true;
 			}
-			return false;
-		} else {
-			RealisticBiomes.doLog(Level.FINER, "generateTree reset data: " + states.size());
-			for (BlockState state: states) {
-				state.update(true, false);
-			}
-			return true;
+		} catch (Exception e) {
+			RealisticBiomes.LOG.log(Level.SEVERE, "generateTree has failed", e);
+			return false; // we don't know what happened.
 		}
 	}
 
@@ -187,6 +210,9 @@ public class BlockGrower {
 				return true;
 			} else {
 				// grown successfully
+				BlockState preChange = block.getState();
+				preChange.setType(type);
+				RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesBlockGrowEvent(block, preChange));
 				block.setType(type);
 			}
 		}
@@ -197,11 +223,18 @@ public class BlockGrower {
 		for (Vector victor: surroundingBlocks) {
 			Block candidate = topBlock.getLocation().add(victor).getBlock();
 			if (candidate.getType() != Material.AIR) {
+				BlockState preChange = topBlock.getState();
+				preChange.setType(Material.CACTUS); // stage change for grow event
+				RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesBlockGrowEvent(topBlock, preChange));
+				
+				topBlock.setType(Material.CACTUS); // temporarily change for break event
+				RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesBlockBreakEvent(topBlock, null));
+				
 				if (dropGrouper != null) {
+					topBlock.setType(Material.AIR); // grouper doesn't need it to be real
 					dropGrouper.add(topBlock.getLocation(), Material.CACTUS);
 				} else {
-					topBlock.setType(Material.CACTUS);
-					topBlock.breakNaturally();
+					topBlock.breakNaturally(); // dropper does
 				}
 				return true;
 			}
@@ -220,7 +253,13 @@ public class BlockGrower {
 		
 		Block freeBlock = Fruits.getFreeBlock(block, null);
 		if (freeBlock != null) {
-			freeBlock.setType(Fruits.getFruit(block.getType()));
+			Material toBe = Fruits.getFruit(block.getType());
+			
+			BlockState preChange = freeBlock.getState();
+			preChange.setType(toBe); // stage change for grow event
+			RealisticBiomes.plugin.getServer().getPluginManager().callEvent(new RealisticBiomesBlockGrowEvent(freeBlock, preChange));
+			
+			freeBlock.setType(toBe);
 		}
 	}
 	
