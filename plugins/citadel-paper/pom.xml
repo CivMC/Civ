@@ -5,9 +5,9 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.8.04</version>
+	<version>3.9.0</version>
 	<name>Citadel</name>
-	<url>https://github.com/Civcraft/Citadel</url>
+	<url>https://github.com/Devoted/Citadel</url>
 
 	<build>
 		<pluginManagement>
@@ -41,20 +41,20 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.11-R0.1-SNAPSHOT</version>
+			<version>1.12-pre6-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.5.11</version>
+			<version>1.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-            <groupId>vg.civcraft.mc.namelayer</groupId>
-            <artifactId>NameLayer</artifactId>
-            <version>2.10.0</version>
-            <scope>provided</scope>
-        </dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.11.0</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.bettershards</groupId>
 			<artifactId>BetterShardsBukkit</artifactId>
@@ -64,14 +64,14 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.mercury</groupId>
 			<artifactId>Mercury</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.19</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>civcraft-repo</id>
+			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
