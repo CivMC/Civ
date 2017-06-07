@@ -478,7 +478,26 @@ realistic_biomes:
     hot_rainy: 0.1
     mushroom: 1.0
 
+  DONKEY:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    cold: 0.25
+    hot_rainy: 0.1
+    mushroom: 1.0
 
+  MULE:
+   inherit: animal
+   biomes:
+    temperate: 1.0
+    mountain: 0.25
+    hot_dry: 0.25
+    cold: 0.25
+    hot_rainy: 0.1
+    mushroom: 1.0
+    
   PIG:
    inherit: animal
    not_full_sunlight_multiplier: 0.5
@@ -520,6 +539,16 @@ realistic_biomes:
     cold: 0.25
     hot_rainy: 0.1
     mushroom: 1.0
+
+  PARROT:
+   inherit: animal
+   biomes:
+    hot_rainy: 1.0
+    hot_dry: 0.2
+    temperate: 0.5
+    moutain: 0.5
+    mushroom: 0.1
+    cold: 0.0
 
   #---------------------------------------
 

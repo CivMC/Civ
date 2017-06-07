@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 
-import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
@@ -36,7 +35,7 @@ public class ChunkWriter {
 			initWrite(writeConn);
 			initRead(readConn);
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to create the prepared statements in ChunkWriter", e);
+			throw new RuntimeException("Failed to create the prepared statements in ChunkWriter", e);
 		}
 	}
 	

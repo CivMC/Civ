@@ -23,7 +23,6 @@ import org.bukkit.block.Block;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.PersistConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -94,7 +93,7 @@ public class PlantManager {
 		try {
 			Class.forName(sDriverName);
 		} catch (ClassNotFoundException e) {
-			throw new DataSourceException("Failed to initalize the " + sDriverName + " driver class!", e);
+			throw new RuntimeException("Failed to initalize the " + sDriverName + " driver class!", e);
 		}
 		
 		this.connect();
@@ -137,7 +136,7 @@ public class PlantManager {
 						
 		} catch (SQLException e) {
 			
-			throw new DataSourceException("PlantManager constructor: Caught exception when trying to run the " +
+			throw new RuntimeException("PlantManager constructor: Caught exception when trying to run the " +
 					"'create xx_chunk and xx_plant' tables if they don't exist!", e);
 		}
 		
@@ -172,7 +171,7 @@ public class PlantManager {
 			}
 			
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to load all of the chunks from the database! ", e);
+			throw new RuntimeException("Failed to load all of the chunks from the database! ", e);
 		}
 		long endTime = System.nanoTime()/1000000/*ns/ms*/;
 
@@ -214,7 +213,7 @@ public class PlantManager {
 		try {
 			connect();
 			setupStatements();
-		} catch (DataSourceException dse) {
+		} catch (RuntimeException dse) {
 			RealisticBiomes.LOG.log(Level.SEVERE, "Unable to reconnect to RealisticBiomes database", dse);
 		}
 	}
@@ -232,7 +231,7 @@ public class PlantManager {
 			//stmt.setQueryTimeout(iTimeout);
 			
 		} catch (SQLException e) {
-			throw new DataSourceException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
+			throw new RuntimeException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
 		}
 	}
 	
@@ -259,7 +258,7 @@ public class PlantManager {
 			ChunkWriter.init(writeConn, readConn, config);
 			
 		} catch (SQLException e) {
-			throw new DataSourceException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
+			throw new RuntimeException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
 		}
 	}
 

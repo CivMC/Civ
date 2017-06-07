@@ -8,12 +8,12 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
 
-import net.minecraft.server.v1_11_R1.EnchantmentManager;
+import net.minecraft.server.v1_12_R1.EnchantmentManager;
 
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
@@ -91,8 +91,8 @@ public class GrowthMap {
 				}
 			}
 			if (gc.getApplyRandomEnchantment()) {
-				net.minecraft.server.v1_11_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
-				net.minecraft.server.v1_11_R1.ItemStack nmsis2 = EnchantmentManager.a(
+				net.minecraft.server.v1_12_R1.ItemStack nmsis = CraftItemStack.asNMSCopy(is);
+				net.minecraft.server.v1_12_R1.ItemStack nmsis2 = EnchantmentManager.a(
 						new Random(), nmsis, 30, gc.getAllowTreasureEnchantments());
 				is = CraftItemStack.asBukkitCopy(nmsis2);
 			}

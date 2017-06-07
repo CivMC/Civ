@@ -1,6 +1,5 @@
 package com.untamedears.realisticbiomes.persist;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import java.util.logging.Level;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
-import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 import com.untamedears.realisticbiomes.DropGrouper;
 import com.untamedears.realisticbiomes.GrowthConfig;
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -126,7 +124,7 @@ public class PlantChunk {
 		// wrapper.
 		try { 
 			return innerLoad();
-		} catch (DataSourceException dse) {
+		} catch (RuntimeException dse) {
 			// assume DB has gone away, reconnect and try one more time.
 			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
 		}
@@ -135,7 +133,7 @@ public class PlantChunk {
 		try {
 			plugin.getPlantManager().reconnect();
 			return innerLoad();
-		} catch(DataSourceException dse) {
+		} catch(RuntimeException dse) {
 			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
 			throw dse;
 		}
@@ -208,7 +206,7 @@ public class PlantChunk {
 				}
 			}
 		} catch (SQLException e) {
-			throw new DataSourceException(
+			throw new RuntimeException(
 					String.format(
 							"Failed to execute/load the data from the plants table (In PlantChunk.load()) with chunkId %s, coords %s",
 							index, coords), e);
@@ -226,7 +224,7 @@ public class PlantChunk {
 		try { 
 			innerUnload();
 			return;
-		} catch (DataSourceException dse) {
+		} catch (RuntimeException dse) {
 			// assume DB has gone away, reconnect and try one more time.
 			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
 		}
@@ -235,7 +233,7 @@ public class PlantChunk {
 		try {
 			plugin.getPlantManager().reconnect();
 			innerUnload();
-		} catch(DataSourceException dse) {
+		} catch(RuntimeException dse) {
 			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
 			throw dse;
 		}
@@ -284,7 +282,7 @@ public class PlantChunk {
 					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): got new autoincrement index, it is now "
 									+ index);
 				} else {
-					throw new DataSourceException(
+					throw new RuntimeException(
 							"Trying to add the chunk to the database, but was unable to get "
 									+ "the last inserted statement to get the index");
 				}
@@ -306,7 +304,7 @@ public class PlantChunk {
 
 		} catch (SQLException e) {
 
-			throw new DataSourceException(
+			throw new RuntimeException(
 					String.format(
 							"Failed to unload the chunk (In PlantChunk, adding chunk to db if needed), index %s, coords %s, PlantChunk obj: %s",
 							index, coords, this), e);
@@ -391,7 +389,7 @@ public class PlantChunk {
 				} 
 			}
 		} catch (SQLException e) {
-			throw new DataSourceException(
+			throw new RuntimeException(
 					String.format(
 							"Failed to unload the chunk (In PlantChunk, "
 									+ "replacing with new data/deleting), index %s, coords %s, PlantChunk obj: %s",

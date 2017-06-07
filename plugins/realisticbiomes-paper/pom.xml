@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
   <version>1.4.0</version>
   <name>RealisticBiomes</name>
-  <url>https://github.com/Civcraft/RealisticBiomes</url>
+  <url>https://github.com/DevotedMC/RealisticBiomes</url>
   
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
@@ -35,7 +35,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>1.11-R0.1-SNAPSHOT</version>
+      <version>1.12-pre6-SNAPSHOT</version>
       <scope>provided</scope>
 	</dependency>
   </dependencies>
