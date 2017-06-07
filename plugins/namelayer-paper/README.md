@@ -2,6 +2,6 @@
 
 See the wiki for details on group creation, management, and other commands.
 
-https://github.com/Civcraft/NameLayer/wiki
+https://github.com/Devoted/NameLayer/wiki
 
-Jenkins Build Server: http://build.devotedmc.com:8080/
+Jenkins Build Server: https://build.devotedmc.com/

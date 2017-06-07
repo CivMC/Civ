@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>namelayer-nms-v1_11_R1</artifactId>
-  <version>1_11_R1</version>
+  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <dependencies>
