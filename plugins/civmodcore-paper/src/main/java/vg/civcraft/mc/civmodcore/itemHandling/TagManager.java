@@ -1,25 +1,27 @@
 package vg.civcraft.mc.civmodcore.itemHandling;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_11_R1.NBTBase;
-import net.minecraft.server.v1_11_R1.NBTTagByte;
-import net.minecraft.server.v1_11_R1.NBTTagByteArray;
-import net.minecraft.server.v1_11_R1.NBTTagCompound;
-import net.minecraft.server.v1_11_R1.NBTTagDouble;
-import net.minecraft.server.v1_11_R1.NBTTagFloat;
-import net.minecraft.server.v1_11_R1.NBTTagInt;
-import net.minecraft.server.v1_11_R1.NBTTagIntArray;
-import net.minecraft.server.v1_11_R1.NBTTagList;
-import net.minecraft.server.v1_11_R1.NBTTagLong;
-import net.minecraft.server.v1_11_R1.NBTTagShort;
-import net.minecraft.server.v1_11_R1.NBTTagString;
+import net.minecraft.server.v1_12_R1.NBTBase;
+import net.minecraft.server.v1_12_R1.NBTTagByte;
+import net.minecraft.server.v1_12_R1.NBTTagByteArray;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagDouble;
+import net.minecraft.server.v1_12_R1.NBTTagFloat;
+import net.minecraft.server.v1_12_R1.NBTTagInt;
+import net.minecraft.server.v1_12_R1.NBTTagIntArray;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.NBTTagLong;
+import net.minecraft.server.v1_12_R1.NBTTagShort;
+import net.minecraft.server.v1_12_R1.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_11_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class TagManager {
@@ -36,7 +38,7 @@ public class TagManager {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
 
-		net.minecraft.server.v1_11_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_12_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 		this.tag = s.getTag();
 
 		if (this.tag == null) {
@@ -122,17 +124,49 @@ public class TagManager {
 		this.tag.set(key, tagList);
 	}
 
+	/**
+	 * As of 1.12, the base NBTTagList has no accessor specific for Shorts, so we'll mark it deprecated here.
+	 * Weirdly, the superclass has a method f() that still returns a Short for all number types, but NBTNumber isn't
+	 * visible so ... hack it is.
+	 * 
+	 * @param key
+	 * @return
+	 */
+	@Deprecated
 	public List<Short> getShortList(String key) {
 		NBTTagList tagList = this.tag.getList(key, 2);
 		List<Short> list = new ArrayList<Short>();
 
 		for (int i = 0; i < tagList.size(); i++) {
-			list.add(((NBTTagShort) tagList.h(i)).f());
+			NBTBase base = tagList.i(i);
+			try {
+				Method f = base.getClass().getMethod("f");
+				Short s = (Short) f.invoke(base);
+				list.add(s);
+			} catch (NoSuchMethodException e) {
+				log.warning("ShortList no longer officially supported, failed to map to retrieve method.");
+			} catch (SecurityException e) {
+				log.warning("ShortList no longer officially supported, failed to secure retrieve method.");
+			} catch (IllegalAccessException e) {
+				log.warning("ShortList no longer officially supported, failed to access retrieve method.");
+			} catch (IllegalArgumentException e) {
+				log.warning("ShortList no longer officially supported, failed to use retrieve method.");
+			} catch (InvocationTargetException e) {
+				log.warning("ShortList no longer officially supported, failed to invoke retrieve method.");
+			}
 		}
 
 		return list;
 	}
 
+	/**
+	 * Deprecating this as well as of 1.12, even though technically it is still supported (nothing prevents the creation)
+	 * however since accessing a short list _is_, so should writing.
+	 * 
+	 * @param key
+	 * @param list
+	 */
+	@Deprecated
 	public void setShortList(String key, List<Short> list) {
 		NBTTagList tagList = new NBTTagList();
 
@@ -153,7 +187,7 @@ public class TagManager {
 
 	public ItemStack enrichWithNBT(ItemStack is) {
 
-		net.minecraft.server.v1_11_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_12_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());
