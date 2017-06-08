@@ -244,9 +244,11 @@ public class SnitchManager {
 
 		snitches.get(snitch.getLoc().getWorld()).remove(snitch);
 		snitchesById.remove(snitch.getId());
-		Set<Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
-		if (groupSet != null) {
-			groupSet.remove(snitch);
+		if (snitch.getGroup() != null) {
+			Set<Snitch> groupSet = snitchesByGroup.get(snitch.getGroup().getName());
+			if (groupSet != null) {
+				groupSet.remove(snitch);
+			}
 		}
 	}
 

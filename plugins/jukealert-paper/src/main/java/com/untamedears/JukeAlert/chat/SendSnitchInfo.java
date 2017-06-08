@@ -8,6 +8,8 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import com.google.common.base.Strings;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -27,32 +29,42 @@ public class SendSnitchInfo implements Runnable {
 
 	private String snitchName;
 
+	private boolean isJukebox;
+
 	private boolean shouldCensor;
 
 	private boolean isGroup;
 
-	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, String snitchName, boolean shouldCensor,
-			boolean isGroup) {
+	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, String snitchName, boolean isJukebox,
+			boolean shouldCensor, boolean isGroup) {
 
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
 		this.snitchName = snitchName;
+		this.isJukebox = isJukebox;
 		this.shouldCensor = shouldCensor;
 		this.isGroup = isGroup;
 	}
 
 	public void run() {
 
+		if (!isJukebox) {
+			if (this.snitchName == null || this.snitchName.trim().isEmpty()) {
+				player.sendMessage(ChatColor.AQUA + " * Unnamed entry snitch");
+			} else {
+				player.sendMessage(ChatColor.AQUA + " * Entry snitch " + this.snitchName);
+			}
+			return;
+		}
 		if (info != null && !info.isEmpty()) {
 			String output = "";
 
-			if (this.snitchName != null) {
-				output += ChatColor.WHITE + " Snitch Log for " + this.snitchName + " "
-				        + ChatColor.DARK_GRAY
-				        + "-----------------------------------".substring(this.snitchName.length()) + "\n";
+			if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
+				output += ChatColor.WHITE + " Log for snitch " + this.snitchName + " "
+				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitchName.length()) + "\n";
 			} else {
-				output += ChatColor.WHITE + " Snitch Log "
+				output += ChatColor.WHITE + " Log for unnamed snitch "
 				        + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
 			}
 
@@ -103,10 +115,10 @@ public class SendSnitchInfo implements Runnable {
 			output += "\n";
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
 			player.sendMessage(output);
-		} else if (this.snitchName != null) {
+		} else if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitchName);
 		} else {
-			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty");
+			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for unnamed snitch");
 		}
 	}
 }

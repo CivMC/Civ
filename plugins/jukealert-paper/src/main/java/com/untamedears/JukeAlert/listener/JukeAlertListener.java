@@ -49,6 +49,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.material.Lever;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -271,11 +272,11 @@ public class JukeAlertListener implements Listener {
 
 		String message;
 		if (isJukebox) {
-			message = (ChatColor.AQUA + "You've created a snitch block registered to the group " + snitchGroupName
-				+ ".  To name your snitch, type /janame.");
+			message = (ChatColor.AQUA + "You've created a snitch registered to the group " + snitchGroupName
+				+ ". To name it, type /janame.");
 		} else {
 			message = (ChatColor.AQUA + "You've created an entry snitch registered to the group " + snitchGroupName
-				+ ".  To name your entry snitch, type /janame.");
+				+ ". To name it, type /janame.");
 		}
 		TextComponent lineText = new TextComponent(message);
 		lineText.setHoverEvent(
@@ -451,6 +452,15 @@ public class JukeAlertListener implements Listener {
 			}
 		}
 	}
+
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onVehicleMovement(VehicleMoveEvent event) {
+			Entity e = event.getVehicle().getPassenger();
+			// TODO: apparently there's no way to get the second passenger? wtf, bukkit
+			if (e instanceof Player) {
+				enterSnitchProximity(new PlayerMoveEvent((Player) e, event.getFrom(), event.getTo()));
+			}
+		}
 
 	// Because teleporting doesn't trigger a movement event :/
 	@EventHandler(priority = EventPriority.HIGHEST)

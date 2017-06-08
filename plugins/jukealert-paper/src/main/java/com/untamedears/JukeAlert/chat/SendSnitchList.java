@@ -2,6 +2,8 @@ package com.untamedears.JukeAlert.chat;
 
 import java.util.List;
 
+import com.google.common.base.Strings;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -42,9 +44,7 @@ public class SendSnitchList implements Runnable {
 				topLine += "for " + worldName + " ";
 			}
 
-			topLine = ChatColor.WHITE + topLine
-			        + ChatColor.DARK_GRAY
-			        + "--------------------------------------------------------".substring(topLine.length()) + "\n";
+			topLine = ChatColor.WHITE + topLine + ChatColor.DARK_GRAY + Strings.repeat("-", topLine.length()) + "\n";
 
 			String columnNames = ChatColor.GRAY
 			                   + String.format("    %s %s %s", ChatFiller.fillString("Location", locationColWidth),
@@ -58,8 +58,7 @@ public class SendSnitchList implements Runnable {
 			}
 
 			String bottomLine = ChatColor.DARK_GRAY + " * Page " + offset + " ";
-			bottomLine = bottomLine
-			           + "-------------------------------------------------------".substring(bottomLine.length());
+			bottomLine = bottomLine + Strings.repeat("-", bottomLine.length());
 			output.addExtra(bottomLine);
 			player.spigot().sendMessage(output);
 		} else {
