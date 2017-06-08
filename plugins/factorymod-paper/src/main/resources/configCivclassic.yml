@@ -53,6 +53,7 @@ factories:
      - upgrade_to_redstone
      - upgrade_to_bastion
      - upgrade_to_basic_cauldron
+     - upgrade_to_compactor
      - repair_dirt_factory
   stone_smelter:
     type: FCC
@@ -67,6 +68,7 @@ factories:
      - smelt_glass
      - smelt_netherrack
      - smelt_bricks
+     - smelt_hard_clay
      - repair_stone_smelter
   charcoal_factory:
     type: FCC
@@ -397,6 +399,10 @@ factories:
      - sapling_to_jungle
      - sapling_to_acacia
      - sapling_to_dark_oak
+     - make_mushroom_brown
+     - make_mushroom_red
+     - make_mushroom_stem
+     - make_mushroom_pores
      - repair_bio_lab
   carpentry:
     type: FCC
@@ -414,6 +420,7 @@ factories:
      - make_trapdoors
      - make_wood_doors
      - make_casing
+     - make_crates
      - repair_carpentry
   rails:
     type: FCC
@@ -462,6 +469,9 @@ factories:
       iron:
         material: IRON_INGOT
         amount: 128
+      lava_bucket:
+        material: LAVA_BUCKET
+        amount: 1
     recipes:
      - make_iron_fence
      - make_anvil
@@ -543,10 +553,10 @@ factories:
         material: GOLD_INGOT
         amount: 32
     recipes:
-     - make_b_1
-     - make_b_2
-     - make_b_3
-     - make_energizer
+     - basic_xp_1
+     - basic_xp_2
+     - basic_xp_3
+     - basic_xp_4
      - upgrade_to_intermediate_cauldron
      - repair_basic_cauldron
   intermediate_cauldron:
@@ -554,9 +564,10 @@ factories:
     name: Intermediate Cauldron
     citadelBreakReduction: 1.0
     recipes:
-     - make_i_1
-     - make_i_2
-     - make_i_3
+     - int_xp_1
+     - int_xp_2
+     - int_xp_3
+     - int_xp_4
      - make_energizer
      - upgrade_to_advanced_cauldron
      - repair_intermediate_cauldron
@@ -565,11 +576,35 @@ factories:
     name: Advanced Cauldron
     citadelBreakReduction: 1.0
     recipes:
-     - make_a_1
-     - make_a_2
-     - make_a_3
+     - adv_xp_1
+     - adv_xp_2
+     - adv_xp_3
+     - adv_xp_4
      - make_energizer
      - repair_advanced_cauldron
+  compactor:
+    type: FCC
+    name: Compactor
+    citadelBreakReduction: 0.8
+    setupcost:
+      iron_block:
+        material: IRON_BLOCK
+        amount: 32
+      redstone_block:
+        material: REDSTONE_BLOCK
+        amount: 16
+      sticky_piston:
+        material: PISTON_STICKY_BASE
+        amount: 64
+      crate:
+        material: CHEST
+        amount: 32
+        lore:
+          - Crate
+    recipes:
+      - compact
+      - decompact
+      - repair_compactor
 recipes:
   smelt_stone:
     production_time: 10s
@@ -1340,11 +1375,13 @@ recipes:
       casing:
         material: ENDER_CHEST
         amount: 16
+        name: Casing
         lore:
           - Casing for a bastion
       gearbox:
         material: WATCH
         amount: 16
+        name: Gearbox
         lore:
           - Gear mechanism for a bastion
       radar:
@@ -1355,16 +1392,19 @@ recipes:
       energizer:
         material: EMERALD
         amount: 16
+        name: Energizer
         lore:
           - Power source for bastion
       refractor:
         material: DIAMOND
         amount: 16
+        name: Refractor
         lore:
           - Refractor for bastion
       bio_compoent:
         material: MAGMA_CREAM
         amount: 16
+        name: Bio-Component
         lore:
           - Bio-Component for bastion
     output:
@@ -1524,7 +1564,7 @@ recipes:
         amount: 4
     output:
       white_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 0
         amount: 64
   dye_clay_orange:
@@ -1542,7 +1582,7 @@ recipes:
         amount: 4
     output:
       orange_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 1
         amount: 64
   dye_clay_magenta:
@@ -1560,7 +1600,7 @@ recipes:
         amount: 4
     output:
       magenta_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 2
         amount: 64
   dye_clay_light_blue:
@@ -1578,7 +1618,7 @@ recipes:
         amount: 4
     output:
       light_blue_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 3
         amount: 64
   dye_clay_yellow:
@@ -1596,7 +1636,7 @@ recipes:
         amount: 4
     output:
       yellow_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 4
         amount: 64
   dye_clay_lime:
@@ -1614,7 +1654,7 @@ recipes:
         amount: 4
     output:
       lime_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 5
         amount: 64
   dye_clay_pink:
@@ -1632,7 +1672,7 @@ recipes:
         amount: 4
     output:
       pink_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 6
         amount: 64
   dye_clay_gray:
@@ -1650,7 +1690,7 @@ recipes:
         amount: 4
     output:
       gray_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 7
         amount: 64
   dye_clay_light_gray:
@@ -1668,7 +1708,7 @@ recipes:
         amount: 4
     output:
       light_gray_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 8
         amount: 64
   dye_clay_cyan:
@@ -1686,7 +1726,7 @@ recipes:
         amount: 4
     output:
       cyan_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 9
         amount: 64
   dye_clay_purple:
@@ -1704,7 +1744,7 @@ recipes:
         amount: 4
     output:
       purple_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 10
         amount: 64
   dye_clay_blue:
@@ -1722,7 +1762,7 @@ recipes:
         amount: 4
     output:
       blue_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 11
         amount: 64
   dye_clay_brown:
@@ -1740,7 +1780,7 @@ recipes:
         amount: 4
     output:
       brown_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 12
         amount: 64
   dye_clay_green:
@@ -1758,7 +1798,7 @@ recipes:
         amount: 4
     output:
       green_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 13
         amount: 64
   dye_clay_red:
@@ -1776,7 +1816,7 @@ recipes:
         amount: 4
     output:
       red_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 14
         amount: 64
   dye_clay_black:
@@ -1794,7 +1834,7 @@ recipes:
         amount: 4
     output:
       black_clay:
-        material: HARD_CLAY
+        material: STAINED_CLAY
         durability: 15
         amount: 64
   dye_wool_white:
@@ -2663,6 +2703,9 @@ recipes:
       iron:
         material: IRON_INGOT
         amount: 128
+      lava_bucket:
+        material: LAVA_BUCKET
+        amount: 1
     factory: Iron Forge
   upgrade_to_redstone:
     production_time: 10s
@@ -2718,6 +2761,9 @@ recipes:
       iron:
         material: IRON_INGOT
         amount: 128
+      gold:
+        material: GOLD_INGOT
+        amount: 32
     factory: Basic Cauldron
   upgrade_to_intermediate_cauldron:
     production_time: 10s
@@ -3205,6 +3251,18 @@ recipes:
       bricks:
         material: CLAY_BRICK
         amount: 256
+  smelt_hard_clay:
+    production_time: 10s
+    name: Make Hard Clay
+    type: PRODUCTION
+    input:
+      clay_block:
+        material: CLAY
+        amount: 128
+    output:
+      hard_clay:
+        material: HARD_CLAY
+        amount: 256
   repair_iron_tools_factory:
     production_time: 10s
     name: Repair Factory
@@ -3238,6 +3296,7 @@ recipes:
       refractor:
         material: DIAMOND
         amount: 2
+        name: Refractor
         lore:
           - Refractor for bastion
   make_radar:
@@ -3258,6 +3317,7 @@ recipes:
       radar:
         material: COMPASS
         amount: 8
+        name: Radar
         lore:
           - Radar for detecting pearls
   make_casing:
@@ -3278,6 +3338,7 @@ recipes:
       casing:
         material: ENDER_CHEST
         amount: 4
+        name: Casing
         lore:
           - Casing for bastion
   make_gearbox:
@@ -3298,6 +3359,9 @@ recipes:
       gearbox:
         material: WATCH
         amount: 1
+        name: Gearbox
+        lore:
+          - Gear mechanism for bastion
   make_energizer:
     production_time: 10s
     name: Make Energizer
@@ -3306,17 +3370,18 @@ recipes:
       emerald:
         material: EMERALD
         amount: 32
-      coal:
-        material: CHARCOAL
+      charcoal:
+        material: COAL
         amount: 64
         durability: 1
       gunpowder:
-        material: GUNPOWDER
+        material: SULPHUR
         amount: 8
     output:
       energizer:
         material: EMERALD
         amount: 1
+        name: Energizer
         lore:
           - Power source for bastion
   make_bio_component:
@@ -3340,13 +3405,704 @@ recipes:
       bio_component:
         material: MAGMA_CREAM
         amount: 1
+        name: Bio-Component
         lore:
           - Bio-Component for bastion
+  basic_xp_1:
+    production_time: 10s
+    name: Make Exp 1
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 24
+      carrot:
+        material: CARROT_ITEM
+        amount: 256
+      cactus:
+        material: CACTUS
+        amount: 256
+      bread:
+        material: BREAD
+        amount: 256
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 24
+  basic_xp_2:
+    production_time: 10s
+    name: Make Exp 2
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 14
+      carrot:
+        material: CARROT_ITEM
+        amount: 256
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 256
+      baked_potato:
+        material: BAKED_POTATO
+        amount: 256
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 14
+  basic_xp_3:
+    production_time: 10s
+    name: Make Exp 3
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 42
+      carrot:
+        material: CARROT_ITEM
+        amount: 128
+      cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+      pumpkin:
+        material: PUMPKIN
+        amount: 64
+      cactus:
+        material: CACTUS
+        amount: 64
+      bread:
+        material: BREAD
+        amount: 64
+      steak:
+        material: COOKED_BEEF
+        amount: 32
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 42
+  basic_xp_4:
+    production_time: 10s
+    name: Make Exp 4
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 42
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 256
+      melon:
+        material: MELON_BLOCK
+        amount: 64
+      sugar_cane:
+        material: SUGAR_CANE
+        amount: 64
+      cookie:
+        material: COOKIE
+        amount: 512
+      baked_potato:
+        material: BAKED_POTATO
+        amount: 64
+      grilled_pork:
+        material: GRILLED_PORK
+        amount: 32
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 42
+  repair_basic_cauldron:
+    production_time: 10s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      iron:
+        material: IRON_INGOT
+        amount: 12
+      gold:
+        material: GOLD_INGOT
+        amount: 3
+    health_gained: 10000
+  int_xp_1:
+    production_time: 10s
+    name: Make Exp 1
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+      carrot:
+        material: CARROT_ITEM
+        amount: 96
+      melon:
+        material: MELON_BLOCK
+        amount: 32
+      cactus:
+        material: CACTUS
+        amount: 256
+      rose:
+        material: RED_ROSE
+        amount: 8
+      rotten_flesh:
+        material: ROTTEN_FLESH
+        amount: 128
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 32
+      vine:
+        material: VINE
+        amount: 32
+      bread:
+        material: BREAD
+        amount: 128
+      grilled_pork:
+        material: GRILLED_PORK
+        amount: 32
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 128
+  int_xp_2:
+    production_time: 10s
+    name: Make Exp 2
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 64
+      melon:
+        material: MELON_BLOCK
+        amount: 32
+      sugar_cane:
+        material: SUGAR_CANE
+        amount: 128
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 16
+      rotten_flesh:
+        material: ROTTEN_FLESH
+        amount: 128
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+      vine:
+        material: VINE
+        amount: 32
+      baked_potato:
+        material: BAKED_POTATO
+        amount: 256
+      cooked_chicken:
+        material: COOKED_CHICKEN
+        amount: 16
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 128
+  int_xp_3:
+    production_time: 10s
+    name: Make Exp 3
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+      wheat:
+        material: WHEAT
+        amount: 128
+      cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 16
+      pumpkin:
+        material: PUMPKIN
+        amount: 128
+      cactus:
+        material: CACTUS
+        amount: 256
+      rose:
+        material: RED_ROSE
+        amount: 8
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 32
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 16
+      grass:
+        material: LONG_GRASS
+        amount: 32
+        durability: 1
+      cooked_fish:
+        material: COOKED_FISH
+        amount: 16
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 128
+  int_xp_4:
+    production_time: 10s
+    name: Make Exp 4
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 64
+      pumpkin:
+        material: PUMPKIN
+        amount: 128
+      sugar_cane:
+        material: SUGAR_CANE
+        amount: 128
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 16
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 32
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+      grass:
+        material: LONG_GRASS
+        amount: 64
+        durability: 1
+      cookie:
+        material: COOKIE
+        amount: 256
+      steak:
+        material: COOKED_BEEF
+        amount: 32
+    output:
+      exp:
+        material: EXP_BOTTLE
+        amount: 128
+  upgrade_to_intermediate_cauldron:
+    production_time: 10s
+    name: Upgrade to Intermediate Cauldron
+    type: UPGRADE
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 64
+    factory: Intermediate Cauldron
+  repair_intermediate_cauldron:
+    production_time: 10s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      diamond:
+        material: DIAMOND
+        amount: 6
+    health_gained: 10000
+  adv_xp_1:
+    production_time: 10s
+    name: Make Exp 1
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+        lore:
+          - Compacted item
+      carrot:
+        material: CARROT_ITEM
+        amount: 96
+        lore:
+          - Compacted item
+      melon:
+        material: MELON_BLOCK
+        amount: 32
+        lore:
+          - Compacted item
+      cactus:
+        material: CACTUS
+        amount: 256
+        lore:
+          - Compacted item
+      rose:
+        material: RED_ROSE
+        amount: 8
+        lore:
+          - Compacted item
+      rotten_flesh:
+        material: ROTTEN_FLESH
+        amount: 128
+        lore:
+          - Compacted item
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 32
+        lore:
+          - Compacted item
+      vine:
+        material: VINE
+        amount: 32
+        lore:
+          - Compacted item
+      bread:
+        material: BREAD
+        amount: 128
+        lore:
+          - Compacted item
+      grilled_pork:
+        material: GRILLED_PORK
+        amount: 32
+        lore:
+          - Compacted item
+    output:
+      exp:
+        material: EMERALD_BLOCK
+        amount: 2
+        lore:
+          - Compacted item
+  adv_xp_2:
+    production_time: 10s
+    name: Make Exp 2
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+        lore:
+          - Compacted item
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 64
+        lore:
+          - Compacted item
+      melon:
+        material: MELON_BLOCK
+        amount: 32
+        lore:
+          - Compacted item
+      sugar_cane:
+        material: SUGAR_CANE
+        amount: 128
+        lore:
+          - Compacted item
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 16
+        lore:
+          - Compacted item
+      rotten_flesh:
+        material: ROTTEN_FLESH
+        amount: 128
+        lore:
+          - Compacted item
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+        lore:
+          - Compacted item
+      vine:
+        material: VINE
+        amount: 32
+        lore:
+          - Compacted item
+      baked_potato:
+        material: BAKED_POTATO
+        amount: 256
+        lore:
+          - Compacted item
+      cooked_chicken:
+        material: COOKED_CHICKEN
+        amount: 16
+        lore:
+          - Compacted item
+    output:
+      exp:
+        material: EMERALD_BLOCK
+        amount: 2
+        lore: 
+          - Compacted item
+  adv_xp_3:
+    production_time: 10s
+    name: Make Exp 3
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+        lore:
+          - Compacted item
+      wheat:
+        material: WHEAT
+        amount: 128
+        lore:
+          - Compacted item
+      cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 16
+        lore:
+          - Compacted item
+      pumpkin:
+        material: PUMPKIN
+        amount: 128
+        lore:
+          - Compacted item
+      cactus:
+        material: CACTUS
+        amount: 256
+        lore:
+          - Compacted item
+      rose:
+        material: RED_ROSE
+        amount: 8
+        lore:
+          - Compacted item
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 32
+        lore:
+          - Compacted item
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 16
+        lore:
+          - Compacted item
+      grass:
+        material: LONG_GRASS
+        amount: 32
+        durability: 1
+        lore:
+          - Compacted item
+      cooked_fish:
+        material: COOKED_FISH
+        amount: 16
+        lore:
+          - Compacted item
+    output:
+      exp:
+        material: EMERALD_BLOCK
+        amount: 2
+        lore:
+          - Compacted item
+  adv_xp_4:
+    production_time: 10s
+    name: Make Exp 4
+    type: PRODUCTION
+    input:
+      glass_bottle:
+        material: GLASS_BOTTLE
+        amount: 128
+        lore:
+          - Compacted item
+      nether_wart:
+        material: NETHER_WART_BLOCK
+        amount: 64
+        lore:
+          - Compacted item
+      pumpkin:
+        material: PUMPKIN
+        amount: 128
+        lore:
+          - Compacted item
+      sugar_cane:
+        material: SUGAR_CANE
+        amount: 128
+        lore:
+          - Compacted item
+      yellow_flower:
+        material: YELLOW_FLOWER
+        amount: 16
+        lore:
+          - Compacted item
+      spider_eye:
+        material: SPIDER_EYE
+        amount: 32
+        lore:
+          - Compacted item
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+        lore:
+          - Compacted item
+      grass:
+        material: LONG_GRASS
+        amount: 64
+        durability: 1
+        lore:
+          - Compacted item
+      cookie:
+        material: COOKIE
+        amount: 256
+        lore:
+          - Compacted item
+      steak:
+        material: COOKED_BEEF
+        amount: 32
+        lore:
+          - Compacted item
+    output:
+      exp:
+        material: EMERALD_BLOCK
+        amount: 2
+        lore:
+          - Compacted item
+  upgrade_to_advanced_cauldron:
+    production_time: 10s
+    name: Upgrade to Advanced Cauldron
+    type: UPGRADE
+    input:
+      emerald_block:
+        material: EMERALD_BLOCK
+        amount: 128
+      wither_skull:
+        material: SKULL_ITEM
+        amount: 1
+        durability: 1
+    factory: Advanced Cauldron
+  repair_advanced_cauldron:
+    production_time: 10s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      emerald_block:
+        material: EMERALD_BLOCK
+        amount: 16
+    health_gained: 10000
+  upgrade_to_compactor:
+    production_time: 10s
+    name: Upgrade to Compactor
+    type: UPGRADE
+    input:
+      iron_block:
+        material: IRON_BLOCK
+        amount: 32
+      redstone_block:
+        material: REDSTONE_BLOCK
+        amount: 16
+      sticky_piston:
+        material: PISTON_STICKY_BASE
+        amount: 64
+      crate:
+        material: CHEST
+        amount: 32
+        lore:
+          - Crate
+    factory: Compactor
+  compact:
+    production_time: 5s
+    name: Compact
+    type: COMPACT
+    input:
+      crate:
+        material: CHEST
+        lore:
+          - Crate
+    compact_lore: Compacted Item
+    excluded_materials:
+      - BOOK
+  decompact:
+    production_time: 5s
+    name: Decompact
+    type: DECOMPACT
+    input:
+    compact_lore: Compacted Item
+  repair_compactor:
+    production_time: 10s
+    name: Repair Factory
+    type: REPAIR
+    input:
+      iron_block:
+        material: IRON_BLOCK
+        amount: 4
+      redstone_block:
+        material: REDSTONE_BLOCK
+        amount: 2
+      stick_piston:
+        material: PISTON_STICKY_BASE
+        amount: 6
+      crate:
+        material: CHEST
+        amount: 3
+        lore:
+          - Crate
+    health_gained: 10000
+  make_crates:
+    production_time: 10s
+    name: Make Crates
+    type: PRODUCTION
+    input:
+      wood:
+        material: WOOD
+        amount: 128
+      obsidian:
+        material: OBSIDIAN
+        amount: 32
+      iron:
+        material: IRON_INGOT
+        amount: 64
+    output:
+      crate:
+        material: CHEST
+        amount: 32
+        lore:
+          - Crate
+  make_mushroom_brown:
+    type: PRODUCTION
+    name: Make Brown Mushroom Blocks
+    production_time: 10s
+    input:
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+    output:
+      brown_mushroom_block:
+        material: HUGE_MUSHROOM_1
+        durability: 14
+        amount: 16
+  make_mushroom_red:
+    type: PRODUCTION
+    name: Make Red Mushroom Blocks
+    production_time: 10s
+    input:
+      red_mushroom:
+        material: RED_MUSHROOM
+        amount: 64
+    output:
+      red_mushroom_block:
+        material: HUGE_MUSHROOM_2
+        durability: 14
+        amount: 16
+  make_mushroom_stem:
+    type: PRODUCTION
+    name: Make Stem Mushroom Blocks
+    production_time: 10s
+    input:
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+    output:
+      stem_mushroom_block:
+        material: HUGE_MUSHROOM_1
+        durability: 10
+        amount: 16
+  make_mushroom_pores:
+    type: PRODUCTION
+    name: Make Pore Mushroom Blocks
+    production_time: 10s
+    input:
+      brown_mushroom:
+        material: BROWN_MUSHROOM
+        amount: 64
+    output:
+      pore_mushroom_block:
+        material: HUGE_MUSHROOM_1
+        amount: 16
   crack_fossil:
     type: RANDOM
     name: Crack Fossil
     production_time: 1s
-    fuel_consumption_intervall: 50s
+    fuel_consumption_intervall: 1s
     input:
       fossil:
         material: PRISMARINE_SHARD
