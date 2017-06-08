@@ -8,6 +8,7 @@ import vg.civcraft.mc.civchat2.command.ChatCommand;
 public class Afk extends ChatCommand {
 
 	public Afk(String name) {
+
 		super(name);
 		setIdentifier("afk");
 		setDescription("Sets your afk status.");
@@ -18,9 +19,9 @@ public class Afk extends ChatCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		
+
 		Boolean isAfk = chatMan.setPlayerAfk(player(), !chatMan.isPlayerAfk(player()));
-		
+
 		if (isAfk) {
 			msg(ChatStrings.chatAfk);
 		} else {

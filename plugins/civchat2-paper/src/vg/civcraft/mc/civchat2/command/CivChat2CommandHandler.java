@@ -10,9 +10,10 @@ import vg.civcraft.mc.civchat2.command.commands.Reply;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
 import vg.civcraft.mc.civchat2.command.commands.Afk;
 
-public class CivChat2CommandHandler extends CommandHandler{
+public class CivChat2CommandHandler extends CommandHandler {
 
-	public void registerCommands(){
+	public void registerCommands() {
+
 		addCommands(new Tell("tell"));
 		addCommands(new Afk("afk"));
 		addCommands(new Reply("reply"));
