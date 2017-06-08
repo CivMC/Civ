@@ -73,7 +73,6 @@ public class ItemExchangeListener implements Listener {
 			final Player player = (Player) event.getWhoClicked();
 			
 			Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
-				@SuppressWarnings("deprecation")
 				public void run() {
 					CraftingInventory inv = (CraftingInventory) top;
 					

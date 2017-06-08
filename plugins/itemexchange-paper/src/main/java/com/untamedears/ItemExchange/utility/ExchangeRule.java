@@ -26,9 +26,10 @@ import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleParseException;
@@ -200,7 +201,7 @@ public class ExchangeRule {
 			}
 
 			// Get Material
-			Material material = Material.getMaterial(Integer.valueOf(showString(compiledRule[2])));
+			Material material = DeprecatedMethods.getMaterialById(Integer.valueOf(showString(compiledRule[2])));
 			// Get Durability
 			short durability = Short.valueOf(showString(compiledRule[3]));
 			// Get Amount
@@ -214,7 +215,7 @@ public class ExchangeRule {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
-				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[0])));
+				Enchantment enchantment = DeprecatedMethods.getEnchantmentById(Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[0])));
 				Integer level = Integer.valueOf(showString(compiledEnchant.split(hiddenTertiarySpacer)[1]));
 				requiredEnchantments.put(enchantment, level);
 			}
@@ -225,7 +226,7 @@ public class ExchangeRule {
 				if (compiledEnchant.equals("")) {
 					continue;
 				}
-				Enchantment enchantment = Enchantment.getById(Integer.valueOf(showString(compiledEnchant)));
+				Enchantment enchantment = DeprecatedMethods.getEnchantmentById(Integer.valueOf(showString(compiledEnchant)));
 				excludedEnchantments.add(enchantment);
 			}
 			// Get if unlisted enchantments are allowed
@@ -271,7 +272,7 @@ public class ExchangeRule {
 			Group group;
 
 			if(!compiledRule[11].equals("")) {
-				group = NameAPI.getGroupManager().getGroup(unescapeString(showString(compiledRule[11])));
+				group = GroupManager.getGroup(unescapeString(showString(compiledRule[11])));
 			}
 			else {
 				group = null;
@@ -354,7 +355,7 @@ public class ExchangeRule {
 					}
 					else {
 						String[] split = args[1].split(":");
-						material = Material.getMaterial(Integer.valueOf(split[0]));
+						material = DeprecatedMethods.getMaterialById(Integer.valueOf(split[0]));
 						if (split.length > 1) {
 							durability = Short.valueOf(split[1]);
 						}
@@ -453,7 +454,7 @@ public class ExchangeRule {
 		// Transaction type
 		compiledRule += hiddenCategorySpacer + hideString("item");
 		// Material ID
-		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(material.getId()));
+		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(DeprecatedMethods.getMaterialId(material)));
 		// Durability
 		compiledRule += hiddenCategorySpacer + hideString(String.valueOf(durability));
 		// Amount
@@ -462,13 +463,13 @@ public class ExchangeRule {
 		boolean enchantable = ItemExchangePlugin.ENCHANTABLE_ITEMS.contains(material);
 		if(enchantable) {
 			for (Entry<Enchantment, Integer> entry : requiredEnchantments.entrySet()) {
-				compiledRule += hideString(String.valueOf(entry.getKey().getId())) + hiddenTertiarySpacer + hideString(entry.getValue().toString()) + hiddenSecondarySpacer;
+				compiledRule += hideString(String.valueOf(DeprecatedMethods.getEnchantmentId(entry.getKey()))) + hiddenTertiarySpacer + hideString(entry.getValue().toString()) + hiddenSecondarySpacer;
 			}
 		}
 		compiledRule += hiddenCategorySpacer;
 		if(enchantable) {
 			for (Enchantment enchantment : excludedEnchantments) {
-				compiledRule += hideString(String.valueOf(enchantment.getId())) + hiddenSecondarySpacer;
+				compiledRule += hideString(String.valueOf(DeprecatedMethods.getEnchantmentId(enchantment))) + hiddenSecondarySpacer;
 			}
 		}
 		compiledRule += hiddenCategorySpacer + ((unlistedEnchantmentsAllowed && enchantable) ? hideString("1") : hideString("0"));
@@ -545,7 +546,9 @@ public class ExchangeRule {
 	 */
 	public boolean followsRules(ItemStack itemStack) {
 		// check material type and druability
-		boolean followsRules = material.getId() == itemStack.getTypeId() && durability == itemStack.getDurability();
+		boolean followsRules = DeprecatedMethods.getMaterialId(material) == DeprecatedMethods.getItemId(itemStack)
+				&& durability == itemStack.getDurability();
+		
 		// Check enchantments
 		if (itemStack.getEnchantments().size() > 0) {
 			followsRules = followsRules && itemStack.getEnchantments().entrySet().containsAll(requiredEnchantments.entrySet());
