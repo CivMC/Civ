@@ -1,13 +1,14 @@
 Bastion
 =======
 
-A minecraft mod designed for use with /r/civcraft
+A minecraft mod designed for use with /r/civcraft and continually improved by /r/devoted at play.devotedmc.com
 
 Features:
  * Destroys blocks placed in a cylinder of configurable radius starting just above a reinforced target block (Bastion block) at the price of a configurable amount of reinforcement if the placer is not a member of the reinforcing group
  * Prevents dispensers dispensing water, lava, and flint and steel if the owner of there reinforcement is not allowed to place blocks
  * Prevents pistons pushing into the Bastion field (Area where block placement is restricted) if the owner of the reinforcement would not be allowed to place there.
  * Prevents teleportation through the the Bastion field by non-members (Note this is highly experimental and may be better disabled)
+ * Multiple Bastion types with unique properties
 
 Modes:
 * INFO
