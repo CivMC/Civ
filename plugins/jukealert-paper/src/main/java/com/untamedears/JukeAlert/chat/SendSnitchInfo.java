@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.SnitchAction;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
@@ -91,7 +92,7 @@ public class SendSnitchInfo implements Runnable {
 			for (SnitchAction entry: info) {
 				Material mat = entry.getMaterial();
 				if (mat != null && !mat.equals(Material.AIR)) {
-					int mat_id = mat.getId();
+					int mat_id = DeprecatedMethods.getMaterialId(mat);
 					String mat_name = mat.name();
 					if (mat_name != null && !mat_name.isEmpty() && !materials.containsKey(mat_id)) {
 						materials.put(mat_id, mat_name);
