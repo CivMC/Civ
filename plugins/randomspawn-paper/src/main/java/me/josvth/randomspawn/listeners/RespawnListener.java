@@ -8,6 +8,7 @@ import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -42,8 +43,10 @@ public class RespawnListener implements Listener{
 		List<String> spawnPointFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".spawnpointson");
 				
 		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){  		// checks if player should be spawned at his bed
-			plugin.logDebug(playerName + " is spawned at his bed!");
-			return; 
+			if(event.getPlayer().getBedSpawnLocation().getBlock().getType() == Material.BED_BLOCK) {
+				plugin.logDebug(playerName + " is spawned at his bed!");
+				return; 
+			}
 		}
 		
 		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false) && player.getBedSpawnLocation() != null ){
