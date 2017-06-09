@@ -21,7 +21,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
+			<artifactId>spigot</artifactId>
 			<version>1.10.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
@@ -44,6 +44,12 @@
             <artifactId>CivModCore</artifactId>
             <version>1.5.09</version>
             <scope>provided</scope>
+	    <exclusions>
+                <exclusion>
+                    <groupId>org.mcstats.bukkit</groupId>
+                    <artifactId>metrics</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 	</dependencies>
 
