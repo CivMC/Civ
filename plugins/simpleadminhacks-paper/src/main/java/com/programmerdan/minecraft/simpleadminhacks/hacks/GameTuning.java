@@ -34,10 +34,15 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_10_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
+
+import net.minecraft.server.v1_10_R1.BlockPosition;
+
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -220,6 +225,10 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 
 		event.getPlayer().setBedSpawnLocation(event.getClickedBlock().getLocation());
+		Location loc = event.getClickedBlock().getLocation();
+		// NMS -- force set of bed position so that it is not null. Above just sets a valid spawn but not a valid bed.
+		((CraftPlayer) event.getPlayer()).getHandle().bedPosition = new BlockPosition(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+		// NMS end
 		event.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
 	}
 
