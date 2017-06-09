@@ -5,9 +5,9 @@
 	<groupId>com.github.maxopoly</groupId>
 	<artifactId>Finale</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.6</version>
+	<version>1.1.0</version>
 	<name>Finale</name>
-	<url>https://github.com/maxopoly/Finale</url>
+	<url>https://github.com/DevotedMC/Finale</url>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -34,24 +34,24 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot</artifactId>
-			<version>1.10-R0.1-SNAPSHOT</version>
+			<version>1.12-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.3.3</version>
+			<version>1.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
-			<version>4.0.0-SNAPSHOT</version>
+			<version>4.3.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>net.minelink</groupId>
 			<artifactId>CombatTagPlus</artifactId>
-			<version>1.2.4-SNAPSHOT</version>
+			<version>1.3.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -62,8 +62,8 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
-			<id>Jenkins-repo</id>
-			<url>http://build.civcraft.co:8080/plugin/repository/everything/</url>
+			<id>Devoted-repo</id>
+			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>dmulloy2-repo</id>
