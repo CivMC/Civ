@@ -76,14 +76,17 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		
 		Vehicle vehicle = move.getVehicle();
 		if (vehicle == null) return;
-		Entity e = vehicle.getPassenger();
-		if (e == null) return;
-
-		if (e.isOp() && config.getIgnoreOps()) return;
-		String tPerm = config.getIgnorePermission();
-		if (tPerm != null && e.hasPermission(tPerm)) return;
+		if (vehicle.getPassengers() == null || vehicle.getPassengers().size() == 0) return;
 		
-		forceUpdate(e);
+		for (Entity e : vehicle.getPassengers()) {
+			if (e == null) continue;
+
+			if (e.isOp() && config.getIgnoreOps()) continue;
+			String tPerm = config.getIgnorePermission();
+			if (tPerm != null && e.hasPermission(tPerm)) continue;
+			
+			forceUpdate(e);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
