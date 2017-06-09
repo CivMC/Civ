@@ -148,7 +148,7 @@ hacks:
   InvControl:
     enabled: true
   InvisibleFixTwo:
-    enabled: true
+    enabled: false
     # in ticks -- ticks to wait after teleport to force update
     teleportDelay: 5
     # in milliseconds -- min time between forced updates if active
@@ -156,7 +156,7 @@ hacks:
     ignoreOps: true
     ignorePermission: sah.allowInvisible
   InvisibleFix:
-    enabled: true
+    enabled: false
     ignoreOps: true
     ignorePermission: sah.allowInvisible
     # in ticks
