@@ -93,7 +93,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 						int mask = lowboundAddr.isIPv4() ? 32 : 128;
 						while (mask > 0) {
 							IPAddress maskAddr = lowboundAddr.toSubnet(mask - 1	);
-							if ( maskAddr.getLowest().compareTo(lowboundAddr) != 0) break;
+							if ( maskAddr.getLower().compareTo(lowboundAddr) != 0) break;
 							mask --;
 						}
 						int x = BigIntegerMath.log2(end.subtract(start).add(BigInteger.ONE), RoundingMode.FLOOR);
@@ -113,9 +113,9 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 					String domain = (fields.length > 3) ? fields[3] : null;
 
 					for (IPAddress address : cidrFromRange) {
-						BSIP found = BSIP.byCIDR(address.getLowest().toString(), address.getNetworkPrefixLength());
+						BSIP found = BSIP.byCIDR(address.getLower().toString(), address.getNetworkPrefixLength());
 						if (found == null) {
-							found = BSIP.create(address.getLowest(), address.getNetworkPrefixLength());
+							found = BSIP.create(address.getLower(), address.getNetworkPrefixLength());
 						}
 						
 						BSIPData data = BSIPData.byExactIP(found);

@@ -3,3 +3,4 @@
 .project
 .settings
 /apidocs/
+dependency-reduced-pom.xml

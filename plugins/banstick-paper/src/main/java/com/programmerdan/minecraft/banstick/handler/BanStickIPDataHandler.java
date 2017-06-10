@@ -137,7 +137,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				Integer mask = address.getNetworkPrefixLength();
 				if (!(mask == null || mask == (address.isIPv4() ? 32 : 128))) continue; // only cidr-less ips allowed.
 				if (mask != null) {
-					address = address.getLowest(); // strip cidr
+					address = address.getLower(); // strip cidr
 				}
 				
 				Map<String, String> newEntry = new HashMap<String, String>();

@@ -207,7 +207,7 @@ public class BSIP {
 	 */
 	private static void fillFromCIDRs(IPAddress lookup, int maxCIDR, List<BSIP> matches) {
 		for (int cCIDR = maxCIDR; cCIDR > 0; cCIDR--) {
-			BSIP prospect = byCIDR(lookup.toSubnet(cCIDR).getLowest().toString(), cCIDR);
+			BSIP prospect = byCIDR(lookup.toSubnet(cCIDR).getLower().toString(), cCIDR);
 			if (prospect != null) {
 				matches.add(prospect);
 			}
@@ -249,7 +249,7 @@ public class BSIP {
 				BanStick.getPlugin().severe("Unknown Inet address type: " + netAddress.toString());
 				return null;
 			}
-			getIP.setString(1, lookup.toSubnet(CIDR).getLowest().toString());
+			getIP.setString(1, lookup.toSubnet(CIDR).getLower().toString());
 			getIP.setInt(2, CIDR);
 			
 			BSIP bsip = null;
@@ -433,7 +433,7 @@ public class BSIP {
 	}
 	
 	public static BSIP create(InetAddress netAddress, int CIDR) {
-		IPAddress lookup = IPAddress.from(netAddress).toSubnet(CIDR).getLowest();
+		IPAddress lookup = IPAddress.from(netAddress).toSubnet(CIDR).getLower();
 		return create(lookup, CIDR);
 	}
 	

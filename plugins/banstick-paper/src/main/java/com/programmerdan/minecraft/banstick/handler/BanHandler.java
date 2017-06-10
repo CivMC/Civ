@@ -258,7 +258,7 @@ public class BanHandler {
 			}
 				
 			if (includeHistoric) {
-				List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLowest(), cidrIP.getIPAddress().getNetworkPrefixLength());
+				List<BSIP> ipsIn = BSIP.allContained(cidrIP.getIPAddress().getLower(), cidrIP.getIPAddress().getNetworkPrefixLength());
 				for (BSIP exactIP : ipsIn) {
 					List<BSSession> sessions = BSSession.byIP(exactIP);
 					for (BSSession session : sessions) {

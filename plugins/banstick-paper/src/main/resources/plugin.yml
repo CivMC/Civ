@@ -2,7 +2,7 @@ name: ${project.name}
 version: ${project.version}
 author: [ProgrammerDan]
 depend: [CivModCore]
-softdepend: [IP-Check]
+softdepend: [IP-Check, NameLayer]
 main: com.programmerdan.minecraft.banstick.BanStick
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
 commands:

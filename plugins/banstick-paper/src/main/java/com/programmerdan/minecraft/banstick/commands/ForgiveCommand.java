@@ -121,7 +121,7 @@ public class ForgiveCommand implements CommandExecutor {
 					try {
 						Player underlyingUnban = Bukkit.getPlayer(playerId);
 						if (underlyingUnban.isBanned()) {
-							underlyingUnban.setBanned(false);
+							//underlyingUnban.setBanned(false); // REMOVED 1.12
 							BanList legacyBans = Bukkit.getBanList(Type.NAME);
 							legacyBans.pardon(playerId.toString());
 							legacyBans.pardon(player.getName());
@@ -146,7 +146,7 @@ public class ForgiveCommand implements CommandExecutor {
 							try {
 								Player underlyingUnban = Bukkit.getPlayer(playerId);
 								if (underlyingUnban.isBanned()) {
-									underlyingUnban.setBanned(false);
+									//underlyingUnban.setBanned(false); // REMOVED 1.12
 									BanList legacyBans = Bukkit.getBanList(Type.NAME);
 									legacyBans.pardon(playerId.toString());
 									legacyBans.pardon(player.getName());
