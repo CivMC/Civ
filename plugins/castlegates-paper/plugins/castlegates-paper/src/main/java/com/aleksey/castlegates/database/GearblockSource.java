@@ -13,7 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GearblockSource {
-	private static final String selectAllScript = "SELECT * FROM cg_gearblock";
+	private static final String countAllScript = "SELECT COUNT(*) FROM cg_gearblock";
+	private static final String selectAllScript = "SELECT * FROM cg_gearblock ORDER BY gearblock_id";
 	private static final String insertScript = "INSERT INTO cg_gearblock (location_worlduid, location_x, location_y, location_z, timer, timer_operation) VALUES (?, ?, ?, ?, ?, ?)";
 	private static final String updateScript = "UPDATE cg_gearblock SET location_worlduid = ?, location_x = ?, location_y = ?, location_z = ?, timer = ?, timer_operation = ? WHERE gearblock_id = ?";
 	private static final String deleteScript = "DELETE FROM cg_gearblock WHERE gearblock_id = ?";
@@ -22,6 +23,20 @@ public class GearblockSource {
 
 	public GearblockSource(SqlDatabase db) {
 		this.db = db;
+	}
+
+	public int countAll() throws SQLException {
+		PreparedStatement sql = this.db.prepareStatement(countAllScript);
+
+		ResultSet rs = sql.executeQuery();
+
+		try {
+			if(rs.next()) return rs.getInt(1);
+		} finally {
+			rs.close();
+		}
+
+		return 0;
 	}
 
 	public List<GearblockInfo> selectAll() throws SQLException {

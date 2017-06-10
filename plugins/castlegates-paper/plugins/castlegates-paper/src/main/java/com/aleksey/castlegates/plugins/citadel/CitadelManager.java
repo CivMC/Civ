@@ -5,12 +5,13 @@
 
 package com.aleksey.castlegates.plugins.citadel;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
-import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -40,8 +41,10 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
+	private AtomicBoolean run = new AtomicBoolean(false);
 
     private List<UpdatedReinforcement> updatedReinforcements = new ArrayList<UpdatedReinforcement>();
+	private Queue<UpdatedReinforcement> localUpdatedReinforcements = new ArrayDeque<UpdatedReinforcement>();
 
     public void init() {
     	startThread();
@@ -55,33 +58,36 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 
-	public int getGroupId(Location loc) {
+	public ICitadel getCitadel(List<Player> players, Location loc) {
+		PlayerReinforcement playerRein = null;
+    	boolean hasAccess = false;
+    	boolean useJukeAlert = false;
+
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
 
-		if(rein == null || !(rein instanceof PlayerReinforcement)) return -1;
+		hasAccess = rein == null || !(rein instanceof PlayerReinforcement);
 
-		return ((PlayerReinforcement)rein).getGroupId();
-    }
+		if(!hasAccess) {
+			playerRein = (PlayerReinforcement)rein;
 
-	public boolean canAccessDoors(List<Player> players, Location loc, IJukeAlert jukeAlert) {
-		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+			if (players != null && players.size() > 0) {
+				for (Player player : players) {
+					if (playerRein.canAccessDoors(player) || player.hasPermission("citadel.admin")) {
+						hasAccess = true;
+						break;
+					}
+				}
+			}
 
-		if(rein == null || !(rein instanceof PlayerReinforcement)) return true;
-
-		PlayerReinforcement playerRein = (PlayerReinforcement)rein;
-
-		if(players != null && players.size() > 0) {
-			for(Player player : players) {
-				if(playerRein.canAccessDoors(player)
-						|| player.hasPermission("citadel.admin")
-						)
-				{
-					return true;
+			if(!hasAccess) {
+				if(CastleGates.getJukeAlertManager().hasJukeAlertAccess(loc, playerRein.getGroupId())) {
+					hasAccess = true;
+					useJukeAlert = true;
 				}
 			}
 		}
 
-		return playerRein.getGroupId() == jukeAlert.getJukeAlertGroupId();
+		return new com.aleksey.castlegates.plugins.citadel.Citadel(players, playerRein, hasAccess, useJukeAlert);
 	}
 
 	public boolean canBypass(Player player, Location loc) {
@@ -174,40 +180,65 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
         CastleGates.getPluginLogger().log(Level.INFO, "CitadelManager thread started");
     }
 
-    public void terminateThread() {
-        this.kill.set(true);
-    }
+	public void terminateThread() {
+		this.kill.set(true);
 
+		while (this.run.get()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		saveData();
+
+		CastleGates.getPluginLogger().log(Level.INFO, "CitadelManager thread stopped");
+	}
+
+    @Override
     public void run() {
-    	List<UpdatedReinforcement> localUpdatedReinforcements = new ArrayList<UpdatedReinforcement>();
+    	this.run.set(true);
 
-        while (!this.isInterrupted() && !this.kill.get()) {
-            try {
-                long timeWait = lastExecute + CastleGates.getConfigManager().getDataWorkerRate() - System.currentTimeMillis();
-                lastExecute = System.currentTimeMillis();
-                if (timeWait > 0) {
-                    Thread.sleep(timeWait);
-                }
+    	try {
+			while (!this.isInterrupted() && !this.kill.get()) {
+				try {
+					long timeWait = lastExecute + CastleGates.getConfigManager().getDataWorkerRate() - System.currentTimeMillis();
+					lastExecute = System.currentTimeMillis();
+					if (timeWait > 0) {
+						Thread.sleep(timeWait);
+					}
 
-                synchronized (this.updatedReinforcements) {
-                	if(this.updatedReinforcements.size() == 0) continue;
+					saveData();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} finally {
+    		this.run.set(false);
+		}
+	}
 
-                	localUpdatedReinforcements.addAll(this.updatedReinforcements);
-                	this.updatedReinforcements.clear();
-                }
+	private void saveData() {
+		try {
+			synchronized (this.updatedReinforcements) {
+				if (this.updatedReinforcements.size() == 0) return;
 
-                for(UpdatedReinforcement updated : localUpdatedReinforcements) {
-                	if(updated.deleted) {
-                		Citadel.getReinforcementManager().deleteReinforcement(updated.rein);
-                	} else {
-                		Citadel.getReinforcementManager().saveInitialReinforcement(updated.rein);
-                	}
-                }
+				this.localUpdatedReinforcements.addAll(this.updatedReinforcements);
+				this.updatedReinforcements.clear();
+			}
 
-                localUpdatedReinforcements.clear();
-            } catch (Exception e) {
-            	e.printStackTrace();
-            }
-        }
-    }
+			UpdatedReinforcement updated;
+
+			while ((updated = this.localUpdatedReinforcements.poll()) != null) {
+				if (updated.deleted) {
+					Citadel.getReinforcementManager().deleteReinforcement(updated.rein);
+				} else {
+					Citadel.getReinforcementManager().saveInitialReinforcement(updated.rein);
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

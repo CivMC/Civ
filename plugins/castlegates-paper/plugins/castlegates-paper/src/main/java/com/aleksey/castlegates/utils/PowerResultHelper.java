@@ -27,6 +27,9 @@ public class PowerResultHelper {
 		case NotInCitadelGroup:
 			message = ChatColor.RED + "Citadel has prevented that operation.";
 			break;
+		case DifferentCitadelGroup:
+			message = ChatColor.RED + "All blocks must be reinforced by the same group.";
+			break;
 		case BastionBlocked:
 			message = ChatColor.RED + "A bastion has prevented the bridge/gate from undrawing.";
 			break;

@@ -12,7 +12,6 @@ import com.aleksey.castlegates.utils.DataWorker;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
 
 public class StorageManager {
     private Map<BlockCoord, Gearblock> gearblocks;
@@ -20,9 +19,8 @@ public class StorageManager {
 
     public void init(SqlDatabase db) throws SQLException {
         this.dataWorker = new DataWorker(db, CastleGates.getConfigManager().getLogChanges());
-        this.gearblocks = this.dataWorker.load();
 
-        CastleGates.getPluginLogger().log(Level.INFO, "Loaded " + this.gearblocks.size() + " gearblocks");
+        this.gearblocks = this.dataWorker.load();
 
         this.dataWorker.startThread();
     }
@@ -30,6 +28,7 @@ public class StorageManager {
     public void close() {
         if(this.dataWorker != null) {
             this.dataWorker.close();
+            this.dataWorker = null;
         }
     }
 

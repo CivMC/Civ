@@ -5,6 +5,7 @@
 
 package com.aleksey.castlegates.command;
 
+import com.aleksey.castlegates.engine.CastleGatesManager;
 import com.aleksey.castlegates.types.TimerMode;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,7 +21,9 @@ import com.google.common.base.Objects;
 public class CastleGatesCommand {
 	public static boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player)) {
-			return false;
+			if(args.length != 1 || !args[0].equalsIgnoreCase("reload")) return false;
+			CastleGates.getManager().reinit();
+			return true;
 		}
 
 		Player player = (Player)sender;
@@ -30,7 +33,9 @@ public class CastleGatesCommand {
         if(command.getName().equalsIgnoreCase("gear")) {
         	mode = CommandMode.CREATE;
         } else if(command.getName().equalsIgnoreCase("link")) {
-        	mode = CommandMode.LINK;
+			mode = CommandMode.LINK;
+		} else  if(args.length == 0){
+        	return false;
         } else {
 	        switch(args[0].toLowerCase()) {
 				case "timer":

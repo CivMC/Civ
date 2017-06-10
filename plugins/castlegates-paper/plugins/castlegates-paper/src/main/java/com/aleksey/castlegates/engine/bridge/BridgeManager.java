@@ -5,13 +5,11 @@
 
 package com.aleksey.castlegates.engine.bridge;
 
-import java.sql.SQLException;
 import java.util.*;
-import java.util.logging.Level;
 
 import com.aleksey.castlegates.config.ConfigManager;
 import com.aleksey.castlegates.engine.StorageManager;
-import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
+import com.aleksey.castlegates.plugins.citadel.ICitadel;
 import com.aleksey.castlegates.types.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -24,10 +22,8 @@ import org.bukkit.entity.Player;
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.DeprecatedMethods;
 import com.aleksey.castlegates.plugins.citadel.ICitadelManager;
-import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.events.CastleGatesDrawGateEvent;
 import com.aleksey.castlegates.events.CastleGatesUndrawGateEvent;
-import com.aleksey.castlegates.utils.DataWorker;
 import com.aleksey.castlegates.utils.Helper;
 import com.aleksey.castlegates.utils.TimerWorker;
 
@@ -44,6 +40,7 @@ public class BridgeManager {
 	public static enum CreateResult { NotCreated, AlreadyExist, Created }
 	public static enum RemoveResult { NotExist, Removed, RemovedWithLink }
 	public static enum SearchBridgeBlockResult { NotFound, Bridge, Gates }
+	public static enum DoorAccess { None, Partial, Full }
 
 	private StorageManager storage;
 	private Map<Gearblock, TimerBatch> pendingTimerBatches;
@@ -60,6 +57,7 @@ public class BridgeManager {
 	public void close() {
 		if(this.timerWorker != null) {
 			this.timerWorker.terminateThread();
+			this.timerWorker = null;
 		}
 	}
 
@@ -234,9 +232,9 @@ public class BridgeManager {
 			return PowerResult.Unchanged;
 		}
 
-		IJukeAlert jukeAlert = getJukeAlert(world, gearblock);
+		ICitadel citadel = getCitadel(world, gearblock, players);
 
-		if(!canAccessDoors(players, world, gearblock.getCoord(), jukeAlert)) {
+		if(canAccessDoors(world, gearblock, citadel) != DoorAccess.Full) {
 			return PowerResult.NotInCitadelGroup;
 		}
 
@@ -251,15 +249,15 @@ public class BridgeManager {
 			PowerResult result;
 
 			if(!gearblock.getLink().isDrawn()) {
-				result = canDraw(world, gearblock.getLink(), players, jukeAlert);
+				result = canDraw(world, gearblock.getLink(), citadel);
 			} else {
-				result = canUndraw(world, gearblock.getLink(), players, jukeAlert);
+				result = canUndraw(world, gearblock.getLink(), players, citadel);
 			}
 
 			if(result != PowerResult.Allowed) return result;
 		}
 
-		PowerResult result = powerGear(world, gearblock, isPowered, players, jukeAlert);
+		PowerResult result = powerGear(world, gearblock, isPowered, players, citadel);
 
 		gearblock.setLastSwitchTime();
 
@@ -276,11 +274,11 @@ public class BridgeManager {
 		}
 	}
 
-	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players, IJukeAlert jukeAlert) {
-		HashSet<Gearblock> gearblocks = new HashSet<Gearblock>();
+	private PowerResult powerGear(World world, Gearblock gearblock, boolean isPowered, List<Player> players, ICitadel citadel) {
+		HashSet<Gearblock> gearblocks = new HashSet<>();
 		gearblocks.add(gearblock);
 
-		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, jukeAlert, gearblocks);
+		PowerResult transferResult = transferPower(world, gearblock, isPowered, players, citadel, gearblocks);
 
 		if(transferResult != PowerResult.Allowed) return transferResult;
 
@@ -427,7 +425,7 @@ public class BridgeManager {
 			Gearblock gearblock,
 			boolean isPowered,
 			List<Player> players,
-			IJukeAlert jukeAlert,
+			ICitadel citadel,
 			HashSet<Gearblock> gearblocks
 			)
 	{
@@ -441,7 +439,13 @@ public class BridgeManager {
 
 			if(to == null || to.isPowered() == isPowered || gearblocks.contains(to)) continue;
 
-			if(!canAccessDoors(players, world, loc, jukeAlert)) return PowerResult.NotInCitadelGroup;
+			DoorAccess access = canAccessDoors(world, to, citadel);
+
+			if(access == DoorAccess.Partial) {
+				return PowerResult.DifferentCitadelGroup;
+			} else if(access == DoorAccess.None) {
+				continue;
+			}
 
 			if(isPowered) {
 				GearblockLink link = to.getLink();
@@ -450,9 +454,9 @@ public class BridgeManager {
 					PowerResult result;
 
 					if(!link.isDrawn()) {
-						result = canDraw(world, link, players, jukeAlert);
+						result = canDraw(world, link, citadel);
 					} else {
-						result = canUndraw(world, link, players, jukeAlert);
+						result = canUndraw(world, link, players, citadel);
 					}
 
 					if(result != PowerResult.Allowed) return result;
@@ -461,7 +465,7 @@ public class BridgeManager {
 				gearblocks.add(to);
 			}
 
-			PowerResult result = transferPower(world, to, isPowered, players, jukeAlert, gearblocks);
+			PowerResult result = transferPower(world, to, isPowered, players, citadel, gearblocks);
 
 			if(result != PowerResult.Allowed) return result;
 		}
@@ -486,7 +490,7 @@ public class BridgeManager {
 		return null;
 	}
 
-	private PowerResult canDraw(World world, GearblockLink link, List<Player> players, IJukeAlert jukeAlert) {
+	private PowerResult canDraw(World world, GearblockLink link, ICitadel citadel) {
 		ConfigManager configManager = CastleGates.getConfigManager();
 
 		BlockFace blockFace = getLinkFace(link);;
@@ -507,7 +511,7 @@ public class BridgeManager {
 
 			if(this.storage.hasGearblock(new BlockCoord(block))) return new PowerResult(PowerResult.Status.CannotDrawGear, block);
 
-			if(!canAccessDoors(players, block.getLocation(), jukeAlert)) return PowerResult.NotInCitadelGroup;
+			if(!citadel.canAccessDoors(block.getLocation())) return PowerResult.DifferentCitadelGroup;
 
 			x1 += blockFace.getModX();
 			y1 += blockFace.getModY();
@@ -568,7 +572,7 @@ public class BridgeManager {
 		this.storage.setLinkBlocks(link, blockStates);
 	}
 
-	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players, IJukeAlert jukeAlert) {
+	private PowerResult canUndraw(World world, GearblockLink link, List<Player> players, ICitadel citadel) {
 		BlockFace blockFace = getLinkFace(link);
 		BlockCoord loc1 = link.getGearblock1().getCoord();
 		BlockCoord loc2 = link.getGearblock2().getCoord();
@@ -594,7 +598,7 @@ public class BridgeManager {
 			z1 += blockFace.getModZ();
 		}
 
-		return CastleGates.getBastionManager().canUndraw(players, bridgeBlocks, jukeAlert)
+		return CastleGates.getBastionManager().canUndraw(players, bridgeBlocks, citadel)
 				? PowerResult.Allowed
 				: PowerResult.BastionBlocked;
 	}
@@ -644,20 +648,30 @@ public class BridgeManager {
 		this.storage.setLinkBlocks(link, null);
 	}
 
-	private static boolean canAccessDoors(List<Player> players, Location location, IJukeAlert jukeAlert) {
-		return CastleGates.getCitadelManager().canAccessDoors(players, location, jukeAlert);
+	private static DoorAccess canAccessDoors(World world, Gearblock gearblock, ICitadel citadel) {
+		boolean hasAccess = citadel.canAccessDoors(getLocation(world, gearblock.getCoord()));
+
+		if(!hasAccess) return DoorAccess.None;
+
+		GearblockLink link = gearblock.getLink();
+
+		if(link == null) return DoorAccess.Full;
+
+		Gearblock secondGearblock = link.getGearblock1() == gearblock
+				? link.getGearblock2()
+				: link.getGearblock1();
+
+		return citadel.canAccessDoors(getLocation(world, secondGearblock.getCoord())) ? DoorAccess.Full : DoorAccess.Partial;
 	}
 
-	private static boolean canAccessDoors(List<Player> players, World world, BlockCoord coord, IJukeAlert jukeAlert) {
-		Location location = new Location(world, coord.getX(), coord.getY(), coord.getZ());
-		return CastleGates.getCitadelManager().canAccessDoors(players, location, jukeAlert);
+	private static Location getLocation(World world, BlockCoord coord) {
+		return new Location(world, coord.getX(), coord.getY(), coord.getZ());
 	}
 
-	private static IJukeAlert getJukeAlert(World world, Gearblock gearblock) {
+	private static ICitadel getCitadel(World world, Gearblock gearblock, List<Player> players) {
 		BlockCoord coord = gearblock.getCoord();
 		Location location = new Location(world, coord.getX(), coord.getY(), coord.getZ());
-		int groupId = CastleGates.getCitadelManager().getGroupId(location);
 
-		return CastleGates.getJukeAlertManager().getJukeAlert(location, groupId);
+		return CastleGates.getCitadelManager().getCitadel(players, location);
 	}
 }
