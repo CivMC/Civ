@@ -4487,7 +4487,7 @@ recipes:
         chance: 0.000029411764
         record_ward:
           material: RECORD_10
-          amount: 64
+          amount: 1
       record_11:
         chance: 0.000029411764
         record_11:
