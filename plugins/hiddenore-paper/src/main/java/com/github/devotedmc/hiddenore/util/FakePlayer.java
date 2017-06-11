@@ -21,9 +21,12 @@ import org.bukkit.Note;
 import org.bukkit.Particle;
 import org.bukkit.Server;
 import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.Statistic;
 import org.bukkit.WeatherType;
 import org.bukkit.World;
+import org.bukkit.advancement.Advancement;
+import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
@@ -44,6 +47,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.MainHand;
+import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.map.MapView;
 import org.bukkit.metadata.MetadataValue;
@@ -56,6 +60,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
+@SuppressWarnings("deprecation")
 public class FakePlayer implements Player {
 	private final ItemStack inHand;
 	private final Location location;
@@ -463,11 +468,6 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public List<Block> getLineOfSight(HashSet<Byte> transparent, int maxDistance) {
-		return null;
-	}
-
-	@Override
 	public List<Block> getLineOfSight(Set<Material> transparent, int maxDistance) {
 		return null;
 	}
@@ -525,18 +525,7 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public int _INVALID_getLastDamage() {
-
-		return 0;
-	}
-
-	@Override
 	public void setLastDamage(double damage) {
-
-	}
-
-	@Override
-	public void _INVALID_setLastDamage(int damage) {
 
 	}
 
@@ -1034,17 +1023,7 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public void _INVALID_damage(int amount) {
-
-	}
-
-	@Override
 	public void damage(double amount, Entity source) {
-
-	}
-
-	@Override
-	public void _INVALID_damage(int amount, Entity source) {
 
 	}
 
@@ -1055,18 +1034,7 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public int _INVALID_getHealth() {
-
-		return 0;
-	}
-
-	@Override
 	public void setHealth(double health) {
-
-	}
-
-	@Override
-	public void _INVALID_setHealth(int health) {
 
 	}
 
@@ -1077,18 +1045,7 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public int _INVALID_getMaxHealth() {
-
-		return 0;
-	}
-
-	@Override
 	public void setMaxHealth(double health) {
-
-	}
-
-	@Override
-	public void _INVALID_setMaxHealth(int health) {
 
 	}
 
@@ -1146,11 +1103,6 @@ public class FakePlayer implements Player {
 	public boolean isBanned() {
 
 		return false;
-	}
-
-	@Override
-	public void setBanned(boolean banned) {
-
 	}
 
 	@Override
@@ -1368,17 +1320,17 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public void awardAchievement(Achievement achievement) {
+	public void awardAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
 
 	}
 
 	@Override
-	public void removeAchievement(Achievement achievement) {
+	public void removeAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
 
 	}
 
 	@Override
-	public boolean hasAchievement(Achievement achievement) {
+	public boolean hasAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
 
 		return false;
 	}
@@ -1840,5 +1792,145 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void stopSound(String sound) {
+	}
+
+	@Override
+	public int getCooldown(Material arg0) {
+		return 0;
+	}
+
+	@Override
+	public Entity getShoulderEntityLeft() {
+		return null;
+	}
+
+	@Override
+	public Entity getShoulderEntityRight() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCooldown(Material arg0) {
+		return false;
+	}
+
+	@Override
+	public boolean isHandRaised() {
+		return false;
+	}
+
+	@Override
+	public InventoryView openMerchant(Merchant arg0, boolean arg1) {
+		return null;
+	}
+
+	@Override
+	public void setCooldown(Material arg0, int arg1) {
+		
+	}
+
+	@Override
+	public void setShoulderEntityLeft(Entity arg0) {
+		
+	}
+
+	@Override
+	public void setShoulderEntityRight(Entity arg0) {
+		
+	}
+
+	@Override
+	public PotionEffect getPotionEffect(PotionEffectType arg0) {
+		return null;
+	}
+
+	@Override
+	public boolean addPassenger(Entity arg0) {
+		return false;
+	}
+
+	@Override
+	public boolean addScoreboardTag(String arg0) {
+		return false;
+	}
+
+	@Override
+	public double getHeight() {
+		return 1.0;
+	}
+
+	@Override
+	public List<Entity> getPassengers() {
+		return null;
+	}
+
+	@Override
+	public int getPortalCooldown() {
+		return 0;
+	}
+
+	@Override
+	public Set<String> getScoreboardTags() {
+		return null;
+	}
+
+	@Override
+	public double getWidth() {
+		return 0.33;
+	}
+
+	@Override
+	public boolean removePassenger(Entity arg0) {
+		return false;
+	}
+
+	@Override
+	public boolean removeScoreboardTag(String arg0) {
+		return false;
+	}
+
+	@Override
+	public void setPortalCooldown(int arg0) {
+		
+	}
+
+	@Override
+	public AdvancementProgress getAdvancementProgress(Advancement arg0) {
+		return null;
+	}
+
+	@Override
+	public String getLocale() {
+		return null;
+	}
+
+	@Override
+	public void playSound(Location arg0, Sound arg1, SoundCategory arg2, float arg3, float arg4) {
+		
+	}
+
+	@Override
+	public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
+		
+	}
+
+	@Override
+	public void sendTitle(String arg0, String arg1, int arg2, int arg3, int arg4) {
+		
+	}
+
+	@Override
+	public void setResourcePack(String arg0, byte[] arg1) {
+		
+	}
+
+	@Override
+	public void stopSound(Sound arg0, SoundCategory arg1) {
+		
+	}
+
+	@Override
+	public void stopSound(String arg0, SoundCategory arg1) {
+		
 	}
 }
