@@ -120,7 +120,7 @@
 		<dependency>
 			<groupId>com.aleksey</groupId>
 			<artifactId>castlegates</artifactId>
-			<version>1.0.12-SNAPSHOT</version>
+			<version>1.0.17-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<!--  Note: CrazyCrates isn't distributed in POM form.
