@@ -3476,9 +3476,9 @@ recipes:
       bread:
         material: BREAD
         amount: 64
-      steak:
-        material: COOKED_BEEF
-        amount: 32
+      beetroot:
+        material: BEETROOT
+        amount: 128
     output:
       exp:
         material: EXP_BOTTLE
@@ -3506,9 +3506,10 @@ recipes:
       baked_potato:
         material: BAKED_POTATO
         amount: 64
-      grilled_pork:
-        material: GRILLED_PORK
-        amount: 32
+      sapling:
+        material: SAPLING
+        amount: 16
+        durability: -1
     output:
       exp:
         material: EXP_BOTTLE
