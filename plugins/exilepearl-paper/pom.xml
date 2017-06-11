@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>com.dre</groupId>
 			<artifactId>brewery</artifactId>
-			<version>1.5</version>
+			<version>1.6.0</version>
 			<scope>provided</scope>
 		</dependency>
 
