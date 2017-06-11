@@ -385,6 +385,7 @@ factories:
       sapling:
         material: SAPLING
         amount: 32
+        durability: -1
       Dirt!:
         material: DIRT
         amount: 256
@@ -1424,6 +1425,7 @@ recipes:
       sapling:
         material: SAPLING
         amount: 32
+        durability: -1
       Dirt!:
         material: DIRT
         amount: 256
@@ -3555,9 +3557,10 @@ recipes:
       bread:
         material: BREAD
         amount: 128
-      grilled_pork:
-        material: GRILLED_PORK
+      sapling:
+        material: SAPLING
         amount: 32
+        durability: -1
     output:
       exp:
         material: EXP_BOTTLE
@@ -3594,9 +3597,9 @@ recipes:
       baked_potato:
         material: BAKED_POTATO
         amount: 256
-      cooked_chicken:
-        material: COOKED_CHICKEN
-        amount: 16
+      beetroot:
+        material: BEETROOT
+        amount: 128
     output:
       exp:
         material: EXP_BOTTLE
@@ -3637,7 +3640,7 @@ recipes:
         durability: 1
       cooked_fish:
         material: COOKED_FISH
-        amount: 16
+        amount: 32
     output:
       exp:
         material: EXP_BOTTLE
@@ -3675,9 +3678,9 @@ recipes:
       cookie:
         material: COOKIE
         amount: 256
-      steak:
-        material: COOKED_BEEF
-        amount: 32
+      beetroot:
+        material: BEETROOT
+        amount: 128
     output:
       exp:
         material: EXP_BOTTLE
@@ -3750,9 +3753,10 @@ recipes:
         amount: 128
         lore:
           - Compacted item
-      grilled_pork:
-        material: GRILLED_PORK
+      sapling:
+        material: SAPLING
         amount: 32
+        durability: -1
         lore:
           - Compacted item
     output:
@@ -3811,9 +3815,9 @@ recipes:
         amount: 256
         lore:
           - Compacted item
-      cooked_chicken:
-        material: COOKED_CHICKEN
-        amount: 16
+      beetroot:
+        material: BEETROOT
+        amount: 128
         lore:
           - Compacted item
     output:
@@ -3876,7 +3880,7 @@ recipes:
           - Compacted item
       cooked_fish:
         material: COOKED_FISH
-        amount: 16
+        amount: 32
         lore:
           - Compacted item
     output:
@@ -3936,9 +3940,9 @@ recipes:
         amount: 256
         lore:
           - Compacted item
-      steak:
-        material: COOKED_BEEF
-        amount: 32
+      beetroot:
+        material: BEETROOT
+        amount: 128
         lore:
           - Compacted item
     output:
