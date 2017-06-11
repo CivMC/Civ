@@ -5,8 +5,10 @@
 
 package com.aleksey.castlegates.engine;
 
+import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.database.SqlDatabase;
 import com.aleksey.castlegates.engine.bridge.BridgeEventHandler;
+import com.aleksey.castlegates.engine.bridge.BridgeManager;
 import com.aleksey.castlegates.types.CommandMode;
 import com.aleksey.castlegates.types.TimerMode;
 import com.aleksey.castlegates.types.TimerOperation;
@@ -23,12 +25,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
 
 public class CastleGatesManager {
 	private SqlDatabase db;
 	private StorageManager storage;
-	private PlayerStateManager stateManager;
+	private BridgeManager bridgeManager;
 	private BridgeEventHandler bridgeEventHandler;
+	private PlayerStateManager stateManager;
 
 	public boolean init(SqlDatabase db) {
 		this.db = db;
@@ -41,17 +45,39 @@ public class CastleGatesManager {
 			return false;
 		}
 
+		this.bridgeManager = new BridgeManager();
+		this.bridgeManager.init(this.storage);
+
+		this.bridgeEventHandler = new BridgeEventHandler(this.storage, this.bridgeManager);
+
 		this.stateManager = new PlayerStateManager();
 
-		this.bridgeEventHandler = new BridgeEventHandler();
-		this.bridgeEventHandler.init(this.storage);
+		return true;
+	}
+
+	public boolean reinit() {
+		CastleGates.getPluginLogger().log(Level.INFO, "Start reload process...");
+
+		this.bridgeManager.close();
+
+		try {
+			this.storage.close();
+			this.storage.init(this.db);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		this.bridgeManager.init(this.storage);
+
+		CastleGates.getPluginLogger().log(Level.INFO, "Reload process completed.");
 
 		return true;
 	}
 
 	public void close() {
-		if(this.bridgeEventHandler != null) {
-			this.bridgeEventHandler.close();
+		if(this.bridgeManager != null) {
+			this.bridgeManager.close();
 		}
 
 		if(this.storage != null) {
@@ -99,9 +125,7 @@ public class CastleGatesManager {
 		this.bridgeEventHandler.handleEntityExplode(event);
 	}
 
-	public void handleEntityChangeBlock(EntityChangeBlockEvent event) {
-		this.bridgeEventHandler.handleEntityChangeBlock(event);
-	}
+	public void handleEntityChangeBlock(EntityChangeBlockEvent event) { this.bridgeEventHandler.handleEntityChangeBlock(event); }
 
 	public void handlePistonEvent(List<Block> blocks) {
 		this.bridgeEventHandler.handlePistonEvent(blocks);

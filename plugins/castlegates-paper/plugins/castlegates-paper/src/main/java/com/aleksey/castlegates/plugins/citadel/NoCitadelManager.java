@@ -7,7 +7,6 @@ package com.aleksey.castlegates.plugins.citadel;
 
 import java.util.List;
 
-import com.aleksey.castlegates.plugins.jukealert.IJukeAlert;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
@@ -27,11 +26,7 @@ public class NoCitadelManager implements ICitadelManager {
 		return CastleGates.getConfigManager().getMaxRedstoneDistance();
 	}
 
-	public int getGroupId(Location loc) { return -1; }
-
-	public boolean canAccessDoors(List<Player> players, Location loc, IJukeAlert jukeAlert) {
-		return true;
-	}
+	public ICitadel getCitadel(List<Player> players, Location loc) { return new NoCitadel(); }
 
 	public boolean canBypass(Player player, Location loc) {
 		return true;

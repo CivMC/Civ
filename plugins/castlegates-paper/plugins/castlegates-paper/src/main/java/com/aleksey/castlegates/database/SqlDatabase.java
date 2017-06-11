@@ -16,7 +16,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.aleksey.castlegates.utils.ResourceHelper;
-import com.avaje.ebeaninternal.server.lib.sql.DataSourceException;
 
 public class SqlDatabase {
 	private String host;
@@ -42,7 +41,8 @@ public class SqlDatabase {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
         } catch (Exception ex) {
-            throw new DataSourceException("Failed to initialize JDBC driver.");
+            ex.printStackTrace();
+            return false;
         }
         try {
             this.connection = DriverManager.getConnection(jdbc);

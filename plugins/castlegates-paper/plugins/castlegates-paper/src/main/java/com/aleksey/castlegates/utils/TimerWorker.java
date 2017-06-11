@@ -26,6 +26,7 @@ public class TimerWorker extends Thread implements Runnable {
 
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
+    private AtomicBoolean run = new AtomicBoolean(false);
 
     public TimerWorker(BridgeManager bridgeManager) {
     	this.bridgeManager = bridgeManager;
@@ -33,6 +34,8 @@ public class TimerWorker extends Thread implements Runnable {
 	}
 
     public void startThread() {
+        this.kill.set(false);
+
         setName("CastleGates TimerWorker Thread");
         setPriority(Thread.MIN_PRIORITY);
         start();
@@ -42,45 +45,71 @@ public class TimerWorker extends Thread implements Runnable {
 
     public void terminateThread() {
         this.kill.set(true);
+
+        while (this.run.get()) {
+            try {
+                Thread.sleep(100);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        try {
+            for (TimerBatch batch : this.batches) {
+                this.bridgeManager.processTimerBatch(batch);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        this.batches.clear();
+
+        CastleGates.getPluginLogger().log(Level.INFO, "TimerWorker thread stopped");
     }
 
     public void run() {
-    	Map<Gearblock, TimerBatch> localBatchMap = new WeakHashMap<Gearblock, TimerBatch>();
-    	List<TimerBatch> localBatches = new ArrayList<TimerBatch>();
+        this.run.set(true);
 
-        while (!this.isInterrupted() && !this.kill.get()) {
-            try {
-                long timeWait = this.lastExecute + CastleGates.getConfigManager().getTimerWorkerRate() - System.currentTimeMillis();
-                this.lastExecute = System.currentTimeMillis();
-                if (timeWait > 0) {
-                    Thread.sleep(timeWait);
+        try {
+            Map<Gearblock, TimerBatch> localBatchMap = new WeakHashMap<Gearblock, TimerBatch>();
+            List<TimerBatch> localBatches = new ArrayList<TimerBatch>();
+
+            while (!this.isInterrupted() && !this.kill.get()) {
+                try {
+                    long timeWait = this.lastExecute + CastleGates.getConfigManager().getTimerWorkerRate() - System.currentTimeMillis();
+                    this.lastExecute = System.currentTimeMillis();
+                    if (timeWait > 0) {
+                        Thread.sleep(timeWait);
+                    }
+
+                    synchronized (this.batches) {
+                        if (this.batches.size() > 0) {
+                            for (TimerBatch batch : this.batches) {
+                                localBatchMap.put(batch.getGearblock(), batch);
+                            }
+
+                            this.batches.clear();
+                        }
+                    }
+
+                    long currentTimeMillis = System.currentTimeMillis();
+
+                    localBatches.addAll(localBatchMap.values());
+
+                    for (TimerBatch batch : localBatches) {
+                        if (batch.getRunTimeMillis() <= currentTimeMillis) {
+                            runBatch(batch);
+                            localBatchMap.remove(batch.getGearblock());
+                        }
+                    }
+
+                    localBatches.clear();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-
-                synchronized (this.batches) {
-                	if(this.batches.size() > 0) {
-                		for(TimerBatch batch : this.batches) {
-              				localBatchMap.put(batch.getGearblock(), batch);
-                		}
-
-	                	this.batches.clear();
-                	}
-                }
-
-                long currentTimeMillis = System.currentTimeMillis();
-
-                localBatches.addAll(localBatchMap.values());
-
-                for(TimerBatch batch : localBatches) {
-                	if(batch.getRunTimeMillis() <= currentTimeMillis) {
-                		runBatch(batch);
-                		localBatchMap.remove(batch.getGearblock());
-                	}
-                }
-
-                localBatches.clear();
-            } catch (Exception e) {
-            	e.printStackTrace();
             }
+        } finally {
+            this.run.set(false);
         }
     }
 

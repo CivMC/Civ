@@ -1,3 +1,7 @@
+/**
+ * Created by Aleksey Terzi
+ */
+
 package com.aleksey.castlegates.engine.bridge;
 
 import com.aleksey.castlegates.CastleGates;
@@ -27,10 +31,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
-/**
- * Created by Aleksey Terzi
- */
 public class BridgeEventHandler {
     private static class FindGearResult {
         public Gearblock gearblock;
@@ -47,16 +49,9 @@ public class BridgeEventHandler {
     private HashSet<Block> waitingBlocks = new HashSet<Block>();
     private HashSet<Block> processingBlocks = new HashSet<Block>();
 
-    public void init(StorageManager storage) {
+    public BridgeEventHandler(StorageManager storage, BridgeManager bridgeManager) {
         this.storage = storage;
-
-        this.bridgeManager.init(this.storage);
-    }
-
-    public void close() {
-        if(this.bridgeManager != null) {
-            this.bridgeManager.close();
-        }
+        this.bridgeManager = bridgeManager;
     }
 
     public boolean handleBlockClicked(PlayerInteractEvent event, PlayerStateManager.PlayerState state) {
@@ -379,7 +374,7 @@ public class BridgeEventHandler {
             );
 
             if(result.status == PowerResult.Status.Locked && gearblock.getTimerMode() == TimerMode.DOOR) {
-                result.status = PowerResult.Status.Unchanged;
+                result = PowerResult.Unchanged;
             }
 
             PowerResultHelper.showStatus(block.getLocation(), players, result);

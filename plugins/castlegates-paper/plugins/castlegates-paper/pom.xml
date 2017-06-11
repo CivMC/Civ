@@ -6,7 +6,7 @@
   <groupId>com.aleksey</groupId>
   <artifactId>castlegates</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.16-SNAPSHOT</version>
+  <version>1.0.17-SNAPSHOT</version>
   <name>CastleGates</name>
   <url>https://github.com/DevotedMC/CastleGates</url>
   
@@ -31,7 +31,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.11-R0.1-SNAPSHOT</version>
+      <version>1.12-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

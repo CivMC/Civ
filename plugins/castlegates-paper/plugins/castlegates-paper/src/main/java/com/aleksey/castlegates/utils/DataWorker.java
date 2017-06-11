@@ -45,6 +45,7 @@ public class DataWorker extends Thread implements Runnable {
 
 	private long lastExecute = System.currentTimeMillis();
     private AtomicBoolean kill = new AtomicBoolean(false);
+	private AtomicBoolean run = new AtomicBoolean(false);
 
     public DataWorker(SqlDatabase db, boolean logChanges) {
     	this.db = db;
@@ -76,7 +77,12 @@ public class DataWorker extends Thread implements Runnable {
 	}
 
 	private void loadGears(Map<BlockCoord, Gearblock> gearblocks, Map<Integer, Gearblock> gearblocksById) throws SQLException {
+    	int gearblockCount = this.gearblockSource.countAll();
+
+		CastleGates.getPluginLogger().log(Level.INFO, "Gearblock count: " + gearblockCount);
+
 		List<GearblockInfo> gearData = this.gearblockSource.selectAll();
+		int timerCount = 0;
 
 		for(GearblockInfo info : gearData) {
 			UUID world = UUID.fromString(info.location_worlduid);
@@ -100,6 +106,8 @@ public class DataWorker extends Thread implements Runnable {
 					timerOperation = TimerOperation.REVERT;
 					break;
 				}
+
+				timerCount++;
 			}
 
 			gearblock.setId(info.gearblock_id);
@@ -108,10 +116,18 @@ public class DataWorker extends Thread implements Runnable {
 			gearblocks.put(location, gearblock);
 			gearblocksById.put(info.gearblock_id, gearblock);
 		}
+
+		CastleGates.getPluginLogger().log(Level.INFO, "Loaded gearblocks: " + gearblocks.size());
+		CastleGates.getPluginLogger().log(Level.INFO, "Timers: " + timerCount);
 	}
 
 	private void loadLinks(Map<Integer, GearblockLink> linksById, Map<Integer, Gearblock> gearblocksById) throws SQLException {
+    	int linkCount = this.linkSource.countAll();
+
+		CastleGates.getPluginLogger().log(Level.INFO, "Link count: " + linkCount);
+
 		List<LinkInfo> linkData = this.linkSource.selectAll();
+		int invalidLinkCount = 0, drawnLinkCount = 0, brokenLinkCount = 0;
 
 		for(LinkInfo info : linkData) {
 			Gearblock gearblock1 = info.gearblock1_id != null ? gearblocksById.get(info.gearblock1_id) : null;
@@ -131,6 +147,32 @@ public class DataWorker extends Thread implements Runnable {
 			}
 
 			linksById.put(link.getId(), link);
+
+			if(gearblock1 == null && gearblock2 == null) {
+				invalidLinkCount++;
+			}
+
+			if(link.isDrawn()) {
+				drawnLinkCount++;
+			}
+
+			if(link.isBroken()) {
+				brokenLinkCount++;
+			}
+		}
+
+		CastleGates.getPluginLogger().log(Level.INFO, "Loaded links: " + linkData.size());
+
+		if(drawnLinkCount > 0) {
+			CastleGates.getPluginLogger().log(Level.INFO, "Links in DRAWN state: " + drawnLinkCount);
+		}
+
+		if(brokenLinkCount > 0) {
+			CastleGates.getPluginLogger().log(Level.INFO, "Links in BROKEN state: " + brokenLinkCount);
+		}
+
+		if(invalidLinkCount > 0) {
+			CastleGates.getPluginLogger().log(Level.WARNING, "Invalid links (i.e. BUG): " + invalidLinkCount);
 		}
 	}
 
@@ -149,6 +191,8 @@ public class DataWorker extends Thread implements Runnable {
 	}
 
     public void startThread() {
+		this.kill.set(false);
+
         setName("CastleGates DataWorker Thread");
         setPriority(Thread.MIN_PRIORITY);
         start();
@@ -158,53 +202,79 @@ public class DataWorker extends Thread implements Runnable {
 
     public void terminateThread() {
         this.kill.set(true);
+
+		while (this.run.get()) {
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		saveData();
+
+		CastleGates.getPluginLogger().log(Level.INFO, "DataWorker thread stopped");
     }
 
     public void run() {
-        while (!this.isInterrupted() && !this.kill.get()) {
-            try {
-                long timeWait = lastExecute + CastleGates.getConfigManager().getDataWorkerRate() - System.currentTimeMillis();
-                lastExecute = System.currentTimeMillis();
-                if (timeWait > 0) {
-                    Thread.sleep(timeWait);
-                }
+		this.run.set(true);
 
-                synchronized (this.changedGearblocks) {
-                	for(GearblockForUpdate gearForUpdate : this.changedGearblocks.values()) {
-                		this.localChangedGearblocks.add(gearForUpdate);
-                	}
+		try {
+			while (!this.isInterrupted() && !this.kill.get()) {
+				try {
+					long timeWait = lastExecute + CastleGates.getConfigManager().getDataWorkerRate() - System.currentTimeMillis();
+					lastExecute = System.currentTimeMillis();
+					if (timeWait > 0) {
+						Thread.sleep(timeWait);
+					}
 
-                	this.changedGearblocks.clear();
-                }
-
-                synchronized (this.changedLinks) {
-                	for(LinkForUpdate linkForUpdate : this.changedLinks.values()) {
-                		this.localChangedLinks.add(linkForUpdate);
-                	}
-
-                	this.changedLinks.clear();
-                }
-
-                if(this.localChangedGearblocks.size() > 0 || this.localChangedLinks.size() > 0) {
-                	if(this.db.checkConnection()) {
-		                try {
-			                updateGears();
-			                updateLinks();
-
-			                if(this.changeLogger != null) {
-			                	this.changeLogger.flush();
-			                }
-		                } finally {
-			                this.localChangedGearblocks.clear();
-			                this.localChangedLinks.clear();
-		                }
-                	}
-                }
-            } catch (Exception e) {
-            	e.printStackTrace();
-            }
-        }
+					saveData();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		} finally {
+			this.run.set(false);
+		}
     }
+
+    private void saveData() {
+		try {
+			synchronized (this.changedGearblocks) {
+				for (GearblockForUpdate gearForUpdate : this.changedGearblocks.values()) {
+					this.localChangedGearblocks.add(gearForUpdate);
+				}
+
+				this.changedGearblocks.clear();
+			}
+
+			synchronized (this.changedLinks) {
+				for (LinkForUpdate linkForUpdate : this.changedLinks.values()) {
+					this.localChangedLinks.add(linkForUpdate);
+				}
+
+				this.changedLinks.clear();
+			}
+
+			if (this.localChangedGearblocks.size() > 0 || this.localChangedLinks.size() > 0) {
+				if (this.db.checkConnection()) {
+					try {
+						updateGears();
+						updateLinks();
+
+						if (this.changeLogger != null) {
+							this.changeLogger.flush();
+						}
+					} finally {
+						this.localChangedGearblocks.clear();
+						this.localChangedLinks.clear();
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
     private void updateGears() throws SQLException {
     	for(GearblockForUpdate gearForUpdate : this.localChangedGearblocks) {
