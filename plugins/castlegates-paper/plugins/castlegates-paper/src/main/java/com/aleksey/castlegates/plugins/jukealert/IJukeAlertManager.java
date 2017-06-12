@@ -7,5 +7,5 @@ import org.bukkit.entity.Player;
 import java.util.List;
 
 public interface IJukeAlertManager {
-	boolean hasJukeAlertAccess(Location location, int groupId);
+	boolean hasJukeAlertAccess(Location location, String groupName);
 }

@@ -233,9 +233,11 @@ public class BridgeManager {
 		}
 
 		ICitadel citadel = getCitadel(world, gearblock, players);
+		DoorAccess doorAccess = canAccessDoors(world, gearblock, citadel);
 
-		if(canAccessDoors(world, gearblock, citadel) != DoorAccess.Full) {
-			return PowerResult.NotInCitadelGroup;
+		switch(doorAccess) {
+			case None: return PowerResult.NotInCitadelGroup;
+			case Partial: return PowerResult.DifferentCitadelGroup;
 		}
 
 		if(!unlock(gearblock)) {
