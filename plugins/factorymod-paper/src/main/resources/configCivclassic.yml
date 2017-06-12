@@ -3443,7 +3443,7 @@ recipes:
         material: CARROT_ITEM
         amount: 256
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 256
       baked_potato:
         material: BAKED_POTATO
@@ -3492,7 +3492,7 @@ recipes:
         material: GLASS_BOTTLE
         amount: 42
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 256
       melon:
         material: MELON_BLOCK
@@ -3575,7 +3575,7 @@ recipes:
         material: GLASS_BOTTLE
         amount: 128
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 64
       melon:
         material: MELON_BLOCK
@@ -3655,7 +3655,7 @@ recipes:
         material: GLASS_BOTTLE
         amount: 128
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 64
       pumpkin:
         material: PUMPKIN
@@ -3777,7 +3777,7 @@ recipes:
         lore:
           - Compacted item
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 64
         lore:
           - Compacted item
@@ -3901,7 +3901,7 @@ recipes:
         lore:
           - Compacted item
       nether_wart:
-        material: NETHER_WART_BLOCK
+        material: NETHER_WARTS
         amount: 64
         lore:
           - Compacted item
