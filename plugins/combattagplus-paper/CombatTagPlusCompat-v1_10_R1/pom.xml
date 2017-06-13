@@ -5,7 +5,7 @@
     <parent>
         <artifactId>CombatTagPlusParent</artifactId>
         <groupId>net.minelink</groupId>
-        <version>1.3.0-SNAPSHOT</version>
+        <version>1.3.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -29,7 +29,7 @@
         <dependency>
             <groupId>net.minelink</groupId>
             <artifactId>CombatTagPlusCompat-API</artifactId>
-            <version>1.3.0-SNAPSHOT</version>
+            <version>1.3.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

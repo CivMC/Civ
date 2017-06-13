@@ -7,7 +7,7 @@
     <groupId>net.minelink</groupId>
     <artifactId>CombatTagPlusParent</artifactId>
     <packaging>pom</packaging>
-    <version>1.3.0-SNAPSHOT</version>
+    <version>1.3.1-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,6 +27,7 @@
         <module>CombatTagPlusCompat-v1_9_R2</module>
         <module>CombatTagPlusCompat-v1_10_R1</module>
         <module>CombatTagPlusCompat-v1_11_R1</module>
+        <module>CombatTagPlusCompat-v1_12_R1</module>
         <module>CombatTagPlusHook</module>
         <module>CombatTagPlusFactions-v1_6</module>
         <module>CombatTagPlusFactions-v1_8</module>

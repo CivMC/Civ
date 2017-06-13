@@ -47,7 +47,7 @@ public final class Settings {
         Path path = Paths.get(plugin.getDataFolder().getAbsolutePath() + File.separator + "config.yml");
 
         // Iterate through new config
-        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(plugin.getResource("config.yml"));
+        YamlConfiguration defaultConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(plugin.getResource("config.yml")));
         for (String key : defaultConfig.getKeys(true)) {
             // Convert key to correct format for a single line
             String oneLineKey = StringUtils.repeat("  ", key.split(".").length) + key + ": ";
