@@ -64,9 +64,14 @@ public class PearlCoolDownListener implements Listener {
 		}
 		//put pearl on cooldown		
 		cds.putOnCoolDown(shooter.getUniqueId());
-		ProtocolLibManager plm = Finale.getProtocolLibManager();
-		if (plm != null) {
-			plm.sendPacketWithCoolDown(cds.getTotalCoolDown(), shooter);
+		
+		try {
+			shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown());
+		} catch (Exception q) {
+			ProtocolLibManager plm = Finale.getProtocolLibManager();
+			if (plm != null) {
+				plm.sendPacketWithCoolDown(cds.getTotalCoolDown(), shooter);
+			}
 		}
 	}
 	
