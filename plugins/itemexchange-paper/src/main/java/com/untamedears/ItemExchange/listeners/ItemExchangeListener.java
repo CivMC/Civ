@@ -6,9 +6,7 @@ package com.untamedears.ItemExchange.listeners;
 
 import static org.bukkit.event.block.Action.LEFT_CLICK_BLOCK;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -38,6 +36,9 @@ import com.untamedears.ItemExchange.utility.ItemExchange;
  * @author Brian Landry
  */
 public class ItemExchangeListener implements Listener {
+	private static final int TimeBetweenClicks = 200;
+	private Map<Player, Long> players = new Hashtable<>();
+
 	/**
 	 * Constructor
 	 */
@@ -50,6 +51,18 @@ public class ItemExchangeListener implements Listener {
 	@EventHandler
 	public void playerInteractionEvent(PlayerInteractEvent e) {
 		Player player = e.getPlayer();
+
+		// Workaround to fix double triggering of event
+		// Start
+		if(player == null) return;
+
+		Long lastTime = this.players.get(player);
+
+		if(lastTime != null && System.currentTimeMillis() - lastTime < TimeBetweenClicks) return;
+
+		this.players.put(player, System.currentTimeMillis());
+		// End
+
 		ItemStack itemStack = e.getItem();
 		// If a player using an interacting action
 		if (e.getAction() == LEFT_CLICK_BLOCK) {
