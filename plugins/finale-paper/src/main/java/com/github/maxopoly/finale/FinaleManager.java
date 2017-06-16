@@ -9,6 +9,7 @@ import com.github.maxopoly.finale.misc.WeaponModifier;
 
 public class FinaleManager {
 	
+	private boolean debug;
 	private boolean attackSpeedEnabled;
 	private double attackSpeed;
 	private boolean regenHandlerEnabled;
@@ -17,15 +18,18 @@ public class FinaleManager {
 	private boolean protocolLibEnabled;
 	private Collection <Enchantment> disabledEnchantments;
 	
-	public FinaleManager(boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
-			SaturationHealthRegenHandler regenHandler,WeaponModifier weaponModifier, boolean protocolLibEnabled, Collection <Enchantment> disabledEnchants) {
+	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
+			SaturationHealthRegenHandler regenHandler,WeaponModifier weaponModifier, Collection <Enchantment> disabledEnchants) {
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
 		this.regenHandlerEnabled = regenHandlerEnabled;
 		this.regenHandler = regenHandler;
-		this.protocolLibEnabled = protocolLibEnabled;
 		this.weaponModifier = weaponModifier;
 		this.disabledEnchantments = disabledEnchants;
+	}
+	
+	public boolean isDebug() {
+		return debug;
 	}
 	
 	public boolean isAttackSpeedEnabled() {
@@ -46,10 +50,6 @@ public class FinaleManager {
 	
 	public WeaponModifier getWeaponModifer() {
 	    return weaponModifier;
-	}
-	
-	public boolean protocolLibEnabled() {
-		return protocolLibEnabled;
 	}
 	
 	public boolean isDisabledEnchantment(Enchantment enchant) {

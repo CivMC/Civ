@@ -77,18 +77,24 @@ public class SaturationHealthRegenHandler implements Runnable {
 				double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 
 				if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
-					StringBuffer alterHealth = new StringBuffer(p.getName());
-					alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
-					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
-					alterHealth.append(":").append(p.getFoodLevel());
+					StringBuffer alterHealth = null;
+				
+					if (Finale.getManager().isDebug()) {
+						alterHealth = new StringBuffer(p.getName());
+						alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
+						alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+						alterHealth.append(":").append(p.getFoodLevel());
+					}
 					double newHealth = p.getHealth() + healthPerCycle;
 					newHealth = Math.min(newHealth, maxHealth);
 					p.setExhaustion(p.getExhaustion() + exhaustionPerHeal);
 					p.setHealth(newHealth);
-					alterHealth.append(" TO ").append(p.getHealth()).append("<").append(maxHealth);
-					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
-					alterHealth.append(":").append(p.getFoodLevel());
-					Finale.getPlugin().getLogger().info(alterHealth.toString());
+					if (Finale.getManager().isDebug()) {
+						alterHealth.append(" TO ").append(p.getHealth()).append("<").append(maxHealth);
+						alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+						alterHealth.append(":").append(p.getFoodLevel());
+						Finale.getPlugin().getLogger().info(alterHealth.toString());
+					}
 				}
 			}
 		}

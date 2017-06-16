@@ -15,7 +15,6 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
-import com.github.maxopoly.finale.external.ProtocolLibManager;
 
 import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
 

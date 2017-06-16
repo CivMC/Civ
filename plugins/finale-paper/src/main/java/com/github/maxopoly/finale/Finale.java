@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
-import com.github.maxopoly.finale.external.ProtocolLibManager;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
@@ -17,7 +16,6 @@ public class Finale extends ACivMod {
 	private static Finale instance;
 	private static FinaleManager manager;
 	private static CombatTagPlusManager ctpManager;
-	private static ProtocolLibManager protocolLibManager;
 	
 	private ConfigParser config;
 
@@ -45,10 +43,6 @@ public class Finale extends ACivMod {
 		return ctpManager;
 	}
 	
-	public static ProtocolLibManager getProtocolLibManager() {
-		return protocolLibManager;
-	}
-
 	public String getPluginName() {
 		return "Finale";
 	}
@@ -58,7 +52,7 @@ public class Finale extends ACivMod {
 		if (manager.isAttackSpeedEnabled() || manager.isRegenHandlerEnabled()) {
 			Bukkit.getPluginManager().registerEvents(new PlayerListener(manager), this);
 		}
-		// So far the pearl listener, CTP manager and ProtocolLib manager are only needed if pearl cooldown changes are enabled.
+		// So far the pearl listener, CTP manager only needed if pearl cooldown changes are enabled.
 		if (config.isPearlEnabled()) {
 			Bukkit.getPluginManager().registerEvents(
 					new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(), ctpManager, config.refundBlockedPearls()), this);
@@ -74,9 +68,6 @@ public class Finale extends ACivMod {
 		if (plugins.isPluginEnabled("CombatTagPlus")) {
 			ctpManager = new CombatTagPlusManager();
 		}
-		/*if (plugins.isPluginEnabled("ProtocolLib")) {
-			protocolLibManager = new ProtocolLibManager();
-		}*/
 	}
 
 }

@@ -55,31 +55,37 @@ public class PlayerListener implements Listener {
 			double spigotRegenExhaustion = ((net.minecraft.server.v1_12_R1.World) ( (org.bukkit.craftbukkit.v1_12_R1.CraftWorld) p.getWorld()).getHandle()).spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 
-			StringBuffer alterHealth = new StringBuffer("SATIATED: " + p.getName());
-			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
-			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
-			alterHealth.append(":").append(p.getFoodLevel());
-
+			StringBuffer alterHealth = null;
+			if (manager.isDebug()) {
+				alterHealth = new StringBuffer("SATIATED: " + p.getName());
+				alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
+				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+				alterHealth.append(":").append(p.getFoodLevel());
+			}
 			if(newExhaustion < 0) // not 100% sure this is correct route; intention was restoring what spigot takes, but we'll roll with it
 				newExhaustion = 0;
 
 			p.setExhaustion(newExhaustion);
 			
-			alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
-			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
-			alterHealth.append(":").append(p.getFoodLevel());
-			Finale.getPlugin().getLogger().info(alterHealth.toString());
+			if (manager.isDebug()) {
+				alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
+				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+				alterHealth.append(":").append(p.getFoodLevel());
+				Finale.getPlugin().getLogger().info(alterHealth.toString());
+			}
 			e.setCancelled(true);
 			return;
 		}
 		if (e.getRegainReason() == RegainReason.EATING && manager.getPassiveRegenHandler().blockFoodHealthRegen()) {
 			Player p = (Player) e.getEntity();
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-			StringBuffer alterHealth = new StringBuffer("EATING:" + p.getName());
-			alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
-			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
-			alterHealth.append(":").append(p.getFoodLevel());
-			Finale.getPlugin().getLogger().info(alterHealth.toString());
+			if (manager.isDebug()) {
+				StringBuffer alterHealth = new StringBuffer("EATING:" + p.getName());
+				alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
+				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+				alterHealth.append(":").append(p.getFoodLevel());
+				Finale.getPlugin().getLogger().info(alterHealth.toString());
+			}
 			e.setCancelled(true);
 		}
 	}

@@ -35,6 +35,7 @@ public class ConfigParser {
 		plugin.reloadConfig();
 		FileConfiguration config = plugin.getConfig();
 		// Attack Speed modification for all players
+		boolean debug = config.getBoolean("debug", false);
 		boolean attackEnabled = config.getBoolean("alterAttack.enabled", true);
 		double attackSpeed = config.getDouble("alterAttack.speed", 9.4);
 		// Food Health Regen modifications for all players
@@ -44,13 +45,11 @@ public class ConfigParser {
 		// Pearl cooldown changes
 		this.pearlEnabled = parsePearls(config.getConfigurationSection("pearls"));
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
-		// Flags
-		boolean protocolLibEnabled = Bukkit.getPluginManager().isPluginEnabled("ProtocolLib");
 		
 		Collection <Enchantment> disabledEnchants = parseDisableEnchantments(config);
 
 		// Initialize the manager
-		manager = new FinaleManager(attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod, protocolLibEnabled, disabledEnchants);
+		manager = new FinaleManager(debug, attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod, disabledEnchants);
 		return manager;
 	}
 
