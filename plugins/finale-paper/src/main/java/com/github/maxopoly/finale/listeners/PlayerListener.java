@@ -1,4 +1,5 @@
 package com.github.maxopoly.finale.listeners;
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
@@ -49,15 +50,22 @@ public class PlayerListener implements Listener {
 				&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
 			// apparently setting to cancelled doesn't prevent the "consumption" of satiation.
 			Player p = (Player) e.getEntity();
-			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * 6.0d);
 
-			if(newExhaustion < 0)
+			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			double spigotRegenExhaustion = ((net.minecraft.server.v1_12_R1.World) ( (org.bukkit.craftbukkit.v1_12_R1.CraftWorld) p.getWorld()).getHandle()).spigotConfig.regenExhaustion;
+			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
+
+			StringBuffer alterHealth = new StringBuffer("SATIATED: " + p.getName());
+			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+			alterHealth.append(":").append(p.getFoodLevel());
+
+			if(newExhaustion < 0) // not 100% sure this is correct route; intention was restoring what spigot takes, but we'll roll with it
 				newExhaustion = 0;
 
 			p.setExhaustion(newExhaustion);
-			StringBuffer alterHealth = new StringBuffer(p.getName());
-			alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
+			
+			alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
 			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 			alterHealth.append(":").append(p.getFoodLevel());
 			Finale.getPlugin().getLogger().info(alterHealth.toString());
