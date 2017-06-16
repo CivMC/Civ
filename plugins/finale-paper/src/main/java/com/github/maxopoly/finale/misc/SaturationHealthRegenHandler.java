@@ -73,10 +73,18 @@ public class SaturationHealthRegenHandler implements Runnable {
 					continue;
 				}
 				if (p.getFoodLevel() >= minimumFood && p.getHealth() < p.getMaxHealth()) {
+					StringBuffer alterHealth = new StringBuffer(p.getName());
+					alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+					alterHealth.append(":").append(p.getFoodLevel());
 					double newHealth = p.getHealth() + healthPerCycle;
 					newHealth = Math.min(newHealth, p.getMaxHealth());
 					p.setExhaustion(p.getExhaustion() + exhaustionPerHeal);
 					p.setHealth(newHealth);
+					alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
+					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+					alterHealth.append(":").append(p.getFoodLevel());
+					Finale.getPlugin().getLogger().info(alterHealth.toString());
 				}
 			}
 		}

@@ -3,6 +3,7 @@ package com.github.maxopoly.finale.listeners;
 import java.text.DecimalFormat;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -54,6 +55,7 @@ public class PearlCoolDownListener implements Listener {
 					+ df.format(((double) cd / 20.0))+  " seconds");
 			if (refundPearl) {
 				//cancelling the event will not give the pearl back, so we need to do this here
+				// THIS DOES NOT APPLY IN 1.12
 				shooter.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
 			}
 			return;
@@ -65,14 +67,11 @@ public class PearlCoolDownListener implements Listener {
 		//put pearl on cooldown		
 		cds.putOnCoolDown(shooter.getUniqueId());
 		
-		try {
-			shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown());
-		} catch (Exception q) {
-			ProtocolLibManager plm = Finale.getProtocolLibManager();
-			if (plm != null) {
-				plm.sendPacketWithCoolDown(cds.getTotalCoolDown(), shooter);
+		Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), new Runnable() {
+			public void run() {
+				shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown());
 			}
-		}
+		}, 1);
 	}
 	
 	public static long getPearlCoolDown(UUID uuid) {

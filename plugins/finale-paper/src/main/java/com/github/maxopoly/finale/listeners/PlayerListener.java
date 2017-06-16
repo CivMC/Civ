@@ -3,6 +3,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -10,6 +11,7 @@ import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerJoinEvent;
 
+import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.FinaleManager;
 
 public class PlayerListener implements Listener {
@@ -45,10 +47,24 @@ public class PlayerListener implements Listener {
 		}
 		if (e.getRegainReason() == RegainReason.SATIATED
 				&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
+			// apparently setting to cancelled doesn't prevent the "consumption" of satiation.
+			Player p = (Player) e.getEntity();
+			p.setExhaustion((float) (p.getExhaustion() - e.getAmount() * 6.0d));
+			StringBuffer alterHealth = new StringBuffer(p.getName());
+			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+			alterHealth.append(":").append(p.getFoodLevel());
+			Finale.getPlugin().getLogger().info(alterHealth.toString());
 			e.setCancelled(true);
 			return;
 		}
 		if (e.getRegainReason() == RegainReason.EATING && manager.getPassiveRegenHandler().blockFoodHealthRegen()) {
+			Player p = (Player) e.getEntity();
+			StringBuffer alterHealth = new StringBuffer("EATING:" + p.getName());
+			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
+			alterHealth.append(":").append(p.getFoodLevel());
+			Finale.getPlugin().getLogger().info(alterHealth.toString());
 			e.setCancelled(true);
 		}
 	}

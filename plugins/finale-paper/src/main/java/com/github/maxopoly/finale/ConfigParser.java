@@ -73,7 +73,7 @@ public class ConfigParser {
 		pearlCooldown = parseTime(config.getString("cooldown", "10s"));
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
-		refundPearls = config.getBoolean("refundBlockedPearls", true);
+		refundPearls = config.getBoolean("refundBlockedPearls", false);
 		return true;
 	}
 

@@ -74,9 +74,9 @@ public class Finale extends ACivMod {
 		if (plugins.isPluginEnabled("CombatTagPlus")) {
 			ctpManager = new CombatTagPlusManager();
 		}
-		if (plugins.isPluginEnabled("ProtocolLib")) {
+		/*if (plugins.isPluginEnabled("ProtocolLib")) {
 			protocolLibManager = new ProtocolLibManager();
-		}
+		}*/
 	}
 
 }
