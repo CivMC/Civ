@@ -49,9 +49,15 @@ public class PlayerListener implements Listener {
 				&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
 			// apparently setting to cancelled doesn't prevent the "consumption" of satiation.
 			Player p = (Player) e.getEntity();
-			p.setExhaustion((float) (p.getExhaustion() - e.getAmount() * 6.0d));
+			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * 6.0d);
+
+			if(newExhaustion < 0)
+				newExhaustion = 0;
+
+			p.setExhaustion(newExhaustion);
 			StringBuffer alterHealth = new StringBuffer(p.getName());
-			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+			alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 			alterHealth.append(":").append(p.getFoodLevel());
 			Finale.getPlugin().getLogger().info(alterHealth.toString());
@@ -60,8 +66,9 @@ public class PlayerListener implements Listener {
 		}
 		if (e.getRegainReason() == RegainReason.EATING && manager.getPassiveRegenHandler().blockFoodHealthRegen()) {
 			Player p = (Player) e.getEntity();
+			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			StringBuffer alterHealth = new StringBuffer("EATING:" + p.getName());
-			alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+			alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 			alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 			alterHealth.append(":").append(p.getFoodLevel());
 			Finale.getPlugin().getLogger().info(alterHealth.toString());
