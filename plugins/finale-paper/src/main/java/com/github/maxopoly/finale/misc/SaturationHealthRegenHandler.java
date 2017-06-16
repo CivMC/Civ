@@ -9,6 +9,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import com.github.maxopoly.finale.Finale;
@@ -72,16 +73,19 @@ public class SaturationHealthRegenHandler implements Runnable {
 				if (p.isDead() || p.getHealth() <= 0.0) {
 					continue;
 				}
-				if (p.getFoodLevel() >= minimumFood && p.getHealth() < p.getMaxHealth()) {
+
+				double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+				if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
 					StringBuffer alterHealth = new StringBuffer(p.getName());
-					alterHealth.append(":").append(p.getHealth()).append("<").append(p.getMaxHealth());
+					alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 					alterHealth.append(":").append(p.getFoodLevel());
 					double newHealth = p.getHealth() + healthPerCycle;
-					newHealth = Math.min(newHealth, p.getMaxHealth());
+					newHealth = Math.min(newHealth, maxHealth);
 					p.setExhaustion(p.getExhaustion() + exhaustionPerHeal);
 					p.setHealth(newHealth);
-					alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
+					alterHealth.append(" TO ").append(p.getHealth()).append("<").append(maxHealth);
 					alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 					alterHealth.append(":").append(p.getFoodLevel());
 					Finale.getPlugin().getLogger().info(alterHealth.toString());

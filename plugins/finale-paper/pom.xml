@@ -28,6 +28,7 @@
 				<filtering>true</filtering>
 			</resource>
 		</resources>
+		<defaultGoal>clean install</defaultGoal>
 	</build>
 
 	<dependencies>
