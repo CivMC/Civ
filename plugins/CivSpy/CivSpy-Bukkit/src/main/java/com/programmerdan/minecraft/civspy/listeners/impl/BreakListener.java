@@ -62,6 +62,7 @@ public final class BreakListener extends ServerDataListener {
 				
 				if (dropped != null && dropped.length > 0) {
 					for (ItemStack drop : dropped) {
+						if (drop == null) continue;
 						ItemStack dropQ = drop.clone();
 						dropQ.setAmount(1);
 						DataSample deathdrop = new PointDataSample("block.drop." + broken.getType().toString(),

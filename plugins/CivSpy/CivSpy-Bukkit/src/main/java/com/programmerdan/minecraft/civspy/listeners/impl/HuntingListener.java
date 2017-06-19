@@ -141,6 +141,7 @@ public final class HuntingListener extends ServerDataListener {
 			
 			if (dropped != null && dropped.size() > 0) {
 				for (ItemStack drop : dropped) {
+					if (drop == null) continue;
 					ItemStack dropQ = drop.clone();
 					dropQ.setAmount(1);
 					DataSample deathdrop = new PointDataSample("player." + (killerIsEntity ? "killed.drop" : "died.drop"),
@@ -179,6 +180,7 @@ public final class HuntingListener extends ServerDataListener {
 	
 			if (dropped != null && dropped.size() > 0) {
 				for (ItemStack drop : dropped) {
+					if (drop == null) continue;
 					ItemStack dropQ = drop.clone();
 					dropQ.setAmount(1);
 					DataSample deathdrop = new PointDataSample("entity.death.drop." + type, this.getServer(),
