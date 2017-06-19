@@ -89,7 +89,7 @@ public class BastionManager implements IBastionManager {
 			if(players == null) return false;
 
 			if(citadel.useJukeAlert()) {
-				if(citadel.getGroupId() == playerRein.getGroupId()) {
+				if(citadel.getGroupName().equalsIgnoreCase(playerRein.getGroup().getName())) {
 					return true;
 				}
 			} else {

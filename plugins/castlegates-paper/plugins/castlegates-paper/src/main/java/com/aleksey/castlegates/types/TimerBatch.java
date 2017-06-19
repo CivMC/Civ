@@ -1,6 +1,7 @@
 package com.aleksey.castlegates.types;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.World;
@@ -8,9 +9,12 @@ import org.bukkit.World;
 public class TimerBatch {
 	private World world;
 	private Gearblock gearblock;
+	private HashSet<Gearblock> allGearblocks;
 	private long runTimeMillis;
 	private PowerResult.Status processStatus;
 	private TimerOperation timerOperation;
+	private TimerMode timerMode;
+	private boolean isInvalid;
 	private List<TimerLink> links = new ArrayList<TimerLink>();
 
 	public World getWorld() {
@@ -19,6 +23,15 @@ public class TimerBatch {
 
 	public Gearblock getGearblock() {
 		return this.gearblock;
+	}
+
+	public TimerMode getTimerMode() { return this.timerMode; }
+
+	public HashSet<Gearblock> getAllGearblocks() { return this.allGearblocks; }
+	public void clearTimerBatchForAllGearblocks() {
+		for(Gearblock gearblock : this.allGearblocks) {
+			gearblock.setTimerBatch(null);
+		}
 	}
 
 	public List<TimerLink> getLinks() {
@@ -45,10 +58,23 @@ public class TimerBatch {
 		return this.processStatus;
 	}
 
-	public TimerBatch(World world, Gearblock gearblock) {
+	public boolean isInvalid() { return this.isInvalid; }
+	public void invalidate() { this.isInvalid = true; }
+
+	public TimerBatch(World world, Gearblock gearblock, HashSet<Gearblock> allGearblocks) {
 		this.world = world;
 		this.gearblock = gearblock;
 		this.timerOperation = gearblock.getTimerOperation();
+		this.timerMode = gearblock.getTimerMode();
+		this.allGearblocks = allGearblocks;
+
+		for(Gearblock current : this.allGearblocks) {
+			if(current.getTimerBatch() != null) {
+				current.getTimerBatch().invalidate();
+			}
+
+			current.setTimerBatch(this);
+		}
 
 		resetRunTime();
 	}
@@ -58,5 +84,21 @@ public class TimerBatch {
 				|| this.timerOperation == TimerOperation.REVERT && !link.isDrawn();
 
 		this.links.add(new TimerLink(link, mustDraw));
+	}
+
+	public TimerBatch clone(Gearblock newGearblock) {
+		TimerBatch clone = new TimerBatch(this.world, newGearblock, this.allGearblocks);
+
+		clone.world = this.world;
+		clone.gearblock = newGearblock;
+		clone.allGearblocks = this.allGearblocks;
+		clone.runTimeMillis = this.runTimeMillis;
+		clone.processStatus = this.processStatus;
+		clone.timerOperation = this.timerOperation;
+		clone.timerMode = this.timerMode;
+		clone.isInvalid = false;
+		clone.links = this.links;
+
+		return clone;
 	}
 }

@@ -9,6 +9,6 @@ import org.bukkit.Location;
 public interface ICitadel {
     boolean hasAccess();
     boolean useJukeAlert();
-    Integer getGroupId();
+    String getGroupName();
     boolean canAccessDoors(Location location);
 }

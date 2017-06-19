@@ -5,10 +5,7 @@
 
 package com.aleksey.castlegates.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -118,12 +115,12 @@ public class TimerWorker extends Thread implements Runnable {
 
 		CastleGates.runTask(new Runnable() {
             public void run() {
-            	if(bridgeManager.processTimerBatch(batch)) {
-	            	BlockCoord blockCoord = batch.getGearblock().getCoord();
-	            	Location location = new Location(batch.getWorld(), blockCoord.getX(), blockCoord.getY(), blockCoord.getZ());
+            if(!batch.isInvalid() && bridgeManager.processTimerBatch(batch)) {
+                BlockCoord blockCoord = batch.getGearblock().getCoord();
+                Location location = new Location(batch.getWorld(), blockCoord.getX(), blockCoord.getY(), blockCoord.getZ());
 
-	            	PowerResultHelper.playSound(location, batch.getProcessStatus());
-            	}
+                PowerResultHelper.playSound(location, batch.getProcessStatus());
+            }
             }
         });
     }

@@ -13,7 +13,7 @@ import java.util.Set;
 public class JukeAlertManager implements IJukeAlertManager {
     private SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
 
-	public boolean hasJukeAlertAccess(Location location, int groupId) {
+	public boolean hasJukeAlertAccess(Location location, String groupName) {
 		if(!CastleGates.getConfigManager().getInteractWithSnitches()) return false;
 
 		Set<Snitch> snitches = this.snitchManager.findSnitches(location.getWorld(), location);
@@ -22,7 +22,7 @@ public class JukeAlertManager implements IJukeAlertManager {
 			double distance = CastleGates.getCitadelManager().getMaxRedstoneDistance();
 
 			for (Snitch snitch : snitches) {
-				if (snitch.getGroup().getGroupId() == groupId
+				if (snitch.getGroup().getName().equalsIgnoreCase(groupName)
 						&& snitch.shouldToggleLevers()
 						&& snitch.getLoc().distance(location) <= distance
 						)

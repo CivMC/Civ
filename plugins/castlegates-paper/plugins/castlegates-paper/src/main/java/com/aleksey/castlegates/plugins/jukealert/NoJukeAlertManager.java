@@ -4,5 +4,5 @@ import com.aleksey.castlegates.plugins.citadel.ICitadel;
 import org.bukkit.Location;
 
 public class NoJukeAlertManager implements IJukeAlertManager {
-	public boolean hasJukeAlertAccess(Location location, int groupId) { return false; }
+	public boolean hasJukeAlertAccess(Location location, String groupName) { return false; }
 }

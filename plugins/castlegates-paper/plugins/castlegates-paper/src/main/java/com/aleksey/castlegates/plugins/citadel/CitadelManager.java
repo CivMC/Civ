@@ -80,7 +80,7 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 			}
 
 			if(!hasAccess) {
-				if(CastleGates.getJukeAlertManager().hasJukeAlertAccess(loc, playerRein.getGroupId())) {
+				if(CastleGates.getJukeAlertManager().hasJukeAlertAccess(loc, playerRein.getGroup().getName())) {
 					hasAccess = true;
 					useJukeAlert = true;
 				}

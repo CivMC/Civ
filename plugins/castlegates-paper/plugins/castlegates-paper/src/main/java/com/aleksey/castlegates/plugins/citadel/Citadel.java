@@ -13,13 +13,13 @@ import java.util.List;
 
 public class Citadel implements ICitadel {
     private List<Player> players;
-    private Integer groupId;
+    private String groupName;
     private boolean hasAccess;
     private boolean useJukeAlert;
 
     public Citadel(List<Player> players, PlayerReinforcement playerRein, boolean hasAccess, boolean useJukeAlert) {
         this.players = players;
-        this.groupId = playerRein != null ? playerRein.getGroupId() : null;
+        this.groupName = playerRein != null ? playerRein.getGroup().getName() : null;
         this.hasAccess = hasAccess;
         this.useJukeAlert = useJukeAlert;
     }
@@ -30,8 +30,8 @@ public class Citadel implements ICitadel {
 
     public boolean useJukeAlert() { return this.useJukeAlert; }
 
-    public Integer getGroupId() {
-        return this.groupId;
+    public String getGroupName() {
+        return this.groupName;
     }
 
     public boolean canAccessDoors(Location location) {
@@ -40,7 +40,7 @@ public class Citadel implements ICitadel {
         Reinforcement rein = vg.civcraft.mc.citadel.Citadel.getReinforcementManager().getReinforcement(location);
 
         return rein == null || !(rein instanceof PlayerReinforcement)
-            ? this.groupId == null
-            : this.groupId != null && ((PlayerReinforcement)rein).getGroupId() == this.groupId;
+            ? this.groupName == null
+            : this.groupName != null && this.groupName.equalsIgnoreCase(((PlayerReinforcement)rein).getGroup().getName());
     }
 }

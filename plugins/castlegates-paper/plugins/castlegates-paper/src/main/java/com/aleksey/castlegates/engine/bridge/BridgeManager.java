@@ -233,14 +233,16 @@ public class BridgeManager {
 		}
 
 		ICitadel citadel = getCitadel(world, gearblock, players);
+		DoorAccess doorAccess = canAccessDoors(world, gearblock, citadel);
 
-		if(canAccessDoors(world, gearblock, citadel) != DoorAccess.Full) {
-			return PowerResult.NotInCitadelGroup;
+		switch(doorAccess) {
+			case None: return PowerResult.NotInCitadelGroup;
+			case Partial: return PowerResult.DifferentCitadelGroup;
 		}
 
-		if(!unlock(gearblock)) {
-			return PowerResult.Locked;
-		}
+		if(extendDoorTimerBatch(gearblock)) return PowerResult.Unchanged;
+
+		if(!unlock(gearblock)) return PowerResult.Locked;
 
 		gearblock.setPowered(true);
 
@@ -267,10 +269,8 @@ public class BridgeManager {
 	private void addPendingTimerBatch(Gearblock gearblock) {
 		TimerBatch timerBatch = this.pendingTimerBatches.get(gearblock);
 
-		if(timerBatch != null) {
-			if(timerBatch.resetRunTime()) {
-				this.timerWorker.addBatch(timerBatch);
-			}
+		if(timerBatch != null && timerBatch.resetRunTime() && !timerBatch.isInvalid()) {
+			this.timerWorker.addBatch(timerBatch);
 		}
 	}
 
@@ -284,8 +284,8 @@ public class BridgeManager {
 
 		if(isLocked(gearblocks)) return PowerResult.Locked;
 
-		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock) : null;
-		Boolean draw = powerGearList(world, gearblocks, isPowered, players, timerBatch);
+		TimerBatch timerBatch = gearblock.getTimer() != null ? new TimerBatch(world, gearblock, gearblocks) : null;
+		Boolean draw = powerGearList(world, gearblocks, timerBatch);
 
 		lock(gearblock, gearblocks);
 
@@ -306,13 +306,7 @@ public class BridgeManager {
 		return result;
 	}
 
-	private Boolean powerGearList(
-			World world,
-			HashSet<Gearblock> gearblocks,
-			boolean isPowered,
-			List<Player> players,
-			TimerBatch timerBatch)
-	{
+	private Boolean powerGearList(World world, HashSet<Gearblock> gearblocks, TimerBatch timerBatch) {
 		Boolean draw = null;
 
 		for(Gearblock gearFromList : gearblocks) {
@@ -397,7 +391,47 @@ public class BridgeManager {
 		return false;
 	}
 
+	private boolean extendDoorTimerBatch(Gearblock gearblock) {
+		if(gearblock.getTimer() == null
+			|| gearblock.getTimerMode() != TimerMode.DOOR
+			|| gearblock.getTimerBatch() == null
+			|| gearblock.getTimerBatch().getTimerMode() != TimerMode.DOOR
+			|| gearblock.getTimerBatch().isInvalid()
+			)
+		{
+			return false;
+		}
+
+		TimerBatch originalTimerBatch = gearblock.getTimerBatch();
+		boolean canLock = true;
+
+		for(Gearblock current : originalTimerBatch.getAllGearblocks()) {
+			if(current.getLockedGearblocks() != null && current != originalTimerBatch.getGearblock()
+					|| current.getLockGearblock() != null && current.getLockGearblock() != originalTimerBatch.getGearblock()
+				)
+			{
+				canLock = false;
+				break;
+			}
+		}
+
+		if(canLock) {
+			gearblock.setPowered(true);
+
+			originalTimerBatch.invalidate();
+
+			unlock(originalTimerBatch.getGearblock());
+			lock(gearblock, originalTimerBatch.getAllGearblocks());
+
+			this.pendingTimerBatches.put(gearblock, originalTimerBatch.clone(gearblock));
+		}
+
+		return true;
+	}
+
 	public boolean processTimerBatch(TimerBatch timerBatch) {
+		timerBatch.clearTimerBatchForAllGearblocks();
+
 		boolean result = false;
 		World world = timerBatch.getWorld();
 

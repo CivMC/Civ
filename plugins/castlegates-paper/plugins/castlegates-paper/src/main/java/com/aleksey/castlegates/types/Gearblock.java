@@ -17,6 +17,7 @@ public class Gearblock {
 	private Integer timer;
 	private TimerOperation timerOperation;
 	private TimerMode timerMode;
+	private TimerBatch timerBatch;
 	private long lastSwitchTime;
 	private Gearblock lockGearblock;
 	private List<Gearblock> lockedGearblocks;
@@ -48,6 +49,9 @@ public class Gearblock {
 		this.timerOperation = timerOperation;
 		this.timerMode = timerMode;
 	}
+
+	public TimerBatch getTimerBatch() { return this.timerBatch; }
+	public void setTimerBatch(TimerBatch timerBatch) { this.timerBatch = timerBatch; }
 
 	public long getLastSwitchTime() { return this.lastSwitchTime; }
 	public void setLastSwitchTime() { this.lastSwitchTime = System.currentTimeMillis(); }
