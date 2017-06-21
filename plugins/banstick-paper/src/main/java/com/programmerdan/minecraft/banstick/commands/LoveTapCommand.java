@@ -210,7 +210,10 @@ public class LoveTapCommand  implements CommandExecutor {
 			UUID playerId = null;
 			if (toTap.length() <= 16) {
 				try {
-					playerId = NameAPI.getUUID(toTap);
+					playerId = null;
+					try {
+						playerId = NameAPI.getUUID(toTap);
+					} catch (NoClassDefFoundError ncde) { }
 					
 					if (playerId == null) {
 						Player match = Bukkit.getPlayer(toTap);

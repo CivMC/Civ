@@ -117,7 +117,12 @@ public class BanHandler {
 				if (spigotPlayer != null) {
 					player = BSPlayer.create(spigotPlayer);
 				} else {
-					player = BSPlayer.create(playerId, NameAPI.getCurrentName(playerId));
+					String playerName = null;
+					try {
+						playerName = NameAPI.getCurrentName(playerId);
+					} catch (NoClassDefFoundError ncde) { }
+					
+					player = BSPlayer.create(playerId, playerName);
 				}
 			}
 			BSBan ban = BSBan.create(message, banEnd, adminBan); // general ban.

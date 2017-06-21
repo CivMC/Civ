@@ -86,7 +86,11 @@ public class ForgiveCommand implements CommandExecutor {
 			UUID playerId = null;
 			if (toForgive.length() <= 16) {
 				try {
-					playerId = NameAPI.getUUID(toForgive);
+					playerId = null;
+					
+					try {
+						playerId = NameAPI.getUUID(toForgive);
+					} catch (NoClassDefFoundError ncde) { }
 					
 					if (playerId == null) {
 						Player match = Bukkit.getPlayer(toForgive);
@@ -196,7 +200,11 @@ public class ForgiveCommand implements CommandExecutor {
 						UUID playerId2 = null;
 						if (toForgive.length() <= 16) {
 							try {
-								playerId2 = NameAPI.getUUID(toForgive);
+								playerId2 = null; 
+								
+								try {
+									playerId2 = NameAPI.getUUID(toForgive);
+								} catch (NoClassDefFoundError ncde) { }
 								
 								if (playerId2 == null) {
 									Player mcatch = Bukkit.getPlayer(toForgive);

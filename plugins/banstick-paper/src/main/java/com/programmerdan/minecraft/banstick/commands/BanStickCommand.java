@@ -122,7 +122,10 @@ public class BanStickCommand implements CommandExecutor {
 			UUID playerId = null;
 			if (toBan.length() <= 16) {
 				try {
-					playerId = NameAPI.getUUID(toBan);
+					playerId = null;
+					try {
+						playerId = NameAPI.getUUID(toBan);
+					} catch (NoClassDefFoundError ncde) { }
 					
 					if (playerId == null) {
 						Player match = Bukkit.getPlayer(toBan);

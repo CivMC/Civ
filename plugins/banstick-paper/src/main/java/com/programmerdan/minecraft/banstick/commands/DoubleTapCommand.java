@@ -156,7 +156,11 @@ public class DoubleTapCommand implements CommandExecutor {
 			UUID playerId = null;
 			if (toBan.length() <= 16) {
 				try {
-					playerId = NameAPI.getUUID(toBan);
+					playerId = null; 
+					
+					try {
+						playerId = NameAPI.getUUID(toBan);
+					} catch (NoClassDefFoundError ncde) { }
 					
 					if (playerId == null) {
 						Player match = Bukkit.getPlayer(toBan);
@@ -183,7 +187,11 @@ public class DoubleTapCommand implements CommandExecutor {
 			UUID secondPlayerId = null;
 			if (secondBan.length() <= 16) {
 				try {
-					secondPlayerId = NameAPI.getUUID(secondBan);
+					secondPlayerId = null;
+					
+					try {
+						secondPlayerId = NameAPI.getUUID(secondBan);
+					} catch (NoClassDefFoundError ncde) { }
 					
 					if (secondPlayerId == null) {
 						Player match = Bukkit.getPlayer(secondBan);

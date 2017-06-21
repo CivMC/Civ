@@ -114,13 +114,27 @@ tor:
    delay: 3600
    cidr: false
 # Configure the IP-API lookup for geoip data. By specs maxBatch must not exceed 100; don't exceed a total
-#  request count of more then 120 / min. Period is in ticks as is cooldownTicks.
+#  request count of more then 150 / min. Period is in ticks as is cooldownTicks.
 #  FailureCap defines how many errors from IP-API to ignore before coolingdown / stopped
 #  Set cooldownTicks to 0 to disable cooldown
+# Defaults are safe for non-commercial use.
 iplookup:
  enable: true
  maxBatch: 50
  period: 120
+ failureCap: 5
+ cooldownTicks: 72000
+# Configure the IPHub.info lookup for proxy/vpn/vps data. By specs you must not exceed 50 reqs / min unless on
+#  a more permissive plan. Default achieves this.
+#  request count of more then 50 / min. Period is in ticks as is cooldownTicks.
+#  FailureCap defines how many errors from IPHub.info to ignore before coolingdown / stopped
+#  Set cooldownTicks to 0 to disable cooldown.
+#  Batching is not apparently supported atm.
+# Defaults match free account limits.
+iphub:
+ enable: false
+ key: skey
+ period: 40
  failureCap: 5
  cooldownTicks: 72000
 # Configure the Scrapers to harvest public or anonymous proxies to prevent use in connecting
@@ -128,7 +142,7 @@ iplookup:
 #   jitter randomizes a bit the length of time inbetween requests, to reduce likelihood of your server being
 #    blacklisted
 #   maxErrors configures how many errors to ignore before engaging errorCooldown time (0 to just stop trying on errors)
-#   ban: fields define ban length in milliseconds and a ban message to use. 
+#   ban: fields define ban length in milliseconds and a ban message to use.
 scrapers:
  enable: true
  freeproxylist:

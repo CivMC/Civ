@@ -173,7 +173,11 @@ public class IpCheckImportWorker extends ImportWorker {
 						boolean isWarnExempt = rs.getBoolean(6);
 						boolean isProtected = rs.getBoolean(7);
 						
-						UUID uuid = NameAPI.getUUID(username);
+						UUID uuid = null;
+						try {
+							uuid = NameAPI.getUUID(username);
+						} catch (NoClassDefFoundError ncde) { }
+						
 						if (uuid == null) {
 							Player bukkitPlayer = Bukkit.getPlayerExact(username);
 							if (bukkitPlayer != null) {
@@ -248,7 +252,11 @@ public class IpCheckImportWorker extends ImportWorker {
 							IPAddressString address = new IPAddressString(ip);
 							IPAddress exactAddress = address.toAddress();
 							
-							UUID uuid = NameAPI.getUUID(username);
+							UUID uuid = null;
+							try {
+								uuid = NameAPI.getUUID(username);
+							} catch (NoClassDefFoundError ncde) { }
+							
 							if (uuid == null) {
 								Player bukkitPlayer = Bukkit.getPlayerExact(username);
 								if (bukkitPlayer != null) {

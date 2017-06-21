@@ -5,6 +5,7 @@ import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickIPDataHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickIPHubHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickImportHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickProxyHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickScrapeHandler;
@@ -20,6 +21,7 @@ public class BanStick extends ACivMod {
 	private BanStickTorUpdater torUpdater;
 	private BanStickProxyHandler proxyHandler;
 	private BanStickIPDataHandler ipdataUpdater;
+	private BanStickIPHubHandler ipHubUpdater;
 	private BanStickScrapeHandler scrapeHandler;
 	private BanStickImportHandler importHandler;
 	private BSLog logHandler;
@@ -46,6 +48,7 @@ public class BanStick extends ACivMod {
 		registerTorHandler();
 		registerProxyHandler();
 		registerIPDataHandler();
+		registerIPHubHandler();
 		registerScrapeHandler();
 		registerImportHandler();
 		registerLogHandler();
@@ -59,6 +62,7 @@ public class BanStick extends ACivMod {
 		if (this.proxyHandler != null) this.proxyHandler.shutdown();
 		if (this.scrapeHandler != null) this.scrapeHandler.shutdown();
 		if (this.ipdataUpdater != null) this.ipdataUpdater.end();
+		if (this.ipHubUpdater != null) this.ipHubUpdater.end();
 		if (this.torUpdater != null) this.torUpdater.shutdown();
 		if (this.importHandler != null) this.importHandler.shutdown();
 		if (this.logHandler != null) this.logHandler.disable();
@@ -78,6 +82,14 @@ public class BanStick extends ACivMod {
 		return this.ipdataUpdater;
 	}
 
+	public BanStickIPHubHandler getIPHubHandler() {
+		return this.ipHubUpdater;
+	}
+	
+	public BanStickEventHandler getEventHandler() {
+		return this.eventHandler;
+	}
+	
 	private void registerCommandHandler() {
 		if (!this.isEnabled()) return;
 		try {
@@ -122,6 +134,15 @@ public class BanStick extends ACivMod {
 			this.ipdataUpdater = new BanStickIPDataHandler(getConfig());
 		} catch (Exception e) {
 			this.severe("Failed to set up dynamic IPData updater!", e);
+		}
+	}
+	
+	private void registerIPHubHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.ipHubUpdater = new BanStickIPHubHandler(getConfig());
+		} catch (Exception e) {
+			this.severe("Failed to set up dynamic IPHub.info updater!", e);
 		}
 	}
 	

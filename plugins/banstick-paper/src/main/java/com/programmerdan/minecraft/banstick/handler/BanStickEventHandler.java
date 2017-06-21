@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import java.lang.ref.WeakReference;
 import java.net.InetAddress;
 import java.util.Collections;
 import java.util.Date;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,7 +84,10 @@ public class BanStickEventHandler implements Listener {
 		// First, trigger a UUID based lookup. TODO: Use Async Handler
 		BSPlayer player = BSPlayer.byUUID(preJoinUUID);
 		if (player == null) { // create and attempt to name -- review if this is safe.
-			String name = NameAPI.getCurrentName(preJoinUUID);
+			String name = null;
+			try {
+				name = NameAPI.getCurrentName(preJoinUUID);
+			} catch (NoClassDefFoundError ncde) { } // no namelayer
 			if (name == null) {
 				name = preJoinName;
 			}
@@ -188,7 +193,12 @@ public class BanStickEventHandler implements Listener {
 				}
 				
 				BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
-				String nowName = NameAPI.getCurrentName(player.getUniqueId());
+				
+				String nowName = null;
+				try {
+					nowName = NameAPI.getCurrentName(player.getUniqueId());
+				} catch (NoClassDefFoundError cnfe) {} // no namelayer
+					
 				if (nowName == null) {
 					nowName = player.getDisplayName();
 				}
@@ -278,9 +288,11 @@ public class BanStickEventHandler implements Listener {
 					return;
 				}
 				
-				
 				// Then do VPN checks
 				if (enableProxyBans) {
+					// Inject IP Hub handler.
+					BanStick.getPlugin().getIPHubHandler().offer(bsPlayer.getLatestSession().getIP());
+					
 					try {
 						if (bsPlayer.getProxyPardonTime() == null) {
 							if (bsPlayer.getLatestSession().getIP() == null) {
@@ -329,6 +341,47 @@ public class BanStickEventHandler implements Listener {
 			}
 			
 		}); 
+	}
+	
+	public void manageDeferredProxyKick(final BSIP proxySource, final BSIPData proxyCheck) {
+		BanStick.getPlugin().debug("Deferred check for bans on Proxy: {0}", proxyCheck.getId());
+
+		// check if proxy meets /exceeds threshold for banning and new proxy bans are enabled.
+		if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
+			List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
+			BSBan newBan = null;
+			if (proxyBans != null && proxyBans.size() > 0) {
+				for (BSBan checkBan : proxyBans) {
+					if (checkBan.getBanEndTime() != null && checkBan.getBanEndTime().after(new Date())) {
+						newBan = checkBan;
+						break;
+					}
+				}
+			}
+			if (newBan == null && (proxyBans == null || proxyBans.size() == 0)) {
+				newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
+			}
+			
+			// now look for online players that match, and kickban them.
+			for (Player player : Bukkit.getOnlinePlayers()) {
+				if (player != null) {
+					BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
+					
+					if (bsPlayer != null && bsPlayer.getProxyPardonTime() == null) {
+
+						if (proxySource.getId() == bsPlayer.getLatestSession().getIP().getId()) { // match!
+							bsPlayer.setBan(newBan);
+						
+							doKickWithCheckup(player.getUniqueId(), newBan);
+						}
+					}
+				}
+			}
+			
+		
+			return;
+		}
+		
 	}
 
 	private void doKickWithCheckup(final UUID puuid, final BSBan picked) {

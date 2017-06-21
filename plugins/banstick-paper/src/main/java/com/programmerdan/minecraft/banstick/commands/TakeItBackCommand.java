@@ -45,7 +45,10 @@ public class TakeItBackCommand implements CommandExecutor {
 		UUID playerId = null;
 		if (toRevoke.length() <= 16) {
 			try {
-				playerId = NameAPI.getUUID(toRevoke);
+				playerId = null;
+				try {
+					playerId = NameAPI.getUUID(toRevoke);
+				} catch (NoClassDefFoundError ncde) { }
 				
 				if (playerId == null) {
 					Player match = Bukkit.getPlayer(toRevoke);
@@ -72,7 +75,10 @@ public class TakeItBackCommand implements CommandExecutor {
 		UUID secondPlayerId = null;
 		if (secRevoke.length() <= 16) {
 			try {
-				secondPlayerId = NameAPI.getUUID(secRevoke);
+				secondPlayerId = null;
+				try {
+					secondPlayerId = NameAPI.getUUID(secRevoke);
+				} catch (NoClassDefFoundError ncde) { }
 				
 				if (secondPlayerId == null) {
 					Player match = Bukkit.getPlayer(secRevoke);
