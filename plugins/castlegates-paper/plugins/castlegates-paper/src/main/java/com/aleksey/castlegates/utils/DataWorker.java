@@ -118,6 +118,7 @@ public class DataWorker extends Thread implements Runnable {
 		}
 
 		CastleGates.getPluginLogger().log(Level.INFO, "Loaded gearblocks: " + gearblocks.size());
+		CastleGates.getPluginLogger().log(Level.INFO, "Loaded gearblocksById: " + gearblocksById.size());
 		CastleGates.getPluginLogger().log(Level.INFO, "Timers: " + timerCount);
 	}
 
@@ -127,7 +128,8 @@ public class DataWorker extends Thread implements Runnable {
 		CastleGates.getPluginLogger().log(Level.INFO, "Link count: " + linkCount);
 
 		List<LinkInfo> linkData = this.linkSource.selectAll();
-		int invalidLinkCount = 0, drawnLinkCount = 0, brokenLinkCount = 0;
+		List<LinkInfo> invalidLinks = new ArrayList<>();
+		int drawnLinkCount = 0, brokenLinkCount = 0;
 
 		for(LinkInfo info : linkData) {
 			Gearblock gearblock1 = info.gearblock1_id != null ? gearblocksById.get(info.gearblock1_id) : null;
@@ -149,7 +151,7 @@ public class DataWorker extends Thread implements Runnable {
 			linksById.put(link.getId(), link);
 
 			if(gearblock1 == null && gearblock2 == null) {
-				invalidLinkCount++;
+				invalidLinks.add(info);
 			}
 
 			if(link.isDrawn()) {
@@ -171,8 +173,12 @@ public class DataWorker extends Thread implements Runnable {
 			CastleGates.getPluginLogger().log(Level.INFO, "Links in BROKEN state: " + brokenLinkCount);
 		}
 
-		if(invalidLinkCount > 0) {
-			CastleGates.getPluginLogger().log(Level.WARNING, "Invalid links (i.e. BUG): " + invalidLinkCount);
+		if(invalidLinks.size() > 0) {
+			CastleGates.getPluginLogger().log(Level.WARNING, "Invalid links (i.e. BUG): " + invalidLinks.size());
+
+			String filePath = new InvalidLinkLogger().write(invalidLinks);
+
+			CastleGates.getPluginLogger().log(Level.INFO, "List of invalid links saved to: " + filePath);
 		}
 	}
 
