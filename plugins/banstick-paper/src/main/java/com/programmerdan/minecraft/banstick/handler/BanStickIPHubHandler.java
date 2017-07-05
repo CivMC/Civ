@@ -307,9 +307,9 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 			case 0:
 				return 0.0f; // residential IP // safe
 			case 1:
-				return 4.0f; // non-residential IP / host / proxy / vpn
+				return 3.0f; // non-residential IP / host / proxy / vpn
 			case 2:
-				return 2.0f; // non-residential  AND  residential IP
+				return 1.5f; // non-residential  AND  residential IP
 			}
 			return 0.0f;
 		}
