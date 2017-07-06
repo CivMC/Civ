@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -9,6 +10,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
+import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.devotedmc.ExilePearl.util.Clock;
 
 import net.minelink.ctplus.compat.api.NpcIdentity;
@@ -145,6 +147,13 @@ public interface ExilePearlApi extends Plugin, PearlAccess, PearlLogger, PlayerP
 	 * @return true if the player is inside a non-permission bastion
 	 */
 	boolean isPlayerInUnpermittedBastion(Player player);
+	
+	/**
+	 * Gets bastions the player is in, that they shouldn't be in.
+	 * @param player The player to check
+	 * @return list of bastions the player is inside that they shouldn't be
+	 */
+	List<BastionWrapper> getPlayerInUnpermittedBastion(Player player);
 	
 	/**
 	 * Gets whether an entity is a Mythic Mob entity
