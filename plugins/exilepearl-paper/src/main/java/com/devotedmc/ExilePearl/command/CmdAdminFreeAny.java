@@ -34,7 +34,7 @@ public class CmdAdminFreeAny extends PearlCommand {
 		
 		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl == null) {
-			msg("<i>The player <c>%s is not exiled.", playerName);
+			msg("<i>The player <c>%s <i>is not exiled.", playerName);
 			return;
 		}
 		
