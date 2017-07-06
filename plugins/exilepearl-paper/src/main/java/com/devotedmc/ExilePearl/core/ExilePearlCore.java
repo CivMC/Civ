@@ -65,7 +65,7 @@ import com.wimbli.WorldBorder.WorldBorder;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
-import net.elseland.xikage.MythicMobs.MythicMobs;
+import io.lumine.xikage.mythicmobs.MythicMobs;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
@@ -629,7 +629,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public boolean isMythicMob(Entity entity) {
 		if (isMythicMobsEnabled()) {
-			return MythicMobs.inst().getAPI().getMobAPI().isMythicMob(entity);
+			return MythicMobs.inst().getAPIHelper().isMythicMob(entity);
 		}
 		return false;
 	}
