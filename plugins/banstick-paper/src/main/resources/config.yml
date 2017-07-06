@@ -58,9 +58,16 @@ log:
 #  enable:
 #   - ipBans: If banstick should autoban players for existing, standing IP bans.
 #   - subnetBans: If banstick should autoban players for existing, standing bans on subnets containing the connecting IP
-#   - proxyBans: If banstick should autoban players for existing, standing bans of known proxies
-#   - newProxyBans: If banstick should check the proxy threshold and create new bans for proxies if non already exists
+#   - proxyKicks: If banstick should autokick players for existing, standing banable proxies (does not issue ban)
+#   - proxyBans: If banstick should autoban players for existing, standing bans of known proxies (enable proxyKicks to also kick)
+#   - newProxyBans: If banstick should check the proxy threshold and create new bans for proxies if non already exists (leave true even if only kicking)
+#   Usage notes: To ban AND kick on new proxy detection, turn on proxyKicks, proxyBans, and newProxyBans.
+#                To ban but not kick, turn on proxyBans, and newProxyBans.
+#                To kick but not ban, turn on proxyKicks and newProxyBans.
+#                To only leverage existing proxy bans (direct import?) use either proxyKicks or proxyBans but leave newProxyBans off.
+#  
 #   - shareBans: If banstick should enforce the share threshold with bans.
+#   Usage notes: Set share.threshold to > 0 to allow some multiaccounting. If exceeded, will ban only the newest.
 events:
  proxy:
   threshold: 2.0
@@ -71,6 +78,7 @@ events:
  enable:
   ipBans: true
   subnetBans: true
+  proxyKicks: true
   proxyBans: true
   newProxyBans: true
   shareBans: true

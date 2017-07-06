@@ -45,6 +45,7 @@ public class BanStickEventHandler implements Listener {
 	private float proxyThreshold = 2.0f;
 	private boolean enableIPBans = true;
 	private boolean enableSubnetBans = true;
+	private boolean enableProxyKicks = true;
 	private boolean enableProxyBans = false;
 	private boolean enableNewProxyBans = false;
 	private boolean enableShareBans = false;
@@ -62,6 +63,7 @@ public class BanStickEventHandler implements Listener {
 		this.proxyThreshold = (float) config.getDouble("proxy.threshold", proxyThreshold);
 		this.enableIPBans = config.getBoolean("enable.ipBans", true);
 		this.enableSubnetBans = config.getBoolean("enable.subnetBans", true);
+		this.enableProxyKicks = config.getBoolean("enable.proxyKicks", true);
 		this.enableProxyBans = config.getBoolean("enable.proxyBans", false);
 		this.enableNewProxyBans = config.getBoolean("enable.newProxyBans", false);
 		this.enableShareBans = config.getBoolean("enable.shareBans", false);
@@ -289,7 +291,7 @@ public class BanStickEventHandler implements Listener {
 				}
 				
 				// Then do VPN checks
-				if (enableProxyBans) {
+				if (enableProxyBans || enableProxyKicks) {
 					// Inject IP Hub handler.
 					BanStick.getPlugin().getIPHubHandler().offer(bsPlayer.getLatestSession().getIP());
 					
@@ -314,9 +316,13 @@ public class BanStickEventHandler implements Listener {
 											continue; // skip expired ban.
 										}
 										
-										bsPlayer.setBan(pickOne); // get most recent matching proxy ban and use it.
+										if (enableProxyBans) {
+											bsPlayer.setBan(pickOne); // get most recent matching proxy ban and use it.
+										}
 										
-										doKickWithCheckup(player.getUniqueId(), pickOne);
+										if (enableProxyKicks) {
+											doKickWithCheckup(player.getUniqueId(), pickOne);
+										}
 																		
 										return;
 									}
@@ -324,9 +330,13 @@ public class BanStickEventHandler implements Listener {
 									if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
 										BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 										
-										bsPlayer.setBan(newBan);
+										if (enableProxyBans) {
+											bsPlayer.setBan(newBan);
+										}
 										
-										doKickWithCheckup(player.getUniqueId(), newBan);
+										if (enableProxyKicks) {
+											doKickWithCheckup(player.getUniqueId(), newBan);
+										}
 									
 										return;
 									}
@@ -370,9 +380,12 @@ public class BanStickEventHandler implements Listener {
 					if (bsPlayer != null && bsPlayer.getProxyPardonTime() == null) {
 
 						if (proxySource.getId() == bsPlayer.getLatestSession().getIP().getId()) { // match!
-							bsPlayer.setBan(newBan);
-						
-							doKickWithCheckup(player.getUniqueId(), newBan);
+							if (enableProxyBans) {
+								bsPlayer.setBan(newBan);
+							}
+							if (enableProxyKicks) {
+								doKickWithCheckup(player.getUniqueId(), newBan);
+							}
 						}
 					}
 				}
