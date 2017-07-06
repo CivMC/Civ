@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -69,12 +70,19 @@ final class CoreLoreGenerator implements LoreProvider {
 		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
 		Set<RepairMaterial> repair = config.getRepairMaterials();
-		for (RepairMaterial rep : repair) {
-			int amountPerItem = rep.getRepairAmount();
-			String item = rep.getStack().getType().toString();
-			int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
-			int repairsPerDay = damagesPerDay / amountPerItem;
-			lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
+		if (repair != null) {
+			for (RepairMaterial rep : repair) {
+				int amountPerItem = rep.getRepairAmount();
+				String item = rep.getStack().getType().toString();
+				int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
+				int repairsPerDay = damagesPerDay / amountPerItem;
+				lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
+			}
+		}
+		
+		int decayTimeout = config.getPearlHealthDecayTimeout();
+		if ( (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
+			lore.add(parse("<h>Health Decay suspended due to Inactivity"));
 		}
 		
 		if (addCommandHelp) {

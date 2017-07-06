@@ -52,4 +52,7 @@ class RamStorage implements PluginStorage {
 
 	@Override
 	public boolean isConnected() { return true; }
+
+	@Override
+	public void updatePearlLastOnline(ExilePearl pearl) { }
 }

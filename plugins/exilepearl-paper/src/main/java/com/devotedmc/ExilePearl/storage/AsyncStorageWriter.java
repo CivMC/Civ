@@ -116,6 +116,14 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 		
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_KILLER));
 	}
+	
+	@Override
+	public void updatePearlLastOnline(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		checkRunning();
+		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LAST_SEEN));
+	}
 
 	@Override
 	public void run() {
@@ -167,7 +175,11 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 		case UPDATE_KILLER:
 			storage.updatePearlKiller(record.getPearl());
 			break;
-
+			
+		case UPDATE_LAST_SEEN:
+			storage.updatePearlLastOnline(record.getPearl());
+			break;
+			
 		case TERMINATE:
 		default:
 			break;

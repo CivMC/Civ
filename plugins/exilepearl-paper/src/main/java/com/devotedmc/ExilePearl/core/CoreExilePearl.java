@@ -58,6 +58,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	private PearlType pearlType;
 	private Date pearledOn;
+	private Date lastSeen;
 	private LinkedBlockingDeque<PearlHolder> holders;
 	private boolean freedOffline;
 	private int health;
@@ -82,6 +83,7 @@ final class CoreExilePearl implements ExilePearl {
 		this.pearlId = pearlId;
 		this.killedBy = killedBy;
 		this.pearledOn = new Date();
+		this.lastSeen = new Date();
 		this.pearlType = PearlType.EXILE;
 		this.holders = new LinkedBlockingDeque<PearlHolder>();
 		this.holders.add(holder);
@@ -484,5 +486,21 @@ final class CoreExilePearl implements ExilePearl {
 			}
 		}
 		return false;
+	}
+
+
+	@Override
+	public Date getLastOnline() {
+		return lastSeen;
+	}
+
+
+	@Override
+	public void setLastOnline(Date online) {
+		lastSeen = online;
+		
+		if (storageEnabled) {
+			storage.updatePearlLastOnline(this);
+		}
 	}
 }

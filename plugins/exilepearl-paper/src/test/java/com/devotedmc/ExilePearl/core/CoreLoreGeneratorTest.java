@@ -39,6 +39,7 @@ public class CoreLoreGeneratorTest {
 		
 		config = mock(PearlConfig.class);
 		when(config.getPearlHealthMaxValue()).thenReturn(100);
+		when(config.getPearlHealthDecayTimeout()).thenReturn(20000);
 		
 		dut = new CoreLoreGenerator(config);
 		
@@ -49,6 +50,7 @@ public class CoreLoreGeneratorTest {
 		when(pearl.getKillerName()).thenReturn("Killer");
 		when(pearl.getHealth()).thenReturn(10);
 		when(pearl.getPearledOn()).thenReturn(new Date());
+		when(pearl.getLastOnline()).thenReturn(new Date());
 		when(pearl.getPearlId()).thenReturn(pearlId);
 	}
 
