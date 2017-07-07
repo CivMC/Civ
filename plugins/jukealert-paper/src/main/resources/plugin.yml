@@ -14,13 +14,13 @@ commands:
     usage: /jahelp
   jainfo:
     description: Display information from a snitch
-    usage: /jainfo
+    usage: /jainfo [<page number> or 'next'] [censor] [action=<action type>] [player=<player name>]
   jalist:
     description: Displays Juke List Information
-    usage: /jalist
+    usage: /jalist <page number> [groups=<group1>,<group2>,...]
   jalistlong:
     description: Displays Juke List Information with full-length Snitch names
-    usage: /jalistlong
+    usage: /jalistlong <page number> [groups=<group1>,<group2>,...]
   jagroup:
     description: Display information from a group
     usage: /jagroup <group> <page>
@@ -30,7 +30,7 @@ commands:
     usage: /jaclear
   janame:
     description: Name a snitch
-    usage: /janame
+    usage: /janame <name>
   jalookup:
     description: Look up a snitch by its coordinates
     usage: /jalookup <x> <y> <z> [world]
