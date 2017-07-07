@@ -19,20 +19,24 @@ public class GetSnitchListPlayerTask implements Runnable {
 
 	private final JukeAlert plugin;
 
+	private final List<String> groupNames;
+
 	private final boolean truncateNames;
 
-	public GetSnitchListPlayerTask(JukeAlert plugin, int offset, Player player, boolean truncateNames) {
+	public GetSnitchListPlayerTask(JukeAlert plugin, int offset, Player player, List<String> groupNames,
+			boolean truncateNames) {
 
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
+		this.groupNames = groupNames;
 		this.truncateNames = truncateNames;
 	}
 
 	@Override
 	public void run() {
 
-		SendSnitchList sendSnitchList = plugin.getJaLogger().getSnitchList(player, offset, truncateNames);
+		SendSnitchList sendSnitchList = plugin.getJaLogger().getSnitchList(player, offset, groupNames, truncateNames);
 		if (sendSnitchList != null) {
 			sendSnitchList.run();
 		}
