@@ -57,7 +57,12 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 				 0, 6, 8, 9, 27, 28, 30, 31, 32, 37, 38, 39, 40, 50, 55, 
 				 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 
 				 83, 90, 93, 94, 96, 104, 105, 106, 115, 131, 132, 141, 
-				 142, 149, 150, 157, 171}
+				 142, 149, 150, 157, 171, 175, 177}
+	));
+	
+	public static final LinkedHashSet<Integer> okBaseBlocks = new LinkedHashSet<Integer>(Arrays.asList(
+		new Integer[] {
+				17, 18, 161, 162}
 	));
 
 	//these material IDs are ones we don't want to drop the player onto, like cactus or lava or fire or activated Ender portal
@@ -129,6 +134,11 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		// Ignore if not pearled
 		ExilePearl pearl = pearlApi.getPearl(player.getUniqueId());
 		if (pearl == null) {
+			return;
+		}
+		
+		// Ignore if dead already
+		if (player.isDead()) {
 			return;
 		}
 		
@@ -239,17 +249,36 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			Y = 0;
 
 		// for non Nether worlds we don't need to check upwards to the world-limit, it is enough to check up to the highestBlockBoundary, unless player is flying
-		if (!isNether && !flying)
+		if (!isNether && !flying) {
 			limTop = highestBlockBoundary;
-		// Expanding Y search method adapted from Acru's code in the Nether plugin
-
-		// look full up first.
-		for(int y2 = Y; (y2 < limTop); y2++){
-			// Look above.
-			if(y2 < limTop)
-			{
-				if (isSafeSpot(world, X, y2, Z, flying))
-					return (double)y2;
+			// Expanding Y search method adapted from Acru's code in the Nether plugin
+	
+			// look full up first. Start at highest Y; we want to prefer landing on the surface.
+			int lastOkY = -1;
+			for(int y2 = limTop - 1; (y2 >= Y); y2--){
+				// Look above.
+				if (isSafeSpot(world, X, y2, Z, flying)) {
+					Integer below = (Integer)world.getBlockTypeIdAt(X, y2 - 1, Z);
+					if (okBaseBlocks.contains(below)) {
+						lastOkY = y2;
+					} else {
+						return (double)y2;
+					}
+				}
+			}
+			// We don't prefer to teleport into trees, but beats caves. If we found an option, take it.
+			if (lastOkY > -1) {
+				return (double) lastOkY;
+			}
+		} else {
+			// look full up first, starting from active Y (try to preserve level height for nether and flying)
+			for(int y2 = Y; (y2 > limTop); y2++){
+				// Look above.
+				if(y2 < limTop)
+				{
+					if (isSafeSpot(world, X, y2, Z, flying))
+						return (double)y2;
+				}
 			}
 		}
 		// the look fully below.
