@@ -256,20 +256,10 @@ public class JukeAlertListener implements Listener {
 		}
 		snitchManager.addSnitch(snitch);
 
-		String snitchWorldName = "";
-		if (snitch.getLoc() != null
-				&& snitch.getLoc().getWorld() != null
-				&& snitch.getLoc().getWorld().getName() != null) {
-			snitchWorldName = snitch.getLoc().getWorld().getName();
-		}
-		String snitchLocation = "[" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]";
 		String snitchGroupName = "";
 		if (snitch.getGroup() != null && snitch.getGroup().getName() != null) {
 			snitchGroupName = snitch.getGroup().getName();
 		}
-		String hoverText = String.format("World: %s\nLocation: %s\nGroup: %s",
-			snitchWorldName, snitchLocation, snitchGroupName);
-
 		String message;
 		if (isJukebox) {
 			message = (ChatColor.AQUA + "You've created a snitch registered to the group " + snitchGroupName
@@ -279,6 +269,7 @@ public class JukeAlertListener implements Listener {
 				+ ". To name it, type /janame.");
 		}
 		TextComponent lineText = new TextComponent(message);
+		String hoverText = snitch.getHoverText(null, null);
 		lineText.setHoverEvent(
 			new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
 		player.spigot().sendMessage(lineText);

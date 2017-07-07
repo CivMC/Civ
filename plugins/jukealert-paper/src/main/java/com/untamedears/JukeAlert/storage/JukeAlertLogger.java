@@ -41,6 +41,7 @@ import com.untamedears.JukeAlert.chat.ChatFiller;
 import com.untamedears.JukeAlert.chat.SendSnitchList;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.manager.ConfigManager;
+import com.untamedears.JukeAlert.manager.SnitchManager;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchAction;
@@ -861,13 +862,13 @@ public class JukeAlertLogger {
 			if (set.isBeforeFirst()) {
 				while (set.next()) {
 					String snitchWorld = set.getString("world");
-					String snitchX = set.getString("x");
-					String snitchY = set.getString("y");
-					String snitchZ = set.getString("z");
+					int snitchX = Integer.parseInt(set.getString("x"));
+					int snitchY = Integer.parseInt(set.getString("y"));
+					int snitchZ = Integer.parseInt(set.getString("z"));
 					String snitchGroup = set.getString("SnitchGroup");
 					String snitchName = set.getString("SnitchName");
-					String snitchCullTime = "";
-					String snitchLocation = "[" + snitchX + " " + snitchY + " " + snitchZ + "]";
+					String snitchCullTimeFmt = "";
+					String snitchLocation = String.format("[%d %d %d]", snitchX, snitchY, snitchZ);
 
 					if (snitchWorld == null) {
 						snitchWorld = "";
@@ -875,13 +876,14 @@ public class JukeAlertLogger {
 					if (worldName == null || worldName.isEmpty()) {
 						worldName = snitchWorld;
 					}
+					Integer snitchCullTimeSeconds = null;
 					if ((set.getInt("DoesSnitchRegisterEvents") == 1
 							&& daysFromLastAdminVisitForLoggedSnitchCulling >= 1) ||
 							(set.getInt("DoesSnitchRegisterEvents") == 0
 								&& daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) {
-						snitchCullTime = String.format("%.2f", (
-							(set.getInt("TimeLeftAliveInSeconds") < 0 ? 0 : set.getInt("TimeLeftAliveInSeconds"))
-							/ 3600.0));
+						snitchCullTimeSeconds = set.getInt("TimeLeftAliveInSeconds");
+						snitchCullTimeFmt = String.format("%.2f", (
+							(snitchCullTimeSeconds < 0 ? 0 : snitchCullTimeSeconds) / 3600.0));
 					}
 					if (snitchGroup == null) {
 						snitchGroup = "";
@@ -889,8 +891,21 @@ public class JukeAlertLogger {
 					if (snitchName == null) {
 						snitchName = "";
 					}
-					if (snitchCullTime == null) {
-						snitchCullTime = "";
+					if (snitchCullTimeFmt == null) {
+						snitchCullTimeFmt = "";
+					}
+
+					String hoverText;
+					Location loc = new Location(Bukkit.getWorld(snitchWorld), snitchX, snitchY, snitchZ);
+					SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
+					Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
+					if (snitch == null) {
+						this.plugin.getLogger().log(Level.SEVERE,
+							String.format("Could not find snitch at [%s %d %d %d]. This should never happen.",
+								snitchWorld, snitchX, snitchY, snitchZ));
+						hoverText = "Error";
+					} else {
+						hoverText = snitch.getHoverText(null, snitchCullTimeSeconds);
 					}
 
 					// Building each line like this is a little ugly to look at,
@@ -901,7 +916,7 @@ public class JukeAlertLogger {
 							ChatColor.GRAY + "..." + ChatColor.WHITE);
 					}
 					currLine = ChatFiller.fillString(currLine + snitchLocation, worldColWidth + locationColWidth);
-					currLine = ChatFiller.fillString(currLine + snitchCullTime, worldColWidth + locationColWidth +
+					currLine = ChatFiller.fillString(currLine + snitchCullTimeFmt, worldColWidth + locationColWidth +
 						cullColWidth, truncateChars);
 					if (truncateNames) {
 						currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth +
@@ -915,9 +930,6 @@ public class JukeAlertLogger {
 					currLine += "\n";
 
 					TextComponent lineText = new TextComponent(currLine);
-					String hoverText = String.format("World: %s\nLocation: %s\nHours to cull: %s\n", snitchWorld,
-						snitchLocation, snitchCullTime)
-						+ String.format("Group: %s\nName: %s", snitchGroup, snitchName);
 					lineText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 						new ComponentBuilder(hoverText).create()));
 					info.add(lineText);

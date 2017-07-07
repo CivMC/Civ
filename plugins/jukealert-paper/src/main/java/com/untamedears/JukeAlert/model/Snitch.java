@@ -262,4 +262,51 @@ public class Snitch implements QTBox, Comparable<Snitch> {
 			Utility.maybeReinforcementDamaged(location.getBlock());
 		}
 	}
+
+	public String getHoverText(String previousName, Integer cullTimeSeconds) {
+		String snitchWorldFmt = "";
+		if (this.getLoc() != null
+				&& this.getLoc().getWorld() != null
+				&& this.getLoc().getWorld().getName() != null) {
+			snitchWorldFmt = String.format("%s ", this.getLoc().getWorld().getName());
+		}
+		String snitchLocation = String.format("[%s%d %d %d]", snitchWorldFmt, this.getX(), this.getY(), this.getZ());
+		String snitchGroup = "";
+		if (this.getGroup() != null && this.getGroup().getName() != null) {
+			snitchGroup = this.getGroup().getName();
+		}
+		String nameFmt;
+		String previousNameFmt;
+		if (previousName != null && !previousName.trim().isEmpty()) {
+			if (this.name != null && !this.name.trim().isEmpty()) {
+				nameFmt = String.format("\nName:\n  %s", name);
+			} else {
+				nameFmt = "";
+			}
+			previousNameFmt = String.format("\nPrevious name:\n  %s", previousName);
+		} else {
+			if (this.name != null && !this.name.trim().isEmpty()) {
+				nameFmt = String.format("\nName: %s", name);
+			} else {
+				nameFmt = "";
+			}
+			previousNameFmt = "";
+		}
+		String typeFmt;
+		if (this.shouldLog) {
+			typeFmt = "\nType: Logging";
+		} else {
+			typeFmt = "\nType: Entry";
+		}
+		String cullTimeFmt;
+		if (cullTimeSeconds == null || cullTimeSeconds == 0) {
+			cullTimeFmt = "";
+		} else {
+			cullTimeFmt = String.format("\nCull: %.2fh", cullTimeSeconds < 0 ? 0 : cullTimeSeconds / 3600.0);
+		}
+		String hoverText = String.format(
+			"Location: %s\nGroup: %s%s%s%s%s",
+			snitchLocation, snitchGroup, typeFmt, cullTimeFmt, previousNameFmt, nameFmt);
+		return hoverText;
+	}
 }
