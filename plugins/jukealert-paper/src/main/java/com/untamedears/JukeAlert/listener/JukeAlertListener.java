@@ -392,9 +392,6 @@ public class JukeAlertListener implements Listener {
 					+ " and is on group: " + snitch.getGroup().getName());
 			}
 		}
-		if (!block.getType().equals(Material.JUKEBOX)) {
-			return;
-		}
 		if (vanishNoPacket.isPlayerInvisible(event.getPlayer())
 				|| event.getPlayer().hasPermission("jukealert.vanish")) {
 			return;
@@ -402,10 +399,8 @@ public class JukeAlertListener implements Listener {
 		Location loc = block.getLocation();
 		if (snitchManager.getSnitch(loc.getWorld(), loc) != null) {
 			Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-			if (snitch.shouldLog()) {
-				plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(),
-					loc.getBlockZ());
-			}
+			plugin.getJaLogger().logSnitchBreak(loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(),
+				loc.getBlockZ());
 			snitchManager.removeSnitch(snitch);
 		}
 	}
