@@ -20,7 +20,7 @@ public class JaListLongCommand extends PlayerCommand {
 		super("jalistlong");
 		setDescription("Displays Juke List information with full-length Snitch and group names");
 		setUsage("/jalistlong <page number> [groups=<group1>,<group2>,...]");
-		setArguments(0, 1);
+		setArguments(0, 2);
 		setIdentifier("jalistlong");
 	}
 
