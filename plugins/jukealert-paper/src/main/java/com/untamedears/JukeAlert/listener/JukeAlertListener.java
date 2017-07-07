@@ -395,7 +395,7 @@ public class JukeAlertListener implements Listener {
 					return;
 				}
 				boolean playerHasPerm = NameAPI.getGroupManager().hasAccess(
-					snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"))
+					snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"));
 				if (playerHasPerm) {
 					String snitchGroup = "";
 					if (snitch.getGroup() != null && snitch.getGroup().getName() != null) {
