@@ -360,7 +360,8 @@ class MySqlStorage implements PluginStorage {
 		}
 		catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update 'last_seen'");
-		}	}
+		}
+	}
 
 	/**
 	 * Migrate prison pearl data
@@ -464,7 +465,7 @@ class MySqlStorage implements PluginStorage {
 		int version = DATABASE_VERSION;
 		String versionStr = getPluginSetting("db_version");
 
-		if (versionStr == null) {
+		if (versionStr != null) {
 			version = Integer.parseInt(versionStr);
 		}
 

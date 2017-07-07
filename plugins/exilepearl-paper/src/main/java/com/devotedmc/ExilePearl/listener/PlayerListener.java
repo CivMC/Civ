@@ -653,7 +653,7 @@ public class PlayerListener implements Listener, Configurable {
 			msg(pearl.getPlayer(), Lang.pearlYouWereFreed);
 			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
 			removeHelpItem(pearl.getPlayer());
-		} else {
+		} else if (pearl != null) {
 			pearl.setLastOnline(new Date());
 		}
 	}

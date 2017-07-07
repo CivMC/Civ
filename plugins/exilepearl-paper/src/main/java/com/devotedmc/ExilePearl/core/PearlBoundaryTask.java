@@ -375,7 +375,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (bastions.isEmpty()) {
 			return false;
 		}
-		Location loc = player.getLocation();
+		Location loc = player.getLocation().clone();
 		Vector v = null;
 		for (BastionWrapper computeShell : bastions) {
 			if (v == null) {

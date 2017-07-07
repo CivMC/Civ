@@ -275,8 +275,13 @@ final class CorePearlManager implements PearlManager {
 				pearlsToFree.add(pearl);
 			}
 			
+			if (decayTimeout > 0 && pearl.getPlayer() != null) {
+				// player is online now!
+				pearl.setLastOnline(new Date());
+			}
+			
 			// convert timeout to milliseconds and compare against last time online.
-			if ( (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
+			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
 				pearl.setHealth(pearl.getHealth() - decayAmount);
 			}
 			

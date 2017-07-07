@@ -231,6 +231,7 @@ pearls:
   hotbar_needed: true
   decay_interval_min: 60
   decay_amount: 1
+  decay_timeout_min: 10080
   start_value: 12
   max_value: 336
   repair_materials:

@@ -20,13 +20,13 @@ public class BastionWrapper {
 		Location bastionLocation = bastion.getLocation();
 		if (!player.getWorld().getUID().equals(bastionLocation.getWorld().getUID())) return null; // what?
 		double radius = bastion.getType().getEffectRadius() + (double) KNOCKBACK;
-		
+		double xd = player.getX() - bastionLocation.getX();
+		double zd = player.getZ() - bastionLocation.getZ();
+		double dist = Math.sqrt(xd*xd + zd*zd);		
 		Vector vector = null;
 		
 		if (bastion.getType().isSquare()) {
 			// get linear distance
-			double xd = bastionLocation.getX() - player.getX();
-			double zd = bastionLocation.getZ() - player.getZ();
 			if (xd == 0.0 & zd == 0.0) {
 				// pick a direction and _shove_
 				xd = radius;
@@ -35,21 +35,27 @@ public class BastionWrapper {
 				double ax = Math.abs(xd);
 				double az = Math.abs(zd);
 				if (ax > az) {
-					xd = (xd / ax) * radius;
-					zd = (zd / ax) * radius;
+					xd = (xd / ax);
+					zd = (zd / ax);
 				} else {
-					xd = (xd / az) * radius;
-					zd = (zd / az) * radius;
+					xd = (xd / az);
+					zd = (zd / az);
 				}
+				double push = (radius * Math.sqrt(xd*xd + zd*zd)) - dist;
+				// adjust pushout based on "unit" triangle to accomodate corners.
+				// it will always be some factor between 1 and sqrt(2).
+				xd *= push;
+				zd *= push;
 			}
 			vector = new Vector(xd, 0.0, zd);	
 		} else {
 			// ez. straightline vector from radial distance.
-			vector = bastionLocation.subtract(player).getDirection(); // points from Bastion to player.
-			vector.setY(0.0);
+			Location nP = player.clone().subtract(bastionLocation);
+			vector = new Vector(nP.getX(), 0.0, nP.getZ());
+			vector.normalize(); // points from Bastion to player.
 
-			double dist = bastionLocation.distance(player);
 			vector.multiply((radius - dist)); // pushout!
+			System.out.println(vector.toString());
 		}
 		return vector;
 	}
