@@ -381,15 +381,47 @@ public class JukeAlertListener implements Listener {
 	public void breakSnitchBlock(BlockBreakEvent event) {
 
 		Block block = event.getBlock();
-		if ((block.getType().equals(Material.JUKEBOX) || block.getType().equals(Material.NOTE_BLOCK))
-				&& plugin.getConfigManager().isDisplayOwnerOnBreak()) {
+		if (block == null) {
+			return;
+		}
+		if (block.getType().equals(Material.JUKEBOX) || block.getType().equals(Material.NOTE_BLOCK)) {
 			Snitch snitch = snitchManager.getSnitch(block.getWorld(), block.getLocation());
-			if (snitch != null && !snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
-				Location loc = snitch.getLoc();
-				event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName()
-					+ " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by "
-					+ NameAPI.getCurrentName(snitch.getGroup().getOwner())
-					+ " and is on group: " + snitch.getGroup().getName());
+			if (snitch == null) {
+				return;
+			}
+			if (snitch.getGroup().isMember(event.getPlayer().getUniqueId())) {
+				Player player = event.getPlayer();
+				if (player == null) {
+					return;
+				}
+				boolean playerHasPerm = NameAPI.getGroupManager().hasAccess(
+					snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("READ_SNITCHLOG"))
+				if (playerHasPerm) {
+					String snitchGroup = "";
+					if (snitch.getGroup() != null && snitch.getGroup().getName() != null) {
+						snitchGroup = snitch.getGroup().getName();
+					}
+					TextComponent playerSnitchInfoMessage;
+					if (snitch.shouldLog()) {
+						playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA
+							+ "You've broken a snitch registered to the group " + snitchGroup + ".");
+					} else {
+						playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA
+							+ "You've broken an entry snitch registered to the group " + snitchGroup + ".");
+					}
+					String hoverText = snitch.getHoverText(null, null);
+					playerSnitchInfoMessage.setHoverEvent(
+						new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+					player.spigot().sendMessage(playerSnitchInfoMessage);
+				}
+			} else {
+				if (plugin.getConfigManager().isDisplayOwnerOnBreak()) {
+					Location loc = snitch.getLoc();
+					event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName()
+						+ " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by "
+						+ NameAPI.getCurrentName(snitch.getGroup().getOwner())
+						+ " and is on group: " + snitch.getGroup().getName());
+				}
 			}
 		}
 		if (!block.getType().equals(Material.JUKEBOX)) {
