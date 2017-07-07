@@ -14,6 +14,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import com.untamedears.JukeAlert.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
@@ -47,25 +51,29 @@ public class SendSnitchInfo implements Runnable {
 
 	public void run() {
 
+		TextComponent playerSnitchInfoMessage;
 		if (!this.snitch.shouldLog()) {
 			if (this.snitch.getName() == null || this.snitch.getName().trim().isEmpty()) {
-				player.sendMessage(ChatColor.AQUA + " * Unnamed entry snitch");
+				playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA + " * Unnamed entry snitch");
 			} else {
-				player.sendMessage(ChatColor.AQUA + " * Entry snitch " + this.snitch.getName());
+				playerSnitchInfoMessage = new TextComponent(
+					ChatColor.AQUA + " * Entry snitch " + this.snitch.getName());
 			}
+			sendPlayerSnitchInfoMessage(playerSnitchInfoMessage);
 			return;
 		}
 		if (info != null && !info.isEmpty()) {
-			String output = "";
-
 			if (this.snitch.getName() != null && !this.snitch.getName().trim().isEmpty()) {
-				output += ChatColor.WHITE + " Log for snitch " + this.snitch.getName() + " "
-				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitch.getName().length()) + "\n";
+				playerSnitchInfoMessage = new TextComponent(ChatColor.WHITE + " Log for snitch "
+					+ this.snitch.getName() + " "
+					+ ChatColor.DARK_GRAY + Strings.repeat("-", this.snitch.getName().length()));
 			} else {
-				output += ChatColor.WHITE + " Log for unnamed snitch "
-				        + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
+				playerSnitchInfoMessage = new TextComponent(ChatColor.WHITE + " Log for unnamed snitch "
+					+ ChatColor.DARK_GRAY + "----------------------------------------");
 			}
+			sendPlayerSnitchInfoMessage(playerSnitchInfoMessage);
 
+			String output = "";
 			try {
 				TimeZone timeZone = Calendar.getInstance().getTimeZone();
 				Date now = Calendar.getInstance().getTime();
@@ -114,9 +122,20 @@ public class SendSnitchInfo implements Runnable {
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
 			player.sendMessage(output);
 		} else if (this.snitch.getName() != null && !this.snitch.getName().trim().isEmpty()) {
-			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitch.getName());
+			playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA + " * Page " + offset + " is empty for snitch "
+				+ this.snitch.getName());
+			sendPlayerSnitchInfoMessage(playerSnitchInfoMessage);
 		} else {
-			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for unnamed snitch");
+			playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA + " * Page " + offset
+				+ " is empty for unnamed snitch");
+			sendPlayerSnitchInfoMessage(playerSnitchInfoMessage);
 		}
+	}
+
+	private void sendPlayerSnitchInfoMessage(TextComponent playerSnitchInfoMessage) {
+		String hoverText = this.snitch.getHoverText(null, null);
+		playerSnitchInfoMessage.setHoverEvent(
+			new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+		player.spigot().sendMessage(playerSnitchInfoMessage);
 	}
 }
