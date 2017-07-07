@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchAction;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
 
@@ -27,42 +28,39 @@ public class SendSnitchInfo implements Runnable {
 
 	private int offset;
 
-	private String snitchName;
-
-	private boolean isJukebox;
+	private Snitch snitch;
 
 	private boolean shouldCensor;
 
 	private boolean isGroup;
 
-	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, String snitchName, boolean isJukebox,
-			boolean shouldCensor, boolean isGroup) {
+	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, Snitch snitch, boolean shouldCensor,
+			boolean isGroup) {
 
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
-		this.snitchName = snitchName;
-		this.isJukebox = isJukebox;
+		this.snitch = snitch;
 		this.shouldCensor = shouldCensor;
 		this.isGroup = isGroup;
 	}
 
 	public void run() {
 
-		if (!isJukebox) {
-			if (this.snitchName == null || this.snitchName.trim().isEmpty()) {
+		if (!this.snitch.shouldLog()) {
+			if (this.snitch.getName() == null || this.snitch.getName().trim().isEmpty()) {
 				player.sendMessage(ChatColor.AQUA + " * Unnamed entry snitch");
 			} else {
-				player.sendMessage(ChatColor.AQUA + " * Entry snitch " + this.snitchName);
+				player.sendMessage(ChatColor.AQUA + " * Entry snitch " + this.snitch.getName());
 			}
 			return;
 		}
 		if (info != null && !info.isEmpty()) {
 			String output = "";
 
-			if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
-				output += ChatColor.WHITE + " Log for snitch " + this.snitchName + " "
-				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitchName.length()) + "\n";
+			if (this.snitch.getName() != null && !this.snitch.getName().trim().isEmpty()) {
+				output += ChatColor.WHITE + " Log for snitch " + this.snitch.getName() + " "
+				        + ChatColor.DARK_GRAY + Strings.repeat("-", this.snitch.getName().length()) + "\n";
 			} else {
 				output += ChatColor.WHITE + " Log for unnamed snitch "
 				        + ChatColor.DARK_GRAY + "----------------------------------------" + "\n";
@@ -115,8 +113,8 @@ public class SendSnitchInfo implements Runnable {
 			output += "\n";
 			output += ChatColor.DARK_GRAY + " * Page " + offset + " ------------------------------------------";
 			player.sendMessage(output);
-		} else if (this.snitchName != null && !this.snitchName.trim().isEmpty()) {
-			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitchName);
+		} else if (this.snitch.getName() != null && !this.snitch.getName().trim().isEmpty()) {
+			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for snitch " + this.snitch.getName());
 		} else {
 			player.sendMessage(ChatColor.AQUA + " * Page " + offset + " is empty for unnamed snitch");
 		}
