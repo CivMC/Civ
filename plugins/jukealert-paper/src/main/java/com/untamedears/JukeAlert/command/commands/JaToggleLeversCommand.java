@@ -62,7 +62,7 @@ public class JaToggleLeversCommand extends PlayerCommand {
 				plugin.getJaLogger().updateSnitchToggleLevers(snitch, flag);
 				snitch.setShouldToggleLevers(flag);
 				sender.sendMessage(
-					ChatColor.AQUA + " Changed toggle levers settings to " + (flag ? "True" : "False") + ".");
+					ChatColor.AQUA + "Changed the ToggleLevers setting to " + (flag ? "True" : "False") + ".");
 
 				return true;
 			} else {

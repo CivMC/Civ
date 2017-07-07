@@ -206,12 +206,12 @@ public class JukeAlertListener implements Listener {
 		if (block.getType().equals(Material.JUKEBOX)) {
 			if (!rm.isReinforced(loc)) {
 				player.sendMessage(
-					ChatColor.YELLOW + "You've placed a jukebox; reinforce it to register it as a snitch.");
+					ChatColor.YELLOW + "You've placed a Jukebox; reinforce it to register it as a snitch.");
 			}
 		} else if (block.getType().equals(Material.NOTE_BLOCK)) {
 			if (!rm.isReinforced(loc)) {
 				player.sendMessage(
-					ChatColor.YELLOW + "You've placed a noteblock; reinforce it to register it as an entry snitch.");
+					ChatColor.YELLOW + "You've placed a Noteblock; reinforce it to register it as an entry snitch.");
 			}
 		}
 	}
@@ -418,9 +418,9 @@ public class JukeAlertListener implements Listener {
 				if (plugin.getConfigManager().isDisplayOwnerOnBreak()) {
 					Location loc = snitch.getLoc();
 					event.getPlayer().sendMessage(ChatColor.AQUA + "Snitch at [" + loc.getWorld().getName()
-						+ " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] is owned by "
-						+ NameAPI.getCurrentName(snitch.getGroup().getOwner())
-						+ " and is on group: " + snitch.getGroup().getName());
+						+ " " + loc.getBlockX() + " " + loc.getBlockY() + " " + loc.getBlockZ() + "] was on group "
+						+ snitch.getGroup().getName()
+						+ " which is owned by " + NameAPI.getCurrentName(snitch.getGroup().getOwner()));
 				}
 			}
 		}
