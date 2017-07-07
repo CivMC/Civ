@@ -118,10 +118,14 @@ public class JukeAlertListener implements Listener {
 				snitch.imposeSnitchTax();
 				inList.add(snitch);
 				try {
-					String message = " * " + player.getDisplayName() + " logged in to snitch at "
+					TextComponent message = new TextComponent(ChatColor.AQUA + " * " + player.getDisplayName()
+						+ " logged in to snitch at "
 						+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() +
-						" " + snitch.getY() + " " + snitch.getZ() + "]";
-					notifyGroup(snitch, ChatColor.AQUA + message);
+						" " + snitch.getY() + " " + snitch.getZ() + "]");
+					String hoverText = snitch.getHoverText(null, null);
+					message.setHoverEvent(
+						new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+					notifyGroup(snitch, message);
 
 					if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers()) {
 						mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-login");
@@ -156,10 +160,15 @@ public class JukeAlertListener implements Listener {
 			if (!immuneToSnitch(snitch, accountId)) {
 				snitch.imposeSnitchTax();
 				try {
-					String message = " * " + player.getDisplayName() + " logged out in snitch at "
-							+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() +
-							" " + snitch.getY() + " " + snitch.getZ() + "]";
-					notifyGroup(snitch, ChatColor.AQUA + message);
+					TextComponent message = new TextComponent(ChatColor.AQUA + " * " + player.getDisplayName()
+						+ " logged out in snitch at "
+						+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " " + snitch.getX() +
+						" " + snitch.getY() + " " + snitch.getZ() + "]");
+					String hoverText = snitch.getHoverText(null, null);
+					message.setHoverEvent(
+						new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+					notifyGroup(snitch, message);
+
 					if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers()) {
 						mercury.sendMessage(snitch.getGroup().getName() + " " + message, "jukealert-logout");
 					}
@@ -504,10 +513,14 @@ public class JukeAlertListener implements Listener {
 								continue;
 							} else {
 								try {
-									String message = " * " + player.getDisplayName() + " entered snitch at "
+									TextComponent message = new TextComponent(ChatColor.AQUA + " * "
+										+ player.getDisplayName() + " entered snitch at "
 										+ snitch.getName() + " [" + snitch.getLoc().getWorld().getName() + " "
-										+ snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]";
-									notifyGroup(snitch, ChatColor.AQUA + message);
+										+ snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]");
+									String hoverText = snitch.getHoverText(null, null);
+									message.setHoverEvent(
+										new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+									notifyGroup(snitch, message);
 
 									if (mercury.isEnabled() && plugin.getConfigManager().getBroadcastAllServers()) {
 										Group g = snitch.getGroup();
