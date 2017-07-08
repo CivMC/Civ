@@ -80,6 +80,7 @@ class FileStorage implements PluginStorage {
 				.append("location", pearl.getLocation())
 				.append("health", pearl.getHealth())
 				.append("pearled_on", pearl.getPearledOn())
+				.append("last_seen", pearl.getLastOnline())
 				.append("freed_offline", pearl.getFreedOffline());
 		
 		pearlDoc.append(pearl.getPlayerId().toString(), insert);
@@ -119,6 +120,12 @@ class FileStorage implements PluginStorage {
 	@Override
 	public void updatePearlKiller(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
+		writeFile();
+	}
+	
+	@Override
+	public void updatePearlLastOnline(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
 		writeFile();
 	}
 	

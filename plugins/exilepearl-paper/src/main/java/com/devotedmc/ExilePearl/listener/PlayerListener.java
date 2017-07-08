@@ -1,6 +1,7 @@
 package com.devotedmc.ExilePearl.listener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -652,6 +653,8 @@ public class PlayerListener implements Listener, Configurable {
 			msg(pearl.getPlayer(), Lang.pearlYouWereFreed);
 			pearlApi.freePearl(pearl,PearlFreeReason.FREED_OFFLINE);
 			removeHelpItem(pearl.getPlayer());
+		} else if (pearl != null) {
+			pearl.setLastOnline(new Date());
 		}
 	}
 

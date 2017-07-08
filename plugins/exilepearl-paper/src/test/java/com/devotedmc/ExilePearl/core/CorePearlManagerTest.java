@@ -381,6 +381,7 @@ public class CorePearlManagerTest {
 		
 		when(config.getPearlHealthStartValue()).thenReturn(10);
 		when(config.getPearlHealthDecayAmount()).thenReturn(1);
+		when(config.getPearlHealthDecayTimeout()).thenReturn(20000);
 		
 		ExilePearl pearl1 = manager.exilePlayer(player.getUniqueId(), killer);
 		assertEquals(pearl1.getHealth(), 10);

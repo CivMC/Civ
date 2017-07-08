@@ -33,4 +33,10 @@ public interface PearlUpdateStorage {
 	 * @param pearl The pearl instance to update
 	 */
 	void updatePearlKiller(ExilePearl pearl);
+	
+	/**
+	 * Updates the last online time
+	 * @param pearl The pearl instance to update
+	 */
+	void updatePearlLastOnline(ExilePearl pearl);
 }

@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.core;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -256,6 +257,7 @@ final class CorePearlManager implements PearlManager {
 
 		final Collection<ExilePearl> pearls = getPearls();
 		final int decayAmount = pearlApi.getPearlConfig().getPearlHealthDecayAmount();
+		final int decayTimeout = pearlApi.getPearlConfig().getPearlHealthDecayTimeout();
 		final Set<String> disallowedWorlds = pearlApi.getPearlConfig().getDisallowedWorlds();
 		final HashSet<ExilePearl> pearlsToFree = new HashSet<ExilePearl>();
 
@@ -272,8 +274,16 @@ final class CorePearlManager implements PearlManager {
 				pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
 				pearlsToFree.add(pearl);
 			}
-
-			pearl.setHealth(pearl.getHealth() - decayAmount);
+			
+			if (decayTimeout > 0 && pearl.getPlayer() != null) {
+				// player is online now!
+				pearl.setLastOnline(new Date());
+			}
+			
+			// convert timeout to milliseconds and compare against last time online.
+			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
+				pearl.setHealth(pearl.getHealth() - decayAmount);
+			}
 			
 			if (pearl.getHealth() == 0) {
 				pearlApi.log("Freeing pearl for player %s because the health reached 0.", pearl.getPlayerName());

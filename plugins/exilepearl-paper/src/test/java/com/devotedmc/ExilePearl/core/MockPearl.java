@@ -33,6 +33,7 @@ public class MockPearl implements ExilePearl {
 	private Location loc;
 	private Date pearledOn;
 	private PearlType pearlType;
+	private Date lastOnline;
 	private int health;
 	private boolean freedOffline;
 	
@@ -44,6 +45,7 @@ public class MockPearl implements ExilePearl {
 		this.loc = loc;
 		this.health = 10;
 		this.pearledOn = new Date();
+		this.lastOnline = new Date();
 		this.pearlType = PearlType.EXILE;
 	}
 
@@ -265,5 +267,14 @@ public class MockPearl implements ExilePearl {
 	public void setKillerId(UUID killerId) {
 		this.killedBy = killerId;
 	}
+	
+	@Override
+	public Date getLastOnline() {
+		return this.lastOnline;
+	}
 
+	@Override
+	public void setLastOnline(Date online) {
+		this.lastOnline = online;
+	}
 }

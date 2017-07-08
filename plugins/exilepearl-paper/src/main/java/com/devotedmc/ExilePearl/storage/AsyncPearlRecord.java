@@ -19,7 +19,8 @@ class AsyncPearlRecord {
 		UPDATE_HEALTH,
 		UPDATE_FREED_OFFLINE,
 		UPDATE_TYPE,
-		UPDATE_KILLER
+		UPDATE_KILLER,
+		UPDATE_LAST_SEEN
 	}
 	
 	private final ExilePearl pearl;

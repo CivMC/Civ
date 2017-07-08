@@ -27,7 +27,7 @@ import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 class MySqlStorage implements PluginStorage {
 
-	private static final Integer DATABASE_VERSION = 1;
+	private static final Integer DATABASE_VERSION = 2;
 
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
@@ -54,6 +54,11 @@ class MySqlStorage implements PluginStorage {
 			"pearled_on long not null," +
 			"freed_offline bool," +
 			"PRIMARY KEY (uid));";
+	
+	private static final String migration0001PearlTable = "alter table exilepearls " +
+			"add column last_seen long not null;";
+	private static final String migration0001PearlTable2 = "update exilepearls " +
+			"set last_seen = unix_timestamp() * 1000;";
 
 	/**
 	 * Creates a new MySqlStorage instance
@@ -127,12 +132,50 @@ class MySqlStorage implements PluginStorage {
 			if (config.getMigratePrisonPearl()) {
 				migratePrisonPearl();
 			}
+			
+			applyMigration0001();
+			
+			// add new migrations here.
+			
 			setHasRun();
+			
+			updateDatabaseVersion();
 		} else if (getDatabaseVersion() < DATABASE_VERSION) {
-			// This is a placeholder for any future upgrade methods
+			boolean success = true;
+			if (getDatabaseVersion() < 2 ) {
+				// run migration 1.
+				success &= applyMigration0001();
+			}
+			// and new migrations here.
+			// if (getDatabaseVersion() < 3) { // next migration
+			
+			if (success) {
+				updateDatabaseVersion();
+			} else {
+				logger.log(Level.SEVERE, "Not all database migrations applied cleanly, something might be horribly broken!");
+			}
 		}
-
-		updateDatabaseVersion();
+	}
+	
+	private boolean applyMigration0001() {
+		try (Connection connection = db.getConnection();) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0001PearlTable)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to add last_seen");
+				return false;
+			}
+			
+			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0001PearlTable2)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to update last_seen to valid values for all pearls.");
+			}
+			return true;
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Failed to apply migration 0001");
+		}
+		return false;
 	}
 
 	@Override
@@ -157,6 +200,7 @@ class MySqlStorage implements PluginStorage {
 					
 					// Translate the date and location to the expected format
 					doc.append("pearled_on", new Date(Long.parseLong(doc.getString("pearled_on"))));
+					doc.append("last_seen", new Date(Long.parseLong(doc.getString("last_seen"))));
 					doc.append("location", new Document("world", doc.getString("world"))
 							.append("x", doc.getInteger("x"))
 							.append("y", doc.getInteger("y"))
@@ -182,7 +226,7 @@ class MySqlStorage implements PluginStorage {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
-				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
+				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
 
 			Location l = pearl.getLocation();
 
@@ -197,6 +241,7 @@ class MySqlStorage implements PluginStorage {
 			ps.setInt(9, pearl.getHealth());
 			ps.setLong(10, pearl.getPearledOn().getTime());
 			ps.setBoolean(11, pearl.getFreedOffline());
+			ps.setLong(12, pearl.getLastOnline().getTime());
 			ps.executeUpdate();
 
 		} catch (SQLException ex) {
@@ -301,6 +346,22 @@ class MySqlStorage implements PluginStorage {
 			logFailedPearlOperation(ex, pearl, "update 'killer_id'");
 		}
 	}
+	
+	@Override
+	public void updatePearlLastOnline(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET last_seen = ? WHERE uid = ?"); ) {
+
+			ps.setLong(1, pearl.getLastOnline().getTime());
+			ps.setString(2, pearl.getPlayerId().toString());
+			ps.executeUpdate();
+		}
+		catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update 'last_seen'");
+		}
+	}
 
 	/**
 	 * Migrate prison pearl data
@@ -368,7 +429,8 @@ class MySqlStorage implements PluginStorage {
 						Document doc = new Document("killer_id", killerId)
 								.append("pearl_id", pearlId)
 								.append("location", loc)
-								.append("pearled_on", pearledOn);
+								.append("pearled_on", pearledOn)
+								.append("last_seen", pearledOn); // TODO: overloading for now.
 
 						ExilePearl pearl = pearlFactory.createdMigratedPearl(playerId, doc);
 						if (pearl != null) {
@@ -403,7 +465,7 @@ class MySqlStorage implements PluginStorage {
 		int version = DATABASE_VERSION;
 		String versionStr = getPluginSetting("db_version");
 
-		if (versionStr == null) {
+		if (versionStr != null) {
 			version = Integer.parseInt(versionStr);
 		}
 

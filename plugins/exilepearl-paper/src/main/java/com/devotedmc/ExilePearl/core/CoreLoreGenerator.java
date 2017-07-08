@@ -2,7 +2,9 @@ package com.devotedmc.ExilePearl.core;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.LoreProvider;
+import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
@@ -66,6 +69,21 @@ final class CoreLoreGenerator implements LoreProvider {
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
 		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
+		Set<RepairMaterial> repair = config.getRepairMaterials();
+		if (repair != null) {
+			for (RepairMaterial rep : repair) {
+				int amountPerItem = rep.getRepairAmount();
+				String item = rep.getStack().getType().toString();
+				int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
+				int repairsPerDay = damagesPerDay / amountPerItem;
+				lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
+			}
+		}
+		
+		int decayTimeout = config.getPearlHealthDecayTimeout();
+		if ( (new Date()).getTime() - pearl.getLastOnline().getTime() >= (decayTimeout * 60 * 1000)) {
+			lore.add(parse("<h>Health Decay suspended due to Inactivity"));
+		}
 		
 		if (addCommandHelp) {
 			// Generate some helpful commands
@@ -147,7 +165,7 @@ final class CoreLoreGenerator implements LoreProvider {
 		}
 		
 		List<String> lore = im.getLore();
-		if (lore == null || lore.size() < 5) {
+		if (lore == null || lore.size() < 5) { // technically six but leaving as five for conversion purposes
 			return null;
 		}
 		return lore;

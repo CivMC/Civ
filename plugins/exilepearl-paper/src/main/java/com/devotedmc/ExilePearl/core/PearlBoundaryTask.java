@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +14,7 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
+import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.google.common.collect.ImmutableList;
 
 import org.bukkit.Chunk;
@@ -24,6 +26,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.util.Vector;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
@@ -54,7 +57,12 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 				 0, 6, 8, 9, 27, 28, 30, 31, 32, 37, 38, 39, 40, 50, 55, 
 				 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 
 				 83, 90, 93, 94, 96, 104, 105, 106, 115, 131, 132, 141, 
-				 142, 149, 150, 157, 171}
+				 142, 149, 150, 157, 171, 175, 177}
+	));
+	
+	public static final LinkedHashSet<Integer> okBaseBlocks = new LinkedHashSet<Integer>(Arrays.asList(
+		new Integer[] {
+				17, 18, 161, 162}
 	));
 
 	//these material IDs are ones we don't want to drop the player onto, like cactus or lava or fire or activated Ender portal
@@ -129,7 +137,14 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			return;
 		}
 		
-		checkBastion(player);
+		// Ignore if dead already
+		if (player.isDead()) {
+			return;
+		}
+		
+		if (!pushoutBastion(player)) {
+			checkBastion(player);
+		}
 
 		// Ignore non-block holders
 		if (!pearl.getHolder().isBlock()) {
@@ -234,25 +249,48 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			Y = 0;
 
 		// for non Nether worlds we don't need to check upwards to the world-limit, it is enough to check up to the highestBlockBoundary, unless player is flying
-		if (!isNether && !flying)
+		if (!isNether && !flying) {
 			limTop = highestBlockBoundary;
-		// Expanding Y search method adapted from Acru's code in the Nether plugin
-
-		for(int y1 = Y, y2 = Y; (y1 > 0) || (y2 < limTop); y1--, y2++){
+			// Expanding Y search method adapted from Acru's code in the Nether plugin
+	
+			// look full up first. Start at highest Y; we want to prefer landing on the surface.
+			int lastOkY = -1;
+			for(int y2 = limTop - 1; (y2 >= Y); y2--){
+				// Look above.
+				if (isSafeSpot(world, X, y2, Z, flying)) {
+					Integer below = (Integer)world.getBlockTypeIdAt(X, y2 - 1, Z);
+					if (okBaseBlocks.contains(below)) {
+						lastOkY = y2;
+					} else {
+						return (double)y2;
+					}
+				}
+			}
+			// We don't prefer to teleport into trees, but beats caves. If we found an option, take it.
+			if (lastOkY > -1) {
+				return (double) lastOkY;
+			}
+		} else {
+			// look full up first, starting from active Y (try to preserve level height for nether and flying)
+			for(int y2 = Y; (y2 > limTop); y2++){
+				// Look above.
+				if(y2 < limTop)
+				{
+					if (isSafeSpot(world, X, y2, Z, flying))
+						return (double)y2;
+				}
+			}
+		}
+		// the look fully below.
+		for (int y1 = Y; (y1 > 0); y1--) {
 			// Look below.
 			if(y1 > 0)
 			{
 				if (isSafeSpot(world, X, y1, Z, flying))
 					return (double)y1;
 			}
-
-			// Look above.
-			if(y2 < limTop && y2 != y1)
-			{
-				if (isSafeSpot(world, X, y2, Z, flying))
-					return (double)y2;
-			}
 		}
+		// this should help prevent so many cavespawns on pushback.
 
 		return -1.0;	// no safe Y location?!?!? Must be a rare spot in a Nether world or something
 	}
@@ -351,5 +389,48 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			player.playEffect(EntityEffect.HURT);
 			msg(player, "<b>You aren't allowed in this bastion field when exiled.");
 		}
+	}
+	
+	/**
+	 * Makes a best effort to push a player out of overlapping bastion fields using some fancy vector math.
+	 * Will work with all current types of bastions, square and circle, and resolves the vector intersections
+	 * with ease ... if I remember my maths.
+	 * @param player The player to check
+	 * @return true if the player was in a bastion field AND could be pushed back safely, false otherwise.
+	 *    False does _not_ mean they are not in a bastion field.
+	 */
+	private boolean pushoutBastion(Player player) {
+		List<BastionWrapper> bastions = pearlApi.getPlayerInUnpermittedBastion(player);
+		if (bastions.isEmpty()) {
+			return false;
+		}
+		Location loc = player.getLocation().clone();
+		Vector v = null;
+		for (BastionWrapper computeShell : bastions) {
+			if (v == null) {
+				v = computeShell.getPushout(loc, KNOCKBACK);
+			} else {
+				Vector p = computeShell.getPushout(loc, KNOCKBACK);
+				if (p != null) {
+					v.add(p);
+				}
+			}
+		}
+		if (v != null) {
+			Location tLoc = loc.add(v);
+
+			double yLoc = getSafeY(loc.getWorld(), tLoc.getBlockX(), tLoc.getBlockY(), tLoc.getBlockZ(), player.isFlying());
+			if (yLoc == -1)
+				return false;
+
+			Location newLoc = new Location(loc.getWorld(), tLoc.getX(), yLoc, tLoc.getZ(), tLoc.getYaw(), tLoc.getPitch());
+			
+			player.teleport(newLoc, TeleportCause.PLUGIN);
+			
+			msg(player, "<b>You aren't allowed to enter this bastion field when exiled.");
+			return true;
+		}
+		
+		return false;
 	}
 }

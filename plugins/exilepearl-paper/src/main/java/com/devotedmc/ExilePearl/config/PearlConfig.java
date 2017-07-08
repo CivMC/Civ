@@ -34,6 +34,13 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	int getPearlHealthDecayAmount();
 	
 	/**
+	 * Gets the pearl health decay shutoff timeout (time since last login 
+	 *  that decay is no longer applied)
+	 * @return the # of minutes absent at which decay is skipped.
+	 */
+	int getPearlHealthDecayTimeout();
+	
+	/**
 	 * Gets the pearl health start value
 	 * @return the pearl health start value
 	 */

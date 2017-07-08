@@ -136,6 +136,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	public int getPearlHealthDecayAmount() {
 		return doc.getInteger("pearls.decay_amount", 1);
 	}
+	
+	@Override
+	public int getPearlHealthDecayTimeout() {
+		return doc.getInteger("pearls.decay_timeout_min", 10080);
+	}
 
 	@Override
 	public int getPearlHealthStartValue() {

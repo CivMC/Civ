@@ -203,4 +203,20 @@ public interface ExilePearl {
 	 * @return true if it is broadcasting
 	 */
 	boolean isBroadcastingTo(Object o);
+	
+	/**
+	 * Gets last recorded appearance online for the player
+	 * held by this pearl
+	 * 
+	 * @return last online Date
+	 */
+	Date getLastOnline();
+	
+	/**
+	 * Resets the recorded appearance online for a player
+	 * held by this pearl
+	 * 
+	 * @param online The new latest Seen Date.
+	 */
+	void setLastOnline(Date online);
 }

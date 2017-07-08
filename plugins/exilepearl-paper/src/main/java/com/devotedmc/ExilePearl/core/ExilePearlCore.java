@@ -57,6 +57,7 @@ import com.devotedmc.ExilePearl.listener.RandomSpawnListener;
 import com.devotedmc.ExilePearl.listener.WorldBorderListener;
 import com.devotedmc.ExilePearl.storage.CoreStorageProvider;
 import com.devotedmc.ExilePearl.storage.PluginStorage;
+import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.wimbli.WorldBorder.BorderData;
@@ -642,5 +643,27 @@ final class ExilePearlCore implements ExilePearlApi {
 	@Override
 	public BrewHandler getBrewHandler() {
 		return this.brewHandler;
+	}
+
+	@Override
+	public List<BastionWrapper> getPlayerInUnpermittedBastion(Player player) {
+		if (!isBastionEnabled()) {
+			return new ArrayList<>();
+		}
+		try {
+			final BastionBlockManager manager = Bastion.getBastionManager();
+			
+			Set<? extends QTBox> possible  = manager.getBlockingBastions(player.getLocation());
+			@SuppressWarnings("unchecked")
+			List<BastionBlock> bastions = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+			List<BastionWrapper> wrapper = new LinkedList<>();
+			for (BastionBlock bastion : bastions) {
+				if (!bastion.canPlace(player)) {
+					wrapper.add(new BastionWrapper(bastion));
+				}
+			}
+			return wrapper;
+		} catch(Exception ex) { }
+		return new ArrayList<>();
 	}
 }
