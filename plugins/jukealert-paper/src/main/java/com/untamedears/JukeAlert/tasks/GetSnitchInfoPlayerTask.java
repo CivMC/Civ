@@ -8,10 +8,15 @@ package com.untamedears.JukeAlert.tasks;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.namelayer.group.Group;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.SendSnitchInfo;
+import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.LoggedAction;
 
 /**
@@ -21,6 +26,8 @@ import com.untamedears.JukeAlert.model.LoggedAction;
 public class GetSnitchInfoPlayerTask implements Runnable {
 
 	private final List<String> info = new ArrayList<String>();
+
+	private Snitch snitch;
 
 	private boolean shouldCensor;
 
@@ -42,45 +49,37 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
 	private final JukeAlert plugin;
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, boolean isJukebox, int offset,
-			Player player, boolean shouldCensor) {
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor) {
 
-		this.snitchId = snitchId;
-		this.snitchName = snitchName;
-		this.isJukebox = isJukebox;
+		this.snitch = snitch;
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
 		this.shouldCensor = shouldCensor;
-		this.group = null;
 		this.filterAction = null;
 		this.filterPlayer = "";
 	}
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, int snitchId, String snitchName, boolean isJukebox, int offset,
-			Player player, boolean shouldCensor, LoggedAction filterAction, String filterPlayer) {
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor,
+			LoggedAction filterAction, String filterPlayer) {
 
-		this.snitchId = snitchId;
-		this.snitchName = snitchName;
-		this.isJukebox = isJukebox;
+		this.snitch = snitch;
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
 		this.shouldCensor = shouldCensor;
-		this.group = null;
 		this.filterAction = filterAction;
 		this.filterPlayer = filterPlayer;
 	}
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, String group, int offset, Player player) {
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, Group group, int offset, Player player) {
 
-		this.group = group;
+		Location loc = new Location(Bukkit.getWorld("world"), 0, 0, 0);
+		this.snitch = new Snitch(loc, group, true, false);
 		this.offset = offset;
 		this.player = player;
 		this.plugin = plugin;
-		this.snitchId = -1;
-		this.snitchName = null;
-		this.isJukebox = true;
+		this.snitch.setId(-1);
 		this.shouldCensor = false;
 		this.filterAction = null;
 		this.filterPlayer = "";
@@ -91,12 +90,11 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
 		SendSnitchInfo sendSnitchInfo;
 		if (group == null) {
-			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(snitchId, (offset - 1) * 10,
-				this.filterAction, this.filterPlayer), this.player, offset, this.snitchName, this.isJukebox,
-				shouldCensor, false);
+			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(this.snitch.getId(), (offset - 1) * 10,
+				this.filterAction, this.filterPlayer), this.player, offset, this.snitch, shouldCensor, false);
 		} else {
 			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchGroupInfo(group, (offset - 1) * 10),
-				this.player, offset, null, this.isJukebox, false, true);
+				this.player, offset, this.snitch, false, true);
 		}
 		sendSnitchInfo.run();
 	}

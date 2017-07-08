@@ -9,6 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -63,18 +67,22 @@ public class LookupCommand extends PlayerCommand {
 				return false;
 			}
 			Location loc = new Location(Bukkit.getWorld(world), x, y, z);
-			Snitch match = snitchManager.getSnitch(loc.getWorld(), loc);
-			if (match == null) {
+			Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
+			if (snitch == null) {
 				sender.sendMessage(ChatColor.RED + "You do not own a snitch at those coordinates!");
 				return false;
 			}
 			if (canLookupAny || (
 					player != null
 					&& NameAPI.getGroupManager().hasAccess(
-						match.getGroup(), player.getUniqueId(), PermissionType.getPermission("LOOKUP_SNITCH")))) {
-				sender.sendMessage(ChatColor.AQUA
-				                   + "The snitch at [" + x + " " + y + " " + z + "] is owned by "
-				                   + match.getGroup().getName());
+						snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("LOOKUP_SNITCH")))) {
+				TextComponent playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA
+					+ "The snitch at [" + x + " " + y + " " + z + "] is owned by "
+					+ snitch.getGroup().getName());
+				String hoverText = snitch.getHoverText(null, null);
+				playerSnitchInfoMessage.setHoverEvent(
+					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+				player.spigot().sendMessage(playerSnitchInfoMessage);
 			} else {
 				sender.sendMessage(ChatColor.RED + "You don't have permission to lookup the group of this snitch");
 			}

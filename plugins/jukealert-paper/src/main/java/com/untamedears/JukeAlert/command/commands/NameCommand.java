@@ -44,28 +44,12 @@ public class NameCommand extends PlayerCommand {
 			Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("RENAME_SNITCH"));
 			if (snitch != null) {
 				String prevName = snitch.getName();
-				if (prevName == null) {
-					prevName = "";
-				}
 				JukeAlert plugin = JukeAlert.getInstance();
 				plugin.getJaLogger().updateSnitchName(snitch, name);
 				snitch.setName(name);
 
-				String snitchWorld = "";
-				if (snitch.getLoc() != null
-						&& snitch.getLoc().getWorld() != null
-						&& snitch.getLoc().getWorld().getName() != null) {
-					snitchWorld = snitch.getLoc().getWorld().getName();
-				}
-				String snitchGroup = "";
-				if (snitch.getGroup() != null && snitch.getGroup().getName() != null) {
-					snitchGroup = snitch.getGroup().getName();
-				}
-				String snitchLocation = "[" + snitch.getX() + " " + snitch.getY() + " " + snitch.getZ() + "]";
 				TextComponent lineText = new TextComponent(ChatColor.AQUA + " Changed snitch name to " + name);
-				String hoverText = String.format(
-					"World: %s\nLocation: %s\nGroup: %s\nPrevious name:\n  %s\nNew name:\n  %s",
-					snitchWorld, snitchLocation, snitchGroup, prevName, name);
+				String hoverText = snitch.getHoverText(prevName, null);
 				lineText.setHoverEvent(
 					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
 				player.spigot().sendMessage(lineText);

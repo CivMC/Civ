@@ -11,6 +11,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.md_5.bungee.api.chat.TextComponent;
+
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -52,7 +54,7 @@ public class MercuryListener implements Listener {
 				try {
 					Group g = GroupManager.getGroup(grp);
 					if (g != null) {
-						Utility.notifyGroup(g, ChatColor.AQUA + message.toString());
+						Utility.notifyGroup(g, new TextComponent(ChatColor.AQUA + message.toString()));
 					} else {
 						if (System.currentTimeMillis() - lastAsyncMessageFailure > failureReportDelay) {
 							JukeAlert.getInstance().getLogger().log(

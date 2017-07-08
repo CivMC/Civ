@@ -12,6 +12,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
+import net.md_5.bungee.api.chat.TextComponent;
+
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -35,7 +37,7 @@ public class Utility {
 		debugging_ = debugging;
 	}
 
-	public static void notifyGroup(Group g, String message) throws SQLException {
+	public static void notifyGroup(Group g, TextComponent message) throws SQLException {
 
 		if (g == null) {
 			return;
@@ -55,7 +57,7 @@ public class Utility {
 		}
 	}
 
-	public static void notifyGroup(Snitch snitch, String message) throws SQLException {
+	public static void notifyGroup(Snitch snitch, TextComponent message) throws SQLException {
 
 		Group sG = snitch.getGroup();
 		if (sG == null) {

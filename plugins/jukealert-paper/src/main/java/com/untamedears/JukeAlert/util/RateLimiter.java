@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.md_5.bungee.api.chat.TextComponent;
+
 import com.untamedears.JukeAlert.JukeAlert;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -50,7 +52,7 @@ public class RateLimiter {
 		RateLimiter.playerMessageRates_.set(RateLimiter.currentFrame_, new HashMap<String, Integer>());
 	}
 
-	public static void sendMessage(Player player, String message) {
+	public static void sendMessage(Player player, TextComponent message) {
 
 		final String playerName = player.getName().toLowerCase();
 		final Map<String, Integer> currentRates = playerMessageRates_.get(currentFrame_);
@@ -69,7 +71,7 @@ public class RateLimiter {
 			curRate = 0;
 		}
 		currentRates.put(playerName, curRate + 1);
-		player.sendMessage(message);
+		player.spigot().sendMessage(message);
 	}
 
 	public static int getMaxRate() {

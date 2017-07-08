@@ -9,6 +9,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
+
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 
@@ -67,11 +71,16 @@ public class ClearCommand extends PlayerCommand {
 		new BukkitRunnable() {
 			@Override
 			public void run() {
+				TextComponent playerSnitchInfoMessage;
 				if (completed) {
-					player.sendMessage(ChatColor.AQUA + "Cleared all snitch logs");
+					playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA + "Cleared all snitch logs");
 				} else {
-					player.sendMessage(ChatColor.DARK_RED + "Snitch Clear Failed");
+					playerSnitchInfoMessage = new TextComponent(ChatColor.DARK_RED + "Snitch Clear Failed");
 				}
+				String hoverText = snitch.getHoverText(null, null);
+				playerSnitchInfoMessage.setHoverEvent(
+					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+				player.spigot().sendMessage(playerSnitchInfoMessage);
 			}
 		}.runTask(JukeAlert.getInstance());
 	}

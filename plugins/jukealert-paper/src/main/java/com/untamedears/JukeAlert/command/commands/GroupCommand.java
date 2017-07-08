@@ -42,8 +42,8 @@ public class GroupCommand extends PlayerCommand {
 			if (offset < 1) {
 				offset = 1;
 			}
+			Group group = GroupManager.getGroup(args[0]);
 			if (!sender.hasPermission("jukealert.admin.jagroup")) {
-				Group group = GroupManager.getGroup(args[0]);
 				if (group == null) {
 					sender.sendMessage(ChatColor.RED + "That group doesn't exist!");
 					return true;
@@ -54,14 +54,14 @@ public class GroupCommand extends PlayerCommand {
 					return true;
 				}
 			}
-			sendLog(sender, args[0], offset);
+			sendLog(sender, group, offset);
 		} else {
 			sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
 		}
 		return true;
 	}
 
-	private void sendLog(CommandSender sender, String group, int offset) {
+	private void sendLog(CommandSender sender, Group group, int offset) {
 
 		Player player = (Player) sender;
 		GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), group, offset, player);
