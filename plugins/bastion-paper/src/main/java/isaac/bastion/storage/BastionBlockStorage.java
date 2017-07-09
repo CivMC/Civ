@@ -341,7 +341,7 @@ public class BastionBlockStorage {
 	/**
 	 * Loads all bastions from the database
 	 */
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	public void loadBastions() {
 		int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
 		for(World world : Bukkit.getWorlds()) {
@@ -359,16 +359,20 @@ public class BastionBlockStorage {
 					long placed = result.getLong("placed");
 					double balance = result.getDouble("fraction");
 					BastionType type = BastionType.getBastionType(result.getString("bastion_type"));
+					boolean died = result.getBoolean("dead");
 					Location loc = new Location(world, x, y, z);
 					BastionBlock block = new BastionBlock(loc, placed, balance, id, type);
 					//Check if it's a ghost bastion, if so remove from the db
-					if(loc.getBlock().getType() != type.getMaterial().getItemType() 
-							|| loc.getBlock().getData() != type.getMaterial().getData()) {
+					if(loc.getBlock().getType() != type.getMaterial().getItemType() ) { // can't set data why check with it
 						deleteBastion(block);
 						continue;
 					}
-					bastions.add(block);
-					bastionsForWorld.add(block);
+					if (died) {
+						dead.put(loc, block.getType().getName());
+					} else {
+						bastions.add(block);
+						bastionsForWorld.add(block);
+					}
 				}
 			} catch (SQLException e) {
 				log.log(Level.SEVERE, "Error loading bastions from database, shutting down", e);

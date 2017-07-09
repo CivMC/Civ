@@ -173,9 +173,9 @@ public class BastionInteractListener implements Listener {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
+	//@SuppressWarnings("deprecation")
 	public BastionType blockToType(Block block, ItemStack inHand) {
-		MaterialData mat = new MaterialData(block.getType(), block.getData());
+		MaterialData mat = new MaterialData(block.getType()); //, block.getData()); -- again, we can't differentiate based on this?
 		String displayName = null;
 		List<String> lore = null;
 		if (inHand != null) {

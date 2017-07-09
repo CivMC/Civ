@@ -378,18 +378,27 @@ public class BastionType {
 			if(type.erosionTime > 0) {
 				new BukkitRunnable() {
 					public void run() {
+						Bastion.getPlugin().getLogger().log(Level.INFO, "Erosion task begin, found " + 
+								Bastion.getBastionStorage().getBastionsForType(type).size() + " to erode");
 						for(BastionBlock bastion : Bastion.getBastionStorage().getBastionsForType(type)) {
 							bastion.erode(1);
 						}
+						Bastion.getPlugin().getLogger().log(Level.INFO, "Erosion task ended, after erosion " + 
+								Bastion.getBastionStorage().getBastionsForType(type).size() + " remain");
 					}
 				}.runTaskTimerAsynchronously(Bastion.getPlugin(), type.erosionTime, type.erosionTime);
 			}
 			if(type.regenTime > 0) {
 				new BukkitRunnable() {
 					public void run() {
+						Bastion.getPlugin().getLogger().log(Level.INFO, "Regen task begin, found " + 
+								Bastion.getBastionStorage().getBastionsForType(type).size() + " to regen");
 						for(BastionBlock bastion : Bastion.getBastionStorage().getBastionsForType(type)) {
 							bastion.regen();
 						}
+						Bastion.getPlugin().getLogger().log(Level.INFO, "Regen task ended, after regen " + 
+								Bastion.getBastionStorage().getBastionsForType(type).size() + " remain");
+
 					}
 				}.runTaskTimerAsynchronously(Bastion.getPlugin(), type.regenTime, type.regenTime);
 			}

@@ -48,7 +48,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		} else{
 			this.health = 0;
 			destroy();
-			Bastion.getPlugin().severe("Reinforcement removed during BastionBlock instantiation, removing");
+			Bastion.getPlugin().severe("Reinforcement removed during BastionBlock instantiation, removing at " + location.toString());
 		}
 
 	}
@@ -213,7 +213,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 				}
 			} else {
 				destroy();
-				Bastion.getPlugin().severe("Reinforcement removed without removing bastion, fixed");
+				Bastion.getPlugin().severe("Reinforcement removed without removing bastion, fixed at " + location);
 			}
 		}
 	}
@@ -277,7 +277,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 			return (PlayerReinforcement) reinforcement;
 		} else {
 			destroy();
-			Bastion.getPlugin().severe("Reinforcement removed without removing bastion, fixed");
+			Bastion.getPlugin().severe("Reinforcement no longer exists, but bastion not removed, fixed at " + location);
 		}
 		return null;
 	}
