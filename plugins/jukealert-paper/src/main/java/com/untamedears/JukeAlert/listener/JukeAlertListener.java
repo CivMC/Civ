@@ -499,6 +499,10 @@ public class JukeAlertListener implements Listener {
 
 	private void handleSnitchEntry(Player player) {
 
+		if (player.hasMetadata("NPC")) {
+			return;
+		}
+
 		if (vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish")) {
 			return;
 		}
