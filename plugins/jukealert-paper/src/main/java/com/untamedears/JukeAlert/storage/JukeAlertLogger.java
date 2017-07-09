@@ -1633,7 +1633,7 @@ public class JukeAlertLogger {
 		} else {
 			// Add the first value
 			String[] mutedGroups = set.getString(2).split("\\s+");
-			Set<String> mutedGroupsSet = new HashSet<String>(Arrays.asList(mutedGroups));
+			List<String> mutedGroupsSet = new ArrayList<String>(Arrays.asList(mutedGroups));
 			if (mutedGroupsSet.contains(ignoredGroup)) {
 				ignoringUsers.add(set.getString(1));
 			}
@@ -1641,7 +1641,7 @@ public class JukeAlertLogger {
 			while (set.next()) {
 				// Create set of uuids
 				mutedGroups = set.getString(2).split("\\s+");
-				mutedGroupsSet = new HashSet<String>(Arrays.asList(mutedGroups));
+				mutedGroupsSet = new ArrayList<String>(Arrays.asList(mutedGroups));
 				if (mutedGroupsSet.contains(ignoredGroup)) {
 					ignoringUsers.add(set.getString(1));
 				}
