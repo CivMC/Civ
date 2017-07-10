@@ -35,8 +35,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
-import com.untamedears.humbug.annotations.BahHumbug;
-import com.untamedears.humbug.annotations.BahHumbugs;
 
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
