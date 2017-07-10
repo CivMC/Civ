@@ -1,7 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -70,27 +72,42 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		genStatus.append("GameFixes is ");
 		if (config != null && config.isEnabled()) {
 			genStatus.append(ChatColor.GREEN).append("active\n").append(ChatColor.RESET);
+			genStatus.append("   Block elytra break bug is ");
 			if (config.isBlockElytraBreakBug()) {
-				genStatus.append("   Block elytra break bug is ").append(ChatColor.GREEN).append("enabled\n")
-						.append(ChatColor.RESET);
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 				genStatus.append("   Will deal " + config.getDamageOnElytraBreakBug() + " damage to players\n");
 			} else {
-				genStatus.append("   Block elytra break bug is ").append(ChatColor.RED).append("disabled\n")
-						.append(ChatColor.RESET);
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
+			genStatus.append("   Block storage entities from teleporting to prevents exploits ");
 			if (!config.canStorageTeleport()) {
-				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
-						.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
-				genStatus.append("   Block storage entities from teleporting to prevents exploits ")
-						.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
+			genStatus.append("   Hopper self-feed duplication exploit fix ");
 			if (config.isStopHopperDupe()) {
-				genStatus.append("   Hopper self-feed duplication exploit fix ")
-						.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
-				genStatus.append("   Hopper self-feed duplication exploit fix ")
-						.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("   Duplications using rails exploit fix ");
+			if (config.isStopRailDupe()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  End Portal removal exploit fix ");
+			if (config.isStopEndPortalDeletion()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  Bed Bombing in Nether / Hell Biomes fix ");
+			if (config.stopBedBombing()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
 			}
 		} else {
 			genStatus.append(ChatColor.RED).append("inactive").append(ChatColor.RESET);
@@ -147,7 +164,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPistonPushRail(BlockPistonExtendEvent event) {
-		if (config.isStopRailDupe()) {
+		if (config.isEnabled() && config.isStopRailDupe()) {
 			for (Block block : event.getBlocks()) {
 				Material type = block.getType();
 
@@ -161,7 +178,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onRailPlace(BlockPlaceEvent event) {
-		if (config.isStopRailDupe()) {
+		if (config.isEnabled() && config.isStopRailDupe()) {
 			Block block = event.getBlock();
 			Material type = block.getType();
 
@@ -181,7 +198,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	//Trying to stop players from deleting end portals
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-		if (config.isStopEndPortalDeletion()) {
+		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
 			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 
 			if (block.getType() == Material.ENDER_PORTAL) {
@@ -192,7 +209,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onDispenseEvent(BlockDispenseEvent event) {
-		if (config.isStopEndPortalDeletion()) {
+		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
 			if (event.getBlock().getType() == Material.DISPENSER) {
 				Dispenser disp = (Dispenser) event.getBlock().getState().getData();
 				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
@@ -202,6 +219,21 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				}
 
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerEnterBed(BlockPlaceEvent event) {
+		if (!config.isEnabled() || !config.stopBedBombing()) return;
+		
+		Block b = event.getBlock();
+		if (!(b.getType() == Material.BED || b.getType() == Material.BED_BLOCK))
+			return;
+
+		Environment env = b.getLocation().getWorld().getEnvironment();
+		Biome biome = b.getLocation().getBlock().getBiome();
+		if (env == Environment.NETHER || env == Environment.THE_END || Biome.HELL == biome || Biome.SKY == biome) {
+			event.setCancelled(true);
 		}
 	}
 

@@ -227,7 +227,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPortalTravel(EntityPortalEvent event) {
-		if (config.isOneToOneNether()) {
+		if (config.isEnabled() && config.isOneToOneNether()) {
 			Location newLoc = event.getFrom();
 			newLoc.setWorld(event.getTo().getWorld());
 			event.setTo(newLoc);
@@ -236,7 +236,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPortalTravel(PlayerPortalEvent event) {
-		if (config.isOneToOneNether() && event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+		if (config.isEnabled() && config.isOneToOneNether() && event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
 			Location newLoc = event.getFrom();
 			newLoc.setWorld(event.getTo().getWorld());
 			event.setTo(newLoc);
@@ -245,7 +245,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPortalCreate(PortalCreateEvent event) {
-		if (!config.isReturnNetherPortal()) {
+		if (config.isEnabled() && !config.isReturnNetherPortal()) {
 			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getName().equals("world_nether")) {
 				event.setCancelled(true);
 			}
@@ -255,6 +255,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	//Trying to stop dupe bugs via minecart inventories
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityRightClick(PlayerInteractEntityEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories()) {
 			Entity target = event.getRightClicked();
 
@@ -270,6 +271,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isChestedMinecartInventories() || !config.isHopperMinecartInventories()) {
 			InventoryHolder holder = event.getDestination().getHolder();
 			if (holder instanceof StorageMinecart && !config.isChestedMinecartInventories()) {

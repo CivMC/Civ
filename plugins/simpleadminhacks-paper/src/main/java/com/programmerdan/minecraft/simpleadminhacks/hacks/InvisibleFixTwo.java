@@ -3,13 +3,13 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.minecraft.server.v1_10_R1.EntityTracker;
-import net.minecraft.server.v1_10_R1.EntityTrackerEntry;
-import net.minecraft.server.v1_10_R1.WorldServer;
-import net.minecraft.server.v1_10_R1.PacketPlayOutEntityTeleport;
+import net.minecraft.server.v1_12_R1.EntityTracker;
+import net.minecraft.server.v1_12_R1.EntityTrackerEntry;
+import net.minecraft.server.v1_12_R1.WorldServer;
+import net.minecraft.server.v1_12_R1.PacketPlayOutEntityTeleport;
 
-import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftEntity;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_12_R1.entity.CraftEntity;
 import org.bukkit.Server;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -76,14 +76,17 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		
 		Vehicle vehicle = move.getVehicle();
 		if (vehicle == null) return;
-		Entity e = vehicle.getPassenger();
-		if (e == null) return;
-
-		if (e.isOp() && config.getIgnoreOps()) return;
-		String tPerm = config.getIgnorePermission();
-		if (tPerm != null && e.hasPermission(tPerm)) return;
+		if (vehicle.getPassengers() == null || vehicle.getPassengers().size() == 0) return;
 		
-		forceUpdate(e);
+		for (Entity e : vehicle.getPassengers()) {
+			if (e == null) continue;
+
+			if (e.isOp() && config.getIgnoreOps()) continue;
+			String tPerm = config.getIgnorePermission();
+			if (tPerm != null && e.hasPermission(tPerm)) continue;
+			
+			forceUpdate(e);
+		}
 	}
 	
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -121,12 +124,12 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		EntityTrackerEntry entry = (EntityTrackerEntry) tracker.trackedEntities
 				.get(entity.getEntityId());
 		
-		net.minecraft.server.v1_10_R1.Entity eEntity = getNmsEntity(entity);
+		net.minecraft.server.v1_12_R1.Entity eEntity = getNmsEntity(entity);
 		
 		entry.broadcast(new PacketPlayOutEntityTeleport(eEntity));
 	}
 	
-	private net.minecraft.server.v1_10_R1.Entity getNmsEntity(final Entity entity) {
+	private net.minecraft.server.v1_12_R1.Entity getNmsEntity(final Entity entity) {
 		CraftEntity craftEntity = (CraftEntity) entity;
 		return craftEntity.getHandle();
 	}
@@ -176,4 +179,3 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 		return new InvisibleFixTwoConfig(plugin, config);
 	}
 }
-

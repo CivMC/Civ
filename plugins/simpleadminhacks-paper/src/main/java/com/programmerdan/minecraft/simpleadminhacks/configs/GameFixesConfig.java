@@ -8,6 +8,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class GameFixesConfig extends SimpleHackConfig {
 
@@ -17,7 +18,8 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private boolean stopHopperDupe;
 	private boolean stopRailDupe;
 	private boolean stopEndPortalDeletion;
-
+	private boolean stopBedBombing;
+	
 	private ArrayList<BlockFace> bfArray;
 	private ArrayList<Material> railArray;
 	private ArrayList<Material> pistonArray;
@@ -30,14 +32,22 @@ public class GameFixesConfig extends SimpleHackConfig {
 	protected void wireup(ConfigurationSection config) {
 		blockElytraBreakBug = config.getBoolean("blockElytraBreakBug", true);
 		damageOnElytraBreakBug = config.getDouble("damageOnElytraBreakBug", 0.0d);
+		if (blockElytraBreakBug) plugin().log(Level.INFO, "  Block Elytra 1height break bug is enabled, doing {} damage to violators", damageOnElytraBreakBug);
+		
 		canStorageTeleport = config.getBoolean("canStorageTeleport");
+		if (!canStorageTeleport) plugin().log("  Storage holder teleportation is disabled.");
+		
 		stopHopperDupe = config.getBoolean("stopHopperDupe");
+		if (stopHopperDupe) plugin().log("  Stop Hopper self-feeding Dupe is enabled.");
 
 		stopRailDupe = config.getBoolean("stopRailDupe", true);
-		if (stopRailDupe) plugin().log("Stop Rail Dupe is enabled.");
+		if (stopRailDupe) plugin().log("  Stop Rail Dupe is enabled.");
 
 		stopEndPortalDeletion = config.getBoolean("stopEndPortalDeletion", true);
-		if (stopEndPortalDeletion) plugin().log("Stop End Portal Deletion is enabled.");
+		if (stopEndPortalDeletion) plugin().log("  Stop End Portal Deletion is enabled.");
+		
+		stopBedBombing = config.getBoolean("stopBedBombingInHellBiomes", true);
+		if (stopBedBombing) plugin().log("  Stop Bed Bombing In Hell Biomes is enabled.");
 	}
 
 	private void wireUpArrays() {
@@ -98,5 +108,9 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	public ArrayList<Material> getPistonArray() {
 		return pistonArray;
+	}
+	
+	public boolean stopBedBombing() {
+		return this.stopBedBombing;
 	}
 }

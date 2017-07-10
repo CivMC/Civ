@@ -21,14 +21,18 @@ hacks:
     # Wither spawn is also true = enabled and false = disabled
     witherSpawning: false
     # Enderchests is also true = enabled and false = disabled
-    enderChestPlacement: false
-    elytra: off
-    chorus_fruit: off
+    enderChestPlacement: true
+    enderChestUse: false
+    # ElytraUse: true  = enabled, false = disabled
+    elytraUse: true
+    chorusFruitTeleportation: false
     # WeepingAngel bans people when they die, the numbers are in minutes.
     weepingAngel:
       enabled: false
       environment: 1
       playerKill: 5
+    # prevent use of buckets or dispensing water in hell biomes
+    blockWaterInHell: true
   GameFixes:
     enabled: true
     # Does not fully work atm
@@ -38,6 +42,7 @@ hacks:
     stopHopperDupe: true
     stopRailDupe: true
     stopEndPortalDeletion: true
+    stopBedBombingInHellBiomes: true
   GameTuning:
     enabled: true
     chunkLimits:
@@ -50,6 +55,7 @@ hacks:
         DISPENSER: 4
         DROPPER: 4
         REDSTONE_COMPARATOR: 4
+        OBSERVER: 2
       exempt:
       - Steve
       - Alex
@@ -148,7 +154,7 @@ hacks:
   InvControl:
     enabled: true
   InvisibleFixTwo:
-    enabled: true
+    enabled: false
     # in ticks -- ticks to wait after teleport to force update
     teleportDelay: 5
     # in milliseconds -- min time between forced updates if active
@@ -156,7 +162,7 @@ hacks:
     ignoreOps: true
     ignorePermission: sah.allowInvisible
   InvisibleFix:
-    enabled: true
+    enabled: false
     ignoreOps: true
     ignorePermission: sah.allowInvisible
     # in ticks
@@ -190,6 +196,7 @@ hacks:
      - HOPPER
      - PISTON_BASE
      - PISTON_STICKY_BASE
+     - OBSERVER
   Insight:
     enabled: false
     into:

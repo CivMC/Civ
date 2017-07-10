@@ -7,16 +7,24 @@ import java.util.List;
 import org.apache.commons.lang.time.DateUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.block.Biome;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.*;
 import org.bukkit.event.Listener;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
+import org.bukkit.event.entity.EntityToggleGlideEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.FurnaceExtractEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.Material;
 
 import org.bukkit.command.Command;
@@ -27,7 +35,19 @@ import org.bukkit.configuration.ConfigurationSection;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
+import com.untamedears.humbug.annotations.BahHumbug;
+import com.untamedears.humbug.annotations.BahHumbugs;
+
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dispenser;
+import org.bukkit.material.Hopper;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
@@ -91,29 +111,71 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				genStatus.append("  Potato XP is disabled\n");
 			}
 
-			genStatus.append(" Villager Trading is ");
+			genStatus.append("  Villager Trading is ");
 			if (config.isVillagerTrading()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
-			genStatus.append(" Wither Spawning is ");
+			genStatus.append("  Wither Spawning is ");
 			if (config.isWitherSpawning()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
-			genStatus.append(" Ender Chest placement is ");
+			genStatus.append("  Ender Chest placement is ");
 			if (config.isEnderChestPlacement()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
 
-			genStatus.append(" WeepAngel is ");
+			genStatus.append("  Ender Chest use is ");
+			if (config.isEnderChestUse()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
+			genStatus.append("  Shulker Box use is ");
+			if (config.isShulkerBoxUse()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
+			genStatus.append("  Totem of Undying effects are ");
+			if (config.isTotemPowers()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
+			genStatus.append("  Elytra use is ");
+			if (config.isElytraUse()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Chorus Fruit teleportation is ");
+			if (config.isChorusFruitTeleportation()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  WeepAngel is ");
 			if (config.isWeepingAngel()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
+			genStatus.append("  Block water in HELL biomes is ");
+			if (config.isBlockWaterInHell()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
@@ -152,6 +214,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableVillagerTrading(PlayerInteractEntityEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isVillagerTrading()) {
 			Entity npc = event.getRightClicked();
 
@@ -165,6 +228,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableWitherSpawning(CreatureSpawnEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isWitherSpawning()) {
 			if (event.getEntityType().equals(EntityType.WITHER)) {
 				event.setCancelled(true);
@@ -174,15 +238,75 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderChestPlacement(BlockPlaceEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isEnderChestPlacement()) {
 			if (event.getBlock().getType().equals(Material.ENDER_CHEST)) {
 				event.setCancelled(true);
 			}
 		}
 	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) 
+	public void disableEnderChestUse(PlayerInteractEvent event) {
+		if (!config.isEnabled()) return;
+		if (!config.isEnderChestUse()) {
+			Action action = event.getAction();
+			Material material = event.getClickedBlock().getType();
+			boolean ender_chest = action == Action.RIGHT_CLICK_BLOCK &&
+					material.equals(Material.ENDER_CHEST);
+			if (ender_chest) {
+				event.setCancelled(true);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void disableShulkerBoxUse(InventoryOpenEvent event){
+		if (!config.isEnabled()) return;
+		if (!config.isShulkerBoxUse() && InventoryType.SHULKER_BOX.equals(event.getInventory().getType())) {
+			event.setCancelled(true);
+		}
+	}
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void disabledShulkerBoxHoppering(InventoryMoveItemEvent event) {
+		if (!config.isEnabled() || config.isShulkerBoxUse()) return;
+		
+		if ((event.getDestination() == null) || (event.getSource() == null)) return;
+		if (InventoryType.SHULKER_BOX.equals(event.getDestination().getType()) ||
+				InventoryType.SHULKER_BOX.equals(event.getSource().getType())) {
+			event.setCancelled(true);
+		}
+
+	}
+	
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void disableTotemPowers(EntityResurrectEvent event) {
+		if (!config.isEnabled() || config.isTotemPowers()) return;
+		
+		if (EntityType.PLAYER.equals(event.getEntityType())) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void disableChorusFruitTeleportation(PlayerTeleportEvent event) {
+		if (!config.isEnabled() || config.isChorusFruitTeleportation()) return;
+		
+		if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void disableElytraUse(EntityToggleGlideEvent event) {
+		if (!config.isEnabled() || config.isElytraUse()) return;
+		
+		event.setCancelled(true);
+	}
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void weepingAngelListener(PlayerDeathEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isWeepingAngel()) {
 			return;
 		}
@@ -229,4 +353,29 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}, 2L);
 	}
 
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e) {
+		if (config.isEnabled() && config.isBlockWaterInHell()) {
+			if ((e.getBlockClicked().getBiome() == Biome.HELL) && (e.getBucket() == Material.WATER_BUCKET)) {
+				e.setCancelled(true);
+				e.getItemStack().setType(Material.BUCKET);
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onDispenseEvent(BlockDispenseEvent event) {
+		if (config.isEnabled() && config.isBlockWaterInHell()) {
+			if (event.getBlock().getType() == Material.DISPENSER) {
+				Dispenser disp = (Dispenser) event.getBlock().getState().getData();
+				Biome biome = event.getBlock().getRelative(disp.getFacing()).getBiome();
+
+				if (Biome.HELL.equals(biome) && event.getItem() != null && event.getItem().getType().equals(Material.WATER_BUCKET)) {
+					event.setItem(new ItemStack(Material.BUCKET, event.getItem().getAmount()));
+					event.setCancelled(true);
+				}
+
+			}
+		}
+	}
 }

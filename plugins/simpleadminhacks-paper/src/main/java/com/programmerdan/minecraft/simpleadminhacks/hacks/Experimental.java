@@ -105,6 +105,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	private void monitorTeleportLow(PlayerTeleportEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isTeleportSpy()) return;
 		StringBuffer sb = new StringBuffer("[LO] ");
 		logTeleport(event, sb);
@@ -112,6 +113,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	private void monitorTeleportHigh(PlayerTeleportEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isTeleportSpy()) return;
 		StringBuffer sb = new StringBuffer("[HI] ");
 		logTeleport(event, sb);
@@ -119,6 +121,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	private void monitorTeleportTrack(PlayerPortalEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isPostTeleportSpy()) return;
 		
 		final Player player = event.getPlayer();
@@ -194,6 +197,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	private void monitorCombatLow(EntityDamageByEntityEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isCombatSpy()) return;
 		StringBuffer sb = new StringBuffer("[LO] ");
 		logCombat(event, sb);
@@ -219,6 +223,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
 	private void monitorCombatHigh(EntityDamageByEntityEvent event) {
+		if (!config.isEnabled()) return;
 		if (!config.isCombatSpy()) return;
 		StringBuffer sb = new StringBuffer("[HI]: ");
 		logCombat(event, sb);
