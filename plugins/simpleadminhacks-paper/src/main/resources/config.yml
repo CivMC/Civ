@@ -21,14 +21,18 @@ hacks:
     # Wither spawn is also true = enabled and false = disabled
     witherSpawning: false
     # Enderchests is also true = enabled and false = disabled
-    enderChestPlacement: false
-    elytra: off
-    chorus_fruit: off
+    enderChestPlacement: true
+    enderChestUse: false
+    # ElytraUse: true  = enabled, false = disabled
+    elytraUse: true
+    chorusFruitTeleportation: false
     # WeepingAngel bans people when they die, the numbers are in minutes.
     weepingAngel:
       enabled: false
       environment: 1
       playerKill: 5
+    # prevent use of buckets or dispensing water in hell biomes
+    blockWaterInHell: true
   GameFixes:
     enabled: true
     # Does not fully work atm
@@ -38,6 +42,7 @@ hacks:
     stopHopperDupe: true
     stopRailDupe: true
     stopEndPortalDeletion: true
+    stopBedBombingInHellBiomes: true
   GameTuning:
     enabled: true
     chunkLimits:

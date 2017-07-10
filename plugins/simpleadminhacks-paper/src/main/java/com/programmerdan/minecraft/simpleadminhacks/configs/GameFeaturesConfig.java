@@ -31,11 +31,15 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean enderChestUse;
 	private boolean shulkerBoxUse;
 	private boolean totemPowers;
+	private boolean elytraUse;
+	private boolean chorusFruitUse;
 
 	private boolean weepingAngel;
 	private int weepingAngelEnv;
 	private int weepingAngelPlayer;
 
+	private boolean blockWaterInHell;
+	
 	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -62,8 +66,14 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		
 		this.totemPowers = config.getBoolean("totemPower", false);
 		if (!this.totemPowers) plugin().log("  Undeath via totems is disabled");
+		
+		this.elytraUse = config.getBoolean("elytraUse", true);
+		if (!this.elytraUse) plugin().log("  Elytra use is disabled");
+		
+		this.chorusFruitUse = config.getBoolean("chorusFruitTeleportation", false);
+		if (!this.chorusFruitUse) plugin().log("  Chorus Fruit Teleportation is disabled");
 
-		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
+ 		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
 		if (this.weepingAngel) {
 			this.weepingAngelEnv = config.getInt("weepingAngel.environment", 1);
 			this.weepingAngelPlayer = config.getInt("weepingAngel.playerKill", 5);
@@ -71,6 +81,8 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 			plugin().log("  Weeping Angel is enabled. Times | Env[" + weepingAngelEnv + "] PK[" + weepingAngelPlayer + "]");
 		}
 
+		this.blockWaterInHell = config.getBoolean("blockWaterInHell", true);
+		if (this.blockWaterInHell) plugin().log("  Blocking bucket use in hell biomes");
 
 		/* Add additional feature config grabs here. */
 	}
@@ -106,6 +118,14 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		return this.totemPowers;
 	}
 	
+	public boolean isElytraUse() {
+		return this.elytraUse;
+	}
+	
+	public boolean isChorusFruitTeleportation() {
+		return this.chorusFruitUse;
+	}
+	
 	public boolean isWeepingAngel() {
 		return this.weepingAngel;
 	}
@@ -118,5 +138,9 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		return this.weepingAngelPlayer;
 	}
 
+	public boolean isBlockWaterInHell() {
+		return this.blockWaterInHell;
+	}
+	
 }
 
