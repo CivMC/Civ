@@ -821,7 +821,8 @@ public class JukeAlertLogger {
 		return info;
 	}
 
-	public synchronized SendSnitchList getSnitchList(Player player, int offset, boolean truncateNames) {
+	public synchronized SendSnitchList getSnitchList(Player player, int offset, List<String> groupNames,
+			boolean truncateNames) {
 
 		final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
 
@@ -845,12 +846,24 @@ public class JukeAlertLogger {
 		try {
 			String uuidString = java.util.UUID.randomUUID().toString();
 			UUID accountId = player.getUniqueId();
-			List<String> groups = groupMediator.getGroupsWithPermission(accountId,
+			List<String> allGroupNames = groupMediator.getGroupsWithPermission(accountId,
 				PermissionType.getPermission("LIST_SNITCHES"));
 
+			List<String> groupNamesToShow;
+			if (groupNames != null) {
+				groupNamesToShow = new ArrayList<String>();
+				for (String groupName : groupNames) {
+					if (allGroupNames.contains(groupName)) {
+						groupNamesToShow.add(groupName);
+					}
+				}
+			} else {
+				groupNamesToShow = allGroupNames;
+			}
+
 			StringBuilder sb = new StringBuilder();
-			for (String group : groups) {
-				sb.append(group);
+			for (String groupName : groupNamesToShow) {
+				sb.append(groupName);
 				sb.append(uuidString);
 			}
 

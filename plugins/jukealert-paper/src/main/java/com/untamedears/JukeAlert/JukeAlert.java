@@ -10,6 +10,7 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.untamedears.JukeAlert.command.JukeAlertCommandHandler;
+import com.untamedears.JukeAlert.command.commands.JaListCommand;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.ItemExchangeListener;
 import com.untamedears.JukeAlert.listener.JukeAlertListener;
@@ -33,6 +34,8 @@ public class JukeAlert extends ACivMod {
 
 	private GroupMediator groupMediator;
 
+	private JaListCommand jaListCommand;
+
 	@Override
 	public void onEnable() {
 
@@ -42,6 +45,7 @@ public class JukeAlert extends ACivMod {
 		groupMediator = new GroupMediator();
 		jaLogger = new JukeAlertLogger();
 		snitchManager = new SnitchManager();
+		jaListCommand = new JaListCommand();
 		handle = new JukeAlertCommandHandler();
 		handle.registerCommands();
 		registerEvents();
@@ -119,6 +123,11 @@ public class JukeAlert extends ACivMod {
 	public JukeAlertCommandHandler getCommandHandler() {
 
 		return commandHandler;
+	}
+
+	public JaListCommand getJaListCommand() {
+
+		return jaListCommand;
 	}
 
 	// Logs a message with the level of Info
