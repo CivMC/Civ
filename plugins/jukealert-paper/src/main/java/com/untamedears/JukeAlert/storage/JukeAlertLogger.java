@@ -1644,11 +1644,19 @@ public class JukeAlertLogger {
 			return null;
 		} else {
 			// Add the first value
-			ignoringUsers.add(set.getString(1));
+			String[] mutedGroups = set.getString(2).split("\\s+");
+			List<String> mutedGroupsSet = Arrays.asList(mutedGroups);
+			if (mutedGroupsSet.contains(ignoredGroup)) {
+				ignoringUsers.add(set.getString(1));
+			}
 			// Now if there is more loop through them
 			while (set.next()) {
 				// Create set of uuids
-				ignoringUsers.add(set.getString(1));
+				mutedGroups = set.getString(2).split("\\s+");
+				mutedGroupsSet = Arrays.asList(mutedGroups);
+				if (mutedGroupsSet.contains(ignoredGroup)) {
+					ignoringUsers.add(set.getString(1));
+				}
 			}
 		}
 		return ignoringUsers;
