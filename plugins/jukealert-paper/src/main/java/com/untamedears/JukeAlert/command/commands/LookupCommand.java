@@ -77,7 +77,7 @@ public class LookupCommand extends PlayerCommand {
 					&& NameAPI.getGroupManager().hasAccess(
 						snitch.getGroup(), player.getUniqueId(), PermissionType.getPermission("LOOKUP_SNITCH")))) {
 				TextComponent playerSnitchInfoMessage = new TextComponent(ChatColor.AQUA
-					+ "The snitch at [" + x + " " + y + " " + z + "] is owned by "
+					+ "The snitch at [" + x + " " + y + " " + z + "] is on group "
 					+ snitch.getGroup().getName());
 				String hoverText = snitch.getHoverText(null, null);
 				playerSnitchInfoMessage.setHoverEvent(
