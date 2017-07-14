@@ -3,6 +3,8 @@ CivModCore
 
 Versions:
 
+* 1.6.0 - Spigot 1.12
+
 * 1.5.10 - Spigot 1.11 or higher.
 
 * 1.5.9 - Spigot 1.10 / 1.10.x
