@@ -2,6 +2,10 @@ package isaac.bastion;
 
 import java.util.LinkedList;
 
+import isaac.bastion.commands.GroupCommandManager;
+import isaac.bastion.manager.BastionGroupManager;
+import isaac.bastion.storage.BastionGroupStorage;
+import isaac.bastion.storage.Database;
 import org.bukkit.configuration.ConfigurationSection;
 
 import isaac.bastion.commands.BastionCommandManager;
@@ -18,23 +22,27 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import java.util.logging.Logger;
 import java.util.logging.Level;
 
 public final class Bastion extends ACivMod {
 	private static Bastion plugin;
-	private static BastionBlockStorage storage;
-	private static BastionBlockManager manager;
-	
+	private static BastionBlockStorage blockStorage;
+	private static BastionBlockManager blockManager;
+	private static BastionGroupStorage groupStorage;
+	private static BastionGroupManager groupManager;
+	private static CommonSettings commonSettings;
+
 	public void onEnable() 	{
 		super.onEnable();
 		plugin = this;
 		saveDefaultConfig();
 		reloadConfig();
 		BastionType.loadBastionTypes(getConfig().getConfigurationSection("bastions"));
+		commonSettings = CommonSettings.load(getConfig().getConfigurationSection("commonSettings"));
 		setupDatabase();
 		registerNameLayerPermissions();
-		manager = new BastionBlockManager();
+		blockManager = new BastionBlockManager();
+		groupManager = new BastionGroupManager(this.groupStorage);
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
@@ -45,7 +53,8 @@ public final class Bastion extends ACivMod {
 	}
 	
 	public void onDisable() {
-		storage.close();
+		blockStorage.close();
+		groupStorage.close();
 	}
 	
 	public String getPluginName() {
@@ -57,7 +66,7 @@ public final class Bastion extends ACivMod {
 		getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
 		getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
 		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
-		getServer().getPluginManager().registerEvents(new BastionBreakListener(storage), this);
+		getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage), this);
 	}
 
 	private void setupDatabase() {
@@ -80,15 +89,20 @@ public final class Bastion extends ACivMod {
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		storage = new BastionBlockStorage(db, getLogger());
-		storage.registerMigrations();
+
+		Database.registerMigrations(db);
 		if(!db.updateDatabase()) {
 			warning("Failed to update database, stopping bastion");
 			getServer().getPluginManager().disablePlugin(this);
 			return;
 		}
-		storage.loadBastions();
+
+		blockStorage = new BastionBlockStorage(db, getLogger());
+		blockStorage.loadBastions();
 		getLogger().log(Level.INFO, "All Bastions loaded");
+
+		groupStorage = new BastionGroupStorage(db, getLogger());
+		groupStorage.loadGroups();
 	}
 	
 	//Sets up the command managers
@@ -100,6 +114,9 @@ public final class Bastion extends ACivMod {
 		getCommand("bsb").setExecutor(new ModeChangeCommand(Mode.BASTION));
 		getCommand("bsf").setExecutor(new ModeChangeCommand(Mode.OFF));
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
+		getCommand("bsga").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Add));
+		getCommand("bsgd").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Delete));
+		getCommand("bsgl").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.List));
 	}
 
 	public static Bastion getPlugin() {
@@ -107,13 +124,19 @@ public final class Bastion extends ACivMod {
 	}
 	
 	public static BastionBlockManager getBastionManager() {
-		return manager;
+		return blockManager;
 	}
 	
 	public static BastionBlockStorage getBastionStorage() {
-		return storage;
+		return blockStorage;
 	}
-	
+
+	public static BastionGroupManager getGroupManager() {
+		return groupManager;
+	}
+
+	public static CommonSettings getCommonSettings() { return commonSettings; }
+
 	private void registerNameLayerPermissions() {
 		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
 		memberAndAbove.add(PlayerType.MEMBERS);
@@ -124,8 +147,12 @@ public final class Bastion extends ACivMod {
 		modAndAbove.add(PlayerType.MODS);
 		modAndAbove.add(PlayerType.ADMINS);
 		modAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission("BASTION_PEARL", memberAndAbove);
-		PermissionType.registerPermission("BASTION_PLACE", modAndAbove);
+		LinkedList <PlayerType> adminAndAbove = new LinkedList<PlayerType>();
+		adminAndAbove.add(PlayerType.ADMINS);
+		adminAndAbove.add(PlayerType.OWNER);
+		PermissionType.registerPermission(Permissions.BASTION_PEARL, memberAndAbove);
+		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove);
+		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove);
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import isaac.bastion.Permissions;
+import isaac.bastion.manager.BastionGroupManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -34,28 +36,24 @@ import isaac.bastion.manager.EnderPearlManager;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public final class BastionDamageListener implements Listener {
-	private BastionBlockManager manager;
-	private EnderPearlManager pearlMan;
+	private BastionBlockManager blockManager;
+	private BastionGroupManager groupManager;
+	private EnderPearlManager pearlManager;
 
 	public BastionDamageListener() {
-		manager = Bastion.getBastionManager();
-		pearlMan = new EnderPearlManager();
+		blockManager = Bastion.getBastionManager();
+		groupManager = Bastion.getGroupManager();
+		pearlManager = new EnderPearlManager();
 	}
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
-		Set<BastionBlock> preblocking = manager.shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
 		
-		if (preblocking.size() != 0){
-			Set<BastionBlock> blocking = clearNonBlocking(preblocking);
-
-			if (blocking.size() == 0) {
-				return;
-			}
-			
-			manager.erodeFromPlace(event.getPlayer(),blocking);
+		if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
+			blockManager.erodeFromPlace(event.getPlayer(), blocking);
 			
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
@@ -66,7 +64,7 @@ public final class BastionDamageListener implements Listener {
 	public void onWaterFlow(BlockFromToEvent  event){
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getToBlock());
-		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(event.getBlock(),blocks, null));
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getBlock(),blocks, null);
 		
 		if(blocking.size() != 0){
 			event.setCancelled(true);
@@ -86,7 +84,7 @@ public final class BastionDamageListener implements Listener {
 			playerName = player.getUniqueId();
 		}
 		
-		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(event.getLocation().getBlock(), blocks, playerName));
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getLocation().getBlock(), blocks, playerName);
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -95,11 +93,11 @@ public final class BastionDamageListener implements Listener {
 
 	@EventHandler (ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent  event){
-		Block pistion = event.getBlock();
+		Block piston = event.getBlock();
 		Set<Block> involved = new HashSet<Block>(event.getBlocks());
-		involved.add(pistion.getRelative(event.getDirection()));
+		involved.add(piston.getRelative(event.getDirection()));
 		
-		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(pistion, involved, null));
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(piston, involved, null);
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -111,7 +109,7 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
 		
-		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId()));
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -125,8 +123,8 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getState().getData()).getFacing()));
 		
-		Set<BastionBlock> blocking = clearNonBlocking(manager.shouldStopBlock(event.getBlock(),blocks, null));
-		
+		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getBlock(), blocks, null);
+
 		if(blocking.size() != 0) {
 			event.setCancelled(true);
 		}
@@ -145,7 +143,7 @@ public final class BastionDamageListener implements Listener {
 		if (event.getPlayer().hasPermission("Bastion.bypass")) return; //I'm not totally sure about the implications of this combined with humbug. It might cause some exceptions. Bukkit will catch.
 		if (event.getCause() != TeleportCause.ENDER_PEARL) return; // Only handle enderpearl cases
 		
-		Set<BastionBlock> blocking = manager.getBlockingBastions(event.getTo(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
+		Set<BastionBlock> blocking = blockManager.getBlockingBastions(event.getTo(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PEARL));
 		
 		Iterator<BastionBlock> i = blocking.iterator();
 		
@@ -157,7 +155,7 @@ public final class BastionDamageListener implements Listener {
 		}
 		
 		if(blocking.size() > 0) {
-			manager.erodeFromTeleport(event.getPlayer(), blocking);
+			blockManager.erodeFromTeleport(event.getPlayer(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
 			boolean consume = false;
 			for(BastionBlock block : blocking) {
@@ -172,7 +170,7 @@ public final class BastionDamageListener implements Listener {
 			return;
 		}
 		
-		blocking = manager.getBlockingBastions(event.getFrom(), event.getPlayer(), PermissionType.getPermission("BASTION_PEARL"));
+		blocking = blockManager.getBlockingBastions(event.getFrom(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PEARL));
 		
 		i = blocking.iterator();
 		
@@ -184,7 +182,7 @@ public final class BastionDamageListener implements Listener {
 		}
 		
 		if(blocking.size() > 0) {
-			manager.erodeFromTeleport(event.getPlayer(), blocking);
+			blockManager.erodeFromTeleport(event.getPlayer(), blocking);
 			event.getPlayer().sendMessage(ChatColor.RED + "Ender pearl blocked by Bastion Block");
 			boolean consume = false;
 			for(BastionBlock block : blocking) {
@@ -204,19 +202,8 @@ public final class BastionDamageListener implements Listener {
 	public void onProjectileThrownEvent(ProjectileLaunchEvent event) {
 		if (event.getEntity() instanceof EnderPearl) {
 			EnderPearl pearl = (EnderPearl) event.getEntity();
-			pearlMan.handlePearlLaunched(pearl);
+			pearlManager.handlePearlLaunched(pearl);
 		}
-	}
-	
-	public static Set<BastionBlock> clearNonBlocking(Set<BastionBlock> preblocking) {
-		if (preblocking == null || preblocking.size() == 0) return preblocking; // don't allocate if nothing to do.
-		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
-		for (BastionBlock bastion : preblocking) {
-			if (!bastion.getType().isOnlyDirectDestruction()) {
-				blocking.add(bastion);
-			}
-		}
-		return blocking;
 	}
 }
 

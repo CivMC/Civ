@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
+import isaac.bastion.manager.BastionGroupManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.inventory.ItemStack;
@@ -34,12 +36,14 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 
 public class BastionInteractListener implements Listener {
 
-	private BastionBlockManager manager;
-	private BastionBlockStorage storage;
+	private BastionBlockManager blockManager;
+	private BastionBlockStorage blockStorage;
+	private BastionGroupManager groupManager;
 
 	public BastionInteractListener() {
-		manager = Bastion.getBastionManager();
-		storage = Bastion.getBastionStorage();
+		blockManager = Bastion.getBastionManager();
+		blockStorage = Bastion.getBastionStorage();
+		groupManager = Bastion.getGroupManager();
 	}
 
 	@EventHandler(ignoreCancelled=true)
@@ -57,15 +61,12 @@ public class BastionInteractListener implements Listener {
 			isBoat == Material.BOAT_JUNGLE || isBoat == Material.BOAT_SPRUCE ) {
 			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 			blocks.add(event.getClickedBlock());
-			Set<BastionBlock> blocking = manager.shouldStopBlock(null, blocks, player.getUniqueId());
+			Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks, player.getUniqueId());
 
-			if(blocking != null && blocking.size() > 0) {
-				blocking = BastionDamageListener.clearNonBlocking(blocking);
-				if (blocking.size() > 0) {
-					event.setCancelled(true);
-					player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
-					return;
-				}
+			if (blocking.size() > 0) {
+				event.setCancelled(true);
+				player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
+				return;
 			}
 		}
 
@@ -73,7 +74,7 @@ public class BastionInteractListener implements Listener {
 			return;
 		}
 		
-		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getHand() != EquipmentSlot.HAND) {
 			return;
 		}		
 
@@ -81,13 +82,13 @@ public class BastionInteractListener implements Listener {
 
 		if (PlayersStates.playerInMode(player, Mode.INFO)) {
 			boolean dev = player.hasPermission("Bastion.dev");
-			String toSend = manager.infoMessage(dev, block.getRelative(event.getBlockFace()), block, player);
+			String toSend = blockManager.infoMessage(dev, block.getRelative(event.getBlockFace()), block, player);
 			if (toSend != null) {
 				PlayersStates.touchPlayer(player);
 				player.sendMessage(toSend);
 			}
 		} else if (PlayersStates.playerInMode(player, Mode.DELETE)) {
-			BastionBlock bastionBlock = storage.getBastionBlock(block.getLocation());
+			BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
 
 			if (bastionBlock == null) {
 				return;
@@ -100,7 +101,7 @@ public class BastionInteractListener implements Listener {
 				event.setCancelled(true);
 			}
 		} else if (PlayersStates.playerInMode(player, Mode.MATURE)) {
-			BastionBlock bastionBlock=storage.getBastionBlock(block.getLocation());
+			BastionBlock bastionBlock= blockStorage.getBastionBlock(block.getLocation());
 
 			if (bastionBlock == null) {
 				return;
@@ -108,7 +109,7 @@ public class BastionInteractListener implements Listener {
 			bastionBlock.mature();
 			player.sendMessage(ChatColor.GREEN + "Matured");
 		} else if (PlayersStates.playerInMode(player, Mode.BASTION)) {
-			final BastionType type = storage.getAndRemovePendingBastion(block.getLocation());
+			final BastionType type = blockStorage.getAndRemovePendingBastion(block.getLocation());
 			if(type == null) return; //if it wasnt stored it cant have been a bastion
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
 					getReinforcement(block.getLocation());
@@ -122,10 +123,10 @@ public class BastionInteractListener implements Listener {
 				new BukkitRunnable() {
 					@Override
 					public void run() {
-						if(storage.createBastion(loc,  type, player)) {
+						if(blockStorage.createBastion(loc,  type, player)) {
 							player.sendMessage(ChatColor.GREEN + "Bastion block created");
 						} else {
-							storage.addPendingBastion(loc, type);
+							blockStorage.addPendingBastion(loc, type);
 							player.sendMessage(ChatColor.RED + "Failed to create bastion");
 						}
 					}
@@ -145,13 +146,25 @@ public class BastionInteractListener implements Listener {
 		BastionType type = blockToType(event.getBlock(), inHand);
 		if(type != null) {
 			Bastion.getPlugin().getLogger().log(Level.INFO, "Pending a bastion at {0}", event.getBlock().getLocation());
-			storage.addPendingBastion(event.getBlock().getLocation(), type);
+			blockStorage.addPendingBastion(event.getBlock().getLocation(), type);
 		}
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onReinforcement(ReinforcementCreationEvent event) {
-		final BastionType type = storage.getAndRemovePendingBastion(event.getBlock().getLocation());
+		if(Bastion.getCommonSettings().isCancelReinInBastionField()) {
+			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
+			blocks.add(event.getBlock());
+			Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
+
+			if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
+				event.setCancelled(true);
+				event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevents this operation");
+				return;
+			}
+		}
+
+		final BastionType type = blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
 		if(type != null &&
 				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
 			PlayersStates.touchPlayer(event.getPlayer());
@@ -162,10 +175,10 @@ public class BastionInteractListener implements Listener {
 			new BukkitRunnable() {
 				@Override
 				public void run() {
-					if(storage.createBastion(loc,  type, player)) {
+					if(blockStorage.createBastion(loc,  type, player)) {
 						player.sendMessage(ChatColor.GREEN + "Bastion block created");
 					} else {
-						storage.addPendingBastion(loc, type);
+						blockStorage.addPendingBastion(loc, type);
 						player.sendMessage(ChatColor.RED + "Failed to create bastion");
 					}
 				}

@@ -26,6 +26,7 @@ import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
@@ -33,7 +34,7 @@ public class BastionBlockManager {
 	
 	private HashMap<UUID, HashMap<String, Long>> cooldowns = new HashMap<UUID, HashMap<String, Long>>();
 	private BastionBlockStorage storage;
-	
+
 	public BastionBlockManager() {
 		storage = Bastion.getBastionStorage();
 	}
@@ -124,7 +125,7 @@ public class BastionBlockManager {
 			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
 		}
 		
-		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
+		Set<BastionBlock> preblocking = new HashSet<BastionBlock>();
 		Set<UUID> accessors = new HashSet<UUID>();
 		if (player != null) {
 			accessors.add(player);
@@ -143,10 +144,22 @@ public class BastionBlockManager {
 		}
 		
 		for(Block block: result) {
-			toReturn.addAll(getBlockingBastions(block.getLocation(),accessors));
+			preblocking.addAll(getBlockingBastions(block.getLocation(),accessors));
 		}
-		
-		return toReturn;
+
+		// Clear non-blocking
+
+		if (preblocking.size() == 0) return preblocking; // don't allocate if nothing to do.
+
+		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
+
+		for (BastionBlock bastion : preblocking) {
+			if (!bastion.getType().isOnlyDirectDestruction()) {
+				blocking.add(bastion);
+			}
+		}
+
+		return blocking;
 	}
 
 	// TODO: This is potentially inefficient: new LL, plus shuffle, all to "random-choose" a bastion?
@@ -274,7 +287,13 @@ public class BastionBlockManager {
 			if (bastion.getType().isOnlyDirectDestruction()) {
 				sb.append(ChatColor.BLUE).append("Bastion ignores blocks");
 			} else {
-				sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+				Group allowedGroup = Bastion.getGroupManager().getAllowedGroup(player, bastion, null);
+
+				if(allowedGroup != null) {
+					sb.append(ChatColor.YELLOW).append("A Bastion Block allows you to build using group [" + allowedGroup.getName() + "]");
+				} else {
+					sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+				}
 			}
 		}
 
