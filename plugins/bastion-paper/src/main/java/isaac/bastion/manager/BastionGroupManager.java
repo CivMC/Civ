@@ -123,9 +123,7 @@ public class BastionGroupManager {
 		return true;
 	}
 
-	public Group getAllowedGroup(Player player, BastionBlock bastionBlock, PermissionType perm) {
-		GroupManager groupManager = NameAPI.getGroupManager();
-
+	public Group findFirstAllowedGroup(Player player, BastionBlock bastionBlock) {
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(bastionBlock.getLocation());
 		PlayerReinforcement playerRein = rein != null && (rein instanceof PlayerReinforcement) ? (PlayerReinforcement)rein : null;
 
@@ -137,18 +135,17 @@ public class BastionGroupManager {
 			for(int allowedGroupId : bastionGroup.getAllowedGroupIds()) {
 				Group allowedGroup = GroupManager.getGroup(allowedGroupId);
 
-				if(allowedGroup != null && allowedGroup.isValid()) {
-					if(perm != null && groupManager.hasAccess(allowedGroup, player.getUniqueId(), perm)
-						|| perm == null && allowedGroup.isMember(player.getUniqueId())
-						)
-					{
-						return allowedGroup;
-					}
+				if(allowedGroup != null && allowedGroup.isValid()&& allowedGroup.isMember(player.getUniqueId())) {
+					return allowedGroup;
 				}
 			}
 		}
 
 		return null;
+	}
+
+	public boolean isAllowedGroup(Group group, Group allowedGroup) {
+		return this.storage.isAllowedGroup(group, allowedGroup);
 	}
 
 	private Group findGroup(Player player, String groupName) {

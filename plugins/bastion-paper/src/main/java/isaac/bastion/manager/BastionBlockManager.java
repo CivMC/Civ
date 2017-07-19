@@ -110,9 +110,8 @@ public class BastionBlockManager {
 		
 		return false;
 	}
-	
 
-	/** 
+	/**
 	 * handles all block based events in a general way
 	 * @param origin
 	 * @param result
@@ -124,28 +123,41 @@ public class BastionBlockManager {
 			Player playerB = Bukkit.getPlayer(player);
 			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
 		}
-		
-		Set<BastionBlock> preblocking = new HashSet<BastionBlock>();
+
+		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
 		Set<UUID> accessors = new HashSet<UUID>();
 		if (player != null) {
 			accessors.add(player);
 		}
-		
+
 		if (origin != null) {
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
-			getReinforcement(origin);
+					getReinforcement(origin);
 			if (reinforcement instanceof PlayerReinforcement) {
 				accessors.add(reinforcement.getGroup().getOwner());
 			}
-			
+
 			for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {
 				accessors.add(bastion.getOwner());
 			}
 		}
-		
+
 		for(Block block: result) {
-			preblocking.addAll(getBlockingBastions(block.getLocation(),accessors));
+			toReturn.addAll(getBlockingBastions(block.getLocation(),accessors));
 		}
+
+		return toReturn;
+	}
+
+	/** 
+	 * handles all block based events in a general way
+	 * @param origin
+	 * @param result
+	 * @param player
+	 * @return
+	 */
+	public Set<BastionBlock> shouldStopBlockByBlockingBastion(Block origin, Set<Block> result, UUID player) {
+		Set<BastionBlock> preblocking = shouldStopBlock(origin, result, player);
 
 		// Clear non-blocking
 
@@ -287,7 +299,7 @@ public class BastionBlockManager {
 			if (bastion.getType().isOnlyDirectDestruction()) {
 				sb.append(ChatColor.BLUE).append("Bastion ignores blocks");
 			} else {
-				Group allowedGroup = Bastion.getGroupManager().getAllowedGroup(player, bastion, null);
+				Group allowedGroup = Bastion.getGroupManager().findFirstAllowedGroup(player, bastion);
 
 				if(allowedGroup != null) {
 					sb.append(ChatColor.YELLOW).append("A Bastion Block allows you to build using group [" + allowedGroup.getName() + "]");

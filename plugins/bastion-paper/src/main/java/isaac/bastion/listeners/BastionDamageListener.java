@@ -50,7 +50,7 @@ public final class BastionDamageListener implements Listener {
 	public void onBlockPlace(BlockPlaceEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
 		
 		if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);
@@ -64,7 +64,7 @@ public final class BastionDamageListener implements Listener {
 	public void onWaterFlow(BlockFromToEvent  event){
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getToBlock());
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getBlock(),blocks, null);
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getBlock(),blocks, null);
 		
 		if(blocking.size() != 0){
 			event.setCancelled(true);
@@ -84,7 +84,7 @@ public final class BastionDamageListener implements Listener {
 			playerName = player.getUniqueId();
 		}
 		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getLocation().getBlock(), blocks, playerName);
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getLocation().getBlock(), blocks, playerName);
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -97,7 +97,7 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> involved = new HashSet<Block>(event.getBlocks());
 		involved.add(piston.getRelative(event.getDirection()));
 		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(piston, involved, null);
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(piston, involved, null);
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -109,7 +109,7 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
 		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks, event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
 		
 		if (blocking.size() != 0) {
 			event.setCancelled(true);
@@ -123,7 +123,7 @@ public final class BastionDamageListener implements Listener {
 		Set<Block> blocks = new HashSet<Block>();
 		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getState().getData()).getFacing()));
 		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlock(event.getBlock(), blocks, null);
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getBlock(), blocks, null);
 
 		if(blocking.size() != 0) {
 			event.setCancelled(true);

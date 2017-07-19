@@ -7,15 +7,15 @@ package isaac.bastion;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class CommonSettings {
-	private boolean cancelReinInBastionField;
+	private boolean cancelReinforcementModeInBastionField;
 
-	public boolean isCancelReinInBastionField() {
-		return this.cancelReinInBastionField;
+	public boolean isCancelReinforcementModeInBastionField() {
+		return this.cancelReinforcementModeInBastionField;
 	}
 
 	public static CommonSettings load(ConfigurationSection config) {
 		CommonSettings settings = new CommonSettings();
-		settings.cancelReinInBastionField = config.getBoolean("cancelReinInBastionField", false);
+		settings.cancelReinforcementModeInBastionField = config.getBoolean("cancelReinforcementModeInBastionField", false);
 
 		return settings;
 	}

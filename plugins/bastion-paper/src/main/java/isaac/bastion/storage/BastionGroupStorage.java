@@ -13,6 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import isaac.bastion.Bastion;
@@ -183,7 +184,7 @@ public class BastionGroupStorage {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			log.log(Level.SEVERE, "Error loading bastion groups from database, shutting down", e);
+			log.log(Level.SEVERE, ChatColor.RED + "===== Error loading bastion groups from database, shutting down =====", e);
 			Bukkit.getServer().getPluginManager().disablePlugin(Bastion.getPlugin());
 		}
 	}

@@ -61,7 +61,7 @@ public class BastionInteractListener implements Listener {
 			isBoat == Material.BOAT_JUNGLE || isBoat == Material.BOAT_SPRUCE ) {
 			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 			blocks.add(event.getClickedBlock());
-			Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks, player.getUniqueId());
+			Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, player.getUniqueId());
 
 			if (blocking.size() > 0) {
 				event.setCancelled(true);
@@ -152,14 +152,14 @@ public class BastionInteractListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onReinforcement(ReinforcementCreationEvent event) {
-		if(Bastion.getCommonSettings().isCancelReinInBastionField()) {
+		if(Bastion.getCommonSettings().isCancelReinforcementModeInBastionField()) {
 			Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 			blocks.add(event.getBlock());
-			Set<BastionBlock> blocking = blockManager.shouldStopBlock(null, blocks,event.getPlayer().getUniqueId());
+			Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
 
 			if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevents this operation");
+				event.getPlayer().sendMessage(ChatColor.RED + "A Bastion prevents you from reinforcing");
 				return;
 			}
 		}
