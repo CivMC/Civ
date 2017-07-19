@@ -26,6 +26,7 @@ import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionBlockManager {
@@ -33,7 +34,7 @@ public class BastionBlockManager {
 	
 	private HashMap<UUID, HashMap<String, Long>> cooldowns = new HashMap<UUID, HashMap<String, Long>>();
 	private BastionBlockStorage storage;
-	
+
 	public BastionBlockManager() {
 		storage = Bastion.getBastionStorage();
 	}
@@ -109,9 +110,8 @@ public class BastionBlockManager {
 		
 		return false;
 	}
-	
 
-	/** 
+	/**
 	 * handles all block based events in a general way
 	 * @param origin
 	 * @param result
@@ -123,30 +123,55 @@ public class BastionBlockManager {
 			Player playerB = Bukkit.getPlayer(player);
 			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
 		}
-		
+
 		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
 		Set<UUID> accessors = new HashSet<UUID>();
 		if (player != null) {
 			accessors.add(player);
 		}
-		
+
 		if (origin != null) {
 			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
-			getReinforcement(origin);
+					getReinforcement(origin);
 			if (reinforcement instanceof PlayerReinforcement) {
 				accessors.add(reinforcement.getGroup().getOwner());
 			}
-			
+
 			for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {
 				accessors.add(bastion.getOwner());
 			}
 		}
-		
+
 		for(Block block: result) {
 			toReturn.addAll(getBlockingBastions(block.getLocation(),accessors));
 		}
-		
+
 		return toReturn;
+	}
+
+	/** 
+	 * handles all block based events in a general way
+	 * @param origin
+	 * @param result
+	 * @param player
+	 * @return
+	 */
+	public Set<BastionBlock> shouldStopBlockByBlockingBastion(Block origin, Set<Block> result, UUID player) {
+		Set<BastionBlock> preblocking = shouldStopBlock(origin, result, player);
+
+		// Clear non-blocking
+
+		if (preblocking.size() == 0) return preblocking; // don't allocate if nothing to do.
+
+		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
+
+		for (BastionBlock bastion : preblocking) {
+			if (!bastion.getType().isOnlyDirectDestruction()) {
+				blocking.add(bastion);
+			}
+		}
+
+		return blocking;
 	}
 
 	// TODO: This is potentially inefficient: new LL, plus shuffle, all to "random-choose" a bastion?
@@ -274,7 +299,13 @@ public class BastionBlockManager {
 			if (bastion.getType().isOnlyDirectDestruction()) {
 				sb.append(ChatColor.BLUE).append("Bastion ignores blocks");
 			} else {
-				sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+				Group allowedGroup = Bastion.getGroupManager().findFirstAllowedGroup(player, bastion);
+
+				if(allowedGroup != null) {
+					sb.append(ChatColor.YELLOW).append("A Bastion Block allows you to build using group [" + allowedGroup.getName() + "]");
+				} else {
+					sb.append(ChatColor.RED).append("A Bastion Block prevents you building");
+				}
 			}
 		}
 

@@ -133,7 +133,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		PlayerReinforcement reinforcement = getReinforcement();
 
 		if(reinforcement!=null){
-			return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission("BASTION_PEARL"));
+			return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PEARL));
 		}
 		return true;
 	}
@@ -149,7 +149,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		if (reinforcement == null) return true;
 		if (player == null) return false;
 
-		return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission("BASTION_PLACE"));
+		return NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
 	}
 	
 	/**
@@ -180,7 +180,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		for (UUID player: players){
 			if (player != null)
-				if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player, PermissionType.getPermission("BASTION_PLACE")))
+				if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player, PermissionType.getPermission(Permissions.BASTION_PLACE)))
 					return true;
 		}
 

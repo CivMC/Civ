@@ -2,7 +2,7 @@ name: ${project.name}
 version: ${project.version}
 main: isaac.bastion.Bastion
 author: spaceFountain
-authors: [Rourke750, ProgrammerDan, Maxopoly, TealNerd]
+authors: [Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi]
 depend: [CivModCore, Citadel, NameLayer]
 softdepend: [Humbug]
 commands:
@@ -34,6 +34,18 @@ commands:
       description: Insta matures any bastion left clicked 
       usage: /bsm
       permission: Bastion.admin
+   bsga:
+      description: Adds allowed group to bastion group
+      usage: /bsga <bastion group> <allowed group>
+      permission: Bastion.normal
+   bsgd:
+      description: Deletes allowed group from bastion group
+      usage: /bsgd <bastion group> <allowed group>
+      permission: Bastion.normal
+   bsgl:
+      description: List allowed groups in bastion group
+      usage: /bsga <bastion group>
+      permission: Bastion.normal
 permissions:
     Bastion.*:
         description: Gives access to all Bastion commands

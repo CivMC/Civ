@@ -13,9 +13,7 @@ import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.entity.Player;
 
@@ -62,28 +60,6 @@ public class BastionBlockStorage {
 				update();
 			}
 		}.runTaskTimer(Bastion.getPlugin(),saveDelay,saveDelay).getTaskId();
-	}
-	
-	/**
-	 * Registers database migrations
-	 */
-	public void registerMigrations() {
-		db.registerMigration(0, false, 
-				"create table if not exists `bastion_blocks`("
-				+ "bastion_id int(10) unsigned NOT NULL AUTO_INCREMENT,"
-				+ "bastion_type varchar(40) DEFAULT '" + BastionType.getDefaultType() + "',"
-				+ "loc_x int(10),"
-				+ "loc_y int(10),"
-				+ "loc_z int(10),"
-				+ "loc_world varchar(40) NOT NULL,"
-				+ "placed bigint(20) Unsigned,"
-				+ "fraction float(20) Unsigned,"
-				+ "PRIMARY KEY (`bastion_id`));");
-		db.registerMigration(1, false, 
-				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS bastion_type VARCHAR(40) DEFAULT '"
-				+ BastionType.getDefaultType() + "';");	
-		db.registerMigration(2, false, 
-				"ALTER TABLE bastion_blocks ADD COLUMN IF NOT EXISTS dead TINYINT(1) DEFAULT 0;");
 	}
 	
 	/**
@@ -375,7 +351,7 @@ public class BastionBlockStorage {
 					}
 				}
 			} catch (SQLException e) {
-				log.log(Level.SEVERE, "Error loading bastions from database, shutting down", e);
+				log.log(Level.SEVERE, ChatColor.RED + "===== Error loading bastions from database, shutting down =====", e);
 				Bukkit.getServer().getPluginManager().disablePlugin(Bastion.getPlugin());
 			}
 		}
