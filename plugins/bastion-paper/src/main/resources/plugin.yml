@@ -44,7 +44,7 @@ commands:
       permission: Bastion.normal
    bsgl:
       description: List allowed groups in bastion group
-      usage: /bsga <bastion group>
+      usage: /bsgl <bastion group>
       permission: Bastion.normal
 permissions:
     Bastion.*:
