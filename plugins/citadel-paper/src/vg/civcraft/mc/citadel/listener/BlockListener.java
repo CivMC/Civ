@@ -547,7 +547,11 @@ public class BlockListener implements Listener {
 							g = GroupManager.getGroup(gName);
 						}
 						if (g != null) {
-							createPlayerReinforcement(player, g, block, type, null);
+							if (createPlayerReinforcement(player, g, block, type, null) == null && CitadelConfigManager.shouldLogReinforcement()) {
+								// someone else's job to tell the player what went wrong, but let's do log it.
+								Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
+										new Object[] {player.getName(), block.getLocation()});
+							}
 						}
 					}
 				}
@@ -692,7 +696,12 @@ public class BlockListener implements Listener {
 						sendAndLog(player, ChatColor.RED,
 								"Cancelled reinforcement, crop would already be reinforced.");
 					} else {
-						createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null);
+						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null) == null && 
+								CitadelConfigManager.shouldLogReinforcement()) {
+							// someone else's job to tell the player what went wrong, but let's do log it.
+							Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
+									new Object[] {player.getName(), block.getLocation()});
+						}
 					}
 				} else if (reinforcement.canBypass(player)
 						|| (player.isOp() || player
@@ -731,6 +740,9 @@ public class BlockListener implements Listener {
 								if (!event.isCancelled()) {
 									if(createPlayerReinforcement(player, state.getGroup(),	block, type, null) != null) {
 										sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
+									} else if (CitadelConfigManager.shouldLogReinforcement()) {
+										Citadel.getInstance().getLogger().log(Level.INFO, "Change Reinforcement by {0} at {1} cancelled by plugin",
+												new Object[] {player.getName(), block.getLocation()});
 									}
 								}
 							}
