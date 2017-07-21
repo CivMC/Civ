@@ -547,16 +547,7 @@ public class BlockListener implements Listener {
 							g = GroupManager.getGroup(gName);
 						}
 						if (g != null) {
-							try {
-								createPlayerReinforcement(player, g,
-										block, type, null);
-							} catch (ReinforcemnetFortificationCancelException e) {
-								Citadel.getInstance()
-										.getLogger()
-										.log(Level.WARNING,
-												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
-												e);
-							}
+							createPlayerReinforcement(player, g, block, type, null);
 						}
 					}
 				}
@@ -701,16 +692,7 @@ public class BlockListener implements Listener {
 						sendAndLog(player, ChatColor.RED,
 								"Cancelled reinforcement, crop would already be reinforced.");
 					} else {
-						try {
-							createPlayerReinforcement(player, state.getGroup(),
-									block, state.getReinforcementType(), null);
-						} catch (ReinforcemnetFortificationCancelException e) {
-							Citadel.getInstance()
-									.getLogger()
-									.log(Level.WARNING,
-											"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
-											e);
-						}
+						createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null);
 					}
 				} else if (reinforcement.canBypass(player)
 						|| (player.isOp() || player
@@ -747,12 +729,8 @@ public class BlockListener implements Listener {
 								ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
 								Bukkit.getPluginManager().callEvent(event);
 								if (!event.isCancelled()) {
-									try {
-										createPlayerReinforcement(player, state.getGroup(),	block, type, null);
+									if(createPlayerReinforcement(player, state.getGroup(),	block, type, null) != null) {
 										sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
-									} catch (ReinforcemnetFortificationCancelException ex) {
-										Citadel.getInstance().getLogger().log(Level.WARNING,
-												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ", ex);
 									}
 								}
 							}

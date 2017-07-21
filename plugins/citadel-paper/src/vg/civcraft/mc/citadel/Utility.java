@@ -58,7 +58,6 @@ public class Utility {
      * @param The ReinforcementType that is being reinforced on the block.
      * @param The ItemStack type of the block being placed (if CTF, null if CTR)
      * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
-     * @throws ReinforcemnetFortificationCancelException
      */
     public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
             ReinforcementType type, ItemStack reinfMat) {
@@ -141,7 +140,7 @@ public class Utility {
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            throw new ReinforcemnetFortificationCancelException();
+            return null;
         }
 		if (CitadelConfigManager.shouldLogReinforcement()) {
 			StringBuffer slb = new StringBuffer();
