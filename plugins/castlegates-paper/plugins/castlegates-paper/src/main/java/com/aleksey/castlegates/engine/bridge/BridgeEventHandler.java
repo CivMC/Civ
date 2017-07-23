@@ -25,9 +25,11 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
@@ -55,7 +57,7 @@ public class BridgeEventHandler {
     }
 
     public boolean handleBlockClicked(PlayerInteractEvent event, PlayerStateManager.PlayerState state) {
-        if(event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if(event.getAction() == Action.RIGHT_CLICK_BLOCK && event.getHand() == EquipmentSlot.HAND) {
             simpleActivate(event);
             return false;
         }
@@ -172,8 +174,16 @@ public class BridgeEventHandler {
     private boolean createGearblock(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Block block = event.getClickedBlock();
+        Location location = block.getLocation();
 
-        if(!CastleGates.getCitadelManager().canBypass(player, block.getLocation())) {
+        if(CastleGates.getConfigManager().isGearblockMustBeReinforced()
+                && !CastleGates.getCitadelManager().isReinforced(location))
+        {
+            player.sendMessage(ChatColor.RED + "Block must be reinforced to create a gearblock.");
+            return false;
+        }
+
+        if(!CastleGates.getCitadelManager().canBypass(player, location)) {
             player.sendMessage(ChatColor.RED + "Citadel has prevented the creation of a gearblock.");
             return false;
         }
@@ -438,6 +448,13 @@ public class BridgeEventHandler {
                 && (link = getLink(blockCoord.getRight(), blockCoord.getLeft())) == null
                 && (link = getLink(blockCoord.getTop(), blockCoord.getBottom())) == null
             )
+        {
+            return false;
+        }
+
+        if(!this.bridgeManager.isSimpleGearblock(link.getGearblock1(), event.getPlayer())
+                || !this.bridgeManager.isSimpleGearblock(link.getGearblock2(), event.getPlayer())
+                )
         {
             return false;
         }

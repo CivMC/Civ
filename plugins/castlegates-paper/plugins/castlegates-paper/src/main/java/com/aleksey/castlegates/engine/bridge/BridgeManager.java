@@ -708,4 +708,33 @@ public class BridgeManager {
 
 		return CastleGates.getCitadelManager().getCitadel(players, location);
 	}
+
+	public boolean isSimpleGearblock(Gearblock gearblock, Player player) {
+		World world = player.getWorld();
+		BlockCoord coord = gearblock.getCoord();
+		List<Player> players = new ArrayList<>();
+
+		players.add(player);
+
+		ICitadel citadel = getCitadel(world, gearblock, players);
+
+		return !hasAccessibleGearblock(world, coord.getForward(), players, citadel)
+			&& !hasAccessibleGearblock(world, coord.getBackward(), players, citadel)
+			&& !hasAccessibleGearblock(world, coord.getRight(), players, citadel)
+			&& !hasAccessibleGearblock(world, coord.getLeft(), players, citadel)
+			&& !hasAccessibleGearblock(world, coord.getTop(), players, citadel)
+			&& !hasAccessibleGearblock(world, coord.getBottom(), players, citadel);
+	}
+
+	private boolean hasAccessibleGearblock(World world, BlockCoord coord, List<Player> players, ICitadel originalCitadel) {
+		Gearblock gearblock = this.storage.getGearblock(coord);
+
+		if(gearblock == null) return false;
+
+		ICitadel citadel = getCitadel(world, gearblock, players);
+
+		return originalCitadel.getGroupName() == null
+				? citadel.getGroupName() == null
+				: originalCitadel.getGroupName().equalsIgnoreCase(citadel.getGroupName());
+	}
 }

@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.aleksey.castlegates.engine.CastleGatesManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
@@ -86,15 +87,6 @@ public class CastleGates extends JavaPlugin {
         	getLogger().log(Level.INFO, "Citadel plugin NOT found.");
         }
 
-        if(getServer().getPluginManager().getPlugin("Bastion") != null) {
-        	bastionManager = new BastionManager();
-        	bastionManager.init();
-        	getLogger().log(Level.INFO, "Bastion plugin found.");
-        } else {
-        	bastionManager = new NoBastionManager();
-        	getLogger().log(Level.INFO, "Bastion plugin NOT found.");
-        }
-
         if(getServer().getPluginManager().getPlugin("JukeAlert") != null) {
         	jukeAlertManager = new JukeAlertManager();
         	getLogger().log(Level.INFO, "JukeAlert plugin found.");
@@ -103,6 +95,7 @@ public class CastleGates extends JavaPlugin {
         	getLogger().log(Level.INFO, "JukeAlert plugin NOT found.");
         }
 
+        createBastionManager();
         createOrebfuscatorManager();
 
         // Load configurations
@@ -122,12 +115,12 @@ public class CastleGates extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockListener(), this);
     }
 
-    private void createOrebfuscatorManager() {
-        Plugin plugin = getServer().getPluginManager().getPlugin("Orebfuscator4");
+    private void createBastionManager() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("Bastion");
 
         if(plugin == null) {
-        	orebfuscatorManager = new NoOrebfuscatorManager();
-        	getLogger().log(Level.INFO, "Orebfuscator plugin NOT found.");
+            bastionManager = new NoBastionManager();
+        	getLogger().log(Level.INFO, "Bastion plugin NOT found.");
         	return;
         }
 
@@ -137,20 +130,53 @@ public class CastleGates extends JavaPlugin {
 	        int majorRevision = Integer.parseInt(versionParts[1]);
 	        int minorVersion = Integer.parseInt(versionParts[2].split("\\-")[0]);
 
-	        if(majorVersion > 4
-	        		|| majorVersion == 4 && majorRevision > 1
-	        		|| majorVersion == 4 && majorRevision == 1 && minorVersion > 0
+	        if(majorVersion > 2
+	        		|| majorVersion == 2 && majorRevision > 2
+	        		|| majorVersion == 2 && majorRevision == 2 && minorVersion >= 0
 	        		)
 	        {
-	        	orebfuscatorManager = new OrebfuscatorManager();
-	        	getLogger().log(Level.INFO, "Orebfuscator plugin found.");
+                bastionManager = new BastionManager();
+                bastionManager.init();
+	        	getLogger().log(Level.INFO, "Bastion plugin found.");
 	        } else {
-	        	orebfuscatorManager = new NoOrebfuscatorManager();
-	        	getLogger().log(Level.INFO, "Orebfuscator plugin found but old versions are NOT supported. You need to use the 4.1.1 version or newer.");
+                bastionManager = new NoBastionManager();
+	        	getLogger().log(Level.WARNING, ChatColor.YELLOW + "Bastion plugin found but old versions are NOT supported. You need to use the 2.2.0 version or newer.");
 	        }
         } catch (Exception e) {
-        	orebfuscatorManager = new NoOrebfuscatorManager();
-        	getLogger().log(Level.INFO, "Orebfuscator plugin found but this version is NOT supported.");
+            bastionManager = new NoBastionManager();
+        	getLogger().log(Level.INFO, ChatColor.YELLOW + "Bastion plugin found but this version is NOT supported.");
+        }
+    }
+
+    private void createOrebfuscatorManager() {
+        Plugin plugin = getServer().getPluginManager().getPlugin("Orebfuscator4");
+
+        if(plugin == null) {
+            orebfuscatorManager = new NoOrebfuscatorManager();
+            getLogger().log(Level.INFO, "Orebfuscator plugin NOT found.");
+            return;
+        }
+
+        try {
+            String[] versionParts = plugin.getDescription().getVersion().split("\\.");
+            int majorVersion = Integer.parseInt(versionParts[0]);
+            int majorRevision = Integer.parseInt(versionParts[1]);
+            int minorVersion = Integer.parseInt(versionParts[2].split("\\-")[0]);
+
+            if(majorVersion > 4
+                    || majorVersion == 4 && majorRevision > 1
+                    || majorVersion == 4 && majorRevision == 1 && minorVersion > 0
+                    )
+            {
+                orebfuscatorManager = new OrebfuscatorManager();
+                getLogger().log(Level.INFO, "Orebfuscator plugin found.");
+            } else {
+                orebfuscatorManager = new NoOrebfuscatorManager();
+                getLogger().log(Level.WARNING, ChatColor.YELLOW + "Orebfuscator plugin found but old versions are NOT supported. You need to use the 4.1.1 version or newer.");
+            }
+        } catch (Exception e) {
+            orebfuscatorManager = new NoOrebfuscatorManager();
+            getLogger().log(Level.INFO, ChatColor.YELLOW + "Orebfuscator plugin found but this version is NOT supported.");
         }
     }
 

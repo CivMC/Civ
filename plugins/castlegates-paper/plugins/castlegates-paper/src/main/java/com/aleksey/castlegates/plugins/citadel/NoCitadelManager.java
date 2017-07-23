@@ -28,6 +28,8 @@ public class NoCitadelManager implements ICitadelManager {
 
 	public ICitadel getCitadel(List<Player> players, Location loc) { return new NoCitadel(); }
 
+	public boolean isReinforced(Location loc) { return false; }
+
 	public boolean canBypass(Player player, Location loc) {
 		return true;
 	}

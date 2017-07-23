@@ -90,6 +90,12 @@ public class CitadelManager extends Thread implements ICitadelManager, Runnable 
 		return new com.aleksey.castlegates.plugins.citadel.Citadel(players, playerRein, hasAccess, useJukeAlert);
 	}
 
+	public boolean isReinforced(Location loc) {
+		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+
+		return rein != null && (rein instanceof PlayerReinforcement);
+	}
+
 	public boolean canBypass(Player player, Location loc) {
 		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
 
