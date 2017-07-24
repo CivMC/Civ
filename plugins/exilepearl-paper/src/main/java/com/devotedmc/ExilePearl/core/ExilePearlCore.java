@@ -13,6 +13,7 @@ import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
@@ -71,7 +72,9 @@ import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * The implementation class for the ExilPearlApi.
@@ -113,7 +116,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	
 	private PluginStorage storage;
 	private CombatTagPlus combatTag;
-	
+
 	public ExilePearlCore(final Plugin plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
 		
@@ -197,6 +200,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		}
 		if (isBastionEnabled()) {
 			this.getServer().getPluginManager().registerEvents(bastionListener, this);
+			registerBastionPermissions();
 		} else {
 			logIgnoringHooks("Bastion");
 		}
@@ -235,6 +239,19 @@ final class ExilePearlCore implements ExilePearlApi {
 		
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
+
+	private void registerBastionPermissions() {
+		if(!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
+
+		LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
+		memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
+		memberAndAbove.add(GroupManager.PlayerType.MODS);
+		memberAndAbove.add(GroupManager.PlayerType.ADMINS);
+		memberAndAbove.add(GroupManager.PlayerType.OWNER);
+
+		PermissionType.registerPermission(NameLayerPermissions.BASTION_ALLOW_EXILED, memberAndAbove);
+	}
+
 
 	/**
 	 * Spigot disable method
@@ -611,18 +628,22 @@ final class ExilePearlCore implements ExilePearlApi {
 		if (!isBastionEnabled()) {
 			return false;
 		}
+
 		try {
 			final BastionBlockManager manager = Bastion.getBastionManager();
-			
-			Set<? extends QTBox> possible  = manager.getBlockingBastions(player.getLocation());
-			@SuppressWarnings("unchecked")
-			List<BastionBlock> bastions = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+
+			Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
+			PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
+
 			for (BastionBlock bastion : bastions) {
-				if (!bastion.canPlace(player)) {
+				if (!bastion.permAccess(player, perm)) {
 					return true;
 				}
 			}
-		} catch(Exception ex) { }
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+
 		return false;
 	}
 	
@@ -650,20 +671,24 @@ final class ExilePearlCore implements ExilePearlApi {
 		if (!isBastionEnabled()) {
 			return new ArrayList<>();
 		}
+
 		try {
 			final BastionBlockManager manager = Bastion.getBastionManager();
-			
-			Set<? extends QTBox> possible  = manager.getBlockingBastions(player.getLocation());
-			@SuppressWarnings("unchecked")
-			List<BastionBlock> bastions = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+
+			Set<BastionBlock> bastions = manager.getBlockingBastions(player.getLocation());
 			List<BastionWrapper> wrapper = new LinkedList<>();
+			PermissionType perm = PermissionType.getPermission(NameLayerPermissions.BASTION_ALLOW_EXILED);
+
 			for (BastionBlock bastion : bastions) {
-				if (!bastion.canPlace(player)) {
+				if (!bastion.permAccess(player, perm)) {
 					wrapper.add(new BastionWrapper(bastion));
 				}
 			}
 			return wrapper;
-		} catch(Exception ex) { }
+		} catch(Exception ex) {
+			ex.printStackTrace();
+		}
+
 		return new ArrayList<>();
 	}
 }
