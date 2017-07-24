@@ -33,8 +33,7 @@ public class PlantManager {
 	private final PersistConfig config;
 	
 	// database connection
-	private Connection writeConn;
-	private Connection readConn;
+	private Database db;
 	
 	public class PlantChunks {
 		private final HashMap<ChunkCoords, PlantChunk> map;
@@ -72,10 +71,6 @@ public class PlantManager {
 
 	
 	// prepared statements
-	PreparedStatement makeTableChunk;
-	PreparedStatement makeTablePlant;
-	PreparedStatement selectAllFromChunk;
-	
 	private Logger log;
 	
 	////================================================================================= ////
@@ -88,75 +83,22 @@ public class PlantManager {
 		
 		chunks = new PlantChunks();
 		
-		// open the database
-		String sDriverName = "com.mysql.jdbc.Driver";
-		try {
-			Class.forName(sDriverName);
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Failed to initalize the " + sDriverName + " driver class!", e);
-		}
-		
-		this.connect();
-		
-		// KeepAlives. TODO: Replace with actual connection handling.
-		new BukkitRunnable() {
-			private long failCount = 0l;
-			@Override
-			public void run() {
-				if (failCount > 50) {
-					RealisticBiomes.doLog(Level.WARNING, "Keepalive has failed too many times, cancelling");
-					this.cancel();
-					return;
-				}
-				try {
-					Statement writeAlive = RealisticBiomes.plugin.getPlantManager().getWriteConnection().createStatement();
-					Statement readAlive = RealisticBiomes.plugin.getPlantManager().getReadConnection().createStatement();
-				
-					writeAlive.execute("SELECT 1;");
-					readAlive.execute("SELECT 1;");
-					
-					RealisticBiomes.doLog(Level.FINER, "Keepalive Sent for read and write connections");
-				} catch(SQLException e) {
-					RealisticBiomes.doLog(Level.WARNING, "Keepalive has failed");
-					failCount++;
-				}
-			}
-			
-		}.runTaskTimer(plugin, 180000l, 180000l); // every 3 minutes
-		
-		setupStatements();
-		
-		// run the prepared statements that create the tables if they do not exist in the database
-		try {
-			
-			RealisticBiomes.doLog(Level.FINER, "creating chunk table (if necessary) with prepared statement:" + this.makeTableChunk.toString());
-
-			this.makeTableChunk.execute();
-			this.makeTablePlant.execute();
-						
-		} catch (SQLException e) {
-			
-			throw new RuntimeException("PlantManager constructor: Caught exception when trying to run the " +
-					"'create xx_chunk and xx_plant' tables if they don't exist!", e);
-		}
+		db = new Database(config);
 		
 		try {
-			// update database schema: try and catch
-			PreparedStatement upgradeTablePlant = writeConn.prepareStatement(String.format("ALTER TABLE %s_plant " +
-				"ADD fruitGrowth REAL AFTER growth", config.prefix));
-			upgradeTablePlant.execute();
-		} catch (SQLException e) {
-			RealisticBiomes.LOG.info("Could not update table - ignore if already updated. Error code: " + e.getErrorCode() + ", error message: " + e.getMessage());
+			db.available();
+		} catch (SQLException se) {
+			throw new RuntimeException("Failed to connect to the database! ", se);
 		}
-
+		
 		// load all chunks
 		
 		RealisticBiomes.LOG.info("loading PlantChunks");
 		long startTime = System.nanoTime()/1000000/*ns/ms*/;
 
-		try {
-			ResultSet rs = this.selectAllFromChunk.executeQuery();
-			
+		try (Connection connection = db.getConnection();
+				PreparedStatement selectAllFromChunk = connection.prepareStatement(Database.selectAllFromChunk);
+				ResultSet rs = selectAllFromChunk.executeQuery();) {
 			while (rs.next()) {
 				long id = rs.getLong("id");
 				int w = rs.getInt("w");
@@ -192,100 +134,11 @@ public class PlantManager {
 		
 		log = plugin.getLogger();
 	}
-
-	public void reconnect() {
-		RealisticBiomes.LOG.info("Triggering reconnection for write and read channels.");
-		try {
-			if (writeConn != null) {
-				writeConn.close();
-			}
-		} catch (SQLException e){
-			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior write connection, may already be closed", e);
-		}
-
-		try {
-			if (readConn != null) {
-				readConn.close();
-			}
-		} catch (SQLException e){
-			RealisticBiomes.LOG.log(Level.WARNING, "Can't close prior read connection, may already be closed", e);
-		}
-		try {
-			connect();
-			setupStatements();
-		} catch (RuntimeException dse) {
-			RealisticBiomes.LOG.log(Level.SEVERE, "Unable to reconnect to RealisticBiomes database", dse);
-		}
-	}
 	
-	public void connect() {
-		String jdbcUrl = "jdbc:mysql://" + config.host + ":" + config.port + "/" + config.databaseName + "?user=" + config.user + "&password=" + config.password;
-		int iTimeout = 30;
-
-		// Try and connect to the database
-		try {
-			RealisticBiomes.LOG.info("Connecting write and read channels.");
-			writeConn = DriverManager.getConnection(jdbcUrl);
-			readConn = DriverManager.getConnection(jdbcUrl);
-			//Statement stmt = readConn.createStatement(); // TODO: wtf is this supposed to do
-			//stmt.setQueryTimeout(iTimeout);
-			
-		} catch (SQLException e) {
-			throw new RuntimeException("Failed to connect to the database with the jdbcUrl: " + jdbcUrl, e);
-		}
-	}
-	
-	public void setupStatements() {
-		// Create the prepared statements
-		try {
-			// we need InnoDB storage engine or else we can't do foreign keys!
-			this.makeTableChunk = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_chunk " +
-							"(id BIGINT PRIMARY KEY AUTO_INCREMENT, " +
-							"w INTEGER, x INTEGER, z INTEGER," +
-							"INDEX chunk_coords_idx (w, x, z)) " +
-							"ENGINE INNODB", config.prefix));
-			
-			// we need InnoDB storage engine or else we can't do foreign keys!
-			this.makeTablePlant = writeConn.prepareStatement(String.format("CREATE TABLE IF NOT EXISTS %s_plant" +
-							"(chunkId BIGINT, w INTEGER, x INTEGER, y INTEGER, z INTEGER, date INTEGER UNSIGNED, growth REAL, fruitGrowth REAL, " +
-							"INDEX plant_chunk_idx (chunkId), " +
-							"CONSTRAINT chunkIdConstraint FOREIGN KEY (chunkId) REFERENCES %s_chunk (id))" +
-							"ENGINE INNODB", config.prefix, config.prefix));
-			
-			this.selectAllFromChunk = readConn.prepareStatement(String.format("SELECT id, w, x, z FROM %s_chunk", config.prefix));
-						
-			// create chunk writer
-			ChunkWriter.init(writeConn, readConn, config);
-			
-		} catch (SQLException e) {
-			throw new RuntimeException("PlantManager constructor: Failed to create the prepared statements! (for table creation)", e);
-		}
+	public Database getDb() {
+		return this.db;
 	}
 
-	public Connection getWriteConnection() {
-		return writeConn;
-	}
-
-	public Connection getReadConnection() {
-		return readConn;
-	}
-
-	public void testOrReconnect() {
-		try {
-			Statement writeAlive = writeConn.createStatement();
-			Statement readAlive = readConn.createStatement();
-		
-			writeAlive.execute("SELECT 1;");
-			readAlive.execute("SELECT 1;");
-			
-		} catch(SQLException e) {
-			RealisticBiomes.LOG.log(Level.WARNING, "Connection has died.", e);
-
-			reconnect();
-		}
-	}
-			
-	
 	/**
 	 * call this to load all the plants from all our plant chunks
 	 * this should only be called if persistConfig.cacheEntireDatabase is true
@@ -426,17 +279,16 @@ public class PlantManager {
 			public void run() {
 				
 				try {
-				log.info("Starting runnable in saveAllAndStop()");
-				testOrReconnect();
-				
-				for (ChunkCoords coords : chunks.getCoordsSet()) {
-
-					PlantChunk pChunk = chunks.get(coords);
-
-					pChunk.unload();
-				}
-				
-				log.info("finished runnable in saveAllAndStop()");
+					log.info("Starting runnable in saveAllAndStop()");
+					
+					for (ChunkCoords coords : chunks.getCoordsSet()) {
+	
+						PlantChunk pChunk = chunks.get(coords);
+	
+						pChunk.unload();
+					}
+					
+					log.info("finished runnable in saveAllAndStop()");
 				} catch (Exception e) {
 					
 					log.log(Level.SEVERE, "error in run() when shutting down!", e);
@@ -457,6 +309,13 @@ public class PlantManager {
 				// Keep trying to shut down
 			}
 		}
+		
+		try {
+			db.close();
+		} catch (SQLException e) {
+			log.log(Level.SEVERE, "error in saveAllAndStop, closing db", e);
+		}
+		
 		log.info("write service finished");
 	}
 	
@@ -481,7 +340,6 @@ public class PlantManager {
 			return 0;
 		
 		// finally, actually unload this thing
-		testOrReconnect();
 		int tmpCount = pChunk.getPlantCount();
 		pChunk.unload();
 		return tmpCount;
@@ -543,7 +401,6 @@ public class PlantManager {
 		}
 		
 		// finally, just load this thing!
-		testOrReconnect();
 		long start = System.nanoTime()/1000000/*ns/ms*/;
 		boolean loaded = pChunk.load();
 		long end = System.nanoTime()/1000000/*ns/ms*/;
@@ -605,7 +462,6 @@ public class PlantManager {
 		
 		// load the plant data if it is not yet loaded
 		if (pChunk.isLoaded() == false) {
-			testOrReconnect();
 			pChunk.load();
 		}
 		

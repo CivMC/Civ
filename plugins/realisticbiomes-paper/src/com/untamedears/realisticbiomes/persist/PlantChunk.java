@@ -1,7 +1,10 @@
 package com.untamedears.realisticbiomes.persist;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
@@ -129,9 +132,8 @@ public class PlantChunk {
 			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
 		}
 		
-		// if we are here, had failure.
+		// if we are here, had failure -- one retry, then bail
 		try {
-			plugin.getPlantManager().reconnect();
 			return innerLoad();
 		} catch(RuntimeException dse) {
 			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
@@ -161,48 +163,45 @@ public class PlantChunk {
 		DropGrouper dropGrouper = new DropGrouper(world);
 
 		// execute the load plant statement
-		try {
+		try (Connection connection = plugin.getPlantManager().getDb().getConnection();
+				PreparedStatement loadPlantsStmt = connection.prepareStatement(Database.loadPlantsStmt);){
 
-			ChunkWriter.loadPlantsStmt.setLong(1, index);
-			RealisticBiomes.doLog(Level.FINER,
-					"PlantChunk.load() executing sql query: "
-							+ ChunkWriter.loadPlantsStmt.toString());
-			ChunkWriter.loadPlantsStmt.execute();
-
-			ResultSet rs = ChunkWriter.loadPlantsStmt.getResultSet();
-			while (rs.next()) {
-				int w = rs.getInt("w");
-				int x = rs.getInt("x");
-				int y = rs.getInt("y");
-				int z = rs.getInt("z");
-				long date = rs.getLong(5);
-				float growth = rs.getFloat(6);
-				float fruitGrowth = rs.getFloat(7);
-
-				RealisticBiomes.doLog(Level.FINEST, String
-								.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s",
-										w, x, y, z, date, growth));
-
-				// if the plant does not correspond to an actual crop, don't
-				// load it
-				if (MaterialAliases.getConfig(plugin.materialGrowth, world.getBlockAt(x, y, z)) == null) {
-					RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
-					continue;
-				}
-
-				Plant plant = new Plant(date, growth, fruitGrowth);
-
-				Block block = world.getBlockAt(x, y, z);
-				GrowthConfig growthConfig = MaterialAliases.getConfig(plugin.materialGrowth, block);
-				if (growthConfig.isPersistent()) {
-					plugin.growPlant(plant, block, growthConfig, null, dropGrouper);
-				}
-
-				// if the plant isn't finished growing, add it to the
-				// plants
-				if (!plant.isFullyGrown()) {
-					plants.put(new Coords(w, x, y, z), plant);
-					RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
+			loadPlantsStmt.setLong(1, index);
+			RealisticBiomes.doLog(Level.FINER, "PlantChunk.load() executing sql query: " + Database.loadPlantsStmt);
+			
+			try (ResultSet rs = loadPlantsStmt.executeQuery()) {
+				while (rs.next()) {
+					int w = rs.getInt("w");
+					int x = rs.getInt("x");
+					int y = rs.getInt("y");
+					int z = rs.getInt("z");
+					long date = rs.getLong(5);
+					float growth = rs.getFloat(6);
+					float fruitGrowth = rs.getFloat(7);
+	
+					RealisticBiomes.doLog(Level.FINEST, String
+									.format("PlantChunk.load(): got result: w:%s x:%s y:%s z:%s date:%s growth:%s",
+											w, x, y, z, date, growth));
+	
+					// if the plant does not correspond to an actual crop, don't load it
+					if (MaterialAliases.getConfig(plugin.materialGrowth, world.getBlockAt(x, y, z)) == null) {
+						RealisticBiomes.doLog(Level.FINER, "Plantchunk.load(): plant we got from db doesn't correspond to an actual crop, not loading");
+						continue;
+					}
+	
+					Plant plant = new Plant(date, growth, fruitGrowth);
+	
+					Block block = world.getBlockAt(x, y, z);
+					GrowthConfig growthConfig = MaterialAliases.getConfig(plugin.materialGrowth, block);
+					if (growthConfig.isPersistent()) {
+						plugin.growPlant(plant, block, growthConfig, null, dropGrouper);
+					}
+	
+					// if the plant isn't finished growing, add it to the plants
+					if (!plant.isFullyGrown()) {
+						plants.put(new Coords(w, x, y, z), plant);
+						RealisticBiomes.doLog(Level.FINER, "PlantChunk.load(): plant not finished growing, adding to plants list");
+					}
 				}
 			}
 		} catch (SQLException e) {
@@ -229,9 +228,8 @@ public class PlantChunk {
 			RealisticBiomes.LOG.log(Level.WARNING, "Looks like DB has gone away: ", dse);			
 		}
 		
-		// if we are here, had failure.
+		// if we are here, had failure -- do one retry
 		try {
-			plugin.getPlantManager().reconnect();
 			innerUnload();
 		} catch(RuntimeException dse) {
 			RealisticBiomes.LOG.log(Level.WARNING, "DB really has gone away: ", dse);
@@ -242,68 +240,46 @@ public class PlantChunk {
 	
 	/**
 	 * unloads the plant chunk, and saves it to the database.
-	 * 
-	 * Note that this is called by PlantManager.saveAllAndStop(), so that method
-	 * takes care of setting autocommit to false/true and actually committing to
-	 * the database
-
-	 * @param writeStmts
 	 */
 	private void innerUnload() {
 
-		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): called with coords "
+		RealisticBiomes.doLog(Level.FINEST,"PlantChunk.innerUnload(): called with coords "
 				+ coords + "plantchunk object: " + this);
 		
 		if (!loaded) {
-			RealisticBiomes.doLog(Level.FINEST, "Plantchunk.unload(): not loaded so returning");
+			RealisticBiomes.doLog(Level.FINEST, "Plantchunk.innerUnload(): not loaded so returning");
 			return;
 		}
 
 		try {
 			// if this chunk was not in the database, then add it to the
 			// database
-			RealisticBiomes.doLog(Level.FINEST,"PlantChunk.unload(): is inDatabase?: "
-					+ inDatabase);
+			RealisticBiomes.doLog(Level.FINEST,"PlantChunk.innerUnload(): is inDatabase?: " + inDatabase);
 			if (!inDatabase) {
-
-				RealisticBiomes.doLog(Level.FINEST, "not in database, adding new chunk");
-				ChunkWriter.addChunkStmt.setInt(1, coords.w);
-				ChunkWriter.addChunkStmt.setInt(2, coords.x);
-				ChunkWriter.addChunkStmt.setInt(3, coords.z);
-				ChunkWriter.addChunkStmt.execute();
-				ChunkWriter.getLastChunkIdStmt.execute();
-				ResultSet rs = ChunkWriter.getLastChunkIdStmt.getResultSet();
-
-				// need to call rs.next() to get the first result, and make sure
-				// we get the index, and throw an exception
-				// if we don't
-				if (rs.next()) {
-					index = rs.getLong(1);
-					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): got new autoincrement index, it is now "
-									+ index);
-				} else {
-					throw new RuntimeException(
-							"Trying to add the chunk to the database, but was unable to get "
-									+ "the last inserted statement to get the index");
-				}
-
-				// make sure to commit this newly added chunk, or else when we
-				// add plants to the
-				// database later in this method we dont get a Constraint
-				// Failure exception
-
-				try {
-					RealisticBiomes.doLog(Level.FINEST, "plantchunk.unload(): committing new plantchunk with index "
-								+ this.index);
-					plugin.getPlantManager().getWriteConnection().commit();
-				} catch(SQLException e) {
-					RealisticBiomes.LOG.warning("Can't commit?" + e);
+				RealisticBiomes.doLog(Level.FINEST, "  not in database, adding new chunk");
+				try (Connection connection = plugin.getPlantManager().getDb().getConnection();
+						PreparedStatement addChunkStmt = connection.prepareStatement(Database.addChunkStmt, Statement.RETURN_GENERATED_KEYS);) {
+					addChunkStmt.setInt(1, coords.w);
+					addChunkStmt.setInt(2, coords.x);
+					addChunkStmt.setInt(3, coords.z);
+					addChunkStmt.execute();
+					try (ResultSet rs = addChunkStmt.getGeneratedKeys()) {
+						// need to call rs.next() to get the first result, and make sure
+						// we get the index, and throw an exceptionif we don't
+						if (rs.next()) {
+							index = rs.getLong(1);
+							RealisticBiomes.doLog(Level.FINEST, "plantchunk.innerUnload(): got new autoincrement index, it is now "
+											+ index);
+						} else {
+							throw new RuntimeException(
+									"Trying to add the chunk to the database, but was unable to get "
+											+ "the last inserted statement to get the index");
+						}
+					}
 				}
 				inDatabase = true;
 			}
-
 		} catch (SQLException e) {
-
 			throw new RuntimeException(
 					String.format(
 							"Failed to unload the chunk (In PlantChunk, adding chunk to db if needed), index %s, coords %s, PlantChunk obj: %s",
@@ -315,84 +291,69 @@ public class PlantChunk {
 			// if we are already unloaded then don't do anything
 			if (loaded) {
 				if (!plants.isEmpty()) {
-					try {
-						plugin.getPlantManager().getWriteConnection().setAutoCommit(false);
-					} catch (SQLException e) {
-						RealisticBiomes.LOG.severe("Can't set autocommit?" + e);
-					}
+					try (Connection connection = plugin.getPlantManager().getDb().getConnection();){
+						connection.setAutoCommit(false);
 
-					// delete plants in the database for this chunk and re-add them
-					// this is OK because rb_plant does not have a autoincrement index
-					// so it won't explode. However, does this have a negative performance impact?
-					// TODO: add listener for block break event, and if its a plant, we remove it
-					// from the correct plantchunk? Right now if a plant gets destroyed before
-					// it is fully grown then it won't get remove from the database
-					ChunkWriter.deleteOldPlantsStmt.setLong(1, index);
-					ChunkWriter.deleteOldPlantsStmt.execute();
-
-					int coordCounter = 0;
-					boolean needToExec = false;
-					
-					RealisticBiomes.doLog(Level.FINEST, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
-					for (Coords coords : plants.keySet()) {
-						if (!needToExec) {
-							needToExec = true;
+						// delete plants in the database for this chunk and re-add them
+						// this is OK because rb_plant does not have a autoincrement index
+						// so it won't explode. However, does this have a negative performance impact?
+						// TODO: add listener for block break event, and if its a plant, we remove it
+						// from the correct plantchunk? Right now if a plant gets destroyed before
+						// it is fully grown then it won't get remove from the database
+						try (PreparedStatement deleteOldPlantsStmt = connection.prepareStatement(Database.deleteOldPlantsStmt);) {
+							deleteOldPlantsStmt.setLong(1, index);
+							deleteOldPlantsStmt.execute();
 						}
-						
-						Plant plant = plants.get(coords);
 
-						ChunkWriter.addPlantStmt.clearParameters();
-						ChunkWriter.addPlantStmt.setLong(1, index);
-						ChunkWriter.addPlantStmt.setInt(2, coords.w);
-						ChunkWriter.addPlantStmt.setInt(3, coords.x);
-						ChunkWriter.addPlantStmt.setInt(4, coords.y);
-						ChunkWriter.addPlantStmt.setInt(5, coords.z);
-						ChunkWriter.addPlantStmt.setLong(6,
-								plant.getUpdateTime());
-						ChunkWriter.addPlantStmt.setFloat(7,
-								plant.getGrowth());
-						ChunkWriter.addPlantStmt.setFloat(8,
-								plant.getFruitGrowth());
+						int coordCounter = 0;
+						boolean needToExec = false;
 						
-						ChunkWriter.addPlantStmt.addBatch();
-						
-						// execute the statement if we hit 1000 batches
-						if ((coordCounter + 1) % 1000 == 0) {
+						try (PreparedStatement addPlantStmt = connection.prepareStatement(Database.addPlantStmt);) {
+							RealisticBiomes.doLog(Level.FINEST, "PlantChunk.unload(): Unloading plantchunk with index: " + this.index);
+							for (Coords coords : plants.keySet()) {
+								if (!needToExec) {
+									needToExec = true;
+								}
 							
-							ChunkWriter.addPlantStmt.executeBatch();
-							coordCounter = 0;
-							needToExec = false;
-							try {
-								plugin.getPlantManager().getWriteConnection().commit();
-							} catch (SQLException e) {
-								RealisticBiomes.LOG.warning("Autocommit is probably still on..." + e);
+								Plant plant = plants.get(coords);
+		
+								addPlantStmt.clearParameters();
+								addPlantStmt.setLong(1, index);
+								addPlantStmt.setInt(2, coords.w);
+								addPlantStmt.setInt(3, coords.x);
+								addPlantStmt.setInt(4, coords.y);
+								addPlantStmt.setInt(5, coords.z);
+								addPlantStmt.setLong(6, plant.getUpdateTime());
+								addPlantStmt.setFloat(7, plant.getGrowth());
+								addPlantStmt.setFloat(8, plant.getFruitGrowth());
+								
+								addPlantStmt.addBatch();
+								
+								// execute the statement if we hit 100 batches -- most connections limit to 100 in a batch
+								if ((++coordCounter) % 100 == 0) {
+									
+									addPlantStmt.executeBatch();
+									coordCounter = 0;
+									needToExec = false;
+								}
+								
+							} // end for
+							
+							// if we have left over statements afterwards, execute them
+							if (needToExec) {
+								addPlantStmt.executeBatch();
 							}
 						}
-						
-					} // end for
-					
-					// if we have left over statements afterwards, execute them
-					if (needToExec) {
-						ChunkWriter.addPlantStmt.executeBatch();
-						try {
-							plugin.getPlantManager().getWriteConnection().commit();
-						} catch (SQLException e) {
-							RealisticBiomes.LOG.warning("Autocommit is probably still on..." + e);
-						}
+
+						connection.commit();
+						connection.setAutoCommit(true);
 					}
-					try {
-						plugin.getPlantManager().getWriteConnection().setAutoCommit(true);
-					} catch (SQLException e) {
-						RealisticBiomes.LOG.severe("Can't set autocommit?" + e);
-					}
-					
-				} 
+				}
 			}
 		} catch (SQLException e) {
 			throw new RuntimeException(
-					String.format(
-							"Failed to unload the chunk (In PlantChunk, "
-									+ "replacing with new data/deleting), index %s, coords %s, PlantChunk obj: %s",
+					String.format("Failed to unload the chunk (In PlantChunk, "
+							+ "replacing with new data/deleting), index %s, coords %s, PlantChunk obj: %s",
 							index, coords, this), e);
 		}
 

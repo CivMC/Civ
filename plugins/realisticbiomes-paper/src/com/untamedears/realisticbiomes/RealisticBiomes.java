@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -128,6 +129,21 @@ public class RealisticBiomes extends JavaPlugin {
 			}	
 		}
 	}
+	
+
+	public static void doLog(Level level, String message, Throwable wrong) {
+		
+		if (RealisticBiomes.LOG != null) {
+			
+			// here we make sure that we only log messages that are loggable with the given Level
+			// so if its set to INFO (800) and we try to log a FINER message (400), then it wont work
+			// However if its ALL, then its set to Integer.MIN_VALUE, so everything will get logged. etc etc
+			if (level.intValue() >= RealisticBiomes.minLogLevel.intValue() ) {
+				RealisticBiomes.LOG.log(level, "[" + level.toString() + "] " + message, wrong);
+				
+			}	
+		}
+	}
 
 	private void loadPersistConfig(ConfigurationSection config) {
 		persistConfig = new PersistConfig();
@@ -138,6 +154,7 @@ public class RealisticBiomes extends JavaPlugin {
 		persistConfig.user = config.getString("database_user");
 		persistConfig.password = config.getString("database_password");
 		persistConfig.prefix = config.getString("database_prefix");
+		persistConfig.poolSize = config.getInt("database_poolsize", 10);
 		
 		persistConfig.enabled = config.getBoolean("persistence_enabled");
 		persistConfig.unloadBatchPeriod = config.getInt("unload_batch_period");
@@ -464,4 +481,5 @@ public class RealisticBiomes extends JavaPlugin {
 	public PlantManager getPlantManager() {
 		return plantManager;
 	}
+
 }

@@ -9,6 +9,8 @@ public class PersistConfig {
 	public String user;
 	public String password;
 	public String prefix;
+	
+	public int poolSize;
 
 	public boolean enabled;
 	

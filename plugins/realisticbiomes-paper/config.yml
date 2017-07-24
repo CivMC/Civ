@@ -5,6 +5,7 @@ realistic_biomes:
  database_user: "tekkit"
  database_password: ""
  database_prefix: "rb"
+ database_poolsize: 10
 
  cache_entire_database: true
  persistence_enabled: true
