@@ -17,6 +17,7 @@ public interface ICitadelManager {
 	void close();
 	double getMaxRedstoneDistance();
 	ICitadel getCitadel(List<Player> players, Location loc);
+	boolean isReinforced(Location loc);
 	boolean canBypass(Player player, Location loc);
 	boolean canViewInformation(Player player, Location loc);
 	ReinforcementInfo removeReinforcement(Location loc);

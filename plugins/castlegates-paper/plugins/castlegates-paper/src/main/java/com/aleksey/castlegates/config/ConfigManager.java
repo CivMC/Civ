@@ -68,6 +68,7 @@ public class ConfigManager {
 	private int timerMax;
 	private int timerDefault;
 	private TimerOperation timerDefaultOperation;
+	private boolean gearblockMustBeReinforced;
 
 	public ConfigManager(Logger logger) {
 		this.logger = logger;
@@ -96,6 +97,7 @@ public class ConfigManager {
 		this.timerMax = getInt("Settings.Timer.Max", 60);
 		this.timerDefault = getInt("Settings.Timer.DefaultInterval", 5);
 		this.timerDefaultOperation = getTimerOperation("Settings.Timer.DefaultOperation", TimerOperation.UNDRAW);
+		this.gearblockMustBeReinforced = getBoolean("Settings.GearblockMustBeReinforced", false);
 
 		this.gearMaterials = getBlockMaterials("Blocks.GearMaterials", ConfigDefaults.gearMaterials);
 		this.bridgeMaterials = getBlockMaterials("Blocks.BridgeMaterials", ConfigDefaults.bridgeMaterials);
@@ -132,6 +134,8 @@ public class ConfigManager {
 	public TimerOperation getTimerDefaultOperation() {
 		return this.timerDefaultOperation;
 	}
+
+	public boolean isGearblockMustBeReinforced() { return this.gearblockMustBeReinforced; }
 
 	public Database getDatabase() {
 		return this.database;

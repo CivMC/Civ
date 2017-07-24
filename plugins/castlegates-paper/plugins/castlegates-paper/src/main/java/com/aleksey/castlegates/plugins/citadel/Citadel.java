@@ -24,10 +24,6 @@ public class Citadel implements ICitadel {
         this.useJukeAlert = useJukeAlert;
     }
 
-    public boolean hasAccess() {
-        return this.hasAccess;
-    }
-
     public boolean useJukeAlert() { return this.useJukeAlert; }
 
     public String getGroupName() {

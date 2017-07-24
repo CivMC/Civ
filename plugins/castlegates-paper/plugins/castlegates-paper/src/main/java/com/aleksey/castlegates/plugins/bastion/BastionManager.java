@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import isaac.bastion.manager.BastionGroupManager;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -22,17 +23,20 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionManager implements IBastionManager {
 	private static final String PERMISSION_UNDRAW = "BASTION_BRIDGE_UNDRAW";
 
-	private BastionBlockManager manager;
+	private BastionBlockManager blockManager;
+	private BastionGroupManager groupManager;
 
 	public void init() {
-		this.manager = Bastion.getBastionManager();
+		this.blockManager = Bastion.getBastionManager();
+		this.groupManager = Bastion.getGroupManager();
 
 		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
 		memberAndAbove.add(PlayerType.MEMBERS);
@@ -64,43 +68,39 @@ public class BastionManager implements IBastionManager {
 	private boolean hasBastionAccess(List<Player> players, Block block, ICitadel citadel) {
 		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
 		Location loc = block.getLocation();
-		Set<? extends QTBox> boxes = this.manager.getBlockingBastions(loc);
-		Set<BastionBlock> bastions = null;
+		Set<BastionBlock> bastions = this.blockManager.getBlockingBastions(loc);
 
-		if (boxes.size() != 0) {
-			bastions = (Set<BastionBlock>) boxes;
-		}
-
-		if (bastions == null)  return true;
+		if (bastions == null) return true;
 
 		ReinforcementManager reinManager = Citadel.getReinforcementManager();
-		boolean hasAccess = true;
+		Group citadelGroup = citadel.getGroupName() != null ? GroupManager.getGroup(citadel.getGroupName()) : null;
 
 		for(BastionBlock bastion : bastions) {
-			if(!bastion.inField(loc)) {
-				continue;
-			}
+			if(!bastion.inField(loc)) continue;
 
-			Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(loc);
+			Reinforcement rein = reinManager.getReinforcement(bastion.getLocation());
 			PlayerReinforcement playerRein = rein != null && (rein instanceof PlayerReinforcement) ? (PlayerReinforcement)rein : null;
 
 			if(playerRein == null) continue;
 
 			if(players == null) return false;
 
-			if(citadel.useJukeAlert()) {
-				if(citadel.getGroupName().equalsIgnoreCase(playerRein.getGroup().getName())) {
-					return true;
-				}
-			} else {
-				for (Player player : players) {
-					if (bastion.permAccess(player, perm)) return true;
-				}
-			}
+			if(citadel.useJukeAlert() && !citadel.getGroupName().equalsIgnoreCase(playerRein.getGroup().getName())) {
+				return false;
+			} else if(citadelGroup == null || !this.groupManager.isAllowedGroup(playerRein.getGroup(), citadelGroup)) {
+				boolean hasAccess = false;
 
-			hasAccess = false;
+				for (Player player : players) {
+					if (bastion.permAccess(player, perm)) {
+						hasAccess = true;
+						break;
+					}
+				}
+
+				if (!hasAccess) return false;
+			}
 		}
 
-		return hasAccess;
+		return true;
 	}
 }

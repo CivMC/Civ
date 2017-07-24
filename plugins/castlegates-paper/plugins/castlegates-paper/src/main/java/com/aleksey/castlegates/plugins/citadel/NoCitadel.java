@@ -7,7 +7,6 @@ package com.aleksey.castlegates.plugins.citadel;
 import org.bukkit.Location;
 
 public class NoCitadel implements ICitadel {
-    public boolean hasAccess() { return true; }
     public boolean useJukeAlert() { return false; }
     public String getGroupName() { return null; }
     public boolean canAccessDoors(Location location) { return true; }
