@@ -96,6 +96,10 @@ public class CitadelConfigManager {
 		return config.getStringList("reinforcements." + type + ".lore");
 	}
 	
+	public static int getGracePeriod(String type) {
+		return config.getInt("reinforcements." + type + ".grace_period", 0); // default disabled
+	}
+	
 	public static ReinforcementEffect getReinforcementEffect(String type){
 		Particle effect = null;
 		if (config.getString("reinforcements." + type + ".effect.type") != null) {

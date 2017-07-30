@@ -24,6 +24,7 @@ public class ReinforcementType {
 	private int maturationTime;
 	private int acidTime;
 	private int scale;
+	private int gracePeriod;
 	private ItemStack stack;
 	private ReinforcementEffect effect;
 	private Set <Material> allowedReinforceables;
@@ -35,7 +36,7 @@ public class ReinforcementType {
 	public ReinforcementType(Material mat, int amount, double percentReturn,
 			int returnValue, int hitpoints, int maturationTime, int acidTime,
 			int scale, List<String> lore, ReinforcementEffect effect, Set <Material> allowsReinforceables, 
-			Set <Material> disallowedReinforceables) {
+			Set <Material> disallowedReinforceables, int gracePeriod) {
 		this.mat = mat;
 		this.amount = amount;
 		this.percentReturn = percentReturn/100;
@@ -53,6 +54,7 @@ public class ReinforcementType {
 		types.put(stack, this);
 		this.allowedReinforceables = allowsReinforceables;
 		this.disallowedReinforceables = disallowedReinforceables;
+		this.gracePeriod = gracePeriod;
 	}
 	
 	public static void initializeReinforcementTypes(){
@@ -72,15 +74,17 @@ public class ReinforcementType {
 			Set <Material> reinforceableMats = CitadelConfigManager.parseMaterialList(reinforceableMatString);
 			List <String> unreinforceableMatString = CitadelConfigManager.getNonReinforceableMaterials(type);
 			Set <Material> nonReinforceableMats = CitadelConfigManager.parseMaterialList(unreinforceableMatString);
+			int gracePeriod = CitadelConfigManager.getGracePeriod(type);
 			new ReinforcementType(mat, amount, percentReturn, returnValue,
-					hitpoints, maturation, acid, maturation_scale, lore, effect, reinforceableMats, nonReinforceableMats);
+					hitpoints, maturation, acid, maturation_scale, lore, effect, reinforceableMats, nonReinforceableMats, gracePeriod);
 			if (CitadelConfigManager.shouldLogInternal()) {
 				Citadel.getInstance().getLogger().log(Level.INFO,
 						"Adding Reinforcement {0} with:\n  material {1} \n  amount {2} "
 								+ "\n  return rate {3} \n  return? {4} \n  health {5} \n  maturation {6} "
-								+ "\n  acid {7} \n  scaling {8} \n  lore: {9} \n  effect: \n {10}",
+								+ "\n  acid {7} \n  scaling {8} \n  lore: {9} \n  effect: \n {10} \n grace: {11}",
 						new Object[] { type, mat.toString(), amount, percentReturn, returnValue, hitpoints, maturation,
-								acid, maturation_scale, (lore != null ? String.join("   ", lore) : ""), (effect != null ? effect : "")});
+								acid, maturation_scale, (lore != null ? String.join("   ", lore) : ""), (effect != null ? effect : ""),
+								gracePeriod});
 			}
 		}
     }
@@ -175,5 +179,12 @@ public class ReinforcementType {
 		List<ReinforcementType> type = new ArrayList<ReinforcementType>();
 		type.addAll(types.values());
 		return type;
+	}
+	
+	/**
+	 * @return the time in minutes to "forgive" reinforcements and apply 100% return rate. Set to 0 to disable.
+	 */
+	public int getGracePeriod() {
+		return this.gracePeriod;
 	}
 }
