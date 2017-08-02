@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.LinkedList;
@@ -129,8 +130,18 @@ public class SimpleAdminHacks extends JavaPlugin {
 		}
 
 		// Boot up the hacks.
-		for (SimpleHack<?> hack : hacks) {
-			hack.enable();
+		List<SimpleHack<?>> iterList = new ArrayList<SimpleHack<?>>(hacks);
+		for (SimpleHack<?> hack : iterList) {
+			try {
+				hack.enable();
+			} catch (NoClassDefFoundError err) {
+				log(Level.WARNING, "Unable to activate hack {0}, missing dependency: {1}", hack.getName(), err.getMessage());
+				unregister(hack);
+			} catch (Exception e) {
+				log(Level.WARNING, "Unable to activate hack {0}, unrecognized error: {1}", hack.getName(), e.getMessage());
+				log(Level.WARNING, "Full stack trace: ", e);
+				unregister(hack);
+			}
 		}
 
 		this.registerCommand("hacks", new CommandListener(this));
@@ -142,7 +153,14 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void onDisable() {
 		if (hacks == null) return;
 		for (SimpleHack<?> hack : hacks) {
-			hack.disable();
+			try {
+				hack.disable();
+			} catch (NoClassDefFoundError err) {
+				log(Level.WARNING, "Unable to cleanly disable hack {0}, missing dependency: {1}", hack.getName(), err.getMessage());
+			} catch (Exception e) {
+				log(Level.WARNING, "Unable to cleanly disable hack {0}, unrecognized error: {1}", hack.getName(), e.getMessage());
+				log(Level.WARNING, "Full stack trace: ", e);
+			}
 		}
 		hacks.clear();
 		hacks = null;
