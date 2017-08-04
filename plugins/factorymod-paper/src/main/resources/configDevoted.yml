@@ -2335,7 +2335,7 @@ recipes:
         - Mercury T1
     output:
       Iron_Chest:
-        material: CHEST
+        material: IRON_INGOT
         amount: 2
         lore:
         - Iron Reinforced Chest
