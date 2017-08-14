@@ -193,8 +193,9 @@ public final class Config {
 					boolean transformIfAble = drop.getBoolean("transformIfAble", false);
 					boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
 					int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
+					String command = drop.getString("command", null);
 
-					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), 
+					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), command,
 							transformIfAble, transformDropIfFails, transformMaxDropsIfFails,
 							dPrefix, grabLimits(drop, new DropLimitsConfig()));
 

@@ -238,6 +238,7 @@ public class BlockBreakListener implements Listener {
 			}
 		}
 		
+		runCommand(player, dropConfig.command);
 		// now try for XP
 		
 
@@ -386,6 +387,22 @@ public class BlockBreakListener implements Listener {
 	private void debug(String message, Object...replace) {
 		if (Config.isDebug) {
 			plugin.getLogger().log(Level.INFO, message, replace);
+		}
+	}
+	
+	private void runCommand(Player player, String command) {
+		if (player != null && command != null) {
+			try {
+				String fCommand = command.replaceAll("%player%", player.getName()).replaceAll("%uuid%", player.getUniqueId().toString());
+				
+				if (Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), fCommand)) {
+					log("Fired off {0} for {1}.", fCommand, player.getName());
+				} else {
+					log("Failed to fire off {0} for {1}.", fCommand, player.getName());
+				}
+			} catch (Exception e) {
+				log("Failure during command processing: {0}", e);
+			}
 		}
 	}
 }

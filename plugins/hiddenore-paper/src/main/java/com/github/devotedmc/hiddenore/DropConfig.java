@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class DropConfig {
 	public List<DropItemConfig> drops;
+	public String command;
 	public String dropName;
 	public String prefix;
 	public DropLimitsConfig limits;
@@ -20,11 +21,12 @@ public class DropConfig {
 	public int maxDropsIfTransformFails;
 	private Map<String, DropLimitsConfig> biomeLimits;
 
-	public DropConfig(String dropName, List<DropItemConfig> drops, boolean transformIfAble, 
+	public DropConfig(String dropName, List<DropItemConfig> drops, String command, boolean transformIfAble, 
 			boolean dropIfTransformFails, int maxDropsIfTransformFails, String prefix, 
 			DropLimitsConfig limits) {
 		this.dropName = dropName;
 		this.drops = drops;
+		this.command = command;
 		this.transformIfAble = transformIfAble;
 		this.dropIfTransformFails = dropIfTransformFails;
 		this.maxDropsIfTransformFails = maxDropsIfTransformFails;
