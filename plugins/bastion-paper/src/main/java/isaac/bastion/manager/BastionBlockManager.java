@@ -11,6 +11,10 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import isaac.bastion.Permissions;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -26,6 +30,8 @@ import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -277,6 +283,51 @@ public class BastionBlockManager {
 		
 		return bastions;
 	}
+
+	public boolean canList(Player player, Integer groupId) {
+		if(player == null || groupId == null) return false;
+
+		Group group = GroupManager.getGroup(groupId);
+
+		PermissionType permission = PermissionType.getPermission(Permissions.BASTION_LIST);
+
+		return group != null && NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission);
+	}
+
+	public TextComponent bastionDeletedMessageComponent(BastionBlock bastion) {
+		TextComponent component = new TextComponent(ChatColor.GREEN + "Bastion deleted");
+
+		String hoverText = bastion.getHoverText();
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+
+		return component;
+	}
+
+	public TextComponent bastionCreatedMessageComponent(Location location) {
+		BastionBlock bastion = storage.getBastionBlock(location);
+
+		TextComponent component = new TextComponent(ChatColor.GREEN + "Bastion block created");
+
+		String hoverText = bastion.getHoverText();
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+
+		return component;
+	}
+
+	public TextComponent infoMessageComponent(boolean dev, Block block, Block clicked, Player player) {
+		BastionBlock bastion = storage.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
+
+		if(bastion == null) return new TextComponent(infoMessage(dev, block, clicked, player));
+
+		TextComponent component = new TextComponent(bastion.infoMessage(dev));
+
+		if(canList(player, bastion.getListGroupId())) {
+			String hoverText = bastion.getHoverText();
+			component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+		}
+
+		return component;
+	}
 	
 	public String infoMessage(boolean dev, Block block, Block clicked, Player player) {
 		BastionBlock bastion = storage.getBastionBlock(clicked.getLocation()); //Get the bastion at the location clicked.
@@ -314,5 +365,17 @@ public class BastionBlockManager {
 		}
 
 		return sb.toString();
+	}
+
+	public void changeBastionGroup(Location location) {
+		BastionBlock bastion = storage.getBastionBlock(location);
+
+		if(bastion == null) return;
+
+		storage.changeBastionGroup(bastion);
+	}
+
+	public void getBastionsByGroupIds(List<Integer> groupIds, List<BastionBlock> result) {
+		storage.getBastionsByGroupIds(groupIds, result);
 	}
 }

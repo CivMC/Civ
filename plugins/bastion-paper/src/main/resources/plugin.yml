@@ -34,6 +34,9 @@ commands:
       description: Insta matures any bastion left clicked 
       usage: /bsm
       permission: Bastion.admin
+   bsl:
+    description: Displays list of bastions
+    usage: /bsl <page number> [groups=<group1>,<group2>,...]
    bsga:
       description: Adds allowed group to bastion group
       usage: /bsga <bastion group> <allowed group>

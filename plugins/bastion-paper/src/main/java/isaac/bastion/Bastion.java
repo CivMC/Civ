@@ -2,7 +2,9 @@ package isaac.bastion;
 
 import java.util.LinkedList;
 
+import isaac.bastion.commands.BastionListCommand;
 import isaac.bastion.commands.GroupCommandManager;
+import isaac.bastion.listeners.*;
 import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.storage.BastionGroupStorage;
 import isaac.bastion.storage.Database;
@@ -11,10 +13,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import isaac.bastion.commands.BastionCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
-import isaac.bastion.listeners.BastionBreakListener;
-import isaac.bastion.listeners.BastionDamageListener;
-import isaac.bastion.listeners.BastionInteractListener;
-import isaac.bastion.listeners.ElytraListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -66,7 +64,8 @@ public final class Bastion extends ACivMod {
 		getServer().getPluginManager().registerEvents(new BastionDamageListener(), this);
 		getServer().getPluginManager().registerEvents(new BastionInteractListener(), this);
 		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
-		getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage), this);
+		getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage, blockManager), this);
+		getServer().getPluginManager().registerEvents(new NameLayerListener(blockStorage), this);
 	}
 
 	private void setupDatabase() {
@@ -114,6 +113,7 @@ public final class Bastion extends ACivMod {
 		getCommand("bsb").setExecutor(new ModeChangeCommand(Mode.BASTION));
 		getCommand("bsf").setExecutor(new ModeChangeCommand(Mode.OFF));
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
+		getCommand("bsl").setExecutor(new BastionListCommand());
 		getCommand("bsga").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Add));
 		getCommand("bsgd").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Delete));
 		getCommand("bsgl").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.List));
@@ -143,15 +143,19 @@ public final class Bastion extends ACivMod {
 		memberAndAbove.add(PlayerType.MODS);
 		memberAndAbove.add(PlayerType.ADMINS);
 		memberAndAbove.add(PlayerType.OWNER);
+
 		LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
 		modAndAbove.add(PlayerType.MODS);
 		modAndAbove.add(PlayerType.ADMINS);
 		modAndAbove.add(PlayerType.OWNER);
+
 		LinkedList <PlayerType> adminAndAbove = new LinkedList<PlayerType>();
 		adminAndAbove.add(PlayerType.ADMINS);
 		adminAndAbove.add(PlayerType.OWNER);
+
 		PermissionType.registerPermission(Permissions.BASTION_PEARL, memberAndAbove);
 		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove);
+		PermissionType.registerPermission(Permissions.BASTION_LIST, modAndAbove);
 		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove);
 	}
 

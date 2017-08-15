@@ -15,6 +15,8 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -26,6 +28,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	private int health; //current durability
 	private long placed; //time when the bastion block was created
 	private BastionType type;
+	private Integer listGroupId;
 
 	/**
 	 * constructor for blocks loaded from database
@@ -45,6 +48,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		PlayerReinforcement reinforcement = getReinforcement();
 		if (reinforcement != null) {
 			this.health = reinforcement.getDurability();
+			this.listGroupId = reinforcement.getGroupId();
 		} else{
 			this.health = 0;
 			destroy();
@@ -277,7 +281,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * Gets the reinforcement for this bastion
 	 * @return The reinforcement for this bastion
 	 */
-	private PlayerReinforcement getReinforcement() {
+	public PlayerReinforcement getReinforcement() {
 		Reinforcement reinforcement = Citadel.getReinforcementManager().getReinforcement(location);
 		if(reinforcement != null && reinforcement instanceof PlayerReinforcement) {
 			return (PlayerReinforcement) reinforcement;
@@ -329,12 +333,20 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	public double getBalance() {
 		return balance;
 	}
-	
+
 	/**
 	 * Sets the id of this bastion
 	 */
 	public void setId(int id) {
 		this.id = id;
+	}
+
+	public Integer getListGroupId() {
+		return this.listGroupId;
+	}
+
+	public void setListGroupId(Integer groupId) {
+		this.listGroupId = groupId;
 	}
 
 	// needed to use SparseQuadTree
@@ -410,27 +422,92 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 			return result.append( this.toString() ).toString();
 		}
 
+		String strength = getStrengthText();
+
+		if(strength != null) {
+			result.append("Bastion: ");
+			result.append(strength);
+		}
+
+		return result.toString();
+	}
+
+	public String getHoverText() {
+		StringBuilder hoverText = new StringBuilder();
+
+		hoverText.append("Location: ");
+		hoverText.append(getLocationText());
+		hoverText.append("\n");
+
+		hoverText.append("Strength: ");
+		hoverText.append(getStrengthText());
+		hoverText.append("\n");
+
+		hoverText.append("Group: ");
+		hoverText.append(getGroupName());
+		hoverText.append("\n");
+
+		hoverText.append("Type: ");
+		hoverText.append(this.type.getItemName());
+		hoverText.append("\n");
+
+		hoverText.append("Shape: ");
+		hoverText.append(this.type.isSquare() ? "Square" : "Circle");
+		hoverText.append("\n");
+
+		hoverText.append("Radius: ");
+		hoverText.append(this.type.getEffectRadius());
+		hoverText.append("\n");
+
+		return hoverText.toString();
+	}
+
+	public String getLocationText() {
+		String worldText = "";
+
+		if (this.location != null
+				&& this.location.getWorld() != null
+				&& this.location.getWorld().getName() != null
+				)
+		{
+			worldText = String.format("%s ", this.location.getWorld().getName());
+		}
+
+		return String.format("[%s%d %d %d]", worldText, this.location.getBlockX(), this.location.getBlockY(), this.location.getBlockZ());
+	}
+
+	private String getGroupName() {
+		if(this.listGroupId == null) return "";
+
+		Group group = GroupManager.getGroup(this.listGroupId);
+
+		return group != null ? group.getName() : "";
+	}
+
+	public String getStrengthText() {
 		double fractionOfMaturityTime = 0;
+
 		if (type.getWarmupTime() == 0) {
 			fractionOfMaturityTime = 1;
 		} else {
 			fractionOfMaturityTime = ((double) (System.currentTimeMillis() - placed)) / type.getWarmupTime();
 		}
+
 		if (fractionOfMaturityTime == 0) {
-			result.append("No strength");
+			return "No strength";
 		} else if (fractionOfMaturityTime < 0.25) {
-			result.append("Some strength");
+			return "Some strength";
 		} else if (fractionOfMaturityTime < 0.5) {
-			result.append("Low strength");
+			return "Low strength";
 		} else if (fractionOfMaturityTime < 0.75) {
-			result.append("Moderate strength");
+			return "Moderate strength";
 		} else if (fractionOfMaturityTime < 1) {
-			result.append("High strength");
+			return "High strength";
 		} else if (fractionOfMaturityTime >= 1) {
-			result.append("Full strength");
+			return "Full strength";
 		}
 
-		return result.toString();
+		return null;
 	}
 	
 	// TODO: Test world-aware comparison

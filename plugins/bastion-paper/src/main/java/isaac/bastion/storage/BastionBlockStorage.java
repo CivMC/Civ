@@ -5,11 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,6 +18,7 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.event.BastionCreateEvent;
 import isaac.bastion.manager.EnderPearlManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
@@ -34,6 +31,7 @@ public class BastionBlockStorage {
 	private Map<World, SparseQuadTree> blocks;
 	private Set<BastionBlock> changed;
 	private Set<BastionBlock> bastions;
+	private Map<Integer, List<BastionBlock>> groups;
 	private Map<Location, String> dead;
 	private int taskId;
 	
@@ -50,6 +48,7 @@ public class BastionBlockStorage {
 		blocks = new HashMap<World, SparseQuadTree>();
 		changed = new TreeSet<BastionBlock>();
 		bastions = new TreeSet<BastionBlock>();
+		groups = new HashMap<>();
 		dead = new HashMap<Location, String>();
 		pendingBastions = new HashMap<Location, BastionType>();
 		this.db = db;
@@ -105,8 +104,7 @@ public class BastionBlockStorage {
 				return false;
 			}
 			bastion.setId(id);
-			bastions.add(bastion);
-			blocks.get(loc.getWorld()).add(bastion);
+			addBastion(bastion);
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Problem saving bastion at " + bastion.getLocation().toString(), e);
 			return false;
@@ -124,8 +122,7 @@ public class BastionBlockStorage {
 			ps.setInt(1, bastion.getId());
 			ps.executeUpdate();
 			try {
- 				bastions.remove(bastion);
- 				blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+				removeBastion(bastion);
  			} catch (NullPointerException npe) {
  				log.log(Level.WARNING, "Bastion wasn't in cache, or failed to remove from cache: " + bastion.getLocation().toString(), npe);
  			}
@@ -143,8 +140,7 @@ public class BastionBlockStorage {
 				PreparedStatement ps = conn.prepareStatement(setDead)) {
 			ps.setInt(1, bastion.getId());
 			ps.executeUpdate();
-			bastions.remove(bastion);
-			blocks.get(bastion.getLocation().getWorld()).remove(bastion);
+			removeBastion(bastion);
 			dead.put(bastion.getLocation(), bastion.getType().getName());
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Failed to set bastion as dead at " + bastion.getLocation().toString(), e);
@@ -346,8 +342,7 @@ public class BastionBlockStorage {
 					if (died) {
 						dead.put(loc, block.getType().getName());
 					} else {
-						bastions.add(block);
-						bastionsForWorld.add(block);
+						addBastion(block, bastionsForWorld);
 					}
 				}
 			} catch (SQLException e) {
@@ -356,7 +351,7 @@ public class BastionBlockStorage {
 			}
 		}
 	}
-	
+
 	private void update() {
 		int count = changed.size();
 		for(BastionBlock block : changed) {
@@ -364,6 +359,118 @@ public class BastionBlockStorage {
 		}
 		changed.clear();
 		log.info("Updated " + count + " bastions");
+	}
+
+	/**
+	 * List groups methods
+	 **/
+
+	public void changeBastionGroup(BastionBlock bastion) {
+		if(bastion.getListGroupId() != null) {
+			List<BastionBlock> oldGroupBastions = groups.get(bastion.getListGroupId());
+
+			if (oldGroupBastions != null) {
+				oldGroupBastions.remove(bastion);
+			}
+		}
+
+		PlayerReinforcement rein = bastion.getReinforcement();
+
+		if(rein != null) {
+			bastion.setListGroupId(rein.getGroupId());
+
+			List<BastionBlock> groupBastions = groups.get(rein.getGroupId());
+
+			if(groupBastions == null) {
+				groups.put(rein.getGroupId(), groupBastions = new ArrayList<>());
+			}
+
+			groupBastions.add(bastion);
+		} else {
+			bastion.setListGroupId(null);
+		}
+	}
+
+	public void getBastionsByGroupIds(List<Integer> groupIds, List<BastionBlock> result) {
+		synchronized (groups) {
+			for(Integer groupId : groupIds) {
+				List<BastionBlock> groupBastions = groups.get(groupId);
+
+				if (groupBastions != null) {
+					for(BastionBlock bastion : groupBastions) {
+						result.add(bastion);
+					}
+				}
+			}
+		}
+	}
+
+	public void mergeGroups(int toGroupId, List<Integer> fromGroupIds) {
+		synchronized (groups) {
+			List<BastionBlock> toGroupBastions = null;
+
+			for(int fromGroupId : fromGroupIds) {
+				List<BastionBlock> fromGroupBastions = groups.get(fromGroupId);
+
+				if(fromGroupBastions == null) continue;
+
+				if(toGroupBastions == null) {
+					toGroupBastions = groups.get(toGroupId);
+
+					if(toGroupBastions == null) {
+						groups.put(toGroupId, toGroupBastions = new ArrayList<>());
+					}
+				}
+
+				toGroupBastions.addAll(fromGroupBastions);
+
+				groups.remove(fromGroupId);
+			}
+		}
+	}
+
+	public void removeGroups(List<Integer> groupIds) {
+		synchronized (groups) {
+			for(int groupId : groupIds) {
+				groups.remove(groupId);
+			}
+		}
+	}
+
+	private void addBastion(BastionBlock bastion) {
+		addBastion(bastion, blocks.get(bastion.getLocation().getWorld()));
+	}
+
+	private void addBastion(BastionBlock bastion, SparseQuadTree bastionsForWorld) {
+		bastions.add(bastion);
+		bastionsForWorld.add(bastion);
+
+		if(bastion.getListGroupId() != null) {
+			synchronized (groups) {
+				List<BastionBlock> groupBastions = groups.get(bastion.getListGroupId());
+
+				if (groupBastions == null) {
+					groups.put(bastion.getListGroupId(), groupBastions = new ArrayList<>());
+				}
+
+				groupBastions.add(bastion);
+			}
+		}
+	}
+
+	private void removeBastion(BastionBlock bastion) {
+		if(bastion.getListGroupId() != null) {
+			synchronized (groups) {
+				List<BastionBlock> groupBastions = groups.get(bastion.getListGroupId());
+
+				if (groupBastions != null) {
+					groupBastions.remove(bastion);
+				}
+			}
+		}
+
+		bastions.remove(bastion);
+		blocks.get(bastion.getLocation().getWorld()).remove(bastion);
 	}
 
 	/**
