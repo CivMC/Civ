@@ -72,6 +72,8 @@ public class BastionListCommand implements CommandExecutor {
 
 	private static final BastionBlockComparator bastionComparator = new BastionBlockComparator();
 
+	private Map<Player, Long> lastExecutions = new HashMap<>();
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!(sender instanceof Player)) {
@@ -84,12 +86,18 @@ public class BastionListCommand implements CommandExecutor {
 
 		if(!parseArgs(player, args, argsInfo)) return false;
 
-		Bukkit.getScheduler().runTaskAsynchronously(Bastion.getPlugin(), new Runnable() {
-			@Override
-			public void run() {
-				readListAndShow(player, argsInfo);
-			}
-		});
+		Long lastExecution = this.lastExecutions.get(player);
+
+		if(lastExecution == null || System.currentTimeMillis() - lastExecution > Bastion.getCommonSettings().getListBastionTimeout()) {
+			Bukkit.getScheduler().runTaskAsynchronously(Bastion.getPlugin(), new Runnable() {
+				@Override
+				public void run() {
+					readListAndShow(player, argsInfo);
+				}
+			});
+
+			this.lastExecutions.put(player, System.currentTimeMillis());
+		}
 
 		return true;
 	}
