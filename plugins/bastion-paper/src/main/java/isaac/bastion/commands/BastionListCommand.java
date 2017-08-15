@@ -97,6 +97,11 @@ public class BastionListCommand implements CommandExecutor {
 			});
 
 			this.lastExecutions.put(player.getUniqueId(), System.currentTimeMillis());
+		} else {
+			double timeRemained = Bastion.getCommonSettings().getListBastionTimeout() - (System.currentTimeMillis() - lastExecution);
+			String message = ChatColor.RED  + String.format("Slow down, try again in %.1f seconds", (timeRemained / 1000d));
+
+			player.sendMessage(message);
 		}
 
 		return true;
