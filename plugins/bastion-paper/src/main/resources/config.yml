@@ -10,7 +10,8 @@ mysql:
   maxLifetime: 7200000
   savesPerDay: 64
 commonSettings:
-  cancelReinInBastionField: false
+  cancelReinforcementModeInBastionField: false
+  listBastionTimeout: 2000
 bastions:
 #The first bastion in this list will be used as the default type
 #This only really matters the first time your start it up when converting from old bastion

@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
 import isaac.bastion.manager.BastionGroupManager;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -82,11 +83,10 @@ public class BastionInteractListener implements Listener {
 
 		if (PlayersStates.playerInMode(player, Mode.INFO)) {
 			boolean dev = player.hasPermission("Bastion.dev");
-			String toSend = blockManager.infoMessage(dev, block.getRelative(event.getBlockFace()), block, player);
-			if (toSend != null) {
-				PlayersStates.touchPlayer(player);
-				player.sendMessage(toSend);
-			}
+			TextComponent toSend = blockManager.infoMessageComponent(dev, block.getRelative(event.getBlockFace()), block, player);
+
+			PlayersStates.touchPlayer(player);
+			player.spigot().sendMessage(toSend);
 		} else if (PlayersStates.playerInMode(player, Mode.DELETE)) {
 			BastionBlock bastionBlock = blockStorage.getBastionBlock(block.getLocation());
 
@@ -95,8 +95,9 @@ public class BastionInteractListener implements Listener {
 			}
 
 			if (bastionBlock.canRemove(player)) {
+				TextComponent toSend = blockManager.bastionDeletedMessageComponent(bastionBlock);
 				bastionBlock.destroy();
-				player.sendMessage(ChatColor.GREEN + "Bastion Deleted");
+				player.spigot().sendMessage(toSend);
 				PlayersStates.touchPlayer(player);
 				event.setCancelled(true);
 			}
@@ -124,7 +125,8 @@ public class BastionInteractListener implements Listener {
 					@Override
 					public void run() {
 						if(blockStorage.createBastion(loc,  type, player)) {
-							player.sendMessage(ChatColor.GREEN + "Bastion block created");
+							TextComponent toSend = blockManager.bastionCreatedMessageComponent(loc);
+							player.spigot().sendMessage(toSend);
 						} else {
 							blockStorage.addPendingBastion(loc, type);
 							player.sendMessage(ChatColor.RED + "Failed to create bastion");
@@ -164,25 +166,29 @@ public class BastionInteractListener implements Listener {
 			}
 		}
 
-		final BastionType type = blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
-		if(type != null &&
-				!PlayersStates.playerInMode(event.getPlayer(), Mode.OFF) && event.getReinforcement() instanceof PlayerReinforcement) {
-			PlayersStates.touchPlayer(event.getPlayer());
-			Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
-			final Location loc = event.getBlock().getLocation().clone();
-			final Player player = event.getPlayer();
-			// Can't do it immediately, as the reinforcement doesn't exist _during_ the create event.
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					if(blockStorage.createBastion(loc,  type, player)) {
-						player.sendMessage(ChatColor.GREEN + "Bastion block created");
-					} else {
-						blockStorage.addPendingBastion(loc, type);
-						player.sendMessage(ChatColor.RED + "Failed to create bastion");
+		if(event.getReinforcement() instanceof PlayerReinforcement) {
+			final BastionType type = blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
+			if (type != null && !PlayersStates.playerInMode(event.getPlayer(), Mode.OFF)) {
+				PlayersStates.touchPlayer(event.getPlayer());
+				Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
+				final Location loc = event.getBlock().getLocation().clone();
+				final Player player = event.getPlayer();
+				// Can't do it immediately, as the reinforcement doesn't exist _during_ the create event.
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						if (blockStorage.createBastion(loc, type, player)) {
+							TextComponent toSend = blockManager.bastionCreatedMessageComponent(loc);
+							player.spigot().sendMessage(toSend);
+						} else {
+							blockStorage.addPendingBastion(loc, type);
+							player.sendMessage(ChatColor.RED + "Failed to create bastion");
+						}
 					}
-				}
-			}.runTask(Bastion.getPlugin());
+				}.runTask(Bastion.getPlugin());
+			} else {
+				blockManager.changeBastionGroup(event.getBlock().getLocation());
+			}
 		}
 	}
 

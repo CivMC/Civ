@@ -4,10 +4,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 
+import isaac.bastion.manager.BastionBlockManager;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -31,17 +34,23 @@ import vg.civcraft.mc.citadel.Utility;
 public class BastionBreakListener implements Listener {
 
 	private BastionBlockStorage storage;
+	private BastionBlockManager manager;
 	
-	public BastionBreakListener(BastionBlockStorage storage) {
+	public BastionBreakListener(BastionBlockStorage storage, BastionBlockManager manager) {
 		this.storage = storage;
+		this.manager = manager;
 	}
 	
-	private void dropBastionItem(Location loc, BastionType type) {
+	private void dropBastionItem(Location loc, BastionType type, Player player, TextComponent chatMessage) {
 		ItemStack item = type.getItemRepresentation();
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				loc.getWorld().dropItem(loc.add(0.5, 0.5, 0.5), item).setVelocity(new Vector(0, 0.05, 0));;
+
+				if(player != null && chatMessage != null) {
+					player.spigot().sendMessage(chatMessage);
+				}
 			}
 		}.runTaskLater(Bastion.getPlugin(), 1);
 		storage.deleteDeadBastion(loc); // just in case.
@@ -57,13 +66,19 @@ public class BastionBreakListener implements Listener {
 		}
 		if(type != null) {
 			Bastion.getPlugin().getLogger().log(Level.INFO, "BastionType broken {0}", type.toString());
+
+			TextComponent chatMessage = null;
 			BastionBlock bastion = storage.getBastionBlock(block.getLocation());
 			if (bastion != null) {
+				if(this.manager.canList(event.getPlayer(), bastion.getListGroupId())) {
+					chatMessage = this.manager.bastionDeletedMessageComponent(bastion);
+				}
+
 				bastion.destroy();
 			}
 			event.setCancelled(true);
 			block.setType(Material.AIR);
-			dropBastionItem(block.getLocation(), type);
+			dropBastionItem(block.getLocation(), type, event.getPlayer(), chatMessage);
 		}
 	}
 	
@@ -83,7 +98,7 @@ public class BastionBreakListener implements Listener {
 				}
 				blocks.add(block);
 				block.setType(Material.AIR);
-				dropBastionItem(block.getLocation(), type);
+				dropBastionItem(block.getLocation(), type, null, null);
 				iterator.remove(); // don't explode it, we've got it covered now.
 			}
 		}
@@ -105,7 +120,7 @@ public class BastionBreakListener implements Listener {
 				}
 				blocks.add(block);
 				block.setType(Material.AIR);
-				dropBastionItem(block.getLocation(), type);
+				dropBastionItem(block.getLocation(), type, null, null);
 				iterator.remove(); // don't explode it, we've got it covered now.
 			}
 		}
@@ -127,7 +142,7 @@ public class BastionBreakListener implements Listener {
 			event.setCancelled(true);
 			block.setType(Material.AIR);
 			event.getBlock().setType(Material.AIR);
-			dropBastionItem(block.getLocation(), type);
+			dropBastionItem(block.getLocation(), type, null, null);
 		}
 	}
 
@@ -141,7 +156,7 @@ public class BastionBreakListener implements Listener {
 			}
 			if(type != null) {
 				if(block.getPistonMoveReaction() == PistonMoveReaction.BREAK) {
-					dropBastionItem(block.getLocation(), type);
+					dropBastionItem(block.getLocation(), type, null, null);
 					block.setType(Material.AIR);
 				} else if(block.getPistonMoveReaction() == PistonMoveReaction.MOVE) {
 					Block toBlock = block.getRelative(event.getDirection());
@@ -162,7 +177,7 @@ public class BastionBreakListener implements Listener {
 			}
 			if(type != null) {
 				if(block.getPistonMoveReaction() == PistonMoveReaction.BREAK) {
-					dropBastionItem(block.getLocation(), type);
+					dropBastionItem(block.getLocation(), type, null, null);
 					block.setType(Material.AIR);
 				} else if(block.getPistonMoveReaction() == PistonMoveReaction.MOVE) {
 					Block toBlock = block.getRelative(event.getDirection());
@@ -182,7 +197,7 @@ public class BastionBreakListener implements Listener {
 		}
 		if(type != null) {
 			block.setType(Material.AIR);
-			dropBastionItem(block.getLocation(), type);
+			dropBastionItem(block.getLocation(), type, null, null);
 			event.setCancelled(true);
 		}
 	}
