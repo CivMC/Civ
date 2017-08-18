@@ -64,7 +64,6 @@ public class BastionManager implements IBastionManager {
 		return true;
 	}
 
-	@SuppressWarnings("unchecked")
 	private boolean hasBastionAccess(List<Player> players, Block block, ICitadel citadel) {
 		PermissionType perm = PermissionType.getPermission(PERMISSION_UNDRAW);
 		Location loc = block.getLocation();
@@ -76,7 +75,7 @@ public class BastionManager implements IBastionManager {
 		Group citadelGroup = citadel.getGroupName() != null ? GroupManager.getGroup(citadel.getGroupName()) : null;
 
 		for(BastionBlock bastion : bastions) {
-			if(!bastion.inField(loc)) continue;
+			if(bastion.getType().isOnlyDirectDestruction() || !bastion.inField(loc)) continue;
 
 			Reinforcement rein = reinManager.getReinforcement(bastion.getLocation());
 			PlayerReinforcement playerRein = rein != null && (rein instanceof PlayerReinforcement) ? (PlayerReinforcement)rein : null;
