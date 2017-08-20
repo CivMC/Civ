@@ -42,7 +42,8 @@ public class BastionListCommand implements CommandExecutor {
 		public String location;
 		public String strength;
 		public String group;
-		public String type;
+		public String typeName;
+		public String typeShortName;
 		public String hoverText;
 	}
 
@@ -66,7 +67,7 @@ public class BastionListCommand implements CommandExecutor {
 	}
 
 	private static final int pageSize = 10;
-	private static final double locationColWidth = 26;
+	private static final double locationColWidth = 31;
 	private static final double groupColWidth = 22;
 	private static final double typeColWidth = 10;
 
@@ -183,7 +184,7 @@ public class BastionListCommand implements CommandExecutor {
 		for(BastionInfo info : list) {
 			TextComponent line = new TextComponent(ChatFiller.fillString(info.location, locationColWidth));
 			line.addExtra(ChatFiller.fillString(info.group, groupColWidth));
-			line.addExtra(ChatFiller.fillString(getBastionType(info.type, shortenings), typeColWidth));
+			line.addExtra(ChatFiller.fillString(getBastionType(info.typeName, info.typeShortName, shortenings), typeColWidth));
 			line.addExtra("\n");
 
 			line.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(info.hoverText).create()));
@@ -214,10 +215,12 @@ public class BastionListCommand implements CommandExecutor {
 		});
 	}
 
-	private static String getBastionType(String type, Map<String, String> shortenings) {
-		if(type.length() < typeColWidth) return type;
+	private static String getBastionType(String typeName, String typeShortName, Map<String, String> shortenings) {
+		if(typeShortName != null && typeShortName.length() > 0) return typeShortName;
 
-		String[] parts = type.split(" ");
+		if(typeName.length() < typeColWidth) return typeName;
+
+		String[] parts = typeName.split(" ");
 		StringBuilder result = new StringBuilder();
 
 		for(String part : parts) {
@@ -227,7 +230,7 @@ public class BastionListCommand implements CommandExecutor {
 		String shortName = result.toString();
 
 		if(!shortenings.containsKey(shortName)) {
-			shortenings.put(shortName, type);
+			shortenings.put(shortName, typeName);
 		}
 
 		return shortName;
@@ -255,7 +258,8 @@ public class BastionListCommand implements CommandExecutor {
 					bastionInfo.location = bastion.getLocationText();
 					bastionInfo.strength = bastion.getStrengthText();
 					bastionInfo.group = groupInfo.name;
-					bastionInfo.type = bastion.getType().getItemName();
+					bastionInfo.typeName = bastion.getType().getItemName();
+					bastionInfo.typeShortName = bastion.getType().getShortName();
 					bastionInfo.hoverText = bastion.getHoverText();
 
 					result.add(bastionInfo);
