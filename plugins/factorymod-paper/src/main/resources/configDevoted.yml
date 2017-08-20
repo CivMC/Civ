@@ -2521,7 +2521,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 48
         lore:
         - Pewter T2
@@ -2702,7 +2702,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 16
         lore:
         - Pewter T2
@@ -2899,7 +2899,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 16
         lore:
         - Pewter T2
@@ -3117,7 +3117,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 32
         lore:
         - Pewter T2
@@ -3172,7 +3172,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 48
         lore:
         - Pewter T2
