@@ -23,6 +23,7 @@ bastions:
       name: City Bastion
       lore: 
         - This bastion will protect your plot
+    shortName: City
     squarefield: true
     effectRadius: 50
     includeY: true
