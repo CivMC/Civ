@@ -166,7 +166,7 @@ public final class BastionDamageListener implements Listener {
 		
 		while(i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if(!bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
+			if(bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
 				i.remove();
 			}
 		}
