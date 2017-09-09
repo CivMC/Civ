@@ -172,18 +172,19 @@ public class BastionInteractListener implements Listener {
 		}
 
 		if(event.getReinforcement() instanceof PlayerReinforcement) {
-			// Check Permissions.BASTION_PLACE; Citadel handles the canBypass() check...
-			PlayerReinforcement reinforcement = (PlayerReinforcement) event.getReinforcement();
-			final Player player = event.getPlayer();
-			if (!NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
-				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to create a Bastion on this group");
-				return;
-			}
-			// end Check Permissions.BASTION_PLACE
-			
 			final BastionType type = blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
 			if (type != null && !PlayersStates.playerInMode(event.getPlayer(), Mode.OFF)) {
+				// Check Permissions.BASTION_PLACE; Citadel handles the canBypass() check...
+				PlayerReinforcement reinforcement = (PlayerReinforcement) event.getReinforcement();
+				final Player player = event.getPlayer();
+				if (!NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to create a Bastion on this group");
+					blockStorage.addPendingBastion(event.getBlock().getLocation(), type);
+					return;
+				}
+				// end Check Permissions.BASTION_PLACE
+				
 				PlayersStates.touchPlayer(event.getPlayer());
 				Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
 				final Location loc = event.getBlock().getLocation().clone();
@@ -201,7 +202,11 @@ public class BastionInteractListener implements Listener {
 					}
 				}.runTask(Bastion.getPlugin());
 			} else {
-				blockManager.changeBastionGroup(event.getBlock().getLocation());
+				if (blockManager.changeBastionGroup(event.getPlayer(), (PlayerReinforcement) event.getReinforcement(), event.getBlock().getLocation()) == Boolean.FALSE) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to reinforce a Bastion on this group");
+					return;
+				}
 			}
 		}
 	}
