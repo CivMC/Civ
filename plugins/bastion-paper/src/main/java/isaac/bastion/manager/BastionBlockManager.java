@@ -367,12 +367,20 @@ public class BastionBlockManager {
 		return sb.toString();
 	}
 
-	public void changeBastionGroup(Location location) {
+	public Boolean changeBastionGroup(Player player, PlayerReinforcement reinforcement, Location location) {
 		BastionBlock bastion = storage.getBastionBlock(location);
 
-		if(bastion == null) return;
+		if(bastion == null) return null;
+		
+		PlayerReinforcement oldReinf = bastion.getReinforcement();
 
-		storage.changeBastionGroup(bastion);
+		if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE)) &&
+				NameAPI.getGroupManager().hasAccess(oldReinf.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+			storage.changeBastionGroup(bastion);
+			return Boolean.TRUE;
+		} else {
+			return Boolean.FALSE;
+		}
 	}
 
 	public void getBastionsByGroupIds(List<Integer> groupIds, List<BastionBlock> result) {

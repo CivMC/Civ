@@ -27,6 +27,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
+import isaac.bastion.Permissions;
 import isaac.bastion.commands.PlayersStates;
 import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
@@ -34,6 +35,9 @@ import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class BastionInteractListener implements Listener {
 
@@ -112,14 +116,15 @@ public class BastionInteractListener implements Listener {
 		} else if (PlayersStates.playerInMode(player, Mode.BASTION)) {
 			final BastionType type = blockStorage.getAndRemovePendingBastion(block.getLocation());
 			if(type == null) return; //if it wasnt stored it cant have been a bastion
-			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
-					getReinforcement(block.getLocation());
+			Reinforcement reinf = Citadel.getReinforcementManager().getReinforcement(block.getLocation());
 
-			if (!(reinforcement instanceof PlayerReinforcement)) {
+			if (!(reinf instanceof PlayerReinforcement)) {
 				return;
 			}
+			
+			PlayerReinforcement reinforcement = (PlayerReinforcement) reinf;
 
-			if (reinforcement.canBypass(player)) {
+			if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
 				final Location loc = block.getLocation().clone();
 				new BukkitRunnable() {
 					@Override
@@ -169,10 +174,20 @@ public class BastionInteractListener implements Listener {
 		if(event.getReinforcement() instanceof PlayerReinforcement) {
 			final BastionType type = blockStorage.getAndRemovePendingBastion(event.getBlock().getLocation());
 			if (type != null && !PlayersStates.playerInMode(event.getPlayer(), Mode.OFF)) {
+				// Check Permissions.BASTION_PLACE; Citadel handles the canBypass() check...
+				PlayerReinforcement reinforcement = (PlayerReinforcement) event.getReinforcement();
+				final Player player = event.getPlayer();
+				if (!NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to create a Bastion on this group");
+					blockStorage.addPendingBastion(event.getBlock().getLocation(), type);
+					return;
+				}
+				// end Check Permissions.BASTION_PLACE
+				
 				PlayersStates.touchPlayer(event.getPlayer());
 				Bastion.getPlugin().getLogger().log(Level.INFO, "Registering to create a {0} bastion", type);
 				final Location loc = event.getBlock().getLocation().clone();
-				final Player player = event.getPlayer();
 				// Can't do it immediately, as the reinforcement doesn't exist _during_ the create event.
 				new BukkitRunnable() {
 					@Override
@@ -187,7 +202,11 @@ public class BastionInteractListener implements Listener {
 					}
 				}.runTask(Bastion.getPlugin());
 			} else {
-				blockManager.changeBastionGroup(event.getBlock().getLocation());
+				if (blockManager.changeBastionGroup(event.getPlayer(), (PlayerReinforcement) event.getReinforcement(), event.getBlock().getLocation()) == Boolean.FALSE) {
+					event.setCancelled(true);
+					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to alter a Bastion with this group");
+					return;
+				}
 			}
 		}
 	}

@@ -20,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
+import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -94,7 +95,23 @@ public final class BastionDamageListener implements Listener {
 	@EventHandler (ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent  event){
 		Block piston = event.getBlock();
-		Set<Block> involved = new HashSet<Block>(event.getBlocks());
+		Set<Block> involved = new HashSet<Block>();
+		event.getBlocks().forEach( b -> {involved.add(b); involved.add(b.getRelative(event.getDirection())); } );
+		involved.add(piston.getRelative(event.getDirection()));
+		
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(piston, involved, null);
+		
+		if (blocking.size() != 0) {
+			event.setCancelled(true);
+		}
+	}
+
+	/* Symmetry */
+	@EventHandler (ignoreCancelled = true)
+	public void onPistonRetract(BlockPistonRetractEvent  event){
+		Block piston = event.getBlock();
+		Set<Block> involved = new HashSet<Block>();
+		event.getBlocks().forEach( b -> {involved.add(b); involved.add(b.getRelative(event.getDirection())); } );
 		involved.add(piston.getRelative(event.getDirection()));
 		
 		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(piston, involved, null);
@@ -149,7 +166,7 @@ public final class BastionDamageListener implements Listener {
 		
 		while(i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if(!bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
+			if(bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
 				i.remove();
 			}
 		}
