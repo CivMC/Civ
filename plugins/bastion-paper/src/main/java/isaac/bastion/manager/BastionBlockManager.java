@@ -371,8 +371,11 @@ public class BastionBlockManager {
 		BastionBlock bastion = storage.getBastionBlock(location);
 
 		if(bastion == null) return null;
+		
+		PlayerReinforcement oldReinf = bastion.getReinforcement();
 
-		if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
+		if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE)) &&
+				NameAPI.getGroupManager().hasAccess(oldReinf.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {
 			storage.changeBastionGroup(bastion);
 			return Boolean.TRUE;
 		} else {

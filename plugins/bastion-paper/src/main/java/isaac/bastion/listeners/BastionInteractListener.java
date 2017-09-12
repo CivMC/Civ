@@ -204,7 +204,7 @@ public class BastionInteractListener implements Listener {
 			} else {
 				if (blockManager.changeBastionGroup(event.getPlayer(), (PlayerReinforcement) event.getReinforcement(), event.getBlock().getLocation()) == Boolean.FALSE) {
 					event.setCancelled(true);
-					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to reinforce a Bastion on this group");
+					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to alter a Bastion with this group");
 					return;
 				}
 			}
