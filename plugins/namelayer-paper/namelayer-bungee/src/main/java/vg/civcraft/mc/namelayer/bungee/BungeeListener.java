@@ -53,6 +53,13 @@ public class BungeeListener implements Listener{
 		}
 	}
 	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void postLoginEvent(PostLoginEvent event) {
+		UUID uuid = event.getPlayer().getUniqueId();
+		String name = db.getCurrentName(uuid);
+		event.getPlayer().setDisplayName(name);
+	}
+	
 	public void setFinalStatic(Field field, Object newValue, Object object) {
 		try {
 			field.setAccessible(true);
