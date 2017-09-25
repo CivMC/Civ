@@ -31,6 +31,10 @@ public final class Config {
 	private static File trackFile;
 	public static long trackSave;
 	
+	private static String mapFileName;
+	private static File mapFile;
+	public static long mapSave;
+	
 	public int transformAttemptMultiplier = 3;
 	
 	public static boolean caveOres = false;
@@ -41,6 +45,8 @@ public final class Config {
 		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
 		trackSave = 90000l;
+		mapFileName = "map.dat";
+		mapSave = 90000l;
 		alertUser = false;
 		listDrops = false;
 		isDebug = false;
@@ -67,6 +73,10 @@ public final class Config {
 		trackFileName = file.getString("track_file", trackFileName);
 		trackFile = new File(HiddenOre.getPlugin().getDataFolder(), trackFileName);
 		trackSave = file.getLong("track_save_ticks", trackSave);
+		
+		mapFileName = file.getString("map_file", mapFileName);
+		mapFile = new File(HiddenOre.getPlugin().getDataFolder(), mapFileName);
+		mapSave = file.getLong("map_save_ticks", mapSave);
 
 		i.ignoreSilktouch = file.getBoolean("ignore_silktouch", i.ignoreSilktouch);
 
@@ -308,6 +318,10 @@ public final class Config {
 
 	public static File getTrackFile() {
 		return trackFile;
+	}
+	
+	public static File getMapFile() {
+		return mapFile;
 	}
 	
 	public static int getTransformAttemptMultiplier() {
