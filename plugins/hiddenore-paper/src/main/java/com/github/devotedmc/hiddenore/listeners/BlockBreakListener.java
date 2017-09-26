@@ -106,6 +106,7 @@ public class BlockBreakListener implements Listener {
 		// Check SilkTouch failfast, if configured.
 		if (!Config.instance.ignoreSilktouch && inMainHand != null && inMainHand.hasItemMeta() && 
 				inMainHand.getEnchantments() != null && inMainHand.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
+			plugin.getTracking().postTrackBreak(event.getBlock().getLocation()); // before return, let's posttrack.
 			return;
 		}
 
@@ -142,6 +143,7 @@ public class BlockBreakListener implements Listener {
 							drop, dc, blockName, bc, sb, alertUser);
 					if (!hasDrop) {
 						// Core of event cancelled!
+						plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
 						return;
 					} else {
 						doXP(dc, biomeName, dropModifier, b.getLocation(), p);
@@ -160,6 +162,7 @@ public class BlockBreakListener implements Listener {
 						drop, dc, blockName, bc, sb, alertUser);
 				if (!hasDrop) {
 					// Core of event cancelled!
+					plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
 					return;
 				} else {
 					doXP(dc, biomeName, tc, b.getLocation(), p);
@@ -173,6 +176,8 @@ public class BlockBreakListener implements Listener {
 
 			event.getPlayer().sendMessage(ChatColor.GOLD + alertUser.toString());
 		}
+		
+		plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
 	}
 
 	private void doXP(DropConfig dc, String biomeName, ToolConfig dropModifier, Location loc, Player p) {
@@ -323,7 +328,7 @@ public class BlockBreakListener implements Listener {
 							(int) Math.round(u * zsq * Math.sin(theta)),
 							(int) Math.round(u * z));
 				}
-				if (blockConfig.checkGenerateBlock(walk)) {
+				if (plugin.getTracking().testGen(walk.getLocation()) && blockConfig.checkGenerateBlock(walk)) {
 					HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, walk, sample);
 					Bukkit.getPluginManager().callEvent(hoge);
 					if (!hoge.isCancelled()) {
@@ -331,6 +336,7 @@ public class BlockBreakListener implements Listener {
 						expressed = hoge.getTransform();
 						cPlace --;
 						tryFacing = true;
+						plugin.getTracking().trackGen(walk.getLocation());
 					}
 				}
 				maxWalk --;
