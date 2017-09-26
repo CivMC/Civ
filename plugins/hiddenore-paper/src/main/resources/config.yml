@@ -136,8 +136,13 @@ tools:
    minAmount: 0.0
    maxAmount: 0.0
 states:
+# These allow modification of drop chance based on the player's state
  hasteDebuff:
+ # Give each "set" of modifications a name
   haste: [0.8, 0.5]
+  # For each specific type of player state (haste / fatigue / nausea, etc) provide an array
+  # The chance is picked from this array by matching Level of effect to the named effect.
+  # So for [0.8, 0.5] -- haste I has a 0.8 reduction, haste II has a 0.5 reduction.
  fatigueBuff:
   fatigue: [1.2, 1.5]
  generalRebalance:

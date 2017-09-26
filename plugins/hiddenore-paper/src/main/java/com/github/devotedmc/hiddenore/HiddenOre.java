@@ -27,6 +27,7 @@ public class HiddenOre extends JavaPlugin {
 
 	private static BreakTracking tracking;
 	private BukkitTask trackingSave;
+	private BukkitTask trackingMapSave;
 	
 	private static BlockBreakListener breakHandler;
 	private static ExploitListener exploitHandler;
@@ -47,6 +48,13 @@ public class HiddenOre extends JavaPlugin {
 				tracking.save();
 			}
 		}, Config.trackSave, Config.trackSave);
+
+		trackingMapSave = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+			public void run() {
+				tracking.saveMap();
+			}
+		}, Config.mapSave, Config.mapSave);
+
 		
 		exploitHandler = new ExploitListener(plugin);
 		this.getServer().getPluginManager().registerEvents(exploitHandler, this);
@@ -72,8 +80,10 @@ public class HiddenOre extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
-		tracking.save();
 		trackingSave.cancel();
+		trackingMapSave.cancel();
+		tracking.save();
+		tracking.saveMap();
 	}
 
 	public static HiddenOre getPlugin() {

@@ -473,7 +473,6 @@ public class FakePlayer implements Player {
 		return null;
 	}
 
-	@Override
 	public Block getTargetBlock(HashSet<Byte> transparent, int maxDistance) {
 		return null;
 	}
@@ -483,7 +482,6 @@ public class FakePlayer implements Player {
 		return null;
 	}
 
-	@Override
 	public List<Block> getLastTwoTargetBlocks(HashSet<Byte> transparent, int maxDistance) {
 		return null;
 	}

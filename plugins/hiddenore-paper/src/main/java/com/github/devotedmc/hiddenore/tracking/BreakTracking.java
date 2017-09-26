@@ -265,6 +265,7 @@ public class BreakTracking {
 	 * @return
 	 */
 	public boolean trackGen(Location loc) {
+		long s = System.currentTimeMillis();
 		int Y = loc.getBlockY();
 		int X = (loc.getBlockX() % 16 + 16) % 16;
 		int Z = (loc.getBlockZ() % 16 + 16) % 16;
@@ -302,6 +303,11 @@ public class BreakTracking {
 		} else {
 			ret = true; // new break according to this tracking.
 			mapLayers[Y] |= block_id;
+		}
+		
+		s = System.currentTimeMillis() - s;
+		if (s > 10l) {
+			HiddenOre.getPlugin().getLogger().info("Took a long time (" + s + "ms) recording generation at " + loc);
 		}
 		
 		return ret;
@@ -348,6 +354,7 @@ public class BreakTracking {
 	 * @return
 	 */
 	public void postTrackBreak(Location loc) {
+		long s = System.currentTimeMillis();
 		int Y = loc.getBlockY();
 		int X = (loc.getBlockX() % 16 + 16) % 16;
 		int Z = (loc.getBlockZ() % 16 + 16) % 16;
@@ -378,6 +385,16 @@ public class BreakTracking {
 		else trackBreak(loc.clone().add(0, 0, -1));
 		if (Z < 15) mapLayers[Y] |= (short) (((short) (X) << 4) + (short) (Z+1));
 		else trackBreak(loc.clone().add(0, 0, 1));
+		
+		if (Config.isDebug) {
+			HiddenOre.getPlugin().getLogger()
+					.info("now world " + world + " chunk " + chunk_id + " mapt " + mapLayers[Y]);
+		}
+		s = System.currentTimeMillis() - s;
+		if (s > 10l) {
+			HiddenOre.getPlugin().getLogger().info("Took a long time (" + s + "ms) recording map post break at " + loc);
+		}
+	
 	}
 	
 	public boolean trackBreak(Location loc) {
