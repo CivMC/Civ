@@ -32,6 +32,7 @@ public class BungeeListener implements Listener{
 		UUID uuid = pending.getUniqueId();
 		db.addPlayer(pending.getName(), uuid);
 		String name = db.getCurrentName(uuid);
+		// pre 1.11
 		try {
 			Field loginField = InitialHandler.class.getDeclaredField("loginRequest");
 			loginField.setAccessible(true);
@@ -51,14 +52,36 @@ public class BungeeListener implements Listener{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		// post 1.11
+		try {
+			Field nameField = InitialHandler.class.getDeclaredField("name");
+			nameField.setAccessible(true);
+			nameField.set(handle, name);
+		} catch (NoSuchFieldException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST)
+	/*
+	 * This doesn't work (1.12)
+	 * @param event
+	 */
+	/*@EventHandler(priority = EventPriority.LOWEST)
 	public void postLoginEvent(PostLoginEvent event) {
 		UUID uuid = event.getPlayer().getUniqueId();
 		String name = db.getCurrentName(uuid);
 		event.getPlayer().setDisplayName(name);
-	}
+	}*/
 	
 	public void setFinalStatic(Field field, Object newValue, Object object) {
 		try {
