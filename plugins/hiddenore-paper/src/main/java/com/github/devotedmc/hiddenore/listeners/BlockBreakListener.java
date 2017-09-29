@@ -106,7 +106,7 @@ public class BlockBreakListener implements Listener {
 		// Check SilkTouch failfast, if configured.
 		if (!Config.instance.ignoreSilktouch && inMainHand != null && inMainHand.hasItemMeta() && 
 				inMainHand.getEnchantments() != null && inMainHand.getEnchantments().containsKey(Enchantment.SILK_TOUCH)) {
-			plugin.getTracking().postTrackBreak(event.getBlock().getLocation()); // before return, let's posttrack.
+			plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true); // before return, let's posttrack.
 			return;
 		}
 
@@ -143,7 +143,7 @@ public class BlockBreakListener implements Listener {
 							drop, dc, blockName, bc, sb, alertUser);
 					if (!hasDrop) {
 						// Core of event cancelled!
-						plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
+						plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
 						return;
 					} else {
 						doXP(dc, biomeName, dropModifier, b.getLocation(), p);
@@ -162,7 +162,7 @@ public class BlockBreakListener implements Listener {
 						drop, dc, blockName, bc, sb, alertUser);
 				if (!hasDrop) {
 					// Core of event cancelled!
-					plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
+					plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
 					return;
 				} else {
 					doXP(dc, biomeName, tc, b.getLocation(), p);
@@ -177,7 +177,7 @@ public class BlockBreakListener implements Listener {
 			event.getPlayer().sendMessage(ChatColor.GOLD + alertUser.toString());
 		}
 		
-		plugin.getTracking().postTrackBreak(event.getBlock().getLocation());
+		plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
 	}
 
 	private void doXP(DropConfig dc, String biomeName, ToolConfig dropModifier, Location loc, Player p) {
