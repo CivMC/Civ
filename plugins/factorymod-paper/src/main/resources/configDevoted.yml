@@ -30,9 +30,57 @@ factories:
     recipes:
     - Upgrade to Smelter
     - Upgrade to Printing Press
+    - Upgrade to Harvest Factory
     - Upgrade to Vault Factory 1
     - Upgrade to Pickaxe Factory 1
     - Upgrade to Conversion Factory
+    - Accident Repair
+  Harvest Factory:
+    type: FCCUPGRADE
+    name: Harvest Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Soup
+    - Upgrade to Tree Factory
+    - Upgrade to Farm Factory
+    - Accident Repair
+  Farm Factory:
+    type: FCCUPGRADE
+    name: Farm Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Tiered Beetroot Lotto
+    - Tiered Pumpkin Lotto
+    - Tiered Sugar Cane Lotto
+    - Tiered Potato Lotto
+    - Tiered Carrot Lotto
+    - Tiered Cocoa Bean Lotto
+    - Tiered Cactus Lotto
+    - Accident Repair
+  Tree Factory:
+    type: FCCUPGRADE
+    name: Tree Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Tiered Oak Lotto
+    - Tiered Spruce Lotto
+    - Tiered Birch Lotto
+    - Tiered Jungle Lotto
+    - Tiered Dark Oak Lotto
+    - Tiered Acacia Lotto
+    - Tiered Twig Lotto
     - Accident Repair
   Smelter:
     type: FCCUPGRADE
@@ -8571,6 +8619,19 @@ recipes:
       trapdoor:
         material: TRAP_DOOR
         amount: 1
+  Soup:
+    type: PRODUCTION
+    name: Soup
+    production_time: 5s
+    input:
+      Plank:
+        material: WOOD
+        durability: -1
+        amount: 1
+    output:
+      Soup:
+        material: MUSHROOM_SOUP
+        amount: 1
   Placeholder:
     type: PRODUCTION
     name: Placeholder
@@ -13654,3 +13715,118 @@ recipes:
         amount: 256
         durability: -1
     factory: Compactor
+  Upgrade to Harvest Factory:
+    name: Upgrade to Harvest Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Iron Axe:
+        material: IRON_AXE
+        amount: 1
+      Iron Hoe:
+        material: IRON_HOE
+        amount: 1
+    factory: Harvest Factory
+  Upgrade to Farm Factory:
+    name: Upgrade to Farm Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
+        lore:
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 48
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 48
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 16
+        lore:
+        - Withered Cocoa Beans T1
+    factory: Farm Factory
+  Upgrade to Tree Factory:
+    name: Upgrade to Tree Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 48
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 48
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 32
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 32
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 32
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 64
+        lore:
+        - Mixed Twig T1
+    factory: Tree Factory
