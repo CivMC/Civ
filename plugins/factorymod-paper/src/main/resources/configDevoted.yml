@@ -374,6 +374,7 @@ factories:
     - Pull String from any Wool
     - Freeze Packed Ice
     - Claims Bastion
+    - Craft Eye of Ender
     - Accident Repair
   Printing_Press:
     type: FCCUPGRADE
@@ -4226,6 +4227,21 @@ recipes:
       End Rods:
         material: END_ROD
         amount: 64
+  Craft Eye of Ender:
+    type: PRODUCTION
+    name: Craft Eye of Ender
+    production_time: 5s
+    input:
+      enderpearl:
+        material: ENDER_PEARL
+        amount: 1
+      blazepowder:
+        material: BLAZE_POWDER
+        amount: 1
+    output:
+      eyeofender:
+        material: EYE_OF_ENDER
+        amount: 1
   Convert Copper Block T1:
     type: PRODUCTION
     name: Convert Copper Block T1
