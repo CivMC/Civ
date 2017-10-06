@@ -62,8 +62,9 @@ factories:
     - Tiered Sugar Cane Lotto
     - Tiered Potato Lotto
     - Tiered Carrot Lotto
-    - Tiered Cocoa Bean Lotto
+    - Tiered Cocoa Beans Lotto
     - Tiered Cactus Lotto
+    - Harvester Hoe
     - Accident Repair
   Tree Factory:
     type: FCCUPGRADE
@@ -80,7 +81,7 @@ factories:
     - Tiered Jungle Lotto
     - Tiered Dark Oak Lotto
     - Tiered Acacia Lotto
-    - Tiered Twig Lotto
+    - Treecutter Axe
     - Accident Repair
   Smelter:
     type: FCCUPGRADE
@@ -8636,7 +8637,7 @@ recipes:
         material: TRAP_DOOR
         amount: 1
   Soup:
-    type: PRODUCTION
+    type: RANDOM
     name: Soup
     production_time: 5s
     input:
@@ -8644,9 +8645,675 @@ recipes:
         material: WOOD
         durability: -1
         amount: 1
-    output:
+      Carrot:
+        material: CARROT_ITEM
+        amount: 1
+      Potato:
+        material: POTATO_ITEM
+        amount: 1
+      Beetroot:
+        material: BEETROOT
+        amount: 1
+      Pumpkin:
+        material: PUMPKIN
+        amount: 1
+      Cocoa Beans:
+        material: INK_SACK
+        durability: 3
+        amount: 1
+      Cactus:
+        material: CACTUS
+        amount: 1
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 1
+    outputs:
+      display: Soup
       Soup:
-        material: MUSHROOM_SOUP
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      BSoup:
+        chance: 0.5
+        Beetroot Soup:
+          material: BEETROOT_SOUP
+          amount: 1
+  Beetroot Lotto:
+    type: RANDOM
+    name: Beetroot Lotto
+    production_time: 45s
+    input:
+      Beetroot:
+        material: BEETROOT
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: BEETROOT
+          name: Withered Beetroot
+          amount: 1
+          lore:
+          - Withered Beetroot T1
+      T2:
+        chance: 0.08
+        T2:
+          material: BEETROOT
+          name: Average Beetroot
+          amount: 1
+          lore:
+          - Average Beetroot T2
+      T3:
+        chance: 0.04
+        T3:
+          material: BEETROOT
+          name: Ripe Beetroot
+          amount: 1
+          lore:
+          - Ripe Beetroot T3
+  Pumpkin Lotto:
+    type: RANDOM
+    name: Pumpkin Lotto
+    production_time: 45s
+    input:
+      Pumpkin:
+        material: PUMPKIN
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: PUMPKIN
+          name: Withered Pumpkin
+          amount: 1
+          lore:
+          - Withered Pumpkin T1
+      T2:
+        chance: 0.08
+        T2:
+          material: PUMPKIN
+          name: Average Pumpkin
+          amount: 1
+          lore:
+          - Average Pumpkin T2
+      T3:
+        chance: 0.04
+        T3:
+          material: PUMPKIN
+          name: Ripe Pumpkin
+          amount: 1
+          lore:
+          - Ripe Pumpkin T3
+  Sugar Cane Lotto:
+    type: RANDOM
+    name: Sugar Cane Lotto
+    production_time: 45s
+    input:
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: SUGAR_CANE
+          name: Withered Sugar Cane
+          amount: 1
+          lore:
+          - Withered Sugar Cane T1
+      T2:
+        chance: 0.08
+        T2:
+          material: SUGAR_CANE
+          name: Average Sugar Cane
+          amount: 1
+          lore:
+          - Average Sugar Cane T2
+      T3:
+        chance: 0.04
+        T3:
+          material: SUGAR_CANE
+          name: Ripe Sugar Cane
+          amount: 1
+          lore:
+          - Ripe Sugar Cane T3
+  Potato Lotto:
+    type: RANDOM
+    name: Potato Lotto
+    production_time: 45s
+    input:
+      Potato:
+        material: POTATO_ITEM
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: POTATO_ITEM
+          name: Withered Potato
+          amount: 1
+          lore:
+          - Withered Potato T1
+      T2:
+        chance: 0.08
+        T2:
+          material: POTATO_ITEM
+          name: Average Potato
+          amount: 1
+          lore:
+          - Average Potato T2
+      T3:
+        chance: 0.04
+        T3:
+          material: POTATO_ITEM
+          name: Ripe Potato
+          amount: 1
+          lore:
+          - Ripe Potato T3
+  Carrot Lotto:
+    type: RANDOM
+    name: Carrot Lotto
+    production_time: 45s
+    input:
+      Carrot:
+        material: CARROT_ITEM
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: CARROT_ITEM
+          name: Withered Carrot
+          amount: 1
+          lore:
+          - Withered Carrot T1
+      T2:
+        chance: 0.08
+        T2:
+          material: CARROT_ITEM
+          name: Average Carrot
+          amount: 1
+          lore:
+          - Average Carrot T2
+      T3:
+        chance: 0.04
+        T3:
+          material: CARROT_ITEM
+          name: Ripe Carrot
+          amount: 1
+          lore:
+          - Ripe Carrot T3
+  Cocoa Bean Lotto:
+    type: RANDOM
+    name: Cocoa Bean Lotto
+    production_time: 45s
+    input:
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: INK_SACK
+          durability: 3
+          name: Withered Cocoa Beans
+          amount: 1
+          lore:
+          - Withered Cocoa Beans T1
+      T2:
+        chance: 0.08
+        T2:
+          material: INK_SACK
+          durability: 3
+          name: Average Cocoa Beans
+          amount: 1
+          lore:
+          - Average Cocoa Beans T2
+      T3:
+        chance: 0.04
+        T3:
+          material: INK_SACK
+          durability: 3
+          name: Ripe Cocoa Beans
+          amount: 1
+          lore:
+          - Ripe Cocoa Beans T3
+  Cactus Lotto:
+    type: RANDOM
+    name: Cactus Lotto
+    production_time: 45s
+    input:
+      Cactus:
+        material: CACTUS
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: CACTUS
+          name: Withered Cactus
+          amount: 1
+          lore:
+          - Withered Cactus T1
+      T2:
+        chance: 0.08
+        T2:
+          material: CACTUS
+          name: Average Cactus
+          amount: 1
+          lore:
+          - Average Cactus T2
+      T3:
+        chance: 0.04
+        T3:
+          material: CACTUS
+          name: Ripe Cactus
+          amount: 1
+          lore:
+          - Ripe Cactus T3
+  Oak Lotto:
+    type: RANDOM
+    name: Oak Lotto
+    production_time: 45s
+    input:
+      Oak:
+        material: LOG
+        durability: 0
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 0
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 0
+          name: Oak Twig
+          amount: 1
+          lore:
+          - Oak Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 0
+          name: Oak Bark
+          amount: 1
+          lore:
+          - Oak Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 0
+          name: Oak Trunk
+          amount: 1
+          lore:
+          - Oak Trunk T3
+  Spruce Lotto:
+    type: RANDOM
+    name: Spruce Lotto
+    production_time: 45s
+    input:
+      Spruce:
+        material: LOG
+        durability: 1
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 1
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 1
+          name: Spruce Twig
+          amount: 1
+          lore:
+          - Spruce Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 1
+          name: Spruce Bark
+          amount: 1
+          lore:
+          - Spruce Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 1
+          name: Spruce Trunk
+          amount: 1
+          lore:
+          - Spruce Trunk T3
+  Birch Lotto:
+    type: RANDOM
+    name: Birch Lotto
+    production_time: 45s
+    input:
+      Birch:
+        material: LOG
+        durability: 2
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 2
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 2
+          name: Birch Twig
+          amount: 1
+          lore:
+          - Birch Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 2
+          name: Birch Bark
+          amount: 1
+          lore:
+          - Birch Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 2
+          name: Birch Trunk
+          amount: 1
+          lore:
+          - Birch Trunk T3
+  Jungle Lotto:
+    type: RANDOM
+    name: Jungle Lotto
+    production_time: 45s
+    input:
+      Jungle:
+        material: LOG
+        durability: 3
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 3
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 3
+          name: Jungle Twig
+          amount: 1
+          lore:
+          - Jungle Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 3
+          name: Jungle Bark
+          amount: 1
+          lore:
+          - Jungle Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 3
+          name: Jungle Trunk
+          amount: 1
+          lore:
+          - Jungle Trunk T3
+  Acacia Lotto:
+    type: RANDOM
+    name: Acacia Lotto
+    production_time: 45s
+    input:
+      Acacia:
+        material: LOG_2
+        durability: 0
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 4
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG_2
+          durability: 0
+          name: Acacia Twig
+          amount: 1
+          lore:
+          - Acacia Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG_2
+          durability: 0
+          name: Acacia Bark
+          amount: 1
+          lore:
+          - Acacia Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG_2
+          durability: 0
+          name: Acacia Trunk
+          amount: 1
+          lore:
+          - Acacia Trunk T3
+  Dark Oak Lotto:
+    type: RANDOM
+    name: Dark Oak Lotto
+    production_time: 45s
+    input:
+      DarkOak:
+        material: LOG_2
+        durability: 1
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 5
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: AIR
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Twig
+          amount: 1
+          lore:
+          - Dark Oak Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Bark
+          amount: 1
+          lore:
+          - Dark Oak Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Trunk
+          amount: 1
+          lore:
+          - Dark Oak Trunk T3
+  Harvester Hoe:
+    type: PRODUCTION
+    name: Harvester Hoe
+    production_time: 60s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      stone:
+        material: STONE
+        amount: 1
+  Treecutter Axe:
+    type: PRODUCTION
+    name: Treecutter Axe
+    production_time: 60s
+    input:
+      barrier:
+        material: BARRIER
+        name: You cannot do this yet!
+        amount: 1
+        lore:
+        - Recipe coming soon!
+    output:
+      stone:
+        material: STONE
         amount: 1
   Placeholder:
     type: PRODUCTION
