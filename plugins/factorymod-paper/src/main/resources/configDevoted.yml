@@ -4837,7 +4837,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -4999,7 +4999,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -5161,7 +5161,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -5323,7 +5323,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -5505,7 +5505,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 8
         lore:
@@ -5701,7 +5701,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 8
         lore:
@@ -5975,7 +5975,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -6030,7 +6030,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 36
         lore:
@@ -9290,31 +9290,62 @@ recipes:
     name: Harvester Hoe
     production_time: 60s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      artifact:
+        material: GOLD_INGOT
+        name: Artifact
+        amount: 3
         lore:
-        - Recipe coming soon!
+        - Artifact T3
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 6
+        lore:
+        - Brass T2
+      steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 9
+        lore:
+        - Steel T1
     output:
-      stone:
-        material: STONE
+      harvesterHoe:
+        material: GOLD_HOE
         amount: 1
+        name: Harvester Hoe
+        lore:
+        - Improve yields for all crops
   Treecutter Axe:
     type: PRODUCTION
     name: Treecutter Axe
     production_time: 60s
     input:
-      barrier:
-        material: BARRIER
-        name: You cannot do this yet!
-        amount: 1
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 3
         lore:
-        - Recipe coming soon!
+        - Carbon T3
+      pewter:
+        material: INK_SACK
+        name: Pewter
+        durability: 8
+        amount: 6
+        lore:
+        - Pewter T2
+      titanium:
+        material: DIAMOND
+        name: Titanium
+        amount: 9
+        lore:
+        - Titanium T1
     output:
-      stone:
-        material: STONE
+      treecutteraxe:
+        material: DIAMOND_AXE
         amount: 1
+        name: Treecutter Axe
+        lore:
+        - Improve yields for all trees
   Placeholder:
     type: PRODUCTION
     name: Placeholder
@@ -13492,7 +13523,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -13590,7 +13621,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -13688,7 +13719,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -13786,7 +13817,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -13884,7 +13915,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -13982,7 +14013,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -14080,7 +14111,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -14178,7 +14209,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
