@@ -8679,7 +8679,7 @@ recipes:
         Beetroot Soup:
           material: BEETROOT_SOUP
           amount: 1
-  Beetroot Lotto:
+  Tiered Beetroot Lotto:
     type: RANDOM
     name: Beetroot Lotto
     production_time: 45s
@@ -8697,7 +8697,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8723,7 +8723,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Beetroot T3
-  Pumpkin Lotto:
+  Tiered Pumpkin Lotto:
     type: RANDOM
     name: Pumpkin Lotto
     production_time: 45s
@@ -8741,7 +8741,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8767,7 +8767,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Pumpkin T3
-  Sugar Cane Lotto:
+  Tiered Sugar Cane Lotto:
     type: RANDOM
     name: Sugar Cane Lotto
     production_time: 45s
@@ -8785,7 +8785,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8811,7 +8811,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Sugar Cane T3
-  Potato Lotto:
+  Tiered Potato Lotto:
     type: RANDOM
     name: Potato Lotto
     production_time: 45s
@@ -8829,7 +8829,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8855,7 +8855,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Potato T3
-  Carrot Lotto:
+  Tiered Carrot Lotto:
     type: RANDOM
     name: Carrot Lotto
     production_time: 45s
@@ -8873,7 +8873,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8899,7 +8899,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Carrot T3
-  Cocoa Bean Lotto:
+  Tiered Cocoa Beans Lotto:
     type: RANDOM
     name: Cocoa Bean Lotto
     production_time: 45s
@@ -8918,7 +8918,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8947,7 +8947,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Cocoa Beans T3
-  Cactus Lotto:
+  Tiered Cactus Lotto:
     type: RANDOM
     name: Cactus Lotto
     production_time: 45s
@@ -8965,7 +8965,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -8991,7 +8991,7 @@ recipes:
           amount: 1
           lore:
           - Ripe Cactus T3
-  Oak Lotto:
+  Tiered Oak Lotto:
     type: RANDOM
     name: Oak Lotto
     production_time: 45s
@@ -9011,7 +9011,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -9040,7 +9040,7 @@ recipes:
           amount: 1
           lore:
           - Oak Trunk T3
-  Spruce Lotto:
+  Tiered Spruce Lotto:
     type: RANDOM
     name: Spruce Lotto
     production_time: 45s
@@ -9060,7 +9060,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -9089,7 +9089,7 @@ recipes:
           amount: 1
           lore:
           - Spruce Trunk T3
-  Birch Lotto:
+  Tiered Birch Lotto:
     type: RANDOM
     name: Birch Lotto
     production_time: 45s
@@ -9109,7 +9109,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -9138,7 +9138,7 @@ recipes:
           amount: 1
           lore:
           - Birch Trunk T3
-  Jungle Lotto:
+  Tiered Jungle Lotto:
     type: RANDOM
     name: Jungle Lotto
     production_time: 45s
@@ -9158,7 +9158,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -9187,7 +9187,7 @@ recipes:
           amount: 1
           lore:
           - Jungle Trunk T3
-  Acacia Lotto:
+  Tiered Acacia Lotto:
     type: RANDOM
     name: Acacia Lotto
     production_time: 45s
@@ -9207,7 +9207,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -9236,7 +9236,7 @@ recipes:
           amount: 1
           lore:
           - Acacia Trunk T3
-  Dark Oak Lotto:
+  Tiered Dark Oak Lotto:
     type: RANDOM
     name: Dark Oak Lotto
     production_time: 45s
@@ -9256,7 +9256,7 @@ recipes:
       Fail:
         chance: 0.25
         Fail:
-          material: AIR
+          material: STICK
           amount: 1
       T1:
         chance: 0.13
@@ -14373,9 +14373,6 @@ recipes:
       Iron Shovel:
         material: IRON_SPADE
         amount: 1
-      Iron Axe:
-        material: IRON_AXE
-        amount: 1
       Iron Hoe:
         material: IRON_HOE
         amount: 1
@@ -14434,8 +14431,8 @@ recipes:
     production_time: 10s
     type: UPGRADE
     input:
-      Iron Axe:
-        material: IRON_AXE
+      Shears:
+        material: SHEARS
         amount: 1
       Iron Hoe:
         material: IRON_HOE
