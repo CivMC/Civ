@@ -62,11 +62,13 @@ I'm probably missing some other details but that's it for now.
 
 * Full multiworld support
 
-* Configure which tool to "use" for cave dusting
+* Configure which tool to "use" for cave dusting. Default right now is Diamond Pickaxe.
 
 * Better documentation
 
 ### Feature Augment List:
+
+**v1.4.1** Live use of new tracker shows its disk use is much increased. Added a configuration option to explicity disable it. Added config example of Command "drops" and some fixes.
 
 **v1.4.0** New exploit tracker that tracks the actual blocks broken or exposed. This will fully prevent the "but I already checked that block" problem. Heuristic tracking is, for now, still active.
 

@@ -31,6 +31,7 @@ public final class Config {
 	private static File trackFile;
 	public static long trackSave;
 	
+	private static boolean useMapSave;
 	private static String mapFileName;
 	private static File mapFile;
 	public static long mapSave;
@@ -45,6 +46,7 @@ public final class Config {
 		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
 		trackSave = 90000l;
+		useMapSave = true;
 		mapFileName = "map.dat";
 		mapSave = 90000l;
 		alertUser = false;
@@ -74,6 +76,7 @@ public final class Config {
 		trackFile = new File(HiddenOre.getPlugin().getDataFolder(), trackFileName);
 		trackSave = file.getLong("track_save_ticks", trackSave);
 		
+		useMapSave = file.getBoolean("map_save_active", useMapSave);
 		mapFileName = file.getString("map_file", mapFileName);
 		mapFile = new File(HiddenOre.getPlugin().getDataFolder(), mapFileName);
 		mapSave = file.getLong("map_save_ticks", mapSave);
@@ -199,7 +202,7 @@ public final class Config {
 					ConfigurationSection drop = drops.getConfigurationSection(sourceDrop);
 					String dPrefix = drop.getString("prefix", null);
 					@SuppressWarnings("unchecked")
-					List<ItemStack> items = (List<ItemStack>) drop.getList("package");
+					List<ItemStack> items = (List<ItemStack>) drop.getList("package", new ArrayList<ItemStack>());
 					boolean transformIfAble = drop.getBoolean("transformIfAble", false);
 					boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
 					int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
@@ -318,6 +321,10 @@ public final class Config {
 
 	public static File getTrackFile() {
 		return trackFile;
+	}
+	
+	public static boolean isMapActive() {
+		return useMapSave;
 	}
 	
 	public static File getMapFile() {

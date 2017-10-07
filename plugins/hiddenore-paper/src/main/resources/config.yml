@@ -2,6 +2,10 @@ prefix: You found a hidden ore!
 alert_user: true
 list_drops: true
 debug: false
+# As of 1.4.0, a new tracking was added that keeps a per-block record of "activity" and discards revealed blocks as
+# sources for transformation. This tracking requires a LOT of space and memory, compared to ordinary exploit prevention.
+# It's mostly a quality of life addition. Set this to false to turn it off. Default (if unset) is to turn it on.
+map_save_active: true
 ignore_silktouch: true
 caveOres: false
 # For each potential transformation in a generate event, how many attempts at most will be made?
@@ -176,6 +180,15 @@ blocks:
   #   evaluated, resulting in either one or no drop.
   dropMultiple: false
   drops:
+   # As of 1.3.2, you can now specify a command to run instead of (or in addition to) drops.
+   fancy_cmd:
+    minY: 1
+    maxY: 255
+    chance: 0.0001
+    command: '/give %player% iron_ingot 1'
+    # You can specify tool and biome, and state modifiers like any other drop.
+    tools:
+     - wood_pickaxe
    # Here we define all the potential drops for this material/subtype. Give each "drop config" a friendly name.
    coal_ore:
     # Package is the list of ConfigurationSerializeable ItemStack that should constitutes this drop.
