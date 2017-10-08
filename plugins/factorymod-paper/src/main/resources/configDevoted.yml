@@ -14420,7 +14420,7 @@ recipes:
         name: Copper
         amount: 4
         lore:
-        - Copper T2
+        - Copper T1
       Any Planks:
         material: WOOD
         amount: 256
