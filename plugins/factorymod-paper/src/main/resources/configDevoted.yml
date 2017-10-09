@@ -1834,7 +1834,7 @@ recipes:
         name: Steel
         amount: 4
         lore:
-        - Steel T2
+        - Steel T1
       XP:
         material: EXP_BOTTLE
         amount: 64
