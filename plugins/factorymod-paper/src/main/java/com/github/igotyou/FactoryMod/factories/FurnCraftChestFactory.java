@@ -167,7 +167,7 @@ public class FurnCraftChestFactory extends Factory {
 			}
 		}
 		//ensure we have fuel
-		if (!pm.powerAvailable()) {
+		if (!pm.powerAvailable(1)) {
 			if (p != null) {
 				p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
 			}
@@ -323,23 +323,27 @@ public class FurnCraftChestFactory extends Factory {
 				// if the factory has been working for less than the required
 				// time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime()) {
+					int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() != -1
+							? ((InputRecipe) currentRecipe).getFuelConsumptionIntervall()
+							: pm.getPowerConsumptionIntervall();
+
+					int powerCounter = pm.getPowerCounter() + updateTime;
+					int fuelCount = powerCounter / consumptionIntervall;
+
 					// if the factory power source inventory has enough fuel for
 					// at least 1 energyCycle
-					if (pm.powerAvailable()) {
+					if (pm.powerAvailable(fuelCount)) {
 						// check whether the furnace is on, minecraft sometimes
 						// turns it off
 						if (getFurnace().getType() != Material.BURNING_FURNACE) {
 							turnFurnaceOn(getFurnace());
 						}
-						// if the time since fuel was last consumed is equal to
-						// how often fuel needs to be consumed
-						int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() != -1 ? ((InputRecipe) currentRecipe)
-								.getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
-						if (pm.getPowerCounter() >= consumptionIntervall - 1) {
-							// remove one fuel.
-							pm.consumePower();
-							// 0 seconds since last fuel consumption
-							pm.setPowerCounter(0);
+						// if we need to consume fuel - then do it
+						if (fuelCount >= 1) {
+							// remove fuel.
+							pm.consumePower(fuelCount);
+							// update power counter to remained time
+							pm.setPowerCounter(powerCounter % consumptionIntervall);
 						}
 						// if we don't need to consume fuel, just increase the
 						// energy timer
@@ -360,7 +364,7 @@ public class FurnCraftChestFactory extends Factory {
 
 				// if the production timer has reached the recipes production
 				// time remove input from chest, and add output material
-				else if (currentProductionTimer >= currentRecipe.getProductionTime()) {
+				else {
 					LoggingUtils.log("Executing recipe " + currentRecipe.getName() + " for " + getLogData());
 					RecipeExecuteEvent ree = new RecipeExecuteEvent(this, (InputRecipe) currentRecipe);
 					Bukkit.getPluginManager().callEvent(ree);
@@ -389,7 +393,7 @@ public class FurnCraftChestFactory extends Factory {
 						deactivate();
 						return;
 					}
-					if (pm.powerAvailable()) {
+					if (pm.powerAvailable(1)) {
 						//not enough materials, but if auto select is on, we might find another recipe to run
 						if (!hasInputMaterials() && isAutoSelect())  {
 							IRecipe nextOne = getAutoSelectRecipe();

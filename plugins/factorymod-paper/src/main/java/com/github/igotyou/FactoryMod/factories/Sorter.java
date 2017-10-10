@@ -51,7 +51,7 @@ public class Sorter extends Factory {
 				+ "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
-			if (pm.powerAvailable()) {
+			if (pm.powerAvailable(1)) {
 				if (sortableMaterialsAvailable()) {
 					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 					Bukkit.getPluginManager().callEvent(fae);
@@ -101,8 +101,10 @@ public class Sorter extends Factory {
 	}
 
 	public void run() {
-		if (active && mbs.isComplete() && pm.powerAvailable()
-				&& sortableMaterialsAvailable()) {
+		int powerCounter = pm.getPowerCounter() + updateTime;
+		int fuelCount = powerCounter / pm.getPowerConsumptionIntervall();
+
+		if (active && mbs.isComplete() && pm.powerAvailable(fuelCount) && sortableMaterialsAvailable()) {
 			if (runTime >= sortTime) {
 				mbs.recheckComplete();
 				if (!mbs.isComplete()) {
@@ -121,10 +123,12 @@ public class Sorter extends Factory {
 				if (furnace.getType() != Material.BURNING_FURNACE) {
 					turnFurnaceOn(furnace);
 				}
-				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {
-					pm.consumePower();
-					pm.setPowerCounter(0);
-
+				// if we need to consume fuel - then do it
+				if (fuelCount >= 1) {
+					// remove fuel.
+					pm.consumePower(fuelCount);
+					// update power counter to remained time
+					pm.setPowerCounter(powerCounter % pm.getPowerConsumptionIntervall());
 				} else {
 					pm.increasePowerCounter(updateTime);
 				}

@@ -45,7 +45,7 @@ public class Pipe extends Factory {
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
-				if (pm.powerAvailable()) {
+				if (pm.powerAvailable(1)) {
 					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 					Bukkit.getPluginManager().callEvent(fae);
 					if (fae.isCancelled()) {
@@ -96,8 +96,10 @@ public class Pipe extends Factory {
 	}
 
 	public void run() {
-		if (active && mbs.isComplete() && pm.powerAvailable()
-				&& transferMaterialsAvailable()) {
+		int powerCounter = pm.getPowerCounter() + updateTime;
+		int fuelCount = powerCounter / pm.getPowerConsumptionIntervall();
+
+		if (active && mbs.isComplete() && pm.powerAvailable(fuelCount) && transferMaterialsAvailable()) {
 			if (runTime >= getTransferTime()) {
 				transfer();
 				runTime = 0;
@@ -111,13 +113,12 @@ public class Pipe extends Factory {
 				if (furnace.getType() != Material.BURNING_FURNACE) {
 					turnFurnaceOn(furnace);
 				}
-				// if the time since fuel was last consumed is equal to
-				// how often fuel needs to be consumed
-				if (pm.getPowerCounter() >= pm.getPowerConsumptionIntervall() - 1) {
-					// remove one fuel.
-					pm.consumePower();
-					// 0 seconds since last fuel consumption
-					pm.setPowerCounter(0);
+				// if we need to consume fuel - then do it
+				if (fuelCount >= 1) {
+					// remove fuel.
+					pm.consumePower(fuelCount);
+					// update power counter to remained time
+					pm.setPowerCounter(powerCounter % pm.getPowerConsumptionIntervall());
 				}
 				// if we don't need to consume fuel, just increase the
 				// energy timer
