@@ -24,17 +24,26 @@ import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 public class ProductionRecipe extends InputRecipe {
 	
 	private ItemMap output;
+	private ItemStack recipeRepresentation;
 	private ProductionRecipeModifier modifier;
 	private Random rng;
 	private DecimalFormat decimalFormatting;
 
-	public ProductionRecipe(String identifier, String name, int productionTime, ItemMap inputs, ItemMap output,
-			ProductionRecipeModifier modifier) {
+	public ProductionRecipe(
+			String identifier,
+			String name,
+			int productionTime,
+			ItemMap inputs,
+			ItemMap output,
+			ItemStack recipeRepresentation,
+			ProductionRecipeModifier modifier
+	) {
 		super(identifier, name, productionTime, inputs);
 		this.output = output;
 		this.modifier = modifier;
 		this.rng = new Random();
 		this.decimalFormatting = new DecimalFormat("#.#####");
+		this.recipeRepresentation = recipeRepresentation != null ? recipeRepresentation : new ItemStack(Material.STONE);
 	}
 
 	public ItemMap getOutput() {
@@ -130,15 +139,8 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public ItemStack getRecipeRepresentation() {
-		List<ItemStack> out = getOutput().getItemStackRepresentation();
-		ItemStack res;
-		if (out.size() == 0) {
-			res = new ItemStack(Material.STONE);
-		} else {
-			res = out.get(0);
-		}
-		ISUtils.setName(res, getName());
-		return res;
+		ISUtils.setName(this.recipeRepresentation, getName());
+		return this.recipeRepresentation;
 	}
 
 	public ProductionRecipeModifier getModifier() {
