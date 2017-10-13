@@ -4116,7 +4116,7 @@ recipes:
         amount: 2
     output:
       Activator Rails:
-        material: DETECTOR_RAIL
+        material: ACTIVATOR_RAIL
         amount: 32
   Craft Red Netherbrick:
     type: PRODUCTION

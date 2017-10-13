@@ -10,12 +10,12 @@ public interface IPowerManager {
 	 * Consumes one unit of power, what that means is up to the concrete
 	 * implementation
 	 */
-	public void consumePower();
+	public void consumePower(int fuelCount);
 
 	/**
 	 * @return Whether power for at least one further tick cycle is available
 	 */
-	public boolean powerAvailable();
+	public boolean powerAvailable(int fuelCount);
 
 	/**
 	 * @return How often power should be consumed when running the factory this

@@ -137,8 +137,8 @@ public abstract class Factory implements Runnable {
 		MaterialData data = furnace.getData();
 		((DirectionalContainer) data).setFacingDirection(facing);
 		furnace.setData(data);
-		furnace.update();
 		furnace.setBurnTime(Short.MAX_VALUE);
+		furnace.update();
 		furnace.getInventory().setContents(oldContents);
 	}
 

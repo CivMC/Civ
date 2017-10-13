@@ -144,7 +144,7 @@ public class AOERepairRecipe extends InputRecipe {
 			if (diff >= repairPerEssence
 					&& fac.getMultiBlockStructure().isComplete()
 					&& !fac.isActive()
-					&& fac.getPowerManager().powerAvailable()) {
+					&& fac.getPowerManager().powerAvailable(1)) {
 				int rem = Math.min(essenceCount, diff / repairPerEssence);
 				ItemStack remStack = essence.clone();
 				remStack.setAmount(rem);

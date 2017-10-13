@@ -35,16 +35,20 @@ public class FurnacePowerManager implements IPowerManager {
 		return powerCounter;
 	}
 
-	public boolean powerAvailable() {
+	public boolean powerAvailable(int fuelCount) {
 		if (furnace.getType() != Material.FURNACE
 				&& furnace.getType() != Material.BURNING_FURNACE) {
 			return false;
 		}
+
+		if(fuelCount == 0)
+			fuelCount = 1;
+
 		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
 		ItemMap im = new ItemMap();
 		im.addItemStack(fi.getFuel());
 		im.addItemStack(fi.getSmelting());
-		return im.getAmount(fuel) != 0;
+		return im.getAmount(fuel) >= fuelCount;
 	}
 
 	public int getPowerConsumptionIntervall() {
@@ -59,9 +63,11 @@ public class FurnacePowerManager implements IPowerManager {
 		powerCounter = amount;
 	}
 
-	public void consumePower() {
+	public void consumePower(int fuelCount) {
 		FurnaceInventory fi = ((Furnace) furnace.getState()).getInventory();
-		fi.removeItem(fuel);
+
+		for(int i = 0; i < fuelCount; i++)
+			fi.removeItem(fuel);
 	}
 	
 	public int getFuelAmountAvailable() {
