@@ -1807,7 +1807,7 @@ recipes:
   Compact Crate:
     type: COMPACT
     name: Compact Crate
-    production_time: 10s
+    production_time: 8s
     input:
       crate:
         material: CHEST
@@ -1819,7 +1819,7 @@ recipes:
   Decompact Crate:
     type: DECOMPACT
     name: Decompact Crate
-    production_time: 10s
+    production_time: 1s
     compact_lore: Compacted Item
   Craft Crate:
     name: Craft Crate
