@@ -13,8 +13,8 @@
 
     <repositories>
         <repository>
-            <id>techcable-repo</id>
-            <url>https://repo.techcable.net/content/groups/public/</url>
+            <id>byteflux-repo</id>
+            <url>http://repo.byteflux.net/repository/maven-public/</url>
         </repository>
     </repositories>
 
