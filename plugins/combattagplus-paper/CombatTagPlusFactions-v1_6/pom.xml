@@ -16,13 +16,17 @@
             <id>byteflux-repo</id>
             <url>http://repo.byteflux.net/repository/maven-public/</url>
         </repository>
+        <repository>
+            <id>techcable-repo</id>
+            <url>https://repo.techcable.net/content/groups/public/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.8.3-R0.1</version>
+            <version>1.8.3-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
