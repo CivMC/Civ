@@ -36,10 +36,6 @@
                             <pattern>org.mcstats</pattern>
                             <shadedPattern>net.minelink.ctplus.libs.mcstats</shadedPattern>
                         </relocation>
-                        <relocation>
-                            <pattern>javax.annotation</pattern>
-                            <shadedPattern>net.minelink.ctplus.libs.javax_annotations</shadedPattern>
-                        </relocation>
                     </relocations>
                 </configuration>
                 <executions>
@@ -56,20 +52,12 @@
 
     <repositories>
         <repository>
-            <id>metrics-repo</id>
-            <url>http://repo.mcstats.org/content/repositories/public</url>
-        </repository>
-        <repository>
-            <id>minelink-thirdparty</id>
-            <url>http://repo.minelink.net/content/repositories/thirdparty</url>
+            <id>byteflux-repo</id>
+            <url>http://repo.byteflux.net/repository/maven-public/</url>
         </repository>
         <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>confuser-repo</id>
-            <url>https://ci.frostcast.net/plugin/repository/everything</url>
         </repository>
     </repositories>
 
@@ -79,12 +67,6 @@
             <artifactId>bukkit</artifactId>
             <version>1.10-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mcstats.bukkit</groupId>
-            <artifactId>metrics-lite</artifactId>
-            <version>R8-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>net.minelink</groupId>
@@ -228,6 +210,7 @@
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
             <version>2.0.1</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>

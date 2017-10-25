@@ -13,8 +13,8 @@
 
     <repositories>
         <repository>
-            <id>minelink-thirdparty</id>
-            <url>http://repo.minelink.net/content/repositories/thirdparty</url>
+            <id>byteflux-repo</id>
+            <url>http://repo.byteflux.net/repository/maven-public/</url>
         </repository>
     </repositories>
 

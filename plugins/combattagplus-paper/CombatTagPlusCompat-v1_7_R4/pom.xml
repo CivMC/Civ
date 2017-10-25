@@ -13,8 +13,8 @@
 
     <repositories>
         <repository>
-            <id>minelink-thirdparty</id>
-            <url>http://repo.minelink.net/content/repositories/thirdparty</url>
+            <id>techcable-repo</id>
+            <url>https://repo.techcable.net/content/groups/public/</url>
         </repository>
     </repositories>
 
