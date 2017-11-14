@@ -3,6 +3,8 @@ package com.devotedmc.ExilePearl.config;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.World;
+
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.storage.StorageType;
@@ -143,4 +145,6 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	String getHelpItemName();
 	
 	List<String> getHelpItemText();
+	
+	World getPrisonWorld();
 }
