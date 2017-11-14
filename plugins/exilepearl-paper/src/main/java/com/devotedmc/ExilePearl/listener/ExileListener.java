@@ -106,7 +106,7 @@ public class ExileListener extends RuleListener implements Configurable {
 		if (config.canPerform(ExileRule.USE_BED)) {
 			return;
 		}
-		if (pearlApi.isPlayerExiled(e.getPlayer())) {
+		if (pearlApi.isPlayerExiled(e.getPlayer()) && !pearlApi.getPearl(e.getPlayer().getUniqueId()).isSummoned()) {
 			e.getPlayer().setBedSpawnLocation(null, true);
 		}
 	}

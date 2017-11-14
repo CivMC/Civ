@@ -30,6 +30,7 @@ import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
+import com.devotedmc.ExilePearl.event.PearlReturnEvent;
 import com.devotedmc.ExilePearl.event.PearlSummonEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -378,7 +379,21 @@ final class CorePearlManager implements PearlManager {
 			PearlSummonEvent event = new PearlSummonEvent(pearl, summoner);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
+				pearl.getPlayer().setBedSpawnLocation(pearl.getPlayer().getLocation(), true);
 				return pearl.getPlayer().teleport(summoner);
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean returnPearl(ExilePearl pearl) {
+		if(pearl.isSummoned() && pearl.getPlayer().isOnline() && !pearl.getPlayer().isDead()) {
+			PearlReturnEvent event = new PearlReturnEvent(pearl);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				pearl.getPlayer().teleport(pearl.getPlayer().getBedSpawnLocation());
+				return true;
 			}
 		}
 		return false;
