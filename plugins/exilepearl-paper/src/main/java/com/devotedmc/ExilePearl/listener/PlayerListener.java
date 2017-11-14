@@ -756,8 +756,9 @@ public class PlayerListener implements Listener, Configurable {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerRespawn(PlayerRespawnEvent e) {
 		Player player = e.getPlayer();
-		if (useHelpItem && pearlApi.isPlayerExiled(player)) {
-			giveHelpItem(player);
+		if (pearlApi.isPlayerExiled(player)) {
+			if(useHelpItem) giveHelpItem(player);
+			if(pearlApi.getPearl(player.getUniqueId()).getPearlType() == PearlType.PRISON) e.setRespawnLocation(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
 		}
 	}
 	
@@ -949,7 +950,7 @@ public class PlayerListener implements Listener, Configurable {
 	public void onPlayerPortal(PlayerPortalEvent event) {
 		ExilePearl pearl = pearlApi.getPearl(event.getPlayer().getUniqueId());
 		if(pearl != null && pearl.getPearlType() == PearlType.PRISON && event.getCause() == TeleportCause.END_PORTAL) {
-			event.setCancelled(true);
+			event.setTo(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
 		}
 	}
 

@@ -121,6 +121,10 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setPearlType(PearlType pearlType) {
 		this.pearlType = pearlType;
+		
+		if(storageEnabled) {
+			storage.updatePearlType(this);
+		}
 	}
 
 

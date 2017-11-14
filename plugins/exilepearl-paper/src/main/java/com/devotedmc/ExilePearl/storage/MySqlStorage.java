@@ -258,7 +258,7 @@ class MySqlStorage implements PluginStorage {
 		Guard.ArgumentNotNull(pearl, "pearl");
 
 		try (Connection connection = db.getConnection();
-				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
+				PreparedStatement ps = connection.prepareStatement("INSERT INTO exilepearls VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);"); ) {
 
 			Location l = pearl.getLocation();
 
@@ -274,9 +274,11 @@ class MySqlStorage implements PluginStorage {
 			ps.setLong(10, pearl.getPearledOn().getTime());
 			ps.setBoolean(11, pearl.getFreedOffline());
 			ps.setLong(12, pearl.getLastOnline().getTime());
+			ps.setBoolean(13, pearl.isSummoned());
 			ps.executeUpdate();
 
 		} catch (SQLException ex) {
+			ex.printStackTrace();
 			logFailedPearlOperation(ex, pearl, "insert record");
 		}
 	}

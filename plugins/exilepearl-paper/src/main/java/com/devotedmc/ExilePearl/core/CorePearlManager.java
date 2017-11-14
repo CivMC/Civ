@@ -387,11 +387,13 @@ final class CorePearlManager implements PearlManager {
 	@Override
 	public boolean summonPearl(ExilePearl pearl, Player summoner) {
 		if(pearl.getPearlType() == PearlType.PRISON && pearl.getPlayer().isOnline()
-				&& !pearl.getPlayer().isDead()) {
+				&& !pearl.getPlayer().isDead() && !pearl.isSummoned()) {
 			PearlSummonEvent event = new PearlSummonEvent(pearl, summoner);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
 				dropInventory(pearl.getPlayer());
+				pearl.setReturnLocation(pearl.getPlayer().getLocation());
+				pearl.setSummoned(true);
 				return pearl.getPlayer().teleport(summoner);
 			}
 		}
@@ -400,13 +402,17 @@ final class CorePearlManager implements PearlManager {
 	
 	@Override
 	public boolean returnPearl(ExilePearl pearl) {
+		System.out.println(pearl.isSummoned() + " : " + pearl.getPlayer().isOnline() + " : " + pearl.getPlayer().isDead());
 		if(pearl.isSummoned() && pearl.getPlayer().isOnline() && !pearl.getPlayer().isDead()) {
+			System.out.println("returning pearl");
 			PearlReturnEvent event = new PearlReturnEvent(pearl);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
 				Location returnLoc = pearl.getReturnLocation();
 				if(returnLoc == null) returnLoc = pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation();
 				pearl.getPlayer().teleport(returnLoc);
+				pearl.setSummoned(false);
+				pearl.setReturnLocation(null);
 				return true;
 			}
 		}
