@@ -39,6 +39,7 @@ import org.bukkit.inventory.ItemStack;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -106,8 +107,10 @@ public class ExileListener extends RuleListener implements Configurable {
 		if (config.canPerform(ExileRule.USE_BED)) {
 			return;
 		}
-		if (pearlApi.isPlayerExiled(e.getPlayer()) && !pearlApi.getPearl(e.getPlayer().getUniqueId()).isSummoned()) {
-			e.getPlayer().setBedSpawnLocation(null, true);
+		if (pearlApi.isPlayerExiled(e.getPlayer())) {
+			//if it's a prison pearl set their spawn to the prison world, probably the end
+			boolean prison = pearlApi.getPearl(e.getPlayer().getUniqueId()).getPearlType() == PearlType.PRISON;
+			e.getPlayer().setBedSpawnLocation(prison ? pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation() : null, true);
 		}
 	}
 	

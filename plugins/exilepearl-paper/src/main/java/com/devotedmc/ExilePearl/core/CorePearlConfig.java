@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
@@ -455,6 +456,7 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	
 	@Override
 	public World getPrisonWorld() {
-		return Bukkit.getWorld(doc.getString("prison_world"), "world_the_end");
+		return Bukkit.getWorld(doc.getString("prison_world", "world_the_end"));
 	}
+
 }

@@ -3,6 +3,7 @@ package com.devotedmc.ExilePearl.config;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.devotedmc.ExilePearl.ExileRule;

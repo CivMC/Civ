@@ -15,9 +15,12 @@ import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -37,6 +40,7 @@ import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
@@ -174,6 +178,14 @@ final class CorePearlManager implements PearlManager {
 			pearls.remove(pearl.getPlayerId());
 			clearPearlBroadcasts(pearl);
 			storage.getStorage().pearlRemove(pearl);
+			if(pearl.getPearlType() == PearlType.PRISON) {
+				dropInventory(player);
+				if(reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN) {
+					player.teleport(pearl.getLocation());
+				} else {
+					SpawnUtil.spawnPlayer(player);
+				}
+			}
 		} else {
 			pearl.setFreedOffline(true);
 		}
@@ -379,7 +391,7 @@ final class CorePearlManager implements PearlManager {
 			PearlSummonEvent event = new PearlSummonEvent(pearl, summoner);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				pearl.getPlayer().setBedSpawnLocation(pearl.getPlayer().getLocation(), true);
+				dropInventory(pearl.getPlayer());
 				return pearl.getPlayer().teleport(summoner);
 			}
 		}
@@ -397,5 +409,25 @@ final class CorePearlManager implements PearlManager {
 			}
 		}
 		return false;
+	}
+	
+	private void dropInventory(Player player) {
+		Inventory inv = player.getInventory();
+		final Location loc = player.getLocation();
+		final World world = loc.getWorld();
+		for(int i = 0; i < inv.getSize(); i++) {
+			final ItemStack item = inv.getItem(i);
+			if(item == null) continue;
+			if(item.getType() == Material.ENDER_PEARL) continue;
+			inv.clear(i);
+			Bukkit.getScheduler().runTask(pearlApi, new Runnable() {
+
+				@Override
+				public void run() {
+					world.dropItemNaturally(loc, item);
+				}
+				
+			});
+		}
 	}
 }

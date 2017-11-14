@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl.listener;
 
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
@@ -7,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,8 +52,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
@@ -66,6 +70,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -73,12 +78,9 @@ import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 
-import net.minelink.ctplus.compat.api.NpcIdentity;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
-import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * Handles events related to prison pearls
@@ -806,33 +808,6 @@ public class PlayerListener implements Listener, Configurable {
 		e.getPearl().performBroadcast();
 	}
 
-
-	/**
-	 * Clears out a player's inventory when being summoned from the end
-	 * @param player The player instance
-	 * @param loc The location
-	 */
-	public void dropInventory(Player player, Location loc) {
-		if (loc == null) {
-			loc = player.getLocation();
-		}
-		World world = loc.getWorld();
-		Inventory inv = player.getInventory();
-		int end = inv.getSize();
-		for (int i = 0; i < end; ++i) {
-			ItemStack item = inv.getItem(i);
-			if (item == null) {
-				continue;
-			}
-			if (item.getType().equals(Material.ENDER_PEARL)) {
-				continue;
-			}
-			inv.clear(i);
-			world.dropItemNaturally(loc, item);
-		}
-	}
-
-
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPrepareCraftPearl(PrepareItemCraftEvent e) {
 		CraftingInventory inv = e.getInventory();
@@ -968,7 +943,14 @@ public class PlayerListener implements Listener, Configurable {
 		inv.setResult(pearl.createItemStack());
 		pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
 	}
-
+	
+	@EventHandler
+	public void onPlayerPortal(PlayerPortalEvent event) {
+		ExilePearl pearl = pearlApi.getPearl(event.getPlayer().getUniqueId());
+		if(pearl != null && pearl.getPearlType() == PearlType.PRISON && event.getCause() == TeleportCause.END_PORTAL) {
+			event.setCancelled(true);
+		}
+	}
 
 	@Override
 	public void loadConfig(PearlConfig config) {

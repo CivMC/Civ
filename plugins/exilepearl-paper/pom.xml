@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>com.wimbli.WorldBorder</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.9.0</version>
+			<version>1.9.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -130,7 +130,7 @@
 		<dependency>
 			<groupId>com.dre</groupId>
 			<artifactId>brewery</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -164,14 +164,6 @@
 		<repository>
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
-		</repository>
-		<repository>
-			<id>minelink-releases</id>
-			<url>http://repo.minelink.net/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 	</repositories>
 
