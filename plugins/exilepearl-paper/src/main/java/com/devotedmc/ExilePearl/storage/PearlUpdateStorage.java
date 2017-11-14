@@ -39,4 +39,10 @@ public interface PearlUpdateStorage {
 	 * @param pearl The pearl instance to update
 	 */
 	void updatePearlLastOnline(ExilePearl pearl);
+	
+	/**
+	 * Updates whether or not a player is summoned
+	 * @param pearl The pearl instance to update
+	 */
+	void updatePearlSummoned(ExilePearl pearl);
 }

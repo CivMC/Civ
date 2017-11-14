@@ -430,6 +430,11 @@ final class ExilePearlCore implements ExilePearlApi {
 	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
 		return pearlManager.freePearl(pearl, reason);
 	}
+	
+	@Override
+	public boolean summonPearl(ExilePearl pearl, Player summoner) {
+		return pearlManager.summonPearl(pearl, summoner);
+	}
 
 	@Override
 	public Player getPlayer(UUID uid) {

@@ -123,4 +123,16 @@ public interface PearlAccess {
 	 * @return true if the pearl is freed, otherwise false
 	 */
 	boolean freePearl(ExilePearl pearl, PearlFreeReason reason);
+	
+	/**
+	 * Summons a prison pearl
+	 * <p>
+	 * It's possible for the summon operation to fail if the
+	 * {@link com.devotedmc.ExilePearl.event.PlayerSummonEvent PlayerSummonEvent} is cancelled.
+	 * Or if the target player is dead or already summoned (or offline)
+	 * @param pearl The pearl to summon
+	 * @param summoner The player summoning the prisoner
+	 * @return true if the player is summoned, otherwise false
+	 */
+	boolean summonPearl(ExilePearl pearl, Player summoner);
 }

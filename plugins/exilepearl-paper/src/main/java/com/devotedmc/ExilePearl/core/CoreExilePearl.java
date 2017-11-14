@@ -28,9 +28,9 @@ import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
+import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.ItemHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
-import com.devotedmc.ExilePearl.holder.HolderVerifyResult;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.storage.PearlUpdateStorage;
 
@@ -63,6 +63,7 @@ final class CoreExilePearl implements ExilePearl {
 	private boolean freedOffline;
 	private int health;
 	private boolean storageEnabled;
+	private boolean summoned;
 
 	/**
 	 * Creates a new prison pearl instance
@@ -501,6 +502,20 @@ final class CoreExilePearl implements ExilePearl {
 		
 		if (storageEnabled) {
 			storage.updatePearlLastOnline(this);
+		}
+	}
+	
+	@Override
+	public boolean isSummoned() {
+		return summoned;
+	}
+	
+	@Override
+	public void setSummoned(boolean summoned) {
+		if(pearlType != PearlType.PRISON) return;
+		this.summoned = summoned;
+		if (storageEnabled) {
+			storage.updatePearlSummoned(this);
 		}
 	}
 }

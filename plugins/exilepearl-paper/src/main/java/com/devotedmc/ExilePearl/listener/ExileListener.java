@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;

@@ -27,7 +27,7 @@ import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 class MySqlStorage implements PluginStorage {
 
-	private static final Integer DATABASE_VERSION = 2;
+	private static final Integer DATABASE_VERSION = 3;
 
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
@@ -59,6 +59,8 @@ class MySqlStorage implements PluginStorage {
 			"add column last_seen long not null;";
 	private static final String migration0001PearlTable2 = "update exilepearls " +
 			"set last_seen = unix_timestamp() * 1000;";
+	private static final String migration0002PearlTable = "alter table exilepearls " +
+			"add column summoned bool default 0;";
 
 	/**
 	 * Creates a new MySqlStorage instance
@@ -134,6 +136,7 @@ class MySqlStorage implements PluginStorage {
 			}
 			
 			applyMigration0001();
+			applyMigration0002();
 			
 			// add new migrations here.
 			
@@ -146,8 +149,11 @@ class MySqlStorage implements PluginStorage {
 				// run migration 1.
 				success &= applyMigration0001();
 			}
+			if (getDatabaseVersion() < 3) {
+				success &= applyMigration0002();
+			}
 			// and new migrations here.
-			// if (getDatabaseVersion() < 3) { // next migration
+			// if (getDatabaseVersion() < 4) { // next migration
 			
 			if (success) {
 				updateDatabaseVersion();
@@ -174,6 +180,21 @@ class MySqlStorage implements PluginStorage {
 			return true;
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Failed to apply migration 0001");
+		}
+		return false;
+	}
+	
+	private boolean applyMigration0002() {
+		try (Connection connection = db.getConnection();) {
+			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0002PearlTable)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to add summoned");
+				return false;
+			}
+			return true;
+		} catch (SQLException ex) {
+			logger.log(Level.SEVERE, "Failed to apply migration 0002");
 		}
 		return false;
 	}
@@ -363,6 +384,20 @@ class MySqlStorage implements PluginStorage {
 		}
 	}
 
+	@Override
+	public void updatePearlSummoned(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		
+		try (Connection connection = db.getConnection();
+				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET summoned = ? WHERE uid = ?"); ) {
+			ps.setBoolean(1, pearl.isSummoned());
+			ps.setString(2, pearl.getPlayerId().toString());
+			ps.executeUpdate();
+		} catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update 'summoned'");
+		}
+	}
+	
 	/**
 	 * Migrate prison pearl data
 	 */

@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -25,9 +26,11 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
+import com.devotedmc.ExilePearl.event.PearlSummonEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
@@ -366,5 +369,18 @@ final class CorePearlManager implements PearlManager {
 		for(UUID uid : toRemove) {
 			bcastRequests.remove(uid);
 		}
+	}
+	
+	@Override
+	public boolean summonPearl(ExilePearl pearl, Player summoner) {
+		if(pearl.getPearlType() == PearlType.PRISON && pearl.getPlayer().isOnline()
+				&& !pearl.getPlayer().isDead()) {
+			PearlSummonEvent event = new PearlSummonEvent(pearl, summoner);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				return pearl.getPlayer().teleport(summoner);
+			}
+		}
+		return false;
 	}
 }

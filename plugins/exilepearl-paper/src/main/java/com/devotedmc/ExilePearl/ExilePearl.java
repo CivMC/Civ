@@ -219,4 +219,18 @@ public interface ExilePearl {
 	 * @param online The new latest Seen Date.
 	 */
 	void setLastOnline(Date online);
+	
+	/**
+	 * Gets whether or not the pearled player is summoned
+	 * This is always false for exiled players, summoning only works for upgraded PrisonPearls
+	 * @return true if the player is summoned
+	 */
+	boolean isSummoned();
+	
+	/**
+	 * Sets the summoned state of a player
+	 * Can only be true if pearl is of prison type
+	 * @param summoned The summoned value
+	 */
+	void setSummoned(boolean summoned);
 }
