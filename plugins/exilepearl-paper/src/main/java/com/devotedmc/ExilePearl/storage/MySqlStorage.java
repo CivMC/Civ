@@ -55,6 +55,14 @@ class MySqlStorage implements PluginStorage {
 			"freed_offline bool," +
 			"PRIMARY KEY (uid));";
 	
+	private static final String createSummonTable = "create table if not exists returnlocations( " +
+			"uid varchar(36) not null," +
+			"world varchar(36) not null," +
+			"x int not null," +
+			"y int not null," +
+			"z int not null," +
+			"PRIMARY KEY (uid));";
+	
 	private static final String migration0001PearlTable = "alter table exilepearls " +
 			"add column last_seen long not null;";
 	private static final String migration0001PearlTable2 = "update exilepearls " +
@@ -125,6 +133,12 @@ class MySqlStorage implements PluginStorage {
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Failed to create the pearl table.");
 			}
+			
+			try (PreparedStatement preparedStatement = connection.prepareStatement(createSummonTable)) {
+				preparedStatement.execute();
+			} catch (SQLException ex) {
+				logger.log(Level.SEVERE, "Failed to create summon table");
+			}
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Failed to setup the database");
 		}
@@ -185,13 +199,9 @@ class MySqlStorage implements PluginStorage {
 	}
 	
 	private boolean applyMigration0002() {
-		try (Connection connection = db.getConnection();) {
-			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0002PearlTable)) {
-				preparedStatement.execute();
-			} catch (SQLException ex) {
-				logger.log(Level.SEVERE, "Failed to add summoned");
-				return false;
-			}
+		try (Connection connection = db.getConnection();
+				PreparedStatement preparedStatement = connection.prepareStatement(migration0002PearlTable);) {
+			preparedStatement.execute();
 			return true;
 		} catch (SQLException ex) {
 			logger.log(Level.SEVERE, "Failed to apply migration 0002");
@@ -396,6 +406,36 @@ class MySqlStorage implements PluginStorage {
 			ps.executeUpdate();
 		} catch (SQLException ex) {
 			logFailedPearlOperation(ex, pearl, "update 'summoned'");
+		}
+	}
+	
+	@Override
+	public void updateReturnLocation(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		
+		try (Connection connection = db.getConnection();) {
+			if(pearl.getReturnLocation() != null) {
+				try (PreparedStatement ps = connection.prepareStatement("INSERT INTO returnlocations (uid, world, x, y, z) VALUES (?, ?, ?, ?, ?);")) {
+					ps.setString(1, pearl.getPlayerId().toString());
+					Location loc = pearl.getReturnLocation();
+					ps.setString(2, loc.getWorld().getName());
+					ps.setInt(3, loc.getBlockX());
+					ps.setInt(4, loc.getBlockY());
+					ps.setInt(5, loc.getBlockZ());
+					ps.executeUpdate();
+				} catch (SQLException ex) {
+					logFailedPearlOperation(ex, pearl, "insert return location");
+				}
+			} else {
+				try (PreparedStatement ps = connection.prepareStatement("DELETE FROM returnlocations WHERE uid = ?;")) {
+					ps.setString(1, pearl.getPlayerId().toString());
+					ps.executeUpdate();
+				} catch (SQLException ex) {
+					logFailedPearlOperation(ex, pearl, "delete return location");
+				}
+			}
+		} catch (SQLException ex) {
+			logFailedPearlOperation(ex, pearl, "update return location");
 		}
 	}
 	

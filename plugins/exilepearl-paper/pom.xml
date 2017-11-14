@@ -66,6 +66,12 @@
 			<artifactId>CivModCore</artifactId>
 			<version>1.6.0</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>metrics</artifactId>
+					<groupId>org.mcstats.bukkit</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
@@ -164,6 +170,10 @@
 		<repository>
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>byteflux-repo</id>
+			<url>http://repo.byteflux.net/repository/maven-releases/</url>
 		</repository>
 	</repositories>
 

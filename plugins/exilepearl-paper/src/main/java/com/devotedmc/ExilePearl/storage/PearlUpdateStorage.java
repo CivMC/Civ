@@ -45,4 +45,10 @@ public interface PearlUpdateStorage {
 	 * @param pearl The pearl instance to update
 	 */
 	void updatePearlSummoned(ExilePearl pearl);
+	
+	/**
+	 * Updates where the player should be returned from summon
+	 * @param pearl The pearl instance to update
+	 */
+	void updateReturnLocation(ExilePearl pearl);
 }

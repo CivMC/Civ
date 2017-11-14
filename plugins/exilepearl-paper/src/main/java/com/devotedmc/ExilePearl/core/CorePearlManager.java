@@ -404,7 +404,9 @@ final class CorePearlManager implements PearlManager {
 			PearlReturnEvent event = new PearlReturnEvent(pearl);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
-				pearl.getPlayer().teleport(pearl.getPlayer().getBedSpawnLocation());
+				Location returnLoc = pearl.getReturnLocation();
+				if(returnLoc == null) returnLoc = pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation();
+				pearl.getPlayer().teleport(returnLoc);
 				return true;
 			}
 		}

@@ -64,6 +64,7 @@ final class CoreExilePearl implements ExilePearl {
 	private int health;
 	private boolean storageEnabled;
 	private boolean summoned;
+	private Location returnLoc;
 
 	/**
 	 * Creates a new prison pearl instance
@@ -516,6 +517,20 @@ final class CoreExilePearl implements ExilePearl {
 		this.summoned = summoned;
 		if (storageEnabled) {
 			storage.updatePearlSummoned(this);
+		}
+	}
+	
+	@Override
+	public Location getReturnLocation() {
+		return returnLoc;
+	}
+	
+	@Override
+	public void setReturnLocation(Location loc) {
+		if(pearlType != PearlType.PRISON) return;
+		this.returnLoc = loc;
+		if(storageEnabled) {
+			storage.updateReturnLocation(this);
 		}
 	}
 }

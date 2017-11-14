@@ -277,4 +277,28 @@ public class MockPearl implements ExilePearl {
 	public void setLastOnline(Date online) {
 		this.lastOnline = online;
 	}
+
+	@Override
+	public boolean isSummoned() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void setSummoned(boolean summoned) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Location getReturnLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setReturnLocation(Location loc) {
+		// TODO Auto-generated method stub
+		
+	}
 }

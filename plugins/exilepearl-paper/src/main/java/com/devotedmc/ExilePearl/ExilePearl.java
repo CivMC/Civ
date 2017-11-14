@@ -233,4 +233,16 @@ public interface ExilePearl {
 	 * @param summoned The summoned value
 	 */
 	void setSummoned(boolean summoned);
+	
+	/**
+	 * Gets the location where player should be returned from summon
+	 * @return The location
+	 */
+	Location getReturnLocation();
+	
+	/**
+	 * Sets the location where a player should be returned from summon
+	 * @param loc The location
+	 */
+	void setReturnLocation(Location loc);
 }
