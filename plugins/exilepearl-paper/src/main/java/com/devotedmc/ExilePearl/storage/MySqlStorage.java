@@ -227,6 +227,7 @@ class MySqlStorage implements PluginStorage {
 							.append("y", doc.getInteger("y"))
 							.append("z", doc.getInteger("z")));
 					doc.append("type", doc.getInteger("ptype", 0));
+					doc.append("summoned", doc.getBoolean("summoned"));
 					
 					pearls.add(pearlFactory.createExilePearl(doc.getUUID("uid"), doc));
 				} catch (Exception ex) {
