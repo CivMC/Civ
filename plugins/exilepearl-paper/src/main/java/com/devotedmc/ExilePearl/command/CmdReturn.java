@@ -4,16 +4,16 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 
-public class CmdSummon extends PearlCommand {
+public class CmdReturn extends PearlCommand {
 
-	public CmdSummon(ExilePearlApi pearlApi) {
+	public CmdReturn(ExilePearlApi pearlApi) {
 		super(pearlApi);
-		this.aliases.add("summon");
+		this.aliases.add("return");
 		
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Summon a prisoner");
+		this.helpShort = "Returns a summoned player";
 	}
-	
+
 	@Override
 	public void perform() {
 		ExilePearl pearl = plugin.getPearlFromItemStack(player().getInventory().getItemInMainHand());
@@ -22,10 +22,10 @@ public class CmdSummon extends PearlCommand {
 			return;
 		}
 
-		if(plugin.summonPearl(pearl, player())) {
-			msg(Lang.pearlSummoned, pearl.getPlayerName());
+		if(plugin.returnPearl(pearl)) {
+			msg(Lang.pearlReturned, pearl.getPlayerName());
 		} else {
-			msg(Lang.pearlCantSummon);
+			msg(Lang.pearlCantReturn);
 		}
 	}
 }
