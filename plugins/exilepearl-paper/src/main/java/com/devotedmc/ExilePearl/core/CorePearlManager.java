@@ -402,9 +402,7 @@ final class CorePearlManager implements PearlManager {
 	
 	@Override
 	public boolean returnPearl(ExilePearl pearl) {
-		System.out.println(pearl.isSummoned() + " : " + pearl.getPlayer().isOnline() + " : " + pearl.getPlayer().isDead());
 		if(pearl.isSummoned() && pearl.getPlayer().isOnline() && !pearl.getPlayer().isDead()) {
-			System.out.println("returning pearl");
 			PearlReturnEvent event = new PearlReturnEvent(pearl);
 			Bukkit.getPluginManager().callEvent(event);
 			if(!event.isCancelled()) {
