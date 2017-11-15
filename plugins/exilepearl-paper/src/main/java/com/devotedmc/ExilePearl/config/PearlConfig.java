@@ -3,10 +3,10 @@ package com.devotedmc.ExilePearl.config;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Material;
 import org.bukkit.World;
 
 import com.devotedmc.ExilePearl.ExileRule;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.storage.StorageType;
 
@@ -81,9 +81,10 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	
 	/**
 	 * Gets the pearl repair materials
+	 * @param type The type for repairs
 	 * @return The pearl repair materials
 	 */
-	Set<RepairMaterial> getRepairMaterials();
+	Set<RepairMaterial> getRepairMaterials(PearlType type);
 	
 	/**
 	 * Gets the names of animals that are protected
@@ -148,4 +149,6 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	List<String> getHelpItemText();
 	
 	World getPrisonWorld();
+	
+	Set<RepairMaterial> getUpgradeMaterials();
 }

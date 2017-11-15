@@ -4,6 +4,7 @@ import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,8 @@ public class PlayerListener implements Listener, Configurable {
 
 	private final ExilePearlApi pearlApi;
 
-	private Set<RepairMaterial> repairMaterials = new HashSet<RepairMaterial>();
+	private Map<PearlType, Set<RepairMaterial>> repairMaterials = new HashMap<PearlType, Set<RepairMaterial>>();
+	private Set<RepairMaterial> upgradeMaterials = new HashSet<RepairMaterial>();
 	
 	
 	private boolean useHelpItem = false;
@@ -658,6 +660,10 @@ public class PlayerListener implements Listener, Configurable {
 			removeHelpItem(pearl.getPlayer());
 		} else if (pearl != null) {
 			pearl.setLastOnline(new Date());
+			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() && 
+					!pearl.getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
+				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+			}
 		}
 	}
 
@@ -850,6 +856,26 @@ public class PlayerListener implements Listener, Configurable {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
+		
+		ItemMap invItems = new ItemMap(inv);
+		
+		if(pearl.getPearlType() == PearlType.PRISON) {
+			RepairMaterial upgradeItem = null;
+			for(RepairMaterial item : upgradeMaterials) {
+				if(invItems.getAmount(item.getStack()) > item.getRepairAmount()) {
+					upgradeItem = item;
+					break;
+				}
+			}
+			if(upgradeItem != null) {
+				ItemStack resultStack = pearl.createItemStack();
+				ItemMeta im = resultStack.getItemMeta();
+				im.setLore(pearlApi.getLoreProvider().generateLoreWithModifiedType(pearl, PearlType.PRISON));
+				resultStack.setItemMeta(im);
+				e.getInventory().setResult(resultStack);
+				return;
+			}
+		}
 
 		// Ignore pearls that are at full health
 		if (pearl.getHealth() == pearlApi.getPearlConfig().getPearlHealthMaxValue()) {
@@ -857,11 +883,10 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 		
-		ItemMap invItems = new ItemMap(inv);
 		RepairMaterial repairItem = null;
 		
 		// Find the repair material that is being used for crafting
-		for(RepairMaterial item : repairMaterials) {
+		for(RepairMaterial item : repairMaterials.get(pearl.getPearlType())) {
 			if (invItems.getAmount(item.getStack()) > 0) {
 				repairItem = item;
 				break;
@@ -902,7 +927,7 @@ public class PlayerListener implements Listener, Configurable {
 		RepairMaterial repairItem = null;
 		
 		// Find the repair material that is being used for crafting
-		for(RepairMaterial item : repairMaterials) {
+		for(RepairMaterial item : repairMaterials.get(pearl.getPearlType())) {
 			if (invItems.getAmount(item.getStack()) > 0) {
 				repairItem = item;
 				break;
@@ -910,45 +935,93 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		
 		// Quit if no repair items were found in the crafting inventory
-		if (repairItem == null) {
-			return;
-		}
+		if (repairItem != null) {
+			int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
+			int repairPerItem = repairItem.getRepairAmount();
+			int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
+			int repairMatsToUse = Math.min((int)Math.ceil((maxHealth - pearl.getHealth()) / (double)repairPerItem), repairMatsAvailable);
+			int repairAmount = repairMatsToUse * repairPerItem;
 
-		int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
-		int repairPerItem = repairItem.getRepairAmount();
-		int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
-		int repairMatsToUse = Math.min((int)Math.ceil((maxHealth - pearl.getHealth()) / (double)repairPerItem), repairMatsAvailable);
-		int repairAmount = repairMatsToUse * repairPerItem;
-
-		// Changing the value of the crafting items results in a dupe glitch so any remaining
-		// materials need to be placed back into the player's inventory.
-		inv.remove(Material.ENDER_PEARL);
-		if (repairMatsAvailable > repairMatsToUse) {
-			for (int i = 0; i < inv.getContents().length; i++) {
-				ItemStack is = inv.getItem(i);
-				if (is != null) {
-					int numLeft = repairMatsAvailable - repairMatsToUse;
-					Player player = (Player)(e.getWhoClicked());
-					int openSlot = player.getInventory().firstEmpty();
-					ItemStack giveBack = repairItem.getStack().clone();
-					giveBack.setAmount(numLeft);
-					if (openSlot > 0) {
-						player.getInventory().setItem(openSlot, giveBack);
-						msg(player, "<i>The remaining %d repair items were put back in your inventory.", numLeft);
-					} else {
-						player.getWorld().dropItem(player.getLocation().add(0, 0.5, 0), giveBack);
-						msg(player, "<i>The remaining %d repair items were dropped on the ground.", numLeft);
+			// Changing the value of the crafting items results in a dupe glitch so any remaining
+			// materials need to be placed back into the player's inventory.
+			inv.remove(Material.ENDER_PEARL);
+			if (repairMatsAvailable > repairMatsToUse) {
+				for (int i = 0; i < inv.getContents().length; i++) {
+					ItemStack is = inv.getItem(i);
+					if (is != null) {
+						int numLeft = repairMatsAvailable - repairMatsToUse;
+						Player player = (Player)(e.getWhoClicked());
+						int openSlot = player.getInventory().firstEmpty();
+						ItemStack giveBack = repairItem.getStack().clone();
+						giveBack.setAmount(numLeft);
+						if (openSlot > 0) {
+							player.getInventory().setItem(openSlot, giveBack);
+							msg(player, "<i>The remaining %d repair items were put back in your inventory.", numLeft);
+						} else {
+							player.getWorld().dropItem(player.getLocation().add(0, 0.5, 0), giveBack);
+							msg(player, "<i>The remaining %d repair items were dropped on the ground.", numLeft);
+						}
+						break;
 					}
-					break;
 				}
 			}
-		}
-		inv.clear();
+			inv.clear();
 
-		// Repair the pearl and update the item stack
-		pearl.setHealth(pearl.getHealth() + repairAmount);
-		inv.setResult(pearl.createItemStack());
-		pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
+			// Repair the pearl and update the item stack
+			pearl.setHealth(pearl.getHealth() + repairAmount);
+			inv.setResult(pearl.createItemStack());
+			pearlApi.log("The pearl for player %s was repaired by %d points.", pearl.getPlayerName(), repairAmount);
+			return;
+		}
+		if(pearl.getPearlType() == PearlType.PRISON) {
+			//can't be upgraded
+			return;
+		}
+		//try to find an upgrade recipe
+		RepairMaterial upgradeItem = null;
+		
+		for(RepairMaterial item : upgradeMaterials) {
+			if(invItems.getAmount(item.getStack()) > item.getRepairAmount()) {
+				upgradeItem = item;
+				break;
+			}
+		}
+		
+		if(upgradeItem != null) {
+			//just using the repair amount as a stack size because fuck it
+			int upgradeMatsRequired = upgradeItem.getRepairAmount();
+			int upgradeMatsAvailable = invItems.getAmount(upgradeItem.getStack());
+			if(upgradeMatsAvailable < upgradeMatsRequired) return;
+			inv.remove(Material.ENDER_PEARL);
+			if(upgradeMatsAvailable > upgradeMatsRequired) {
+				for(int i = 0; i < inv.getContents().length; i++) {
+					ItemStack is = inv.getItem(i);
+					if(is != null) {
+						int numLeft = upgradeMatsAvailable - upgradeMatsRequired;
+						Player player = (Player)e.getWhoClicked();
+						int openSlot = player.getInventory().firstEmpty();
+						ItemStack giveBack = upgradeItem.getStack().clone();
+						giveBack.setAmount(numLeft);
+						if(openSlot > 0) {
+							player.getInventory().setItem(openSlot, giveBack);
+							msg(player, "<i>The remaining %d upgrade items were put back in your inventory.", numLeft);
+						} else {
+							player.getWorld().dropItemNaturally(player.getLocation().add(0, 0.5, 0), giveBack);
+							msg(player, "<i>The remaining %d repair items were dropped on the ground.", numLeft);
+						}
+						break;
+					}
+				}
+			}
+			inv.clear();
+			pearl.setPearlType(PearlType.PRISON);
+			inv.setResult(pearl.createItemStack());
+			if(pearl.getPlayer().isOnline()) {
+				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+				msg(pearl.getPlayer(), "<i>You've been imprisoned in the end by %s.", ((Player)e.getWhoClicked()).getDisplayName());
+			}
+			pearlApi.log("The pearl for player %s was upgraded to a Prison Pearl.", pearl.getPlayerName());
+		}
 	}
 	
 	@EventHandler
@@ -962,6 +1035,7 @@ public class PlayerListener implements Listener, Configurable {
 	@Override
 	public void loadConfig(PearlConfig config) {
 		repairMaterials.clear();
+		upgradeMaterials.clear();
 		
 		try {
 			// This item is basically used as a trigger to catch the recipe being created
@@ -971,24 +1045,52 @@ public class PlayerListener implements Listener, Configurable {
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 			
-			repairMaterials.addAll(config.getRepairMaterials());
-			
-			if (repairMaterials.size() == 0) {
-				pearlApi.log("Failed to load any pearl repair materials. Defaulting to Obsidian.");
-				repairMaterials.add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
+			for(PearlType type : PearlType.values()) {
+				repairMaterials.put(type, config.getRepairMaterials(type));
 			}
 			
-			for(RepairMaterial mat : repairMaterials) {
-				// Shapeless recipe
-				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
-				r1.addIngredient(1, Material.ENDER_PEARL);
-				r1.addIngredient(1, mat.getStack().getData());
+			for(PearlType type : PearlType.values()) {
+				if(repairMaterials.get(type).size() == 0) {
+					pearlApi.log("Failed to load any pearl repair materials for " + type.getTitle() + ". Defaulting to Obsidian.");
+					repairMaterials.get(type).add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
+				}
+			}
 
-				Bukkit.getServer().addRecipe(r1);
+			for(Set<RepairMaterial> set : repairMaterials.values()) {
+				for(RepairMaterial mat : set) {
+					ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+					r1.addIngredient(1, Material.ENDER_PEARL);
+					r1.addIngredient(1, mat.getStack().getData());
+
+					Bukkit.getServer().addRecipe(r1);
+				}
 			}
 			
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
+		}
+		
+		try {
+			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
+			ItemMeta im = resultItem.getItemMeta();
+			im.addEnchant(Enchantment.DURABILITY, 1, true);
+			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+			resultItem.setItemMeta(im);
+			
+			if(upgradeMaterials.isEmpty()) {
+				pearlApi.log("Failed to load any upgrade recipes, defaulting to bedrock");
+				upgradeMaterials.add(new RepairMaterial("Admin Crimes", new ItemStack(Material.BEDROCK), 1));
+			}
+			
+			for(RepairMaterial mat : upgradeMaterials) {
+				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+				r1.addIngredient(1, Material.ENDER_PEARL);
+				r1.addIngredient(1, mat.getStack().getData());
+				
+				Bukkit.getServer().addRecipe(r1);
+			}
+		} catch (Exception ex) {
+			pearlApi.log(Level.SEVERE, "Failed to register pearl upgrade recipes.");
 		}
 		
 		useHelpItem = config.getUseHelpItem();

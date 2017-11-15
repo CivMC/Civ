@@ -6,12 +6,12 @@ import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.PearlLogger;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.config.Document;
@@ -19,6 +19,7 @@ import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.storage.StorageType;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 final class CorePearlConfig implements DocumentConfig, PearlConfig {
@@ -176,9 +177,9 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
-	public Set<RepairMaterial> getRepairMaterials() {
+	public Set<RepairMaterial> getRepairMaterials(PearlType type) {
 		Set<RepairMaterial> repairs = new HashSet<RepairMaterial>();
-		Document repairRecipes = doc.getDocument("pearls.repair_materials");
+		Document repairRecipes = doc.getDocument("pearls.repair_materials." + type);
 		
 		for(String repairName : repairRecipes.keySet()) {
 			repairs.add(RepairMaterial.fromDocument(repairName, repairRecipes.getDocument(repairName)));
@@ -459,4 +460,15 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		return Bukkit.getWorld(doc.getString("prison_world", "world_the_end"));
 	}
 
+	@Override
+	public Set<RepairMaterial> getUpgradeMaterials() {
+		Set<RepairMaterial> upgrades = new HashSet<RepairMaterial>();
+		Document upgradeRecipes = doc.getDocument("pearls.upgrade_materials");
+		
+		for(String upgradeName : upgradeRecipes.keySet()) {
+			upgrades.add(RepairMaterial.fromDocument(upgradeName, upgradeRecipes.getDocument(upgradeName)));
+		}
+		
+		return upgrades;
+	}
 }

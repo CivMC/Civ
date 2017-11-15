@@ -9,6 +9,11 @@ import com.devotedmc.ExilePearl.ExilePearlPlugin;
 
 public class SpawnUtil {
 	
+	/**
+	 * Spawns a player in the overworld without killing them
+	 * Uses Randomspawn if available, otherwise natural spawn
+	 * @param player The player to spawn
+	 */
 	public static void spawnPlayer(Player player) {
 		if(ExilePearlPlugin.getApi().isRandomSpawnEnabled()) {
 			RandomSpawn randomSpawn = (RandomSpawn) Bukkit.getPluginManager().getPlugin("RandomSpawn");
