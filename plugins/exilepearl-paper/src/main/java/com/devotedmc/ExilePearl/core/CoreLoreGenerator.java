@@ -81,7 +81,7 @@ final class CoreLoreGenerator implements LoreProvider {
 		if (repair != null) {
 			for (RepairMaterial rep : repair) {
 				int amountPerItem = rep.getRepairAmount();
-				String item = rep.getName();
+				String item = rep.getStack().getType().toString();
 				int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
 				int repairsPerDay = damagesPerDay / amountPerItem;
 				lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
@@ -91,9 +91,9 @@ final class CoreLoreGenerator implements LoreProvider {
 		if(pearl.getPearlType() == PearlType.EXILE) {
 			Set<RepairMaterial> upgrade = config.getUpgradeMaterials();
 			if(upgrade != null) {
-				for(RepairMaterial rep : repair) {
-					int amount = rep.getRepairAmount();
-					String item = rep.getName();
+				for(RepairMaterial up : upgrade) {
+					int amount = up.getRepairAmount();
+					String item = up.getStack().getType().toString();
 					lore.add(parse("<a>Upgrade cost: <n>%d %s", amount, item));
 				}
 			}

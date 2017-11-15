@@ -859,10 +859,10 @@ public class PlayerListener implements Listener, Configurable {
 		
 		ItemMap invItems = new ItemMap(inv);
 		
-		if(pearl.getPearlType() == PearlType.PRISON) {
+		if(pearl.getPearlType() == PearlType.EXILE) {
 			RepairMaterial upgradeItem = null;
 			for(RepairMaterial item : upgradeMaterials) {
-				if(invItems.getAmount(item.getStack()) > item.getRepairAmount()) {
+				if(invItems.getAmount(item.getStack()) >= item.getRepairAmount()) {
 					upgradeItem = item;
 					break;
 				}
@@ -1016,7 +1016,7 @@ public class PlayerListener implements Listener, Configurable {
 			inv.clear();
 			pearl.setPearlType(PearlType.PRISON);
 			inv.setResult(pearl.createItemStack());
-			if(pearl.getPlayer().isOnline()) {
+			if(pearl.getPlayer() != null && pearl.getPlayer().isOnline()) {
 				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
 				msg(pearl.getPlayer(), "<i>You've been imprisoned in the end by %s.", ((Player)e.getWhoClicked()).getDisplayName());
 			}
@@ -1076,6 +1076,8 @@ public class PlayerListener implements Listener, Configurable {
 			im.addEnchant(Enchantment.DURABILITY, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
+			
+			upgradeMaterials.addAll(config.getUpgradeMaterials());
 			
 			if(upgradeMaterials.isEmpty()) {
 				pearlApi.log("Failed to load any upgrade recipes, defaulting to bedrock");
