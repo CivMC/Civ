@@ -81,7 +81,11 @@ class FileStorage implements PluginStorage {
 				.append("health", pearl.getHealth())
 				.append("pearled_on", pearl.getPearledOn())
 				.append("last_seen", pearl.getLastOnline())
-				.append("freed_offline", pearl.getFreedOffline());
+				.append("freed_offline", pearl.getFreedOffline())
+				.append("summoned", pearl.isSummoned());
+		if(pearl.isSummoned()) {
+			insert.append("returnLoc", pearl.getReturnLocation());
+		}
 		
 		pearlDoc.append(pearl.getPlayerId().toString(), insert);
 		writeFile();
@@ -126,6 +130,18 @@ class FileStorage implements PluginStorage {
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
+		writeFile();
+	}
+	
+	@Override
+	public void updatePearlSummoned(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("summoned", pearl.isSummoned());
+		writeFile();
+	}
+	
+	@Override
+	public void updateReturnLocation(ExilePearl pearl) {
+		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
 		writeFile();
 	}
 	

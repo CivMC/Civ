@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.LoreProvider;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.RepairMaterial;
 import com.devotedmc.ExilePearl.command.CmdExilePearl;
 import com.devotedmc.ExilePearl.config.PearlConfig;
@@ -59,6 +60,13 @@ final class CoreLoreGenerator implements LoreProvider {
 		return generateLoreInternal(pearl, healthValue, true);
 	}
 	
+	@Override
+	public List<String> generateLoreWithModifiedType(ExilePearl pearl, PearlType type) {
+		List<String> lore = generateLoreInternal(pearl, pearl.getHealth(), true);
+		lore.set(0, parse("<l>%s", type.getTitle()));
+		return lore;
+	}
+	
 	private List<String> generateLoreInternal(ExilePearl pearl, int health, boolean addCommandHelp) {
 		List<String> lore = new ArrayList<String>();
 
@@ -69,7 +77,7 @@ final class CoreLoreGenerator implements LoreProvider {
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
 		lore.add(parse("<a>Exiled on: <n>%s", dateFormat.format(pearl.getPearledOn())));
 		lore.add(parse("<a>Killed by: <n>%s", pearl.getKillerName()));
-		Set<RepairMaterial> repair = config.getRepairMaterials();
+		Set<RepairMaterial> repair = config.getRepairMaterials(pearl.getPearlType());
 		if (repair != null) {
 			for (RepairMaterial rep : repair) {
 				int amountPerItem = rep.getRepairAmount();
@@ -77,6 +85,17 @@ final class CoreLoreGenerator implements LoreProvider {
 				int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
 				int repairsPerDay = damagesPerDay / amountPerItem;
 				lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
+			}
+		}
+		
+		if(pearl.getPearlType() == PearlType.EXILE) {
+			Set<RepairMaterial> upgrade = config.getUpgradeMaterials();
+			if(upgrade != null) {
+				for(RepairMaterial up : upgrade) {
+					int amount = up.getRepairAmount();
+					String item = up.getStack().getType().toString();
+					lore.add(parse("<a>Upgrade cost: <n>%d %s", amount, item));
+				}
 			}
 		}
 		

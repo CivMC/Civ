@@ -27,6 +27,10 @@ public class Lang
 	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
 	public static final String pearlCantThrow = "<i>You can't throw exile pearls.";
+	public static final String pearlCantSummon = "<i>That pearl can't be summoned.";
+	public static final String pearlSummoned = "<g>You have summoned <c>%s<g>!";
+	public static final String pearlCantReturn = "<i>That pearl can't be returned.";
+	public static final String pearlReturned = "<g>You have returned <c>%s<g>!";
 	
 	public static final String groupUnknown = "<i>That group doesn't exist.";
 	public static final String groupNoChatPermission = "<i>You don't have permission to chat in that group.";

@@ -20,7 +20,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.LingeringPotionSplashEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
@@ -40,6 +39,7 @@ import org.bukkit.inventory.ItemStack;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
@@ -108,7 +108,9 @@ public class ExileListener extends RuleListener implements Configurable {
 			return;
 		}
 		if (pearlApi.isPlayerExiled(e.getPlayer())) {
-			e.getPlayer().setBedSpawnLocation(null, true);
+			//if it's a prison pearl set their spawn to the prison world, probably the end
+			boolean prison = pearlApi.getPearl(e.getPlayer().getUniqueId()).getPearlType() == PearlType.PRISON;
+			e.getPlayer().setBedSpawnLocation(prison ? pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation() : null, true);
 		}
 	}
 	

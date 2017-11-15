@@ -1,5 +1,7 @@
 package com.devotedmc.ExilePearl.core;
 
+import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -7,6 +9,20 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
+import org.bukkit.Chunk;
+import org.bukkit.EntityEffect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Sound;
+import org.bukkit.World;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -16,22 +32,6 @@ import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.util.BastionWrapper;
 import com.google.common.collect.ImmutableList;
-
-import org.bukkit.Chunk;
-import org.bukkit.EntityEffect;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.util.Vector;
-import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.World;
-
-import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
 
 /**
  * This class tracks the pearls players that are online and prevents them
@@ -221,6 +221,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	}
 	
 	// find closest safe Y position from the starting position
+	@SuppressWarnings("deprecation")
 	private double getSafeY(World world, int X, int Y, int Z, boolean flying)
 	{
 		// artificial height limit of 127 added for Nether worlds since CraftBukkit still incorrectly returns 255 for their max height, leading to players sent to the "roof" of the Nether

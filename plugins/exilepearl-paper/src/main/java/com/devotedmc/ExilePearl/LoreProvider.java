@@ -21,6 +21,12 @@ public interface LoreProvider {
 	List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue);
 	
 	/**
+	 * Generates the lore for a pearl with a modified type
+	 * @return The pearl lore
+	 */
+	List<String> generateLoreWithModifiedType(ExilePearl pearl, PearlType type);
+	
+	/**
 	 * Gets the pearl ID from a pearl item stack
 	 * @param is The item stack to parse
 	 * @return The pearl ID, or 0 if can't parse

@@ -12,11 +12,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,14 +29,18 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.PearlFactory;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlManager;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
+import com.devotedmc.ExilePearl.event.PearlReturnEvent;
+import com.devotedmc.ExilePearl.event.PearlSummonEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
 import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
+import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 
@@ -170,6 +178,14 @@ final class CorePearlManager implements PearlManager {
 			pearls.remove(pearl.getPlayerId());
 			clearPearlBroadcasts(pearl);
 			storage.getStorage().pearlRemove(pearl);
+			if(pearl.getPearlType() == PearlType.PRISON) {
+				dropInventory(player);
+				if(reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN) {
+					player.teleport(pearl.getLocation());
+				} else {
+					SpawnUtil.spawnPlayer(player);
+				}
+			}
 		} else {
 			pearl.setFreedOffline(true);
 		}
@@ -365,6 +381,59 @@ final class CorePearlManager implements PearlManager {
 		
 		for(UUID uid : toRemove) {
 			bcastRequests.remove(uid);
+		}
+	}
+	
+	@Override
+	public boolean summonPearl(ExilePearl pearl, Player summoner) {
+		if(pearl.getPearlType() == PearlType.PRISON && pearl.getPlayer().isOnline()
+				&& !pearl.getPlayer().isDead() && !pearl.isSummoned()) {
+			PearlSummonEvent event = new PearlSummonEvent(pearl, summoner);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				dropInventory(pearl.getPlayer());
+				pearl.setReturnLocation(pearl.getPlayer().getLocation());
+				pearl.setSummoned(true);
+				return pearl.getPlayer().teleport(summoner);
+			}
+		}
+		return false;
+	}
+	
+	@Override
+	public boolean returnPearl(ExilePearl pearl) {
+		if(pearl.isSummoned() && pearl.getPlayer().isOnline() && !pearl.getPlayer().isDead()) {
+			PearlReturnEvent event = new PearlReturnEvent(pearl);
+			Bukkit.getPluginManager().callEvent(event);
+			if(!event.isCancelled()) {
+				Location returnLoc = pearl.getReturnLocation();
+				if(returnLoc == null) returnLoc = pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation();
+				pearl.getPlayer().teleport(returnLoc);
+				pearl.setSummoned(false);
+				pearl.setReturnLocation(null);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private void dropInventory(Player player) {
+		Inventory inv = player.getInventory();
+		final Location loc = player.getLocation();
+		final World world = loc.getWorld();
+		for(int i = 0; i < inv.getSize(); i++) {
+			final ItemStack item = inv.getItem(i);
+			if(item == null) continue;
+			if(item.getType() == Material.ENDER_PEARL) continue;
+			inv.clear(i);
+			Bukkit.getScheduler().runTask(pearlApi, new Runnable() {
+
+				@Override
+				public void run() {
+					world.dropItemNaturally(loc, item);
+				}
+				
+			});
 		}
 	}
 }

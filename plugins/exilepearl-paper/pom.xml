@@ -5,7 +5,7 @@
 	<groupId>com.devotedmc</groupId>
 	<artifactId>ExilePearl</artifactId>
 	<packaging>jar</packaging>
-	<version>1.1.2-SNAPSHOT</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<name>ExilePearl</name>
 	<url>https://github.com/DevotedMC/ExilePearl</url>
 
@@ -66,6 +66,12 @@
 			<artifactId>CivModCore</artifactId>
 			<version>1.6.0</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>metrics</artifactId>
+					<groupId>org.mcstats.bukkit</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
@@ -100,7 +106,7 @@
 		<dependency>
 			<groupId>com.wimbli.WorldBorder</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.9.0</version>
+			<version>1.9.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -130,7 +136,7 @@
 		<dependency>
 			<groupId>com.dre</groupId>
 			<artifactId>brewery</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -166,12 +172,8 @@
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
-			<id>minelink-releases</id>
-			<url>http://repo.minelink.net/content/repositories/releases/</url>
-		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+			<id>byteflux-repo</id>
+			<url>http://repo.byteflux.net/repository/maven-releases/</url>
 		</repository>
 	</repositories>
 

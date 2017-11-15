@@ -126,6 +126,23 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	}
 
 	@Override
+	public void updatePearlSummoned(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		checkRunning();
+		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_SUMMONED));
+	}
+	
+
+	@Override
+	public void updateReturnLocation(ExilePearl pearl) {
+		Guard.ArgumentNotNull(pearl, "pearl");
+		checkRunning();
+		
+		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_RETURN_LOCATION));
+	}
+
+	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
 		
@@ -178,6 +195,14 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 			
 		case UPDATE_LAST_SEEN:
 			storage.updatePearlLastOnline(record.getPearl());
+			break;
+		
+		case UPDATE_SUMMONED:
+			storage.updatePearlSummoned(record.getPearl());
+			break;
+			
+		case UPDATE_RETURN_LOCATION:
+			storage.updateReturnLocation(record.getPearl());
 			break;
 			
 		case TERMINATE:
