@@ -19,7 +19,6 @@ import com.devotedmc.ExilePearl.config.DocumentConfig;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.storage.StorageType;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 final class CorePearlConfig implements DocumentConfig, PearlConfig {

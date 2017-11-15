@@ -88,6 +88,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * Handles events related to prison pearls
  * @author GFQ
  */
+@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener, Configurable {
 
 	private final ExilePearlApi pearlApi;

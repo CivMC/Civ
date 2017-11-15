@@ -131,7 +131,7 @@ public final class CorePluginFactory implements PearlFactory {
 	
 	public BrewHandler createBrewHandler() {
 		if (Bukkit.getPluginManager().isPluginEnabled("Brewery")) {
-			return new BreweryHandler(pearlApi);
+			return new BreweryHandler();
 		} else {
 			pearlApi.log("Brewery not found, defaulting to no-brew handler");
 			return new NoBrewHandler(pearlApi);
