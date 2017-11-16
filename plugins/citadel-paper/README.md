@@ -1,6 +1,6 @@
 # Citadel
 
-Original Citadel Jenkins Build Server can be found here: http://build.civcraft.co/job/Citadel-master/
+Citadel Jenkins Build Server can be found here: https://build.devotedmc.com/job/Citadel-master/
 
 Basic new player tutorial: https://www.reddit.com/r/Devoted/wiki/plugins/citadel
 

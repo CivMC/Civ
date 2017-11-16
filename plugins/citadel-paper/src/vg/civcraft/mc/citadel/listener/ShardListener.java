@@ -16,7 +16,7 @@ import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.mercury.events.AsyncPluginBroadcastMessageEvent;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ShardListener implements Listener {
@@ -81,7 +81,7 @@ public class ShardListener implements Listener {
 			}
 			if (mode == ReinforcementMode.REINFORCEMENT
 					|| mode == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
-				Group g = NameAPI.getGroupManager().getGroup(data[3]);
+				Group g = GroupManager.getGroup(data[3]);
 				ps.setGroup(g);
 				if (mode == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 					Material m = Material.valueOf(data[4]);

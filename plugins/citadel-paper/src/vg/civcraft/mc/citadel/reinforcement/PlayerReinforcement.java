@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
@@ -26,6 +27,7 @@ public class PlayerReinforcement extends Reinforcement{
 	private static GroupManager gm;
 	private boolean isInsecure = false;
 	private ItemStack stack;
+	private String materialName;
 	
 	public PlayerReinforcement(Location loc, int health,
 			int creation, int acid, Group g, ItemStack stack) {
@@ -36,7 +38,12 @@ public class PlayerReinforcement extends Reinforcement{
 			gm = NameAPI.getGroupManager();
 		}
 		this.gid = g.getGroupId();
-	}	
+		
+		ItemMeta meta = this.stack.hasItemMeta() ? this.stack.getItemMeta(): null;
+		String lore = meta != null && meta.hasLore() && meta.getLore().size() > 0 ? meta.getLore().get(0): null;
+		
+		this.materialName = lore != null && lore.length() > 0 ? "\"" + lore + "\"": stack.getType().name();
+	}
 	
 	public boolean canBypass(Player p) {
 		checkValid();
@@ -217,7 +224,8 @@ public class PlayerReinforcement extends Reinforcement{
         } else {
             verb = "Reinforced";
         }
-        return String.format("%s %s with %s", verb, getHealthText(), getMaterial().name());
+        
+        return String.format("%s %s with %s", verb, getHealthText(), this.materialName);
     }
     
     private void checkValid(){

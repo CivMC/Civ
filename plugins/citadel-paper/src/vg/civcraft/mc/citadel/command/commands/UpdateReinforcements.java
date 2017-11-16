@@ -16,13 +16,10 @@ import vg.civcraft.mc.citadel.reinforcement.MultiBlockReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class UpdateReinforcements extends PlayerCommandMiddle{
 
-	private GroupManager gm = NameAPI.getGroupManager();
-	
 	public UpdateReinforcements(String name) {
 		super(name);
 		setIdentifier("ctur");
@@ -53,8 +50,8 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 			return true;
 		}
 		
-		Group old = gm.getGroup(args[0]);
-		Group n = gm.getGroup(args[1]);
+		Group old = GroupManager.getGroup(args[0]);
+		Group n = GroupManager.getGroup(args[1]);
 		
 		if (old == null || n == null){
 			sendAndLog(p, ChatColor.RED, "One of the groups does not exist.");

@@ -58,7 +58,6 @@ public class Utility {
      * @param The ReinforcementType that is being reinforced on the block.
      * @param The ItemStack type of the block being placed (if CTF, null if CTR)
      * @return The PlayerReinforcement that comes from these parameters or null if certain checks failed.
-     * @throws ReinforcemnetFortificationCancelException
      */
     public static PlayerReinforcement createPlayerReinforcement(Player player, Group g, Block block,
             ReinforcementType type, ItemStack reinfMat) {
@@ -141,7 +140,7 @@ public class Utility {
         ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, block, player);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) {
-            throw new ReinforcemnetFortificationCancelException();
+            return null;
         }
 		if (CitadelConfigManager.shouldLogReinforcement()) {
 			StringBuffer slb = new StringBuffer();
@@ -159,7 +158,7 @@ public class Utility {
         // Handle special case with block reinforcements.
         if (type.getMaterial().isBlock()){
             if (slots.size()>1){
-                if (inv.getItemInHand().isSimilar(itemType) && PlayerState.get(player).getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION && slots.get(0) != inv.getHeldItemSlot()){
+                if (inv.getItemInMainHand().isSimilar(itemType) && PlayerState.get(player).getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION && slots.get(0) != inv.getHeldItemSlot()){
                 	requirements--;
                 }
             }
@@ -563,8 +562,13 @@ public class Utility {
         if (reinforcement instanceof PlayerReinforcement) {
             PlayerReinforcement pr = (PlayerReinforcement)reinforcement;
             ReinforcementType material = ReinforcementType.getReinforcementType(pr.getStackRepresentation());
-			// RNG is [0,1) so <= would give chance of return if health is 0. Replaced with < alone to fix.
-            if (rng.nextDouble() < pr.getHealth() * material.getPercentReturn()) {
+            // Adds in grace period returns, where if set, allows in minute increments for players to change their minds with
+            // no loss. Only applies if the reinforcement is immature and undamaged
+            if ((material.getGracePeriod() > 0 && pr.getMaturationTime() > 0 && pr.getHealth() >= 1.0 &&  
+            			material.getMaturationTime() - timeUntilMature(pr) < material.getGracePeriod() ) ||
+        			// RNG is [0,1) so <= would give chance of return if health is 0. Replaced with < alone to fix.
+            		rng.nextDouble() < pr.getHealth() * material.getPercentReturn()) {
+            	
                 Location location = pr.getLocation();
                 if (player != null){
                     Inventory inv = player.getInventory();

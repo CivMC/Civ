@@ -8,7 +8,7 @@ import java.util.logging.Level;
 import org.bukkit.Location;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class MultiBlockReinforcement extends Reinforcement{
@@ -53,7 +53,7 @@ public class MultiBlockReinforcement extends Reinforcement{
     		return;
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		g = NameAPI.getGroupManager().getGroup(g.getGroupId());
+			g = GroupManager.getGroup(g.getGroupId());
     		if (g == null) {
     			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
     		}

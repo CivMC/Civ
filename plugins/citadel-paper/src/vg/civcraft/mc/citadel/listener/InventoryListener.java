@@ -1,8 +1,5 @@
 package vg.civcraft.mc.citadel.listener;
 
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.bukkit.Location;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
@@ -21,7 +18,6 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class InventoryListener implements Listener {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
-	private Set<String> priorMessages_ = new TreeSet<String>();
 
 	public PlayerReinforcement getReinforcement(Inventory inv) {
 		// Returns reinforcement of the inventory's holder or null if none

@@ -41,8 +41,11 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Comparator;
 import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
@@ -74,6 +77,55 @@ public class BlockListener implements Listener {
 
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 
+	//Stop comparators from being placed unless the reinforcement is insecure
+	@EventHandler(priority = EventPriority.HIGH,ignoreCancelled = true)
+	public void comparatorPlaceCheck(BlockPlaceEvent event)
+	{
+		//We only care if they are placing a comparator
+		if(event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) return;
+	
+		Comparator comparator = (Comparator)event.getBlockPlaced().getState().getData();
+		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
+		//We only care if the comparator is going placed against something with an inventory
+		if(block.getState() instanceof InventoryHolder) {
+			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+			if (rein != null && rein instanceof PlayerReinforcement) {
+				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
+				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
+					Player player = event.getPlayer();
+					if (player != null) {
+						if (playerReinforcement.canAccessChests(player)) { 
+							return; // We also allow players to place against chests they can access
+						}
+						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+					}
+					event.setCancelled(true);
+				}
+			}
+			return;
+		}
+
+		// So apparently read-through state can pass through an intermediary block, so lets check that too.
+		block = block.getRelative(comparator.getFacing().getOppositeFace());
+		if(block.getState() instanceof InventoryHolder) {
+			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+			if (rein != null && rein instanceof PlayerReinforcement) {
+				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
+				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
+					Player player = event.getPlayer();
+					if (player != null) {
+						if (playerReinforcement.canAccessChests(player)) { 
+							return; // We also allow players to place against chests they can access
+						}
+						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+					}
+					event.setCancelled(true);
+				}
+			}
+		}
+		
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onFortificationMode(BlockPlaceEvent event){
 		Player p = event.getPlayer();
@@ -95,7 +147,7 @@ public class BlockListener implements Listener {
 						}
 					}
 				}
-				
+
 				rm.deleteReinforcement(rein);
 			}
 			ItemStack stack = event.getItemInHand();
@@ -117,7 +169,7 @@ public class BlockListener implements Listener {
 				return;
 			}
 			groupToReinforceTo = state.getGroup();
-		}else if(state.getMode() == ReinforcementMode.NORMAL) {	
+		}else if(state.getMode() == ReinforcementMode.NORMAL) {
 			if (!state.getEasyMode()) {
 				return;
 			}
@@ -136,7 +188,7 @@ public class BlockListener implements Listener {
 			else {
 				return;
 		}
-	
+
 		if (!canPlace(b, p)){
 			sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
 			event.setCancelled(true);
@@ -164,13 +216,13 @@ public class BlockListener implements Listener {
 					sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
-				}	
+				}
 			} catch(ReinforcemnetFortificationCancelException ex){
 				Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementFortificationCancelException occured in BlockListener, BlockPlaceEvent ", ex);
 			}
         } else {
         	if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
-	        	sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",  
+	        	sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
 	            		state.getReinforcementType().getMaterial().name()));
 	            state.reset();
 	            event.setCancelled(true);
@@ -313,23 +365,23 @@ public class BlockListener implements Listener {
 			Block block = bbe.getBlock();
 			// Basic essential fire protection
 			if (block.getRelative(0, 1, 0).getType() == matfire) {
-				block.getRelative(0, 1, 0).setTypeId(0);
+				block.getRelative(0, 1, 0).setType(Material.AIR);
 			} // Essential
 			// Extended fire protection (recommend)
 			if (block.getRelative(1, 0, 0).getType() == matfire) {
-				block.getRelative(1, 0, 0).setTypeId(0);
+				block.getRelative(1, 0, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(-1, 0, 0).getType() == matfire) {
-				block.getRelative(-1, 0, 0).setTypeId(0);
+				block.getRelative(-1, 0, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(0, -1, 0).getType() == matfire) {
-				block.getRelative(0, -1, 0).setTypeId(0);
+				block.getRelative(0, -1, 0).setType(Material.AIR);
 			}
 			if (block.getRelative(0, 0, 1).getType() == matfire) {
-				block.getRelative(0, 0, 1).setTypeId(0);
+				block.getRelative(0, 0, 1).setType(Material.AIR);
 			}
 			if (block.getRelative(0, 0, -1).getType() == matfire) {
-				block.getRelative(0, 0, -1).setTypeId(0);
+				block.getRelative(0, 0, -1).setType(Material.AIR);
 			}
 			// Aggressive fire protection (would seriously reduce effectiveness
 			// of flint down to near the "you'd have to use it 25 times"
@@ -417,7 +469,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void interact(PlayerInteractEvent pie) {
 		try {
-			if (!pie.hasBlock())
+			if (!pie.hasBlock() || pie.getHand() != EquipmentSlot.HAND)
 				return;
 
 			Player player = pie.getPlayer();
@@ -488,26 +540,21 @@ public class BlockListener implements Listener {
 						if (!canPlace(block, player)){
 							sendAndLog(player, ChatColor.RED, "Cancelled interact easymode rein, mismatched reinforcement.");
 							return;
-						}						
-						
+						}
+
 						String gName = gm.getDefaultGroup(player.getUniqueId());
 						Group g = null;
 						if (gName != null) {
 							g = GroupManager.getGroup(gName);
 						}
 						if (g != null) {
-							try {
-								createPlayerReinforcement(player, g,
-										block, type, null);
-							} catch (ReinforcemnetFortificationCancelException e) {
-								Citadel.getInstance()
-										.getLogger()
-										.log(Level.WARNING,
-												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
-												e);
+							if (createPlayerReinforcement(player, g, block, type, null) == null && CitadelConfigManager.shouldLogReinforcement()) {
+								// someone else's job to tell the player what went wrong, but let's do log it.
+								Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
+										new Object[] {player.getName(), block.getLocation()});
 							}
 						}
-					}	
+					}
 				}
 				return;
 			case REINFORCEMENT_FORTIFICATION:
@@ -650,15 +697,11 @@ public class BlockListener implements Listener {
 						sendAndLog(player, ChatColor.RED,
 								"Cancelled reinforcement, crop would already be reinforced.");
 					} else {
-						try {
-							createPlayerReinforcement(player, state.getGroup(),
-									block, state.getReinforcementType(), null);
-						} catch (ReinforcemnetFortificationCancelException e) {
-							Citadel.getInstance()
-									.getLogger()
-									.log(Level.WARNING,
-											"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ",
-											e);
+						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null) == null && 
+								CitadelConfigManager.shouldLogReinforcement()) {
+							// someone else's job to tell the player what went wrong, but let's do log it.
+							Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
+									new Object[] {player.getName(), block.getLocation()});
 						}
 					}
 				} else if (reinforcement.canBypass(player)
@@ -696,12 +739,11 @@ public class BlockListener implements Listener {
 								ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
 								Bukkit.getPluginManager().callEvent(event);
 								if (!event.isCancelled()) {
-									try {
-										createPlayerReinforcement(player, state.getGroup(),	block, type, null);
+									if(createPlayerReinforcement(player, state.getGroup(),	block, type, null) != null) {
 										sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
-									} catch (ReinforcemnetFortificationCancelException ex) {
-										Citadel.getInstance().getLogger().log(Level.WARNING,
-												"ReinforcementFortificationCancelException occured in BlockListener, PlayerInteractEvent ", ex);
+									} else if (CitadelConfigManager.shouldLogReinforcement()) {
+										Citadel.getInstance().getLogger().log(Level.INFO, "Change Reinforcement by {0} at {1} cancelled by plugin",
+												new Object[] {player.getName(), block.getLocation()});
 									}
 								}
 							}

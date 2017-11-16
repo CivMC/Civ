@@ -37,9 +37,11 @@ reinforcements:
   mature_time: 5
   acid_time: 30
   scale_amount: 1
+# grace period is in minutes, forced 100% return within that time if undamaged. Set to 0 to disable (default)
+  grace_period: 1
   lore:
   effect:
-   type: FLYING_GLYPH
+   type: ENCHANTMENT_TABLE
    speed: 0.5
    particleCount: 50
  iron_tier:
