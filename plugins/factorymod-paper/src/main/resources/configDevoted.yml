@@ -30,9 +30,58 @@ factories:
     recipes:
     - Upgrade to Smelter
     - Upgrade to Printing Press
+    - Upgrade to Harvest Factory
     - Upgrade to Vault Factory 1
     - Upgrade to Pickaxe Factory 1
     - Upgrade to Conversion Factory
+    - Accident Repair
+  Harvest Factory:
+    type: FCCUPGRADE
+    name: Harvest Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Soup
+    - Upgrade to Tree Factory
+    - Upgrade to Farm Factory
+    - Accident Repair
+  Farm Factory:
+    type: FCCUPGRADE
+    name: Farm Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Tiered Beetroot Lotto
+    - Tiered Pumpkin Lotto
+    - Tiered Sugar Cane Lotto
+    - Tiered Potato Lotto
+    - Tiered Carrot Lotto
+    - Tiered Cocoa Beans Lotto
+    - Tiered Cactus Lotto
+    - Harvester Hoe
+    - Accident Repair
+  Tree Factory:
+    type: FCCUPGRADE
+    name: Tree Factory
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Tiered Oak Lotto
+    - Tiered Spruce Lotto
+    - Tiered Birch Lotto
+    - Tiered Jungle Lotto
+    - Tiered Dark Oak Lotto
+    - Tiered Acacia Lotto
+    - Treecutter Axe
     - Accident Repair
   Smelter:
     type: FCCUPGRADE
@@ -44,29 +93,289 @@ factories:
     citadelBreakReduction: 1.0
     recipes:
     - Smelt Glass
-    - Smelt Glass Alternative
     - Smelt Stone
+    - Smelt Sandstone
+    - Smelt Red Sandstone
+    - Smelt Hardened Clay
+    - Smelt Bricks
+    - Create Netherbrick
+    - Upgrade to Metal Work
+    - Upgrade to Carpentry
+    - Upgrade to Kitchen
+    - Upgrade to Building Factory
+    - Upgrade to Utility Factory
+    - Accident Repair
+  Carpentry:
+    type: FCCUPGRADE
+    name: Carpentry
+    fuel:
+      Lead:
+        material: COAL
+        name: Lead
+        lore:
+        - Lead T1
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Craft Crate
+    - Convert to Oak Planks
+    - Convert to Spruce Planks
+    - Convert to Birch Planks
+    - Convert to Jungle Planks
+    - Convert to Acacia Planks
+    - Convert to Dark Oak Planks
+    - Craft Oak Fences
+    - Craft Spruce Fences
+    - Craft Birch Fences
+    - Craft Jungle Fences
+    - Craft Acacia Fences
+    - Craft Dark Oak Fences
+    - Craft Oak Fence Gates
+    - Craft Spruce Fence Gates
+    - Craft Birch Fence Gates
+    - Craft Jungle Fence Gates
+    - Craft Acacia Fence Gates
+    - Craft Dark Oak Fence Gates
+    - Craft Trapdoors
+    - Craft Signs
+    - Craft Chests
+    - Craft Trapped Chests
+    - Upgrade to Compactor
+    - Accident Repair
+  Kitchen:
+    type: FCCUPGRADE
+    name: Kitchen
+    fuel:
+      Lead:
+        material: COAL
+        name: Lead
+        lore:
+        - Lead T1
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Bake Bread
+    - Bake Cookies
+    - Bake Cakes
+    - Bake Potatoes
+    - Bake Pumpkin Pies
+    - Grill Pork
+    - Grill Steak
+    - Grill Fish
+    - Grill Salmon
+    - Grill Rabbit
+    - Grill Mutton
+    - Fry Chicken
+    - Accident Repair
+  Building Factory:
+    type: FCCUPGRADE
+    name: Building Factory
+    fuel:
+      coal:
+        material: COAL
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
     - Craft Granite
     - Craft Andesite
     - Craft Diorite
-    - Smelt Sandstone
-    - Smelt Hardened Clay
-    - Smelt Red Sandstone
     - Craft Netherrack
+    - Craft Red Netherbrick
     - Create Sea Lantern
-    - Craft Coal Blocks
-    - Smelt Bricks
-    - Create Netherbrick
-    - Create Quartz Blocks
     - Create Prismarine Blocks
     - Create Dark Prismarine
     - Create Prismarine Bricks
-    - Freeze Packed Ice
     - Create Redstone Lamp
+    - Create Quartz Blocks
+    - Create Pillar Quartz
+    - Create Chiselled Quartz
+    - Craft Purpur Blocks
+    - Craft Purpur Pillars
+    - Craft End Rods
+    - Upgrade to Glass Dying Factory
+    - Upgrade to Wool Dying Factory
+    - Upgrade to Clay Dying Factory
+    - Accident Repair
+  Metal Work:
+    type: FCCUPGRADE
+    name: Metal Work
+    fuel:
+      Lead:
+        material: COAL
+        name: Lead
+        lore:
+        - Lead T1
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
     - Forge Rails
     - Forge Powered Rails
+    - Forge Activator Rails
+    - Forge Detector Rails
+    - Forge Anvils
+    - Forge Iron Doors
+    - Forge Iron Trapdoors
+    - Forge Iron Bars
+    - Accident Repair
+  Glass Dying Factory:
+    type: FCCUPGRADE
+    name: Glass Dying Factory
+    fuel:
+      coal:
+        material: COAL
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Convert Coloured Glass
+    - Convert Coloured Pane
+    - Dye White Glass
+    - Dye Orange Glass
+    - Dye Magenta Glass
+    - Dye Light Blue Glass
+    - Dye Yellow Glass
+    - Dye Lime Glass
+    - Dye Pink Glass
+    - Dye Gray Glass
+    - Dye Light Gray Glass
+    - Dye Cyan Glass
+    - Dye Purple Glass
+    - Dye Blue Glass
+    - Dye Brown Glass
+    - Dye Green Glass
+    - Dye Red Glass
+    - Dye Black Glass
+    - Dye White Pane
+    - Dye Orange Pane
+    - Dye Magenta Pane
+    - Dye Light Blue Pane
+    - Dye Yellow Pane
+    - Dye Lime Pane
+    - Dye Pink Pane
+    - Dye Gray Pane
+    - Dye Light Gray Pane
+    - Dye Cyan Pane
+    - Dye Purple Pane
+    - Dye Blue Pane
+    - Dye Brown Pane
+    - Dye Green Pane
+    - Dye Red Pane
+    - Dye Black Pane
+    - Accident Repair
+  Wool Dying Factory:
+    type: FCCUPGRADE
+    name: Wool Dying Factory
+    fuel:
+      coal:
+        material: COAL
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Convert Coloured Wool
+    - Convert Coloured Carpet
+    - Dye Orange Wool
+    - Dye Magenta Wool
+    - Dye Light Blue Wool
+    - Dye Yellow Wool
+    - Dye Lime Wool
+    - Dye Pink Wool
+    - Dye Gray Wool
+    - Dye Light Gray Wool
+    - Dye Cyan Wool
+    - Dye Purple Wool
+    - Dye Blue Wool
+    - Dye Brown Wool
+    - Dye Green Wool
+    - Dye Red Wool
+    - Dye Black Wool
+    - Dye Orange Carpet
+    - Dye Magenta Carpet
+    - Dye Light Blue Carpet
+    - Dye Yellow Carpet
+    - Dye Lime Carpet
+    - Dye Pink Carpet
+    - Dye Gray Carpet
+    - Dye Light Gray Carpet
+    - Dye Cyan Carpet
+    - Dye Purple Carpet
+    - Dye Blue Carpet
+    - Dye Brown Carpet
+    - Dye Green Carpet
+    - Dye Red Carpet
+    - Dye Black Carpet
+    - Accident Repair
+  Clay Dying Factory:
+    type: FCCUPGRADE
+    name: Clay Dying Factory
+    fuel:
+      coal:
+        material: COAL
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Convert Coloured Clay
+    - Dye White Clay
+    - Dye Orange Clay
+    - Dye Magenta Clay
+    - Dye Light Blue Clay
+    - Dye Yellow Clay
+    - Dye Lime Clay
+    - Dye Pink Clay
+    - Dye Gray Clay
+    - Dye Light Gray Clay
+    - Dye Cyan Clay
+    - Dye Purple Clay
+    - Dye Blue Clay
+    - Dye Brown Clay
+    - Dye Green Clay
+    - Dye Red Clay
+    - Dye Black Clay
+    - Dye White Concrete Powder
+    - Dye Orange Concrete Powder
+    - Dye Magenta Concrete Powder
+    - Dye Light Blue Concrete Powder
+    - Dye Yellow Concrete Powder
+    - Dye Lime Concrete Powder
+    - Dye Pink Concrete Powder
+    - Dye Gray Concrete Powder
+    - Dye Light Gray Concrete Powder
+    - Dye Cyan Concrete Powder
+    - Dye Purple Concrete Powder
+    - Dye Blue Concrete Powder
+    - Dye Brown Concrete Powder
+    - Dye Green Concrete Powder
+    - Dye Red Concrete Powder
+    - Dye Black Concrete Powder
+    - Accident Repair
+  Compactor:
+    type: FCCUPGRADE
+    name: Compactor
+    fuel:
+      XP:
+        material: EXP_BOTTLE
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    updatetime: 5t
+    recipes:
+    - Compact Crate
+    - Decompact Crate
+    - Accident Repair
+  Utility Factory:
+    type: FCCUPGRADE
+    name: Utility Factory
+    fuel:
+      Lead:
+        material: COAL
+        name: Lead
+        lore:
+        - Lead T1
+    fuel_consumption_intervall: 2s
+    citadelBreakReduction: 1.0
+    recipes:
+    - Craft Coal Blocks
     - Pull String from any Wool
+    - Freeze Packed Ice
     - Claims Bastion
+    - Craft Eye of Ender
     - Accident Repair
   Printing_Press:
     type: FCCUPGRADE
@@ -1171,6 +1480,7 @@ recipes:
         amount: 10
     health_gained: 10000
   Smelt Glass:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Glass
     production_time: 5s
@@ -1178,11 +1488,13 @@ recipes:
       sand:
         material: SAND
         amount: 64
+        durability: -1
     output:
       glass:
         material: GLASS
         amount: 192
   Smelt Stone:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Stone
     production_time: 5s
@@ -1229,6 +1541,7 @@ recipes:
         material: COAL_BLOCK
         amount: 64
   Create Netherbrick:
+    forceInclude: true
     type: PRODUCTION
     name: Create Netherbrick
     production_time: 5s
@@ -1341,6 +1654,7 @@ recipes:
         material: BUCKET
         amount: 4
   Smelt Bricks:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Bricks
     production_time: 5s
@@ -1353,6 +1667,7 @@ recipes:
         material: BRICK
         amount: 192
   Smelt Sandstone:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Sandstone
     production_time: 5s
@@ -1365,6 +1680,7 @@ recipes:
         material: SANDSTONE
         amount: 96
   Smelt Hardened Clay:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Hardened Clay
     production_time: 5s
@@ -1375,19 +1691,6 @@ recipes:
     output:
       hardenedclay:
         material: HARD_CLAY
-        amount: 192
-  Smelt Glass Alternative:
-    type: PRODUCTION
-    name: Smelt Glass Alternative
-    production_time: 5s
-    input:
-      redsand:
-        material: SAND
-        durability: 1
-        amount: 64
-    output:
-      glass:
-        material: GLASS
         amount: 192
   Craft Netherrack:
     type: PRODUCTION
@@ -1405,6 +1708,7 @@ recipes:
         material: NETHERRACK
         amount: 192
   Smelt Red Sandstone:
+    forceInclude: true
     type: PRODUCTION
     name: Smelt Red Sandstone
     production_time: 5s
@@ -1500,6 +1804,2445 @@ recipes:
       string:
         material: STRING
         amount: 16
+  Compact Crate:
+    type: COMPACT
+    name: Compact Crate
+    production_time: 8s
+    input:
+      crate:
+        material: CHEST
+        lore:
+        - Crate
+    compact_lore: Compacted Item
+    excluded_materials: 
+     - BOOK
+  Decompact Crate:
+    type: DECOMPACT
+    name: Decompact Crate
+    production_time: 1s
+    compact_lore: Compacted Item
+  Craft Crate:
+    name: Craft Crate
+    type: PRODUCTION
+    production_time: 5s
+    input:
+      chest:
+        material: CHEST
+        amount: 64
+      Steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 4
+        lore:
+        - Steel T1
+      XP:
+        material: EXP_BOTTLE
+        amount: 64
+    output:
+      crates:
+        material: CHEST
+        amount: 64
+        lore:
+        - Crate
+  Convert Coloured Wool:
+    type: PRODUCTION
+    name: Convert Coloured Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+    output:
+      White Wool:
+        material: WOOL
+        amount: 64
+  Dye Orange Wool:
+    type: PRODUCTION
+    name: Dye Orange Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Wool:
+        material: WOOL
+        durability: 1
+        amount: 64
+  Dye Magenta Wool:
+    type: PRODUCTION
+    name: Dye Magenta Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Wool:
+        material: WOOL
+        durability: 2
+        amount: 64
+  Dye Light Blue Wool:
+    type: PRODUCTION
+    name: Dye Light Blue Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Wool:
+        material: WOOL
+        durability: 3
+        amount: 64
+  Dye Yellow Wool:
+    type: PRODUCTION
+    name: Dye Yellow Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Wool:
+        material: WOOL
+        durability: 4
+        amount: 64
+  Dye Lime Wool:
+    type: PRODUCTION
+    name: Dye Lime Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Wool:
+        material: WOOL
+        durability: 5
+        amount: 64
+  Dye Pink Wool:
+    type: PRODUCTION
+    name: Dye Pink Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Wool:
+        material: WOOL
+        durability: 6
+        amount: 64
+  Dye Gray Wool:
+    type: PRODUCTION
+    name: Dye Gray Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Wool:
+        material: WOOL
+        durability: 7
+        amount: 64
+  Dye Light Gray Wool:
+    type: PRODUCTION
+    name: Dye Light Gray Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Wool:
+        material: WOOL
+        durability: 8
+        amount: 64
+  Dye Cyan Wool:
+    type: PRODUCTION
+    name: Dye Cyan Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Wool:
+        material: WOOL
+        durability: 9
+        amount: 64
+  Dye Purple Wool:
+    type: PRODUCTION
+    name: Dye Purple Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Wool:
+        material: WOOL
+        durability: 10
+        amount: 64
+  Dye Blue Wool:
+    type: PRODUCTION
+    name: Dye Blue Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Wool:
+        material: WOOL
+        durability: 11
+        amount: 64
+  Dye Brown Wool:
+    type: PRODUCTION
+    name: Dye Brown Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Wool:
+        material: WOOL
+        durability: 12
+        amount: 64
+  Dye Green Wool:
+    type: PRODUCTION
+    name: Dye Green Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Wool:
+        material: WOOL
+        durability: 13
+        amount: 64
+  Dye Red Wool:
+    type: PRODUCTION
+    name: Dye Red Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Wool:
+        material: WOOL
+        durability: 14
+        amount: 64
+  Dye Black Wool:
+    type: PRODUCTION
+    name: Dye Black Wool
+    production_time: 5s
+    input:
+      Any Wool:
+        material: WOOL
+        durability: -1
+        amount: 64
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Wool:
+        material: WOOL
+        durability: 15
+        amount: 64
+  Convert Coloured Carpet:
+    type: PRODUCTION
+    name: Convert Coloured Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+    output:
+      White Carpet:
+        material: CARPET
+        amount: 64
+  Dye Orange Carpet:
+    type: PRODUCTION
+    name: Dye Orange Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Carpet:
+        material: CARPET
+        durability: 1
+        amount: 64
+  Dye Magenta Carpet:
+    type: PRODUCTION
+    name: Dye Magenta Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Carpet:
+        material: CARPET
+        durability: 2
+        amount: 64
+  Dye Light Blue Carpet:
+    type: PRODUCTION
+    name: Dye Light Blue Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Carpet:
+        material: CARPET
+        durability: 3
+        amount: 64
+  Dye Yellow Carpet:
+    type: PRODUCTION
+    name: Dye Yellow Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Carpet:
+        material: CARPET
+        durability: 4
+        amount: 64
+  Dye Lime Carpet:
+    type: PRODUCTION
+    name: Dye Lime Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Carpet:
+        material: CARPET
+        durability: 5
+        amount: 64
+  Dye Pink Carpet:
+    type: PRODUCTION
+    name: Dye Pink Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Carpet:
+        material: CARPET
+        durability: 6
+        amount: 64
+  Dye Gray Carpet:
+    type: PRODUCTION
+    name: Dye Gray Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Carpet:
+        material: CARPET
+        durability: 7
+        amount: 64
+  Dye Light Gray Carpet:
+    type: PRODUCTION
+    name: Dye Light Gray Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Carpet:
+        material: CARPET
+        durability: 8
+        amount: 64
+  Dye Cyan Carpet:
+    type: PRODUCTION
+    name: Dye Cyan Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Carpet:
+        material: CARPET
+        durability: 9
+        amount: 64
+  Dye Purple Carpet:
+    type: PRODUCTION
+    name: Dye Purple Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Carpet:
+        material: CARPET
+        durability: 10
+        amount: 64
+  Dye Blue Carpet:
+    type: PRODUCTION
+    name: Dye Blue Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Carpet:
+        material: CARPET
+        durability: 11
+        amount: 64
+  Dye Brown Carpet:
+    type: PRODUCTION
+    name: Dye Brown Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Carpet:
+        material: CARPET
+        durability: 12
+        amount: 64
+  Dye Green Carpet:
+    type: PRODUCTION
+    name: Dye Green Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Carpet:
+        material: CARPET
+        durability: 13
+        amount: 64
+  Dye Red Carpet:
+    type: PRODUCTION
+    name: Dye Red Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Carpet:
+        material: CARPET
+        durability: 14
+        amount: 64
+  Dye Black Carpet:
+    type: PRODUCTION
+    name: Dye Black Carpet
+    production_time: 5s
+    input:
+      Any Carpet:
+        material: CARPET
+        durability: -1
+        amount: 64
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Carpet:
+        material: CARPET
+        durability: 15
+        amount: 64
+  Convert Coloured Glass:
+    type: PRODUCTION
+    name: Convert Coloured Glass
+    production_time: 5s
+    input:
+      Any Glass:
+        material: STAINED_GLASS
+        durability: -1
+        amount: 64
+    output:
+      Glass:
+        material: GLASS
+        amount: 64
+  Dye White Glass:
+    type: PRODUCTION
+    name: Dye White Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Bone Meal:
+        material: INK_SACK
+        durability: 15
+        amount: 4
+    output:
+      White Glass:
+        material: STAINED_GLASS_PANE
+        amount: 64
+  Dye Orange Glass:
+    type: PRODUCTION
+    name: Dye Orange Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Glass:
+        material: STAINED_GLASS
+        durability: 1
+        amount: 64
+  Dye Magenta Glass:
+    type: PRODUCTION
+    name: Dye Magenta Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Glass:
+        material: STAINED_GLASS
+        durability: 2
+        amount: 64
+  Dye Light Blue Glass:
+    type: PRODUCTION
+    name: Dye Light Blue Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Glass:
+        material: STAINED_GLASS
+        durability: 3
+        amount: 64
+  Dye Yellow Glass:
+    type: PRODUCTION
+    name: Dye Yellow Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Glass:
+        material: STAINED_GLASS
+        durability: 4
+        amount: 64
+  Dye Lime Glass:
+    type: PRODUCTION
+    name: Dye Lime Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Glass:
+        material: STAINED_GLASS
+        durability: 5
+        amount: 64
+  Dye Pink Glass:
+    type: PRODUCTION
+    name: Dye Pink Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Glass:
+        material: STAINED_GLASS
+        durability: 6
+        amount: 64
+  Dye Gray Glass:
+    type: PRODUCTION
+    name: Dye Gray Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Glass:
+        material: STAINED_GLASS
+        durability: 7
+        amount: 64
+  Dye Light Gray Glass:
+    type: PRODUCTION
+    name: Dye Light Gray Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Glass:
+        material: STAINED_GLASS
+        durability: 8
+        amount: 64
+  Dye Cyan Glass:
+    type: PRODUCTION
+    name: Dye Cyan Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Glass:
+        material: STAINED_GLASS
+        durability: 9
+        amount: 64
+  Dye Purple Glass:
+    type: PRODUCTION
+    name: Dye Purple Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Glass:
+        material: STAINED_GLASS
+        durability: 10
+        amount: 64
+  Dye Blue Glass:
+    type: PRODUCTION
+    name: Dye Blue Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Glass:
+        material: STAINED_GLASS
+        durability: 11
+        amount: 64
+  Dye Brown Glass:
+    type: PRODUCTION
+    name: Dye Brown Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Glass:
+        material: STAINED_GLASS
+        durability: 12
+        amount: 64
+  Dye Green Glass:
+    type: PRODUCTION
+    name: Dye Green Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Glass:
+        material: STAINED_GLASS
+        durability: 13
+        amount: 64
+  Dye Red Glass:
+    type: PRODUCTION
+    name: Dye Red Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Glass:
+        material: STAINED_GLASS
+        durability: 14
+        amount: 64
+  Dye Black Glass:
+    type: PRODUCTION
+    name: Dye Black Glass
+    production_time: 5s
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Glass:
+        material: STAINED_GLASS
+        durability: 15
+        amount: 64
+  Convert Coloured Pane:
+    type: PRODUCTION
+    name: Convert Coloured Pane
+    production_time: 5s
+    input:
+      Any Pane:
+        material: STAINED_GLASS_PANE
+        durability: -1
+        amount: 64
+    output:
+      Glass:
+        material: THIN_GLASS
+        amount: 64
+  Dye White Pane:
+    type: PRODUCTION
+    name: Dye White Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Bone Meal:
+        material: INK_SACK
+        durability: 15
+        amount: 4
+    output:
+      White Glass Pane:
+        material: STAINED_GLASS_PANE
+        amount: 64
+  Dye Orange Pane:
+    type: PRODUCTION
+    name: Dye Orange Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 1
+        amount: 64
+  Dye Magenta Pane:
+    type: PRODUCTION
+    name: Dye Magenta Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 2
+        amount: 64
+  Dye Light Blue Pane:
+    type: PRODUCTION
+    name: Dye Light Blue Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 3
+        amount: 64
+  Dye Yellow Pane:
+    type: PRODUCTION
+    name: Dye Yellow Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 4
+        amount: 64
+  Dye Lime Pane:
+    type: PRODUCTION
+    name: Dye Lime Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 5
+        amount: 64
+  Dye Pink Pane:
+    type: PRODUCTION
+    name: Dye Pink Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 6
+        amount: 64
+  Dye Gray Pane:
+    type: PRODUCTION
+    name: Dye Gray Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 7
+        amount: 64
+  Dye Light Gray Pane:
+    type: PRODUCTION
+    name: Dye Light Gray Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 8
+        amount: 64
+  Dye Cyan Pane:
+    type: PRODUCTION
+    name: Dye Cyan Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 9
+        amount: 64
+  Dye Purple Pane:
+    type: PRODUCTION
+    name: Dye Purple Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Glass:
+        material: STAINED_GLASS_PANE
+        durability: 10
+        amount: 64
+  Dye Blue Pane:
+    type: PRODUCTION
+    name: Dye Blue Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 11
+        amount: 64
+  Dye Brown Pane:
+    type: PRODUCTION
+    name: Dye Brown Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Glass Pane Pane:
+        material: STAINED_GLASS_PANE
+        durability: 12
+        amount: 64
+  Dye Green Pane:
+    type: PRODUCTION
+    name: Dye Green Pane
+    production_time: 5s
+    input:
+      Glass Pane:
+        material: THIN_GLASS
+        amount: 64
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Glass Pane:
+        material: STAINED_GLASS_PANE
+        durability: 13
+        amount: 64
+  Dye Red Pane:
+    type: PRODUCTION
+    name: Dye Red Pane
+    production_time: 5s
+    input:
+      Glass:
+        material: THIN_GLASS
+        amount: 64
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Glass:
+        material: STAINED_GLASS_PANE
+        durability: 14
+        amount: 64
+  Dye Black Pane:
+    type: PRODUCTION
+    name: Dye Black Pane
+    production_time: 5s
+    input:
+      Glass:
+        material: THIN_GLASS
+        amount: 64
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Glass:
+        material: STAINED_GLASS_PANE
+        durability: 15
+        amount: 64
+  Convert Coloured Clay:
+    type: PRODUCTION
+    name: Convert Coloured Clay
+    production_time: 5s
+    input:
+      Any Clay:
+        material: STAINED_CLAY
+        durability: -1
+        amount: 64
+    output:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+  Dye White Clay:
+    type: PRODUCTION
+    name: Dye White Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Bone Meal:
+        material: INK_SACK
+        durability: 15
+        amount: 4
+    output:
+      White Stained Clay:
+        material: STAINED_CLAY
+        amount: 64
+  Dye Orange Clay:
+    type: PRODUCTION
+    name: Dye Orange Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Stained Clay:
+        material: STAINED_CLAY
+        durability: 1
+        amount: 64
+  Dye Magenta Clay:
+    type: PRODUCTION
+    name: Dye Magenta Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Stained Clay:
+        material: STAINED_CLAY
+        durability: 2
+        amount: 64
+  Dye Light Blue Clay:
+    type: PRODUCTION
+    name: Dye Light Blue Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Stained Clay:
+        material: STAINED_CLAY
+        durability: 3
+        amount: 64
+  Dye Yellow Clay:
+    type: PRODUCTION
+    name: Dye Yellow Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Stained Clay:
+        material: STAINED_CLAY
+        durability: 4
+        amount: 64
+  Dye Lime Clay:
+    type: PRODUCTION
+    name: Dye Lime Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Stained Clay:
+        material: STAINED_CLAY
+        durability: 5
+        amount: 64
+  Dye Pink Clay:
+    type: PRODUCTION
+    name: Dye Pink Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Stained Clay:
+        material: STAINED_CLAY
+        durability: 6
+        amount: 64
+  Dye Gray Clay:
+    type: PRODUCTION
+    name: Dye Gray Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Stained Clay:
+        material: STAINED_CLAY
+        durability: 7
+        amount: 64
+  Dye Light Gray Clay:
+    type: PRODUCTION
+    name: Dye Light Gray Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Stained Clay:
+        material: STAINED_CLAY
+        durability: 8
+        amount: 64
+  Dye Cyan Clay:
+    type: PRODUCTION
+    name: Dye Cyan Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Stained Clay:
+        material: STAINED_CLAY
+        durability: 9
+        amount: 64
+  Dye Purple Clay:
+    type: PRODUCTION
+    name: Dye Purple Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Stained Clay:
+        material: STAINED_CLAY
+        durability: 10
+        amount: 64
+  Dye Blue Clay:
+    type: PRODUCTION
+    name: Dye Blue Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Stained Clay:
+        material: STAINED_CLAY
+        durability: 11
+        amount: 64
+  Dye Brown Clay:
+    type: PRODUCTION
+    name: Dye Brown Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Stained Clay:
+        material: STAINED_CLAY
+        durability: 12
+        amount: 64
+  Dye Green Clay:
+    type: PRODUCTION
+    name: Dye Green Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Stained Clay:
+        material: STAINED_CLAY
+        durability: 13
+        amount: 64
+  Dye Red Clay:
+    type: PRODUCTION
+    name: Dye Red Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Stained Clay:
+        material: STAINED_CLAY
+        durability: 14
+        amount: 64
+  Dye Black Clay:
+    type: PRODUCTION
+    name: Dye Black Clay
+    production_time: 5s
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Stained Clay:
+        material: STAINED_CLAY
+        durability: 15
+        amount: 64
+  Dye White Concrete Powder:
+    type: PRODUCTION
+    name: Dye White Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Bone Meal:
+        material: INK_SACK
+        durability: 15
+        amount: 4
+    output:
+      White Concrete Powder:
+        material: CONCRETE_POWDER
+        amount: 128
+  Dye Orange Concrete Powder:
+    type: PRODUCTION
+    name: Dye Orange Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Orange Dye:
+        material: INK_SACK
+        durability: 14
+        amount: 4
+    output:
+      Orange Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 1
+        amount: 128
+  Dye Magenta Concrete Powder:
+    type: PRODUCTION
+    name: Dye Magenta Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Magenta Dye:
+        material: INK_SACK
+        durability: 13
+        amount: 4
+    output:
+      Magenta Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 2
+        amount: 128
+  Dye Light Blue Concrete Powder:
+    type: PRODUCTION
+    name: Dye Light Blue Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Light Blue Dye:
+        material: INK_SACK
+        durability: 12
+        amount: 4
+    output:
+      Light Blue Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 3
+        amount: 128
+  Dye Yellow Concrete Powder:
+    type: PRODUCTION
+    name: Dye Yellow Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Yellow Dye:
+        material: INK_SACK
+        durability: 11
+        amount: 4
+    output:
+      Yellow Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 4
+        amount: 128
+  Dye Lime Concrete Powder:
+    type: PRODUCTION
+    name: Dye Lime Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Lime Dye:
+        material: INK_SACK
+        durability: 10
+        amount: 4
+    output:
+      Lime Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 5
+        amount: 128
+  Dye Pink Concrete Powder:
+    type: PRODUCTION
+    name: Dye Pink Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Pink Dye:
+        material: INK_SACK
+        durability: 9
+        amount: 4
+    output:
+      Pink Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 6
+        amount: 128
+  Dye Gray Concrete Powder:
+    type: PRODUCTION
+    name: Dye Gray Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Gray Dye:
+        material: INK_SACK
+        durability: 8
+        amount: 4
+    output:
+      Gray Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 7
+        amount: 128
+  Dye Light Gray Concrete Powder:
+    type: PRODUCTION
+    name: Dye Light Gray Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Light Gray Dye:
+        material: INK_SACK
+        durability: 7
+        amount: 4
+    output:
+      Light Gray Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 8
+        amount: 128
+  Dye Cyan Concrete Powder:
+    type: PRODUCTION
+    name: Dye Cyan Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Cyan Dye:
+        material: INK_SACK
+        durability: 6
+        amount: 4
+    output:
+      Cyan Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 9
+        amount: 128
+  Dye Purple Concrete Powder:
+    type: PRODUCTION
+    name: Dye Purple Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purple Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 10
+        amount: 128
+  Dye Blue Concrete Powder:
+    type: PRODUCTION
+    name: Dye Blue Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Lapis:
+        material: INK_SACK
+        durability: 4
+        amount: 4
+    output:
+      Blue Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 11
+        amount: 128
+  Dye Brown Concrete Powder:
+    type: PRODUCTION
+    name: Dye Brown Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 4
+    output:
+      Brown Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 12
+        amount: 128
+  Dye Green Concrete Powder:
+    type: PRODUCTION
+    name: Dye Green Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Cactus Green:
+        material: INK_SACK
+        durability: 2
+        amount: 4
+    output:
+      Green Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 13
+        amount: 128
+  Dye Red Concrete Powder:
+    type: PRODUCTION
+    name: Dye Red Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+        amount: 4
+    output:
+      Red Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 14
+        amount: 128
+  Dye Black Concrete Powder:
+    type: PRODUCTION
+    name: Dye Black Concrete Powder
+    production_time: 5s
+    input:
+      Sand:
+        material: SAND
+        amount: 32
+      Gravel:
+        material: GRAVEL
+        amount: 32
+      Ink Sack:
+        material: INK_SACK
+        amount: 4
+    output:
+      Black Concrete Powder:
+        material: CONCRETE_POWDER
+        durability: 15
+        amount: 128
+  Convert to Oak Planks:
+    type: PRODUCTION
+    name: Convert to Oak Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Oak Planks:
+        material: WOOD
+        amount: 48
+  Convert to Spruce Planks:
+    type: PRODUCTION
+    name: Convert to Spruce Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Spruce Planks:
+        material: WOOD
+        durability: 1
+        amount: 48
+  Convert to Birch Planks:
+    type: PRODUCTION
+    name: Convert to Birch Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Birch Planks:
+        material: WOOD
+        durability: 2
+        amount: 48
+  Convert to Jungle Planks:
+    type: PRODUCTION
+    name: Convert to Jungle Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Jungle Planks:
+        material: WOOD
+        durability: 3
+        amount: 48
+  Convert to Acacia Planks:
+    type: PRODUCTION
+    name: Convert to Acacia Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Acacia Planks:
+        material: WOOD
+        durability: 4
+        amount: 48
+  Convert to Dark Oak Planks:
+    type: PRODUCTION
+    name: Convert to Dark Oak Planks
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Dark Oak Planks:
+        material: WOOD
+        durability: 5
+        amount: 48
+  Craft Oak Fences:
+    type: PRODUCTION
+    name: Craft Oak Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Oak Fences:
+        material: FENCE
+        amount: 256
+  Craft Spruce Fences:
+    type: PRODUCTION
+    name: Craft Spruce Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Spruce Fences:
+        material: SPRUCE_FENCE
+        amount: 256
+  Craft Birch Fences:
+    type: PRODUCTION
+    name: Craft Birch Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Birch Fences:
+        material: BIRCH_FENCE
+        amount: 256
+  Craft Jungle Fences:
+    type: PRODUCTION
+    name: Craft Jungle Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Jungle Fences:
+        material: JUNGLE_FENCE
+        amount: 256
+  Craft Acacia Fences:
+    type: PRODUCTION
+    name: Craft Acacia Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Acacia Fences:
+        material: ACACIA_FENCE
+        amount: 256
+  Craft Dark Oak Fences:
+    type: PRODUCTION
+    name: Craft Dark Oak Fences
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 96
+    output:
+      Dark Oak Fences:
+        material: DARK_OAK_FENCE
+        amount: 256
+  Craft Oak Fence Gates:
+    type: PRODUCTION
+    name: Craft Oak Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Oak Fence Gates:
+        material: FENCE_GATE
+        amount: 16
+  Craft Spruce Fence Gates:
+    type: PRODUCTION
+    name: Craft Spruce Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Spruce Fence Gates:
+        material: SPRUCE_FENCE_GATE
+        amount: 16
+  Craft Birch Fence Gates:
+    type: PRODUCTION
+    name: Craft Birch Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Birch Fence Gates:
+        material: BIRCH_FENCE_GATE
+        amount: 16
+  Craft Jungle Fence Gates:
+    type: PRODUCTION
+    name: Craft Jungle Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Jungle Fence Gates:
+        material: JUNGLE_FENCE_GATE
+        amount: 16
+  Craft Acacia Fence Gates:
+    type: PRODUCTION
+    name: Craft Acacia Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Acacia Fence Gates:
+        material: ACACIA_FENCE_GATE
+        amount: 16
+  Craft Dark Oak Fence Gates:
+    type: PRODUCTION
+    name: Craft Dark Oak Fence Gates
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 32
+    output:
+      Dark Oak Fence Gates:
+        material: DARK_OAK_FENCE_GATE
+        amount: 16
+  Craft Trapdoors:
+    type: PRODUCTION
+    name: Craft Trapdoors
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 64
+    output:
+      Trapdoors:
+        material: TRAP_DOOR
+        amount: 32
+  Craft Chests:
+    type: PRODUCTION
+    name: Craft Chests
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 384
+    output:
+      Chests:
+        material: CHEST
+        amount: 64
+  Craft Trapped Chests:
+    type: PRODUCTION
+    name: Craft Trapped Chests
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 384
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 16
+    output:
+      Trapped Chests:
+        material: TRAPPED_CHEST
+        amount: 64
+  Craft Signs:
+    type: PRODUCTION
+    name: Craft Signs
+    production_time: 5s
+    input:
+      Any Planks:
+        material: WOOD
+        durability: -1
+        amount: 256
+    output:
+      Signs:
+        material: SIGN
+        amount: 64
+  Bake Potatoes:
+    type: PRODUCTION
+    name: Bake Potatoes
+    production_time: 5s
+    input:
+      Potatoes:
+        material: POTATO_ITEM
+        amount: 192
+    output:
+      Baked Potatoes:
+        material: BAKED_POTATO
+        amount: 384
+  Bake Cookies:
+    type: PRODUCTION
+    name: Bake Cookies
+    production_time: 5s
+    input:
+      Wheat:
+        material: WHEAT
+        amount: 256
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 128
+    output:
+      Cookies:
+        material: COOKIE
+        amount: 2048
+  Bake Bread:
+    type: PRODUCTION
+    name: Bake Bread
+    production_time: 5s
+    input:
+      Wheat:
+        material: WHEAT
+        amount: 384
+    output:
+      Bread:
+        material: BREAD
+        amount: 256
+  Bake Cakes:
+    type: PRODUCTION
+    name: Bake Cakes
+    production_time: 5s
+    input:
+      Wheat:
+        material: WHEAT
+        amount: 54
+      Sugar:
+        material: SUGAR
+        amount: 36
+      Milk Bucket:
+        material: MILK_BUCKET
+        amount: 18
+      Egg:
+        material: EGG
+        amount: 13
+    output:
+      Cakes:
+        material: CAKE
+        amount: 24
+      Bucket:
+        material: BUCKET
+        amount: 18
+  Bake Pumpkin Pies:
+    type: PRODUCTION
+    name: Bake Pumpkin Pies
+    production_time: 5s
+    input:
+      Sugar:
+        material: SUGAR
+        amount: 192
+      Pumpkin:
+        material: PUMPKIN
+        amount: 192
+      Egg:
+        material: EGG
+        amount: 192
+    output:
+      Pumpkin Pie:
+        material: PUMPKIN_PIE
+        amount: 256
+  Fry Chicken:
+    type: PRODUCTION
+    name: Fry Chicken
+    production_time: 5s
+    input:
+      Raw Chicken:
+        material: RAW_CHICKEN
+        amount: 64
+    output:
+      Fried Chicken:
+        material: COOKED_CHICKEN
+        amount: 128
+  Grill Fish:
+    type: PRODUCTION
+    name: Grill Fish
+    production_time: 5s
+    input:
+      Raw Fish:
+        material: RAW_FISH
+        amount: 64
+    output:
+      Grilled Fish:
+        material: COOKED_FISH
+        amount: 192
+  Grill Pork:
+    type: PRODUCTION
+    name: Grill Pork
+    production_time: 5s
+    input:
+      Raw Pork:
+        material: PORK
+        amount: 64
+    output:
+      Grilled Pork:
+        material: GRILLED_PORK
+        amount: 128
+  Grill Steak:
+    type: PRODUCTION
+    name: Grill Steak
+    production_time: 5s
+    input:
+      Raw Beef:
+        material: RAW_BEEF
+        amount: 64
+    output:
+      Grilled Steak:
+        material: COOKED_BEEF
+        amount: 128
+  Grill Salmon:
+    type: PRODUCTION
+    name: Grill Salmon
+    production_time: 5s
+    input:
+      Raw Salmon:
+        material: RAW_FISH
+        durability: 1
+        amount: 64
+    output:
+      Grilled Salmon:
+        material: COOKED_FISH
+        durability: 1
+        amount: 192
+  Grill Mutton:
+    type: PRODUCTION
+    name: Grill Mutton
+    production_time: 5s
+    input:
+      Raw Mutton:
+        material: MUTTON
+        amount: 64
+    output:
+      Grilled Mutton:
+        material: COOKED_MUTTON
+        amount: 128
+  Grill Rabbit:
+    type: PRODUCTION
+    name: Grill Rabbit
+    production_time: 5s
+    input:
+      Raw Rabbit:
+        material: RABBIT
+        amount: 64
+    output:
+      Grilled Rabbit:
+        material: COOKED_RABBIT
+        amount: 128
+  Forge Anvils:
+    type: PRODUCTION
+    name: Forge Anvils
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 256
+    output:
+      Anvils:
+        material: ANVIL
+        amount: 16
+  Forge Iron Bars:
+    type: PRODUCTION
+    name: Forge Iron Bars
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 24
+    output:
+      Iron Bars:
+        material: IRON_FENCE
+        amount: 256
+  Forge Iron Doors:
+    type: PRODUCTION
+    name: Forge Iron Doors
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 18
+    output:
+      Iron Doors:
+        material: IRON_DOOR
+        amount: 18
+  Forge Iron Trapdoors:
+    type: PRODUCTION
+    name: Forge Iron Trapdoors
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 54
+    output:
+      Iron Trapdoors:
+        material: IRON_TRAPDOOR
+        amount: 36
+  Forge Detector Rails:
+    type: PRODUCTION
+    name: Forge Detector Rails
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 18
+      Redstone:
+        material: REDSTONE
+        amount: 2
+    output:
+      Detector Rails:
+        material: DETECTOR_RAIL
+        amount: 32
+  Forge Activator Rails:
+    type: PRODUCTION
+    name: Forge Activator Rails
+    production_time: 5s
+    input:
+      Iron Ingot:
+        material: IRON_INGOT
+        amount: 18
+      Stick:
+        material: STICK
+        amount: 8
+      Redstone:
+        material: REDSTONE
+        amount: 2
+    output:
+      Activator Rails:
+        material: ACTIVATOR_RAIL
+        amount: 32
+  Craft Red Netherbrick:
+    type: PRODUCTION
+    name: Craft Red Netherbrick
+    production_time: 5s
+    input:
+      Obsidian:
+        material: OBSIDIAN
+        amount: 32
+      Any Sand:
+        material: SAND
+        durability: -1
+        amount: 32
+      Red Dye:
+        material: INK_SACK
+        durability: 1
+    output:
+      Red Netherbrick:
+        material: RED_NETHER_BRICK
+        amount: 192
+  Create Pillar Quartz:
+    type: PRODUCTION
+    name: Create Pillar Quartz
+    production_time: 5s
+    input:
+      Snow:
+        material: SNOW_BLOCK
+        amount: 32
+      Any Stone:
+        material: STONE
+        durability: -1
+        amount: 32
+      Ladder:
+        material: LADDER
+        amount: 4
+    output:
+      Pillar Quartz:
+        material: QUARTZ_BLOCK
+        durability: 2
+        amount: 192
+  Create Chiselled Quartz:
+    type: PRODUCTION
+    name: Create Chiselled Quartz
+    production_time: 5s
+    input:
+      Snow:
+        material: SNOW_BLOCK
+        amount: 32
+      Any Stone:
+        material: STONE
+        durability: -1
+        amount: 32
+      Flint:
+        material: FLINT
+        amount: 4
+    output:
+      Chiselled Quartz:
+        material: QUARTZ_BLOCK
+        durability: 1
+        amount: 192
+  Craft Purpur Blocks:
+    type: PRODUCTION
+    name: Craft Purpur Blocks
+    production_time: 5s
+    input:
+      Stone:
+        material: STONE
+        amount: 64
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purpur Blocks:
+        material: PURPUR_BLOCK
+        amount: 192
+  Craft Purpur Pillars:
+    type: PRODUCTION
+    name: Craft Purpur Pillars
+    production_time: 5s
+    input:
+      Stone:
+        material: STONE
+        amount: 64
+      Ladders:
+        material: LADDER
+        amount: 4
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 4
+    output:
+      Purpur Pillars:
+        material: PURPUR_PILLAR
+        amount: 192
+  Craft End Rods:
+    type: PRODUCTION
+    name: Craft End Rods
+    production_time: 5s
+    input:
+      Purple Dye:
+        material: INK_SACK
+        durability: 5
+        amount: 8
+      Glowstone Dust:
+        material: GLOWSTONE_DUST
+        amount: 4
+    output:
+      End Rods:
+        material: END_ROD
+        amount: 64
+  Craft Eye of Ender:
+    type: PRODUCTION
+    name: Craft Eye of Ender
+    production_time: 5s
+    input:
+      enderpearl:
+        material: ENDER_PEARL
+        amount: 1
+      blazepowder:
+        material: BLAZE_POWDER
+        amount: 1
+    output:
+      eyeofender:
+        material: EYE_OF_ENDER
+        amount: 1
   Convert Copper Block T1:
     type: PRODUCTION
     name: Convert Copper Block T1
@@ -2094,7 +4837,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -2256,7 +4999,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -2335,7 +5078,7 @@ recipes:
         - Mercury T1
     output:
       Iron_Chest:
-        material: CHEST
+        material: IRON_INGOT
         amount: 2
         lore:
         - Iron Reinforced Chest
@@ -2418,7 +5161,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -2521,7 +5264,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 48
         lore:
         - Pewter T2
@@ -2580,7 +5323,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -2702,7 +5445,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 16
         lore:
         - Pewter T2
@@ -2762,7 +5505,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 8
         lore:
@@ -2822,7 +5565,6 @@ recipes:
     output:
       Stone_Beacon:
         material: STONE
-        name: Stone Beacon
         amount: 1
         lore:
         - Stone Reinforced Beacon
@@ -2877,7 +5619,6 @@ recipes:
     output:
       Iron_Beacon:
         material: IRON_INGOT
-        name: Iron Beacon
         amount: 1
         lore:
         - Iron Reinforced Beacon
@@ -2901,7 +5642,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 16
         lore:
         - Pewter T2
@@ -2932,7 +5673,6 @@ recipes:
     output:
       Diamond_Beacon:
         material: DIAMOND
-        name: Diamond Beacon
         amount: 1
         lore:
         - Diamond Reinforced Beacon
@@ -2961,7 +5701,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 8
         lore:
@@ -2987,7 +5727,6 @@ recipes:
     output:
       Emerald_Beacon:
         material: EMERALD
-        name: Emerald Beacon
         amount: 1
         lore:
         - Emerald Reinforced Beacon
@@ -3121,7 +5860,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 32
         lore:
         - Pewter T2
@@ -3176,7 +5915,7 @@ recipes:
       pewter:
         material: INK_SACK
         name: Pewter
-        durability: 4
+        durability: 8
         amount: 48
         lore:
         - Pewter T2
@@ -3236,7 +5975,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 24
         lore:
@@ -3291,7 +6030,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 36
         lore:
@@ -5897,6 +8636,716 @@ recipes:
       trapdoor:
         material: TRAP_DOOR
         amount: 1
+  Soup:
+    type: RANDOM
+    name: Soup
+    production_time: 5s
+    input:
+      Plank:
+        material: WOOD
+        durability: -1
+        amount: 1
+      Carrot:
+        material: CARROT_ITEM
+        amount: 1
+      Potato:
+        material: POTATO_ITEM
+        amount: 1
+      Beetroot:
+        material: BEETROOT
+        amount: 1
+      Pumpkin:
+        material: PUMPKIN
+        amount: 1
+      Cocoa Beans:
+        material: INK_SACK
+        durability: 3
+        amount: 1
+      Cactus:
+        material: CACTUS
+        amount: 1
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 1
+    outputs:
+      display: Soup
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      BSoup:
+        chance: 0.5
+        Beetroot Soup:
+          material: BEETROOT_SOUP
+          amount: 1
+  Tiered Beetroot Lotto:
+    type: RANDOM
+    name: Beetroot Lotto
+    production_time: 45s
+    input:
+      Beetroot:
+        material: BEETROOT
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: BEETROOT
+          name: Withered Beetroot
+          amount: 1
+          lore:
+          - Withered Beetroot T1
+      T2:
+        chance: 0.08
+        T2:
+          material: BEETROOT
+          name: Average Beetroot
+          amount: 1
+          lore:
+          - Average Beetroot T2
+      T3:
+        chance: 0.04
+        T3:
+          material: BEETROOT
+          name: Ripe Beetroot
+          amount: 1
+          lore:
+          - Ripe Beetroot T3
+  Tiered Pumpkin Lotto:
+    type: RANDOM
+    name: Pumpkin Lotto
+    production_time: 45s
+    input:
+      Pumpkin:
+        material: PUMPKIN
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: PUMPKIN
+          name: Withered Pumpkin
+          amount: 1
+          lore:
+          - Withered Pumpkin T1
+      T2:
+        chance: 0.08
+        T2:
+          material: PUMPKIN
+          name: Average Pumpkin
+          amount: 1
+          lore:
+          - Average Pumpkin T2
+      T3:
+        chance: 0.04
+        T3:
+          material: PUMPKIN
+          name: Ripe Pumpkin
+          amount: 1
+          lore:
+          - Ripe Pumpkin T3
+  Tiered Sugar Cane Lotto:
+    type: RANDOM
+    name: Sugar Cane Lotto
+    production_time: 45s
+    input:
+      Sugar Cane:
+        material: SUGAR_CANE
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: SUGAR_CANE
+          name: Withered Sugar Cane
+          amount: 1
+          lore:
+          - Withered Sugar Cane T1
+      T2:
+        chance: 0.08
+        T2:
+          material: SUGAR_CANE
+          name: Average Sugar Cane
+          amount: 1
+          lore:
+          - Average Sugar Cane T2
+      T3:
+        chance: 0.04
+        T3:
+          material: SUGAR_CANE
+          name: Ripe Sugar Cane
+          amount: 1
+          lore:
+          - Ripe Sugar Cane T3
+  Tiered Potato Lotto:
+    type: RANDOM
+    name: Potato Lotto
+    production_time: 45s
+    input:
+      Potato:
+        material: POTATO_ITEM
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: POTATO_ITEM
+          name: Withered Potato
+          amount: 1
+          lore:
+          - Withered Potato T1
+      T2:
+        chance: 0.08
+        T2:
+          material: POTATO_ITEM
+          name: Average Potato
+          amount: 1
+          lore:
+          - Average Potato T2
+      T3:
+        chance: 0.04
+        T3:
+          material: POTATO_ITEM
+          name: Ripe Potato
+          amount: 1
+          lore:
+          - Ripe Potato T3
+  Tiered Carrot Lotto:
+    type: RANDOM
+    name: Carrot Lotto
+    production_time: 45s
+    input:
+      Carrot:
+        material: CARROT_ITEM
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: CARROT_ITEM
+          name: Withered Carrot
+          amount: 1
+          lore:
+          - Withered Carrot T1
+      T2:
+        chance: 0.08
+        T2:
+          material: CARROT_ITEM
+          name: Average Carrot
+          amount: 1
+          lore:
+          - Average Carrot T2
+      T3:
+        chance: 0.04
+        T3:
+          material: CARROT_ITEM
+          name: Ripe Carrot
+          amount: 1
+          lore:
+          - Ripe Carrot T3
+  Tiered Cocoa Beans Lotto:
+    type: RANDOM
+    name: Cocoa Bean Lotto
+    production_time: 45s
+    input:
+      Cocoa:
+        material: INK_SACK
+        durability: 3
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: INK_SACK
+          durability: 3
+          name: Withered Cocoa Beans
+          amount: 1
+          lore:
+          - Withered Cocoa Beans T1
+      T2:
+        chance: 0.08
+        T2:
+          material: INK_SACK
+          durability: 3
+          name: Average Cocoa Beans
+          amount: 1
+          lore:
+          - Average Cocoa Beans T2
+      T3:
+        chance: 0.04
+        T3:
+          material: INK_SACK
+          durability: 3
+          name: Ripe Cocoa Beans
+          amount: 1
+          lore:
+          - Ripe Cocoa Beans T3
+  Tiered Cactus Lotto:
+    type: RANDOM
+    name: Cactus Lotto
+    production_time: 45s
+    input:
+      Cactus:
+        material: CACTUS
+        amount: 64
+    outputs:
+      display: T3
+      Soup:
+        chance: 0.5
+        Soup:
+          material: MUSHROOM_SOUP
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: CACTUS
+          name: Withered Cactus
+          amount: 1
+          lore:
+          - Withered Cactus T1
+      T2:
+        chance: 0.08
+        T2:
+          material: CACTUS
+          name: Average Cactus
+          amount: 1
+          lore:
+          - Average Cactus T2
+      T3:
+        chance: 0.04
+        T3:
+          material: CACTUS
+          name: Ripe Cactus
+          amount: 1
+          lore:
+          - Ripe Cactus T3
+  Tiered Oak Lotto:
+    type: RANDOM
+    name: Oak Lotto
+    production_time: 45s
+    input:
+      Oak:
+        material: LOG
+        durability: 0
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 0
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 0
+          name: Oak Twig
+          amount: 1
+          lore:
+          - Oak Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 0
+          name: Oak Bark
+          amount: 1
+          lore:
+          - Oak Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 0
+          name: Oak Trunk
+          amount: 1
+          lore:
+          - Oak Trunk T3
+  Tiered Spruce Lotto:
+    type: RANDOM
+    name: Spruce Lotto
+    production_time: 45s
+    input:
+      Spruce:
+        material: LOG
+        durability: 1
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 1
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 1
+          name: Spruce Twig
+          amount: 1
+          lore:
+          - Spruce Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 1
+          name: Spruce Bark
+          amount: 1
+          lore:
+          - Spruce Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 1
+          name: Spruce Trunk
+          amount: 1
+          lore:
+          - Spruce Trunk T3
+  Tiered Birch Lotto:
+    type: RANDOM
+    name: Birch Lotto
+    production_time: 45s
+    input:
+      Birch:
+        material: LOG
+        durability: 2
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 2
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 2
+          name: Birch Twig
+          amount: 1
+          lore:
+          - Birch Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 2
+          name: Birch Bark
+          amount: 1
+          lore:
+          - Birch Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 2
+          name: Birch Trunk
+          amount: 1
+          lore:
+          - Birch Trunk T3
+  Tiered Jungle Lotto:
+    type: RANDOM
+    name: Jungle Lotto
+    production_time: 45s
+    input:
+      Jungle:
+        material: LOG
+        durability: 3
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 3
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG
+          durability: 3
+          name: Jungle Twig
+          amount: 1
+          lore:
+          - Jungle Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG
+          durability: 3
+          name: Jungle Bark
+          amount: 1
+          lore:
+          - Jungle Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG
+          durability: 3
+          name: Jungle Trunk
+          amount: 1
+          lore:
+          - Jungle Trunk T3
+  Tiered Acacia Lotto:
+    type: RANDOM
+    name: Acacia Lotto
+    production_time: 45s
+    input:
+      Acacia:
+        material: LOG_2
+        durability: 0
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 4
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG_2
+          durability: 0
+          name: Acacia Twig
+          amount: 1
+          lore:
+          - Acacia Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG_2
+          durability: 0
+          name: Acacia Bark
+          amount: 1
+          lore:
+          - Acacia Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG_2
+          durability: 0
+          name: Acacia Trunk
+          amount: 1
+          lore:
+          - Acacia Trunk T3
+  Tiered Dark Oak Lotto:
+    type: RANDOM
+    name: Dark Oak Lotto
+    production_time: 45s
+    input:
+      DarkOak:
+        material: LOG_2
+        durability: 1
+        amount: 64
+    outputs:
+      display: T3
+      Sapling:
+        chance: 0.5
+        Sapling:
+          material: SAPLING
+          durability: 5
+          amount: 1
+      Fail:
+        chance: 0.25
+        Fail:
+          material: STICK
+          amount: 1
+      T1:
+        chance: 0.13
+        T1:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Twig
+          amount: 1
+          lore:
+          - Dark Oak Twig T1
+      T2:
+        chance: 0.08
+        T2:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Bark
+          amount: 1
+          lore:
+          - Dark Oak Bark T2
+      T3:
+        chance: 0.04
+        T3:
+          material: LOG_2
+          durability: 1
+          name: Dark Oak Trunk
+          amount: 1
+          lore:
+          - Dark Oak Trunk T3
+  Harvester Hoe:
+    type: PRODUCTION
+    name: Harvester Hoe
+    production_time: 60s
+    input:
+      artifact:
+        material: GOLD_INGOT
+        name: Artifact
+        amount: 3
+        lore:
+        - Artifact T3
+      brass:
+        material: REDSTONE
+        name: Brass
+        amount: 6
+        lore:
+        - Brass T2
+      steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 9
+        lore:
+        - Steel T1
+    output:
+      harvesterHoe:
+        material: GOLD_HOE
+        amount: 1
+        name: Harvester Hoe
+        lore:
+        - Improve yields for all crops
+  Treecutter Axe:
+    type: PRODUCTION
+    name: Treecutter Axe
+    production_time: 60s
+    input:
+      carbon:
+        material: DIAMOND
+        name: Carbon
+        amount: 3
+        lore:
+        - Carbon T3
+      pewter:
+        material: INK_SACK
+        name: Pewter
+        durability: 8
+        amount: 6
+        lore:
+        - Pewter T2
+      titanium:
+        material: DIAMOND
+        name: Titanium
+        amount: 9
+        lore:
+        - Titanium T1
+    output:
+      treecutteraxe:
+        material: DIAMOND_AXE
+        amount: 1
+        name: Treecutter Axe
+        lore:
+        - Improve yields for all trees
   Placeholder:
     type: PRODUCTION
     name: Placeholder
@@ -10074,7 +13523,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10172,7 +13621,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10270,7 +13719,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10368,7 +13817,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10466,7 +13915,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10564,7 +14013,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10662,7 +14111,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10760,7 +14209,7 @@ recipes:
         lore:
         - Fiberglass T3
       artifact:
-        material: EYE_OF_ENDER
+        material: GOLD_INGOT
         name: Artifact
         amount: 48
         lore:
@@ -10842,3 +14291,253 @@ recipes:
         material: STONE
         amount: 64
     factory: Conversion Factory
+  Upgrade to Metal Work:
+    forceInclude: true
+    name: Upgrade to Metal Work
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 128
+        lore:
+        - Steel T1
+    factory: Metal Work
+  Upgrade to Carpentry:
+    forceInclude: true
+    name: Upgrade to Carpentry
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Steel:
+        material: IRON_INGOT
+        name: Steel
+        amount: 32
+        lore:
+        - Steel T1
+      Any Planks:
+        material: WOOD
+        amount: 512
+        durability: -1
+    factory: Carpentry
+  Upgrade to Kitchen:
+    forceInclude: true
+    name: Upgrade to Kitchen
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Raw Chicken:
+        material: RAW_CHICKEN
+        amount: 16
+      Raw Beef:
+        material: RAW_BEEF
+        amount: 16
+      Raw Pork:
+        material: PORK
+        amount: 16
+      Raw Fish:
+        material: RAW_FISH
+        amount: 16
+      Raw Salmon:
+        material: RAW_FISH
+        amount: 16
+        durability: 1
+      Raw Mutton:
+        material: MUTTON
+        amount: 16
+    factory: Kitchen
+  Upgrade to Building Factory:
+    forceInclude: true
+    name: Upgrade to Building Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Stone:
+        material: STONE
+        amount: 64
+      Any Planks:
+        material: WOOD
+        amount: 64
+        durability: -1
+    factory: Building Factory
+  Upgrade to Utility Factory:
+    forceInclude: true
+    name: Upgrade to Utility Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Iron Pickaxe:
+        material: IRON_PICKAXE
+        amount: 1
+      Iron Shovel:
+        material: IRON_SPADE
+        amount: 1
+      Iron Hoe:
+        material: IRON_HOE
+        amount: 1
+    factory: Utility Factory
+  Upgrade to Glass Dying Factory:
+    name: Upgrade to Glass Dying Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Glass:
+        material: GLASS
+        amount: 64
+    factory: Glass Dying Factory
+  Upgrade to Wool Dying Factory:
+    name: Upgrade to Wool Dying Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Wool:
+        material: WOOL
+        amount: 64
+    factory: Wool Dying Factory
+  Upgrade to Clay Dying Factory:
+    name: Upgrade to Clay Dying Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Hardened Clay:
+        material: HARD_CLAY
+        amount: 64
+    factory: Clay Dying Factory
+  Upgrade to Compactor:
+    name: Upgrade to Compactor
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Aluminum:
+        material: IRON_INGOT
+        name: Aluminum
+        amount: 8
+        lore:
+        - Aluminum T2
+      Copper:
+        material: REDSTONE
+        name: Copper
+        amount: 4
+        lore:
+        - Copper T1
+      Any Planks:
+        material: WOOD
+        amount: 256
+        durability: -1
+    factory: Compactor
+  Upgrade to Harvest Factory:
+    name: Upgrade to Harvest Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      Shears:
+        material: SHEARS
+        amount: 1
+      Iron Hoe:
+        material: IRON_HOE
+        amount: 1
+    factory: Harvest Factory
+  Upgrade to Farm Factory:
+    name: Upgrade to Farm Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      witheredcactus:
+        material: CACTUS
+        name: Withered Cactus
+        amount: 16
+        lore:
+        - Withered Cactus T1
+      witheredpumpkin:
+        material: PUMPKIN
+        name: Withered Pumpkin
+        amount: 16
+        lore:
+        - Withered Pumpkin T1
+      witheredsugarcane:
+        material: SUGAR_CANE
+        name: Withered Sugar Cane
+        amount: 64
+        lore:
+        - Withered Sugar Cane T1
+      witheredpotato:
+        material: POTATO_ITEM
+        name: Withered Potato
+        amount: 48
+        lore:
+        - Withered Potato T1
+      witheredcarrot:
+        material: CARROT_ITEM
+        name: Withered Carrot
+        amount: 48
+        lore:
+        - Withered Carrot T1
+      witheredbeetroot:
+        material: BEETROOT
+        name: Withered Beetroot
+        amount: 32
+        lore:
+        - Withered Beetroot T1
+      witheredcocoa:
+        material: INK_SACK
+        durability: 3
+        name: Withered Cocoa Beans
+        amount: 16
+        lore:
+        - Withered Cocoa Beans T1
+    factory: Farm Factory
+  Upgrade to Tree Factory:
+    name: Upgrade to Tree Factory
+    production_time: 10s
+    type: UPGRADE
+    input:
+      oaktwig:
+        material: LOG
+        durability: 0
+        name: Oak Twig
+        amount: 48
+        lore:
+        - Oak Twig T1
+      sprucetwig:
+        material: LOG
+        durability: 1
+        name: Spruce Twig
+        amount: 48
+        lore:
+        - Spruce Twig T1
+      birchtwig:
+        material: LOG
+        durability: 2
+        name: Birch Twig
+        amount: 32
+        lore:
+        - Birch Twig T1
+      jungletwig:
+        material: LOG
+        durability: 3
+        name: Jungle Twig
+        amount: 32
+        lore:
+        - Jungle Twig T1
+      acaciatwig:
+        material: LOG_2
+        durability: 0
+        name: Acacia Twig
+        amount: 16
+        lore:
+        - Acacia Twig T1
+      darkoaktwig:
+        material: LOG_2
+        durability: 1
+        name: Dark Oak Twig
+        amount: 32
+        lore:
+        - Dark Oak Twig T1
+      mixedtwig:
+        material: DEAD_BUSH
+        name: Mixed Twig
+        amount: 64
+        lore:
+        - Mixed Twig T1
+    factory: Tree Factory

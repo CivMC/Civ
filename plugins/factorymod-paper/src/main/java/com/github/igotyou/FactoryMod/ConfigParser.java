@@ -1,15 +1,11 @@
 package com.github.igotyou.FactoryMod;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMapDirectly;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -290,6 +286,9 @@ public class ConfigParser {
 			if (setupCost.getTotalUniqueItemAmount() > 0) {
 				manager.addFactoryCreationEgg(FurnCraftChestStructure.class,
 						setupCost, egg);
+				//This is a placeholder to allow for FCC factories to be shown in /fm as upgrades from a base factory
+				//Just until /fm can be improved to show all FCCs outright
+				upgradeEggs.put(egg.getName(), egg);
 			} else {
 				plugin.warning(String.format("FCC %s specified with no setup cost, skipping",
 						egg.getName()));
@@ -564,22 +563,26 @@ public class ConfigParser {
 		case "PRODUCTION":
 			ConfigurationSection outputSection = config.getConfigurationSection("output");
 			ItemMap output;
+			ItemStack recipeRepresentation;
 			if (outputSection == null) {
 				if (!(parentRecipe instanceof ProductionRecipe)) {
 					output = new ItemMap();
+					recipeRepresentation = null;
 				}
 				else {
 					output = ((ProductionRecipe) parentRecipe).getOutput();
+					recipeRepresentation = ((ProductionRecipe) parentRecipe).getRecipeRepresentation();
 				}
 			}
 			else {
 				output = parseItemMap(outputSection);
+				recipeRepresentation = parseFirstItem(outputSection);
 			}
 			ProductionRecipeModifier modi = parseProductionRecipeModifier(config.getConfigurationSection("modi"));
 			if (modi == null && parentRecipe instanceof ProductionRecipe) {
 				modi = ((ProductionRecipe) parentRecipe).getModifier().clone();
 			}
-			result = new ProductionRecipe(identifier, name, productionTime, input, output, modi);
+			result = new ProductionRecipe(identifier, name, productionTime, input, output, recipeRepresentation, modi);
 			break;
 		case "COMPACT":
 			String compactedLore = config.getString("compact_lore", 
@@ -861,6 +864,20 @@ public class ConfigParser {
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
+	}
+
+	private static ItemStack parseFirstItem(ConfigurationSection config) {
+		if(config == null) {
+			return null;
+		}
+
+		for(String key : config.getKeys(false)) {
+			ConfigurationSection current = config.getConfigurationSection(key);
+			List<ItemStack> list = parseItemMapDirectly(current).getItemStackRepresentation();
+			return list.size() > 0 ? list.get(0) : null;
+		}
+
+		return null;
 	}
 	
 	private Map <String,String> parseRenames(ConfigurationSection config) {

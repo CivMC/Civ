@@ -55,24 +55,17 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
 		.getReinforcementManager() : null;
 	int threshold = FactoryMod.getManager().getRedstonePowerOn();
-	if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation())) {
-	    if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
-		    && fccf.isActive()) {
-		if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
-			.getBlock()))) {
+	if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation()) && 
+			e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && 
+			(rm == null || MultiBlockStructure.citadelRedstoneChecks(e
+					.getBlock()))) {
+		if (fccf.isActive()) {
 		    fccf.deactivate();
 		}
-	    } else if (e.getOldCurrent() < threshold
-		    && e.getNewCurrent() >= threshold && !fccf.isActive()) {
-		if (rm == null
-			|| MultiBlockStructure.citadelRedstoneChecks(e
-				.getBlock())) {
-		    fccf.attemptToActivate(null, false);
+		else {
+			fccf.attemptToActivate(null, false);
 		}
-	    } else {
-		return;
-	    }
-	}
+		}
     }
 
     public void blockBreak(Player p, Block b) {
