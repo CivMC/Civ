@@ -625,7 +625,7 @@ public class PlayerListener implements Listener, Configurable {
 			} else {
 				// otherwise, put the prison pearl in the first empty slot
 				pearlnum = inv.firstEmpty();
-				if (pearlnum > 0) {
+				if (pearlnum >= 0) {
 					// and reduce his stack of pearls by one
 					stack.setAmount(stack.getAmount() - 1);
 					inv.setItem(stacknum, stack);
@@ -955,7 +955,7 @@ public class PlayerListener implements Listener, Configurable {
 						int openSlot = player.getInventory().firstEmpty();
 						ItemStack giveBack = repairItem.getStack().clone();
 						giveBack.setAmount(numLeft);
-						if (openSlot > 0) {
+						if (openSlot >= 0) {
 							player.getInventory().setItem(openSlot, giveBack);
 							msg(player, "<i>The remaining %d repair items were put back in your inventory.", numLeft);
 						} else {
@@ -1003,7 +1003,7 @@ public class PlayerListener implements Listener, Configurable {
 						int openSlot = player.getInventory().firstEmpty();
 						ItemStack giveBack = upgradeItem.getStack().clone();
 						giveBack.setAmount(numLeft);
-						if(openSlot > 0) {
+						if(openSlot >= 0) {
 							player.getInventory().setItem(openSlot, giveBack);
 							msg(player, "<i>The remaining %d upgrade items were put back in your inventory.", numLeft);
 						} else {
