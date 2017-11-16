@@ -54,13 +54,20 @@
 # pearls.start_value
 #  - The starting health value of pearls when they are created
 # 
-# pearls.repair_materials
+# pearls.TYPE.repair_materials
 #  - The materials used to repair pearls
 #  - The repair value is how many health points are repaired for each item 
 #
 # pearls.bastion_harm_amount
 #  - The amount of damage to deal to players when they are inside a
 #    bastion field they don't have perms on.
+#
+# pearls.prison_world
+#  - The name of the world where prisoners should be sent
+#
+# pearls.upgrade_materials
+# - The materials used to upgrade pearls from exile to prison
+#   The repair value is how many are required
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -235,10 +242,21 @@ pearls:
   start_value: 12
   max_value: 336
   repair_materials:
-    obsidian:
-      material: OBSIDIAN
-      repair: 3
+    PRISON:
+      emerald:
+        material: EMERALD
+        repair: 3
+    EXILE:
+      obsidian:
+        material: OBSIDIAN
+        repair: 3
   bastion_harm_amount: 2.0
+  upgrade_materials:
+    special_diamond_thing:
+      material: DIAMOND
+      repair: 1
+      lore:
+       - This is used to upgrade exile pearls to prison pearls
 help_item:
   enabled: true
   item_name: "You've been exiled!"
