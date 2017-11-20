@@ -982,7 +982,7 @@ public class PlayerListener implements Listener, Configurable {
 		RepairMaterial upgradeItem = null;
 		
 		for(RepairMaterial item : upgradeMaterials) {
-			if(invItems.getAmount(item.getStack()) > item.getRepairAmount()) {
+			if(invItems.getAmount(item.getStack()) >= item.getRepairAmount()) {
 				upgradeItem = item;
 				break;
 			}
