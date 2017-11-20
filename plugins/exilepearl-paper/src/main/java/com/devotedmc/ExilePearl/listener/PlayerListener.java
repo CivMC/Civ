@@ -1008,7 +1008,7 @@ public class PlayerListener implements Listener, Configurable {
 							msg(player, "<i>The remaining %d upgrade items were put back in your inventory.", numLeft);
 						} else {
 							player.getWorld().dropItemNaturally(player.getLocation().add(0, 0.5, 0), giveBack);
-							msg(player, "<i>The remaining %d repair items were dropped on the ground.", numLeft);
+							msg(player, "<i>The remaining %d upgrade items were dropped on the ground.", numLeft);
 						}
 						break;
 					}
