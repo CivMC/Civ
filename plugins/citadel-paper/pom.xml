@@ -55,18 +55,6 @@
 			<version>2.11.0</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.bettershards</groupId>
-			<artifactId>BetterShardsBukkit</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.mercury</groupId>
-			<artifactId>Mercury</artifactId>
-			<version>1.2.19</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<repositories>
