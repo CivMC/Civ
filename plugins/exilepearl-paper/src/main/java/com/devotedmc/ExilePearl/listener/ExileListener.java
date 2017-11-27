@@ -110,7 +110,7 @@ public class ExileListener extends RuleListener implements Configurable {
 		if (pearlApi.isPlayerExiled(e.getPlayer())) {
 			//if it's a prison pearl set their spawn to the prison world, probably the end
 			boolean prison = pearlApi.getPearl(e.getPlayer().getUniqueId()).getPearlType() == PearlType.PRISON;
-			e.getPlayer().setBedSpawnLocation(prison ? pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation() : null, true);
+			e.getPlayer().setBedSpawnLocation(prison ? pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0) : null, true);
 		}
 	}
 	

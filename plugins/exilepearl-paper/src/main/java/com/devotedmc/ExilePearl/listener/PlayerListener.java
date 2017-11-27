@@ -663,7 +663,7 @@ public class PlayerListener implements Listener, Configurable {
 			pearl.setLastOnline(new Date());
 			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() && 
 					!pearl.getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
-				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0));
 			}
 		}
 	}
@@ -766,7 +766,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (pearlApi.isPlayerExiled(player)) {
 			if(useHelpItem) giveHelpItem(player);
 			ExilePearl pearl = pearlApi.getPearl(player.getUniqueId());
-			if(pearl.getPearlType() == PearlType.PRISON) e.setRespawnLocation(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+			if(pearl.getPearlType() == PearlType.PRISON) e.setRespawnLocation(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0));
 			if(pearl.isSummoned()) {
 				pearl.setSummoned(false);
 				pearl.setReturnLocation(null);
@@ -994,7 +994,7 @@ public class PlayerListener implements Listener, Configurable {
 			int upgradeMatsAvailable = invItems.getAmount(upgradeItem.getStack());
 			if(upgradeMatsAvailable < upgradeMatsRequired) return;
 			inv.remove(Material.ENDER_PEARL);
-			if(upgradeMatsAvailable > upgradeMatsRequired) {
+			if(upgradeMatsAvailable >= upgradeMatsRequired) {
 				for(int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
 					if(is != null) {
@@ -1018,7 +1018,7 @@ public class PlayerListener implements Listener, Configurable {
 			pearl.setPearlType(PearlType.PRISON);
 			inv.setResult(pearl.createItemStack());
 			if(pearl.getPlayer() != null && pearl.getPlayer().isOnline()) {
-				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+				pearl.getPlayer().teleport(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0));
 				msg(pearl.getPlayer(), "<i>You've been imprisoned in the end by %s.", ((Player)e.getWhoClicked()).getDisplayName());
 			}
 			pearlApi.log("The pearl for player %s was upgraded to a Prison Pearl.", pearl.getPlayerName());
@@ -1029,7 +1029,7 @@ public class PlayerListener implements Listener, Configurable {
 	public void onPlayerPortal(PlayerPortalEvent event) {
 		ExilePearl pearl = pearlApi.getPearl(event.getPlayer().getUniqueId());
 		if(pearl != null && pearl.getPearlType() == PearlType.PRISON && event.getCause() == TeleportCause.END_PORTAL) {
-			event.setTo(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation());
+			event.setTo(pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0));
 		}
 	}
 
