@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import com.github.civcraft.donum.commands.DonumCommandHandler;
 import com.github.civcraft.donum.listeners.AdminDeliveryListener;
 import com.github.civcraft.donum.listeners.PlayerListener;
-import com.github.civcraft.donum.listeners.storage.BetterShardsListener;
 import com.github.civcraft.donum.listeners.storage.BukkitListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -38,9 +37,6 @@ public class Donum extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
 		Bukkit.getPluginManager().registerEvents(new AdminDeliveryListener(), this);
 		Bukkit.getPluginManager().registerEvents(new BukkitListener(), this);
-		if(config.useBetterShards()) {
-			Bukkit.getPluginManager().registerEvents(new BetterShardsListener(), this);
-		}
 	}
 
 	@Override

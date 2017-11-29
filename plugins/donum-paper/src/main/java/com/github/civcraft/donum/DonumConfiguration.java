@@ -1,7 +1,6 @@
 package com.github.civcraft.donum;
 
 import org.apache.commons.lang.RandomStringUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class DonumConfiguration {
@@ -14,19 +13,11 @@ public class DonumConfiguration {
 	private String user;
 	private String password;
 	
-	private boolean useBetterShards;
-	
-	
 	public void parse() {
 		Donum plugin = Donum.getInstance();
 		plugin.saveDefaultConfig();
 		plugin.reloadConfig();
 		FileConfiguration config = plugin.getConfig();
-		this.useBetterShards = config.getBoolean("useBetterShards", false);
-		if (this.useBetterShards) {
-			//make sure plugin is enabled
-			this.useBetterShards = Bukkit.getPluginManager().isPluginEnabled("BetterShards");
-		}
 		this.complaintURL = config.getString("complaintURL","");
 		this.host= config.getString("database.host", "localhost");
 		this.database = config.getString("database.database", "global");
@@ -40,10 +31,6 @@ public class DonumConfiguration {
 	 */
 	public String getComplaintURL() {
 		return complaintURL;
-	}
-	
-	public boolean useBetterShards() {
-		return useBetterShards;
 	}
 	
 	/**

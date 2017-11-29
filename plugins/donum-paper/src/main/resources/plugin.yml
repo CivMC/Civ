@@ -3,12 +3,9 @@ main: com.github.civcraft.donum.Donum
 author: Maxopoly
 version: ${project.version}
 depend: [CivModCore, NameLayer]
-softdepend: [BetterShards]
 commands:
   present:
   deliver:
-    permission: donum.op
-  deliverml:
     permission: donum.op
   deliverdeath:
     permission: donum.op

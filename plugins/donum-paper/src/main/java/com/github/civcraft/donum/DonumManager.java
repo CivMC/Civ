@@ -14,7 +14,6 @@ import com.github.civcraft.donum.database.DonumDAO;
 import com.github.civcraft.donum.inventories.DeathInventory;
 import com.github.civcraft.donum.inventories.DeliveryInventory;
 import com.github.civcraft.donum.misc.ItemMapBlobHandling;
-import com.github.civcraft.donum.storage.BetterShardsDeliveryStorage;
 import com.github.civcraft.donum.storage.DatabaseStorage;
 import com.github.civcraft.donum.storage.IDeliveryStorage;
 
@@ -30,12 +29,7 @@ public class DonumManager {
 		DonumConfiguration config = Donum.getConfiguration();
 		this.database = new DonumDAO(config.getHost(), config.getPort(), config.getDatabaseName(), config.getUser(),
 				config.getPassword());
-		if (config.useBetterShards()) {
-			deliveryStorage = new BetterShardsDeliveryStorage();
-		}
-		else {
-			deliveryStorage = new DatabaseStorage();
-		}
+		deliveryStorage = new DatabaseStorage();
 		this.deliveryInventories = new ConcurrentHashMap<UUID, DeliveryInventory>();
 	}
 
