@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.9.3</version>
+	<version>3.10.0</version>
 	<name>Citadel</name>
 	<url>https://github.com/Devoted/Citadel</url>
 
@@ -53,18 +53,6 @@
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
 			<version>2.11.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.bettershards</groupId>
-			<artifactId>BetterShardsBukkit</artifactId>
-			<version>1.0.0</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.mercury</groupId>
-			<artifactId>Mercury</artifactId>
-			<version>1.2.19</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
