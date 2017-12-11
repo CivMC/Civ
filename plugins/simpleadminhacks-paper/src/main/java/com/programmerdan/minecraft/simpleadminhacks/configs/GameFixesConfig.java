@@ -24,6 +24,21 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private ArrayList<Material> railArray;
 	private ArrayList<Material> pistonArray;
 
+	private boolean preventTreeWrap;
+	
+	private boolean maintainFlatBedrock;
+	
+	private boolean fixPearlGlitch;
+	
+	private int maxFluidHeight;
+	private int maxFluidAmount;
+	private int maxFluidTimer;
+	
+	private boolean preventLongSigns;
+	private int signLengthLimit;
+	private boolean preventLongSignsAbsolute;
+	private boolean cancelLongSignEvent;
+	
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 		wireUpArrays();
@@ -48,6 +63,24 @@ public class GameFixesConfig extends SimpleHackConfig {
 		
 		stopBedBombing = config.getBoolean("stopBedBombingInHellBiomes", true);
 		if (stopBedBombing) plugin().log("  Stop Bed Bombing In Hell Biomes is enabled.");
+		
+		preventTreeWrap = config.getBoolean("preventTreeWraparound", true);
+		if (preventTreeWrap) plugin().log("  Stop tree wrapping into bedrock is enabled.");
+		
+		maintainFlatBedrock = config.getBoolean("maintainFlatBedrock", true);
+		if (maintainFlatBedrock) plugin().log("  Maintaining bedrock flatness.");
+		
+		fixPearlGlitch = config.getBoolean("fixPearlGlitch", true);
+		if (fixPearlGlitch) plugin().log("  Pearl glitch fix enabled.");
+		
+		maxFluidHeight = config.getInt("maxFluidHeight", 100);
+		maxFluidAmount = config.getInt("maxFluidAmount", 400);
+		maxFluidTimer = config.getInt("maxFluidTimer", 1200);
+		
+		preventLongSigns = config.getBoolean("preventLongSigns", true);
+		signLengthLimit = config.getInt("signLengthLimit", 100);
+		preventLongSignsAbsolute = config.getBoolean("preventLongSignsAbsolute", true);
+		cancelLongSignEvent = config.getBoolean("cancelLongSignEvent", false);
 	}
 
 	private void wireUpArrays() {
@@ -113,4 +146,45 @@ public class GameFixesConfig extends SimpleHackConfig {
 	public boolean stopBedBombing() {
 		return this.stopBedBombing;
 	}
+	
+	public boolean stopTreeWraparound() {
+		return preventTreeWrap;
+	}
+	
+	public boolean maintainFlatBedrock() {
+		return maintainFlatBedrock;
+	}
+	
+	public boolean fixPearlGlitch() {
+		return fixPearlGlitch;
+	}
+
+	public int getMaxFluidHeight() {
+		return maxFluidHeight;
+	}
+
+	public int getMaxFluidAmount() {
+		return maxFluidAmount;
+	}
+
+	public int getMaxFluidTimer() {
+		return maxFluidTimer;
+	}
+
+	public boolean isPreventLongSigns() {
+		return preventLongSigns;
+	}
+
+	public int getSignLengthLimit() {
+		return signLengthLimit;
+	}
+
+	public boolean isPreventLongSignsAbsolute() {
+		return preventLongSignsAbsolute;
+	}
+
+	public boolean isCancelLongSignEvent() {
+		return cancelLongSignEvent;
+	}
+
 }

@@ -1,18 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
-import java.util.Map;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.UUID;
-import java.util.List;
-import java.util.logging.Level;
-
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.Material;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.ChatColor;
-import org.bukkit.Bukkit;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
@@ -39,6 +27,12 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private int weepingAngelPlayer;
 
 	private boolean blockWaterInHell;
+	
+	private boolean minecartTeleport;
+	
+	private boolean obsidianGenerators;
+	
+	private boolean personalDeathMessages;
 	
 	public GameFeaturesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -84,6 +78,15 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		this.blockWaterInHell = config.getBoolean("blockWaterInHell", true);
 		if (this.blockWaterInHell) plugin().log("  Blocking bucket use in hell biomes");
 
+		this.minecartTeleport = config.getBoolean("minecartTeleport", true);
+		if (this.minecartTeleport) plugin().log("  Minecart teleporter enabled");
+		
+		this.obsidianGenerators = config.getBoolean("obsidianGenerators", true);
+		if (this.obsidianGenerators) plugin().log("  Obsidian generators enabled.");
+		
+		this.personalDeathMessages = config.getBoolean("personalDeathMessages", true);
+		if (this.personalDeathMessages) plugin().log("  Personal death messages enabled.");
+		
 		/* Add additional feature config grabs here. */
 	}
 
@@ -140,6 +143,18 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 	public boolean isBlockWaterInHell() {
 		return this.blockWaterInHell;
+	}
+	
+	public boolean isMinecartTeleport() {
+		return this.minecartTeleport;
+	}
+	
+	public boolean isObsidianGenerators() {
+		return this.obsidianGenerators;
+	}
+	
+	public boolean isPersonalDeathMessages() {
+		return this.personalDeathMessages;
 	}
 	
 }

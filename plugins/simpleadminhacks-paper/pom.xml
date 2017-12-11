@@ -6,7 +6,7 @@
   <groupId>com.programmerdan.minecraft</groupId>
   <artifactId>SimpleAdminHacks</artifactId>
   <packaging>jar</packaging>
-  <version>1.2.2</version>
+  <version>1.2.3</version>
   <name>SimpleAdminHacks</name>
   <url>https://github.com/DevotedMC/SimpleAdminHacks</url>
 
@@ -126,6 +126,12 @@
       <groupId>org.inventivetalent.npclib</groupId>
       <artifactId>api</artifactId>
       <version>1.8.6</version>
+      <exclusions>
+      	<exclusion>
+      		<artifactId>craftbukkit</artifactId>
+      		<groupId>org.bukkit</groupId>
+      	</exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -160,15 +166,6 @@
       <groupId>vg.civcraft.mc.civmodcore</groupId>
       <artifactId>CivModCore</artifactId>
       <version>1.6.0</version>
-      <scope>provided</scope>
-    </dependency>
-<!--  Note: CrazyCrates isn't distributed in POM form.
-  For this to build successfully, use install:install-file with
-  attributes as below. -->
-    <dependency>
-      <groupId>me.badbones69</groupId>
-      <artifactId>CrazyCrates</artifactId>
-      <version>1.7.1.5</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

@@ -1,20 +1,30 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import java.util.Date;
-import java.util.logging.Level;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Biome;
-import org.bukkit.block.CreatureSpawner;
-import org.bukkit.entity.*;
-import org.bukkit.event.Listener;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -25,27 +35,22 @@ import org.bukkit.event.inventory.FurnaceExtractEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.Material;
-
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-
-import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.material.Dispenser;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
+import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
 
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerItemDamageEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Dispenser;
-import org.bukkit.material.Hopper;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import net.md_5.bungee.api.ChatColor;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
@@ -179,6 +184,12 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				genStatus.append("disabled\n");
 			}
 
+			genStatus.append("  Minecart teleporter is ");
+			if (config.isMinecartTeleport()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
 			// more?
 		} else {
 			genStatus.append("inactive");
@@ -374,6 +385,113 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				}
 
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onPlayerQuit(PlayerQuitEvent event) {
+		if(config.isEnabled() && config.isMinecartTeleport()) {
+			Player player = event.getPlayer();
+			Entity vehicle = player.getVehicle();
+			if(vehicle == null) {
+				return;
+			}
+			Location vehicleLocation = vehicle.getLocation();
+			player.leaveVehicle();
+			if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "logged out")) {
+				player.setHealth(0.000000D);
+				plugin().log(Level.INFO, "Player '%s' logged out in vehicle: killed", player.getName());
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onVehicleExit(VehicleExitEvent event) {
+		if(config.isEnabled() && config.isMinecartTeleport()) {
+			final Vehicle vehicle = event.getVehicle();
+			if(vehicle == null) {
+				return;
+			}
+			final Entity passenger = event.getExited();
+			if(passenger == null || !(passenger instanceof Player)) {
+				return;
+			}
+			final Player player = (Player) passenger;
+			final Location vehicleLocation = vehicle.getLocation();
+			Bukkit.getScheduler().runTaskLater(plugin(), () -> {
+				if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "exiting vehicle")) {
+					player.setHealth(0.000000D);
+					plugin().log(Level.INFO, "Player '%s' exiting vehicle: killed", player.getName());
+				}
+			}, 2L);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onVehicleDestroy(VehicleDestroyEvent event) {
+		if(config.isEnabled() && config.isMinecartTeleport()) {
+			final Vehicle vehicle = event.getVehicle();
+			if(vehicle == null) {
+				return;
+			}
+			final List<Entity> passengers = vehicle.getPassengers();
+			if(passengers == null) {
+				return;
+			}
+			final Location vehicleLocation = vehicle.getLocation();
+			passengers.removeIf((passenger -> !(passenger instanceof Player)));
+			passengers.forEach((passenger) -> {
+				final Player player = (Player) passenger;
+				Bukkit.getScheduler().runTaskLater(plugin(), () -> {
+					if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "in destroyed vehicle")) {
+						player.setHealth(0.000000D);
+						plugin().log(Level.INFO, "Player '%s' exiting vehicle: killed", player.getName());
+					}
+				}, 2L);
+			});
+		}
+	}
+	
+	@EventHandler
+	public void onBlockFromTo(BlockFromToEvent event) {
+		if(config.isEnabled() && config.isObsidianGenerators()) {
+			if(event.getBlock().getType() == Material.STATIONARY_LAVA ||
+					event.getBlock().getType() == Material.LAVA) {
+				Block to = event.getToBlock();
+				if(to.getType() == Material.REDSTONE || to.getType() == Material.TRIPWIRE) {
+					if(to.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER
+							|| to.getRelative(BlockFace.SOUTH).getType() == Material.STATIONARY_WATER
+							|| to.getRelative(BlockFace.WEST).getType() == Material.STATIONARY_WATER
+							|| to.getRelative(BlockFace.EAST).getType() == Material.STATIONARY_WATER
+							|| to.getRelative(BlockFace.NORTH).getType() == Material.WATER
+							|| to.getRelative(BlockFace.SOUTH).getType() == Material.WATER
+							|| to.getRelative(BlockFace.WEST).getType() == Material.WATER
+							|| to.getRelative(BlockFace.EAST).getType() == Material.WATER) {
+							to.setType(Material.OBSIDIAN);
+						}
+				}
+			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void onPlayerDeath(PlayerDeathEvent event) {
+		if(config.isEnabled() && config.isPersonalDeathMessages()) {
+			Player dead = event.getEntity();
+			event.setDeathMessage(null);
+			String killer = "";
+			if(dead.getKiller() != null) {
+				killer = dead.getKiller().getDisplayName();
+			} else {
+				try {
+					killer = dead.getLastDamageCause().getCause().toString();
+				} catch (NullPointerException e) {
+					return;
+				}
+			}
+			Location loc = dead.getLocation();
+			dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]", 
+					killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 		}
 	}
 }

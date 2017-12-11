@@ -14,6 +14,7 @@ import de.inventivegames.npc.living.NPCPlayer;
  *
  */
 public class Bot {
+	
 	private String botName;
 	private Location spawnLocation;
 	private Location location;

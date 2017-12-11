@@ -33,6 +33,9 @@ hacks:
       playerKill: 5
     # prevent use of buckets or dispensing water in hell biomes
     blockWaterInHell: true
+    minecartTeleport: true
+    obsidianGenerators: true
+    personalDeathMessages: true
   GameFixes:
     enabled: true
     # Does not fully work atm
@@ -43,6 +46,11 @@ hacks:
     stopRailDupe: true
     stopEndPortalDeletion: true
     stopBedBombingInHellBiomes: true
+    preventTreeWraparound: true
+    fixPearlGlitch: true
+    maxFluidHeight: 100
+    maxFluidAmount: 400
+    maxFluidTimer: 1200
   GameTuning:
     enabled: true
     chunkLimits:
@@ -66,17 +74,35 @@ hacks:
     oneToOneNether: false
     # Return nether portal, true = enabled    false = disabled
     returnNetherPortal: true
+    allowNetherTravel: false
     # Disables minecart inventories (trying to fix dupe issues)
     # enabled = able to right click   disabled = not able to right click
     chestedMinecartInventories: true
     hopperMinecartInventories: true
+    enderChestInventories: false
+    stopTrapHorses: true
+    killTrapHorses: true
+    changeSpawnerType: false
+    allowVillagerTrading: false
+    enderGrief: false
+    witherGrief: false
+    #the following are random chances with max of 1000000
+    extraGhastSpawnRate: 0
+    extraWitherSpawnRate: 0
+    extraGhastPortalSpawnRate: 0
+    extraWitherPortalSpawnRate: 0
+    pigPortalSpawnMultiplier: 1000000
+    witherSkullDropRate: 10000
+    extraMagmaSpawnRate: 0
+    allowEnchantedApples: false
+    #a list of materials players shouldn't be allowed to place at all
+    noplace:
+     - DRAGON_EGG
   CTAnnounce:
     enabled: false
     delay: 10000
     message: '%Victim% was combat tagged by %Attacker%'
     broadcast: [OP, CONSOLE]
-  CrazyCratesAnnounce:
-    enabled: false
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
