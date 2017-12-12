@@ -4,7 +4,7 @@
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.6.0</version>
+	<version>1.6.1</version>
 
 	<name>CivModCore</name>
 	<url>https://github.com/DevotedMC/CivModCore/</url>
@@ -26,20 +26,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.mcstats.bukkit</groupId>
-			<artifactId>metrics</artifactId>
-			<version>R8-SNAPSHOT</version>
-			<scope>compile</scope>
-		</dependency>
-
-		<dependency>
-			<groupId>vg.civcraft.mc.mercury</groupId>
-			<artifactId>Mercury</artifactId>
-			<version>1.2.19</version>
-			<scope>provided</scope>
-		</dependency>
-
-		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>2.6.2</version>
@@ -48,10 +34,6 @@
 	</dependencies>
 
 	<repositories>
-		<repository>
-			<id>Plugin Metrics</id>
-			<url>http://repo.mcstats.org/content/repositories/public</url>
-		</repository>
 		<repository>
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>

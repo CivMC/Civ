@@ -15,15 +15,11 @@ public abstract class CommandHandler {
 	private static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";
 
 	public Map<String, Command> commands = new HashMap<>();
-	private Boolean mercuryEnabled;
 
 	public abstract void registerCommands();
 
 	protected void addCommands(Command command) {
 		commands.put(command.getIdentifier().toLowerCase(), command);
-		if (mercuryEnabled == null) {
-			mercuryEnabled = Bukkit.getPluginManager().getPlugin("Mercury") != null;
-		}
 	}
 
 	public boolean execute(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
@@ -68,13 +64,9 @@ public abstract class CommandHandler {
 			}
 			if (completes == null) {
 				completes = new LinkedList<String>();
-				if (mercuryEnabled) {
-					return MercuryTabCompleter.complete(completeArg);
-				} else {
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						if (p.getName().toLowerCase().startsWith(completeArg)) {
-							completes.add(p.getName());
-						}
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					if (p.getName().toLowerCase().startsWith(completeArg)) {
+						completes.add(p.getName());
 					}
 				}
 				return completes;
