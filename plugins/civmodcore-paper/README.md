@@ -3,6 +3,8 @@ CivModCore
 
 Versions:
 
+* 1.6.1 - Spigot 1.12 (Mercury Removed -- incompatible with plugins that rely on Mercury hooks)
+
 * 1.6.0 - Spigot 1.12
 
 * 1.5.10 - Spigot 1.11 or higher.
