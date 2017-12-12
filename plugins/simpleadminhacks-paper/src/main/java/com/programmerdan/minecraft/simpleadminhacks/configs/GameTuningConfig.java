@@ -60,6 +60,8 @@ public class GameTuningConfig extends SimpleHackConfig {
 	
 	private boolean allowEnchantedApples;
 	
+	private boolean preventFallingThroughBedrock;
+	
 	private Set<Material> noPlace;
 	
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
@@ -119,6 +121,8 @@ public class GameTuningConfig extends SimpleHackConfig {
 		this.witherSkullDropRate = config.getInt("witherSkullDropRate", 10000);
 		
 		this.allowEnchantedApples = config.getBoolean("allowEnchantedApples", false);
+		
+		this.preventFallingThroughBedrock = config.getBoolean("preventFallingThroughBedrock", true);
 		
 		if(config.contains("noplace")) {
 			config.getStringList("noplace").forEach((mat) -> {
@@ -329,6 +333,10 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	public boolean allowEnchantedApples() {
 		return allowEnchantedApples;
+	}
+	
+	public boolean isPreventFallingThroughBedrock() {
+		return preventFallingThroughBedrock;
 	}
 	
 	public boolean canPlace(Material mat) {

@@ -325,6 +325,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			case SKULL:
 				height = 0.5;
 				break;
+			default:
+				break;
 			}
 			switch (below.getType()) {
 			case FENCE:
@@ -332,6 +334,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			case NETHER_FENCE:
 			case COBBLE_WALL:
 				height = 0.5;
+				break;
+			default:
 				break;
 			}
 			

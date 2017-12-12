@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -36,16 +37,17 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
+import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
 
 import net.md_5.bungee.api.ChatColor;
 
@@ -430,6 +432,14 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 					&& event.getItem().getDurability() == 1) {
 				event.getItem().setDurability((short) 1);
 			}
+		}
+	}
+	
+	@EventHandler
+	public void onPlayerMove(PlayerMoveEvent event) {
+		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1
+				&& event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+			TeleportUtil.tryToTeleportVertically(event.getPlayer(), event.getTo(), "falling into the void");
 		}
 	}
 }
