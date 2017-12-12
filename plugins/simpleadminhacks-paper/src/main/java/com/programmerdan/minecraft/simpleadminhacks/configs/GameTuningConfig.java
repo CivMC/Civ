@@ -124,6 +124,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 		
 		this.preventFallingThroughBedrock = config.getBoolean("preventFallingThroughBedrock", true);
 		
+		noPlace = new HashSet<Material>();
 		if(config.contains("noplace")) {
 			config.getStringList("noplace").forEach((mat) -> {
 				noPlace.add(Material.getMaterial(mat));
