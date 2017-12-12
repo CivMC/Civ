@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.civchat2</groupId>
 	<artifactId>CivChat2</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<name>CivChat2</name>
 	<url>https://github.com/DevotedMC/CivChat2</url>
 

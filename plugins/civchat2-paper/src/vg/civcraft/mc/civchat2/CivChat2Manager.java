@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -49,6 +50,8 @@ public class CivChat2Manager {
 	protected static final GroupManager GM = NameAPI.getGroupManager();
 
 	private String defaultColor;
+	
+	private static Map<UUID, String> customNames = new HashMap<UUID, String>();
 
 	public CivChat2Manager(CivChat2 pluginInstance) {
 
@@ -125,12 +128,13 @@ public class CivChat2Manager {
 
 		StringBuilder sb = new StringBuilder();
 
-		String senderName = sender.getName();
-		String receiverName = receiver.getName();
+		String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.getDisplayName();
+		String receiverName = customNames.containsKey(receiver.getUniqueId()) ? customNames.get(receiver.getUniqueId()) : receiver.getDisplayName();
 
 		String senderMessage = sb.append(ChatColor.LIGHT_PURPLE)
 								.append("To ")
 								.append(receiverName)
+								.append(ChatColor.LIGHT_PURPLE)
 								.append(": ")
 								.append(chatMessage)
 								.toString();
@@ -139,6 +143,7 @@ public class CivChat2Manager {
 		String receiverMessage = sb.append(ChatColor.LIGHT_PURPLE)
 									.append("From ")
 									.append(senderName)
+									.append(ChatColor.LIGHT_PURPLE)
 									.append(": ")
 									.append(chatMessage)
 									.toString();
@@ -226,7 +231,10 @@ public class CivChat2Manager {
 					if (receiverDistance <= range) {
 						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
 						newColor = newColor != null ? newColor : color;
-						receiver.sendMessage(String.format(messageFormat, newColor + NameAPI.getCurrentName(sender.getUniqueId()),
+						
+						String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.getDisplayName();
+						
+						receiver.sendMessage(String.format(messageFormat, newColor + senderName,
 							newColor + chatMessage));
 					}
 				}
@@ -334,8 +342,8 @@ public class CivChat2Manager {
 			}
 		}
 
-		String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), sender.getName(), message);
-		String senderName = NameAPI.getCurrentName(sender.getUniqueId());
+		String senderName = customNames.containsKey(sender.getUniqueId()) ? customNames.get(sender.getUniqueId()) : sender.getDisplayName();
+		String formatted = parse(ChatStrings.chatGroupMessage, group.getName(), senderName, message);
 
 		for (Player receiver : members) {
 			if (DBM.isIgnoringGroup(receiver.getUniqueId(), group.getName())) {
@@ -386,5 +394,13 @@ public class CivChat2Manager {
 	public String parse(String text, Object... args) {
 
 		return TextUtil.parse(text, args);
+	}
+	
+	public static void removeCustomName(UUID player) {
+		customNames.remove(player);
+	}
+	
+	public static void setCustomName(UUID player, String name) {
+		customNames.put(player, name);
 	}
 }
