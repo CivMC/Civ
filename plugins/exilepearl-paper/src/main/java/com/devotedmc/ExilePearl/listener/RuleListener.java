@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
+import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
@@ -38,7 +39,7 @@ public class RuleListener implements Listener {
 	 * @return true if the rule is active for the player
 	 */
 	protected boolean isRuleActive(ExileRule rule, UUID playerId) {
-		return pearlApi.isPlayerExiled(playerId) && !config.canPerform(rule);
+		return pearlApi.isPlayerExiled(playerId) && !config.canPerform(rule) && pearlApi.getPearl(playerId).getPearlType() == PearlType.EXILE;
 	}
 	
 	
