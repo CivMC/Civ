@@ -3,7 +3,7 @@ main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
 authors: []
 version: ${project.version}
-softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer, NPCLib, CrazyCrates]
+softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer]
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them

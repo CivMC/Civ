@@ -445,7 +445,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				Bukkit.getScheduler().runTaskLater(plugin(), () -> {
 					if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "in destroyed vehicle")) {
 						player.setHealth(0.000000D);
-						plugin().log(Level.INFO, "Player '%s' exiting vehicle: killed", player.getName());
+						plugin().log(Level.INFO, String.format("Player '%s' exiting vehicle: killed", player.getName()));
 					}
 				}, 2L);
 			});

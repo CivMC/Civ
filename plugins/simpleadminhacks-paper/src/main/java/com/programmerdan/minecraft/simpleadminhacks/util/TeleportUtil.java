@@ -39,16 +39,18 @@ public class TeleportUtil {
 		loc.setZ(Math.floor(loc.getZ()) + 0.500000D);
 		final Location baseLoc = loc.clone();
 		final World world = baseLoc.getWorld();
-		boolean teleport = checkForTeleportSpace(loc);
-		if(!teleport) {
-			loc.setY(loc.getY() + 1);
-			teleport = checkForTeleportSpace(loc);
-		}
-		if(teleport) {
-			player.setVelocity(new Vector());
-			player.teleport(loc);
-			SimpleAdminHacks.instance().log(Level.INFO, "Player '%s' %s: teleported to %s", player.getName(), reason, loc.toString());
-			return true;
+		if(loc.getY() > 1) {
+			boolean teleport = checkForTeleportSpace(loc);
+			if(!teleport) {
+				loc.setY(loc.getY() + 1);
+				teleport = checkForTeleportSpace(loc);
+			}
+			if(teleport) {
+				player.setVelocity(new Vector());
+				player.teleport(loc);
+				SimpleAdminHacks.instance().log(Level.INFO, String.format("Player '%s' %s: teleported to %s", player.getName(), reason, loc.toString()));
+				return true;
+			}
 		}
 		loc = getTeleportLocation(player, baseLoc.add(0, world.getMaxHeight() - baseLoc.getY(), 0));
 		if(loc != null) {
@@ -57,7 +59,7 @@ public class TeleportUtil {
 	          loc.setY(loc.getY() + 1.02D);
 	          loc.setZ(Math.floor(loc.getZ()) + 0.500000D);
 			player.teleport(loc);
-			SimpleAdminHacks.instance().log(Level.INFO, "Player '%s' %s: teleported to %s", player.getName(), reason, loc.toString());
+			SimpleAdminHacks.instance().log(Level.INFO, String.format("Player '%s' %s: teleported to %s", player.getName(), reason, loc.toString()));
 			return true;
 		}
 		return false;

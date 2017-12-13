@@ -272,8 +272,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			if(maxY - minY > 240) {
 				event.setCancelled(true);
 				final Location loc = event.getLocation();
-				plugin().log(Level.INFO, "Prevented structure wraparound at %s: %d, %d, %d", 
-						loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+				plugin().log(Level.INFO, String.format("Prevented structure wraparound at %s: %d, %d, %d", 
+						loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 			}
 		}
 	}
@@ -439,9 +439,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				if(signdata[i] != null && signdata[i].length() > config.getSignLengthLimit()) {
 					Player player = event.getPlayer();
 					Location loc = event.getBlock().getLocation();
-					plugin().log(Level.WARNING, "Player '%s' [%s] attempted to place sign at ([%s] %d, %d, %d) with line %d having length %d > %d. Preventing.",
+					plugin().log(Level.WARNING, String.format("Player '%s' [%s] attempted to place sign at ([%s] %d, %d, %d) with line %d having length %d > %d. Preventing.",
 							player.getDisplayName(), player.getUniqueId(), loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(),
-							i, signdata[i], config.getSignLengthLimit());
+							i, signdata[i], config.getSignLengthLimit()));
 					if(config.isCancelLongSignEvent()) {
 						event.setCancelled(true);
 						return;

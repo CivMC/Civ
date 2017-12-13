@@ -90,8 +90,8 @@
       <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
     </repository>
     <repository>
-      <id>inventive-repo</id>
-      <url>http://repo.inventivetalent.org/content/groups/public/</url>
+      <id>byteflux-repo</id>
+      <url>http://repo.byteflux.net/repository/maven-snapshots/</url>
     </repository>
     <repository>
       <id>dmulloy2-repo</id>
@@ -120,17 +120,6 @@
           <groupId>org.mcstats.bukkit</groupId>
           <artifactId>metrics-lite</artifactId>
         </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.inventivetalent.npclib</groupId>
-      <artifactId>api</artifactId>
-      <version>1.8.6</version>
-      <exclusions>
-      	<exclusion>
-      		<artifactId>craftbukkit</artifactId>
-      		<groupId>org.bukkit</groupId>
-      	</exclusion>
       </exclusions>
     </dependency>
     <dependency>
