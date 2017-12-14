@@ -184,7 +184,7 @@ final class CorePearlManager implements PearlManager {
 			if(pearl.getPearlType() == PearlType.PRISON) {
 				dropInventory(player);
 				if(reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN) {
-					player.teleport(pearl.getLocation().add(0.5, 0.5, 0.5));
+					player.teleport(pearl.getLocation().add(0, 0.5, 0));
 				} else {
 					SpawnUtil.spawnPlayer(player);
 				}
