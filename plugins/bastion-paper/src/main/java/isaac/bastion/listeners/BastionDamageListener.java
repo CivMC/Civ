@@ -187,13 +187,14 @@ public final class BastionDamageListener implements Listener {
 			return;
 		}
 		
+		
 		blocking = blockManager.getBlockingBastions(event.getFrom(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PEARL));
 		
 		i = blocking.iterator();
 		
 		while(i.hasNext()) {
 			BastionBlock bastion = i.next();
-			if(bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
+			if(bastion.getType().canPearlOut() || bastion.getType().isOnlyDirectDestruction() || !bastion.getType().isBlockPearls() || (bastion.getType().isRequireMaturity() && !bastion.isMature())) {
 				i.remove();
 			}
 		}
