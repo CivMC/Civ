@@ -263,11 +263,11 @@ pearls:
   allow_pearl_stealing: true
 help_item:
   enabled: true
-  item_name: "You've been exiled!"
+  item_name: "You've been pearled!"
   item_text:
-  - "<a>You are exiled."
+  - "<a>You have been pearled."
   - ""
-  - "<n>Another player has imprisoned you in an exile pearl."
+  - "<n>Another player has imprisoned you in an ender pearl."
   - "<n>Your in-game actions will be limited until you are freed."
   - "<n>You can type <c>/ep locate to see the location of your pearl."
 damage_log:
