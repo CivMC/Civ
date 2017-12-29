@@ -539,14 +539,6 @@ public class PlayerListener implements Listener, Configurable {
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
 		
-		// Check is player is already exiled
-		if (pearlApi.isPlayerExiled(playerId)) {
-			for(Player damager : damagers) {
-				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
-			}
-			return;
-		}
-		
 		Player killer = null;
 		ExilePearl pearl = null;
 		
@@ -571,6 +563,14 @@ public class PlayerListener implements Listener, Configurable {
 			
 			pearl = pearlApi.exilePlayer(playerId, damager);
 			if (pearl == null) {
+				// Check if player is already exiled
+				// exilePlayer already handles the case where this is a pearl steal
+				// and will not return null if it is, so we don't check that here
+				if (pearlApi.isPlayerExiled(playerId)) {
+					for(Player damager : damagers) {
+						msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+					}
+				}
 				return; // The pearling failed for some reason
 			}
 			killer = damager;
