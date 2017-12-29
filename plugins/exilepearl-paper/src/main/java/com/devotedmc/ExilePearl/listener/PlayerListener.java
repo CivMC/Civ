@@ -994,7 +994,7 @@ public class PlayerListener implements Listener, Configurable {
 			int upgradeMatsAvailable = invItems.getAmount(upgradeItem.getStack());
 			if(upgradeMatsAvailable < upgradeMatsRequired) return;
 			inv.remove(Material.ENDER_PEARL);
-			if(upgradeMatsAvailable >= upgradeMatsRequired) {
+			if(upgradeMatsAvailable > upgradeMatsRequired) {
 				for(int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
 					if(is != null) {
