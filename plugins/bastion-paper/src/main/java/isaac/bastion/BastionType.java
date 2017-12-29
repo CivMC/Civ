@@ -50,6 +50,7 @@ public class BastionType {
 	private double explodeOnBlockStrength;
 	private boolean damageFirstBastion;
 	private int regenTime;
+	private boolean allowPearlingOut;
 	
 	public BastionType(
 			String name,
@@ -81,7 +82,8 @@ public class BastionType {
 			double explodeOnBlockStrength,
 			boolean damageFirstBastion,
 			int regenTime,
-			boolean onlyDirectDestruction
+			boolean onlyDirectDestruction,
+			boolean allowPearlingOut
 	) {
 		this.name = name;
 		this.material = material;
@@ -114,6 +116,7 @@ public class BastionType {
 		this.explodeOnBlockStrength = explodeOnBlockStrength;
 		this.damageFirstBastion = damageFirstBastion;
 		this.regenTime = regenTime;
+		this.allowPearlingOut = allowPearlingOut;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
@@ -174,6 +177,15 @@ public class BastionType {
 	 */
 	public boolean isIncludeY() {
 		return includeY;
+	}
+	
+	/**
+	 *
+	 * @return Whether players are allowed to pearl out of this field, 
+	 * 	meaning they are standing inside of the field, but their pearl landed in unbastioned territory
+	 */
+	public boolean canPearlOut() {
+		return allowPearlingOut;
 	}
 
 	/**
@@ -502,6 +514,7 @@ public class BastionType {
 		boolean onlyDirectDestroy = config.getBoolean("onlyDirectDestroy");
 		boolean blockPearls = config.getBoolean("pearls.block");
 		boolean blockMidair = config.getBoolean("pearls.blockMidair");
+		boolean allowPearlingOut = config.getBoolean("pearls.allowPearlingOut");
 		int scaleFactor = config.getInt("pearls.scaleFactor");
 		boolean requireMaturity = config.getBoolean("pearls.requireMaturity");
 		boolean consumeOnBlock = config.getBoolean("pearls.consumeOnBlock");
@@ -523,7 +536,7 @@ public class BastionType {
 		return new BastionType(name, material, itemName, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
-				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy);
+				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut);
 	}
 
 	@Override
@@ -542,7 +555,7 @@ public class BastionType {
 		if (this.blockPearls) {
 			sb.append(": mid").append(this.blockMidair).append(" rM").append(this.pearlRequireMature)
 				.append(" sc").append(this.pearlScale).append(" cob").append(this.consumeOnBlock)
-				.append(" dfB").append(this.damageFirstBastion);
+				.append(" dfB").append(this.damageFirstBastion).append(" apo").append(allowPearlingOut);
 		}
 		sb.append("] elytra[").append(this.blockElytra);
 		if (this.blockElytra) {
