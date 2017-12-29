@@ -567,8 +567,8 @@ public class PlayerListener implements Listener, Configurable {
 				// exilePlayer already handles the case where this is a pearl steal
 				// and will not return null if it is, so we don't check that here
 				if (pearlApi.isPlayerExiled(playerId)) {
-					for(Player damager : damagers) {
-						msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+					for(Player dmgr : damagers) {
+						msg(dmgr, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
 					}
 				}
 				return; // The pearling failed for some reason
