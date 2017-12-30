@@ -51,6 +51,7 @@ public class BastionType {
 	private boolean damageFirstBastion;
 	private int regenTime;
 	private boolean allowPearlingOut;
+	private boolean blockReinforcements;
 	
 	public BastionType(
 			String name,
@@ -83,7 +84,8 @@ public class BastionType {
 			boolean damageFirstBastion,
 			int regenTime,
 			boolean onlyDirectDestruction,
-			boolean allowPearlingOut
+			boolean allowPearlingOut,
+			boolean blockReinforcements
 	) {
 		this.name = name;
 		this.material = material;
@@ -117,6 +119,7 @@ public class BastionType {
 		this.damageFirstBastion = damageFirstBastion;
 		this.regenTime = regenTime;
 		this.allowPearlingOut = allowPearlingOut;
+		this.blockReinforcements = blockReinforcements;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
@@ -372,6 +375,13 @@ public class BastionType {
 	public String getName() {
 		return name;
 	}
+	
+	/**
+	 * @return true if the bastion should prevent citadel reinforcements
+	 */
+	public boolean isBlockReinforcements() {
+		return blockReinforcements;
+	}
 
 	public int hashCode() {
 		return name.hashCode();
@@ -512,6 +522,7 @@ public class BastionType {
 		long placementCooldown = config.getLong("placementCooldown");
 		boolean destroyOnRemove = config.getBoolean("destroyOnRemove");
 		boolean onlyDirectDestroy = config.getBoolean("onlyDirectDestroy");
+		boolean blockReinforcements = config.getBoolean("blockReinforcements");
 		boolean blockPearls = config.getBoolean("pearls.block");
 		boolean blockMidair = config.getBoolean("pearls.blockMidair");
 		boolean allowPearlingOut = config.getBoolean("pearls.allowPearlingOut");
@@ -536,7 +547,7 @@ public class BastionType {
 		return new BastionType(name, material, itemName, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
-				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut);
+				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements);
 	}
 
 	@Override
