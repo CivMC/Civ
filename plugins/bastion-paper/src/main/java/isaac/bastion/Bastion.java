@@ -66,6 +66,7 @@ public final class Bastion extends ACivMod {
 		getServer().getPluginManager().registerEvents(new ElytraListener(), this);
 		getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage, blockManager), this);
 		getServer().getPluginManager().registerEvents(new NameLayerListener(blockStorage), this);
+		getServer().getPluginManager().registerEvents(new CitadelListener(), this);
 	}
 
 	private void setupDatabase() {
