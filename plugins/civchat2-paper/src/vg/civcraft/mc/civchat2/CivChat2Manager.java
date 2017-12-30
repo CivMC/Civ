@@ -163,10 +163,10 @@ public class CivChat2Manager {
 			sender.sendMessage(parse(ChatStrings.chatPlayerAfk));
 			return;
 		// Player is ignoring the sender
-		} else if (DBM.isIgnoringPlayer(receiverName, senderName))  {
+		} else if (DBM.isIgnoringPlayer(receiver.getName(), sender.getName()))  {
 			sender.sendMessage(parse(ChatStrings.chatPlayerIgnoringYou));
 			return;
-		} else if (DBM.isIgnoringPlayer(senderName, receiverName)) {
+		} else if (DBM.isIgnoringPlayer(sender.getName(), receiver.getName())) {
 			sender.sendMessage(parse(ChatStrings.chatNeedToUnignore, receiverName));
 			return;
 		}
