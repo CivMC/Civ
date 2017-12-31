@@ -5,18 +5,18 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.broadcast.PlayerBroadcastListener;
 
-public class CmdPearlBroadcastConfirm extends PearlCommand {
+public class CmdPearlBroadcastAccept extends PearlCommand {
 
-	public CmdPearlBroadcastConfirm(ExilePearlApi pearlApi) {
+	public CmdPearlBroadcastAccept(ExilePearlApi pearlApi) {
 		super(pearlApi);
-		this.aliases.add("confirm");
+		this.aliases.add("accept");
 
 		this.senderMustBePlayer = true;
-		this.setHelpShort("Confirms a pearl broadcast request.");
+		this.setHelpShort("Accepts a pearl broadcast request.");
 	}
 
 	@Override
-	public void perform() {
+	protected void perform() {
 		ExilePearl pearl = plugin.getPearlManager().getBroadcastRequest(player());
 		
 		if (pearl == null) {
@@ -28,4 +28,5 @@ public class CmdPearlBroadcastConfirm extends PearlCommand {
 		plugin.getPearlManager().removeBroadcastRequest(player());
 		msg(Lang.pearlGettingBcasts, pearl.getPlayerName());
 	}
+
 }

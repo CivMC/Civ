@@ -43,6 +43,8 @@ import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
+import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 
 /**
  * The prison pearl manager implementation
@@ -56,6 +58,8 @@ final class CorePearlManager implements PearlManager {
 	
 	private final Map<UUID, ExilePearl> pearls = new HashMap<UUID, ExilePearl>();
 	private final Map<UUID, ExilePearl> bcastRequests = new HashMap<UUID, ExilePearl>();
+	
+	private ICoolDownHandler<UUID> summonRequests = new MilliSecCoolDownHandler<UUID>(120000);
 	
 	
 	/**
@@ -186,7 +190,7 @@ final class CorePearlManager implements PearlManager {
 				if(reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN) {
 					player.teleport(pearl.getLocation().add(0, 0.5, 0));
 				} else {
-					SpawnUtil.spawnPlayer(player);
+					SpawnUtil.spawnPlayer(player, pearlApi.getPearlConfig().getMainWorld());
 				}
 			}
 		} else {
@@ -418,6 +422,19 @@ final class CorePearlManager implements PearlManager {
 			}
 		}
 		return false;
+	}
+	
+	public boolean requestSummon(ExilePearl pearl) {
+		if(summonRequests.onCoolDown(pearl.getPlayerId())) {
+			return false;
+		} else {
+			summonRequests.putOnCoolDown(pearl.getPlayerId());
+			return true;
+		}
+	}
+
+	public boolean awaitingSummon(ExilePearl pearl) {
+		return summonRequests.onCoolDown(pearl.getPlayerId());
 	}
 	
 	private void dropInventory(Player player) {

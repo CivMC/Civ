@@ -26,7 +26,7 @@ public class CmdExilePearl extends PearlCommand {
 		cmdLocate = new CmdPearlLocate(plugin);
 		cmdFree = new CmdPearlFree(plugin);
 		cmdBcast = new CmdPearlBroadcast(plugin);
-		cmdBcastConfirm = new CmdPearlBroadcastConfirm(plugin);
+		cmdBcastConfirm = new CmdPearlBroadcastAccept(plugin);
 		cmdBcastSilence = new CmdPearlBroadcastSilence(plugin);
 		
 		addSubCommand(plugin.getAutoHelp());
@@ -38,6 +38,7 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(cmdBcastSilence);
 		addSubCommand(new CmdSummon(plugin));
 		addSubCommand(new CmdReturn(plugin));
+		addSubCommand(new CmdSummonConfirm(plugin));
 		
 		// Admin commands
 		addSubCommand(new CmdConfig(plugin));

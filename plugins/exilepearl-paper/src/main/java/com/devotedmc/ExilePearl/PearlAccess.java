@@ -146,4 +146,18 @@ public interface PearlAccess {
 	 * @return true if the player is returned, otherwise false
 	 */
 	boolean returnPearl(ExilePearl pearl);
+	
+	/**
+	 * Requests to summon a pearled player
+	 * @param pearl The pearl to summon
+	 * @return True if the request goes through
+	 */
+	boolean requestSummon(ExilePearl pearl);
+	
+	/**
+	 * Checks if a summon request has been made
+	 * @param pearl The pearl to check
+	 * @return true if a request has been made
+	 */
+	boolean awaitingSummon(ExilePearl pearl);
 }

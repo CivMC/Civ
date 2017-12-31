@@ -458,6 +458,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	public World getPrisonWorld() {
 		return Bukkit.getWorld(doc.getString("prison_world", "world_the_end"));
 	}
+	
+	@Override
+	public World getMainWorld() {
+		return Bukkit.getWorld(doc.getString("main_world", "world"));
+	}
 
 	@Override
 	public Set<RepairMaterial> getUpgradeMaterials() {
@@ -473,6 +478,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	
 	@Override
 	public boolean allowPearlStealing() {
-		return doc.getBoolean("allow_pearl_stealing", true);
+		return doc.getBoolean("pearls.allow_pearl_stealing", true);
+	}
+	
+	@Override
+	public boolean allowSummoning() {
+		return doc.getBoolean("pearls.allow_summoning", true);
 	}
 }

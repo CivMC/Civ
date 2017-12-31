@@ -38,6 +38,10 @@ public class PlayerHolder implements PearlHolder {
 	public Location getLocation() {
 		return player.getLocation().add(0, -.5, 0);
 	}
+	
+	public Player getPlayer() {
+		return player;
+	}
 
 	@Override
 	public HolderVerifyResult validate(ExilePearl pearl) {

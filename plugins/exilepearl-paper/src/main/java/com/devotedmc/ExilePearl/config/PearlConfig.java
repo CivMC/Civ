@@ -150,7 +150,11 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	
 	World getPrisonWorld();
 	
+	World getMainWorld();
+	
 	Set<RepairMaterial> getUpgradeMaterials();
 
 	boolean allowPearlStealing();
+	
+	boolean allowSummoning();
 }

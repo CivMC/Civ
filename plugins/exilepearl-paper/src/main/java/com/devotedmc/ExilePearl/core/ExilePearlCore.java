@@ -700,4 +700,14 @@ final class ExilePearlCore implements ExilePearlApi {
 
 		return new ArrayList<>();
 	}
+
+	@Override
+	public boolean requestSummon(ExilePearl pearl) {
+		return pearlManager.requestSummon(pearl);
+	}
+
+	@Override
+	public boolean awaitingSummon(ExilePearl pearl) {
+		return pearlManager.awaitingSummon(pearl);
+	}
 }
