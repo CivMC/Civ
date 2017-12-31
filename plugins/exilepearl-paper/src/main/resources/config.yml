@@ -37,6 +37,9 @@
 # pearls.free_by_throwing
 #  - When true, pearls can be freed by throwing them
 # 
+# pearls.free_teleport
+#  - When true, freeing a prison pearled player teleports them to the freer
+# 
 # pearls.hotbar_needed
 #  - When true, players will only be pearled if the killer has a pearl 
 #    in their hotbar
@@ -238,6 +241,7 @@ general:
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
+  free_teleport: true
   hotbar_needed: true
   decay_interval_min: 60
   decay_amount: 1

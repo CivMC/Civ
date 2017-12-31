@@ -171,6 +171,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public boolean getShouldFreeTeleport() {
+		return doc.getBoolean("pearls.free_teleport", true);
+	}
+
+	@Override
 	public double getBastionDamage() {
 		return doc.getDouble("pearls.bastion_harm_amount", 0.5);
 	}
