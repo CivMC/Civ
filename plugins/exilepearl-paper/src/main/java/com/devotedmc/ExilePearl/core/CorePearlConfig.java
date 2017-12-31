@@ -456,12 +456,12 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	
 	@Override
 	public World getPrisonWorld() {
-		return Bukkit.getWorld(doc.getString("prison_world", "world_the_end"));
+		return Bukkit.getWorld(doc.getString("pearls.prison_world", "world_the_end"));
 	}
 	
 	@Override
 	public World getMainWorld() {
-		return Bukkit.getWorld(doc.getString("main_world", "world"));
+		return Bukkit.getWorld(doc.getString("pearls.main_world", "world"));
 	}
 
 	@Override

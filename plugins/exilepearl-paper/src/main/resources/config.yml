@@ -64,6 +64,8 @@
 #
 # pearls.prison_world
 #  - The name of the world where prisoners should be sent
+# pearls.main_world
+#  - The name of the world where freed prisoners should go
 #
 # pearls.upgrade_materials
 # - The materials used to upgrade pearls from exile to prison
@@ -71,6 +73,9 @@
 #
 # pearls.allow_pearl_stealing
 # - Whether or not prison pearls can be stolen by killing a summoned player
+#
+# pearls.allow_summoning
+# - Whether or not summoning is allowed
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -261,6 +266,9 @@ pearls:
       lore:
        - This is used to upgrade exile pearls to prison pearls
   allow_pearl_stealing: true
+  allow_summoning: true
+  prison_world: world_the_end
+  main_world: world
 help_item:
   enabled: true
   item_name: "You've been pearled!"
