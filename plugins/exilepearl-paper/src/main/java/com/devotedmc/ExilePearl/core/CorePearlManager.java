@@ -181,9 +181,9 @@ final class CorePearlManager implements PearlManager {
 			pearls.remove(pearl.getPlayerId());
 			clearPearlBroadcasts(pearl);
 			storage.getStorage().pearlRemove(pearl);
-			if(pearlApi.getPearlConfig().getShouldFreeTeleport() && pearl.getPearlType() == PearlType.PRISON) {
+			if(pearl.getPearlType() == PearlType.PRISON) {
 				dropInventory(player);
-				if(reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN) {
+				if(pearlApi.getPearlConfig().getShouldFreeTeleport() && (reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN)) {
 					player.teleport(pearl.getLocation().add(0, 0.5, 0));
 				} else {
 					SpawnUtil.spawnPlayer(player);
