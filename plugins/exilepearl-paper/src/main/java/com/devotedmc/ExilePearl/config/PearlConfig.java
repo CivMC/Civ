@@ -72,6 +72,12 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 * @return true if they can be freed by throwing
 	 */
 	boolean getFreeByThrowing();
+
+	/**
+	 * Gets whether freeing a prison pearl should teleport the player
+	 * @return true if they should be teleported
+	 */
+	boolean getShouldFreeTeleport();
 	
 	/**
 	 * Gets how much to damage the players when they are inside a bastion field
