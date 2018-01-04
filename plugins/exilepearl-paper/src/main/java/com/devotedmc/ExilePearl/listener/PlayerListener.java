@@ -663,7 +663,7 @@ public class PlayerListener implements Listener, Configurable {
 		} else if (pearl != null) {
 			pearl.setLastOnline(new Date());
 			if(pearl.getPearlType() == PearlType.PRISON && !pearl.isSummoned() && 
-					!pearl.getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
+					!e.getPlayer().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())) {
 				SpawnUtil.spawnPlayer(pearl.getPlayer(), pearlApi.getPearlConfig().getPrisonWorld());
 			}
 		}
