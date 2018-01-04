@@ -28,7 +28,6 @@ public class CmdSummonConfirm extends PearlCommand {
 			msg(Lang.onlyPrisonedPlayers);
 			return;
 		}
-		
 		if(!(pearl.getHolder() instanceof PlayerHolder)) {
 			msg("<b>Somebody must be holding your pearl to be summoned");
 		} else {

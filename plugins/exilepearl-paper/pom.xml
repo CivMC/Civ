@@ -64,14 +64,8 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.2</version>
 			<scope>provided</scope>
-			<exclusions>
-				<exclusion>
-					<artifactId>metrics</artifactId>
-					<groupId>org.mcstats.bukkit</groupId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>

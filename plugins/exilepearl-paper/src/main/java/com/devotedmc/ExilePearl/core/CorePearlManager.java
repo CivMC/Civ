@@ -401,6 +401,7 @@ final class CorePearlManager implements PearlManager {
 				dropInventory(pearl.getPlayer());
 				pearl.setReturnLocation(pearl.getPlayer().getLocation());
 				pearl.setSummoned(true);
+				summonRequests.removeCooldown(pearl.getPlayerId());
 				return pearl.getPlayer().teleport(summoner);
 			}
 		}
