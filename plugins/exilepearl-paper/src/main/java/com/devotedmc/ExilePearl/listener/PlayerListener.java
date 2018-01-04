@@ -1017,6 +1017,7 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			inv.clear();
 			pearl.setPearlType(PearlType.PRISON);
+			pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
 			inv.setResult(pearl.createItemStack());
 			if(pearl.getPlayer() != null && pearl.getPlayer().isOnline()) {
 				SpawnUtil.spawnPlayer(pearl.getPlayer(), pearlApi.getPearlConfig().getPrisonWorld());
