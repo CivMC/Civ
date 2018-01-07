@@ -4,16 +4,17 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.bukkit.ChatColor;
-import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
+import isaac.bastion.Permissions;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.BastionGroupManager;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CitadelListener implements Listener {
 	
@@ -27,13 +28,13 @@ public class CitadelListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
-		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
-		blocks.add(event.getBlock());
-		Set<BastionBlock> preblocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
+		Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getBlock().getLocation(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+		System.out.println("Pre-blocking reinforcements: " + preblocking.size());
 		Set<BastionBlock> blocking = new CopyOnWriteArraySet<BastionBlock>();
 		for(BastionBlock bastion : preblocking) {
 			BastionType type = bastion.getType();
 			if(type.isBlockReinforcements()) {
+				System.out.println("Found blocking reinforcement bastion");
 				blocking.add(bastion);
 			}
 		}
