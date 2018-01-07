@@ -2,10 +2,14 @@ package com.devotedmc.ExilePearl.command;
 
 import java.util.UUID;
 
+import org.bukkit.entity.Player;
+
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.util.Permission;
+import com.devotedmc.ExilePearl.util.SpawnUtil;
 
 public class CmdAdminSetType extends PearlCommand {
 
@@ -47,6 +51,10 @@ public class CmdAdminSetType extends PearlCommand {
 		}
 		
 		pearl.setPearlType(type);
+		Player player = pearl.getPlayer();
+		if(player != null && player.isOnline()) {
+			SpawnUtil.spawnPlayer(player, pearl.getPearlType() == PearlType.PRISON ? ExilePearlPlugin.getApi().getPearlConfig().getPrisonWorld() : ExilePearlPlugin.getApi().getPearlConfig().getMainWorld());
+		}
 		msg("<g>You updated the pearl type of player %s to %s", pearl.getPlayerName(), type.toString());
 	}
 }
