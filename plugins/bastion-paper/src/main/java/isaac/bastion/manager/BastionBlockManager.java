@@ -29,6 +29,7 @@ import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -137,10 +138,10 @@ public class BastionBlockManager {
 		}
 
 		if (origin != null) {
-			PlayerReinforcement reinforcement = (PlayerReinforcement) Citadel.getReinforcementManager().
+			Reinforcement reinforcement = Citadel.getReinforcementManager().
 					getReinforcement(origin);
 			if (reinforcement instanceof PlayerReinforcement) {
-				accessors.add(reinforcement.getGroup().getOwner());
+				accessors.add(((PlayerReinforcement)reinforcement).getGroup().getOwner());
 			}
 
 			for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {

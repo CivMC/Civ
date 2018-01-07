@@ -30,7 +30,7 @@ public class CitadelListener implements Listener {
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
 		Iterator<BastionBlock> iter = blocking.iterator();
 		while(iter.hasNext()) {
 			BastionType type = iter.next().getType();
