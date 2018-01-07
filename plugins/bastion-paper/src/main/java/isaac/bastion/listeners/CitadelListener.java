@@ -29,12 +29,10 @@ public class CitadelListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
 		Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getBlock().getLocation(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		System.out.println("Pre-blocking reinforcements: " + preblocking.size());
 		Set<BastionBlock> blocking = new CopyOnWriteArraySet<BastionBlock>();
 		for(BastionBlock bastion : preblocking) {
 			BastionType type = bastion.getType();
 			if(type.isBlockReinforcements()) {
-				System.out.println("Found blocking reinforcement bastion");
 				blocking.add(bastion);
 			}
 		}
