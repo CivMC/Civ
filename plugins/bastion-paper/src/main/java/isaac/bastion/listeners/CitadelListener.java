@@ -27,14 +27,13 @@ public class CitadelListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
-		System.out.println(event.getPlayer().getDisplayName());
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
 		Set<BastionBlock> preblocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
 		Set<BastionBlock> blocking = new CopyOnWriteArraySet<BastionBlock>();
 		for(BastionBlock bastion : preblocking) {
 			BastionType type = bastion.getType();
-			if(!type.isOnlyDirectDestruction() && type.isBlockReinforcements()) {
+			if(type.isBlockReinforcements()) {
 				blocking.add(bastion);
 			}
 		}
