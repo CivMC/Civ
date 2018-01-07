@@ -1,6 +1,5 @@
 package isaac.bastion.listeners;
 
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -31,12 +30,12 @@ public class CitadelListener implements Listener {
 		System.out.println(event.getPlayer().getDisplayName());
 		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
 		blocks.add(event.getBlock());
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
-		Iterator<BastionBlock> iter = blocking.iterator();
-		while(iter.hasNext()) {
-			BastionType type = iter.next().getType();
-			if(!type.isOnlyDirectDestruction() || !type.isBlockReinforcements()) {
-				iter.remove();
+		Set<BastionBlock> preblocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
+		Set<BastionBlock> blocking = new CopyOnWriteArraySet<BastionBlock>();
+		for(BastionBlock bastion : preblocking) {
+			BastionType type = bastion.getType();
+			if(!type.isOnlyDirectDestruction() && type.isBlockReinforcements()) {
+				blocking.add(bastion);
 			}
 		}
 		if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
