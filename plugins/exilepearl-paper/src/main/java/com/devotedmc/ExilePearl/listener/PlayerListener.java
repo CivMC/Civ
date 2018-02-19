@@ -1051,14 +1051,6 @@ public class PlayerListener implements Listener, Configurable {
 			for(PearlType type : PearlType.values()) {
 				repairMaterials.put(type, config.getRepairMaterials(type));
 			}
-			
-			for(PearlType type : PearlType.values()) {
-				if(repairMaterials.get(type).size() == 0) {
-					pearlApi.log("Failed to load any pearl repair materials for " + type.getTitle() + ". Defaulting to Obsidian.");
-					repairMaterials.get(type).add(new RepairMaterial("Obsidian", new ItemStack(Material.OBSIDIAN), 2));
-				}
-			}
-
 			for(Set<RepairMaterial> set : repairMaterials.values()) {
 				for(RepairMaterial mat : set) {
 					ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
@@ -1081,11 +1073,6 @@ public class PlayerListener implements Listener, Configurable {
 			resultItem.setItemMeta(im);
 			
 			upgradeMaterials.addAll(config.getUpgradeMaterials());
-			
-			if(upgradeMaterials.isEmpty()) {
-				pearlApi.log("Failed to load any upgrade recipes, defaulting to bedrock");
-				upgradeMaterials.add(new RepairMaterial("Admin Crimes", new ItemStack(Material.BEDROCK), 1));
-			}
 			
 			for(RepairMaterial mat : upgradeMaterials) {
 				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
