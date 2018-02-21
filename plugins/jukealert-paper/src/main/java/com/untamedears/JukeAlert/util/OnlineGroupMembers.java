@@ -193,8 +193,8 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 				if (g.getPlayerType(uuid) == PlayerType.MEMBERS && !g.getOwner().equals(uuid)) {
 					members.add(Bukkit.getOfflinePlayer(uuid));
 				}
-			member_iter_ = members.iterator();
 			}
+			member_iter_ = members.iterator();
 		}
 		while (member_iter_.hasNext()) {
 			OfflinePlayer member = member_iter_.next();
