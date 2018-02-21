@@ -7,13 +7,17 @@ Exile pearls have a health value that decays over time, so they must be repaired
 
 Exiled players can't come within a set radius of their pearl, so the only way they can be freed is to convince the pearl owner to free him, or if other players forcefully free the pearl.
 
+Exile pearls can also be upgraded to prison pearls, which imprison the pearled player in the end, for a higher upkeep cost.
+
 ### Player Commands
     /ep                           The root command
     /ep help                      Displays plugin help
     /ep locate                    Locates your pearl location
     /ep free                      Frees a pearl in your hand
+    /ep summon                    Requests to summon the player in the pearl in your hand
+    /ep confirm                   Confirms a summon request
     /ep broadcast                 Broadcasts your pearl's location to a group or player
-    /ep confirm                   Confirms a broadcast request from another player
+    /ep accept                    Accepts a broadcast request from another player
     /ep silence                   Silences pearl broadcasts from a player
     
 ### Admin Commands
