@@ -50,12 +50,12 @@ public class Fortification extends PlayerCommandMiddle{
 		else{
 			groupName = args[0];
 		}
-		Group g = GroupManager.getGroup(groupName);	
+		Group g = GroupManager.getGroup(groupName);
 		if (g == null){
 			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
-		
+
 		PlayerType type = g.getPlayerType(uuid);
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && type == null){
 			sendAndLog(p, ChatColor.RED, "You are not on this group.");
@@ -69,7 +69,7 @@ public class Fortification extends PlayerCommandMiddle{
 		ItemStack stack = p.getInventory().getItemInMainHand();
 		PlayerState state = PlayerState.get(p);
 		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION && state.getGroup().getName() == g.getName()){
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 		}
