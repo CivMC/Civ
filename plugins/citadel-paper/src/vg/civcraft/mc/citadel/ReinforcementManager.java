@@ -283,7 +283,9 @@ public class ReinforcementManager {
 						}
 					}
 					
-					saveManyReinforcements(reins);
+					if(reins.size() != 0){
+						saveManyReinforcements(reins);
+					}
 					
 					if (CitadelConfigManager.shouldLogInternal()) {
 						s = System.currentTimeMillis() - s;
