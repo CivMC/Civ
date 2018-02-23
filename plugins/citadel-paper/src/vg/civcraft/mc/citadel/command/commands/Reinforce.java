@@ -18,7 +18,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class Reinforce extends PlayerCommandMiddle {
 
 	private GroupManager gm = NameAPI.getGroupManager();
-	
+
 	public Reinforce(String name) {
 		super(name);
 		setIdentifier("ctr");
@@ -62,7 +62,7 @@ public class Reinforce extends PlayerCommandMiddle {
 			return true;
 		}
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT && state.getGroup().getName() == g.getName()){
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 		}
