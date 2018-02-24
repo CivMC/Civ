@@ -234,9 +234,10 @@ public class PlayerReinforcement extends Reinforcement{
     		return;
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		g = GroupManager.getGroup(g.getGroupId());
+    		int groupId = g.getGroupId();
+    		g = GroupManager.getGroup(groupId);
     		if (g == null) {
-    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
+    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + groupId + " was deleted or merged but not marked invalid!");
     		}
     		isDirty = true;
     	}
