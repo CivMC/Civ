@@ -39,7 +39,7 @@ public class ToggleEasyMode extends PlayerCommandMiddle {
 				}
 				sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
 			} else {
-				sendAndLog(p, ChatColor.RED, "Usage: /cte [on|off]");
+				sendAndLog(p, ChatColor.RED, String.format("Usage: %s", this.getUsage()));
 			}
 			return true;
 		}
