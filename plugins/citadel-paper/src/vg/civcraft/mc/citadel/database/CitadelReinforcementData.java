@@ -613,8 +613,8 @@ public class CitadelReinforcementData {
 				throw new SQLException("Reinforcement index collision");
 			}
 		} catch (SQLException e) {
-			Citadel.getInstance().getLogger().log(Level.SEVERE, "Citadel has detected a reinforcement that should not be there. Deleting it"
-					+ (retry ? "and trying again. " : "") + "Including the stack incase it is useful.", e);
+			Citadel.getInstance().getLogger().log(Level.SEVERE, "Citadel has detected a reinforcement that should not be there. Deleting it "
+					+ (retry ? "and trying again. " : "") + "Including the stack in case it is useful.", e);
 			// Let's delete the reinforcement; if a user is able to place one then the db is out of synch / messed up some how.
 			deleteReinforcement(rein);
 			// Now lets try again.
