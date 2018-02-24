@@ -131,6 +131,16 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public String getPearlHealthDecayHumanInterval() {
+		return doc.getString("pearls.decay_interval_human", "day");
+	}
+
+	@Override
+	public int getPearlHealthDecayHumanIntervalMin() {
+		return doc.getInteger("pearls.decay_interval_min_human", 1440);
+	}
+
+	@Override
 	public int getPearlHealthDecayIntervalMin() {
 		return doc.getInteger("pearls.decay_interval_min", 60);
 	}

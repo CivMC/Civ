@@ -82,6 +82,7 @@ public class RepairMaterial {
 				if (lore.size() > 0) {
 					im.setLore(lore);
 				}
+				is.setItemMeta(im);
 			}
 			
 			RepairMaterial repair = new RepairMaterial(name, is, repairAmount);
