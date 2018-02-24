@@ -67,28 +67,28 @@ public class CitadelReinforcementData {
 		}
 	}
 
-	private static final String getRein = 
+	private static final String getRein =
 			"SELECT material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
 				+ "FROM reinforcement WHERE x = ? and y = ? and z = ? and world = ?";
-	private static final String getReins = 
+	private static final String getReins =
 			"SELECT x, y, z, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, rein_id "
 				+ "FROM reinforcement WHERE chunk_x = ? and chunk_z = ? and world = ?;";
-	private static final String addRein = 
+	private static final String addRein =
 			"INSERT INTO reinforcement (x, y, z, world, material_id, durability, insecure, maturation_time, acid_time, rein_type_id, lore, group_id, chunk_x, chunk_z) "
 				+ "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?); ";
 	private static final String removeRein = "DELETE from reinforcement WHERE x = ? and y = ? and z = ? and world = ?";
-	private static final String updateRein = 
+	private static final String updateRein =
 			"UPDATE reinforcement SET durability = ?, insecure = ?, group_id = ?, maturation_time = ?, acid_time = ? "
 				+ "WHERE x = ? and y = ? and z = ? and world = ?";
 	private static final String getNatures = "SELECT rein_type_id, rein_type FROM reinforcement_type";
-	
-	private static final String selectReinCountForGroup = 
+
+	private static final String selectReinCountForGroup =
 			"SELECT count(*) AS count FROM reinforcement WHERE FIND_IN_SET(CAST(group_id AS char), ?) > 0";
 	private static final String selectReinCount = "SELECT count(*) AS count FROM reinforcement";
 
 	public CitadelReinforcementData(ManagedDatasource db){
 		this.db = db;
-		
+
 		if (!db.isManaged()) {
 			// First "migration" is conversion from old system to new
 			boolean isNew = true;
@@ -104,7 +104,7 @@ public class CitadelReinforcementData {
 
 			if (!isNew) {
 				try (Connection connection = db.getConnection();
-						PreparedStatement migrateInstall = connection.prepareStatement( 
+						PreparedStatement migrateInstall = connection.prepareStatement(
 								"INSERT INTO managed_plugin_data (plugin_name, current_migration_number, last_migration)"
 									+ " SELECT plugin_name, max(db_version), max(str_to_date(update_time, '%Y-%m-%d %H:%i:%s' )) FROM db_version WHERE plugin_name = ? LIMIT 1;");) {
 					migrateInstall.setString(1, Citadel.getInstance().getPluginName());
@@ -126,10 +126,10 @@ public class CitadelReinforcementData {
 		} else {
 			logger.log(Level.INFO, "Still at it, eh?");
 		}
-		
+
 		doPrepareNatures();
 	}
-	
+
 	private void doPrepareNatures() {
 		try (Connection connection = db.getConnection();
 				PreparedStatement statement = connection.prepareStatement(CitadelReinforcementData.getNatures);
@@ -145,7 +145,7 @@ public class CitadelReinforcementData {
 					logger.log(Level.WARNING, "Note that although configured, {0} is not a recognized Reinforcement Nature", type);
 				}
 			}
-			
+
 			if (natures.size() == 0) {
 				logger.log(Level.SEVERE, "Failed to find any reinforcement types, shutting down.");
 				Bukkit.shutdown();
@@ -155,7 +155,7 @@ public class CitadelReinforcementData {
 			Bukkit.shutdown();
 		}
 	}
-	
+
 	public void registerMigrations() {
 		db.registerMigration(6, false,
 				new Callable<Boolean> () {
@@ -205,7 +205,7 @@ public class CitadelReinforcementData {
 					+ "chunk_id varchar(255),"
 					+ "world varchar (255) not null,"
 					+ "primary key rein_id_key (rein_id),"
-					+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos", 
+					+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos",
 					// I like turtles mother fucker. Never program because then you get turtles.
 				"insert into reinforcement_id (x, y, z, chunk_id, world) select x, y, z, chunk_id, world from reinforcement;", // populate that bitch.
 				"alter table reinforcement add rein_id int not null, drop chunk_id;",
@@ -221,7 +221,7 @@ public class CitadelReinforcementData {
 				"alter table reinforcement_id add index `chunk_id_index` (chunk_id);");
 		db.registerMigration(8, false, "alter table reinforcement_id drop primary key,"
 					+ " add primary key (rein_id, x, y, z, world);");
-		db.registerMigration(9, false, "alter table reinforcement add acid_time int not null;", 
+		db.registerMigration(9, false, "alter table reinforcement add acid_time int not null;",
 				"update reinforcement set acid_time = maturation_time;"); // Might take a minute.
 		db.registerMigration(10, false, "drop procedure if exists insertReinID;",
 				"create definer=current_user procedure insertReinID("
@@ -269,7 +269,7 @@ public class CitadelReinforcementData {
 					+ "(SELECT rt.rein_type_id FROM reinforcement_type rt where rt.rein_type = rein_type LIMIT 1), "
 					+ "lore, (select LAST_INSERT_ID()), acid_time);"
 					+ "end;");
-		db.registerMigration(12, false, 
+		db.registerMigration(12, false,
 				"CREATE TABLE reinforcement_temp ("
 					+ "rein_id int not null auto_increment,"
 					+ "x int not null,"
@@ -301,8 +301,8 @@ public class CitadelReinforcementData {
 				"DROP PROCEDURE IF EXISTS insertRein;"
 				);
 	}
-	
-	
+
+
 	/**
 	 * Is used to grab the reinforcement from the mysql db.
 	 * If there isn't a reinforcement at the location it
@@ -356,7 +356,7 @@ public class CitadelReinforcementData {
 				if (g == null) {
 					if (CitadelConfigManager.shouldLogReinforcement()) {
 						logger.log(Level.WARNING,
-								"Player Reinforcement at {0} lacks a valid group (group {1} failed lookup)", 
+								"Player Reinforcement at {0} lacks a valid group (group {1} failed lookup)",
 								new Object[] {loc, group_id});
 					}
 					return null; // group not found!
@@ -381,7 +381,7 @@ public class CitadelReinforcementData {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * Returns a list of reinforcements in a given chunk.
 	 * @param The chunk you want the reinforcements about.
@@ -407,7 +407,7 @@ public class CitadelReinforcementData {
 			getReins.setInt(1, cx);
 			getReins.setInt(2, cz);
 			getReins.setString(3, world);
-			
+
 			try (ResultSet set = getReins.executeQuery();) {
 				while (set.next()) {
 					int x = set.getInt(1);
@@ -426,14 +426,14 @@ public class CitadelReinforcementData {
 					// Sketch: when doing multiblock, have an FK that self-references the same table, so multiple locations link to a single rein.
 					//int linked_rein_id = set.getInt(12);
 					Location loc = new Location(chunk.getWorld(), x, y, z);
-					
+
 					switch(rein_type) {
 					case PLAYER_REINFORCEMENT:
 						Group g = GroupManager.getGroup(group_id);
 						if (g == null) {
 							if (CitadelConfigManager.shouldLogReinforcement()) {
 								logger.log(Level.WARNING,
-										"During Chunk {0} load, Player Reinforcement at {1} lacks a valid group (group {2} failed lookup)", 
+										"During Chunk {0} load, Player Reinforcement at {1} lacks a valid group (group {2} failed lookup)",
 										new Object[] {chunk, loc, group_id});
 							}
 							continue; // group not found!
@@ -466,7 +466,7 @@ public class CitadelReinforcementData {
 		}
 		return reins;
 	}
-	
+
 	/**
 	 * Inserts a reinforcement into the Database. Should only be called from SaveManager.
 	 * @param The Reinforcement to save.
@@ -474,7 +474,7 @@ public class CitadelReinforcementData {
 	public void insertReinforcement(Reinforcement rein){
 		insertReinforcement(rein, true);
 	}
-	
+
 	/**
 	 * Internal, just sets the params correctly depending on nature. Assumes a single compatible query across all natures.
 	 * @param rein
@@ -494,17 +494,17 @@ public class CitadelReinforcementData {
 		int acidTime = rein.getAcidTime();
 		int cx = loc.getChunk().getX();
 		int cz = loc.getChunk().getZ();
-		
+
 		// specific fields, "safe" values.
 		boolean insecure = false;
 		String lore = null;
 		int groupId = -1;
 		int type = 0;
-		
+
 		if (rein instanceof PlayerReinforcement) {
 			type = invNatures.get(ReinforcementNature.PLAYER_REINFORCEMENT);
-			
-			PlayerReinforcement prein = (PlayerReinforcement) rein; 
+
+			PlayerReinforcement prein = (PlayerReinforcement) rein;
 			insecure = prein.isInsecure();
 			ItemMeta meta = prein.getStackRepresentation().getItemMeta();
 			if (meta.hasLore()) {
@@ -516,8 +516,8 @@ public class CitadelReinforcementData {
 			} else {
 				lore = null;
 			}
-		
-			Group g = prein.getGroup(); 
+
+			Group g = prein.getGroup();
 			if (g == null) {
 				logger.log(Level.WARNING, "Player Reinforcement insert at {0} lacks a valid group (lookup failed)", loc);
 			}
@@ -538,17 +538,17 @@ public class CitadelReinforcementData {
 		insertRein.setBoolean(7, insecure);
 		insertRein.setInt(8, maturationTime);
 		insertRein.setInt(9, acidTime);
-		insertRein.setInt(10, type);		
+		insertRein.setInt(10, type);
 		insertRein.setString(11, lore);
 		insertRein.setInt(12, groupId);
 		insertRein.setInt(13, cx);
 		insertRein.setInt(14, cz);
 		return insertRein;
 	}
-	
+
 	/**
 	 * Use this to insert a set of Player reinforcements all at once. Note that this automatically fails over to single-insertions if the batch fails in any way.
-	 * 
+	 *
 	 * @param reins
 	 */
 	public void insertManyReinforcements(Collection<Reinforcement> reins) {
@@ -557,7 +557,7 @@ public class CitadelReinforcementData {
 		try (Connection connection = db.getConnection();
 				PreparedStatement insertRein = connection.prepareStatement(CitadelReinforcementData.addRein);) {
 			int count = 0;
-			for (Reinforcement rein : reins) {		
+			for (Reinforcement rein : reins) {
 				this.prepInsertRein(rein, insertRein).addBatch();
 				count++;
 				if (count % 100 == 0) {
@@ -572,7 +572,7 @@ public class CitadelReinforcementData {
 						failover = true;
 						logger.log(Level.INFO, "Inserted a batch of Player reinforcements -- 100 attempted -- outcome indeterminate");
 						break;
-					}					
+					}
 				}
 			}
 			if (count % 100 != 0) {
@@ -591,7 +591,7 @@ public class CitadelReinforcementData {
 			failover = true;
 			logger.log(Level.SEVERE, "Citadel encountered a critical error while inserting a batch of reinforcements", e);
 		}
-		
+
 		if (failover) {
 			logger.log(Level.WARNING, "Citadel encountered uncertainty while inserting a batch of records. Failing over to individual insertion logic.");
 			for (Reinforcement rein : reins) {
@@ -599,13 +599,13 @@ public class CitadelReinforcementData {
 			}
 		}
 	}
-	
+
 	public void insertReinforcement(Reinforcement rein, boolean retry){
 		if (rein == null){
 			logger.log(Level.WARNING, "CitadelReinforcementData insertReinforcement called with null");
 			return;
 		}
-		
+
 		try (Connection connection = db.getConnection();
 				PreparedStatement insertRein = connection.prepareStatement(CitadelReinforcementData.addRein);) {
 			if (this.prepInsertRein(rein, insertRein).executeUpdate() != 1) {
@@ -634,7 +634,7 @@ public class CitadelReinforcementData {
 		try (Connection connection = db.getConnection();
 				PreparedStatement removeRein = connection.prepareStatement(CitadelReinforcementData.removeRein);) {
 			int count = 0;
-			for (Reinforcement rein : reins) {		
+			for (Reinforcement rein : reins) {
 				Location loc = rein.getLocation();
 				int x = loc.getBlockX();
 				int y = loc.getBlockY();
@@ -661,7 +661,7 @@ public class CitadelReinforcementData {
 					}
 				}
 			}
-			
+
 			if (count % 100 != 0) {
 				int[] done = removeRein.executeBatch();
 				if (done == null || done.length == 0) {
@@ -678,7 +678,7 @@ public class CitadelReinforcementData {
 			failover = true;
 			logger.log(Level.SEVERE, "Citadel encountered a critical error while removing a batch of reinforcements", e);
 		}
-		
+
 		if (failover) {
 			logger.log(Level.WARNING, "Citadel encountered uncertainty while deleting a batch of records. Failing over to individual deleting logic.");
 			for (Reinforcement rein : reins) {
@@ -686,10 +686,10 @@ public class CitadelReinforcementData {
 			}
 		}
 	}
-	
+
 	/**
 	 * Deletes a Reinforcement from the database. Should only be called within SaveManager
-	 * 
+	 *
 	 * @param The Reinforcement to delete.
 	 */
 	public void deleteReinforcement(Reinforcement rein){
@@ -755,10 +755,10 @@ public class CitadelReinforcementData {
 
 		return updateRein;
 	}
-	
+
 	/**
 	 * Save many reinforcements all at once!
-	 * 
+	 *
 	 * @param reins
 	 */
 	public void saveManyReinforcements(Collection<Reinforcement> reins) {
@@ -772,7 +772,7 @@ public class CitadelReinforcementData {
 			int count = 0;
 			t = System.currentTimeMillis();
 			sb.append(t - s).append("ms setup ");
-			for (Reinforcement rein : reins) {	
+			for (Reinforcement rein : reins) {
 				s = System.currentTimeMillis();
 				this.prepSaveReinforcement(rein, updateRein).addBatch();
 				t = System.currentTimeMillis();
@@ -794,7 +794,7 @@ public class CitadelReinforcementData {
 					}
 				}
 			}
-			
+
 			if (count % 100 != 0) {
 				s = System.currentTimeMillis();
 				int[] done = updateRein.executeBatch();
@@ -814,16 +814,16 @@ public class CitadelReinforcementData {
 			failover = true;
 			logger.log(Level.SEVERE, "Citadel encountered a critical error while saving a batch of reinforcements", e);
 		}
-		
+
 		logger.log(Level.INFO, sb.toString());
 		if (failover) {
 			logger.log(Level.WARNING, "Citadel encountered uncertainty while saving a batch of records. Failing over to individual save logic.");
 			for (Reinforcement rein : reins) {
 				saveReinforcement(rein);
 			}
-		}		
+		}
 	}
-	
+
 	/**
 	 * Saves the Reinforcement to the Database. Should only be called from SaveManager.
 	 * @param The Reinforcement to save.
@@ -835,17 +835,17 @@ public class CitadelReinforcementData {
 		}
 		try (Connection connection = db.getConnection();
 				PreparedStatement updateRein = connection.prepareStatement(CitadelReinforcementData.updateRein);) {
-		
+
 			if (this.prepSaveReinforcement(rein, updateRein).executeUpdate() != 1) {
 				logger.log(Level.WARNING, "Update did not alter any records for save at {0}", rein.getLocation());
 			}
 		} catch (SQLException e) {
-			logger.log(Level.WARNING, 
+			logger.log(Level.WARNING,
 					"Failed to save an update to reinforcement at {0}", rein.getLocation());
 			logger.log(Level.SEVERE, "The Exception on saving a reinforcement:", e);
 		}
 	}
-	
+
 	public int getReinCountForGroup(String group){
 		if (group == null){
 			logger.log(Level.WARNING, "CitadelReinforcementData getReinCountForGroup called with null");
@@ -862,9 +862,9 @@ public class CitadelReinforcementData {
 			allIDs.append(id).append(",");
 		}
 		allIDs.append(gg.getGroupId());
-		
+
 		String finalIDs = allIDs.toString();
-		
+
 		try (Connection connection = db.getConnection();
 				PreparedStatement selectReinCountForGroup = connection.prepareStatement(CitadelReinforcementData.selectReinCountForGroup);) {
 			selectReinCountForGroup.setString(1, finalIDs);
@@ -879,7 +879,7 @@ public class CitadelReinforcementData {
 		}
 		return 0;
 	}
-	
+
 	public int getReinCountForAllGroups(){
 		try (Connection connection = db.getConnection();
 				PreparedStatement selectReinCount = connection.prepareStatement(CitadelReinforcementData.selectReinCount);
