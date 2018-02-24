@@ -21,10 +21,11 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Acid extends PlayerCommandMiddle {
+public class Acid extends PlayerCommand {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
-	
+
 	public Acid(String name) {
 		super(name);
 		setIdentifier("ctacid");
@@ -49,42 +50,42 @@ public class Acid extends PlayerCommandMiddle {
 			}
 			Reinforcement rein = rm.getReinforcement(block);
 			if (rein == null) {
-				sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
+				Utility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
 				return true;
 			}
 			if (!(rein instanceof PlayerReinforcement)) { // Just in case.
 				// Most chance it is a PlayerReinforcement but otherwise.
-				sendAndLog(p, ChatColor.RED,
+				Utility.sendAndLog(p, ChatColor.RED,
 						"An acid block cannot be a natural reinforcement.");
 				return true;
 			}
 			PlayerReinforcement pRein = (PlayerReinforcement) rein;
 			UUID uuid = NameAPI.getUUID(p.getName());
 			if (pRein.getGroup() == null) {
-				sendAndLog(p, ChatColor.RED, "No-one is on that group.");
+				Utility.sendAndLog(p, ChatColor.RED, "No-one is on that group.");
 				return true;
 			}
 			if (!pRein.getGroup().isMember(uuid)) {
-				sendAndLog(p, ChatColor.RED, "You do not belong on that group.");
+				Utility.sendAndLog(p, ChatColor.RED, "You do not belong on that group.");
 				return true;
 			}
 			if (!pRein.canAcid(p)) {
-				sendAndLog(p, ChatColor.RED, "You do not have sufficient permission to use acid blocks on this group.");
+				Utility.sendAndLog(p, ChatColor.RED, "You do not have sufficient permission to use acid blocks on this group.");
 				return true;
 			}
 			int time = Utility.timeUntilAcidMature(pRein);
 			if (time != 0) {
-				sendAndLog(p, ChatColor.RED, "That acid block is not mature yet.");
+				Utility.sendAndLog(p, ChatColor.RED, "That acid block is not mature yet.");
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
 			if (Material.AIR.equals(topFace.getType())) {
-				sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
+				Utility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
 				return true;
 			}
 			Reinforcement topRein = rm.getReinforcement(topFace);
 			if (topRein == null) {
-				sendAndLog(p, ChatColor.RED, "That block doesn't have a reinforcement.");
+				Utility.sendAndLog(p, ChatColor.RED, "That block doesn't have a reinforcement.");
 				return true;
 			}
 			if (!(topRein instanceof PlayerReinforcement)) {
@@ -96,7 +97,7 @@ public class Acid extends PlayerCommandMiddle {
 			ReinforcementType topReinType = ReinforcementType
 					.getReinforcementType(pTopRein.getStackRepresentation());
 			if (acidBlockType.getAcidTime() < topReinType.getAcidTime()) {
-				sendAndLog(p, ChatColor.RED, "This acid block is too weak for that reinforcement.");
+				Utility.sendAndLog(p, ChatColor.RED, "This acid block is too weak for that reinforcement.");
 				return true;
 			}
 			AcidBlockEvent event = new AcidBlockEvent(p, pRein, pTopRein);
@@ -108,20 +109,20 @@ public class Acid extends PlayerCommandMiddle {
 	            }
 				return true;
 			}
-			
+
 			if (CitadelConfigManager.shouldLogHostileBreaks()) {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}",
 						new Object[] {block.getLocation(), topFace.getType(), topFace.getLocation()});
 			}
-			
+
 			topFace.setType(Material.AIR);
 
 			block.breakNaturally();
-			
+
 			// Consider if should simply be an AcidBlockEvent listener. This will do for now.
 			Utility.reinforcementBroken(p, pRein);
 			rm.deleteReinforcement(pTopRein);
-			
+
 		}
 		return true;
 	}

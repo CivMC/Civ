@@ -16,9 +16,10 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class ReinforcementsGUI extends PlayerCommandMiddle {
-	
+public class ReinforcementsGUI extends PlayerCommand {
+
 	private DecimalFormat format;
 
 	public ReinforcementsGUI(String name) {
@@ -68,7 +69,7 @@ public class ReinforcementsGUI extends PlayerCommandMiddle {
 			String acidString = ChatColor.GOLD + "Acidblock maturation time: " + createOutputTime(daysAcid, "day")
 					+ createOutputTime(hoursAcid, "hour") + createOutputTime(minutesAcid, "minute");
 			ISUtils.addLore(is, acidString.substring(0, acidString.length() - 2));
-			ISUtils.addLore(is, ChatColor.WHITE + "Return chance: " + format.format(type.getPercentReturn() * 100.0) + " %");	
+			ISUtils.addLore(is, ChatColor.WHITE + "Return chance: " + format.format(type.getPercentReturn() * 100.0) + " %");
 			items.add(is);
 			ci.setSlot(new DecorationStack(is), slot);
 			slot++;

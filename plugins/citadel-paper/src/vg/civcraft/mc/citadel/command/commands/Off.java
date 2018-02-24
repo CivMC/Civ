@@ -5,11 +5,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Off extends PlayerCommandMiddle{
+public class Off extends PlayerCommand{
 
 	public Off(String name) {
 		super(name);
@@ -31,7 +33,7 @@ public class Off extends PlayerCommandMiddle{
 		if (state.isBypassMode()) {
 			state.toggleBypassMode();
 		}
-		sendAndLog(p, ChatColor.GREEN, "Reinforcement mode has been set to Normal.");
+		Utility.sendAndLog(p, ChatColor.GREEN, "Reinforcement mode has been set to Normal.");
 		return true;
 	}
 

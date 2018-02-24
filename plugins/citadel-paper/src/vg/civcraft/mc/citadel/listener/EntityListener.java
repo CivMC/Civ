@@ -167,14 +167,14 @@ public class EntityListener implements Listener{
 			return;
 		}
 		if (!canPlace(b, p)){
-			sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
+			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
 			event.setCancelled(true);
 			return;
 		}
 		ReinforcementType type = state.getReinforcementType();
 		// Don't allow double reinforcing reinforceable plants
 		if (wouldPlantDoubleReinforce(b)) {
-			sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
 			event.setCancelled(true);
 			return;
 		}
@@ -185,15 +185,15 @@ public class EntityListener implements Listener{
 		if (inv.containsAtLeast(type.getItemStack(), required)) {
 			try {
 				if (createPlayerReinforcement(p, state.getGroup(), b, type, p.getInventory().getItemInMainHand()) == null) {
-					sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
+					Utility.sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
-				}	
+				}
 			} catch(ReinforcemnetFortificationCancelException ex){
 				Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementFortificationCancelException occured in BlockListener, BlockPlaceEvent ", ex);
 			}
 		} else {
-			sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",  
+			Utility.sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
 					state.getReinforcementType().getMaterial().name()));
 			state.reset();
 			event.setCancelled(true);
@@ -227,7 +227,7 @@ public class EntityListener implements Listener{
 				Group group = pr.getGroup();
 				StringBuilder sb;
 				if (player.hasPermission("citadel.admin.ctinfodetails")) {
-					sendAndLog(player, ChatColor.GREEN, String.format(
+					Utility.sendAndLog(player, ChatColor.GREEN, String.format(
 							"Loc[%s]", pr.getLocation().toString()));
 					String groupName = "!NULL!";
 					if (group != null) {
@@ -264,12 +264,12 @@ public class EntityListener implements Listener{
 					}
 					sb.append("\nGroup id: " + pr.getGroupId());
 
-					sendAndLog(player, ChatColor.GREEN, sb.toString());
+					Utility.sendAndLog(player, ChatColor.GREEN, sb.toString());
 					event.setCancelled(is_cancelled);
 					return;
 				}
 			}
-			boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");   
+			boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
 			if (state.isBypassMode() && (pr.canBypass(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
 				reinforcementBroken(player, rein);
 				is_cancelled = false;
@@ -317,7 +317,7 @@ public class EntityListener implements Listener{
 			Reinforcement rein = rm.getReinforcement(entity.getLocation());
 			if (rein == null || !(rein instanceof PlayerReinforcement))
 				return;
-			PlayerReinforcement pr = (PlayerReinforcement)rein; 
+			PlayerReinforcement pr = (PlayerReinforcement)rein;
 			Group group = pr.getGroup(); if (group == null){return;}
 
 			if (group.isMember(event.getPlayer().getUniqueId()) == false){
@@ -336,7 +336,7 @@ public class EntityListener implements Listener{
 				return;
 			Entity damager = event.getDamager(); if (!(damager instanceof Player)){event.setCancelled(true);return;}
 			Player player = (Player)damager;
-			PlayerReinforcement pr = (PlayerReinforcement)rein; 
+			PlayerReinforcement pr = (PlayerReinforcement)rein;
 			Group group = pr.getGroup(); if (group == null){return;}
 
 			if (group.isMember(player.getUniqueId()) == false){
@@ -345,17 +345,17 @@ public class EntityListener implements Listener{
 			}
 		}
 	}
-	
+
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void playerJoinEvent(PlayerJoinEvent event){
 		Player p = event.getPlayer();
 		final UUID uuid = p.getUniqueId();
-		
+
 		new BukkitRunnable() {
 			@Override
 			public void run() {
 				GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
-				for (String groupName : db.getGroupNames(uuid)){	
+				for (String groupName : db.getGroupNames(uuid)){
 					if(NameAPI.getGroupManager().hasAccess(groupName, uuid, PermissionType.getPermission("REINFORCE"))) {
 						db.updateTimestamp(groupName);
 					}
@@ -368,13 +368,6 @@ public class EntityListener implements Listener{
 			if (!state.isBypassMode()) {
 				state.toggleBypassMode();
 			}
-		}
-	}
-
-	protected void sendAndLog(Player receiver, ChatColor color, String message) {
-		receiver.sendMessage(color + message);
-		if (CitadelConfigManager.shouldLogPlayerCommands()) {
-			Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}", new Object[]{receiver.getName(), message});
 		}
 	}
 }
