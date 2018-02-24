@@ -82,9 +82,12 @@ final class CoreLoreGenerator implements LoreProvider {
 			for (RepairMaterial rep : repair) {
 				int amountPerItem = rep.getRepairAmount();
 				String item = rep.getStack().getType().toString();
-				int damagesPerDay = (1440 / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a day * damage per
-				int repairsPerDay = damagesPerDay / amountPerItem;
-				lore.add(parse("<a>Cost per day using %s: <n> %s", item, Integer.toString(repairsPerDay)));
+				if(rep.getStack().hasItemMeta() && rep.getStack().getItemMeta().hasDisplayName()){
+					item = rep.getStack().getItemMeta().getDisplayName();
+				}
+				int damagesPerHumanInterval = (config.getPearlHealthDecayHumanIntervalMin() / config.getPearlHealthDecayIntervalMin()) * config.getPearlHealthDecayAmount(); // intervals in a human interval * damage per
+				int repairsPerHumanInterval = damagesPerHumanInterval / amountPerItem;
+				lore.add(parse("<a>Cost per %s using %s:<n> %s", config.getPearlHealthDecayHumanInterval(), item, Integer.toString(repairsPerHumanInterval)));
 			}
 		}
 		
@@ -94,7 +97,10 @@ final class CoreLoreGenerator implements LoreProvider {
 				for(RepairMaterial up : upgrade) {
 					int amount = up.getRepairAmount();
 					String item = up.getStack().getType().toString();
-					lore.add(parse("<a>Upgrade cost: <n>%d %s", amount, item));
+					if(up.getStack().hasItemMeta() && up.getStack().getItemMeta().hasDisplayName()){
+						item = up.getStack().getItemMeta().getDisplayName();
+					}
+					lore.add(parse("<a>Upgrade cost:<n>%d %s", amount, item));
 				}
 			}
 		}

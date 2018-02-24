@@ -25,6 +25,16 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	Set<String> getDisallowedWorlds();
 
 	/**
+	 * Gets the name of the interval humans measure pearl decay in
+	 */
+	String getPearlHealthDecayHumanInterval();
+
+	/**
+	 * Gets the length of the interval humans measure pearl decay in (minutes)
+	 */
+	int getPearlHealthDecayHumanIntervalMin();
+
+	/**
 	 * Gets the pearl decay minute interval
 	 * @return the pearl decay minute interval
 	 */
