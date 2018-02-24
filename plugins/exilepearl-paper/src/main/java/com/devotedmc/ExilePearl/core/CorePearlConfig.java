@@ -185,6 +185,10 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		Set<RepairMaterial> repairs = new HashSet<RepairMaterial>();
 		Document repairRecipes = doc.getDocument("pearls.repair_materials." + type);
 		
+		if(repairRecipes == null){
+			return repairs;
+		}
+		
 		for(String repairName : repairRecipes.keySet()) {
 			repairs.add(RepairMaterial.fromDocument(repairName, repairRecipes.getDocument(repairName)));
 		}
@@ -473,6 +477,10 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	public Set<RepairMaterial> getUpgradeMaterials() {
 		Set<RepairMaterial> upgrades = new HashSet<RepairMaterial>();
 		Document upgradeRecipes = doc.getDocument("pearls.upgrade_materials");
+		
+		if(upgradeRecipes == null){
+			return upgrades;
+		}
 		
 		for(String upgradeName : upgradeRecipes.keySet()) {
 			upgrades.add(RepairMaterial.fromDocument(upgradeName, upgradeRecipes.getDocument(upgradeName)));
