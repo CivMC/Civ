@@ -13,6 +13,7 @@ public class Lang
 	public static final String pearlYouDamagedNotAwarded = "<c>%s <i>was bound to an exile pearl by <c>%s";
 	public static final String pearlMustBeHoldingPearl = "<b>You must be holding an exile pearl to do that.";
 	public static final String pearlAlreadyPearled = "<c>%s <b>is already held by an exile pearl.";
+	public static final String pearlAlreadyPearledAtLocation = "<c>%s <b>is already <i>%s<b>.";
 	public static final String pearlPlayerNotExiled = "<i>That player is not exiled.";
 	public static final String pearlPlayerNotExiledOrBcasting = "<i>That player is not exiled or broadcasting to you.";
 	public static final String pearlCantDoThat = "<i>You can't do that when exiled!";
