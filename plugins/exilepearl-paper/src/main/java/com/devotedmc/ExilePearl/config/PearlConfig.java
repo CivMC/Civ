@@ -90,6 +90,12 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	boolean getShouldFreeTeleport();
 	
 	/**
+	 * Gets whether killing exiles should announce their location
+	 * @return true if it should be announced
+	 */
+	boolean getShouldAnnounceExileLocation();
+	
+	/**
 	 * Gets how much to damage the players when they are inside a bastion field
 	 * @return The damage amount
 	 */

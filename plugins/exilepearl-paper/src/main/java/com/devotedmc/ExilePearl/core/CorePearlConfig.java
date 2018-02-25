@@ -186,6 +186,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public boolean getShouldAnnounceExileLocation(){
+		return doc.getBoolean("pearls.announce_exile_location", true);
+	}
+
+	@Override
 	public double getBastionDamage() {
 		return doc.getDouble("pearls.bastion_harm_amount", 0.5);
 	}

@@ -569,7 +569,11 @@ public class PlayerListener implements Listener, Configurable {
 				// and will not return null if it is, so we don't check that here
 				if (pearlApi.isPlayerExiled(playerId)) {
 					for(Player dmgr : damagers) {
-						msg(dmgr, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+						if(pearlApi.getPearlConfig().getShouldAnnounceExileLocation()){
+							msg(dmgr, Lang.pearlAlreadyPearledAtLocation, pearlApi.getRealPlayerName(playerId), pearlApi.getPearl(playerId).getLocationDescription());
+						}else{
+							msg(dmgr, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+						}
 					}
 				}
 				return; // The pearling failed for some reason
