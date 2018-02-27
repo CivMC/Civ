@@ -67,7 +67,10 @@ public class Fortification extends PlayerCommandMiddle{
 		}
 
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION && state.getGroup().getName() == g.getName()) {
+		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION.equals(state.getMode())
+				&& state.getGroup() != null
+				&& state.getGroup().getName() != null
+				&& state.getGroup().getName().equals(g.getName())) {
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 			return true;
