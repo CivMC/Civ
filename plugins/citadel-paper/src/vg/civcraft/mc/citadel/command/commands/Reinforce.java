@@ -61,16 +61,17 @@ public class Reinforce extends PlayerCommandMiddle {
 					+ "place a reinforcement on this group.");
 			return true;
 		}
+
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT && state.getGroup().getName() == g.getName()){
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT && state.getGroup().getName() == g.getName()) {
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
+			return true;
 		}
-		else{
-			sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
-			state.setMode(ReinforcementMode.REINFORCEMENT);
-			state.setGroup(g);
-		}
+
+		sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
+		state.setMode(ReinforcementMode.REINFORCEMENT);
+		state.setGroup(g);
 		return true;
 	}
 
