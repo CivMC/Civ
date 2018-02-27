@@ -64,9 +64,10 @@ public class Reinforce extends PlayerCommandMiddle {
 
 		PlayerState state = PlayerState.get(p);
 		if (ReinforcementMode.REINFORCEMENT.equals(state.getMode())
-				&& state.getGroup() != null
-				&& state.getGroup().getName() != null
-				&& state.getGroup().getName().equals(g.getName())) {
+				&& (args.length == 0
+					|| (state.getGroup() != null
+						&& state.getGroup().getName() != null
+						&& state.getGroup().getName().equals(g.getName())))) {
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 			return true;
