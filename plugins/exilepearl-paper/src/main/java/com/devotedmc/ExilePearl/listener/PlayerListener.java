@@ -537,7 +537,10 @@ public class PlayerListener implements Listener, Configurable {
 			playerId = ((Player)e.getEntity()).getUniqueId();
 		}
 
-		if(pearlApi.isPlayerExiled(playerId) && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
+		if(pearlApi.isPlayerExiled(playerId)
+		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
+		   && !pearlApi.getPearl(playerId).isSummoned()
+		   && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
 			return;
 		}
 		
