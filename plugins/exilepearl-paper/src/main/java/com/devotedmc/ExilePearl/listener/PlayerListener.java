@@ -536,6 +536,13 @@ public class PlayerListener implements Listener, Configurable {
 		} else {
 			playerId = ((Player)e.getEntity()).getUniqueId();
 		}
+
+		if(pearlApi.isPlayerExiled(playerId)
+		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
+		   && !pearlApi.getPearl(playerId).isSummoned()
+		   && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
+			return;
+		}
 		
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
