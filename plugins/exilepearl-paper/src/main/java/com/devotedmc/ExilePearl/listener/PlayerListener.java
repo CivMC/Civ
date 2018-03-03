@@ -43,6 +43,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -183,6 +184,18 @@ public class PlayerListener implements Listener, Configurable {
 		pearl.setHolder(item);
 	}
 
+	// Prevent dropped pearls from going through portals
+	@EventHandler
+	public void onItemSpawn(EntityPortalEvent e) {
+		if(!(e.getEntity() instanceof Item)){
+			return;
+		}
+		Item item = (Item) e.getEntity();
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
+		if(pearl != null){
+			e.setCancelled(true);
+		}
+	}
 
 	/**
 	 * Drops a pearl when the player leaves the game
