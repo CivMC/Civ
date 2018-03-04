@@ -47,20 +47,19 @@ public class CmdPearlBroadcast extends PearlCommand {
 			if (g != null) {
 				if (!gm.hasAccess(g, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 					msg(Lang.groupNoChatPermission);
-					return;
-				}
-
-				//If they are already broadcasting to group then remove the listener for that group
-				if (pearl.isBroadcastingTo(g)) {
-					pearl.removeBroadcastListener(new NLGroupBroadcastListener(g));
-					msg(Lang.groupStoppedBcasting, g.getName());
-					return;
-				}
+				}else{
+					//If they are already broadcasting to group then remove the listener for that group
+					if (pearl.isBroadcastingTo(g)) {
+						pearl.removeBroadcastListener(new NLGroupBroadcastListener(g));
+						msg(Lang.groupStoppedBcasting, g.getName());
+						return;
+					}
 				
-				// Ok the group exists and the player has permission. Create the listener
-				pearl.addBroadcastListener(new NLGroupBroadcastListener(g));
-				msg(Lang.groupNowBcasting, g.getName());
-				return;
+					// Ok the group exists and the player has permission. Create the listener
+					pearl.addBroadcastListener(new NLGroupBroadcastListener(g));
+					msg(Lang.groupNowBcasting, g.getName());
+					return;
+				}
 			}
 		}
 		
