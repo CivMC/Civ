@@ -28,7 +28,7 @@ public class PlayerReinforcement extends Reinforcement{
 	private boolean isInsecure = false;
 	private ItemStack stack;
 	private String materialName;
-	
+
 	public PlayerReinforcement(Location loc, int health,
 			int creation, int acid, Group g, ItemStack stack) {
 		super(loc, stack.getType(), health, creation, acid);
@@ -38,13 +38,13 @@ public class PlayerReinforcement extends Reinforcement{
 			gm = NameAPI.getGroupManager();
 		}
 		this.gid = g.getGroupId();
-		
+
 		ItemMeta meta = this.stack.hasItemMeta() ? this.stack.getItemMeta(): null;
 		String lore = meta != null && meta.hasLore() && meta.getLore().size() > 0 ? meta.getLore().get(0): null;
-		
+
 		this.materialName = lore != null && lore.length() > 0 ? "\"" + lore + "\"": stack.getType().name();
 	}
-	
+
 	public boolean canBypass(Player p) {
 		checkValid();
 		if (g == null) {
@@ -52,7 +52,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BYPASS_REINFORCEMENT"));
 	}
-	
+
 	public boolean canAccessCrops(Player p) {
 		checkValid();
 		if (g == null) {
@@ -60,7 +60,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("CROPS"));
 	}
-	
+
 	public boolean canAccessChests(Player p) {
 		checkValid();
 		if (g == null) {
@@ -68,7 +68,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("CHESTS"));
 	}
-	
+
 	public boolean canAccessDoors(Player p) {
 		checkValid();
 		if (g == null) {
@@ -76,7 +76,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("DOORS"));
 	}
-	
+
 	public boolean canViewInformation(Player p) {
 		checkValid();
 		if (g == null) {
@@ -84,7 +84,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("REINFORCEMENT_INFO"));
 	}
-	
+
 	public boolean canMakeInsecure(Player p) {
 		checkValid();
 		if (g == null) {
@@ -92,7 +92,7 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("INSECURE_REINFORCEMENT"));
 	}
-	
+
 	public boolean canAcid(Player p) {
 		checkValid();
 		if (g == null) {
@@ -100,25 +100,25 @@ public class PlayerReinforcement extends Reinforcement{
 		}
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("ACIDBLOCK"));
 	}
-	
+
 	public boolean isSecurable() {
 		return (isContainer() || isDoor());
 	}
-	
+
 	public int getDamageMultiplier(){
 		checkValid();
 		if (g == null){
 			return 1;
 		}
 		Timestamp ts = NameAPI.getGroupManager().getTimestamp(g.getName());
-		
+
 		long shiftMultiplier = ((System.currentTimeMillis() - ts.getTime()) / (long)86400000) / (long)Citadel.getReinforcementManager().getDayMultiplier();
 		if (shiftMultiplier > 0) {
 			return 1 << shiftMultiplier;
 		}
 		return 1;
 	}
-	
+
 	/**
 	 * @return return false if it is secure, return true if it is insecure.
 	 */
@@ -177,7 +177,7 @@ public class PlayerReinforcement extends Reinforcement{
         return block.getState() instanceof InventoryHolder
                 || block.getState().getData() instanceof Openable || Utility.doorTypes.contains(block.getType());
     }
-    
+
     /**
      * @return True if the reinforced block is a door/trapdoor etc. or part of one
      */
@@ -185,12 +185,12 @@ public class PlayerReinforcement extends Reinforcement{
     	Block block = getLocation().getBlock();
     	return Utility.doorTypes.contains(block.getType()) || block.getState().getData() instanceof Openable;
     }
-    
+
     public boolean isContainer() {
     	return getLocation().getBlock().getState() instanceof InventoryHolder;
     }
-    
-    
+
+
     /**
      * Returns the group this PlayerReinforcement is associated with.
      * @return group
@@ -224,19 +224,20 @@ public class PlayerReinforcement extends Reinforcement{
         } else {
             verb = "Reinforced";
         }
-        
+
         return String.format("%s %s with %s", verb, getHealthText(), this.materialName);
     }
-    
+
     private void checkValid(){
     	if (g == null) {
     		Citadel.getInstance().getLogger().log(Level.WARNING, "CheckValid was called but the underlying group " + gid + " is gone for " + this.getLocation() + "!");
     		return;
     	}
     	if (!g.isValid()){ // incase it was recently merged/ deleted.
-    		g = GroupManager.getGroup(g.getGroupId());
+    		int groupId = g.getGroupId();
+    		g = GroupManager.getGroup(groupId);
     		if (g == null) {
-    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + g.getGroupId() + " was deleted or merged but not marked invalid!");
+    			Citadel.getInstance().getLogger().log(Level.INFO, "Group " + groupId + " was deleted or merged but not marked invalid!");
     		}
     		isDirty = true;
     	}
