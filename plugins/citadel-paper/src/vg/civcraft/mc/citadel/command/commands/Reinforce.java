@@ -14,8 +14,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Reinforce extends PlayerCommandMiddle {
+public class Reinforce extends PlayerCommand {
 
 	private GroupManager gm = NameAPI.getGroupManager();
 
@@ -39,7 +41,7 @@ public class Reinforce extends PlayerCommandMiddle {
 		if(args.length == 0){
 			groupName = gm.getDefaultGroup(uuid);
 			if(groupName == null){
-				sendAndLog(p, ChatColor.RED, "You need to reinforce to a group! Try /reinforce groupname. \n Or /create groupname if you don't have a group yet.");
+				Utility.sendAndLog(p, ChatColor.RED, "You need to reinforce to a group! Try /reinforce groupname. \n Or /create groupname if you don't have a group yet.");
 				return true;
 			}
 		}
@@ -48,16 +50,16 @@ public class Reinforce extends PlayerCommandMiddle {
 		}
 		Group g = GroupManager.getGroup(groupName);
 		if (g == null){
-			sendAndLog(p, ChatColor.RED, "That group does not exist.");
+			Utility.sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
 		PlayerType type = g.getPlayerType(uuid);
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && type == null){
-			sendAndLog(p, ChatColor.RED, "You are not on this group.");
+			Utility.sendAndLog(p, ChatColor.RED, "You are not on this group.");
 			return true;
 		}
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && !gm.hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("REINFORCE"))){
-			sendAndLog(p, ChatColor.RED, "You do not have permission to "
+			Utility.sendAndLog(p, ChatColor.RED, "You do not have permission to "
 					+ "place a reinforcement on this group.");
 			return true;
 		}
@@ -68,12 +70,22 @@ public class Reinforce extends PlayerCommandMiddle {
 					|| (state.getGroup() != null
 						&& state.getGroup().getName() != null
 						&& state.getGroup().getName().equals(g.getName())))) {
-			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
+			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 			return true;
 		}
 
-		sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
+		String hoverMessage = String.format("Group: %s", groupName);
+			Utility.sendAndLog(
+				p,
+				ChatColor.GREEN,
+				"You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them.",
+				hoverMessage);
+			Utility.sendAndLog(
+				p,
+				ChatColor.GREEN,
+				" Type /reinforce or /cto to turn this off when you are done.",
+				hoverMessage);
 		state.setMode(ReinforcementMode.REINFORCEMENT);
 		state.setGroup(g);
 		return true;

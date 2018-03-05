@@ -10,8 +10,10 @@ import org.bukkit.command.ConsoleCommandSender;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class SetLogging extends PlayerCommandMiddle {
+public class SetLogging extends PlayerCommand {
 
 	public SetLogging(String name) {
 		super(name);
@@ -26,18 +28,18 @@ public class SetLogging extends PlayerCommandMiddle {
 		if (args.length > 0 && !cmds.contains(args[0])) {
 			return false;
 		}
-		
+
 		if (args.length >= 1 && !flgs.contains(args[1])) {
 			return false;
 		}
-		
+
 		if (!(sender instanceof ConsoleCommandSender) && !sender.isOp() && !sender.hasPermission("citadel.admin")) {
 			// This should never actually happen thanks to the plugin.yml, but
 			// we just want to be sure
-			sendAndLog(sender, ChatColor.RED, "Nice try");
+			Utility.sendAndLog(sender, ChatColor.RED, "Nice try");
 			return true;
 		}
-		
+
 		// validated, so lets just do it.
 		if (args.length == 0) {
 			StringBuilder sb = new StringBuilder("Current deep logging set to: \n");
@@ -47,10 +49,10 @@ public class SetLogging extends PlayerCommandMiddle {
 			sb.append("   Hostile Breaks: ").append(CitadelConfigManager.shouldLogHostileBreaks()).append("\n");
 			sb.append("   Damage: ").append(CitadelConfigManager.shouldLogDamage()).append("\n");
 			sb.append("   Reinforcements: ").append(CitadelConfigManager.shouldLogReinforcement()).append("\n");
-			
-			sendAndLog(sender, ChatColor.GREEN, sb.toString());
+
+			Utility.sendAndLog(sender, ChatColor.GREEN, sb.toString());
 		}
-		
+
 		String flag = null;
 		boolean newval = false;
 		if (args.length >= 1) {
@@ -71,23 +73,23 @@ public class SetLogging extends PlayerCommandMiddle {
 				newval = CitadelConfigManager.shouldLogDamage();
 			} else if ("reinforcements".equalsIgnoreCase(args[0])) {
 				flag = "reinf_logging";
-				newval = CitadelConfigManager.shouldLogReinforcement();				
+				newval = CitadelConfigManager.shouldLogReinforcement();
 			}
 		}
-		
+
 		if (args.length < 2) {
 			newval = !newval; // invert current.
 		} else {
 			// If can't figure it out, leave current.
 			newval = "on".equalsIgnoreCase(args[1])? true : "off".equalsIgnoreCase(args[1]) ? false : newval;
 		}
-		
+
 		if (flag != null) {
 			Citadel.getInstance().getConfig().set(flag, newval);
-			sendAndLog(sender, ChatColor.GREEN, "Flag " + flag + " is " + (newval ? "on" : "off"));
+			Utility.sendAndLog(sender, ChatColor.GREEN, "Flag " + flag + " is " + (newval ? "on" : "off"));
 			return true;
 		} else {
-			sendAndLog(sender, ChatColor.RED, "Unknown setting!");
+			Utility.sendAndLog(sender, ChatColor.RED, "Unknown setting!");
 			return false;
 		}
 	}

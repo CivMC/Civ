@@ -8,8 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Bypass extends PlayerCommandMiddle{
+public class Bypass extends PlayerCommand{
 	public Bypass(String name) {
 		super(name);
 		setIdentifier("ctb");
@@ -27,10 +29,10 @@ public class Bypass extends PlayerCommandMiddle{
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
 		if (state.toggleBypassMode()){
-			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
+			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
 		else  {
-			sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
+			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
 		}
 		return true;
 	}

@@ -19,8 +19,9 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class AreaReinforce extends PlayerCommandMiddle {
+public class AreaReinforce extends PlayerCommand {
 	private ReinforcementManager rm = Citadel.getReinforcementManager();
 	private GroupManager gm = NameAPI.getGroupManager();
 
@@ -43,21 +44,21 @@ public class AreaReinforce extends PlayerCommandMiddle {
 		if (!p.isOp() && !p.hasPermission("citadel.admin")) {
 			// This should never actually happen thanks to the plugin.yml, but
 			// we just want to be sure
-			sendAndLog(p, ChatColor.RED, "Nice try");
+			Utility.sendAndLog(p, ChatColor.RED, "Nice try");
 			return true;
 		}
 
 		ReinforcementType rt = ReinforcementType.getReinforcementType(p.getInventory().getItemInMainHand());
 
 		if (rt == null) {
-			sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
+			Utility.sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
 			return true;
 		}
 		String groupName = null;
 		if (args.length == 6) {
 			groupName = gm.getDefaultGroup(uuid);
 			if (groupName == null) {
-				sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
+				Utility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
 				return true;
 			}
 		} else {
@@ -65,7 +66,7 @@ public class AreaReinforce extends PlayerCommandMiddle {
 		}
 		Group g = GroupManager.getGroup(groupName);
 		if (g == null) {
-			sendAndLog(p, ChatColor.RED, "That group does not exist.");
+			Utility.sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
 		// no additional group permission check here because the player is
@@ -86,7 +87,7 @@ public class AreaReinforce extends PlayerCommandMiddle {
 			yMax = Math.max(y1, y2);
 			zMax = Math.max(z1, z2);
 		} catch (NumberFormatException e) {
-			sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
+			Utility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
 			return false;
 		}
 		for (int x = xMin; x <= xMax; x++) {
@@ -94,10 +95,10 @@ public class AreaReinforce extends PlayerCommandMiddle {
 				for (int z = zMin; z <= zMax; z++) {
 					Block current = Utility.getRealBlock(p.getWorld()
 							.getBlockAt(x, y, z));
-					if (!(current.getType() == Material.AIR) && !rm.isReinforced(current) 
-							&& !Utility.wouldPlantDoubleReinforce(current)) {				
+					if (!(current.getType() == Material.AIR) && !rm.isReinforced(current)
+							&& !Utility.wouldPlantDoubleReinforce(current)) {
 						if (!rt.canBeReinforced(current.getType())) {
-							sendAndLog(p, ChatColor.RED, "The block at " + x + ", " + y + ", " + z + 
+							Utility.sendAndLog(p, ChatColor.RED, "The block at " + x + ", " + y + ", " + z +
 									" was not reinforced because the material type you are using cannot reinforce that type of block.");
 							continue;
 						}
@@ -107,10 +108,10 @@ public class AreaReinforce extends PlayerCommandMiddle {
 			}
 		}
 
-		sendAndLog(p, ChatColor.GREEN, "Successfully created reinforcements");
+		Utility.sendAndLog(p, ChatColor.GREEN, "Successfully created reinforcements");
 		return true;
 	}
-	
+
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<String>();

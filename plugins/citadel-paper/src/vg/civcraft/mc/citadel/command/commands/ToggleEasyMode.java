@@ -8,8 +8,10 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class ToggleEasyMode extends PlayerCommandMiddle {
+public class ToggleEasyMode extends PlayerCommand {
 
 	public ToggleEasyMode(String name) {
 		super(name);
@@ -44,9 +46,9 @@ public class ToggleEasyMode extends PlayerCommandMiddle {
 			return true;
 		}
 		if (state.toggleEasyMode()) {
-			sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
+			Utility.sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
 		} else {
-			sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
+			Utility.sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
 		}
 		return true;
 	}
