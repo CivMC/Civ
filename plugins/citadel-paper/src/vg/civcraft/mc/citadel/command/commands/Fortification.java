@@ -68,23 +68,29 @@ public class Fortification extends PlayerCommand{
 					+ "place a reinforcement on this group.");
 			return true;
 		}
-		ItemStack stack = p.getInventory().getItemInMainHand();
+
 		PlayerState state = PlayerState.get(p);
-		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){
+		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION.equals(state.getMode())
+				&& (args.length == 0
+					|| (state.getGroup() != null
+						&& state.getGroup().getName() != null
+						&& state.getGroup().getName().equals(g.getName())))) {
 			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
+			return true;
 		}
-		else{
-			if (stack.getType() == Material.AIR){
-				Utility.sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
-				return true;
-			}
-			else if (reinType == null){
-				Utility.sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
-				return true;
-			}
-			String hoverMessage = String.format("Material: %s\nGroup: %s", reinType.getMaterial().toString(), groupName);
+
+		ItemStack stack = p.getInventory().getItemInMainHand();
+		if (stack.getType() == Material.AIR) {
+			Utility.sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
+			return true;
+		}
+		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
+		if (reinType == null) {
+			Utility.sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
+			return true;
+		}
+		String hoverMessage = String.format("Material: %s\nGroup: %s", reinType.getMaterial().toString(), groupName);
 			Utility.sendAndLog(
 				p,
 				ChatColor.GREEN,
@@ -95,10 +101,9 @@ public class Fortification extends PlayerCommand{
 				ChatColor.GREEN,
 				" Type /fortify or /cto to turn this off when you are done.",
 				hoverMessage);
-			state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
-			state.setFortificationItemStack(reinType.getItemStack());
-			state.setGroup(g);
-		}
+		state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
+		state.setFortificationItemStack(reinType.getItemStack());
+		state.setGroup(g);
 		return true;
 	}
 

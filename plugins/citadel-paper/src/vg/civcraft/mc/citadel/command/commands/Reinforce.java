@@ -63,13 +63,19 @@ public class Reinforce extends PlayerCommand {
 					+ "place a reinforcement on this group.");
 			return true;
 		}
+
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT){
+		if (ReinforcementMode.REINFORCEMENT.equals(state.getMode())
+				&& (args.length == 0
+					|| (state.getGroup() != null
+						&& state.getGroup().getName() != null
+						&& state.getGroup().getName().equals(g.getName())))) {
 			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
+			return true;
 		}
-		else{
-			String hoverMessage = String.format("Group: %s", groupName);
+
+		String hoverMessage = String.format("Group: %s", groupName);
 			Utility.sendAndLog(
 				p,
 				ChatColor.GREEN,
@@ -80,9 +86,8 @@ public class Reinforce extends PlayerCommand {
 				ChatColor.GREEN,
 				" Type /reinforce or /cto to turn this off when you are done.",
 				hoverMessage);
-			state.setMode(ReinforcementMode.REINFORCEMENT);
-			state.setGroup(g);
-		}
+		state.setMode(ReinforcementMode.REINFORCEMENT);
+		state.setGroup(g);
 		return true;
 	}
 
