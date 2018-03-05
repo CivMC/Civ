@@ -15,8 +15,8 @@ public class ToggleEasyMode extends PlayerCommandMiddle {
 		super(name);
 		setIdentifier("cte");
 		setDescription("Toggle easy mode");
-		setUsage("/cte");
-		setArguments(0, 0);
+		setUsage("/cte [on|off]");
+		setArguments(0, 1);
 	}
 
 	@Override
@@ -27,6 +27,22 @@ public class ToggleEasyMode extends PlayerCommandMiddle {
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
+		if (args.length == 1) {
+			if (args[0].equalsIgnoreCase("on")) {
+				if (!state.getEasyMode()) {
+					state.toggleEasyMode();
+				}
+				sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
+			} else if (args[0].equalsIgnoreCase("off")) {
+				if (state.getEasyMode()) {
+					state.toggleEasyMode();
+				}
+				sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
+			} else {
+				sendAndLog(p, ChatColor.RED, String.format("Usage: %s", this.getUsage()));
+			}
+			return true;
+		}
 		if (state.toggleEasyMode()) {
 			sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
 		} else {
