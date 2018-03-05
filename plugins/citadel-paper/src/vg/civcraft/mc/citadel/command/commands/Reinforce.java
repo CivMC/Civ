@@ -18,7 +18,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class Reinforce extends PlayerCommandMiddle {
 
 	private GroupManager gm = NameAPI.getGroupManager();
-	
+
 	public Reinforce(String name) {
 		super(name);
 		setIdentifier("ctr");
@@ -61,16 +61,21 @@ public class Reinforce extends PlayerCommandMiddle {
 					+ "place a reinforcement on this group.");
 			return true;
 		}
+
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT){
+		if (ReinforcementMode.REINFORCEMENT.equals(state.getMode())
+				&& (args.length == 0
+					|| (state.getGroup() != null
+						&& state.getGroup().getName() != null
+						&& state.getGroup().getName().equals(g.getName())))) {
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
+			return true;
 		}
-		else{
-			sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
-			state.setMode(ReinforcementMode.REINFORCEMENT);
-			state.setGroup(g);
-		}
+
+		sendAndLog(p, ChatColor.GREEN, "You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them. \n Type /reinforce or /cto to turn this off when you are done.");
+		state.setMode(ReinforcementMode.REINFORCEMENT);
+		state.setGroup(g);
 		return true;
 	}
 

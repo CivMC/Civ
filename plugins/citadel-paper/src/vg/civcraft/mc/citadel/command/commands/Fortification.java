@@ -50,12 +50,11 @@ public class Fortification extends PlayerCommandMiddle{
 		else{
 			groupName = args[0];
 		}
-		Group g = GroupManager.getGroup(groupName);	
+		Group g = GroupManager.getGroup(groupName);
 		if (g == null){
 			sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
-		
 		PlayerType type = g.getPlayerType(uuid);
 		if (!p.hasPermission("citadel.admin") && !p.isOp() && type == null){
 			sendAndLog(p, ChatColor.RED, "You are not on this group.");
@@ -66,27 +65,32 @@ public class Fortification extends PlayerCommandMiddle{
 					+ "place a reinforcement on this group.");
 			return true;
 		}
-		ItemStack stack = p.getInventory().getItemInMainHand();
+
 		PlayerState state = PlayerState.get(p);
-		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION){
+		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION.equals(state.getMode())
+				&& (args.length == 0
+					|| (state.getGroup() != null
+						&& state.getGroup().getName() != null
+						&& state.getGroup().getName().equals(g.getName())))) {
 			sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
+			return true;
 		}
-		else{
-			if (stack.getType() == Material.AIR){
-				sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
-				return true;
-			}
-			else if (reinType == null){
-				sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
-				return true;
-			}
-			sendAndLog(p, ChatColor.GREEN, "You are now in Fortification mode, place blocks down and they will be secured with the material in your hand. \n Type /fortify or /cto to turn this off when you are done.");
-			state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
-			state.setFortificationItemStack(reinType.getItemStack());
-			state.setGroup(g);
+
+		ItemStack stack = p.getInventory().getItemInMainHand();
+		if (stack.getType() == Material.AIR) {
+			sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
+			return true;
 		}
+		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
+		if (reinType == null) {
+			sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
+			return true;
+		}
+		sendAndLog(p, ChatColor.GREEN, "You are now in Fortification mode, place blocks down and they will be secured with the material in your hand. \n Type /fortify or /cto to turn this off when you are done.");
+		state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
+		state.setFortificationItemStack(reinType.getItemStack());
+		state.setGroup(g);
 		return true;
 	}
 
