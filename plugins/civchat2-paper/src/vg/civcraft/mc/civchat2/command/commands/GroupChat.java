@@ -98,9 +98,6 @@ public class GroupChat extends ChatCommand {
 					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				} else {
-					chatMan.removeGroupChat(player());
-					chatMan.addGroupChat(player(), group);
-					msg(ChatStrings.chatGroupNowChattingIn, group.getName());
 					chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 					return true;
 				}
@@ -108,8 +105,6 @@ public class GroupChat extends ChatCommand {
 				if (chatMan.getChannel(player()) != null) {
 					chatMan.removeChannel(player());
 				}
-				chatMan.addGroupChat(player(), group);
-				msg(ChatStrings.chatGroupNowChattingIn, group.getName());
 				chatMan.sendGroupMsg(player(), group, chatMsg.toString());
 				return true;
 			}
