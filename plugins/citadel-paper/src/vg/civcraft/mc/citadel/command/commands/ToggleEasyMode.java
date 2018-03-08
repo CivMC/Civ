@@ -34,14 +34,14 @@ public class ToggleEasyMode extends PlayerCommand {
 				if (!state.getEasyMode()) {
 					state.toggleEasyMode();
 				}
-				sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
+				Utility.sendAndLog(p, ChatColor.GREEN, "Easy mode has been enabled.");
 			} else if (args[0].equalsIgnoreCase("off")) {
 				if (state.getEasyMode()) {
 					state.toggleEasyMode();
 				}
-				sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
+				Utility.sendAndLog(p, ChatColor.GREEN, "Easy mode has been disabled.");
 			} else {
-				sendAndLog(p, ChatColor.RED, String.format("Usage: %s", this.getUsage()));
+				Utility.sendAndLog(p, ChatColor.RED, String.format("Usage: %s", this.getUsage()));
 			}
 			return true;
 		}
