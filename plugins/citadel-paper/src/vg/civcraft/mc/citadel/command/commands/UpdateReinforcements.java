@@ -17,8 +17,10 @@ import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class UpdateReinforcements extends PlayerCommandMiddle{
+public class UpdateReinforcements extends PlayerCommand{
 
 	public UpdateReinforcements(String name) {
 		super(name);
@@ -36,29 +38,29 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		if (!p.hasPermission("citadel.admin") || !p.isOp()){
-			sendAndLog(p, ChatColor.RED, "Nice try");
+			Utility.sendAndLog(p, ChatColor.RED, "Nice try");
 			return true;
 		}
-		
+
 		if (args.length == 0){
-			sendAndLog(p, ChatColor.GREEN, "Searching for groups in current chunk.");
+			Utility.sendAndLog(p, ChatColor.GREEN, "Searching for groups in current chunk.");
 			Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new FindGroups(p, p.getLocation()));
 			return true;
 		}
 		else if (args.length == 1){
-			sendAndLog(p, ChatColor.RED, "Please enter two groups.");
+			Utility.sendAndLog(p, ChatColor.RED, "Please enter two groups.");
 			return true;
 		}
-		
+
 		Group old = GroupManager.getGroup(args[0]);
 		Group n = GroupManager.getGroup(args[1]);
-		
+
 		if (old == null || n == null){
-			sendAndLog(p, ChatColor.RED, "One of the groups does not exist.");
+			Utility.sendAndLog(p, ChatColor.RED, "One of the groups does not exist.");
 			return true;
 		}
-		
-		sendAndLog(p, ChatColor.GREEN, "Beginning to change groups.");
+
+		Utility.sendAndLog(p, ChatColor.GREEN, "Beginning to change groups.");
 		Bukkit.getScheduler().runTaskAsynchronously(Citadel.getInstance(), new UpdateGroups(p, p.getLocation().getChunk(), old, n));
 		return true;
 	}
@@ -68,7 +70,7 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	class UpdateGroups implements Runnable{
 
 		private final Group old, n;
@@ -80,7 +82,7 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 			this.p = p;
 			this.c = c;
 		}
-		
+
 		@Override
 		public void run() {
 			ReinforcementManager rm = Citadel.getReinforcementManager();
@@ -101,22 +103,22 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 			}
 			if (!p.isOnline())
 				return;
-			
-			sendAndLog(p, ChatColor.GREEN, "The groups have been updated.");
+
+			Utility.sendAndLog(p, ChatColor.GREEN, "The groups have been updated.");
 		}
-		
+
 	}
-	
+
 	class FindGroups implements Runnable{
 
 		private final Player p;
 		private final Location loc;
-		
+
 		public FindGroups(Player p, Location loc){
 			this.p = p;
 			this.loc = loc;
 		}
-		
+
 		@Override
 		public void run() {
 			ReinforcementManager rm = Citadel.getReinforcementManager();
@@ -147,10 +149,10 @@ public class UpdateReinforcements extends PlayerCommandMiddle{
 			for (String g: groups) {
 				names.append(g).append(" ");
 			}
-			
-			sendAndLog(p, ChatColor.GREEN, "The groups in this chunk are: " + names);
+
+			Utility.sendAndLog(p, ChatColor.GREEN, "The groups in this chunk are: " + names);
 		}
-		
+
 	}
 
 }

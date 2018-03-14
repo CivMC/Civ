@@ -13,11 +13,13 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Stats extends PlayerCommandMiddle{
+public class Stats extends PlayerCommand{
 
 	private List<Group> run = new ArrayList<Group>();
-	
+
 	public Stats(String name) {
 		super(name);
 		setIdentifier("cts");
@@ -34,7 +36,7 @@ public class Stats extends PlayerCommandMiddle{
 		}
 		Player p = (Player) sender;
 		if (!(p.isOp() || p.hasPermission("citadel.admin"))){
-			sendAndLog(p, ChatColor.RED, "You do not have permission for this command.");
+			Utility.sendAndLog(p, ChatColor.RED, "You do not have permission for this command.");
 			return true;
 		}
 		if (args.length == 0){
@@ -42,19 +44,19 @@ public class Stats extends PlayerCommandMiddle{
 			return true;
 		}
 		Group g = GroupManager.getGroup(args[0]);
-		
+
 		if (g == null){
-			sendAndLog(p, ChatColor.RED, "This group does not exist.");
+			Utility.sendAndLog(p, ChatColor.RED, "This group does not exist.");
 			return true;
 		}
 		UUID uuid = NameAPI.getUUID(p.getName());
 		if (!g.isMember(uuid) && !(p.isOp() || p.hasPermission("citadel.admin"))){
-			sendAndLog(p, ChatColor.RED, "You are not on this group.");
+			Utility.sendAndLog(p, ChatColor.RED, "You are not on this group.");
 			return true;
 		}
 		synchronized(run){
 			if (run.contains(g)){
-				sendAndLog(p, ChatColor.RED, "That group is already being searched for.");
+				Utility.sendAndLog(p, ChatColor.RED, "That group is already being searched for.");
 				return true;
 			}
 			run.add(g);
@@ -82,12 +84,12 @@ public class Stats extends PlayerCommandMiddle{
 
 		private final Player p;
 		private final Group g;
-		
+
 		public StatsMessage(Player p, Group g){
 			this.p = p;
 			this.g = g;
 		}
-		
+
 		@Override
 		public void run() {
 			if (g == null || p == null) {
@@ -102,18 +104,18 @@ public class Stats extends PlayerCommandMiddle{
 			if (p != null && !p.isOnline()) {// meh be safe
 				return;
 			}
-			sendAndLog(p, ChatColor.GREEN, message);
+			Utility.sendAndLog(p, ChatColor.GREEN, message);
 		}
-		
+
 	}
-	
+
 	public class StatsMessageAllGroups implements Runnable{
-		
+
 		private final Player p;
 		public StatsMessageAllGroups(Player p){
 			this.p = p;
 		}
-		
+
 		@Override
 		public void run() {
 			String message = "The amount of reinforcements on the server are: ";
@@ -121,7 +123,7 @@ public class Stats extends PlayerCommandMiddle{
 			message += count;
 			if (p != null && !p.isOnline()) // meh be safe
 				return;
-			sendAndLog(p, ChatColor.GREEN, message);
+			Utility.sendAndLog(p, ChatColor.GREEN, message);
 		}
 	}
 }

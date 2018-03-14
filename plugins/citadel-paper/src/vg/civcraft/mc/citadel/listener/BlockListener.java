@@ -83,7 +83,7 @@ public class BlockListener implements Listener {
 	{
 		//We only care if they are placing a comparator
 		if(event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) return;
-	
+
 		Comparator comparator = (Comparator)event.getBlockPlaced().getState().getData();
 		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
 		//We only care if the comparator is going placed against something with an inventory
@@ -94,10 +94,10 @@ public class BlockListener implements Listener {
 				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
 					Player player = event.getPlayer();
 					if (player != null) {
-						if (playerReinforcement.canAccessChests(player)) { 
+						if (playerReinforcement.canAccessChests(player)) {
 							return; // We also allow players to place against chests they can access
 						}
-						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+						Utility.sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
 					}
 					event.setCancelled(true);
 				}
@@ -114,16 +114,16 @@ public class BlockListener implements Listener {
 				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
 					Player player = event.getPlayer();
 					if (player != null) {
-						if (playerReinforcement.canAccessChests(player)) { 
+						if (playerReinforcement.canAccessChests(player)) {
 							return; // We also allow players to place against chests they can access
 						}
-						sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
+						Utility.sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
 					}
 					event.setCancelled(true);
 				}
 			}
 		}
-		
+
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -163,7 +163,7 @@ public class BlockListener implements Listener {
 		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
 			type = state.getReinforcementType();
 			if (type == null) {
-				sendAndLog(p, ChatColor.RED, "Something went wrong, you dont seem to have a reinforcement material selected?");
+				Utility.sendAndLog(p, ChatColor.RED, "Something went wrong, you dont seem to have a reinforcement material selected?");
 				state.reset();
 				event.setCancelled(true);
 				return;
@@ -190,19 +190,19 @@ public class BlockListener implements Listener {
 		}
 
 		if (!canPlace(b, p)){
-			sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
+			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
 			event.setCancelled(true);
 			return;
 		}
 		 // Don't allow double reinforcing reinforceable plants
         if (wouldPlantDoubleReinforce(b)) {
-        	sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+        	Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
             event.setCancelled(true);
             return;
         }
         // Don't allow incorrect reinforcement with exclusive reinforcement types
         if (!type.canBeReinforced(b.getType())) {
-            sendAndLog(p, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+            Utility.sendAndLog(p, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
             event.setCancelled(true);
             return;
         }
@@ -213,7 +213,7 @@ public class BlockListener implements Listener {
 		if (inv.containsAtLeast(type.getItemStack(), required)) {
 			try {
 				if (createPlayerReinforcement(p, groupToReinforceTo, b, type, event.getItemInHand()) == null) {
-					sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
+					Utility.sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
 				} else {
 					state.checkResetMode();
 				}
@@ -222,7 +222,7 @@ public class BlockListener implements Listener {
 			}
         } else {
         	if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
-	        	sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
+	        	Utility.sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
 	            		state.getReinforcementType().getMaterial().name()));
 	            state.reset();
 	            event.setCancelled(true);
@@ -529,16 +529,16 @@ public class BlockListener implements Listener {
 					if (type != null) {
 						 // Don't allow double reinforcing reinforceable plants
 				        if (wouldPlantDoubleReinforce(block)) {
-				        	sendAndLog(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
+				        	Utility.sendAndLog(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
 				            return;
 				        }
 				        // Don't allow incorrect reinforcement with exclusive reinforcement types
 				        if (!type.canBeReinforced(block.getType())) {
-				            sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+				            Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
 				            return;
 				        }
 						if (!canPlace(block, player)){
-							sendAndLog(player, ChatColor.RED, "Cancelled interact easymode rein, mismatched reinforcement.");
+							Utility.sendAndLog(player, ChatColor.RED, "Cancelled interact easymode rein, mismatched reinforcement.");
 							return;
 						}
 
@@ -567,7 +567,7 @@ public class BlockListener implements Listener {
 					Group group = reinforcement.getGroup();
 					StringBuilder sb;
 					if (player.hasPermission("citadel.admin.ctinfodetails")) {
-						sendAndLog(player, ChatColor.GREEN, String.format(
+						Utility.sendAndLog(player, ChatColor.GREEN, String.format(
 								"Loc[%s]", reinforcement.getLocation()
 										.toString()));
 						String groupName = "!NULL!";
@@ -608,7 +608,7 @@ public class BlockListener implements Listener {
 						}
 						sb.append("\nGroup id: " + reinforcement.getGroupId());
 
-						sendAndLog(player, ChatColor.GREEN, sb.toString());
+						Utility.sendAndLog(player, ChatColor.GREEN, sb.toString());
 					} else if (reinforcement.canViewInformation(player)) {
 						sb = new StringBuilder();
 						boolean immature = timeUntilMature(reinforcement) != 0
@@ -631,9 +631,14 @@ public class BlockListener implements Listener {
 						if (reinforcement.isInsecure()) {
 							sb.append(" (Insecure)");
 						}
-						sendAndLog(player, ChatColor.GREEN, sb.toString());
+						Location blockLoc = reinforcement.getLocation();
+						String blockName = reinforcement.getLocation().getBlock().getType().toString();
+						String hoverMessage = String.format(
+							"Block: %s\nLocation: [%s %d %d %d]",
+							blockName, blockLoc.getWorld().getName(), (int)blockLoc.getX(), (int)blockLoc.getY(), (int)blockLoc.getZ());
+						Utility.sendAndLog(player, ChatColor.GREEN, sb.toString(), hoverMessage);
 					} else {
-						sendAndLog(player, ChatColor.RED, reinforcementStatus
+						Utility.sendAndLog(player, ChatColor.RED, reinforcementStatus
 								+ ", " + ageStatus);
 					}
 					if (player.getGameMode() == GameMode.CREATIVE) {
@@ -651,14 +656,14 @@ public class BlockListener implements Listener {
 						// Save the change
 						/*Citadel.getReinforcementManager().saveReinforcement(reinforcement);*/
 						if (reinforcement.isInsecure()) {
-							sendAndLog(player, ChatColor.YELLOW,
+							Utility.sendAndLog(player, ChatColor.YELLOW,
 									"Reinforcement now insecure");
 						} else {
-							sendAndLog(player, ChatColor.GREEN,
+							Utility.sendAndLog(player, ChatColor.GREEN,
 									"Reinforcement secured");
 						}
 					} else {
-						sendAndLog(player, ChatColor.RED, "Access denied");
+						Utility.sendAndLog(player, ChatColor.RED, "Access denied");
 					}
 				}
 				break;
@@ -672,17 +677,17 @@ public class BlockListener implements Listener {
 					ReinforcementType type = ReinforcementType
 							.getReinforcementType(stack);
 					if (type == null) {
-						sendAndLog(player, ChatColor.RED, stack.getType()
+						Utility.sendAndLog(player, ChatColor.RED, stack.getType()
 								.name() + " is not a reinforcable material.");
-						sendAndLog(player, ChatColor.RED,
+						Utility.sendAndLog(player, ChatColor.RED,
 								"Left Reinforcement mode.");
 						state.reset();
 						return;
 					}
 					// Don't allow incorrect reinforcement with exclusive reinforcement types
 					if (!type.canBeReinforced(block.getType())) {
-						sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
-						sendAndLog(player, ChatColor.RED,"Left Reinforcement mode.");
+						Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+						Utility.sendAndLog(player, ChatColor.RED,"Left Reinforcement mode.");
 						state.reset();
 						return;
 					}
@@ -694,10 +699,10 @@ public class BlockListener implements Listener {
 					}
 					// Don't allow double reinforcing reinforceable plants
 					if (wouldPlantDoubleReinforce(block)) {
-						sendAndLog(player, ChatColor.RED,
+						Utility.sendAndLog(player, ChatColor.RED,
 								"Cancelled reinforcement, crop would already be reinforced.");
 					} else {
-						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null) == null && 
+						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null) == null &&
 								CitadelConfigManager.shouldLogReinforcement()) {
 							// someone else's job to tell the player what went wrong, but let's do log it.
 							Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
@@ -719,7 +724,7 @@ public class BlockListener implements Listener {
 							//rm.saveReinforcement(reinforcement);
 							message = "Group has been changed to: "
 									+ group.getName() + ".";
-							sendAndLog(player, ChatColor.GREEN, message);
+							Utility.sendAndLog(player, ChatColor.GREEN, message);
 						} else {
 							reinforcement.setGroup(old_group);
 						}
@@ -729,7 +734,7 @@ public class BlockListener implements Listener {
 					if (type != null && !reinforcement.getStackRepresentation().isSimilar(type.getItemStack())) {
 						//hit with different rein material, so switch material
 						if (!type.canBeReinforced(block.getType())) {
-							sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
+							Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
 						}
 						else {
 							ReinforcementChangeTypeEvent e = new ReinforcementChangeTypeEvent(reinforcement, type, player);
@@ -740,7 +745,7 @@ public class BlockListener implements Listener {
 								Bukkit.getPluginManager().callEvent(event);
 								if (!event.isCancelled()) {
 									if(createPlayerReinforcement(player, state.getGroup(),	block, type, null) != null) {
-										sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
+										Utility.sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
 									} else if (CitadelConfigManager.shouldLogReinforcement()) {
 										Citadel.getInstance().getLogger().log(Level.INFO, "Change Reinforcement by {0} at {1} cancelled by plugin",
 												new Object[] {player.getName(), block.getLocation()});
@@ -750,7 +755,7 @@ public class BlockListener implements Listener {
 						}
 					}
 				} else {
-					sendAndLog(player, ChatColor.RED,
+					Utility.sendAndLog(player, ChatColor.RED,
 							"You are not permitted to modify this reinforcement");
 				}
 				pie.setCancelled(true);
@@ -797,16 +802,6 @@ public class BlockListener implements Listener {
 		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
 		if (rein != null) {
 			event.setCancelled(true);
-		}
-	}
-
-	protected void sendAndLog(Player receiver, ChatColor color, String message) {
-		receiver.sendMessage(color + message);
-		if (CitadelConfigManager.shouldLogPlayerCommands()) {
-			Citadel.getInstance()
-					.getLogger()
-					.log(Level.INFO, "Sent {0} reply {1}",
-							new Object[] { receiver.getName(), message });
 		}
 	}
 }
