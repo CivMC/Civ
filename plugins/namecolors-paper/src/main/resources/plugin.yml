@@ -1,0 +1,18 @@
+name: NameColors
+main: com.biggestnerd.namecolors.NameColors
+version: ${project.version}
+author: biggestnerd
+depend: [CivModCore]
+softdepend: [CivChat2]
+commands:
+  namecolor:
+    description: "Give your name a nice color!"
+    usage: "Usage /namecolor"
+    permission: namecolor.use
+permissions:
+  namecolor.use:
+    description: Allows you to change the color of your name
+    default: op
+  namecolor.rainbow:
+    description: Lets you get a rainbow name
+    default: op
