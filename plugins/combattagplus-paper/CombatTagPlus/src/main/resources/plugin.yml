@@ -37,5 +37,4 @@ permissions:
   ctplus.bypass.craft: {default: op}
   ctplus.check: {default: true}
   ctplus.logout: {default: true}
-  ctplus.check: {default: op}
   ctplus.notify.kill: {default: true}
