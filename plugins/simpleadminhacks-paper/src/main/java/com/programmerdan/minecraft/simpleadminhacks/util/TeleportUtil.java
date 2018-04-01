@@ -52,7 +52,7 @@ public class TeleportUtil {
 				return true;
 			}
 		}
-		loc = getTeleportLocation(player, baseLoc.add(0, world.getMaxHeight() - baseLoc.getY(), 0));
+		loc = getTeleportLocation(player, baseLoc.add(0, world.getMaxHeight() - baseLoc.getY() - 2, 0));
 		if(loc != null) {
 			player.setVelocity(new Vector());
 			loc.setX(Math.floor(loc.getX()) + 0.500000D);
