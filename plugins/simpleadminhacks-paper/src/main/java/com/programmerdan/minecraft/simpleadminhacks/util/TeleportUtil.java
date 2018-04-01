@@ -15,8 +15,10 @@ public class TeleportUtil {
 
 	private static boolean checkForTeleportSpace(Location loc) {
 		final Block block = loc.getBlock();
-		return !block.getType().isSolid() && !block.getRelative(BlockFace.UP).getType().isSolid() &&
-				!block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().isSolid();
+		return !block.getType().isSolid() && 
+				!block.getRelative(BlockFace.UP).getType().isSolid() &&
+				!block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().isSolid() &&
+				!block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().isSolid();
 	}
 	
 	private static Location getTeleportLocation(Player player, Location location) {
