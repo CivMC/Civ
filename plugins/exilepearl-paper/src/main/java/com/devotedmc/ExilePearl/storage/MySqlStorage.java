@@ -145,12 +145,13 @@ class MySqlStorage implements PluginStorage {
 
 		if (isFirstRun()) {
 			logger.log(Level.WARNING, "ExilePearl is running for the first time.");
-			if (config.getMigratePrisonPearl()) {
-				migratePrisonPearl();
-			}
 			
 			applyMigration0001();
 			applyMigration0002();
+			
+			if (config.getMigratePrisonPearl()) {
+				migratePrisonPearl();
+			}
 			
 			// add new migrations here.
 			
