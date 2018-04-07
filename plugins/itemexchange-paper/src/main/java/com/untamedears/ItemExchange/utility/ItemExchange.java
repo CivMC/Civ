@@ -13,6 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.material.Button;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
@@ -277,7 +278,7 @@ public class ItemExchange {
 
 			// Power buttons.
 			Block block = location.getBlock();
-			ItemExchange.powerBlock(player, block);
+			ItemExchange.powerBlock(player, block); // <-- Why try to power the shopchest if it'll just fail at the first if-statement?
 
 			Material type = block.getType();
 			if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
@@ -318,16 +319,25 @@ public class ItemExchange {
 	}
 	
 	public static void powerBlock(Player p, Block b) {
+		// The Player parameter here is never used and so should be removed!
+		// ======================================================================
+		// The changes to this function mean that the button can be placed
+		// on any of the five remaining faces of the block behind the ShopChest.
+
 		Material type = b.getType();
-		
+
+		// Why also a furnace? o.O
+		// Also why not just check if the block is opaque?
+		// if (!type.isSolid()) return;
 		if(!(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.FURNACE)) {
 			return;
 		}
 		
 		byte data = DeprecatedMethods.getBlockMeta(b);
-		
+
+		// Get the reverse direction of
+		// where the shopchest is facing
 		BlockFace face;
-		
 		if((data & 0x5) == 5) {
 			face = BlockFace.EAST;
 		}
@@ -343,51 +353,35 @@ public class ItemExchange {
 		else {
 			return;
 		}
-		
 		face = face.getOppositeFace();
-		
-		final Block b2 = b.getRelative(face, 2);
-		Material type2 = b2.getType();
-		
-		if(type2 == Material.STONE_BUTTON || type2 == Material.WOOD_BUTTON) {
-			BlockFace face2;
-			byte data2 = DeprecatedMethods.getBlockMeta(b2);
-			
-			if((data2 & 0x4) == 4) {
-				face2 = BlockFace.NORTH;
-			}
-			else if((data2 & 0x3) == 3) {
-				face2 = BlockFace.SOUTH;
-			}
-			else if((data2 & 0x2) == 2) {
-				face2 = BlockFace.WEST;
-			}
-			else if((data2 & 0x1) == 1) {
-				face2 = BlockFace.EAST;
-			}
-			else {
-				return;
-			}
-			
-			if(face2 == face) {
-				BlockState pressed = b2.getState();
-				DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) | 0x8));
-				pressed.update();
-				
-				Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
-					public void run() {
-						BlockState pressed = b2.getState();
-						Material type = pressed.getType();
-						
-						if(!(type == Material.STONE_BUTTON || type == Material.WOOD_BUTTON)) {
-							return;
-						}
-						
-						DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) & ~0x8));
-						pressed.update();
-					}
-				}, 30);
-			}
+
+		// Get the block the button is on
+		final Block buttonBlock = b.getRelative(face);
+
+		// Loop through each of the remaining face
+		// if they have a button, auto push it
+		// (BlockFace totally needs a BlockFace.getCardinalDirections() function >.>)
+		BlockFace[] faces = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN };
+		for (BlockFace bFace : faces) {
+			// Get the block and type in that direction
+			final Block bBlock = buttonBlock.getRelative(bFace);
+			Material bType = bBlock.getType();
+			// If it's not a button, then just continue
+			if (bType != Material.STONE_BUTTON && bType != Material.WOOD_BUTTON)
+				continue;
+			// Otherwise get the direction of the button
+			Button bButton = new Button(bType);
+			// And if it isn't on the block, skip
+			if (bButton.getAttachedFace() != bFace.getOppositeFace())
+				continue;
+			// Otherwise power button
+			bButton.setPowered(true);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
+				public void run() {
+					if (bButton.isPowered())
+						bButton.setPowered(false);
+				}
+			}, 30);
 		}
 	}
 
