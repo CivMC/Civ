@@ -13,15 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.material.Button;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
+import org.bukkit.block.*;
+import org.bukkit.inventory.*;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
@@ -276,23 +270,14 @@ public class ItemExchange {
 			IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
 			Bukkit.getPluginManager().callEvent(event);
 
-			// Power buttons.
-			Block block = location.getBlock();
-			ItemExchange.powerBlock(player, block); // <-- Why try to power the shopchest if it'll just fail at the first if-statement?
+			// Power buttons button directly behind *this* chest
+			Block ShopChest = location.getBlock();
+			ItemExchange.SuccessfulTransactionButton(ShopChest);
+			// Check if *this* chest if double chest, if so, call for that too
+			Block isDoubleChest = BlockUtility.CheckIfDoubleChest(ShopChest);
+			if (isDoubleChest != null) ItemExchange.SuccessfulTransactionButton(isDoubleChest);
 
-			Material type = block.getType();
-			if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
-				Block north = block.getRelative(BlockFace.NORTH);
-				Block south = block.getRelative(BlockFace.SOUTH);
-				Block east = block.getRelative(BlockFace.EAST);
-				Block west = block.getRelative(BlockFace.WEST);
-
-				if(north.getType() == type) ItemExchange.powerBlock(player, north);
-				if(south.getType() == type) ItemExchange.powerBlock(player, south);
-				if(east.getType() == type) ItemExchange.powerBlock(player, east);
-				if(west.getType() == type) ItemExchange.powerBlock(player, west);
-			}
-
+			// Successful exchange
 			if (exchangeOutput != null) {
 				player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 			} else {
@@ -317,71 +302,30 @@ public class ItemExchange {
 		}
 		messagePlayer(player);
 	}
-	
-	public static void powerBlock(Player p, Block b) {
-		// The Player parameter here is never used and so should be removed!
-		// ======================================================================
-		// The changes to this function mean that the button can be placed
-		// on any of the five remaining faces of the block behind the ShopChest.
 
-		Material type = b.getType();
-
-		// Why also a furnace? o.O
-		// Also why not just check if the block is opaque?
-		// if (!type.isSolid()) return;
-		if(!(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.FURNACE)) {
-			return;
-		}
-		
-		byte data = DeprecatedMethods.getBlockMeta(b);
-
-		// Get the reverse direction of
-		// where the shopchest is facing
-		BlockFace face;
-		if((data & 0x5) == 5) {
-			face = BlockFace.EAST;
-		}
-		else if((data & 0x4) == 4) {
-			face = BlockFace.WEST;
-		}
-		else if((data & 0x3) == 3) {
-			face = BlockFace.SOUTH;
-		}
-		else if((data & 0x2) == 2) {
-			face = BlockFace.NORTH;
-		}
-		else {
-			return;
-		}
-		face = face.getOppositeFace();
-
-		// Get the block the button is on
-		final Block buttonBlock = b.getRelative(face);
-
-		// Loop through each of the remaining face
-		// if they have a button, auto push it
-		// (BlockFace totally needs a BlockFace.getCardinalDirections() function >.>)
-		BlockFace[] faces = new BlockFace[] { BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN };
-		for (BlockFace bFace : faces) {
-			// Get the block and type in that direction
-			final Block bBlock = buttonBlock.getRelative(bFace);
-			Material bType = bBlock.getType();
-			// If it's not a button, then just continue
-			if (bType != Material.STONE_BUTTON && bType != Material.WOOD_BUTTON)
-				continue;
-			// Otherwise get the direction of the button
-			Button bButton = new Button(bType);
-			// And if it isn't on the block, skip
-			if (bButton.getAttachedFace() != bFace.getOppositeFace())
-				continue;
-			// Otherwise power button
-			bButton.setPowered(true);
-			Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
-				public void run() {
-					if (bButton.isPowered())
-						bButton.setPowered(false);
-				}
-			}, 30);
+	public static void SuccessfulTransactionButton(Block shopChest) {
+		Material SC_Material = shopChest.getType();
+		if (SC_Material == Material.CHEST || SC_Material == Material.TRAPPED_CHEST) {
+			// Get the block behind the shopChest
+			BlockFace SC_Facing = BlockUtility.GetFacingDirection(shopChest);
+			BlockFace SC_Behind = SC_Facing.getOppositeFace();
+			// Check that host block isn't a shop compatible block
+			Block SC_ButtonHost = shopChest.getRelative(SC_Behind);
+			if (BlockUtility.IsShopCompatible(SC_ButtonHost.getType())) return;
+			// Loop through each cardinal direciton
+			for (BlockFace HostFace : BlockUtility.CardinalFaces) {
+				// Skip if direction is where the shopchest is
+				if (HostFace == SC_Facing) continue;
+				// Otherwise check if block is a button, if not then skip
+				Block BB_Block = SC_ButtonHost.getRelative(HostFace);
+				Material BB_Material = BB_Block.getType();
+				if (!(BB_Material == Material.STONE_BUTTON || BB_Material == Material.WOOD_BUTTON)) continue;
+				// Check if the button is attached to the face, otherwise skip
+				BlockFace BB_Facing = BlockUtility.GetAttachedDirection(BB_Block);
+				if (!(BB_Facing == HostFace)) continue;
+				// Otherwise power the button
+				BlockUtility.PowerBlock(BB_Block, 30);
+			}
 		}
 	}
 
