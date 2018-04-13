@@ -482,16 +482,18 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		event.setDeathMessage(null);
 		Player dead = event.getEntity();
 		String killer = "";
+		Location loc = dead.getLocation();
 		if (dead.getKiller() != null) {
 			killer = dead.getKiller().getDisplayName();
-		} else {
-			try {
-				killer = dead.getLastDamageCause().getCause().toString();
-			} catch (NullPointerException e) {
-				return;
-			}
+			dead.sendMessage(ChatColor.RED + String.format("You were slain by player %s at [%s %d, %d, %d]",
+					killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+			return;
 		}
-		Location loc = dead.getLocation();
+		try {
+			killer = dead.getLastDamageCause().getCause().toString();
+		} catch (NullPointerException e) {
+			return;
+		}
 		dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
 				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
