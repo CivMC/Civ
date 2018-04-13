@@ -476,22 +476,23 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if (config.isEnabled() && config.isPersonalDeathMessages()) {
-			Player dead = event.getEntity();
-			event.setDeathMessage(null);
-			String killer = "";
-			if (dead.getKiller() != null) {
-				killer = dead.getKiller().getDisplayName();
-			} else {
-				try {
-					killer = dead.getLastDamageCause().getCause().toString();
-				} catch (NullPointerException e) {
-					return;
-				}
-			}
-			Location loc = dead.getLocation();
-			dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
-					killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		if (!config.isEnabled() || !config.isPersonalDeathMessages()) {
+			return;
 		}
+		event.setDeathMessage(null);
+		Player dead = event.getEntity();
+		String killer = "";
+		if (dead.getKiller() != null) {
+			killer = dead.getKiller().getDisplayName();
+		} else {
+			try {
+				killer = dead.getLastDamageCause().getCause().toString();
+			} catch (NullPointerException e) {
+				return;
+			}
+		}
+		Location loc = dead.getLocation();
+		dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
+				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
 }
