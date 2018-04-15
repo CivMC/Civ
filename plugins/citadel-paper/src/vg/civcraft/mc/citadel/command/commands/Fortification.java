@@ -91,16 +91,12 @@ public class Fortification extends PlayerCommand{
 			return true;
 		}
 		String hoverMessage = String.format("Material: %s\nGroup: %s", reinType.getMaterial().toString(), groupName);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				"You are now in Fortification mode, place blocks down and they will be secured with the material in your hand.",
-				hoverMessage);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				" Type /fortify or /cto to turn this off when you are done.",
-				hoverMessage);
+		Utility.sendAndLog(
+			p,
+			ChatColor.GREEN,
+			"You are now in Fortification mode, place blocks down and they will be secured with the material in your hand.\n"
+			+ " Type /fortify or /cto to turn this off when you are done.",
+			hoverMessage);
 		state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
 		state.setFortificationItemStack(reinType.getItemStack());
 		state.setGroup(g);
