@@ -76,16 +76,12 @@ public class Reinforce extends PlayerCommand {
 		}
 
 		String hoverMessage = String.format("Group: %s", groupName);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				"You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them.",
-				hoverMessage);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				" Type /reinforce or /cto to turn this off when you are done.",
-				hoverMessage);
+		Utility.sendAndLog(
+			p,
+			ChatColor.GREEN,
+			"You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them.\n"
+			+ " Type /reinforce or /cto to turn this off when you are done.",
+			hoverMessage);
 		state.setMode(ReinforcementMode.REINFORCEMENT);
 		state.setGroup(g);
 		return true;

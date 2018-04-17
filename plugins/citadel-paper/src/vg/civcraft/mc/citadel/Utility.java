@@ -62,16 +62,16 @@ public class Utility {
         }
     }
 
-    // Bug: colors don't seem to work with player.spigot().sendMessage() when sending multiline strings.
     public static void sendAndLog(Player player, ChatColor color, String message, String hoverMessage) {
-        if (hoverMessage != null && !hoverMessage.trim().isEmpty()) {
-            TextComponent playerMessage = new TextComponent(color + message);
-            playerMessage.setHoverEvent(
-                new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverMessage).create()));
-            player.spigot().sendMessage(playerMessage);
-        } else {
+        if (hoverMessage == null || hoverMessage.trim().isEmpty()) {
             sendAndLog(player, color, message);
             return;
+        }
+        HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverMessage).create());
+        for (String line : message.split("\n")) {
+            TextComponent playerMessage = new TextComponent(color + line);
+            playerMessage.setHoverEvent(hover);
+            player.spigot().sendMessage(playerMessage);
         }
         if (CitadelConfigManager.shouldLogPlayerCommands()) {
             Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}", new Object[]{player.getName(), message});
