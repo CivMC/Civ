@@ -141,21 +141,21 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("disabled\n");
 			}
-			
+
 			genStatus.append("  Shulker Box use is ");
 			if (config.isShulkerBoxUse()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
-			
+
 			genStatus.append("  Totem of Undying effects are ");
 			if (config.isTotemPowers()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
 			}
-			
+
 			genStatus.append("  Elytra use is ");
 			if (config.isElytraUse()) {
 				genStatus.append("enabled\n");
@@ -176,7 +176,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("disabled\n");
 			}
-			
+
 			genStatus.append("  Block water in HELL biomes is ");
 			if (config.isBlockWaterInHell()) {
 				genStatus.append("enabled\n");
@@ -254,8 +254,8 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true) 
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderChestUse(PlayerInteractEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isEnderChestUse()) {
@@ -268,7 +268,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableShulkerBoxUse(InventoryOpenEvent event){
 		if (!config.isEnabled()) return;
@@ -279,7 +279,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void disabledShulkerBoxHoppering(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || config.isShulkerBoxUse()) return;
-		
+
 		if ((event.getDestination() == null) || (event.getSource() == null)) return;
 		if (InventoryType.SHULKER_BOX.equals(event.getDestination().getType()) ||
 				InventoryType.SHULKER_BOX.equals(event.getSource().getType())) {
@@ -287,11 +287,11 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableTotemPowers(EntityResurrectEvent event) {
 		if (!config.isEnabled() || config.isTotemPowers()) return;
-		
+
 		if (EntityType.PLAYER.equals(event.getEntityType())) {
 			event.setCancelled(true);
 		}
@@ -300,7 +300,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void disableChorusFruitTeleportation(PlayerTeleportEvent event) {
 		if (!config.isEnabled() || config.isChorusFruitTeleportation()) return;
-		
+
 		if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)) {
 			event.setCancelled(true);
 		}
@@ -309,7 +309,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void disableElytraUse(EntityToggleGlideEvent event) {
 		if (!config.isEnabled() || config.isElytraUse()) return;
-		
+
 		event.setCancelled(true);
 	}
 
@@ -371,7 +371,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onDispenseEvent(BlockDispenseEvent event) {
 		if (config.isEnabled() && config.isBlockWaterInHell()) {
@@ -387,55 +387,55 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent event) {
-		if(config.isEnabled() && config.isMinecartTeleport()) {
+		if (config.isEnabled() && config.isMinecartTeleport()) {
 			Player player = event.getPlayer();
 			Entity vehicle = player.getVehicle();
-			if(vehicle == null) {
+			if (vehicle == null) {
 				return;
 			}
 			Location vehicleLocation = vehicle.getLocation();
 			player.leaveVehicle();
-			if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "logged out")) {
+			if (!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "logged out")) {
 				player.setHealth(0.000000D);
 				plugin().log(Level.INFO, "Player '%s' logged out in vehicle: killed", player.getName());
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onVehicleExit(VehicleExitEvent event) {
-		if(config.isEnabled() && config.isMinecartTeleport()) {
+		if (config.isEnabled() && config.isMinecartTeleport()) {
 			final Vehicle vehicle = event.getVehicle();
-			if(vehicle == null) {
+			if (vehicle == null) {
 				return;
 			}
 			final Entity passenger = event.getExited();
-			if(passenger == null || !(passenger instanceof Player)) {
+			if (passenger == null || !(passenger instanceof Player)) {
 				return;
 			}
 			final Player player = (Player) passenger;
 			final Location vehicleLocation = vehicle.getLocation();
 			Bukkit.getScheduler().runTaskLater(plugin(), () -> {
-				if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "exiting vehicle")) {
+				if (!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "exiting vehicle")) {
 					player.setHealth(0.000000D);
 					plugin().log(Level.INFO, "Player '%s' exiting vehicle: killed", player.getName());
 				}
 			}, 2L);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
-		if(config.isEnabled() && config.isMinecartTeleport()) {
+		if (config.isEnabled() && config.isMinecartTeleport()) {
 			final Vehicle vehicle = event.getVehicle();
-			if(vehicle == null) {
+			if (vehicle == null) {
 				return;
 			}
 			final List<Entity> passengers = vehicle.getPassengers();
-			if(passengers == null) {
+			if (passengers == null) {
 				return;
 			}
 			final Location vehicleLocation = vehicle.getLocation();
@@ -443,7 +443,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			passengers.forEach((passenger) -> {
 				final Player player = (Player) passenger;
 				Bukkit.getScheduler().runTaskLater(plugin(), () -> {
-					if(!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "in destroyed vehicle")) {
+					if (!TeleportUtil.tryToTeleportVertically(player, vehicleLocation, "in destroyed vehicle")) {
 						player.setHealth(0.000000D);
 						plugin().log(Level.INFO, String.format("Player '%s' exiting vehicle: killed", player.getName()));
 					}
@@ -451,15 +451,15 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			});
 		}
 	}
-	
+
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
-		if(config.isEnabled() && config.isObsidianGenerators()) {
-			if(event.getBlock().getType() == Material.STATIONARY_LAVA ||
+		if (config.isEnabled() && config.isObsidianGenerators()) {
+			if (event.getBlock().getType() == Material.STATIONARY_LAVA ||
 					event.getBlock().getType() == Material.LAVA) {
 				Block to = event.getToBlock();
-				if(to.getType() == Material.REDSTONE || to.getType() == Material.TRIPWIRE) {
-					if(to.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER
+				if (to.getType() == Material.REDSTONE || to.getType() == Material.TRIPWIRE) {
+					if (to.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER
 							|| to.getRelative(BlockFace.SOUTH).getType() == Material.STATIONARY_WATER
 							|| to.getRelative(BlockFace.WEST).getType() == Material.STATIONARY_WATER
 							|| to.getRelative(BlockFace.EAST).getType() == Material.STATIONARY_WATER
@@ -473,25 +473,28 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		if(config.isEnabled() && config.isPersonalDeathMessages()) {
-			Player dead = event.getEntity();
-			event.setDeathMessage(null);
-			String killer = "";
-			if(dead.getKiller() != null) {
-				killer = dead.getKiller().getDisplayName();
-			} else {
-				try {
-					killer = dead.getLastDamageCause().getCause().toString();
-				} catch (NullPointerException e) {
-					return;
-				}
-			}
-			Location loc = dead.getLocation();
-			dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]", 
-					killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+		if (!config.isEnabled() || !config.isPersonalDeathMessages()) {
+			return;
 		}
+		event.setDeathMessage(null);
+		Player dead = event.getEntity();
+		String killer = "";
+		Location loc = dead.getLocation();
+		if (dead.getKiller() != null) {
+			killer = dead.getKiller().getDisplayName();
+			dead.sendMessage(ChatColor.RED + String.format("You were slain by player %s at [%s %d, %d, %d]",
+					killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
+			return;
+		}
+		try {
+			killer = dead.getLastDamageCause().getCause().toString();
+		} catch (NullPointerException e) {
+			return;
+		}
+		dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
+				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
 }
