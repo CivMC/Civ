@@ -566,6 +566,11 @@ public class BlockListener implements Listener {
 					String ageStatus = reinforcement.getAgeStatus();
 					Group group = reinforcement.getGroup();
 					StringBuilder sb;
+					Location blockLoc = reinforcement.getLocation();
+					String blockName = reinforcement.getLocation().getBlock().getType().toString();
+					String hoverMessage = String.format(
+						"Block: %s\nLocation: [%s %d %d %d]",
+						blockName, blockLoc.getWorld().getName(), (int)blockLoc.getX(), (int)blockLoc.getY(), (int)blockLoc.getZ());
 					if (player.hasPermission("citadel.admin.ctinfodetails")) {
 						Utility.sendAndLog(player, ChatColor.GREEN, String.format(
 								"Loc[%s]", reinforcement.getLocation()
@@ -631,15 +636,10 @@ public class BlockListener implements Listener {
 						if (reinforcement.isInsecure()) {
 							sb.append(" (Insecure)");
 						}
-						Location blockLoc = reinforcement.getLocation();
-						String blockName = reinforcement.getLocation().getBlock().getType().toString();
-						String hoverMessage = String.format(
-							"Block: %s\nLocation: [%s %d %d %d]",
-							blockName, blockLoc.getWorld().getName(), (int)blockLoc.getX(), (int)blockLoc.getY(), (int)blockLoc.getZ());
 						Utility.sendAndLog(player, ChatColor.GREEN, sb.toString(), hoverMessage);
 					} else {
-						Utility.sendAndLog(player, ChatColor.RED, reinforcementStatus
-								+ ", " + ageStatus);
+						Utility.sendAndLog(player, ChatColor.RED,
+								reinforcementStatus + ", " + ageStatus, hoverMessage);
 					}
 					if (player.getGameMode() == GameMode.CREATIVE) {
 						pie.setCancelled(true);

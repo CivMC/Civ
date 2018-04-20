@@ -70,37 +70,36 @@ public class Fortification extends PlayerCommand{
 		}
 
 		PlayerState state = PlayerState.get(p);
-		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION.equals(state.getMode())
-				&& (args.length == 0
-					|| (state.getGroup() != null
-						&& state.getGroup().getName() != null
-						&& state.getGroup().getName().equals(g.getName())))) {
+		boolean inFortificationMode = ReinforcementMode.REINFORCEMENT_FORTIFICATION.equals(state.getMode());
+		boolean noGroupSpecified = args.length == 0;
+		boolean noGroupChange = (
+			state.getGroup() != null
+			&& state.getGroup().getName() != null
+			&& state.getGroup().getName().equals(g.getName()));
+		ItemStack stack = p.getInventory().getItemInMainHand();
+		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
+		boolean noMaterialChange = reinType != null && reinType.equals(state.getReinforcementType());
+		if (inFortificationMode && (noGroupSpecified || (noGroupChange && noMaterialChange))) {
 			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 			return true;
 		}
 
-		ItemStack stack = p.getInventory().getItemInMainHand();
 		if (stack.getType() == Material.AIR) {
 			Utility.sendAndLog(p, ChatColor.RED, "You need to be holding something to fortify with, try holding a stone block in your hand.");
 			return true;
 		}
-		ReinforcementType reinType = ReinforcementType.getReinforcementType(stack);
 		if (reinType == null) {
 			Utility.sendAndLog(p, ChatColor.RED, "You can't use the item in your hand to reinforce. Try using a stone block.");
 			return true;
 		}
 		String hoverMessage = String.format("Material: %s\nGroup: %s", reinType.getMaterial().toString(), groupName);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				"You are now in Fortification mode, place blocks down and they will be secured with the material in your hand.",
-				hoverMessage);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				" Type /fortify or /cto to turn this off when you are done.",
-				hoverMessage);
+		Utility.sendAndLog(
+			p,
+			ChatColor.GREEN,
+			"You are now in Fortification mode, place blocks down and they will be secured with the material in your hand.\n"
+			+ " Type /fortify or /cto to turn this off when you are done.",
+			hoverMessage);
 		state.setMode(ReinforcementMode.REINFORCEMENT_FORTIFICATION);
 		state.setFortificationItemStack(reinType.getItemStack());
 		state.setGroup(g);

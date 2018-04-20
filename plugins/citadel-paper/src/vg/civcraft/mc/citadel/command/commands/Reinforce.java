@@ -65,27 +65,25 @@ public class Reinforce extends PlayerCommand {
 		}
 
 		PlayerState state = PlayerState.get(p);
-		if (ReinforcementMode.REINFORCEMENT.equals(state.getMode())
-				&& (args.length == 0
-					|| (state.getGroup() != null
-						&& state.getGroup().getName() != null
-						&& state.getGroup().getName().equals(g.getName())))) {
+		boolean inReinforcementMode = ReinforcementMode.REINFORCEMENT.equals(state.getMode());
+		boolean noGroupSpecified = args.length == 0;
+		boolean noGroupChange = (
+			state.getGroup() != null
+			&& state.getGroup().getName() != null
+			&& state.getGroup().getName().equals(g.getName()));
+		if (inReinforcementMode && (noGroupSpecified || noGroupChange)) {
 			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 			return true;
 		}
 
 		String hoverMessage = String.format("Group: %s", groupName);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				"You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them.",
-				hoverMessage);
-			Utility.sendAndLog(
-				p,
-				ChatColor.GREEN,
-				" Type /reinforce or /cto to turn this off when you are done.",
-				hoverMessage);
+		Utility.sendAndLog(
+			p,
+			ChatColor.GREEN,
+			"You are now in Reinforcement mode, hit blocks with a reinforcement material to secure them.\n"
+			+ " Type /reinforce or /cto to turn this off when you are done.",
+			hoverMessage);
 		state.setMode(ReinforcementMode.REINFORCEMENT);
 		state.setGroup(g);
 		return true;
