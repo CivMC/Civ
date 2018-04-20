@@ -140,7 +140,7 @@ public class ProductionRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ISUtils.setName(this.recipeRepresentation, getName());
-		return this.recipeRepresentation;
+		return this.recipeRepresentation.clone();
 	}
 
 	public ProductionRecipeModifier getModifier() {

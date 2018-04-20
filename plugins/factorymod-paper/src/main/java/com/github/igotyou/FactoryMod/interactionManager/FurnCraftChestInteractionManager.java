@@ -1,28 +1,5 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -31,9 +8,29 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.inventory.ItemStack;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementManager;
+import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
+import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
+import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class FurnCraftChestInteractionManager implements IInteractionManager {
-	
+
     private FurnCraftChestFactory fccf;
     private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
     private DecimalFormat decimalFormatting;
@@ -51,12 +48,13 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	this.fccf = fccf;
     }
 
-    public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
+    @Override
+	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
 	ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
 		.getReinforcementManager() : null;
 	int threshold = FactoryMod.getManager().getRedstonePowerOn();
-	if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation()) && 
-			e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && 
+	if (factoryBlock.getLocation().equals(fccf.getFurnace().getLocation()) &&
+			e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold &&
 			(rm == null || MultiBlockStructure.citadelRedstoneChecks(e
 					.getBlock()))) {
 		if (fccf.isActive()) {
@@ -68,7 +66,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 		}
     }
 
-    public void blockBreak(Player p, Block b) {
+    @Override
+	public void blockBreak(Player p, Block b) {
 	if (p != null && !fccf.getRepairManager().inDisrepair()) {
 	    p.sendMessage(ChatColor.DARK_RED
 		    + "You broke the factory, it is in disrepair now");
@@ -80,7 +79,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	fccf.getRepairManager().breakIt();
     }
 
-    public void leftClick(Player p, Block b, BlockFace bf) {
+    @Override
+	public void leftClick(Player p, Block b, BlockFace bf) {
 	if (p.getInventory().getItemInMainHand().getType() != FactoryMod.getManager()
 		.getFactoryInteractionMaterial()) {
 	    return;
@@ -256,11 +256,11 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	    ISUtils.addLore(autoSelectStack, ChatColor.GOLD + "Auto select will make the factory automatically select any "
 	    		+ "recipe it can run whenever you activate it.", ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
 	    Clickable autoClick = new Clickable(autoSelectStack) {
-			
+
 			@Override
 			public void clicked(Player arg0) {
 				arg0.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on") + " for " + fccf.getName());
-				fccf.setAutoSelect(!fccf.isAutoSelect());				
+				fccf.setAutoSelect(!fccf.isAutoSelect());
 			}
 		};
 		ci.setSlot(autoClick, (rows * 9) - 2);
@@ -292,7 +292,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	}
     }
 
-    public void rightClick(Player p, Block b, BlockFace bf) {
+    @Override
+	public void rightClick(Player p, Block b, BlockFace bf) {
 	// Nothing to do here, every block already has a right click
 	// functionality
     }
