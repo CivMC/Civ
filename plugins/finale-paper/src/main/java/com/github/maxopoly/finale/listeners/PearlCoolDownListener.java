@@ -52,11 +52,6 @@ public class PearlCoolDownListener implements Listener {
 			DecimalFormat df = new DecimalFormat("#.##");
 			shooter.sendMessage(ChatColor.RED + "You may pearl again in "
 					+ df.format(((double) cd / 20.0))+  " seconds");
-			if (refundPearl) {
-				//cancelling the event will not give the pearl back, so we need to do this here
-				// THIS DOES NOT APPLY IN 1.12
-				shooter.getInventory().addItem(new ItemStack(Material.ENDER_PEARL));
-			}
 			return;
 		}
 		//tag player if desired
