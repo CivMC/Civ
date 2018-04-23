@@ -15,14 +15,12 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.events.IETransactionEvent;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
@@ -275,23 +273,14 @@ public class ItemExchange {
 			IETransactionEvent event = new IETransactionEvent(player, location, playerInput, exchangeOutput);
 			Bukkit.getPluginManager().callEvent(event);
 
-			// Power buttons.
-			Block block = location.getBlock();
-			ItemExchange.powerBlock(player, block);
+			// Power buttons button directly behind *this* chest
+			Block ShopChest = location.getBlock();
+			ItemExchange.successfulTransactionButton(ShopChest);
+			// Check if *this* chest if double chest, if so, call for that too
+			Block isDoubleChest = BlockUtility.getOtherDoubleChestBlock(ShopChest);
+			if (isDoubleChest != null) ItemExchange.successfulTransactionButton(isDoubleChest);
 
-			Material type = block.getType();
-			if(type == Material.CHEST || type == Material.TRAPPED_CHEST) {
-				Block north = block.getRelative(BlockFace.NORTH);
-				Block south = block.getRelative(BlockFace.SOUTH);
-				Block east = block.getRelative(BlockFace.EAST);
-				Block west = block.getRelative(BlockFace.WEST);
-
-				if(north.getType() == type) ItemExchange.powerBlock(player, north);
-				if(south.getType() == type) ItemExchange.powerBlock(player, south);
-				if(east.getType() == type) ItemExchange.powerBlock(player, east);
-				if(west.getType() == type) ItemExchange.powerBlock(player, west);
-			}
-
+			// Successful exchange
 			if (exchangeOutput != null) {
 				player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 			} else {
@@ -316,77 +305,29 @@ public class ItemExchange {
 		}
 		messagePlayer(player);
 	}
-	
-	public static void powerBlock(Player p, Block b) {
-		Material type = b.getType();
-		
-		if(!(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.FURNACE)) {
-			return;
-		}
-		
-		byte data = DeprecatedMethods.getBlockMeta(b);
-		
-		BlockFace face;
-		
-		if((data & 0x5) == 5) {
-			face = BlockFace.EAST;
-		}
-		else if((data & 0x4) == 4) {
-			face = BlockFace.WEST;
-		}
-		else if((data & 0x3) == 3) {
-			face = BlockFace.SOUTH;
-		}
-		else if((data & 0x2) == 2) {
-			face = BlockFace.NORTH;
-		}
-		else {
-			return;
-		}
-		
-		face = face.getOppositeFace();
-		
-		final Block b2 = b.getRelative(face, 2);
-		Material type2 = b2.getType();
-		
-		if(type2 == Material.STONE_BUTTON || type2 == Material.WOOD_BUTTON) {
-			BlockFace face2;
-			byte data2 = DeprecatedMethods.getBlockMeta(b2);
-			
-			if((data2 & 0x4) == 4) {
-				face2 = BlockFace.NORTH;
-			}
-			else if((data2 & 0x3) == 3) {
-				face2 = BlockFace.SOUTH;
-			}
-			else if((data2 & 0x2) == 2) {
-				face2 = BlockFace.WEST;
-			}
-			else if((data2 & 0x1) == 1) {
-				face2 = BlockFace.EAST;
-			}
-			else {
-				return;
-			}
-			
-			if(face2 == face) {
-				BlockState pressed = b2.getState();
-				DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) | 0x8));
-				pressed.update();
-				
-				Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
-					public void run() {
-						BlockState pressed = b2.getState();
-						Material type = pressed.getType();
-						
-						if(!(type == Material.STONE_BUTTON || type == Material.WOOD_BUTTON)) {
-							return;
-						}
-						
-						DeprecatedMethods.setBlockMeta(pressed, (byte)(DeprecatedMethods.getBlockMeta(pressed) & ~0x8));
-						pressed.update();
-					}
-				}, 30);
+
+	public static void successfulTransactionButton(Block shopChest) {
+		Material sc_material = shopChest.getType();
+		if (sc_material == Material.CHEST || sc_material == Material.TRAPPED_CHEST) {
+			// Get the block behind the shopChest
+			BlockFace sc_facing = BlockUtility.getFacingDirection(shopChest);
+			BlockFace sc_behind = sc_facing.getOppositeFace();
+			// Check that host block isn't a shop compatible block
+			Block sc_buttonhost = shopChest.getRelative(sc_behind);
+			if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(sc_buttonhost.getType())) return;
+			// Loop through each cardinal direciton
+			for (BlockFace hostface : BlockUtility.cardinalFaces) {
+				// Skip if direction is where the shopchest is
+				if (hostface == sc_facing) continue;
+				// Otherwise check if block is a button, if not then skip
+				Block bb_block = sc_buttonhost.getRelative(hostface);
+				Material bb_material = bb_block.getType();
+				if (!(bb_material == Material.STONE_BUTTON || bb_material == Material.WOOD_BUTTON)) continue;
+				// Check if the button is attached to the face, otherwise skip
+				BlockFace bb_facing = BlockUtility.getAttachedDirection(bb_block);
+				if (!(bb_facing == hostface)) continue;
+				// Otherwise power the button
+				BlockUtility.powerBlock(bb_block, 30);
 			}
 		}
 	}
