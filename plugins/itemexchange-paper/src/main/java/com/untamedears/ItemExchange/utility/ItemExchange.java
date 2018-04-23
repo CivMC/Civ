@@ -13,11 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.*;
-import org.bukkit.inventory.*;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 
-import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
 import com.untamedears.ItemExchange.events.IETransactionEvent;
 import com.untamedears.ItemExchange.exceptions.ExchangeRuleCreateException;
@@ -272,10 +275,10 @@ public class ItemExchange {
 
 			// Power buttons button directly behind *this* chest
 			Block ShopChest = location.getBlock();
-			ItemExchange.SuccessfulTransactionButton(ShopChest);
+			ItemExchange.successfulTransactionButton(ShopChest);
 			// Check if *this* chest if double chest, if so, call for that too
-			Block isDoubleChest = BlockUtility.CheckIfDoubleChest(ShopChest);
-			if (isDoubleChest != null) ItemExchange.SuccessfulTransactionButton(isDoubleChest);
+			Block isDoubleChest = BlockUtility.getOtherDoubleChestBlock(ShopChest);
+			if (isDoubleChest != null) ItemExchange.successfulTransactionButton(isDoubleChest);
 
 			// Successful exchange
 			if (exchangeOutput != null) {
@@ -303,28 +306,28 @@ public class ItemExchange {
 		messagePlayer(player);
 	}
 
-	public static void SuccessfulTransactionButton(Block shopChest) {
-		Material SC_Material = shopChest.getType();
-		if (SC_Material == Material.CHEST || SC_Material == Material.TRAPPED_CHEST) {
+	public static void successfulTransactionButton(Block shopChest) {
+		Material sc_material = shopChest.getType();
+		if (sc_material == Material.CHEST || sc_material == Material.TRAPPED_CHEST) {
 			// Get the block behind the shopChest
-			BlockFace SC_Facing = BlockUtility.GetFacingDirection(shopChest);
-			BlockFace SC_Behind = SC_Facing.getOppositeFace();
+			BlockFace sc_facing = BlockUtility.getFacingDirection(shopChest);
+			BlockFace sc_behind = sc_facing.getOppositeFace();
 			// Check that host block isn't a shop compatible block
-			Block SC_ButtonHost = shopChest.getRelative(SC_Behind);
-			if (BlockUtility.IsShopCompatible(SC_ButtonHost.getType())) return;
+			Block sc_buttonhost = shopChest.getRelative(sc_behind);
+			if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(sc_buttonhost.getType())) return;
 			// Loop through each cardinal direciton
-			for (BlockFace HostFace : BlockUtility.CardinalFaces) {
+			for (BlockFace hostface : BlockUtility.cardinalFaces) {
 				// Skip if direction is where the shopchest is
-				if (HostFace == SC_Facing) continue;
+				if (hostface == sc_facing) continue;
 				// Otherwise check if block is a button, if not then skip
-				Block BB_Block = SC_ButtonHost.getRelative(HostFace);
-				Material BB_Material = BB_Block.getType();
-				if (!(BB_Material == Material.STONE_BUTTON || BB_Material == Material.WOOD_BUTTON)) continue;
+				Block bb_block = sc_buttonhost.getRelative(hostface);
+				Material bb_material = bb_block.getType();
+				if (!(bb_material == Material.STONE_BUTTON || bb_material == Material.WOOD_BUTTON)) continue;
 				// Check if the button is attached to the face, otherwise skip
-				BlockFace BB_Facing = BlockUtility.GetAttachedDirection(BB_Block);
-				if (!(BB_Facing == HostFace)) continue;
+				BlockFace bb_facing = BlockUtility.getAttachedDirection(bb_block);
+				if (!(bb_facing == hostface)) continue;
 				// Otherwise power the button
-				BlockUtility.PowerBlock(BB_Block, 30);
+				BlockUtility.powerBlock(bb_block, 30);
 			}
 		}
 	}

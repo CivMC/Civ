@@ -2,16 +2,19 @@ package com.untamedears.ItemExchange.utility;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.*;
-import org.bukkit.inventory.*;
 
 import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.ItemExchange.ItemExchangePlugin;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.inventory.DoubleChestInventory;
+import org.bukkit.inventory.Inventory;
 
 public class BlockUtility {
 
-	public static final BlockFace[] CardinalFaces = new BlockFace[] {
+	public static final BlockFace[] cardinalFaces = new BlockFace[] {
 			BlockFace.NORTH,
 			BlockFace.EAST,
 			BlockFace.SOUTH,
@@ -20,7 +23,8 @@ public class BlockUtility {
 			BlockFace.UP
 	};
 
-	public static BlockFace GetFacingDirection(Block block) {
+	// Get the direction a block is facing
+	public static BlockFace getFacingDirection(Block block) {
 		byte data = DeprecatedMethods.getBlockMeta(block);
 		if ((data & 0x5) == 5)
 			return BlockFace.EAST;
@@ -32,13 +36,15 @@ public class BlockUtility {
 			return BlockFace.NORTH;
 		else if((data & 0x1) == 1)
 			return BlockFace.UP;
-		else if((data & 0x0) == 0)
+		else if(data == 0)
 			return BlockFace.DOWN;
 		else
 			return BlockFace.SELF;
 	}
 
-	public static BlockFace GetAttachedDirection(Block block) {
+	// Get the face an object is attached to
+	// (Attached can mean more than just buttons)
+	public static BlockFace getAttachedDirection(Block block) {
 		byte data = DeprecatedMethods.getBlockMeta(block);
 		if ((data & 0x5) == 5)
 			return BlockFace.UP;
@@ -50,62 +56,47 @@ public class BlockUtility {
 			return BlockFace.WEST;
 		else if((data & 0x1) == 1)
 			return BlockFace.EAST;
-		else if((data & 0x0) == 0)
+		else if(data == 0)
 			return BlockFace.DOWN;
 		else
 			return BlockFace.SELF;
 	}
 
-	public static void PowerBlock(Block block, long time) {
-		// Ensure that timedelay exists
-		if (time < 0) time = 0;
+	public static void powerBlock(Block block, long time) {
+		// Ensure that a timedelay exists
+		if (time <= 0) {
+			throw new IllegalArgumentException("You must enter an above zero time value!");
+		}
 		// Set the block to be powered
-		BlockState B_OnState = block.getState();
-		byte B_OnMeta = DeprecatedMethods.getBlockMeta(block);
-		DeprecatedMethods.setBlockMeta(B_OnState, (byte)(B_OnMeta | 0x8));
-		B_OnState.update();
+		BlockState b_onstate = block.getState();
+		byte b_onmeta = DeprecatedMethods.getBlockMeta(block);
+		DeprecatedMethods.setBlockMeta(b_onstate, (byte)(b_onmeta | 0x8));
+		b_onstate.update();
 		// And set the block to unpower in due time
 		Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.instance, new Runnable() {
 			public void run() {
-				BlockState B_OffState = block.getState();
-				byte B_OffMeta = DeprecatedMethods.getBlockMeta(block);
-				DeprecatedMethods.setBlockMeta(B_OffState, (byte)(B_OffMeta & ~0x8));
-				B_OffState.update();
+				BlockState b_offstate = block.getState();
+				byte b_offmeta = DeprecatedMethods.getBlockMeta(block);
+				DeprecatedMethods.setBlockMeta(b_offstate, (byte)(b_offmeta & ~0x8));
+				b_offstate.update();
 			}
 		}, time);
 	}
 
-	public static boolean IsShopCompatible(Material mat) {
-		for (Material item : ItemExchangePlugin.ACCEPTABLE_BLOCKS) {
-			if (mat == item)
-				return true;
-		}
-		return false;
-	}
-
-	public static BlockFace[] GetPerpendicularFaces(final BlockFace reference) {
-		if (reference == BlockFace.NORTH || reference == BlockFace.SOUTH)
-			return new BlockFace[] { BlockFace.EAST, BlockFace.WEST };
-		else if (reference == BlockFace.EAST || reference == BlockFace.WEST)
-			return new BlockFace[] { BlockFace.NORTH, BlockFace.SOUTH };
-		else
-			return null;
-	}
-
-	public static Block CheckIfDoubleChest(final Block chest) {
-		BlockState C_State = chest.getState();
+	public static Block getOtherDoubleChestBlock(final Block chest) {
+		BlockState c_state = chest.getState();
 		// If block is not a double chest, then do nothing
-		if (!(C_State instanceof Chest)) return null;
+		if (!(c_state instanceof Chest)) return null;
 		// Otherwise get the locations of both sides
-		Inventory C_Invetory = ((Chest)C_State).getInventory();
-		if (!(C_Invetory instanceof DoubleChestInventory)) return null;
-		DoubleChestInventory DC_Inventory = (DoubleChestInventory)C_Invetory;
-		Location DC_LSLocation = DC_Inventory.getLeftSide().getLocation();
-		Location DC_RSLocation = DC_Inventory.getRightSide().getLocation();
+		Inventory c_inventory = ((Chest)c_state).getInventory();
+		if (!(c_inventory instanceof DoubleChestInventory)) return null;
+		DoubleChestInventory dc_invectory = (DoubleChestInventory)c_inventory;
+		Location dc_l_location = dc_invectory.getLeftSide().getLocation();
+		Location dc_r_location = dc_invectory.getRightSide().getLocation();
 		// If LeftSide has the same location as the original chest, use RightSize
-		if (chest.getLocation().equals(DC_LSLocation))
-			return DC_RSLocation.getBlock();
+		if (chest.getLocation().equals(dc_l_location))
+			return dc_r_location.getBlock();
 		else
-			return DC_LSLocation.getBlock();
+			return dc_l_location.getBlock();
 	}
 }
