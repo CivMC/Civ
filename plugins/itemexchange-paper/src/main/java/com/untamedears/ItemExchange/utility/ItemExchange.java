@@ -274,11 +274,11 @@ public class ItemExchange {
 			Bukkit.getPluginManager().callEvent(event);
 
 			// Power buttons button directly behind *this* chest
-			Block ShopChest = location.getBlock();
-			ItemExchange.successfulTransactionButton(ShopChest);
+			Block shopChest = location.getBlock();
+			ItemExchange.successfulTransactionButton(shopChest);
 			// Check if *this* chest if double chest, if so, call for that too
-			Block isDoubleChest = BlockUtility.getOtherDoubleChestBlock(ShopChest);
-			if (isDoubleChest != null) ItemExchange.successfulTransactionButton(isDoubleChest);
+			Block otherChestBlock = BlockUtility.getOtherDoubleChestBlock(shopChest);
+			if (otherChestBlock != null) ItemExchange.successfulTransactionButton(otherChestBlock);
 
 			// Successful exchange
 			if (exchangeOutput != null) {
