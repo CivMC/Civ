@@ -1,50 +1,47 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.data.BSLog;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
-import com.programmerdan.minecraft.banstick.data.BSSession;
-import com.programmerdan.minecraft.banstick.data.BSShare;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-import com.programmerdan.minecraft.banstick.data.BSLog;
-
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 /**
  * Ties into the managed datasource processes of the CivMod core plugin.
- * 
+ *
  * @author <a href="mailto:programmerdan@gmail.com">ProgrammerDan</a>
  *
  */
 public class BanStickDatabaseHandler {
 
 	private ManagedDatasource data;
-	
+
 	public ManagedDatasource getData() {
 		return this.data;
 	}
-	
+
 	private static BanStickDatabaseHandler instance;
-	
+
 	public static BanStickDatabaseHandler getInstance() {
 		return BanStickDatabaseHandler.instance;
 	}
-	
+
 	public static ManagedDatasource getinstanceData() {
 		return BanStickDatabaseHandler.instance.data;
 	}
-	
+
 	public BanStickDatabaseHandler(FileConfiguration config) {
 		if (!configureData(config.getConfigurationSection("database"))) {
 			throw new RuntimeException("Failed to configure Database for BanStick!");
@@ -71,9 +68,9 @@ public class BanStickDatabaseHandler {
 			return false;
 		}
 
-		initializeTables();		
+		initializeTables();
 		stageUpdates();
-		
+
 		long begin_time = System.currentTimeMillis();
 
 		try {
@@ -88,7 +85,7 @@ public class BanStickDatabaseHandler {
 		}
 
 		BanStick.getPlugin().info(String.format("Database update took %d seconds", (System.currentTimeMillis() - begin_time) / 1000));
-		
+
 		activatePreload(config.getConfigurationSection("preload"));
 		activateDirtySave(config.getConfigurationSection("dirtysave"));
 		return true;
@@ -102,7 +99,7 @@ public class BanStickDatabaseHandler {
 			delay = config.getLong("delay", delay);
 		}
 		BanStick.getPlugin().debug("DirtySave Period {0} Delay {1}", period, delay);
-		
+
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
@@ -118,7 +115,7 @@ public class BanStickDatabaseHandler {
 				BSBan.saveDirty();
 			}
 		}, delay + (period / 5), period);
-		
+
 		Bukkit.getScheduler().runTaskTimerAsynchronously(BanStick.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
@@ -155,9 +152,9 @@ public class BanStickDatabaseHandler {
 				delay = config.getLong("delay", delay);
 			}
 			final int batchsize = config.getInt("batch", 100);
-			
+
 			BanStick.getPlugin().debug("Preload Period {0} Delay {1} batch {2}", period, delay, batchsize);
-			
+
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
@@ -167,7 +164,7 @@ public class BanStickDatabaseHandler {
 					if (lastId < 0) this.cancel();
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay, period);
-			
+
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
@@ -177,7 +174,7 @@ public class BanStickDatabaseHandler {
 					if (lastId < 0) this.cancel();
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + (period / 6), period);
-			
+
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
@@ -187,7 +184,7 @@ public class BanStickDatabaseHandler {
 					if (lastId < 0) this.cancel();
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 2) / 6), period);
-			
+
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
@@ -207,7 +204,7 @@ public class BanStickDatabaseHandler {
 					if (lastId < 0) this.cancel();
 				}
 			}.runTaskTimerAsynchronously(BanStick.getPlugin(), delay + ((period * 4) / 6), period);
-			
+
 			new BukkitRunnable() {
 				private long lastId = 0l;
 				@Override
@@ -220,14 +217,14 @@ public class BanStickDatabaseHandler {
 		} else {
 			BanStick.getPlugin().info("Preloading is disabled. Expect more lag on joins, lookups, and bans.");
 		}
-		
+
 	}
 
 	/**
 	 * Basic method to set up data model v1.
 	 */
 	private void initializeTables() {
-		data.registerMigration(0,  false, 
+		data.registerMigration(0,  false,
 					"CREATE TABLE IF NOT EXISTS bs_player (" +
 					" pid BIGINT AUTO_INCREMENT PRIMARY KEY," +
 					" name VARCHAR(16)," +
@@ -301,7 +298,7 @@ public class BanStickDatabaseHandler {
 					" iid BIGINT NOT NULL REFERENCES bs_ip(iid)," +
 					" create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP," +
 					" valid BOOLEAN DEFAULT TRUE," +
-					" continent TEXT," + 
+					" continent TEXT," +
 					" country TEXT," +
 					" region TEXT," +
 					" city TEXT," +
@@ -314,22 +311,29 @@ public class BanStickDatabaseHandler {
 					" connection TEXT," +
 					" proxy FLOAT," +
 					" source TEXT," +
-					" comment TEXT," + 
+					" comment TEXT," +
 					" INDEX bs_ip_data_iid (iid)," +
 					" INDEX bs_ip_data_valid (valid, create_time DESC)," +
 					" INDEX bs_ip_data_proxy (proxy)" +
 					");"
 				);
-		
+		data.registerMigration(1,  false, "CREATE TABLE IF NOT EXISTS bs_exclusion ("
+		        + "eid BIGINT AUTO_INCREMENT PRIMARY KEY,"
+	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+                + "first_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
+                + "second_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
+                + " INDEX bs_exclusion_pid (first_pid, second_pid),"
+		        + ");");
+
 	}
-	
+
 	/**
 	 * Add all new migrations here.
 	 */
 	private void stageUpdates() {
-		
+
 	}
-	
+
 	public void doShutdown() {
 
 		BanStick.getPlugin().info("Player dirty save");
@@ -346,28 +350,28 @@ public class BanStickDatabaseHandler {
 
 		BanStick.getPlugin().info("Proxy dirty save");
 		BSIPData.saveDirty();
-		
+
 		BanStick.getPlugin().info("Ban Log save");
 		BSLog log = BanStick.getPlugin().getLogHandler();
 		if (log != null) log.disable();
 	}
-	
+
 	// ============ QUERIES =============
-	
+
 	public BSPlayer getOrCreatePlayer(final Player player) {
 		// TODO: use exception
 		BSPlayer bsPlayer = getPlayer(player.getUniqueId());
 		if (bsPlayer == null) {
 			bsPlayer = BSPlayer.create(player);
 		}
-		
+
 		return bsPlayer;
 	}
-	
+
 	public BSPlayer getPlayer(final UUID uuid) {
 		return BSPlayer.byUUID(uuid); // TODO: exception
 	}
-	
+
 	public BSIP getOrCreateIP(final InetAddress netAddress) {
 		BSIP bsIP = getIP(netAddress);
 		if (bsIP == null) {
@@ -379,11 +383,11 @@ public class BanStickDatabaseHandler {
 		}
 		return bsIP;
 	}
-	
+
 	public BSIP getIP(final InetAddress netAddress) {
 		return BSIP.byInetAddress(netAddress);
 	}
-	
+
 	public List<BSIP> getAllByIP(final InetAddress netAddress) {
 		return BSIP.allMatching(netAddress);
 	}
