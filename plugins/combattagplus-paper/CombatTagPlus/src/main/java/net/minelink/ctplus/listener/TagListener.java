@@ -168,7 +168,7 @@ public final class TagListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void tagPlayer(ProjectileLaunchEvent event) {
         // Do nothing if option is disabled
-        if (plugin.getSettings().resetTagOnPearl()) return;
+        if (!plugin.getSettings().resetTagOnPearl()) return;
 
         // Do nothing if the launched projectile is not an ender pearl
         Projectile entity = event.getEntity();
