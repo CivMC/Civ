@@ -174,6 +174,9 @@ public class FactoryModListener implements Listener {
 	 * Turns slabs with the lore "Smooth double slab" into smooth double slab
 	 * blocks and logs with the lore "6-sided log" into logs with the log
 	 * texture on all 6 sides
+	 * Turns mushroom blocks with the lore "Mushroom stem" into blocks with the 
+	 * stem textures on all sides and mushroom blocks with the lore "Mushroom pores"
+	 * into blocks with pores texture on all sides
 	 * 
 	 * @param e
 	 */
@@ -201,6 +204,17 @@ public class FactoryModListener implements Listener {
 				e.getBlock().setTypeIdAndData(material.getId(), type, true);
 			}
 
+			break;
+		case HUGE_MUSHROOM_1:
+		case HUGE_MUSHROOM_2:
+			if (blockMeta.getLore().get(0).equals("Mushroom stem")) {
+				byte type = (byte) 15;
+				e.getBlock().setTypeIdAndData(material.getId(), type, true);
+			}
+			if (blockMeta.getLore().get(0).equals("Mushroom pores")) {
+				byte type = (byte) 0;
+				e.getBlock().setTypeIdAndData(material.getId(), type, true);
+			}
 			break;
 		default:
 			return;
