@@ -100,7 +100,7 @@ final class CoreLoreGenerator implements LoreProvider {
 					if(up.getStack().hasItemMeta() && up.getStack().getItemMeta().hasDisplayName()){
 						item = up.getStack().getItemMeta().getDisplayName();
 					}
-					lore.add(parse("<a>Upgrade cost:<n>%d %s", amount, item));
+					lore.add(parse("<a>Upgrade cost:<n> %d %s", amount, item));
 				}
 			}
 		}
