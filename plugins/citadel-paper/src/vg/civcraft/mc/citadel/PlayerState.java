@@ -172,7 +172,7 @@ public class PlayerState {
             public void run() {
             	try {
 	                Player player = Bukkit.getPlayer(accountId);
-	                if (player != null) {
+	                if (player != null && mode.name() != "NORMAL") {
 	                    player.sendMessage(ChatColor.YELLOW + mode.name() + " mode off");
 	                }
 	                reset();
