@@ -33,6 +33,9 @@ public class Off extends PlayerCommand{
 		if (state.isBypassMode()) {
 			state.toggleBypassMode();
 		}
+		if (state.getEasyMode()) {
+			state.toggleEasyMode();
+		}
 		Utility.sendAndLog(p, ChatColor.GREEN, "Reinforcement mode has been set to Normal.");
 		return true;
 	}
