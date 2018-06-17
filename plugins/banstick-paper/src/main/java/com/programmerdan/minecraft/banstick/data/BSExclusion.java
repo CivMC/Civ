@@ -41,17 +41,29 @@ public class BSExclusion {
 
     private Timestamp createTime;
 
+    /**
+     * Creation only possible over the static methods
+     */
     private BSExclusion() {
     }
 
+    /**
+     * @return Unique id of this exclusion, which is also its primary key in the database
+     */
     public long getId() {
         return this.eid;
     }
 
+    /**
+     * @return When this exclusion was created
+     */
     public Date getCreateTime() {
         return createTime;
     }
 
+    /**
+     * @return First player part of this exclusion
+     */
     public BSPlayer getFirstPlayer() {
         if (firstPlayer == null) {
             firstPlayer = BSPlayer.byId(deferFirstPlayer);
@@ -59,16 +71,23 @@ public class BSExclusion {
         return firstPlayer;
     }
 
-    public long getFirstPlayerID()
-    {
+    /**
+     * @return BanStick internal id of the first player part of this exclusion
+     */
+    public long getFirstPlayerID() {
         return deferFirstPlayer;
     }
 
+    /**
+     * @return BanStick internal id of the second player part of this exclusion
+     */
     public long getSecondPlayerID() {
         return deferSecondPlayer;
     }
 
-
+    /**
+     * @return Second player part of this exclusion
+     */
     public BSPlayer getSecondPlayer() {
         if (secondPlayer == null) {
             secondPlayer = BSPlayer.byId(deferSecondPlayer);
@@ -77,7 +96,7 @@ public class BSExclusion {
     }
 
     /**
-     * Deletes this exclusion from both the cache and the database
+     * Deletes this exclusion completly from both the cache and the database
      */
     public void delete() {
         allExclussionsID.remove(this.eid);
@@ -92,6 +111,14 @@ public class BSExclusion {
         getSecondPlayer().removeExclusion(this);
     }
 
+    /**
+     * Retrieves an exclusion based on its id. If the exclusion is known in the cache it'll be loaded from there,
+     * otherwise it'll attempted to be loaded from the database
+     *
+     * @param eid
+     *            ID of the exclusion to load
+     * @return BSExclusion with the given ID or null if no such BSExclusion was found
+     */
     public static BSExclusion byId(long eid) {
         if (allExclussionsID.containsKey(eid)) {
             return allExclussionsID.get(eid);
@@ -117,7 +144,7 @@ public class BSExclusion {
 
     /**
      * Retrieves all exclusions for a given player from the database. If some exclusions were already cached, the cached
-     * object will be priorized. The returned map will use the pid of the other player in the exclusion as key, but no
+     * object will be priorized. The returned map will use the id of the other player in the exclusion as key, but no
      * guarantee can be made regarding whether the player the exclusions were requested for is the first or second
      * player within the exclusion itself.
      *
@@ -154,6 +181,14 @@ public class BSExclusion {
         return exclusions;
     }
 
+    /**
+     * Internal method to retrieve parts of a BSExclusion from a ResultSet and fill them into a new instance
+     *
+     * @param rs
+     *            ResultSet to retrieve data from
+     * @return Constructed BSExclusion
+     * @throws SQLException
+     */
     private static BSExclusion internalGetExclusion(ResultSet rs) throws SQLException {
         BSExclusion excl = new BSExclusion();
         excl.eid = rs.getLong(1);
@@ -163,6 +198,15 @@ public class BSExclusion {
         return excl;
     }
 
+    /**
+     * Preloads exclusions from the database by their index
+     *
+     * @param offset
+     *            Offset of the section to load
+     * @param limit
+     *            How many exclusions to load
+     * @return Highest id that was successfully loaded
+     */
     public static long preload(long offset, int limit) {
         long maxId = -1;
         try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();

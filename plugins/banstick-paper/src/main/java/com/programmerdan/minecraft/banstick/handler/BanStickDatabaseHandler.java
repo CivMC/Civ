@@ -65,6 +65,7 @@ public class BanStickDatabaseHandler {
 			data.getConnection().close();
 		} catch (Exception se) {
 			BanStick.getPlugin().info("Failed to initialize Database connection");
+			se.printStackTrace();
 			return false;
 		}
 
@@ -319,10 +320,10 @@ public class BanStickDatabaseHandler {
 				);
 		data.registerMigration(1,  false, "CREATE TABLE IF NOT EXISTS bs_exclusion ("
 		        + "eid BIGINT AUTO_INCREMENT PRIMARY KEY,"
-	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
                 + "first_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
                 + "second_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
-                + " INDEX bs_exclusion_pid (first_pid, second_pid),"
+                + " INDEX bs_exclusion_pid (first_pid, second_pid)"
 		        + ");");
 
 	}

@@ -16,8 +16,14 @@ import vg.civcraft.mc.namelayer.NameAPI;
 
 public class UntangleCommand implements CommandExecutor {
 
+    public static String name = "untangle";
+
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        if (args.length == 0) {
+            sender.sendMessage(ChatColor.RED + "You must specify player names or uuids");
+            return true;
+        }
         Set<BSPlayer> subGraphPlayers = new HashSet<>();
         Set<BSPlayer> allGraphPlayers = new HashSet<>();
         // parse uuids out of the command
@@ -81,7 +87,7 @@ public class UntangleCommand implements CommandExecutor {
         return true;
     }
 
-    private UUID resolveName(String input) {
+    public static UUID resolveName(String input) {
         UUID playerId = null;
         if (input.length() <= 16) {
             // interpret as player name

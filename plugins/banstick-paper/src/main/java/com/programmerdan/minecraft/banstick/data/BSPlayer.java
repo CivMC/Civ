@@ -639,7 +639,7 @@ public class BSPlayer {
 
 	/**
 	 * Recursively retrieves all other BSPlayers this one has a transitive IP connection to.
-	 * For example if Player A uses IP X, Player B uses IP X & Y and Player C uses IP Y,
+	 * For example if Player A uses IP X, Player B uses IP X &amp; Y and Player C uses IP Y,
 	 * the players A and C would not have a share. This function digs recursively through shares
 	 * though to find connections like that one
 	 *

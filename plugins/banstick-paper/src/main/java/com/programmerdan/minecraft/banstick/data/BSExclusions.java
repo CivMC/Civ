@@ -17,6 +17,7 @@ public class BSExclusions {
 
     public static BSExclusions onlyFor(BSPlayer player) {
         BSExclusions exclusions = new BSExclusions();
+        exclusions.forPlayer = player;
         return exclusions;
     }
 

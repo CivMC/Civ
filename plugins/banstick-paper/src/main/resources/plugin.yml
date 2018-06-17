@@ -92,6 +92,18 @@ commands:
   alias: bsbs
   permission: banstick.ips
   usage: /<command>
+ untangle:
+  description: Reassigns alt groups
+  permission: banstick.alts.modify
+  usage: |
+   /<command> [name/uuid] [name/uuid] [name/uuid] ...
+     Merges all of these accounts into a new alt group
+ getalts:
+  description: Gets alts for a player
+  permission: banstick.alts.view
+  usage: |
+   /<command> <name/uuid>
+     Gets alts for this account
 permissions:
  banstick.ban:
   description: Allows delivery of justice
@@ -105,6 +117,16 @@ permissions:
  banstick.ips:
   description: Allows full investigation of all data
   default: op
+ banstick.alts.view:
+  description: Allows viewing player alts
+  default: op
+ banstick.alts.modify:
+  description: Allows viewing player alts
+  default: op
+ banstick.alts:
+  children:
+   banstick.alts.modify: true
+   banstick.alts.view: true
  banstick.*:
   description: Superpowered justice
   default: op
@@ -113,3 +135,4 @@ permissions:
    banstick.lovetap: true
    banstick.forgive: true
    banstick.ips: true
+   banstick.alts: true

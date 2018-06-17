@@ -107,7 +107,7 @@ public class BanStickEventHandler implements Listener {
 				}
 			}
 			if (transitiveBans) {
-			    for(BSPlayer alt : player.getTransitiveSharedPlayers()) {
+			    for(BSPlayer alt : player.getTransitiveSharedPlayers(true)) {
 			        ban = alt.getBan();
 		            if (ban != null) {
 		                if (ban.getBanEndTime() != null && ban.getBanEndTime().before(new Date())) { // ban has ended.

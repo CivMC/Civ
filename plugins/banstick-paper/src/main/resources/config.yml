@@ -61,6 +61,7 @@ log:
 #   - proxyKicks: If banstick should autokick players for existing, standing banable proxies (does not issue ban)
 #   - proxyBans: If banstick should autoban players for existing, standing bans of known proxies (enable proxyKicks to also kick)
 #   - newProxyBans: If banstick should check the proxy threshold and create new bans for proxies if non already exists (leave true even if only kicking)
+#   - transitiveBans: If banstick should apply bans transitive across IPs
 #   Usage notes: To ban AND kick on new proxy detection, turn on proxyKicks, proxyBans, and newProxyBans.
 #                To ban but not kick, turn on proxyBans, and newProxyBans.
 #                To kick but not ban, turn on proxyKicks and newProxyBans.
@@ -82,6 +83,7 @@ events:
   proxyBans: true
   newProxyBans: true
   shareBans: true
+  transitiveBans: true
 # Configure the data source for VPS / VPN proxy list grabs.
 # For cloud9:
 #  ban.length is in millisecond
