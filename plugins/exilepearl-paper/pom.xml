@@ -133,6 +133,11 @@
 			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.programmerdan.minecraft</groupId>
+			<artifactId>banstick</artifactId>
+			<version>1.0.3</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
