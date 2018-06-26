@@ -171,6 +171,10 @@
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
+			<id>civclassic-repo</id>
+			<url>https://aux.civclassic.com:8080/plugin/repository/everything/</url>
+		</repository>
+		<repository>
 			<id>byteflux-repo</id>
 			<url>http://repo.byteflux.net/repository/maven-releases/</url>
 		</repository>
