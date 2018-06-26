@@ -1,34 +1,5 @@
 package com.devotedmc.ExilePearl.core;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.generator.ChunkGenerator;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.PluginLoader;
-
 import com.devotedmc.ExilePearl.BorderHandler;
 import com.devotedmc.ExilePearl.BrewHandler;
 import com.devotedmc.ExilePearl.DamageLogger;
@@ -47,6 +18,7 @@ import com.devotedmc.ExilePearl.command.CmdSuicide;
 import com.devotedmc.ExilePearl.command.PearlCommand;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
+import com.devotedmc.ExilePearl.listener.BanStickListener;
 import com.devotedmc.ExilePearl.listener.BastionListener;
 import com.devotedmc.ExilePearl.listener.CitadelListener;
 import com.devotedmc.ExilePearl.listener.CivChatListener;
@@ -62,14 +34,40 @@ import com.devotedmc.ExilePearl.util.Clock;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.wimbli.WorldBorder.BorderData;
-import com.wimbli.WorldBorder.WorldBorder;
-
 import io.lumine.xikage.mythicmobs.MythicMobs;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
+import java.io.File;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.minelink.ctplus.CombatTagPlus;
 import net.minelink.ctplus.compat.api.NpcIdentity;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.Server;
+import org.bukkit.WorldBorder;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
+import org.bukkit.generator.ChunkGenerator;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginLoader;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -82,12 +80,12 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * 1. It forces any development to reference the API instead of the implementation.
  * 2. It's much easier for testing because creating instances of JavaPlugin inside
  * 		a test case isn't trivial.
- * 
- * 
+ *
+ *
  * @author Gordon
  */
 final class ExilePearlCore implements ExilePearlApi {
-	
+
 	private final Plugin plugin;
 	private final CorePluginFactory pearlFactory;
 	private final PearlConfig pearlConfig;
@@ -99,7 +97,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final SuicideHandler suicideHandler;
 	private final DamageLogger damageLogger;
 	private BrewHandler brewHandler;
-	
+
 	private final PlayerListener playerListener;
 	private final ExileListener exileListener;
 	private final CitadelListener citadelListener;
@@ -108,19 +106,20 @@ final class ExilePearlCore implements ExilePearlApi {
 	private final JukeAlertListener jukeAlertListener;
 	private final RandomSpawnListener randomSpawnListener;
 	private final WorldBorderListener worldBorderListener;
-	
+	private final BanStickListener banStickListener;
+
 	private final HashSet<BaseCommand<?>> commands;
 	private final CmdAutoHelp autoHelp;
 	private CoreClock clock;
-	
+
 	private PluginStorage storage;
 	private CombatTagPlus combatTag;
 
 	public ExilePearlCore(final Plugin plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
-		
+
 		this.plugin = plugin;
-		
+
 		pearlFactory = new CorePluginFactory(this);
 		pearlConfig = pearlFactory.createPearlConfig();
 		storageProvider = new CoreStorageProvider(this, pearlFactory);
@@ -130,7 +129,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		borderHandler = pearlFactory.createPearlBorderHandler();
 		suicideHandler = pearlFactory.createSuicideHandler();
 		damageLogger = pearlFactory.createDamageLogger();
-		
+
 		playerListener = new PlayerListener(this);
 		exileListener = new ExileListener(this);
 		citadelListener = new CitadelListener(this);
@@ -139,8 +138,9 @@ final class ExilePearlCore implements ExilePearlApi {
 		jukeAlertListener = new JukeAlertListener(this);
 		randomSpawnListener = new RandomSpawnListener(this);
 		worldBorderListener = new WorldBorderListener(this);
-		
-		commands = new HashSet<BaseCommand<?>>();
+		banStickListener = new BanStickListener(this);
+
+		commands = new HashSet<>();
 		autoHelp = new CmdAutoHelp(this);
 		clock = new CoreClock();
 	}
@@ -156,17 +156,17 @@ final class ExilePearlCore implements ExilePearlApi {
 	public void onEnable() {
 		log("=== ENABLE START ===");
 		long timeEnableStart = System.currentTimeMillis();
-		
+
 		pearlConfig.addConfigurable(playerListener);
 		pearlConfig.addConfigurable(exileListener);
 		pearlConfig.addConfigurable(pearlDecayWorker);
 		pearlConfig.addConfigurable(borderHandler);
 		pearlConfig.addConfigurable(suicideHandler);
 		pearlConfig.addConfigurable(damageLogger);
-		
+
 		saveDefaultConfig();
 		pearlConfig.reload();
-		
+
 		// Storage connect and load
 		if (storageProvider.getStorage() == null) {
 			storage = storageProvider.createStorage();
@@ -176,12 +176,12 @@ final class ExilePearlCore implements ExilePearlApi {
 		} else {
 			log(Level.SEVERE, "Failed to connect to storage.");
 		}
-		
+
 		// Add commands
 		commands.add(new CmdExilePearl(this));
 		commands.add(new CmdLegacy(this));
 		commands.add(new CmdSuicide(this));
-		
+
 		// Register events
 		getServer().getPluginManager().registerEvents(playerListener, this);
 		getServer().getPluginManager().registerEvents(suicideHandler, this);
@@ -218,8 +218,11 @@ final class ExilePearlCore implements ExilePearlApi {
 		} else {
 			logIgnoringHooks("WorldBorder");
 		}
-		brewHandler = pearlFactory.createBrewHandler();		
-		
+		if(isBanStickEnabled()) {
+		    this.getServer().getPluginManager().registerEvents(banStickListener, this);
+        }
+		brewHandler = pearlFactory.createBrewHandler();
+
 		// Start tasks
 		pearlDecayWorker.start();
 		borderHandler.start();
@@ -230,12 +233,12 @@ final class ExilePearlCore implements ExilePearlApi {
 		} else {
 			logIgnoringTask(damageLogger);
 		}
-		
+
 		Plugin combatPlugin = Bukkit.getPluginManager().getPlugin("CombatTagPlus");
 		if(combatPlugin != null) {
 			combatTag = (CombatTagPlus)combatPlugin;
 		}
-		
+
 		log("=== ENABLE DONE (Took "+(System.currentTimeMillis() - timeEnableStart)+"ms) ===");
 	}
 
@@ -263,15 +266,15 @@ final class ExilePearlCore implements ExilePearlApi {
 		suicideHandler.stop();
 		storage.disconnect();
 	}
-	
+
 	private void logIgnoringHooks(String pluginName) {
 		log(Level.WARNING, "Ignoring hooks for '%s' since it's not enabled.", pluginName);
 	}
-	
+
 	private void logIgnoringTask(ExilePearlRunnable task) {
 		log(Level.WARNING, "Ignoring the task '%s' since it's not enabled.", task.getTaskName());
 	}
-	
+
 	/**
 	 * Gets the pearl configuration
 	 * @return The pearl configuration
@@ -280,7 +283,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public PearlConfig getPearlConfig() {
 		return pearlConfig;
 	}
-	
+
 	/**
 	 * Gets the plugin storage provider
 	 * @return The storage instance provider
@@ -289,7 +292,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public StorageProvider getStorageProvider() {
 		return storageProvider;
 	}
-	
+
 	/**
 	 * Gets the pearl manager
 	 * @return The pearl manager instance
@@ -303,7 +306,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public DamageLogger getDamageLogger() {
 		return damageLogger;
 	}
-	
+
 	/**
 	 * Gets the auto-help command
 	 * @return The auto-help command
@@ -312,7 +315,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public PearlCommand getAutoHelp() {
 		return autoHelp;
 	}
-	
+
 	/**
 	 * Gets the suicide handler
 	 * @return The suicide handler
@@ -321,7 +324,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public SuicideHandler getSuicideHandler() {
 		return suicideHandler;
 	}
-	
+
 	/**
 	 * Handles a bukkit command event
 	 */
@@ -333,16 +336,16 @@ final class ExilePearlCore implements ExilePearlApi {
 
 				// Set the label to the default alias
 				cmd.setLabel(aliases.get(0));
-				
-				c.execute(sender, new ArrayList<String>(Arrays.asList(args)));
+
+				c.execute(sender, new ArrayList<>(Arrays.asList(args)));
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
-	
-	
+
+
 	/**
 	 * Handles a tab complete event
 	 */
@@ -354,8 +357,8 @@ final class ExilePearlCore implements ExilePearlApi {
 
 				// Set the label to the default alias
 				cmd.setLabel(aliases.get(0));
-				
-				return c.getTabList(sender, new ArrayList<String>(Arrays.asList(args)));
+
+				return c.getTabList(sender, new ArrayList<>(Arrays.asList(args)));
 			}
 		}
 		return null;
@@ -375,7 +378,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public Logger getPluginLogger() {
 		return plugin.getLogger();
 	}
-	
+
 	private void logInternal(Level level, String msg) {
 		getLogger().log(level, msg);
 	}
@@ -389,7 +392,7 @@ final class ExilePearlCore implements ExilePearlApi {
 	public ExilePearl exilePlayer(UUID exiledId, UUID killerId, Location location) {
 		return pearlManager.exilePlayer(exiledId, killerId, location);
 	}
-	
+
 	@Override
 	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
 		return pearlManager.exilePlayer(exiledId, killer);
@@ -429,12 +432,12 @@ final class ExilePearlCore implements ExilePearlApi {
 	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
 		return pearlManager.freePearl(pearl, reason);
 	}
-	
+
 	@Override
 	public boolean summonPearl(ExilePearl pearl, Player summoner) {
 		return pearlManager.summonPearl(pearl, summoner);
 	}
-	
+
 	@Override
 	public boolean returnPearl(ExilePearl pearl) {
 		return pearlManager.returnPearl(pearl);
@@ -461,7 +464,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		}
 		return player.getName();
 	}
-	
+
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -511,6 +514,12 @@ final class ExilePearlCore implements ExilePearlApi {
 		return Bukkit.getPluginManager().isPluginEnabled("WorldBorder");
 	}
 
+
+    @Override
+    public boolean isBanStickEnabled() {
+        return Bukkit.getPluginManager().isPluginEnabled("BanStick");
+    }
+
 	@Override
 	public boolean isCombatTagEnabled() {
 		return combatTag != null;
@@ -533,7 +542,7 @@ final class ExilePearlCore implements ExilePearlApi {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public NpcIdentity getPlayerAsTaggedNpc(Player player) {
 		if (isCombatTagEnabled()) {
@@ -655,7 +664,7 @@ final class ExilePearlCore implements ExilePearlApi {
 
 		return false;
 	}
-	
+
 
 	@Override
 	public boolean isMythicMob(Entity entity) {

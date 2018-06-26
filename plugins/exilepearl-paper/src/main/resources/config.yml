@@ -24,6 +24,12 @@
 # general.suicide_time_seconds
 #  - The timeout for the /suicide command before the player 
 #    actually dies
+#
+# general.max_pearled_alts  
+#  - Once a player has this many accounts pearled, any further BanStick alts will be prevented from logging in
+#
+# general.max_pearled_message  
+#  - Message shown to altbanned accounts when they attempt to login
 # 
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
@@ -243,6 +249,8 @@ storage:
     migrate_dbname: prisonpearl
 general:
   suicide_time_seconds: 180
+  max_pearled_alts: 1
+  max_pearled_message: 'You have too many imprisoned alts'
 pearls:
   autofree_worldborder: true
   free_by_throwing: false
