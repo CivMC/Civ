@@ -40,6 +40,7 @@ public class BanStickListener extends RuleListener {
      *
      * @param e
      */
+	@EventHandler
     public void playerPearl(PlayerPearledEvent e) {
         UUID uuid = e.getPearl().getPlayerId();
         if (getPearledAlts(uuid) < config.maxAltsPearled()) {
