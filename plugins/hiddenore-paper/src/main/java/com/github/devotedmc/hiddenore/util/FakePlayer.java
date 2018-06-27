@@ -1576,7 +1576,17 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
+	public void hidePlayer(Plugin plugin, Player player) {
+
+	}
+
+	@Override
 	public void hidePlayer(Player player) {
+
+	}
+
+	@Override
+	public void showPlayer(Plugin plugin, Player player) {
 
 	}
 

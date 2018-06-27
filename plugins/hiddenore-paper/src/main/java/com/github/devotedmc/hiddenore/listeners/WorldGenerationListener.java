@@ -122,20 +122,29 @@ public class WorldGenerationListener implements Listener {
 
 	private void clear(Chunk chunk) {
 		int rep = 0;
-		
-		// now scan the chunk for ores and remove them.
-		for (int y = 1; y < chunk.getWorld().getMaxHeight(); y++) {
-			for (int x = 0; x < 16; x++) {
-				for (int z = 0; z < 16; z++) {
-					Block block = chunk.getBlock(x, y, z);
-					Material mat = block.getType();
-					
-					if (toReplace.contains(mat)) {
-						rep++;
-						block.setType(replaceWith, false);
+		try {
+			int maxY = chunk.getWorld().getMaxHeight();
+			// now scan the chunk for ores and remove them.
+			for (int y = 1; y < maxY; y++) {
+				for (int x = 0; x < 16; x++) {
+					for (int z = 0; z < 16; z++) {
+						Block block = chunk.getBlock(x, y, z);
+						Material mat = block.getType();
+						
+						if (toReplace.contains(mat)) {
+							rep++;
+							block.setType(replaceWith, false);
+						}
 					}
 				}
 			}
+			if (maxY < 32) {
+				HiddenOre.getPlugin().getLogger().log(Level.WARNING, "Chunk height abnormally low: {0} at {1}, {2}",
+						new Object[]{maxY, chunk.getX(), chunk.getZ()});
+			}
+		} catch (Exception e) {
+			HiddenOre.getPlugin().getLogger().log(Level.SEVERE, "Failed to clear ores from chunk at {0}, {1} with error {2}",
+					new Object[]{chunk.getX(), chunk.getZ(), e.getMessage()});
 		}
 		
 		if (rep > 0 && Config.isDebug) {
