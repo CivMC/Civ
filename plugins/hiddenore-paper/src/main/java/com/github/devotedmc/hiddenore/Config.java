@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
@@ -21,7 +22,7 @@ public final class Config {
 	public boolean alertUser;
 	public boolean listDrops;
 	public boolean ignoreSilktouch;
-	public Map<String, List<BlockConfig>> blockConfigs;
+	public Map<UUID, Map<String, List<BlockConfig>>> blockConfigs;
 	public Map<String, NameConfig> prettyNames;
 	public Map<String, PlayerStateConfig> stateMasterList;
 
@@ -41,7 +42,7 @@ public final class Config {
 	public static boolean caveOres = false;
 
 	private Config() {
-		blockConfigs = new HashMap<String, List<BlockConfig>>();
+		blockConfigs = new HashMap<UUID, Map<String, List<BlockConfig>>>();
 		prettyNames = new HashMap<String, NameConfig>();
 		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
@@ -165,6 +166,44 @@ public final class Config {
 		}
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
+		if (blocks != null) { // default or legacy
+			grabBlocks(null, blocks, i);
+		}
+		
+		ConfigurationSection worlds = file.getConfigurationSection("worlds");
+		if (worlds != null) { // has per-world blocks!
+			for (String world : worlds.getKeys(false)) {
+				UUID worlduid = null;
+				try {
+					worlduid = UUID.fromString(world);
+				} catch (Exception e) {
+					System.out.println("World not defined by UUID");
+				}
+				
+				try {
+					worlduid = HiddenOre.getPlugin().getServer().getWorld(world).getUID();
+				} catch (Exception f) {
+					System.out.println("World not defined by Name");
+				}
+				
+				if (worlduid == null) {
+					System.err.println("Unable to match world " + world + " with actual spigot world. Skipping.");
+				} else {
+					ConfigurationSection worldConfig = worlds.getConfigurationSection(world);
+					if (worldConfig != null) {
+						ConfigurationSection worldBlocks = worldConfig.getConfigurationSection("blocks");
+						if (worldBlocks != null) {
+							grabBlocks(worlduid, worldBlocks, i)
+						}
+					}
+				}
+			}
+		}
+		
+		instance = i;
+	}
+
+	private static void grabBlocks(UUID world, ConfigurationSection blocks, Config i) {
 		if (blocks != null) {
 			for (String sourceBlock : blocks.getKeys(false)) {
 				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock);
@@ -235,9 +274,8 @@ public final class Config {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
 		}
 
-		instance = i;
 	}
-
+	
 	private static DropLimitsConfig grabLimits(ConfigurationSection drop, DropLimitsConfig parent) {
 		DropLimitsConfig dlc = new DropLimitsConfig();
 		dlc.setTools(drop.isSet("tools") ? drop.getStringList("tools") : parent.tools);
