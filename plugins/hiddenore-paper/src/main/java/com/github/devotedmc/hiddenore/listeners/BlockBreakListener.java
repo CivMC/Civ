@@ -22,6 +22,7 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import com.github.devotedmc.hiddenore.BlockConfig;
@@ -33,6 +34,11 @@ import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 import com.github.devotedmc.hiddenore.events.HiddenOreGenerateEvent;
 import com.github.devotedmc.hiddenore.util.FakePlayer;
 
+/**
+ * Heart of ore generation, handles breaks.
+ * 
+ * @author soerxpso, programmerdan
+ */
 public class BlockBreakListener implements Listener {
 	private final HiddenOre plugin;
 	
@@ -69,8 +75,9 @@ public class BlockBreakListener implements Listener {
 		Block b = event.getBlock();
 		String blockName = b.getType().name();
 		Byte sb = b.getData();
+		UUID world = b.getWorld().getUID();
 
-		BlockConfig bc = Config.isDropBlock(blockName, sb);
+		BlockConfig bc = Config.isDropBlock(world, blockName, sb);
 
 		Player p = event.getPlayer();
 		

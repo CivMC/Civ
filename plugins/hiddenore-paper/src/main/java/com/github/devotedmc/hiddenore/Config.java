@@ -13,6 +13,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Someday it might be nice to refactor this to be a proper object.
+ * 
+ * For now, this holds the configs for HiddenOre, in an instance-backed semi-private collective.
+ * 
+ * @author soexpso, programmerdan
+ *
+ */
 public final class Config {
 
 	public static Config instance;
@@ -176,24 +184,32 @@ public final class Config {
 				UUID worlduid = null;
 				try {
 					worlduid = UUID.fromString(world);
+					if (HiddenOre.getPlugin().getServer().getWorld(worlduid) == null) {
+						System.err.println("Although it seems to be a UUID, " + world + " no match found yet.");
+						worlduid = null;
+					}
 				} catch (Exception e) {
 					System.out.println("World not defined by UUID");
-				}
-				
-				try {
-					worlduid = HiddenOre.getPlugin().getServer().getWorld(world).getUID();
-				} catch (Exception f) {
-					System.out.println("World not defined by Name");
+					worlduid = null;
 				}
 				
 				if (worlduid == null) {
-					System.err.println("Unable to match world " + world + " with actual spigot world. Skipping.");
+					try {
+						worlduid = HiddenOre.getPlugin().getServer().getWorld(world).getUID();
+					} catch (Exception f) {
+						System.out.println("World not defined by Name; unable to match " + world + " with actual world. Skipping.");
+						continue;
+					}
+				}
+				
+				if (worlduid == null) {
+					System.err.println("Unable to match world " + world + " with actual world. Skipping.");
 				} else {
 					ConfigurationSection worldConfig = worlds.getConfigurationSection(world);
 					if (worldConfig != null) {
 						ConfigurationSection worldBlocks = worldConfig.getConfigurationSection("blocks");
 						if (worldBlocks != null) {
-							grabBlocks(worlduid, worldBlocks, i)
+							grabBlocks(worlduid, worldBlocks, i);
 						}
 					}
 				}
@@ -205,8 +221,12 @@ public final class Config {
 
 	private static void grabBlocks(UUID world, ConfigurationSection blocks, Config i) {
 		if (blocks != null) {
+			Map<String, List<BlockConfig>> worldBlockConfigs = i.blockConfigs.get(world);
+			if (worldBlockConfigs == null) {
+				worldBlockConfigs = new HashMap<String, List<BlockConfig>>();
+			}
 			for (String sourceBlock : blocks.getKeys(false)) {
-				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock);
+				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock + " for world " + world);
 				ConfigurationSection block = blocks.getConfigurationSection(sourceBlock);
 
 				String cBlockName = block.getString("material");
@@ -262,14 +282,16 @@ public final class Config {
 
 					bc.addDropConfig(sourceDrop, dc);
 				}
-				List<BlockConfig> bclist = i.blockConfigs.get(cBlockName);//sourceBlock);
+				List<BlockConfig> bclist = worldBlockConfigs.get(cBlockName);//sourceBlock);
 				if (bclist == null) {
 					bclist = new LinkedList<BlockConfig>();
 				}
 				bclist.add(bc);
 
-				i.blockConfigs.put(cBlockName, bclist);//sourceBlock, bclist);
+				worldBlockConfigs.put(cBlockName, bclist);//sourceBlock, bclist);
 			}
+			
+			i.blockConfigs.put(world, worldBlockConfigs);
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
 		}
@@ -320,8 +342,8 @@ public final class Config {
 		return dlc;
 	}
 
-	public static BlockConfig isDropBlock(String block, byte subtype) {
-		List<BlockConfig> bcs = instance.blockConfigs.get(block);
+	public static BlockConfig isDropBlock(UUID world, String block, byte subtype) {
+		List<BlockConfig> bcs = instance.blockConfigs.getOrDefault(world, instance.blockConfigs.get(null)).get(block);
 		if (bcs != null && bcs.size() > 0) {
 			// return first match
 			for (BlockConfig bc : bcs) {
@@ -333,8 +355,8 @@ public final class Config {
 		return null;
 	}
 
-	public static String getPrefix(String block, byte subtype, String drop) {
-		BlockConfig bc = isDropBlock(block, subtype);
+	public static String getPrefix(UUID world, String block, byte subtype, String drop) {
+		BlockConfig bc = isDropBlock(world, block, subtype);
 		String pref = (bc == null) ? instance.defaultPrefix : bc.getPrefix(drop);
 		return (pref == null ? instance.defaultPrefix : pref);
 	}

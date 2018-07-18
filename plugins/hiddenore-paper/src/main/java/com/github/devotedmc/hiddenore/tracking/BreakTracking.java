@@ -23,6 +23,14 @@ import org.bukkit.block.Block;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.HiddenOre;
 
+/**
+ * A critical component of HiddenOre is preventing gaming of the ore generation system.
+ * This is done by circumspect tracking and suppressing of "repeat placements", 
+ * generators, piston use, etc. It's quite effective; all known avenues of attack
+ * result in significantly reduced drop/genrates. It does <i>not</i> pay to cheat.
+ * 
+ * @author soerxpso, programmerdan
+ */
 public class BreakTracking {
 	private static final int GEN = 1;
 	private static final int MAP = 0;
@@ -175,17 +183,21 @@ public class BreakTracking {
 		long s = System.currentTimeMillis();
 		HiddenOre.getPlugin().getLogger().info("Starting Break Tracking save");
 		File tf = Config.getTrackFile();
-		if (tf.exists()) {
-			File tfb = new File(tf.getAbsoluteFile() + ".backup");
-			if (tfb.exists()) {
-				if (!tfb.delete()) {
-					HiddenOre.getPlugin().getLogger().info("Couldn't remove old backup file - " + tfb);
+		try {
+			if (tf.exists()) {
+				File tfb = new File(tf.getAbsoluteFile() + ".backup");
+				if (tfb.exists()) {
+					if (!tfb.delete()) {
+						HiddenOre.getPlugin().getLogger().info("Couldn't remove old backup file - " + tfb);
+					} else {
+						tf.renameTo(tfb);
+					}
 				} else {
 					tf.renameTo(tfb);
 				}
-			} else {
-				tf.renameTo(tfb);
 			}
+		} catch (SecurityException se) {
+			HiddenOre.getPlugin().getLogger().log(Level.SEVERE, "Failed to manage old backup of break tracking.", se);
 		}
 		try {
 			if (tf.createNewFile()) {
@@ -230,17 +242,21 @@ public class BreakTracking {
 		long s = System.currentTimeMillis();
 		HiddenOre.getPlugin().getLogger().info("Starting Break Map save");
 		File tf = Config.getMapFile();
-		if (tf.exists()) {
-			File tfb = new File(tf.getAbsoluteFile() + ".backup");
-			if (tfb.exists()) {
-				if (!tfb.delete()) {
-					HiddenOre.getPlugin().getLogger().info("Couldn't remove old map backup file - " + tfb);
+		try {
+			if (tf.exists()) {
+				File tfb = new File(tf.getAbsoluteFile() + ".backup");
+				if (tfb.exists()) {
+					if (!tfb.delete()) {
+						HiddenOre.getPlugin().getLogger().info("Couldn't remove old map backup file - " + tfb);
+					} else {
+						tf.renameTo(tfb);
+					}
 				} else {
 					tf.renameTo(tfb);
 				}
-			} else {
-				tf.renameTo(tfb);
 			}
+		} catch (SecurityException se) {
+			HiddenOre.getPlugin().getLogger().log(Level.SEVERE, "Failed to manage old break map backup.", se);
 		}
 		try {
 			if (tf.createNewFile()) {

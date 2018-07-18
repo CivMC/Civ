@@ -337,33 +337,37 @@ blocks:
       chance: 0.001437
      MUTATED_EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
- netherrack:
-  material: NETHERRACK
-  allTypes: true
-  dropMultiple: false
-  drops:
-   quartz_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       type: QUARTZ_ORE
-       amount: 1
-    tools:
-     - wood_pickaxe
-     - stone_pickaxe
-     - iron_pickaxe
-     - gold_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 125
-    chance: 0.0
-    minAmount: 1
-    maxAmount: 2
-    biomes:
-     HELL:
-      # You can also modify the minimum Y values for a specific biome giving you complete control over where things can be found.
+# Example of new worlds config, here we explicitly specify only a single block drop for this world.
+worlds:
+ world_nether:
+  blocks:
+   netherrack:
+    material: NETHERRACK
+    allTypes: true
+    dropMultiple: false
+    drops:
+     quartz_ore:
+      package:
+       - ==: org.bukkit.inventory.ItemStack
+         type: QUARTZ_ORE
+         amount: 1
+      tools:
+       - wood_pickaxe
+       - stone_pickaxe
+       - iron_pickaxe
+       - gold_pickaxe
+       - diamond_pickaxe
       minY: 1
       maxY: 125
-      chance: 0.007
+      chance: 0.0
+      minAmount: 1
+      maxAmount: 2
+      biomes:
+       HELL:
+        # You can also modify the minimum Y values for a specific biome giving you complete control over where things can be found.
+        minY: 1
+        maxY: 125
+        chance: 0.007
 # Example w/ custom prefixes.
 # sand:
 #  material: SAND

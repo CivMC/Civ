@@ -54,21 +54,26 @@ You can specify custom messages for specific types of drops, allowing "uber"-fin
 
 You can turn on or off the debug using `/hiddenore debug true` or `false`. Be warned, if people are digging, this will spam the console _very_ badly.
 
-Supports saving and loading of the tracking database, and fully adheres to /reload with no difficulties. 
+Supports saving and loading of the tracking database, and fully adheres to /reload with no difficulties.
+
+As of 1.4.2, full multiple world support, via name or UUID. 
 
 I'm probably missing some other details but that's it for now.
 
 ### TODO / In progress features:
 
-* Full multiworld support
-
 * Configure which tool to "use" for cave dusting. Default right now is Diamond Pickaxe.
 
 * Better documentation
 
+* Minecraft 1.13 support (will be 1.5.0)
+
 ### Feature Augment List:
 
-**v1.4.1** Live use of new tracker shows its disk use is much increased. Added a configuration option to explicity disable it. Added config example of Command "drops" and some fixes.
+**v1.4.2** Added full multiple world support. Standard config is used as default for any world that does not have a specific config. A new section, `worlds`
+can be specified, each subsection is either the UUID or name of the world with a specific config. A single `blocks` subsection under the world identifier contains all the block configurations for that world. It is configured like the default, within that subsection. Check the configs for examples.
+
+**v1.4.1** Live use of new tracker shows its disk use is much increased. Added a configuration option to explicitly disable it. Added config example of Command "drops" and some fixes.
 
 **v1.4.0** New exploit tracker that tracks the actual blocks broken or exposed. This will fully prevent the "but I already checked that block" problem. Heuristic tracking is, for now, still active.
 

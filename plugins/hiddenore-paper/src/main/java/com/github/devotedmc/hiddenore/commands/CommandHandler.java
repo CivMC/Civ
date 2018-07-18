@@ -1,6 +1,8 @@
 package com.github.devotedmc.hiddenore.commands;
 
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -15,6 +17,11 @@ import com.github.devotedmc.hiddenore.DropConfig;
 import com.github.devotedmc.hiddenore.DropItemConfig;
 import com.github.devotedmc.hiddenore.HiddenOre;
 
+/**
+ * Management and maintenance commands
+ * 
+ * @author programmerdan
+ */
 public class CommandHandler implements CommandExecutor {
 
 	final HiddenOre plugin;
@@ -49,6 +56,7 @@ public class CommandHandler implements CommandExecutor {
 							mult = Integer.parseInt(args[1]);
 						} catch (Exception e) {mult = 1;}
 						final double vmult = mult;
+						final UUID world = player.getWorld().getUID();
 						
 						sender.sendMessage("Generating all drops, this could cause lag");
 						
@@ -56,8 +64,13 @@ public class CommandHandler implements CommandExecutor {
 							@Override
 							public void run() {
 								long delay = 0l;
-								for (String blockConf : Config.instance.blockConfigs.keySet()) {
-									for (BlockConfig block : Config.instance.blockConfigs.get(blockConf)) {
+								Map<String, List<BlockConfig>> worldBlockConfigs = Config.instance.blockConfigs.getOrDefault(world, Config.instance.blockConfigs.get(null));
+								if (worldBlockConfigs == null) {
+									sender.sendMessage("No drops configured for blocks in this world.");
+									return;
+								}
+								for (String blockConf : worldBlockConfigs.keySet()) {
+									for (BlockConfig block : worldBlockConfigs.get(blockConf)) {
 										for (String dropConf : block.getDrops()) {
 											DropConfig drop = block.getDropConfig(dropConf);
 											for (DropItemConfig item : drop.drops) {

@@ -2,6 +2,7 @@ package com.github.devotedmc.hiddenore.listeners;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Chunk;
@@ -30,12 +31,13 @@ public class WorldGenerationListener implements Listener {
 	Set<Material> toReplace = null;
 	Material replaceWith = null;
 	String worldName = null;
+	UUID worldUUID = null;
 	
 	/**
-	 * When creating, pass in a config with three sub-elements
+	 * When creating, pass in a config with three sub-elements. Now supports UUID reference of world.
 	 * <br/>
 	 * <code>
-	 *   world: world_name
+	 *   world: world_name (or UUID)
 	 *   replace:
 	 *   - IRON_ORE
 	 *   - REDSTONE_ORE
@@ -50,6 +52,18 @@ public class WorldGenerationListener implements Listener {
 	public WorldGenerationListener(ConfigurationSection config) {
 		if (config.contains("world")) {
 			worldName = config.getString("world");
+		}
+		try {
+			if (worldName != null) {
+				World world = HiddenOre.getPlugin().getServer().getWorld(worldName);
+				if (world != null) {
+					worldUUID = world.getUID();
+				} else {
+					worldUUID = UUID.fromString(worldName);
+				}
+			}
+		} catch (IllegalArgumentException iae) {
+			worldUUID = null;
 		}
 		if (config.contains("replace")) {
 			toReplace = new HashSet<Material>();
@@ -85,7 +99,7 @@ public class WorldGenerationListener implements Listener {
 		
 		World world = chunk.getWorld();
 		
-		if (!world.getName().equalsIgnoreCase(worldName)) {
+		if (!world.getName().equalsIgnoreCase(worldName) && !world.getUID().equals(worldUUID)) {
 			return;
 		}
 		
@@ -154,15 +168,18 @@ public class WorldGenerationListener implements Listener {
 		
 	static BlockFace[] faces = new BlockFace[] {BlockFace.UP,BlockFace.DOWN,BlockFace.NORTH,BlockFace.SOUTH,BlockFace.EAST,BlockFace.WEST};
 	private void generateCaveOres(Chunk chunk) {
+		UUID world = chunk.getWorld().getUID();
+		int xzmax = chunk.getWorld().getMaxHeight();
+		ItemStack breakItem = new ItemStack(Material.DIAMOND_PICKAXE);
 		for(int x = 0; x < 16; x++) {
 			for(int z = 0; z < 16; z++) {
-				for(int y = 0; y < chunk.getWorld().getMaxHeight(); y++) {
+				for(int y = 0; y < xzmax; y++) {
 					Block block = chunk.getBlock(x, y, z);
-					BlockConfig bc = Config.isDropBlock(block.getType().name(), block.getData());
+					BlockConfig bc = Config.isDropBlock(world, block.getType().name(), block.getData());
 					if(bc == null) continue;
 					for(BlockFace face : faces) {
 						if(block.getRelative(face).getType() == Material.AIR) {
-							BlockBreakListener.spoofBlockBreak(block.getLocation(), block, new ItemStack(Material.DIAMOND_PICKAXE));
+							BlockBreakListener.spoofBlockBreak(block.getLocation(), block, breakItem);
 							break;
 						}
 					}
