@@ -1,9 +1,9 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import net.minecraft.server.v1_12_R1.IChatBaseComponent;
-import net.minecraft.server.v1_12_R1.PacketPlayOutTitle;
-import net.minecraft.server.v1_12_R1.PlayerConnection;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import net.minecraft.server.v1_13_R1.IChatBaseComponent;
+import net.minecraft.server.v1_13_R1.PacketPlayOutTitle;
+import net.minecraft.server.v1_13_R1.PlayerConnection;
+import org.bukkit.craftbukkit.v1_13_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 /**
