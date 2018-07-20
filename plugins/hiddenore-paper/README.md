@@ -66,12 +66,12 @@ I'm probably missing some other details but that's it for now.
 
 * Better documentation
 
-* Minecraft 1.13 support (will be 1.5.0)
+* Minecraft 1.13 support (will be 1.5.0, and _will_ break your config. It will not be backwards compatible.)
 
 ### Feature Augment List:
 
 **v1.4.2** Added full multiple world support. Standard config is used as default for any world that does not have a specific config. A new section, `worlds`
-can be specified, each subsection is either the UUID or name of the world with a specific config. A single `blocks` subsection under the world identifier contains all the block configurations for that world. It is configured like the default, within that subsection. Check the configs for examples.
+can be specified, each subsection is either the UUID or name of the world with a specific config. A single `blocks` subsection under the world identifier contains all the block configurations for that world. It is configured like the default, but within the world's blocks subsection. Check the configs for examples.
 
 **v1.4.1** Live use of new tracker shows its disk use is much increased. Added a configuration option to explicitly disable it. Added config example of Command "drops" and some fixes.
 

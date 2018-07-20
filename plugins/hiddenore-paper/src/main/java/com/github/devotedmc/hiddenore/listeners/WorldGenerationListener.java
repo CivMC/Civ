@@ -91,7 +91,7 @@ public class WorldGenerationListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void postGenerationOreClear(ChunkPopulateEvent event) {
-		if (toReplace == null || replaceWith == null || worldName == null) {
+		if (toReplace == null || replaceWith == null || (worldName == null && worldUUID == null) ) {
 			return;
 		}
 		
@@ -165,7 +165,7 @@ public class WorldGenerationListener implements Listener {
 			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Replaced {0} blocks at {1}, {2}", new Object[]{rep, chunk.getX(), chunk.getZ()});
 		}
 	}
-		
+
 	static BlockFace[] faces = new BlockFace[] {BlockFace.UP,BlockFace.DOWN,BlockFace.NORTH,BlockFace.SOUTH,BlockFace.EAST,BlockFace.WEST};
 	private void generateCaveOres(Chunk chunk) {
 		UUID world = chunk.getWorld().getUID();

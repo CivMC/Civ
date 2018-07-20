@@ -13,6 +13,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.devotedmc.hiddenore.listeners.ConfigDeferralListener;
+
 /**
  * Someday it might be nice to refactor this to be a proper object.
  * 
@@ -31,6 +33,7 @@ public final class Config {
 	public boolean listDrops;
 	public boolean ignoreSilktouch;
 	public Map<UUID, Map<String, List<BlockConfig>>> blockConfigs;
+	public Map<String, Map<String, List<BlockConfig>>> preloadBlockConfigs;
 	public Map<String, NameConfig> prettyNames;
 	public Map<String, PlayerStateConfig> stateMasterList;
 
@@ -51,6 +54,7 @@ public final class Config {
 
 	private Config() {
 		blockConfigs = new HashMap<UUID, Map<String, List<BlockConfig>>>();
+		preloadBlockConfigs = new HashMap<String, Map<String, List<BlockConfig>>>();
 		prettyNames = new HashMap<String, NameConfig>();
 		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
@@ -175,7 +179,9 @@ public final class Config {
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
 		if (blocks != null) { // default or legacy
-			grabBlocks(null, blocks, i);
+			Map<String, List<BlockConfig>> worldBlockConfigs =  new HashMap<String, List<BlockConfig>>();
+			grabBlocks("default", worldBlockConfigs, blocks, i);
+			i.blockConfigs.put(null, worldBlockConfigs);
 		}
 		
 		ConfigurationSection worlds = file.getConfigurationSection("worlds");
@@ -197,34 +203,53 @@ public final class Config {
 					try {
 						worlduid = HiddenOre.getPlugin().getServer().getWorld(world).getUID();
 					} catch (Exception f) {
-						System.out.println("World not defined by Name; unable to match " + world + " with actual world. Skipping.");
-						continue;
+						System.out.println("World not defined by Name; unable to match " + world + " with loaded world.");
 					}
 				}
 				
+				Map<String, List<BlockConfig>> worldBlockConfigs = null;
+				
 				if (worlduid == null) {
-					System.err.println("Unable to match world " + world + " with actual world. Skipping.");
+					System.err.println("Unable to match world " + world + " with loaded world, registering for post-load.");
+					worldBlockConfigs = i.preloadBlockConfigs.get(world);
 				} else {
-					ConfigurationSection worldConfig = worlds.getConfigurationSection(world);
-					if (worldConfig != null) {
-						ConfigurationSection worldBlocks = worldConfig.getConfigurationSection("blocks");
-						if (worldBlocks != null) {
-							grabBlocks(worlduid, worldBlocks, i);
-						}
+					worldBlockConfigs = i.blockConfigs.get(worlduid);
+				}
+
+				if (worldBlockConfigs == null) {
+					worldBlockConfigs = new HashMap<String, List<BlockConfig>>();
+				}
+
+				ConfigurationSection worldConfig = worlds.getConfigurationSection(world);
+				if (worldConfig != null) {
+					ConfigurationSection worldBlocks = worldConfig.getConfigurationSection("blocks");
+					if (worldBlocks != null) {
+						grabBlocks(world, worldBlockConfigs, worldBlocks, i);
 					}
 				}
+
+				if (worlduid == null) {
+					i.preloadBlockConfigs.put(world, worldBlockConfigs);
+				} else {
+					i.blockConfigs.put(worlduid, worldBlockConfigs);
+				}
 			}
+		}
+		
+		if (i.preloadBlockConfigs.size() > 0) {
+			// some world configs won't immediately resolve!
+			// register a listener for world init / loading to check if we can resolve them!
+			
+			HiddenOre.getPlugin().getServer().getPluginManager()
+					.registerEvents(new ConfigDeferralListener(), HiddenOre.getPlugin());
+			
 		}
 		
 		instance = i;
 	}
 
-	private static void grabBlocks(UUID world, ConfigurationSection blocks, Config i) {
+	private static void grabBlocks(String world, Map<String, List<BlockConfig>> worldBlockConfigs, ConfigurationSection blocks, Config i) {
 		if (blocks != null) {
-			Map<String, List<BlockConfig>> worldBlockConfigs = i.blockConfigs.get(world);
-			if (worldBlockConfigs == null) {
-				worldBlockConfigs = new HashMap<String, List<BlockConfig>>();
-			}
 			for (String sourceBlock : blocks.getKeys(false)) {
 				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock + " for world " + world);
 				ConfigurationSection block = blocks.getConfigurationSection(sourceBlock);
@@ -290,8 +315,6 @@ public final class Config {
 
 				worldBlockConfigs.put(cBlockName, bclist);//sourceBlock, bclist);
 			}
-			
-			i.blockConfigs.put(world, worldBlockConfigs);
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
 		}
