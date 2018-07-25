@@ -31,7 +31,9 @@ public class DropItemConfig {
 		ArrayList<DropItemConfig> drops = new ArrayList<DropItemConfig>(items.size());
 		
 		for (ItemStack item : items) {
-			drops.add(new DropItemConfig(item));
+			if (item != null) {
+				drops.add(new DropItemConfig(item));
+			}
 		}
 		
 		return drops;

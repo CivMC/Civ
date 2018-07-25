@@ -7,26 +7,26 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public class BlockConfig {
-	private String material;
-	public Set<Byte> subtypes;
-	public Collection<MaterialWrapper> validGenTypes;
+	private NamespacedKey material;
+	public Collection<NamespacedKey> validGenTypes;
 	public boolean dropMultiple;
 	public boolean suppressDrops;
 	private Map<String, DropConfig> dropConfigs;
 	private String prefix;
 
-	public BlockConfig(String material, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<MaterialWrapper> validGenTypes) {
+	public BlockConfig(NamespacedKey material, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<NamespacedKey> validGenTypes) {
 		this(material, null, dropMultiple, suppressDrops, prefix, validGenTypes);
 	}
 
-	public BlockConfig(String material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<MaterialWrapper> validGenTypes) {
+	public BlockConfig(NamespacedKey material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<NamespacedKey> validGenTypes) {
 		this.material = material;
-		this.subtypes = (subtype != null) ? new HashSet<Byte>(subtype) : new HashSet<Byte>();
 		this.dropMultiple = dropMultiple;
 		this.suppressDrops = suppressDrops;
 		this.dropConfigs = new HashMap<String, DropConfig>();
@@ -34,17 +34,12 @@ public class BlockConfig {
 		this.validGenTypes = validGenTypes;
 	}
 
-	public boolean checkSubType(Byte subtype) {
-		return this.subtypes.isEmpty() || this.subtypes.contains(subtype);
-	}
-	
-	public String getMaterial() {
+	public NamespacedKey getMaterialKey() {
 		return this.material;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public boolean checkBlock(Block check) {
-		return material.equals(check.getType().name()) && checkSubType(check.getData());
+		return material.equals(check.getType().getKey());
 	}
 	
 	/**
@@ -58,8 +53,8 @@ public class BlockConfig {
 		if (checkBlock(check)) return true;
 		
 		if (validGenTypes == null) return false;
-		for (MaterialWrapper wrapper : validGenTypes) {
-			if (wrapper.checkBlock(check)) return true;
+		for (NamespacedKey wrapper : validGenTypes) {
+			if (wrapper.equals(check.getType().getKey())) return true;
 		}
 		
 		return false;
@@ -123,28 +118,5 @@ public class BlockConfig {
 		}
 
 		return null;
-	}
-	
-	static class MaterialWrapper {
-		String material;
-		Set<Byte> subtypes;
-		
-		public MaterialWrapper(String material, Collection<Byte> subtypes) {
-			this.material = material;
-			this.subtypes = (subtypes != null) ? new HashSet<Byte>(subtypes) : new HashSet<Byte>();	
-		}
-
-		public boolean checkSubType(Byte subtype) {
-			return this.subtypes.isEmpty() || this.subtypes.contains(subtype);
-		}
-		
-		public String getMaterial() {
-			return this.material;
-		}
-		
-		@SuppressWarnings("deprecation")
-		public boolean checkBlock(Block check) {
-			return material.equals(check.getType().name()) && checkSubType(check.getData());
-		}
 	}
 }

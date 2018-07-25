@@ -17,7 +17,8 @@ tools:
  wood_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
-   type: WOOD_PICKAXE
+   v: 1
+   type: WOODEN_PICKAXE
    amount: 1
   ignore:
    amount: true
@@ -34,7 +35,8 @@ tools:
  gold_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
-   type: GOLD_PICKAXE
+   v: 1
+   type: GOLDEN_PICKAXE
    amount: 1
   ignore:
    amount: true
@@ -51,6 +53,7 @@ tools:
  iron_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: IRON_PICKAXE
    amount: 1
   ignore:
@@ -68,6 +71,7 @@ tools:
  stone_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: STONE_PICKAXE
    amount: 1
   ignore:
@@ -85,6 +89,7 @@ tools:
  diamond_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: DIAMOND_PICKAXE
    amount: 1
   ignore:
@@ -102,21 +107,17 @@ tools:
 blocks:
  stone:
   material: STONE
-  allTypes: true
   validTransforms:
     cobblestone:
       material: COBBLESTONE
-      allTypes: true
     dirt:
       material: DIRT
-      allTypes: false
-      types:
-       - 0
   dropMultiple: false
   drops:
    coal_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: COAL_ORE
        amount: 1
     tools:
@@ -136,6 +137,7 @@ blocks:
    iron_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: IRON_ORE
        amount: 1
     tools:
@@ -153,6 +155,7 @@ blocks:
    gold_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: GOLD_ORE
        amount: 1
     tools:
@@ -169,6 +172,7 @@ blocks:
    diamond_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: DIAMOND_ORE
        amount: 1
     tools:
@@ -182,6 +186,7 @@ blocks:
    redstone_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: REDSTONE_ORE
        amount: 1
     tools:
@@ -198,6 +203,7 @@ blocks:
    lapis_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: LAPIS_ORE
        amount: 1
     tools:
@@ -213,7 +219,7 @@ pretty_names:
  DIAMOND_ORE: Diamond Ore
  IRON_ORE: Iron Ore
  GOLD_ORE: Gold Ore
- QUARTZ_ORE: Quartz Ore
+ NETHER_QUARTZ_ORE: Quartz Ore
  EMERALD_ORE: Emerald Ore
  REDSTONE_ORE: Redstone Ore
  LAPIS_ORE: Lapis Lazuli Ore

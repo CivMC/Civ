@@ -31,6 +31,7 @@ import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Entity;
@@ -132,10 +133,10 @@ public class FakePlayer implements Player {
 			public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
 			}
 
-			@Override
+			/*@Override
 			public boolean contains(int materialId) {
 				return false;
-			}
+			}*/
 
 			@Override
 			public boolean contains(Material material) throws IllegalArgumentException {
@@ -147,10 +148,10 @@ public class FakePlayer implements Player {
 				return false;
 			}
 
-			@Override
+			/*@Override
 			public boolean contains(int materialId, int amount) {
 				return false;
-			}
+			}*/
 
 			@Override
 			public boolean contains(Material material, int amount) throws IllegalArgumentException {
@@ -167,10 +168,10 @@ public class FakePlayer implements Player {
 				return false;
 			}
 
-			@Override
+			/*@Override
 			public HashMap<Integer, ? extends ItemStack> all(int materialId) {
 				return null;
-			}
+			}*/
 
 			@Override
 			public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
@@ -182,10 +183,10 @@ public class FakePlayer implements Player {
 				return null;
 			}
 
-			@Override
+			/*@Override
 			public int first(int materialId) {
 				return 0;
-			}
+			}*/
 
 			@Override
 			public int first(Material material) throws IllegalArgumentException {
@@ -202,9 +203,9 @@ public class FakePlayer implements Player {
 				return 0;
 			}
 
-			@Override
+			/*@Override
 			public void remove(int materialId) {
-			}
+			}*/
 
 			@Override
 			public void remove(Material material) throws IllegalArgumentException {
@@ -346,10 +347,10 @@ public class FakePlayer implements Player {
 			public void setHeldItemSlot(int slot) {
 			}
 
-			@Override
+			/*@Override
 			public int clear(int id, int data) {
 				return 0;
-			}
+			}*/
 
 			@Override
 			public HumanEntity getHolder() {
@@ -1298,10 +1299,10 @@ public class FakePlayer implements Player {
 		return false;
 	}
 
-	@Override
+	/*@Override
 	public void sendBlockChange(Location loc, int material, byte data) {
 
-	}
+	}*/
 
 	@Override
 	public void sendSignChange(Location loc, String[] lines) throws IllegalArgumentException {
@@ -1946,5 +1947,20 @@ public class FakePlayer implements Player {
 	@Override
 	public PistonMoveReaction getPistonMoveReaction() {
 		return null;
+	}
+
+	@Override
+	public boolean isSwimming() {
+		return false;
+	}
+
+	@Override
+	public void setSwimming(boolean arg0) {
+		
+	}
+
+	@Override
+	public void sendBlockChange(Location arg0, BlockData arg1) {
+		
 	}
 }

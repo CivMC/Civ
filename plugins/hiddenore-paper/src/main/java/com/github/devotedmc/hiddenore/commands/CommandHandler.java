@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -64,12 +65,12 @@ public class CommandHandler implements CommandExecutor {
 							@Override
 							public void run() {
 								long delay = 0l;
-								Map<String, List<BlockConfig>> worldBlockConfigs = Config.instance.blockConfigs.getOrDefault(world, Config.instance.blockConfigs.get(null));
+								Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs = Config.instance.blockConfigs.getOrDefault(world, Config.instance.blockConfigs.get(null));
 								if (worldBlockConfigs == null) {
 									sender.sendMessage("No drops configured for blocks in this world.");
 									return;
 								}
-								for (String blockConf : worldBlockConfigs.keySet()) {
+								for (NamespacedKey blockConf : worldBlockConfigs.keySet()) {
 									for (BlockConfig block : worldBlockConfigs.get(blockConf)) {
 										for (String dropConf : block.getDrops()) {
 											DropConfig drop = block.getDropConfig(dropConf);
@@ -77,7 +78,7 @@ public class CommandHandler implements CommandExecutor {
 												Bukkit.getScheduler().runTaskLater(plugin,  new Runnable() {
 													@Override
 													public void run() {
-														sender.sendMessage(String.format("Block: %s, drop: %s", blockConf, dropConf));
+														sender.sendMessage(String.format("Block: %s, drop: %s", blockConf.toString(), dropConf));
 														Item dropped = player.getWorld().dropItem(player.getLocation().add(0, 1.0, 0), item.render(vmult));
 														dropped.setPickupDelay(20);
 													}

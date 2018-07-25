@@ -1,26 +1,20 @@
 package com.github.devotedmc.hiddenore;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * TODO: 1.13 -- evaluate if there are other dimensions of consideration here.
+ * 
+ * @author programmerdan
+ *
+ */
 public class NameConfig {
 	public String prettyName;
-	private Map<Short, String> subtypePrettyName;
 
 	public NameConfig(String prettyName) {
 		this.prettyName = prettyName;
-		this.subtypePrettyName = new HashMap<Short, String>();
 	}
 
-	public void addSubTypePrettyName(short subtype, String name) {
-		this.subtypePrettyName.put(subtype, name);
-	}
 
-	public String getSubTypePrettyName(Short subtype) {
-		if (subtype == null) {
-			return prettyName;
-		}
-		String pName = subtypePrettyName.get(subtype);
-		return pName == null ? prettyName : pName;
+	public String getPrettyName() {
+		return prettyName;
 	}
 }

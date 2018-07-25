@@ -4,6 +4,17 @@ Brought to you by the developers from https://www.reddit.com/r/Devoted and https
 
 Massively configurable, low-impact plugin to allow post world generation ore balance, via either drops, or ad-hoc generation of ores into the blocks of the world on-demand. It works as a wonderful anti-xray plugin, and as a powerful incentive tool for mining.
 
+## Notes on Minecraft 1.13
+
+Minecraft 1.13, and Bukkit/Spigot's implementation, introduces a wrinkle for my admittedly "deprecated" approach to sub types of materials; namely,
+if you're defining a normal ore sequence, you can no longer just define a block config for "STONE" -- you now need to define a block config for
+STONE, ANDESITE, DIORITE, and GRANITE, and if you use generation, you need to define allowed types for each.
+
+The benefit with this approach, however, is even greater control over every detail of ore generation within your worlds. I wanted to include this note
+at the top, however, to highlight the importance of this change. You can find an example of this done in detail, in config.yml.
+
+Additional 1.13 notes are included below in the normal place.
+
 ## Overview
 
 Every time you break a block, naturally placed, there will be a lottery run. This will occasionally drop cool stuff instead of the block you broke, or generate new blocks around the miner.
@@ -34,7 +45,7 @@ Alternatively, you can indicate only a single drop-type is allowed. In this case
 
 The chance to drop for each type of drop against a type of broken block is configurable.
 
-A block can be configured to match all subtypes or just a specific set of subtypes (e.g. not regular stone but both andesite and diorite would be possible).
+With Minecraft 1.13, subtype specification is no longer directly possible; future releases may add groups of native materials to emulate this prior behavior, but for now it has been removed.
 
 You can apply biome-level chance, level, and amount modifiers.
 
@@ -48,11 +59,11 @@ Included is a default config that effectively mirrors Minecraft Vanilla orespawn
 
 Supports tracking of breaks to prevent "gaming" the system for more drops. Extra event handlers watch for game attempts and directly penalize that "chunk" (technically, the chunk slice). An extra "highly localized" round robin list keeps track of recent breaks and places to _completely_ prevent break-place based attempts at exploits. Finally, a new tracker keeps track of _each block_ that is broken or interacted, and prevents it from being converted into ore or producing drops.
 
-You can specify more then one config per block type, to deal with subtypes even better. Note that in terms of drops, the first matching config to be encountered will be used; so keep that in mind. 
+You can specify more then one config per block type, although as of Minecraft 1.13 only the first will be used. Also note that in terms of drops, the first matching config to be encountered will be used; so keep that in mind. 
 
 You can specify custom messages for specific types of drops, allowing "uber"-finds to have a unique message.
 
-You can turn on or off the debug using `/hiddenore debug true` or `false`. Be warned, if people are digging, this will spam the console _very_ badly.
+You can turn on or off the debug using `/hiddenore debug true` or `false`. Be warned, if people are digging or pistons are active, this will spam the console _very_ badly.
 
 Supports saving and loading of the tracking database, and fully adheres to /reload with no difficulties.
 
@@ -69,6 +80,8 @@ I'm probably missing some other details but that's it for now.
 * Minecraft 1.13 support (will be 1.5.0, and _will_ break your config. It will not be backwards compatible.)
 
 ### Feature Augment List:
+
+**v1.5.0** Added Minecraft 1.13 support. Note that you WILL need to REDO your config. Although your config will load _as is_ it is unlikely to work as expected. Subtype support has been entirely removed and declarations of subtypes will be ignored. Spigot itself has renamed **many** materials to match their Minecraft normative style, and there is no backwards compatibility in HiddenOre. As of 1.5.0, no prior release of Minecraft is guaranteed active support, and will only be provided on a best-effort basis, if at all. IMPORTANT NOTE on config: All ItemStack serialization has been changed! There is a new `v:` specification. I've emulated it in the demonstration configs, but to avoid messy and unsupported prior version settings, re-export your serialized drops. 
 
 **v1.4.2** Added full multiple world support. Standard config is used as default for any world that does not have a specific config. A new section, `worlds`
 can be specified, each subsection is either the UUID or name of the world with a specific config. A single `blocks` subsection under the world identifier contains all the block configurations for that world. It is configured like the default, but within the world's blocks subsection. Check the configs for examples.

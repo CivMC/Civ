@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -32,8 +35,8 @@ public final class Config {
 	public boolean alertUser;
 	public boolean listDrops;
 	public boolean ignoreSilktouch;
-	public Map<UUID, Map<String, List<BlockConfig>>> blockConfigs;
-	public Map<String, Map<String, List<BlockConfig>>> preloadBlockConfigs;
+	public Map<UUID, Map<NamespacedKey, List<BlockConfig>>> blockConfigs;
+	public Map<String, Map<NamespacedKey, List<BlockConfig>>> preloadBlockConfigs;
 	public Map<String, NameConfig> prettyNames;
 	public Map<String, PlayerStateConfig> stateMasterList;
 
@@ -53,8 +56,8 @@ public final class Config {
 	public static boolean caveOres = false;
 
 	private Config() {
-		blockConfigs = new HashMap<UUID, Map<String, List<BlockConfig>>>();
-		preloadBlockConfigs = new HashMap<String, Map<String, List<BlockConfig>>>();
+		blockConfigs = new HashMap<UUID, Map<NamespacedKey, List<BlockConfig>>>();
+		preloadBlockConfigs = new HashMap<String, Map<NamespacedKey, List<BlockConfig>>>();
 		prettyNames = new HashMap<String, NameConfig>();
 		stateMasterList = new HashMap<String, PlayerStateConfig>();
 		trackFileName = "tracking.dat";
@@ -106,22 +109,15 @@ public final class Config {
 			for (String key : prettyNames.getKeys(false)) {
 				NameConfig nc = null;
 				/*
-				 * Basically a valid pretty name config can be: pretty_names: BUKKIT_NAME: pretty_name or pretty_names:
-				 * BUKKIT_NAME: name: pretty_name 0: subtype_name 1: subtype_name or any blend.
+				 * As of 1.13, subtypes are removed.
 				 */
 				if (prettyNames.isConfigurationSection(key)) {
 					ConfigurationSection pName = prettyNames.getConfigurationSection(key);
 					String name = pName.getString("name", key);
 					nc = new NameConfig(name);
-					for (String subtype : pName.getKeys(false)) {
-						if (!subtype.equals("name")) {
-							try {
-								nc.addSubTypePrettyName(Short.parseShort(subtype), pName.getString(subtype, name));
-							} catch (NumberFormatException nfe) {
-								HiddenOre.getPlugin().getLogger().info(subtype + " is not a valid subtype for " + key);
-							}
-						}
-					}
+					// for 1.13, we're ignoring subtypes. We've kept this stub to encourage cross
+					// compat, but they are ignored if designated.
+					// No attempt is made to bridge compatibility, even where possible.
 				} else if (prettyNames.isString(key)) {
 					String name = prettyNames.getString(key, key);
 					nc = new NameConfig(name);
@@ -179,7 +175,7 @@ public final class Config {
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
 		if (blocks != null) { // default or legacy
-			Map<String, List<BlockConfig>> worldBlockConfigs =  new HashMap<String, List<BlockConfig>>();
+			Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs =  new HashMap<NamespacedKey, List<BlockConfig>>();
 			grabBlocks("default", worldBlockConfigs, blocks, i);
 			i.blockConfigs.put(null, worldBlockConfigs);
 		}
@@ -207,7 +203,7 @@ public final class Config {
 					}
 				}
 				
-				Map<String, List<BlockConfig>> worldBlockConfigs = null;
+				Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs = null;
 				
 				if (worlduid == null) {
 					System.err.println("Unable to match world " + world + " with loaded world, registering for post-load.");
@@ -217,7 +213,7 @@ public final class Config {
 				}
 
 				if (worldBlockConfigs == null) {
-					worldBlockConfigs = new HashMap<String, List<BlockConfig>>();
+					worldBlockConfigs = new HashMap<NamespacedKey, List<BlockConfig>>();
 				}
 
 				ConfigurationSection worldConfig = worlds.getConfigurationSection(world);
@@ -248,36 +244,57 @@ public final class Config {
 		instance = i;
 	}
 
-	private static void grabBlocks(String world, Map<String, List<BlockConfig>> worldBlockConfigs, ConfigurationSection blocks, Config i) {
+	private static void grabBlocks(String world, Map<NamespacedKey, List<BlockConfig>> worldBlockConfigs, ConfigurationSection blocks, Config i) {
 		if (blocks != null) {
 			for (String sourceBlock : blocks.getKeys(false)) {
 				HiddenOre.getPlugin().getLogger().info("Loading config for " + sourceBlock + " for world " + world);
 				ConfigurationSection block = blocks.getConfigurationSection(sourceBlock);
 
 				String cBlockName = block.getString("material");
+				NamespacedKey cBlockKey = null;
 				if (cBlockName == null) {
 					HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + sourceBlock);
 					continue;
+				} else {
+					try {
+						Material cBlockMat = Material.getMaterial(cBlockName);
+						if (cBlockMat == null) {
+							HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
+							continue;
+						} else {
+							cBlockKey = cBlockMat.getKey();
+						}
+					} catch (Exception e) {
+						HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
+						continue;
+					}
 				}
 				String cPrefix = block.getString("prefix", null);
 				Boolean cMultiple = block.getBoolean("dropMultiple", false);
 				Boolean cSuppress = block.getBoolean("suppressDrops", false);
-				List<Byte> subtypes = (block.getBoolean("allTypes", true)) ? null : block.getByteList("types");
 				
 				// add what blocks should be transformed, if transformation is used.
 				ConfigurationSection validTransforms = block.getConfigurationSection("validTransforms");
-				List<BlockConfig.MaterialWrapper> transformThese = new ArrayList<BlockConfig.MaterialWrapper>();
+				List<NamespacedKey> transformThese = new ArrayList<NamespacedKey>();
 				if (validTransforms != null) {
 					for (String transformL : validTransforms.getKeys(false)) {
 						ConfigurationSection transform = validTransforms.getConfigurationSection(transformL);
 						String tBlockName = transform.getString("material");
-						List<Byte> tSubtypes = (transform.getBoolean("allTypes", true)) ? null : transform.getByteList("types");
-						transformThese.add(new BlockConfig.MaterialWrapper(tBlockName, tSubtypes));
+						try {
+							Material tBlockMat = Material.getMaterial(tBlockName);
+							NamespacedKey tBlockKey = tBlockMat == null ? null : tBlockMat.getKey(); 
+							if (tBlockKey != null) {
+								transformThese.add(tBlockKey);
+							}
+						} catch (Exception e) {
+							HiddenOre.getPlugin().getLogger().warning("Failed to find valid transform material for " + tBlockName);
+							continue;
+						}
 					}
 				} else {
 					validTransforms = null;
 				}
-				BlockConfig bc = new BlockConfig(cBlockName, subtypes, cMultiple, cSuppress, cPrefix, transformThese);
+				BlockConfig bc = new BlockConfig(cBlockKey, cMultiple, cSuppress, cPrefix, transformThese);
 
 				// now add drops.
 				ConfigurationSection drops = block.getConfigurationSection("drops");
@@ -307,13 +324,13 @@ public final class Config {
 
 					bc.addDropConfig(sourceDrop, dc);
 				}
-				List<BlockConfig> bclist = worldBlockConfigs.get(cBlockName);//sourceBlock);
+				List<BlockConfig> bclist = worldBlockConfigs.get(cBlockKey);
 				if (bclist == null) {
 					bclist = new LinkedList<BlockConfig>();
 				}
 				bclist.add(bc);
 
-				worldBlockConfigs.put(cBlockName, bclist);//sourceBlock, bclist);
+				worldBlockConfigs.put(cBlockKey, bclist);
 			}
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
@@ -365,21 +382,20 @@ public final class Config {
 		return dlc;
 	}
 
-	public static BlockConfig isDropBlock(UUID world, String block, byte subtype) {
-		List<BlockConfig> bcs = instance.blockConfigs.getOrDefault(world, instance.blockConfigs.get(null)).get(block);
+	public static BlockConfig isDropBlock(UUID world, BlockData block) {
+		List<BlockConfig> bcs = instance.blockConfigs.getOrDefault(world, instance.blockConfigs.get(null)).get(block.getMaterial().getKey());
 		if (bcs != null && bcs.size() > 0) {
 			// return first match
-			for (BlockConfig bc : bcs) {
-				if (bc.checkSubType(subtype)) {
-					return bc;
-				}
-			}
+			return bcs.get(0);
+			/*for (BlockConfig bc : bcs) {
+				return bc;
+			}*/ // TODO 1.13: can we layer in some new distinguishers that could lead to multi-anchoring by Material?
 		}
 		return null;
 	}
 
-	public static String getPrefix(UUID world, String block, byte subtype, String drop) {
-		BlockConfig bc = isDropBlock(world, block, subtype);
+	public static String getPrefix(UUID world, BlockData block, String drop) {
+		BlockConfig bc = isDropBlock(world, block);
 		String pref = (bc == null) ? instance.defaultPrefix : bc.getPrefix(drop);
 		return (pref == null ? instance.defaultPrefix : pref);
 	}
@@ -396,9 +412,9 @@ public final class Config {
 		return instance.listDrops;
 	}
 
-	public static String getPrettyName(String name, short durability) {
+	public static String getPrettyName(String name) {
 		NameConfig nc = instance.prettyNames.get(name);
-		String pref = (nc == null) ? name : nc.getSubTypePrettyName(durability);
+		String pref = (nc == null) ? name : nc.getPrettyName();
 		return (pref == null) ? name : pref;
 	}
 

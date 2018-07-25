@@ -17,7 +17,6 @@ clear_ores:
   replace:
   - IRON_ORE
   - REDSTONE_ORE
-  - GLOWING_REDSTONE_ORE
   - GOLD_ORE
   - COAL_ORE
   - DIAMOND_ORE
@@ -27,7 +26,7 @@ clear_ores:
  end_world:
   world: world_nether
   replace: 
-  - QUARTZ_ORE
+  - NETHER_QUARTZ_ORE
   with: NETHERRACK
 tools:
  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
@@ -47,7 +46,8 @@ tools:
   #  design the template of your desire.
   template:
    ==: org.bukkit.inventory.ItemStack
-   type: WOOD_PICKAXE
+   v: 1
+   type: WOODEN_PICKAXE
    amount: 1
   ignore:
    # Ignore the amount held.
@@ -74,7 +74,8 @@ tools:
  gold_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
-   type: GOLD_PICKAXE
+   v: 1
+   type: GOLDEN_PICKAXE
    amount: 1
   ignore:
    amount: true
@@ -91,6 +92,7 @@ tools:
  iron_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: IRON_PICKAXE
    amount: 1
   ignore:
@@ -108,6 +110,7 @@ tools:
  stone_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: STONE_PICKAXE
    amount: 1
   ignore:
@@ -125,6 +128,7 @@ tools:
  diamond_pickaxe:
   template:
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: DIAMOND_PICKAXE
    amount: 1
   ignore:
@@ -161,20 +165,20 @@ blocks:
  stone:
   # Name the 'root type' of this block config using its Bukkit material name.
   material: STONE
-  # Indicate if all subtypes of material are included under this block config. If false, you must define a "types" list
-  allTypes: true
   # If any of the drops for this block have Transform mode enabled, you can specify a list of blocks that,
   # in addition to the block defined above, can be transformed.
   validTransforms:
     # Use the same style of definition as above. Throwaway label, then 'material' and either 'allTypes' true, or define a "types" list.
     cobblestone:
       material: COBBLESTONE
-      allTypes: true
     dirt:
       material: DIRT
-      allTypes: false
-      types:
-       - 0
+    andesite:
+      material: ANDESITE
+    diorite:
+      material: DIORITE
+    granite:
+      material: GRANITE
   # Drop mode. Multiple drops means that every possible drop is evaluated separately and all RNG-winners are grouped together in one big drop.
   #   false is more of a "classic" mode, where every possible drop's chance is accumulated, then a single Random number is generated and
   #   evaluated, resulting in either one or no drop.
@@ -195,6 +199,7 @@ blocks:
     # You can specify one or _many_ items, to emulate the true "drop chest" experience.
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: COAL_ORE
        # Amount is _not_ ignored. Use this as the "base" multipler. This amount will be multiplied by the randomly chosen "amount" configured
        # later and modified per tool and biome.
@@ -232,6 +237,7 @@ blocks:
    iron_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: IRON_ORE
        amount: 1
     tools:
@@ -255,6 +261,7 @@ blocks:
    gold_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: GOLD_ORE
        amount: 1
     tools:
@@ -269,6 +276,7 @@ blocks:
    diamond_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: DIAMOND_ORE
        amount: 1
     tools:
@@ -283,6 +291,7 @@ blocks:
    redstone_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: REDSTONE_ORE
        amount: 1
     tools:
@@ -297,6 +306,7 @@ blocks:
    lapis_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: LAPIS_ORE
        amount: 1
     tools:
@@ -312,6 +322,7 @@ blocks:
    emerald_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
+       v: 1
        type: EMERALD_ORE
        amount: 1
     tools:
@@ -337,19 +348,467 @@ blocks:
       chance: 0.001437
      MUTATED_EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
+ andesite:
+  material: ANDESITE
+  validTransforms:
+    cobblestone:
+      material: COBBLESTONE
+    dirt:
+      material: DIRT
+    stone:
+      material: STONE
+    diorite:
+      material: DIORITE
+    granite:
+      material: GRANITE
+  dropMultiple: false
+  drops:
+   fancy_cmd:
+    minY: 1
+    maxY: 255
+    chance: 0.0001
+    command: '/give %player% iron_ingot 1'
+    tools:
+     - wood_pickaxe
+   coal_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: COAL_ORE
+       amount: 1
+    tools:
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 131
+    chance: 0.01
+    minAmount: 2
+    maxAmount: 8
+    transformIfAble: true
+    transformDropIfFails: false
+    transformMaxDropsIfFails: 1
+    state: generalRebalance
+   iron_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: IRON_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    xp:
+     amount: 1
+     chance: 1.0
+    minY: 1
+    maxY: 67
+    chance: 0.007
+    minAmount: 1
+    maxAmount: 4
+    state: hasteDebuff
+   gold_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: GOLD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.001437
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   diamond_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: DIAMOND_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.0005427
+    minAmount: 1
+    maxAmount: 3
+    state: generalRebalance
+   redstone_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: REDSTONE_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.01025
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   lapis_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: LAPIS_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.000597
+    minAmount: 1
+    maxAmount: 3
+    state: fatigueBuff
+   emerald_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: EMERALD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 32
+    chance: 0.0
+    minAmount: 1
+    maxAmount: 2
+    state: generalRebalance
+    biomes:
+     EXTREME_HILLS:
+      chance: 0.001437
+      state: fatigueBuff
+     MUTATED_EXTREME_HILLS:
+      chance: 0.001437
+      state: hasteDebuff
+     EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+     MUTATED_EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+ diorite:
+  material: DIORITE
+  validTransforms:
+    cobblestone:
+      material: COBBLESTONE
+    dirt:
+      material: DIRT
+    andesite:
+      material: ANDESITE
+    stone:
+      material: STONE
+    granite:
+      material: GRANITE
+  dropMultiple: false
+  drops:
+   fancy_cmd:
+    minY: 1
+    maxY: 255
+    chance: 0.0001
+    command: '/give %player% iron_ingot 1'
+    tools:
+     - wood_pickaxe
+   coal_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: COAL_ORE
+       amount: 1
+    tools:
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 131
+    chance: 0.01
+    minAmount: 2
+    maxAmount: 8
+    transformIfAble: true
+    transformDropIfFails: false
+    transformMaxDropsIfFails: 1
+    state: generalRebalance
+   iron_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: IRON_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    xp:
+     amount: 1
+     chance: 1.0
+    minY: 1
+    maxY: 67
+    chance: 0.007
+    minAmount: 1
+    maxAmount: 4
+    state: hasteDebuff
+   gold_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: GOLD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.001437
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   diamond_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: DIAMOND_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.0005427
+    minAmount: 1
+    maxAmount: 3
+    state: generalRebalance
+   redstone_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: REDSTONE_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.01025
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   lapis_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: LAPIS_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.000597
+    minAmount: 1
+    maxAmount: 3
+    state: fatigueBuff
+   emerald_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: EMERALD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 32
+    chance: 0.0
+    minAmount: 1
+    maxAmount: 2
+    state: generalRebalance
+    biomes:
+     EXTREME_HILLS:
+      chance: 0.001437
+      state: fatigueBuff
+     MUTATED_EXTREME_HILLS:
+      chance: 0.001437
+      state: hasteDebuff
+     EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+     MUTATED_EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+ granite:
+  material: GRANITE
+  validTransforms:
+    cobblestone:
+      material: COBBLESTONE
+    dirt:
+      material: DIRT
+    andesite:
+      material: ANDESITE
+    diorite:
+      material: DIORITE
+    stone:
+      material: STONE
+  dropMultiple: false
+  drops:
+   fancy_cmd:
+    minY: 1
+    maxY: 255
+    chance: 0.0001
+    command: '/give %player% iron_ingot 1'
+    tools:
+     - wood_pickaxe
+   coal_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: COAL_ORE
+       amount: 1
+    tools:
+     - wood_pickaxe
+     - stone_pickaxe
+     - iron_pickaxe
+     - gold_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 131
+    chance: 0.01
+    minAmount: 2
+    maxAmount: 8
+    transformIfAble: true
+    transformDropIfFails: false
+    transformMaxDropsIfFails: 1
+    state: generalRebalance
+   iron_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: IRON_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    xp:
+     amount: 1
+     chance: 1.0
+    minY: 1
+    maxY: 67
+    chance: 0.007
+    minAmount: 1
+    maxAmount: 4
+    state: hasteDebuff
+   gold_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: GOLD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.001437
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   diamond_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: DIAMOND_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.0005427
+    minAmount: 1
+    maxAmount: 3
+    state: generalRebalance
+   redstone_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: REDSTONE_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 15
+    chance: 0.01025
+    minAmount: 1
+    maxAmount: 4
+    state: generalRebalance
+   lapis_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: LAPIS_ORE
+       amount: 1
+    tools:
+     - stone_pickaxe
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 33
+    chance: 0.000597
+    minAmount: 1
+    maxAmount: 3
+    state: fatigueBuff
+   emerald_ore:
+    package:
+     - ==: org.bukkit.inventory.ItemStack
+       v: 1
+       type: EMERALD_ORE
+       amount: 1
+    tools:
+     - iron_pickaxe
+     - diamond_pickaxe
+    minY: 1
+    maxY: 32
+    chance: 0.0
+    minAmount: 1
+    maxAmount: 2
+    state: generalRebalance
+    biomes:
+     EXTREME_HILLS:
+      chance: 0.001437
+      state: fatigueBuff
+     MUTATED_EXTREME_HILLS:
+      chance: 0.001437
+      state: hasteDebuff
+     EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+     MUTATED_EXTREME_HILLS_WITH_TREES:
+      chance: 0.001437
+
 # Example of new worlds config, here we explicitly specify only a single block drop for this world.
 worlds:
  world_nether:
   blocks:
    netherrack:
     material: NETHERRACK
-    allTypes: true
     dropMultiple: false
     drops:
      quartz_ore:
       package:
        - ==: org.bukkit.inventory.ItemStack
-         type: QUARTZ_ORE
+         v: 1
+         type: NETHER_QUARTZ_ORE
          amount: 1
       tools:
        - wood_pickaxe
@@ -371,15 +830,12 @@ worlds:
 # Example w/ custom prefixes.
 # sand:
 #  material: SAND
-#  allTypes: false
-#  types:
-#   - 0
 #  dropMultiple: true
 #  drops:
 #   ink_sack:
 #    package:
 #     - ==: org.bukkit.inventory.ItemStack
-#       type: INK_SACK
+#       type: INK_SAC
 #       durability: 4
 #       amount: 1
 #    prefix: Lucky find! You've found a dropchest inner.
@@ -401,7 +857,6 @@ worlds:
 # Example w/ drop suppression.
 # glass:
 #  material: GLASS
-#  allTypes: true
 #  suppressDrops: true
 # This will prevent glass from dropping, ever.
 #
@@ -428,5 +883,4 @@ pretty_names:
  COAL: Coal
  NETHERRACK: Netherrack
  # if the base type has subtypes, just specify those subtypes as a list. If you specify one, you'll need to specify all used subtypes.
- INK_SACK:
-  4: Lapis Lazuli
+ LAPIS_LAZULI: Lapis Lazuli

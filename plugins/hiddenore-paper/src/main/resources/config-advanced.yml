@@ -20,6 +20,7 @@ tools:
   template:
    # This specifies a named diamond pickaxe -- a colored name even -- with lore, and two enchantments
    ==: org.bukkit.inventory.ItemStack
+   v: 1
    type: DIAMOND_PICKAXE
    meta:
     ==: ItemMeta
@@ -53,25 +54,25 @@ tools:
 blocks:
  stone:
   material: STONE
-  allTypes: true
   dropMultiple: false
   drops:
    washed_out_shulker:
     package:
      # The drop config can get very complex; here is a Named Monster Egg for Shulkers. 
      - ==: org.bukkit.inventory.ItemStack
-       type: MONSTER_EGG
+       v: 1
+       type: SHULKER_SPAWN_EGG
        amount: 1
        meta:
         ==: ItemMeta
         meta-type: UNSPECIFIC
         display-name: Pet Shulker
-        internal: H4sIAAAAAAAAAONiYOBi4HTNK8ksqQxJTOdgYMpMYWAPzijNyU4tYmAAAGLDXgUfAAAA
-     # Even cooler, you can specify the "block" type of stationary water, and 
+     # Even cooler, you can specify the "block" type of water, and 
      # if transformIsAble is true, the very rock around you will instantly transform
      # into water.
      - ==: org.bukkit.inventory.ItemStack
-       type: STATIONARY_WATER
+       v: 1
+       type: WATER
        amount: 1
     tools:
      - fancy_dpick
@@ -88,25 +89,25 @@ worlds:
   blocks:
    endstone:
     material: END_STONE
-    allTypes: true
     dropMultiple: false
     drops:
      washed_out_shulker:
       package:
        # The drop config can get very complex; here is a Named Monster Egg for Shulkers. 
        - ==: org.bukkit.inventory.ItemStack
-         type: MONSTER_EGG
+         v: 1
+         type: SHULKER_SPAWN_EGG
          amount: 1
          meta:
           ==: ItemMeta
           meta-type: UNSPECIFIC
           display-name: Pet Shulker
-          internal: H4sIAAAAAAAAAONiYOBi4HTNK8ksqQxJTOdgYMpMYWAPzijNyU4tYmAAAGLDXgUfAAAA
        # Even cooler, you can specify the "block" type of stationary water, and 
        # if transformIsAble is true, the very rock around you will instantly transform
        # into water.
        - ==: org.bukkit.inventory.ItemStack
-         type: STATIONARY_WATER
+         v: 1
+         type: WATER
          amount: 1
       tools:
        - fancy_dpick

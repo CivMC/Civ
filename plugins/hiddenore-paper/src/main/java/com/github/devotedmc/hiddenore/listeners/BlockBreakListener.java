@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -73,11 +74,12 @@ public class BlockBreakListener implements Listener {
 	@SuppressWarnings("deprecation")
 	private void doBlockBreak(BlockBreakEvent event) {
 		Block b = event.getBlock();
+		BlockData bd = b.getBlockData();
 		String blockName = b.getType().name();
-		Byte sb = b.getData();
+
 		UUID world = b.getWorld().getUID();
 
-		BlockConfig bc = Config.isDropBlock(world, blockName, sb);
+		BlockConfig bc = Config.isDropBlock(world, bd);
 
 		Player p = event.getPlayer();
 		
@@ -147,7 +149,7 @@ public class BlockBreakListener implements Listener {
 				// Random check to decide whether or not the special drop should be dropped
 				if (dropChance > Math.random()) {
 					hasDrop = doDrops(hasDrop, b, event, p, biomeName, dropModifier, 
-							drop, dc, blockName, bc, sb, alertUser);
+							drop, dc, blockName, bc, alertUser);
 					if (!hasDrop) {
 						// Core of event cancelled!
 						plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
@@ -166,7 +168,7 @@ public class BlockBreakListener implements Listener {
 				ToolConfig tc = dc.dropsWithToolConfig(biomeName, inMainHand);
 				
 				hasDrop = doDrops(hasDrop, b, event, p, biomeName, tc, 
-						drop, dc, blockName, bc, sb, alertUser);
+						drop, dc, blockName, bc, alertUser);
 				if (!hasDrop) {
 					// Core of event cancelled!
 					plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
@@ -216,12 +218,11 @@ public class BlockBreakListener implements Listener {
 	 * @param dropConfig The actual drop config being invoked
 	 * @param blockName The configured name of the block config
 	 * @param blockConfig The actual block config being invoked.
-	 * @param blockSubType The block being broken's subtype
 	 * @param alertBuffer a StringBuffer used to report to the user on what was found, if configured.
 	 * @return true if everything went well, false if the generate was cancelled or other error.
 	 */
 	private Boolean doDrops(boolean clearBlock, Block sourceBlock, BlockBreakEvent event, Player player, String biomeName, ToolConfig dropTool, 
-			String dropName, DropConfig dropConfig, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer) {
+			String dropName, DropConfig dropConfig, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer) {
 		// Remove block, drop special drop and cancel the event
 		if (!clearBlock) {
 			HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, sourceBlock, Material.AIR);
@@ -239,14 +240,14 @@ public class BlockBreakListener implements Listener {
 		final List<ItemStack> items = dropConfig.renderDrop(biomeName, dropTool);
 		final Location sourceLocation = sourceBlock.getLocation();
 		if (items.size() > 0) {
-			doActualDrops(items, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
+			doActualDrops(items, sourceLocation, player, dropName, blockName, blockConfig, alertBuffer);
 		}
 
 		if (dropConfig.transformIfAble) {
 			final List<ItemStack> transform = dropConfig.renderTransform(biomeName, dropTool);
 			if (transform.size() > 0) {
 				doActualGenerate(transform, sourceLocation, player, dropName, blockName, blockConfig, 
-						blockSubType, alertBuffer, dropConfig);
+						alertBuffer, dropConfig);
 			}
 		}
 		
@@ -258,7 +259,7 @@ public class BlockBreakListener implements Listener {
 	}
 
 	private void doActualDrops(final List<ItemStack> items, final Location sourceLocation, final Player player,
-			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer) {
+			String dropName, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer) {
 		final HiddenOreEvent hoe = new HiddenOreEvent(player, sourceLocation, items);
 		Bukkit.getPluginManager().callEvent(hoe);
 		if (!hoe.isCancelled()) {
@@ -275,8 +276,8 @@ public class BlockBreakListener implements Listener {
 			// Correct stats output.
 			for (ItemStack item: hoe.getDrops()) {
 				String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
-				log("STAT: Player {0} at {1} broke {2}:{3} - dropping {4} {5}:{6}", 
-						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
+				log("STAT: Player {0} at {1} broke {2} - dropping {3} {4}:{5}", 
+						player.getDisplayName(), player.getLocation(), blockName, 
 						item.getAmount(), name, item.getDurability());
 			}
 			
@@ -286,7 +287,7 @@ public class BlockBreakListener implements Listener {
 
 					for (ItemStack item : hoe.getDrops()) {
 						String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
-								item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name(), item.getDurability());
+								item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
 						customAlerts.append(" ").append(item.getAmount()).append(" ").append(name);
 					}
 					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
@@ -294,7 +295,7 @@ public class BlockBreakListener implements Listener {
 					if (Config.isListDrops()) {
 						for (ItemStack item : hoe.getDrops()) {
 							String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
-									item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name(), item.getDurability());
+									item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
 							alertBuffer.append(" ").append(item.getAmount()).append(" ").append(name).append(",");
 						}
 					}
@@ -307,8 +308,7 @@ public class BlockBreakListener implements Listener {
 	}
 
 	private void doActualGenerate(final List<ItemStack> items, final Location sourceLocation, final Player player,
-			String dropName, String blockName, BlockConfig blockConfig, byte blockSubType, StringBuffer alertBuffer,
-			DropConfig dropConfig) {
+			String dropName, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer, DropConfig dropConfig) {
 		int maxWalk = 0;
 		int cPlace = 0;
 		double cAttempt = 0;
@@ -354,13 +354,13 @@ public class BlockBreakListener implements Listener {
 				toDrop.setAmount(Math.min(xform.getAmount(), dropConfig.maxDropsIfTransformFails));
 				final List<ItemStack> newDrops = new ArrayList<ItemStack>();
 				newDrops.add(toDrop);
-				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, blockSubType, alertBuffer);
+				doActualDrops(newDrops, sourceLocation, player, dropName, blockName, blockConfig, alertBuffer);
 			} else {
 				String name = xform.hasItemMeta() && xform.getItemMeta().hasDisplayName() ? 
-						xform.getItemMeta().getDisplayName() : Config.getPrettyName(xform.getType().name(), xform.getDurability());
+						xform.getItemMeta().getDisplayName() : Config.getPrettyName(xform.getType().name());
 						
-				log("STAT: Player {0} at {1} broke {2}:{3} - replacing with {4} {5}:{6} as {7}", 
-						player.getDisplayName(), player.getLocation(), blockName, blockSubType, 
+				log("STAT: Player {0} at {1} broke {2} - replacing with {3} {4}:{5} as {6}", 
+						player.getDisplayName(), player.getLocation(), blockName, 
 						xform.getAmount()- cPlace, name, xform.getDurability(),
 						expressed);
 				
