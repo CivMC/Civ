@@ -147,7 +147,7 @@ public class TagManager {
 		List<Short> list = new ArrayList<Short>();
 
 		for (int i = 0; i < tagList.size(); ++i) {
-			list.add(tagList.g(0));
+			list.add(tagList.g(i));
 		}
 
 		return list;
