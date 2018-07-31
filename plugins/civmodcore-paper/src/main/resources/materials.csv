@@ -4,32 +4,30 @@ Dirt,DIRT,3,0
 Grassless Dirt,DIRT,3,1
 Podzol,DIRT,3,2
 Cobblestone,COBBLESTONE,4,0
-Oak Wood Planks,WOOD,5,0
-Spruce Wood Planks,WOOD,5,1
-Birch Wood Planks,WOOD,5,2
-Jungle Wood Planks,WOOD,5,3
-Acacia Wood Planks,WOOD,5,4
-Dark Oak Wood Planks,WOOD,5,5
-Oak Sapling,SAPLING,6,0
-Spruce Sapling,SAPLING,6,1
-Birch Sapling,SAPLING,6,2
-Jungle Sapling,SAPLING,6,3
-Acacia Sapling,SAPLING,6,4
-Dark Oak Sapling,SAPLING,6,5
+Oak Wood Planks,OAK_PLANKS,5,0
+Spruce Wood Planks,SPRUCE_PLANKS,5,0
+Birch Wood Planks,BIRCH_PLANKS,5,0
+Jungle Wood Planks,JUNGLE_PLANKS,5,0
+Acacia Wood Planks,ACACIA_PLANKS,5,0
+Dark Oak Wood Planks,DARK_OAK_PLANKS,5,0
+Oak Sapling,OAK_SAPLING,6,0
+Spruce Sapling,SPRUCE_SAPLING,6,1
+Birch Sapling,BIRCH_SAPLING,6,2
+Jungle Sapling,JUNGLE_SAPLING,6,3
+Acacia Sapling,ACACIA_SAPLING,6,4
+Dark Oak Sapling,DARK_OAK_SAPLING,6,5
 Bedrock,BEDROCK,7,0
 Water,WATER,8,0
-Stationary Water,STATIONARY_WATER,9,0
 Lava,LAVA,10,0
-Stationary Lava,STATIONARY_LAVA,11,0
 Sand,SAND,12,0
 Gravel,GRAVEL,13,0
 Gold Ore,GOLD_ORE,14,0
 Iron Ore,IRON_ORE,15,0
 Coal Ore,COAL_ORE,16,0
-Oak Wood,LOG,17,0
-Spruce Wood,LOG,17,1
-Birch Wood,LOG,17,2
-Jungle Wood,LOG,17,3
+Oak Wood,OAK_LOG,17,0
+Spruce Wood,SPRUCE_LOG,17,1
+Birch Wood,BIRCH_LOG,17,2
+Jungle Wood,JUNGLE_LOG,17,3
 Leaves,LEAVES,18,0
 Sponge,SPONGE,19,0
 Glass,GLASS,20,0
