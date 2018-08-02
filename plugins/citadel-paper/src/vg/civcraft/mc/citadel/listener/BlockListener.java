@@ -469,7 +469,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void interact(PlayerInteractEvent pie) {
 		try {
-			if (!pie.hasBlock() || pie.getHand() != EquipmentSlot.HAND)
+			if (!pie.hasBlock() || (pie.getHand() != EquipmentSlot.HAND && pie.getHand() != EquipmentSlot.OFF_HAND))
 				return;
 
 			Player player = pie.getPlayer();
@@ -495,10 +495,13 @@ public class BlockListener implements Listener {
 				 * Citadel.verbose( VerboseMsg.ReinLocked,
 				 * player.getDisplayName(), block.getLocation().toString());
 				 */
-				pie.getPlayer().sendMessage(
-						ChatColor.RED
-								+ String.format("%s is locked", block.getType()
-										.name()));
+				//Prevents double broadcasts
+				if(pie.getHand() == EquipmentSlot.HAND) {
+					pie.getPlayer().sendMessage(
+							ChatColor.RED
+									+ String.format("%s is locked", block.getType()
+									.name()));
+				}
 				pie.setCancelled(true);
 			}
 			// Not really sure what this is for. Should come up in testing.
@@ -511,7 +514,7 @@ public class BlockListener implements Listener {
 			 * VerboseMsg.CropTrample, block.getLocation().toString());
 			 * pie.setCancelled(true); } }
 			 */
-			if (pie.isCancelled())
+			if (pie.isCancelled() || pie.getHand() != EquipmentSlot.HAND)
 				return;
 
 			PlayerState state = PlayerState.get(player);
