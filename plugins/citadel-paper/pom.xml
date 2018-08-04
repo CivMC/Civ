@@ -5,7 +5,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.11.3</version>
+	<version>3.11.4</version>
 	<name>Citadel</name>
 	<url>https://github.com/Devoted/Citadel</url>
 
@@ -41,7 +41,7 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.12-R0.1-SNAPSHOT</version>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
