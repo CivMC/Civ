@@ -11,6 +11,10 @@
   
     <repositories>
         <repository>
+            <id>civ-jenkins</id>
+            <url>http://test.civclassic.com:8080/plugin/repository/everything/</url>
+        </repository>
+        <repository>
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>

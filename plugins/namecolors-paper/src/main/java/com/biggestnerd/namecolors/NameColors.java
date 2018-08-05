@@ -80,7 +80,7 @@ public class NameColors extends ACivMod implements Listener {
 	}
 	
 	private void updatePlayerName(Player player, ChatColor color) {
-		updatePlayerName(player, color + player.getDisplayName());
+		updatePlayerName(player, color + player.getDisplayName() + ChatColor.RESET);
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
