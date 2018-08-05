@@ -2,6 +2,8 @@ package vg.civcraft.mc.civchat2;
 
 public class ChatStrings {
 
+	public final static String localChatFormat = "<%1$s> %2$s";
+
 	public final static String chatPlayerIsOffline = "<i>That player is offline.";
 
 	public final static String chatNoOneToReplyTo = "<i>You have no one to reply to.";
