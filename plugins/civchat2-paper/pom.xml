@@ -62,8 +62,8 @@
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
 		</repository>
 		<repository>
-			<id>devoted-repo</id>
-			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civ-jenkins</id>
+			<url>http://test.civclassic.com:8080/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 </project>
