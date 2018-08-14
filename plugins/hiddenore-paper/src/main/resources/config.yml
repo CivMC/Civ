@@ -364,7 +364,7 @@ blocks:
  # As of 1.5.1 you can indicate a list of materials that all share this config,
  # and it will be replicated for each one.
  aggregates:
-  # Note, use "materials" instead of "material" (1.5.1) for it to work
+  # Note, use "materials" instead of "material" (1.5.1) for it to work (pick just one -- no mixnmatch here)
   materials:
    andesite:
     material: ANDESITE
@@ -386,14 +386,10 @@ blocks:
     andesite:
       material: ANDESITE
   dropMultiple: false
+  # As of 1.5.1 you can mix and match new dropList and prior drops
+  dropList:
+   - fancy_cmd
   drops:
-   fancy_cmd:
-    minY: 1
-    maxY: 255
-    chance: 0.0001
-    command: '/give %player% iron_ingot 1'
-    tools:
-     - wood_pickaxe
    coal_ore:
     package:
      - ==: org.bukkit.inventory.ItemStack
