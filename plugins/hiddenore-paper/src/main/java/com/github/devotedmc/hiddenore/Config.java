@@ -35,6 +35,7 @@ public final class Config {
 	public boolean alertUser;
 	public boolean listDrops;
 	public boolean ignoreSilktouch;
+	public Map<String, DropConfig> dropConfigs;
 	public Map<UUID, Map<NamespacedKey, List<BlockConfig>>> blockConfigs;
 	public Map<String, Map<NamespacedKey, List<BlockConfig>>> preloadBlockConfigs;
 	public Map<String, NameConfig> prettyNames;
@@ -56,6 +57,7 @@ public final class Config {
 	public static boolean caveOres = false;
 
 	private Config() {
+		dropConfigs = new HashMap<String, DropConfig>();
 		blockConfigs = new HashMap<UUID, Map<NamespacedKey, List<BlockConfig>>>();
 		preloadBlockConfigs = new HashMap<String, Map<NamespacedKey, List<BlockConfig>>>();
 		prettyNames = new HashMap<String, NameConfig>();
@@ -172,6 +174,15 @@ public final class Config {
 				}
 			}
 		}
+		
+		ConfigurationSection drops = file.getConfigurationSection("drops");
+		if (drops != null) {
+			for (String drop : drops.getKeys(false)) {
+				if (drops.isConfigurationSection(drop)) {
+					i.dropConfigs.put(drop, grabDropConfig(drops, drop));
+				}
+			}
+		}
 
 		ConfigurationSection blocks = file.getConfigurationSection("blocks");
 		if (blocks != null) { // default or legacy
@@ -251,10 +262,23 @@ public final class Config {
 				ConfigurationSection block = blocks.getConfigurationSection(sourceBlock);
 
 				String cBlockName = block.getString("material");
-				NamespacedKey cBlockKey = null;
+				List<NamespacedKey> cBlockKeys = new ArrayList<NamespacedKey>();
 				if (cBlockName == null) {
-					HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + sourceBlock);
-					continue;
+					List<String> cBlockNames = block.getStringList("materials");
+					if (cBlockNames == null || cBlockNames.isEmpty()) {
+						HiddenOre.getPlugin().getLogger().warning("Failed to find material or materials for " + sourceBlock);
+						continue;
+					} else {
+						for (String cBlockN : cBlockNames) {
+							Material cBlockMat = Material.getMaterial(cBlockN);
+							if (cBlockMat == null) {
+								HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
+								continue;
+							} else {
+								cBlockKeys.add(cBlockMat.getKey());
+							}
+						}
+					}
 				} else {
 					try {
 						Material cBlockMat = Material.getMaterial(cBlockName);
@@ -262,13 +286,19 @@ public final class Config {
 							HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
 							continue;
 						} else {
-							cBlockKey = cBlockMat.getKey();
+							cBlockKeys.add(cBlockMat.getKey());
 						}
 					} catch (Exception e) {
 						HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
 						continue;
 					}
 				}
+				
+				if (cBlockKeys.isEmpty()) {
+					HiddenOre.getPlugin().getLogger().warning("No material(s) set for " + sourceBlock);
+					continue;
+				}
+				
 				String cPrefix = block.getString("prefix", null);
 				Boolean cMultiple = block.getBoolean("dropMultiple", false);
 				Boolean cSuppress = block.getBoolean("suppressDrops", false);
@@ -294,48 +324,69 @@ public final class Config {
 				} else {
 					validTransforms = null;
 				}
-				BlockConfig bc = new BlockConfig(cBlockKey, cMultiple, cSuppress, cPrefix, transformThese);
-
-				// now add drops.
-				ConfigurationSection drops = block.getConfigurationSection("drops");
-				for (String sourceDrop : drops.getKeys(false)) {
-					HiddenOre.getPlugin().getLogger().info("Loading config for drop " + sourceDrop);
-					ConfigurationSection drop = drops.getConfigurationSection(sourceDrop);
-					String dPrefix = drop.getString("prefix", null);
-					@SuppressWarnings("unchecked")
-					List<ItemStack> items = (List<ItemStack>) drop.getList("package", new ArrayList<ItemStack>());
-					boolean transformIfAble = drop.getBoolean("transformIfAble", false);
-					boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
-					int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
-					String command = drop.getString("command", null);
-
-					DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), command,
-							transformIfAble, transformDropIfFails, transformMaxDropsIfFails,
-							dPrefix, grabLimits(drop, new DropLimitsConfig()));
-
-					ConfigurationSection biomes = drop.getConfigurationSection("biomes");
-					if (biomes != null) {
-						for (String sourceBiome : biomes.getKeys(false)) {
-							HiddenOre.getPlugin().getLogger().info("Loading config for biome " + sourceBiome);
-							DropLimitsConfig dlc = grabLimits(biomes.getConfigurationSection(sourceBiome), dc.limits);
-							dc.addBiomeLimits(sourceBiome, dlc);
+				
+				// we can set up multiple per def, here we handle it.
+				for (NamespacedKey cBlockKey : cBlockKeys) {
+					BlockConfig bc = new BlockConfig(cBlockKey, cMultiple, cSuppress, cPrefix, new ArrayList<NamespacedKey>(transformThese));
+	
+					// now add drops.
+					ConfigurationSection drops = block.getConfigurationSection("drops");
+					if (drops != null) {
+						for (String sourceDrop : drops.getKeys(false)) {
+							bc.addDropConfig(sourceDrop, grabDropConfig(drops, sourceDrop));
 						}
 					}
-
-					bc.addDropConfig(sourceDrop, dc);
+					
+					// mix and match in-house drops and "from list" shared drops.
+					List<String> dropList = block.getStringList("dropList");
+					if (dropList != null) {
+						for (String drop : dropList) {
+							if (i.dropConfigs.containsKey(drop)) {
+								bc.addDropConfig(drop, i.dropConfigs.get(drop));
+							}
+						}
+					}
+					
+					List<BlockConfig> bclist = worldBlockConfigs.get(cBlockKey);
+					if (bclist == null) {
+						bclist = new LinkedList<BlockConfig>();
+					}
+					bclist.add(bc);
+	
+					worldBlockConfigs.put(cBlockKey, bclist);
 				}
-				List<BlockConfig> bclist = worldBlockConfigs.get(cBlockKey);
-				if (bclist == null) {
-					bclist = new LinkedList<BlockConfig>();
-				}
-				bclist.add(bc);
-
-				worldBlockConfigs.put(cBlockKey, bclist);
 			}
 		} else {
 			HiddenOre.getPlugin().getLogger().info("No blocks specified (Why are you using this plugin?)");
 		}
 
+	}
+	
+	private static DropConfig grabDropConfig(ConfigurationSection drops, String sourceDrop) {
+		HiddenOre.getPlugin().getLogger().info("Loading config for drop " + sourceDrop);
+		ConfigurationSection drop = drops.getConfigurationSection(sourceDrop);
+		String dPrefix = drop.getString("prefix", null);
+		@SuppressWarnings("unchecked")
+		List<ItemStack> items = (List<ItemStack>) drop.getList("package", new ArrayList<ItemStack>());
+		boolean transformIfAble = drop.getBoolean("transformIfAble", false);
+		boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
+		int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
+		String command = drop.getString("command", null);
+
+		DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), command,
+				transformIfAble, transformDropIfFails, transformMaxDropsIfFails,
+				dPrefix, grabLimits(drop, new DropLimitsConfig()));
+
+		ConfigurationSection biomes = drop.getConfigurationSection("biomes");
+		if (biomes != null) {
+			for (String sourceBiome : biomes.getKeys(false)) {
+				HiddenOre.getPlugin().getLogger().info("Loading config for biome " + sourceBiome);
+				DropLimitsConfig dlc = grabLimits(biomes.getConfigurationSection(sourceBiome), dc.limits);
+				dc.addBiomeLimits(sourceBiome, dlc);
+			}
+		}
+
+		return dc;
 	}
 	
 	private static DropLimitsConfig grabLimits(ConfigurationSection drop, DropLimitsConfig parent) {

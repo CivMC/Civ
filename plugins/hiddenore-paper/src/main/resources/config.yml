@@ -160,6 +160,172 @@ states:
   luck: [2.0, 3.0, 4.0]
   badluck: [0.1, 0.01, 0.002]
   blindness: [0.0, 0.0, 0.0]
+drops:
+ # As of 1.3.2, you can now specify a command to run instead of (or in addition to) drops.
+ fancy_cmd:
+  minY: 1
+  maxY: 255
+  chance: 0.0001
+  command: '/give %player% iron_ingot 1'
+  # You can specify tool and biome, and state modifiers like any other drop.
+  tools:
+   - wood_pickaxe
+ # Here we define all the potential drops for this material/subtype. Give each "drop config" a friendly name.
+ coal_ore:
+  # Package is the list of ConfigurationSerializeable ItemStack that should constitutes this drop.
+  # You can specify one or _many_ items, to emulate the true "drop chest" experience.
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: COAL_ORE
+     # Amount is _not_ ignored. Use this as the "base" multipler. This amount will be multiplied by the randomly chosen "amount" configured
+     # later and modified per tool and biome.
+     amount: 1
+  # A String list here of all the tool friendly-names that you defined in the root "tools" section which can trigger this drop.
+  tools:
+   - wood_pickaxe
+   - stone_pickaxe
+   - iron_pickaxe
+   - gold_pickaxe
+   - diamond_pickaxe
+  # lowest Y in the map that this drop can be found.
+  minY: 1
+  # highest Y in the map that this drop can be found.
+  maxY: 131
+  # Base chance for this drop. This is percent chance / 100 -- so 1 is 100%, 0.1 is 10%, and 0.01 is 1%.
+  chance: 0.01
+  # multipliers of package's amount. Specify these separately or "amount" for a fixed value. If min and max are used,
+  #  and this drop is selected, then a random value between min and max is chosen, after min and max are adjusted
+  #  by biome or tool.
+  minAmount: 2
+  maxAmount: 8
+  # Instead of dropping the package, attempts to transform nearby blocks of the same type as triggered this
+  # drop into the package. If portions of the drop can't be transformed, they are still just dropped.
+  # Default is false. 
+  transformIfAble: true
+  # If for some reason transformation can't find a place to do its magic, should we use normal drop behavior?
+  # Default is false.
+  transformDropIfFails: false
+  # If we do use normal drop behavior, what's the maximum drop size (after being constrained by maxAmount above)
+  # Default is 1.
+  transformMaxDropsIfFails: 1
+  # Describes which state by name to use from the `states` section above.
+  state: generalRebalance
+ iron_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: IRON_ORE
+     amount: 1
+  tools:
+   - stone_pickaxe
+   - iron_pickaxe
+   - diamond_pickaxe
+  # Chance for XP to drop when this gen/drop occurs
+  # you can add this section to "biomes" as well for unique biome-level drops
+  # chance and amount are modified by tool.
+  xp:
+   # standard amount config; amount for "always" value, minAmount/maxAmount for randomized size
+   amount: 1
+   # Chance of XP to generate; this is a separate chance and computed separately for XP
+   chance: 1.0
+  minY: 1
+  maxY: 67
+  chance: 0.007
+  minAmount: 1
+  maxAmount: 4
+  state: hasteDebuff
+ gold_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: GOLD_ORE
+     amount: 1
+  tools:
+   - iron_pickaxe
+   - diamond_pickaxe
+  minY: 1
+  maxY: 33
+  chance: 0.001437
+  minAmount: 1
+  maxAmount: 4
+  state: generalRebalance
+ diamond_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: DIAMOND_ORE
+     amount: 1
+  tools:
+   - iron_pickaxe
+   - diamond_pickaxe
+  minY: 1
+  maxY: 15
+  chance: 0.0005427
+  minAmount: 1
+  maxAmount: 3
+  state: generalRebalance
+ redstone_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: REDSTONE_ORE
+     amount: 1
+  tools:
+   - iron_pickaxe
+   - diamond_pickaxe
+  minY: 1
+  maxY: 15
+  chance: 0.01025
+  minAmount: 1
+  maxAmount: 4
+  state: generalRebalance
+ lapis_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: LAPIS_ORE
+     amount: 1
+  tools:
+   - stone_pickaxe
+   - iron_pickaxe
+   - diamond_pickaxe
+  minY: 1
+  maxY: 33
+  chance: 0.000597
+  minAmount: 1
+  maxAmount: 3
+  state: fatigueBuff
+ emerald_ore:
+  package:
+   - ==: org.bukkit.inventory.ItemStack
+     v: 1
+     type: EMERALD_ORE
+     amount: 1
+  tools:
+   - iron_pickaxe
+   - diamond_pickaxe
+  minY: 1
+  maxY: 32
+  chance: 0.0
+  minAmount: 1
+  maxAmount: 2
+  state: generalRebalance
+  # Biomes can modify the chance rate. Anything specified in biome _replaces_ the base chance or min/max amounts,
+  #  unlike tools which modify those values after biome is resolved.
+  # States can be defined per biome as well, and similarly replaces base state assignment when within that biome.
+  biomes:
+   EXTREME_HILLS:
+    chance: 0.001437
+    state: fatigueBuff
+   MUTATED_EXTREME_HILLS:
+    chance: 0.001437
+    state: hasteDebuff
+   EXTREME_HILLS_WITH_TREES:
+    chance: 0.001437
+   MUTATED_EXTREME_HILLS_WITH_TREES:
+    chance: 0.001437
+
 blocks:
  # This defines for which types of things drops are possible. Give each "block config" a friendly name.
  stone:
@@ -183,173 +349,29 @@ blocks:
   #   false is more of a "classic" mode, where every possible drop's chance is accumulated, then a single Random number is generated and
   #   evaluated, resulting in either one or no drop.
   dropMultiple: false
-  drops:
-   # As of 1.3.2, you can now specify a command to run instead of (or in addition to) drops.
-   fancy_cmd:
-    minY: 1
-    maxY: 255
-    chance: 0.0001
-    command: '/give %player% iron_ingot 1'
-    # You can specify tool and biome, and state modifiers like any other drop.
-    tools:
-     - wood_pickaxe
-   # Here we define all the potential drops for this material/subtype. Give each "drop config" a friendly name.
-   coal_ore:
-    # Package is the list of ConfigurationSerializeable ItemStack that should constitutes this drop.
-    # You can specify one or _many_ items, to emulate the true "drop chest" experience.
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: COAL_ORE
-       # Amount is _not_ ignored. Use this as the "base" multipler. This amount will be multiplied by the randomly chosen "amount" configured
-       # later and modified per tool and biome.
-       amount: 1
-    # A String list here of all the tool friendly-names that you defined in the root "tools" section which can trigger this drop.
-    tools:
-     - wood_pickaxe
-     - stone_pickaxe
-     - iron_pickaxe
-     - gold_pickaxe
-     - diamond_pickaxe
-    # lowest Y in the map that this drop can be found.
-    minY: 1
-    # highest Y in the map that this drop can be found.
-    maxY: 131
-    # Base chance for this drop. This is percent chance / 100 -- so 1 is 100%, 0.1 is 10%, and 0.01 is 1%.
-    chance: 0.01
-    # multipliers of package's amount. Specify these separately or "amount" for a fixed value. If min and max are used,
-    #  and this drop is selected, then a random value between min and max is chosen, after min and max are adjusted
-    #  by biome or tool.
-    minAmount: 2
-    maxAmount: 8
-    # Instead of dropping the package, attempts to transform nearby blocks of the same type as triggered this
-    # drop into the package. If portions of the drop can't be transformed, they are still just dropped.
-    # Default is false. 
-    transformIfAble: true
-    # If for some reason transformation can't find a place to do its magic, should we use normal drop behavior?
-    # Default is false.
-    transformDropIfFails: false
-    # If we do use normal drop behavior, what's the maximum drop size (after being constrained by maxAmount above)
-    # Default is 1.
-    transformMaxDropsIfFails: 1
-    # Describes which state by name to use from the `states` section above.
-    state: generalRebalance
-   iron_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: IRON_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    # Chance for XP to drop when this gen/drop occurs
-    # you can add this section to "biomes" as well for unique biome-level drops
-    # chance and amount are modified by tool.
-    xp:
-     # standard amount config; amount for "always" value, minAmount/maxAmount for randomized size
-     amount: 1
-     # Chance of XP to generate; this is a separate chance and computed separately for XP
-     chance: 1.0
-    minY: 1
-    maxY: 67
-    chance: 0.007
-    minAmount: 1
-    maxAmount: 4
-    state: hasteDebuff
-   gold_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: GOLD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.001437
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   diamond_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: DIAMOND_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.0005427
-    minAmount: 1
-    maxAmount: 3
-    state: generalRebalance
-   redstone_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: REDSTONE_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.01025
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   lapis_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: LAPIS_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.000597
-    minAmount: 1
-    maxAmount: 3
-    state: fatigueBuff
-   emerald_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: EMERALD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 32
-    chance: 0.0
-    minAmount: 1
-    maxAmount: 2
-    state: generalRebalance
-    # Biomes can modify the chance rate. Anything specified in biome _replaces_ the base chance or min/max amounts,
-    #  unlike tools which modify those values after biome is resolved.
-    # States can be defined per biome as well, and similarly replaces base state assignment when within that biome.
-    biomes:
-     EXTREME_HILLS:
-      chance: 0.001437
-      state: fatigueBuff
-     MUTATED_EXTREME_HILLS:
-      chance: 0.001437
-      state: hasteDebuff
-     EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
-     MUTATED_EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
- andesite:
-  material: ANDESITE
+  dropList:
+   # As of 1.5.1, you can now specify a list of drops, configured in a master drops section, to apply.
+   - fancy_cmd
+   - coal_ore
+   - gold_ore
+   - diamond_ore
+   - lapis_ore
+   - iron_ore
+   - redstone_ore
+   - emerald_ore
+   # As of 1.5.1, you can skip this if you use the dropList above.
+  #drops:
+ # As of 1.5.1 you can indicate a list of materials that all share this config,
+ # and it will be replicated for each one.
+ aggregates:
+  # Note, use "materials" instead of "material" (1.5.1) for it to work
+  materials:
+   andesite:
+    material: ANDESITE
+   diorite:
+    material: DIORITE
+   granite: 
+    material: GRANITE
   validTransforms:
     cobblestone:
       material: COBBLESTONE
@@ -361,304 +383,8 @@ blocks:
       material: DIORITE
     granite:
       material: GRANITE
-  dropMultiple: false
-  drops:
-   fancy_cmd:
-    minY: 1
-    maxY: 255
-    chance: 0.0001
-    command: '/give %player% iron_ingot 1'
-    tools:
-     - wood_pickaxe
-   coal_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: COAL_ORE
-       amount: 1
-    tools:
-     - wood_pickaxe
-     - stone_pickaxe
-     - iron_pickaxe
-     - gold_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 131
-    chance: 0.01
-    minAmount: 2
-    maxAmount: 8
-    transformIfAble: true
-    transformDropIfFails: false
-    transformMaxDropsIfFails: 1
-    state: generalRebalance
-   iron_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: IRON_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    xp:
-     amount: 1
-     chance: 1.0
-    minY: 1
-    maxY: 67
-    chance: 0.007
-    minAmount: 1
-    maxAmount: 4
-    state: hasteDebuff
-   gold_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: GOLD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.001437
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   diamond_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: DIAMOND_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.0005427
-    minAmount: 1
-    maxAmount: 3
-    state: generalRebalance
-   redstone_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: REDSTONE_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.01025
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   lapis_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: LAPIS_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.000597
-    minAmount: 1
-    maxAmount: 3
-    state: fatigueBuff
-   emerald_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: EMERALD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 32
-    chance: 0.0
-    minAmount: 1
-    maxAmount: 2
-    state: generalRebalance
-    biomes:
-     EXTREME_HILLS:
-      chance: 0.001437
-      state: fatigueBuff
-     MUTATED_EXTREME_HILLS:
-      chance: 0.001437
-      state: hasteDebuff
-     EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
-     MUTATED_EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
- diorite:
-  material: DIORITE
-  validTransforms:
-    cobblestone:
-      material: COBBLESTONE
-    dirt:
-      material: DIRT
     andesite:
       material: ANDESITE
-    stone:
-      material: STONE
-    granite:
-      material: GRANITE
-  dropMultiple: false
-  drops:
-   fancy_cmd:
-    minY: 1
-    maxY: 255
-    chance: 0.0001
-    command: '/give %player% iron_ingot 1'
-    tools:
-     - wood_pickaxe
-   coal_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: COAL_ORE
-       amount: 1
-    tools:
-     - wood_pickaxe
-     - stone_pickaxe
-     - iron_pickaxe
-     - gold_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 131
-    chance: 0.01
-    minAmount: 2
-    maxAmount: 8
-    transformIfAble: true
-    transformDropIfFails: false
-    transformMaxDropsIfFails: 1
-    state: generalRebalance
-   iron_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: IRON_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    xp:
-     amount: 1
-     chance: 1.0
-    minY: 1
-    maxY: 67
-    chance: 0.007
-    minAmount: 1
-    maxAmount: 4
-    state: hasteDebuff
-   gold_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: GOLD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.001437
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   diamond_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: DIAMOND_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.0005427
-    minAmount: 1
-    maxAmount: 3
-    state: generalRebalance
-   redstone_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: REDSTONE_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 15
-    chance: 0.01025
-    minAmount: 1
-    maxAmount: 4
-    state: generalRebalance
-   lapis_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: LAPIS_ORE
-       amount: 1
-    tools:
-     - stone_pickaxe
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 33
-    chance: 0.000597
-    minAmount: 1
-    maxAmount: 3
-    state: fatigueBuff
-   emerald_ore:
-    package:
-     - ==: org.bukkit.inventory.ItemStack
-       v: 1
-       type: EMERALD_ORE
-       amount: 1
-    tools:
-     - iron_pickaxe
-     - diamond_pickaxe
-    minY: 1
-    maxY: 32
-    chance: 0.0
-    minAmount: 1
-    maxAmount: 2
-    state: generalRebalance
-    biomes:
-     EXTREME_HILLS:
-      chance: 0.001437
-      state: fatigueBuff
-     MUTATED_EXTREME_HILLS:
-      chance: 0.001437
-      state: hasteDebuff
-     EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
-     MUTATED_EXTREME_HILLS_WITH_TREES:
-      chance: 0.001437
- granite:
-  material: GRANITE
-  validTransforms:
-    cobblestone:
-      material: COBBLESTONE
-    dirt:
-      material: DIRT
-    andesite:
-      material: ANDESITE
-    diorite:
-      material: DIORITE
-    stone:
-      material: STONE
   dropMultiple: false
   drops:
    fancy_cmd:

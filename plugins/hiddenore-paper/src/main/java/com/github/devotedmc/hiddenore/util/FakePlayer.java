@@ -1963,4 +1963,44 @@ public class FakePlayer implements Player {
 	public void sendBlockChange(Location arg0, BlockData arg1) {
 		
 	}
+
+	@Override
+	public boolean isRiptiding() {
+		return false;
+	}
+
+	@Override
+	public boolean isPersistent() {
+		return false;
+	}
+
+	@Override
+	public void setPersistent(boolean arg0) {
+	}
+
+	@Override
+	public String getPlayerListFooter() {
+		return null;
+	}
+
+	@Override
+	public String getPlayerListHeader() {
+		return null;
+	}
+
+	@Override
+	public void setPlayerListFooter(String arg0) {
+	}
+
+	@Override
+	public void setPlayerListHeader(String arg0) {
+	}
+
+	@Override
+	public void setPlayerListHeaderFooter(String arg0, String arg1) {
+	}
+
+	@Override
+	public void updateCommands() {
+	}
 }

@@ -77,9 +77,11 @@ I'm probably missing some other details but that's it for now.
 
 * Better documentation
 
-* Minecraft 1.13 support (will be 1.5.0, and _will_ break your config. It will not be backwards compatible.)
+* 'Veins' -- adapting a popular feature from the CivClassic fork
 
 ### Feature Augment List:
+
+**v1.5.1** Adding in a few key QoL features for continued 1.13 support. Specifically (and see config.yml for examples and details) you can now specify drops in a global section, and pick those drops by name in the block drop configurations. You can also specify multiple blocks for whom the drop config should apply, all in the same block config. This should allow significantly improved "terseness" to configs, above and beyond what the prior subtype system allowed. Note you can mix and match global drops and local drop configs for a block, but you cannot mix single or multiple block types for a single block config.
 
 **v1.5.0** Added Minecraft 1.13 support. Note that you WILL need to REDO your config. Although your config will load _as is_ it is unlikely to work as expected. Subtype support has been entirely removed and declarations of subtypes will be ignored. Spigot itself has renamed **many** materials to match their Minecraft normative style, and there is no backwards compatibility in HiddenOre. As of 1.5.0, no prior release of Minecraft is guaranteed active support, and will only be provided on a best-effort basis, if at all. IMPORTANT NOTE on config: All ItemStack serialization has been changed! There is a new `v:` specification. I've emulated it in the demonstration configs, but to avoid messy and unsupported prior version settings, re-export your serialized drops. 
 

@@ -22,10 +22,6 @@ public class BlockConfig {
 	private String prefix;
 
 	public BlockConfig(NamespacedKey material, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<NamespacedKey> validGenTypes) {
-		this(material, null, dropMultiple, suppressDrops, prefix, validGenTypes);
-	}
-
-	public BlockConfig(NamespacedKey material, Collection<Byte> subtype, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<NamespacedKey> validGenTypes) {
 		this.material = material;
 		this.dropMultiple = dropMultiple;
 		this.suppressDrops = suppressDrops;
