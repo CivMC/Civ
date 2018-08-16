@@ -5,7 +5,8 @@ debug: false
 # As of 1.4.0, a new tracking was added that keeps a per-block record of "activity" and discards revealed blocks as
 # sources for transformation. This tracking requires a LOT of space and memory, compared to ordinary exploit prevention.
 # It's mostly a quality of life addition. Set this to false to turn it off. Default (if unset) is to turn it on.
-map_save_active: true
+# Example for 1.5.2 is to set to false, as it will incur some additional runtime impact.
+map_save_active: false
 ignore_silktouch: true
 caveOres: false
 # For each potential transformation in a generate event, how many attempts at most will be made?

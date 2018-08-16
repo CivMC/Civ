@@ -102,19 +102,19 @@ public class BlockConfig {
 				if (vc != null) {
 					localChance *= vc.getOreChance(loc);
 					
-					/*DIAGNOSTICS*/
+					/*DIAGNOSTICS
 					HiddenOre.getPlugin().getLogger()
 							.log(Level.INFO, "Base chance {0}| tool mod {1}| vein mod {2}| totalChance {3}| tc {4}",
 							new Object[] {Double.toString(dc.getChance(biome)),
 									Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
-									vc.getOreChance(loc), localChance, (tc == null ? null : tc.toString())});/**/
+									vc.getOreChance(loc), localChance, (tc == null ? null : tc.toString())});*/
 				} else {
-					/*DIAGNOSTICS*/
+					/*DIAGNOSTICS
 					HiddenOre.getPlugin().getLogger()
 							.log(Level.INFO, "Base chance {0}| tool mod {1}| totalChance {2}| tc {3}",
 							new Object[] {Double.toString(dc.getChance(biome)),
 									Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
-									localChance, (tc == null ? null : tc.toString())});/**/
+									localChance, (tc == null ? null : tc.toString())});*/
 				}
 				
 				if (dice >= cumChance && dice < cumChance + localChance) {
