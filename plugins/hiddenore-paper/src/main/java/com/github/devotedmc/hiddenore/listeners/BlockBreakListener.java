@@ -338,14 +338,16 @@ public class BlockBreakListener implements Listener {
 			cPlace = xform.getAmount();
 			while (cPlace > 0 && maxWalk > 0) {
 				Block walk = null;
-				if (forceFacing >= -1 && forceFacing < visibleFaces.length) {
-					walk = origin.getRelative(this.visibleFaces[forceFacing++]);
+				if (forceFacing > -1 && forceFacing < visibleFaces.length) {
+					walk = this.getVisibleFacing(origin);//origin.getRelative(this.visibleFaces[forceFacing++]);
+					forceFacing++;
 					tryFacing = true;
 				} else if (!tryFacing) {
 					// Try to ensure something of the generation is visible.
 					walk = this.getVisibleFacing(origin);
 				} else {
 					// Use a kind of radial bloom to try to place the discovered blocks.
+					// expose u0, uA (multiplier on cube root of attempts) in config
 					double z = Math.random() * 2.0 - 1.0;
 					double zsq = Math.sqrt(1-Math.pow(z, 2));
 					double u = 0.5 + Math.floor(Math.cbrt(cAttempt++));

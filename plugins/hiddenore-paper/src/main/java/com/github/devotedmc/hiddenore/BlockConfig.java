@@ -21,7 +21,6 @@ public class BlockConfig {
 	public boolean suppressDrops;
 	private Map<String, DropConfig> dropConfigs;
 	private String prefix;
-	private BlockConfigMode preferMode;
 
 	public BlockConfig(NamespacedKey material, boolean dropMultiple, boolean suppressDrops, String prefix, Collection<NamespacedKey> validGenTypes) {
 		this.material = material;
@@ -30,17 +29,8 @@ public class BlockConfig {
 		this.dropConfigs = new HashMap<String, DropConfig>();
 		this.prefix = prefix;
 		this.validGenTypes = validGenTypes;
-		this.preferMode = BlockConfigMode.both;
 	}
 	
-	public void setPreferMode(BlockConfigMode preferMode) {
-		this.preferMode = preferMode;
-	}
-	
-	public BlockConfigMode getPreferMode() {
-		return this.preferMode;
-	}
-
 	public NamespacedKey getMaterialKey() {
 		return this.material;
 	}
@@ -89,14 +79,6 @@ public class BlockConfig {
 
 	public DropConfig getDropConfig(String drop) {
 		return dropConfigs.get(drop);
-	}
-	
-	public boolean getForceVisibleTransform(String drop) {
-		DropConfig dc = getDropConfig(drop);
-		if (dc == null) return false;
-		VeinConfig vc = dc.getVeinNature();
-		if (vc == null) return false;
-		return vc.getForceVisibleTransform();
 	}
 
 	public String getDropConfig(double dice, String biome, ItemStack tool, Player player, Location loc) {

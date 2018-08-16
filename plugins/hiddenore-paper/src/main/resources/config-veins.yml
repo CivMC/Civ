@@ -15,47 +15,47 @@ caveOres: false
 # Keep this value small, or performance _will_ suffer.
 transform_attempt_multiplier: 3
 clear_ores:
- main_world:
-  world: world
-  replace:
-  - IRON_ORE
-  - REDSTONE_ORE
-  - GOLD_ORE
-  - COAL_ORE
-  - DIAMOND_ORE
-  - EMERALD_ORE
-  - LAPIS_ORE
-  with: STONE
- end_world:
-  world: world_nether
-  replace: 
-  - NETHER_QUARTZ_ORE
-  with: NETHERRACK
+  main_world:
+    world: world
+    replace:
+    - IRON_ORE
+    - REDSTONE_ORE
+    - GOLD_ORE
+    - COAL_ORE
+    - DIAMOND_ORE
+    - EMERALD_ORE
+    - LAPIS_ORE
+    with: STONE
+  end_world:
+    world: world_nether
+    replace: 
+    - NETHER_QUARTZ_ORE
+    with: NETHERRACK
 tools:
- # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
- # So if you have a "default" behavior you want for any non-specified tool, use that.
- # Great for things that are often broken by hand or with random crap held, like dirt, sand, gravel.
- # "ignore" section is ignored but "modifiers" section will be applied.
- anything:
-  ignore:
-   all: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
+  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
+  # So if you have a "default" behavior you want for any non-specified tool, use that.
+  # Great for things that are often broken by hand or with random crap held, like dirt, sand, gravel.
+  # "ignore" section is ignored but "modifiers" section will be applied.
+  anything:
+    ignore:
+      all: true
+    modifiers:
+      dropChance: 1.0
+      minAmount: 0.0
+      maxAmount: 0.0
 states:
 # These allow modification of drop chance based on the player's state
  # Give each "set" of modifications a name
   # For each specific type of player state (haste / fatigue / nausea, etc) provide an array
   # The chance is picked from this array by matching Level of effect to the named effect.
   # So for [0.8, 0.5] -- haste I has a 0.8 reduction, haste II has a 0.5 reduction.
- generalRebalance:
-  haste: [0.9, 0.7]
-  fatigue: [1.1, 1.3]
-  nausea: [0.5, 0.3, 0.1]
-  luck: [2.0, 3.0, 4.0]
-  badluck: [0.1, 0.01, 0.002]
-  blindness: [0.0, 0.0, 0.0]
+  generalRebalance:
+    haste: [0.9, 0.7]
+    fatigue: [1.1, 1.3]
+    nausea: [0.5, 0.3, 0.1]
+    luck: [2.0, 3.0, 4.0]
+    badluck: [0.1, 0.01, 0.002]
+    blindness: [0.0, 0.0, 0.0]
 drops:
  # As of 1.3.2, you can now specify a command to run instead of (or in addition to) drops.
  fancy_cmd:
@@ -112,29 +112,32 @@ drops:
   veinNature:
    # Controls the "intensity" of the noise function, or, the overall likelihood at peak noise
    density: .5
-   # This controls in some fashion the tailoff distribution across the vein span region, such that
-   # it helps to form a cosine distribution centered around the "height" of the 
-   # vein as determined by areaHeight, areaSpan, and the height seed.
-   maxSpan: 65
-   # After raw density [0-1] is computed, add this value to the computation, then multiply by density.
+   # This controls in the tailoff distribution across the vein span region, such that
+   # it helps to form a cosine distribution centered around the "center" of the 
+   # vein as bounded by areaHeight, areaSpan, and the height seed.
+   maxSpan: 10
+   # After raw density [-1,1] is computed, add this value to the computation, then multiply by density.
    densityBonus: 0.1
-   # Offset Y for vein. The vein midpoints definitely start strictly ABOVE this offset
-   # subject to drop's minY, maxY
-   areaHeight: 10
+   # Offset Y for vein. This is the midpoint for vein centers.
+   areaHeight: 30
    # Preferred radius/spread on Y for vein. Vein will be  
-   # again subject to drop's minY maxY. Full distribution vertically is
-   # controlled by some mix of areaHeight as lower bound for picking a midpoint,
-   # areaSpan to help choose a midpoint using the noise function,
-   # then maxSpan as max distance from the chosen midpoint that has a 
+   # again subject to drop's minY maxY. Full vein center distribution vertically is
+   # controlled by [areaHeight - areaSpan, areaHeight + areaSpan]
+   # 
+   # Full spread is [areaHeight - areaSpan - maxSpan, areaHeight + areaSpan + maxSpan]
+   # where maxSpan is max distance from the chosen midpoint that has a 
    # chance of being in the vein, subject to a cosine function decaying out
    # from the center, with point of highest chance at the chosen midpoint, and
    # lowest chance at maxSpan distance away from that midpoint.
-   areaSpan: 50
-   # This is a divider against the "height noise map". Basically, larger values results in more severe vein height
-   # transitions. smaller values, more gradual.
+   #
+   # All of these spans are constrained by [minY, maxY]
+   areaSpan: 20
+   # This is a divider against the "height noise map". Basically, smaller values results in more severe vein height
+   # transitions. heigher values, more gradual.
    heightLength: 0.5
-   # This is a divider against the "density noise map". larger values result in smaller overall veins in terms of
-   # density. Conversely, small values; larger regions of density.
+   # This is a divider against the "density noise map". smaller values result in smaller overall veins in terms of
+   # density. Conversely, large values; larger regions of density. Some trial and error is necessary to determine the 
+   # relative "feel" of the resulting vein structures.
    densityLength: 2
    # A number indicating the height seed to use in the noise function.
    heightSeed: 129382
@@ -168,16 +171,6 @@ drops:
   minAmount: 1
   maxAmount: 4
   state: generalRebalance
-  veinNature:
-   density: 
-   maxSpan:
-   densityBonus:
-   areaHeight:
-   areaSpan:
-   heightLength:
-   densityLength:
-   heightSeed:
-   densitySeed:
 blocks:
  # This defines for which types of things drops are possible. Give each "block config" a friendly name.
  stone:
@@ -219,6 +212,8 @@ blocks:
   # Note, use "materials" instead of "material" (1.5.1) for it to work (pick just one -- no mixnmatch here)
   materials:
    andesite:
+    # we preserve this structure in anticipation of future features for 1.13 and beyond, where we can specify block
+    # natures and otherwise limit or enhance our recognition of specific blocks and block types.
     material: ANDESITE
    diorite:
     material: DIORITE
