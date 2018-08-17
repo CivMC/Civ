@@ -20,10 +20,11 @@ public class DropConfig {
 	public boolean dropIfTransformFails;
 	public int maxDropsIfTransformFails;
 	private Map<String, DropLimitsConfig> biomeLimits;
+	private VeinConfig veinNature;
 
 	public DropConfig(String dropName, List<DropItemConfig> drops, String command, boolean transformIfAble, 
 			boolean dropIfTransformFails, int maxDropsIfTransformFails, String prefix, 
-			DropLimitsConfig limits) {
+			DropLimitsConfig limits, VeinConfig veinNature) {
 		this.dropName = dropName;
 		this.drops = drops;
 		this.command = command;
@@ -32,6 +33,11 @@ public class DropConfig {
 		this.maxDropsIfTransformFails = maxDropsIfTransformFails;
 		this.limits = limits;
 		this.biomeLimits = new HashMap<String, DropLimitsConfig>();
+		this.veinNature = veinNature;
+	}
+	
+	public VeinConfig getVeinNature() {
+		return veinNature;
 	}
 
 	public void addBiomeLimits(String biome, DropLimitsConfig limits) {

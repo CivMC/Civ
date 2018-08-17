@@ -1,4 +1,7 @@
-prefix: You found a hidden ore!
+# This file shows an example of how to do veins for HiddenOre backed by noise generators.
+# Portions of this are deeply inspired by the work by TealNerd in his CivClassic fork of
+#  HiddenOre.
+prefix: You found a hidden vein ore!
 alert_user: true
 list_drops: true
 debug: false
@@ -13,154 +16,47 @@ caveOres: false
 # Keep this value small, or performance _will_ suffer.
 transform_attempt_multiplier: 3
 clear_ores:
- main_world:
-  world: world
-  replace:
-  - IRON_ORE
-  - REDSTONE_ORE
-  - GOLD_ORE
-  - COAL_ORE
-  - DIAMOND_ORE
-  - EMERALD_ORE
-  - LAPIS_ORE
-  with: STONE
- end_world:
-  world: world_nether
-  replace: 
-  - NETHER_QUARTZ_ORE
-  with: NETHERRACK
+  main_world:
+    world: world
+    replace:
+    - IRON_ORE
+    - REDSTONE_ORE
+    - GOLD_ORE
+    - COAL_ORE
+    - DIAMOND_ORE
+    - EMERALD_ORE
+    - LAPIS_ORE
+    with: STONE
+  end_world:
+    world: world_nether
+    replace: 
+    - NETHER_QUARTZ_ORE
+    with: NETHERRACK
 tools:
- # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
- # So if you have a "default" behavior you want for any non-specified tool, use that.
- # Great for things that are often broken by hand or with random crap held, like dirt, sand, gravel.
- # "ignore" section is ignored but "modifiers" section will be applied.
- anything:
-  ignore:
-   all: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
- # Give the item a "friendly name" that you'll use in the "tools" section of each drop config.
- wood_pickaxe:
-  # Open an issue if the config-advanced.yml data doesn't give you enough to go on to 
-  #  design the template of your desire.
-  template:
-   ==: org.bukkit.inventory.ItemStack
-   v: 1
-   type: WOODEN_PICKAXE
-   amount: 1
-  ignore:
-   # Ignore the amount held.
-   amount: true
-   # Ignore the durability of the item held.
-   durability: true
-   # Ignore all enchantments.
-   enchants: true
-   # Ignore any enchantments not specified in the template
-   otherEnchants: true
-   # Ignore the specific lvl of the enchantments considered
-   enchantsLvl: true
-   # Ignore any differences in lore
-   lore: true
-   # Ignore any differences in display name.
-   name: true
-  modifiers:
-   # Multiplier to drop chance; applied _after_ biome computation
-   dropChance: 1.0
-   # Adder on minimum drop size; so, drop config min + this min.
-   minAmount: 0.0
-   # Adder on maximum drop size; so, drop config max + this max. Both can be negative.
-   maxAmount: 0.0
- gold_pickaxe:
-  template:
-   ==: org.bukkit.inventory.ItemStack
-   v: 1
-   type: GOLDEN_PICKAXE
-   amount: 1
-  ignore:
-   amount: true
-   durability: true
-   enchants: true
-   otherEnchants: true
-   enchantsLvl: true
-   lore: true
-   name: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
- iron_pickaxe:
-  template:
-   ==: org.bukkit.inventory.ItemStack
-   v: 1
-   type: IRON_PICKAXE
-   amount: 1
-  ignore:
-   amount: true
-   durability: true
-   enchants: true
-   otherEnchants: true
-   enchantsLvl: true
-   lore: true
-   name: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
- stone_pickaxe:
-  template:
-   ==: org.bukkit.inventory.ItemStack
-   v: 1
-   type: STONE_PICKAXE
-   amount: 1
-  ignore:
-   amount: true
-   durability: true
-   enchants: true
-   otherEnchants: true
-   enchantsLvl: true
-   lore: true
-   name: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
- diamond_pickaxe:
-  template:
-   ==: org.bukkit.inventory.ItemStack
-   v: 1
-   type: DIAMOND_PICKAXE
-   amount: 1
-  ignore:
-   amount: true
-   durability: true
-   enchants: true
-   otherEnchants: true
-   enchantsLvl: true
-   lore: true
-   name: true
-  modifiers:
-   dropChance: 1.0
-   minAmount: 0.0
-   maxAmount: 0.0
+  # Giving a tool ignore:all:true will make it the default catchall, if specified in a config.
+  # So if you have a "default" behavior you want for any non-specified tool, use that.
+  # Great for things that are often broken by hand or with random crap held, like dirt, sand, gravel.
+  # "ignore" section is ignored but "modifiers" section will be applied.
+  anything:
+    ignore:
+      all: true
+    modifiers:
+      dropChance: 1.0
+      minAmount: 0.0
+      maxAmount: 0.0
 states:
 # These allow modification of drop chance based on the player's state
- hasteDebuff:
  # Give each "set" of modifications a name
-  haste: [0.8, 0.5]
   # For each specific type of player state (haste / fatigue / nausea, etc) provide an array
   # The chance is picked from this array by matching Level of effect to the named effect.
   # So for [0.8, 0.5] -- haste I has a 0.8 reduction, haste II has a 0.5 reduction.
- fatigueBuff:
-  fatigue: [1.2, 1.5]
- generalRebalance:
-  haste: [0.9, 0.7]
-  fatigue: [1.1, 1.3]
-  nausea: [0.5, 0.3, 0.1]
-  luck: [2.0, 3.0, 4.0]
-  badluck: [0.1, 0.01, 0.002]
-  blindness: [0.0, 0.0, 0.0]
+  generalRebalance:
+    haste: [0.9, 0.7]
+    fatigue: [1.1, 1.3]
+    nausea: [0.5, 0.3, 0.1]
+    luck: [2.0, 3.0, 4.0]
+    badluck: [0.1, 0.01, 0.002]
+    blindness: [0.0, 0.0, 0.0]
 drops:
  # As of 1.3.2, you can now specify a command to run instead of (or in addition to) drops.
  fancy_cmd:
@@ -190,6 +86,7 @@ drops:
    - gold_pickaxe
    - diamond_pickaxe
   # lowest Y in the map that this drop can be found.
+  # acts as "areaHeight" if areaHeight isn't set on veinNature.
   minY: 1
   # highest Y in the map that this drop can be found.
   maxY: 131
@@ -212,6 +109,45 @@ drops:
   transformMaxDropsIfFails: 1
   # Describes which state by name to use from the `states` section above.
   state: generalRebalance
+  # drop configurations can also have a vein nature 
+  veinNature:
+   # Controls the "intensity" of the noise function, or, the overall likelihood at peak noise
+   density: .5
+   # This controls in the tailoff distribution across the vein span region, such that
+   # it helps to form a cosine distribution centered around the "center" of the 
+   # vein as bounded by areaHeight, areaSpan, and the height seed.
+   maxSpan: 10
+   # After raw density [-1,1] is computed, add this value to the computation, then multiply by density.
+   densityBonus: 0.1
+   # Offset Y for vein. This is the midpoint for vein centers.
+   areaHeight: 30
+   # Preferred radius/spread on Y for vein. Vein will be  
+   # again subject to drop's minY maxY. Full vein center distribution vertically is
+   # controlled by [areaHeight - areaSpan, areaHeight + areaSpan]
+   # 
+   # Full spread is [areaHeight - areaSpan - maxSpan, areaHeight + areaSpan + maxSpan]
+   # where maxSpan is max distance from the chosen midpoint that has a 
+   # chance of being in the vein, subject to a cosine function decaying out
+   # from the center, with point of highest chance at the chosen midpoint, and
+   # lowest chance at maxSpan distance away from that midpoint.
+   #
+   # All of these spans are constrained by [minY, maxY]
+   areaSpan: 20
+   # This is a divider against the "height noise map". Basically, smaller values results in more severe vein height
+   # transitions. heigher values, more gradual.
+   heightLength: 0.5
+   # This is a divider against the "density noise map". smaller values result in smaller overall veins in terms of
+   # density. Conversely, large values; larger regions of density. Some trial and error is necessary to determine the 
+   # relative "feel" of the resulting vein structures.
+   densityLength: 2
+   # A number indicating the height seed to use in the noise function.
+   heightSeed: 129382
+   # A number indicating the density seed to use
+   densitySeed: 384837
+   # Basically, if a vein block condition is met, check all immediate neighboring, and now visible blocks
+   # if they should be revealed, subject to the drop & block configurations.
+   # revealed as well
+   forceVisibleTransform: true
  iron_ore:
   package:
    - ==: org.bukkit.inventory.ItemStack
@@ -235,98 +171,7 @@ drops:
   chance: 0.007
   minAmount: 1
   maxAmount: 4
-  state: hasteDebuff
- gold_ore:
-  package:
-   - ==: org.bukkit.inventory.ItemStack
-     v: 1
-     type: GOLD_ORE
-     amount: 1
-  tools:
-   - iron_pickaxe
-   - diamond_pickaxe
-  minY: 1
-  maxY: 33
-  chance: 0.001437
-  minAmount: 1
-  maxAmount: 4
   state: generalRebalance
- diamond_ore:
-  package:
-   - ==: org.bukkit.inventory.ItemStack
-     v: 1
-     type: DIAMOND_ORE
-     amount: 1
-  tools:
-   - iron_pickaxe
-   - diamond_pickaxe
-  minY: 1
-  maxY: 15
-  chance: 0.0005427
-  minAmount: 1
-  maxAmount: 3
-  state: generalRebalance
- redstone_ore:
-  package:
-   - ==: org.bukkit.inventory.ItemStack
-     v: 1
-     type: REDSTONE_ORE
-     amount: 1
-  tools:
-   - iron_pickaxe
-   - diamond_pickaxe
-  minY: 1
-  maxY: 15
-  chance: 0.01025
-  minAmount: 1
-  maxAmount: 4
-  state: generalRebalance
- lapis_ore:
-  package:
-   - ==: org.bukkit.inventory.ItemStack
-     v: 1
-     type: LAPIS_ORE
-     amount: 1
-  tools:
-   - stone_pickaxe
-   - iron_pickaxe
-   - diamond_pickaxe
-  minY: 1
-  maxY: 33
-  chance: 0.000597
-  minAmount: 1
-  maxAmount: 3
-  state: fatigueBuff
- emerald_ore:
-  package:
-   - ==: org.bukkit.inventory.ItemStack
-     v: 1
-     type: EMERALD_ORE
-     amount: 1
-  tools:
-   - iron_pickaxe
-   - diamond_pickaxe
-  minY: 1
-  maxY: 32
-  chance: 0.0
-  minAmount: 1
-  maxAmount: 2
-  state: generalRebalance
-  # Biomes can modify the chance rate. Anything specified in biome _replaces_ the base chance or min/max amounts,
-  #  unlike tools which modify those values after biome is resolved.
-  # States can be defined per biome as well, and similarly replaces base state assignment when within that biome.
-  biomes:
-   EXTREME_HILLS:
-    chance: 0.001437
-    state: fatigueBuff
-   MUTATED_EXTREME_HILLS:
-    chance: 0.001437
-    state: hasteDebuff
-   EXTREME_HILLS_WITH_TREES:
-    chance: 0.001437
-   MUTATED_EXTREME_HILLS_WITH_TREES:
-    chance: 0.001437
-
 blocks:
  # This defines for which types of things drops are possible. Give each "block config" a friendly name.
  stone:
@@ -368,6 +213,8 @@ blocks:
   # Note, use "materials" instead of "material" (1.5.1) for it to work (pick just one -- no mixnmatch here)
   materials:
    andesite:
+    # we preserve this structure in anticipation of future features for 1.13 and beyond, where we can specify block
+    # natures and otherwise limit or enhance our recognition of specific blocks and block types.
     material: ANDESITE
    diorite:
     material: DIORITE
@@ -518,92 +365,3 @@ blocks:
       chance: 0.001437
      MUTATED_EXTREME_HILLS_WITH_TREES:
       chance: 0.001437
-
-# Example of new worlds config, here we explicitly specify only a single block drop for this world.
-worlds:
- world_nether:
-  blocks:
-   netherrack:
-    material: NETHERRACK
-    dropMultiple: false
-    drops:
-     quartz_ore:
-      package:
-       - ==: org.bukkit.inventory.ItemStack
-         v: 1
-         type: NETHER_QUARTZ_ORE
-         amount: 1
-      tools:
-       - wood_pickaxe
-       - stone_pickaxe
-       - iron_pickaxe
-       - gold_pickaxe
-       - diamond_pickaxe
-      minY: 1
-      maxY: 125
-      chance: 0.0
-      minAmount: 1
-      maxAmount: 2
-      biomes:
-       HELL:
-        # You can also modify the minimum Y values for a specific biome giving you complete control over where things can be found.
-        minY: 1
-        maxY: 125
-        chance: 0.007
-# Example w/ custom prefixes.
-# sand:
-#  material: SAND
-#  dropMultiple: true
-#  drops:
-#   ink_sack:
-#    package:
-#     - ==: org.bukkit.inventory.ItemStack
-#       type: INK_SAC
-#       durability: 4
-#       amount: 1
-#    prefix: Lucky find! You've found a dropchest inner.
-#    chance: 0.5
-#    minAmount: 32
-#    maxAmount: 64
-#    biome: 
-#     PLAIN:
-#      minY: 1
-#      maxY: 128
-#   quartz:
-#    package:
-#     - ==: org.bukkit.inventory.ItemStack
-#       type: QUARTZ
-#       amount: 1
-#    prefix: Lucky find! You've found a dropchest.
-#    chance: 0.25
-#    amount: 5
-# Example w/ drop suppression.
-# glass:
-#  material: GLASS
-#  suppressDrops: true
-# This will prevent glass from dropping, ever.
-#
-# Pretty names section; many tools use Vault or other dependencies. If there's a strong enough request I can add it later, but
-#  for now you can specify replacement names for your drops here. This values are only used in messaging to users about
-#  their drops and are not applied to the items dropped.
-pretty_names:
- DIAMOND: Diamond
- IRON_INGOT: Iron ingot
- GOLD_INGOT: Gold ingot
- QUARTZ: Quartz
- EMERALD: Emerald
- PRISMARINE_SHARD: Prismarine Shard
- REDSTONE: Redstone
- DIAMOND_ORE: Diamond Ore
- IRON_ORE: Iron Ore
- GOLD_ORE: Gold Ore
- QUARTZ_ORE: Quartz Ore
- EMERALD_ORE: Emerald Ore
- PRISMARINE: Prismarine
- REDSTONE_ORE: Redstone Ore
- LAPIS_ORE: Lapis Lazuli Ore
- COAL_ORE: Coal Ore
- COAL: Coal
- NETHERRACK: Netherrack
- # if the base type has subtypes, just specify those subtypes as a list. If you specify one, you'll need to specify all used subtypes.
- LAPIS_LAZULI: Lapis Lazuli

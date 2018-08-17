@@ -33,6 +33,10 @@ Etc.
 
 This plugin is fully configurable with biome-specific settings, tool restrictions, and limited player state restrictions, allowing a significant degree of options and specificity. 
 
+As of 1.5.2, you can upend this regime and construct intersecting probability fields via "Noise" generators, which allow a persistent hidden map of drop density regions. The probabilities are a bit harder to constrain, but still quite measurable with some trial and error. Unfortunately, due to the nature of noise generators, once you choose a config it will be difficult to rebalance smoothly -- e.g. player's discoveries of high density regions will likely be rendered invalid on a config change. The traditional probability approach doesn't really suffer from this as players would simply notice changes globally or within defined regions, and the "pain" would be shared, without impacting much secret knowledge. Regardless, both are excellent options for administrators and we're proud to finally support it on the mainline w/ all of our existing performance and anti-exploit features intact.
+
+Note that unlike other branches, our noise-based generation approach is embedded in the existing configuration flow, and is handled as a new feature regime instead of a completely "other" element. This allows you to freely mix and match these "veins", drops, transforms, commands and the like without loss of functionality. As always, the goal is max features and control for you.
+
 ## Details
 
 The raw technical details:
@@ -69,6 +73,10 @@ Supports saving and loading of the tracking database, and fully adheres to /relo
 
 As of 1.4.2, full multiple world support, via name or UUID. 
 
+As of 1.5.2, you can specify "veinNatures" which allow complex simplex-noise based distributions of ore probabilities. These are hard to compute as the mechanics aren't as straightforward, but the end result can be quite nice, allowing for layered, overlapping, or otherwise clever intersections of ores. Players like it too, as it allows a kind of density distribution, which once "found" can be leveraged. 
+
+In mainline as with all our other features, the full suite of configuration options, including drops, transforms, commands, biome and state modifiers, etc can be applied to veinNature configs. See config-veins.yml for examples.
+
 I'm probably missing some other details but that's it for now.
 
 ### TODO / In progress features:
@@ -77,9 +85,9 @@ I'm probably missing some other details but that's it for now.
 
 * Better documentation
 
-* 'Veins' -- adapting a popular feature from the CivClassic fork
-
 ### Feature Augment List:
+
+**v1.5.2** Adding in CivClassic style "veins", which are basically just distributions of ore backed by persistent noise fields instead of the classic HiddenOre probability distribution functions. The outcomes are probabilistically compatible, but the generation is quite a bit different. Check out config-veins.yml for a hopefully clear example. Note that due to fundamental implementation differences, configurations made for CivClassic veins are not portable to this implementation, as their implementation refactors the configs and introduces veins as a separate flow, with only some of the tradition drop or generation capabilities; our approach to veins preserves all the existing feature-rich environment and simply implements veins as a probability distribution modifier to existing drop configs (Expanding the features in 1.5.1 for global drop config design as well).
 
 **v1.5.1** Adding in a few key QoL features for continued 1.13 support. Specifically (and see config.yml for examples and details) you can now specify drops in a global section, and pick those drops by name in the block drop configurations. You can also specify multiple blocks for whom the drop config should apply, all in the same block config. This should allow significantly improved "terseness" to configs, above and beyond what the prior subtype system allowed. Note you can mix and match global drops and local drop configs for a block, but you cannot mix single or multiple block types for a single block config.
 

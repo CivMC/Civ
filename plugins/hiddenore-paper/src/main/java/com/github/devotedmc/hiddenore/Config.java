@@ -264,15 +264,17 @@ public final class Config {
 				String cBlockName = block.getString("material");
 				List<NamespacedKey> cBlockKeys = new ArrayList<NamespacedKey>();
 				if (cBlockName == null) {
-					List<String> cBlockNames = block.getStringList("materials");
-					if (cBlockNames == null || cBlockNames.isEmpty()) {
+					ConfigurationSection cBlockNames = block.getConfigurationSection("materials");
+					if (cBlockNames == null) {
 						HiddenOre.getPlugin().getLogger().warning("Failed to find material or materials for " + sourceBlock);
 						continue;
 					} else {
-						for (String cBlockN : cBlockNames) {
-							Material cBlockMat = Material.getMaterial(cBlockN);
+						for (String cBlockN : cBlockNames.getKeys(false)) {
+							ConfigurationSection cBlockS = cBlockNames.getConfigurationSection(cBlockN);
+							String cBlockName2 = cBlockS.getString("material");
+							Material cBlockMat = Material.getMaterial(cBlockName2);
 							if (cBlockMat == null) {
-								HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName);
+								HiddenOre.getPlugin().getLogger().warning("Failed to find material for " + cBlockName2);
 								continue;
 							} else {
 								cBlockKeys.add(cBlockMat.getKey());
@@ -372,10 +374,28 @@ public final class Config {
 		boolean transformDropIfFails = drop.getBoolean("transformDropIfFails", false);
 		int transformMaxDropsIfFails = drop.getInt("transformMaxDropsIfFails", 1);
 		String command = drop.getString("command", null);
+		
+		VeinConfig veinNature = null;
+		ConfigurationSection veinNatureConfig = drop.getConfigurationSection("veinNature");
+		if (veinNatureConfig != null) {
+			long densitySeed = veinNatureConfig.getLong("densitySeed", 1);
+			long heightSeed = veinNatureConfig.getLong("heightSeed", 2);
+			double density = veinNatureConfig.getDouble("density", 1.0);
+			double maxSpan = veinNatureConfig.getDouble("maxSpan", 0.0);
+			double densityBonus = veinNatureConfig.getDouble("densityBonus", 0.0);
+			double areaHeight = veinNatureConfig.getDouble("areaHeight", 1.0);
+			double areaSpan = veinNatureConfig.getDouble("areaSpan", 0.0);
+			double heightLength = veinNatureConfig.getDouble("heightLength", 1.0);
+			double densityLength = veinNatureConfig.getDouble("densityLength", 1.0);
+			boolean forceVisible = veinNatureConfig.getBoolean("forceVisibleTransform", false);
+			
+			veinNature = new VeinConfig(densitySeed, heightSeed, density, maxSpan, densityBonus, areaHeight, areaSpan,
+					heightLength, densityLength, forceVisible);
+		}
 
 		DropConfig dc = new DropConfig(sourceDrop, DropItemConfig.transform(items), command,
 				transformIfAble, transformDropIfFails, transformMaxDropsIfFails,
-				dPrefix, grabLimits(drop, new DropLimitsConfig()));
+				dPrefix, grabLimits(drop, new DropLimitsConfig()), veinNature);
 
 		ConfigurationSection biomes = drop.getConfigurationSection("biomes");
 		if (biomes != null) {

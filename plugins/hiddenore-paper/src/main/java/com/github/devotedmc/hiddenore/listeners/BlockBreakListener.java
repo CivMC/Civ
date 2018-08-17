@@ -31,6 +31,7 @@ import com.github.devotedmc.hiddenore.DropConfig;
 import com.github.devotedmc.hiddenore.HiddenOre;
 import com.github.devotedmc.hiddenore.Config;
 import com.github.devotedmc.hiddenore.ToolConfig;
+import com.github.devotedmc.hiddenore.VeinConfig;
 import com.github.devotedmc.hiddenore.events.HiddenOreEvent;
 import com.github.devotedmc.hiddenore.events.HiddenOreGenerateEvent;
 import com.github.devotedmc.hiddenore.util.FakePlayer;
@@ -145,6 +146,11 @@ public class BlockBreakListener implements Listener {
 				double dropChance = dc.getChance(biomeName) 
 						* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier())
 						* dc.getStateChance(biomeName, p);
+				
+				VeinConfig vc = dc.getVeinNature(); // handle vein externally
+				if (vc != null) {
+					dropChance *= vc.getOreChance(b.getLocation());
+				}
 
 				// Random check to decide whether or not the special drop should be dropped
 				if (dropChance > Math.random()) {
@@ -161,7 +167,7 @@ public class BlockBreakListener implements Listener {
 			}
 		} else {
 			String drop = bc.getDropConfig(Math.random(), biomeName, inMainHand, 
-					p, b.getLocation().getBlockY());
+					p, b.getLocation()); // handles vein internally
 
 			if (drop != null) {
 				DropConfig dc = bc.getDropConfig(drop);
@@ -193,6 +199,12 @@ public class BlockBreakListener implements Listener {
 		double xpChance = dc.getXPChance(biomeName) 
 				* (dropModifier == null ? 1.0 : dropModifier.getDropChanceModifier())
 				* dc.getStateChance(biomeName, p);
+		
+		VeinConfig vc = dc.getVeinNature();
+		if (vc != null) {
+			xpChance *= vc.getOreChance(loc);
+		}
+		
 		if (xpChance > Math.random()) {
 			int toXP = dc.renderXP(biomeName, dropModifier);
 			if (toXP > 0) {
@@ -252,8 +264,8 @@ public class BlockBreakListener implements Listener {
 		}
 		
 		runCommand(player, dropConfig.command);
-		// now try for XP
-		
+
+		// xp handled upstream
 
 		return true;
 	}
@@ -313,19 +325,29 @@ public class BlockBreakListener implements Listener {
 		int cPlace = 0;
 		double cAttempt = 0;
 		boolean tryFacing = false; // pick a facing block of attacked block
+		int forceFacing = -1;
+		VeinConfig vc = dropConfig.getVeinNature();
 		Block origin = sourceLocation.getBlock();
 		for (ItemStack xform : items) {
 			Material sample = xform.getType();
 			Material expressed = sample;
-			maxWalk += xform.getAmount() * Config.getTransformAttemptMultiplier();
+			forceFacing = (vc == null ? -1 : (vc.getForceVisibleTransform() ? 0 : -1 )); // do index traverse on visible faces
+			// to ensure overall fairness but density in discovery, we add walk attempts to cover forced facing reveal
+			// to make sure we test them all before moving on.
+			maxWalk += xform.getAmount() * Config.getTransformAttemptMultiplier() + (forceFacing == 0 ? visibleFaces.length : 0);
 			cPlace = xform.getAmount();
 			while (cPlace > 0 && maxWalk > 0) {
 				Block walk = null;
-				if (!tryFacing) {
+				if (forceFacing > -1 && forceFacing < visibleFaces.length) {
+					walk = this.getVisibleFacing(origin);//origin.getRelative(this.visibleFaces[forceFacing++]);
+					forceFacing++;
+					tryFacing = true;
+				} else if (!tryFacing) {
 					// Try to ensure something of the generation is visible.
 					walk = this.getVisibleFacing(origin);
 				} else {
 					// Use a kind of radial bloom to try to place the discovered blocks.
+					// expose u0, uA (multiplier on cube root of attempts) in config
 					double z = Math.random() * 2.0 - 1.0;
 					double zsq = Math.sqrt(1-Math.pow(z, 2));
 					double u = 0.5 + Math.floor(Math.cbrt(cAttempt++));

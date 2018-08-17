@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
@@ -29,7 +30,7 @@ public class BlockConfig {
 		this.prefix = prefix;
 		this.validGenTypes = validGenTypes;
 	}
-
+	
 	public NamespacedKey getMaterialKey() {
 		return this.material;
 	}
@@ -80,29 +81,44 @@ public class BlockConfig {
 		return dropConfigs.get(drop);
 	}
 
-	public String getDropConfig(double dice, String biome, ItemStack tool, Player player, int blockY) {
+	public String getDropConfig(double dice, String biome, ItemStack tool, Player player, Location loc) {
 		// accrue possible drops based on biome / tool
 		// check dice against stacked probabilities
 
 		double cumChance = 0.0d;
 		double localChance = 0.0d;
 		int counted = 0;
+		int blockY = loc.getBlockY();
 
-		for (Map.Entry<String, DropConfig> dc : dropConfigs.entrySet()) {
-			if (dc.getValue().dropsWithTool(biome, tool) && blockY <= dc.getValue().getMaxY(biome)
-					&& blockY >= dc.getValue().getMinY(biome)) {
+		for (Map.Entry<String, DropConfig> dce : dropConfigs.entrySet()) {
+			DropConfig dc = dce.getValue();
+			if (dc.dropsWithTool(biome, tool) && blockY <= dc.getMaxY(biome)
+					&& blockY >= dc.getMinY(biome)) {
 				
-				ToolConfig tc = dc.getValue().dropsWithToolConfig(biome, tool);
-				localChance = dc.getValue().getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier()) * dc.getValue().getStateChance(biome, player);
+				ToolConfig tc = dc.dropsWithToolConfig(biome, tool);
+				localChance = dc.getChance(biome) * (tc == null ? 1.0 : tc.getDropChanceModifier()) * dc.getStateChance(biome, player);
 				
-				/*DIAGNOSTICS*HiddenOre.getPlugin().getLogger()
-						.log(Level.INFO, "Base chance {0}| tool mod {1}| totalChance {2}| tc {3}",
-						new Object[] {Double.toString(dc.getValue().getChance(biome)),
-								Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
-								localChance, (tc == null ? null : tc.toString())});*/
+				VeinConfig vc = dc.getVeinNature();
+				if (vc != null) {
+					localChance *= vc.getOreChance(loc);
+					
+					/*DIAGNOSTICS
+					HiddenOre.getPlugin().getLogger()
+							.log(Level.INFO, "Base chance {0}| tool mod {1}| vein mod {2}| totalChance {3}| tc {4}",
+							new Object[] {Double.toString(dc.getChance(biome)),
+									Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
+									vc.getOreChance(loc), localChance, (tc == null ? null : tc.toString())});*/
+				} else {
+					/*DIAGNOSTICS
+					HiddenOre.getPlugin().getLogger()
+							.log(Level.INFO, "Base chance {0}| tool mod {1}| totalChance {2}| tc {3}",
+							new Object[] {Double.toString(dc.getChance(biome)),
+									Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
+									localChance, (tc == null ? null : tc.toString())});*/
+				}
 				
 				if (dice >= cumChance && dice < cumChance + localChance) {
-					return dc.getKey();
+					return dce.getKey();
 				}
 				cumChance += localChance;
 				counted++;
