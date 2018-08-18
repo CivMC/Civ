@@ -366,10 +366,21 @@ public class BreakTracking {
 	/**
 	 * This has a specific purpose of testing a generation of an ore.
 	 * 
+	 * As of 1.5.3, checks the recent list for a match, just in case.
+	 * 
 	 * @param loc
 	 * @return
 	 */
 	public boolean testGen(Location loc) {
+		int j = recentPtr;
+		for (int i = 0; i < RECENT_MAX; i++) {
+			j = (recentPtr + i) % RECENT_MAX;
+			if (recent[j] == null) break; // anything null means we're done here
+			if (loc.equals(recent[j])) {
+				return false;
+			}
+		}
+		
 		if (!Config.isMapActive()) return true;
 		
 		int Y = loc.getBlockY();
