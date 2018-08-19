@@ -17,7 +17,9 @@ import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
+import org.bukkit.ChunkSnapshot;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import com.github.devotedmc.hiddenore.Config;
@@ -499,6 +501,13 @@ public class BreakTracking {
 	 * @return
 	 */
 	public boolean trackBreak(Location loc) {
+		long initChunk = 0l;
+		long initLayers = 0l;
+		long initMapChunk = 0l;
+		long initMapLayers = 0l;
+		long scanLayer = 0l;
+		long recentCheck = 0l;
+		
 		long s = System.currentTimeMillis();
 		int Y = loc.getBlockY();
 		int X = (loc.getBlockX() % 16 + 16) % 16;
@@ -512,14 +521,18 @@ public class BreakTracking {
 		
 		Map<Long, short[]> chunks = track.get(world);
 		if (chunks == null) { // init chunk
+			initChunk = System.nanoTime();
 			chunks = new HashMap<Long, short[]>();
 			track.put(world, chunks);
+			initChunk = System.nanoTime() - initChunk;
 		}
 		
 		short[] layers = chunks.get(chunk_id);
 		if (layers == null) { // init layers
+			initLayers = System.nanoTime();
 			layers = new short[256];
 			chunks.put(chunk_id, layers);
+			initLayers = System.nanoTime() - initLayers;
 		}
 
 		boolean ret = true;
@@ -528,20 +541,26 @@ public class BreakTracking {
 		if (Config.isMapActive()) {
 			Map<Long, long[][][]> mapChunks = map.get(world);
 			if (mapChunks == null) { // init map chunk
+				initMapChunk = System.nanoTime();
 				mapChunks = new HashMap<Long, long[][][]>();
 				map.put(world, mapChunks);
+				initMapChunk = System.nanoTime() - initMapChunk;
 			}
 	
 			long[][][] mapLayers = mapChunks.get(chunk_id);
 			if (mapLayers == null) { // init layers
+				initMapLayers = System.nanoTime();
 				mapLayers = new long[2][256][4];
 				mapChunks.put(chunk_id, mapLayers);
+				ChunkSnapshot chunkS = chunk.getChunkSnapshot();
 				
 				for (int y = 0; y < 256; y++) {
 					for (int x = 0; x < 16; x++) {
 						for (int z = 0; z < 16; z++) {
-							Block b = chunk.getBlock(x, y, z);
-							if (b.isEmpty() || b.isLiquid()) {
+							//Block b = chunk.getBlock(x, y, z);
+							//if (b.isEmpty() || b.isLiquid()) {
+							Material m = chunkS.getBlockType(x, y, z);
+							if (Material.AIR.equals(m) || Material.WATER.equals(m) || Material.LAVA.equals(m)) {
 								int bloc = ((x << 4) + z);
 								int quad = (block_id / 64);
 								long mask = (1l << (bloc % 64));
@@ -551,6 +570,7 @@ public class BreakTracking {
 						}
 					}
 				}
+				initMapLayers = System.nanoTime() - initMapLayers;
 			}
 	
 			if ((mapLayers[MAP][Y][quad_id] & mask_id) == mask_id) {
@@ -565,6 +585,7 @@ public class BreakTracking {
 		}
 		
 		if (layers[Y] == 0) {
+			scanLayer = System.nanoTime();
 			// quick layer scan for air and water
 			for (int x = 0; x < 16; x++) {
 				for (int z = 0; z < 16; z++) {
@@ -574,6 +595,7 @@ public class BreakTracking {
 					}
 				}
 			}
+			scanLayer = System.nanoTime() - scanLayer;
 		}
 
 		if (layers[Y] >= 256) { // done
@@ -583,6 +605,7 @@ public class BreakTracking {
 			ret = true;
 		}
 		if (ret) { 
+			recentCheck = System.nanoTime();
 			boolean shallow = false;
 			int j = recentPtr;
 			for (int i = 0; i < RECENT_MAX; i++) {
@@ -601,6 +624,7 @@ public class BreakTracking {
 				}
 				recent[recentPtr] = loc;
 			}
+			recentCheck = System.nanoTime() - recentCheck;
 		}
 		
 		if (Config.isDebug) {
@@ -611,6 +635,8 @@ public class BreakTracking {
 		s = System.currentTimeMillis() - s;
 		if (s > 10l) {
 			HiddenOre.getPlugin().getLogger().info("Took a long time (" + s + "ms) recording break at " + loc);
+			HiddenOre.getPlugin().getLogger().log(Level.INFO, "Breakdown: chunk{0}ns layer{1}ns mchunk{2}ns mlayer{3}ns scan{4}ns recent{5}ns",
+					new Object[] {initChunk, initLayers, initMapChunk, initMapLayers, scanLayer, recentCheck});
 		}
 
 		return ret;
