@@ -87,6 +87,8 @@ I'm probably missing some other details but that's it for now.
 
 ### Feature Augment List:
 
+**v1.5.3** Some general fixes and improvements to block-level exploit tracking.
+
 **v1.5.2** Adding in CivClassic style "veins", which are basically just distributions of ore backed by persistent noise fields instead of the classic HiddenOre probability distribution functions. The outcomes are probabilistically compatible, but the generation is quite a bit different. Check out config-veins.yml for a hopefully clear example. Note that due to fundamental implementation differences, configurations made for CivClassic veins are not portable to this implementation, as their implementation refactors the configs and introduces veins as a separate flow, with only some of the tradition drop or generation capabilities; our approach to veins preserves all the existing feature-rich environment and simply implements veins as a probability distribution modifier to existing drop configs (Expanding the features in 1.5.1 for global drop config design as well).
 
 **v1.5.1** Adding in a few key QoL features for continued 1.13 support. Specifically (and see config.yml for examples and details) you can now specify drops in a global section, and pick those drops by name in the block drop configurations. You can also specify multiple blocks for whom the drop config should apply, all in the same block config. This should allow significantly improved "terseness" to configs, above and beyond what the prior subtype system allowed. Note you can mix and match global drops and local drop configs for a block, but you cannot mix single or multiple block types for a single block config.
