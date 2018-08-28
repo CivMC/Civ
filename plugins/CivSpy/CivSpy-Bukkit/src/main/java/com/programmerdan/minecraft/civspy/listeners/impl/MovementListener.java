@@ -92,13 +92,13 @@ public final class MovementListener extends ServerDataListener {
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void VehicleMovementListen(VehicleMoveEvent event) {
-		Entity e = event.getVehicle().getPassenger();
-		// TODO: apparently there's no way to get the second passenger? wtf, bukkit
-		if (e instanceof Player) {
-			Player p = (Player) e;
-			UUID id = p.getUniqueId();
-			Location to = event.getTo();
-			doMove(p, id, to);
+		for (Entity e : event.getVehicle().getPassengers()) {
+			if (e instanceof Player) {
+				Player p = (Player) e;
+				UUID id = p.getUniqueId();
+				Location to = event.getTo();
+				doMove(p, id, to);
+			}
 		}
 	}
 

@@ -3,9 +3,12 @@ package com.programmerdan.minecraft.civspy.util;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.FireworkEffect;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -13,73 +16,23 @@ import org.bukkit.inventory.meta.BlockStateMeta;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.KnowledgeBookMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.inventory.meta.SkullMeta;
-import org.bukkit.material.Attachable;
-import org.bukkit.material.Banner;
-import org.bukkit.material.Bed;
-import org.bukkit.material.Button;
-import org.bukkit.material.Cake;
-import org.bukkit.material.Cauldron;
-import org.bukkit.material.Coal;
-import org.bukkit.material.CocoaPlant;
-import org.bukkit.material.Colorable;
-import org.bukkit.material.Command;
-import org.bukkit.material.Comparator;
-import org.bukkit.material.Crops;
-import org.bukkit.material.DetectorRail;
-import org.bukkit.material.Diode;
-import org.bukkit.material.Directional;
-import org.bukkit.material.Door;
-import org.bukkit.material.Dye;
-import org.bukkit.material.Gate;
-import org.bukkit.material.Hopper;
-import org.bukkit.material.Ladder;
-import org.bukkit.material.Leaves;
-import org.bukkit.material.Lever;
-import org.bukkit.material.LongGrass;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Mushroom;
-import org.bukkit.material.NetherWarts;
-import org.bukkit.material.Openable;
-import org.bukkit.material.PistonBaseMaterial;
-import org.bukkit.material.PistonExtensionMaterial;
-import org.bukkit.material.PoweredRail;
-import org.bukkit.material.PressurePlate;
-import org.bukkit.material.PressureSensor;
-import org.bukkit.material.Pumpkin;
-import org.bukkit.material.Rails;
-import org.bukkit.material.Redstone;
-import org.bukkit.material.RedstoneTorch;
-import org.bukkit.material.RedstoneWire;
-import org.bukkit.material.Sandstone;
-import org.bukkit.material.Sapling;
-import org.bukkit.material.Sign;
-import org.bukkit.material.Stairs;
-import org.bukkit.material.Step;
-import org.bukkit.material.TexturedMaterial;
-import org.bukkit.material.Torch;
-import org.bukkit.material.TrapDoor;
-import org.bukkit.material.Tree;
-import org.bukkit.material.Tripwire;
-import org.bukkit.material.TripwireHook;
-import org.bukkit.material.Vine;
-import org.bukkit.material.Wood;
-import org.bukkit.material.WoodenStep;
-import org.bukkit.material.Wool;
+import org.bukkit.inventory.meta.TropicalFishBucketMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 
-// TODO: integrate with CivModCore and use NiceNames api.
 public class ItemStackToString {
 
 	private ItemStackToString(){}
 
 	/**
-	 * For 1.10.2 ItemStacks.
+	 * For 1.13 ItemStacks.
 	 */
 	public static String toString(ItemStack itemStack) {
 		if (itemStack == null) return "Nothing";
@@ -110,7 +63,7 @@ public class ItemStackToString {
 			if (meta.hasEnchants()) {
 				toString.append('[');
 				for (Map.Entry<Enchantment, Integer> enchant : enchants.entrySet()) {
-					toString.append(enchant.getKey().getName()).append('/')
+					toString.append(enchant.getKey().getKey()).append('/')
 							.append(enchant.getValue()).append('|');
 				}
 				toString.deleteCharAt(toString.length() - 1);
@@ -129,8 +82,8 @@ public class ItemStackToString {
 			// custom metas
 			if (meta instanceof BannerMeta) {
 				BannerMeta banner = (BannerMeta) meta;
-				toString.append('/').append("Pattern")
-						.append(':').append(banner.getBaseColor());
+				toString.append('/').append("Pattern");
+						// color embedded in 1.13: .append(':').append(banner.getBaseColor());
 				if (banner.numberOfPatterns() > 0) {
 					toString.append('[');
 					for (Pattern pattern : banner.getPatterns()) {
@@ -146,6 +99,16 @@ public class ItemStackToString {
 				if (bsm.hasBlockState()) {
 					toString.append('/').append(toString(bsm.getBlockState()));
 				}
+			} else if (meta instanceof KnowledgeBookMeta){
+				KnowledgeBookMeta kbmeta = (KnowledgeBookMeta) meta;
+				if (kbmeta.hasRecipes()) {
+					toString.append("_Recipes[");
+					for (NamespacedKey nk : kbmeta.getRecipes()) {
+						toString.append(nk.toString()).append('|');
+					}
+					toString.deleteCharAt(toString.length() - 1);
+				}
+				toString.append(']');
 			} else if (meta instanceof BookMeta) {
 				BookMeta bookmeta = (BookMeta) meta;
 				toString.append('/');
@@ -170,7 +133,7 @@ public class ItemStackToString {
 				EnchantmentStorageMeta esm = (EnchantmentStorageMeta) meta;
 				if (esm.hasStoredEnchants()) {
 					for (Map.Entry<Enchantment, Integer> enchant : esm.getStoredEnchants().entrySet()) {
-						toString.append(enchant.getKey().getName()).append('/')
+						toString.append(enchant.getKey().getKey()).append('/')
 								.append(enchant.getValue()).append('|');
 					}
 					toString.deleteCharAt(toString.length() - 1);
@@ -179,11 +142,28 @@ public class ItemStackToString {
 			} else if (meta instanceof FireworkEffectMeta) {
 				FireworkEffectMeta fe = (FireworkEffectMeta) meta;
 				toString.append("_").append(fe.toString());
+			} else if (meta instanceof FireworkMeta) {
+				FireworkMeta fm = (FireworkMeta) meta;
+				if (fm.hasEffects()) {
+					toString.append("_Effects[");
+					for (FireworkEffect fe : fm.getEffects()) {
+						toString.append(fe.toString()).append('|');
+					}
+					toString.deleteCharAt(toString.length() - 1);
+				}
+				toString.append(']');
 			} else if (meta instanceof LeatherArmorMeta) {
 				toString.append('/').append("Color:").append(((LeatherArmorMeta) meta).getColor().toString());
 			} else if (meta instanceof MapMeta) {
-				if (((MapMeta) meta).isScaling()) {
+				MapMeta mmeta = (MapMeta) meta;
+				if (mmeta.hasLocationName()) {
+					toString.append("_").append(mmeta.getLocationName());
+				}
+				if (mmeta.isScaling()) {
 					toString.append("_Scaling");
+				}
+				if (mmeta.hasColor()) {
+					toString.append("/Color:").append(mmeta.getColor().toString());
 				}
 			} else if (meta instanceof PotionMeta) {
 				PotionMeta potionMeta = (PotionMeta) meta;
@@ -200,7 +180,7 @@ public class ItemStackToString {
 						toString.append(effect.getType().getName())
 								.append("x").append(effect.getAmplifier())
 								.append("t").append(effect.getDuration())
-								.append("c").append(effect.getColor());
+								.append("c").append(effect.getType().getColor());
 						if (effect.isAmbient()) {
 							toString.append('/').append("Ambient");
 						} else if (effect.hasParticles()) {
@@ -214,7 +194,14 @@ public class ItemStackToString {
 			} else if (meta instanceof SkullMeta) {
 				SkullMeta skull = (SkullMeta) meta;
 				if (skull.hasOwner()) {
-					toString.append('/').append("Owner:").append(skull.getOwner());
+					toString.append('/').append("Owner:").append(skull.getOwningPlayer().getName());
+				}
+			} else if (meta instanceof TropicalFishBucketMeta) {
+				TropicalFishBucketMeta bucket = (TropicalFishBucketMeta) meta;
+				if (bucket.hasVariant()) {
+					toString.append("/Body:").append(bucket.getBodyColor() == null ? "null" : bucket.getBodyColor().toString())
+						.append("_Pattern:").append(bucket.getPattern() == null ? "null" : bucket.getPattern().toString())
+						.append("_PatColor:").append(bucket.getPatternColor() == null ? "null" : bucket.getPatternColor().toString());
 				}
 			}
 		}
@@ -223,44 +210,106 @@ public class ItemStackToString {
 	}
 	
 	/**
-	 * For 1.10.2 Blocks
+	 * For 1.13
 	 * @param block
 	 * @return
 	 */
-	@SuppressWarnings("deprecation")
 	public static String toString(BlockState block) {
 		if (block == null) return "Empty";
-		StringBuilder toString = new StringBuilder();
+		//StringBuilder toString = new StringBuilder();
 
-		Material material = block.getType();
-		MaterialData data = block.getData();
+		//Material material = block.getType();
+		BlockData data = block.getBlockData();
 		
-		if (data instanceof Directional) {
-			toString.append(((Directional) data).getFacing().name()).append("_");
+		return data.getAsString(); // Should be best
+		
+/*		if (data instanceof Directional && ((Directional) data).getFacing() != null) {
+			toString.append(((Directional) data).getFacing().toString()).append("_");
 		}
 
+		if (data instanceof Orientable && ((Orientable) data).getAxis() != null) {
+			toString.append("Axis").append(((Orientable) data).getAxis().toString()).append("_");
+		}
+		
 		if (data instanceof Attachable) {
-			toString.append("On").append(((Attachable) data).getAttachedFace().name()).append("_");
+			toString.append(((Attachable) data).isAttached() ? "On" : "Off").append("_");
 		}
 		
-		if (data instanceof Redstone) {
-			toString.append(((Redstone) data).isPowered() ? "Powered_" : "Unpowered_");
+		if (data instanceof MultipleFacing) {
+			toString.append("Facing");
+			for (BlockFace face : ((MultipleFacing) data).getFaces()) {
+				toString.append(face.toString());
+			}
+			toString.append("_");
 		}
-
-		if (data instanceof Colorable) {
-			toString.append(((Colorable) data).getColor().name()).append("_");
+		
+		if (data instanceof Rotatable && ((Rotatable) data).getRotation() != null) {
+			toString.append("Rotated").append(((Rotatable) data).getRotation().toString() ).append("_");
+		}
+		
+		if (data instanceof Waterlogged) {
+			toString.append(((Waterlogged) data).isWaterlogged() ? "Waterlogged" : "Dry").append("_");
+		}
+		
+		if (data instanceof Levelled) {
+			toString.append("Level-").append(((Levelled) data).getLevel() ).append("_");
+		}
+		
+		if (data instanceof Snowable) {
+			toString.append(((Snowable) data).isSnowy() ? "Snowy_" : "");
+		}
+		
+		if (data instanceof Snow) {
+			Snow snow = (Snow) data;
+			toString.append("Snow[").append(snow.getMinimumLayers()).append("|") 
+				.append(snow.getLayers()).append("|")
+				.append(snow.getMaximumLayers()).append("]");
+		}
+		
+		if (data instanceof Powerable) {
+			toString.append(((Powerable) data).isPowered() ? "Powered_" : "Unpowered_");
+		}
+		
+		if (data instanceof AnaloguePowerable) {
+			toString.append("Power[").append(((AnaloguePowerable) data).getPower()).append("|").append(((AnaloguePowerable) data).getMaximumPower()).append("]_");
 		}
 
 		if (data instanceof Openable) {
 			toString.append(((Openable) data).isOpen() ? "Open_" : "Closed_");
 		}
 		
-		if (data instanceof PressureSensor) {
-			toString.append(((PressureSensor) data).isPressed() ? "Pressed_" : "Unpressed_");
+		if (data instanceof Ageable) {
+			toString.append("Age[").append(((Ageable) data).getAge()).append("|").append(((Ageable) data).getMaximumAge()).append("]_");
 		}
-
-
-		if (data instanceof Banner) {
+		
+		if (data instanceof Bisected) {
+			toString.append("Bisected").append(((Bisected) data).getHalf().toString()).append("_");
+		}
+		
+		if (data instanceof Lightable) {
+			toString.append(((Lightable) data).isLit() ? "Lit_" : "NotLit_");
+		}
+		
+		if (data instanceof StructureBlock) {
+			toString.append("Structure").append(((StructureBlock) data).getMode().toString()).append("_");
+		}
+		
+		if (data instanceof BubbleColumn) {
+			toString.append(((BubbleColumn) data).isDrag() ? "Drag_" : "NoDrag_");
+		}
+		
+		if (data instanceof Switch && ((Switch) data).getFace() != null) {
+			toString.append("Switch").append(((Switch) data).getFace().toString()).append("_");
+		}
+		
+		if (data instanceof SeaPickle) {
+			SeaPickle pickle = (SeaPickle) data;
+			toString.append("SeaPickle[").append(pickle.getMinimumPickles()).append("|") 
+				.append(pickle.getPickles()).append("|")
+				.append(pickle.getMaximumPickles()).append("]");
+		}
+*/
+/*		if (data instanceof Banner) {
 			Banner banner = (Banner) data;
 			if (banner.isWallBanner()) {
 				toString.append("Wall");
@@ -445,6 +494,6 @@ public class ItemStackToString {
 				toString.append(":").append(data.getData());
 			}
 		}
-		return toString.toString();
+		return toString.toString();*/
 	}
 }

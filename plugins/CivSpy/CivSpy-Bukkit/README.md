@@ -140,6 +140,8 @@ As of April 22, 2017:
 
 `player.pickup` - Records when a person picks up something
 
+`entity.pickup.TYPE` - Records when an entity picks up something
+
 `inventory.pickup.TYPE` - An inventory holder picks up an item. TYPE is the Hopper or HopperMinecart that picked up the item.
 
 `player.bucket.empty`

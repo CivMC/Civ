@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<artifactId>civspy</artifactId>
-	<version>1.2.0</version>
+	<version>1.3.0</version>
 	<packaging>jar</packaging>
 	<name>CivSpy</name>
 	<url>https://github.com/DevotedMC/CivSpy</url>
@@ -91,18 +91,18 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.12-R0.1-SNAPSHOT</version>
+			<version>1.13-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>civspy-api</artifactId>
-			<version>1.0</version>
+			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.devotedmc</groupId>
 			<artifactId>hiddenore</artifactId>
-			<version>1.3.0</version>
+			<version>1.5.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
