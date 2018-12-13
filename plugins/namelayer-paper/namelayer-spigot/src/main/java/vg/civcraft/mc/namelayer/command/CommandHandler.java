@@ -72,6 +72,7 @@ public class CommandHandler {
 		addCommands(new ListCurrentInvites("ListCurrentInvites"));
 		addCommands(new ToggleAutoAcceptInvites("AutoAcceptInvites"));
 		addCommands(new PromotePlayer("PromotePlayer"));
+		addCommands(new RejectInvite("RejectInvite"));
 		addCommands(new RevokeInvite("RevokeInvite"));
 		addCommands(new ChangePlayerName("ChangePlayerName"));
 		addCommands(new SetDefaultGroup("SetDefaultGroup"));
