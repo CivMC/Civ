@@ -38,6 +38,7 @@ import vg.civcraft.mc.namelayer.command.commands.SetPassword;
 import vg.civcraft.mc.namelayer.command.commands.ToggleAutoAcceptInvites;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
 import vg.civcraft.mc.namelayer.command.commands.PromotePlayer;
+import vg.civcraft.mc.namelayer.command.commands.RejectInvite;
 import vg.civcraft.mc.namelayer.command.commands.RevokeInvite;
 import vg.civcraft.mc.namelayer.command.commands.SetDefaultGroup;
 import vg.civcraft.mc.namelayer.command.commands.GetDefaultGroup;
@@ -72,6 +73,7 @@ public class CommandHandler {
 		addCommands(new ListCurrentInvites("ListCurrentInvites"));
 		addCommands(new ToggleAutoAcceptInvites("AutoAcceptInvites"));
 		addCommands(new PromotePlayer("PromotePlayer"));
+		addCommands(new RejectInvite("RejectInvite"));
 		addCommands(new RevokeInvite("RevokeInvite"));
 		addCommands(new ChangePlayerName("ChangePlayerName"));
 		addCommands(new SetDefaultGroup("SetDefaultGroup"));
