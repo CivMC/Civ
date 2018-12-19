@@ -334,7 +334,8 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void pistonExtend(BlockPistonExtendEvent bpee) {
 		for (Block block : bpee.getBlocks()) {
-			Reinforcement reinforcement = rm.getReinforcement(block
+			Block realBlock = Utility.getRealBlock(block);
+			Reinforcement reinforcement = rm.getReinforcement(realBlock
 					.getLocation());
 			if (reinforcement != null) {
 				bpee.setCancelled(true);
@@ -346,7 +347,8 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void pistonRetract(BlockPistonRetractEvent bpre) {
 		for (Block block : bpre.getBlocks()) {
-			Reinforcement reinforcement = rm.getReinforcement(block
+			Block realBlock = Utility.getRealBlock(block);
+			Reinforcement reinforcement = rm.getReinforcement(realBlock
 					.getLocation());
 			if (reinforcement != null) {
 				bpre.setCancelled(true);
