@@ -5,9 +5,9 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>3.11.4</version>
+	<version>3.11.5</version>
 	<name>Citadel</name>
-	<url>https://github.com/Devoted/Citadel</url>
+	<url>https://github.com/Devotedmc/Citadel</url>
 
 	<build>
 		<pluginManagement>
@@ -46,7 +46,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
