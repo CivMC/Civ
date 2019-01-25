@@ -115,13 +115,12 @@ public class Acid extends PlayerCommand {
 						new Object[] {block.getLocation(), topFace.getType(), topFace.getLocation()});
 			}
 
-			topFace.setType(Material.AIR);
-
-			block.breakNaturally();
-
 			// Consider if should simply be an AcidBlockEvent listener. This will do for now.
 			Utility.reinforcementBroken(p, pRein);
 			rm.deleteReinforcement(pTopRein);
+			
+			topFace.breakNaturally();
+			block.breakNaturally();
 
 		}
 		return true;
