@@ -138,7 +138,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview; 
+		try { // 1.13
+			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
+		} catch (Exception e) {}
+		if (backToOverview == null) { // pre 1.13
+			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
+		}
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -345,7 +351,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				break;
 			case MODS:
 				if (showMods) {
-					c = constructMemberClickable(Material.GOLD_CHESTPLATE,
+					Material gcp = Material.getMaterial("GOLDEN_CHESTPLATE"); // 1.13
+					if (gcp == null) gcp = Material.getMaterial("GOLD_CHESTPLATE"); // pre1.13
+					c = constructMemberClickable(gcp,
 							uuid, PlayerType.MODS);
 				}
 				break;
@@ -482,7 +490,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		Clickable memberClick = setupDetailSlot(Material.LEATHER_CHESTPLATE,
 				uuid, PlayerType.MEMBERS);
 		ci.setSlot(memberClick, 10);
-		Clickable modClick = setupDetailSlot(Material.GOLD_CHESTPLATE, uuid,
+		Material gcp = Material.getMaterial("GOLDEN_CHESTPLATE"); // 1.13
+		if (gcp == null) gcp = Material.getMaterial("GOLD_CHESTPLATE"); // pre 1.13
+		Clickable modClick = setupDetailSlot(gcp, uuid,
 				PlayerType.MODS);
 		ci.setSlot(modClick, 12);
 		Clickable adminClick = setupDetailSlot(Material.IRON_CHESTPLATE, uuid,
@@ -492,7 +502,13 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
 
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview; 
+		try { // 1.13
+			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
+		} catch (Exception e) {}
+		if (backToOverview == null) { // pre 1.13
+			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
+		}
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -1020,12 +1036,24 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					ISUtils.addLore(info, ChatColor.RED
 							+ "Are you sure that you want to", ChatColor.RED
 							+ "leave this group? You can not undo this!");
-					ItemStack yes = new ItemStack(Material.INK_SACK);
-					yes.setDurability((short) 10); // green
+					ItemStack yes = null;
+					try { // 1.13
+						yes = new ItemStack(Material.getMaterial("CACTUS_GREEN"));
+					} catch (Exception e) {}
+					if (yes == null) { // pre 1.13
+						yes = new ItemStack(Material.getMaterial("INK_SACK"));
+						yes.setDurability((short) 10); // green
+					}
 					ISUtils.setName(yes,
 							ChatColor.GOLD + "Yes, leave " + g.getName());
-					ItemStack no = new ItemStack(Material.INK_SACK);
-					no.setDurability((short) 1); // red
+					ItemStack no = null;
+					try { // 1.13
+						no = new ItemStack(Material.getMaterial("ROSE_RED"));
+					} catch (Exception e) {}
+					if (no == null) { // pre 1.13
+						no = new ItemStack(Material.getMaterial("INK_SACK"));
+						no.setDurability((short) 1); // red
+					}
 					ISUtils.setName(no,
 							ChatColor.GOLD + "No, stay in " + g.getName());
 					confirmInv.setSlot(new Clickable(yes) {
@@ -1193,7 +1221,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				is = new ItemStack(Material.LEATHER_CHESTPLATE);
 				break;
 			case MODS:
-				is = new ItemStack(Material.GOLD_CHESTPLATE);
+				Material gcp = Material.getMaterial("GOLDEN_CHESTPLATE"); // 1.13
+				if (gcp == null) gcp = Material.getMaterial("GOLD_CHESTPLATE"); // pre-1.13
+				is = new ItemStack(gcp);
 				break;
 			case ADMINS:
 				is = new ItemStack(Material.IRON_CHESTPLATE);

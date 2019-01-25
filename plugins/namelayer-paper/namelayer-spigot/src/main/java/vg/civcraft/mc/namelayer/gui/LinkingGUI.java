@@ -79,7 +79,13 @@ public class LinkingGUI extends AbstractGroupGUI {
 		}
 
 		// back button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = null; 
+		try { // 1.13
+			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
+		} catch (Exception e) {}
+		if (backToOverview == null) { // pre 1.13
+			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
+		}
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -318,7 +324,13 @@ public class LinkingGUI extends AbstractGroupGUI {
 		}
 
 		// close button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = null; 
+		try { // 1.13
+			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
+		} catch (Exception e) {}
+		if (backToOverview == null) { // pre 1.13
+			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
+		}
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 

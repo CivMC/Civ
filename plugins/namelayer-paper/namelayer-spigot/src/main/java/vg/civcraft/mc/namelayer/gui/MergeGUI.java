@@ -184,7 +184,7 @@ public class MergeGUI extends AbstractGroupGUI {
 						+ "This will transfer all members, reinforcements, snitches etc. from "
 						+ fromGroup + " to " + targetGroup + ". " + fromGroup
 						+ " will be deleted in the process");
-		ItemStack yes;
+		ItemStack yes = null;
 		try { // 1.13
 			yes = new ItemStack(Material.getMaterial("CACTUS_GREEN"));
 		} catch (Exception e) {}
@@ -194,7 +194,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		}
 		ISUtils.setName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup
 				+ " into " + targetGroup);
-		ItemStack no;
+		ItemStack no = null;
 		try { // 1.13
 			no = new ItemStack(Material.getMaterial("ROSE_RED"));
 		} catch (Exception e) {}

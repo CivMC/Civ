@@ -129,7 +129,13 @@ public class GUIGroupOverview {
 		}
 
 		// close button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview; 
+		try { // 1.13
+			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
+		} catch (Exception e) {}
+		if (backToOverview == null) { // pre 1.13
+			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
+		}
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -166,7 +172,10 @@ public class GUIGroupOverview {
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
 				break;
 			case MODS:
-				is = new ItemStack(Material.GOLD_CHESTPLATE);
+				try { // 1.13
+					is = new ItemStack(Material.getMaterial("GOLDEN_CHESTPLATE"));
+				} catch (Exception e) {}
+				if (is == null) is = new ItemStack(Material.getMaterial("GOLD_CHESTPLATE")); // pre 1.13
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
 				break;
 			case ADMINS:
