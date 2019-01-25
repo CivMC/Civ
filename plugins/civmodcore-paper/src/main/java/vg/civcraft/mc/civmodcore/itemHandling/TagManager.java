@@ -7,21 +7,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_12_R1.NBTBase;
-import net.minecraft.server.v1_12_R1.NBTTagByte;
-import net.minecraft.server.v1_12_R1.NBTTagByteArray;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagDouble;
-import net.minecraft.server.v1_12_R1.NBTTagFloat;
-import net.minecraft.server.v1_12_R1.NBTTagInt;
-import net.minecraft.server.v1_12_R1.NBTTagIntArray;
-import net.minecraft.server.v1_12_R1.NBTTagList;
-import net.minecraft.server.v1_12_R1.NBTTagLong;
-import net.minecraft.server.v1_12_R1.NBTTagShort;
-import net.minecraft.server.v1_12_R1.NBTTagString;
+import net.minecraft.server.v1_13_R1.NBTBase;
+import net.minecraft.server.v1_13_R1.NBTTagByte;
+import net.minecraft.server.v1_13_R1.NBTTagByteArray;
+import net.minecraft.server.v1_13_R1.NBTTagCompound;
+import net.minecraft.server.v1_13_R1.NBTTagDouble;
+import net.minecraft.server.v1_13_R1.NBTTagFloat;
+import net.minecraft.server.v1_13_R1.NBTTagInt;
+import net.minecraft.server.v1_13_R1.NBTTagIntArray;
+import net.minecraft.server.v1_13_R1.NBTTagList;
+import net.minecraft.server.v1_13_R1.NBTTagLong;
+import net.minecraft.server.v1_13_R1.NBTTagShort;
+import net.minecraft.server.v1_13_R1.NBTTagString;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_13_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 public class TagManager {
@@ -38,7 +38,7 @@ public class TagManager {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
 
-		net.minecraft.server.v1_12_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_13_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 		this.tag = s.getTag();
 
 		if (this.tag == null) {
@@ -108,7 +108,7 @@ public class TagManager {
 		List<Integer> list = new ArrayList<Integer>();
 
 		for (int i = 0; i < tagList.size(); i++) {
-			list.add(tagList.c(i));
+			list.add(tagList.h(i));
 		}
 
 		return list;
@@ -125,6 +125,15 @@ public class TagManager {
 	}
 
 	/**
+	 * This wasn't really deprecated so much as they just didn't put in the short accessor to the
+	 * tag list (not sure if they forgot or what, but it used to be missing)
+	 * This basically copies the same implementation as the getIntList for shorts
+	 *  Note: You need to decompile or use an IDE to get the function name that is the 'short' accessor
+	 *        in this code when a new version is made
+	 *
+	 * So this is the old comment, I am keeping it for posterity in case it is removed again
+	 * Reference the git history to see the old implementation, have fun wit hteh deobfuscation
+	 *
 	 * As of 1.12, the base NBTTagList has no accessor specific for Shorts, so we'll mark it deprecated here.
 	 * Weirdly, the superclass has a method f() that still returns a Short for all number types, but NBTNumber isn't
 	 * visible so ... hack it is.
@@ -137,23 +146,8 @@ public class TagManager {
 		NBTTagList tagList = this.tag.getList(key, 2);
 		List<Short> list = new ArrayList<Short>();
 
-		for (int i = 0; i < tagList.size(); i++) {
-			NBTBase base = tagList.i(i);
-			try {
-				Method f = base.getClass().getMethod("f");
-				Short s = (Short) f.invoke(base);
-				list.add(s);
-			} catch (NoSuchMethodException e) {
-				log.warning("ShortList no longer officially supported, failed to map to retrieve method.");
-			} catch (SecurityException e) {
-				log.warning("ShortList no longer officially supported, failed to secure retrieve method.");
-			} catch (IllegalAccessException e) {
-				log.warning("ShortList no longer officially supported, failed to access retrieve method.");
-			} catch (IllegalArgumentException e) {
-				log.warning("ShortList no longer officially supported, failed to use retrieve method.");
-			} catch (InvocationTargetException e) {
-				log.warning("ShortList no longer officially supported, failed to invoke retrieve method.");
-			}
+		for (int i = 0; i < tagList.size(); ++i) {
+			list.add(tagList.g(i));
 		}
 
 		return list;
@@ -187,7 +181,7 @@ public class TagManager {
 
 	public ItemStack enrichWithNBT(ItemStack is) {
 
-		net.minecraft.server.v1_12_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_13_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());
