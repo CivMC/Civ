@@ -129,7 +129,7 @@ public class GUIGroupOverview {
 		}
 
 		// close button
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null; 
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}

@@ -138,7 +138,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
 		// exit button
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null; 
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}
@@ -502,7 +502,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
 
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null; 
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}
@@ -736,7 +736,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getAddBlackListClickable() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.LEASH);
+		Material lsh = Material.getMaterial("LEAD"); // 1.13
+		if (lsh == null) { lsh = Material.getMaterial("LEASH");} // pre 1.13
+		ItemStack is = new ItemStack(lsh);
 		ISUtils.setName(is, ChatColor.GOLD + "Add player to blacklist");
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("BLACKLIST"))) {
@@ -923,7 +925,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	}
 
 	private Clickable getPermOptionClickable() {
-		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
+		Material feg = Material.getMaterial("OAK_FENCE_GATE"); // 1.13
+		if (feg == null) feg = Material.getMaterial("FENCE_GATE"); // pre 1.13
+		ItemStack permStack = new ItemStack(feg);
 		ISUtils.setName(permStack, ChatColor.GOLD
 				+ "View and manage group permissions");
 		Clickable permClickable;

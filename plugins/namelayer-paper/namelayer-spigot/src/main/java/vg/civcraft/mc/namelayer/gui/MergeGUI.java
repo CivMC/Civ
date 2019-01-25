@@ -68,7 +68,7 @@ public class MergeGUI extends AbstractGroupGUI {
 			}
 		}, 15);
 		// exit button
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null; 
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}
@@ -151,7 +151,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		}
 
 		// exit button
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null;
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}

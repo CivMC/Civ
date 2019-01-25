@@ -13,7 +13,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
 public class MenuUtils {
 	public static ItemStack toggleButton(boolean initState, String name, boolean canModify) {
-		ItemStack is;
+		ItemStack is = null;
 		try {
 			if (initState) {
 				is = new ItemStack(Material.getMaterial("CACTUS_GREEN"));

@@ -116,7 +116,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("PERMS"));
 		for (final PermissionType perm : PermissionType.getAllPermissions()) {
-			ItemStack is;
+			ItemStack is = null;
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
 			if (hasPerm) {
@@ -226,7 +226,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			ci.setSlot(forCl, 53);
 		}
 
-		ItemStack backToOverview; 
+		ItemStack backToOverview = null; 
 		try { // 1.13
 			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
 		} catch (Exception e) {}
