@@ -1,7 +1,6 @@
 name: ${name}
 version: ${version}
-authors: [valadian, rourke750]
+authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef]
 main: ${groupId}.${name}Plugin
 api-version: 1.13
-softdepend: [Mercury]
 dev-url: null

@@ -7,7 +7,10 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +22,8 @@ public class NiceNames {
 	private static Map<Material, Map<String, String>> materialLoreString = new HashMap<>();
 	private static Map<Enchantment, String> enchants = new HashMap<>();
 	private static Map<Enchantment, String> enchantAcronyms = new HashMap<>();
+
+	private static final Logger log = Bukkit.getLogger();
 
 	public static String getName(ItemStack is) {
 		Material material = is.getType();
@@ -78,7 +83,7 @@ public class NiceNames {
 			}
 			reader.close();
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.log(Level.WARNING, "Failed to load enchantment aliases", e);
 		}
 	}
 
@@ -99,7 +104,7 @@ public class NiceNames {
 		String combinedLore = String.join(",",lore);
 
 		if(registeredMat.containsKey(combinedLore)) {
-			System.out.println("Registered name override for "+material+"["+combinedLore+"] to "+name);
+			log.info("Registered name override for "+material+"["+combinedLore+"] to "+name);
 		}
 
 		registeredMat.put(combinedLore, name);
