@@ -118,9 +118,17 @@ public class Acid extends PlayerCommand {
 			// Consider if should simply be an AcidBlockEvent listener. This will do for now.
 			Utility.reinforcementBroken(p, pRein);
 			rm.deleteReinforcement(pTopRein);
-			
-			topFace.breakNaturally();
+
+			// Break the acid block
 			block.breakNaturally();
+
+			// Break the acided block
+			if (CitadelConfigManager.breakAcidedBlockNaturally()) {
+				topFace.breakNaturally();
+			}
+			else {
+				topFace.setType(Material.AIR);
+			}
 
 		}
 		return true;

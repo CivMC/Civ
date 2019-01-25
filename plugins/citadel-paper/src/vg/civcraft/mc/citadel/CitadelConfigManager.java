@@ -252,4 +252,9 @@ public class CitadelConfigManager {
 		}
 		return reinforceableMats;
 	}
+
+	public static boolean breakAcidedBlockNaturally() {
+		return config.getBoolean("break_acided_block_naturally", false);
+	}
+
 }
