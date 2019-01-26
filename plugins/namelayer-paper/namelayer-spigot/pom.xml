@@ -18,7 +18,7 @@
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
       <artifactId>namelayer-nms-v1_13_R2</artifactId>
-      <version>1.0.0</version>
+      <version>1.0.1</version>
     </dependency>
 
     <!-- Spigot -->
@@ -92,42 +92,42 @@
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_8_R1</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_8_R2</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_8_R3</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_9_R1</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_9_R2</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_10_R1</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_11_R1</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_12_R1</artifactId>
-          <version>1.0.0</version>
+          <version>1.0.1</version>
         </dependency>
       </dependencies>
     </profile>

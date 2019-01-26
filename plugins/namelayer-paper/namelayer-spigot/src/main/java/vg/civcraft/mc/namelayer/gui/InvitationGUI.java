@@ -44,9 +44,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 		ISUtils.addLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
 		ci.setSlot(new DecorationStack(explain), 4);
 		ci.setSlot(produceOptionStack(Material.LEATHER_CHESTPLATE, "member", PlayerType.MEMBERS, PermissionType.getPermission("MEMBERS")), 10);
-		Material gcp = Material.getMaterial("GOLDEN_CHESTPLATE"); // 1.13
-		if (gcp == null) gcp = Material.getMaterial("GOLD_CHESTPLATE"); // pre 1.13
-		ci.setSlot(produceOptionStack(gcp, "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
+		ci.setSlot(produceOptionStack(modMat(), "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
 		ci.setSlot(produceOptionStack(Material.IRON_CHESTPLATE, "admin", PlayerType.ADMINS, PermissionType.getPermission("ADMINS")), 14);
 		ci.setSlot(produceOptionStack(Material.DIAMOND_CHESTPLATE, "owner", PlayerType.OWNER, PermissionType.getPermission("OWNER")), 16);
 		ci.showInventory(p);

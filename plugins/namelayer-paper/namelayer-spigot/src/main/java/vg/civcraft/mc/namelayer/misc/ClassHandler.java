@@ -31,6 +31,10 @@ public class ClassHandler {
 		return (ProfileInterface) getObject(ProfileInterface.class, "ProfileModifier");
 	}
 
+	public MaterialInterface getMaterialClass() {
+		return (MaterialInterface) getObject(MaterialInterface.class, "MaterialMap");
+	}
+
 	private Object getObject(Class<? extends Object> Class, String name) {
 		try {
 			Class<?> internalClass = Class.forName("vg.civcraft.mc.namelayer.misc." + ch.version + "." + name);

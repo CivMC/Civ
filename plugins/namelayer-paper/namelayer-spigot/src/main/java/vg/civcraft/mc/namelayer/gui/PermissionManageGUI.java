@@ -49,10 +49,8 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		ci.setSlot(
 				produceSelectionClickable(Material.LEATHER_CHESTPLATE,
 						PlayerType.MEMBERS), 11);
-		Material gcp = Material.getMaterial("GOLDEN_CHESTPLATE"); // 1.13
-		if (gcp == null) gcp = Material.getMaterial("GOLD_CHESTPLATE"); // pre 1.13
 		ci.setSlot(
-				produceSelectionClickable(gcp,
+				produceSelectionClickable(modMat(),
 						PlayerType.MODS), 13);
 		ci.setSlot(
 				produceSelectionClickable(Material.IRON_CHESTPLATE,
@@ -120,13 +118,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
 			if (hasPerm) {
-				try { // 1.13
-					is = new ItemStack(Material.getMaterial("CACUS_GREEN"));
-				} catch (Exception e) {}
-				if (is == null) { // pre 1.13
-					is = new ItemStack(Material.getMaterial("INK_SACK"), 1, (short) 10); // green
-				}
-																		// dye
+				is = yesStack();
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
@@ -134,12 +126,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 								+ "s currently have", ChatColor.DARK_AQUA
 								+ "this permission");
 			} else {
-				try { // 1.13
-					is = new ItemStack(Material.getMaterial("ROSE_RED"));
-				} catch (Exception e) {}
-				if (is == null) { // pre 1.13
-					is = new ItemStack(Material.getMaterial("INK_SACK"), 1, (short) 1); // red dye
-				}
+				is = noStack();
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
@@ -226,13 +213,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			ci.setSlot(forCl, 53);
 		}
 
-		ItemStack backToOverview = null; 
-		try { // 1.13
-			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
-		} catch (Exception e) {}
-		if (backToOverview == null) { // pre 1.13
-			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
-		}
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back");
 		ci.setSlot(new Clickable(backToOverview) {
 

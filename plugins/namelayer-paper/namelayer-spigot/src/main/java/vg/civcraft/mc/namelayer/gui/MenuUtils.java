@@ -14,25 +14,10 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 public class MenuUtils {
 	public static ItemStack toggleButton(boolean initState, String name, boolean canModify) {
 		ItemStack is = null;
-		try {
-			if (initState) {
-				is = new ItemStack(Material.getMaterial("CACTUS_GREEN"));
-			} else {
-				is = new ItemStack(Material.getMaterial("ROSE_RED"));
-			}
-		} catch (Exception e) {
-			// not 1.13
-		}
-
-
-		// pre 1.13
-		if (is == null) {
-			is = new ItemStack(Material.getMaterial("INK_SACK"));
-			if (initState) {
-				is.setDurability((short) 10); //dye green
-			} else {
-				is.setDurability((short) 1); //dye red
-			}
+		if (initState) {
+			is = AbstractGroupGUI.yesStack();
+		} else {
+			is = AbstractGroupGUI.noStack();
 		}
 		if (initState) {
 			if (canModify) {
