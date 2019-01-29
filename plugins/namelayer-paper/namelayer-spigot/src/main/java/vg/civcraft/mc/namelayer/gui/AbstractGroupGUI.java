@@ -32,6 +32,10 @@ public abstract class AbstractGroupGUI {
 		}
 		this.g = g;
 		this.p = p;
+		matsInit();
+	}
+
+	public static void matsInit() {
 		if (ch == null) {
 			Bukkit.getScheduler().runTaskLater(NameLayerPlugin.getInstance(), new Runnable() {
 
@@ -94,6 +98,10 @@ public abstract class AbstractGroupGUI {
 	}
 	public ItemStack mergeStack() {
 		if (mats != null) return mats.getItemStack(MaterialInterface.Specific.MERGE);
+		return new ItemStack(Material.BARRIER); // common for now
+	}
+	public ItemStack defaultStack() {
+		if (mats != null) return mats.getItemStack(MaterialInterface.Specific.DEFAULT);
 		return new ItemStack(Material.BARRIER); // common for now
 	}
 

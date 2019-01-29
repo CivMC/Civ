@@ -943,7 +943,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getDefaultGroupStack() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.BRICK);
+		ItemStack is = defaultStack();
 		ISUtils.setName(is, ChatColor.GOLD + "Default group");
 		final String defGroup = gm.getDefaultGroup(p.getUniqueId());
 		if (defGroup != null && defGroup.equals(g.getName())) {

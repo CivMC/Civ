@@ -9,7 +9,7 @@ public class MaterialMap implements MaterialInterface {
 	public Material getMaterial(MaterialInterface.Specific specific) {
 		switch (specific) {
 			case GREEN:
-				return Material.CACTUS_GREEN;
+				return Material.LIME_DYE;
 			case RED:
 				return Material.ROSE_RED;
 			case BACK:
@@ -22,6 +22,8 @@ public class MaterialMap implements MaterialInterface {
 				return Material.OAK_FENCE_GATE;
 			case MERGE:
 				return Material.CHEST_MINECART;
+			case DEFAULT:
+				return Material.BRICKS;
 		}
 		return null;
 	}
@@ -36,6 +38,7 @@ public class MaterialMap implements MaterialInterface {
 			case BLACKLIST:
 			case PERMS:
 			case MERGE:
+			case DEFAULT:
 				return new ItemStack(getMaterial(specific));
 		}
 		return null;

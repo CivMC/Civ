@@ -20,6 +20,7 @@ public class ClassHandler {
 		ch.version = packageName.substring(packageName.lastIndexOf('.') + 1);
 		try {
 			Class.forName("vg.civcraft.mc.namelayer.misc." + ch.version + ".ProfileModifier");
+			vg.civcraft.mc.namelayer.gui.AbstractGroupGUI.matsInit();
 			return properlyEnabled = true;
 		} catch (Exception e) {
 			e.printStackTrace();

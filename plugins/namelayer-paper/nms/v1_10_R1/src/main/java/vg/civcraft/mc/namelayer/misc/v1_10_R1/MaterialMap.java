@@ -22,6 +22,8 @@ public class MaterialMap implements MaterialInterface {
 				return Material.FENCE_GATE;
 			case MERGE:
 				return Material.STORAGE_MINECART;
+			case DEFAULT:
+				return Material.BRICK;
 		}
 		return null;
 	}
@@ -38,6 +40,7 @@ public class MaterialMap implements MaterialInterface {
 			case BLACKLIST:
 			case PERMS:
 			case MERGE:
+			case DEFAULT:
 				return new ItemStack(getMaterial(specific));
 		}
 		return null;
