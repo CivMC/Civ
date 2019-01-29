@@ -51,8 +51,7 @@ public class GUIGroupOverview {
 
 	public void showScreen() {
 
-		ClickableInventory ci = new ClickableInventory(54, p.getName()
-				+ "'s groups");
+		ClickableInventory ci = new ClickableInventory(54, p.getName() + "'s groups");
 		final List<Clickable> groups = getGroupClickables();
 		if (groups.size() < 45 * currentPage) {
 			// would show an empty page, so go to previous
@@ -129,13 +128,7 @@ public class GUIGroupOverview {
 		}
 
 		// close button
-		ItemStack backToOverview = null; 
-		try { // 1.13
-			backToOverview = new ItemStack(Material.getMaterial("OAK_DOOR"));
-		} catch (Exception e) {}
-		if (backToOverview == null) { // pre 1.13
-			backToOverview = new ItemStack(Material.getMaterial("WOOD_DOOR"));
-		}
+		ItemStack backToOverview = AbstractGroupGUI.goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -172,10 +165,7 @@ public class GUIGroupOverview {
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
 				break;
 			case MODS:
-				try { // 1.13
-					is = new ItemStack(Material.getMaterial("GOLDEN_CHESTPLATE"));
-				} catch (Exception e) {}
-				if (is == null) is = new ItemStack(Material.getMaterial("GOLD_CHESTPLATE")); // pre 1.13
+				is = AbstractGroupGUI.modStack();
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
 				break;
 			case ADMINS:
