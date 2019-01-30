@@ -46,21 +46,21 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.6.0</version>
+			<version>1.6.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.11.0</version>
+			<version>2.11.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>devoted-repo</id>
-			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civ-jenkins</id>
+			<url>http://test.civclassic.com:8080/plugin/repository/everything/</url>
 		</repository>
 		<repository>
 			<id>spigot-repo</id>
