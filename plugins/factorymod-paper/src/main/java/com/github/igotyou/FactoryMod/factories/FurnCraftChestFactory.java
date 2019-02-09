@@ -132,7 +132,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * that the factory is allowed to turn on
 	 */
 	public void attemptToActivate(Player p, boolean onStartUp) {
-		LoggingUtils.log((p != null ? p.getName() : "Redstone") + " is attempting to activate " + getLogData());
+		LoggingUtils.debug((p != null ? p.getName() : "Redstone") + " is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		//dont activate twice
 		if (active) {
@@ -243,7 +243,8 @@ public class FurnCraftChestFactory extends Factory {
 	 * is allowed to turn on
 	 */
 	public void activate() {
-		LoggingUtils.log("Activating " + getLogData());
+		LoggingUtils.log("Activating " + getLogData() + ", because of " + (activator != null ? 
+				Bukkit.getPlayer(activator) : "Redstone"));
 		active = true;
 		pm.setPowerCounter(0);
 		turnFurnaceOn(getFurnace());
