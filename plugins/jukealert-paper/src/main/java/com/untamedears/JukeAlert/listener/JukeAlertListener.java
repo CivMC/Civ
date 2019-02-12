@@ -17,6 +17,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -57,6 +58,7 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.events.PlayerHitSnitchEvent;
 import com.untamedears.JukeAlert.external.Mercury;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -539,6 +541,7 @@ public class JukeAlertListener implements Listener {
 						if (!inList.contains(snitch)) {
 							snitch.imposeSnitchTax();
 							inList.add(snitch);
+							Bukkit.getPluginManager().callEvent(new PlayerHitSnitchEvent(snitch, player));
 							if ((plugin.getConfigManager().getInvisibilityEnabled()
 									&& player.hasPotionEffect(PotionEffectType.INVISIBILITY)) && !snitch.shouldLog()) {
 								continue;
