@@ -241,7 +241,7 @@ public final class CombatTagPlus extends JavaPlugin {
         String v = plugin.getDescription().getVersion();
 
         // Determine which hook implementation to use
-        String className = "net.minelink.ctplus.worldguard.v" + (v.startsWith("5") ? 5 : 6) + ".WorldGuardHook";
+        String className = "net.minelink.ctplus.worldguard.v" + v.substring(0, 1) + ".WorldGuardHook";
 
         try {
             // Create and add WorldGuardHook

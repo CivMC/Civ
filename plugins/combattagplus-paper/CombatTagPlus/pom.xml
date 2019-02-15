@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.10-R0.1-SNAPSHOT</version>
+            <version>1.12.2-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -136,6 +136,12 @@
         </dependency>
         <dependency>
             <groupId>net.minelink</groupId>
+            <artifactId>CombatTagPlusCompat-v1_13_R2</artifactId>
+            <version>1.3.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minelink</groupId>
             <artifactId>CombatTagPlusHook</artifactId>
             <version>1.3.2-SNAPSHOT</version>
             <scope>compile</scope>
@@ -173,6 +179,12 @@
         <dependency>
             <groupId>net.minelink</groupId>
             <artifactId>CombatTagPlusWG-v6</artifactId>
+            <version>1.3.2-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.minelink</groupId>
+            <artifactId>CombatTagPlusWG-v7</artifactId>
             <version>1.3.2-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
