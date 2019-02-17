@@ -7,6 +7,7 @@ import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
+import com.github.maxopoly.finale.listeners.PotionListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -59,6 +60,7 @@ public class Finale extends ACivMod {
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PotionListener(), this);
 	}
 
 	private void initExternalManagers() {
