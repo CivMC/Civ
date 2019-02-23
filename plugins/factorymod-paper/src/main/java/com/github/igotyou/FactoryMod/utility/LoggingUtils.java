@@ -15,6 +15,10 @@ public class LoggingUtils {
 	public static void log(String msg) {
 		FactoryMod.getPlugin().getLogger().log(Level.INFO, msg);
 	}
+	
+	public static void debug(String msg) {
+		FactoryMod.getPlugin().debug(msg);
+	}
 
 	private static String serializeInventory(Inventory i) {
 		return new ItemMap(i).toString();
