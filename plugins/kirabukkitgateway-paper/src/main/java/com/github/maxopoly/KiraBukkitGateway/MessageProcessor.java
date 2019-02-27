@@ -19,14 +19,13 @@ public class MessageProcessor {
 		String msg = input.substring(37);
 		runCommand(uuid, msg);
 	}
-	
+
 	private void runCommand(UUID uuid, String msg) {
 		System.out.println("Called " + msg);
 		try {
-		Bukkit.getServer().dispatchCommand(new PseudoPlayer(uuid), msg);
-		
-		}
-		catch (Exception e) {
+			Bukkit.getServer().dispatchCommand(new PseudoPlayer(uuid), msg);
+
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		System.out.println("Passed");

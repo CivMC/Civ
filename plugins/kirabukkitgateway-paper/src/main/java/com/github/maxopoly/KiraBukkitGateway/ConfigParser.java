@@ -44,7 +44,7 @@ public class ConfigParser {
 	public String getIncomingQueueName() {
 		return config.getString("rabbitmq.incomingQueue");
 	}
-	
+
 	public String getOutgoingQueueName() {
 		return config.getString("rabbitmq.outgoingQueue");
 	}

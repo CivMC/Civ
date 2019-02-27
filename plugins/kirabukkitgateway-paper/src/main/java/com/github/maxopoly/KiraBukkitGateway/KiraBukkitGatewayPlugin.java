@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
 import com.github.maxopoly.KiraBukkitGateway.command.KiraCommandHandler;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
+import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitCommands;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitHandler;
 
@@ -33,7 +34,8 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		authcodeManager = new AuthcodeManager(12);
 		vault = new VaultAPI();
 		config = new ConfigParser(this);
-		rabbit = new RabbitHandler(config.getRabbitConfig(), config.getIncomingQueueName(), config.getOutgoingQueueName(), getLogger());
+		rabbit = new RabbitHandler(config.getRabbitConfig(), config.getIncomingQueueName(),
+				config.getOutgoingQueueName(), getLogger());
 		if (!rabbit.setup()) {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
@@ -44,6 +46,7 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		rabbit.beginAsyncListen();
 		rabbitCommands = new RabbitCommands(rabbit);
 		getServer().getPluginManager().registerEvents(new CivChatListener(), this);
+		getServer().getPluginManager().registerEvents(new JukeAlertListener(), this);
 		getLogger().info("Successfully enabled " + getName());
 	}
 
@@ -58,11 +61,11 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 	public static KiraBukkitGatewayPlugin getInstance() {
 		return instance;
 	}
-	
+
 	public AuthcodeManager getAuthcodeManager() {
 		return authcodeManager;
 	}
-	
+
 	public RabbitCommands getRabbit() {
 		return rabbitCommands;
 	}

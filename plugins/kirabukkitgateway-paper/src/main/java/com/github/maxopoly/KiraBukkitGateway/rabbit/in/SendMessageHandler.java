@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
 import com.google.gson.JsonObject;
 
@@ -22,6 +23,9 @@ public class SendMessageHandler extends RabbitInput {
 		Player p = Bukkit.getPlayer(target);
 		if (p != null) {
 			p.sendMessage(ChatColor.GOLD + msg);
+		}
+		else {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(target, msg);
 		}
 	}
 }

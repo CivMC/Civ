@@ -2,7 +2,6 @@ package com.github.maxopoly.KiraBukkitGateway.command.commands;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,21 +48,22 @@ public class CreateDiscordGroupChatCommand extends PlayerCommand {
 		GroupManager gm = NameAPI.getGroupManager();
 		PermissionType perm = PermissionType.getPermission("READ_CHAT");
 		Collection<UUID> members = new HashSet<>();
-		group.getAllMembers().stream().filter(m -> gm.hasAccess(group, p.getUniqueId(), perm)).forEach(m -> members.add(m));
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().createGroupChatChannel(group.getName(), members, p.getUniqueId());
+		group.getAllMembers().stream().filter(m -> gm.hasAccess(group, m, perm)).forEach(m -> members.add(m));
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().createGroupChatChannel(group.getName(), members,
+				p.getUniqueId(), -1L, -1L);
 		sender.sendMessage(ChatColor.GREEN + "Attempting to create channel...");
 		return true;
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (! (sender instanceof Player))  {
+		if (!(sender instanceof Player)) {
 			return null;
 		}
 		if (args.length == 0) {
 			return GroupTabCompleter.complete("", null, (Player) sender);
 		}
-		return GroupTabCompleter.complete(args [0], null, (Player) sender);
+		return GroupTabCompleter.complete(args[0], null, (Player) sender);
 	}
 
 }

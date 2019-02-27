@@ -14,10 +14,9 @@ public class VaultAPI {
 			throw new IllegalStateException("Failed to setup permissions");
 		}
 	}
-	
+
 	public boolean hasPermission(PseudoPlayer player, String permission) {
-		return perms.playerHas("world", player.getOfflinePlayer(),
-				permission);
+		return perms.playerHas("world", player.getOfflinePlayer(), permission);
 	}
 
 	private boolean setupPermissions() {

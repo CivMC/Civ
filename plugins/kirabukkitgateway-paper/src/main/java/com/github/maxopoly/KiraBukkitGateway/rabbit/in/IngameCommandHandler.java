@@ -25,8 +25,11 @@ public class IngameCommandHandler extends RabbitInput {
 		try {
 			Bukkit.getServer().dispatchCommand(new PseudoPlayer(runner), command);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(runner, "You can not run this command from out of game");
 			logger.warning("Failed to run command from external source: "  + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 }

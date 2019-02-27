@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.GroupChatMessageHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.IngameCommandHandler;
+import com.github.maxopoly.KiraBukkitGateway.rabbit.in.RequestRelayCreationHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.SendMessageHandler;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -26,6 +27,7 @@ public class RabbitInputHandler {
 		registerCommand(new IngameCommandHandler());
 		registerCommand(new SendMessageHandler());
 		registerCommand(new GroupChatMessageHandler());
+		registerCommand(new RequestRelayCreationHandler());
 	}
 
 	private void registerCommand(RabbitInput command) {

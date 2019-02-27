@@ -1,6 +1,5 @@
 package com.github.maxopoly.KiraBukkitGateway.command.commands;
 
-import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.ChatColor;

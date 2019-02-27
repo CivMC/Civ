@@ -19,14 +19,14 @@ public class PseudoPlayerIdentity extends EntityPlayer {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public static PseudoPlayerIdentity generate(UUID uuid, String name) {
 		MinecraftServer minecraftServer = MinecraftServer.getServer();
-        WorldServer worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
-        PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
-        GameProfile gameProfile = new GameProfile(uuid, name);
+		WorldServer worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
+		PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
+		GameProfile gameProfile = new GameProfile(uuid, name);
 
-        return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile, playerInteractManager);
+		return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile, playerInteractManager);
 	}
 
 }
