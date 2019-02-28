@@ -40,6 +40,13 @@ public class RabbitCommands {
 		sendInternal("groupchatmessage", json);
 	}
 	
+	public void replyToRequestSession(JsonObject json) {
+		if (json == null) {
+			throw new IllegalArgumentException("Arguments cant be null");
+		}
+		sendInternal("requestsession", json);
+	}
+	
 	public void syncGroupChatAccess(String group, Collection<UUID> members, UUID sender) {
 		if (group == null || members == null) {
 			throw new IllegalArgumentException("Arguments cant be null");

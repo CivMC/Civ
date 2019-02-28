@@ -107,10 +107,10 @@
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
-		<repository>
+	<repository>
 			<id>vault-repo</id>
-			<url>http://nexus.hc.to/content/repositories/pub_releases</url>
-		</repository>
+			<url>https://ci.ender.zone/plugin/repository/everything/</url>
+		</repository> 	
 		<repository>
 			<id>Jenkins-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
