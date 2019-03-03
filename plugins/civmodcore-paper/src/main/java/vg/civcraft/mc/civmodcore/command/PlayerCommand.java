@@ -4,6 +4,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
+import vg.civcraft.mc.civmodcore.ratelimiting.TokenBucket;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public abstract class PlayerCommand implements Command {
@@ -18,6 +22,7 @@ public abstract class PlayerCommand implements Command {
 	private boolean errorOnTooManyArgs = true;
 	private CommandSender sender;
 	private String[] args;
+	private RateLimiter rateLimiter;
 
 	public PlayerCommand(String name) {
 		this.name = name;
@@ -114,12 +119,21 @@ public abstract class PlayerCommand implements Command {
 		return flag;
 	}
 
-	public void setSenderMustBePlayer(boolean senderMustBeConsole) {
-		this.senderMustBePlayer = senderMustBeConsole;
+	public void setSenderMustBePlayer(boolean senderMustBePlayer) {
+		this.senderMustBePlayer = senderMustBePlayer;
 	}
 
 	public void setErrorOnTooManyArgs(boolean errorOnTooManyArgs) {
 		this.errorOnTooManyArgs = errorOnTooManyArgs;
+	}
+	
+	public void setRateLimitingBehavior(int limit, int refillAmount, int refillIntervallInSeconds) {
+		this.rateLimiter = RateLimiting.createRateLimiter("COMMAND_" + identifier, 
+				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
+	}
+	
+	public RateLimiter getRateLimiter() {
+		return rateLimiter;
 	}
 
 	public Player player() {

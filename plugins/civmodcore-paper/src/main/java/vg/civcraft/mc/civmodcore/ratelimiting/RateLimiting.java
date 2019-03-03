@@ -25,6 +25,9 @@ public class RateLimiting {
 	 */
 	public static RateLimiter createRateLimiter(String name, int initialCapacity, int maximumCapacity, int refillAmount,
 			long refillIntervall) {
+		if (limiterMapping.containsKey(name)) {
+			throw new IllegalArgumentException("Rate limiter with name " + name + " already exists");
+		}
 		RateLimiter limiter = new RateLimiter(initialCapacity, maximumCapacity, refillAmount, refillIntervall);
 		limiterMapping.put(name, limiter);
 		return limiter;
@@ -64,7 +67,7 @@ public class RateLimiting {
 	}
 
 	/**
-	 * To save time the needed for lookups you can also directly retrieve a rate
+	 * To save the time needed for lookups you can also directly retrieve a rate
 	 * limiter. This is encouraged if you are frequently using the same limiter
 	 * locally
 	 * 

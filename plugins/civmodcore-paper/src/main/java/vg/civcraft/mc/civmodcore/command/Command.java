@@ -3,6 +3,8 @@ package vg.civcraft.mc.civmodcore.command;
 import java.util.List;
 import org.bukkit.command.CommandSender;
 
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+
 public interface Command {
 
 	boolean execute(CommandSender sender, String[] args);
@@ -30,5 +32,7 @@ public interface Command {
 	void setSender(CommandSender sender);
 
 	void setArgs(String[] args);
+	
+	public RateLimiter getRateLimiter();
 
 }
