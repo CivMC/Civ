@@ -53,7 +53,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 		registerCommands();
 		registerListeners();
 	}
-	
+
 	/**
 	 * Any listeners that this hack needs should get registered here.
 	 */

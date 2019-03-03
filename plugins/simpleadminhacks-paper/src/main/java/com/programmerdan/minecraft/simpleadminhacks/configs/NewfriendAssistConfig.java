@@ -35,13 +35,13 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	 * What is the newbie kit composed of.
 	 */
 	private ItemStack[] newbieKit;
-	
+
 	//private List<HelpTips> helps; // TODO
 
 	public NewfriendAssistConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
-	
+
 	public NewfriendAssistConfig(ConfigurationSection base) {
 		super(SimpleAdminHacks.instance(), base);
 	}
@@ -49,7 +49,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	@Override
 	protected void wireup(ConfigurationSection config) {		
 		this.announceMessage = config.getString("announce", "&f%Player% is brand new!");
-		
+
 		List<String> broadcastTo = config.getStringList("broadcast");
 		if (this.announceBroadcast == null) {
 			this.announceBroadcast = new LinkedList<BroadcastLevel>();
@@ -58,7 +58,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 		for (String type : broadcastTo) {
 			try {
 				this.announceBroadcast.add(BroadcastLevel.valueOf(type));
-				
+
 				plugin().log(Level.INFO, " broadcast: {0}", type);
 			} catch (IllegalArgumentException iae) {
 				// noop
@@ -81,7 +81,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 			plugin().log(Level.INFO, " introkit disabled");
 		}
 	}
-	
+
 	public List<BroadcastLevel> getAnnounceBroadcast() {
 		return announceBroadcast;
 	}
@@ -93,7 +93,7 @@ public class NewfriendAssistConfig extends SimpleHackConfig {
 	public boolean isIntroKitEnabled() {
 		return hasNewbieKit;
 	}
-	
+
 	public ItemStack[] getIntroKit() {
 		return newbieKit;
 	}

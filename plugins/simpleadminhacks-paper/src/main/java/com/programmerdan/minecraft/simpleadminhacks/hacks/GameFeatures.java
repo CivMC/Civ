@@ -190,6 +190,20 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			} else {
 				genStatus.append("disabled\n");
 			}
+			
+			genStatus.append("  Obsidian generator 1.7 is ");
+			if (config.isObsidianGenerators()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+			
+			genStatus.append("  Personal death messages is ");
+			if (config.isPersonalDeathMessages()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
 			// more?
 		} else {
 			genStatus.append("inactive");

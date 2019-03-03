@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -17,12 +18,10 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.ChatColor;
 
 import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 
 /**
@@ -31,7 +30,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfi
  * @author ProgrammerDan
  */
 public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implements Listener, CommandExecutor {
-	
+
 	public static final String NAME = "NewfriendAssist";
 	private static long newfriendCount = 0l;
 	/**
@@ -95,11 +94,11 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 
 		newfriendNames.put(newUUID, newfriend.getName());
 		newfriendSessionTime.put(newUUID, new SessionTime(System.currentTimeMillis()));
-		
+
 		if (config.getAnnounceBroadcast().size() > 0) {
 			// Prepare message
 			String cleanMessage = cleanMessage(join);
-			
+
 			// Overlap is possible. Some people might get double-notified
 			for (BroadcastLevel level : config.getAnnounceBroadcast()) {
 				plugin().debug("  Broadcast to {0}", level);
@@ -119,7 +118,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 				}
 			}
 		}
-		
+
 		if (config.isIntroKitEnabled()) {
 			ItemStack[] introKit = config.getIntroKit();
 			if (introKit != null && introKit.length > 0) {
@@ -128,9 +127,9 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 				plugin().log(Level.INFO, "  Gave newbit kit to {0}", newfriend.getDisplayName());
 			}
 		}
-		
+
 	}
-	
+
 	private String cleanMessage(PlayerJoinEvent event) {
 		return ChatColor.translateAlternateColorCodes('&',
 				config.getAnnounceMessage()
@@ -195,7 +194,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 
 		sb.append("\n  Since server start, ").append(NewfriendAssist.newfriendCount)
 				.append(" new players have joined.");
-		
+
 		if (this.newfriendNames != null && !this.newfriendNames.isEmpty()) {
 			sb.append("\n  New players since this hack was last enabled:");
 			for (HashMap.Entry<UUID, String> entry : this.newfriendNames.entrySet()) {
@@ -206,7 +205,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 				}
 			}
 		}
-		
+
 		if (config.isIntroKitEnabled()) {
 			sb.append("\n  Introkit gifting is enabled. Current Introkit:");
 			if (config.getIntroKit() != null && config.getIntroKit().length > 0 ) {
@@ -222,18 +221,18 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 
 		return sb.toString();
 	}
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!config.isIntroKitEnabled()) {
 			sender.sendMessage(ChatColor.RED + "Introkit gifting is disabled.");
 			return true;
 		}
-		
+
 		if (args.length < 1) return false;
-		
+
 		Player p = plugin().getServer().getPlayer(args[0]);
-		
+
 		if (p == null) {
 			try {
 				UUID pu = UUID.fromString(args[0]);
@@ -242,7 +241,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 				p = null;
 			}
 		}
-		
+
 		if (p == null) {
 			sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
 		} else {
@@ -251,10 +250,10 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 			Inventory inv = p.getInventory();
 			inv.addItem(config.getIntroKit());
 		}
-		
+
 		return true;
 	}
-	
+
 	public static NewfriendAssistConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new NewfriendAssistConfig(plugin, config);
 	}

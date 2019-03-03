@@ -8,7 +8,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 public class SessionTime {
 	private long playtimeTotal;
 	private long lastJoin;
-	
+
 	public SessionTime(long joinTime) {
 		playtimeTotal = 0l;
 		lastJoin = joinTime;

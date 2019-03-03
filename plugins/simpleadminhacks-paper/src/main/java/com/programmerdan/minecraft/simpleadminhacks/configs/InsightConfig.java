@@ -24,7 +24,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
  */
 public class InsightConfig extends SimpleHackConfig {
 	private List<String> insightOn;
-	
+
 	public InsightConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -37,7 +37,7 @@ public class InsightConfig extends SimpleHackConfig {
 			insightOn = null;
 		}
 	}
-		
+
 	public List<String> getInsightOn() {
 		return insightOn;
 	}

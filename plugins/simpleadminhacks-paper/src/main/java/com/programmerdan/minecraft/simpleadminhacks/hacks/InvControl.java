@@ -4,11 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-import vg.civcraft.mc.namelayer.NameAPI;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagList;
-import net.minecraft.server.v1_12_R1.WorldNBTStorage;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,30 +13,31 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftInventoryPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.InvControlConfig;
+
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.WorldNBTStorage;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 public class InvControl extends SimpleHack<InvControlConfig> implements CommandExecutor, Listener {
 
 	public static final String NAME = "InvControl";
-	
+
 	private boolean hasNameAPI;
-	
+
 	private Set<UUID> adminsWithInv;
-	
+
 	public InvControl(SimpleAdminHacks plugin, InvControlConfig config) {
 		super(plugin, config);
 	}
@@ -76,7 +72,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 		if (player == null && playerUID != null) { // Go deep into NBT.
 			WorldNBTStorage storage = (WorldNBTStorage) (((CraftServer) plugin().getServer()).getServer().worlds.get(0).getDataManager());
 			NBTTagCompound rawPlayer = storage.getPlayerData(playerUID.toString());
-			
+
 			if (rawPlayer != null) {
 				plugin().debug("Player {0} found in NBT data, read-only access enabled.", playername);
 				sender.sendMessage("Player found via alternate lookup, read-only access enabled.");
@@ -84,7 +80,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 				sender.sendMessage("Player " + playername + " does not exist or cannot be opened.");
 				return false;
 			}
-			
+
 			float health = rawPlayer.getFloat("Health");
 			int food = rawPlayer.getInt("foodLevel");
 
@@ -93,7 +89,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 			NBTTagList inv = rawPlayer.getList("Inventory", rawPlayer.getTypeId());
 			nms_pl_inv.b(inv); // We use this to bypass the Craft code which requires a player object, unlike NMS.
 			PlayerInventory pl_inv = (PlayerInventory) new CraftInventoryPlayer(nms_pl_inv);
-			
+
 			invSee(sender, pl_inv, health, food, playername);
 			return true;
 		}
@@ -113,7 +109,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 				sender.sendMessage(ChatColor.RED + "Apologies, this is only for in-game operators");
 			} else {
 				Player admin = (Player) sender;
-				
+
 				if (admin.equals(player)) {
 					sender.sendMessage(ChatColor.RED + "You cannot modify your own inventory in this manner.");
 				} else {
@@ -126,13 +122,13 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 		}
 		return true;
 	}
-	
+
 	public void adminCloseInventory(InventoryCloseEvent event) {
 		if (event.getPlayer() != null && this.adminsWithInv.contains(event.getPlayer().getUniqueId())) {
 			this.adminsWithInv.remove(event.getPlayer().getUniqueId());
 		}
 	}
-	
+
 	private void invSee(CommandSender sender, PlayerInventory pl_inv, double health, int food, String playername) {
 		if (!(sender instanceof Player)) { // send text only.
 			StringBuffer sb = new StringBuffer();
@@ -179,7 +175,7 @@ public class InvControl extends SimpleHack<InvControlConfig> implements CommandE
 
 	@Override
 	public void registerListeners() {
-		
+
 	}
 
 	@Override

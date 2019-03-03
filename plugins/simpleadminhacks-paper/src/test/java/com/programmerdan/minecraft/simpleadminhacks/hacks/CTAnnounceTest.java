@@ -32,10 +32,10 @@ public class CTAnnounceTest {
 
 	public CTAnnounce instance;
 	public CTAnnounceConfig config;
-	
+
 	public SimpleAdminHacks plugin;
 	public SimpleAdminHacksConfig pluginconfig;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		config = mock(CTAnnounceConfig.class);
@@ -66,7 +66,7 @@ public class CTAnnounceTest {
 		instance = new CTAnnounce(plugin, config);
 		when(config.isEnabled()).thenReturn(true);
 		PlayerCombatTagEvent cte = new PlayerCombatTagEvent(null, null, 30);
-		
+
 		try {
 			instance.CTEvent(cte);
 
@@ -75,14 +75,14 @@ public class CTAnnounceTest {
 			fail("Check failed to prevent NPE by fast-failing on null attacker/victim.");
 		}
 	}
-	
+
 	private List<BroadcastLevel> allLevels() {
 		return Arrays.asList(BroadcastLevel.values());
 	}
-	
+
 	private Set<OfflinePlayer> fakeOperators() {
 		Set<OfflinePlayer> op = new HashSet<OfflinePlayer>();
-		
+
 		OfflinePlayer ofp = mock(OfflinePlayer.class);
 		when(ofp.isOnline()).thenReturn(true);
 		op.add(ofp);
@@ -99,12 +99,12 @@ public class CTAnnounceTest {
 	public void testCTEvent() {
 		instance = new CTAnnounce(plugin, config);
 		instance.dataBootstrap();
-		
+
 		when(config.isEnabled()).thenReturn(true);
 		when(config.getBroadcastDelay()).thenReturn(250l);
 		when(config.getBroadcast()).thenReturn(allLevels());
 		when(config.getBroadcastMessage()).thenReturn("%Victim% struck by %Attacker%");
-		
+
 		Set<OfflinePlayer> ops = fakeOperators();
 		Set<SoftPlayer> sops = new HashSet<SoftPlayer>();
 		for (OfflinePlayer op : ops) {
@@ -132,7 +132,7 @@ public class CTAnnounceTest {
 		UUID vicUUID = UUID.randomUUID();
 		when(vic.getUniqueId()).thenReturn(vicUUID);
 		when(vic.isOnline()).thenReturn(true);
-				
+
 		SoftPlayer att = mock(SoftPlayer.class);
 		String attName = "Attacker";
 		when(att.getName()).thenReturn(attName);
@@ -140,37 +140,37 @@ public class CTAnnounceTest {
 		UUID attUUID = UUID.randomUUID();
 		when(att.getUniqueId()).thenReturn(attUUID);
 		when(att.isOnline()).thenReturn(true);
-		
+
 		PlayerCombatTagEvent cte = new PlayerCombatTagEvent(vic, att, 30);
-		
+
 		LinkedList online = new LinkedList();
 		online.add(vic);
 		online.add(att);
 		when(plugin.serverOnlineBroadcast(anyString())).thenReturn(online.size());
-		
+
 		instance.CTEvent(cte);
 		// Now we make sure everyone got notified, and only once.
-		
+
 		// OPs got notified
 		verify(plugin).serverOperatorBroadcast(anyString());
-		
+
 		// Console got notified
 		verify(plugin).serverSendConsoleMessage(anyString());
-		
+
 		// All Players got notified
 		verify(plugin).serverOnlineBroadcast(anyString());
-		
+
 		// Broadcast holders got notified
 		verify(plugin).serverBroadcast(anyString());
-		
+
 		try {
 			Thread.sleep(10l);
 		} catch (InterruptedException ie) {
 		}
-		
+
 		// This one should get throttled right away.
 		instance.CTEvent(cte);
-		
+
 		// verify that console was _not_ alerted again (e.g. still only one message)
 		verify(plugin).serverSendConsoleMessage(anyString());
 
@@ -178,13 +178,13 @@ public class CTAnnounceTest {
 			Thread.sleep(400l);
 		} catch (InterruptedException ie) {
 		}
-		
+
 		// This one should not get throttled.
 		instance.CTEvent(cte);
-		
+
 		// verify that console was alerted again (e.g. second throttled, third succeeded)
 		verify(plugin, times(2)).serverSendConsoleMessage(anyString());
 	}
-	
+
 	abstract interface SoftPlayer extends Player {}
 }

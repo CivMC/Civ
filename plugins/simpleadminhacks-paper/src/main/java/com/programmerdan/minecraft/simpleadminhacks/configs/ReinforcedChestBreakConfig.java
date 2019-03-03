@@ -1,8 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
-import org.bukkit.configuration.ConfigurationSection;
 
 public class ReinforcedChestBreakConfig extends SimpleHackConfig{
 

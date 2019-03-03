@@ -17,7 +17,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
  *
  */
 public class CTAnnounceConfig extends SimpleHackConfig {
-	
+
 	/**
 	 * Who should I broadcast to?
 	 */
@@ -39,23 +39,23 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 	public CTAnnounceConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
-	
+
 	public CTAnnounceConfig(ConfigurationSection base) {
 		super(SimpleAdminHacks.instance(), base);
 	}
-	
+
 	@Override
 	protected void wireup(ConfigurationSection config) {
 		this.broadcastDelay = config.getLong("delay", 5000l);
 		this.broadcastMessage = config.getString("message", "%Victim% was combat tagged by %Attacker%");
-		
+
 		plugin().log(Level.INFO, " delay: {0}, message: {1}", this.broadcastDelay, this.broadcastMessage);
-		
+
 		List<String> broadcastTo = config.getStringList("broadcast");
 		if (this.broadcast == null) {
 			this.broadcast = new LinkedList<BroadcastLevel>();
 		}
-		
+
 		this.broadcast.clear();
 
 		if (broadcastTo == null) {
@@ -65,14 +65,14 @@ public class CTAnnounceConfig extends SimpleHackConfig {
 		for (String type : broadcastTo) {
 			try {
 				broadcast.add(BroadcastLevel.valueOf(type));
-				
+
 				plugin().log(Level.INFO, " broadcast: {0}", type);
 			} catch (IllegalArgumentException iae) {
 				// noop
 			}
 		}
 	}
-	
+
 	public List<BroadcastLevel> getBroadcast() {
 		return broadcast;
 	}

@@ -7,18 +7,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
@@ -69,15 +66,15 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.InsightConfig;
 public class Insight extends SimpleHack<InsightConfig> implements CommandExecutor, Listener {
 
 	public static final String NAME = "Insight";
-	
+
 	private Map<String, InsightStat> tracking;
 	private List<Class<? extends Event>> rebounders;
-	
+
 	public Insight(SimpleAdminHacks plugin, InsightConfig config) {
 		super(plugin, config);
 	}
 
-	
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
  		if (args.length < 1) { // show help
@@ -86,7 +83,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 
 		return true;
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -94,9 +91,9 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		if (config.isEnabled()) {
 			plugin().log("Registering Insight reordering hack");
 			plugin().registerListener(this);
-			
+
 			plugin().log("Registering Insight event instrumentations");
-			
+
 			if (config.getInsightOn() == null) {
 				plugin().log("No instrumentations defined, disabling.");
 				this.softDisable();
@@ -104,7 +101,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			}
 			try {
 				ClassPath getSamplersPath = ClassPath.from(plugin().exposeClassLoader());
-	
+
 				for (String clsPackage : config.getInsightOn()) {
 					ImmutableSet<ClassPath.ClassInfo> clsInfoSet = getSamplersPath.getTopLevelClasses(clsPackage);
 					if (clsInfoSet == null || clsInfoSet.isEmpty()) {
@@ -156,7 +153,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 	}
 
 	private BukkitTask remap = null;
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void postPluginLoad(PluginEnableEvent e) {
 		if (!config.isEnabled()) {
@@ -165,7 +162,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		if (remap != null) {
 			remap.cancel();
 		}
-		
+
 		remap = Bukkit.getScheduler().runTaskLater(plugin(), new Runnable(){
 			@Override
 			public void run() {
@@ -174,7 +171,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			}
 		}, 60l); // 3 seconds
 	}
-	
+
 	/**
 	 * For tracked events we hijack priority ordering insertions
 	 * We to grab the registeredlistener array, remove all listeners
@@ -265,7 +262,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 	public String status() {
 		if (config.isEnabled()) {
 			StringBuffer sb = new StringBuffer( "Passively providing insight into events:\n");
-			
+
 			if (this.tracking != null) {
 				sb.append(ChatColor.WHITE).append(String.format("  %10s %10s %10s %7s %7s %7s %7s Event\n", "Count", "Canceled", "Handlers", "Min", "Avg", "Max", "StDev"));
 				this.tracking.forEach((k, v) -> {
@@ -278,13 +275,13 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 					sb.append(ChatColor.AQUA).append(k).append("\n");
 				}); 
 			}
-			
+
 			return sb.toString();
 		} else {
 			return "Insights fully disabled.";
 		}
 	}
-	
+
 	/**
 	 * 10% of tick? Green.
 	 * 15% of tick? Dark Green.
@@ -311,13 +308,13 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			return ChatColor.RED;
 		}
 	}
-	
+
 	private ChatColor color(double microseconds) {
 		return color((long) microseconds);
 	}
 
 	// -- SUPPORT
-	
+
 	public void start(Event event) {
 		if (config.isEnabled()) {
 			InsightStat insight = this.tracking.compute(event.getEventName(), (key, stat) -> 
@@ -326,7 +323,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			insight.begin(event.getHandlers().getRegisteredListeners().length);
 		}
 	}
-	
+
 	public void end(Event event) {
 		if (config.isEnabled()) {
 			InsightStat insight = this.tracking.get(event.getEventName());
@@ -339,11 +336,11 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			}
 		}
 	}
-	
+
 	public static InsightConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new InsightConfig(plugin, config);
 	}
-	
+
 	private static class InsightStat {
 		// count of events
 		private long count;
@@ -362,9 +359,9 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 		private double std;
 		// last execution handler list size
 		private long handlers;
-		
+
 		private long lastStart;
-		
+
 		public InsightStat() {
 			count = 0l;
 			cancels = 0l;
@@ -376,7 +373,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			handlers = 0l;
 			lastStart = 0l;
 		}
-		
+
 		/**
 		 * Starts a specific capture for this; assumes runs in LOWEST for same-event.
 		 * Will safely skip events that had no end() called.
@@ -387,7 +384,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			this.lastStart = System.nanoTime() / 1000l;
 			this.handlers = handlers;
 		}
-		
+
 		/**
 		 * Ends a specific capture for this; assumes runs in MONITOR for same-event.
 		 */
@@ -396,7 +393,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			if (cancelled) {
 				cancels ++;
 			}
-			
+
 			if (count == 0) {
 				avg = len;
 				max = len;
@@ -420,31 +417,31 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			}
 			count++; // n+1
 		}
-		
+
 		public long getHandlers() {
 			return handlers;
 		}
-		
+
 		public double getAverage() {
 			return avg;
 		}
-		
+
 		public long getSamples() {
 			return count;
 		}
-		
+
 		public double getStdev() {
 			return std;
 		}
-		
+
 		public long getMin() {
 			return min;
 		}
-		
+
 		public long getMax() {
 			return max;
 		}
-		
+
 		public long getCancels() {
 			return cancels;
 		}

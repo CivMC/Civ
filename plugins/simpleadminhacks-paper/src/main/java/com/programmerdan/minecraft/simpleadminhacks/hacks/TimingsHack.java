@@ -97,7 +97,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	private static final int DEPTH_MAX = 60;
 	private static final int HQ_CYCLES = 120000;
 	private static final int LQ_CYCLES = 12000;
-	
+
 	/**
 	 * Nanosecond time of last tick start.
 	 */
@@ -110,11 +110,11 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	 * Circular array storing millisecond lengths of ticks.
 	 */
 	private long[] ticks = null; 
-	
+
 	private long sumTicks = 0l;
 	private long cntTicks = 0l;
 	private double avgTick = 0.0d;
-	
+
 	/**
 	 * Nanosecond time of last HQ tick start.
 	 */
@@ -149,7 +149,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	 * Aggregated data from hq elapsed time; circular array indexed by <code>tickRecord</code>.
 	 */
 	private long[] hqToLqElapsedTime = null;
-	
+
 	/**
 	 * Stores the breakdown of "where time is spent" inside each tick, leveraging a high resolution
 	 * timer task. This high resolution timer task data is aggregated into the hqTickMap on a per class/method basis.
@@ -158,24 +158,24 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	private ConcurrentHashMap<String, ClassMethod>[] hqTickMap = null;
 
 	private int tickTask = 0;
-	
+
 	private int tickErrors = 0;
 	private int hqTickErrors = 0;
-	
+
 	private BukkitTask listTask = null;
 	private BukkitTask thresholdTask = null;
 
 	private TimingsMap tickVisualize = null;
 	private Map<String, BindTimingMap> bindVisualizers = null;
-	
+
 	private long rootThread = -1;
-	
+
 	private ThreadMXBean threadBean = null;
-	
+
 	private ScheduledExecutorService executor = null;
-	
+
 	private ScheduledFuture<?> hqTask = null;
-	
+
 	public TimingsHack(SimpleAdminHacks plugin, TimingsHackConfig config) {
 		super(plugin, config);
 	}
@@ -184,24 +184,24 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (!config.isEnabled()) return true;
-		
+
 		if (command.getName().equalsIgnoreCase("thresholdtimings")) {
 			if (args.length < 1) {
 				sender.sendMessage("Please specify a threshold - a factor * against avg tick which if a particular tick exceeds it, outputs the worst offending classes");
 				return true;
 			}
-			
+
 			startHq();
-			
+
 			double factor = 1.0d;
-			
+
 			try {
 				factor = Double.parseDouble(args[0]);
 			} catch (NumberFormatException e) {
 				sender.sendMessage("Cannot recognize " + args[0] + " as a factor -- should be something like 1.5 or 1.25");
 				return true;
 			}
-			
+
 			sender.sendMessage("Request for Threshold Timings at " + factor + " received.");
 
 			if (this.thresholdTask != null) {
@@ -218,7 +218,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		} else if (command.getName().equalsIgnoreCase("listtimings")) {
 			// do open sampling for a little while until bindtimings is called or nothing new is found.
 			startHq();
-			
+
 			sender.sendMessage("Request to list timings received.");
 			// Start monitor task a little later that accumulates and prints Classes to bind to
 			if (this.listTask != null) {
@@ -233,11 +233,11 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			return true;
 		} else if (command.getName().equalsIgnoreCase("stoptimings")) {
 			stopHq();
-			
+
 			sender.sendMessage("Advanced timings stopped");
 			return true;
 		}
-		
+
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("No Map visualization support on console.");
 			return true;
@@ -255,9 +255,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			if (view != null) {
 				view.getRenderers().forEach(view::removeRenderer);
 				view.addRenderer(this.tickVisualize);
-				
+
 				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
-				
+
 				ItemMeta mapMeta = viewMap.getItemMeta();
 				mapMeta.setDisplayName("Tick Health Monitor");
 				mapMeta.setLore(Arrays.asList(
@@ -267,9 +267,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 						"Bottom - Heatmap of per-tick-time"
 						));
 				viewMap.setItemMeta(mapMeta);
-				
+
 				player.getInventory().addItem(viewMap);
-				
+
 				player.sendMessage("Check your inventory for a TPS visualization Map");
 			} else {
 				player.sendMessage("Unable to generate TPS visualization map. Are you in Gamemode 3?");
@@ -281,9 +281,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			}
 			// show map with graph for a specific limited element
 			startHq();
-			
+
 			player.sendMessage("Request received to bind to " + args[0] + " tick time utilization");
-			
+
 			// Delay a few ticks, then give into inventory a map that shows the class % of TPS use
 			MapView view = null;
 			Short mapId = config.getBindMap(args[0]);
@@ -302,9 +302,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			if (view != null) {
 				view.getRenderers().forEach(view::removeRenderer);
 				view.addRenderer(this.bindVisualizers.get(args[0]));
-				
+
 				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
-				
+
 				ItemMeta mapMeta = viewMap.getItemMeta();
 				mapMeta.setDisplayName(args[0] + " Utilization Monitor");
 				mapMeta.setLore(Arrays.asList(
@@ -314,9 +314,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 						"Bottom - Heatmap of per-tick-time"
 						));
 				viewMap.setItemMeta(mapMeta);
-				
+
 				player.getInventory().addItem(viewMap);
-				
+
 				player.sendMessage("Check your inventory for a " + args[0] + " binding TPS visualization Map");
 			} else {
 				player.sendMessage("Unable to generate TPS visualization map. Are you in Gamemode 3?");
@@ -325,15 +325,15 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}
 		return true;
 	}
-	
+
 	@Override
 	public void registerListeners() {
 		if (!config.isEnabled()) return;
-		
+
 		plugin().log("Registering listeners");
 		plugin().registerListener(this);
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@EventHandler(ignoreCancelled = true)
 	public void onMapInit(MapInitializeEvent event) {
@@ -349,11 +349,11 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					bindVisualizers.put(bind, new BindTimingMap(bind)); // on demand binding.
 				}
 				view.addRenderer(this.bindVisualizers.get(bind));
-				
+
 			}
 		}
 	}
-	
+
 	@EventHandler(ignoreCancelled = true)
 	public void onItemHeldChange(PlayerItemHeldEvent event) {
 		Player player = event.getPlayer();
@@ -364,7 +364,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			if (baseMeta.hasLore()) {
 				try {
 					String ID = baseMeta.getLore().get(0);
-					
+
 					if (ID.equals("TPS")) {
 						MapView view = Bukkit.getMap(newHeld.getDurability());
 						if (view.getRenderers().size() == 1 && !view.getRenderers().get(0).equals(this.tickVisualize)) {
@@ -416,7 +416,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		hqTickMap = new ConcurrentHashMap[LQ_CYCLES];
 		hqActive = false;
 		tickErrors = 0;
-		
+
 		for (int i = 0; i < LQ_CYCLES; i++) {
 			hqTickMap[i] = new ConcurrentHashMap<String, ClassMethod>(100);
 		}
@@ -429,15 +429,15 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				tick();
 			}
 		}, 0l, 1l);
-		
+
 		tickVisualize = new TimingsMap();
 		bindVisualizers = new ConcurrentHashMap<String, BindTimingMap>();
-		
+
 		rootThread = Thread.currentThread().getId();
 		threadBean = ManagementFactory.getThreadMXBean();
 		executor = Executors.newSingleThreadScheduledExecutor();
 	}
-	
+
 	private void startHq() {
 		if (hqActive) return; // already alive.
 		SimpleAdminHacks.instance().log("Starting HQ timer sequence");
@@ -446,11 +446,11 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		hqTickRecord = 0;
 		hqToLqTickRecord = 0; // tails behind hqTickRecord
 		hqTickErrors = 0;
-		
+
 		hqCpuTime[0] = threadBean.getThreadCpuTime(rootThread);
 		hqLastTick = System.nanoTime();
 		hqActive = true;
-		
+
 		SimpleAdminHacks.instance().log("Starting actual HQ timer");
 		hqTask = executor.scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -464,15 +464,15 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			}
 		}, 1l, 1l, TimeUnit.MILLISECONDS);
 	}
-	
+
 	private void stopHq() {
 		if (!hqActive) return; // already paused
 		SimpleAdminHacks.instance().log("Stopping HQ timer");
 		hqActive = false;
-		
+
 		hqTask.cancel(true);
 	}
-	
+
 	private void tick() {
 		if (!isEnabled()) return;
 		try {
@@ -484,13 +484,13 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				tickRecord = 0;
 			}
 			hqTickMap[tickRecord].clear(); // prepare future tickmap.
-			
+
 			ticks[tempTickRecord] = tickTime;
-			
+
 			sumTicks += tickTime - ticks[tickRecord]; // new record - outgoing record.
 			cntTicks = (cntTicks == LQ_CYCLES) ? LQ_CYCLES : cntTicks + 1;
 			avgTick = (double) sumTicks / (double) cntTicks;
-			
+
 			if (hqActive) {
 				// now do Hq tick time summary
 				hqToLqCpuTime[tempTickRecord] = 0l;
@@ -504,11 +504,11 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					hqToLqElapsedTime[tempTickRecord] += hqElapsedTime[hqToLqTickRecord];
 				}
 			}
-			
+
 			if (tickRecord % 1000 == 999) {
 				SimpleAdminHacks.instance().log(Level.INFO, "Recorded 1000 ticks so far, avg: {0}", avgTick);
 			}
-			
+
 			lastTick = newTick;
 		} catch (Exception e) {
 			plugin().log(Level.WARNING, "Tick tracking encountered an error", e);
@@ -521,24 +521,24 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			}
 		}
 	}
-	
+
 	private void hqTick() {
 		try {
 			long newTick = System.nanoTime();
 			long tickTime = newTick - hqLastTick;
 			int nextHqTick = hqTickRecord >= HQ_CYCLES - 1 ? 0 : hqTickRecord + 1;
-			
+
 			hqCpuTime[nextHqTick] = threadBean.getThreadCpuTime(rootThread); // "start" of next record stored now.
 			hqCpuTime[hqTickRecord] = hqCpuTime[nextHqTick] - hqCpuTime[hqTickRecord]; // diff against old start.
 			hqElapsedTime[hqTickRecord] = tickTime; // tick over tick time too, not just cpu time. Evals drift / co-sharing issues.
 			if (hqCpuTime[hqTickRecord] == 0) {
 				hqCpuTime[hqTickRecord] = tickTime;
 			}
-			
+
 			ThreadInfo threadInfo = threadBean.getThreadInfo(rootThread, DEPTH_MAX);
-			
+
 			StackTraceElement[] stack = threadInfo.getStackTrace(); 
-			
+
 			//SimpleAdminHacks.instance().log(Level.INFO, "HQTick: {0} {1} {2}", hqTickRecord, tickTime, stack.length);
 			int tmpTickRecord = tickRecord;
 			if (tmpTickRecord >= LQ_CYCLES) tmpTickRecord = 0;
@@ -553,17 +553,17 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					return clzMethod;
 				});
 			}
-			
-			
+
+
 			hqTickRecord++;
 			if (hqTickRecord >= HQ_CYCLES) {
 				hqTickRecord = 0;
 			}
-			
+
 			if (hqTickRecord % 10000 == 9999) {
 				SimpleAdminHacks.instance().log("Recorded 10000 hq ticks so far");
 			}
-			
+
 			hqLastTick = newTick;
 		} catch (Exception e) {
 			plugin().log(Level.WARNING, "HQ Tick tracking encountered an error", e);
@@ -574,7 +574,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			}
 		}
 	}
-	
+
 	@Override
 	public void unregisterListeners() {
 	}
@@ -586,23 +586,23 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	@Override
 	public void dataCleanup() {
 		stopHq();
-		
+
 		if (tickTask > 0) {
 			Bukkit.getScheduler().cancelTask(tickTask);
 		}
-		
+
 		if (listTask != null) {
 			try {
 				listTask.cancel();
 			} catch (Exception e) {
-				
+
 			}
 		}
 		if (thresholdTask != null) {
 			try {
 				thresholdTask.cancel();
 			} catch (Exception e) {
-				
+
 			}
 		}
 	}
@@ -615,7 +615,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			return "Timings Hack enabled.";
 		}
 	}
-	
+
 	public static TimingsHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new TimingsHackConfig(plugin, config);
 	}
@@ -655,7 +655,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return 12 + (int) Math.floor(1d - ((double) avgTick / (double) avgSec) * 22d);
 			}
 		}
-		
+
 		@SuppressWarnings("deprecation")
 		private byte resolveColor(long tickLength) {
 			if (tickLength <= 10000l) {
@@ -678,7 +678,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return MapPalette.matchColor(0, 0, 0); //.WHITE;
 			}
 		}
-		
+
 		private int resolveWidth(long tickLength) {
 			if (tickLength <= 50000000l){
 				return 1;
@@ -692,7 +692,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return 5;
 			}
 		}
-		
+
 		@Override
 		public void render(MapView view, MapCanvas canvas, Player player) {
 			if (!isEnabled()) return;
@@ -705,9 +705,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				int newRow = 127;
 				int nextCol = 105;
 				int downCol = 107;
-				
+
 				long tickAvg = 0l;
-				
+
 				for (int displace = 0; displace < 2560; displace++) {
 					if (newRow != lastRow) {
 						// clear row
@@ -720,22 +720,22 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					if (activeIdx < 0) activeIdx += LQ_CYCLES;
 					long recorded = ticks[activeIdx];
 					tickAvg += recorded;
-					
+
 					byte color = resolveColor(recorded);
 					for (int j = 0; j < resolveWidth(recorded);j++,nextCol--) {
 						canvas.setPixel(newRow, nextCol, color);
 					}
 					canvas.setPixel(newRow, downCol++, color);
-					
+
 					if (displace % 20 == 19) {
 						long localAvg = Math.floorDiv(tickAvg, 20l);
 						canvas.setPixel(newRow, resolveY(localAvg, (long)avgTick), resolveColor(localAvg));
-						
+
 						if (canvas.getPixel(newRow, 12) == 0) canvas.setPixel(newRow, 12, MapPalette.LIGHT_GRAY);
 						if (canvas.getPixel(newRow, 85) == 0) canvas.setPixel(newRow, 85, MapPalette.DARK_GRAY);
 						if (canvas.getPixel(newRow, 86) == 0) canvas.setPixel(newRow, 86, MapPalette.DARK_GRAY);
 						if (canvas.getPixel(newRow, 106) == 0) canvas.setPixel(newRow, 106, MapPalette.DARK_GRAY);
-						
+
 						tickAvg = 0l;
 						newRow--;
 						nextCol = 105;
@@ -747,18 +747,18 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			}
 		}
 	}
-	
+
 	class BindTimingMap extends MapRenderer {
 
 		private String regex;
 		private int errorCount = 0;
-		
+
 		public BindTimingMap(String regex) {
 			super();
 			this.regex = regex;
 			this.errorCount = 0;
 		}
-		
+
 		/**
 		 * A neat little shapefitting function from 0 to 34 done partwise
 		 * @param avgSec
@@ -774,7 +774,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return 22 + (int) Math.floor(1d - ((double) avgTick / (double) avgSec) * 12d);
 			}
 		}
-		
+
 		/**
 		 * Deals with color at 10% to 40% of total tick -- above 40% will be full white; 10% green, and so on.
 		 * 
@@ -803,7 +803,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return MapPalette.matchColor(0,0,0); //WHITE;
 			}
 		}
-		
+
 		private int resolveWidth(long tickLength) {
 			if (tickLength <= 5000000l){
 				return 1;
@@ -817,7 +817,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				return 3;
 			}
 		}
-		
+
 		@Override
 		public void render(MapView view, MapCanvas canvas, Player player) {
 			if (!isEnabled() || !hqActive) return;
@@ -830,10 +830,10 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				int newRow = 127;
 				int nextCol = 105;
 				int downCol = 107;
-				
+
 				long avgUtil = 0l;
 				long avgTick = 0l;
-				
+
 				for (int displace = 0; displace < 2560; displace++) {
 					if (newRow != lastRow) {
 						// clear row
@@ -844,7 +844,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					}
 					int activeIdx = storeStart - displace;
 					if (activeIdx < 0) activeIdx += LQ_CYCLES;
-					
+
 					Long binding = hqTickMap[activeIdx].reduceValues(10000, (ClassMethod v) -> {
 						if (v != null && v.matches(regex)) {
 							return Long.valueOf(v.max());
@@ -860,32 +860,32 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					if(binding == null) {
 						binding = 0l;
 					}
-					
+
 					long recorded = ticks[activeIdx];
-					
+
 					avgTick += recorded;
 					avgUtil += binding;
-					
+
 					byte color = resolveColor(binding);
 					for (int j = 0; j < resolveWidth(binding);j++,nextCol--) {
 						canvas.setPixel(newRow, nextCol, color);
 					}
 					canvas.setPixel(newRow, downCol++, color);
-					
+
 					if (displace % 20 == 19) {
 						// now draw avg ratio up top.
 						long tAvg = Math.floorDiv(avgUtil, 20l);
 						canvas.setPixel(newRow, resolveY(tAvg, Math.floorDiv(avgTick, 20l)), resolveColor(tAvg));
-						
+
 						if (canvas.getPixel(newRow, 22) == 0) canvas.setPixel(newRow, 22, MapPalette.LIGHT_GRAY);
 						if (canvas.getPixel(newRow, 85) == 0) canvas.setPixel(newRow, 85, MapPalette.DARK_GRAY);
 						if (canvas.getPixel(newRow, 86) == 0) canvas.setPixel(newRow, 86, MapPalette.DARK_GRAY);
 						if (canvas.getPixel(newRow, 106) == 0) canvas.setPixel(newRow, 106, MapPalette.DARK_GRAY);
-						
+
 						// then reset
 						avgUtil = 0l;
 						avgTick = 0l;
-						
+
 						newRow--;
 						nextCol = 105;
 						downCol = 107;
@@ -911,41 +911,41 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	class ClassMethod implements Comparable<ClassMethod>{
 		String clazz = null;
 		ConcurrentHashMap<String, Long> method = null;
-		
+
 		long max = 0l; //nanoseconds
-		
+
 		public ClassMethod(String clazz) {
 			this.clazz = clazz;
 			this.method = new ConcurrentHashMap<String, Long>();
 			this.max = 0l;
 		}
-		
+
 		public void inc(String method, long elapsed) {
 			Long newm = this.method.merge(method, elapsed, (x, y) -> x + y); // insert, or merge if already present.
 			if (newm > max) {
 				max = newm;
 			}
 		}
-		
+
 		public String getClazz() {
 			return clazz;
 		}
-		
+
 		public long max() {
 			return max;
 		}
-		
+
 		public int methodCount() {
 			return this.method.size();
 		}
-		
+
 		public double fraction(String method) {
 			Long num = timeIn(method);
 			if (max <= 0l) return 0d;
 			if (num <= 0l) return 0d;
 			return (double) num / (double) max;
 		}
-		
+
 		public long timeIn(String method) {
 			return this.method.getOrDefault(method, 0L);
 		}
@@ -954,50 +954,50 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		public int compareTo(ClassMethod o) {
 			return clazz.compareTo(o.clazz);
 		}
-		
+
 		@Override
 		public int hashCode() {
 			return clazz.hashCode();
 		}
-		
+
 		public boolean matches(String regex) {
 			return clazz.contains(regex); //.matches(regex);
 		}
 	}
-	
+
 	class ListTask extends BukkitRunnable {
 
 		public static final long CANCEL_AFTER = 1000l;
-		
+
 		Set<String> classOptions = Sets.newConcurrentHashSet();
-		
+
 		long lastAdd = 0l;;
 		int lastTickInternal = -1;
-		
+
 		WeakReference<CommandSender> sender = null;
-		
+
 		public ListTask(CommandSender sender) {
 			super();
 			this.sender = new WeakReference<CommandSender>(sender);
 		}
-		
+
 		@Override
 		public void run() {
 			if (lastTickInternal == tickRecord) return;
-					
+
 			if (lastAdd == 0l) {
 				lastAdd = System.currentTimeMillis();
 			}
-			
+
 			int checkTick = tickRecord - 1;
 			if (checkTick < 0) {
 				checkTick += TimingsHack.LQ_CYCLES;
 			}
-			
+
 			ArrayList<String> keys = new ArrayList<String>(hqTickMap[checkTick].keySet());
-			
+
 			keys.removeAll(classOptions);
-			
+
 			if (keys.isEmpty()) {
 				if (System.currentTimeMillis() - lastAdd > CANCEL_AFTER) {
 					this.cancel();
@@ -1014,41 +1014,41 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					this.cancel();
 				}
 			}
-			
+
 			lastTickInternal = tickRecord;
 		}
-		
+
 	}
 
 	class ThresholdTask extends BukkitRunnable {
 
 		Set<String> classOptions = Sets.newConcurrentHashSet();
-		
+
 		int lastTickInternal = -1;
-		
+
 		double threshold = 1.5d;
-		
+
 		WeakReference<CommandSender> sender = null;
-		
+
 		public ThresholdTask(CommandSender sender, double threshold) {
 			super();
 			this.sender = new WeakReference<CommandSender>(sender);
 			this.threshold = threshold;
 		}
-		
+
 		@Override
 		public void run() {
 			if (lastTickInternal == tickRecord) return;
-					
+
 			int checkTick = tickRecord - 1;
 			if (checkTick < 0) {
 				checkTick += TimingsHack.LQ_CYCLES;
 			}
-			
+
 			if ( (double) ticks[checkTick] <= avgTick * threshold ) {
 				return;
 			}
-			
+
 			StringBuilder badTick = new StringBuilder();
 			badTick.append(ChatColor.AQUA).append("Typical tick is ").append(ChatColor.GREEN).append(String.format("%.2f", avgTick)).append("ns");
 			badTick.append(ChatColor.AQUA).append(" this tick was ").append(ChatColor.RED).append(String.format("%d", ticks[checkTick])).append("ns");
@@ -1056,9 +1056,9 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					.append(String.format(" %13d", hqToLqCpuTime[checkTick])).append(ChatColor.AQUA).append("ns")
 					.append(ChatColor.AQUA).append("\n   Elapsed Time: \n").append(ChatColor.BLUE)
 					.append(String.format(" %13d", hqToLqElapsedTime[checkTick])).append(ChatColor.AQUA).append("ns");
-			
+
 			TreeMap<Long, String> reveals = new TreeMap<Long, String>();
-			
+
 			for (ClassMethod cm : hqTickMap[checkTick].values()) {
 					reveals.compute(cm.max(), (k, S) -> {
 						if (S != null) {
@@ -1068,25 +1068,25 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 						}
 					});
 			}
-			
+
 			for (Long key : reveals.descendingKeySet()) {
 				badTick.append(reveals.get(key));
 			}
 			ArrayList<String> keys = new ArrayList<String>(hqTickMap[checkTick].keySet());
-			
+
 			keys.removeAll(classOptions);
-			
+
 			CommandSender toSend = sender.get();
 			if (toSend != null) {
 				toSend.sendMessage(badTick.toString());
 			} else {
 				this.cancel();
 			}
-			
+
 			lastTickInternal = tickRecord;
 		}
-		
+
 	}
 
 }
-	
+

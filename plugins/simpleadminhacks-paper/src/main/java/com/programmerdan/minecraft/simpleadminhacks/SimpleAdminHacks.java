@@ -3,25 +3,25 @@ package com.programmerdan.minecraft.simpleadminhacks;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.logging.Level;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.CommandExecutor;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.reflect.ClassPath;
 
@@ -48,7 +48,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void onEnable() {
 		SimpleAdminHacks.plugin = this;
 		this.hacks = new LinkedList<SimpleHack<?>>();
-		
+
 		// Config bootstrap
 		this.saveDefaultConfig();
 		this.reloadConfig();
@@ -60,8 +60,8 @@ public class SimpleAdminHacks extends JavaPlugin {
 			this.setEnabled(false);
 			return;
 		}
-		
-		
+
+
 		// Now load all the Hacks and register.
 		ConfigurationSection hackConfigs = this.getConfig().getConfigurationSection("hacks");
 		try {
@@ -88,7 +88,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 						} else {
 							log(Level.INFO, "Hack for {0} found but no configuration, skipping.", clazz.getSimpleName());
 						}
-						
+
 						if (hackingConfig != null) {
 							log(Level.INFO, "Configuration for Hack {0} found, instance: {1}", clazz.getSimpleName(), hackingConfig.toString());
 							SimpleHack<?> hack = null;
@@ -101,7 +101,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 							} catch (Exception e) {
 								log(Level.WARNING, "Failed to activate {0} hack, configuration failed: {1}", clazz.getSimpleName(), e.getMessage());
 							}
-							
+
 							if (hack == null) {
 								log(Level.WARNING, "Failed to create a Hack of type {0}", clazz.getSimpleName());
 							} else {
@@ -215,7 +215,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		if (!config.isDebug()) return;
 		log(Level.INFO, SimpleAdminHacks.debugPrefix + message);
 	}
-	
+
 	public void debug(String message, Object object) {
 		if (!config.isDebug()) return;
 		log(Level.INFO, SimpleAdminHacks.debugPrefix + message, object);
@@ -230,7 +230,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		if (!config.isDebug()) return;
 		log(Level.INFO, SimpleAdminHacks.debugPrefix + message, objects);
 	}
-	
+
 	public void log(String message) {
 		getLogger().log(Level.INFO, message);
 	}
@@ -250,9 +250,9 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void log(Level level, String message, Object...objects) {
 		getLogger().log(level, message, objects);
 	}
-	
+
 	// Other non-static convenience aides
-	
+
 	public boolean serverHasPlugin(String pluginName) {
 		return this.getServer().getPluginManager().isPluginEnabled(pluginName);
 	}
@@ -307,7 +307,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public void serverSendConsoleMessage(String message) {
 		this.serverConsoleSender().sendMessage(message);
 	}
-	
+
 	// Non-static Server accessor helps (facilitates testing)
 
 	public ConsoleCommandSender serverConsoleSender() {
@@ -321,7 +321,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public Set<OfflinePlayer> serverOperators(){
 		return this.getServer().getOperators();
 	}
-	
+
 	public void registerListener(Listener listener) {
 		this.getServer().getPluginManager().registerEvents(listener, this);
 	}
@@ -348,7 +348,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 			log(Level.WARNING, "Failed to register Executor for {0}, please define that command in the plugin.yml first.", command);
 		}
 	}
-	
+
 	/**
 	 * Definitely not safe. Used for Insight hack.
 	 * @return the ClassLoader for this plugin.
@@ -356,5 +356,5 @@ public class SimpleAdminHacks extends JavaPlugin {
 	public ClassLoader exposeClassLoader() {
 		return this.getClassLoader();
 	}
-		
+
 }

@@ -1,23 +1,23 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.InvisibleFixConfig;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.UUID;
+import java.util.concurrent.LinkedTransferQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.util.concurrent.LinkedTransferQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.UUID;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.configs.InvisibleFixConfig;
 
 /**
  * Sometimes when joining, a player is invisible due to some kind of spigot bug that's been
@@ -32,14 +32,14 @@ import java.util.UUID;
 public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements Listener {
 	public static final String NAME = "InvisibleFix";
 	private AtomicInteger activeJoins = new AtomicInteger(0);
-	
+
 	private LinkedTransferQueue<UUID> ltq = new LinkedTransferQueue<UUID>();
 	private BukkitTask recheckTask = null;
 
 	public InvisibleFix(SimpleAdminHacks plugin, InvisibleFixConfig config) {
 		super(plugin, config);
 	}
-	
+
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void JoinEvent(PlayerJoinEvent event) {
 		if (!config.isEnabled()) return; // ignore if off
@@ -51,7 +51,7 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 		if (p.isOp() && config.getIgnoreOps()) return;
 		String tPerm = config.getIgnorePermission();
 		if (tPerm != null && p.hasPermission(tPerm)) return;
-		
+
 		Bukkit.getScheduler().runTaskLater(plugin(), new Runnable() {
 				@Override
 				public void run() {
@@ -94,7 +94,7 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 					config.getRecheckInterval(), config.getRecheckInterval());
 		}
 	}
-	
+
 	private void doRecheck() {
 		// unspool, then recheck.
 		plugin().debug("Refixing invisibles...");
@@ -178,7 +178,7 @@ public class InvisibleFix extends SimpleHack<InvisibleFixConfig> implements List
 			return "InvisibleFix not active";
 		}
 	}
-	
+
 	public static InvisibleFixConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new InvisibleFixConfig(plugin, config);
 	}

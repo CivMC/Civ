@@ -45,7 +45,7 @@ public abstract class SimpleHackConfig {
 	public ConfigurationSection getBase() {
 		return base;
 	}
-	
+
 	protected SimpleAdminHacks plugin() {
 		if (this.plugin == null) {
 			return SimpleAdminHacks.instance();

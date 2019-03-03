@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks.util;
 
 import java.util.LinkedList;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.Material;

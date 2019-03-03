@@ -1,15 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
 import java.util.Arrays;
+import java.util.logging.Level;
 
 import org.apache.commons.lang.StringUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import java.util.logging.Level;
 
 /**
  * Base command handler that listens for the "hacks" command allowing CnC of all the loaded or unloaded hacks.
@@ -25,14 +23,14 @@ public class CommandListener implements CommandExecutor {
 	public CommandListener() {
 		this(SimpleAdminHacks.instance());
 	}
-	
+
 	/**
 	 * Instantiate with provided plugin, useful for testing
 	 */
 	public CommandListener(SimpleAdminHacks plugin) {
 		this.plugin = plugin;
 	}
-	
+
 	/**
 	 * Captures invocations of "hacks". Will attempt to command and control the various hacks as best as possible
 	 * based on that.

@@ -1,12 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -23,7 +20,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -39,7 +35,6 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Dispenser;
 import org.bukkit.material.Hopper;
-import org.bukkit.scheduler.BukkitTask;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -128,6 +123,30 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			}
 			genStatus.append("  Tree wraparound fix ");
 			if (config.stopTreeWraparound()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  Maintain flat bedrock ");
+			if (config.maintainFlatBedrock()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  Maintain flat bedrock ");
+			if (config.maintainFlatBedrock()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  Fix pearl glitches ");
+			if (config.fixPearlGlitch()) {
+				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
+			} else {
+				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
+			}
+			genStatus.append("  Prevent long signs ");
+			if (config.isPreventLongSigns()) {
 				genStatus.append(ChatColor.GREEN).append("enabled\n").append(ChatColor.RESET);
 			} else {
 				genStatus.append(ChatColor.RED).append("disabled\n").append(ChatColor.RESET);
@@ -240,15 +259,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				if (type == Material.ENDER_PORTAL) {
 					event.setCancelled(true);
 				}
-
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerEnterBed(BlockPlaceEvent event) {
 		if (!config.isEnabled() || !config.stopBedBombing()) return;
-		
+
 		Block b = event.getBlock();
 		if (!(b.getType() == Material.BED || b.getType() == Material.BED_BLOCK))
 			return;
@@ -259,7 +277,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		if(config.isEnabled() && config.stopTreeWraparound()) {
@@ -277,7 +295,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onTouchBedrock(PlayerInteractEvent event) {
 		if(config.isEnabled() && config.maintainFlatBedrock() && event.getClickedBlock() != null 
@@ -287,13 +305,13 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			});
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPearlTeleport(PlayerTeleportEvent event) {
 		if(config.isEnabled() && config.fixPearlGlitch() && event.getCause() == TeleportCause.ENDER_PEARL) {
 			Location to = event.getTo();
 			World world = to.getWorld();
-			
+
 			Block toBlock = to.getBlock();
 			Block above = toBlock.getRelative(BlockFace.UP);
 			Block below = toBlock.getRelative(BlockFace.DOWN);
@@ -338,7 +356,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			default:
 				break;
 			}
-			
+
 			boolean upperBlockBypass = false;
 			if (height >= 0.5) {
 				Block aboveHeadBlock = above.getRelative(BlockFace.UP);
@@ -348,11 +366,11 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 					upperBlockBypass = true;
 				}
 			}
-			
+
 			to.setX(Math.floor(to.getX() + 0.5000));
 			to.setY(Math.floor(to.getY() + height));
 			to.setZ(Math.floor(to.getZ() + 0.5000));
-			
+
 			if (above.getType().isSolid() || (toBlock.getType().isSolid() && !lowerBlockBypass) 
 					|| upperBlockBypass) {
 				boolean bypass = false;
@@ -366,58 +384,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			}
 		}
 	}
-	
-	private Map<Chunk, Integer> waterChunks = new HashMap<Chunk, Integer>();
-	BukkitTask waterSchedule = null;
-	@EventHandler(priority = EventPriority.LOWEST)
-	public void stopPercolators(BlockFromToEvent event) {
-		if(config.isEnabled()) {
-			try {
-				Block to = event.getToBlock();
-				Block from = event.getBlock();
-				if(to.getLocation().getBlockY() >= config.getMaxFluidHeight()) {
-					Material mat = from.getType();
-					if(!(mat == Material.WATER || mat == Material.STATIONARY_WATER ||
-							mat == Material.LAVA || mat == Material.STATIONARY_LAVA)) {
-						return;
-					}
-					Chunk chunk = to.getChunk();
-					if(!waterChunks.containsKey(chunk)) {
-						waterChunks.put(chunk, 0);
-					}
-					waterChunks.put(chunk, waterChunks.get(chunk) + 1);
-					World world = chunk.getWorld();
-					Chunk[] chunks = {
-						world.getChunkAt(chunk.getX(), chunk.getZ()), world.getChunkAt(chunk.getX()-1, chunk.getZ()),
-				        world.getChunkAt(chunk.getX(), chunk.getZ()-1), world.getChunkAt(chunk.getX()-1, chunk.getZ()-1),
-				        world.getChunkAt(chunk.getX()+1, chunk.getZ()), world.getChunkAt(chunk.getX(), chunk.getZ()+1),
-				        world.getChunkAt(chunk.getX()+1, chunk.getZ()+1), world.getChunkAt(chunk.getX()-1, chunk.getZ()+1),
-				        world.getChunkAt(chunk.getX()+1, chunk.getZ()-1)
-					};
-					int amount = 0;
-					for(Chunk c : chunks) {
-						Integer count = waterChunks.get(c);
-						if(count != null) {
-							amount += count;
-						}
-					}
-					if(amount > config.getMaxFluidAmount()) {
-						event.setCancelled(true);
-					}
-					if(waterSchedule == null) {
-						waterSchedule = Bukkit.getScheduler().runTaskLater(plugin(), () -> {
-							waterChunks.clear();
-							waterSchedule = null;
-						}, config.getMaxFluidTimer());
-					}
-				}
-			} catch (Exception e) {
-				plugin().log(Level.INFO, "Tried getting info from a chunk before it was generated");
-				return;
-			}
-		}
-	}
-	
+
 	//fixes a small side effect of the above
 	BlockFace[] faces = new BlockFace[] {BlockFace.NORTH,BlockFace.SOUTH,BlockFace.EAST,BlockFace.WEST};
 	@EventHandler
@@ -430,7 +397,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			event.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(ignoreCancelled = true)
 	public void onSignChange(SignChangeEvent event) {
 		if(config.isEnabled() && config.isPreventLongSigns()) {

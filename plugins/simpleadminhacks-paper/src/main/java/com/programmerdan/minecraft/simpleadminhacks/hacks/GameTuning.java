@@ -67,7 +67,7 @@ import net.md_5.bungee.api.ChatColor;
  */
 public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener {
 	public static final String NAME = "GameTuning";
-	
+
 	private Random rng = new Random();
 
 	public GameTuning(SimpleAdminHacks plugin, GameTuningConfig config) {
@@ -304,7 +304,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 		}
 	}
-	
+
 	@EventHandler
 	public void onEntityTarget(EntityTargetEvent event) {
 		if(config.isEnabled() && config.stopTrapHorses()) {
@@ -327,7 +327,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			event.setCancelled(cancel);
 		}
 	}
-	
+
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		if(config.isEnabled() && !config.canPlace(event.getBlock().getType())) {
@@ -335,7 +335,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			event.getPlayer().sendMessage(ChatColor.RED + "You're not allowed to place that!");
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(config.isEnabled() && !config.allowVillagerTrading()) {
@@ -345,7 +345,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onEntityChangeBLock(EntityChangeBlockEvent event) {
 		if(config.isEnabled() &&
@@ -354,87 +354,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			event.setCancelled(true);
 		}
 	}
-	
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void spawnMoreHellMonsters(CreatureSpawnEvent event) {
-		final Location loc = event.getLocation();
-		final World world = loc.getWorld();
-		Block block = loc.getBlock();
-		boolean portal = block.getType() == Material.PORTAL || block.getType() == Material.OBSIDIAN;
-		if(portal) {
-			if(rng.nextInt(1000000) >= config.getPigPortalSpawnMultiplier()) {
-				event.setCancelled(true);
-				return;
-			}
-		}
-		if(event.getEntityType() == EntityType.PIG_ZOMBIE) {
-			int wither = portal ? config.getExtraWitherPortalSpawnRate() : config.getExtraWitherSpawnRate();
-			int ghast = portal ? config.getExtraGhastPortalSpawnRate() : config.getExtraGhastSpawnRate();
-			int magma = portal ? 0 : config.getExtraMagmaSpawnRate();
-			if(rng.nextInt(1000000) < wither) {
-				event.setCancelled(true);
-				world.spawnEntity(loc, EntityType.WITHER_SKELETON);
-			} else if(rng.nextInt(1000000) < ghast) {
-				event.setCancelled(true);
-				int x = loc.getBlockX();
-				int z = loc.getBlockZ();
-				List<Integer> heights = new ArrayList<Integer>(16);
-				int last = 2;
-				int empty = 0;
-				int max = world.getMaxHeight();
-				for(int y = 2; y < max; y++) {
-					block = world.getBlockAt(x, y, z);
-					if(block.isEmpty()) {
-						if(++empty == 11) {
-							heights.add(last + 2);
-						}
-					} else {
-						last = y;
-						empty = 0;
-					}
-				}
-				if(heights.size() <= 0) {
-					return;
-				}
-				loc.setY(heights.get(rng.nextInt(heights.size())));
-				world.spawnEntity(loc, EntityType.GHAST);
-			} else if(rng.nextInt(1000000) < magma) {
-				event.setCancelled(true);
-				world.spawnEntity(loc, EntityType.MAGMA_CUBE);
-			}
-		}
-	}
-	
-	@EventHandler
-	public void adjustWitherSkulls(EntityDeathEvent event) {
-		if(config.isEnabled() && event.getEntity() instanceof WitherSkeleton) {
-			int rate = config.getWitherSkullDropRate();
-			if(rate < 0 || rate > 1000000) return;
-			List<ItemStack> drops = event.getDrops();
-			for(int i = 0; i < drops.size(); i++) {
-				if(drops.get(i).getType() == Material.SKULL_ITEM) {
-					drops.remove(i);
-				}
-			}
-			if(rng.nextInt(1000000) < rate) {
-				ItemStack skull = new ItemStack(Material.SKULL_ITEM);
-				skull.setAmount(1);
-				skull.setDurability((short)1);
-				drops.add(skull);
-			}
-		}
-	}
-	
-	@EventHandler
-	public void onPlayerEatGoldenApple(PlayerInteractEvent event) {
-		if(config.isEnabled() && !config.allowEnchantedApples()) {
-			if(event.getItem() != null && event.getItem().getType() == Material.GOLDEN_APPLE
-					&& event.getItem().getDurability() == 1) {
-				event.getItem().setDurability((short) 1);
-			}
-		}
-	}
-	
+
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1

@@ -4,18 +4,18 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.ChatColor;
 
-import net.minelink.ctplus.event.PlayerCombatTagEvent;
-
+import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
 import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+
+import net.minelink.ctplus.event.PlayerCombatTagEvent;
 
 /**
  * Ties into CombatTagPlus, listens for {@link PlayerCombatTagEvent}
@@ -23,11 +23,11 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
  * @author ProgrammerDan
  */
 public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener{
-	
+
 	public static final String NAME = "CombatTagAnnounce";
-	
+
 	private Map<UUID, Long> lastCTAnnounce;
-	
+
 	public CTAnnounce(SimpleAdminHacks plugin, CTAnnounceConfig config) {
 		super(plugin, config);
 
@@ -36,7 +36,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 			config.setEnabled(false);
 		}
 	}
-	
+
 	/**
 	 * Capture player combattag and broadcast it
 	 * 
@@ -47,7 +47,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 		if (!config.isEnabled()) return; // ignore if off
 		if (event.getVictim() == null || event.getAttacker() == null) return; // ignore non-pvp and admin-pvp
 		plugin().debug("  Victim: {0} Attacker: {1}", event.getVictim().getName(), event.getAttacker().getName());
-		
+
 		// Throttle broadcast frequency
 		Long lastTag = lastCTAnnounce.get(event.getVictim().getUniqueId());
 		Long now = System.currentTimeMillis();
@@ -56,7 +56,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 
 		// Prepare message
 		String cleanMessage = cleanMessage(event);
-		
+
 		// Overlap is possible. Some people might get double-notified
 		for (BroadcastLevel level : config.getBroadcast()) {
 			plugin().debug("  Broadcast to {0}", level);
@@ -76,7 +76,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 			}
 		}
 	}
-	
+
 	private String cleanMessage(PlayerCombatTagEvent event) {
 		return ChatColor.translateAlternateColorCodes('&',
 				config.getBroadcastMessage()
@@ -124,7 +124,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 			return "CombatTagPlus.PlayerCombatTagEvent monitoring not active";
 		}
 	}
-	
+
 	public static CTAnnounceConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new CTAnnounceConfig(plugin, config);
 	}

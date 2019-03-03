@@ -23,7 +23,7 @@ public class BadBoyWatchConfig extends SimpleHackConfig {
 	private boolean clearOnMatch;
 	private int minDepthToMatch;
 	private Set<Material> watchedMaterials;
-	
+
 	private static final List<Material> defaultWatched = Arrays.asList(
 			Material.CHEST,
 			Material.JUKEBOX,
@@ -33,7 +33,7 @@ public class BadBoyWatchConfig extends SimpleHackConfig {
 			Material.ENDER_CHEST,
 			Material.FURNACE,
 			Material.SPONGE);
-	
+
 	public BadBoyWatchConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}

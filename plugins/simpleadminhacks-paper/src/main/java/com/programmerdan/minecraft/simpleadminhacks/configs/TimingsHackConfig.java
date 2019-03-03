@@ -33,23 +33,23 @@ public class TimingsHackConfig extends SimpleHackConfig {
 			}
 		}
 	}
-	
+
 	public Short getTimingsMap() {
 		return timingsMap;
 	}
-	
+
 	public void setTimingsMap(short mapId) {
 		timingsMap = mapId;
 		getBase().set("timingMap", mapId);
 	}
-	
+
 	public Short getBindMap(String bind) {
 		if (bind == null) {
 			return null;
 		}
 		return bindMaps.get(bind);
 	}
-	
+
 	public void setBindMap(String bind, short mapId) {
 		Short prior = bindMaps.replace(bind, mapId);
 		if (prior != null) {
@@ -58,7 +58,7 @@ public class TimingsHackConfig extends SimpleHackConfig {
 		reverseBindMaps.replace(mapId, bind);
 		getBase().set("bindings." + bind, mapId);
 	}
-	
+
 	public String getBindFromId(short mapId) {
 		return reverseBindMaps.get(mapId);
 	}

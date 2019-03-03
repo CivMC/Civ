@@ -11,20 +11,20 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
  * @author ProgrammerDan
  */
 public class InvisibleFixTwoConfig extends SimpleHackConfig {
-	
+
 	/**
 	 * How many ticks after teleport to attempt to force a refresh of player position.
 	 */
 	private long teleportFixDelay;
-	
+
 	/**
 	 * How many milliseconds in between each forced update of player position.
 	 */
 	private long fixInterval;
-	
+
 	private boolean ignoreOps;
 	private String ignorePermission;
-	
+
 	public InvisibleFixTwoConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
@@ -37,19 +37,19 @@ public class InvisibleFixTwoConfig extends SimpleHackConfig {
 		this.ignorePermission = config.getString("ignorePermission", "sah.allowInvisible");
 		if (this.ignorePermission.equals("")) this.ignorePermission = null;
 	}
-	
+
 	public long getTeleportFixDelay() {
 		return this.teleportFixDelay;
 	}
-	
+
 	public long getFixInterval() {
 		return this.fixInterval;
 	}
-	
+
 	public boolean getIgnoreOps() {
 		return this.ignoreOps;
 	}
-	
+
 	public String getIgnorePermission() {
 		return this.ignorePermission;
 	}

@@ -15,11 +15,11 @@ public class HackBotConfig extends SimpleHackConfig {
 
 	private ConfigurationSection bots;
 	private boolean spawnOnLoad;
-	
+
 	public HackBotConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
 	}
-	
+
 	public HackBotConfig(ConfigurationSection base) {
 		super(SimpleAdminHacks.instance(), base);
 	}
@@ -32,7 +32,7 @@ public class HackBotConfig extends SimpleHackConfig {
 		}
 		spawnOnLoad = config.getBoolean("spawn_on_load", false);
 	}
-	
+
 	public ConfigurationSection getBots() {
 		return bots;
 	}
@@ -40,7 +40,7 @@ public class HackBotConfig extends SimpleHackConfig {
 	public boolean doSpawnOnLoad() {
 		return spawnOnLoad;
 	}
-	
+
 	public void setSpawnOnLoad(boolean spawnOnLoad) {
 		if (this.isEnabled()) {
 			getBase().set("spawn_on_load", spawnOnLoad);

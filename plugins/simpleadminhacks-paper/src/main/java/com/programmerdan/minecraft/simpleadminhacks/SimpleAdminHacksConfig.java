@@ -42,7 +42,7 @@ public class SimpleAdminHacksConfig {
 		if (this.debug) {
 			this.plugin.log("Debug messages enabled");
 		}
-		
+
 		this.broadcastPermission = config.getString("broadcast_permission", "simpleadmin.broadcast");
 		if (this.debug) {
 			this.plugin.log(Level.INFO, "broadcast_permission set to {0}", this.broadcastPermission);
@@ -62,7 +62,7 @@ public class SimpleAdminHacksConfig {
 		config.set(node, value);
 		plugin.saveConfig();
 	}
-	
+
 	public String getBroadcastPermission() {
 		return this.broadcastPermission;
 	}

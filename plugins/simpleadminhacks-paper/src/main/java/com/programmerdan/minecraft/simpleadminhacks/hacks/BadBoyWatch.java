@@ -1,9 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -35,11 +35,11 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 	 */
 	private Map<UUID, BadBoyRecord> boys = null;
 	private Map<UUID, BadBoyRecord> lowBoys = null;
-	
+
 	public BadBoyWatch(SimpleAdminHacks plugin, BadBoyWatchConfig config) {
 		super(plugin, config);
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void breakListenLow(BlockBreakEvent bbe) {
 		if (!config.isEnabled()) return;
@@ -48,7 +48,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			Block block = bbe.getBlock();
 			BlockState bs = block.getState();
 			Material material = bs.getType();
-			
+
 			lowTrackAndReport(player.getUniqueId(), block.getLocation(), material);
 		} catch (Exception e) {
 			// insane catchall
@@ -64,23 +64,23 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			Block block = bbe.getBlock();
 			BlockState bs = block.getState();
 			Material material = bs.getType();
-			
+
 			trackAndReport(player.getUniqueId(), block.getLocation(), material);
 		} catch (Exception e) {
 			// insane catchall
 			plugin().log(Level.WARNING, "Failed to track a break for badboy", e);
 		}
 	}
-	
+
 	private void trackAndReport(UUID uuid, Location location, Material material) {
 		if (uuid == null || location == null || material == null) return;
-		
+
 		BadBoyRecord record = boys.get(uuid);
 		if (record == null) {
 			record = new BadBoyRecord(config);
 			boys.put(uuid, record);
 		}
-		
+
 		String report = record.registerBreak(location, material);
 		if (report != null) {
 			plugin().log(uuid.toString() + "} " + report);
@@ -89,13 +89,13 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 
 	private void lowTrackAndReport(UUID uuid, Location location, Material material) {
 		if (uuid == null || location == null || material == null) return;
-		
+
 		BadBoyRecord record = lowBoys.get(uuid);
 		if (record == null) {
 			record = new BadBoyRecord(config);
 			lowBoys.put(uuid, record);
 		}
-		
+
 		String report = record.registerBreak(location, material);
 		if (report != null) {
 			plugin().log(uuid.toString() + "} FIRST HITS " + report);
@@ -136,7 +136,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			return "Bad Boy Listening disabled.";
 		}
 		StringBuffer status = new StringBuffer("Listening for bad boy breaks");
-		
+
 		status.append("\n  Currently watching ").append(boys.size()).append(" players.");
 		status.append("\n  Currently watching LOW ").append(lowBoys.size()).append(" players.");
 		return status.toString();
@@ -148,20 +148,20 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 
 	@Override
 	public void registerCommands() {}
-	
+
 	private static class BadBoyRecord {
 		private int nextBreak;
 		private int breakCount;
 		private BadBoyBlock[] breaks;
 		private BadBoyWatchConfig config;
-		
+
 		public BadBoyRecord(BadBoyWatchConfig config) {
 			this.config = config;
 			this.nextBreak = 0;
 			this.breakCount = 0;
 			this.breaks = new BadBoyBlock[config.getTrackingDepth() + 1];
 		}
-		
+
 		/**
 		 * Returns a string if this is a watched break that passes all checks.
 		 * Handles abiding the config too.
@@ -170,10 +170,10 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		 */
 		public synchronized String registerBreak(Location location, Material material) {
 			breaks[nextBreak] = new BadBoyBlock(location, material);
-			
+
 			nextBreak = (nextBreak + 1) % breaks.length;
 			breakCount ++;
-			
+
 			if (config.getWatchedMaterials().contains(material)) {
 				String breaks = null;
 				if (breakCount >= config.getMinDepthToMatch()) {
@@ -187,7 +187,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			}
 			return null;
 		}
-		
+
 		/**
 		 * Clears everything tracked and resets break pointer.
 		 */
@@ -197,7 +197,7 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 			}
 			nextBreak = 0;
 		}
-		
+
 		/**
 		 * Just outputs what we know right now.
 		 * @return a String showing locations and block materials
@@ -205,30 +205,30 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 		private String showBreaks() {
 			StringBuilder sb = new StringBuilder("BadBoyBreak: ");
 			int max = breaks.length;
-			
+
 			for (int i = (nextBreak - 1 + max) % max; i != nextBreak; i = (i - 1 + max) % max) {
 				BadBoyBlock bbb = breaks[i];
 				if (bbb == null) break;
 				sb.append('[').append(bbb.toString()).append(']');
 			}
-			
+
 			return sb.toString();
 		}
 	}
-	
+
 	private static class BadBoyBlock {
 		public final Location location;
 		public final Material material;
-		
+
 		public BadBoyBlock(Location location, Material material) {
 			this.location = location;
 			this.material = material;
 		}
-		
+
 		@Override
 		public String toString() {
 			StringBuilder se = new StringBuilder();
-			
+
 			se.append(location.getWorld().getName());
 			se.append('(').append(location.getBlockX()).append(',')
 				.append(location.getBlockY()).append(',')

@@ -18,10 +18,10 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.SanityHackConfig;
 public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener {
 
 	public static final String NAME = "SanityHack";
-	
+
 	private final int trackingLevel;
 	private int caughtPlayers; // Just to give a useful message in status tbh
-	
+
 	public SanityHack(SimpleAdminHacks plugin, SanityHackConfig config) {
 		super(plugin, config);
 		this.trackingLevel = config.getTrackingLevel();
@@ -31,29 +31,29 @@ public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener
 	public void onBlockBreak(BlockBreakEvent event){
 		if(!config.isEnabled()) return;
 		if(!config.isTrackingBreak()) return;
-		
-		
+
+
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
 
 		if (player == null) return;
 		if (block == null) return;
-		
+
 		if(block.getY() < trackingLevel){
 			plugin().log(Level.INFO, "Player({0}, {1}) caught breaking a block({2}) below Y {3} at {4}", player.getName(), player.getUniqueId().toString(), 
 					block.getType().toString(), trackingLevel, block.getLocation());
 			caughtPlayers++;
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled=true)
 	public void onBlockPlace(BlockPlaceEvent event){
 		if(!config.isEnabled()) return;
 		if(!config.isTrackingPlace()) return;
-		
+
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		
+
 		if (player == null) return;
 		if (block == null) return;
 
@@ -63,7 +63,7 @@ public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener
 			caughtPlayers++;
 		}
 	}
-	
+
 	@Override
 	public void registerListeners() {
 		if (config.isEnabled()) {
@@ -99,13 +99,13 @@ public class SanityHack extends SimpleHack<SanityHackConfig> implements Listener
 		if (!config.isEnabled()) {
 			return "Sanity Hack listening disabled.";
 		}
-		
+
 		return caughtPlayers + " caught below Y " + trackingLevel;
 	}
-	
+
 	public static SanityHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new SanityHackConfig(plugin, config);
 	}
 
 }
-	
+

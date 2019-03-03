@@ -1,34 +1,32 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import org.bukkit.event.Listener;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
-import org.bukkit.event.player.PlayerPortalEvent;
+import java.util.UUID;
+
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.entity.Player;
-import org.bukkit.Location;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.util.UUID;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerPortalEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
 
 public class Experimental extends SimpleHack<ExperimentalConfig> implements Listener, CommandExecutor {
 
 	public static final String NAME = "Experimental";
-	
+
 	public Experimental(SimpleAdminHacks plugin, ExperimentalConfig config) {
 		super(plugin, config);
 	}
@@ -123,7 +121,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	private void monitorTeleportTrack(PlayerPortalEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isPostTeleportSpy()) return;
-		
+
 		final Player player = event.getPlayer();
 
 		new BukkitRunnable() {
@@ -228,7 +226,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		StringBuffer sb = new StringBuffer("[HI]: ");
 		logCombat(event, sb);
 	}
-	
+
 	public static ExperimentalConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new ExperimentalConfig(plugin, config);
 	}

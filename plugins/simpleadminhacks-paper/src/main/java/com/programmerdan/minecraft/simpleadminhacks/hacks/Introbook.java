@@ -22,10 +22,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
-import com.programmerdan.minecraft.simpleadminhacks.CommandListener;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.HackBotConfig;
 import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 
 /**
@@ -39,7 +37,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 
 	public static final String NAME = "Introbook";
 	private static long bookGiftCount = 0l;
-	
+
 	private Set<UUID> hasBook;
 
 	public Introbook(SimpleAdminHacks plugin, IntrobookConfig config) {
@@ -85,13 +83,13 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void determineBookDrop(PlayerDeathEvent event) {
 		if (!config.isEnabled() || !config.doesFollow()) return;
-		
+
 		Player dead = event.getEntity();
 		if (dead == null) return;
-		
+
 		UUID puid = dead.getUniqueId();
 		if (puid == null) return;
-		
+
 		// Check if they have the book on them.
 		List<ItemStack> toDrop = event.getDrops();
 		for (int idx = 0; idx < toDrop.size(); idx++) {
@@ -107,29 +105,29 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void determineBookRespawn(PlayerRespawnEvent event) {
 		if (!config.isEnabled() || !config.doesFollow()) return;
-		
+
 		Player dead = event.getPlayer();
 		if (dead == null) return;
-		
+
 		UUID puid = dead.getUniqueId();
 		if (puid == null) return;
-		
+
 		if (this.hasBook.remove(puid)) {
 		    Inventory inv = dead.getInventory();
 		    inv.addItem(config.getIntroBook(dead));
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void determineBookJoin(PlayerJoinEvent event) {
 		if (!config.isEnabled()) return;
 
 		Player alive = event.getPlayer();
 		if (alive == null) return;
-		
+
 		UUID puid = alive.getUniqueId();
 		if (puid == null) return;
-		
+
 		if (!alive.hasPlayedBefore() || this.hasBook.contains(puid)) {
 			this.hasBook.remove(puid);
 		    Inventory inv = alive.getInventory();
@@ -171,16 +169,16 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 				sb.append("\n    ").append(ChatColor.RED).append("-- in error --");
 			}
 		}
-		
+
 		return sb.toString();
 	}
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (args.length < 1) return false;
-		
+
 		Player p = plugin().getServer().getPlayer(args[0]);
-		
+
 		if (p == null) {
 			try {
 				UUID pu = UUID.fromString(args[0]);
@@ -189,7 +187,7 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 				p = null;
 			}
 		}
-		
+
 		if (p == null) {
 			sender.sendMessage(ChatColor.RED + "Unable to find " + args[0]);
 		} else {
@@ -198,10 +196,10 @@ public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, 
 			Inventory inv = p.getInventory();
 			inv.addItem(config.getIntroBook(p));
 		}
-		
+
 		return true;
 	}
-	
+
 	public static IntrobookConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new IntrobookConfig(plugin, config);
 	}
