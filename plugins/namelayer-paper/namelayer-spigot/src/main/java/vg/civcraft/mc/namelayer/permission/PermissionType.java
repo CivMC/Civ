@@ -25,6 +25,13 @@ public class PermissionType {
 		permissionByName = new HashMap<String, PermissionType>();
 		permissionById = new TreeMap<Integer, PermissionType>();
 		maximumExistingId = 0;
+		Map <Integer,String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
+		for(Entry <Integer,String> perm : dbRegisteredPerms.entrySet()) {
+			int id = perm.getKey();
+			String name = perm.getValue();
+			maximumExistingId = Math.max(maximumExistingId, id);
+			internalRegisterPermission(id, name, new LinkedList<>(), null);
+		}
 		registerNameLayerPermissions();
 	}
 	
@@ -45,36 +52,26 @@ public class PermissionType {
 			Bukkit.getLogger().severe("Could not register permission, name was null");
 			return;
 		}
-		if (permissionByName.get(name) != null) {
-			Bukkit.getLogger().severe("Could not register permission " + name + ". It was already registered");
+		PermissionType existing = permissionByName.get(name);
+		if (existing != null) {
+			existing.update(defaultPermLevels, description);
 			return;
 		}
-		int id = -1;
-		Map <Integer,String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
-		for(Entry <Integer,String> perm : dbRegisteredPerms.entrySet()) {
-			if (perm.getValue().equals(name)) {
-				id = perm.getKey();
-				break;
-			}
+		//not in db yet
+		int id = maximumExistingId + 1;
+		maximumExistingId = id;
+		PermissionType perm = internalRegisterPermission(id, name, defaultPermLevels, description);
+		NameLayerPlugin.getGroupManagerDao().registerPermission(perm);
+		if (!defaultPermLevels.isEmpty()) {
+			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, perm);
 		}
-		PermissionType p;
-		if (id == -1) {
-			//not in db yet
-			id = maximumExistingId + 1;
-			while(dbRegisteredPerms.get(id) != null) {
-				id++;
-			}
-			maximumExistingId = id;
-			p = new PermissionType(name, id, defaultPermLevels, description);
-			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
-			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, p);
-		}
-		else {
-			//already in db, so use existing id
-			p = new PermissionType(name, id, defaultPermLevels, description);
-		}
+	}
+
+	private static PermissionType internalRegisterPermission(int id, String name, List <PlayerType> defaultPermLevels, String description) {
+		PermissionType p = new PermissionType(name, id, defaultPermLevels, description);
 		permissionByName.put(name, p);
 		permissionById.put(id, p);
+		return p;
 	}
 	
 	public static Collection<PermissionType> getAllPermissions() {
@@ -160,5 +157,10 @@ public class PermissionType {
 	
 	public String getDescription() {
 		return description;
+	}
+
+	public void update(List <PlayerType> defaultPermLevels, String description) {
+		this.defaultPermLevels = defaultPermLevels;
+		this.description = description;
 	}
 }
