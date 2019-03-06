@@ -7,6 +7,7 @@ softdepend: [CombatTagPlus]
 commands:
     finalereload:
         permission: finale.op
+        aliases: [reloadfinale]
 permissions:
     finale.op:
         default: op

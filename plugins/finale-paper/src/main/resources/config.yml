@@ -15,8 +15,11 @@ foodHealthRegen:
 pearls:
   enabled: true
   cooldown: 10s
+#Combat tag using CTP when pearling?
   combatTag: true
-  refundBlockedPearls: true
+#Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
+#but they wont be able to see a cooldown in chat anymore and sometimes it's a bit laggy
+  setVanillaCooldown: false
   
 #allows adjusting the attack damage of any item by its spigot material identifier
 weaponModification:
@@ -114,6 +117,7 @@ velocity:
 #'flatAddition' is a flat amount added per level. Flat addition is applied before the multiplier
 
 #The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT
+#Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
 damageModifiers: 
 #Decrease all damage by 20 % 
   ALL:

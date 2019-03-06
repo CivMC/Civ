@@ -31,7 +31,7 @@ public class ConfigParser {
 	private boolean pearlEnabled;
 	private long pearlCooldown;
 	private boolean combatTagOnPearl;
-	private boolean refundPearls;
+	private boolean setVanillaPearlCooldown;
 	private PotionHandler potionHandler;
 	private Collection<Enchantment> disabledEnchants;
 	private VelocityHandler velocityHandler;
@@ -69,6 +69,10 @@ public class ConfigParser {
 		return pearlEnabled;
 	}
 
+	public boolean setVanillaPearlCooldown() {
+		return setVanillaPearlCooldown;
+	}
+
 	public FinaleManager parse() {
 		plugin.info("Parsing Finale config...");
 		plugin.saveDefaultConfig();
@@ -101,7 +105,7 @@ public class ConfigParser {
 
 		// Initialize the manager
 		manager = new FinaleManager(debug, attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod,
-				disabledEnchants, potionHandler);
+				potionHandler);
 		plugin.info("Successfully parsed config");
 		return manager;
 	}
@@ -180,8 +184,8 @@ public class ConfigParser {
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
 		plugin.info("Combat tagging on pearling: " + combatTagOnPearl);
-		refundPearls = config.getBoolean("refundBlockedPearls", false);
-		plugin.info("Refund blocked pearls: " + refundPearls);
+		setVanillaPearlCooldown = config.getBoolean("setVanillaCooldown", false);
+		plugin.info("Setting vanilla cooldown on pearling: " + setVanillaPearlCooldown);
 		return true;
 	}
 
@@ -253,6 +257,7 @@ public class ConfigParser {
 				try {
 					EntityType type = EntityType.valueOf(entry);
 					revertedTypes.add(type);
+					plugin.info("Reverting launch velocity behavior of " + type.toString());
 				} catch (IllegalArgumentException e) {
 					plugin.warning("Failed to parse " + entry + " as entity type at " + config.getCurrentPath());
 				}
@@ -267,6 +272,7 @@ public class ConfigParser {
 						EntityType type = EntityType.valueOf(key);
 						double multiplier = multSection.getDouble(key);
 						velocityMultiplier.put(type, multiplier);
+						plugin.info("Applying launch velocity multiplier of " + multiplier + " to " + type.toString());
 
 					} catch (IllegalArgumentException e) {
 						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
@@ -311,9 +317,4 @@ public class ConfigParser {
 		}
 		return wm;
 	}
-
-	public boolean refundBlockedPearls() {
-		return refundPearls;
-	}
-
 }

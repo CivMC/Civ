@@ -16,18 +16,15 @@ public class FinaleManager {
 	private boolean regenHandlerEnabled;
 	private SaturationHealthRegenHandler regenHandler;
 	private WeaponModifier weaponModifier;
-	private Collection<Enchantment> disabledEnchantments;
 	private PotionHandler potionHandler;
 
 	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
-			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier,
-			Collection<Enchantment> disabledEnchants, PotionHandler potionHandler) {
+			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, PotionHandler potionHandler) {
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
 		this.regenHandlerEnabled = regenHandlerEnabled;
 		this.regenHandler = regenHandler;
 		this.weaponModifier = weaponModifier;
-		this.disabledEnchantments = disabledEnchants;
 		this.potionHandler = potionHandler;
 	}
 

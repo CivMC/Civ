@@ -73,7 +73,7 @@ public class Finale extends ACivMod {
 		// are enabled.
 		if (config.isPearlEnabled()) {
 			Bukkit.getPluginManager().registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(),
-					config.combatTagOnPearl(), ctpManager), this);
+					config.combatTagOnPearl(), ctpManager, config.setVanillaPearlCooldown()), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);

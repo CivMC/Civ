@@ -64,7 +64,7 @@ public class DamageListener implements Listener {
 		if (strengthModifier != null) {
 			PotionEffect strengthEffect = damager.getPotionEffect(PotionEffectType.INCREASE_DAMAGE);
 			if (strengthEffect != null) {
-				e.setDamage(strengthModifier.modify(e.getDamage()));
+				e.setDamage(strengthModifier.modify(e.getDamage(), strengthEffect.getAmplifier() + 1));
 			}
 		}
 
