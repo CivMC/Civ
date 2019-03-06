@@ -33,6 +33,8 @@ public interface Command {
 
 	void setArgs(String[] args);
 	
-	public RateLimiter getRateLimiter();
+	RateLimiter getRateLimiter();
+	
+	RateLimiter getTabCompletionRateLimiter();
 
 }

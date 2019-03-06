@@ -49,16 +49,26 @@ public abstract class CommandHandler {
 			command.setArgs(args);
 			command.execute(sender, args);
 		}
+		else {
+			sender.sendMessage("Command was registered in plugin.yml, but not registered in command handler, tell a dev about this");
+		}
 		return true;
 	}
 
 	public List<String> complete(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
 		if (commands.containsKey(cmd.getName().toLowerCase())) {
 			Command command = commands.get(cmd.getName().toLowerCase());
-
-			if (command.getSenderMustBePlayer() && (!(sender instanceof Player))) {
+			boolean isPlayer = sender instanceof Player;
+			if (command.getSenderMustBePlayer() && !isPlayer) {
 				sender.sendMessage(TextUtil.parse(cmdMustBePlayer));
 				return null;
+			}
+			RateLimiter limiter = command.getTabCompletionRateLimiter();
+			if (limiter != null && isPlayer) {
+				if (!limiter.pullToken((Player) sender)) {
+					sender.sendMessage(TextUtil.parse(cmdRateLimited));
+					return null;
+				}
 			}
 
 			command.setSender(sender);

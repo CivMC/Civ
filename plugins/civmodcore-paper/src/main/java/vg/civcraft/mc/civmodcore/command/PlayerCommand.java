@@ -23,6 +23,7 @@ public abstract class PlayerCommand implements Command {
 	private CommandSender sender;
 	private String[] args;
 	private RateLimiter rateLimiter;
+	private RateLimiter tabCompletionRateLimiter;
 
 	public PlayerCommand(String name) {
 		this.name = name;
@@ -74,10 +75,12 @@ public abstract class PlayerCommand implements Command {
 	}
 
 	@Override
+	@Deprecated
 	public void setArgs(String[] args) {
 		this.args = args;
 	}
 
+	@Deprecated
 	public String[] getArgs() {
 		return args;
 	}
@@ -132,8 +135,17 @@ public abstract class PlayerCommand implements Command {
 				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
 	}
 	
+	public void setTabCompletionRateLimitingBehavior(int limit, int refillAmount, int refillIntervallInSeconds) {
+		this.tabCompletionRateLimiter = RateLimiting.createRateLimiter("COMMAND_" + identifier, 
+				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
+	}
+	
 	public RateLimiter getRateLimiter() {
 		return rateLimiter;
+	}
+	
+	public RateLimiter getTabCompletionRateLimiter() {
+		return tabCompletionRateLimiter;
 	}
 
 	public Player player() {
