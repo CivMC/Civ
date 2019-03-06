@@ -39,14 +39,24 @@ public class RabbitCommands {
 		json.addProperty("msg", msg);
 		sendInternal("groupchatmessage", json);
 	}
-	
+
 	public void replyToRequestSession(JsonObject json) {
 		if (json == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
 		}
 		sendInternal("requestsession", json);
 	}
-	
+
+	public void playerLoginOut(String player, String action) {
+		if (player == null || action == null) {
+			throw new IllegalArgumentException("Arguments cant be null");
+		}
+		JsonObject json = new JsonObject();
+		json.addProperty("player", player);
+		json.addProperty("action", action);
+		sendInternal("skynet", json);
+	}
+
 	public void syncGroupChatAccess(String group, Collection<UUID> members, UUID sender) {
 		if (group == null || members == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -74,7 +84,7 @@ public class RabbitCommands {
 		json.add("members", array);
 		sendInternal("creategroupchat", json);
 	}
-	
+
 	public void deleteGroupChatChannel(String group, UUID sender) {
 		if (group == null || sender == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -84,7 +94,7 @@ public class RabbitCommands {
 		json.addProperty("sender", sender.toString());
 		sendInternal("deletegroupchat", json);
 	}
-	
+
 	public void removeGroupMember(String group, UUID member) {
 		if (group == null || member == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -94,7 +104,7 @@ public class RabbitCommands {
 		json.addProperty("member", member.toString());
 		sendInternal("removegroupmember", json);
 	}
-	
+
 	public void addGroupMember(String group, UUID member) {
 		if (group == null || member == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -104,7 +114,7 @@ public class RabbitCommands {
 		json.addProperty("member", member.toString());
 		sendInternal("addgroupmember", json);
 	}
-	
+
 	public void replyToUser(UUID user, String msg) {
 		if (user == null || msg == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -114,7 +124,7 @@ public class RabbitCommands {
 		json.addProperty("msg", msg);
 		sendInternal("replytouser", json);
 	}
-	
+
 	public void sendSnitchHit(Player victim, Location location, String snitchName, String groupName) {
 		if (victim == null || location == null || groupName == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
@@ -132,7 +142,7 @@ public class RabbitCommands {
 		json.addProperty("groupName", groupName);
 		sendInternal("sendsnitchhit", json);
 	}
-	
+
 	private void sendInternal(String id, JsonObject json) {
 		Gson gson = new Gson();
 		String payload = gson.toJson(json);

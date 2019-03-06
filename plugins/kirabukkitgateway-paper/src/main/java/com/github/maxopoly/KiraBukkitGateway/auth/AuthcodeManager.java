@@ -5,25 +5,25 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AuthcodeManager {
-	
+
 	private static final String validCharacters = "abcdefghijklmnopqrstuvwxyz0123456789";
 	private static final int maxRecursionDepth = 20;
-	
+
 	private Set<String> currentCodes;
 	private SecureRandom rng;
 	private int codeLength;
-	
-	
+
+
 	public AuthcodeManager(int codeLength) {
 		currentCodes = new HashSet<>();
 		rng = new SecureRandom();
 		this.codeLength = codeLength;
 	}
-	
+
 	public String getNewCode() {
 		return getNewCode(0);
 	}
-	
+
 	private String getNewCode(int recursion) {
 		if (recursion >= maxRecursionDepth) {
 			return null;

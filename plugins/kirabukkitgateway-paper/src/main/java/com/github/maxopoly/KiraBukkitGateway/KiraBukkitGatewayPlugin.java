@@ -9,6 +9,7 @@ import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
 import com.github.maxopoly.KiraBukkitGateway.command.KiraCommandHandler;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
+import com.github.maxopoly.KiraBukkitGateway.listener.SkynetListener;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitCommands;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitHandler;
 
@@ -47,6 +48,7 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		rabbitCommands = new RabbitCommands(rabbit);
 		getServer().getPluginManager().registerEvents(new CivChatListener(), this);
 		getServer().getPluginManager().registerEvents(new JukeAlertListener(), this);
+		getServer().getPluginManager().registerEvents(new SkynetListener(), this);
 		getLogger().info("Successfully enabled " + getName());
 	}
 

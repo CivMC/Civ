@@ -12,7 +12,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class RequestSessionHandler extends RabbitInput {
-	
+
 	private static final String idField = "RequestSessionId";
 	private static final String keyField = "RequestSessionKey";
 
@@ -36,7 +36,7 @@ public class RequestSessionHandler extends RabbitInput {
 		}
 		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToRequestSession(reply);
 	}
-	
+
 	private boolean checkPerm(JsonObject input) {
 		UUID player = UUID.fromString(input.get("player").getAsString());
 		String group = input.get("group").getAsString();

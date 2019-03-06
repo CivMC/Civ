@@ -3,7 +3,7 @@ package com.github.maxopoly.KiraBukkitGateway.rabbit;
 import com.google.gson.JsonObject;
 
 public abstract class RabbitInput {
-	
+
 	private String identifier;
 
 	public RabbitInput(String identifier) {
@@ -13,7 +13,7 @@ public abstract class RabbitInput {
 	public String getIdentifier() {
 		return identifier;
 	}
-	
+
 	public abstract void handle(JsonObject input);
 
 }
