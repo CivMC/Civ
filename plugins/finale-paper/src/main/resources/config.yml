@@ -40,3 +40,85 @@ weaponModification:
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
 disabledEnchantments:
  - MENDING
+ - FROST_WALKER
+ 
+ 
+potions:
+#Allows applying a multiplier to the intensity of potions. Intensities <= 1.0 will always work fine, but intensities > 1 
+#may lead to unintended results for instant effects like INSTANT_HEALTH.
+#All entries may have the following entries:
+# type:
+#   A potion type (https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/potion/PotionType.html)
+# upgraded:
+#   Boolean to specify whether the pot is upgraded (tier 2) 
+# extended:
+#   Boolean to specify whether the pot is extended
+# splash:
+#   Boolean to specify whether the pot is splash 
+# multiplier:
+#   Double value, the multiplier applied to the duration. May not be negative and defaults to 1.0
+
+#   ---
+#All values specifying the kind of option are optional and will wildcard if not specified, for example:
+
+#An entry applying to all extended splash potions:
+#    splash:
+#      splash: true
+#      extended: true
+#      multiplier: 0.8
+
+#Or one applying only to speed 8, both splash&drinkable
+#    speed8:
+#      type: SPEED
+#      extended: true
+#      multiplier: 0.8
+  potIntensity:
+    splash:
+#All splash pots reduced
+      splash: true
+      multiplier: 0.8
+#Except for health
+    health:
+      type: INSTANT_HEAL
+      multiplier: 1.0
+#Multiplier applied to the health gain from all health potions
+  healthMultiplier: 1.5
+  
+velocity:
+#In newer Minecraft versions when a player launches a projectile the players velocity will be added to the projectiles base velocity. This can lead to 
+#weird behavior sometimes and reverted with this setting. Add entity types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) 
+#of projectiles to the list to revert their behavior regarding initial velocity to 1.7
+  revertedVelocity:
+   - SPLASH_POTION
+   - ENDER_PEARL
+   - ARROW
+
+
+#This let's you apply a general multiplier to the launch velocity of any kind of projectile. Entry key is the 
+#entity type (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) and value is the multiplier.
+  multiplier:
+#Increase pearl velocity by 20 % for example
+    ENDER_PEARL: 1.2
+    
+    
+#This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
+
+#  SWORD:
+#    multiplier: 1.2
+#    mode: LINEAR
+#    flatAddition: 0.0
+
+#Key of the entry is the type of damage modified, allowed here are: ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT
+#'multiplier' is the multiplier applied to the preexisting vanilla damage, defaults to 1.0
+#'mode' is the mode used to apply the multiplier for types with different levels like SHARPNESS_ENCHANT. Allowed are LINEAR and EXPONENTIAL
+#'flatAddition' is a flat amount added per level. Flat addition is applied before the multiplier
+
+#The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT
+damageModifiers: 
+#Decrease all damage by 20 % 
+  ALL:
+    multiplier: 0.8
+#Increase sword damage by 25 %
+  SWORD:
+    multiplier: 1.25
+    

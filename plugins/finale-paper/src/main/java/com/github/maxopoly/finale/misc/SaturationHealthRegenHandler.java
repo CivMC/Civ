@@ -43,6 +43,34 @@ public class SaturationHealthRegenHandler implements Runnable {
 		this.blockFoodHealthRegen = blockFoodHealthRegen;
 	}
 
+	public boolean blockFoodHealthRegen() {
+		return blockFoodHealthRegen;
+	}
+
+	public boolean blockPassiveHealthRegen() {
+		return blockPassiveHealthRegen;
+	}
+
+	public float getExhaustionPerHeal() {
+		return exhaustionPerHeal;
+	}
+
+	public double getHealthPerHeal() {
+		return healthPerCycle;
+	}
+
+	public int getInterval() {
+		return interval;
+	}
+
+	public int getMinimumFood() {
+		return minimumFood;
+	}
+
+	public int getPID() {
+		return PID;
+	}
+
 	public void registerPlayer(UUID uuid) {
 		LinkedList<UUID> players = ticks.get(currentTick);
 		if (players == null) {
@@ -58,6 +86,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 		players.add(uuid);
 	}
 
+	@Override
 	public void run() {
 		LinkedList<UUID> players = ticks.get(currentTick);
 		if (players != null) {
@@ -78,8 +107,8 @@ public class SaturationHealthRegenHandler implements Runnable {
 
 				if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
 					StringBuffer alterHealth = null;
-				
-					if (Finale.getManager().isDebug()) {
+
+					if (Finale.getPlugin().getManager().isDebug()) {
 						alterHealth = new StringBuffer(p.getName());
 						alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 						alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
@@ -89,7 +118,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 					newHealth = Math.min(newHealth, maxHealth);
 					p.setExhaustion(p.getExhaustion() + exhaustionPerHeal);
 					p.setHealth(newHealth);
-					if (Finale.getManager().isDebug()) {
+					if (Finale.getPlugin().getManager().isDebug()) {
 						alterHealth.append(" TO ").append(p.getHealth()).append("<").append(maxHealth);
 						alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 						alterHealth.append(":").append(p.getFoodLevel());
@@ -102,34 +131,6 @@ public class SaturationHealthRegenHandler implements Runnable {
 		if (currentTick >= interval) {
 			currentTick = 0;
 		}
-	}
-	
-	public int getMinimumFood() {
-		return minimumFood;
-	}
-	
-	public float getExhaustionPerHeal() {
-		return exhaustionPerHeal;
-	}
-	
-	public int getInterval() {
-		return interval;
-	}
-	
-	public double getHealthPerHeal() {
-		return healthPerCycle;
-	}
-	
-	public int getPID() {
-		return PID;
-	}
-	
-	public boolean blockPassiveHealthRegen() {
-		return blockPassiveHealthRegen;
-	}
-	
-	public boolean blockFoodHealthRegen() {
-		return blockFoodHealthRegen;
 	}
 
 }

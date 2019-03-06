@@ -1,5 +1,4 @@
 package com.github.maxopoly.finale.listeners;
-import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
@@ -23,20 +22,13 @@ public class PlayerListener implements Listener {
 		this.manager = manager;
 	}
 
-	@EventHandler
-	public void playerLogin(PlayerJoinEvent e) {
-		if (manager.isAttackSpeedEnabled()) {;
-			// Set attack speed
-			AttributeInstance attr = e.getPlayer().getAttribute(
-				Attribute.GENERIC_ATTACK_SPEED);
-			if (attr != null) {
-				attr.setBaseValue(manager.getAttackSpeed());
-			}
+	//@EventHandler
+	public void arrowHit(EntityDamageByEntityEvent e) {
+		if (!(e.getEntity() instanceof LivingEntity)) {
+			return;
 		}
-		if (manager.isRegenHandlerEnabled()) {
-			// Register login for custom health regen
-			manager.getPassiveRegenHandler().registerPlayer(
-					e.getPlayer().getUniqueId());
+		if (e.getDamager().getType() == EntityType.TIPPED_ARROW) {
+			return;
 		}
 	}
 
@@ -66,7 +58,7 @@ public class PlayerListener implements Listener {
 				newExhaustion = 0;
 
 			p.setExhaustion(newExhaustion);
-			
+
 			if (manager.isDebug()) {
 				alterHealth.append(" TO ").append(p.getHealth()).append("<").append(p.getMaxHealth());
 				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
@@ -89,14 +81,21 @@ public class PlayerListener implements Listener {
 			e.setCancelled(true);
 		}
 	}
-	
-	//@EventHandler
-	public void arrowHit(EntityDamageByEntityEvent e) {
-		if (!(e.getEntity() instanceof LivingEntity)) {
-			return;
+
+	@EventHandler
+	public void playerLogin(PlayerJoinEvent e) {
+		if (manager.isAttackSpeedEnabled()) {;
+			// Set attack speed
+			AttributeInstance attr = e.getPlayer().getAttribute(
+				Attribute.GENERIC_ATTACK_SPEED);
+			if (attr != null) {
+				attr.setBaseValue(manager.getAttackSpeed());
+			}
 		}
-		if (e.getDamager().getType() == EntityType.TIPPED_ARROW) {
-			return;
+		if (manager.isRegenHandlerEnabled()) {
+			// Register login for custom health regen
+			manager.getPassiveRegenHandler().registerPlayer(
+					e.getPlayer().getUniqueId());
 		}
 	}
 

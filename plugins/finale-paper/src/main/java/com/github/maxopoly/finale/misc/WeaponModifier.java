@@ -41,20 +41,20 @@ public class WeaponModifier {
 		weapons.put(m, new WeaponConfig(m, damage, attackSpeed));
 	}
 
-	public int getDamage(Material m) {
-		WeaponConfig config = weapons.get(m);
-		if (config == null) {
-			return -1;
-		}
-		return config.getDamage();
-	}
-
 	public double getAttackSpeed(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
 			return -1.0;
 		}
 		return config.getAttackSpeed();
+	}
+
+	public int getDamage(Material m) {
+		WeaponConfig config = weapons.get(m);
+		if (config == null) {
+			return -1;
+		}
+		return config.getDamage();
 	}
 
 }

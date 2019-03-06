@@ -5,4 +5,8 @@ version: ${project.version}
 depend: [CivModCore]
 softdepend: [CombatTagPlus]
 commands:
+    finalereload:
+        permission: finale.op
 permissions:
+    finale.op:
+        default: op

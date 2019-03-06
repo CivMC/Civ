@@ -8,6 +8,8 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 public class PotionModification {
+	
+	public static final PotionType wildCardType = PotionType.AWKWARD;
 
 	private PotionType type;
 	private Boolean extended;
@@ -41,7 +43,7 @@ public class PotionModification {
 			}
 		}
 		PotionData pot = pm.getBasePotionData();
-		if (type != null && pot.getType() != type) {
+		if (type != wildCardType && pot.getType() != type) {
 			return false;
 		}
 		if (extended != null && pot.isExtended() != extended) {
@@ -52,7 +54,7 @@ public class PotionModification {
 		}
 		return true;
 	}
-	
+
 	public double getMultiplier() {
 		return multiplier;
 	}

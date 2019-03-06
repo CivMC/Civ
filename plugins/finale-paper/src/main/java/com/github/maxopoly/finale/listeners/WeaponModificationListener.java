@@ -1,12 +1,5 @@
 package com.github.maxopoly.finale.listeners;
 
-import net.minecraft.server.v1_12_R1.NBTBase;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagDouble;
-import net.minecraft.server.v1_12_R1.NBTTagInt;
-import net.minecraft.server.v1_12_R1.NBTTagList;
-import net.minecraft.server.v1_12_R1.NBTTagString;
-
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +7,14 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.misc.WeaponModifier;
+
+import net.minecraft.server.v1_12_R1.NBTBase;
+import net.minecraft.server.v1_12_R1.NBTTagCompound;
+import net.minecraft.server.v1_12_R1.NBTTagDouble;
+import net.minecraft.server.v1_12_R1.NBTTagInt;
+import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.NBTTagString;
 
 public class WeaponModificationListener implements Listener {
 
@@ -23,8 +24,9 @@ public class WeaponModificationListener implements Listener {
 		if (is == null) {
 			return;
 		}
-		int adjustedDamage = Finale.getManager().getWeaponModifer().getDamage(is.getType());
-		double adjustedAttackSpeed = Finale.getManager().getWeaponModifer().getAttackSpeed(is.getType());
+		WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
+		int adjustedDamage = weaponMod.getDamage(is.getType());
+		double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
 		if (adjustedAttackSpeed == -1.0 && adjustedDamage == -1) {
 			// neither should be adjusted
 			return;
