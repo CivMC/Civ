@@ -6,7 +6,7 @@
 	<groupId>com.github.maxopoly</groupId>
 	<artifactId>KiraBukkitGateway</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>KiraBukkitGateway</name>
 	<url>https://github.com/maxopoly/KiraBukkitGateway</url>
 
@@ -97,7 +97,7 @@
 		<dependency>
 			<groupId>com.untamedears</groupId>
 			<artifactId>JukeAlert</artifactId>
-			<version>1.6.2</version>
+			<version>1.6.3</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>

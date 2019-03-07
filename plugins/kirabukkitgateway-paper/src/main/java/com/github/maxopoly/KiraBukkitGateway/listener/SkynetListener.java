@@ -12,12 +12,13 @@ public class SkynetListener implements Listener {
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void join(PlayerJoinEvent e) {
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "login");
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGIN");
 	}
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void leave(PlayerQuitEvent e) {
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "logout");
+		
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGOUT");
 	}
 
 
