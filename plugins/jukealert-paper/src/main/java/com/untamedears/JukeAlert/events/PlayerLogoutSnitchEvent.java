@@ -7,17 +7,16 @@ import org.bukkit.event.player.PlayerEvent;
 import com.untamedears.JukeAlert.model.Snitch;
 
 /**
- * Called when a player hits a snitch, meaning he enters the snitch range
- * without having perms to do so without triggering a notification
+ * Called when a player logs out next to a snitch and triggers a notification
  *
  */
-public class PlayerHitSnitchEvent extends PlayerEvent {
+public class PlayerLogoutSnitchEvent extends PlayerEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private Snitch snitch;
 
-	public PlayerHitSnitchEvent(Snitch snitch, Player player) {
+	public PlayerLogoutSnitchEvent(Snitch snitch, Player player) {
 		super(player);
 		this.snitch = snitch;
 	}
