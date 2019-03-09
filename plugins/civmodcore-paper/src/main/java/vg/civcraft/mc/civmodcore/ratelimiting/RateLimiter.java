@@ -60,4 +60,10 @@ public class RateLimiter {
 		}
 		return pullToken(player.getUniqueId());
 	}
+
+	public String toString() {
+		return String.format(
+				"Rate limiter with initCapacity: %d, maxCapacity: %d, refillInterval: %d, refillAmount: %d",
+				initialCapacity, maximumTokens, refillIntervall, refillAmount);
+	}
 }

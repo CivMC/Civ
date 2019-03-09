@@ -10,26 +10,28 @@ import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
 import vg.civcraft.mc.civmodcore.ratelimiting.TokenBucket;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
+@Deprecated
 public abstract class PlayerCommand implements Command {
 
-	private String name = "";
-	private String description = "";
+	protected String name = "";
+	protected String description = "";
 	private String usage = "";
-	private String identifier = "";
-	private int min = 0;
-	private int max = 0;
-	private boolean senderMustBePlayer = false;
-	private boolean errorOnTooManyArgs = true;
-	private CommandSender sender;
-	private String[] args;
-	private RateLimiter rateLimiter;
-	private RateLimiter tabCompletionRateLimiter;
+	protected String identifier = "";
+	protected int min = 0;
+	protected int max = 0;
+	protected boolean senderMustBePlayer = false;
+	protected boolean errorOnTooManyArgs = true;
+	protected CommandSender sender;
+	protected String[] args;
+	protected RateLimiter rateLimiter;
+	protected RateLimiter tabCompletionRateLimiter;
 
 	public PlayerCommand(String name) {
 		this.name = name;
 	}
 
 	@Override
+	@Deprecated
 	public String getName() {
 		return name;
 	}

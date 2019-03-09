@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
+@Deprecated
 public abstract class CommandHandler {
 
 	private static final String cmdMustBePlayer = "<b>This command can only be used by in-game players.";

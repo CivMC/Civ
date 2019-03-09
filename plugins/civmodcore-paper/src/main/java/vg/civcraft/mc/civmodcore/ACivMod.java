@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
@@ -18,22 +19,30 @@ import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 public abstract class ACivMod extends JavaPlugin {
 
+	@Deprecated
 	protected CommandHandler handle;
+
+	protected StandaloneCommandHandler newCommandHandler;
 
 	private static boolean initializedAPIs = false;
 
 	public ClassLoader classLoader = null;
 
 	public ApiManager apis;
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		return handle == null ? false : handle.execute(sender, command, args);
+		if (handle == null) {
+			return newCommandHandler.executeCommand(sender, command, args);
+		} else {
+			return handle == null ? false : handle.execute(sender, command, args);
+		}
 	}
 
 	@Override
 	public void onEnable() {
 		initApis(this);
+		this.newCommandHandler = new StandaloneCommandHandler(this);
 	}
 
 	private static synchronized void initApis(ACivMod instance) {
@@ -103,7 +112,8 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Simple WARNING level logging with ellipsis notation shortcut for defered injection argument array.
+	 * Simple WARNING level logging with ellipsis notation shortcut for defered
+	 * injection argument array.
 	 */
 	public void warning(String message, Object... vars) {
 		getLogger().log(Level.WARNING, message, vars);
@@ -117,14 +127,16 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Simple INFO level logging with ellipsis notation shortcut for defered injection argument array.
+	 * Simple INFO level logging with ellipsis notation shortcut for defered
+	 * injection argument array.
 	 */
 	public void info(String message, Object... vars) {
 		getLogger().log(Level.INFO, message, vars);
 	}
 
 	/**
-	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level.
+	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at
+	 * INFO level.
 	 *
 	 * Skipped if DebugLog is false.
 	 */
@@ -135,8 +147,9 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at INFO level with ellipsis notation
-	 * shorcut for defered injection argument array.
+	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at
+	 * INFO level with ellipsis notation shorcut for defered injection argument
+	 * array.
 	 *
 	 * Skipped if DebugLog is false.
 	 */
