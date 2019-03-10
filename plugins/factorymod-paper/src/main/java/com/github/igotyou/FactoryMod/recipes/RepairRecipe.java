@@ -63,12 +63,12 @@ public class RepairRecipe extends InputRecipe {
 		ISUtils.setName(res, getName());
 		return res;
 	}
-	
+
 	@Override
 	public String getTypeIdentifier() {
 		return "REPAIR";
 	}
-	
+
 	public int getHealth() {
 		return healthPerRun;
 	}

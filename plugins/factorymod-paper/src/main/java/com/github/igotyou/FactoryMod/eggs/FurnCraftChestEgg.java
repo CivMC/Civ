@@ -79,7 +79,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	public void setRecipes(List<IRecipe> recipes) {
 		this.recipes = recipes;
 	}
-	
+
 	public double getReturnRate() {
 		return returnRateOnDestruction;
 	}
@@ -87,15 +87,15 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	public int getFuelConsumptionIntervall() {
 		return fuelConsumptionIntervall;
 	}
-	
+
 	public int getMaximumHealth() {
 		return maximumHealth;
 	}
-	
+
 	public int getDamagePerDamagingPeriod() {
 		return healthPerDamagePeriod;
 	}
-	
+
 	public long getBreakGracePeriod() {
 		return breakGracePeriod;
 	}
@@ -146,11 +146,11 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		}
 		return fccf;
 	}
-	
+
 	public Class <FurnCraftChestStructure> getMultiBlockStructure() {
 		return FurnCraftChestStructure.class;
 	}
-	
+
 	public double getCitadelBreakReduction() {
 		return citadelBreakReduction;
 	}

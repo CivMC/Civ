@@ -121,11 +121,11 @@ public class ConfigParser {
 		//save factories on a regular base, unless disabled
 		if (savingIntervall != -1) {
 			new BukkitRunnable() {
-				
+
 				@Override
 				public void run() {
 					FactoryMod.getManager().saveFactories();
-					
+
 				}
 			}.runTaskTimerAsynchronously(plugin, savingIntervall, savingIntervall);
 		}
@@ -133,7 +133,7 @@ public class ConfigParser {
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		Map <String,String> factoryRenames = parseRenames(config.getConfigurationSection("renames"));
-		
+
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, nameLayerEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, factoryRenames);
@@ -200,7 +200,7 @@ public class ConfigParser {
 								foundParent = true;
 							}
 							else {
-								
+
 								//specified parent exists, but wasnt parsed yet, so we do it first
 								if (children.contains(parent)) {
 									//cyclic dependency
@@ -879,7 +879,7 @@ public class ConfigParser {
 
 		return null;
 	}
-	
+
 	private Map <String,String> parseRenames(ConfigurationSection config) {
 		Map <String,String> renames = new TreeMap<String, String>();
 		if (config != null) {
@@ -927,7 +927,7 @@ public class ConfigParser {
 			}
 		}
 	}
-	
+
 	private ProductionRecipeModifier parseProductionRecipeModifier(ConfigurationSection config) {
 		ProductionRecipeModifier modi = new ProductionRecipeModifier();
 		if (config == null) {
@@ -948,7 +948,7 @@ public class ConfigParser {
 		}
 		return modi;
 	}
-	
+
 	private void assignRecipeScalingRecipes() {
 		for(Entry <RecipeScalingUpgradeRecipe, String []> entry : recipeScalingUpgradeMapping.entrySet()) {
 			IRecipe prod = recipes.get(entry.getValue() [0]);
@@ -976,7 +976,7 @@ public class ConfigParser {
 			}
 		}
 	}
-	
+
 	public String getDefaultMenuFactory() {
 		return defaultMenuFactory;
 	}

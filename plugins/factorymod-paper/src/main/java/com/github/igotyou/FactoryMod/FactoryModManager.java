@@ -69,7 +69,7 @@ public class FactoryModManager {
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
 		this.fileHandler = new FileHandler(this, factoryRenames);
-		
+
 		if(nameLayerEnabled) {
 			//register our own permissions
 			List <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
@@ -608,7 +608,7 @@ public class FactoryModManager {
 			return new HashSet<Factory>(factories);
 		}
 	}
-	
+
 	/**
 	 * Gets the recipe with the given identifier, if it exists
 	 * @param name Identifier of the recipe
@@ -620,7 +620,7 @@ public class FactoryModManager {
 		}
 		return recipes.get(identifier);
 	}
-	
+
 	/**
 	 * Registers a recipe and add it to the recipe tracking.
 	 * @param recipe Recipe to register

@@ -64,7 +64,7 @@ public class PipeEgg implements IFactoryEgg {
 	public List<Material> getAllowedMaterials() {
 		return allowedMaterials;
 	}
-	
+
 	public double getReturnRate() {
 		return returnRate;
 	}
@@ -76,11 +76,11 @@ public class PipeEgg implements IFactoryEgg {
 	public int getTransferTimeMultiplier() {
 		return transferTimeMultiplier;
 	}
-	
+
 	public byte getColor() {
 		return color;
 	}
-	
+
 	public int getMaximumLength() {
 		return maximumLength;
 	}

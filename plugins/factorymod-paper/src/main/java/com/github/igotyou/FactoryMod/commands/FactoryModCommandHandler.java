@@ -18,7 +18,7 @@ public class FactoryModCommandHandler extends CommandHandler{
 		addCommands(new Create("fmc"));
 		addCommands(new RunAmountSetterCommand("fmsrc"));
 	}
-	
+
 	public static List <String> tabCompleteFactory(CommandSender arg0, String [] arg1) {
 		List <String> fac = new LinkedList<String>();
 		String entered = getFactoryName(arg1);
@@ -62,6 +62,6 @@ public class FactoryModCommandHandler extends CommandHandler{
 		}
 		return sb.toString().substring(0, sb.length() - 1);
 	}
-	
+
 
 }

@@ -120,7 +120,7 @@ public class DecompactingRecipe extends InputRecipe {
 		}
 		return result;
 	}
-	
+
 	private boolean isDecompactable(ItemStack is) {
 		//dont allow decompation if the item is enchanted or has additional lore, as the enchant/additional lore could have been applied to the compacted item
 		//and decompacting it would produce many items, which all have that enchant/lore
@@ -137,7 +137,7 @@ public class DecompactingRecipe extends InputRecipe {
 		}
 		return false;
 	}
-	
+
 	private void removeCompactLore(ItemStack is) {
 		List <String> lore = is.getItemMeta().getLore();
 		if (lore != null) {
@@ -152,7 +152,7 @@ public class DecompactingRecipe extends InputRecipe {
 	public String getTypeIdentifier() {
 		return "DECOMPACT";
 	}
-	
+
 	public String getCompactedLore() {
 		return compactedLore;
 	}

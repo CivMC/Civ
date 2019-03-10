@@ -144,7 +144,7 @@ public abstract class InputRecipe implements IRecipe {
 	protected void logAfterRecipeRun(Inventory i, Factory f) {
 		LoggingUtils.logInventory(i, "After executing recipe " + name + " for " + f.getLogData());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return identifier.hashCode();

@@ -40,9 +40,9 @@ public class FileHandler {
 	private FactoryModManager manager;
 	private File saveFile;
 	private File backup;
-	
+
 	private Map <String, String> factoryRenames;
-	
+
 	private static int saveFileVersion = 2;
 
 	public FileHandler(FactoryModManager manager, Map <String, String> factoryRenames) {
@@ -223,8 +223,8 @@ public class FileHandler {
 						}
 						blocks = sortedList;
 					}
-					
-					
+
+
 				}
 				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name);
 				if (egg == null) {
@@ -246,7 +246,7 @@ public class FileHandler {
 				long breakTime = current.getLong("breakTime", 0);
 				String selectedRecipe = current.getString("selectedRecipe");
 				List <String> recipes = current.getStringList("recipes");
-				
+
 				// Now check for recipes marked as force include that should be on this list.
 				for (IRecipe irecipe : egg.getRecipes()) {
 					if (manager.isForceInclude(irecipe.getIdentifier())) {
@@ -258,7 +258,7 @@ public class FileHandler {
 						}
 					}
 				}
-				
+
 				boolean autoSelect = current.getBoolean("autoSelect", false);
 				if (recipes == null) {
 					recipes = new LinkedList<String>();
@@ -354,10 +354,10 @@ public class FileHandler {
 				}
 				for (String face : current.getConfigurationSection("faces")
 						.getKeys(false)) {
-					
+
 					@SuppressWarnings("unchecked")
 					List<ItemStack> stacks = (List<ItemStack>) current.getConfigurationSection("faces").get(face);
-					
+
 					// it works, okay?
 					ItemMap map = new ItemMap(stacks);
 					assignments.put(BlockFace.valueOf(face), map);

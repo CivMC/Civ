@@ -33,11 +33,11 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	public int getMaximumHealth() {
 		return maximumHealth;
 	}
-	
+
 	public int getDamageAmountPerDecayIntervall() {
 		return damageAmountPerDecayIntervall;
 	}
-	
+
 	public long getGracePeriod() {
 		return gracePeriod;
 	}

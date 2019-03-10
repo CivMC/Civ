@@ -15,7 +15,7 @@ public class LoggingUtils {
 	public static void log(String msg) {
 		FactoryMod.getPlugin().getLogger().log(Level.INFO, msg);
 	}
-	
+
 	public static void debug(String msg) {
 		FactoryMod.getPlugin().debug(msg);
 	}

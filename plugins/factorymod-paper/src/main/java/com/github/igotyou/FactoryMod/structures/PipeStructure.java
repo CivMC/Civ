@@ -38,17 +38,17 @@ public class PipeStructure extends MultiBlockStructure {
 			return;
 		}
 		glassPipe = new LinkedList<Location>();
-		
+
 		Block currentBlock = startBlock.getRelative(dataBlockFaceConversion
 				.get((int) (startBlock.getState().getRawData())));
-		
+
 		Block previousBlock = null;
 		if (currentBlock.getType() != pipeMaterial) {
 			return;
 		}
-		
+
 		glassColor = currentBlock.getData();
-		
+
 		glassPipe.add(currentBlock.getLocation());
 		int length = 1;
 		while (length <= 512) {
@@ -147,7 +147,7 @@ public class PipeStructure extends MultiBlockStructure {
 	public byte getGlassColor() {
 		return glassColor;
 	}
-	
+
 	public void setGlassColor(byte data) {
 		this.glassColor = data;
 	}

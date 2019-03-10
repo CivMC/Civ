@@ -52,11 +52,11 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 		}
 		logAfterRecipeRun(i, fccf);
 	}
-	
+
 	public void setUpgradedRecipe(ProductionRecipe rec) {
 		this.toUpgrade = rec;
 	}
-	
+
 	public void setFollowUpRecipe(RecipeScalingUpgradeRecipe rec) {
 		this.followUpRecipe = rec;
 	}

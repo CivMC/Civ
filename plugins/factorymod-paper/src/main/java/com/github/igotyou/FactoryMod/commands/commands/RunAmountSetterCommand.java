@@ -58,6 +58,6 @@ public class RunAmountSetterCommand extends PlayerCommand {
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
 		return null;
 	}
-	
+
 
 }

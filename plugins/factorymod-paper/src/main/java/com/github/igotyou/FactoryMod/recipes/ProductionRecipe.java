@@ -22,7 +22,7 @@ import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
  *
  */
 public class ProductionRecipe extends InputRecipe {
-	
+
 	private ItemMap output;
 	private ItemStack recipeRepresentation;
 	private ProductionRecipeModifier modifier;
@@ -58,7 +58,7 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		return im;
 	}
-	
+
 	public ItemMap getGuaranteedOutput(int rank, int runs) {
 		if (modifier == null) {
 			return output.clone();
@@ -96,7 +96,7 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		return stacks;
 	}
-	
+
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();

@@ -51,7 +51,7 @@ public class CompactItemListener implements Listener {
 			}
 		}
 	}
-	
+
 	private boolean isCompacted(ItemStack is) {
 		if (is == null) {
 			return false;

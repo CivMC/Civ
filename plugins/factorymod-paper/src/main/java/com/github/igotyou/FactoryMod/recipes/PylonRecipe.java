@@ -135,7 +135,7 @@ public class PylonRecipe extends InputRecipe {
 	public String getTypeIdentifier() {
 		return "PYLON";
 	}
-	
+
 	public ItemMap getOutput() {
 		return output;
 	}

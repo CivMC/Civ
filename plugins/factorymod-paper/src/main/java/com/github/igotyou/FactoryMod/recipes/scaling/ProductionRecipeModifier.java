@@ -3,9 +3,9 @@ package com.github.igotyou.FactoryMod.recipes.scaling;
 import java.util.TreeMap;
 
 public class ProductionRecipeModifier {
-	
+
 	private TreeMap <Integer, ProductionRecipeModifierConfig> configs;
-	
+
 	public ProductionRecipeModifier() {
 		this.configs = new TreeMap<Integer, ProductionRecipeModifier.ProductionRecipeModifierConfig>();
 	}
@@ -22,8 +22,8 @@ public class ProductionRecipeModifier {
 	public void addConfig(int minimumRuns, int maximumRuns, double baseIncrease, double maximumIncrease, int rank) {
 		configs.put(rank, new ProductionRecipeModifierConfig(minimumRuns, maximumRuns, baseIncrease, maximumIncrease, rank));
 	}
-	
-	
+
+
 	public ProductionRecipeModifier clone() {
 		ProductionRecipeModifier modi = new ProductionRecipeModifier();
 		for(ProductionRecipeModifierConfig config : this.configs.values()) {
@@ -31,7 +31,7 @@ public class ProductionRecipeModifier {
 		}
 		return modi;
 	}
-	
+
 	public double getMaximumMultiplierForRank(int rank) {
 		ProductionRecipeModifierConfig config = configs.get(rank);
 		if (config == null) {
@@ -40,7 +40,7 @@ public class ProductionRecipeModifier {
 		}
 		return config.getMaximumIncrease();
 	}
-	
+
 	private class ProductionRecipeModifierConfig {
 
 		private int minimumRuns;
@@ -73,7 +73,7 @@ public class ProductionRecipeModifier {
 		public double getMaximumIncrease() {
 			return maximumIncrease;
 		}
-		
+
 		public int getRank() {
 			return rank;
 		}

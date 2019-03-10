@@ -143,7 +143,7 @@ public class CompactingRecipe extends InputRecipe {
 			i.addItem(copy);
 		}
 	}
-	
+
 	/**
 	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
 	 */
@@ -186,11 +186,11 @@ public class CompactingRecipe extends InputRecipe {
 	public String getTypeIdentifier() {
 		return "COMPACT";
 	}
-	
+
 	public String getCompactedLore() {
 		return compactedLore;
 	}
-	
+
 	public List <Material> getExcludedMaterials() {
 		return excludedMaterials;
 	}

@@ -80,7 +80,7 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 			complete = false;
 		}
 	}
-	
+
 	public FurnCraftChestStructure(List<Location> blocks) {
 		craftingTable = blocks.get(0);
 		furnace = blocks.get(1);
