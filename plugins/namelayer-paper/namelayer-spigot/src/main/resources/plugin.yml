@@ -42,6 +42,8 @@ commands:
     aliases: [nlmodifyperms, nlmodifypermissions, nlmodperms, modifypermissions]
    nlrm:
     aliases: [nlremovemember, nlremove, nlkick, kickmember, removemember, remove, kickmember, ctremove, ctkick]
+   nlrg:
+    aliases: [nlrejectinvite, nldeclineinvite]
    nlri:
     aliases: [nlrevokeinvite, nluninvite, revoke, uninvite, revokeinvite, uninvite]
    #nllink:
