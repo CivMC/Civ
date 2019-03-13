@@ -1,9 +1,10 @@
-package vg.civcraft.mc.citadel.reinforcement;
+package vg.civcraft.mc.citadel.model;
+
+import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.ChunkCache;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -24,7 +25,7 @@ public class Reinforcement {
 	private ChunkCache owningCache;
 
 	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
-			boolean isDirty, boolean isNew, boolean insecure, ChunkCache cache) {
+			boolean isDirty, boolean isNew, boolean insecure) {
 		if (loc == null) {
 			throw new IllegalArgumentException("Location for reinforcement can not be null");
 		}
@@ -39,11 +40,17 @@ public class Reinforcement {
 		this.groupId = groupID;
 		this.isNew = isNew;
 		this.insecure = insecure;
-		this.owningCache = cache;
 	}
 
 	public Reinforcement(Location loc, ReinforcementType type, Group group, ChunkCache cache) {
-		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false, cache);
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
+	}
+	
+	/**
+	 * Sets which cache this reinforcement belongs to. Cache is expected to set this when beginning to track the reinforcement
+	 */
+	void setOwningCache(ChunkCache cache) {
+		this.owningCache = cache;
 	}
 
 	/**
@@ -190,10 +197,14 @@ public class Reinforcement {
 	}
 
 	public boolean hasPermission(Player p, String permission) {
+		return hasPermission(p.getUniqueId(), permission);
+	}
+	
+	public boolean hasPermission(UUID uuid, String permission) {
 		Group g = getGroup();
 		if (g == null) {
 			return false;
 		}
-		return NameAPI.getGroupManager().hasAccess(g, p.getUniqueId(), PermissionType.getPermission(permission));
+		return NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission(permission));
 	}
 }

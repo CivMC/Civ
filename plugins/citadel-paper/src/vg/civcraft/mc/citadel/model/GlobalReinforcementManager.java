@@ -1,24 +1,25 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.model;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
-public class CitadelWorldManager {
+public class GlobalReinforcementManager {
 
 	private Map<UUID, Integer> uuidToInternalID;
-	private Map<UUID, ReinforcementManager> worldToManager;
+	private Map<UUID, WorldReinforcementManager> worldToManager;
 	private CitadelReinforcementData dao;
 
-	public CitadelWorldManager(CitadelReinforcementData dao) {
+	public GlobalReinforcementManager(CitadelReinforcementData dao) {
 		this.uuidToInternalID = new TreeMap<>();
 		this.worldToManager = new TreeMap<>();
 		this.dao = dao;
@@ -41,7 +42,7 @@ public class CitadelWorldManager {
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		ReinforcementManager manager = new ReinforcementManager(dao, id);
+		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}
@@ -64,7 +65,7 @@ public class CitadelWorldManager {
 	 * @param rein Reinforcement created
 	 */
 	public void insertReinforcement(Reinforcement rein) {
-		ReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
+		WorldReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
 		if (worldManager == null) {
 			if (!registerWorld(rein.getLocation().getWorld())) {
 				throw new IllegalStateException("Failed to register world");
@@ -82,7 +83,7 @@ public class CitadelWorldManager {
 	 * @return Reinforcement at the location if one exists, otherwise null
 	 */
 	public Reinforcement getReinforcement(Location location) {
-		ReinforcementManager worldManager = worldToManager.get(location.getWorld().getUID());
+		WorldReinforcementManager worldManager = worldToManager.get(location.getWorld().getUID());
 		if (worldManager == null) {
 			return null;
 		}
@@ -115,7 +116,7 @@ public class CitadelWorldManager {
 	 * Saves all reinforcements out to the database
 	 */
 	public void flushAll() {
-		for (ReinforcementManager man : worldToManager.values()) {
+		for (WorldReinforcementManager man : worldToManager.values()) {
 			man.invalidateAllReinforcements();
 		}
 	}
@@ -126,10 +127,26 @@ public class CitadelWorldManager {
 	 * @param rein The reinforcement destroyed
 	 */
 	public void removeReinforcement(Reinforcement rein) {
-		ReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
+		WorldReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
 		if (worldManager == null) {
 			throw new IllegalStateException("No world manager for reinforcement at " + rein.getLocation().toString());
 		}
 		worldManager.removeReinforcement(rein);
+	}
+	
+	/**
+	 * Gets all reinforcements in a chunk. Only use this if you know what you're doing
+	 * @param chunk Chunk to get reinforcements for
+	 * @return All reinforcements within the chunk
+	 */
+	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
+		if (chunk == null) {
+			throw new IllegalArgumentException("Chunk can not be null");
+		}
+		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
+		if (worldManager == null) {
+			throw new IllegalStateException("No world manager for reinforcement in " + chunk.getWorld().toString());
+		}
+		return worldManager.getAllReinforcements(chunk);
 	}
 }

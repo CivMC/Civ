@@ -1,5 +1,8 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.model;
 
+import java.util.Collection;
+
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 
 import com.google.common.cache.CacheBuilder;
@@ -9,24 +12,23 @@ import com.google.common.cache.RemovalListener;
 import com.google.common.cache.RemovalNotification;
 
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
-public class ReinforcementManager {
+public class WorldReinforcementManager {
 
 	private final int worldID;
-	private final LoadingCache<ChunkPair, ChunkCache> reinforcements;
+	private final LoadingCache<ChunkCoord, ChunkCache> reinforcements;
 
-	public ReinforcementManager(CitadelReinforcementData db, int worldID) {
+	public WorldReinforcementManager(CitadelReinforcementData db, int worldID) {
 		this.worldID = worldID;
-		this.reinforcements = CacheBuilder.newBuilder().removalListener(new RemovalListener<ChunkPair, ChunkCache>() {
-			public void onRemoval(RemovalNotification<ChunkPair, ChunkCache> removal) {
+		this.reinforcements = CacheBuilder.newBuilder().removalListener(new RemovalListener<ChunkCoord, ChunkCache>() {
+			public void onRemoval(RemovalNotification<ChunkCoord, ChunkCache> removal) {
 				ChunkCache chunk = removal.getValue();
 				if (chunk.isDirty()) {
 					db.saveReinforcements(chunk);
 				}
 			}
-		}).build(new CacheLoader<ChunkPair, ChunkCache>() {
-			public ChunkCache load(ChunkPair loc) throws Exception {
+		}).build(new CacheLoader<ChunkCoord, ChunkCache>() {
+			public ChunkCache load(ChunkCoord loc) throws Exception {
 				if (loc == null) {
 					throw new IllegalArgumentException("Can not load reinforcements for null location");
 				}
@@ -36,7 +38,7 @@ public class ReinforcementManager {
 	}
 	
 	public void insertReinforcement(Reinforcement reinforcement) {
-		ChunkPair key = ChunkPair.forLocation(reinforcement.getLocation());
+		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
 		ChunkCache cache = reinforcements.getIfPresent(key);
 		if (cache == null) {
 			throw new IllegalStateException("Chunk for created reinforcement was not loaded");
@@ -45,7 +47,7 @@ public class ReinforcementManager {
 	}
 	
 	public void removeReinforcement(Reinforcement reinforcement) {
-		ChunkPair key = ChunkPair.forLocation(reinforcement.getLocation());
+		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
 		ChunkCache cache = reinforcements.getIfPresent(key);
 		if (cache == null) {
 			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
@@ -71,7 +73,7 @@ public class ReinforcementManager {
 		if (loc == null) {
 			throw new IllegalArgumentException("Can not get reinforcement for null location");
 		}
-		ChunkCache cache = reinforcements.getIfPresent(ChunkPair.forLocation(loc));
+		ChunkCache cache = reinforcements.getIfPresent(ChunkCoord.forLocation(loc));
 		if (cache == null) {
 			throw new IllegalStateException(
 					"You can not check reinforcements for unloaded chunks. Load the chunk first");
@@ -99,5 +101,19 @@ public class ReinforcementManager {
 	 */
 	public boolean isReinforced(Location loc) {
 		return getReinforcement(loc) != null;
+	}
+	
+	/**
+	 * Gets all reinforcements in a chunk. Only use this if you know what you're doing
+	 * @param chunk Chunk to get reinforcements for
+	 * @return All reinforcements within the chunk
+	 */
+	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
+		ChunkCache cache = reinforcements.getIfPresent(ChunkCoord.forChunk(chunk));
+		if (cache == null) {
+			throw new IllegalStateException(
+					"Can not retrieve reinforcements for unloaded chunks");
+		}
+		return cache.getAll();
 	}
 }

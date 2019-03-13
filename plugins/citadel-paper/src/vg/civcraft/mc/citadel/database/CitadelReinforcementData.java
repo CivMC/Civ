@@ -19,12 +19,12 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.ChunkCache;
-import vg.civcraft.mc.citadel.ChunkPair;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementTypeManager;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.ChunkCache;
+import vg.civcraft.mc.citadel.model.ChunkCoord;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
@@ -211,7 +211,7 @@ public class CitadelReinforcementData {
 						+ "constraint reinforcementUniqueLocation unique (x,y,z,world_id));");
 	}
 
-	public ChunkCache loadReinforcements(ChunkPair coords, int worldID) {
+	public ChunkCache loadReinforcements(ChunkCoord coords, int worldID) {
 		List<Reinforcement> reinforcements = new ArrayList<>();
 		World world = null;
 		try (Connection loadConn = db.getConnection();

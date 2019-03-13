@@ -9,7 +9,11 @@ import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
-import vg.civcraft.mc.citadel.listener.WorldListener;
+import vg.civcraft.mc.citadel.listener.RedstoneListener;
+import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
+import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -25,10 +29,12 @@ public class Citadel extends ACivMod {
 	public static final String insecurePerm = "INSECURE_REINFORCEMENT";
 	public static final String reinforcePerm = "REINFORCE";
 	public static final String doorPerm = "DOORS";
+	public static final String acidPerm = "ACIDBLOCK";
+	public static final String infoPerm = "REINFORCEMENT_INFO";
 
 	private CitadelReinforcementData db;
-	private CitadelWorldManager worldManager;
-	private GlobalReinforcementManager config;
+	private GlobalReinforcementManager worldManager;
+	private CitadelConfigManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
 	private PlayerStateManager stateManager;
@@ -43,7 +49,7 @@ public class Citadel extends ACivMod {
 			this.getPluginLoader().disablePlugin(this);
 			return;
 		}
-		config = new GlobalReinforcementManager(this);
+		config = new CitadelConfigManager(this);
 		if (!config.parse()) {
 			logger.severe("Errors in config file, shutting down");
 			this.getPluginLoader().disablePlugin(this);
@@ -56,7 +62,7 @@ public class Citadel extends ACivMod {
 			this.getPluginLoader().disablePlugin(this);
 			return;
 		}
-		worldManager = new CitadelWorldManager(db);
+		worldManager = new GlobalReinforcementManager(db);
 		if (!worldManager.setup()) {
 			logger.severe("Errors setting up world config, shutting down");
 			this.getPluginLoader().disablePlugin(this);
@@ -92,7 +98,7 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-		getServer().getPluginManager().registerEvents(new WorldListener(), this);
+		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -107,8 +113,8 @@ public class Citadel extends ACivMod {
 		modsAndAbove.add(PlayerType.ADMINS);
 		modsAndAbove.add(PlayerType.OWNER);
 		PermissionType.registerPermission(reinforcePerm, (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission("ACIDBLOCK", (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission("REINFORCEMENT_INFO", (LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission(acidPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
+		PermissionType.registerPermission(infoPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission(doorPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
@@ -119,7 +125,7 @@ public class Citadel extends ACivMod {
 	/**
 	 * @return The ReinforcementManager of Citadel.
 	 */
-	public CitadelWorldManager getReinforcementManager() {
+	public GlobalReinforcementManager getReinforcementManager() {
 		return worldManager;
 	}
 
@@ -143,6 +149,10 @@ public class Citadel extends ACivMod {
 	
 	public PlayerStateManager getStateManager() {
 		return stateManager;
+	}
+	
+	public CitadelConfigManager getConfigManager() {
+		return config;
 	}
 
 	/**

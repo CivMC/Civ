@@ -1,7 +1,6 @@
 package vg.civcraft.mc.citadel.command;
 
 import java.text.DecimalFormat;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
@@ -16,10 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
@@ -35,10 +31,6 @@ public class ReinforcementsGUI extends StandaloneCommand {
 	public boolean execute(CommandSender sender, String[] arg1) {
 		List<ReinforcementType> types = new LinkedList<>(
 				Citadel.getInstance().getReinforcementTypeManager().getAllTypes());
-		int rows = types.size() / 9;
-		if ((types.size() % 9) != 0) {
-			rows++;
-		}
 		// sort ascending by health
 		Collections.sort(types, new Comparator<ReinforcementType>() {
 
@@ -47,7 +39,6 @@ public class ReinforcementsGUI extends StandaloneCommand {
 				return Double.compare(o1.getHealth(), o2.getHealth());
 			}
 		});
-
 		List<IClickable> clicks = new LinkedList<IClickable>();
 		for (ReinforcementType type : types) {
 			ItemStack is = type.getItem().clone();
@@ -55,7 +46,7 @@ public class ReinforcementsGUI extends StandaloneCommand {
 			ISUtils.addLore(is, ChatColor.GREEN + "Health: " + format.format(type.getHealth()));
 			ISUtils.addLore(is, ChatColor.GOLD + "Maturation time: "
 					+ TextUtil.formatDuration(type.getMaturationTime(), TimeUnit.MILLISECONDS));
-			if (Citadel.getInstance().getAcidManager().canBeAcidBlock(type)) {
+			if (type.getAcidTime() > 0) {
 				ISUtils.addLore(is, ChatColor.GOLD + "Acid maturation time: "
 						+ TextUtil.formatDuration(type.getAcidTime(), TimeUnit.MILLISECONDS));
 			} else {

@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -9,19 +9,18 @@ import java.util.TreeMap;
 
 import org.bukkit.Location;
 
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-
 public class ChunkCache {
 
-	private final ChunkPair chunkPair;
+	private final ChunkCoord chunkPair;
 	private Map<Coords, Reinforcement> reinforcements;
 	private List<Reinforcement> deletedReinforcements;
 	private boolean isDirty;
 	private final int worldID;
 
-	public ChunkCache(ChunkPair chunkPair, Collection<Reinforcement> reins, int worldID) {
+	public ChunkCache(ChunkCoord chunkPair, Collection<Reinforcement> reins, int worldID) {
 		this.reinforcements = new TreeMap<>();
 		for (Reinforcement rein : reins) {
+			rein.setOwningCache(this);
 			reinforcements.put(new Coords(rein.getLocation()), rein);
 		}
 		this.chunkPair = chunkPair;
@@ -39,9 +38,10 @@ public class ChunkCache {
 			throw new IllegalStateException(
 					"Trying to insert reinforcement at " + rein.getLocation().toString() + ", but one already existed");
 		}
+		rein.setOwningCache(this);
 		reinforcements.put(key, rein);
 	}
-	
+
 	public void removeReinforcement(Reinforcement rein) {
 		Coords key = new Coords(rein.getLocation());
 		Reinforcement removed = reinforcements.remove(key);
@@ -54,7 +54,7 @@ public class ChunkCache {
 		deletedReinforcements.add(rein);
 	}
 
-	public ChunkPair getChunkPair() {
+	public ChunkCoord getChunkPair() {
 		return chunkPair;
 	}
 
@@ -62,11 +62,29 @@ public class ChunkCache {
 		return reinforcements.get(new Coords(x, y, z));
 	}
 
+	/**
+	 * Used when dumping all reinforcements to the database. Returns not only the
+	 * existing reinforcements, but also the ones deleted and not yet removed from
+	 * the database
+	 * 
+	 * @return All reinforcements possibly needing to be persisted to the database
+	 */
 	public Collection<Reinforcement> getAllAndCleanUp() {
 		List<Reinforcement> reins = new ArrayList<>();
 		reins.addAll(deletedReinforcements);
 		reins.addAll(reinforcements.values());
 		deletedReinforcements.clear();
+		return reins;
+	}
+
+	/**
+	 * Gets all existing reinforcements within this chunk
+	 * 
+	 * @return All reinforcements
+	 */
+	public Collection<Reinforcement> getAll() {
+		List<Reinforcement> reins = new ArrayList<>();
+		reins.addAll(reinforcements.values());
 		return reins;
 	}
 

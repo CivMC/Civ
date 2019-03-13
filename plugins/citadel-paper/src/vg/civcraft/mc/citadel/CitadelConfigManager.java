@@ -16,16 +16,24 @@ import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
-public class GlobalReinforcementManager extends CoreConfigManager {
+public class CitadelConfigManager extends CoreConfigManager {
 
 	private ManagedDatasource database;
 	private List<ReinforcementType> reinforcementTypes;
 	private List<Material> acidMaterials;
 
-	public GlobalReinforcementManager(ACivMod plugin) {
+	private boolean logHostileBreaks;
+	private boolean logFriendlyBreaks;
+	private boolean logDamage;
+	private boolean logCreation;
+	private boolean logMessages;
+	
+	private double redstoneRange;
+
+	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
 	}
-	
+
 	public List<Material> getAcidMaterials() {
 		return acidMaterials;
 	}
@@ -35,16 +43,46 @@ public class GlobalReinforcementManager extends CoreConfigManager {
 		database = (ManagedDatasource) config.get("database");
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
 		parseAcidMaterials(config);
+		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
+		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
+		logDamage = config.getBoolean("logDamage", false);
+		logCreation = config.getBoolean("logCreation", true);
+		logMessages = config.getBoolean("logMessages", true);
+		redstoneRange = config.getDouble("redstoneDistance", 3);
 		return true;
 	}
 	
+	public double getMaxRedstoneDistance() {
+		return redstoneRange;
+	}
+	
+	public boolean logMessages() {
+		return logMessages;
+	}
+
+	public boolean logHostileBreaks() {
+		return logHostileBreaks;
+	}
+
+	public boolean logFriendlyBreaks() {
+		return logFriendlyBreaks;
+	}
+
+	public boolean logDamage() {
+		return logDamage;
+	}
+
+	public boolean logCreation() {
+		return logCreation;
+	}
+
 	private void parseAcidMaterials(ConfigurationSection config) {
 		acidMaterials = parseMaterialList(config, "acidblock_material");
 		if (acidMaterials == null) {
 			logger.info("No valid acid materials found in config");
 			acidMaterials = new LinkedList<>();
 		}
-		for(Material mat : acidMaterials) {
+		for (Material mat : acidMaterials) {
 			logger.info("Adding " + mat.toString() + " as valid acid material");
 		}
 	}
@@ -77,8 +115,7 @@ public class GlobalReinforcementManager extends CoreConfigManager {
 		ReinforcementEffect effect = getReinforcementEffect(config.getConfigurationSection("effect"));
 		long gracePeriod = ConfigParsing.parseTime(config.getString("grace_period", "0"), TimeUnit.MILLISECONDS);
 		long maturationTime = ConfigParsing.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
-		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"),
-				TimeUnit.MILLISECONDS);
+		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
 		String name = config.getString("name");
 		double maturationScale = config.getInt("scale_amount", 1);
 		double health = config.getDouble("hit_points", 100);
@@ -99,8 +136,8 @@ public class GlobalReinforcementManager extends CoreConfigManager {
 					+ ". This does not make sense and the type will be ignored");
 			return null;
 		}
-		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod, effect,
-				reinforceables, nonReinforceables, id, name);
+		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod,
+				effect, reinforceables, nonReinforceables, id, name);
 	}
 
 	private List<Material> parseMaterialList(ConfigurationSection config, String key) {

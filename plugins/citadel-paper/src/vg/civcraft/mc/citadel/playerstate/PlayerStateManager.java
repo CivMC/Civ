@@ -1,13 +1,10 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.playerstate;
 
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.entity.Player;
-
-import vg.civcraft.mc.citadel.playerstate.IPlayerState;
-import vg.civcraft.mc.citadel.playerstate.NormalState;
 
 public class PlayerStateManager {
 

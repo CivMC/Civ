@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import vg.civcraft.mc.citadel.AcidManager;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class InformationState extends IPlayerState {
@@ -39,7 +39,7 @@ public class InformationState extends IPlayerState {
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			e.setCancelled(true);
 		}
-		if (!rein.hasPermission(player, "REINFORCEMENT_INFO")) {
+		if (!rein.hasPermission(player, Citadel.infoPerm)) {
 			String msg = String.format("Reinforced %s with %s", formatHealth(rein), rein.getType().getName());
 			Utility.sendAndLog(player, ChatColor.RED, msg);
 			return;

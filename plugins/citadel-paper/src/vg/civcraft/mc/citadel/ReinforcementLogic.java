@@ -8,7 +8,8 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.material.Bed;
 
 import vg.civcraft.mc.citadel.listener.BlockListener;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -26,7 +27,7 @@ public class ReinforcementLogic {
 	}
 	
 	public static void createReinforcement(Block block, ReinforcementType type, Group group) {
-		CitadelWorldManager worldManager = Citadel.getInstance().getReinforcementManager();
+		GlobalReinforcementManager worldManager = Citadel.getInstance().getReinforcementManager();
 	}
 	
 	public static void damageReinforcement(Reinforcement rein, double damage) {
@@ -97,7 +98,7 @@ public class ReinforcementLogic {
 	
 	public static  Reinforcement resolveDoubleChestReinforcement(Block b) {
 		Material mat = b.getType();
-		CitadelWorldManager reinMan = Citadel.getInstance().getReinforcementManager();
+		GlobalReinforcementManager reinMan = Citadel.getInstance().getReinforcementManager();
 		Reinforcement rein = reinMan.getReinforcement(b);
 		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
 			return rein;

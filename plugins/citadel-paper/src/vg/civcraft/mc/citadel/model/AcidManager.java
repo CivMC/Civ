@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.model;
 
 import java.util.Collection;
 import java.util.Set;
@@ -7,7 +7,6 @@ import java.util.TreeSet;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 public class AcidManager {
@@ -34,17 +33,6 @@ public class AcidManager {
 		}
 		return material.contains(mat);
 	}
-
-	/**
-	 * Checks if acid blocking is enabled for this reinforcement
-	 * 
-	 * @param rein Reinforcement to check for
-	 * @return True if the reinforcement can acid block other reinforcements and has
-	 *         an acid timer configured
-	 */
-	public boolean canBeAcidBlock(Reinforcement rein) {
-		return canBeAcidBlock(rein.getType());
-	}
 	
 	/**
 	 * Checks if acid blocking is enabled for this reinforcement type
@@ -53,8 +41,10 @@ public class AcidManager {
 	 * @return True if the reinforcement type can acid block other reinforcements and has
 	 *         an acid timer configured
 	 */
-	public boolean canBeAcidBlock(ReinforcementType type) {
-		return type.getAcidTime() >= 0;
+	public boolean canAcidBlock(ReinforcementType acidBlock, ReinforcementType victim) {
+		//TODO
+		
+		return true;
 	}
 
 	/**

@@ -3,7 +3,7 @@ package vg.civcraft.mc.citadel.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 /**
  * Called when a reinforcement is damaged by a player

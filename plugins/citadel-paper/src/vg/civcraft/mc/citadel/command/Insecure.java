@@ -7,9 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.PlayerStateManager;
 import vg.civcraft.mc.citadel.playerstate.IPlayerState;
 import vg.civcraft.mc.citadel.playerstate.InsecureState;
+import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 

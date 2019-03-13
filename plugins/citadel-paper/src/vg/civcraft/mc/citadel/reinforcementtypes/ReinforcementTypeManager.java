@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.reinforcementtypes;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 public class ReinforcementTypeManager {
 	

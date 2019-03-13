@@ -1,13 +1,14 @@
-package vg.civcraft.mc.citadel;
+package vg.civcraft.mc.citadel.model;
 
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 
-public class ChunkPair {
+public class ChunkCoord {
 
 	private int x;
 	private int z;
 
-	public ChunkPair(int x, int z) {
+	public ChunkCoord(int x, int z) {
 		this.x = x;
 		this.z = z;
 	}
@@ -27,14 +28,18 @@ public class ChunkPair {
 		return key;
 	}
 
-	public static ChunkPair fromKey(long key) {
+	public static ChunkCoord fromKey(long key) {
 		int x = (int) key;
 		int z = (int) ((key >> 32) & 0x00000000);
-		return new ChunkPair(x, z);
+		return new ChunkCoord(x, z);
 	}
 	
-	public static ChunkPair forLocation(Location loc) {
-		return new ChunkPair(loc.getChunk().getX(), loc.getChunk().getZ());
+	public static ChunkCoord forLocation(Location loc) {
+		return new ChunkCoord(loc.getChunk().getX(), loc.getChunk().getZ());
+	}
+	
+	public static ChunkCoord forChunk(Chunk chunk) {
+		return new ChunkCoord(chunk.getX(), chunk.getZ());
 	}
 	
 	public int hashCode() {
@@ -43,8 +48,8 @@ public class ChunkPair {
 	}
 
 	public boolean equals(Object o) {
-		if (o instanceof ChunkPair) {
-			ChunkPair pair = (ChunkPair) o;
+		if (o instanceof ChunkCoord) {
+			ChunkCoord pair = (ChunkCoord) o;
 			return pair.x == x && pair.z == z;
 		}
 		return false;

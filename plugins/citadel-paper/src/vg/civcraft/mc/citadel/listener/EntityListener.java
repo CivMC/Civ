@@ -1,8 +1,5 @@
 package vg.civcraft.mc.citadel.listener;
 
-import static vg.civcraft.mc.citadel.Utility.getRealBlock;
-import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -24,9 +21,9 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelWorldManager;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -54,18 +51,26 @@ public class EntityListener implements Listener {
 	//prevent zombies from breaking reinforced doors
 	@EventHandler(ignoreCancelled = true)
 	public void breakDoor(EntityBreakDoorEvent ebde) {
-		ebde.setCancelled(maybeReinforcementDamaged(getRealBlock(ebde.getBlock())));
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
+		if (rein != null) {
+			ebde.setCancelled(true);
+			ReinforcementLogic.damageReinforcement(rein, 1.0);
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true)
 	public void changeBlock(EntityChangeBlockEvent ecbe) {
-		ecbe.setCancelled(maybeReinforcementDamaged(ecbe.getBlock()));
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ecbe.getBlock());
+		if (rein != null) {
+			ecbe.setCancelled(true);
+			ReinforcementLogic.damageReinforcement(rein, 1.0);
+		}
 	}
 
 	// prevent creating golems from reinforced blocks
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void spawn(CreatureSpawnEvent cse) {
-		CitadelWorldManager reinforcementManager = Citadel.getInstance().getReinforcementManager();
+		GlobalReinforcementManager reinforcementManager = Citadel.getInstance().getReinforcementManager();
 		EntityType type = cse.getEntityType();
 		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
 				&& type != EntityType.SILVERFISH) {
