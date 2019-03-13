@@ -67,8 +67,11 @@ public abstract class IPlayerState {
 			return;
 		}
 		damage = dre.getDamageDone();
-		rein.setHealth(rein.getHealth() - damage);
-		rein.getType().getReinforcementEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+		ReinforcementLogic.damageReinforcement(rein, damage);
+	}
+	
+	public boolean isBypassEnabled() {
+		return bypass;
 	}
 
 }

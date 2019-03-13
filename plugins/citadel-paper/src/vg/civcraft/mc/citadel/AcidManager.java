@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 public class AcidManager {
 
@@ -42,7 +43,18 @@ public class AcidManager {
 	 *         an acid timer configured
 	 */
 	public boolean canBeAcidBlock(Reinforcement rein) {
-		return rein.getType().getAcidTime() >= 0;
+		return canBeAcidBlock(rein.getType());
+	}
+	
+	/**
+	 * Checks if acid blocking is enabled for this reinforcement type
+	 * 
+	 * @param rein Reinforcement type to check for
+	 * @return True if the reinforcement type can acid block other reinforcements and has
+	 *         an acid timer configured
+	 */
+	public boolean canBeAcidBlock(ReinforcementType type) {
+		return type.getAcidTime() >= 0;
 	}
 
 	/**

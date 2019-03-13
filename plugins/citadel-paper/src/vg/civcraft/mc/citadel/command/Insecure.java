@@ -3,41 +3,29 @@ package vg.civcraft.mc.citadel.command;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.PlayerState;
-import vg.civcraft.mc.citadel.ReinforcementMode;
-import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.PlayerStateManager;
+import vg.civcraft.mc.citadel.playerstate.IPlayerState;
+import vg.civcraft.mc.citadel.playerstate.InsecureState;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-public class Insecure extends PlayerCommand{
-
-	public Insecure(String name) {
-		super(name);
-		setIdentifier("ctin");
-		setDescription("Set a block to an insecure reinforcement.");
-		setUsage("/ctin");
-		setArguments(0,0);
-	}
+@CivCommand(id = "ctin")
+public class Insecure extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("Must be a player to perform that command.");
-			return true;
+		Player player = (Player) sender;
+		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
+		IPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+		if (currentState instanceof InsecureState) {
+			stateManager.setState(player, null);
 		}
-		Player p = (Player) sender;
-		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.INSECURE){
-			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
-			state.reset();
-		}
-		else{
-			Utility.sendAndLog(p, ChatColor.GREEN, "Reinforcement mode changed to "
-					+ ReinforcementMode.INSECURE.name() + ".");
-			state.setMode(ReinforcementMode.INSECURE);
+		else {
+			stateManager.setState(player, new InsecureState(player, currentState.isBypassEnabled()));
 		}
 		return true;
 	}

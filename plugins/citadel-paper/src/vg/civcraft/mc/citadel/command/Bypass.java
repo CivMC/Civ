@@ -7,32 +7,24 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.citadel.playerstate.IPlayerState;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-public class Bypass extends PlayerCommand{
-	public Bypass(String name) {
-		super(name);
-		setIdentifier("ctb");
-		setDescription("Used to bypass block reinforcements.");
-		setUsage("/ctb");
-		setArguments(0,0);
-	}
+@CivCommand(id = "ctb")
+public class Bypass extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)){
-			sender.sendMessage("Must be a player to perform that command.");
-			return true;
-		}
-		Player p = (Player) sender;
-		PlayerState state = PlayerState.get(p);
-		if (state.toggleBypassMode()){
-			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
-		}
-		else  {
-			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
+		Player player = (Player) sender;
+		IPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+		if (currentState.isBypassEnabled()) {
+			Utility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");
+		} else {
+			Utility.sendAndLog(player, ChatColor.GREEN,
+					"Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
 		return true;
 	}

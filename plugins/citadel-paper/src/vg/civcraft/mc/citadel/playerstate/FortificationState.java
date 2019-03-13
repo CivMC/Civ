@@ -77,4 +77,12 @@ public class FortificationState extends IPlayerState {
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
 	}
+	
+	public Group getGroup() {
+		return group;
+	}
+	
+	public ReinforcementType getType() {
+		return type;
+	}
 }

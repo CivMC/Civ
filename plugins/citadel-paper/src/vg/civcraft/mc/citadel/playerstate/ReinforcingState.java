@@ -119,5 +119,9 @@ public class ReinforcingState extends IPlayerState {
 			}
 		}
 	}
+	
+	public Group getGroup() {
+		return group;
+	}
 
 }

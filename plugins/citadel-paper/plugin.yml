@@ -1,13 +1,18 @@
 name: ${project.name}
 main: vg.civcraft.mc.citadel.Citadel
 version: ${project.version}
-author: Rourke750
+authors: [Rourke750, Maxopoly]
 depend: [NameLayer, CivModCore]
 softdepend: [Mercury, BetterShards]
 description: Citadel allows you to make blocks difficult to break. When a block is reinforced, it must be broken many times before it is destroyed.
 commands:
  ctr:
   aliases: [ctreinforce, reinforce, protect, cprivate, lwc, private]
+  usage: /ctr [group]
+  description: 'Enters reinforcing mode. Interacting with blocks in reinforcing mode will reinforce them or modify their reinforcement'
+  min-args: 0
+  max-args: 1
+  player-only: true
  ctacid:
   usage: /ctacid
   description: 'Removes the block above it if used on an acid block'
@@ -16,31 +21,54 @@ commands:
   player-only: true
  ctf:
   aliases: [ctfortify, fortify]
+  usage: /ctf [group]
+  description: 'Enters fortification mode. All blocks placed in fortification mode will automatically be reinforced. If no group is given, your default group will be used'
+  min-args: 0
+  max-args: 1
+  player-only: true
  ctb:
   aliases: [ctbypass, bypass]
+  usage: /ctb
+  description: 'Toggles bypass state. In bypass state you can break blocks reinforced on groups you have access to in a single break'
+  min-args: 0
+  max-args: 0
+  player-only: true
  cti:
   aliases: [ctinformation, info, ctinfo]
+  usage: /cti
+  description: 'Enters information mode. Interacting with blocks in information mode will show information on their reinforcement'
+  min-args: 0
+  max-args: 0
+  player-only: true
  ctin:
-  aliases: [ctinsecure]
+  aliases: [ctinsecure, insecure]
+  usage: /ctin
+  description: 'Enters insecure mode. Interacting with containers in insecure mode will switch their insecure flag. Insecure containers can interact with hoppers reinforced on a different group. All containers are secure by default'
+  min-args: 0
+  max-args: 0
+  player-only: true
  ctm:
   aliases: [ctmaterials, materials]
  cto:
   aliases: [ctoff, off]
- cts:
-  aliases: [ctstats]
-  permission: citadel.admin
+  usage: /cto
+  description: 'Leaves all reinforcement modes'
+  min-args: 0
+  max-args: 0
+  player-only: true
  ctur:
   permission: citadel.admin
  ctar:
   permission: citadel.admin
   aliases: [ctareareinforce] 
- ctsl:
-  permission: citadel.admin
-  aliases: [ctsetlogging]
  cte:
   aliases: [cteasy,toggleeasymode]
  ctdl:
   aliases: [reinforcements,rein]
+  usage: /ctdl
+  description: 'Opens a GUI displaying all reinforcement materials'
+  min-args: 0
+  max-args: 0
 permissions:
  citadel.admin:
   default: op

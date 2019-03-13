@@ -594,7 +594,7 @@ public class Utility {
             if ((material.getGracePeriod() > 0 && pr.getMaturationTime() > 0 && pr.getHealth() >= 1.0 &&
             			material.getMaturationTime() - timeUntilMature(pr) < material.getGracePeriod() ) ||
         			// RNG is [0,1) so <= would give chance of return if health is 0. Replaced with < alone to fix.
-            		rng.nextDouble() < pr.getHealth() * material.getPercentReturn()) {
+            		rng.nextDouble() < pr.getHealth() * material.getReturnChance()) {
 
                 Location location = pr.getLocation();
                 if (player != null){

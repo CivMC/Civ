@@ -141,7 +141,9 @@ public class CitadelReinforcementData {
 						String lore = rs.getString(12);
 						int acidTime = rs.getInt(13);
 						long msAcidTime = acidTime;
+						//old unit was minutes since unix epoch
 						msAcidTime *= 60000;
+						//some reins don't have a time stamp, gonna have to guess for those
 						if (msAcidTime == 0) {
 							msAcidTime = System.currentTimeMillis();
 						}

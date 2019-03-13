@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -31,6 +32,10 @@ public class ReinforcementTypeManager {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
 		return typesByItem.get(copy);
+	}
+	
+	public Collection<ReinforcementType> getAllTypes() {
+		return typesById.values();
 	}
 
 }

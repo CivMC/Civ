@@ -63,7 +63,7 @@ public class ReinforcementType {
 	 * @return The percent chance that a block will return the reinforcements.
 	 *         Scales with damage. 1 means it is 100% and .5 means 50%
 	 */
-	public double getPercentReturn() {
+	public double getReturnChance() {
 		return returnChance;
 	}
 	

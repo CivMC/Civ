@@ -29,13 +29,18 @@ public class ReinforcementLogic {
 		CitadelWorldManager worldManager = Citadel.getInstance().getReinforcementManager();
 	}
 	
-	public static Reinforcement getReinforcementProtecting(Block b) {
+	public static void damageReinforcement(Reinforcement rein, double damage) {
+		rein.setHealth(rein.getHealth() - damage);
+		rein.getType().getReinforcementEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+	}
+	
+ 	public static Reinforcement getReinforcementProtecting(Block b) {
 		Reinforcement directReinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(b);
 		if (directReinforcement != null) {
 			return directReinforcement;
 		}
 		Block actual = getResponsibleBlock(b);
-		return getChestReinforcement(actual);
+		return resolveDoubleChestReinforcement(actual);
 	}
 
 	/**
@@ -90,7 +95,7 @@ public class ReinforcementLogic {
 		return block;
 	}
 	
-	public static  Reinforcement getChestReinforcement(Block b) {
+	public static  Reinforcement resolveDoubleChestReinforcement(Block b) {
 		Material mat = b.getType();
 		CitadelWorldManager reinMan = Citadel.getInstance().getReinforcementManager();
 		Reinforcement rein = reinMan.getReinforcement(b);
@@ -124,7 +129,7 @@ public class ReinforcementLogic {
 			return false;
 		}
 		if (block.getState() instanceof InventoryHolder) {
-			Reinforcement rein = ReinforcementLogic.getChestReinforcement(block);
+			Reinforcement rein = ReinforcementLogic.resolveDoubleChestReinforcement(block);
 			if (rein == null) {
 				return false;
 			}
