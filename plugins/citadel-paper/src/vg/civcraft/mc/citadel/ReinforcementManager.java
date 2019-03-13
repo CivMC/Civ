@@ -44,13 +44,13 @@ public class ReinforcementManager {
 		cache.insertReinforcement(reinforcement);
 	}
 	
-	private void removeReinforcement(Reinforcement reinforcement) {
+	public void removeReinforcement(Reinforcement reinforcement) {
 		ChunkPair key = ChunkPair.forLocation(reinforcement.getLocation());
 		ChunkCache cache = reinforcements.getIfPresent(key);
 		if (cache == null) {
 			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
 		}
-		cache.rem
+		cache.removeReinforcement(reinforcement);
 	}
 	
 	/**

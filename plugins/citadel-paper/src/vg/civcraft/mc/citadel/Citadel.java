@@ -20,10 +20,11 @@ public class Citadel extends ACivMod {
 	private static Logger logger;
 	
 	public static final String chestPerm = "CHESTS";
+	public static final String bypassPerm = "BYPASS_REINFORCEMENT";
 
 	private CitadelReinforcementData db;
 	private CitadelWorldManager worldManager;
-	private CitadelConfigManager config;
+	private GlobalReinforcementManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
 	private static Citadel instance;
@@ -37,7 +38,7 @@ public class Citadel extends ACivMod {
 			this.getPluginLoader().disablePlugin(this);
 			return;
 		}
-		config = new CitadelConfigManager(this);
+		config = new GlobalReinforcementManager(this);
 		if (!config.parse()) {
 			logger.severe("Errors in config file, shutting down");
 			this.getPluginLoader().disablePlugin(this);
@@ -102,7 +103,7 @@ public class Citadel extends ACivMod {
 		PermissionType.registerPermission("REINFORCE", (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission("ACIDBLOCK", (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission("REINFORCEMENT_INFO", (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission("BYPASS_REINFORCEMENT", (LinkedList<PlayerType>) modsAndAbove.clone());
+		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission("DOORS", (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission("CROPS", (LinkedList<PlayerType>) membersAndAbove.clone());

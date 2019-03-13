@@ -7,7 +7,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -17,8 +16,8 @@ public class FortificationState extends IPlayerState {
 
 	private ReinforcementType type;
 
-	public FortificationState(Player p, ReinforcementType type) {
-		super(p);
+	public FortificationState(Player p, boolean bypass, ReinforcementType type) {
+		super(p, bypass);
 		this.type = type;
 	}
 

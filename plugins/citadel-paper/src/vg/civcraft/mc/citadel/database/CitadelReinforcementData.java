@@ -31,13 +31,11 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 public class CitadelReinforcementData {
 
 	private ManagedDatasource db;
-	private Citadel plugin;
 	private Logger logger;
 	private ReinforcementTypeManager typeMan;
 
 	public CitadelReinforcementData(ManagedDatasource db, Citadel plugin, ReinforcementTypeManager typeMan) {
 		this.db = db;
-		this.plugin = plugin;
 		this.typeMan = typeMan;
 		this.logger = plugin.getLogger();
 	}
@@ -259,8 +257,8 @@ public class CitadelReinforcementData {
 			PreparedStatement deleteStatement = conn
 					.prepareStatement("delete from reinforcements where x = ? and y = ? and z = ? and world_id = ?;");
 			PreparedStatement updateStatement = conn.prepareStatement("update reinforcements "
-					+ "set insecure = ?, health=? where x = ? and y = ? and z = ? and world_id = ?;");
-			for (Reinforcement rein : cache.getAll()) {
+					+ "set insecure = ?, health=?, type_id=? where x = ? and y = ? and z = ? and world_id = ?;");
+			for (Reinforcement rein : cache.getAllAndCleanUp()) {
 				if (!rein.isDirty()) {
 					continue;
 				}
@@ -306,10 +304,11 @@ public class CitadelReinforcementData {
 			throws SQLException {
 		updateStatement.setBoolean(1, rein.isInsecure());
 		updateStatement.setDouble(2, rein.getHealth());
-		updateStatement.setInt(3, rein.getLocation().getBlockX());
-		updateStatement.setInt(4, rein.getLocation().getBlockY());
-		updateStatement.setInt(5, rein.getLocation().getBlockZ());
-		updateStatement.setInt(6, cache.getWorldID());
+		updateStatement.setInt(3, rein.getType().getID());
+		updateStatement.setInt(4, rein.getLocation().getBlockX());
+		updateStatement.setInt(5, rein.getLocation().getBlockY());
+		updateStatement.setInt(6, rein.getLocation().getBlockZ());
+		updateStatement.setInt(7, cache.getWorldID());
 		updateStatement.addBatch();
 	}
 

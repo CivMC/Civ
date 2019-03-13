@@ -17,9 +17,7 @@ import org.bukkit.util.BlockIterator;
 
 import vg.civcraft.mc.citadel.AcidManager;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelWorldManager;
 import vg.civcraft.mc.citadel.OldCitadelConfigManager;
-import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.AcidBlockEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -28,7 +26,6 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
 
 @CivCommand(id = "ctacid")
 public class Acid extends StandaloneCommand {

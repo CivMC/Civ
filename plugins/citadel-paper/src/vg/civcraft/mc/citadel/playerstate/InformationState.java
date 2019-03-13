@@ -1,14 +1,10 @@
 package vg.civcraft.mc.citadel.playerstate;
 
-import static vg.civcraft.mc.citadel.Utility.timeUntilAcidMature;
-import static vg.civcraft.mc.citadel.Utility.timeUntilMature;
-
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -16,19 +12,18 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.AcidManager;
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public class InformationState extends IPlayerState {
 
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
 
-	public InformationState(Player p) {
-		super(p);
+	public InformationState(Player p, boolean bypass) {
+		super(p, bypass);
 	}
 
 	@Override
@@ -37,7 +32,7 @@ public class InformationState extends IPlayerState {
 
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
-		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getClickedBlock());
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		if (rein == null) {
 			return;
 		}

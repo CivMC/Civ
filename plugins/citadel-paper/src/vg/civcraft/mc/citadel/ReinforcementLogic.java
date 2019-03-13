@@ -13,7 +13,7 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 public class ReinforcementLogic {
 
-	public static void damageReinforcement(Player player, Reinforcement reinforcement) {
+	public static double getDamageApplied(Player player, Reinforcement reinforcement) {
 		double damageAmount = 1.0;
 		if (!reinforcement.isMature()) {
 			double timeExisted = (double) (System.currentTimeMillis() - reinforcement.getCreationTime());
@@ -21,7 +21,7 @@ public class ReinforcementLogic {
 			damageAmount /= (1.0 - progress);
 			damageAmount *= reinforcement.getType().getMaturationScale();
 		}
-		reinforcement.setHealth(reinforcement.getHealth() - damageAmount);
+		return damageAmount;
 	}
 	
 	public static void createReinforcement(Block block, ReinforcementType type) {

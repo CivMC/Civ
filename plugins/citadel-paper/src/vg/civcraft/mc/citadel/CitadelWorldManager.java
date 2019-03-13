@@ -130,6 +130,6 @@ public class CitadelWorldManager {
 		if (worldManager == null) {
 			throw new IllegalStateException("No world manager for reinforcement at " + rein.getLocation().toString());
 		}
-		worldManager.remo
+		worldManager.removeReinforcement(rein);
 	}
 }

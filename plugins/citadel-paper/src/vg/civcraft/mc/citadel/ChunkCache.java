@@ -2,7 +2,6 @@ package vg.civcraft.mc.citadel;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -63,10 +62,11 @@ public class ChunkCache {
 		return reinforcements.get(new Coords(x, y, z));
 	}
 
-	public Collection<Reinforcement> getAll() {
+	public Collection<Reinforcement> getAllAndCleanUp() {
 		List<Reinforcement> reins = new ArrayList<>();
 		reins.addAll(deletedReinforcements);
 		reins.addAll(reinforcements.values());
+		deletedReinforcements.clear();
 		return reins;
 	}
 

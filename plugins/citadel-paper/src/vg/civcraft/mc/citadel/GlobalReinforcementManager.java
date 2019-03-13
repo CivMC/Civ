@@ -16,13 +16,13 @@ import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
-public class CitadelConfigManager extends CoreConfigManager {
+public class GlobalReinforcementManager extends CoreConfigManager {
 
 	private ManagedDatasource database;
 	private List<ReinforcementType> reinforcementTypes;
 	private List<Material> acidMaterials;
 
-	public CitadelConfigManager(ACivMod plugin) {
+	public GlobalReinforcementManager(ACivMod plugin) {
 		super(plugin);
 	}
 	
@@ -79,12 +79,17 @@ public class CitadelConfigManager extends CoreConfigManager {
 		long maturationTime = ConfigParsing.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
 		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"),
 				TimeUnit.MILLISECONDS);
+		String name = config.getString("name");
 		double maturationScale = config.getInt("scale_amount", 1);
 		double health = config.getDouble("hit_points", 100);
 		double returnChance = config.getDouble("return_chance", 1.0);
 		List<Material> reinforceables = parseMaterialList(config, "reinforceables");
 		List<Material> nonReinforceables = parseMaterialList(config, "non_reinforceables");
 		int id = config.getInt("id", -1);
+		if (name == null) {
+			logger.warning("No name specified for reinforcement type at " + config.getCurrentPath());
+			name = item.getType().name();
+		}
 		if (id == -1) {
 			logger.warning("Reinforcement type at " + config.getCurrentPath() + " had no id, it was ignored");
 			return null;
@@ -95,7 +100,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 			return null;
 		}
 		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod, effect,
-				reinforceables, nonReinforceables, id);
+				reinforceables, nonReinforceables, id, name);
 	}
 
 	private List<Material> parseMaterialList(ConfigurationSection config, String key) {
