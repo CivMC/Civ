@@ -137,8 +137,7 @@ public class JukeAlert extends ACivMod {
 	}
 
 	@Override
-	protected String getPluginName() {
-
+	protected String getPluginName() {		
 		return "JukeAlert";
 	}
 }

@@ -60,6 +60,7 @@ import org.spigotmc.event.entity.EntityMountEvent;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.events.PlayerHitSnitchEvent;
 import com.untamedears.JukeAlert.events.PlayerLoginSnitchEvent;
+import com.untamedears.JukeAlert.events.PlayerLogoutSnitchEvent;
 import com.untamedears.JukeAlert.external.Mercury;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.manager.SnitchManager;
@@ -162,7 +163,7 @@ public class JukeAlertListener implements Listener {
 		Set<Snitch> snitches = snitchManager.findSnitches(world, location);
 		for (Snitch snitch : snitches) {
 			if (!immuneToSnitch(snitch, accountId)) {
-				Bukkit.getPluginManager().callEvent(new PlayerLoginSnitchEvent(snitch, player));
+				Bukkit.getPluginManager().callEvent(new PlayerLogoutSnitchEvent(snitch, player));
 				snitch.imposeSnitchTax();
 				try {
 					TextComponent message = new TextComponent(ChatColor.AQUA + " * " + player.getDisplayName()
