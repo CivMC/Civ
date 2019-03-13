@@ -1,4 +1,7 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -7,9 +10,6 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class Off extends PlayerCommand{
 

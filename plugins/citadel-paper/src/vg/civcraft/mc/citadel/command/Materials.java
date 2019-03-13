@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
 
 import java.util.ArrayList;
 import java.util.List;

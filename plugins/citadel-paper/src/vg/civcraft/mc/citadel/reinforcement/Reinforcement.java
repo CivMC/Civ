@@ -1,94 +1,169 @@
 package vg.civcraft.mc.citadel.reinforcement;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Reinforcement {
 
-	private int creation;
-	private int acid;
-	private Location loc;
-	private Material mat;
-	private int dur;
+	private final long creationTime;
+	private final ReinforcementType type;
+	private final Location loc;
+	private double health;
 	protected boolean isDirty;
-	
-	public Reinforcement(Location loc, Material mat, int dur, int creation, int acid){
+	protected boolean isNew;
+	private final int groupId;
+	private boolean insecure;
+
+	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
+			boolean isDirty, boolean isNew, boolean insecure) {
+		if (loc == null) {
+			throw new IllegalArgumentException("Location for reinforcement can not be null");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Reinforcement type for reinforcement can not be null");
+		}
 		this.loc = loc;
-		this.mat = mat;
-		this.dur = dur;
-		this.creation = creation;
-		this.acid = acid;
-		isDirty = false;
+		this.type = type;
+		this.creationTime = creationTime;
+		this.health = health;
+		this.isDirty = isDirty;
+		this.groupId = groupID;
+		this.isNew = isNew;
+		this.insecure = insecure;
 	}
+
+	public Reinforcement(Location loc, ReinforcementType type, Group group) {
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
+	}
+
 	/**
-	 * Sets the durability of a reinforcement.
-	 * @param The int of the durability.
+	 * Sets the health of a reinforcement.
+	 * 
+	 * @param health new health value
 	 */
-	public void setDurability(int dur){
-		this.dur = dur;
+	public void setHealth(double health) {
+		this.health = health;
 		isDirty = true;
+		if (health <= 0) {
+			Citadel.getInstance().getReinforcementManager().removeReinforcement(this);
+		}
 	}
+
 	/**
-	 * @return Returns what the current durability is.
+	 * @return Whether reinforcement is mature, meaning the maturation time
+	 *         configured for this reinforcements type has passed since the
+	 *         reinforcements creation
 	 */
-	public int getDurability(){
-		return dur;
+	public boolean isMature() {
+		return System.currentTimeMillis() - creationTime > type.getMaturationTime();
 	}
+
 	/**
-	 * @return Returns the material of the ReinforcementMaterial.
+	 * @return Current health
 	 */
-	public Material getMaterial(){
-		return mat;
+	public double getHealth() {
+		return health;
 	}
+
 	/**
-	 * @return Return the location of the Reinforcement.
+	 * @return Location of the Reinforcement.
 	 */
-	public Location getLocation(){
+	public Location getLocation() {
 		return loc;
 	}
+
 	/**
-	 * @return Returns the time that this reinforcement was created or 0 if it is mature.
+	 * @return Unix time in ms when the reinforcement was created
 	 */
-	public int getMaturationTime(){
-		return creation;
+	public long getCreationTime() {
+		return creationTime;
 	}
+
 	/**
-	 * Sets the maturation time of this reinforcement.
-	 * @param The time in minutes it was created.
+	 * @return Whether the reinforcement is insecure, meaning it ignores Citadel
+	 *         restrictions on hoppers etc.
 	 */
-	public void setMaturationTime(int time){
-		creation = time;
-		isDirty = true;
+	public boolean isInsecure() {
+		return insecure;
 	}
+
 	/**
-	 * @return Returns the time that this acid process began or 0 if not acid/done.
+	 * @return Whether this reinforcement needs to be saved to the database
 	 */
-	public int getAcidTime(){
-		return acid;
-	}
-	/**
-	 * Sets the acid process time of this reinforcement (0 to indicate done/not acid).
-	 * @param The time in minutes acid process began.
-	 */
-	public void setAcidTime(int acid) {
-		this.acid = acid;
-		isDirty = true;
-	}
-	/**
-	 * @return Returns if this reinforcement needs to be saved.
-	 */
-	public boolean isDirty(){
+	public boolean isDirty() {
 		return isDirty;
 	}
+
 	/**
-	 * Sets if this reinforcement needs to be saved or not.
+	 * Sets if this reinforcement needs to be saved to the database or not.
+	 * 
 	 * @param dirty
 	 */
-	public void setDirty(boolean dirty){
+	public void setDirty(boolean dirty) {
 		isDirty = dirty;
+		if (!dirty) {
+			isNew = false;
+		}
 	}
-	
-	public Material getType() {
-		return this.mat;
+
+	/**
+	 * @return True if the reinforcement has not been written to the database since its creation
+	 */
+	public boolean isNew() {
+		return isNew;
+	}
+
+	/**
+	 * After being broken reinforcements will no longer be accessible via lookup,
+	 * but may still persist in the cache until their deletion is persisted into the
+	 * database
+	 * 
+	 * @return True if the reinforcements health is equal to or less than 0
+	 */
+	public boolean isBroken() {
+		return health <= 0;
+	}
+
+	/**
+	 * @return Group this reinforcement is under
+	 */
+	public Group getGroup() {
+		return GroupManager.getGroup(groupId);
+	}
+
+	/**
+	 * @return Id of the group this reinforcement is under
+	 */
+	public int getGroupId() {
+		return groupId;
+	}
+
+	/**
+	 * @return Type of this reinforcement
+	 */
+	public ReinforcementType getType() {
+		return type;
+	}
+
+	/**
+	 * @return Age of this reinforcement in milli seconds
+	 */
+	public long getAge() {
+		return System.currentTimeMillis() - creationTime;
+	}
+
+	public boolean hasPermission(Player p, String permission) {
+		Group g = getGroup();
+		if (g == null) {
+			return false;
+		}
+		return NameAPI.getGroupManager().hasAccess(g, p.getUniqueId(), PermissionType.getPermission(permission));
 	}
 }

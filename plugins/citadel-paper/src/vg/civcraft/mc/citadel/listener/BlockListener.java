@@ -9,8 +9,8 @@ import static vg.civcraft.mc.citadel.Utility.isPlant;
 import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
 import static vg.civcraft.mc.citadel.Utility.reinforcementBroken;
 import static vg.civcraft.mc.citadel.Utility.reinforcementDamaged;
-import static vg.civcraft.mc.citadel.Utility.timeUntilMature;
 import static vg.civcraft.mc.citadel.Utility.timeUntilAcidMature;
+import static vg.civcraft.mc.citadel.Utility.timeUntilMature;
 import static vg.civcraft.mc.citadel.Utility.wouldPlantDoubleReinforce;
 
 import java.util.Arrays;
@@ -50,8 +50,10 @@ import org.bukkit.material.MaterialData;
 import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.CitadelWorldManager;
+import vg.civcraft.mc.citadel.OldCitadelConfigManager;
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
@@ -68,166 +70,68 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class BlockListener implements Listener {
 
-	public static final List<BlockFace> all_sides = Arrays.asList(BlockFace.UP,
-			BlockFace.DOWN, BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
+	public static final List<BlockFace> all_sides = Arrays.asList(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
+			BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
+
+	public static final List<BlockFace> planar_sides = Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
 			BlockFace.EAST);
 
-	public static final List<BlockFace> planar_sides = Arrays.asList(
-			BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
-
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
-
-	//Stop comparators from being placed unless the reinforcement is insecure
-	@EventHandler(priority = EventPriority.HIGH,ignoreCancelled = true)
-	public void comparatorPlaceCheck(BlockPlaceEvent event)
-	{
-		//We only care if they are placing a comparator
-		if(event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) return;
-
-		Comparator comparator = (Comparator)event.getBlockPlaced().getState().getData();
+	// Stop comparators from being placed unless the reinforcement is insecure
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void comparatorPlaceCheck(BlockPlaceEvent event) {
+		// We only care if they are placing a comparator
+		if (event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) {
+			return;
+		}
+		Comparator comparator = (Comparator) event.getBlockPlaced().getState().getData();
 		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
-		//We only care if the comparator is going placed against something with an inventory
-		if(block.getState() instanceof InventoryHolder) {
-			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
-			if (rein != null && rein instanceof PlayerReinforcement) {
-				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
-				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
-					Player player = event.getPlayer();
-					if (player != null) {
-						if (playerReinforcement.canAccessChests(player)) {
-							return; // We also allow players to place against chests they can access
-						}
-						Utility.sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
-					}
-					event.setCancelled(true);
-				}
-			}
-			return;
-		}
-
-		// So apparently read-through state can pass through an intermediary block, so lets check that too.
-		block = block.getRelative(comparator.getFacing().getOppositeFace());
-		if(block.getState() instanceof InventoryHolder) {
-			Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
-			if (rein != null && rein instanceof PlayerReinforcement) {
-				PlayerReinforcement playerReinforcement = (PlayerReinforcement) rein;
-				if (!playerReinforcement.isInsecure()) { //Only let them place against /ctinsecure
-					Player player = event.getPlayer();
-					if (player != null) {
-						if (playerReinforcement.canAccessChests(player)) {
-							return; // We also allow players to place against chests they can access
-						}
-						Utility.sendAndLog(player, ChatColor.RED, "You cannot place that next to a container you do not own.");
-					}
-					event.setCancelled(true);
-				}
-			}
-		}
-
-	}
-
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onFortificationMode(BlockPlaceEvent event){
-		Player p = event.getPlayer();
-		Block b = event.getBlock();
-		GroupManager gm = NameAPI.getGroupManager();
-		Location loc = b.getLocation();
-		Inventory inv = p.getInventory();
-		Reinforcement rein = rm.getReinforcement(b.getLocation());
-		if (Material.AIR.equals(event.getBlockReplacedState().getType())) {
-			if (rein != null && rein instanceof PlayerReinforcement){
-				//Would be nice to find a more performant way to detect the entity w/o checking every entity.
-				for (Entity e : loc.getChunk().getEntities()){
-					if (e instanceof Hanging){
-						Location eloc = e.getLocation().getBlock().getLocation();
-						if (eloc.getBlockX() == loc.getBlockX() && eloc.getBlockY() == loc.getBlockY()
-								&& eloc.getBlockZ() == loc.getBlockZ()){
-							event.setCancelled(true);
-							return;
-						}
-					}
-				}
-
-				rm.deleteReinforcement(rein);
-			}
-			ItemStack stack = event.getItemInHand();
-			rein = isDroppedReinforcementBlock(p, stack, loc);
-			if (rein != null){
-				rm.saveInitialReinforcement(rein);
-				return;
-			}
-		}
-		PlayerState state = PlayerState.get(p);
-		ReinforcementType type = null;
-		Group groupToReinforceTo = null;
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
-			type = state.getReinforcementType();
-			if (type == null) {
-				Utility.sendAndLog(p, ChatColor.RED, "Something went wrong, you dont seem to have a reinforcement material selected?");
-				state.reset();
-				event.setCancelled(true);
-				return;
-			}
-			groupToReinforceTo = state.getGroup();
-		}else if(state.getMode() == ReinforcementMode.NORMAL) {
-			if (!state.getEasyMode()) {
-				return;
-			}
-				type =  ReinforcementType.getReinforcementType(p.getInventory().getItemInOffHand());
-				if (type == null) {
-					return;
-				}
-				String gName = gm.getDefaultGroup(p.getUniqueId());
-				if (gName != null) {
-					groupToReinforceTo = GroupManager.getGroup(gName);
-				}
-				if (groupToReinforceTo == null) {
-					return;
-				}
-			}
-			else {
-				return;
-		}
-
-		if (!canPlace(b, p)){
-			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
+		// Check if the comparator is placed against something with an inventory
+		if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(), block)) {
 			event.setCancelled(true);
+			Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+					"You can not place this because it'd allow bypassing a nearby reinforcement");
 			return;
 		}
-		 // Don't allow double reinforcing reinforceable plants
-        if (wouldPlantDoubleReinforce(b)) {
-        	Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
-            event.setCancelled(true);
-            return;
-        }
-        // Don't allow incorrect reinforcement with exclusive reinforcement types
-        if (!type.canBeReinforced(b.getType())) {
-            Utility.sendAndLog(p, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
-            event.setCancelled(true);
-            return;
-        }
-        int required = type.getRequiredAmount();
-        if (type.getItemStack().isSimilar(event.getItemInHand())){
-        	required++;
-        }
-		if (inv.containsAtLeast(type.getItemStack(), required)) {
-			try {
-				if (createPlayerReinforcement(p, groupToReinforceTo, b, type, event.getItemInHand()) == null) {
-					Utility.sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
-				} else {
-					state.checkResetMode();
-				}
-			} catch(ReinforcemnetFortificationCancelException ex){
-				Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementFortificationCancelException occured in BlockListener, BlockPlaceEvent ", ex);
+		// Comparators can also read through a single opaque block
+		if (block.getType().isOccluding()) {
+			if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(),
+					block.getRelative(comparator.getFacing().getOppositeFace()))) {
+				event.setCancelled(true);
+				Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+						"You can not place this because it'd allow bypassing a nearby reinforcement");
+				return;
 			}
-        } else {
-        	if (state.getMode() == ReinforcementMode.REINFORCEMENT_FORTIFICATION) {
-	        	Utility.sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
-	            		state.getReinforcementType().getMaterial().name()));
-	            state.reset();
-	            event.setCancelled(true);
-        	}
-        }
+		}
+	}
+	
+	//remove reinforced air
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void removeReinforcedAir(BlockPlaceEvent e) {
+		if (e.getBlockReplacedState().getType() != Material.AIR) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
+		rein.setHealth(-1);
+	}
+	
+	//prevent players from upgrading a chest into a double chest to bypass the single chests reinforcement
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventBypassChestAccess(BlockPlaceEvent e) {
+		Material mat = e.getBlock().getType();
+		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
+			return;
+		}
+		for(BlockFace face : planar_sides) {
+			Block rel = e.getBlock().getRelative(face);
+			if (rel != null && rel.getType() == mat) {
+				if (ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
+					e.setCancelled(true);
+					Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+							"You can not place this because it'd allow bypassing a nearby reinforcement");
+					break;
+				}
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -250,8 +154,7 @@ public class BlockListener implements Listener {
 		if (rein == null) {
 			rein = createNaturalReinforcement(event.getBlock(), player);
 			if (rein != null) {
-				ReinforcementDamageEvent e = new ReinforcementDamageEvent(rein,
-						player, block);
+				ReinforcementDamageEvent e = new ReinforcementDamageEvent(rein, player, block);
 				Bukkit.getPluginManager().callEvent(e);
 				if (e.isCancelled()) {
 					event.setCancelled(true);
@@ -268,26 +171,21 @@ public class BlockListener implements Listener {
 		if (rein instanceof PlayerReinforcement) {
 			PlayerReinforcement pr = (PlayerReinforcement) rein;
 			PlayerState state = PlayerState.get(player);
-			boolean admin_bypass = player
-					.hasPermission("citadel.admin.bypassmode");
-			if (reinforcingBlock != null && isPlant(block)
-					&& (pr.canAccessCrops(player) || admin_bypass)) {
+			boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
+			if (reinforcingBlock != null && isPlant(block) && (pr.canAccessCrops(player) || admin_bypass)) {
 				// player has CROPS access to the soil block, allow them to
 				// break without affecting reinforcement
 				is_cancelled = false;
-			} else if (state.isBypassMode()
-					&& (pr.canBypass(player) || admin_bypass)
+			} else if (state.isBypassMode() && (pr.canBypass(player) || admin_bypass)
 					&& !pr.getGroup().isDisciplined()) {
 				if (admin_bypass) {
 					/*
-					 * Citadel.verbose( VerboseMsg.AdminReinBypass,
-					 * player.getDisplayName(),
+					 * Citadel.verbose( VerboseMsg.AdminReinBypass, player.getDisplayName(),
 					 * pr.getBlock().getLocation().toString());
 					 */
 				} else {
 					/*
-					 * Citadel.verbose( VerboseMsg.ReinBypass,
-					 * player.getDisplayName(),
+					 * Citadel.verbose( VerboseMsg.ReinBypass, player.getDisplayName(),
 					 * pr.getBlock().getLocation().toString());
 					 */
 				}
@@ -296,8 +194,7 @@ public class BlockListener implements Listener {
 				if (!state.isBypassMode() && pr.canBypass(player)) {
 					player.sendMessage(ChatColor.RED + "Enable bypass mode with \"/ctb\" to break this reinforcement");
 				}
-				ReinforcementDamageEvent dre = new ReinforcementDamageEvent(
-						rein, player, block);
+				ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein, player, block);
 
 				Bukkit.getPluginManager().callEvent(dre);
 
@@ -312,8 +209,7 @@ public class BlockListener implements Listener {
 				is_cancelled = createNaturalReinforcement(block, player) != null;
 			}
 		} else {
-			ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein,
-					player, block);
+			ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein, player, block);
 
 			Bukkit.getPluginManager().callEvent(dre);
 
@@ -334,9 +230,7 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void pistonExtend(BlockPistonExtendEvent bpee) {
 		for (Block block : bpee.getBlocks()) {
-			Block realBlock = Utility.getRealBlock(block);
-			Reinforcement reinforcement = rm.getReinforcement(realBlock
-					.getLocation());
+			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
 			if (reinforcement != null) {
 				bpee.setCancelled(true);
 				break;
@@ -347,9 +241,7 @@ public class BlockListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void pistonRetract(BlockPistonRetractEvent bpre) {
 		for (Block block : bpre.getBlocks()) {
-			Block realBlock = Utility.getRealBlock(block);
-			Reinforcement reinforcement = rm.getReinforcement(realBlock
-					.getLocation());
+			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
 			if (reinforcement != null) {
 				bpre.setCancelled(true);
 				break;
@@ -369,7 +261,7 @@ public class BlockListener implements Listener {
 			if (block.getRelative(0, 1, 0).getType() == matfire) {
 				block.getRelative(0, 1, 0).setType(Material.AIR);
 			} // Essential
-			// Extended fire protection (recommend)
+				// Extended fire protection (recommend)
 			if (block.getRelative(1, 0, 0).getType() == matfire) {
 				block.getRelative(1, 0, 0).setType(Material.AIR);
 			}
@@ -385,27 +277,6 @@ public class BlockListener implements Listener {
 			if (block.getRelative(0, 0, -1).getType() == matfire) {
 				block.getRelative(0, 0, -1).setType(Material.AIR);
 			}
-			// Aggressive fire protection (would seriously reduce effectiveness
-			// of flint down to near the "you'd have to use it 25 times"
-			// mentality)
-			/*
-			 * if (block.getRelative(1,1,0).getType() == matfire)
-			 * {block.getRelative(1,1,0).setTypeId(0);} if
-			 * (block.getRelative(1,-1,0).getType() == matfire)
-			 * {block.getRelative(1,-1,0).setTypeId(0);} if
-			 * (block.getRelative(-1,1,0).getType() == matfire)
-			 * {block.getRelative(-1,1,0).setTypeId(0);} if
-			 * (block.getRelative(-1,-1,0).getType() == matfire)
-			 * {block.getRelative(-1,-1,0).setTypeId(0);} if
-			 * (block.getRelative(0,1,1).getType() == matfire)
-			 * {block.getRelative(0,1,1).setTypeId(0);} if
-			 * (block.getRelative(0,-1,1).getType() == matfire)
-			 * {block.getRelative(0,-1,1).setTypeId(0);} if
-			 * (block.getRelative(0,1,-1).getType() == matfire)
-			 * {block.getRelative(0,1,-1).setTypeId(0);} if
-			 * (block.getRelative(0,-1,-1).getType() == matfire)
-			 * {block.getRelative(0,-1,-1).setTypeId(0);}
-			 */
 		}
 	}
 
@@ -445,26 +316,20 @@ public class BlockListener implements Listener {
 			if (openable.isOpen()) {
 				return;
 			}
-			Reinforcement generic_reinforcement = Citadel
-					.getReinforcementManager().getReinforcement(block);
-			if (generic_reinforcement == null
-					|| !(generic_reinforcement instanceof PlayerReinforcement)) {
+			Reinforcement generic_reinforcement = Citadel.getReinforcementManager().getReinforcement(block);
+			if (generic_reinforcement == null || !(generic_reinforcement instanceof PlayerReinforcement)) {
 				return;
 			}
 			PlayerReinforcement reinforcement = (PlayerReinforcement) generic_reinforcement;
-			double redstoneDistance = CitadelConfigManager
-					.getMaxRedstoneDistance();
+			double redstoneDistance = OldCitadelConfigManager.getMaxRedstoneDistance();
 			if (!isAuthorizedPlayerNear(reinforcement, redstoneDistance)) {
 				// Citadel.Log(
 				// reinforcement.getLocation().toString());
 				bre.setNewCurrent(bre.getOldCurrent());
 			}
 		} catch (Exception e) {
-			Citadel.getInstance()
-					.getLogger()
-					.log(Level.WARNING,
-							"Exception occured in BlockListener, BlockRedstoneEvent ",
-							e);
+			Citadel.getInstance().getLogger().log(Level.WARNING,
+					"Exception occured in BlockListener, BlockRedstoneEvent ", e);
 		}
 	}
 
@@ -483,37 +348,29 @@ public class BlockListener implements Listener {
 			}
 
 			Action action = pie.getAction();
-			boolean access_reinforcement = action == Action.RIGHT_CLICK_BLOCK
-					&& reinforcement != null && reinforcement.isSecurable();
+			boolean access_reinforcement = action == Action.RIGHT_CLICK_BLOCK && reinforcement != null
+					&& reinforcement.isSecurable();
 			boolean normal_access_denied = reinforcement != null
-					&& ((reinforcement.isDoor() && !reinforcement
-							.canAccessDoors(player)) || (reinforcement
-							.isContainer() && !reinforcement
-							.canAccessChests(player)));
+					&& ((reinforcement.isDoor() && !reinforcement.canAccessDoors(player))
+							|| (reinforcement.isContainer() && !reinforcement.canAccessChests(player)));
 			boolean admin_can_access = player.hasPermission("citadel.admin");
-			if (access_reinforcement && normal_access_denied
-					&& !admin_can_access) {
+			if (access_reinforcement && normal_access_denied && !admin_can_access) {
 				/*
-				 * Citadel.verbose( VerboseMsg.ReinLocked,
-				 * player.getDisplayName(), block.getLocation().toString());
+				 * Citadel.verbose( VerboseMsg.ReinLocked, player.getDisplayName(),
+				 * block.getLocation().toString());
 				 */
-				//Prevents double broadcasts
-				if(pie.getHand() == EquipmentSlot.HAND) {
-					pie.getPlayer().sendMessage(
-							ChatColor.RED
-									+ String.format("%s is locked", block.getType()
-									.name()));
+				// Prevents double broadcasts
+				if (pie.getHand() == EquipmentSlot.HAND) {
+					pie.getPlayer().sendMessage(ChatColor.RED + String.format("%s is locked", block.getType().name()));
 				}
 				pie.setCancelled(true);
 			}
 			// Not really sure what this is for. Should come up in testing.
 			/*
-			 * else if (action == Action.PHYSICAL) { AccessDelegate
-			 * aboveDelegate =
+			 * else if (action == Action.PHYSICAL) { AccessDelegate aboveDelegate =
 			 * AccessDelegate.getDelegate(block.getRelative(BlockFace.UP)); if
-			 * (aboveDelegate instanceof CropAccessDelegate &&
-			 * aboveDelegate.isReinforced()) { Citadel.verbose(
-			 * VerboseMsg.CropTrample, block.getLocation().toString());
+			 * (aboveDelegate instanceof CropAccessDelegate && aboveDelegate.isReinforced())
+			 * { Citadel.verbose( VerboseMsg.CropTrample, block.getLocation().toString());
 			 * pie.setCancelled(true); } }
 			 */
 			if (pie.isCancelled() || pie.getHand() != EquipmentSlot.HAND)
@@ -529,21 +386,23 @@ public class BlockListener implements Listener {
 				}
 				if (pie.getAction() == Action.LEFT_CLICK_BLOCK && generic_reinforcement == null) {
 					ItemStack stack = player.getInventory().getItemInMainHand();
-					ReinforcementType type = ReinforcementType
-							.getReinforcementType(stack);
+					ReinforcementType type = ReinforcementType.getReinforcementType(stack);
 					if (type != null) {
-						 // Don't allow double reinforcing reinforceable plants
-				        if (wouldPlantDoubleReinforce(block)) {
-				        	Utility.sendAndLog(player, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
-				            return;
-				        }
-				        // Don't allow incorrect reinforcement with exclusive reinforcement types
-				        if (!type.canBeReinforced(block.getType())) {
-				            Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
-				            return;
-				        }
-						if (!canPlace(block, player)){
-							Utility.sendAndLog(player, ChatColor.RED, "Cancelled interact easymode rein, mismatched reinforcement.");
+						// Don't allow double reinforcing reinforceable plants
+						if (wouldPlantDoubleReinforce(block)) {
+							Utility.sendAndLog(player, ChatColor.RED,
+									"Cancelled block place, crop would already be reinforced.");
+							return;
+						}
+						// Don't allow incorrect reinforcement with exclusive reinforcement types
+						if (!type.canBeReinforced(block.getType())) {
+							Utility.sendAndLog(player, ChatColor.RED,
+									"That material cannot reinforce that type of block. Try a different reinforcement material.");
+							return;
+						}
+						if (!canPlace(block, player)) {
+							Utility.sendAndLog(player, ChatColor.RED,
+									"Cancelled interact easymode rein, mismatched reinforcement.");
 							return;
 						}
 
@@ -553,10 +412,12 @@ public class BlockListener implements Listener {
 							g = GroupManager.getGroup(gName);
 						}
 						if (g != null) {
-							if (createPlayerReinforcement(player, g, block, type, null) == null && CitadelConfigManager.shouldLogReinforcement()) {
+							if (createPlayerReinforcement(player, g, block, type, null) == null
+									&& OldCitadelConfigManager.shouldLogReinforcement()) {
 								// someone else's job to tell the player what went wrong, but let's do log it.
-								Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
-										new Object[] {player.getName(), block.getLocation()});
+								Citadel.getInstance().getLogger().log(Level.INFO,
+										"Create Reinforcement by {0} at {1} cancelled by plugin",
+										new Object[] { player.getName(), block.getLocation() });
 							}
 						}
 					}
@@ -566,90 +427,7 @@ public class BlockListener implements Listener {
 				return;
 			case REINFORCEMENT_INFORMATION:
 				// did player click on a reinforced block?
-				if (reinforcement != null) {
-					String reinforcementStatus = reinforcement.getStatus();
-					String ageStatus = reinforcement.getAgeStatus();
-					Group group = reinforcement.getGroup();
-					StringBuilder sb;
-					Location blockLoc = reinforcement.getLocation();
-					String blockName = reinforcement.getLocation().getBlock().getType().toString();
-					String hoverMessage = String.format(
-						"Block: %s\nLocation: [%s %d %d %d]",
-						blockName, blockLoc.getWorld().getName(), (int)blockLoc.getX(), (int)blockLoc.getY(), (int)blockLoc.getZ());
-					if (player.hasPermission("citadel.admin.ctinfodetails")) {
-						Utility.sendAndLog(player, ChatColor.GREEN, String.format(
-								"Loc[%s]", reinforcement.getLocation()
-										.toString()));
-						String groupName = "!NULL!";
-						if (group != null) {
-							groupName = String.format("[%s]", group.getName());
-						}
-						sb = new StringBuilder();
-						sb.append(String.format(
-								" Group%s Durability[%d/%d]",
-								groupName,
-								reinforcement.getDurability(),
-								ReinforcementType.getReinforcementType(
-										reinforcement.getStackRepresentation())
-										.getHitPoints()));
-						int maturationTime = timeUntilMature(reinforcement);
-						if (maturationTime != 0) {
-							sb.append(" Immature[");
-							sb.append(maturationTime);
-							sb.append("]");
-						}
-						int acidTime = timeUntilAcidMature(reinforcement);
-						if (CitadelConfigManager.getAcidBlock() == block
-								.getType()) {
-							sb.append(" Acid ");
-							if (acidTime != 0) {
-								sb.append("Immature[");
-								sb.append(acidTime);
-								sb.append("]");
-							} else {
-								sb.append("Mature");
-							}
-						}
-						if (reinforcement.isInsecure()) {
-							sb.append(" (Insecure)");
-						}
-						if (group.isDisciplined()) {
-							sb.append(" (Disciplined)");
-						}
-						sb.append("\nGroup id: " + reinforcement.getGroupId());
-
-						Utility.sendAndLog(player, ChatColor.GREEN, sb.toString());
-					} else if (reinforcement.canViewInformation(player)) {
-						sb = new StringBuilder();
-						boolean immature = timeUntilMature(reinforcement) != 0
-								&& CitadelConfigManager.isMaturationEnabled();
-						boolean acid = timeUntilAcidMature(reinforcement) != 0
-								&& CitadelConfigManager.getAcidBlock() == block
-										.getType();
-						String groupName = "!NULL!";
-						if (group != null) {
-							groupName = group.getName();
-						}
-						sb.append(String.format("%s, %s, group: %s",
-								reinforcementStatus, ageStatus, groupName));
-						if (immature) {
-							sb.append(" (Hardening)");
-						}
-						if (acid) {
-							sb.append(" (Acid Maturing)");
-						}
-						if (reinforcement.isInsecure()) {
-							sb.append(" (Insecure)");
-						}
-						Utility.sendAndLog(player, ChatColor.GREEN, sb.toString(), hoverMessage);
-					} else {
-						Utility.sendAndLog(player, ChatColor.RED,
-								reinforcementStatus + ", " + ageStatus, hoverMessage);
-					}
-					if (player.getGameMode() == GameMode.CREATIVE) {
-						pie.setCancelled(true);
-					}
-				}
+//REMOVED
 				break;
 
 			case INSECURE:
@@ -659,13 +437,11 @@ public class BlockListener implements Listener {
 					if (reinforcement.canMakeInsecure(player)) {
 						reinforcement.toggleInsecure();
 						// Save the change
-						/*Citadel.getReinforcementManager().saveReinforcement(reinforcement);*/
+						/* Citadel.getReinforcementManager().saveReinforcement(reinforcement); */
 						if (reinforcement.isInsecure()) {
-							Utility.sendAndLog(player, ChatColor.YELLOW,
-									"Reinforcement now insecure");
+							Utility.sendAndLog(player, ChatColor.YELLOW, "Reinforcement now insecure");
 						} else {
-							Utility.sendAndLog(player, ChatColor.GREEN,
-									"Reinforcement secured");
+							Utility.sendAndLog(player, ChatColor.GREEN, "Reinforcement secured");
 						}
 					} else {
 						Utility.sendAndLog(player, ChatColor.RED, "Access denied");
@@ -679,20 +455,19 @@ public class BlockListener implements Listener {
 					// set the reinforcemet material to what the player is
 					// holding
 					ItemStack stack = player.getInventory().getItemInMainHand();
-					ReinforcementType type = ReinforcementType
-							.getReinforcementType(stack);
+					ReinforcementType type = ReinforcementType.getReinforcementType(stack);
 					if (type == null) {
-						Utility.sendAndLog(player, ChatColor.RED, stack.getType()
-								.name() + " is not a reinforcable material.");
 						Utility.sendAndLog(player, ChatColor.RED,
-								"Left Reinforcement mode.");
+								stack.getType().name() + " is not a reinforcable material.");
+						Utility.sendAndLog(player, ChatColor.RED, "Left Reinforcement mode.");
 						state.reset();
 						return;
 					}
 					// Don't allow incorrect reinforcement with exclusive reinforcement types
 					if (!type.canBeReinforced(block.getType())) {
-						Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
-						Utility.sendAndLog(player, ChatColor.RED,"Left Reinforcement mode.");
+						Utility.sendAndLog(player, ChatColor.RED,
+								"That material cannot reinforce that type of block. Try a different reinforcement material.");
+						Utility.sendAndLog(player, ChatColor.RED, "Left Reinforcement mode.");
 						state.reset();
 						return;
 					}
@@ -707,28 +482,26 @@ public class BlockListener implements Listener {
 						Utility.sendAndLog(player, ChatColor.RED,
 								"Cancelled reinforcement, crop would already be reinforced.");
 					} else {
-						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(), null) == null &&
-								CitadelConfigManager.shouldLogReinforcement()) {
+						if (createPlayerReinforcement(player, state.getGroup(), block, state.getReinforcementType(),
+								null) == null && OldCitadelConfigManager.shouldLogReinforcement()) {
 							// someone else's job to tell the player what went wrong, but let's do log it.
-							Citadel.getInstance().getLogger().log(Level.INFO, "Create Reinforcement by {0} at {1} cancelled by plugin",
-									new Object[] {player.getName(), block.getLocation()});
+							Citadel.getInstance().getLogger().log(Level.INFO,
+									"Create Reinforcement by {0} at {1} cancelled by plugin",
+									new Object[] { player.getName(), block.getLocation() });
 						}
 					}
 				} else if (reinforcement.canBypass(player)
-						|| (player.isOp() || player
-								.hasPermission("citadel.admin"))) {
+						|| (player.isOp() || player.hasPermission("citadel.admin"))) {
 					String message = "";
 					Group group = state.getGroup();
 					Group old_group = reinforcement.getGroup();
 					if (!old_group.getName().equals(group.getName())) {
 						reinforcement.setGroup(group);
-						ReinforcementCreationEvent event = new ReinforcementCreationEvent(
-								reinforcement, block, player);
+						ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
 						Bukkit.getPluginManager().callEvent(event);
 						if (!event.isCancelled()) {
-							//rm.saveReinforcement(reinforcement);
-							message = "Group has been changed to: "
-									+ group.getName() + ".";
+							// rm.saveReinforcement(reinforcement);
+							message = "Group has been changed to: " + group.getName() + ".";
 							Utility.sendAndLog(player, ChatColor.GREEN, message);
 						} else {
 							reinforcement.setGroup(old_group);
@@ -737,31 +510,34 @@ public class BlockListener implements Listener {
 					ItemStack stack = player.getInventory().getItemInMainHand();
 					ReinforcementType type = ReinforcementType.getReinforcementType(stack);
 					if (type != null && !reinforcement.getStackRepresentation().isSimilar(type.getItemStack())) {
-						//hit with different rein material, so switch material
+						// hit with different rein material, so switch material
 						if (!type.canBeReinforced(block.getType())) {
-							Utility.sendAndLog(player, ChatColor.RED, "That material cannot reinforce that type of block. Try a different reinforcement material.");
-						}
-						else {
-							ReinforcementChangeTypeEvent e = new ReinforcementChangeTypeEvent(reinforcement, type, player);
+							Utility.sendAndLog(player, ChatColor.RED,
+									"That material cannot reinforce that type of block. Try a different reinforcement material.");
+						} else {
+							ReinforcementChangeTypeEvent e = new ReinforcementChangeTypeEvent(reinforcement, type,
+									player);
 							Bukkit.getPluginManager().callEvent(e);
 							if (!e.isCancelled()) {
 								reinforcementBroken(player, reinforcement);
-								ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block, player);
+								ReinforcementCreationEvent event = new ReinforcementCreationEvent(reinforcement, block,
+										player);
 								Bukkit.getPluginManager().callEvent(event);
 								if (!event.isCancelled()) {
-									if(createPlayerReinforcement(player, state.getGroup(),	block, type, null) != null) {
+									if (createPlayerReinforcement(player, state.getGroup(), block, type,
+											null) != null) {
 										Utility.sendAndLog(player, ChatColor.GREEN, "Changed reinforcement type");
-									} else if (CitadelConfigManager.shouldLogReinforcement()) {
-										Citadel.getInstance().getLogger().log(Level.INFO, "Change Reinforcement by {0} at {1} cancelled by plugin",
-												new Object[] {player.getName(), block.getLocation()});
+									} else if (OldCitadelConfigManager.shouldLogReinforcement()) {
+										Citadel.getInstance().getLogger().log(Level.INFO,
+												"Change Reinforcement by {0} at {1} cancelled by plugin",
+												new Object[] { player.getName(), block.getLocation() });
 									}
 								}
 							}
 						}
 					}
 				} else {
-					Utility.sendAndLog(player, ChatColor.RED,
-							"You are not permitted to modify this reinforcement");
+					Utility.sendAndLog(player, ChatColor.RED, "You are not permitted to modify this reinforcement");
 				}
 				pie.setCancelled(true);
 				state.checkResetMode();
@@ -770,27 +546,15 @@ public class BlockListener implements Listener {
 			}
 
 		} catch (Exception e) {
-			Citadel.getInstance()
-					.getLogger()
-					.log(Level.WARNING,
-							"General Exception during player interaction", e);
+			Citadel.getInstance().getLogger().log(Level.WARNING, "General Exception during player interaction", e);
 		}
 	}
-
-	// TODO: Come back and figure out why this is causing all the data to be
-	// re-written inplace with no change
-	/*
-	 * @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	 * public void chunkLoadEvent(ChunkLoadEvent event) { Chunk chunk =
-	 * event.getChunk(); rm.loadReinforcementChunk(chunk); }
-	 */
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void blockPhysEvent(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		if (block.getType().hasGravity()) {
-			Reinforcement rein = rm.getReinforcement(Utility
-					.getRealBlock(block));
+			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 			if (rein != null) {
 				event.setCancelled(true);
 			}
@@ -801,10 +565,10 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void liquidDumpEvent(PlayerBucketEmptyEvent event) {
 		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-		if (block.getType().equals(Material.AIR) || block.getType().isSolid())
+		if (block.getType().equals(Material.AIR) || block.getType().isSolid()) {
 			return;
-
-		Reinforcement rein = rm.getReinforcement(Utility.getRealBlock(block));
+		}
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 		if (rein != null) {
 			event.setCancelled(true);
 		}

@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.OldCitadelConfigManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
@@ -43,12 +43,12 @@ public class SetLogging extends PlayerCommand {
 		// validated, so lets just do it.
 		if (args.length == 0) {
 			StringBuilder sb = new StringBuilder("Current deep logging set to: \n");
-			sb.append("   Internal: ").append(CitadelConfigManager.shouldLogInternal()).append("\n");
-			sb.append("   Player Command Responses: ").append(CitadelConfigManager.shouldLogPlayerCommands()).append("\n");
-			sb.append("   Friendly/CTB Breaks: ").append(CitadelConfigManager.shouldLogFriendlyBreaks()).append("\n");
-			sb.append("   Hostile Breaks: ").append(CitadelConfigManager.shouldLogHostileBreaks()).append("\n");
-			sb.append("   Damage: ").append(CitadelConfigManager.shouldLogDamage()).append("\n");
-			sb.append("   Reinforcements: ").append(CitadelConfigManager.shouldLogReinforcement()).append("\n");
+			sb.append("   Internal: ").append(OldCitadelConfigManager.shouldLogInternal()).append("\n");
+			sb.append("   Player Command Responses: ").append(OldCitadelConfigManager.shouldLogPlayerCommands()).append("\n");
+			sb.append("   Friendly/CTB Breaks: ").append(OldCitadelConfigManager.shouldLogFriendlyBreaks()).append("\n");
+			sb.append("   Hostile Breaks: ").append(OldCitadelConfigManager.shouldLogHostileBreaks()).append("\n");
+			sb.append("   Damage: ").append(OldCitadelConfigManager.shouldLogDamage()).append("\n");
+			sb.append("   Reinforcements: ").append(OldCitadelConfigManager.shouldLogReinforcement()).append("\n");
 
 			Utility.sendAndLog(sender, ChatColor.GREEN, sb.toString());
 		}
@@ -58,22 +58,22 @@ public class SetLogging extends PlayerCommand {
 		if (args.length >= 1) {
 			if ("internal".equalsIgnoreCase(args[0])) {
 				flag = "internal_logging";
-				newval = CitadelConfigManager.shouldLogInternal();
+				newval = OldCitadelConfigManager.shouldLogInternal();
 			} else if ("playercommands".equalsIgnoreCase(args[0])) {
 				flag = "command_logging";
-				newval = CitadelConfigManager.shouldLogPlayerCommands();
+				newval = OldCitadelConfigManager.shouldLogPlayerCommands();
 			} else if ("breaks".equalsIgnoreCase(args[0])) {
 				flag = "break_logging";
-				newval = CitadelConfigManager.shouldLogFriendlyBreaks();
+				newval = OldCitadelConfigManager.shouldLogFriendlyBreaks();
 			} else if ("hostilebreaks".equalsIgnoreCase(args[0])) {
 				flag = "hostile_logging";
-				newval = CitadelConfigManager.shouldLogHostileBreaks();
+				newval = OldCitadelConfigManager.shouldLogHostileBreaks();
 			} else if ("damage".equalsIgnoreCase(args[0])) {
 				flag = "damage_logging";
-				newval = CitadelConfigManager.shouldLogDamage();
+				newval = OldCitadelConfigManager.shouldLogDamage();
 			} else if ("reinforcements".equalsIgnoreCase(args[0])) {
 				flag = "reinf_logging";
-				newval = CitadelConfigManager.shouldLogReinforcement();
+				newval = OldCitadelConfigManager.shouldLogReinforcement();
 			}
 		}
 

@@ -1,24 +1,22 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
-import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class Insecure extends PlayerCommand{
-
-	public Insecure(String name) {
+public class Bypass extends PlayerCommand{
+	public Bypass(String name) {
 		super(name);
-		setIdentifier("ctin");
-		setDescription("Set a block to an insecure reinforcement.");
-		setUsage("/ctin");
+		setIdentifier("ctb");
+		setDescription("Used to bypass block reinforcements.");
+		setUsage("/ctb");
 		setArguments(0,0);
 	}
 
@@ -30,14 +28,11 @@ public class Insecure extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.INSECURE){
-			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
-			state.reset();
+		if (state.toggleBypassMode()){
+			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
-		else{
-			Utility.sendAndLog(p, ChatColor.GREEN, "Reinforcement mode changed to "
-					+ ReinforcementMode.INSECURE.name() + ".");
-			state.setMode(ReinforcementMode.INSECURE);
+		else  {
+			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
 		}
 		return true;
 	}
@@ -46,5 +41,4 @@ public class Insecure extends PlayerCommand{
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<String>();
 	}
-
 }

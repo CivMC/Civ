@@ -1,4 +1,7 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -9,16 +12,13 @@ import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-import java.util.ArrayList;
-import java.util.List;
+public class Insecure extends PlayerCommand{
 
-public class Information extends PlayerCommand{
-
-	public Information(String name) {
+	public Insecure(String name) {
 		super(name);
-		setIdentifier("cti");
-		setDescription("Get information about a clicked block.");
-		setUsage("/cti");
+		setIdentifier("ctin");
+		setDescription("Set a block to an insecure reinforcement.");
+		setUsage("/ctin");
 		setArguments(0,0);
 	}
 
@@ -30,13 +30,14 @@ public class Information extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.getMode() == ReinforcementMode.REINFORCEMENT_INFORMATION){
+		if (state.getMode() == ReinforcementMode.INSECURE){
 			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
 			state.reset();
 		}
 		else{
-			Utility.sendAndLog(p, ChatColor.GREEN, "You are now in Information mode, click on blocks to see their reinforcement information! \n Type /cti or /cto to turn this off.");
-			state.setMode(ReinforcementMode.REINFORCEMENT_INFORMATION);
+			Utility.sendAndLog(p, ChatColor.GREEN, "Reinforcement mode changed to "
+					+ ReinforcementMode.INSECURE.name() + ".");
+			state.setMode(ReinforcementMode.INSECURE);
 		}
 		return true;
 	}
@@ -45,4 +46,5 @@ public class Information extends PlayerCommand{
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<String>();
 	}
+
 }

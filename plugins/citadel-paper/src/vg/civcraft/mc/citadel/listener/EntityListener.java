@@ -45,7 +45,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.OldCitadelConfigManager;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.ReinforcementMode;
@@ -246,7 +246,7 @@ public class EntityListener implements Listener{
 						sb.append("]");
 					}
 					int acidTime = timeUntilAcidMature(pr);
-					if (CitadelConfigManager.getAcidBlock() == block.getType()) {
+					if (OldCitadelConfigManager.getAcidBlock() == block.getType()) {
 						sb.append(" Acid ");
 						if (acidTime != 0) {
 							sb.append("Immature[");
@@ -363,7 +363,7 @@ public class EntityListener implements Listener{
 			}
 		}.runTaskAsynchronously(Citadel.getInstance());
 
-		if (CitadelConfigManager.defaultBypassOn()) {
+		if (OldCitadelConfigManager.defaultBypassOn()) {
 			PlayerState state = PlayerState.get(p);
 			if (!state.isBypassMode()) {
 				state.toggleBypassMode();

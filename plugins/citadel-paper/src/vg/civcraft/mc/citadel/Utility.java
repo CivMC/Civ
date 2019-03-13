@@ -10,10 +10,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.logging.Level;
 
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -30,6 +26,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.Bed;
 import org.bukkit.util.Vector;
 
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
@@ -57,7 +56,7 @@ public class Utility {
 
     public static void sendAndLog(CommandSender receiver, ChatColor color, String message) {
         receiver.sendMessage(color + message);
-        if (CitadelConfigManager.shouldLogPlayerCommands()) {
+        if (OldCitadelConfigManager.shouldLogPlayerCommands()) {
             Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}", new Object[]{receiver.getName(), message});
         }
     }
@@ -73,7 +72,7 @@ public class Utility {
             playerMessage.setHoverEvent(hover);
             player.spigot().sendMessage(playerMessage);
         }
-        if (CitadelConfigManager.shouldLogPlayerCommands()) {
+        if (OldCitadelConfigManager.shouldLogPlayerCommands()) {
             Citadel.getInstance().getLogger().log(Level.INFO, "Sent {0} reply {1}", new Object[]{player.getName(), message});
         }
     }
@@ -99,7 +98,7 @@ public class Utility {
 
         if (g.isDisciplined()) {
             player.sendMessage(ChatColor.RED + "This group is disciplined.");
-            if (CitadelConfigManager.shouldLogInternal()) {
+            if (OldCitadelConfigManager.shouldLogInternal()) {
             	Citadel.getInstance().getLogger().log(Level.WARNING,
             			"Request to create reinforcement for disciplined group " + g.getName());
             }
@@ -107,7 +106,7 @@ public class Utility {
         }
         if (NonReinforceableType.isNonReinforceable(block.getType())){
             player.sendMessage(ChatColor.RED + "That block cannot be reinforced.");
-            if (CitadelConfigManager.shouldLogInternal()) {
+            if (OldCitadelConfigManager.shouldLogInternal()) {
             	Citadel.getInstance().getLogger().log(Level.WARNING,
             			"Request to create reinforcement for unreinforceable block " + block.getType());
             }
@@ -171,7 +170,7 @@ public class Utility {
         if (event.isCancelled()) {
             return null;
         }
-		if (CitadelConfigManager.shouldLogReinforcement()) {
+		if (OldCitadelConfigManager.shouldLogReinforcement()) {
 			StringBuffer slb = new StringBuffer();
 			if (player != null) {
 				slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -307,7 +306,7 @@ public class Utility {
     private static boolean isReinforceablePlant(Material mat) {
         // If this list changes, update wouldPlantDoubleReinforce to account
         // for the new soil types.
-        return Material.MELON_BLOCK.equals(mat)
+        return Material.MELON.equals(mat)
             || Material.PUMPKIN.equals(mat);
     }
     /**
@@ -418,7 +417,7 @@ public class Utility {
 		}
     	int durability = reinforcement.getDurability();
         int durabilityLoss = 1;
-        if (reinforcement instanceof PlayerReinforcement && CitadelConfigManager.isMaturationEnabled()) {
+        if (reinforcement instanceof PlayerReinforcement && OldCitadelConfigManager.isMaturationEnabled()) {
           final int maturationTime = timeUntilMature(reinforcement);
           PlayerReinforcement rein = (PlayerReinforcement) reinforcement;
           ReinforcementType type = ReinforcementType.getReinforcementType(rein.getStackRepresentation());
@@ -446,7 +445,7 @@ public class Utility {
         reinforcement.setDurability(durability);
         boolean cancelled = durability > 0;
         if (durability <= 0) {
-			if (CitadelConfigManager.shouldLogHostileBreaks()) {
+			if (OldCitadelConfigManager.shouldLogHostileBreaks()) {
 				StringBuffer slb = new StringBuffer();
 				if (player != null) {
 					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -461,7 +460,7 @@ public class Utility {
 	        cancelled = reinforcementBroken(null, reinforcement);
         } else {
 			/* TODO: Move to ReinforcementEvent listener*/
-			if (CitadelConfigManager.shouldLogDamage()) {
+			if (OldCitadelConfigManager.shouldLogDamage()) {
 				StringBuffer slb = new StringBuffer();
 				if (player != null) {
 					slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -580,7 +579,7 @@ public class Utility {
 			return false;
 		}
     	StringBuffer slb = null;
-		boolean logIt = CitadelConfigManager.shouldLogFriendlyBreaks() && player != null;
+		boolean logIt = OldCitadelConfigManager.shouldLogFriendlyBreaks() && player != null;
 		if (logIt) {
 			slb = new StringBuffer();
 			slb.append("Player ").append(player.getName()).append(" [").append(player.getUniqueId())
@@ -601,7 +600,7 @@ public class Utility {
                 Location location = pr.getLocation();
                 if (player != null){
                     Inventory inv = player.getInventory();
-                    if (CitadelConfigManager.shouldDropReinforcedBlock()){
+                    if (OldCitadelConfigManager.shouldDropReinforcedBlock()){
                         // If we should drop a block instead
                         ItemStack stack = createDroppedReinforcementBlock
                                 (reinforcement.getLocation().getBlock(), (PlayerReinforcement) reinforcement);
@@ -735,39 +734,6 @@ public class Utility {
         }
         return result;
     }
-    /**
-     * Creates a Natural Reinforcement.
-     * @param The block that will have a natural reinforcement
-     * @param The Player who damaged the block.
-     * @return Returns a natural Reinforcement for the block or null if it isn't meant to have one.
-     */
-    public static NaturalReinforcement createNaturalReinforcement(Block block, Player player) {
-    	if (block == null) {
-			Citadel.getInstance().getLogger().log(Level.WARNING,
-					"Utility createNaturalReinforcement called with null");
-			return null;
-		}
-        Material material = block.getType();
-        NaturalReinforcementType nType = NaturalReinforcementType.
-                getNaturalReinforcementType(material);
-        if (nType == null) {
-            return null;
-        }
-        int breakCount = nType.getDurability();
-        NaturalReinforcement nr = new NaturalReinforcement(block, breakCount);
-        ReinforcementCreationEvent event = new ReinforcementCreationEvent(nr, block, player);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            if (CitadelConfigManager.shouldLogInternal()) {
-            	Citadel.getInstance().getLogger().log(Level.INFO,
-            			"createNaturalReinforcement for " + block.getType() + " cancelled");
-            }
-
-            return null;
-        }
-        Citadel.getReinforcementManager().saveInitialReinforcement(nr);
-        return nr;
-    }
 
     /**
      * This method is used to convert Block Reinforcements to itemstacks
@@ -814,7 +780,7 @@ public class Utility {
 					"Utility isDroppedReinforcementBlock called with null");
 			return null;
 		}
-		if (!CitadelConfigManager.shouldDropReinforcedBlock()) return null;
+		if (!OldCitadelConfigManager.shouldDropReinforcedBlock()) return null;
         ItemMeta meta = stack.getItemMeta();
         List<String> lore = meta.getLore();
         try{
@@ -863,7 +829,7 @@ public class Utility {
 	                new ReinforcementCreationEvent(rein, loc.getBlock(), p);
 	        Bukkit.getPluginManager().callEvent(event);
 	        if (event.isCancelled()) {
-	            if (CitadelConfigManager.shouldLogInternal()) {
+	            if (OldCitadelConfigManager.shouldLogInternal()) {
 	            	Citadel.getInstance().getLogger().log(Level.INFO,
 	            			"Dropped reinforcement creation event for " + rein.getType() + " cancelled");
 	            }
@@ -900,36 +866,6 @@ public class Utility {
             return false;
         }
         return reinforcementDamaged(null, reinforcement);
-    }
-
-    /**
-     * Creates a MultiBlockReinforcement and saves it to the db. This method is to be used only be other plugins. Citadel
-     * will not use this anywhere.
-     * @param locs The locations that make up the structure.
-     * @param g The group this will belong too.
-     * @param dur The durability this structure will have.
-     * @param mature The amount of time until it is mature (in minutes).
-     * @param acid The amount of time until it is mature (if acid -- in minutes).
-     * @return
-     */
-    public static MultiBlockReinforcement createMultiBlockReinforcement(List<Location> locs, Group g, int dur, int mature, int acid){
-    	if (locs == null || g == null) {
-			Citadel.getInstance().getLogger().log(Level.WARNING,
-					"Utility createMultiBlockReinforcement called with null");
-			return null;
-		}
-        MultiBlockReinforcement rein = new MultiBlockReinforcement(locs, g, dur, mature, acid, -1);
-        ReinforcementCreationEvent event = new ReinforcementCreationEvent(rein, rein.getLocation().getBlock(), null);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) {
-            if (CitadelConfigManager.shouldLogInternal()) {
-            	Citadel.getInstance().getLogger().log(Level.INFO,
-            			"multiblock reinforcement creation event for " + rein.getType() + " cancelled");
-            }
-            return null;
-        }
-        rm.saveInitialReinforcement(rein);
-        return rein;
     }
 
     /**

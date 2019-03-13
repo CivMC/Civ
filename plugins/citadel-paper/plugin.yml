@@ -9,6 +9,11 @@ commands:
  ctr:
   aliases: [ctreinforce, reinforce, protect, cprivate, lwc, private]
  ctacid:
+  usage: /ctacid
+  description: 'Removes the block above it if used on an acid block'
+  min-args: 0
+  max-args: 0
+  player-only: true
  ctf:
   aliases: [ctfortify, fortify]
  ctb:
@@ -41,3 +46,4 @@ permissions:
   default: op
  citadel.admin.accesssecurable:
   default: op
+api-version: 1.13

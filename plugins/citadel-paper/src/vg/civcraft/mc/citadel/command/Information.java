@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,15 +8,17 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.PlayerState;
+import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
-public class Bypass extends PlayerCommand{
-	public Bypass(String name) {
+public class Information extends PlayerCommand{
+
+	public Information(String name) {
 		super(name);
-		setIdentifier("ctb");
-		setDescription("Used to bypass block reinforcements.");
-		setUsage("/ctb");
+		setIdentifier("cti");
+		setDescription("Get information about a clicked block.");
+		setUsage("/cti");
 		setArguments(0,0);
 	}
 
@@ -28,11 +30,13 @@ public class Bypass extends PlayerCommand{
 		}
 		Player p = (Player) sender;
 		PlayerState state = PlayerState.get(p);
-		if (state.toggleBypassMode()){
-			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
+		if (state.getMode() == ReinforcementMode.REINFORCEMENT_INFORMATION){
+			Utility.sendAndLog(p, ChatColor.GREEN, state.getMode().name() + " has been disabled");
+			state.reset();
 		}
-		else  {
-			Utility.sendAndLog(p, ChatColor.GREEN, "Bypass mode has been disabled.");
+		else{
+			Utility.sendAndLog(p, ChatColor.GREEN, "You are now in Information mode, click on blocks to see their reinforcement information! \n Type /cti or /cto to turn this off.");
+			state.setMode(ReinforcementMode.REINFORCEMENT_INFORMATION);
 		}
 		return true;
 	}

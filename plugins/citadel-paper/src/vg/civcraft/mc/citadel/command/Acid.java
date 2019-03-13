@@ -1,6 +1,9 @@
-package vg.civcraft.mc.citadel.command.commands;
+package vg.civcraft.mc.citadel.command;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -12,67 +15,49 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
+import vg.civcraft.mc.citadel.AcidManager;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.CitadelConfigManager;
+import vg.civcraft.mc.citadel.CitadelWorldManager;
+import vg.civcraft.mc.citadel.OldCitadelConfigManager;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.AcidBlockEvent;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.group.Group;
 
-public class Acid extends PlayerCommand {
-	private ReinforcementManager rm = Citadel.getReinforcementManager();
-
-	public Acid(String name) {
-		super(name);
-		setIdentifier("ctacid");
-		setDescription("Removes the block above it if using an acid block.");
-		setUsage("/ctacid");
-		setArguments(0, 0);
-	}
+@CivCommand(id = "ctacid")
+public class Acid extends StandaloneCommand {
+	
+	private static final String acidPermission = "ACIDBLOCK";
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage("You must be a player to perform this command.");
-			return true;
-		}
 		Player p = (Player) sender;
 		Iterator<Block> itr = new BlockIterator(p, 40); // Within 2.5 chunks
-		Material acidBlock = CitadelConfigManager.getAcidBlock();
+		AcidManager acidMan = Citadel.getInstance().getAcidManager();
 		while (itr.hasNext()) {
 			Block block = itr.next();
-			if (block.getType() != acidBlock) {
+			if (!acidMan.isPossibleAcidBlock(block)) {
 				continue;
 			}
-			Reinforcement rein = rm.getReinforcement(block);
-			if (rein == null) {
+			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+			if (reinforcement == null) {
 				Utility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
 				return true;
 			}
-			if (!(rein instanceof PlayerReinforcement)) { // Just in case.
-				// Most chance it is a PlayerReinforcement but otherwise.
-				Utility.sendAndLog(p, ChatColor.RED,
-						"An acid block cannot be a natural reinforcement.");
-				return true;
-			}
-			PlayerReinforcement pRein = (PlayerReinforcement) rein;
 			UUID uuid = NameAPI.getUUID(p.getName());
-			if (pRein.getGroup() == null) {
-				Utility.sendAndLog(p, ChatColor.RED, "No-one is on that group.");
-				return true;
-			}
-			if (!pRein.getGroup().isMember(uuid)) {
-				Utility.sendAndLog(p, ChatColor.RED, "You do not belong on that group.");
-				return true;
-			}
-			if (!pRein.canAcid(p)) {
+			if (!reinforcement.hasPermission(p, acidPermission)) {
 				Utility.sendAndLog(p, ChatColor.RED, "You do not have sufficient permission to use acid blocks on this group.");
 				return true;
 			}
+			
+			
+			
 			int time = Utility.timeUntilAcidMature(pRein);
 			if (time != 0) {
 				Utility.sendAndLog(p, ChatColor.RED, "That acid block is not mature yet.");
@@ -103,14 +88,14 @@ public class Acid extends PlayerCommand {
 			AcidBlockEvent event = new AcidBlockEvent(p, pRein, pTopRein);
 			Bukkit.getPluginManager().callEvent(event);
 			if (event.isCancelled()) {
-	            if (CitadelConfigManager.shouldLogInternal()) {
+	            if (OldCitadelConfigManager.shouldLogInternal()) {
 	            	Citadel.getInstance().getLogger().log(Level.INFO,
 	            			"Acid block event cancelled for acid at " + pRein.getLocation() );
 	            }
 				return true;
 			}
 
-			if (CitadelConfigManager.shouldLogHostileBreaks()) {
+			if (OldCitadelConfigManager.shouldLogHostileBreaks()) {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}",
 						new Object[] {block.getLocation(), topFace.getType(), topFace.getLocation()});
 			}
@@ -123,7 +108,7 @@ public class Acid extends PlayerCommand {
 			block.breakNaturally();
 
 			// Break the acided block
-			if (CitadelConfigManager.breakAcidedBlockNaturally()) {
+			if (OldCitadelConfigManager.breakAcidedBlockNaturally()) {
 				topFace.breakNaturally();
 			}
 			else {
