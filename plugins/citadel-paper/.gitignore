@@ -195,3 +195,15 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.gitignore.io/api/java,batch,linux,macos,maven,windows,intellij+all
+
+
+#Eclipse stuff
+/target/
+.classpath
+.settings/**
+.project
+/logs/
+dependency-reduced-pom.xml
+/target/
+
+/bin/
