@@ -21,12 +21,17 @@ public class Citadel extends ACivMod {
 	
 	public static final String chestPerm = "CHESTS";
 	public static final String bypassPerm = "BYPASS_REINFORCEMENT";
+	public static final String cropsPerm = "CROPS";
+	public static final String insecurePerm = "INSECURE_REINFORCEMENT";
+	public static final String reinforcePerm = "REINFORCE";
+	public static final String doorPerm = "DOORS";
 
 	private CitadelReinforcementData db;
 	private CitadelWorldManager worldManager;
 	private GlobalReinforcementManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
+	private PlayerStateManager stateManager;
 	private static Citadel instance;
 
 	public void onEnable() {
@@ -57,6 +62,7 @@ public class Citadel extends ACivMod {
 			this.getPluginLoader().disablePlugin(this);
 			return;
 		}
+		stateManager = new PlayerStateManager();
 		acidManager = new AcidManager(config.getAcidMaterials());
 		registerNameLayerPermissions();
 		registerListeners();
@@ -100,14 +106,14 @@ public class Citadel extends ACivMod {
 		modsAndAbove.add(PlayerType.MODS);
 		modsAndAbove.add(PlayerType.ADMINS);
 		modsAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission("REINFORCE", (LinkedList<PlayerType>) modsAndAbove.clone());
+		PermissionType.registerPermission(reinforcePerm, (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission("ACIDBLOCK", (LinkedList<PlayerType>) modsAndAbove.clone());
 		PermissionType.registerPermission("REINFORCEMENT_INFO", (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission("DOORS", (LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission(doorPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission("CROPS", (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission("INSECURE_REINFORCEMENT", (LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission(cropsPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission(insecurePerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 	}
 
 	/**
@@ -133,6 +139,10 @@ public class Citadel extends ACivMod {
 	
 	public ReinforcementTypeManager getReinforcementTypeManager() {
 		return typeManager;
+	}
+	
+	public PlayerStateManager getStateManager() {
+		return stateManager;
 	}
 
 	/**

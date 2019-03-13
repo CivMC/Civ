@@ -3,6 +3,7 @@ package vg.civcraft.mc.citadel.reinforcement;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.citadel.ChunkCache;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -13,16 +14,17 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class Reinforcement {
 
 	private final long creationTime;
-	private final ReinforcementType type;
+	private ReinforcementType type;
 	private final Location loc;
 	private double health;
 	protected boolean isDirty;
 	protected boolean isNew;
-	private final int groupId;
+	private int groupId;
 	private boolean insecure;
+	private ChunkCache owningCache;
 
 	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
-			boolean isDirty, boolean isNew, boolean insecure) {
+			boolean isDirty, boolean isNew, boolean insecure, ChunkCache cache) {
 		if (loc == null) {
 			throw new IllegalArgumentException("Location for reinforcement can not be null");
 		}
@@ -37,10 +39,11 @@ public class Reinforcement {
 		this.groupId = groupID;
 		this.isNew = isNew;
 		this.insecure = insecure;
+		this.owningCache = cache;
 	}
 
-	public Reinforcement(Location loc, ReinforcementType type, Group group) {
-		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
+	public Reinforcement(Location loc, ReinforcementType type, Group group, ChunkCache cache) {
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false, cache);
 	}
 
 	/**
@@ -50,7 +53,7 @@ public class Reinforcement {
 	 */
 	public void setHealth(double health) {
 		this.health = health;
-		isDirty = true;
+		setDirty(true);
 		if (health <= 0) {
 			Citadel.getInstance().getReinforcementManager().removeReinforcement(this);
 		}
@@ -102,19 +105,38 @@ public class Reinforcement {
 	}
 
 	/**
-	 * Sets if this reinforcement needs to be saved to the database or not.
+	 * Sets if this reinforcement needs to be saved to the database or not. Will
+	 * automatically update the dirty flag of the cache holding this reinforcement
+	 * as well
 	 * 
 	 * @param dirty
 	 */
 	public void setDirty(boolean dirty) {
-		isDirty = dirty;
+		this.isDirty = dirty;
 		if (!dirty) {
+			// we saved to the database, so we are no longer new now
 			isNew = false;
+		} else {
+			owningCache.setDirty(true);
 		}
 	}
 
 	/**
-	 * @return True if the reinforcement has not been written to the database since its creation
+	 * Switches the insecure flag of the reinforcement
+	 */
+	public void toggleInsecure() {
+		insecure = !insecure;
+		setDirty(true);
+	}
+
+	public void setType(ReinforcementType type) {
+		this.type = type;
+		setDirty(true);
+	}
+
+	/**
+	 * @return True if the reinforcement has not been written to the database since
+	 *         its creation
 	 */
 	public boolean isNew() {
 		return isNew;
@@ -143,6 +165,14 @@ public class Reinforcement {
 	 */
 	public int getGroupId() {
 		return groupId;
+	}
+	
+	public void setGroup(Group group) {
+		if (group == null) {
+			throw new IllegalArgumentException("Group can not be set to null for a reinforcement");
+		}
+		this.groupId = group.getGroupId();
+		setDirty(true);
 	}
 
 	/**

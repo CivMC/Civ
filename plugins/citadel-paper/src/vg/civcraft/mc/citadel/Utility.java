@@ -688,7 +688,7 @@ public class Utility {
      * @return Returns true if the player is on the group and has permission.
      * @return Returns false if the player is not on the group or doesn't have permission.
      */
-    public static boolean isAuthorizedPlayerNear(PlayerReinforcement reinforcement, double distance) {
+    public static boolean isAuthorizedPlayerNear(Reinforcement reinforcement, double distance) {
     	if (reinforcement == null) {
 			Citadel.getInstance().getLogger().log(Level.WARNING,
 					"Utility isAuthorizedPlayerNear called with null");

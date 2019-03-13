@@ -6,7 +6,6 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -82,10 +81,6 @@ public class InformationState extends IPlayerState {
 	private static String formatHealth(Reinforcement rein) {
 		return String.format("%s%% (%s/%s)", commaFormat.format(rein.getHealth() / rein.getType().getHealth() * 100),
 				roundingFormat.format(rein.getHealth()), rein.getType().getHealth());
-	}
-
-	@Override
-	public void handleBreakBlock(BlockBreakEvent e) {
 	}
 
 }

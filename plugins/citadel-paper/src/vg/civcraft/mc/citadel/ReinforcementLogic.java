@@ -10,6 +10,7 @@ import org.bukkit.material.Bed;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class ReinforcementLogic {
 
@@ -24,11 +25,15 @@ public class ReinforcementLogic {
 		return damageAmount;
 	}
 	
-	public static void createReinforcement(Block block, ReinforcementType type) {
+	public static void createReinforcement(Block block, ReinforcementType type, Group group) {
 		CitadelWorldManager worldManager = Citadel.getInstance().getReinforcementManager();
 	}
 	
 	public static Reinforcement getReinforcementProtecting(Block b) {
+		Reinforcement directReinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(b);
+		if (directReinforcement != null) {
+			return directReinforcement;
+		}
 		Block actual = getResponsibleBlock(b);
 		return getChestReinforcement(actual);
 	}

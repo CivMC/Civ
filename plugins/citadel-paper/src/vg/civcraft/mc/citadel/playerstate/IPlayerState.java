@@ -17,10 +17,10 @@ import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
 public abstract class IPlayerState {
-	
+
 	protected UUID uuid;
 	private boolean bypass;
-	
+
 	public IPlayerState(Player p, boolean bypass) {
 		if (p == null) {
 			throw new IllegalArgumentException("Player for player state can not be null");
@@ -28,15 +28,15 @@ public abstract class IPlayerState {
 		this.uuid = p.getUniqueId();
 		this.bypass = bypass;
 	}
-	
+
 	public abstract void handleBlockPlace(BlockPlaceEvent e);
-	
+
 	public abstract void handleInteractBlock(PlayerInteractEvent e);
-	
+
 	public void handleBreakBlock(BlockBreakEvent e) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getBlock());
 		if (rein == null) {
-			//no reinforcement, normal break which we dont care about
+			// no reinforcement, normal break which we dont care about
 			return;
 		}
 		boolean hasAccess = rein.hasPermission(e.getPlayer(), Citadel.bypassPerm);
@@ -48,8 +48,16 @@ public abstract class IPlayerState {
 			}
 			return;
 		}
+		if (Utility.isPlant(e.getBlock())) {
+			if (rein.hasPermission(e.getPlayer(), Citadel.cropsPerm)
+					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
+				// allow, because player has crop permission and the only reinforcement protecting is in the soil
+				return;
+			}
+		}
 		if (bypass) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN, "You could bypass this reinforcement if you turn bypass mode on with '/ctb'");
+			Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
+					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
 		}
 		e.setCancelled(true);
 		double damage = ReinforcementLogic.getDamageApplied(e.getPlayer(), rein);
