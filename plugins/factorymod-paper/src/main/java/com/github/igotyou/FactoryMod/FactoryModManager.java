@@ -98,10 +98,9 @@ public class FactoryModManager {
 		forceInclude = new HashSet<String>();
 
 		// Normal furnace, craftingtable, chest factories
-		possibleCenterBlocks.add(Material.WORKBENCH);
-		possibleInteractionBlock.add(Material.WORKBENCH);
+		possibleCenterBlocks.add(Material.CRAFTING_TABLE);
+		possibleInteractionBlock.add(Material.CRAFTING_TABLE);
 		possibleInteractionBlock.add(Material.FURNACE);
-		possibleInteractionBlock.add(Material.BURNING_FURNACE);
 		possibleInteractionBlock.add(Material.CHEST);
 
 		// sorter
@@ -257,7 +256,7 @@ public class FactoryModManager {
 		//a class that fits each factory type
 		if (!factoryExistsAt(b.getLocation())) {
 			// Cycle through possible structures here
-			if (b.getType() == Material.WORKBENCH) {
+			if (b.getType() == Material.CRAFTING_TABLE) {
 				FurnCraftChestStructure fccs = new FurnCraftChestStructure(b);
 				if (fccs.isComplete()) {
 					if (fccs.blockedByExistingFactory()) {

@@ -32,9 +32,8 @@ public class Sorter extends Factory {
 	private int sortTime;
 	private int sortAmount;
 
-	public Sorter(IInteractionManager im, IRepairManager rm, IPowerManager pm,
-			MultiBlockStructure mbs, int updateTime, String name, int sortTime,
-			int matsPerSide, int sortAmount) {
+	public Sorter(IInteractionManager im, IRepairManager rm, IPowerManager pm, MultiBlockStructure mbs, int updateTime,
+			String name, int sortTime, int matsPerSide, int sortAmount) {
 		super(im, rm, pm, mbs, updateTime, name);
 		assignedMaterials = new HashMap<BlockFace, ItemMap>();
 		this.sortTime = sortTime;
@@ -47,8 +46,7 @@ public class Sorter extends Factory {
 	}
 
 	public void attemptToActivate(Player p, boolean onStartUp) {
-		LoggingUtils.log((p != null ? p.getName() : "Redstone")
-				+ "is attempting to activate " + getLogData());
+		LoggingUtils.log((p != null ? p.getName() : "Redstone") + "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			if (pm.powerAvailable(1)) {
@@ -56,8 +54,7 @@ public class Sorter extends Factory {
 					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 					Bukkit.getPluginManager().callEvent(fae);
 					if (fae.isCancelled()) {
-						LoggingUtils.log("Activating of " + getLogData()
-								+ " was cancelled by the event");
+						LoggingUtils.log("Activating of " + getLogData() + " was cancelled by the event");
 						return;
 					}
 					if (p != null) {
@@ -66,8 +63,7 @@ public class Sorter extends Factory {
 					activate();
 				} else {
 					if (p != null) {
-						p.sendMessage(ChatColor.RED
-								+ "Nothing to sort available");
+						p.sendMessage(ChatColor.RED + "Nothing to sort available");
 					}
 				}
 			} else {
@@ -120,9 +116,7 @@ public class Sorter extends Factory {
 				}
 			} else {
 				Block furnace = ((BlockFurnaceStructure) mbs).getFurnace();
-				if (furnace.getType() != Material.BURNING_FURNACE) {
-					turnFurnaceOn(furnace);
-				}
+				turnFurnaceOn(furnace);
 				// if we need to consume fuel - then do it
 				if (fuelCount >= 1) {
 					// remove fuel.
@@ -179,51 +173,33 @@ public class Sorter extends Factory {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
 				Block b = center.getRelative(bf);
 				if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {
-					//load adjacent chunk for double chest
+					// load adjacent chunk for double chest
 					MultiBlockStructure.getAdjacentBlocks(b);
 				}
-				Inventory relInv = ((InventoryHolder) center.getRelative(bf)
-						.getState()).getInventory();
+				Inventory relInv = ((InventoryHolder) center.getRelative(bf).getState()).getInventory();
 				ItemMap im = assignedMaterials.get(bf);
 				for (ItemStack is : inv.getContents()) {
-					if (is != null && is.getType() != Material.AIR
-							&& im != null && im.getAmount(is) != 0) {
+					if (is != null && is.getType() != Material.AIR && im != null && im.getAmount(is) != 0) {
 						int removeAmount = Math.min(leftToSort, is.getAmount());
 						ItemStack rem = is.clone();
 						rem.setAmount(removeAmount);
 						if (new ItemMap(is).fitsIn(relInv)) {
-							ItemTransferEvent ite = new ItemTransferEvent(this,
-									inv, relInv, center,
+							ItemTransferEvent ite = new ItemTransferEvent(this, inv, relInv, center,
 									center.getRelative(bf), rem);
 							Bukkit.getPluginManager().callEvent(ite);
 							if (ite.isCancelled()) {
-								LoggingUtils.log("Sorting for "
-										+ rem.toString() + " in "
-										+ getLogData()
+								LoggingUtils.log("Sorting for " + rem.toString() + " in " + getLogData()
 										+ " was cancelled over the event");
 								continue;
 							}
-							LoggingUtils.log("Moving "
-									+ rem.toString()
-									+ " from "
-									+ mbs.getCenter().toString()
-									+ " to "
-									+ center.getRelative(bf).getLocation()
-											.toString());
-							LoggingUtils.logInventory(inv,
-									"Origin inventory before transfer for "
-											+ getLogData());
-							LoggingUtils.logInventory(relInv,
-									"Target inventory before transfer for "
-											+ getLogData());
+							LoggingUtils.log("Moving " + rem.toString() + " from " + mbs.getCenter().toString() + " to "
+									+ center.getRelative(bf).getLocation().toString());
+							LoggingUtils.logInventory(inv, "Origin inventory before transfer for " + getLogData());
+							LoggingUtils.logInventory(relInv, "Target inventory before transfer for " + getLogData());
 							inv.removeItem(rem);
 							relInv.addItem(rem);
-							LoggingUtils.logInventory(inv,
-									"Origin inventory after transfer for "
-											+ getLogData());
-							LoggingUtils.logInventory(relInv,
-									"Target inventory after transfer for "
-											+ getLogData());
+							LoggingUtils.logInventory(inv, "Origin inventory after transfer for " + getLogData());
+							LoggingUtils.logInventory(relInv, "Target inventory after transfer for " + getLogData());
 							leftToSort -= removeAmount;
 							break;
 						}
@@ -248,17 +224,14 @@ public class Sorter extends Factory {
 	}
 
 	public Inventory getCenterInventory() {
-		return ((InventoryHolder) mbs.getCenter().getBlock().getState())
-				.getInventory();
+		return ((InventoryHolder) mbs.getCenter().getBlock().getState()).getInventory();
 	}
 
 	private boolean sortableMaterialsAvailable() {
 		for (ItemStack is : getCenterInventory()) {
 			if (is != null && is.getType() != Material.AIR) {
-				for (Entry<BlockFace, ItemMap> entry : assignedMaterials
-						.entrySet()) {
-					if (mbs.getCenter().getBlock().getRelative(entry.getKey())
-							.getState() instanceof InventoryHolder
+				for (Entry<BlockFace, ItemMap> entry : assignedMaterials.entrySet()) {
+					if (mbs.getCenter().getBlock().getRelative(entry.getKey()).getState() instanceof InventoryHolder
 							&& entry.getValue().getAmount(is) != 0) {
 						return true;
 					}

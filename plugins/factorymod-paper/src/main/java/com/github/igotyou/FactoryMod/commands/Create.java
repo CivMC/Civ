@@ -1,4 +1,4 @@
-package com.github.igotyou.FactoryMod.commands.commands;
+package com.github.igotyou.FactoryMod.commands;
 
 import java.util.List;
 import java.util.Set;
@@ -10,11 +10,12 @@ import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
-import com.github.igotyou.FactoryMod.commands.FactoryModCommandHandler;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -23,26 +24,15 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
+import com.github.igotyou.FactoryMod.utility.FactoryCommandUtils;
 
-public class Create extends PlayerCommand {
-
-	public Create(String name) {
-		super(name);
-		setIdentifier("fmc");
-		setDescription("Creates a factory at the blocks you are looking at");
-		setUsage("/fmc <factory name>");
-		setArguments(0, 10);
-	}
+@CivCommand(id = "fmc")
+public class Create extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.MAGIC
-					+ "How the hell is this supposed to work");
-			return true;
-		}
 		FactoryModManager manager = FactoryMod.getManager();
-		String name = FactoryModCommandHandler.getFactoryName(args);
+		String name = FactoryCommandUtils.getFactoryName(args);
 		IFactoryEgg egg = manager.getEgg(name);
 		if (egg == null) {
 			String comp = name.toLowerCase();
@@ -68,7 +58,7 @@ public class Create extends PlayerCommand {
 		}
 		if (egg instanceof FurnCraftChestEgg) {
 			FurnCraftChestEgg fcce = (FurnCraftChestEgg) egg;
-			if (view.get(view.size() - 1).getType() == Material.WORKBENCH) {
+			if (view.get(view.size() - 1).getType() == Material.CRAFTING_TABLE) {
 				FurnCraftChestStructure fccs = new FurnCraftChestStructure(
 						view.get(view.size() - 1));
 				if (!fccs.isComplete()) {
@@ -125,6 +115,6 @@ public class Create extends PlayerCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return FactoryModCommandHandler.tabCompleteFactory(arg0, arg1);
+		return FactoryCommandUtils.tabCompleteFactory(arg0, arg1);
 	}
 }

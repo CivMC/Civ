@@ -11,8 +11,8 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -46,50 +46,36 @@ public class PipeInteractionManager implements IInteractionManager {
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		ItemStack hand = p.getInventory().getItemInMainHand();
 		if (FactoryMod.getManager().isCitadelEnabled()) {
-			ReinforcementManager rm = Citadel.getReinforcementManager();
-			// is this cast safe? Let's just assume yes for now
-			PlayerReinforcement rein = (PlayerReinforcement) rm
-					.getReinforcement(b);
-			if (rein != null) {
+			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
+			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
 				Group g = rein.getGroup();
-				if (!NameAPI.getGroupManager().hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("USE_FACTORY"))) {
-					p.sendMessage(ChatColor.RED
-							+ "You dont have permission to interact with this factory");
-					FactoryMod.sendResponse("FactoryNoPermission", p);
-					return;
-				}
+				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
+				FactoryMod.sendResponse("FactoryNoPermission", p);
+				return;
 			}
 		}
-		if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure()))
-				.getStart())) {
+		if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure())).getStart())) {
 			if (hand.getType() == manager.getFactoryInteractionMaterial()) {
 				mb.showPipeMaterials(p, pipe);
 			} else {
 				if (pipe.isActive()) {
-					p.sendMessage(ChatColor.RED
-							+ "You can not modify the allowed materials while the pipe is transferring");
+					p.sendMessage(
+							ChatColor.RED + "You can not modify the allowed materials while the pipe is transferring");
 					return;
 				}
 				List<Material> allowedMats = pipe.getAllowedMaterials();
-				if (allowedMats == null
-						|| !allowedMats.contains(hand.getType())) {
+				if (allowedMats == null || !allowedMats.contains(hand.getType())) {
 					pipe.addAllowedMaterial(hand.getType());
-					p.sendMessage(ChatColor.GREEN + "Added "
-							+ hand.getType().toString()
-							+ " as allowed material");
+					p.sendMessage(ChatColor.GREEN + "Added " + hand.getType().toString() + " as allowed material");
 				} else {
 					pipe.removeAllowedMaterial(hand.getType());
-					p.sendMessage(ChatColor.GOLD + "Removed "
-							+ hand.getType().toString()
-							+ " as allowed material");
+					p.sendMessage(ChatColor.GOLD + "Removed " + hand.getType().toString() + " as allowed material");
 				}
 			}
-		} else if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure()))
-				.getFurnace())) {
+		} else if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure())).getFurnace())) {
 			if (pipe.isActive()) {
 				pipe.deactivate();
-				p.sendMessage(ChatColor.GOLD + pipe.getName()
-						+ " has been deactivated");
+				p.sendMessage(ChatColor.GOLD + pipe.getName() + " has been deactivated");
 			} else {
 				pipe.attemptToActivate(p, false);
 			}
@@ -97,28 +83,23 @@ public class PipeInteractionManager implements IInteractionManager {
 	}
 
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
-		ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
-				.getReinforcementManager() : null;
 		int threshold = FactoryMod.getManager().getRedstonePowerOn();
-		if (factoryBlock.getLocation().equals(
-				((PipeStructure) pipe.getMultiBlockStructure()).getFurnace()
-						.getLocation())) {
-			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
-					&& pipe.isActive()) {
-				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
-						.getBlock()))) {
-					pipe.deactivate();
-				}
-			} else if (e.getOldCurrent() < threshold
-					&& e.getNewCurrent() >= threshold && !pipe.isActive()) {
-				if (rm == null
-						|| MultiBlockStructure.citadelRedstoneChecks(e
-								.getBlock())) {
-					pipe.attemptToActivate(null, false);
-				}
-			} else {
-				return;
+		if (!factoryBlock.getLocation()
+				.equals(((PipeStructure) pipe.getMultiBlockStructure()).getFurnace().getLocation())) {
+			return;
+		}
+		if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && pipe.isActive()) {
+			if ((!FactoryMod.getManager().isCitadelEnabled()
+					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock()))) {
+				pipe.deactivate();
 			}
+		} else if (e.getOldCurrent() < threshold && e.getNewCurrent() >= threshold && !pipe.isActive()) {
+			if (!FactoryMod.getManager().isCitadelEnabled()
+					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
+				pipe.attemptToActivate(null, false);
+			}
+		} else {
+			return;
 		}
 	}
 

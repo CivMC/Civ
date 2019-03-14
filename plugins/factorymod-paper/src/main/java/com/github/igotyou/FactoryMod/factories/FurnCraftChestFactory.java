@@ -19,8 +19,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
@@ -103,7 +103,7 @@ public class FurnCraftChestFactory extends Factory {
 	 *         should be
 	 */
 	public FurnaceInventory getFurnaceInventory() {
-		if (!(getFurnace().getType() == Material.FURNACE || getFurnace().getType() == Material.BURNING_FURNACE)) {
+		if (!(getFurnace().getType() == Material.FURNACE)) {
 			return null;
 		}
 		Furnace furnaceBlock = (Furnace) (getFurnace().getState());
@@ -188,8 +188,7 @@ public class FurnCraftChestFactory extends Factory {
 		}
 		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getManager().isCitadelEnabled()) {
 			// only allow permitted members to upgrade the factory
-			ReinforcementManager rm = Citadel.getReinforcementManager();
-			PlayerReinforcement rein = (PlayerReinforcement) rm.getReinforcement(mbs.getCenter());
+			Reinforcement rein = ReinforcementLogic.getReinforcementAt(mbs.getCenter());
 			if (rein != null) {
 				if (p == null) {
 					return;
@@ -201,24 +200,6 @@ public class FurnCraftChestFactory extends Factory {
 				}
 			}
 		}
-		// ---- INJECT: Check if person attempting to run the factory return is the owner of the group.
-		if (currentRecipe instanceof FactoryMaterialReturnRecipe) {
-			ReinforcementManager rm = Citadel.getReinforcementManager();
-			PlayerReinforcement rein = (PlayerReinforcement) rm.getReinforcement(mbs.getCenter());
-			if (rein != null) {
-				if (p == null) {
-					LoggingUtils.log("Preventing unattended activation of material return recipe");
-					return;
-				} else {
-					Group activeGroup = rein.getGroup();
-					if (activeGroup == null || !(activeGroup.isMember(p.getUniqueId(), PlayerType.OWNER) || activeGroup.isOwner(p.getUniqueId()))) {
-						p.sendMessage(ChatColor.RED + "You dont have permission to refund this factory");
-						return;
-					}
-				}
-			}
-		}
-		// ----- DONE INJECT
 		FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 		Bukkit.getPluginManager().callEvent(fae);
 		if (fae.isCancelled()) {
@@ -336,9 +317,7 @@ public class FurnCraftChestFactory extends Factory {
 					if (pm.powerAvailable(fuelCount)) {
 						// check whether the furnace is on, minecraft sometimes
 						// turns it off
-						if (getFurnace().getType() != Material.BURNING_FURNACE) {
-							turnFurnaceOn(getFurnace());
-						}
+						turnFurnaceOn(getFurnace());
 						// if we need to consume fuel - then do it
 						if (fuelCount >= 1) {
 							// remove fuel.

@@ -118,7 +118,7 @@ public class MenuBuilder {
 			browser.setSlot(creationClickable, 10);
 
 			// recipe option
-			ItemStack recipeStack = new ItemStack(Material.WORKBENCH);
+			ItemStack recipeStack = new ItemStack(Material.CRAFTING_TABLE);
 			ISUtils.setName(recipeStack, "Recipes");
 			ISUtils.addLore(recipeStack, ChatColor.LIGHT_PURPLE
 					+ "Click to display all recipes", ChatColor.LIGHT_PURPLE
@@ -201,7 +201,7 @@ public class MenuBuilder {
 				.getEgg(parentFactories.get(facName));
 		ClickableInventory ci = new ClickableInventory(54, "Create a "
 				+ egg.getName()); // Bukkit has 32 char limit on inventory
-		ItemStack cr = new ItemStack(Material.WORKBENCH);
+		ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemStack che = new ItemStack(Material.CHEST);
 		if (parEgg == null) {// creation factory

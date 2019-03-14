@@ -29,9 +29,8 @@ public class Pipe extends Factory {
 	private int transferTimeMultiplier;
 	private int runTime;
 
-	public Pipe(IInteractionManager im, IRepairManager rm, IPowerManager pm,
-			MultiBlockStructure mbs, int updateTime, String name,
-			int transferTimeMultiplier, int transferAmount) {
+	public Pipe(IInteractionManager im, IRepairManager rm, IPowerManager pm, MultiBlockStructure mbs, int updateTime,
+			String name, int transferTimeMultiplier, int transferAmount) {
 		super(im, rm, pm, mbs, updateTime, name);
 		this.transferTimeMultiplier = transferTimeMultiplier;
 		this.transferAmount = transferAmount;
@@ -40,8 +39,7 @@ public class Pipe extends Factory {
 	}
 
 	public void attemptToActivate(Player p, boolean onStartUp) {
-		LoggingUtils.log((p != null ? p.getName() : "Redstone")
-				+ "is attempting to activate " + getLogData());
+		LoggingUtils.log((p != null ? p.getName() : "Redstone") + "is attempting to activate " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
 			if (transferMaterialsAvailable()) {
@@ -49,31 +47,26 @@ public class Pipe extends Factory {
 					FactoryActivateEvent fae = new FactoryActivateEvent(this, p);
 					Bukkit.getPluginManager().callEvent(fae);
 					if (fae.isCancelled()) {
-						LoggingUtils.log("Activating for " + getLogData()
-								+ " was cancelled by the event");
+						LoggingUtils.log("Activating for " + getLogData() + " was cancelled by the event");
 						return;
 					}
 					if (p != null) {
-						p.sendMessage(ChatColor.GREEN
-								+ "Activated pipe transfer");
+						p.sendMessage(ChatColor.GREEN + "Activated pipe transfer");
 					}
 					activate();
 				} else {
 					if (p != null) {
-						p.sendMessage(ChatColor.RED
-								+ "Failed to activate pipe, there is no fuel in the furnace");
+						p.sendMessage(ChatColor.RED + "Failed to activate pipe, there is no fuel in the furnace");
 					}
 				}
 			} else {
 				if (p != null) {
-					p.sendMessage(ChatColor.RED
-							+ "No items available to transfer");
+					p.sendMessage(ChatColor.RED + "No items available to transfer");
 				}
 			}
 		} else {
 			rm.breakIt();
-			p.sendMessage(ChatColor.RED
-					+ "Failed to activate pipe, it is missing blocks");
+			p.sendMessage(ChatColor.RED + "Failed to activate pipe, it is missing blocks");
 		}
 	}
 
@@ -110,9 +103,7 @@ public class Pipe extends Factory {
 				}
 			} else {
 				Block furnace = ((PipeStructure) mbs).getFurnace();
-				if (furnace.getType() != Material.BURNING_FURNACE) {
-					turnFurnaceOn(furnace);
-				}
+				turnFurnaceOn(furnace);
 				// if we need to consume fuel - then do it
 				if (fuelCount >= 1) {
 					// remove fuel.
@@ -139,46 +130,36 @@ public class Pipe extends Factory {
 		LoggingUtils.log("Attempting to transfer for " + getLogData());
 		mbs.recheckComplete();
 		if (mbs.isComplete()) {
-			Inventory sourceInventory = ((InventoryHolder) (((PipeStructure) mbs)
-					.getStart().getState())).getInventory();
-			Inventory targetInventory = ((InventoryHolder) (((PipeStructure) mbs)
-					.getEnd().getState())).getInventory();
+			Inventory sourceInventory = ((InventoryHolder) (((PipeStructure) mbs).getStart().getState()))
+					.getInventory();
+			Inventory targetInventory = ((InventoryHolder) (((PipeStructure) mbs).getEnd().getState())).getInventory();
 			int leftToRemove = transferAmount;
 			for (ItemStack is : sourceInventory.getContents()) {
-				if (is != null
-						&& is.getType() != Material.AIR
-						&& is.getAmount() != 0
-						&& (allowedMaterials == null || allowedMaterials
-								.contains(is.getType()))) {
+				if (is != null && is.getType() != Material.AIR && is.getAmount() != 0
+						&& (allowedMaterials == null || allowedMaterials.contains(is.getType()))) {
 					int removeAmount = Math.min(leftToRemove, is.getAmount());
 					ItemStack removing = is.clone();
 					removing.setAmount(removeAmount);
 					ItemMap removeMap = new ItemMap(removing);
 					if (removeMap.fitsIn(targetInventory)) {
-						ItemTransferEvent ite = new ItemTransferEvent(this,
-								sourceInventory, targetInventory,
-								((PipeStructure) mbs).getStart(),
-								((PipeStructure) mbs).getEnd(), removing);
+						ItemTransferEvent ite = new ItemTransferEvent(this, sourceInventory, targetInventory,
+								((PipeStructure) mbs).getStart(), ((PipeStructure) mbs).getEnd(), removing);
 						Bukkit.getPluginManager().callEvent(ite);
 						if (ite.isCancelled()) {
 							LoggingUtils.log("Transfer for " + removing.toString() + " was cancelled over the event");
 							continue;
 						}
 						LoggingUtils.logInventory(sourceInventory,
-								"Origin inventory before transfer for "
-										+ getLogData());
+								"Origin inventory before transfer for " + getLogData());
 						LoggingUtils.logInventory(targetInventory,
-								"Target inventory before transfer for "
-										+ getLogData());
+								"Target inventory before transfer for " + getLogData());
 						if (removeMap.removeSafelyFrom(sourceInventory)) {
 							targetInventory.addItem(removing);
 						}
 						LoggingUtils.logInventory(sourceInventory,
-								"Origin inventory after transfer for "
-										+ getLogData());
+								"Origin inventory after transfer for " + getLogData());
 						LoggingUtils.logInventory(targetInventory,
-								"Target inventory after transfer for "
-										+ getLogData());
+								"Target inventory after transfer for " + getLogData());
 						leftToRemove -= removeAmount;
 					} else {
 						break;
@@ -204,9 +185,7 @@ public class Pipe extends Factory {
 		if (start != null && start.getState() instanceof InventoryHolder) {
 			Inventory i = ((InventoryHolder) start.getState()).getInventory();
 			for (ItemStack is : i.getContents()) {
-				if (is != null
-						&& (allowedMaterials == null || allowedMaterials
-								.contains(is.getType()))) {
+				if (is != null && (allowedMaterials == null || allowedMaterials.contains(is.getType()))) {
 					return true;
 				}
 			}

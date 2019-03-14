@@ -1,5 +1,6 @@
-package com.github.igotyou.FactoryMod.commands.commands;
+package com.github.igotyou.FactoryMod.commands;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -14,17 +15,12 @@ import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
+import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-public class RunAmountSetterCommand extends PlayerCommand {
-
-	public RunAmountSetterCommand(String name) {
-		super(name);
-		setIdentifier("fmsrc");
-		setDescription("Sets the amount of runs for the currently selected recipe in the factory you are looking at");
-		setUsage("/fmsrc <runCount>");
-		setArguments(1, 1);
-	}
+@CivCommand(id = "fmsrc")
+public class RunAmountSetterCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
@@ -56,7 +52,7 @@ public class RunAmountSetterCommand extends PlayerCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return null;
+		return new LinkedList<>();
 	}
 
 

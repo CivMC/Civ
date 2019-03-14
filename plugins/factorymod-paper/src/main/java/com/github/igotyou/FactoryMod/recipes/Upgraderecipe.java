@@ -85,7 +85,7 @@ public class Upgraderecipe extends InputRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> res = new LinkedList<ItemStack>();
-		ItemStack cr = new ItemStack(Material.WORKBENCH);
+		ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
 		ISUtils.setName(cr, egg.getName());
 		ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE
 				+ "Upgrade to get new and better recipes");

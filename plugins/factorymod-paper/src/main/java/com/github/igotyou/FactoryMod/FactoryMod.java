@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod;
 
 import org.bukkit.entity.Player;
 
-import com.github.igotyou.FactoryMod.commands.FactoryModCommandHandler;
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
@@ -19,8 +18,6 @@ public class FactoryMod extends ACivMod {
 	private static ResponseManager rm;
 
 	public void onEnable() {
-		handle = new FactoryModCommandHandler();
-		handle.registerCommands();
 		super.onEnable();
 		plugin = this;
 		MultiBlockStructure.initializeBlockFaceMap();

@@ -13,8 +13,8 @@ import org.bukkit.block.BlockFace;
 import com.github.igotyou.FactoryMod.FactoryMod;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 /**
  * Physical representation of a factory. This may be any shape as long as the
@@ -140,23 +140,18 @@ public abstract class MultiBlockStructure {
 	 *         group
 	 */
 	public static boolean citadelRedstoneChecks(Block here) {
-		ReinforcementManager rm;
-		if (FactoryMod.getManager().isCitadelEnabled()) {
-			rm = Citadel.getReinforcementManager();
-		} else {
+		if (!FactoryMod.getManager().isCitadelEnabled()) {
 			return true;
 		}
-		PlayerReinforcement pr = (rm != null) ? (PlayerReinforcement) rm
-				.getReinforcement(here) : null;
-		if (pr == null || pr.isInsecure()) {
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(here);
+		if (rein == null || rein.isInsecure()) {
 			return true;
 		}
-		int prGID = pr.getGroup().getGroupId();
+		int prGID = rein.getGroup().getGroupId();
 		for (BlockFace face : MultiBlockStructure.allBlockSides) {
 			Block rel = here.getRelative(face);
 			if (here.isBlockFacePowered(face)) {
-				PlayerReinforcement relRein = (PlayerReinforcement) rm
-						.getReinforcement(rel);
+				Reinforcement relRein = ReinforcementLogic.getReinforcementProtecting(rel);
 				if (relRein == null || relRein.getGroup().getGroupId() != prGID) {
 					return false;
 				}

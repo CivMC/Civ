@@ -36,8 +36,7 @@ public class FurnacePowerManager implements IPowerManager {
 	}
 
 	public boolean powerAvailable(int fuelCount) {
-		if (furnace.getType() != Material.FURNACE
-				&& furnace.getType() != Material.BURNING_FURNACE) {
+		if (furnace.getType() != Material.FURNACE) {
 			return false;
 		}
 

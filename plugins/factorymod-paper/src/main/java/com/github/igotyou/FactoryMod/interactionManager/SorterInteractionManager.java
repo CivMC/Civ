@@ -8,8 +8,8 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -53,84 +53,63 @@ public class SorterInteractionManager implements IInteractionManager {
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		if (FactoryMod.getManager().isCitadelEnabled()) {
-			ReinforcementManager rm = Citadel.getReinforcementManager();
-			// is this cast safe? Let's just assume yes for now
-			PlayerReinforcement rein = (PlayerReinforcement) rm
-					.getReinforcement(b);
-			if (rein != null) {
-				Group g = rein.getGroup();
-				if (!NameAPI.getGroupManager().hasAccess(g.getName(), p.getUniqueId(), PermissionType.getPermission("USE_FACTORY"))) {
-					p.sendMessage(ChatColor.RED
-							+ "You dont have permission to interact with this factory");
-					FactoryMod.sendResponse("FactoryNoPermission", p);
-					return;
-				}
+			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
+			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
+				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
+				FactoryMod.sendResponse("FactoryNoPermission", p);
+				return;
 			}
 		}
 		if (b.equals(bfs.getFurnace())) {
-			if (p.getInventory().getItemInMainHand()
-					.getType()
-					.equals(FactoryMod.getManager()
-							.getFactoryInteractionMaterial())) {
+			if (p.getInventory().getItemInMainHand().getType()
+					.equals(FactoryMod.getManager().getFactoryInteractionMaterial())) {
 				sorter.attemptToActivate(p, false);
 			}
 		} else { // center
-			if (p.isSneaking()
-					&& p.getInventory().getItemInMainHand()
-							.getType()
-							.equals(FactoryMod.getManager()
-									.getFactoryInteractionMaterial())) {
+			if (p.isSneaking() && p.getInventory().getItemInMainHand().getType()
+					.equals(FactoryMod.getManager().getFactoryInteractionMaterial())) {
 				mb.showSorterFace(p, sorter, bf);
 				return;
 			}
 			ItemStack is = p.getInventory().getItemInMainHand();
 			if (is == null) {
 				return;
-				//no item in hand
+				// no item in hand
 			}
 			BlockFace side = sorter.getSide(is);
 			if (side == null) {
 				sorter.addAssignment(bf, is);
-				p.sendMessage(ChatColor.GREEN + "Added "
-						+ NiceNames.getName(is) + " to " + bf.toString());
+				p.sendMessage(ChatColor.GREEN + "Added " + NiceNames.getName(is) + " to " + bf.toString());
 			} else {
 				if (side == bf) {
 					sorter.removeAssignment(is);
-					p.sendMessage(ChatColor.GOLD + "Removed "
-							+ NiceNames.getName(is) + " from "
-							+ side.toString());
+					p.sendMessage(ChatColor.GOLD + "Removed " + NiceNames.getName(is) + " from " + side.toString());
 				} else {
-					p.sendMessage(ChatColor.RED
-							+ "This item is already associated with "
-							+ side.toString());
+					p.sendMessage(ChatColor.RED + "This item is already associated with " + side.toString());
 				}
 			}
 		}
 	}
 
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
-		ReinforcementManager rm = FactoryMod.getManager().isCitadelEnabled() ? Citadel
-				.getReinforcementManager() : null;
 		int threshold = FactoryMod.getManager().getRedstonePowerOn();
-		if (factoryBlock.getLocation().equals(
-				((BlockFurnaceStructure) sorter.getMultiBlockStructure())
-						.getFurnace().getLocation())) {
-			if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold
-					&& sorter.isActive()) {
-				if ((rm == null || MultiBlockStructure.citadelRedstoneChecks(e
-						.getBlock()))) {
-					sorter.deactivate();
-				}
-			} else if (e.getOldCurrent() < threshold
-					&& e.getNewCurrent() >= threshold && !sorter.isActive()) {
-				if (rm == null
-						|| MultiBlockStructure.citadelRedstoneChecks(e
-								.getBlock())) {
-					sorter.attemptToActivate(null, false);
-				}
-			} else {
-				return;
-			}
+		if (!factoryBlock.getLocation()
+				.equals(((BlockFurnaceStructure) sorter.getMultiBlockStructure()).getFurnace().getLocation())) {
+			return;
 		}
+		if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && sorter.isActive()) {
+			if ((!FactoryMod.getManager().isCitadelEnabled()
+					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock()))) {
+				sorter.deactivate();
+			}
+		} else if (e.getOldCurrent() < threshold && e.getNewCurrent() >= threshold && !sorter.isActive()) {
+			if (!FactoryMod.getManager().isCitadelEnabled()
+					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
+				sorter.attemptToActivate(null, false);
+			}
+		} else {
+			return;
+		}
+
 	}
 }

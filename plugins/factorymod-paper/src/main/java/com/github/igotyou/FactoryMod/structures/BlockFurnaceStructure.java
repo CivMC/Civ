@@ -31,8 +31,7 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 
 	public boolean relevantBlocksDestroyed() {
 		return center.getBlock().getType() != Material.DROPPER
-				&& furnace.getBlock().getType() != Material.FURNACE
-				&& furnace.getBlock().getType() != Material.BURNING_FURNACE;
+				&& furnace.getBlock().getType() != Material.FURNACE;
 	}
 
 	public Location getCenter() {
@@ -56,8 +55,7 @@ public class BlockFurnaceStructure extends MultiBlockStructure {
 
 	public void recheckComplete() {
 		complete = (center.getBlock().getType() == Material.DROPPER && (furnace
-				.getBlock().getType() == Material.FURNACE || furnace.getBlock()
-				.getType() == Material.BURNING_FURNACE));
+				.getBlock().getType() == Material.FURNACE));
 	}
 
 	public List<Block> getRelevantBlocks() {

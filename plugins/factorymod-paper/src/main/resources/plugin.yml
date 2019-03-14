@@ -7,10 +7,25 @@ softdepend: [CivMenu, NameLayer, Citadel]
 commands:
     fm:
         permission: fm.public
+        description: 'Opens a GUI allowing you to browse through all factories'
+        usage: '/fm [factoryName]'
+        min-args: 0
+        max-args: 10
+        player-only: true
     fmc:
         permission: fm.op
+        description: 'Creates a factory at the blocks you are looking at'
+        usage: '/fmc <name>'
+        min-args: 0
+        max-args: 10
+        player-only: true
     fmsrc:
         permission: fm.op
+        player-only: true
+        description: 'Sets the amount of runs for the currently selected recipe in the factory you are looking at'
+        usage: '/fmsrc <count>'
+        min-args: 1
+        max-args: 1
 permissions:
     fm.public:
         default: true

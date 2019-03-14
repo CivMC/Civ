@@ -20,7 +20,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private int length;
 	private List<Location> glassPipe;
 	private byte glassColor;
-	private static Material pipeMaterial = Material.STAINED_GLASS;
+	private static Material pipeMaterial = Material.BLACK_STAINED_GLASS;
 	private boolean complete;
 
 	@SuppressWarnings("deprecation")
@@ -99,8 +99,7 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public boolean relevantBlocksDestroyed() {
 		return start.getBlock().getType() != Material.DISPENSER
-				&& furnace.getBlock().getType() != Material.FURNACE
-				&& furnace.getBlock().getType() != Material.BURNING_FURNACE;
+				&& furnace.getBlock().getType() != Material.FURNACE;
 	}
 
 	public List<Location> getAllBlocks() {
@@ -125,7 +124,7 @@ public class PipeStructure extends MultiBlockStructure {
 				|| furnace == null
 				|| end == null
 				|| start.getBlock().getType() != Material.DISPENSER
-				|| (furnace.getBlock().getType() != Material.FURNACE && furnace.getBlock().getType() != Material.BURNING_FURNACE)
+				|| furnace.getBlock().getType() != Material.FURNACE
 				|| !(end.getBlock().getState() instanceof InventoryHolder)) {
 			complete = false;
 			return;

@@ -100,7 +100,7 @@ public class AOERepairRecipe extends InputRecipe {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
-		ItemStack is = new ItemStack(Material.WORKBENCH);
+		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
 		int essenceCount = new ItemMap(i).getAmount(essence);
 		for (FurnCraftChestFactory fac : facs) {
 			PercentageHealthRepairManager rm = (PercentageHealthRepairManager) fac

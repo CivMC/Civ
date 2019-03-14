@@ -66,7 +66,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	}
 
 	public ItemStack getRecipeRepresentation() {
-		ItemStack is = new ItemStack(Material.WORKBENCH);
+		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
 		ISUtils.setName(is, name);
 		ItemMeta im = is.getItemMeta();
 		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
@@ -100,7 +100,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 										is);
 							}
 						}
-						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.WORKBENCH));
+						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.CRAFTING_TABLE));
 						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.FURNACE));
 						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.CHEST));
 					}

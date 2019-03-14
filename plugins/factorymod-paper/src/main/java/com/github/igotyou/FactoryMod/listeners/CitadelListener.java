@@ -24,12 +24,12 @@ public class CitadelListener implements Listener {
 
 	@EventHandler
 	public void reinDamage(ReinforcementDamageEvent e) {
-		Factory f = manager.getFactoryAt(e.getBlock());
+		Factory f = manager.getFactoryAt(e.getReinforcement().getLocation());
 		if (!(f instanceof FurnCraftChestFactory)) {
 			return;
 		}
 		FurnCraftChestFactory fccf = (FurnCraftChestFactory) f;
-		if (fccf.getMultiBlockStructure().getCenter().equals(e.getBlock().getLocation())) {
+		if (fccf.getMultiBlockStructure().getCenter().equals(e.getReinforcement().getLocation())) {
 			if (rng.nextDouble() > fccf.getCitadelBreakReduction()) {
 				e.setCancelled(true);
 			}

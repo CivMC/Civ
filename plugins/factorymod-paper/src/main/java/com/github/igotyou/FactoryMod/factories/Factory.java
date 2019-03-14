@@ -132,7 +132,6 @@ public abstract class Factory implements Runnable {
 		ItemStack[] oldContents = furnace.getInventory().getContents();
 		BlockFace facing = ((DirectionalContainer) furnace.getData()).getFacing();
 		furnace.getInventory().clear();
-		f.setType(Material.BURNING_FURNACE);
 		furnace = (Furnace) f.getState();
 		MaterialData data = furnace.getData();
 		((DirectionalContainer) data).setFacingDirection(facing);
@@ -149,9 +148,6 @@ public abstract class Factory implements Runnable {
 	public void turnFurnaceOff(Block f) {
 		// Since we are turning it off that implies its on, that means we should
 		// check if the furnace is burning.
-		if (f.getType() != Material.BURNING_FURNACE) {
-			return;
-		}
 		Furnace furnace = (Furnace) f.getState();
 		furnace.setBurnTime((short) 0);
 		furnace.update();
