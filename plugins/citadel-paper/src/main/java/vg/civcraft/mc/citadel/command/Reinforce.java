@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.playerstate.IPlayerState;
+import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.playerstate.ReinforcingState;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
@@ -53,7 +53,7 @@ public class Reinforce extends StandaloneCommand {
 			stateManager.setState(player, null);
 			return true;
 		}
-		IPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
 		if (currentState instanceof ReinforcingState) {
 			ReinforcingState reinState = (ReinforcingState) currentState;
 			if (reinState.getGroup() == group) {
@@ -71,9 +71,11 @@ public class Reinforce extends StandaloneCommand {
 			return null;
 
 		if (args.length == 0)
-			return GroupTabCompleter.complete(null, PermissionType.getPermission(Citadel.reinforcePerm), (Player)sender);
+			return GroupTabCompleter.complete(null, PermissionType.getPermission(Citadel.reinforcePerm),
+					(Player) sender);
 		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.getPermission(Citadel.reinforcePerm), (Player)sender);
+			return GroupTabCompleter.complete(args[0], PermissionType.getPermission(Citadel.reinforcePerm),
+					(Player) sender);
 		else {
 			return new ArrayList<String>();
 		}

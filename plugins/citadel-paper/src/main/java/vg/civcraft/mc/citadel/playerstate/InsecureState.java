@@ -10,10 +10,15 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
-public class InsecureState extends IPlayerState {
+public class InsecureState extends AbstractPlayerState {
 
 	public InsecureState(Player p, boolean bypass) {
 		super(p, bypass);
+	}
+
+	@Override
+	public String getName() {
+		return "Insecure mode";
 	}
 
 	@Override
@@ -30,9 +35,11 @@ public class InsecureState extends IPlayerState {
 		if (rein.hasPermission(e.getPlayer(), Citadel.insecurePerm)) {
 			rein.toggleInsecure();
 			if (rein.isInsecure()) {
-				Utility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, e.getClickedBlock().getType().name() + " is now insecure");
+				Utility.sendAndLog(e.getPlayer(), ChatColor.YELLOW,
+						e.getClickedBlock().getType().name() + " is now insecure");
 			} else {
-				Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN, e.getClickedBlock().getType().name() + " is now secure");
+				Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
+						e.getClickedBlock().getType().name() + " is now secure");
 			}
 		} else {
 			Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "You are not allowed to make this reinforcement insecure");

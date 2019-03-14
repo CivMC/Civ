@@ -18,13 +18,21 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class ReinforcingState extends IPlayerState {
+public class ReinforcingState extends AbstractPlayerState {
 
 	private Group group;
 
 	public ReinforcingState(Player p, boolean bypass, Group group) {
 		super(p, bypass);
 		this.group = group;
+	}
+
+	public Group getGroup() {
+		return group;
+	}
+
+	public String getName() {
+		return "Reinforcing mode on " + group.getName();
 	}
 
 	@Override
@@ -90,6 +98,12 @@ public class ReinforcingState extends IPlayerState {
 		}
 
 		if (rein == null) {
+			if (Citadel.getInstance().getConfigManager().logCreation()) {
+				Citadel.getInstance().getLogger()
+						.info(player.getName() + " created reinforcement with " + type.getName() + " for "
+								+ e.getClickedBlock().getType().toString() + " at "
+								+ e.getClickedBlock().getLocation().toString());
+			}
 			// just create new reinforcement
 			ReinforcementLogic.createReinforcement(e.getClickedBlock(), type, group);
 		} else {
@@ -118,10 +132,6 @@ public class ReinforcingState extends IPlayerState {
 				}
 			}
 		}
-	}
-	
-	public Group getGroup() {
-		return group;
 	}
 
 }

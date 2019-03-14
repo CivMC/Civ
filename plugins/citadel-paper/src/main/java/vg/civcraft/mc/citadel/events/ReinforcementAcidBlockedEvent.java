@@ -12,15 +12,20 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 public class ReinforcementAcidBlockedEvent extends ReinforcementEvent {
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	private Reinforcement acidBlock;
 
-	public ReinforcementAcidBlockedEvent(Player player, Reinforcement acidBlock,Reinforcement destroyedBlock) {
+	public ReinforcementAcidBlockedEvent(Player player, Reinforcement acidBlock, Reinforcement destroyedBlock) {
 		super(player, destroyedBlock);
 		this.acidBlock = acidBlock;
 	}
 
 	/**
 	 * Gets the reinforcement of the acid block.
+	 * 
 	 * @return Acid block reinforcement
 	 */
 	public Reinforcement getAcidBlockReinforcement() {
@@ -29,10 +34,6 @@ public class ReinforcementAcidBlockedEvent extends ReinforcementEvent {
 
 	@Override
 	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

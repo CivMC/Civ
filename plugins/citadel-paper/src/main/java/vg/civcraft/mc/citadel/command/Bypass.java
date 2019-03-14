@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.playerstate.IPlayerState;
+import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
@@ -19,7 +19,7 @@ public class Bypass extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		IPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
 		if (currentState.isBypassEnabled()) {
 			Utility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");
 		} else {

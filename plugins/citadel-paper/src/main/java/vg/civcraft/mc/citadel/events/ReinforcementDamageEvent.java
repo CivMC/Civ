@@ -13,6 +13,10 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	private double damageDone;
 
 	public ReinforcementDamageEvent(Player player, Reinforcement rein, double damageDone) {
@@ -29,6 +33,11 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 		return damageDone;
 	}
 
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
+
 	/**
 	 * Sets the total damage done
 	 * 
@@ -36,14 +45,5 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 	 */
 	public void setDamageDone(double damageDone) {
 		this.damageDone = damageDone;
-	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 }

@@ -9,31 +9,16 @@ public class ReinforcementEffect {
 	private float offsetY;
 	private float offsetZ;
 	private float speed;
-	private int particleCount; 
-	
-	public ReinforcementEffect(
-			Particle particle,
-			float offsetX,
-			float offsetY,
-			float offsetZ,
-			float speed,
-			int particleCount
-			)
-	{
+	private int particleCount;
+
+	public ReinforcementEffect(Particle particle, float offsetX, float offsetY, float offsetZ, float speed,
+			int particleCount) {
 		this.particle = particle;
 		this.offsetX = offsetX;
 		this.offsetY = offsetY;
 		this.offsetZ = offsetZ;
 		this.speed = speed;
 		this.particleCount = particleCount;
-	}
-
-	/**
-	 * 
-	 * @return the type of particle used in this effect
-	 */
-	public Particle getParticle() {
-		return particle;
 	}
 
 	/**
@@ -62,6 +47,22 @@ public class ReinforcementEffect {
 
 	/**
 	 * 
+	 * @return the type of particle used in this effect
+	 */
+	public Particle getParticle() {
+		return particle;
+	}
+
+	/**
+	 * 
+	 * @return the amount of particle to display.
+	 */
+	public int getParticleCount() {
+		return particleCount;
+	}
+
+	/**
+	 * 
 	 * @return the speed of the particles
 	 */
 	public float getSpeed() {
@@ -69,21 +70,14 @@ public class ReinforcementEffect {
 	}
 
 	/**
-	 * 
-	 * @return the amount of particle to display. 
-	 */
-	public int getParticleCount() {
-		return particleCount;
-	}
-
-	/**
 	 * Display an effect defined in the config around a reinforcement.
+	 * 
 	 * @param location the location of the reinforcement.
 	 */
-	public void playEffect(Location location){
+	public void playEffect(Location location) {
 		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
 	}
-	
+
 	public String toString() {
 		return String.format(
 				"  type: %s \n   offsetX: %f \n   offsetY: %f \n   offsetZ: %f \n   speed: %f \n   particleCount: %d",

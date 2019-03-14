@@ -40,9 +40,98 @@ public class CitadelReinforcementData {
 		this.logger = plugin.getLogger();
 	}
 
-	public boolean startUp() {
-		registerMigrations();
-		return db.updateDatabase();
+	private void deleteReinforcement(ChunkCache cache, Reinforcement rein, PreparedStatement deleteStatement)
+			throws SQLException {
+		deleteStatement.setInt(1, rein.getLocation().getBlockX());
+		deleteStatement.setInt(2, rein.getLocation().getBlockY());
+		deleteStatement.setInt(3, rein.getLocation().getBlockZ());
+		deleteStatement.setInt(4, cache.getWorldID());
+		deleteStatement.addBatch();
+	}
+
+	public int getOrCreateWorldID(World world) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement insertWorld = insertConn
+						.prepareStatement("select id from reinforcement_worlds where uuid = ?;")) {
+			insertWorld.setString(1, world.getUID().toString());
+			try (ResultSet rs = insertWorld.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			logger.severe("Failed to check for existence of world in db: " + e.toString());
+			return -1;
+		}
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement insertWorld = insertConn.prepareStatement(
+						"insert into reinforcement_worlds (uuid, name) values(?,?);",
+						Statement.RETURN_GENERATED_KEYS);) {
+			insertWorld.setString(1, world.getUID().toString());
+			insertWorld.setString(2, world.getName());
+			try (ResultSet rs = insertWorld.executeQuery()) {
+				if (!rs.next()) {
+					logger.info("Failed to insert world");
+					return -1;
+				}
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			logger.severe("Failed to insert world into db: " + e.toString());
+			return -1;
+		}
+	}
+
+	private void insertNewReinforcement(ChunkCache cache, Reinforcement rein, PreparedStatement insertStatement)
+			throws SQLException {
+		insertStatement.setInt(1, rein.getLocation().getBlockX());
+		insertStatement.setInt(2, rein.getLocation().getBlockY());
+		insertStatement.setInt(3, rein.getLocation().getBlockZ());
+		insertStatement.setInt(4, cache.getChunkPair().getX());
+		insertStatement.setInt(5, cache.getChunkPair().getZ());
+		insertStatement.setInt(6, cache.getWorldID());
+		insertStatement.setInt(7, rein.getType().getID());
+		insertStatement.setDouble(8, rein.getHealth());
+		insertStatement.setInt(9, rein.getGroupId());
+		insertStatement.setBoolean(10, rein.isInsecure());
+		insertStatement.addBatch();
+	}
+
+	public ChunkCache loadReinforcements(ChunkCoord coords, int worldID) {
+		List<Reinforcement> reinforcements = new ArrayList<>();
+		World world = null;
+		try (Connection loadConn = db.getConnection();
+				PreparedStatement loadRein = loadConn.prepareStatement(
+						"select x, y, z, type_id, creation_time, health, group_id, insecure from reinforcements "
+								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;")) {
+			loadRein.setInt(1, coords.getX());
+			loadRein.setInt(2, coords.getZ());
+			loadRein.setInt(3, worldID);
+			try (ResultSet rs = loadRein.executeQuery()) {
+				while (rs.next()) {
+					int x = rs.getInt(1);
+					int y = rs.getInt(2);
+					int z = rs.getInt(3);
+					int typeId = rs.getInt(4);
+					long millisCreation = rs.getTimestamp(5).getTime();
+					double health = rs.getDouble(6);
+					int groupId = rs.getInt(7);
+					boolean insecure = rs.getBoolean(8);
+					ReinforcementType type = typeMan.getById(typeId);
+					Location loc = new Location(world, x, y, z);
+					if (type == null) {
+						logger.warning("Ignoring reinforcement at " + loc.toString() + " because of invalid type id "
+								+ typeId);
+						continue;
+					}
+					reinforcements
+							.add(new Reinforcement(loc, type, groupId, millisCreation, health, false, false, insecure));
+				}
+			}
+		} catch (SQLException e) {
+			logger.severe("Failed to load reinforcements: " + e.toString());
+		}
+		return new ChunkCache(coords, reinforcements, worldID);
 	}
 
 	private void registerMigrations() {
@@ -141,9 +230,9 @@ public class CitadelReinforcementData {
 						String lore = rs.getString(12);
 						int acidTime = rs.getInt(13);
 						long msAcidTime = acidTime;
-						//old unit was minutes since unix epoch
+						// old unit was minutes since unix epoch
 						msAcidTime *= 60000;
-						//some reins don't have a time stamp, gonna have to guess for those
+						// some reins don't have a time stamp, gonna have to guess for those
 						if (msAcidTime == 0) {
 							msAcidTime = System.currentTimeMillis();
 						}
@@ -211,43 +300,6 @@ public class CitadelReinforcementData {
 						+ "constraint reinforcementUniqueLocation unique (x,y,z,world_id));");
 	}
 
-	public ChunkCache loadReinforcements(ChunkCoord coords, int worldID) {
-		List<Reinforcement> reinforcements = new ArrayList<>();
-		World world = null;
-		try (Connection loadConn = db.getConnection();
-				PreparedStatement loadRein = loadConn.prepareStatement(
-						"select x, y, z, type_id, creation_time, health, group_id, insecure from reinforcements "
-								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;")) {
-			loadRein.setInt(1, coords.getX());
-			loadRein.setInt(2, coords.getZ());
-			loadRein.setInt(3, worldID);
-			try (ResultSet rs = loadRein.executeQuery()) {
-				while (rs.next()) {
-					int x = rs.getInt(1);
-					int y = rs.getInt(2);
-					int z = rs.getInt(3);
-					int typeId = rs.getInt(4);
-					long millisCreation = rs.getTimestamp(5).getTime();
-					double health = rs.getDouble(6);
-					int groupId = rs.getInt(7);
-					boolean insecure = rs.getBoolean(8);
-					ReinforcementType type = typeMan.getById(typeId);
-					Location loc = new Location(world, x, y, z);
-					if (type == null) {
-						logger.warning("Ignoring reinforcement at " + loc.toString() + " because of invalid type id "
-								+ typeId);
-						continue;
-					}
-					reinforcements
-							.add(new Reinforcement(loc, type, groupId, millisCreation, health, false, false, insecure));
-				}
-			}
-		} catch (SQLException e) {
-			logger.severe("Failed to load reinforcements: " + e.toString());
-		}
-		return new ChunkCache(coords, reinforcements, worldID);
-	}
-
 	public void saveReinforcements(ChunkCache cache) {
 		if (!cache.isDirty()) {
 			return;
@@ -277,7 +329,8 @@ public class CitadelReinforcementData {
 				}
 				rein.setDirty(false);
 			}
-			//deletes before inserts in case a reinforcement was destroyed and then recreated
+			// deletes before inserts in case a reinforcement was destroyed and then
+			// recreated
 			deleteStatement.executeBatch();
 			insertStatement.executeBatch();
 			updateStatement.executeBatch();
@@ -287,19 +340,9 @@ public class CitadelReinforcementData {
 		}
 	}
 
-	private void insertNewReinforcement(ChunkCache cache, Reinforcement rein, PreparedStatement insertStatement)
-			throws SQLException {
-		insertStatement.setInt(1, rein.getLocation().getBlockX());
-		insertStatement.setInt(2, rein.getLocation().getBlockY());
-		insertStatement.setInt(3, rein.getLocation().getBlockZ());
-		insertStatement.setInt(4, cache.getChunkPair().getX());
-		insertStatement.setInt(5, cache.getChunkPair().getZ());
-		insertStatement.setInt(6, cache.getWorldID());
-		insertStatement.setInt(7, rein.getType().getID());
-		insertStatement.setDouble(8, rein.getHealth());
-		insertStatement.setInt(9, rein.getGroupId());
-		insertStatement.setBoolean(10, rein.isInsecure());
-		insertStatement.addBatch();
+	public boolean startUp() {
+		registerMigrations();
+		return db.updateDatabase();
 	}
 
 	private void updateReinforcement(ChunkCache cache, Reinforcement rein, PreparedStatement updateStatement)
@@ -313,48 +356,6 @@ public class CitadelReinforcementData {
 		updateStatement.setInt(7, rein.getLocation().getBlockZ());
 		updateStatement.setInt(8, cache.getWorldID());
 		updateStatement.addBatch();
-	}
-
-	private void deleteReinforcement(ChunkCache cache, Reinforcement rein, PreparedStatement deleteStatement)
-			throws SQLException {
-		deleteStatement.setInt(1, rein.getLocation().getBlockX());
-		deleteStatement.setInt(2, rein.getLocation().getBlockY());
-		deleteStatement.setInt(3, rein.getLocation().getBlockZ());
-		deleteStatement.setInt(4, cache.getWorldID());
-		deleteStatement.addBatch();
-	}
-
-	public int getOrCreateWorldID(World world) {
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertWorld = insertConn
-						.prepareStatement("select id from reinforcement_worlds where uuid = ?;")) {
-			insertWorld.setString(1, world.getUID().toString());
-			try (ResultSet rs = insertWorld.executeQuery()) {
-				if (rs.next()) {
-					return rs.getInt(1);
-				}
-			}
-		} catch (SQLException e) {
-			logger.severe("Failed to check for existence of world in db: " + e.toString());
-			return -1;
-		}
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertWorld = insertConn.prepareStatement(
-						"insert into reinforcement_worlds (uuid, name) values(?,?);",
-						Statement.RETURN_GENERATED_KEYS);) {
-			insertWorld.setString(1, world.getUID().toString());
-			insertWorld.setString(2, world.getName());
-			try (ResultSet rs = insertWorld.executeQuery()) {
-				if (!rs.next()) {
-					logger.info("Failed to insert world");
-					return -1;
-				}
-				return rs.getInt(1);
-			}
-		} catch (SQLException e) {
-			logger.severe("Failed to insert world into db: " + e.toString());
-			return -1;
-		}
 	}
 
 }

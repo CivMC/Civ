@@ -11,9 +11,13 @@ import vg.civcraft.mc.namelayer.group.Group;
  *
  */
 public class ReinforcementGroupChangeEvent extends ReinforcementEvent {
-	
+
 	private static final HandlerList handlers = new HandlerList();
-	
+
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	private Group newGroup;
 
 	public ReinforcementGroupChangeEvent(Player who, Reinforcement reinforcement, Group newGroup) {
@@ -21,18 +25,13 @@ public class ReinforcementGroupChangeEvent extends ReinforcementEvent {
 		this.newGroup = newGroup;
 	}
 
-	public Group getNewGroup() {
-		return newGroup;
-	}
-	
-
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
-		return handlers;
+	public Group getNewGroup() {
+		return newGroup;
 	}
 
 }

@@ -8,32 +8,32 @@ import java.util.TreeMap;
 import org.bukkit.inventory.ItemStack;
 
 public class ReinforcementTypeManager {
-	
+
 	private Map<ItemStack, ReinforcementType> typesByItem;
 	private Map<Integer, ReinforcementType> typesById;
-	
+
 	public ReinforcementTypeManager() {
 		typesByItem = new HashMap<>();
 		typesById = new TreeMap<>();
 	}
-	
-	public void register(ReinforcementType type) {
-		typesByItem.put(type.getItem(), type);
-		typesById.put(type.getID(), type);
+
+	public Collection<ReinforcementType> getAllTypes() {
+		return typesById.values();
 	}
-	
+
 	public ReinforcementType getById(int id) {
 		return typesById.get(id);
 	}
-	
+
 	public ReinforcementType getByItemStack(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
 		return typesByItem.get(copy);
 	}
-	
-	public Collection<ReinforcementType> getAllTypes() {
-		return typesById.values();
+
+	public void register(ReinforcementType type) {
+		typesByItem.put(type.getItem(), type);
+		typesById.put(type.getID(), type);
 	}
 
 }

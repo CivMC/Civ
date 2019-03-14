@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-public class NormalState extends IPlayerState {
+public class NormalState extends AbstractPlayerState {
 
 	public NormalState(Player p, boolean bypass) {
 		super(p, bypass);
@@ -12,15 +12,19 @@ public class NormalState extends IPlayerState {
 	}
 
 	@Override
+	public String getName() {
+		return "Normal mode";
+	}
+
+	@Override
 	public void handleBlockPlace(BlockPlaceEvent e) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
-		
-		
+
 	}
 
 }

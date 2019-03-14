@@ -31,6 +31,37 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class RedstoneListener implements Listener {
 
+	private static boolean isAuthorizedPlayerNear(Reinforcement reinforcement, double distance) {
+		Location reinLocation = reinforcement.getLocation();
+		double min_x = reinLocation.getX() - distance;
+		double min_z = reinLocation.getZ() - distance;
+		double max_x = reinLocation.getX() + distance;
+		double max_z = reinLocation.getZ() + distance;
+		boolean result = false;
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			if (player.isDead()) {
+				continue;
+			}
+			Location playerLocation = player.getLocation();
+			double player_x = playerLocation.getX();
+			double player_z = playerLocation.getZ();
+			// Simple bounding box check to quickly rule out Players
+			// before doing the more expensive playerLocation.distance
+			if (player_x < min_x || player_x > max_x || player_z < min_z || player_z > max_z) {
+				continue;
+			}
+			if (!reinforcement.hasPermission(player, Citadel.doorPerm)) {
+				continue;
+			}
+			double distanceSquared = playerLocation.distance(reinLocation);
+			if (distanceSquared <= distance) {
+				result = true;
+				break;
+			}
+		}
+		return result;
+	}
+
 	private double maxRedstoneDistance;
 
 	private Map<Location, List<UUID>> authorizations;
@@ -40,6 +71,28 @@ public class RedstoneListener implements Listener {
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Citadel.getInstance(), () -> {
 			authorizations.clear();
 		}, 1L, 1L);
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void pistonExtend(BlockPistonExtendEvent bpee) {
+		for (Block block : bpee.getBlocks()) {
+			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
+			if (reinforcement != null) {
+				bpee.setCancelled(true);
+				break;
+			}
+		}
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	public void pistonRetract(BlockPistonRetractEvent bpre) {
+		for (Block block : bpre.getBlocks()) {
+			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
+			if (reinforcement != null) {
+				bpre.setCancelled(true);
+				break;
+			}
+		}
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
@@ -58,48 +111,6 @@ public class RedstoneListener implements Listener {
 		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getAttachedFace());
 		// prepare all sides of the block attached to
 		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getAttachedFace().getOppositeFace());
-	}
-
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
-	public void stepPressurePlate(PlayerInteractEvent e) {
-		if (e.getAction() != Action.PHYSICAL) {
-			return;
-		}
-		if (!(e.getClickedBlock().getState().getData() instanceof PressurePlate)) {
-			return;
-		}
-		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
-	}
-
-	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
-		for (BlockFace face : BlockListener.all_sides) {
-			if (face == skip) {
-				continue;
-			}
-			Block rel = block.getRelative(face);
-			MaterialData blockData = rel.getState().getData();
-			if (!(blockData instanceof Openable)) {
-				continue;
-			}
-			Location locationToSave;
-			if (blockData instanceof Door) {
-				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
-					// block is upper half of a door
-					locationToSave = rel.getRelative(BlockFace.DOWN).getLocation();
-				} else {
-					// already the lower half of the door
-					locationToSave = rel.getLocation();
-				}
-			} else {
-				locationToSave = rel.getLocation();
-			}
-			List<UUID> existingAuths = authorizations.get(locationToSave);
-			if (existingAuths == null) {
-				existingAuths = new LinkedList<UUID>();
-				authorizations.put(locationToSave, existingAuths);
-			}
-			existingAuths.add(player.getUniqueId());
-		}
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -143,57 +154,46 @@ public class RedstoneListener implements Listener {
 		bre.setNewCurrent(bre.getOldCurrent());
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-	public void pistonExtend(BlockPistonExtendEvent bpee) {
-		for (Block block : bpee.getBlocks()) {
-			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
-			if (reinforcement != null) {
-				bpee.setCancelled(true);
-				break;
+	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
+		for (BlockFace face : BlockListener.all_sides) {
+			if (face == skip) {
+				continue;
 			}
+			Block rel = block.getRelative(face);
+			MaterialData blockData = rel.getState().getData();
+			if (!(blockData instanceof Openable)) {
+				continue;
+			}
+			Location locationToSave;
+			if (blockData instanceof Door) {
+				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
+					// block is upper half of a door
+					locationToSave = rel.getRelative(BlockFace.DOWN).getLocation();
+				} else {
+					// already the lower half of the door
+					locationToSave = rel.getLocation();
+				}
+			} else {
+				locationToSave = rel.getLocation();
+			}
+			List<UUID> existingAuths = authorizations.get(locationToSave);
+			if (existingAuths == null) {
+				existingAuths = new LinkedList<UUID>();
+				authorizations.put(locationToSave, existingAuths);
+			}
+			existingAuths.add(player.getUniqueId());
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-	public void pistonRetract(BlockPistonRetractEvent bpre) {
-		for (Block block : bpre.getBlocks()) {
-			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
-			if (reinforcement != null) {
-				bpre.setCancelled(true);
-				break;
-			}
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	public void stepPressurePlate(PlayerInteractEvent e) {
+		if (e.getAction() != Action.PHYSICAL) {
+			return;
 		}
-	}
-
-	private static boolean isAuthorizedPlayerNear(Reinforcement reinforcement, double distance) {
-		Location reinLocation = reinforcement.getLocation();
-		double min_x = reinLocation.getX() - distance;
-		double min_z = reinLocation.getZ() - distance;
-		double max_x = reinLocation.getX() + distance;
-		double max_z = reinLocation.getZ() + distance;
-		boolean result = false;
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (player.isDead()) {
-				continue;
-			}
-			Location playerLocation = player.getLocation();
-			double player_x = playerLocation.getX();
-			double player_z = playerLocation.getZ();
-			// Simple bounding box check to quickly rule out Players
-			// before doing the more expensive playerLocation.distance
-			if (player_x < min_x || player_x > max_x || player_z < min_z || player_z > max_z) {
-				continue;
-			}
-			if (!reinforcement.hasPermission(player, Citadel.doorPerm)) {
-				continue;
-			}
-			double distanceSquared = playerLocation.distance(reinLocation);
-			if (distanceSquared <= distance) {
-				result = true;
-				break;
-			}
+		if (!(e.getClickedBlock().getState().getData() instanceof PressurePlate)) {
+			return;
 		}
-		return result;
+		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
 	}
 
 }

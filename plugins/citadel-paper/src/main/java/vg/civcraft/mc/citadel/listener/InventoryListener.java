@@ -11,7 +11,8 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class InventoryListener implements Listener {
 
-	//prevent sucking reinforcements out of reinforced containers with hoppers on different groups or filling into them
+	// prevent sucking reinforcements out of reinforced containers with hoppers on
+	// different groups or filling into them
 	@EventHandler(ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory SourceInv = event.getSource();
@@ -39,7 +40,7 @@ public class InventoryListener implements Listener {
 			}
 			return;
 		}
-		//both reinforced at this point
+		// both reinforced at this point
 		if (sourceRein.getGroup().getGroupId() != destRein.getGroup().getGroupId()) {
 			event.setCancelled(true);
 		}

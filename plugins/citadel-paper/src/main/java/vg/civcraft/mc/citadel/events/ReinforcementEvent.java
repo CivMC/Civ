@@ -10,20 +10,20 @@ public abstract class ReinforcementEvent extends PlayerEvent implements Cancella
 
 	protected Reinforcement reinforcement;
 	protected boolean isCancelled;
-	
+
 	public ReinforcementEvent(Player who, Reinforcement reinforcement) {
 		super(who);
 		this.reinforcement = reinforcement;
 		isCancelled = false;
 	}
-	
+
 	/**
 	 * @return Reinforcement involved in this event
 	 */
 	public Reinforcement getReinforcement() {
 		return reinforcement;
 	}
-	
+
 	@Override
 	public boolean isCancelled() {
 		return isCancelled;

@@ -13,16 +13,16 @@ public class ReinforcementCreationEvent extends ReinforcementEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public ReinforcementCreationEvent(Player p, Reinforcement rein) {
 		super(p, rein);
 	}
 
 	@Override
 	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 }

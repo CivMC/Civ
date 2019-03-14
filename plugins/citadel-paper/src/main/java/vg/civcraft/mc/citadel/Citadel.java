@@ -20,10 +20,9 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Citadel extends ACivMod {
-	
-	private static Logger logger;
-	
+
 	public static final String chestPerm = "CHESTS";
+
 	public static final String bypassPerm = "BYPASS_REINFORCEMENT";
 	public static final String cropsPerm = "CROPS";
 	public static final String insecurePerm = "INSECURE_REINFORCEMENT";
@@ -31,14 +30,75 @@ public class Citadel extends ACivMod {
 	public static final String doorPerm = "DOORS";
 	public static final String acidPerm = "ACIDBLOCK";
 	public static final String infoPerm = "REINFORCEMENT_INFO";
+	private static Citadel instance;
 
+	public static Citadel getInstance() {
+		return instance;
+	}
+	
+	private Logger logger;
 	private CitadelReinforcementData db;
 	private GlobalReinforcementManager worldManager;
 	private CitadelConfigManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
+
 	private PlayerStateManager stateManager;
-	private static Citadel instance;
+
+	/**
+	 * @return Acid block manager
+	 */
+	public AcidManager getAcidManager() {
+		return acidManager;
+	}
+
+	/**
+	 * @return The Database Manager for Citadel.
+	 */
+	public CitadelReinforcementData getCitadelDatabase() {
+		return db;
+	}
+
+	public CitadelConfigManager getConfigManager() {
+		return config;
+	}
+
+	@Override
+	public String getPluginName() {
+		return "Citadel";
+	}
+
+	/**
+	 * @return The ReinforcementManager of Citadel.
+	 */
+	public GlobalReinforcementManager getReinforcementManager() {
+		return worldManager;
+	}
+
+	public ReinforcementTypeManager getReinforcementTypeManager() {
+		return typeManager;
+	}
+
+	public PlayerStateManager getStateManager() {
+		return stateManager;
+	}
+
+	/**
+	 * Initializes the database.
+	 */
+	public boolean initializeDatabase() {
+		ManagedDatasource mds = config.getDatabase();
+		if (mds == null) {
+			return false;
+		}
+		db = new CitadelReinforcementData(mds, this, typeManager);
+		return db.startUp();
+	}
+
+	public void onDisable() {
+		// Pushes all reinforcements loaded to be saved to db.
+		worldManager.flushAll();
+	}
 
 	public void onEnable() {
 		super.onEnable();
@@ -74,23 +134,6 @@ public class Citadel extends ACivMod {
 		registerListeners();
 	}
 
-	public void onDisable() {
-		// Pushes all reinforcements loaded to be saved to db.
-		worldManager.flushAll();
-	}
-
-	/**
-	 * Initializes the database.
-	 */
-	public boolean initializeDatabase() {
-		ManagedDatasource mds = config.getDatabase();
-		if (mds == null) {
-			return false;
-		}
-		db = new CitadelReinforcementData(mds, this, typeManager);
-		return db.startUp();
-	}
-
 	/**
 	 * Registers the listeners for Citadel.
 	 */
@@ -120,50 +163,5 @@ public class Citadel extends ACivMod {
 		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(cropsPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission(insecurePerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-	}
-
-	/**
-	 * @return The ReinforcementManager of Citadel.
-	 */
-	public GlobalReinforcementManager getReinforcementManager() {
-		return worldManager;
-	}
-
-	/**
-	 * @return The instance of Citadel.
-	 */
-	public static Citadel getInstance() {
-		return instance;
-	}
-
-	/**
-	 * @return The Database Manager for Citadel.
-	 */
-	public CitadelReinforcementData getCitadelDatabase() {
-		return db;
-	}
-	
-	public ReinforcementTypeManager getReinforcementTypeManager() {
-		return typeManager;
-	}
-	
-	public PlayerStateManager getStateManager() {
-		return stateManager;
-	}
-	
-	public CitadelConfigManager getConfigManager() {
-		return config;
-	}
-
-	/**
-	 * @return Acid block manager
-	 */
-	public AcidManager getAcidManager() {
-		return acidManager;
-	}
-
-	@Override
-	public String getPluginName() {
-		return "Citadel";
 	}
 }

@@ -7,7 +7,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.playerstate.IPlayerState;
+import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.InformationState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
@@ -20,11 +20,10 @@ public class Information extends StandaloneCommand {
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
-		IPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
+		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
 		if (currentState instanceof InformationState) {
 			stateManager.setState(player, null);
-		}
-		else {
+		} else {
 			stateManager.setState(player, new InformationState(player, currentState.isBypassEnabled()));
 		}
 		return true;

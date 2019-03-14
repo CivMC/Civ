@@ -36,71 +36,12 @@ public class BlockListener implements Listener {
 	public static final List<BlockFace> planar_sides = Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
 			BlockFace.EAST);
 
-	// Stop comparators from being placed unless the reinforcement is insecure
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void comparatorPlaceCheck(BlockPlaceEvent event) {
-		// We only care if they are placing a comparator
-		if (event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) {
-			return;
-		}
-		Comparator comparator = (Comparator) event.getBlockPlaced().getState().getData();
-		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
-		// Check if the comparator is placed against something with an inventory
-		if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(), block)) {
-			event.setCancelled(true);
-			Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
-					"You can not place this because it'd allow bypassing a nearby reinforcement");
-			return;
-		}
-		// Comparators can also read through a single opaque block
-		if (block.getType().isOccluding()) {
-			if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(),
-					block.getRelative(comparator.getFacing().getOppositeFace()))) {
-				event.setCancelled(true);
-				Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
-						"You can not place this because it'd allow bypassing a nearby reinforcement");
-				return;
-			}
-		}
-	}
-
-	// remove reinforced air
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void removeReinforcedAir(BlockPlaceEvent e) {
-		if (e.getBlockReplacedState().getType() != Material.AIR) {
-			return;
-		}
-		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
-		rein.setHealth(-1);
-	}
-
-	// prevent players from upgrading a chest into a double chest to bypass the
-	// single chests reinforcement
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void preventBypassChestAccess(BlockPlaceEvent e) {
-		Material mat = e.getBlock().getType();
-		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
-			return;
-		}
-		for (BlockFace face : planar_sides) {
-			Block rel = e.getBlock().getRelative(face);
-			if (rel != null && rel.getType() == mat) {
-				if (ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
-					e.setCancelled(true);
-					Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
-							"You can not place this because it'd allow bypassing a nearby reinforcement");
-					break;
-				}
-			}
-		}
-	}
+	private static final Material matfire = Material.FIRE;
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockBreakEvent(BlockBreakEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBreakBlock(event);
 	}
-
-	private static final Material matfire = Material.FIRE;
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void blockBurn(BlockBurnEvent bbe) {
@@ -132,12 +73,43 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
-	public void onBlockFromToEvent(BlockFromToEvent event) {
-		// prevent water/lava from spilling reinforced blocks away
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getToBlock());
-		if (rein != null) {
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void blockPhysEvent(BlockPhysicsEvent event) {
+		Block block = event.getBlock();
+		if (block.getType().hasGravity()) {
+			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+			if (rein != null) {
+				event.setCancelled(true);
+			}
+		}
+
+	}
+
+	// Stop comparators from being placed unless the reinforcement is insecure
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void comparatorPlaceCheck(BlockPlaceEvent event) {
+		// We only care if they are placing a comparator
+		if (event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) {
+			return;
+		}
+		Comparator comparator = (Comparator) event.getBlockPlaced().getState().getData();
+		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
+		// Check if the comparator is placed against something with an inventory
+		if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(), block)) {
 			event.setCancelled(true);
+			Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+					"You can not place this because it'd allow bypassing a nearby reinforcement");
+			return;
+		}
+		// Comparators can also read through a single opaque block
+		if (block.getType().isOccluding()) {
+			if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(),
+					block.getRelative(comparator.getFacing().getOppositeFace()))) {
+				event.setCancelled(true);
+				Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+						"You can not place this because it'd allow bypassing a nearby reinforcement");
+				return;
+			}
 		}
 	}
 
@@ -149,6 +121,39 @@ public class BlockListener implements Listener {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(pie.getClickedBlock());
 		if (rein == null) {
 			return;
+		}
+	}
+
+	// prevent placing water inside of reinforced blocks
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void liquidDumpEvent(PlayerBucketEmptyEvent event) {
+		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
+		if (block.getType().equals(Material.AIR) || block.getType().isSolid()) {
+			return;
+		}
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+		if (rein != null) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	public void onBlockFromToEvent(BlockFromToEvent event) {
+		// prevent water/lava from spilling reinforced blocks away
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getToBlock());
+		if (rein != null) {
+			event.setCancelled(true);
+		}
+	}
+
+	// prevent breaking reinforced blocks through plant growth
+	@EventHandler(ignoreCancelled = true)
+	public void onStructureGrow(StructureGrowEvent event) {
+		for (BlockState block_state : event.getBlocks()) {
+			if (ReinforcementLogic.getReinforcementProtecting(block_state.getBlock()) != null) {
+				event.setCancelled(true);
+				return;
+			}
 		}
 	}
 
@@ -179,39 +184,34 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void blockPhysEvent(BlockPhysicsEvent event) {
-		Block block = event.getBlock();
-		if (block.getType().hasGravity()) {
-			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-			if (rein != null) {
-				event.setCancelled(true);
-			}
-		}
-
-	}
-
-	// prevent placing water inside of reinforced blocks
-	@EventHandler(priority = EventPriority.HIGHEST)
-	public void liquidDumpEvent(PlayerBucketEmptyEvent event) {
-		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-		if (block.getType().equals(Material.AIR) || block.getType().isSolid()) {
+	// prevent players from upgrading a chest into a double chest to bypass the
+	// single chests reinforcement
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventBypassChestAccess(BlockPlaceEvent e) {
+		Material mat = e.getBlock().getType();
+		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
 			return;
 		}
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-		if (rein != null) {
-			event.setCancelled(true);
+		for (BlockFace face : planar_sides) {
+			Block rel = e.getBlock().getRelative(face);
+			if (rel != null && rel.getType() == mat) {
+				if (ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
+					e.setCancelled(true);
+					Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+							"You can not place this because it'd allow bypassing a nearby reinforcement");
+					break;
+				}
+			}
 		}
 	}
 
-	//prevent breaking reinforced blocks through plant growth
-	@EventHandler(ignoreCancelled = true)
-	public void onStructureGrow(StructureGrowEvent event) {
-		for (BlockState block_state : event.getBlocks()) {
-			if (ReinforcementLogic.getReinforcementProtecting(block_state.getBlock()) != null) {
-				event.setCancelled(true);
-				return;
-			}
+	// remove reinforced air
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void removeReinforcedAir(BlockPlaceEvent e) {
+		if (e.getBlockReplacedState().getType() != Material.AIR) {
+			return;
 		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
+		rein.setHealth(-1);
 	}
 }

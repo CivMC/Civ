@@ -11,107 +11,22 @@ import org.bukkit.Location;
 
 public class ChunkCache {
 
-	private final ChunkCoord chunkPair;
-	private Map<Coords, Reinforcement> reinforcements;
-	private List<Reinforcement> deletedReinforcements;
-	private boolean isDirty;
-	private final int worldID;
-
-	public ChunkCache(ChunkCoord chunkPair, Collection<Reinforcement> reins, int worldID) {
-		this.reinforcements = new TreeMap<>();
-		for (Reinforcement rein : reins) {
-			rein.setOwningCache(this);
-			reinforcements.put(new Coords(rein.getLocation()), rein);
-		}
-		this.chunkPair = chunkPair;
-		this.worldID = worldID;
-		this.isDirty = false;
-	}
-
-	public int getWorldID() {
-		return worldID;
-	}
-
-	public void insertReinforcement(Reinforcement rein) {
-		Coords key = new Coords(rein.getLocation());
-		if (reinforcements.containsKey(key)) {
-			throw new IllegalStateException(
-					"Trying to insert reinforcement at " + rein.getLocation().toString() + ", but one already existed");
-		}
-		rein.setOwningCache(this);
-		reinforcements.put(key, rein);
-	}
-
-	public void removeReinforcement(Reinforcement rein) {
-		Coords key = new Coords(rein.getLocation());
-		Reinforcement removed = reinforcements.remove(key);
-		if (removed != rein) {
-			throw new IllegalStateException("Removed wrong reinforcement at " + rein.getLocation().toString());
-		}
-		if (deletedReinforcements == null) {
-			deletedReinforcements = new LinkedList<>();
-		}
-		deletedReinforcements.add(rein);
-	}
-
-	public ChunkCoord getChunkPair() {
-		return chunkPair;
-	}
-
-	public Reinforcement getReinforcement(int x, int y, int z) {
-		return reinforcements.get(new Coords(x, y, z));
-	}
-
-	/**
-	 * Used when dumping all reinforcements to the database. Returns not only the
-	 * existing reinforcements, but also the ones deleted and not yet removed from
-	 * the database
-	 * 
-	 * @return All reinforcements possibly needing to be persisted to the database
-	 */
-	public Collection<Reinforcement> getAllAndCleanUp() {
-		List<Reinforcement> reins = new ArrayList<>();
-		reins.addAll(deletedReinforcements);
-		reins.addAll(reinforcements.values());
-		deletedReinforcements.clear();
-		return reins;
-	}
-
-	/**
-	 * Gets all existing reinforcements within this chunk
-	 * 
-	 * @return All reinforcements
-	 */
-	public Collection<Reinforcement> getAll() {
-		List<Reinforcement> reins = new ArrayList<>();
-		reins.addAll(reinforcements.values());
-		return reins;
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	public void setDirty(boolean dirty) {
-		this.isDirty = dirty;
-	}
-
 	private class Coords implements Comparable<Coords> {
 
 		private int x;
 		private int y;
 		private int z;
 
-		Coords(Location loc) {
-			this.x = loc.getBlockX();
-			this.y = loc.getBlockY();
-			this.z = loc.getBlockZ();
-		}
-
 		Coords(int x, int y, int z) {
 			this.x = x;
 			this.y = y;
 			this.z = z;
+		}
+
+		Coords(Location loc) {
+			this.x = loc.getBlockX();
+			this.y = loc.getBlockY();
+			this.z = loc.getBlockZ();
 		}
 
 		public int compareTo(Coords coords) {
@@ -132,5 +47,90 @@ public class ChunkCache {
 			Coords coords = (Coords) o;
 			return coords.y == y && coords.x == x && coords.z == z;
 		}
+	}
+	private final ChunkCoord chunkPair;
+	private Map<Coords, Reinforcement> reinforcements;
+	private List<Reinforcement> deletedReinforcements;
+	private boolean isDirty;
+
+	private final int worldID;
+
+	public ChunkCache(ChunkCoord chunkPair, Collection<Reinforcement> reins, int worldID) {
+		this.reinforcements = new TreeMap<>();
+		for (Reinforcement rein : reins) {
+			rein.setOwningCache(this);
+			reinforcements.put(new Coords(rein.getLocation()), rein);
+		}
+		this.chunkPair = chunkPair;
+		this.worldID = worldID;
+		this.isDirty = false;
+	}
+
+	/**
+	 * Gets all existing reinforcements within this chunk
+	 * 
+	 * @return All reinforcements
+	 */
+	public Collection<Reinforcement> getAll() {
+		List<Reinforcement> reins = new ArrayList<>();
+		reins.addAll(reinforcements.values());
+		return reins;
+	}
+
+	/**
+	 * Used when dumping all reinforcements to the database. Returns not only the
+	 * existing reinforcements, but also the ones deleted and not yet removed from
+	 * the database
+	 * 
+	 * @return All reinforcements possibly needing to be persisted to the database
+	 */
+	public Collection<Reinforcement> getAllAndCleanUp() {
+		List<Reinforcement> reins = new ArrayList<>();
+		reins.addAll(deletedReinforcements);
+		reins.addAll(reinforcements.values());
+		deletedReinforcements.clear();
+		return reins;
+	}
+
+	public ChunkCoord getChunkPair() {
+		return chunkPair;
+	}
+
+	public Reinforcement getReinforcement(int x, int y, int z) {
+		return reinforcements.get(new Coords(x, y, z));
+	}
+
+	public int getWorldID() {
+		return worldID;
+	}
+
+	public void insertReinforcement(Reinforcement rein) {
+		Coords key = new Coords(rein.getLocation());
+		if (reinforcements.containsKey(key)) {
+			throw new IllegalStateException(
+					"Trying to insert reinforcement at " + rein.getLocation().toString() + ", but one already existed");
+		}
+		rein.setOwningCache(this);
+		reinforcements.put(key, rein);
+	}
+
+	public boolean isDirty() {
+		return isDirty;
+	}
+
+	public void removeReinforcement(Reinforcement rein) {
+		Coords key = new Coords(rein.getLocation());
+		Reinforcement removed = reinforcements.remove(key);
+		if (removed != rein) {
+			throw new IllegalStateException("Removed wrong reinforcement at " + rein.getLocation().toString());
+		}
+		if (deletedReinforcements == null) {
+			deletedReinforcements = new LinkedList<>();
+		}
+		deletedReinforcements.add(rein);
+	}
+
+	public void setDirty(boolean dirty) {
+		this.isDirty = dirty;
 	}
 }

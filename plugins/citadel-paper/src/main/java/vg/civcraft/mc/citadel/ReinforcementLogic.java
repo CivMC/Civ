@@ -15,6 +15,16 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class ReinforcementLogic {
 
+	public static void createReinforcement(Block block, ReinforcementType type, Group group) {
+		GlobalReinforcementManager worldManager = Citadel.getInstance().getReinforcementManager();
+		worldManager.insertReinforcement(new Reinforcement(block.getLocation(), type, group));
+	}
+
+	public static void damageReinforcement(Reinforcement rein, double damage) {
+		rein.setHealth(rein.getHealth() - damage);
+		rein.getType().getReinforcementEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+	}
+
 	public static double getDamageApplied(Player player, Reinforcement reinforcement) {
 		double damageAmount = 1.0;
 		if (!reinforcement.isMature()) {
@@ -25,17 +35,8 @@ public class ReinforcementLogic {
 		}
 		return damageAmount;
 	}
-	
-	public static void createReinforcement(Block block, ReinforcementType type, Group group) {
-		GlobalReinforcementManager worldManager = Citadel.getInstance().getReinforcementManager();
-	}
-	
-	public static void damageReinforcement(Reinforcement rein, double damage) {
-		rein.setHealth(rein.getHealth() - damage);
-		rein.getType().getReinforcementEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
-	}
-	
- 	public static Reinforcement getReinforcementProtecting(Block b) {
+
+	public static Reinforcement getReinforcementProtecting(Block b) {
 		Reinforcement directReinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(b);
 		if (directReinforcement != null) {
 			return directReinforcement;
@@ -85,38 +86,17 @@ public class ReinforcementLogic {
 		case WOODEN_DOOR:
 		case WOOD_DOOR:
 			if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
-				//block is upper half of a door
+				// block is upper half of a door
 				return block.getRelative(BlockFace.DOWN);
 			}
 		case BED_BLOCK:
 			if (((Bed) block.getState().getData()).isHeadOfBed()) {
-                return block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
-            }
+				return block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
+			}
 		}
 		return block;
 	}
-	
-	public static  Reinforcement resolveDoubleChestReinforcement(Block b) {
-		Material mat = b.getType();
-		GlobalReinforcementManager reinMan = Citadel.getInstance().getReinforcementManager();
-		Reinforcement rein = reinMan.getReinforcement(b);
-		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
-			return rein;
-		}
-		for(BlockFace face : BlockListener.planar_sides) {
-			Block rel = b.getRelative(face);
-			if (rel.getType() != mat) {
-				continue;
-			}
-			rein = reinMan.getReinforcement(rel);
-			if (rein != null) {
-				return rein;
-			}
-		}
-		return null;
-	}
-	
-	
+
 	/**
 	 * Checks if at the given block is a container, which is not insecure and which
 	 * the player can not access due to missing perms
@@ -140,5 +120,25 @@ public class ReinforcementLogic {
 			return !rein.hasPermission(player, Citadel.chestPerm);
 		}
 		return false;
+	}
+
+	public static Reinforcement resolveDoubleChestReinforcement(Block b) {
+		Material mat = b.getType();
+		GlobalReinforcementManager reinMan = Citadel.getInstance().getReinforcementManager();
+		Reinforcement rein = reinMan.getReinforcement(b);
+		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
+			return rein;
+		}
+		for (BlockFace face : BlockListener.planar_sides) {
+			Block rel = b.getRelative(face);
+			if (rel.getType() != mat) {
+				continue;
+			}
+			rein = reinMan.getReinforcement(rel);
+			if (rein != null) {
+				return rein;
+			}
+		}
+		return null;
 	}
 }

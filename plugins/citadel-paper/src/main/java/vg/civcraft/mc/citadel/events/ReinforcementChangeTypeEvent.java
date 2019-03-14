@@ -14,11 +14,20 @@ public class ReinforcementChangeTypeEvent extends ReinforcementEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	private ReinforcementType newType;
 
 	public ReinforcementChangeTypeEvent(Player p, Reinforcement rein, ReinforcementType newType) {
 		super(p, rein);
 		this.newType = newType;
+	}
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
 	}
 
 	/**
@@ -27,14 +36,5 @@ public class ReinforcementChangeTypeEvent extends ReinforcementEvent {
 	 */
 	public ReinforcementType getNewType() {
 		return newType;
-	}
-
-	@Override
-	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 }

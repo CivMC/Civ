@@ -15,7 +15,7 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class FortificationState extends IPlayerState {
+public class FortificationState extends AbstractPlayerState {
 
 	private ReinforcementType type;
 	private Group group;
@@ -26,17 +26,32 @@ public class FortificationState extends IPlayerState {
 		this.group = group;
 	}
 
+	public Group getGroup() {
+		return group;
+	}
+
+	public String getName() {
+		return "Fortifying mode with " + type.getName() + " on " + group.getName();
+	}
+
+	public ReinforcementType getType() {
+		return type;
+	}
+
 	@Override
 	public void handleBlockPlace(BlockPlaceEvent e) {
-		//check if group still exists
+		// check if group still exists
 		if (!group.isValid()) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "The group " + group.getName() + " seems to have been deleted in the mean time");
+			Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+					"The group " + group.getName() + " seems to have been deleted in the mean time");
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
 		}
-		//check if player still has permission
-		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(), PermissionType.getPermission(Citadel.reinforcePerm))) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "You seem to have lost permission to reinforce on " + group.getName());
+		// check if player still has permission
+		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
+				PermissionType.getPermission(Citadel.reinforcePerm))) {
+			Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+					"You seem to have lost permission to reinforce on " + group.getName());
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
 		}
@@ -47,14 +62,14 @@ public class FortificationState extends IPlayerState {
 			return;
 		}
 		Player player = e.getPlayer();
-		//check if reinforcement can reinforce that block
+		// check if reinforcement can reinforce that block
 		if (!type.canBeReinforced(e.getBlock().getType())) {
 			e.setCancelled(true);
 			Utility.sendAndLog(player, ChatColor.RED, type.getName() + " can not reinforce " + e.getBlock().getType());
 			return;
 		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
-		//check inventory
+		// check inventory
 		int available = playerItems.getAmount(type.getItem());
 		if (available == 0) {
 			Citadel.getInstance().getStateManager().setState(player, null);
@@ -62,7 +77,7 @@ public class FortificationState extends IPlayerState {
 			Utility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
 			return;
 		}
-		//remove from inventory
+		// remove from inventory
 		ItemMap toRemove = new ItemMap(type.getItem());
 		if (toRemove.removeSafelyFrom(player.getInventory())) {
 			Utility.sendAndLog(player, ChatColor.RED,
@@ -70,19 +85,15 @@ public class FortificationState extends IPlayerState {
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return;
 		}
-		//create reinforcement
+		// create reinforcement
+		if (Citadel.getInstance().getConfigManager().logCreation()) {
+			Citadel.getInstance().getLogger().info(player.getName() + " created reinforcement with " + type.getName()
+					+ " for " + e.getBlock().getType().toString() + " at " + e.getBlock().getLocation().toString());
+		}
 		ReinforcementLogic.createReinforcement(e.getBlock(), type, group);
 	}
 
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
-	}
-	
-	public Group getGroup() {
-		return group;
-	}
-	
-	public ReinforcementType getType() {
-		return type;
 	}
 }

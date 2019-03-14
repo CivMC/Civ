@@ -16,12 +16,12 @@ import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
-public abstract class IPlayerState {
+public abstract class AbstractPlayerState {
 
 	protected UUID uuid;
 	private boolean bypass;
 
-	public IPlayerState(Player p, boolean bypass) {
+	public AbstractPlayerState(Player p, boolean bypass) {
 		if (p == null) {
 			throw new IllegalArgumentException("Player for player state can not be null");
 		}
@@ -29,9 +29,9 @@ public abstract class IPlayerState {
 		this.bypass = bypass;
 	}
 
-	public abstract void handleBlockPlace(BlockPlaceEvent e);
+	public abstract String getName();
 
-	public abstract void handleInteractBlock(PlayerInteractEvent e);
+	public abstract void handleBlockPlace(BlockPlaceEvent e);
 
 	public void handleBreakBlock(BlockBreakEvent e) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getBlock());
@@ -51,7 +51,8 @@ public abstract class IPlayerState {
 		if (Utility.isPlant(e.getBlock())) {
 			if (rein.hasPermission(e.getPlayer(), Citadel.cropsPerm)
 					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
-				// allow, because player has crop permission and the only reinforcement protecting is in the soil
+				// allow, because player has crop permission and the only reinforcement
+				// protecting is in the soil
 				return;
 			}
 		}
@@ -69,7 +70,9 @@ public abstract class IPlayerState {
 		damage = dre.getDamageDone();
 		ReinforcementLogic.damageReinforcement(rein, damage);
 	}
-	
+
+	public abstract void handleInteractBlock(PlayerInteractEvent e);
+
 	public boolean isBypassEnabled() {
 		return bypass;
 	}

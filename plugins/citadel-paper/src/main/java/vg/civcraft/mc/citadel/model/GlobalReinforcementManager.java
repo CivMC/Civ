@@ -25,26 +25,31 @@ public class GlobalReinforcementManager {
 		this.dao = dao;
 	}
 
-	public boolean setup() {
-		for (World world : Bukkit.getWorlds()) {
-			boolean worked = registerWorld(world);
-			if (!worked) {
-				return false;
-			}
+	/**
+	 * Saves all reinforcements out to the database
+	 */
+	public void flushAll() {
+		for (WorldReinforcementManager man : worldToManager.values()) {
+			man.invalidateAllReinforcements();
 		}
-		return true;
 	}
 
-	public boolean registerWorld(World world) {
-		int id = dao.getOrCreateWorldID(world);
-		if (id == -1) {
-			// very bad
-			return false;
+	/**
+	 * Gets all reinforcements in a chunk. Only use this if you know what you're
+	 * doing
+	 * 
+	 * @param chunk Chunk to get reinforcements for
+	 * @return All reinforcements within the chunk
+	 */
+	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
+		if (chunk == null) {
+			throw new IllegalArgumentException("Chunk can not be null");
 		}
-		uuidToInternalID.put(world.getUID(), id);
-		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id);
-		worldToManager.put(world.getUID(), manager);
-		return true;
+		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
+		if (worldManager == null) {
+			throw new IllegalStateException("No world manager for reinforcement in " + chunk.getWorld().toString());
+		}
+		return worldManager.getAllReinforcements(chunk);
 	}
 
 	/**
@@ -55,6 +60,21 @@ public class GlobalReinforcementManager {
 	 */
 	public Reinforcement getReinforcement(Block block) {
 		return getReinforcement(block.getLocation());
+	}
+
+	/**
+	 * Returns the Reinforcement for the specified block. World is not checked at
+	 * this stage
+	 * 
+	 * @param block Location to get reinforcement for
+	 * @return Reinforcement at the location if one exists, otherwise null
+	 */
+	public Reinforcement getReinforcement(Location location) {
+		WorldReinforcementManager worldManager = worldToManager.get(location.getWorld().getUID());
+		if (worldManager == null) {
+			return null;
+		}
+		return worldManager.getReinforcement(location);
 	}
 
 	/**
@@ -76,18 +96,13 @@ public class GlobalReinforcementManager {
 	}
 
 	/**
-	 * Returns the Reinforcement for the specified block. World is not checked at
-	 * this stage
+	 * Checks if the given block is reinforced or not.
 	 * 
-	 * @param block Location to get reinforcement for
-	 * @return Reinforcement at the location if one exists, otherwise null
+	 * @param b The block of the potential reinforcement.
+	 * @return True if a reinforcement exists for the given block, false otherwise
 	 */
-	public Reinforcement getReinforcement(Location location) {
-		WorldReinforcementManager worldManager = worldToManager.get(location.getWorld().getUID());
-		if (worldManager == null) {
-			return null;
-		}
-		return worldManager.getReinforcement(location);
+	public boolean isReinforced(Block b) {
+		return isReinforced(b.getLocation());
 	}
 
 	/**
@@ -102,23 +117,16 @@ public class GlobalReinforcementManager {
 		return getReinforcement(loc) != null;
 	}
 
-	/**
-	 * Checks if the given block is reinforced or not.
-	 * 
-	 * @param b The block of the potential reinforcement.
-	 * @return True if a reinforcement exists for the given block, false otherwise
-	 */
-	public boolean isReinforced(Block b) {
-		return isReinforced(b.getLocation());
-	}
-
-	/**
-	 * Saves all reinforcements out to the database
-	 */
-	public void flushAll() {
-		for (WorldReinforcementManager man : worldToManager.values()) {
-			man.invalidateAllReinforcements();
+	public boolean registerWorld(World world) {
+		int id = dao.getOrCreateWorldID(world);
+		if (id == -1) {
+			// very bad
+			return false;
 		}
+		uuidToInternalID.put(world.getUID(), id);
+		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id);
+		worldToManager.put(world.getUID(), manager);
+		return true;
 	}
 
 	/**
@@ -133,20 +141,14 @@ public class GlobalReinforcementManager {
 		}
 		worldManager.removeReinforcement(rein);
 	}
-	
-	/**
-	 * Gets all reinforcements in a chunk. Only use this if you know what you're doing
-	 * @param chunk Chunk to get reinforcements for
-	 * @return All reinforcements within the chunk
-	 */
-	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
-		if (chunk == null) {
-			throw new IllegalArgumentException("Chunk can not be null");
+
+	public boolean setup() {
+		for (World world : Bukkit.getWorlds()) {
+			boolean worked = registerWorld(world);
+			if (!worked) {
+				return false;
+			}
 		}
-		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
-		if (worldManager == null) {
-			throw new IllegalStateException("No world manager for reinforcement in " + chunk.getWorld().toString());
-		}
-		return worldManager.getAllReinforcements(chunk);
+		return true;
 	}
 }

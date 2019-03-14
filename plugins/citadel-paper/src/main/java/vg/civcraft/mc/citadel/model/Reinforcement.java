@@ -24,6 +24,10 @@ public class Reinforcement {
 	private boolean insecure;
 	private ChunkCache owningCache;
 
+	public Reinforcement(Location loc, ReinforcementType type, Group group) {
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
+	}
+
 	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
 			boolean isDirty, boolean isNew, boolean insecure) {
 		if (loc == null) {
@@ -42,37 +46,32 @@ public class Reinforcement {
 		this.insecure = insecure;
 	}
 
-	public Reinforcement(Location loc, ReinforcementType type, Group group, ChunkCache cache) {
-		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
-	}
-	
 	/**
-	 * Sets which cache this reinforcement belongs to. Cache is expected to set this when beginning to track the reinforcement
+	 * @return Age of this reinforcement in milli seconds
 	 */
-	void setOwningCache(ChunkCache cache) {
-		this.owningCache = cache;
+	public long getAge() {
+		return System.currentTimeMillis() - creationTime;
 	}
 
 	/**
-	 * Sets the health of a reinforcement.
-	 * 
-	 * @param health new health value
+	 * @return Unix time in ms when the reinforcement was created
 	 */
-	public void setHealth(double health) {
-		this.health = health;
-		setDirty(true);
-		if (health <= 0) {
-			Citadel.getInstance().getReinforcementManager().removeReinforcement(this);
-		}
+	public long getCreationTime() {
+		return creationTime;
 	}
 
 	/**
-	 * @return Whether reinforcement is mature, meaning the maturation time
-	 *         configured for this reinforcements type has passed since the
-	 *         reinforcements creation
+	 * @return Group this reinforcement is under
 	 */
-	public boolean isMature() {
-		return System.currentTimeMillis() - creationTime > type.getMaturationTime();
+	public Group getGroup() {
+		return GroupManager.getGroup(groupId);
+	}
+
+	/**
+	 * @return Id of the group this reinforcement is under
+	 */
+	public int getGroupId() {
+		return groupId;
 	}
 
 	/**
@@ -90,10 +89,40 @@ public class Reinforcement {
 	}
 
 	/**
-	 * @return Unix time in ms when the reinforcement was created
+	 * @return Type of this reinforcement
 	 */
-	public long getCreationTime() {
-		return creationTime;
+	public ReinforcementType getType() {
+		return type;
+	}
+
+	public boolean hasPermission(Player p, String permission) {
+		return hasPermission(p.getUniqueId(), permission);
+	}
+
+	public boolean hasPermission(UUID uuid, String permission) {
+		Group g = getGroup();
+		if (g == null) {
+			return false;
+		}
+		return NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission(permission));
+	}
+
+	/**
+	 * After being broken reinforcements will no longer be accessible via lookup,
+	 * but may still persist in the cache until their deletion is persisted into the
+	 * database
+	 * 
+	 * @return True if the reinforcements health is equal to or less than 0
+	 */
+	public boolean isBroken() {
+		return health <= 0;
+	}
+
+	/**
+	 * @return Whether this reinforcement needs to be saved to the database
+	 */
+	public boolean isDirty() {
+		return isDirty;
 	}
 
 	/**
@@ -105,10 +134,20 @@ public class Reinforcement {
 	}
 
 	/**
-	 * @return Whether this reinforcement needs to be saved to the database
+	 * @return Whether reinforcement is mature, meaning the maturation time
+	 *         configured for this reinforcements type has passed since the
+	 *         reinforcements creation
 	 */
-	public boolean isDirty() {
-		return isDirty;
+	public boolean isMature() {
+		return System.currentTimeMillis() - creationTime > type.getMaturationTime();
+	}
+
+	/**
+	 * @return True if the reinforcement has not been written to the database since
+	 *         its creation
+	 */
+	public boolean isNew() {
+		return isNew;
 	}
 
 	/**
@@ -128,52 +167,6 @@ public class Reinforcement {
 		}
 	}
 
-	/**
-	 * Switches the insecure flag of the reinforcement
-	 */
-	public void toggleInsecure() {
-		insecure = !insecure;
-		setDirty(true);
-	}
-
-	public void setType(ReinforcementType type) {
-		this.type = type;
-		setDirty(true);
-	}
-
-	/**
-	 * @return True if the reinforcement has not been written to the database since
-	 *         its creation
-	 */
-	public boolean isNew() {
-		return isNew;
-	}
-
-	/**
-	 * After being broken reinforcements will no longer be accessible via lookup,
-	 * but may still persist in the cache until their deletion is persisted into the
-	 * database
-	 * 
-	 * @return True if the reinforcements health is equal to or less than 0
-	 */
-	public boolean isBroken() {
-		return health <= 0;
-	}
-
-	/**
-	 * @return Group this reinforcement is under
-	 */
-	public Group getGroup() {
-		return GroupManager.getGroup(groupId);
-	}
-
-	/**
-	 * @return Id of the group this reinforcement is under
-	 */
-	public int getGroupId() {
-		return groupId;
-	}
-	
 	public void setGroup(Group group) {
 		if (group == null) {
 			throw new IllegalArgumentException("Group can not be set to null for a reinforcement");
@@ -183,28 +176,36 @@ public class Reinforcement {
 	}
 
 	/**
-	 * @return Type of this reinforcement
+	 * Sets the health of a reinforcement.
+	 * 
+	 * @param health new health value
 	 */
-	public ReinforcementType getType() {
-		return type;
+	public void setHealth(double health) {
+		this.health = health;
+		setDirty(true);
+		if (health <= 0) {
+			Citadel.getInstance().getReinforcementManager().removeReinforcement(this);
+		}
 	}
 
 	/**
-	 * @return Age of this reinforcement in milli seconds
+	 * Sets which cache this reinforcement belongs to. Cache is expected to set this
+	 * when beginning to track the reinforcement
 	 */
-	public long getAge() {
-		return System.currentTimeMillis() - creationTime;
+	void setOwningCache(ChunkCache cache) {
+		this.owningCache = cache;
 	}
 
-	public boolean hasPermission(Player p, String permission) {
-		return hasPermission(p.getUniqueId(), permission);
+	public void setType(ReinforcementType type) {
+		this.type = type;
+		setDirty(true);
 	}
-	
-	public boolean hasPermission(UUID uuid, String permission) {
-		Group g = getGroup();
-		if (g == null) {
-			return false;
-		}
-		return NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission(permission));
+
+	/**
+	 * Switches the insecure flag of the reinforcement
+	 */
+	public void toggleInsecure() {
+		insecure = !insecure;
+		setDirty(true);
 	}
 }

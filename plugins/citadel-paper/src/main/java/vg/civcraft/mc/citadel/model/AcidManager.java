@@ -18,6 +18,31 @@ public class AcidManager {
 	}
 
 	/**
+	 * Checks if acid blocking is enabled for this reinforcement type
+	 * 
+	 * @param rein Reinforcement type to check for
+	 * @return True if the reinforcement type can acid block other reinforcements
+	 *         and has an acid timer configured
+	 */
+	public boolean canAcidBlock(ReinforcementType acidBlock, ReinforcementType victim) {
+		// TODO
+
+		return true;
+	}
+
+	/**
+	 * Gets remaining time needed to mature acid block in milli seconds. If the acid
+	 * is ready 0 will be returned
+	 * 
+	 * @param rein Reinforcement to check for
+	 * @return Remaining time in milli seconds or 0 if the acid is ready
+	 */
+	public long getRemainingAcidMaturationTime(Reinforcement rein) {
+		long totalTime = rein.getType().getAcidTime();
+		return Math.max(0, totalTime - rein.getAge());
+	}
+
+	/**
 	 * Checks if the given valid is of a material registered as valid acid material
 	 * 
 	 * @param b Block to check for
@@ -32,30 +57,5 @@ public class AcidManager {
 			return false;
 		}
 		return material.contains(mat);
-	}
-	
-	/**
-	 * Checks if acid blocking is enabled for this reinforcement type
-	 * 
-	 * @param rein Reinforcement type to check for
-	 * @return True if the reinforcement type can acid block other reinforcements and has
-	 *         an acid timer configured
-	 */
-	public boolean canAcidBlock(ReinforcementType acidBlock, ReinforcementType victim) {
-		//TODO
-		
-		return true;
-	}
-
-	/**
-	 * Gets remaining time needed to mature acid block in milli seconds. If the acid
-	 * is ready 0 will be returned
-	 * 
-	 * @param rein Reinforcement to check for
-	 * @return Remaining time in milli seconds or 0 if the acid is ready
-	 */
-	public long getRemainingAcidMaturationTime(Reinforcement rein) {
-		long totalTime = rein.getType().getAcidTime();
-		return Math.max(0, totalTime - rein.getAge());
 	}
 }

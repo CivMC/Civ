@@ -8,34 +8,41 @@ import org.bukkit.entity.Player;
 
 public class PlayerStateManager {
 
-	private Map<UUID, IPlayerState> playerStateMap;
+	private Map<UUID, AbstractPlayerState> playerStateMap;
 
 	public PlayerStateManager() {
 		this.playerStateMap = new TreeMap<>();
 	}
 
-	public IPlayerState getState(Player player) {
+	public AbstractPlayerState getState(Player player) {
 		if (player == null) {
 			throw new IllegalArgumentException("Can not get state for null player");
 		}
-		IPlayerState state = playerStateMap.get(player.getUniqueId());
+		AbstractPlayerState state = playerStateMap.get(player.getUniqueId());
 		if (state == null) {
 			state = new NormalState(player, true);
 			playerStateMap.put(player.getUniqueId(), state);
 		}
 		return state;
 	}
-	
-	public void setState(Player p, IPlayerState state) {
-		if (p == null) {
+
+	public void setState(Player player, AbstractPlayerState state) {
+		if (player == null) {
 			throw new IllegalArgumentException("Can not set state for null player");
 		}
-		//null state is allowed, it just resets the state
+		AbstractPlayerState existingState = playerStateMap.get(player.getUniqueId());
+		// null state is allowed, it just resets the state
 		if (state == null) {
-			playerStateMap.remove(p.getUniqueId());
-		}
-		else {
-			playerStateMap.put(p.getUniqueId(), state);
+			if (existingState != null) {
+				state = new NormalState(player, existingState.isBypassEnabled());
+			} else {
+				state = new NormalState(player, true);
+			}
+			playerStateMap.put(player.getUniqueId(), state);
+			player.sendMessage("Switched Citadel mode to " + state.getName());
+		} else {
+			playerStateMap.put(player.getUniqueId(), state);
+			player.sendMessage("Switched Citadel mode to " + state.getName() + " from " + existingState.getName());
 		}
 	}
 

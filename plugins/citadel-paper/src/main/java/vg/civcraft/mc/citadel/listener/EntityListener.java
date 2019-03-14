@@ -33,22 +33,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class EntityListener implements Listener {
 	protected GroupManager gm = NameAPI.getGroupManager();
 
-	//apply explosion damage to reinforcements
-	@EventHandler(ignoreCancelled = true)
-	public void explode(EntityExplodeEvent eee) {
-		Iterator<Block> iterator = eee.blockList().iterator();
-		//we can edit the result by removing blocks from the list
-		while (iterator.hasNext()) {
-			Block block = iterator.next();
-			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-			if (rein != null) {
-				rein.setHealth(rein.getHealth() - 1);
-				iterator.remove();
-			}
-		}
-	}
-
-	//prevent zombies from breaking reinforced doors
+	// prevent zombies from breaking reinforced doors
 	@EventHandler(ignoreCancelled = true)
 	public void breakDoor(EntityBreakDoorEvent ebde) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
@@ -67,19 +52,17 @@ public class EntityListener implements Listener {
 		}
 	}
 
-	// prevent creating golems from reinforced blocks
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-	public void spawn(CreatureSpawnEvent cse) {
-		GlobalReinforcementManager reinforcementManager = Citadel.getInstance().getReinforcementManager();
-		EntityType type = cse.getEntityType();
-		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
-				&& type != EntityType.SILVERFISH) {
-			return;
-		}
-		for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
-			Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
-			if (reinforcement != null) {
-				cse.setCancelled(true);
+	// apply explosion damage to reinforcements
+	@EventHandler(ignoreCancelled = true)
+	public void explode(EntityExplodeEvent eee) {
+		Iterator<Block> iterator = eee.blockList().iterator();
+		// we can edit the result by removing blocks from the list
+		while (iterator.hasNext()) {
+			Block block = iterator.next();
+			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+			if (rein != null) {
+				rein.setHealth(rein.getHealth() - 1);
+				iterator.remove();
 			}
 		}
 	}
@@ -120,5 +103,22 @@ public class EntityListener implements Listener {
 				}
 			}
 		}.runTaskAsynchronously(Citadel.getInstance());
+	}
+
+	// prevent creating golems from reinforced blocks
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	public void spawn(CreatureSpawnEvent cse) {
+		GlobalReinforcementManager reinforcementManager = Citadel.getInstance().getReinforcementManager();
+		EntityType type = cse.getEntityType();
+		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
+				&& type != EntityType.SILVERFISH) {
+			return;
+		}
+		for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
+			Reinforcement reinforcement = reinforcementManager.getReinforcement(block);
+			if (reinforcement != null) {
+				cse.setCancelled(true);
+			}
+		}
 	}
 }

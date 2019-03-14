@@ -36,30 +36,20 @@ public class WorldReinforcementManager {
 			}
 		});
 	}
-	
-	public void insertReinforcement(Reinforcement reinforcement) {
-		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
-		ChunkCache cache = reinforcements.getIfPresent(key);
-		if (cache == null) {
-			throw new IllegalStateException("Chunk for created reinforcement was not loaded");
-		}
-		cache.insertReinforcement(reinforcement);
-	}
-	
-	public void removeReinforcement(Reinforcement reinforcement) {
-		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
-		ChunkCache cache = reinforcements.getIfPresent(key);
-		if (cache == null) {
-			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
-		}
-		cache.removeReinforcement(reinforcement);
-	}
-	
+
 	/**
-	 * @return Internal id of the world for which this instance manages reinforcements
+	 * Gets all reinforcements in a chunk. Only use this if you know what you're
+	 * doing
+	 * 
+	 * @param chunk Chunk to get reinforcements for
+	 * @return All reinforcements within the chunk
 	 */
-	public int getWorldID() {
-		return worldID;
+	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
+		ChunkCache cache = reinforcements.getIfPresent(ChunkCoord.forChunk(chunk));
+		if (cache == null) {
+			throw new IllegalStateException("Can not retrieve reinforcements for unloaded chunks");
+		}
+		return cache.getAll();
 	}
 
 	/**
@@ -86,6 +76,23 @@ public class WorldReinforcementManager {
 	}
 
 	/**
+	 * @return Internal id of the world for which this instance manages
+	 *         reinforcements
+	 */
+	public int getWorldID() {
+		return worldID;
+	}
+
+	public void insertReinforcement(Reinforcement reinforcement) {
+		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
+		ChunkCache cache = reinforcements.getIfPresent(key);
+		if (cache == null) {
+			throw new IllegalStateException("Chunk for created reinforcement was not loaded");
+		}
+		cache.insertReinforcement(reinforcement);
+	}
+
+	/**
 	 * Used to flush all the reinforcements to the db on shutdown. Can be called
 	 * else where if too a manual flush is wanted.
 	 */
@@ -102,18 +109,13 @@ public class WorldReinforcementManager {
 	public boolean isReinforced(Location loc) {
 		return getReinforcement(loc) != null;
 	}
-	
-	/**
-	 * Gets all reinforcements in a chunk. Only use this if you know what you're doing
-	 * @param chunk Chunk to get reinforcements for
-	 * @return All reinforcements within the chunk
-	 */
-	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
-		ChunkCache cache = reinforcements.getIfPresent(ChunkCoord.forChunk(chunk));
+
+	public void removeReinforcement(Reinforcement reinforcement) {
+		ChunkCoord key = ChunkCoord.forLocation(reinforcement.getLocation());
+		ChunkCache cache = reinforcements.getIfPresent(key);
 		if (cache == null) {
-			throw new IllegalStateException(
-					"Can not retrieve reinforcements for unloaded chunks");
+			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
 		}
-		return cache.getAll();
+		cache.removeReinforcement(reinforcement);
 	}
 }

@@ -13,16 +13,16 @@ public class ReinforcementBypassEvent extends ReinforcementEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	public ReinforcementBypassEvent(Player who, Reinforcement reinforcement) {
 		super(who, reinforcement);
 	}
 
 	@Override
 	public HandlerList getHandlers() {
-		return handlers;
-	}
-
-	public static HandlerList getHandlerList() {
 		return handlers;
 	}
 

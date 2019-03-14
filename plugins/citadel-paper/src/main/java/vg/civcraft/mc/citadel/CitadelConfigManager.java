@@ -22,12 +22,14 @@ public class CitadelConfigManager extends CoreConfigManager {
 	private List<ReinforcementType> reinforcementTypes;
 	private List<Material> acidMaterials;
 
+	private List<Material> globalBlackList;
+
 	private boolean logHostileBreaks;
 	private boolean logFriendlyBreaks;
 	private boolean logDamage;
 	private boolean logCreation;
 	private boolean logMessages;
-	
+
 	private double redstoneRange;
 
 	public CitadelConfigManager(ACivMod plugin) {
@@ -38,42 +40,60 @@ public class CitadelConfigManager extends CoreConfigManager {
 		return acidMaterials;
 	}
 
-	@Override
-	protected boolean parseInternal(ConfigurationSection config) {
-		database = (ManagedDatasource) config.get("database");
-		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
-		parseAcidMaterials(config);
-		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
-		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
-		logDamage = config.getBoolean("logDamage", false);
-		logCreation = config.getBoolean("logCreation", true);
-		logMessages = config.getBoolean("logMessages", true);
-		redstoneRange = config.getDouble("redstoneDistance", 3);
-		return true;
+	public List<Material> getBlacklistedMaterials() {
+		return globalBlackList;
 	}
-	
+
+	public ManagedDatasource getDatabase() {
+		return database;
+	}
+
 	public double getMaxRedstoneDistance() {
 		return redstoneRange;
 	}
-	
-	public boolean logMessages() {
-		return logMessages;
+
+	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
+		if (config == null) {
+			return null;
+		}
+		Particle effect;
+		try {
+			String effectName = config.getString("type");
+			effect = effectName.equals("FLYING_GLYPH") ? Particle.ENCHANTMENT_TABLE : Particle.valueOf(effectName);
+		} catch (IllegalArgumentException e) {
+			logger.warning("Invalid effect at: " + config.getCurrentPath());
+			return null;
+		}
+		float offsetX = (float) config.getDouble("offsetX", 0);
+		float offsetY = (float) config.getDouble("offsetY", 0);
+		float offsetZ = (float) config.getDouble("offsetZ", 0);
+		float speed = (float) config.getDouble("speed", 1);
+		int amount = config.getInt("particleCount", 1);
+		return new ReinforcementEffect(effect, offsetX, offsetY, offsetZ, speed, amount);
 	}
 
-	public boolean logHostileBreaks() {
-		return logHostileBreaks;
+	public List<ReinforcementType> getReinforcementTypes() {
+		return reinforcementTypes;
 	}
 
-	public boolean logFriendlyBreaks() {
-		return logFriendlyBreaks;
+	public boolean logCreation() {
+		return logCreation;
 	}
 
 	public boolean logDamage() {
 		return logDamage;
 	}
 
-	public boolean logCreation() {
-		return logCreation;
+	public boolean logFriendlyBreaks() {
+		return logFriendlyBreaks;
+	}
+
+	public boolean logHostileBreaks() {
+		return logHostileBreaks;
+	}
+
+	public boolean logMessages() {
+		return logMessages;
 	}
 
 	private void parseAcidMaterials(ConfigurationSection config) {
@@ -87,22 +107,30 @@ public class CitadelConfigManager extends CoreConfigManager {
 		}
 	}
 
-	private void parseReinforcementTypes(ConfigurationSection config) {
-		reinforcementTypes = new LinkedList<>();
-		if (config == null) {
-			logger.info("No reinforcement types found in config");
-			return;
-		}
-		for (String key : config.getKeys(false)) {
-			if (!config.isConfigurationSection(key)) {
-				logger.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
-				continue;
+	@Override
+	protected boolean parseInternal(ConfigurationSection config) {
+		database = (ManagedDatasource) config.get("database");
+		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
+		parseAcidMaterials(config);
+		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
+		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
+		logDamage = config.getBoolean("logDamage", false);
+		logCreation = config.getBoolean("logCreation", true);
+		logMessages = config.getBoolean("logMessages", true);
+		redstoneRange = config.getDouble("redstoneDistance", 3);
+		globalBlackList = parseMaterialList(config, "non_reinforceables");
+		return true;
+	}
+
+	private List<Material> parseMaterialList(ConfigurationSection config, String key) {
+		return parseList(config, key, s -> {
+			try {
+				return Material.valueOf(s.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				logger.warning("Failed to parse " + s + " as material at " + config.getCurrentPath());
+				return null;
 			}
-			ReinforcementType type = parseReinforcementType(config.getConfigurationSection(key));
-			if (type != null) {
-				reinforcementTypes.add(type);
-			}
-		}
+		});
 	}
 
 	private ReinforcementType parseReinforcementType(ConfigurationSection config) {
@@ -137,46 +165,25 @@ public class CitadelConfigManager extends CoreConfigManager {
 			return null;
 		}
 		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod,
-				effect, reinforceables, nonReinforceables, id, name);
+				effect, reinforceables, nonReinforceables, id, name, globalBlackList);
 	}
 
-	private List<Material> parseMaterialList(ConfigurationSection config, String key) {
-		return parseList(config, key, s -> {
-			try {
-				return Material.valueOf(s.toUpperCase());
-			} catch (IllegalArgumentException e) {
-				logger.warning("Failed to parse " + s + " as material at " + config.getCurrentPath());
-				return null;
-			}
-		});
-	}
-
-	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
+	private void parseReinforcementTypes(ConfigurationSection config) {
+		reinforcementTypes = new LinkedList<>();
 		if (config == null) {
-			return null;
+			logger.info("No reinforcement types found in config");
+			return;
 		}
-		Particle effect;
-		try {
-			String effectName = config.getString("type");
-			effect = effectName.equals("FLYING_GLYPH") ? Particle.ENCHANTMENT_TABLE : Particle.valueOf(effectName);
-		} catch (IllegalArgumentException e) {
-			logger.warning("Invalid effect at: " + config.getCurrentPath());
-			return null;
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				logger.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ReinforcementType type = parseReinforcementType(config.getConfigurationSection(key));
+			if (type != null) {
+				reinforcementTypes.add(type);
+			}
 		}
-		float offsetX = (float) config.getDouble("offsetX", 0);
-		float offsetY = (float) config.getDouble("offsetY", 0);
-		float offsetZ = (float) config.getDouble("offsetZ", 0);
-		float speed = (float) config.getDouble("speed", 1);
-		int amount = config.getInt("particleCount", 1);
-		return new ReinforcementEffect(effect, offsetX, offsetY, offsetZ, speed, amount);
-	}
-
-	public ManagedDatasource getDatabase() {
-		return database;
-	}
-
-	public List<ReinforcementType> getReinforcementTypes() {
-		return reinforcementTypes;
 	}
 
 }
