@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.collect.Lists;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -174,6 +175,12 @@ public class ConfigParsing {
 		toAdd.setAmount(amount);
 		im.addItemStack(toAdd);
 		return im;
+	}
+	
+	public static long parseTime(String arg, TimeUnit unit) {
+		long inTicks = parseTime(arg);
+		long millis = inTicks * 50;
+		return unit.convert(millis, TimeUnit.MILLISECONDS);
 	}
 
 	/**

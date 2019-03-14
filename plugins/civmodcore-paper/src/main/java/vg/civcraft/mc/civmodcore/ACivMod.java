@@ -13,7 +13,6 @@ import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
@@ -26,10 +25,6 @@ public abstract class ACivMod extends JavaPlugin {
 	protected StandaloneCommandHandler newCommandHandler;
 
 	private static boolean initializedAPIs = false;
-
-	public ClassLoader classLoader = null;
-
-	public ApiManager apis;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

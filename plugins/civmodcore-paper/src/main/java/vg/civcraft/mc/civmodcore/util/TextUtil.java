@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
@@ -28,6 +29,28 @@ public class TextUtil {
 
 	public static Map<String, String> getTags() {
 		return tags;
+	}
+	
+	public static String formatDuration(long time, TimeUnit unit) {
+		long totalSeconds = TimeUnit.SECONDS.convert(time, unit);
+		long seconds = totalSeconds % 60;
+		long totalMinutes = totalSeconds / 60;
+		long minutes = totalMinutes % 60;
+		long totalHours = totalMinutes / 60;
+		StringBuilder sb = new StringBuilder();
+		if (totalHours > 0) {
+			sb.append(totalHours);
+			sb.append(" h ");
+		}
+		if (minutes > 0) {
+			sb.append(minutes);
+			sb.append(" min ");
+		}
+		if (seconds > 0) {
+			sb.append(seconds);
+			sb.append(" sec");
+		}
+		return sb.toString().trim();
 	}
 
 	// -------------------------------------------- //

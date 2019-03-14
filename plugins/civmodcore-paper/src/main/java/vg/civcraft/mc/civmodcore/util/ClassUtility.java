@@ -20,7 +20,7 @@ public class ClassUtility {
 			} else {
 
 				String packageName = pack.getName();
-				ClassLoader classloader = plugin.classLoader;
+				ClassLoader classloader = plugin.getClass().getClassLoader();
 				ClassPath path = ClassPath.from(classloader);
 
 				for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {
