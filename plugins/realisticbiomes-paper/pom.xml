@@ -13,20 +13,22 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <build.number>SNAPSHOT</build.number>
   </properties>
   
-  <build>
-    <sourceDirectory>${basedir}/src</sourceDirectory>
-    
+  <build>    
     <resources>
       <resource>
-        <directory>${basedir}</directory>
+        <directory>${basedir}/src/main/resources</directory>
         <includes>
-          <include>**/*.java</include>
           <include>*.yml</include>
         </includes>
 		<filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>${basedir}</directory>
+        <includes>
+          <include>LICENSE.txt</include>
+        </includes>
       </resource>
     </resources>
 	<plugins>
@@ -60,7 +62,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot</artifactId>
-      <version>1.12-R0.1-SNAPSHOT</version>
+      <version>1.12.2-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
 	</dependency>
     <dependency>
@@ -72,10 +74,6 @@
   </dependencies>
   
   <repositories>
-    <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
