@@ -1,5 +1,0 @@
-language: java
-install: true
-matrix:
-  include:
-  - jdk: openjdk6
