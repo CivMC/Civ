@@ -1,7 +1,11 @@
 # NameLayer
 
-See the wiki for details on group creation, management, and other commands.
+A Citadel reinforcement group manager. Allows the creation of groups in Minecraft. From buildings to chat messages, one can selectivity restrict or expand which players are on group and their level of access.
 
-https://github.com/Devoted/NameLayer/wiki
+Example Usage:
+* Chat messages which can only be seen by the group of people you chose to allow.
+* Doors which can only be opened by the group of people you chose to allow.
+
+See the wiki for details on group creation, management, and other commands: https://github.com/CivClassic/NameLayer/wiki
 
 Jenkins Build Server: https://build.devotedmc.com/
