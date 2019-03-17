@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
@@ -32,10 +33,10 @@ public class ConfigParsing {
 	private static final Logger log = Bukkit.getLogger();
 
 	/**
-	 * Creates an itemmap containing all the items listed in the given config section
+	 * Creates an itemmap containing all the items listed in the given config
+	 * section
 	 *
-	 * @param config
-	 *            ConfigurationSection to parse the items from
+	 * @param config ConfigurationSection to parse the items from
 	 * @return The item map created
 	 */
 	public static ItemMap parseItemMap(ConfigurationSection config) {
@@ -63,7 +64,7 @@ public class ConfigParsing {
 			m = null;
 		} finally {
 			if (m == null) {
-				log.severe("Failed to find material of section " + current.getCurrentPath());
+				log.severe("Failed to find material" + m + " in section " + current.getCurrentPath());
 				return im;
 			}
 		}
@@ -94,7 +95,7 @@ public class ConfigParsing {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
 					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
 							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByName(enchantConfig.getString("enchant"));
+					Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant"))));
 					int level = enchantConfig.getInt("level", 1);
 					meta.addEnchant(enchant, level, true);
 				}
@@ -129,8 +130,8 @@ public class ConfigParsing {
 						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
 								.getConfigurationSection(sEKey);
 						if (currentStoredEnchantSection != null) {
-							Enchantment enchant = Enchantment.getByName(currentStoredEnchantSection
-									.getString("enchant"));
+							Enchantment enchant = Enchantment
+									.getByName(currentStoredEnchantSection.getString("enchant"));
 							int level = currentStoredEnchantSection.getInt("level", 1);
 							enchantMeta.addStoredEnchant(enchant, level, true);
 						}
@@ -176,7 +177,7 @@ public class ConfigParsing {
 		im.addItemStack(toAdd);
 		return im;
 	}
-	
+
 	public static long parseTime(String arg, TimeUnit unit) {
 		long inTicks = parseTime(arg);
 		long millis = inTicks * 50;
@@ -184,17 +185,19 @@ public class ConfigParsing {
 	}
 
 	/**
-	 * Parses a time value specified in a config. This allows to specify human readable time values easily, instead of
-	 * having to specify every amount in ticks or seconds. The unit of a number specifed by the letter added after it,
-	 * for example 5h means 5 hours or 34s means 34 seconds. Possible modifiers are: t (ticks), s (seconds), m
-	 * (minutes), h (hours) and d (days). If no letter is added the value will be parsed as ticks.
+	 * Parses a time value specified in a config. This allows to specify human
+	 * readable time values easily, instead of having to specify every amount in
+	 * ticks or seconds. The unit of a number specifed by the letter added after it,
+	 * for example 5h means 5 hours or 34s means 34 seconds. Possible modifiers are:
+	 * t (ticks), s (seconds), m (minutes), h (hours) and d (days). If no letter is
+	 * added the value will be parsed as ticks.
 	 * <p>
-	 * Additionally you can combine those amounts in any way you want, for example you can specify 3h5m43s as 3 hours, 5
-	 * minutes and 43 seconds. This doesn't have to be sorted and may even list the same unit multiple times for
+	 * Additionally you can combine those amounts in any way you want, for example
+	 * you can specify 3h5m43s as 3 hours, 5 minutes and 43 seconds. This doesn't
+	 * have to be sorted and may even list the same unit multiple times for
 	 * different values, but the values are not allowed to be separated by anything
 	 *
-	 * @param arg
-	 *            Parsed string containing the time format
+	 * @param arg Parsed string containing the time format
 	 * @return How many ticks the given time value is
 	 */
 	public static long parseTime(String arg) {
@@ -211,33 +214,33 @@ public class ConfigParsing {
 		while (!arg.equals("")) {
 			int length = 0;
 			switch (arg.charAt(arg.length() - 1)) {
-				case 't': // ticks
-					long ticks = getLastNumber(arg);
-					result += ticks;
-					length = String.valueOf(ticks).length() + 1;
-					break;
-				case 's': // seconds
-					long seconds = getLastNumber(arg);
-					result += 20 * seconds; // 20 ticks in a second
-					length = String.valueOf(seconds).length() + 1;
-					break;
-				case 'm': // minutes
-					long minutes = getLastNumber(arg);
-					result += 20 * 60 * minutes;
-					length = String.valueOf(minutes).length() + 1;
-					break;
-				case 'h': // hours
-					long hours = getLastNumber(arg);
-					result += 20 * 3600 * hours;
-					length = String.valueOf(hours).length() + 1;
-					break;
-				case 'd': // days, mostly here to define a 'never'
-					long days = getLastNumber(arg);
-					result += 20 * 3600 * 24 * days;
-					length = String.valueOf(days).length() + 1;
-					break;
-				default:
-					log.severe("Invalid time value in config:" + arg);
+			case 't': // ticks
+				long ticks = getLastNumber(arg);
+				result += ticks;
+				length = String.valueOf(ticks).length() + 1;
+				break;
+			case 's': // seconds
+				long seconds = getLastNumber(arg);
+				result += 20 * seconds; // 20 ticks in a second
+				length = String.valueOf(seconds).length() + 1;
+				break;
+			case 'm': // minutes
+				long minutes = getLastNumber(arg);
+				result += 20 * 60 * minutes;
+				length = String.valueOf(minutes).length() + 1;
+				break;
+			case 'h': // hours
+				long hours = getLastNumber(arg);
+				result += 20 * 3600 * hours;
+				length = String.valueOf(hours).length() + 1;
+				break;
+			case 'd': // days, mostly here to define a 'never'
+				long days = getLastNumber(arg);
+				result += 20 * 3600 * 24 * days;
+				length = String.valueOf(days).length() + 1;
+				break;
+			default:
+				log.severe("Invalid time value in config:" + arg);
 			}
 			arg = arg.substring(0, arg.length() - length);
 		}
@@ -263,8 +266,7 @@ public class ConfigParsing {
 	/**
 	 * Parses a potion effect
 	 *
-	 * @param configurationSection
-	 *            ConfigurationSection to parse the effect from
+	 * @param configurationSection ConfigurationSection to parse the effect from
 	 * @return The potion effect parsed
 	 */
 	public static List<PotionEffect> parsePotionEffects(ConfigurationSection configurationSection) {
@@ -327,41 +329,41 @@ public class ConfigParsing {
 		int zSize = config.getInt("zSize", -1);
 		IArea area = null;
 		switch (type) {
-			case "GLOBAL":
-				area = new GlobalYLimitedArea(lowerYBound, upperYBound, world);
-				break;
-			case "ELLIPSE":
-				if (center == null) {
-					log.warning("Found no center for area at " + config.getCurrentPath());
-					return null;
-				}
-				if (xSize == -1) {
-					log.warning("Found no xSize for area at " + config.getCurrentPath());
-					return null;
-				}
-				if (zSize == -1) {
-					log.warning("Found no zSize for area at " + config.getCurrentPath());
-					return null;
-				}
-				area = new EllipseArea(lowerYBound, upperYBound, center, xSize, zSize);
-				break;
-			case "RECTANGLE":
-				if (center == null) {
-					log.warning("Found no center for area at " + config.getCurrentPath());
-					return null;
-				}
-				if (xSize == -1) {
-					log.warning("Found no xSize for area at " + config.getCurrentPath());
-					return null;
-				}
-				if (zSize == -1) {
-					log.warning("Found no zSize for area at " + config.getCurrentPath());
-					return null;
-				}
-				area = new RectangleArea(lowerYBound, upperYBound, center, xSize, zSize);
-				break;
-			default:
-				log.warning("Invalid area type " + type + " at " + config.getCurrentPath());
+		case "GLOBAL":
+			area = new GlobalYLimitedArea(lowerYBound, upperYBound, world);
+			break;
+		case "ELLIPSE":
+			if (center == null) {
+				log.warning("Found no center for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (xSize == -1) {
+				log.warning("Found no xSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (zSize == -1) {
+				log.warning("Found no zSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			area = new EllipseArea(lowerYBound, upperYBound, center, xSize, zSize);
+			break;
+		case "RECTANGLE":
+			if (center == null) {
+				log.warning("Found no center for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (xSize == -1) {
+				log.warning("Found no xSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			if (zSize == -1) {
+				log.warning("Found no zSize for area at " + config.getCurrentPath());
+				return null;
+			}
+			area = new RectangleArea(lowerYBound, upperYBound, center, xSize, zSize);
+			break;
+		default:
+			log.warning("Invalid area type " + type + " at " + config.getCurrentPath());
 		}
 		return area;
 	}

@@ -95,11 +95,11 @@ public class StandaloneCommandHandler {
 		return worked;
 	}
 
-	public List<String> tabCompleteCommand(CommandSender sender, Command cmd, String[] args) {
-		StandaloneCommand command = commands.get(cmd.getIdentifier().toLowerCase());
+	public List<String> tabCompleteCommand(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
+		StandaloneCommand command = commands.get(cmd.getName());
 		if (command == null) {
 			plugin.getLogger().warning(
-					"Could not tab complete command " + cmd.getIdentifier() + ", no implementation was provided");
+					"Could not tab complete command " + cmd.getName() + ", no implementation was provided");
 			return new LinkedList<String>();
 		}
 		if (sender instanceof Player) {
