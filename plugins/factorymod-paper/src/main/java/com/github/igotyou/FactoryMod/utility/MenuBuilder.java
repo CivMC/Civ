@@ -26,6 +26,8 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
@@ -327,8 +329,7 @@ public class MenuBuilder {
 				upgrades.add(recipe);
 			}
 		}
-		ClickableInventory ci = new ClickableInventory(Math.max(18,
-				(upgrades.size() / 9) * 9), "Possible upgrades");
+		List<IClickable> clicks = new LinkedList<>();
 		if (upgrades.size() == 0) {
 			ItemStack bar = new ItemStack(Material.BARRIER);
 			ISUtils.setName(bar, "No upgrades available");
@@ -339,7 +340,7 @@ public class MenuBuilder {
 					openFactoryBrowser(p, factoryViewed.get(p.getUniqueId()));
 				}
 			};
-			ci.setSlot(noUpgrades, 4);
+			clicks.add(noUpgrades);
 		} else {
 			for (IRecipe recipe : upgrades) {
 				ItemStack recStack = ((InputRecipe) recipe)
@@ -354,9 +355,10 @@ public class MenuBuilder {
 								ISUtils.getName(this.getItemStack()));
 					}
 				};
-				ci.addSlot(c);
+				clicks.add(c);
 			}
 		}
+		MultiPageView pageView = new MultiPageView(p, clicks, ChatColor.GOLD + "Possible upgrades", true);
 		ItemStack backStack = new ItemStack(Material.ARROW);
 		ISUtils.setName(backStack, "Back to factory overview");
 		ISUtils.addLore(backStack, ChatColor.LIGHT_PURPLE + "Click to go back");
@@ -366,8 +368,8 @@ public class MenuBuilder {
 				openFactoryBrowser(arg0, factoryViewed.get(arg0.getUniqueId()));
 			}
 		};
-		ci.setSlot(backClickable, 17);
-		ci.showInventory(p);
+		pageView.setMenuSlot(backClickable, 2);
+		pageView.showScreen();
 	}
 
 	private void openDetailedRecipeBrowser(Player p, String recipeName) {

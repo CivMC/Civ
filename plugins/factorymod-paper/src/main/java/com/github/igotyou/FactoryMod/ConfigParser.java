@@ -98,7 +98,7 @@ public class ConfigParser {
 		useYamlIdentifers = config.getBoolean("use_recipe_yamlidentifiers", false);
 		if (!useYamlIdentifers) {
 			plugin.warning("You have usage of yaml identifiers turned off, names will be used instead to identify factories and recipes. This behavior"
-					+ "is not recommended and not compatible with config inheritation");
+					+ " is not recommended and not compatible with config inheritation");
 		}
 		defaultUpdateTime = (int) parseTime(config.getString(
 				"default_update_time", "5"));
@@ -251,6 +251,10 @@ public class ConfigParser {
 	 *            default instead
 	 */
 	private void parseFactories(ConfigurationSection config) {
+		if (config == null) {
+			plugin.getLogger().info("No factory configurations found in config");
+			return;
+		}
 		for (String key : config.getKeys(false)) {
 			parseFactory(config.getConfigurationSection(key));
 		}
