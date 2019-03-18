@@ -42,6 +42,11 @@ public class BlockListener implements Listener {
 	public void blockBreakEvent(BlockBreakEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBreakBlock(event);
 	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void blockPlaceEvent(BlockPlaceEvent event) {
+		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBlockPlace(event);
+	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void blockBurn(BlockBurnEvent bbe) {
@@ -89,7 +94,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void comparatorPlaceCheck(BlockPlaceEvent event) {
 		// We only care if they are placing a comparator
-		if (event.getBlockPlaced().getType() != Material.REDSTONE_COMPARATOR_OFF) {
+		if (event.getBlockPlaced().getType() != Material.COMPARATOR) {
 			return;
 		}
 		Comparator comparator = (Comparator) event.getBlockPlaced().getState().getData();
@@ -118,10 +123,7 @@ public class BlockListener implements Listener {
 		if (!pie.hasBlock()) {
 			return;
 		}
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(pie.getClickedBlock());
-		if (rein == null) {
-			return;
-		}
+		Citadel.getInstance().getStateManager().getState(pie.getPlayer()).handleInteractBlock(pie);
 	}
 
 	// prevent placing water inside of reinforced blocks
@@ -208,10 +210,15 @@ public class BlockListener implements Listener {
 	// remove reinforced air
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void removeReinforcedAir(BlockPlaceEvent e) {
+		if (e.getBlockReplacedState() == null) {
+			return;
+		}
 		if (e.getBlockReplacedState().getType() != Material.AIR) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
-		rein.setHealth(-1);
+		if (rein != null) {
+			rein.setHealth(-1);
+		}
 	}
 }

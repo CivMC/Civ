@@ -1,13 +1,16 @@
 package vg.civcraft.mc.citadel.playerstate;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -15,6 +18,7 @@ import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 
 public abstract class AbstractPlayerState {
 
@@ -46,6 +50,9 @@ public abstract class AbstractPlayerState {
 			if (bypassEvent.isCancelled()) {
 				e.setCancelled(true);
 			}
+			if (rein.rollForItemReturn()) {
+				giveReinforcement(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
+			}
 			return;
 		}
 		if (Utility.isPlant(e.getBlock())) {
@@ -61,7 +68,7 @@ public abstract class AbstractPlayerState {
 					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
 		}
 		e.setCancelled(true);
-		double damage = ReinforcementLogic.getDamageApplied(e.getPlayer(), rein);
+		double damage = ReinforcementLogic.getDamageApplied(rein);
 		ReinforcementDamageEvent dre = new ReinforcementDamageEvent(e.getPlayer(), rein, damage);
 		Bukkit.getPluginManager().callEvent(dre);
 		if (dre.isCancelled()) {
@@ -75,6 +82,17 @@ public abstract class AbstractPlayerState {
 
 	public boolean isBypassEnabled() {
 		return bypass;
+	}
+
+	public void toggleBypass() {
+		bypass = !bypass;
+	}
+
+	protected static void giveReinforcement(Location location, Player p, ReinforcementType type) {
+		HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(type.getItem().clone());
+		if (!notAdded.isEmpty()) {
+			Utility.dropItemAtLocation(location, type.getItem().clone());
+		}
 	}
 
 }

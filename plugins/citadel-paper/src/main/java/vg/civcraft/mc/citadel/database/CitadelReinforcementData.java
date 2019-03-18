@@ -5,19 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.sql.Time;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.model.ChunkCache;
@@ -26,7 +19,6 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
 public class CitadelReinforcementData {
 
@@ -69,7 +61,8 @@ public class CitadelReinforcementData {
 						Statement.RETURN_GENERATED_KEYS);) {
 			insertWorld.setString(1, world.getUID().toString());
 			insertWorld.setString(2, world.getName());
-			try (ResultSet rs = insertWorld.executeQuery()) {
+			insertWorld.execute();
+			try (ResultSet rs = insertWorld.getGeneratedKeys()) {
 				if (!rs.next()) {
 					logger.info("Failed to insert world");
 					return -1;
@@ -135,165 +128,9 @@ public class CitadelReinforcementData {
 	}
 
 	private void registerMigrations() {
-		db.registerMigration(7, false,
-				"create table if not exists reinforcement_id(" + "rein_id int not null auto_increment,"
-						+ "x int not null," + "y int not null," + "z int not null," + "chunk_id varchar(255),"
-						+ "world varchar (255) not null," + "primary key rein_id_key (rein_id),"
-						+ "unique key x_y_z_world(x,y,z,world));-- Your mother is a whore and sleeps with banjos",
-				// I like turtles mother fucker. Never program because then you get turtles.
-				"insert into reinforcement_id (x, y, z, chunk_id, world) select x, y, z, chunk_id, world from reinforcement;", // populate
-																																// that
-																																// bitch.
-				"alter table reinforcement add rein_id int not null, drop chunk_id;",
-				"update reinforcement r inner join reinforcement_id ri on "
-						+ "ri.x = r.x and ri.y = r.y and ri.z = r.z and ri.world = r.world "
-						+ "set r.rein_id = ri.rein_id",
-				"alter table reinforcement DROP PRIMARY KEY, " + "add primary key rein_id_key(rein_id), " + "drop x,"
-						+ "drop y," + "drop z," + "drop world;",
-				"alter table reinforcement_id add index `chunk_id_index` (chunk_id);");
-		db.registerMigration(8, false,
-				"alter table reinforcement_id drop primary key," + " add primary key (rein_id, x, y, z, world);");
-		db.registerMigration(9, false, "alter table reinforcement add acid_time int not null;",
-				"update reinforcement set acid_time = maturation_time;"); // Might take a minute.
-		db.registerMigration(10, false, "drop procedure if exists insertReinID;",
-				"create definer=current_user procedure insertReinID(" + "in x int," + "in y int," + "in z int,"
-						+ "in chunk_id varchar(255)," + "in world varchar(255)" + ") sql security invoker begin "
-						+ "insert into reinforcement_id(x, y, z, chunk_id, world) values (x, y, z, chunk_id, world);"
-						+ "select LAST_INSERT_ID() as id;" + "end;",
-				"drop procedure if exists insertCustomReinID;",
-				"create definer=current_user procedure insertCustomReinID(" + "in rein_id int," + "in x int,"
-						+ "in y int," + "in z int," + "in chunk_id varchar(255)," + "in world varchar(255)"
-						+ ") sql security invoker begin "
-						+ "insert into reinforcement_id(rein_id, x, y, z, chunk_id, world) values (rein_id, x, y, z, chunk_id, world);"
-						+ "select LAST_INSERT_ID() as id;" + "end;");
-		db.registerMigration(11, false, "drop procedure if exists insertRein;",
-				"create definer=current_user procedure insertRein(" + "in x int," + "in y int," + "in z int,"
-						+ "in chunk_id varchar(255)," + "in world varchar(255)," + "in material_id int,"
-						+ "in durability varchar(10)," + "in insecure tinyint(1)," + "in group_id int,"
-						+ "in maturation_time int," + "in lore varchar(255)," + "in acid_time int,"
-						+ "in rein_type varchar(30)" + ") sql security invoker begin "
-						+ "insert into reinforcement_id(x, y, z, chunk_id, world) values (x, y, z, chunk_id, world);"
-						+ "insert into reinforcement ("
-						+ "material_id, durability, insecure, group_id, maturation_time, rein_type_id, lore, rein_id, acid_time) VALUES ("
-						+ "material_id, durability, insecure, group_id, maturation_time, "
-						+ "(SELECT rt.rein_type_id FROM reinforcement_type rt where rt.rein_type = rein_type LIMIT 1), "
-						+ "lore, (select LAST_INSERT_ID()), acid_time);" + "end;");
-		db.registerMigration(12, false,
-				"CREATE TABLE reinforcement_temp (" + "rein_id int not null auto_increment," + "x int not null,"
-						+ "y int not null," + "z int not null," + "chunk_x int not null," + "chunk_z int not null,"
-						+ "world varchar(255) not null," + "material_id int not null,"
-						+ "durability varchar(10) not null," + "insecure tinyint(1) not null,"
-						+ "group_id int not null," + "maturation_time int not null," + "rein_type_id int not null,"
-						+ "lore varchar(255)," + "acid_time int not null," + "primary key rid (rein_id),"
-						+ "unique index realcoord (x,y,z,world)," + "index chunkcoord(chunk_x, chunk_z, world)" + ");",
-				"INSERT IGNORE INTO reinforcement_temp SELECT a.rein_id, x, y, z, floor(x/16), floor(z/16), world, "
-						+ "material_id, durability, insecure, group_id, maturation_time, rein_type_id, lore, acid_time "
-						+ "FROM reinforcement_id a JOIN reinforcement b ON a.rein_id = b.rein_id;",
-				"RENAME TABLE reinforcement_id TO deprecated_reinforcement_id;",
-				"RENAME TABLE reinforcement TO deprecated_reinforcement;",
-				"RENAME TABLE reinforcement_temp TO reinforcement;", "DROP PROCEDURE IF EXISTS insertReinID;",
-				"DROP PROCEDURE IF EXISTS insertCustomReinID;", "DROP PROCEDURE IF EXISTS insertRein;");
-		db.registerMigration(13, false, new Callable<Boolean>() {
-
-			@Override
-			public Boolean call() throws SQLException {
-				logger.info("Upgrading to Citadel 4.0. This may take a while.");
-				int failedUpdates = 0;
-				int successfulUpdates = 0;
-				Map<String, Integer> worldMapping = new HashMap<>();
-				for (World world : Bukkit.getWorlds()) {
-					int id = getOrCreateWorldID(world);
-					if (id == -1) {
-						return false;
-					}
-					worldMapping.put(world.getName(), id);
-
-				}
-				try (Connection connection = db.getConnection();
-						PreparedStatement getRein = connection.prepareStatement(
-								"select rein_id, x, y, z, chunk_x, chunk_z, world, material_id, durability, insecure, group_id, "
-										+ "lore, acid_time from reinforcement;");
-						ResultSet rs = getRein.executeQuery()) {
-					while (rs.next()) {
-						int id = rs.getInt(1);
-						int x = rs.getInt(2);
-						int y = rs.getInt(3);
-						int z = rs.getInt(4);
-						int chunk_x = rs.getInt(5);
-						int chunk_z = rs.getInt(6);
-						String worldName = rs.getString(7);
-						int materialID = rs.getInt(8);
-						String durability = rs.getString(9);
-						double health = Double.parseDouble(durability);
-						boolean insecure = rs.getBoolean(10);
-						int groupId = rs.getInt(11);
-						String lore = rs.getString(12);
-						int acidTime = rs.getInt(13);
-						long msAcidTime = acidTime;
-						// old unit was minutes since unix epoch
-						msAcidTime *= 60000;
-						// some reins don't have a time stamp, gonna have to guess for those
-						if (msAcidTime == 0) {
-							msAcidTime = System.currentTimeMillis();
-						}
-						@SuppressWarnings("deprecation")
-						Material mat = Material.getMaterial(materialID);
-						if (mat == null) {
-							failedUpdates++;
-							continue;
-						}
-						ItemStack is = new ItemStack(mat);
-						if (lore != null) {
-							ISUtils.addLore(is, lore);
-						}
-						ReinforcementType type = typeMan.getByItemStack(is);
-						if (type == null) {
-							failedUpdates++;
-							continue;
-						}
-						int typeID = type.getID();
-						Integer worldID = worldMapping.get(worldName);
-						if (worldID == null) {
-							failedUpdates++;
-							continue;
-						}
-						try (Connection insertConn = db.getConnection();
-								PreparedStatement insertRein = insertConn.prepareStatement(
-										"insert into reinforcements (id,x,y,z,chunk_x,chunk_z,world_id,type_id,"
-												+ "creation_time,health,group_id,insecure) values(?,?,?,?,?,?,?,?,?,?,?,?);");) {
-							insertRein.setInt(1, id);
-							insertRein.setInt(2, x);
-							insertRein.setInt(3, y);
-							insertRein.setInt(4, z);
-							insertRein.setInt(5, chunk_x);
-							insertRein.setInt(6, chunk_z);
-							insertRein.setInt(7, worldID);
-							insertRein.setInt(8, typeID);
-							insertRein.setTime(9, new Time(msAcidTime));
-							insertRein.setDouble(10, health);
-							insertRein.setInt(11, groupId);
-							insertRein.setBoolean(12, insecure);
-							insertRein.execute();
-						}
-						try (Connection deleteConn = db.getConnection();
-								PreparedStatement deleteRein = deleteConn
-										.prepareStatement("delete from reinforcement where id = ?;");) {
-							deleteRein.setInt(1, id);
-							deleteRein.execute();
-						}
-						successfulUpdates++;
-					}
-				}
-				logger.info("Completed Citadel 4.0 update. Successfull: " + successfulUpdates + ", Failed: "
-						+ failedUpdates);
-				if (failedUpdates > 0) {
-					logger.severe("Some of your old data could not be transfered, it was left intact in the old table. "
-							+ "Contact Citadel developers if you do not know how to fix this yourself");
-				}
-				return true;
-			}
-		}, "create table reinforcement_worlds (id int not null autoincrement, uuid char(36) not null unique, name text not null);",
-				"create table reinforcements (id int not null auto_increment, x int not null, y int not null, z int not null, "
+		db.registerMigration(13, false, "create table reinforcement_worlds (id int not null auto_increment primary key, uuid char(36) not null, "
+				+ "name text not null, constraint uniqueUuid unique(uuid));",
+				"create table reinforcements (id int not null auto_increment primary key, x int not null, y int not null, z int not null, "
 						+ "chunk_x int not null, chunk_z int not null, world_id int not null references reinforcement_worlds(id), "
 						+ "type_id int not null, creation_time timestamp not null default now(), health double not null, "
 						+ "group_id int not null, insecure boolean not null default false, index reinChunkLookUp(chunk_x, chunk_z, world_id),"

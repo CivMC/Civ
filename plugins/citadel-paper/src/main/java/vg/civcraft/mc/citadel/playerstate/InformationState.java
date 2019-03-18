@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
@@ -21,16 +22,30 @@ public class InformationState extends AbstractPlayerState {
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
 
-	private static String formatHealth(Reinforcement rein) {
-		return String.format("%s%% (%s/%s)", commaFormat.format(rein.getHealth() / rein.getType().getHealth() * 100),
-				roundingFormat.format(rein.getHealth()), rein.getType().getHealth());
+	public static String formatHealth(Reinforcement rein) {
+		double broken = rein.getHealth() / rein.getType().getHealth();
+		ChatColor color;
+		if (broken >= 1.0) {
+			color = ChatColor.GREEN;
+		} else if (broken >= 0.75) {
+			color = ChatColor.DARK_GREEN;
+		} else if (broken >= 0.5) {
+			color = ChatColor.YELLOW;
+		} else if (broken >= 0.25) {
+			color = ChatColor.RED;
+		} else {
+			color = ChatColor.DARK_RED;
+		}
+		return String.format("%s%s%% (%s/%s)", color.toString(),
+				commaFormat.format(rein.getHealth() / rein.getType().getHealth() * 100),
+				roundingFormat.format(rein.getHealth()), roundingFormat.format(rein.getType().getHealth()));
 	}
 
 	private static String formatProgress(long start, long timeNeeded, String text) {
 		long timeTaken = System.currentTimeMillis() - start;
-		timeTaken = Math.max(timeTaken, timeNeeded);
+		timeTaken = Math.min(timeTaken, timeNeeded);
 		double progress = Math.min(1.0, ((double) timeTaken) / ((double) timeNeeded));
-		return String.format("%s%% %s %s left", commaFormat.format(progress * 100), text,
+		return String.format("%s%% %s %s", commaFormat.format(progress * 100), text,
 				TextUtil.formatDuration(timeNeeded - timeTaken, TimeUnit.MILLISECONDS));
 	}
 
@@ -48,8 +63,12 @@ public class InformationState extends AbstractPlayerState {
 
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) {
+			return;
+		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		if (rein == null) {
+			Utility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
 			return;
 		}
 		Player player = e.getPlayer();
@@ -57,12 +76,14 @@ public class InformationState extends AbstractPlayerState {
 			e.setCancelled(true);
 		}
 		if (!rein.hasPermission(player, Citadel.infoPerm)) {
-			String msg = String.format("Reinforced %s with %s", formatHealth(rein), rein.getType().getName());
+			String msg = String.format("Reinforced at %s%s health with %s%s", formatHealth(rein), ChatColor.RED,
+					ChatColor.AQUA, rein.getType().getName());
 			Utility.sendAndLog(player, ChatColor.RED, msg);
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("Reinforced %s with %s on %s, ", formatHealth(rein), rein.getType().getName(),
+		sb.append(String.format("Reinforced at %s%s health with %s%s %son %s%s ", formatHealth(rein), ChatColor.GREEN,
+				ChatColor.AQUA, rein.getType().getName(), ChatColor.GREEN, ChatColor.LIGHT_PURPLE,
 				rein.getGroup().getName()));
 		if (!rein.isMature()) {
 			sb.append(ChatColor.GOLD);
@@ -83,7 +104,7 @@ public class InformationState extends AbstractPlayerState {
 				sb.append(formatProgress(rein.getCreationTime(), rein.getType().getAcidTime(), "acid timer"));
 			}
 		}
-		Utility.sendAndLog(player, ChatColor.GREEN, sb.toString());
+		Utility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
 	}
 
 }

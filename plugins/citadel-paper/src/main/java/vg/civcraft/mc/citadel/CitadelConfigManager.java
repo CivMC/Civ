@@ -15,6 +15,7 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class CitadelConfigManager extends CoreConfigManager {
 
@@ -29,6 +30,9 @@ public class CitadelConfigManager extends CoreConfigManager {
 	private boolean logDamage;
 	private boolean logCreation;
 	private boolean logMessages;
+
+	private long globalDecayTimer;
+	private double globalDecayMultiplier;
 
 	private double redstoneRange;
 
@@ -110,7 +114,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		database = (ManagedDatasource) config.get("database");
-		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
+		globalBlackList = parseMaterialList(config, "non_reinforceables");
 		parseAcidMaterials(config);
 		logHostileBreaks = config.getBoolean("logHostileBreaks", true);
 		logFriendlyBreaks = config.getBoolean("logFriendlyBreaks", true);
@@ -118,7 +122,9 @@ public class CitadelConfigManager extends CoreConfigManager {
 		logCreation = config.getBoolean("logCreation", true);
 		logMessages = config.getBoolean("logMessages", true);
 		redstoneRange = config.getDouble("redstoneDistance", 3);
-		globalBlackList = parseMaterialList(config, "non_reinforceables");
+		globalDecayMultiplier = config.getDouble("global_decay_multiplier", 2.0);
+		globalDecayTimer = ConfigParsing.parseTime(config.getString("global_decay_timer", "0"));
+		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
 		return true;
 	}
 
@@ -140,7 +146,10 @@ public class CitadelConfigManager extends CoreConfigManager {
 			return null;
 		}
 		ItemStack item = config.getItemStack("item");
-		ReinforcementEffect effect = getReinforcementEffect(config.getConfigurationSection("effect"));
+		ReinforcementEffect creationEffect = getReinforcementEffect(config.getConfigurationSection("creation_effect"));
+		ReinforcementEffect damageEffect = getReinforcementEffect(config.getConfigurationSection("damage_effect"));
+		ReinforcementEffect destructionEffect = getReinforcementEffect(
+				config.getConfigurationSection("destruction_effect"));
 		long gracePeriod = ConfigParsing.parseTime(config.getString("grace_period", "0"), TimeUnit.MILLISECONDS);
 		long maturationTime = ConfigParsing.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
 		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
@@ -151,6 +160,9 @@ public class CitadelConfigManager extends CoreConfigManager {
 		List<Material> reinforceables = parseMaterialList(config, "reinforceables");
 		List<Material> nonReinforceables = parseMaterialList(config, "non_reinforceables");
 		int id = config.getInt("id", -1);
+		long decayTimer = ConfigParsing
+				.parseTime(config.getString("decay_timer", String.valueOf(globalDecayTimer / 1000L) + "s"));
+		double decayMultiplier = config.getDouble("decay_multiplier", globalDecayMultiplier);
 		if (name == null) {
 			logger.warning("No name specified for reinforcement type at " + config.getCurrentPath());
 			name = item.getType().name();
@@ -164,8 +176,13 @@ public class CitadelConfigManager extends CoreConfigManager {
 					+ ". This does not make sense and the type will be ignored");
 			return null;
 		}
+		logger.info("Parsed reinforcement type " + name + " for item " + item.toString() + ", returnChance: "
+				+ returnChance + ", maturationTime: " + TextUtil.formatDuration(maturationTime, TimeUnit.MILLISECONDS)
+				+ ", acidTime: " + TextUtil.formatDuration(acidTime, TimeUnit.MILLISECONDS) + ", gracePeriod: "
+				+ gracePeriod + ", id: " + id);
 		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod,
-				effect, reinforceables, nonReinforceables, id, name, globalBlackList);
+				creationEffect, damageEffect, destructionEffect, reinforceables, nonReinforceables, id, name,
+				globalBlackList, decayTimer, decayMultiplier);
 	}
 
 	private void parseReinforcementTypes(ConfigurationSection config) {

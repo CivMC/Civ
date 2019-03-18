@@ -58,7 +58,7 @@ public class ReinforcementsGUI extends StandaloneCommand {
 			clicks.add(click);
 		}
 		MultiPageView pageView = new MultiPageView((Player) sender, clicks,
-				org.bukkit.ChatColor.GOLD + "Reinforcements", true);
+				ChatColor.BLUE + "Reinforcements", true);
 		pageView.showScreen();
 		return true;
 	}

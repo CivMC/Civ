@@ -38,8 +38,10 @@ public class EntityListener implements Listener {
 	public void breakDoor(EntityBreakDoorEvent ebde) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
 		if (rein != null) {
-			ebde.setCancelled(true);
-			ReinforcementLogic.damageReinforcement(rein, 1.0);
+			ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein));
+			if (!rein.isBroken()) {
+				ebde.setCancelled(true);
+			}
 		}
 	}
 
@@ -47,8 +49,10 @@ public class EntityListener implements Listener {
 	public void changeBlock(EntityChangeBlockEvent ecbe) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ecbe.getBlock());
 		if (rein != null) {
-			ecbe.setCancelled(true);
-			ReinforcementLogic.damageReinforcement(rein, 1.0);
+			ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein));
+			if (!rein.isBroken()) {
+				ecbe.setCancelled(true);
+			}
 		}
 	}
 
@@ -60,8 +64,8 @@ public class EntityListener implements Listener {
 		while (iterator.hasNext()) {
 			Block block = iterator.next();
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
-			if (rein != null) {
-				rein.setHealth(rein.getHealth() - 1);
+			ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein));
+			if (!rein.isBroken()) {
 				iterator.remove();
 			}
 		}
@@ -82,7 +86,6 @@ public class EntityListener implements Listener {
 		}
 		base = base.getRelative(BlockFace.UP);
 		blocks.add(base);
-
 		return blocks;
 	}
 
@@ -90,6 +93,7 @@ public class EntityListener implements Listener {
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		final UUID uuid = p.getUniqueId();
+		
 
 		new BukkitRunnable() {
 			@Override
@@ -98,7 +102,7 @@ public class EntityListener implements Listener {
 				for (String groupName : db.getGroupNames(uuid)) {
 					if (NameAPI.getGroupManager().hasAccess(groupName, uuid,
 							PermissionType.getPermission("REINFORCE"))) {
-						db.updateTimestamp(groupName);
+						GroupManager.getGroup(groupName).updateActivityTimeStamp();
 					}
 				}
 			}

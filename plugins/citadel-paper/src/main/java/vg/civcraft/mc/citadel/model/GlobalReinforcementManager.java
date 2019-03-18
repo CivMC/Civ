@@ -11,6 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 
+import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 
 public class GlobalReinforcementManager {
@@ -90,7 +91,7 @@ public class GlobalReinforcementManager {
 			if (!registerWorld(rein.getLocation().getWorld())) {
 				throw new IllegalStateException("Failed to register world");
 			}
-			worldToManager.get(rein.getLocation().getWorld().getUID());
+			worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
 		}
 		worldManager.insertReinforcement(rein);
 	}
@@ -150,5 +151,23 @@ public class GlobalReinforcementManager {
 			}
 		}
 		return true;
+	}
+
+	public void loadChunkData(Chunk chunk) {
+		Utility.debugLog("Loading reinforcement data for chunk at " + chunk.toString());
+		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
+		if (worldManager == null) {
+			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
+		}
+		worldManager.loadChunkData(chunk);
+	}
+
+	public void unloadChunkData(Chunk chunk) {
+		Utility.debugLog("Unloading reinforcement data for chunk at " + chunk.toString());
+		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
+		if (worldManager == null) {
+			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
+		}
+		worldManager.unloadChunkData(chunk);
 	}
 }

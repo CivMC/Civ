@@ -48,6 +48,7 @@ public class ChunkCache {
 			return coords.y == y && coords.x == x && coords.z == z;
 		}
 	}
+
 	private final ChunkCoord chunkPair;
 	private Map<Coords, Reinforcement> reinforcements;
 	private List<Reinforcement> deletedReinforcements;
@@ -86,9 +87,11 @@ public class ChunkCache {
 	 */
 	public Collection<Reinforcement> getAllAndCleanUp() {
 		List<Reinforcement> reins = new ArrayList<>();
-		reins.addAll(deletedReinforcements);
+		if (deletedReinforcements != null) {
+			reins.addAll(deletedReinforcements);
+			deletedReinforcements.clear();
+		}
 		reins.addAll(reinforcements.values());
-		deletedReinforcements.clear();
 		return reins;
 	}
 
@@ -112,6 +115,9 @@ public class ChunkCache {
 		}
 		rein.setOwningCache(this);
 		reinforcements.put(key, rein);
+		if (rein.isDirty) {
+			this.isDirty = true;
+		}
 	}
 
 	public boolean isDirty() {

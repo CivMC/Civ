@@ -4,9 +4,11 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
+import org.bukkit.event.HandlerList;
 
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.listener.BlockListener;
+import vg.civcraft.mc.citadel.listener.ChunkLoadListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
@@ -30,12 +32,14 @@ public class Citadel extends ACivMod {
 	public static final String doorPerm = "DOORS";
 	public static final String acidPerm = "ACIDBLOCK";
 	public static final String infoPerm = "REINFORCEMENT_INFO";
+	public static final String repairPerm = "REPAIR_REINFORCEMENT";
+
 	private static Citadel instance;
 
 	public static Citadel getInstance() {
 		return instance;
 	}
-	
+
 	private Logger logger;
 	private CitadelReinforcementData db;
 	private GlobalReinforcementManager worldManager;
@@ -98,6 +102,13 @@ public class Citadel extends ACivMod {
 	public void onDisable() {
 		// Pushes all reinforcements loaded to be saved to db.
 		worldManager.flushAll();
+		HandlerList.unregisterAll(this);
+		Bukkit.getScheduler().cancelTasks(this);
+	}
+
+	public void reload() {
+		onDisable();
+		onEnable();
 	}
 
 	public void onEnable() {
@@ -106,26 +117,26 @@ public class Citadel extends ACivMod {
 		logger = getLogger();
 		if (!Bukkit.getPluginManager().isPluginEnabled("NameLayer")) {
 			logger.info("Citadel is shutting down because it could not find NameLayer");
-			this.getPluginLoader().disablePlugin(this);
+			Bukkit.shutdown();
 			return;
 		}
 		config = new CitadelConfigManager(this);
 		if (!config.parse()) {
 			logger.severe("Errors in config file, shutting down");
-			this.getPluginLoader().disablePlugin(this);
+			Bukkit.shutdown();
 			return;
 		}
 		typeManager = new ReinforcementTypeManager();
 		config.getReinforcementTypes().forEach(t -> typeManager.register(t));
 		if (!initializeDatabase()) {
 			logger.severe("Errors setting up database, shutting down");
-			this.getPluginLoader().disablePlugin(this);
+			Bukkit.shutdown();
 			return;
 		}
 		worldManager = new GlobalReinforcementManager(db);
 		if (!worldManager.setup()) {
 			logger.severe("Errors setting up world config, shutting down");
-			this.getPluginLoader().disablePlugin(this);
+			Bukkit.shutdown();
 			return;
 		}
 		stateManager = new PlayerStateManager();
@@ -142,6 +153,7 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
+		getServer().getPluginManager().registerEvents(new ChunkLoadListener(), this);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -155,13 +167,23 @@ public class Citadel extends ACivMod {
 		modsAndAbove.add(PlayerType.MODS);
 		modsAndAbove.add(PlayerType.ADMINS);
 		modsAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission(reinforcePerm, (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission(acidPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission(infoPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone());
-		PermissionType.registerPermission(doorPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission(cropsPerm, (LinkedList<PlayerType>) membersAndAbove.clone());
-		PermissionType.registerPermission(insecurePerm, (LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission(reinforcePerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
+				"Allows reinforcing blocks on this group");
+		PermissionType.registerPermission(acidPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
+				"Allows activating acid blocks reinforced on this group");
+		PermissionType.registerPermission(infoPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
+				"Allows viewing information on reinforcements reinforced on this group");
+		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
+				"Allows bypassing reinforcements reinforced on this group");
+		PermissionType.registerPermission(repairPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
+				"Allows repairing reinforcements reinforced on this group");
+		PermissionType.registerPermission(doorPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
+				"Allows opening doors reinforced on this group");
+		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
+				"Allows opening containers like chests reinforced on this group");
+		PermissionType.registerPermission(cropsPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
+				"Allows harvesting crops growing on soil reinforced on this group");
+		PermissionType.registerPermission(insecurePerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
+				"Allows toggling the insecure flag on reinforcements");
 	}
 }

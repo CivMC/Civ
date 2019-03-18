@@ -32,7 +32,7 @@ public class ReinforcingState extends AbstractPlayerState {
 	}
 
 	public String getName() {
-		return "Reinforcing mode on " + group.getName();
+		return "Reinforcing mode on " + ChatColor.LIGHT_PURPLE + group.getName();
 	}
 
 	@Override
@@ -85,16 +85,19 @@ public class ReinforcingState extends AbstractPlayerState {
 				return;
 			}
 		}
-		// check inventory for reinforcement item
-		ItemMap toConsume = new ItemMap(type.getItem());
-		if (!toConsume.isContainedIn(player.getInventory())) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
-			return;
-		}
-		// consume item from inventory
-		if (!toConsume.removeSafelyFrom(player.getInventory())) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "Failed to remove reinforcement item from your inventory");
-			return;
+		if (rein == null || rein.getType() != type) {
+			// check inventory for reinforcement item
+			ItemMap toConsume = new ItemMap(type.getItem());
+			if (!toConsume.isContainedIn(player.getInventory())) {
+				Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
+				return;
+			}
+			// consume item from inventory
+			if (!toConsume.removeSafelyFrom(player.getInventory())) {
+				Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+						"Failed to remove reinforcement item from your inventory");
+				return;
+			}
 		}
 
 		if (rein == null) {
@@ -124,14 +127,19 @@ public class ReinforcingState extends AbstractPlayerState {
 				ReinforcementChangeTypeEvent rcte = new ReinforcementChangeTypeEvent(player, rein, type);
 				Bukkit.getPluginManager().callEvent(rcte);
 				if (!rcte.isCancelled()) {
-					rein.setType(type);
+					giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
+					rein.setHealth(-1);
+					ReinforcementLogic.createReinforcement(rein.getLocation().getBlock(), type, group);
 					Utility.sendAndLog(player, ChatColor.GREEN,
 							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName());
 				} else if (changedGroup) {
-					Utility.sendAndLog(player, ChatColor.GREEN, "Updated group to " + group.getName());
+					Utility.sendAndLog(player, ChatColor.GREEN,
+							"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
 				}
+			} else if (changedGroup) {
+				Utility.sendAndLog(player, ChatColor.GREEN,
+						"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
 			}
 		}
 	}
-
 }

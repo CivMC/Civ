@@ -6,11 +6,12 @@ import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
-import vg.civcraft.mc.citadel.playerstate.FortificationState;
+import vg.civcraft.mc.citadel.playerstate.AdvancedFortificationState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
@@ -21,26 +22,43 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CivCommand(id = "ctf")
-public class Fortification extends StandaloneCommand {
+@CivCommand(id = "cta")
+public class AdvancedFortification extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
 		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
 		AbstractPlayerState currentState = stateManager.getState(player);
-		if (args.length == 0 && currentState instanceof FortificationState) {
-			stateManager.setState(player, null);
+		AdvancedFortificationState advFortState = null;
+		if (currentState instanceof AdvancedFortificationState) {
+			advFortState = (AdvancedFortificationState) currentState;
+			if (args.length == 0) {
+				stateManager.setState(player, null);
+				return true;
+			}
+		}
+		ItemStack mainHand = player.getInventory().getItemInMainHand();
+		if (mainHand == null) {
+			Utility.sendAndLog(player, ChatColor.RED,
+					"You need to hold an item in your main hand to specify the block type to reinforce");
 			return true;
 		}
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager()
-				.getByItemStack(player.getInventory().getItemInMainHand());
+		ItemStack offHand = player.getInventory().getItemInOffHand();
+		if (offHand == null) {
+			Utility.sendAndLog(player, ChatColor.RED, "You need to hold a reinforcement item in your off hand");
+			return true;
+		}
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(offHand);
 		if (type == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
-			stateManager.setState(player, null);
+			Utility.sendAndLog(player, ChatColor.RED, "You can not reinforce with the item in your off hand");
 			return true;
 		}
-		
+		if (!type.canBeReinforced(mainHand.getType())) {
+			Utility.sendAndLog(player, ChatColor.AQUA,
+					type.getName() + ChatColor.RED + " can not reinforce " + mainHand.getType().name());
+			return true;
+		}
 		String groupName = null;
 		if (args.length == 0) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
@@ -52,28 +70,23 @@ public class Fortification extends StandaloneCommand {
 		} else {
 			groupName = args[0];
 		}
-		
+
 		Group group = GroupManager.getGroup(groupName);
 		if (group == null) {
 			Utility.sendAndLog(player, ChatColor.RED, "The group " + groupName + " does not exist.");
-			stateManager.setState(player, null);
 			return true;
 		}
 		boolean hasAccess = NameAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
 				PermissionType.getPermission(Citadel.reinforcePerm));
 		if (!hasAccess) {
 			Utility.sendAndLog(player, ChatColor.RED, "You do not have permission to reinforce on " + group.getName());
-			stateManager.setState(player, null);
 			return true;
 		}
-		if (currentState instanceof FortificationState) {
-			FortificationState fortState = (FortificationState) currentState;
-			if (fortState.getGroup() == group && fortState.getType() == type) {
-				stateManager.setState(player, null);
-				return true;
-			}
+		if (advFortState == null) {
+			advFortState =  new AdvancedFortificationState(player, currentState.isBypassEnabled());
+			stateManager.setState(player, advFortState);
 		}
-		stateManager.setState(player, new FortificationState(player, currentState.isBypassEnabled(), type, group));
+		advFortState.addSetup(mainHand, type, group);
 		return true;
 	}
 
@@ -89,4 +102,5 @@ public class Fortification extends StandaloneCommand {
 			return new ArrayList<String>();
 		}
 	}
+
 }

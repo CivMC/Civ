@@ -28,12 +28,16 @@ public class WorldReinforcementManager {
 				}
 			}
 		}).build(new CacheLoader<ChunkCoord, ChunkCache>() {
+			@Override
 			public ChunkCache load(ChunkCoord loc) throws Exception {
-				if (loc == null) {
-					throw new IllegalArgumentException("Can not load reinforcements for null location");
-				}
 				return db.loadReinforcements(loc, worldID);
 			}
+			/* probably not needed
+			@Override
+			public ListenableFuture<ChunkCache> reload(ChunkCoord loc, ChunkCache oldValue) throws Exception {
+				// this will only be called in super rare race conditions
+				return Futures.immediateFuture(oldValue);
+			} */
 		});
 	}
 
@@ -69,7 +73,7 @@ public class WorldReinforcementManager {
 					"You can not check reinforcements for unloaded chunks. Load the chunk first");
 		}
 		Reinforcement rein = cache.getReinforcement(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-		if (rein.isBroken()) {
+		if (rein == null || rein.isBroken()) {
 			return null;
 		}
 		return rein;
@@ -98,6 +102,7 @@ public class WorldReinforcementManager {
 	 */
 	public void invalidateAllReinforcements() {
 		reinforcements.invalidateAll();
+		reinforcements.cleanUp();
 	}
 
 	/**
@@ -117,5 +122,13 @@ public class WorldReinforcementManager {
 			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
 		}
 		cache.removeReinforcement(reinforcement);
+	}
+
+	void loadChunkData(Chunk chunk) {
+		reinforcements.refresh(ChunkCoord.forChunk(chunk));
+	}
+
+	void unloadChunkData(Chunk chunk) {
+		reinforcements.invalidate(ChunkCoord.forChunk(chunk));
 	}
 }

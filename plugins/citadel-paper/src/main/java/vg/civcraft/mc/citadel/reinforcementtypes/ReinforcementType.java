@@ -16,16 +16,22 @@ public class ReinforcementType {
 	private long acidTime;
 	private double scale;
 	private long gracePeriod;
-	private ReinforcementEffect effect;
+	private ReinforcementEffect creationEffect;
+	private ReinforcementEffect damageEffect;
+	private ReinforcementEffect destructionEffect;
 	private Set<Material> allowedReinforceables;
 	private Set<Material> disallowedReinforceables;
 	private Set<Material> globalBlackList;
 	private int id;
 	private String name;
+	private long decayTimer;
+	private double decayMultiplier;
 
 	public ReinforcementType(double health, double returnChance, ItemStack item, long maturationTime, long acidTime,
-			double scale, long gracePeriod, ReinforcementEffect effect, Collection<Material> allowsReinforceables,
-			Collection<Material> disallowedReinforceables, int id, String name, Collection<Material> globalBlackList) {
+			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
+			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
+			Collection<Material> disallowedReinforceables, int id, String name, Collection<Material> globalBlackList,
+			long decayTimer, double decayMultiplier) {
 		this.health = health;
 		this.name = name;
 		this.returnChance = returnChance;
@@ -33,7 +39,9 @@ public class ReinforcementType {
 		this.maturationTime = maturationTime;
 		this.acidTime = acidTime;
 		this.scale = scale;
-		this.effect = effect;
+		this.creationEffect = creationEffect;
+		this.damageEffect = damageEffect;
+		this.destructionEffect = destructionEffect;
 		this.gracePeriod = gracePeriod;
 		if (allowsReinforceables != null) {
 			this.allowedReinforceables = new TreeSet<>(allowsReinforceables);
@@ -48,6 +56,8 @@ public class ReinforcementType {
 			this.globalBlackList.addAll(globalBlackList);
 		}
 		this.id = id;
+		this.decayMultiplier = decayMultiplier;
+		this.decayTimer = decayTimer;
 	}
 
 	public boolean canBeReinforced(Material mat) {
@@ -126,10 +136,26 @@ public class ReinforcementType {
 
 	/**
 	 * @return Get the effect to spawn around this type of reinforcement when it is
-	 *         created or damaged.
+	 *         created
 	 */
-	public ReinforcementEffect getReinforcementEffect() {
-		return effect;
+	public ReinforcementEffect getCreationEffect() {
+		return creationEffect;
+	}
+
+	/**
+	 * @return Get the effect to spawn around this type of reinforcement when it is
+	 *         damaged
+	 */
+	public ReinforcementEffect getDamageEffect() {
+		return damageEffect;
+	}
+
+	/**
+	 * @return Get the effect to spawn around this type of reinforcement when it is
+	 *         destroyed
+	 */
+	public ReinforcementEffect getDestructionEffect() {
+		return destructionEffect;
 	}
 
 	/**
@@ -138,5 +164,17 @@ public class ReinforcementType {
 	 */
 	public double getReturnChance() {
 		return returnChance;
+	}
+	
+	public double getDecayDamageMultipler(long since) {
+		if (decayTimer <= 0 || decayMultiplier == 1) {
+			return 1;
+		}
+		long timePassed = System.currentTimeMillis() - since;
+		if (timePassed <= decayTimer) {
+			return 1;
+		}
+		double timeExponent = ((double) timePassed / (double) decayTimer);
+		return Math.pow(decayMultiplier, timeExponent);
 	}
 }

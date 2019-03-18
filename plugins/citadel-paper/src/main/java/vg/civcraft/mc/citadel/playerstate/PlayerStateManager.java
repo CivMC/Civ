@@ -4,7 +4,10 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.citadel.Utility;
 
 public class PlayerStateManager {
 
@@ -30,7 +33,7 @@ public class PlayerStateManager {
 		if (player == null) {
 			throw new IllegalArgumentException("Can not set state for null player");
 		}
-		AbstractPlayerState existingState = playerStateMap.get(player.getUniqueId());
+		AbstractPlayerState existingState = getState(player);
 		// null state is allowed, it just resets the state
 		if (state == null) {
 			if (existingState != null) {
@@ -38,12 +41,10 @@ public class PlayerStateManager {
 			} else {
 				state = new NormalState(player, true);
 			}
-			playerStateMap.put(player.getUniqueId(), state);
-			player.sendMessage("Switched Citadel mode to " + state.getName());
-		} else {
-			playerStateMap.put(player.getUniqueId(), state);
-			player.sendMessage("Switched Citadel mode to " + state.getName() + " from " + existingState.getName());
 		}
+		playerStateMap.put(player.getUniqueId(), state);
+		Utility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW + state.getName()
+				+ ChatColor.GOLD + " from " + ChatColor.YELLOW + existingState.getName());
 	}
 
 }

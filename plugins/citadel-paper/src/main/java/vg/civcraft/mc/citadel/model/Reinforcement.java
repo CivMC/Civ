@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.model;
 
+import java.util.Random;
 import java.util.UUID;
 
 import org.bukkit.Location;
@@ -13,6 +14,8 @@ import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Reinforcement {
+
+	private static Random rng = new Random();
 
 	private final long creationTime;
 	private ReinforcementType type;
@@ -207,5 +210,19 @@ public class Reinforcement {
 	public void toggleInsecure() {
 		insecure = !insecure;
 		setDirty(true);
+	}
+
+	/**
+	 * Does a randomness check based on current reinforcement health and
+	 * reinforcement type to decide whether the reinforcement item should be
+	 * returned
+	 * 
+	 * @return Whether to return the reinforcement item or not
+	 */
+	public boolean rollForItemReturn() {
+		double baseChance = type.getReturnChance();
+		double relativeHealth = health / type.getHealth();
+		baseChance *= relativeHealth;
+		return rng.nextDouble() <= baseChance;
 	}
 }

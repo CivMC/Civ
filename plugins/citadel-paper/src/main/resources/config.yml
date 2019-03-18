@@ -1,104 +1,72 @@
-# material is the bukkit name for the material.
-# requirements is the amount of the material needed to create a reinforcement.
-# return is the amount of material to return.
-# percent_chance is the chance to return the block. Scales with damage.
-# scale_amount is, if maturation is enabled, the amount extra to damage a block if it is not fully matured.  The forumla for calculating the extra damage is 1/(1-((time left of maturation) / (default amount of time for maturation))) * scale.  So if a block has 5 minutes left of maturation on a 10 minute default period with a scale of 3 we do 1/(5 / 10) * 3 = 6 damage. Setting scale amount to 0 disables this function.
-# effect allows to add particles around a reinforced block when it is created or damaged.
-#  type: The bukkit name of the particle.
-#  id: the item/block/data id for the effect
-#  data: the data value of the block/item for the effect
-#  offsetX: the amount to be randomly offset by in the X axis
-#  offsetY: the amount to be randomly offset by in the Y axis
-#  offsetZ: the amount to be randomly offset by in the Z axis
-#  speed: the speed of the particles
-#  particleCount: the amount of particle to display. 
-#  view_distance: the distance from which players will be able to see the effect. default is 16. 
-# internal_logging logs Citadel internal status messages, config notices, and the like. Strongly recommend it be on.
-internal_logging: true
-# command_logging logs the _response_ that Citadel sends to the player; very useful.
-command_logging: true
-# break_logging logs all reinforcement breaks that are done in /ctb mode (e.g. friendly breaks).
-break_logging: false
-# hostile_logging logs all reinforcement breaks that are done without bypass (e.g. hostile breaks).
-hostile_logging: true
-# damage_logging logs all reinforcement break attempts. Leave off unless you need it.
-damage_logging: false
-# reinf_logging logs all reinforcement creation and also logs when group lookups fail. Can get super spammy.
-reinf_logging: false
-# All logging states can be controlled using /ctsl
+#Log when a player forcefully breaks reinforcements?
+logHostileBreaks: true
+
+#Log when a player bypasses friendly reinforcements?
+logFriendlyBreaks: true
+
+#Log every time damage is done to a reinforcement? Only recommended for debugging        
+logDamage: true
+
+#Log creation of reinforcements?
+logCreation: true
+
+#Log message replies sent to users? Very useful
+logMessages: true
+
+
+#General debug messages
+debug: true
+
 reinforcements:
- stone_tier:
-  material: STONE
-  requirements: 1
-  return: 1
-  percent_chance: 100
-  hit_points: 50
-# mature time is in minutes
-  mature_time: 5
-  acid_time: 30
-  scale_amount: 1
-# grace period is in minutes, forced 100% return within that time if undamaged. Set to 0 to disable (default)
-  grace_period: 1
-  lore:
-  effect:
-   type: ENCHANTMENT_TABLE
-   speed: 0.5
-   particleCount: 50
- iron_tier:
-  material: IRON_INGOT
-  requirements: 1
-  return: 1
-  percent_chance: 100
-  hit_points: 300
-# mature time is in minutes
-  mature_time: 60
-  acid_time: 90
-  scale_amount: 1
-  lore:
-  effect:
-   type: FLYING_GLYPH
-   speed: 0.5
-   particleCount: 50
- diamond_tier:
-  material: DIAMOND
-  requirements: 1
-  return: 1
-  percent_chance: 100
-  hit_points: 2000
-# mature time is in minutes
-  mature_time: 1440
-  acid_time: 2880
-  scale_amount: 1
-  lore:
-  effect:
-   type: FLYING_GLYPH
-   speed: 0.5
-   particleCount: 50
-# Delete the comment char to use lore.  Three spaces are required 
-# after lore. You can add multiple lines by adding -
-#   - Some string representation required for this reinforcement.
-#
-# # Uncomment below to add limits to what blocks this reinforcement can be applied to
-# reinforceables:
-#   - STONE
- bedrock:
-  material: BEDROCK
-  requirements: 1
-  return: 0
-  percent_chance: 100
-  hit_points: 147483646
-  mature_time: 147483646
-  acid_time: 147483646
-  scale_amount: 1
-  lore:
-  effect:
-   type: FLYING_GLYPH
-   speed: 0.5
-   particleCount: 50
-#natural_reinforcements:
- #diamond_ore:
-  #material: DIAMOND_ORE
-  #hit_points: 60
+  stone:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: STONE
+    effect:
+      type: ENCHANTMENT_TABLE
+      speed: 0.5
+      particleCount: 50
+    mature_time: 5m
+    acid_time: 20m
+    name: Stone
+    hit_points: 50
+  iron:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: IRON_INGOT
+    effect:
+      type: ENCHANTMENT_TABLE
+      speed: 0.5
+      particleCount: 50
+    mature_time: 30m
+    acid_time: 6h
+    name: Iron
+    hit_points: 300
+  diamond:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: DIAMOND
+    effect:
+      type: ENCHANTMENT_TABLE
+      speed: 0.5
+      particleCount: 50
+    mature_time: 4h
+    acid_time: 48h
+    name: Diamond
+    hit_points: 2000
+  bedrock:
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: BEDROCK
+    effect:
+      type: ENCHANTMENT_TABLE
+      speed: 0.5
+      particleCount: 50
+    mature_time: 1s
+    acid_time: 1s
+    name: Bedrock
+    hit_points: 420420420
+    
 non_reinforceables:
  - BEDROCK
  - ENDER_PORTAL_FRAME
@@ -125,27 +93,21 @@ non_reinforceables:
  - VINE
  - NETHER_WARTS
  - ENDER_PORTAL
-reset_player_state: 300
-enable_maturation: true
-# The max amount of reinforcements to keep loaded
-max_cache_size: 20000000
-# The amount of minutes to keep a reinforcement loaded
-max_cache_load_time: 10
-redstone_distance: 3
-acidblock_material: GOLD_BLOCK
-# If set to true then instead of dropping the reinforcement a block with the specified reinforcement value will be dropped.
-drop_reinforced_block: false
-save_interval_ticks: 600
+ 
+acidblock_material:
+ - GOLD_BLOCK
+
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
-mysql:
- hostname: "localhost"
- port: 3306
- dbname: "civclassic"
- username: "root"
- password: "thisisnotourpassword"
-# Shows reinforcement information as percentile value
-show_health_as_percent: true
-# Whether players are automatically put in reinforcement bypass mode on login
-default_bypass_mode: true
-break_acided_block_naturally: false
+#database:
+#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+#  plugin: Citadel
+#  user: username
+#  password: squidLover69
+#  host: localhost
+#  port: 3306
+#  database: citadel
+#  poolsize: 5
+#  connection_timeout: 10000
+#  idle_timeout: 600000
+#  max_lifetime: 7200000  

@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +8,9 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -68,6 +69,7 @@ public class RedstoneListener implements Listener {
 
 	public RedstoneListener(double maxRedstoneDistance) {
 		this.maxRedstoneDistance = maxRedstoneDistance;
+		this.authorizations = new HashMap<>();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Citadel.getInstance(), () -> {
 			authorizations.clear();
 		}, 1L, 1L);
@@ -100,8 +102,7 @@ public class RedstoneListener implements Listener {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-		if (e.getClickedBlock().getType() != Material.STONE_BUTTON
-				&& e.getClickedBlock().getType() != Material.WOOD_BUTTON) {
+		if (!(e.getClickedBlock().getBlockData() instanceof Switch)) {
 			return;
 		}
 		Button button = (Button) (e.getClickedBlock().getState().getData());

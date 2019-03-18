@@ -1,11 +1,12 @@
 package vg.civcraft.mc.citadel;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.material.Bed;
 
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
@@ -18,14 +19,25 @@ public class ReinforcementLogic {
 	public static void createReinforcement(Block block, ReinforcementType type, Group group) {
 		GlobalReinforcementManager worldManager = Citadel.getInstance().getReinforcementManager();
 		worldManager.insertReinforcement(new Reinforcement(block.getLocation(), type, group));
+		if (type.getCreationEffect() != null) {
+			type.getCreationEffect().playEffect(block.getLocation().clone().add(0.5, 0.5, 0.5));
+		}
 	}
 
 	public static void damageReinforcement(Reinforcement rein, double damage) {
 		rein.setHealth(rein.getHealth() - damage);
-		rein.getType().getReinforcementEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+		if (rein.isBroken()) {
+			if (rein.getType().getDestructionEffect() != null) {
+				rein.getType().getDestructionEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+			}
+		} else {
+			if (rein.getType().getDamageEffect() != null) {
+				rein.getType().getDamageEffect().playEffect(rein.getLocation().clone().add(0.5, 0.5, 0.5));
+			}
+		}
 	}
 
-	public static double getDamageApplied(Player player, Reinforcement reinforcement) {
+	public static double getDamageApplied(Reinforcement reinforcement) {
 		double damageAmount = 1.0;
 		if (!reinforcement.isMature()) {
 			double timeExisted = (double) (System.currentTimeMillis() - reinforcement.getCreationTime());
@@ -33,7 +45,14 @@ public class ReinforcementLogic {
 			damageAmount /= (1.0 - progress);
 			damageAmount *= reinforcement.getType().getMaturationScale();
 		}
+		long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
+		damageAmount *= reinforcement.getType().getDecayDamageMultipler(lastRefresh);
 		return damageAmount;
+	}
+
+	public static Reinforcement getReinforcementAt(Location loc) {
+		GlobalReinforcementManager reinMan = Citadel.getInstance().getReinforcementManager();
+		return reinMan.getReinforcement(loc);
 	}
 
 	public static Reinforcement getReinforcementProtecting(Block b) {
@@ -57,20 +76,37 @@ public class ReinforcementLogic {
 	 */
 	public static Block getResponsibleBlock(Block block) {
 		switch (block.getType()) {
-		case NETHER_WARTS:
-		case YELLOW_FLOWER:
-		case SAPLING:
+		case DANDELION:
+		case POPPY:
+		case BLUE_ORCHID:
+		case ALLIUM:
+		case AZURE_BLUET:
+		case ORANGE_TULIP:
+		case RED_TULIP:
+		case PINK_TULIP:
+		case WHITE_TULIP:
+		case OXEYE_DAISY:
+		case ACACIA_SAPLING:
+		case BIRCH_SAPLING:
+		case DARK_OAK_SAPLING:
+		case JUNGLE_SAPLING:
+		case OAK_SAPLING:
+		case SPRUCE_SAPLING:
 		case WHEAT:
-		case CARROT:
-		case POTATO:
-		case CROPS:
-		case BEETROOT_BLOCK:
+		case CARROTS:
+		case POTATOES:
+		case BEETROOTS:
 		case MELON_STEM:
 		case PUMPKIN_STEM:
+		case ATTACHED_MELON_STEM:
+		case ATTACHED_PUMPKIN_STEM:
+		case NETHER_WART_BLOCK:
 			return block.getRelative(BlockFace.DOWN);
-		case RED_ROSE:
-		case SUGAR_CANE_BLOCK:
+		case SUGAR_CANE:
 		case CACTUS:
+		case SUNFLOWER:
+		case LILAC:
+		case PEONY:
 			// scan downwards for first different block
 			Block below = block.getRelative(BlockFace.DOWN);
 			while (below.getType() == block.getType()) {
@@ -80,21 +116,37 @@ public class ReinforcementLogic {
 		case ACACIA_DOOR:
 		case BIRCH_DOOR:
 		case DARK_OAK_DOOR:
-		case IRON_DOOR_BLOCK:
+		case IRON_DOOR:
 		case SPRUCE_DOOR:
 		case JUNGLE_DOOR:
-		case WOODEN_DOOR:
-		case WOOD_DOOR:
+		case OAK_DOOR:
 			if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
 				// block is upper half of a door
 				return block.getRelative(BlockFace.DOWN);
 			}
-		case BED_BLOCK:
-			if (((Bed) block.getState().getData()).isHeadOfBed()) {
+		case BLACK_BED:
+		case BLUE_BED:
+		case BROWN_BED:
+		case CYAN_BED:
+		case GRAY_BED:
+		case GREEN_BED:
+		case MAGENTA_BED:
+		case LIME_BED:
+		case ORANGE_BED:
+		case PURPLE_BED:
+		case PINK_BED:
+		case WHITE_BED:
+		case LIGHT_GRAY_BED:
+		case LIGHT_BLUE_BED:
+		case RED_BED:
+		case YELLOW_BED:
+			Bed bed = (Bed) block.getBlockData();
+			if (bed.getPart() == Bed.Part.HEAD) {
 				return block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
 			}
+		default:
+			return block;
 		}
-		return block;
 	}
 
 	/**
