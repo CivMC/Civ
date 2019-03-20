@@ -8,22 +8,16 @@ import org.bukkit.command.CommandSender;
 
 import com.github.maxopoly.finale.Finale;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-public class ReloadFinaleCommand extends PlayerCommand {
-
-	public ReloadFinaleCommand() {
-		super("finalereload");
-		setIdentifier("finalereload");
-		setDescription("Reloads Finale entirely");
-		setUsage("/finalereload");
-		setArguments(0, 0);
-	}
+@CivCommand(id = "finalereload")
+public class ReloadFinaleCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender arg0, String[] arg1) {
 		Finale.getPlugin().reload();
-		arg0.sendMessage(ChatColor.GREEN  + "Reloaded Finale");
+		arg0.sendMessage(ChatColor.GREEN + "Reloaded Finale");
 		return true;
 	}
 

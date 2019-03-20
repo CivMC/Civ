@@ -11,4 +11,3 @@ commands:
 permissions:
     finale.op:
         default: op
-api-version: 1.13

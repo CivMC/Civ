@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -27,18 +29,21 @@ import org.bukkit.potion.PotionEffectType;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 
+import net.minecraft.server.v1_13_R2.EntityPlayer;
+
 public class DamageListener implements Listener {
 
-	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOOD_SWORD,
-			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.DIAMOND_SWORD }));
+	private static final List<Material> ladderBlocks = Arrays.asList(new Material[] { Material.LADDER, Material.VINE });
+	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
+			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
 
 	private static final String powerMetaDataKey = "shooterPowerLevel";
 
 	private Map<DamageModificationConfig.Type, DamageModificationConfig> modifiers;
-	
+
 	public DamageListener(Collection<DamageModificationConfig> configs) {
 		modifiers = new TreeMap<>();
-		for(DamageModificationConfig config : configs) {
+		for (DamageModificationConfig config : configs) {
 			modifiers.put(config.getType(), config);
 		}
 	}
@@ -55,7 +60,7 @@ public class DamageListener implements Listener {
 		if (!(e.getDamager() instanceof LivingEntity)) {
 			if (e.getDamager().getType() == EntityType.ARROW) {
 				handleArrow(e);
-				
+
 			}
 			return;
 		}
@@ -84,8 +89,12 @@ public class DamageListener implements Listener {
 				e.setDamage(sharpnessModifier.modify(e.getDamage(), sharpnessLevel));
 			}
 		}
+		DamageModificationConfig critModifier = modifiers.get(DamageModificationConfig.Type.CRIT);
+		if (critModifier != null && isCrit(e)) {
+			e.setDamage(critModifier.modify(e.getDamage()));
+		}
 	}
-	
+
 	private void handleArrow(EntityDamageByEntityEvent e) {
 		DamageModificationConfig arrowModifier = modifiers.get(DamageModificationConfig.Type.ARROW);
 		if (arrowModifier != null) {
@@ -99,8 +108,7 @@ public class DamageListener implements Listener {
 		List<MetadataValue> values = arrow.getMetadata(powerMetaDataKey);
 		if (values == null || values.size() == 0) {
 			return;
-		}
-		else {
+		} else {
 			int powerLevel = values.get(0).asInt();
 			e.setDamage(powerModifier.modify(e.getDamage(), powerLevel));
 		}
@@ -125,6 +133,65 @@ public class DamageListener implements Listener {
 		Arrow arrow = (Arrow) e.getEntity();
 		arrow.setMetadata(powerMetaDataKey,
 				new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
+	}
+
+	/**
+	 * Checks if a player crit another player entity
+	 *
+	 * @param e Event to check for
+	 * @return True if the attacker crit, false if not
+	 */
+	public boolean isCrit(EntityDamageByEntityEvent e) {
+		if (e.getDamager().getType() != EntityType.PLAYER) {
+			// only players can crit
+			return false;
+		}
+		Player player = (Player) e.getDamager();
+		EntityPlayer nmsPlayer = ((CraftPlayer) player).getHandle();
+		if (nmsPlayer.fallDistance <= 0.0f) {
+			// player must be falling
+			return false;
+		}
+		if (nmsPlayer.onGround) {
+			// falling and being on the ground are actually two different things. Falling is
+			// a state determined by the client
+			// and barely/never checked by the server.
+			// onGround checks if a solid block is below the player
+			return false;
+		}
+		int x = minecraftFloor(nmsPlayer.locX);
+		int boundingY = minecraftFloor(nmsPlayer.getBoundingBox().minY);
+		int z = minecraftFloor(nmsPlayer.locZ);
+		Block ladderBlock = player.getWorld().getBlockAt(x, boundingY, z);
+		if (ladderBlocks.contains(ladderBlock.getType())) {
+			// going down a ladder isnt actually falling and doesn't count for a crit
+			return false;
+		}
+		if (nmsPlayer.isInWater()) {
+			// cant crit in water
+			return false;
+		}
+		if (player.getPotionEffect(PotionEffectType.BLINDNESS) != null) {
+			return false;
+		}
+		if (player.getVehicle() != null) {
+			// no driveby crits
+			return false;
+		}
+
+		if (nmsPlayer.isSprinting()) {
+			// not sure why, but this has to be here
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Minecrafts own floor implementation
+	 */
+	public static int minecraftFloor(double value) {
+		int i = (int) value;
+		return value < i ? i - 1 : i;
 	}
 
 }

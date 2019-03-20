@@ -20,6 +20,7 @@ import com.github.maxopoly.finale.potion.PotionModification;
 public class PotionListener implements Listener {
 
 	private static final double healthPerPotionLevel = 4;
+
 	public static PotionEffect fromPotionData(PotionData data) {
 		PotionEffectType type = data.getType().getEffectType();
 		if (type == PotionEffectType.HEAL || type == PotionEffectType.HARM) {
@@ -47,7 +48,7 @@ public class PotionListener implements Listener {
 	}
 
 	private PotionHandler potHandler;
-	
+
 	public PotionListener(PotionHandler potHandler) {
 		this.potHandler = potHandler;
 	}
@@ -76,7 +77,7 @@ public class PotionListener implements Listener {
 		if (potMeta.getBasePotionData().getType() != PotionType.INSTANT_HEAL) {
 			return;
 		}
-		for(LivingEntity entity : e.getAffectedEntities()) {
+		for (LivingEntity entity : e.getAffectedEntities()) {
 			double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			double modifiedHealth = entity.getHealth();
 			modifiedHealth += e.getIntensity(entity) * multiplier * (potEffect.getAmplifier() + 1)

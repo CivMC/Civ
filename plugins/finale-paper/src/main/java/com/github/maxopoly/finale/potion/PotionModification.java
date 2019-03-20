@@ -8,7 +8,7 @@ import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionType;
 
 public class PotionModification {
-	
+
 	public static final PotionType wildCardType = PotionType.AWKWARD;
 
 	private PotionType type;

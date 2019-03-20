@@ -27,5 +27,4 @@ public class CombatTagPlusManager {
 		tagManager.tag(victim, attacker);
 	}
 
-
 }

@@ -2,7 +2,6 @@
 alterAttack:
   enabled: true
   speed: 9.4
-  invulnerableTicks: 10
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
@@ -14,12 +13,8 @@ foodHealthRegen:
   blockSaturationRegen: true
 # alters pearl cooldown using vanilla mechanism, optionally combattags on pearl (if combattagplus is available)
 pearls:
-#Enable custom cooldown?
   enabled: true
-#Custom pearl cooldown
   cooldown: 10s
-#Display in sidebar as score board entry?
-  useSideBar: true
 #Combat tag using CTP when pearling?
   combatTag: true
 #Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
@@ -116,12 +111,12 @@ velocity:
 #    mode: LINEAR
 #    flatAddition: 0.0
 
-#Key of the entry is the type of damage modified, allowed here are: ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT, CRIT
+#Key of the entry is the type of damage modified, allowed here are: ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT
 #'multiplier' is the multiplier applied to the preexisting vanilla damage, defaults to 1.0
 #'mode' is the mode used to apply the multiplier for types with different levels like SHARPNESS_ENCHANT. Allowed are LINEAR and EXPONENTIAL
 #'flatAddition' is a flat amount added per level. Flat addition is applied before the multiplier
 
-#The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT, CRIT
+#The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT
 #Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
 damageModifiers: 
 #Decrease all damage by 20 % 

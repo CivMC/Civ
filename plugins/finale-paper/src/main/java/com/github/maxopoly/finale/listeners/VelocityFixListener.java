@@ -8,16 +8,16 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import com.github.maxopoly.finale.misc.VelocityHandler;
 
 public class VelocityFixListener implements Listener {
-	
+
 	private VelocityHandler velocityManager;
-	
+
 	public VelocityFixListener(VelocityHandler velocityManager) {
 		this.velocityManager = velocityManager;
 	}
-	
+
 	@EventHandler
 	public void projectileLaunch(ProjectileLaunchEvent e) {
-		if(!(e.getEntity().getShooter() instanceof Player)) {
+		if (!(e.getEntity().getShooter() instanceof Player)) {
 			return;
 		}
 		velocityManager.modifyVelocity(e.getEntity(), (Player) e.getEntity().getShooter());

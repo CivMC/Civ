@@ -1,9 +1,5 @@
 package com.github.maxopoly.finale;
 
-import java.util.Collection;
-
-import org.bukkit.enchantments.Enchantment;
-
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 import com.github.maxopoly.finale.potion.PotionHandler;
@@ -14,18 +10,21 @@ public class FinaleManager {
 	private boolean attackSpeedEnabled;
 	private double attackSpeed;
 	private boolean regenHandlerEnabled;
+	private int invulnerableTicks;
 	private SaturationHealthRegenHandler regenHandler;
 	private WeaponModifier weaponModifier;
 	private PotionHandler potionHandler;
 
-	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
-			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, PotionHandler potionHandler) {
+	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, int invulnerableTicks,
+			boolean regenHandlerEnabled, SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier,
+			PotionHandler potionHandler) {
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
 		this.regenHandlerEnabled = regenHandlerEnabled;
 		this.regenHandler = regenHandler;
 		this.weaponModifier = weaponModifier;
 		this.potionHandler = potionHandler;
+		this.invulnerableTicks = invulnerableTicks;
 	}
 
 	public double getAttackSpeed() {
@@ -48,10 +47,14 @@ public class FinaleManager {
 		return attackSpeedEnabled;
 	}
 
+	public int getInvulnerableTicks() {
+		return invulnerableTicks;
+	}
+
 	public boolean isDebug() {
 		return debug;
 	}
-	
+
 	public boolean isRegenHandlerEnabled() {
 		return regenHandlerEnabled;
 	}
