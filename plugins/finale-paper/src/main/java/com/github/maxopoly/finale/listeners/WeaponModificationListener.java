@@ -16,7 +16,6 @@ import net.minecraft.server.v1_13_R2.NBTTagInt;
 import net.minecraft.server.v1_13_R2.NBTTagList;
 import net.minecraft.server.v1_13_R2.NBTTagString;
 
-
 public class WeaponModificationListener implements Listener {
 
 	@EventHandler
@@ -53,7 +52,7 @@ public class WeaponModificationListener implements Listener {
 			damage.set("UUIDMost", new NBTTagInt(2872));
 			modifiers.add(damage);
 		}
-		if (adjustedAttackSpeed != - 1.0) {
+		if (adjustedAttackSpeed != -1.0) {
 			NBTTagCompound speed = new NBTTagCompound();
 			speed.set("AttributeName", new NBTTagString("generic.attackSpeed"));
 			speed.set("Name", new NBTTagString("generic.attackSpeed"));

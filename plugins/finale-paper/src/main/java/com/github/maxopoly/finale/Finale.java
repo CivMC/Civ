@@ -4,7 +4,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 
-import com.github.maxopoly.finale.command.FinaleCommandHandler;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
@@ -19,9 +18,11 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 public class Finale extends ACivMod {
 
 	private static Finale instance;
+
 	public static Finale getPlugin() {
 		return instance;
 	}
+
 	private FinaleManager manager;
 
 	private CombatTagPlusManager ctpManager;
@@ -55,25 +56,24 @@ public class Finale extends ACivMod {
 	@Override
 	public void onDisable() {
 		HandlerList.unregisterAll(this);
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	@Override
 	public void onEnable() {
+		super.onEnable();
 		instance = this;
 		reload();
 	}
 
 	private void registerListener() {
-		// So far the player listener is only needed if regen or attack speed is
-		// enabled.
-		if (manager.isAttackSpeedEnabled() || manager.isRegenHandlerEnabled()) {
-			Bukkit.getPluginManager().registerEvents(new PlayerListener(manager), this);
-		}
+		Bukkit.getPluginManager().registerEvents(new PlayerListener(manager), this);
 		// So far the pearl listener, CTP manager only needed if pearl cooldown changes
 		// are enabled.
 		if (config.isPearlEnabled()) {
-			Bukkit.getPluginManager().registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(),
-					config.combatTagOnPearl(), ctpManager, config.setVanillaPearlCooldown()), this);
+			Bukkit.getPluginManager()
+					.registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
+							ctpManager, config.setVanillaPearlCooldown(), config.useSideBarForPearlCoolDown()), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
@@ -83,13 +83,11 @@ public class Finale extends ACivMod {
 	}
 
 	public void reload() {
-		HandlerList.unregisterAll(this);
+		onDisable();
 		config = new ConfigParser(this);
 		manager = config.parse();
 		initExternalManagers();
 		registerListener();
-		handle = new FinaleCommandHandler();
-		handle.registerCommands();
 	}
 
 }

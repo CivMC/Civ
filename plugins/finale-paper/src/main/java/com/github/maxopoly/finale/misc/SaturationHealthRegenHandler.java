@@ -16,7 +16,7 @@ import com.github.maxopoly.finale.Finale;
 
 public class SaturationHealthRegenHandler implements Runnable {
 	private List<LinkedList<UUID>> ticks;
-	private Map <UUID, Integer> tickMapping;
+	private Map<UUID, Integer> tickMapping;
 	private int currentTick;
 	private double healthPerCycle;
 	private int minimumFood;
@@ -26,11 +26,11 @@ public class SaturationHealthRegenHandler implements Runnable {
 	private boolean blockPassiveHealthRegen;
 	private boolean blockFoodHealthRegen;
 
-	public SaturationHealthRegenHandler(int interval, double healthPerCycle,
-			int minimumFood, float exhaustionPerHeal, boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
+	public SaturationHealthRegenHandler(int interval, double healthPerCycle, int minimumFood, float exhaustionPerHeal,
+			boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
 		this.currentTick = 0;
 		this.ticks = new ArrayList<LinkedList<UUID>>(interval);
-		for(int i = 0; i < interval; i++) {
+		for (int i = 0; i < interval; i++) {
 			ticks.add(null);
 		}
 		tickMapping = new TreeMap<UUID, Integer>();

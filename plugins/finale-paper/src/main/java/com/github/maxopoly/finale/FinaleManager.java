@@ -17,6 +17,7 @@ public class FinaleManager {
 	private boolean attackSpeedEnabled;
 	private double attackSpeed;
 	private boolean regenHandlerEnabled;
+	private int invulnerableTicks;
 	private SaturationHealthRegenHandler regenHandler;
 	private WeaponModifier weaponModifier;
 	private PotionHandler potionHandler;
@@ -25,7 +26,7 @@ public class FinaleManager {
 	private CombatRunnable combatRunnable;
 	private CombatConfig combatConfig;
 
-	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, boolean regenHandlerEnabled,
+	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, int invulnerableTicks, boolean regenHandlerEnabled,
 			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, PotionHandler potionHandler, CombatConfig combatConfig) {
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
@@ -47,6 +48,7 @@ public class FinaleManager {
 			}
 			
 		});
+		this.invulnerableTicks = invulnerableTicks;
 	}
 
 	public double getAttackSpeed() {
@@ -81,10 +83,14 @@ public class FinaleManager {
 		return attackSpeedEnabled;
 	}
 
+	public int getInvulnerableTicks() {
+		return invulnerableTicks;
+	}
+
 	public boolean isDebug() {
 		return debug;
 	}
-	
+
 	public boolean isRegenHandlerEnabled() {
 		return regenHandlerEnabled;
 	}

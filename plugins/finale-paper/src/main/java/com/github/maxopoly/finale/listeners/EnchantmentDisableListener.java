@@ -13,16 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class EnchantmentDisableListener implements Listener {
-	
+
 	private Set<Enchantment> disabledEnchants;
-	
+
 	public EnchantmentDisableListener(Collection<Enchantment> disabledEnchants) {
 		this.disabledEnchants = new HashSet<Enchantment>(disabledEnchants);
 	}
-	
+
 	public boolean isDisabledEnchantment(Enchantment enchant) {
 		return disabledEnchants.contains(enchant);
 	}
+
 	@EventHandler
 	public void itemClick(InventoryClickEvent e) {
 		ItemStack is = e.getCurrentItem();
@@ -30,7 +31,7 @@ public class EnchantmentDisableListener implements Listener {
 			return;
 		}
 		ItemMeta im = is.getItemMeta();
-		for(Enchantment ench : im.getEnchants().keySet()) {
+		for (Enchantment ench : im.getEnchants().keySet()) {
 			if (isDisabledEnchantment(ench)) {
 				is.removeEnchantment(ench);
 			}
@@ -47,7 +48,7 @@ public class EnchantmentDisableListener implements Listener {
 			return;
 		}
 		ItemMeta im = is.getItemMeta();
-		for(Enchantment ench : im.getEnchants().keySet()) {
+		for (Enchantment ench : im.getEnchants().keySet()) {
 			if (isDisabledEnchantment(ench)) {
 				is.removeEnchantment(ench);
 			}

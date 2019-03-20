@@ -1,9 +1,7 @@
 # alters the base CPS for all players, set enabled to false to disable
 alterAttack:
   enabled: true
-  speed: 25
-  invulnerableTicks: 10
-
+  speed: 9.4
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
@@ -15,12 +13,8 @@ foodHealthRegen:
   blockSaturationRegen: true
 # alters pearl cooldown using vanilla mechanism, optionally combattags on pearl (if combattagplus is available)
 pearls:
-#Enable custom cooldown?
   enabled: true
-#Custom pearl cooldown
   cooldown: 10s
-#Display in sidebar as score board entry?
-  useSideBar: true
 #Combat tag using CTP when pearling?
   combatTag: true
 #Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
@@ -31,19 +25,19 @@ pearls:
 weaponModification:
   diamondAxe:
     material: DIAMOND_AXE
-    damage: 5
+    damage: 6
   ironAxe:
     material: IRON_AXE
-    damage: 4
+    damage: 5
   stoneAxe:
     material: STONE_AXE
-    damage: 3
+    damage: 4
   goldAxe:
     material: GOLD_AXE
-    damage: 2
+    damage: 3
   woodAxe:
     material: WOOD_AXE
-    damage: 1
+    damage: 3
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
@@ -100,17 +94,15 @@ velocity:
   revertedVelocity:
    - SPLASH_POTION
    - ENDER_PEARL
+   - ARROW
 
 
 #This let's you apply a general multiplier to the launch velocity of any kind of projectile. Entry key is the 
 #entity type (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) and value is the multiplier.
   multiplier:
 #Increase pearl velocity by 20 % for example
-    ENDER_PEARL: 1.0
-    SPLASH_POTION: 1.0
-  power:
-    ENDER_PEARL: 1.6
-    SPLASH_POTION: 0.5
+    ENDER_PEARL: 1.2
+    
     
 #This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
 
@@ -119,12 +111,12 @@ velocity:
 #    mode: LINEAR
 #    flatAddition: 0.0
 
-#Key of the entry is the type of damage modified, allowed here are: ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT, CRIT
+#Key of the entry is the type of damage modified, allowed here are: ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT
 #'multiplier' is the multiplier applied to the preexisting vanilla damage, defaults to 1.0
 #'mode' is the mode used to apply the multiplier for types with different levels like SHARPNESS_ENCHANT. Allowed are LINEAR and EXPONENTIAL
 #'flatAddition' is a flat amount added per level. Flat addition is applied before the multiplier
 
-#The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT, CRIT
+#The order in which modifiers are applied is: ALL, ARROW, POWER_ENCHANT, STRENGTH_EFFECT, SWORD, SHARPNESS_ENCHANT
 #Note that these effects are applied after vanilla damage additions and before vanilla damage reductions
 damageModifiers: 
 #Decrease all damage by 20 % 
@@ -133,10 +125,4 @@ damageModifiers:
 #Increase sword damage by 25 %
   SWORD:
     multiplier: 1.25
-    
-
-combat:
-   cpsLimit: 9
-   maxReach: 6.0
-   critMultiplier: 1.2
     

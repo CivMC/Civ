@@ -1,9 +1,7 @@
 package com.github.maxopoly.finale.misc;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_13_R2.entity.CraftProjectile;
@@ -11,24 +9,28 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 
+import com.github.maxopoly.finale.Finale;
+
 import net.minecraft.server.v1_13_R2.EntityPlayer;
-import net.minecraft.server.v1_13_R2.EntityPotion;
 import net.minecraft.server.v1_13_R2.EntityProjectile;
 import net.minecraft.server.v1_13_R2.MathHelper;
 
 public class VelocityHandler {
-	
+
 	private Set<EntityType> typesToRevert;
 	private Map<EntityType, Double> velocityMultiplier;
 	private Map<EntityType, Float> powers;
 	
-	public VelocityHandler(Collection<EntityType> revertedTypes, Map<EntityType, Double> velocityMultiplier, Map<EntityType, Float> powers) {
-		this.typesToRevert = new TreeSet<>();
+	public VelocityHandler(Set<EntityType> revertedTypes, Map<EntityType, Double> velocityMultiplier, Map<EntityType, Float> powers) {
+		this.typesToRevert = revertedTypes;
 		this.velocityMultiplier = velocityMultiplier;
 		this.powers = powers;
 	}
-	
+
 	public void modifyVelocity(Projectile projectile, Player shooter) {
+		Finale.getPlugin().getLogger().info("typesTorevert: " + typesToRevert);
+		Finale.getPlugin().getLogger().info("powers: " + powers);
+		Finale.getPlugin().getLogger().info("proj type: " + projectile.getType());
 		if (typesToRevert.contains(projectile.getType()) && powers.containsKey(projectile.getType())) {
 			float power = powers.get(projectile.getType());
 			shoot(projectile, shooter, power);
@@ -58,6 +60,7 @@ public class VelocityHandler {
     	entityProj.motY = (double)(-MathHelper.sin((entityProj.pitch + f) / 180.0F * (float)Math.PI) * var3);
     	
         entityProj.shoot(entityProj.motX, entityProj.motY, entityProj.motZ, power, 1.0F);
+        Finale.getPlugin().getLogger().info("reverted velocity with " + power);
 	}
 
 }

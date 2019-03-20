@@ -1,4 +1,6 @@
 package com.github.maxopoly.finale.listeners;
+
+import org.bukkit.Bukkit;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.EntityType;
@@ -20,31 +22,57 @@ public class PlayerListener implements Listener {
 
 	public PlayerListener(FinaleManager manager) {
 		this.manager = manager;
-	}
-
-	//@EventHandler
-	public void arrowHit(EntityDamageByEntityEvent e) {
-		if (!(e.getEntity() instanceof LivingEntity)) {
-			return;
-		}
-		if (e.getDamager().getType() == EntityType.TIPPED_ARROW) {
-			return;
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (manager.isAttackSpeedEnabled()) {
+				fixAttackSpeed(p);
+			}
+			if (manager.isRegenHandlerEnabled()) {
+				// Register login for custom health regen
+				manager.getPassiveRegenHandler().registerPlayer(p.getUniqueId());
+			}
 		}
 	}
 
 	@EventHandler
+	public void damageEntity(EntityDamageByEntityEvent e) {
+		if (e.getDamager().getType() != EntityType.PLAYER) {
+			return;
+		}
+		if (!(e.getEntity() instanceof LivingEntity)) {
+			return;
+		}
+		LivingEntity victim = (LivingEntity) e.getEntity();
+		if (victim.getNoDamageTicks() > 0) {
+			e.setCancelled(true);
+			return;
+		}
+		// see
+		// https://bukkit.org/threads/whats-up-with-setnodamageticks.141901/#post-1638021
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Finale.getPlugin(), new Runnable() {
+
+			@Override
+			public void run() {
+				victim.setNoDamageTicks(manager.getInvulnerableTicks() - 1);
+			}
+		}, 1L);
+	}
+
+	@EventHandler
 	public void healthRegen(EntityRegainHealthEvent e) {
-		if (!manager.isRegenHandlerEnabled()) return;
+		if (!manager.isRegenHandlerEnabled())
+			return;
 		if (e.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
 		if (e.getRegainReason() == RegainReason.SATIATED
 				&& manager.getPassiveRegenHandler().blockPassiveHealthRegen()) {
-			// apparently setting to cancelled doesn't prevent the "consumption" of satiation.
+			// apparently setting to cancelled doesn't prevent the "consumption" of
+			// satiation.
 			Player p = (Player) e.getEntity();
 
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-			double spigotRegenExhaustion = ((net.minecraft.server.v1_13_R2.World) ( (org.bukkit.craftbukkit.v1_13_R2.CraftWorld) p.getWorld()).getHandle()).spigotConfig.regenExhaustion;
+			double spigotRegenExhaustion = ((net.minecraft.server.v1_13_R2.World) ((org.bukkit.craftbukkit.v1_13_R2.CraftWorld) p
+					.getWorld()).getHandle()).spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 
 			StringBuffer alterHealth = null;
@@ -54,7 +82,8 @@ public class PlayerListener implements Listener {
 				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 				alterHealth.append(":").append(p.getFoodLevel());
 			}
-			if(newExhaustion < 0) // not 100% sure this is correct route; intention was restoring what spigot takes, but we'll roll with it
+			if (newExhaustion < 0) // not 100% sure this is correct route; intention was restoring what spigot
+									// takes, but we'll roll with it
 				newExhaustion = 0;
 
 			p.setExhaustion(newExhaustion);
@@ -84,18 +113,19 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void playerLogin(PlayerJoinEvent e) {
-		if (manager.isAttackSpeedEnabled()) {;
-			// Set attack speed
-			AttributeInstance attr = e.getPlayer().getAttribute(
-				Attribute.GENERIC_ATTACK_SPEED);
-			if (attr != null) {
-				attr.setBaseValue(manager.getAttackSpeed());
-			}
+		if (manager.isAttackSpeedEnabled()) {
+			fixAttackSpeed(e.getPlayer());
 		}
 		if (manager.isRegenHandlerEnabled()) {
 			// Register login for custom health regen
-			manager.getPassiveRegenHandler().registerPlayer(
-					e.getPlayer().getUniqueId());
+			manager.getPassiveRegenHandler().registerPlayer(e.getPlayer().getUniqueId());
+		}
+	}
+
+	private void fixAttackSpeed(Player p) {
+		AttributeInstance attr = p.getAttribute(Attribute.GENERIC_ATTACK_SPEED);
+		if (attr != null) {
+			attr.setBaseValue(manager.getAttackSpeed());
 		}
 	}
 

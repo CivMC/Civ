@@ -7,15 +7,15 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionType;
 
 public class PotionHandler {
-	
+
 	private double healthPotionMultiplier;
 	private Map<PotionType, List<PotionModification>> potionMods;
-	
+
 	public PotionHandler(Map<PotionType, List<PotionModification>> potionMods, double healthPotionMultiplier) {
 		this.potionMods = potionMods;
 		this.healthPotionMultiplier = healthPotionMultiplier;
 	}
-	
+
 	public PotionModification getApplyingModifications(PotionType pot, ItemStack is) {
 		List<PotionModification> list = potionMods.get(pot);
 		if (list == null) {
@@ -24,17 +24,16 @@ public class PotionHandler {
 				return null;
 			}
 		}
-		for(PotionModification mod : list) {
+		for (PotionModification mod : list) {
 			if (mod.appliesTo(is)) {
 				return mod;
 			}
 		}
 		return null;
 	}
-	
+
 	public double getHealthPotionMultiplier() {
 		return healthPotionMultiplier;
 	}
-	
 
 }

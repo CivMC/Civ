@@ -25,7 +25,7 @@ public class PotionArrowHandler {
 		}
 	}
 
-	private Map <PotionData, ArrowModification> modifications;
+	private Map<PotionData, ArrowModification> modifications;
 
 	public PotionArrowHandler() {
 		this.modifications = new HashMap<PotionData, PotionArrowHandler.ArrowModification>();
@@ -41,9 +41,9 @@ public class PotionArrowHandler {
 		if (modi == null) {
 			return;
 		}
-		Collection <PotionEffect> existingEffects = ((LivingEntity) e.getEntity()).getActivePotionEffects();
+		Collection<PotionEffect> existingEffects = ((LivingEntity) e.getEntity()).getActivePotionEffects();
 		PotionEffect effectToOverwrite;
-		for(PotionEffect pot : existingEffects) {
+		for (PotionEffect pot : existingEffects) {
 			if (pot.getType() == modi.potionEffect.getType()) {
 				effectToOverwrite = pot;
 			}
@@ -55,10 +55,11 @@ public class PotionArrowHandler {
 			return;
 		}
 		arrow.setBasePotionData(new PotionData(PotionType.UNCRAFTABLE));
-		arrow.addCustomEffect(modi.potionEffect, !modi.noOverwrite);		
+		arrow.addCustomEffect(modi.potionEffect, !modi.noOverwrite);
 	}
 
-	public void registerPotionArrowModification(PotionData arrowType, PotionEffect replacementEffect, boolean dealDamage, boolean noOverwrite) {
+	public void registerPotionArrowModification(PotionData arrowType, PotionEffect replacementEffect,
+			boolean dealDamage, boolean noOverwrite) {
 		modifications.put(arrowType, new ArrowModification(replacementEffect, dealDamage, noOverwrite));
 	}
 

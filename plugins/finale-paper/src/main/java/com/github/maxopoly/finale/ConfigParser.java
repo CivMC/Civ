@@ -5,9 +5,11 @@ import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
@@ -20,6 +22,7 @@ import org.bukkit.potion.PotionType;
 
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
+import com.github.maxopoly.finale.misc.MultiplierMode;
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.VelocityHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
@@ -33,6 +36,7 @@ public class ConfigParser {
 	private long pearlCooldown;
 	private boolean combatTagOnPearl;
 	private boolean setVanillaPearlCooldown;
+	private boolean sideBarPearlCooldown;
 	private PotionHandler potionHandler;
 	private Collection<Enchantment> disabledEnchants;
 	private VelocityHandler velocityHandler;
@@ -79,6 +83,10 @@ public class ConfigParser {
 		return combatConfig;
 	}
 
+	public boolean useSideBarForPearlCoolDown() {
+		return sideBarPearlCooldown;
+	}
+
 	public FinaleManager parse() {
 		plugin.info("Parsing Finale config...");
 		plugin.saveDefaultConfig();
@@ -91,6 +99,8 @@ public class ConfigParser {
 		plugin.info("Attack speed modification enabled: " + attackEnabled);
 		double attackSpeed = config.getDouble("alterAttack.speed", 9.4);
 		plugin.info("Modified attack speed: " + attackSpeed);
+		int invulnerableTicks = config.getInt("alterAttack.invulnerableTicks", 10);
+		plugin.info("Modified invulnerable ticks: " + invulnerableTicks);
 		// Food Health Regen modifications for all players
 		boolean regenEnabled = config.getBoolean("foodHealthRegen.enabled", false);
 		SaturationHealthRegenHandler regenhandler = regenEnabled
@@ -112,7 +122,7 @@ public class ConfigParser {
 		combatConfig = parseCombatConfig(config.getConfigurationSection("combat"));
 
 		// Initialize the manager
-		manager = new FinaleManager(debug, attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod,
+		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, regenhandler, weapMod,
 				potionHandler, combatConfig);
 		plugin.info("Successfully parsed config");
 		return manager;
@@ -137,10 +147,10 @@ public class ConfigParser {
 						+ ". It was skipped");
 				continue;
 			}
-			DamageModificationConfig.Mode mode;
+			MultiplierMode mode;
 			String modeString = current.getString("mode", "LINEAR");
 			try {
-				mode = DamageModificationConfig.Mode.valueOf(modeString.toUpperCase());
+				mode = MultiplierMode.valueOf(modeString.toUpperCase());
 			} catch (IllegalArgumentException e) {
 				plugin.warning("Failed to parse damage modification mode " + modeString + " at "
 						+ current.getCurrentPath() + ". It was skipped");
@@ -150,6 +160,8 @@ public class ConfigParser {
 			double flatAddition = current.getDouble("flatAddition", 0.0);
 			DamageModificationConfig dmgConfig = new DamageModificationConfig(type, mode, multiplier, flatAddition);
 			modifierList.add(dmgConfig);
+			plugin.info("Applying damage modification for " + type.toString() + ", multiplier: " + multiplier
+					+ ", multiplierMode: " + mode.toString() + ", flatAddition: " + flatAddition);
 		}
 		return modifierList;
 	}
@@ -194,6 +206,8 @@ public class ConfigParser {
 		plugin.info("Combat tagging on pearling: " + combatTagOnPearl);
 		setVanillaPearlCooldown = config.getBoolean("setVanillaCooldown", false);
 		plugin.info("Setting vanilla cooldown on pearling: " + setVanillaPearlCooldown);
+		sideBarPearlCooldown = config.getBoolean("useSideBar", true);
+		plugin.info("Using sidebar to display pearl cooldown:" + sideBarPearlCooldown);
 		return true;
 	}
 
@@ -257,9 +271,9 @@ public class ConfigParser {
 
 	private VelocityHandler parseVelocityModification(ConfigurationSection config) {
 		if (config == null) {
-			return new VelocityHandler(new LinkedList<>(), new HashMap<>(), new HashMap<>());
+			return new VelocityHandler(new HashSet<>(), new HashMap<>(), new HashMap<>());
 		}
-		List<EntityType> revertedTypes = new LinkedList<>();
+		Set<EntityType> revertedTypes = new HashSet<>();
 		if (config.isList("revertedVelocity")) {
 			for (String entry : config.getStringList("revertedVelocity")) {
 				try {

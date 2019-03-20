@@ -4,7 +4,6 @@ author: Maxopoly
 version: ${project.version}
 depend: [CivModCore]
 softdepend: [CombatTagPlus]
-api-version: 1.13
 commands:
     finalereload:
         permission: finale.op
@@ -12,4 +11,3 @@ commands:
 permissions:
     finale.op:
         default: op
-api-version: 1.13

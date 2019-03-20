@@ -9,6 +9,8 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
@@ -28,18 +30,21 @@ import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 
+import net.minecraft.server.v1_13_R2.EntityPlayer;
+
 public class DamageListener implements Listener {
 
+	private static final List<Material> ladderBlocks = Arrays.asList(new Material[] { Material.LADDER, Material.VINE });
 	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
 			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
 
 	private static final String powerMetaDataKey = "shooterPowerLevel";
 
 	private Map<DamageModificationConfig.Type, DamageModificationConfig> modifiers;
-	
+
 	public DamageListener(Collection<DamageModificationConfig> configs) {
 		modifiers = new TreeMap<>();
-		for(DamageModificationConfig config : configs) {
+		for (DamageModificationConfig config : configs) {
 			modifiers.put(config.getType(), config);
 		}
 	}
@@ -56,7 +61,7 @@ public class DamageListener implements Listener {
 		if (!(e.getDamager() instanceof LivingEntity)) {
 			if (e.getDamager().getType() == EntityType.ARROW) {
 				handleArrow(e);
-				
+
 			}
 			return;
 		}
@@ -86,7 +91,7 @@ public class DamageListener implements Listener {
 			}
 		}
 	}
-	
+
 	private void handleArrow(EntityDamageByEntityEvent e) {
 		DamageModificationConfig arrowModifier = modifiers.get(DamageModificationConfig.Type.ARROW);
 		if (arrowModifier != null) {
@@ -100,8 +105,7 @@ public class DamageListener implements Listener {
 		List<MetadataValue> values = arrow.getMetadata(powerMetaDataKey);
 		if (values == null || values.size() == 0) {
 			return;
-		}
-		else {
+		} else {
 			int powerLevel = values.get(0).asInt();
 			e.setDamage(powerModifier.modify(e.getDamage(), powerLevel));
 		}
@@ -130,6 +134,9 @@ public class DamageListener implements Listener {
 
 	@EventHandler
 	public void onCrit(CritHitEvent e) {
-		
+		double critMultiplier = Finale.getPlugin().getManager().getCombatConfig().getCritMultiplier();
+		float critSet = (float) critMultiplier;
+		e.setCritMultiplier(critSet);
 	}
+
 }
