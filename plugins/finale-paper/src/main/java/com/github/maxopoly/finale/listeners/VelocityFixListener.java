@@ -22,7 +22,6 @@ public class VelocityFixListener implements Listener {
 			return;
 		}
 		velocityManager.modifyVelocity(e.getEntity(), (Player) e.getEntity().getShooter());
-		Finale.getPlugin().getLogger().info("Launched " + e.getEntity());
 	}
 
 }

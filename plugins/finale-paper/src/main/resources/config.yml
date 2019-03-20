@@ -85,7 +85,7 @@ potions:
     splash:
 #All splash pots reduced
       splash: true
-      multiplier: 0.8
+      multiplier: 1.0
 #Except for health
     health:
       type: INSTANT_HEAL
@@ -109,8 +109,15 @@ velocity:
     ENDER_PEARL: 1.0
     SPLASH_POTION: 1.0
   power:
-    ENDER_PEARL: 1.6
+    ENDER_PEARL: 1.2
     SPLASH_POTION: 0.5
+  pitchOffset:
+    SPLASH_POTION: -20.0
+  vertical:
+    SPLASH_POTION: 0.4
+  horizontal:
+    SPLASH_POTION: 0.4
+  
     
 #This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
 

@@ -271,7 +271,7 @@ public class ConfigParser {
 
 	private VelocityHandler parseVelocityModification(ConfigurationSection config) {
 		if (config == null) {
-			return new VelocityHandler(new HashSet<>(), new HashMap<>(), new HashMap<>());
+			return new VelocityHandler(new HashSet<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
 		}
 		Set<EntityType> revertedTypes = new HashSet<>();
 		if (config.isList("revertedVelocity")) {
@@ -285,16 +285,25 @@ public class ConfigParser {
 				}
 			}
 		}
-		Map<EntityType, Double> velocityMultiplier = new TreeMap<>();
-		if (config.isConfigurationSection("multiplier")) {
-			ConfigurationSection multSection = config.getConfigurationSection("multiplier");
+		Map<EntityType, Double> velocityMultiplier = getEntityTypeDoubleMap(config, "multiplier", "launch velocity multiplier");
+		Map<EntityType, Double> horizontalMultiplier = getEntityTypeDoubleMap(config, "horizontal", "horizontal velocity");
+		Map<EntityType, Double> verticalMultiplier = getEntityTypeDoubleMap(config, "vertical", "vertical velocity");
+		Map<EntityType, Float> powers = getEntityTypeFloatMap(config, "power", "initial launch power");
+		Map<EntityType, Float> pitchOffsets = getEntityTypeFloatMap(config, "pitchOffset", "pitch offset");
+		return new VelocityHandler(revertedTypes, velocityMultiplier, horizontalMultiplier, verticalMultiplier, pitchOffsets, powers);
+	}
+	
+	private Map<EntityType, Double> getEntityTypeDoubleMap(ConfigurationSection config, String section, String debug) {
+		Map<EntityType, Double> result = new TreeMap<>();
+		if (config.isConfigurationSection(section)) {
+			ConfigurationSection multSection = config.getConfigurationSection(section);
 			for (String key : multSection.getKeys(false)) {
 				if (multSection.isDouble(key)) {
 					try {
 						EntityType type = EntityType.valueOf(key);
-						double multiplier = multSection.getDouble(key);
-						velocityMultiplier.put(type, multiplier);
-						plugin.info("Applying launch velocity multiplier of " + multiplier + " to " + type.toString());
+						double val = multSection.getDouble(key);
+						result.put(type, val);
+						plugin.info("Applying " + debug + " of " + val + " to " + type.toString());
 
 					} catch (IllegalArgumentException e) {
 						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
@@ -304,17 +313,21 @@ public class ConfigParser {
 				}
 			}
 		}
-		Map<EntityType, Float> powers = new TreeMap<>();
-		if (config.isConfigurationSection("power")) {
-			ConfigurationSection multSection = config.getConfigurationSection("power");
+		return result;
+	}
+	
+	private Map<EntityType, Float> getEntityTypeFloatMap(ConfigurationSection config, String section, String debug) {
+		Map<EntityType, Float> result = new TreeMap<>();
+		if (config.isConfigurationSection(section)) {
+			ConfigurationSection multSection = config.getConfigurationSection(section);
 			for (String key : multSection.getKeys(false)) {
 				if (multSection.isDouble(key)) {
 					try {
 						EntityType type = EntityType.valueOf(key);
-						double power = multSection.getDouble(key);
-						float powerToInsert = (float) power;
-						powers.put(type, powerToInsert);
-						plugin.info("Applying initial launch power of " + power + " to " + type.toString());
+						double val = multSection.getDouble(key);
+						float valToInsert = (float) val;
+						result.put(type, valToInsert);
+						plugin.info("Applying " + debug + " of " + val + " to " + type.toString());
 
 					} catch (IllegalArgumentException e) {
 						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
@@ -324,7 +337,7 @@ public class ConfigParser {
 				}
 			}
 		}
-		return new VelocityHandler(revertedTypes, velocityMultiplier, powers);
+		return result;
 	}
 
 	private WeaponModifier parseWeaponModification(ConfigurationSection config) {
