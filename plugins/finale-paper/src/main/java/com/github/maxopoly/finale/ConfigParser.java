@@ -18,6 +18,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionType;
 
+import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
 import com.github.maxopoly.finale.misc.VelocityHandler;
@@ -36,6 +37,7 @@ public class ConfigParser {
 	private Collection<Enchantment> disabledEnchants;
 	private VelocityHandler velocityHandler;
 	private List<DamageModificationConfig> damageModifiers;
+	private CombatConfig combatConfig;
 
 	public ConfigParser(Finale plugin) {
 		this.plugin = plugin;
@@ -72,6 +74,10 @@ public class ConfigParser {
 	public boolean setVanillaPearlCooldown() {
 		return setVanillaPearlCooldown;
 	}
+	
+	public CombatConfig getCombatConfig() {
+		return combatConfig;
+	}
 
 	public FinaleManager parse() {
 		plugin.info("Parsing Finale config...");
@@ -102,10 +108,12 @@ public class ConfigParser {
 		potionHandler = parsePotionChanges(config.getConfigurationSection("potions"));
 		velocityHandler = parseVelocityModification(config.getConfigurationSection("velocity"));
 		damageModifiers = parseDamageModifiers(config.getConfigurationSection("damageModifiers"));
+		
+		combatConfig = parseCombatConfig(config.getConfigurationSection("combat"));
 
 		// Initialize the manager
 		manager = new FinaleManager(debug, attackEnabled, attackSpeed, regenEnabled, regenhandler, weapMod,
-				potionHandler);
+				potionHandler, combatConfig);
 		plugin.info("Successfully parsed config");
 		return manager;
 	}
@@ -249,7 +257,7 @@ public class ConfigParser {
 
 	private VelocityHandler parseVelocityModification(ConfigurationSection config) {
 		if (config == null) {
-			return new VelocityHandler(new LinkedList<>(), new HashMap<>());
+			return new VelocityHandler(new LinkedList<>(), new HashMap<>(), new HashMap<>());
 		}
 		List<EntityType> revertedTypes = new LinkedList<>();
 		if (config.isList("revertedVelocity")) {
@@ -282,7 +290,27 @@ public class ConfigParser {
 				}
 			}
 		}
-		return new VelocityHandler(revertedTypes, velocityMultiplier);
+		Map<EntityType, Float> powers = new TreeMap<>();
+		if (config.isConfigurationSection("power")) {
+			ConfigurationSection multSection = config.getConfigurationSection("power");
+			for (String key : multSection.getKeys(false)) {
+				if (multSection.isDouble(key)) {
+					try {
+						EntityType type = EntityType.valueOf(key);
+						double power = multSection.getDouble(key);
+						float powerToInsert = (float) power;
+						powers.put(type, powerToInsert);
+						plugin.info("Applying initial launch power of " + power + " to " + type.toString());
+
+					} catch (IllegalArgumentException e) {
+						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
+					}
+				} else {
+					plugin.warning("Ignoring invalid entry " + key + " at " + multSection.getCurrentPath());
+				}
+			}
+		}
+		return new VelocityHandler(revertedTypes, velocityMultiplier, powers);
 	}
 
 	private WeaponModifier parseWeaponModification(ConfigurationSection config) {
@@ -316,5 +344,12 @@ public class ConfigParser {
 			wm.addWeapon(mat, damage, attackSpeed);
 		}
 		return wm;
+	}
+	
+	private CombatConfig parseCombatConfig(ConfigurationSection config) {
+		int cpsLimit = config.getInt("cpsLimit", 9);
+		double maxReach = config.getDouble("maxReach", 6.0);
+		double critMultiplier = config.getDouble("critMultiplier", 1.2);
+		return new CombatConfig(cpsLimit, maxReach, critMultiplier);
 	}
 }

@@ -1,6 +1,6 @@
 package com.github.maxopoly.finale.listeners;
 
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -9,12 +9,13 @@ import org.bukkit.inventory.ItemStack;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.misc.WeaponModifier;
 
-import net.minecraft.server.v1_12_R1.NBTBase;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagDouble;
-import net.minecraft.server.v1_12_R1.NBTTagInt;
-import net.minecraft.server.v1_12_R1.NBTTagList;
-import net.minecraft.server.v1_12_R1.NBTTagString;
+import net.minecraft.server.v1_13_R2.NBTBase;
+import net.minecraft.server.v1_13_R2.NBTTagCompound;
+import net.minecraft.server.v1_13_R2.NBTTagDouble;
+import net.minecraft.server.v1_13_R2.NBTTagInt;
+import net.minecraft.server.v1_13_R2.NBTTagList;
+import net.minecraft.server.v1_13_R2.NBTTagString;
+
 
 public class WeaponModificationListener implements Listener {
 
@@ -25,13 +26,14 @@ public class WeaponModificationListener implements Listener {
 			return;
 		}
 		WeaponModifier weaponMod = Finale.getPlugin().getManager().getWeaponModifer();
+		
 		int adjustedDamage = weaponMod.getDamage(is.getType());
 		double adjustedAttackSpeed = weaponMod.getAttackSpeed(is.getType());
 		if (adjustedAttackSpeed == -1.0 && adjustedDamage == -1) {
 			// neither should be adjusted
 			return;
 		}
-		net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_13_R2.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		NBTBase modifierBase = compound.get("AttributeModifiers");
 		NBTTagList modifiers;

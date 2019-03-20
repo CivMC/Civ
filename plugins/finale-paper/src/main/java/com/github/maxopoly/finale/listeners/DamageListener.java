@@ -25,12 +25,13 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.maxopoly.finale.Finale;
+import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 
 public class DamageListener implements Listener {
 
-	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOOD_SWORD,
-			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLD_SWORD, Material.DIAMOND_SWORD }));
+	private static Set<Material> swords = new TreeSet<Material>(Arrays.asList(new Material[] { Material.WOODEN_SWORD,
+			Material.STONE_SWORD, Material.IRON_SWORD, Material.GOLDEN_SWORD, Material.DIAMOND_SWORD }));
 
 	private static final String powerMetaDataKey = "shooterPowerLevel";
 
@@ -127,4 +128,8 @@ public class DamageListener implements Listener {
 				new FixedMetadataValue(Finale.getPlugin(), bow.getEnchantmentLevel(Enchantment.ARROW_DAMAGE)));
 	}
 
+	@EventHandler
+	public void onCrit(CritHitEvent e) {
+		
+	}
 }

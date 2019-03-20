@@ -34,7 +34,7 @@ public class WeaponModifier {
 	private Map<Material, WeaponConfig> weapons;
 
 	public WeaponModifier() {
-		weapons = new HashMap<Material, WeaponModifier.WeaponConfig>();
+		this.weapons = new HashMap<Material, WeaponModifier.WeaponConfig>();
 	}
 
 	public void addWeapon(Material m, int damage, double attackSpeed) {
