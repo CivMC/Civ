@@ -2,7 +2,6 @@ package com.github.maxopoly.finale.listeners;
 
 import java.text.DecimalFormat;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
@@ -15,12 +14,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 
-import vg.civcraft.mc.civmodcore.scoreboard.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.ui.ActionBarHandler;
+import vg.civcraft.mc.civmodcore.ui.UI;
+import vg.civcraft.mc.civmodcore.ui.UIHandler;
+import vg.civcraft.mc.civmodcore.ui.UIManager;
+import vg.civcraft.mc.civmodcore.ui.UIScoreboard;
 import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
 
 public class PearlCoolDownListener implements Listener {
@@ -39,43 +42,55 @@ public class PearlCoolDownListener implements Listener {
 	private boolean combatTag;
 	private boolean setVanillaCooldown;
 	private boolean useSideBar;
-	private CivScoreBoard scoreBoard;
-	private Set<UUID> onCooldown;
+	private boolean useActionBar;
 
 	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager,
-			boolean setVanillaCooldown, boolean useSideBar) {
+			boolean setVanillaCooldown, boolean useSideBar, boolean useActionBar) {
 		instance = this;
 		this.cds = new TickCoolDownHandler<UUID>(Finale.getPlugin(), cooldown);
 		this.ctpManager = ctpManager;
 		this.combatTag = combatTag;
 		this.setVanillaCooldown = setVanillaCooldown;
 		this.useSideBar = useSideBar;
-		if (useSideBar) {
-			onCooldown = Collections.synchronizedSet(new TreeSet<>());
-			scoreBoard = ScoreBoardAPI.createBoard("finalePearlCoolDown");
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(Finale.getPlugin(), () -> {
-				Iterator<UUID> iter = onCooldown.iterator();
-				while (iter.hasNext()) {
-					UUID uuid = iter.next();
-					Player p = Bukkit.getPlayer(uuid);
-					if (!cds.onCoolDown(uuid)) {
-						iter.remove();
-						if (p != null) {
-							scoreBoard.hide(p);
-						}
-						continue;
-					}
-					if (p != null) {
-						scoreBoard.set(p, ChatColor.LIGHT_PURPLE + "Pearl: " + formatCoolDown(uuid) + " sec");
-					}
-				}
-
-			}, 1L, 1L);
-		}
+		this.useActionBar = useActionBar;
 	}
 
 	public long getCoolDown() {
 		return cds.getTotalCoolDown();
+	}
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent e) {
+		Player player = e.getPlayer();
+		
+		UI ui = UIManager.getUIManager().getScoreboard(player);
+		if (useSideBar) {
+			ui.getUIHandlers().add(new UIHandler() {
+				
+				@Override
+				public void handle(Player player, UIScoreboard board) {
+					if (cds.onCoolDown(player.getUniqueId())) {
+						board.add(ChatColor.DARK_PURPLE.toString() + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(player.getUniqueId()) + ChatColor.DARK_PURPLE + "s", 5);
+					} else {
+						board.remove(5, "");
+					}
+				}
+			});
+		}
+		if (useActionBar) {
+			ui.getActionBarHandlers().add(new ActionBarHandler() {
+				
+				@Override
+				public StringBuilder handle(Player player, StringBuilder sb) {
+					if (!cds.onCoolDown(player.getUniqueId())) {
+						return sb;
+					}
+					
+					sb.append("   " + ChatColor.DARK_PURPLE + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(player.getUniqueId()) + ChatColor.DARK_PURPLE + "s" + "   ");
+					return sb;
+				}
+			});
+		}
 	}
 
 	@EventHandler
@@ -100,9 +115,7 @@ public class PearlCoolDownListener implements Listener {
 		if (combatTag && ctpManager != null) {
 			ctpManager.tag((Player) e.getEntity().getShooter(), null);
 		}
-		if (useSideBar) {
-			onCooldown.add(shooter.getUniqueId());
-		}
+		
 		// put pearl on cooldown
 		cds.putOnCoolDown(shooter.getUniqueId());
 		if (setVanillaCooldown) {
@@ -116,9 +129,10 @@ public class PearlCoolDownListener implements Listener {
 		}
 	}
 
+	private DecimalFormat df = new DecimalFormat("#.#");
+	
 	private String formatCoolDown(UUID uuid) {
 		long cd = cds.getRemainingCoolDown(uuid);
-		DecimalFormat df = new DecimalFormat("0.0");
 		return df.format((cd / 20.0));
 	}
 

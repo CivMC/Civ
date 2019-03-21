@@ -37,6 +37,7 @@ public class ConfigParser {
 	private boolean combatTagOnPearl;
 	private boolean setVanillaPearlCooldown;
 	private boolean sideBarPearlCooldown;
+	private boolean actionBarPearlCooldown;
 	private PotionHandler potionHandler;
 	private Collection<Enchantment> disabledEnchants;
 	private VelocityHandler velocityHandler;
@@ -83,8 +84,12 @@ public class ConfigParser {
 		return combatConfig;
 	}
 
-	public boolean useSideBarForPearlCoolDown() {
+	public boolean useSideBarForPearlCooldown() {
 		return sideBarPearlCooldown;
+	}
+	
+	public boolean useActionBarForPearlCooldown() {
+		return actionBarPearlCooldown;
 	}
 
 	public FinaleManager parse() {
@@ -206,8 +211,10 @@ public class ConfigParser {
 		plugin.info("Combat tagging on pearling: " + combatTagOnPearl);
 		setVanillaPearlCooldown = config.getBoolean("setVanillaCooldown", false);
 		plugin.info("Setting vanilla cooldown on pearling: " + setVanillaPearlCooldown);
-		sideBarPearlCooldown = config.getBoolean("useSideBar", true);
+		sideBarPearlCooldown = config.getBoolean("useSideBar", false);
 		plugin.info("Using sidebar to display pearl cooldown:" + sideBarPearlCooldown);
+		actionBarPearlCooldown = config.getBoolean("useActionBar", true);
+		plugin.info("Using actionbar to display pearl cooldown:" + actionBarPearlCooldown);
 		return true;
 	}
 

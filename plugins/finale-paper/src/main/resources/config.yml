@@ -18,9 +18,11 @@ pearls:
 #Enable custom cooldown?
   enabled: true
 #Custom pearl cooldown
-  cooldown: 10s
+  cooldown: 16s
 #Display in sidebar as score board entry?
-  useSideBar: true
+  useSideBar: false
+#Display in actionbar?
+  useActionBar: true
 #Combat tag using CTP when pearling?
   combatTag: true
 #Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
@@ -108,6 +110,7 @@ velocity:
 #Increase pearl velocity by 20 % for example
     ENDER_PEARL: 1.0
     SPLASH_POTION: 1.0
+#These properties only apply to velocity-reverted entities.
   power:
     ENDER_PEARL: 1.2
     SPLASH_POTION: 0.5
