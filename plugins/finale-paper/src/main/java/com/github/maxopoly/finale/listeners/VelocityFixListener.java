@@ -6,7 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 import com.github.maxopoly.finale.Finale;
-import com.github.maxopoly.finale.misc.VelocityHandler;
+import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 
 public class VelocityFixListener implements Listener {
 

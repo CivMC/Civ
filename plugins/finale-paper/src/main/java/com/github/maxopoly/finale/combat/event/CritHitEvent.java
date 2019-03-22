@@ -11,9 +11,9 @@ public class CritHitEvent extends Event {
 	
 	private Player attacker;
 	private LivingEntity victim;
-	private float critMultiplier;
+	private double critMultiplier;
 	
-	public CritHitEvent(Player attacker, LivingEntity victim, float critMultiplier) {
+	public CritHitEvent(Player attacker, LivingEntity victim, double critMultiplier) {
 		this.attacker = attacker;
 		this.victim = victim;
 		this.critMultiplier = critMultiplier;
@@ -27,11 +27,11 @@ public class CritHitEvent extends Event {
 		return victim;
 	}
 	
-	public float getCritMultiplier() {
+	public double getCritMultiplier() {
 		return critMultiplier;
 	}
 	
-	public void setCritMultiplier(float set) {
+	public void setCritMultiplier(double set) {
 		this.critMultiplier = set;
 	}
 

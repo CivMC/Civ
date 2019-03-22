@@ -9,6 +9,8 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.entity.Player;
 
+import com.github.maxopoly.finale.Finale;
+
 public class CPSHandler {
 
 	private Map<UUID, List<Long>> playerClicks = new ConcurrentHashMap<>();
@@ -21,7 +23,7 @@ public class CPSHandler {
 		 	}
 	        final Iterator<Long> iterator = clicks.iterator();
 	        while (iterator.hasNext()) {
-	            if (iterator.next() + 1000L < time) {
+	            if (iterator.next() + Finale.getPlugin().getManager().getCombatConfig().getCpsCounterInterval() < time) {
 	                iterator.remove();
 	            }
 	        }
@@ -32,8 +34,8 @@ public class CPSHandler {
 		 List<Long> clicks = playerClicks.get(player.getUniqueId());
 		 if (clicks == null) {
 			 clicks = new ArrayList<>();
+			 playerClicks.put(player.getUniqueId(), clicks);
 		 }
 		 clicks.add(System.currentTimeMillis());
-		 playerClicks.put(player.getUniqueId(), clicks);
 	 }
 }

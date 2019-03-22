@@ -3,7 +3,24 @@ alterAttack:
   enabled: true
   speed: 25
   invulnerableTicks: 10
-
+  
+cleanerCombat:
+  maxReach: 6.0
+  sweepEnabled: false
+  sounds:
+    weak: false
+    strong: false
+    knockback: false
+    crit: true
+  knockback:
+    horizontal: 1.0
+    vertical: 1.0
+  noCooldown:
+    enabled: true
+    cps:
+      limit: 9
+      counterInterval: 1000
+    
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
@@ -41,10 +58,10 @@ weaponModification:
     material: STONE_AXE
     damage: 3
   goldAxe:
-    material: GOLD_AXE
+    material: GOLDEN_AXE
     damage: 2
   woodAxe:
-    material: WOOD_AXE
+    material: WOODEN_AXE
     damage: 1
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
@@ -99,28 +116,15 @@ velocity:
 #In newer Minecraft versions when a player launches a projectile the players velocity will be added to the projectiles base velocity. This can lead to 
 #weird behavior sometimes and reverted with this setting. Add entity types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) 
 #of projectiles to the list to revert their behavior regarding initial velocity to 1.7
-  revertedVelocity:
-   - SPLASH_POTION
-   - ENDER_PEARL
-
-
-#This let's you apply a general multiplier to the launch velocity of any kind of projectile. Entry key is the 
-#entity type (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) and value is the multiplier.
-  multiplier:
-#Increase pearl velocity by 20 % for example
-    ENDER_PEARL: 1.0
-    SPLASH_POTION: 1.0
-#These properties only apply to velocity-reverted entities.
-  power:
-    ENDER_PEARL: 1.2
-    SPLASH_POTION: 0.5
-  pitchOffset:
-    SPLASH_POTION: -20.0
-  vertical:
-    SPLASH_POTION: 0.4
-  horizontal:
-    SPLASH_POTION: 0.4
-  
+  ENDER_PEARL:
+     type: REVERTED
+     power: 1.2
+  SPLASH_POTION:
+     type: REVERTED
+     power: 0.5
+     vertical: 0.4
+     horizontal: 0.4
+     pitchOffset: -20
     
 #This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
 
@@ -143,10 +147,6 @@ damageModifiers:
 #Increase sword damage by 25 %
   SWORD:
     multiplier: 1.25
-    
-
-combat:
-   cpsLimit: 9
-   maxReach: 6.0
-   critMultiplier: 1.2
+  CRIT:
+    multiplier: 0.8
     

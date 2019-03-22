@@ -5,12 +5,9 @@ import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -21,11 +18,13 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionType;
 
 import com.github.maxopoly.finale.combat.CombatConfig;
+import com.github.maxopoly.finale.combat.CombatSoundConfig;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 import com.github.maxopoly.finale.misc.MultiplierMode;
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
-import com.github.maxopoly.finale.misc.VelocityHandler;
 import com.github.maxopoly.finale.misc.WeaponModifier;
+import com.github.maxopoly.finale.misc.velocity.VelocityConfig;
+import com.github.maxopoly.finale.misc.velocity.VelocityHandler;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
 
@@ -123,8 +122,7 @@ public class ConfigParser {
 		potionHandler = parsePotionChanges(config.getConfigurationSection("potions"));
 		velocityHandler = parseVelocityModification(config.getConfigurationSection("velocity"));
 		damageModifiers = parseDamageModifiers(config.getConfigurationSection("damageModifiers"));
-		
-		combatConfig = parseCombatConfig(config.getConfigurationSection("combat"));
+		combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
 
 		// Initialize the manager
 		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, regenhandler, weapMod,
@@ -278,73 +276,43 @@ public class ConfigParser {
 
 	private VelocityHandler parseVelocityModification(ConfigurationSection config) {
 		if (config == null) {
-			return new VelocityHandler(new HashSet<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>(), new HashMap<>());
+			return new VelocityHandler(new HashMap<>());
 		}
-		Set<EntityType> revertedTypes = new HashSet<>();
-		if (config.isList("revertedVelocity")) {
-			for (String entry : config.getStringList("revertedVelocity")) {
-				try {
-					EntityType type = EntityType.valueOf(entry);
-					revertedTypes.add(type);
-					plugin.info("Reverting launch velocity behavior of " + type.toString());
-				} catch (IllegalArgumentException e) {
-					plugin.warning("Failed to parse " + entry + " as entity type at " + config.getCurrentPath());
-				}
+		Map<EntityType, VelocityConfig> velocityConfigs = new HashMap<>();
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				plugin.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
 			}
-		}
-		Map<EntityType, Double> velocityMultiplier = getEntityTypeDoubleMap(config, "multiplier", "launch velocity multiplier");
-		Map<EntityType, Double> horizontalMultiplier = getEntityTypeDoubleMap(config, "horizontal", "horizontal velocity");
-		Map<EntityType, Double> verticalMultiplier = getEntityTypeDoubleMap(config, "vertical", "vertical velocity");
-		Map<EntityType, Float> powers = getEntityTypeFloatMap(config, "power", "initial launch power");
-		Map<EntityType, Float> pitchOffsets = getEntityTypeFloatMap(config, "pitchOffset", "pitch offset");
-		return new VelocityHandler(revertedTypes, velocityMultiplier, horizontalMultiplier, verticalMultiplier, pitchOffsets, powers);
-	}
-	
-	private Map<EntityType, Double> getEntityTypeDoubleMap(ConfigurationSection config, String section, String debug) {
-		Map<EntityType, Double> result = new TreeMap<>();
-		if (config.isConfigurationSection(section)) {
-			ConfigurationSection multSection = config.getConfigurationSection(section);
-			for (String key : multSection.getKeys(false)) {
-				if (multSection.isDouble(key)) {
-					try {
-						EntityType type = EntityType.valueOf(key);
-						double val = multSection.getDouble(key);
-						result.put(type, val);
-						plugin.info("Applying " + debug + " of " + val + " to " + type.toString());
-
-					} catch (IllegalArgumentException e) {
-						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
-					}
-				} else {
-					plugin.warning("Ignoring invalid entry " + key + " at " + multSection.getCurrentPath());
-				}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			EntityType entityType;
+			try {
+				entityType = EntityType.valueOf(key.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				plugin.warning("Failed to parse entity type " + key + " at " + current.getCurrentPath()
+						+ ". It was skipped");
+				continue;
 			}
-		}
-		return result;
-	}
-	
-	private Map<EntityType, Float> getEntityTypeFloatMap(ConfigurationSection config, String section, String debug) {
-		Map<EntityType, Float> result = new TreeMap<>();
-		if (config.isConfigurationSection(section)) {
-			ConfigurationSection multSection = config.getConfigurationSection(section);
-			for (String key : multSection.getKeys(false)) {
-				if (multSection.isDouble(key)) {
-					try {
-						EntityType type = EntityType.valueOf(key);
-						double val = multSection.getDouble(key);
-						float valToInsert = (float) val;
-						result.put(type, valToInsert);
-						plugin.info("Applying " + debug + " of " + val + " to " + type.toString());
-
-					} catch (IllegalArgumentException e) {
-						plugin.warning("Failed to parse " + key + " as entity type at " + multSection.getCurrentPath());
-					}
-				} else {
-					plugin.warning("Ignoring invalid entry " + key + " at " + multSection.getCurrentPath());
-				}
+			String strType = current.getString("type");
+			VelocityConfig.Type type;
+			try {
+				type = VelocityConfig.Type.valueOf(strType.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				plugin.warning("Failed to parse velocity type " + key + " at " + current.getCurrentPath()
+						+ ". It was skipped");
+				continue;
 			}
+			double power = current.getDouble("power", 1.0);
+			double horizontal = current.getDouble("horizontal", 1.0);
+			double vertical = current.getDouble("vertical", 1.0);
+			double pitchOffset = current.getDouble("pitchOffset", 0.0);
+			VelocityConfig velocityConfig = VelocityConfig.createVelocityConfig(type, horizontal, vertical, power, pitchOffset);
+			velocityConfigs.put(entityType, velocityConfig);
+			plugin.info("Applying velocity config for " + entityType.toString() + ", type: " + type.toString()
+					+ ", horizontal: " + horizontal + ", vertical: " + vertical + ", power: " + power
+					+ ", pitchOffset: " + pitchOffset);
 		}
-		return result;
+		return new VelocityHandler(velocityConfigs);
 	}
 
 	private WeaponModifier parseWeaponModification(ConfigurationSection config) {
@@ -381,9 +349,40 @@ public class ConfigParser {
 	}
 	
 	private CombatConfig parseCombatConfig(ConfigurationSection config) {
-		int cpsLimit = config.getInt("cpsLimit", 9);
 		double maxReach = config.getDouble("maxReach", 6.0);
-		double critMultiplier = config.getDouble("critMultiplier", 1.2);
-		return new CombatConfig(cpsLimit, maxReach, critMultiplier);
+		boolean sweepEnabled = config.getBoolean("sweepEnabled", false);
+		double horizontalKb = 1.0;
+		double verticalKb = 1.0;
+		if (config.isConfigurationSection("knockback")) {
+			ConfigurationSection kbSection = config.getConfigurationSection("knockback");
+			horizontalKb = kbSection.getDouble("horizontalKb", horizontalKb);
+			verticalKb = kbSection.getDouble("verticalKb", verticalKb);
+		}
+		boolean weakSoundEnabled = false;
+		boolean strongSoundEnabled = false;
+		boolean knockbackSoundEnabled = false;
+		boolean critSoundEnabled = true;
+		if (config.isConfigurationSection("sounds")) {
+			ConfigurationSection soundsSection = config.getConfigurationSection("sounds");
+			weakSoundEnabled = soundsSection.getBoolean("weak", weakSoundEnabled);
+			strongSoundEnabled = soundsSection.getBoolean("strong", strongSoundEnabled);
+			knockbackSoundEnabled = soundsSection.getBoolean("knockback", knockbackSoundEnabled);
+			critSoundEnabled = soundsSection.getBoolean("crit", critSoundEnabled);
+		}
+		CombatSoundConfig combatSounds = new CombatSoundConfig(weakSoundEnabled, strongSoundEnabled, knockbackSoundEnabled, critSoundEnabled);
+		boolean noCooldown = true;
+		int cpsLimit = 9;
+		long cpsCounterInterval = 1000;
+		if (config.isConfigurationSection("noCooldown")) {
+			ConfigurationSection noCooldownSection = config.getConfigurationSection("noCooldown");
+			noCooldown = noCooldownSection.getBoolean("noCooldown", noCooldown);
+			if (noCooldownSection.isConfigurationSection("cps")) {
+				ConfigurationSection cpsSection = noCooldownSection.getConfigurationSection("cps");
+				cpsLimit = cpsSection.getInt("limit", cpsLimit);
+				cpsCounterInterval = cpsSection.getLong("counterInterval", cpsCounterInterval);
+			}
+		}
+		return new CombatConfig(noCooldown, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds, horizontalKb, verticalKb);
 	}
 }
+

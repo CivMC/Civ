@@ -134,9 +134,8 @@ public class DamageListener implements Listener {
 
 	@EventHandler
 	public void onCrit(CritHitEvent e) {
-		double critMultiplier = Finale.getPlugin().getManager().getCombatConfig().getCritMultiplier();
-		float critSet = (float) critMultiplier;
-		e.setCritMultiplier(critSet);
+		DamageModificationConfig critModifier = modifiers.get(DamageModificationConfig.Type.CRIT);
+		e.setCritMultiplier(critModifier.modify(e.getCritMultiplier()));
 	}
 
 }

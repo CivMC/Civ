@@ -35,6 +35,7 @@ public class FinaleManager {
 		this.weaponModifier = weaponModifier;
 		this.potionHandler = potionHandler;
 		this.combatConfig = combatConfig;
+		this.invulnerableTicks = invulnerableTicks;
 		
 		this.cpsHandler = new CPSHandler();
 		this.combatRunnable = new CombatRunnable();
@@ -48,7 +49,6 @@ public class FinaleManager {
 			}
 			
 		});
-		this.invulnerableTicks = invulnerableTicks;
 	}
 
 	public double getAttackSpeed() {
