@@ -36,8 +36,10 @@ public class MenuSection extends MenuItem {
 		content.put(item.getName(), item);
 	}
 	
-	public void createMenuSection(String name) {
-		addItem(new MenuSection(name, this));
+	public MenuSection createMenuSection(String name) {
+		MenuSection section = new MenuSection(name, this);
+		addItem(section);
+		return section;
 	}
 
 	@Override

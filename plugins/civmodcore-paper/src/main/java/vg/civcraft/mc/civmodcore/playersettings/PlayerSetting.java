@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -26,6 +28,7 @@ public abstract class PlayerSetting<T> {
 	private String identifier;
 	private String niceName;
 	private JavaPlugin owningPlugin;
+	private List<SettingChangeListener<T>> listeners;
 
 	public PlayerSetting(JavaPlugin owningPlugin, T defaultValue, String niceName, String identifier, ItemStack gui,
 			String description) {
@@ -45,6 +48,7 @@ public abstract class PlayerSetting<T> {
 
 	/**
 	 * Recreates an instance from a serialized
+	 * 
 	 * @param serial
 	 * @return
 	 */
@@ -106,7 +110,7 @@ public abstract class PlayerSetting<T> {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Gets the stored value for the given player or the default value if the player
 	 * has no own value
@@ -141,9 +145,15 @@ public abstract class PlayerSetting<T> {
 	 * @param value  New value
 	 */
 	public void setValue(UUID player, T value) {
+		if (listeners != null) {
+			T oldValue = getValue(player);
+			for(SettingChangeListener<T> listener: listeners) {
+				listener.handle(player, this, oldValue, value);
+			}
+		}
 		values.put(player, value);
 	}
-	
+
 	/**
 	 * Sets the given value for the given player. Null values are only allowed if
 	 * the (de-)serialization implementation can properly handle it, which is not
@@ -155,12 +165,35 @@ public abstract class PlayerSetting<T> {
 	public void setValue(Player player, T value) {
 		setValue(player.getUniqueId(), value);
 	}
-	
+
 	/**
 	 * @return Unique identifier
 	 */
 	public String getIdentifier() {
 		return identifier;
+	}
+
+	/**
+	 * Registers a listener which will be triggered if the value is updated
+	 * 
+	 * @param listener Listener to register
+	 */
+	public void registerListener(SettingChangeListener<T> listener) {
+		if (this.listeners == null) {
+			this.listeners = new LinkedList<SettingChangeListener<T>>();
+		}
+		this.listeners.add(listener);
+	}
+	
+	/**
+	 * Unregisters a listener
+	 * 
+	 * @param listener Listener to unregister
+	 */
+	public void unregisterListener(SettingChangeListener<T> listener) {
+		if (this.listeners != null) {
+			this.listeners.remove(listener);
+		}
 	}
 
 	/**
