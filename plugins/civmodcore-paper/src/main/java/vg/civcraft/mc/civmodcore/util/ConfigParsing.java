@@ -69,8 +69,9 @@ public class ConfigParsing {
 			}
 		}
 		ItemStack toAdd = new ItemStack(m);
-		int durability = current.getInt("durability", 0);
-		toAdd.setDurability((short) durability);
+		if (current.isInt("durability")) {
+			log.warning("Item durability as specified at " + current.getCurrentPath() + " is no longer supported");
+		}
 		ItemMeta meta = toAdd.getItemMeta();
 		if (meta == null) {
 			log.severe("No item meta found for" + current.getCurrentPath());
@@ -95,7 +96,16 @@ public class ConfigParsing {
 				for (String enchantKey : current.getConfigurationSection("enchants").getKeys(false)) {
 					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
 							.getConfigurationSection(enchantKey);
-					Enchantment enchant = Enchantment.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant"))));
+					if (!enchantConfig.isString("enchant")) {
+						log.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath() + ". Entry was ignored");
+						continue;
+					}
+					Enchantment enchant;
+					enchant = Enchantment.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
+					if (enchant == null) {
+						log.severe("Failed to parse enchantment " + enchantConfig.getString("enchant") + ", the entry was ignored");
+						continue;
+					}
 					int level = enchantConfig.getInt("level", 1);
 					meta.addEnchant(enchant, level, true);
 				}

@@ -15,6 +15,7 @@ import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
 public abstract class ACivMod extends JavaPlugin {
@@ -39,6 +40,11 @@ public abstract class ACivMod extends JavaPlugin {
 	public void onEnable() {
 		initApis(this);
 		this.newCommandHandler = new StandaloneCommandHandler(this);
+	}
+	
+	@Override
+	public void onDisable() {
+		PlayerSettingAPI.saveAll();
 	}
 
 	private static synchronized void initApis(ACivMod instance) {

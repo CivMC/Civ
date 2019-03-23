@@ -1,11 +1,7 @@
 package vg.civcraft.mc.civmodcore;
 
-/**
- * The sole purpose of this class is to make Spigot recognize this library as a plugin and automatically load the
- * classes onto the classpath for us.
- * <p>
- * Replaces Dummy class.
- */
+import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
+
 public class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
@@ -15,6 +11,9 @@ public class CivModCorePlugin extends ACivMod {
 		super.onEnable();
 		// needed for some of the apis
 		instance = this;
+		// we cant use the command annotation thing here, because the annotation
+		// processor would not be available yet
+		this.newCommandHandler.registerCommand(new ConfigCommand());
 	}
 
 	public static CivModCorePlugin getInstance() {

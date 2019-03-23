@@ -4,3 +4,7 @@ authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef]
 main: ${groupId}.${name}Plugin
 api-version: 1.13
 dev-url: null
+commands:
+  config:
+    description: Allows configuring player specific settings
+    usage: /config

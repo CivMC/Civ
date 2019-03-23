@@ -11,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Dialog {
 
-	private Player player;
+	protected Player player;
 
 	private Conversation convo;
 
