@@ -7,6 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.github.maxopoly.KiraBukkitGateway.listener.SnitchHitType;
+import com.github.maxopoly.KiraBukkitGateway.listener.SnitchType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -71,7 +72,8 @@ public class RabbitCommands {
 		sendInternal("syncgroupchatmembers", json);
 	}
 
-	public void createGroupChatChannel(String group, Collection<UUID> members, UUID creator, long guildID, long channelID) {
+	public void createGroupChatChannel(String group, Collection<UUID> members, UUID creator, long guildID,
+			long channelID) {
 		if (group == null || members == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
 		}
@@ -126,7 +128,8 @@ public class RabbitCommands {
 		sendInternal("replytouser", json);
 	}
 
-	public void sendSnitchHit(Player victim, Location location, String snitchName, String groupName, SnitchHitType type) {
+	public void sendSnitchHit(Player victim, Location location, String snitchName, String groupName,
+			SnitchHitType hitType, SnitchType snitchType) {
 		if (victim == null || location == null || groupName == null) {
 			throw new IllegalArgumentException("Arguments cant be null");
 		}
@@ -136,16 +139,19 @@ public class RabbitCommands {
 		JsonObject json = new JsonObject();
 		json.addProperty("victimUUID", victim.getUniqueId().toString());
 		json.addProperty("victimName", victim.getName());
+		json.addProperty("world", location.getWorld().getName());
 		json.addProperty("x", location.getBlockX());
 		json.addProperty("y", location.getBlockY());
 		json.addProperty("z", location.getBlockZ());
 		json.addProperty("snitchName", snitchName);
 		json.addProperty("groupName", groupName);
-		json.addProperty("type", type.toString());
+		json.addProperty("type", hitType.toString());
+		json.addProperty("snitchtype", snitchType.toString());
 		sendInternal("sendsnitchhit", json);
 	}
 
 	private void sendInternal(String id, JsonObject json) {
+		json.addProperty("timestamp", System.currentTimeMillis());
 		Gson gson = new Gson();
 		String payload = gson.toJson(json);
 		internal.sendMessage(id + " " + payload);
