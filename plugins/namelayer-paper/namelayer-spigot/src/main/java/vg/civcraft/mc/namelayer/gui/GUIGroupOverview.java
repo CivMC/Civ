@@ -305,7 +305,7 @@ public class GUIGroupOverview {
 						}
 
 						final UUID uuid = p.getUniqueId();
-						Group g = new Group(groupName, uuid, false, null, -1);
+						Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis());
 						gm.createGroupAsync(g, new RunnableOnGroup() {
 							@Override
 							public void run() {

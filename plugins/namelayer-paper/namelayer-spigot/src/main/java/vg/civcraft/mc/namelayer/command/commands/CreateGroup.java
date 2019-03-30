@@ -82,7 +82,7 @@ public class CreateGroup extends PlayerCommandMiddle{
 			password = null;
 		}
 		final UUID uuid = NameAPI.getUUID(p.getName());
-		Group g = new Group(name, uuid, false, password, -1);
+		Group g = new Group(name, uuid, false, password, -1, System.currentTimeMillis());
 		gm.createGroupAsync(g, new RunnableOnGroup() {
 			@Override
 			public void run() {

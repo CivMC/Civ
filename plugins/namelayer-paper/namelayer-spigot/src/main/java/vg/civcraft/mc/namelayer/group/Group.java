@@ -34,9 +34,10 @@ public class Group {
 	private Set<Group> subgroups = Sets.<Group>newConcurrentHashSet();
 	private Map<UUID, PlayerType> players = Maps.<UUID, PlayerType>newHashMap();
 	private Map<UUID, PlayerType> invites = Maps.<UUID, PlayerType>newHashMap();
+	private long activityTimestamp;
 	
 	public Group(String name, UUID owner, boolean disciplined, 
-			String password, int id) {
+			String password, int id, long activityTimestamp) {
 		if (db == null) {
 			db = NameLayerPlugin.getGroupManagerDao();
 		}
@@ -45,6 +46,7 @@ public class Group {
 		this.password = password;
 		this.owner = owner;
 		this.isDisciplined = disciplined;
+		this.activityTimestamp = activityTimestamp;
 		
 		if (name == null) {
 			this.ids.add(id);
@@ -73,6 +75,15 @@ public class Group {
 		for (Group subgroup : GroupManager.getSubGroups(name)) {
 			link(this, subgroup, false);
 		}
+	}
+	
+	public long getActivityTimeStamp() {
+		return activityTimestamp;
+	}
+	
+	public void updateActivityTimeStamp() {
+		this.activityTimestamp = System.currentTimeMillis();
+		db.updateTimestampAsync(name);
 	}
 	
 	public void prepareForDeletion() {

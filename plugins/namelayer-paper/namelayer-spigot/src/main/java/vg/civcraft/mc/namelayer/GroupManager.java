@@ -65,7 +65,7 @@ public class GroupManager{
 	public void createGroupAsync(final Group group, final RunnableOnGroup postCreate, boolean checkBeforeCreate) {
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
-			postCreate.setGroup(new Group(null, null, true, null, -1));
+			postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis()));
 			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
 		} else {
 			if (checkBeforeCreate) {
@@ -85,7 +85,7 @@ public class GroupManager{
 							} else {
 								// group does exist, so run postCreate with failure.
 								NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
-								postCreate.setGroup(new Group(null, null, true, null, -1));
+								postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis()));
 								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);								
 							}
 						}
@@ -104,7 +104,7 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
-			postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1));
+			postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1, System.currentTimeMillis()));
 			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
 		}
 		final String name = event.getGroupName();
@@ -554,15 +554,6 @@ public class GroupManager{
 			return 0;
 		}
 		return groupManagerDao.countGroups(uuid);
-	}
-	
-	public Timestamp getTimestamp(String group){
-		if (group == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getTimeStamp failed, caller passed in null", new Exception());
-			return null; 
-		}
-
-		return groupManagerDao.getTimestamp(group);
 	}
 
 	/**
