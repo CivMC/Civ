@@ -25,14 +25,13 @@ public class RevertedVelocityConfig extends VelocityConfig {
 		double yaw = (double) fyaw;
 		double pitch = (double) fpitch;
 		
-		pitch += getPitchOffset();
-		
 		double yawRad = Math.toRadians(yaw);
 		double pitchRad = Math.toRadians(pitch);
+		double yPitchRad = Math.toRadians(pitch + getPitchOffset());
 		
 		double velX = -Math.sin(yawRad) * Math.cos(pitchRad) * getHorizontal();
 		double velZ = Math.cos(yawRad) * Math.cos(pitchRad) * getHorizontal();
-		double velY = -Math.sin(pitchRad) * getVertical();
+		double velY = -Math.sin(yPitchRad) * getVertical();
 		
 		Vector vel = new Vector(velX, velY, velZ);
 		Vector norm = vel.normalize();
