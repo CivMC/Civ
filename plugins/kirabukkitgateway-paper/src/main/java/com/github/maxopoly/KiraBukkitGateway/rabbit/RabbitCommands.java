@@ -152,9 +152,10 @@ public class RabbitCommands {
 
 	private void sendInternal(String id, JsonObject json) {
 		json.addProperty("timestamp", System.currentTimeMillis());
+		json.addProperty("packettype", id);
 		Gson gson = new Gson();
 		String payload = gson.toJson(json);
-		internal.sendMessage(id + " " + payload);
+		internal.sendMessage(payload);
 	}
 
 }
