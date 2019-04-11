@@ -237,3 +237,6 @@ hacks:
     - org.bukkit.event.vehicle
     - org.bukkit.event.weather
     - org.bukkit.event.world
+  ToggleLamp:
+    enabled: false
+    cooldownTime: 100
