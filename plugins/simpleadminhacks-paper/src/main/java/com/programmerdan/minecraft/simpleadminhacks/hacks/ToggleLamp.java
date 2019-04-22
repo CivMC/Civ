@@ -123,10 +123,7 @@ public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener
 		
 		boolean toggled = eventBlock.hasMetadata(META_TOGGLED) ? eventBlock.getMetadata(META_TOGGLED).get(0).asBoolean() : false;
 		
-		plugin().log(Level.INFO, "Found redstone lamp, toggled: {0}", toggled);
-		
 		if(toggled) {
-			plugin().log(Level.INFO, "Cancelled block update: {0}", eventMat.toString());
 			event.setCancelled(true);
 		}
 	}
