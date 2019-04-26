@@ -40,8 +40,8 @@ public class ReinforcementLogic {
 	public static double getDamageApplied(Reinforcement reinforcement) {
 		double damageAmount = 1.0;
 		if (!reinforcement.isMature()) {
-			double timeExisted = (double) (System.currentTimeMillis() - reinforcement.getCreationTime());
-			double progress = timeExisted / (double) reinforcement.getType().getMaturationTime();
+			double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
+			double progress = timeExisted / reinforcement.getType().getMaturationTime();
 			damageAmount /= (1.0 - progress);
 			damageAmount *= reinforcement.getType().getMaturationScale();
 		}

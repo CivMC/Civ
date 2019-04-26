@@ -7,11 +7,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 
 @CivCommand(id = "ctb")
 public class Bypass extends StandaloneCommand {
@@ -19,14 +19,15 @@ public class Bypass extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		AbstractPlayerState currentState = Citadel.getInstance().getStateManager().getState(player);
-		if (currentState.isBypassEnabled()) {
+		BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
+		boolean enabled = setting.getValue(player);
+		if (enabled) {
 			Utility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");
 		} else {
 			Utility.sendAndLog(player, ChatColor.GREEN,
 					"Bypass mode has been enabled. You will be able to break reinforced blocks if you are on the group.");
 		}
-		currentState.toggleBypass();
+		setting.toggleValue(player.getUniqueId());
 		return true;
 	}
 

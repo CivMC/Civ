@@ -12,8 +12,8 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class InsecureState extends AbstractPlayerState {
 
-	public InsecureState(Player p, boolean bypass) {
-		super(p, bypass);
+	public InsecureState(Player p) {
+		super(p);
 	}
 
 	@Override

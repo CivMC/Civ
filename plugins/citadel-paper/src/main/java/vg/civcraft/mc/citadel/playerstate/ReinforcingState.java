@@ -22,8 +22,8 @@ public class ReinforcingState extends AbstractPlayerState {
 
 	private Group group;
 
-	public ReinforcingState(Player p, boolean bypass, Group group) {
-		super(p, bypass);
+	public ReinforcingState(Player p, Group group) {
+		super(p);
 		this.group = group;
 	}
 
@@ -31,6 +31,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		return group;
 	}
 
+	@Override
 	public String getName() {
 		return "Reinforcing mode on " + ChatColor.LIGHT_PURPLE + group.getName();
 	}

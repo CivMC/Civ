@@ -92,6 +92,19 @@ public class Reinforcement {
 	}
 
 	/**
+	 * Gets the center of the block at the location of this reinforcement.
+	 * getLocation() will return the integer coordinates of the reinforcement while
+	 * this location is offset by 0.5 to the center
+	 * 
+	 * @return Center of the block
+	 */
+	public Location getBlockCenter() {
+		Location copy = loc.clone();
+		copy.add(0.5, 0.5, 0.5);
+		return copy;
+	}
+
+	/**
 	 * @return Type of this reinforcement
 	 */
 	public ReinforcementType getType() {

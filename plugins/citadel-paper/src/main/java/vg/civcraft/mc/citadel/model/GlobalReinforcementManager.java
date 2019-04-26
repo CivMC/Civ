@@ -125,7 +125,7 @@ public class GlobalReinforcementManager {
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id);
+		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id, world);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}

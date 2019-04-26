@@ -19,8 +19,8 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 
 	private Map<ItemStack, ReinforcingSetup> setups;
 
-	public AdvancedFortificationState(Player p, boolean bypass) {
-		super(p, bypass);
+	public AdvancedFortificationState(Player p) {
+		super(p);
 		setups = new HashMap<ItemStack, ReinforcingSetup>();
 	}
 

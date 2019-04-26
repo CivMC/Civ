@@ -13,8 +13,8 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PatchState extends AbstractPlayerState {
 
-	public PatchState(Player p, boolean bypass) {
-		super(p, bypass);
+	public PatchState(Player p) {
+		super(p);
 	}
 
 	@Override

@@ -15,10 +15,10 @@ public class InventoryListener implements Listener {
 	// different groups or filling into them
 	@EventHandler(ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
-		Inventory SourceInv = event.getSource();
+		Inventory sourceInv = event.getSource();
 		Reinforcement sourceRein = null;
-		if (SourceInv.getHolder() instanceof Container) {
-			sourceRein = ReinforcementLogic.getReinforcementProtecting(((Container) SourceInv.getHolder()).getBlock());
+		if (sourceInv.getHolder() instanceof Container) {
+			sourceRein = ReinforcementLogic.getReinforcementProtecting(((Container) sourceInv.getHolder()).getBlock());
 		}
 		Inventory destInv = event.getDestination();
 		Reinforcement destRein = null;
@@ -34,7 +34,7 @@ public class InventoryListener implements Listener {
 			}
 			return;
 		}
-		if (sourceRein == null && destRein != null) {
+		if (sourceRein == null) {
 			if (!destRein.isInsecure()) {
 				event.setCancelled(true);
 			}

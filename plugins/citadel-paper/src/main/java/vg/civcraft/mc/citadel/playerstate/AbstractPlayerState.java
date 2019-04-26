@@ -19,18 +19,18 @@ import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 
 public abstract class AbstractPlayerState {
 
 	protected UUID uuid;
-	private boolean bypass;
 
-	public AbstractPlayerState(Player p, boolean bypass) {
+	public AbstractPlayerState(Player p) {
 		if (p == null) {
 			throw new IllegalArgumentException("Player for player state can not be null");
 		}
 		this.uuid = p.getUniqueId();
-		this.bypass = bypass;
 	}
 
 	public abstract String getName();
@@ -44,7 +44,9 @@ public abstract class AbstractPlayerState {
 			return;
 		}
 		boolean hasAccess = rein.hasPermission(e.getPlayer(), Citadel.bypassPerm);
-		if (hasAccess && bypass) {
+		BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
+		boolean hasByPass = setting.getValue(e.getPlayer());
+		if (hasAccess && hasByPass) {
 			ReinforcementBypassEvent bypassEvent = new ReinforcementBypassEvent(e.getPlayer(), rein);
 			Bukkit.getPluginManager().callEvent(bypassEvent);
 			if (bypassEvent.isCancelled()) {
@@ -63,7 +65,7 @@ public abstract class AbstractPlayerState {
 				return;
 			}
 		}
-		if (bypass) {
+		if (hasAccess) {
 			Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
 					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
 		}
@@ -79,14 +81,6 @@ public abstract class AbstractPlayerState {
 	}
 
 	public abstract void handleInteractBlock(PlayerInteractEvent e);
-
-	public boolean isBypassEnabled() {
-		return bypass;
-	}
-
-	public void toggleBypass() {
-		bypass = !bypass;
-	}
 
 	protected static void giveReinforcement(Location location, Player p, ReinforcementType type) {
 		HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(type.getItem().clone());

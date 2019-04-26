@@ -24,7 +24,7 @@ public class PatchMode extends StandaloneCommand{
 		if (currentState instanceof PatchState) {
 			stateManager.setState(player, null);
 		} else {
-			stateManager.setState(player, new PatchState(player, currentState.isBypassEnabled()));
+			stateManager.setState(player, new PatchState(player));
 		}
 		return true;
 	}

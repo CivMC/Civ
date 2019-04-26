@@ -24,7 +24,7 @@ public class Insecure extends StandaloneCommand {
 		if (currentState instanceof InsecureState) {
 			stateManager.setState(player, null);
 		} else {
-			stateManager.setState(player, new InsecureState(player, currentState.isBypassEnabled()));
+			stateManager.setState(player, new InsecureState(player));
 		}
 		return true;
 	}

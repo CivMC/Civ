@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -39,13 +40,13 @@ public class AdvancedFortification extends StandaloneCommand {
 			}
 		}
 		ItemStack mainHand = player.getInventory().getItemInMainHand();
-		if (mainHand == null) {
+		if (mainHand.getType() == Material.AIR) {
 			Utility.sendAndLog(player, ChatColor.RED,
 					"You need to hold an item in your main hand to specify the block type to reinforce");
 			return true;
 		}
 		ItemStack offHand = player.getInventory().getItemInOffHand();
-		if (offHand == null) {
+		if (offHand.getType() == Material.AIR) {
 			Utility.sendAndLog(player, ChatColor.RED, "You need to hold a reinforcement item in your off hand");
 			return true;
 		}
@@ -64,7 +65,7 @@ public class AdvancedFortification extends StandaloneCommand {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
 			if (groupName == null) {
 				Utility.sendAndLog(player, ChatColor.RED,
-						"You need to fortify to a group! Try /fortify groupname. \n Or use /create groupname if you don't have a group yet.");
+						"You don't have a default group and can thus not use this command without specifying a group");
 				return true;
 			}
 		} else {
@@ -83,7 +84,7 @@ public class AdvancedFortification extends StandaloneCommand {
 			return true;
 		}
 		if (advFortState == null) {
-			advFortState =  new AdvancedFortificationState(player, currentState.isBypassEnabled());
+			advFortState =  new AdvancedFortificationState(player);
 			stateManager.setState(player, advFortState);
 		}
 		advFortState.addSetup(mainHand, type, group);

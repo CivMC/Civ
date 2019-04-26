@@ -15,8 +15,8 @@ public class FortificationState extends AbstractPlayerState {
 	private ReinforcementType type;
 	private Group group;
 
-	public FortificationState(Player p, boolean bypass, ReinforcementType type, Group group) {
-		super(p, bypass);
+	public FortificationState(Player p, ReinforcementType type, Group group) {
+		super(p);
 		this.type = type;
 		this.group = group;
 	}
@@ -25,6 +25,7 @@ public class FortificationState extends AbstractPlayerState {
 		return group;
 	}
 
+	@Override
 	public String getName() {
 		return "Fortifying mode with " + ChatColor.AQUA + type.getName() + ChatColor.YELLOW + " on "
 				+ ChatColor.LIGHT_PURPLE + group.getName();

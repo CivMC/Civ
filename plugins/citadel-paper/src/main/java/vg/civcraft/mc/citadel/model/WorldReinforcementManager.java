@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.World;
 
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -17,10 +18,13 @@ public class WorldReinforcementManager {
 
 	private final int worldID;
 	private final LoadingCache<ChunkCoord, ChunkCache> reinforcements;
+	private World world;
 
-	public WorldReinforcementManager(CitadelReinforcementData db, int worldID) {
+	public WorldReinforcementManager(CitadelReinforcementData db, int worldID, World world) {
 		this.worldID = worldID;
+		this.world = world;
 		this.reinforcements = CacheBuilder.newBuilder().removalListener(new RemovalListener<ChunkCoord, ChunkCache>() {
+			@Override
 			public void onRemoval(RemovalNotification<ChunkCoord, ChunkCache> removal) {
 				ChunkCache chunk = removal.getValue();
 				if (chunk.isDirty()) {
@@ -30,7 +34,7 @@ public class WorldReinforcementManager {
 		}).build(new CacheLoader<ChunkCoord, ChunkCache>() {
 			@Override
 			public ChunkCache load(ChunkCoord loc) throws Exception {
-				return db.loadReinforcements(loc, worldID);
+				return db.loadReinforcements(loc, worldID, world);
 			}
 			/* probably not needed
 			@Override
@@ -122,6 +126,13 @@ public class WorldReinforcementManager {
 			throw new IllegalStateException("Chunk for deleted reinforcement was not loaded");
 		}
 		cache.removeReinforcement(reinforcement);
+	}
+	
+	/**
+	 * @return World for which this instance is managing reinforcements
+	 */
+	public World getWorld() {
+		return world;
 	}
 
 	void loadChunkData(Chunk chunk) {

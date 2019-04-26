@@ -73,7 +73,7 @@ public class Fortification extends StandaloneCommand {
 				return true;
 			}
 		}
-		stateManager.setState(player, new FortificationState(player, currentState.isBypassEnabled(), type, group));
+		stateManager.setState(player, new FortificationState(player, type, group));
 		return true;
 	}
 

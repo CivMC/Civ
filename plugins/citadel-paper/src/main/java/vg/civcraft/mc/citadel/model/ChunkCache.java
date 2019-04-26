@@ -29,6 +29,7 @@ public class ChunkCache {
 			this.z = loc.getBlockZ();
 		}
 
+		@Override
 		public int compareTo(Coords coords) {
 			// y first because we have the most variety here
 			if (coords.y != y) {
@@ -43,6 +44,7 @@ public class ChunkCache {
 			return 0;
 		}
 
+		@Override
 		public boolean equals(Object o) {
 			Coords coords = (Coords) o;
 			return coords.y == y && coords.x == x && coords.z == z;

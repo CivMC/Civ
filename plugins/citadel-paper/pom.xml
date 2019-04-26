@@ -50,7 +50,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.3</version>
+			<version>1.7.4</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -59,6 +59,13 @@
 			<version>2.12.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.gmail.filoghost.holographicdisplays</groupId>
+			<artifactId>holographicdisplays-api</artifactId>
+			<version>2.3.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 	</dependencies>
 
 	<repositories>
@@ -69,6 +76,10 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
+		</repository>
+		<repository>
+			<id>filoghost-repo</id>
+			<url>https://ci.filoghost.me/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 </project>

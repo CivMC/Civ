@@ -72,7 +72,7 @@ public class EntityListener implements Listener {
 	}
 
 	private List<Block> getGolemBlocks(EntityType type, Block base) {
-		ArrayList<Block> blocks = new ArrayList<Block>();
+		ArrayList<Block> blocks = new ArrayList<>();
 		blocks.add(base);
 		base = base.getRelative(BlockFace.UP);
 		blocks.add(base);

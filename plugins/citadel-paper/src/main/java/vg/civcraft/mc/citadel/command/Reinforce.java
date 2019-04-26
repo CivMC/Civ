@@ -33,7 +33,7 @@ public class Reinforce extends StandaloneCommand {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(uuid);
 			if (groupName == null) {
 				Utility.sendAndLog(player, ChatColor.RED,
-						"You need to reinforced to a group! Try /reinforce groupname. \n Or use /create groupname if you don't have a group yet.");
+						"You need to reinforce to a group! Try /reinforce groupname. \n Or use /create groupname if you don't have a group yet.");
 				return true;
 			}
 		} else {
@@ -42,7 +42,7 @@ public class Reinforce extends StandaloneCommand {
 		PlayerStateManager stateManager = Citadel.getInstance().getStateManager();
 		Group group = GroupManager.getGroup(groupName);
 		if (group == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "The group" + groupName + "does not exist.");
+			Utility.sendAndLog(player, ChatColor.RED, "The group " + groupName + " does not exist.");
 			stateManager.setState(player, null);
 			return true;
 		}
@@ -61,7 +61,7 @@ public class Reinforce extends StandaloneCommand {
 				return true;
 			}
 		}
-		stateManager.setState(player, new ReinforcingState(player, currentState.isBypassEnabled(), group));
+		stateManager.setState(player, new ReinforcingState(player, group));
 		return true;
 	}
 

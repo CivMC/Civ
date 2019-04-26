@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
@@ -87,12 +88,12 @@ public class CitadelReinforcementData {
 		insertStatement.setDouble(8, rein.getHealth());
 		insertStatement.setInt(9, rein.getGroupId());
 		insertStatement.setBoolean(10, rein.isInsecure());
+		insertStatement.setTimestamp(11, new Timestamp(rein.getCreationTime()));
 		insertStatement.addBatch();
 	}
 
-	public ChunkCache loadReinforcements(ChunkCoord coords, int worldID) {
+	public ChunkCache loadReinforcements(ChunkCoord coords, int worldID, World world) {
 		List<Reinforcement> reinforcements = new ArrayList<>();
-		World world = null;
 		try (Connection loadConn = db.getConnection();
 				PreparedStatement loadRein = loadConn.prepareStatement(
 						"select x, y, z, type_id, creation_time, health, group_id, insecure from reinforcements "
@@ -144,7 +145,7 @@ public class CitadelReinforcementData {
 		try (Connection conn = db.getConnection()) {
 			PreparedStatement insertStatement = conn
 					.prepareStatement("insert into reinforcements (x,y,z,chunk_x,chunk_z,world_id,type_id,"
-							+ "health,group_id,insecure) values(?,?,?,?,?,?,?,?,?,?);");
+							+ "health,group_id,insecure,creation_time) values(?,?,?,?,?,?,?,?,?,?,?);");
 			PreparedStatement deleteStatement = conn
 					.prepareStatement("delete from reinforcements where x = ? and y = ? and z = ? and world_id = ?;");
 			PreparedStatement updateStatement = conn.prepareStatement("update reinforcements "

@@ -52,10 +52,6 @@ public class AcidManager {
 		if (b == null) {
 			return false;
 		}
-		Material mat = b.getType();
-		if (mat == null) {
-			return false;
-		}
-		return material.contains(mat);
+		return material.contains(b.getType());
 	}
 }

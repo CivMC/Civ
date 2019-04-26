@@ -14,6 +14,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -21,6 +22,21 @@ public class InformationState extends AbstractPlayerState {
 
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
+	
+	
+	public static ChatColor getDamageColor(double relativeHealth) {
+		if (relativeHealth >= 1.0) {
+			return ChatColor.GREEN;
+		} else if (relativeHealth >= 0.75) {
+			return ChatColor.DARK_GREEN;
+		} else if (relativeHealth >= 0.5) {
+			return ChatColor.YELLOW;
+		} else if (relativeHealth >= 0.25) {
+			return ChatColor.RED;
+		} else {
+			return ChatColor.DARK_RED;
+		}
+	}
 
 	public static String formatHealth(Reinforcement rein) {
 		double broken = rein.getHealth() / rein.getType().getHealth();
@@ -41,7 +57,7 @@ public class InformationState extends AbstractPlayerState {
 				roundingFormat.format(rein.getHealth()), roundingFormat.format(rein.getType().getHealth()));
 	}
 
-	private static String formatProgress(long start, long timeNeeded, String text) {
+	public static String formatProgress(long start, long timeNeeded, String text) {
 		long timeTaken = System.currentTimeMillis() - start;
 		timeTaken = Math.min(timeTaken, timeNeeded);
 		double progress = Math.min(1.0, ((double) timeTaken) / ((double) timeNeeded));
@@ -49,10 +65,11 @@ public class InformationState extends AbstractPlayerState {
 				TextUtil.formatDuration(timeNeeded - timeTaken, TimeUnit.MILLISECONDS));
 	}
 
-	public InformationState(Player p, boolean bypass) {
-		super(p, bypass);
+	public InformationState(Player p) {
+		super(p);
 	}
 
+	@Override
 	public String getName() {
 		return "Information mode";
 	}
@@ -76,9 +93,7 @@ public class InformationState extends AbstractPlayerState {
 			e.setCancelled(true);
 		}
 		if (!rein.hasPermission(player, Citadel.infoPerm)) {
-			String msg = String.format("Reinforced at %s%s health with %s%s", formatHealth(rein), ChatColor.RED,
-					ChatColor.AQUA, rein.getType().getName());
-			Utility.sendAndLog(player, ChatColor.RED, msg);
+			Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -105,6 +120,10 @@ public class InformationState extends AbstractPlayerState {
 			}
 		}
 		Utility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
+		HologramManager holoManager = Citadel.getInstance().getHologramManager();
+		if (holoManager != null) {
+			holoManager.showInfoHolo(rein, player);
+		}
+				
 	}
-
 }

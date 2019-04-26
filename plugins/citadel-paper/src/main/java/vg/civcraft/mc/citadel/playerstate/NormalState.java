@@ -6,8 +6,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 public class NormalState extends AbstractPlayerState {
 
-	public NormalState(Player p, boolean bypass) {
-		super(p, bypass);
+	public NormalState(Player p) {
+		super(p);
 		// TODO Auto-generated constructor stub
 	}
 

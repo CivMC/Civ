@@ -23,7 +23,7 @@ public class PlayerStateManager {
 		}
 		AbstractPlayerState state = playerStateMap.get(player.getUniqueId());
 		if (state == null) {
-			state = new NormalState(player, true);
+			state = new NormalState(player);
 			playerStateMap.put(player.getUniqueId(), state);
 		}
 		return state;
@@ -36,11 +36,7 @@ public class PlayerStateManager {
 		AbstractPlayerState existingState = getState(player);
 		// null state is allowed, it just resets the state
 		if (state == null) {
-			if (existingState != null) {
-				state = new NormalState(player, existingState.isBypassEnabled());
-			} else {
-				state = new NormalState(player, true);
-			}
+			state = new NormalState(player);
 		}
 		playerStateMap.put(player.getUniqueId(), state);
 		Utility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW + state.getName()

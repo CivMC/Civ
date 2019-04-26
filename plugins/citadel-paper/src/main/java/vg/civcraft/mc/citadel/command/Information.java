@@ -24,7 +24,7 @@ public class Information extends StandaloneCommand {
 		if (currentState instanceof InformationState) {
 			stateManager.setState(player, null);
 		} else {
-			stateManager.setState(player, new InformationState(player, currentState.isBypassEnabled()));
+			stateManager.setState(player, new InformationState(player));
 		}
 		return true;
 	}

@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-
 import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.ChunkLoadListener;
@@ -13,7 +12,9 @@ import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.CitadelSettingManager;
 import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
+import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -24,7 +25,6 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class Citadel extends ACivMod {
 
 	public static final String chestPerm = "CHESTS";
-
 	public static final String bypassPerm = "BYPASS_REINFORCEMENT";
 	public static final String cropsPerm = "CROPS";
 	public static final String insecurePerm = "INSECURE_REINFORCEMENT";
@@ -46,6 +46,8 @@ public class Citadel extends ACivMod {
 	private CitadelConfigManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
+	private HologramManager holoManager;
+	private CitadelSettingManager settingManager;
 
 	private PlayerStateManager stateManager;
 
@@ -72,9 +74,6 @@ public class Citadel extends ACivMod {
 		return "Citadel";
 	}
 
-	/**
-	 * @return The ReinforcementManager of Citadel.
-	 */
 	public GlobalReinforcementManager getReinforcementManager() {
 		return worldManager;
 	}
@@ -82,14 +81,19 @@ public class Citadel extends ACivMod {
 	public ReinforcementTypeManager getReinforcementTypeManager() {
 		return typeManager;
 	}
+	
+	public CitadelSettingManager getSettingManager() {
+		return settingManager;
+	}
 
 	public PlayerStateManager getStateManager() {
 		return stateManager;
 	}
 
-	/**
-	 * Initializes the database.
-	 */
+	public HologramManager getHologramManager() {
+		return holoManager;
+	}
+
 	public boolean initializeDatabase() {
 		ManagedDatasource mds = config.getDatabase();
 		if (mds == null) {
@@ -99,6 +103,7 @@ public class Citadel extends ACivMod {
 		return db.startUp();
 	}
 
+	@Override
 	public void onDisable() {
 		// Pushes all reinforcements loaded to be saved to db.
 		worldManager.flushAll();
@@ -111,6 +116,7 @@ public class Citadel extends ACivMod {
 		onEnable();
 	}
 
+	@Override
 	public void onEnable() {
 		super.onEnable();
 		instance = this;
@@ -141,6 +147,10 @@ public class Citadel extends ACivMod {
 		}
 		stateManager = new PlayerStateManager();
 		acidManager = new AcidManager(config.getAcidMaterials());
+		settingManager = new CitadelSettingManager();
+		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+			holoManager = new HologramManager();
+		}
 		registerNameLayerPermissions();
 		registerListeners();
 	}

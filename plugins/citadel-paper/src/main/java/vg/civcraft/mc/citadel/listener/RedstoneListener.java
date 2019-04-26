@@ -177,11 +177,7 @@ public class RedstoneListener implements Listener {
 			} else {
 				locationToSave = rel.getLocation();
 			}
-			List<UUID> existingAuths = authorizations.get(locationToSave);
-			if (existingAuths == null) {
-				existingAuths = new LinkedList<UUID>();
-				authorizations.put(locationToSave, existingAuths);
-			}
+			List<UUID> existingAuths = authorizations.computeIfAbsent(locationToSave, k -> new LinkedList<>());
 			existingAuths.add(player.getUniqueId());
 		}
 	}

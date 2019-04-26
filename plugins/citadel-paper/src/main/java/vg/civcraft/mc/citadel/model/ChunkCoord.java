@@ -27,6 +27,7 @@ public class ChunkCoord {
 		this.z = z;
 	}
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof ChunkCoord) {
 			ChunkCoord pair = (ChunkCoord) o;
@@ -50,6 +51,7 @@ public class ChunkCoord {
 		return z;
 	}
 
+	@Override
 	public int hashCode() {
 		// might collide
 		return x & (z << 16);
