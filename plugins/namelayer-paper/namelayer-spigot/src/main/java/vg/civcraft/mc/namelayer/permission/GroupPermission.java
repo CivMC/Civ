@@ -8,7 +8,6 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class GroupPermission {
 
@@ -82,7 +81,6 @@ public class GroupPermission {
 		toAdd.add(permType);
 		if (savetodb){
 			db.addPermission(group.getName(), pType.name(), toAdd);
-			Mercury.addPerm(group.getName(),pType.name(), permType.getName());
 		}
 		return true;
 	}
@@ -103,7 +101,6 @@ public class GroupPermission {
 		types.remove(permType);
 		if (savetodb){
 			db.removePermission(group.getName(), pType, permType);
-			Mercury.remPerm(group.getName(), pType.name(), permType.getName());
 		}
 		return true;
 	}

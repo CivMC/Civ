@@ -43,13 +43,13 @@ public class GroupManagerDao {
 	private static final String removeCycles = "delete a from subgroup a join faction_id a2 ON a.group_id = a2.group_id "
 				+ "JOIN subgroup b JOIN faction_id b2 on b.sub_group_id = b2.group_id where a2.group_name = b2.group_name;";
 	private static final String createGroup = "call createGroup(?,?,?,?)";
-	private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String getGroup = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_name = f.group_name "
 				+ "where f.group_name = ?";
 	private static final String getGroupIDs = "SELECT f.group_id, count(DISTINCT fm.member_name) AS sz FROM faction_id f "
 				+ "INNER JOIN faction_member fm ON f.group_id = fm.group_id WHERE f.group_name = ? GROUP BY f.group_id ORDER BY sz DESC";
-	private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id " +
+	private static final String getGroupById = "select f.group_name, f.founder, f.password, f.discipline_flags, fi.group_id, f.last_timestamp " +
 				"from faction f "
 				+ "inner join faction_id fi on fi.group_id = ? "
 				+ "where f.group_name = fi.group_name";
@@ -150,9 +150,6 @@ public class GroupManagerDao {
 								+ "WHERE member_name = ? "
 								+ "AND role = ?;";
 		
-		// Gets the "most recent" updated group from all groups that share the name.
-	private static final String getTimestamp = "SELECT MAX(faction.last_timestamp) FROM faction "
-								+ "WHERE group_name = ?;";
 		
 		// updates "most recent" of all groups with a given name.
 	private static final String updateLastTimestamp = "UPDATE faction SET faction.last_timestamp = NOW() "
@@ -524,7 +521,7 @@ public class GroupManagerDao {
 		boolean discipline = false;
 		String password = null;
 		int id = -1;
-		
+		Timestamp timeStamp = null;
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroup = connection.prepareStatement(GroupManagerDao.getGroup)){
 			
@@ -540,6 +537,7 @@ public class GroupManagerDao {
 				discipline = set.getInt(4) != 0;
 				password = set.getString(3);
 				id = set.getInt(5);
+				timeStamp = set.getTimestamp(6);
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem getting group " + groupName, e);
 				return null;
@@ -550,7 +548,7 @@ public class GroupManagerDao {
 		}
 		Group g = null;
 		try {
-			g = new Group(name, owner, discipline, password, id);
+			g = new Group(name, owner, discipline, password, id, timeStamp.getTime());
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Problem retrieving group " + groupName, e);
 		}
@@ -565,7 +563,7 @@ public class GroupManagerDao {
 		boolean dis = false;
 		String password = null;
 		int id = -1;
-		
+		Timestamp timeStamp = null;
 		try (Connection connection = db.getConnection();
 				PreparedStatement getGroupById = connection.prepareStatement(GroupManagerDao.getGroupById)){
 			getGroupById.setInt(1, groupId);
@@ -582,6 +580,7 @@ public class GroupManagerDao {
 				dis = set.getInt(4) != 0;
 				password = set.getString(3);
 				id = set.getInt(5);
+				timeStamp = set.getTimestamp(6);
 			} catch (SQLException e) {
 				logger.log(Level.WARNING, "Problem getting group " + groupId, e);
 				return null;
@@ -592,7 +591,7 @@ public class GroupManagerDao {
 		}
 		Group g = null;
 		try {
-			g = new Group(name, owner, dis, password, id);
+			g = new Group(name, owner, dis, password, id, timeStamp.getTime());
 		} catch (Exception e) {
 			logger.log(Level.WARNING, "Problem retrieving group " + groupId, e);
 		}
@@ -635,25 +634,6 @@ public class GroupManagerDao {
 			logger.log(Level.WARNING, "Problem preparing to get player " + uuid + " groups by role " + role, e);
 		}
 		return groups;
-	}
-	
-	public Timestamp getTimestamp(String group){
-		Timestamp timestamp = null;
-		try (Connection connection = db.getConnection();
-				PreparedStatement getTimestamp = connection.prepareStatement(GroupManagerDao.getTimestamp)){
-			getTimestamp.setString(1, group);
-			try (ResultSet set = getTimestamp.executeQuery();) {
-				if(set.next()) {
-					timestamp = set.getTimestamp(1);
-				}
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Problem getting group timestamp " + group, e);
-			} 
-		} catch (SQLException e) {
-			logger.log(Level.WARNING, "Problem preparing to get group timestamp " + group, e);
-		}
-		
-		return timestamp;
 	}
 	
 	public PlayerType getPlayerType(int groupid, UUID uuid){

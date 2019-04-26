@@ -23,7 +23,6 @@ import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -66,7 +65,7 @@ public class GroupManager{
 	public void createGroupAsync(final Group group, final RunnableOnGroup postCreate, boolean checkBeforeCreate) {
 		if (group == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, caller passed in null", new Exception());
-			postCreate.setGroup(new Group(null, null, true, null, -1));
+			postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis()));
 			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
 		} else {
 			if (checkBeforeCreate) {
@@ -86,7 +85,7 @@ public class GroupManager{
 							} else {
 								// group does exist, so run postCreate with failure.
 								NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group create failed, group {0} already exists", group.getName());
-								postCreate.setGroup(new Group(null, null, true, null, -1));
+								postCreate.setGroup(new Group(null, null, true, null, -1, System.currentTimeMillis()));
 								Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);								
 							}
 						}
@@ -105,7 +104,7 @@ public class GroupManager{
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()){
 			NameLayerPlugin.log(Level.INFO, "Group create was cancelled for group: " + group.getName());
-			postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1));
+			postCreate.setGroup(new Group(group.getName(), group.getOwner(), true, group.getPassword(), -1, System.currentTimeMillis()));
 			Bukkit.getScheduler().runTask(NameLayerPlugin.getInstance(), postCreate);
 		}
 		final String name = event.getGroupName();
@@ -145,7 +144,6 @@ public class GroupManager{
 		int id;
 		if (savetodb){
 			id = groupManagerDao.createGroup(name, owner, password);
-			Mercury.createGroup(group, id);
 			if (id > -1) {
 				initiateDefaultPerms(id); // give default perms to a newly create group
 				GroupManager.getGroup(id); // force a recache from DB.
@@ -195,7 +193,6 @@ public class GroupManager{
 		group.setValid(false);
 		if (savetodb){
 			groupManagerDao.deleteGroup(groupName);
-			Mercury.deleteGroup(groupName);
 		}
 		return true;
 	}
@@ -219,7 +216,6 @@ public class GroupManager{
 		if (savetodb){
 			g.addMember(uuid, PlayerType.OWNER);
 			g.setOwner(uuid);
-			Mercury.transferGroup(g, uuid);
 		} else {
 			g.addMember(uuid, PlayerType.OWNER, false);
 			g.setOwner(uuid, false);
@@ -281,7 +277,6 @@ public class GroupManager{
 		toMerge.setDisciplined(true, false);
 		
 		if (savetodb){
-			Mercury.mergeGroup(group.getName(), toMerge.getName());
 			// This basically just fires starting events and disciplines groups on target server.
 			// They then wait for merge to complete. Botched merges will lock groups, basically. :shrug:
 
@@ -298,8 +293,7 @@ public class GroupManager{
 					if (toMerge.getSuperGroup() != null) {
 						Group sup = toMerge.getSuperGroup();
 						Group.unlink(sup, toMerge); 
-						// The above handles the need to unlink any supergroup from merge in DB. This sends its own
-						// Mercury message updating everyone else to do the same in-cache so no further unlinking needs doing.
+						// The above handles the need to unlink any supergroup from merge in DB.
 					}
 
 					// Subgroup update is handled in doneMerge, as its a cache-only update.
@@ -307,10 +301,6 @@ public class GroupManager{
 					deleteGroupPerms(toMerge); // commit perm updates to DB.
 
 					doneMergeGroup(group, toMerge);
-
-					// Now we are done the merging process probably, so tell everyone to invalidate their caches for these
-					// two groups and perform any other cleanup (subgroup links,etc.)
-					Mercury.doneMergeGroup(group.getName(), toMerge.getName()); 
 				}
 			});
 		}
@@ -564,15 +554,6 @@ public class GroupManager{
 			return 0;
 		}
 		return groupManagerDao.countGroups(uuid);
-	}
-	
-	public Timestamp getTimestamp(String group){
-		if (group == null) {
-			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getTimeStamp failed, caller passed in null", new Exception());
-			return null; 
-		}
-
-		return groupManagerDao.getTimestamp(group);
 	}
 
 	/**

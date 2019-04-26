@@ -40,8 +40,7 @@ public class MergeGUI extends AbstractGroupGUI {
 				ChatColor.AQUA
 						+ "This action will transfer all members, reinforcements, snitches of this group to the one you chose next. "
 						+ "This group will be deleted in the process");
-		ItemStack mergeOtherIntoThisStack = new ItemStack(
-				Material.STORAGE_MINECART);
+		ItemStack mergeOtherIntoThisStack = mergeStack();
 		ISUtils.setName(mergeOtherIntoThisStack, ChatColor.GOLD
 				+ "Merge a different group into this one");
 		ISUtils.addLore(
@@ -66,7 +65,7 @@ public class MergeGUI extends AbstractGroupGUI {
 			}
 		}, 15);
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD
 				+ "Go back to previous menu");
 		ci.setSlot(new Clickable(backToOverview) {
@@ -143,7 +142,7 @@ public class MergeGUI extends AbstractGroupGUI {
 		}
 
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack();
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Exit selection");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -170,12 +169,10 @@ public class MergeGUI extends AbstractGroupGUI {
 						+ "This will transfer all members, reinforcements, snitches etc. from "
 						+ fromGroup + " to " + targetGroup + ". " + fromGroup
 						+ " will be deleted in the process");
-		ItemStack yes = new ItemStack(Material.INK_SACK);
-		yes.setDurability((short) 10); // green
+		ItemStack yes = yesStack();
 		ISUtils.setName(yes, ChatColor.GOLD + "Yes, merge " + fromGroup
 				+ " into " + targetGroup);
-		ItemStack no = new ItemStack(Material.INK_SACK);
-		no.setDurability((short) 1); // red
+		ItemStack no = noStack();
 		ISUtils.setName(no, ChatColor.GOLD + "No, don't merge " + g.getName());
 		confirmInv.setSlot(new Clickable(yes) {
 

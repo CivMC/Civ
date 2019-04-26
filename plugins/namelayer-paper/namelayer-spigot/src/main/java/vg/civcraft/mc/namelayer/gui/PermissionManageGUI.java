@@ -50,7 +50,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				produceSelectionClickable(Material.LEATHER_CHESTPLATE,
 						PlayerType.MEMBERS), 11);
 		ci.setSlot(
-				produceSelectionClickable(Material.GOLD_CHESTPLATE,
+				produceSelectionClickable(modMat(),
 						PlayerType.MODS), 13);
 		ci.setSlot(
 				produceSelectionClickable(Material.IRON_CHESTPLATE,
@@ -114,12 +114,11 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("PERMS"));
 		for (final PermissionType perm : PermissionType.getAllPermissions()) {
-			ItemStack is;
+			ItemStack is = null;
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
 			if (hasPerm) {
-				is = new ItemStack(Material.INK_SACK, 1, (short) 10); // green
-																		// dye
+				is = yesStack();
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
@@ -127,7 +126,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 								+ "s currently have", ChatColor.DARK_AQUA
 								+ "this permission");
 			} else {
-				is = new ItemStack(Material.INK_SACK, 1, (short) 1); // red dye
+				is = noStack();
 				ISUtils.addLore(
 						is,
 						ChatColor.DARK_AQUA
@@ -214,7 +213,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			ci.setSlot(forCl, 53);
 		}
 
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back");
 		ci.setSlot(new Clickable(backToOverview) {
 

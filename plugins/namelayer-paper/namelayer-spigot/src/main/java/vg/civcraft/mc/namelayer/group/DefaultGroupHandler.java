@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class DefaultGroupHandler {
 	
@@ -45,7 +44,6 @@ public class DefaultGroupHandler {
 			else {
 				dao.changeDefaultGroup(uuid, g.getName());
 			}
-			Mercury.defaultGroup(g.getName(), uuid.toString());
 		}
 		defaultGroups.put(uuid, g.getName());
 	}

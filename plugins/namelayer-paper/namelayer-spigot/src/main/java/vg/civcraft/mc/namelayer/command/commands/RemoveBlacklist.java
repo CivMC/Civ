@@ -10,7 +10,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -77,18 +76,9 @@ public class RemoveBlacklist extends PlayerCommandMiddle {
 
 		} else if (args.length == 2) {
 			List<String> namesToReturn = new ArrayList<String>();
-			if (NameLayerPlugin.isMercuryEnabled()) {
-				Set<String> players = MercuryAPI.instance.getAllPlayers();
-				for (String x: players) {
-					if (x.toLowerCase().startsWith(args[1].toLowerCase()))
-						namesToReturn.add(x);
-				}
-			}
-			else {
-				for (Player p: Bukkit.getOnlinePlayers()) {
-					if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
-						namesToReturn.add(p.getName());
-				}
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
+					namesToReturn.add(p.getName());
 			}
 			return namesToReturn;
 		}

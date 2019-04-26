@@ -25,7 +25,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -33,7 +32,6 @@ import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class MainGroupGUI extends AbstractGroupGUI {
@@ -140,7 +138,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(setupMemberTypeToggle(PlayerType.OWNER, showOwners), 52);
 
 		// exit button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -319,7 +317,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 										+ " for group " + g.getName() + "via gui");
 								g.removeInvite(invitedUUID, true);
 								PlayerListener.removeNotification(invitedUUID, g);
-								Mercury.remInvite(g.getGroupId(), invitedUUID);
 
 								p.sendMessage(ChatColor.GREEN + playerName
 										+ "'s invitation has been revoked.");
@@ -348,7 +345,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				break;
 			case MODS:
 				if (showMods) {
-					c = constructMemberClickable(Material.GOLD_CHESTPLATE,
+					c = constructMemberClickable(modMat(),
 							uuid, PlayerType.MODS);
 				}
 				break;
@@ -485,7 +482,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		Clickable memberClick = setupDetailSlot(Material.LEATHER_CHESTPLATE,
 				uuid, PlayerType.MEMBERS);
 		ci.setSlot(memberClick, 10);
-		Clickable modClick = setupDetailSlot(Material.GOLD_CHESTPLATE, uuid,
+		Clickable modClick = setupDetailSlot(modMat(), uuid,
 				PlayerType.MODS);
 		ci.setSlot(modClick, 12);
 		Clickable adminClick = setupDetailSlot(Material.IRON_CHESTPLATE, uuid,
@@ -495,7 +492,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				uuid, PlayerType.OWNER);
 		ci.setSlot(ownerClick, 16);
 
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -723,7 +720,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getAddBlackListClickable() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.LEASH);
+		ItemStack is = blacklistStack();
 		ISUtils.setName(is, ChatColor.GOLD + "Add player to blacklist");
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("BLACKLIST"))) {
@@ -739,14 +736,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						public List<String> onTabComplete(String word,
 								String[] msg) {
 							List<String> names;
-							if (NameLayerPlugin.isMercuryEnabled()) {
-								names = new LinkedList<String>(
-										MercuryAPI.getAllPlayers());
-							} else {
-								names = new LinkedList<String>();
-								for (Player p : Bukkit.getOnlinePlayers()) {
-									names.add(p.getName());
-								}
+							names = new LinkedList<String>();
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								names.add(p.getName());
 							}
 							if (word.equals("")) {
 								return names;
@@ -915,7 +907,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	}
 
 	private Clickable getPermOptionClickable() {
-		ItemStack permStack = new ItemStack(Material.FENCE_GATE);
+		ItemStack permStack = permsStack();
 		ISUtils.setName(permStack, ChatColor.GOLD
 				+ "View and manage group permissions");
 		Clickable permClickable;
@@ -951,7 +943,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getDefaultGroupStack() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.BRICK);
+		ItemStack is = defaultStack();
 		ISUtils.setName(is, ChatColor.GOLD + "Default group");
 		final String defGroup = gm.getDefaultGroup(p.getUniqueId());
 		if (defGroup != null && defGroup.equals(g.getName())) {
@@ -1028,12 +1020,10 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					ISUtils.addLore(info, ChatColor.RED
 							+ "Are you sure that you want to", ChatColor.RED
 							+ "leave this group? You can not undo this!");
-					ItemStack yes = new ItemStack(Material.INK_SACK);
-					yes.setDurability((short) 10); // green
+					ItemStack yes = yesStack();
 					ISUtils.setName(yes,
 							ChatColor.GOLD + "Yes, leave " + g.getName());
-					ItemStack no = new ItemStack(Material.INK_SACK);
-					no.setDurability((short) 1); // red
+					ItemStack no = noStack();
 					ISUtils.setName(no,
 							ChatColor.GOLD + "No, stay in " + g.getName());
 					confirmInv.setSlot(new Clickable(yes) {
@@ -1201,7 +1191,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				is = new ItemStack(Material.LEATHER_CHESTPLATE);
 				break;
 			case MODS:
-				is = new ItemStack(Material.GOLD_CHESTPLATE);
+				is = modStack();
 				break;
 			case ADMINS:
 				is = new ItemStack(Material.IRON_CHESTPLATE);

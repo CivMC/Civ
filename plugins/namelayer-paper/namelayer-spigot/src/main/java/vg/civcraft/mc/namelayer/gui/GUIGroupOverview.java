@@ -51,8 +51,7 @@ public class GUIGroupOverview {
 
 	public void showScreen() {
 
-		ClickableInventory ci = new ClickableInventory(54, p.getName()
-				+ "'s groups");
+		ClickableInventory ci = new ClickableInventory(54, p.getName() + "'s groups");
 		final List<Clickable> groups = getGroupClickables();
 		if (groups.size() < 45 * currentPage) {
 			// would show an empty page, so go to previous
@@ -129,7 +128,7 @@ public class GUIGroupOverview {
 		}
 
 		// close button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = AbstractGroupGUI.goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -166,7 +165,7 @@ public class GUIGroupOverview {
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Member");
 				break;
 			case MODS:
-				is = new ItemStack(Material.GOLD_CHESTPLATE);
+				is = AbstractGroupGUI.modStack();
 				ISUtils.addLore(is, ChatColor.AQUA + "Your rank: Mod");
 				break;
 			case ADMINS:
@@ -306,7 +305,7 @@ public class GUIGroupOverview {
 						}
 
 						final UUID uuid = p.getUniqueId();
-						Group g = new Group(groupName, uuid, false, null, -1);
+						Group g = new Group(groupName, uuid, false, null, -1, System.currentTimeMillis());
 						gm.createGroupAsync(g, new RunnableOnGroup() {
 							@Override
 							public void run() {

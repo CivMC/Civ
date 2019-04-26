@@ -18,13 +18,11 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitationGUI extends AbstractGroupGUI{
@@ -46,7 +44,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 		ISUtils.addLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
 		ci.setSlot(new DecorationStack(explain), 4);
 		ci.setSlot(produceOptionStack(Material.LEATHER_CHESTPLATE, "member", PlayerType.MEMBERS, PermissionType.getPermission("MEMBERS")), 10);
-		ci.setSlot(produceOptionStack(Material.GOLD_CHESTPLATE, "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
+		ci.setSlot(produceOptionStack(modMat(), "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
 		ci.setSlot(produceOptionStack(Material.IRON_CHESTPLATE, "admin", PlayerType.ADMINS, PermissionType.getPermission("ADMINS")), 14);
 		ci.setSlot(produceOptionStack(Material.DIAMOND_CHESTPLATE, "owner", PlayerType.OWNER, PermissionType.getPermission("OWNER")), 16);
 		ci.showInventory(p);
@@ -96,7 +94,6 @@ public class InvitationGUI extends AbstractGroupGUI{
 													+ "via gui");
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
 									
-									Mercury.addInvite(g.getGroupId(), pType.toString(), inviteUUID, p.getUniqueId().toString());
 
 									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
 								}
@@ -109,14 +106,9 @@ public class InvitationGUI extends AbstractGroupGUI{
 						
 						public List <String> onTabComplete(String word, String [] msg) {
 							List <String> names;
-							if (NameLayerPlugin.isMercuryEnabled()) {
-								names = new LinkedList<String>(MercuryAPI.getAllPlayers());
-							}
-							else {
-								names = new LinkedList<String>();
-								for(Player p : Bukkit.getOnlinePlayers()) {
-									names.add(p.getName());
-								}
+							names = new LinkedList<String>();
+							for(Player p : Bukkit.getOnlinePlayers()) {
+								names.add(p.getName());
 							}
 							names.add("cancel");
 							if (word.equals("")) {

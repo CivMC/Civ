@@ -13,7 +13,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class AcceptInvite extends PlayerCommandMiddle{
 
@@ -55,8 +54,6 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
 		
-		Mercury.remInvite(group.getGroupId(), uuid);
-				
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
 		return true;
 	}

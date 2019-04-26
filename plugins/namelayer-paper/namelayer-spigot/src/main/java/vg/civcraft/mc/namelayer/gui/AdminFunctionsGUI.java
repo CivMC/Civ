@@ -16,7 +16,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
@@ -114,7 +113,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ci.setSlot(deletionClick, 16);
 
 		// back button
-		ItemStack backToOverview = new ItemStack(Material.WOOD_DOOR);
+		ItemStack backToOverview = goBackStack(); 
 		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
@@ -145,13 +144,9 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 			@Override
 			public List<String> onTabComplete(String word, String[] arg1) {
 				List<String> names;
-				if (NameLayerPlugin.isMercuryEnabled()) {
-					names = new LinkedList<String>(MercuryAPI.getAllPlayers());
-				} else {
-					names = new LinkedList<String>();
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						names.add(p.getName());
-					}
+				names = new LinkedList<String>();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					names.add(p.getName());
 				}
 				if (word.equals("")) {
 					return names;
@@ -193,13 +188,11 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				ISUtils.addLore(info, ChatColor.RED
 						+ "Are you sure that you want to", ChatColor.RED
 						+ "transfer this group? You can not undo this!");
-				ItemStack yes = new ItemStack(Material.INK_SACK);
-				yes.setDurability((short) 10); // green
+				ItemStack yes = yesStack();
 				ISUtils.setName(yes,
 						ChatColor.GOLD + "Yes, transfer	 " + g.getName()
 								+ " to " + playerName);
-				ItemStack no = new ItemStack(Material.INK_SACK);
-				no.setDurability((short) 1); // red
+				ItemStack no = noStack();
 				ISUtils.setName(no,
 						ChatColor.GOLD + "No, don't transfer " + g.getName());
 				confirmInv.setSlot(new Clickable(yes) {
@@ -241,11 +234,10 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ISUtils.setName(info, ChatColor.GOLD + "Delete group");
 		ISUtils.addLore(info, ChatColor.RED + "Are you sure that you want to",
 				ChatColor.RED + "delete this group? You can not undo this!");
-		ItemStack yes = new ItemStack(Material.INK_SACK);
-		yes.setDurability((short) 10); // green
+		
+		ItemStack yes = yesStack();
 		ISUtils.setName(yes, ChatColor.GOLD + "Yes, delete " + g.getName());
-		ItemStack no = new ItemStack(Material.INK_SACK);
-		no.setDurability((short) 1); // red
+		ItemStack no = noStack();
 		ISUtils.setName(no, ChatColor.GOLD + "No, keep " + g.getName());
 		confirmInv.setSlot(new Clickable(yes) {
 
