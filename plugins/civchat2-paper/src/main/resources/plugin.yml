@@ -1,26 +1,85 @@
 name: ${project.name}
 main: vg.civcraft.mc.civchat2.CivChat2
 version: ${project.version}
-author: jjj5311
-depend: [NameLayer, CivModCore]
-softdepend: [Mercury, BetterShards]
-description: CivChat2 limits the chat radius to 1000 blocks. However Private Messaging and Group Chat works above the 1000 block chat radius.
+authors:
+- jjj5311
+- Maxopoly
+depend:
+- NameLayer
+- CivModCore
+description: CivChat2 limits the chat radius to 1000 blocks. However Private Messaging and Group Chat works above the 1000
+   block chat radius.
 commands:
-    tell:
-      aliases: [message, msg, m, pm]
-    afk:
-    reply:
-      aliases: [r]
-    ignore:
-      aliases: [i]
-    ignoregroup:
-      aliases: [ig, igroup, ignoreg]
-    groupc:
-      aliases: [groupchat, gchat, gc, g]
-    ignorelist:
-    exit:
-      aliases: [e]
+   tell:
+      aliases:
+      - message
+      - msg
+      - m
+      - pm
+      usage: /tell <recipient> [message]
+      description: Sends a private message to someone or enters a private chat with them
+      min-args: 1
+      max-args: 500
+      player-only: true
+   afk:
+      usage: /afk
+      description: Toggle afk status
+      min-args: 0
+      max-args: 0
+      player-only: true
+   reply:
+      aliases:
+      - r
+      usage: /reply <message>
+      description: Replies to the last person you sent a message to or received one from
+      min-args: 1
+      max-args: 500
+      player-only: true
+   ignore:
+      aliases:
+      - i
+      usage: /ignore <player>
+      description: Toggles ignoring a player
+      min-args: 1
+      max-args: 1
+      player-only: true
+   ignoregroup:
+      aliases:
+      - ig
+      - igroup
+      - ignoreg
+      usage: /ignoregroup <group>
+      description: Toggles ignoring a group
+      min-args: 1
+      max-args: 1
+      player-only: true
+   groupc:
+      aliases:
+      - groupchat
+      - gchat
+      - gc
+      - g
+      usage: /gchat <group> [message]
+      description: Enters a group chat or sends a message to a group chat
+      min-args: 1
+      max-args: 2
+      player-only: true
+   ignorelist:
+      usage: /ignorelist
+      description: Lists the players and groups you are ignoring
+      min-args: 0
+      max-args: 0
+      player-only: true
+   exit:
+      aliases:
+      - e
+      - local
+      usage: /exit
+      description: Exit private or group chats
+      min-args: 0
+      max-args: 0
+      player-only: true
 permissions:
-    CivChat2.*:
+   CivChat2.*:
       description: Gives access to /sayall
       default: op

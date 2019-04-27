@@ -21,7 +21,7 @@ public class CivChat2Executor implements CommandExecutor {
 
 		this.plugin = instance;
 		this.config = plugin.getPluginConfig();
-		this.logger = CivChat2.getCivChat2Log();
+		this.logger = plugin.getCivChat2Log();
 	}
 
 	@Override

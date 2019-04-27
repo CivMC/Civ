@@ -36,22 +36,16 @@ public class CivChat2Listener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerDeath(PlayerDeathEvent playerDeathEvent) {
-
-		CivChat2.debugmessage("PlayerDeathEvent occured");
 		playerDeathEvent.setDeathMessage(null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent playerQuitEvent) {
-
-		CivChat2.debugmessage("playerQuitEvent occured");
 		playerQuitEvent.setQuitMessage(null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent playerJoinEvent) {
-
-		CivChat2.debugmessage("playerJoinEvent occured");
 		if (!CivChat2.getInstance().getPluginConfig().getLoginAnnounce()) {
 			playerJoinEvent.setJoinMessage(null);
 		}
@@ -59,13 +53,11 @@ public class CivChat2Listener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent playerKickEvent) {
-
-		CivChat2.debugmessage("playerKickEvent occured");
 		playerKickEvent.setLeaveMessage(null);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void PlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent) {
+	public void onPlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent) {
 
 		asyncPlayerChatEvent.setCancelled(true);
 		// This needs to be done sync to avoid a rare deadlock due to minecraft
@@ -80,13 +72,9 @@ public class CivChat2Listener implements Listener {
 				UUID chatChannel = chatman.getChannel(sender);
 				Group groupChat = chatman.getGroupChatting(sender);
 
-				CivChat2.debugmessage(String.format(
-						"ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];",
-						chatMessage, sender.getName(), chatChannel, groupChat));
 				if (chatChannel != null) {
 					StringBuilder sb = new StringBuilder();
 					Player receiver = Bukkit.getPlayer(chatChannel);
-					CivChat2.debugmessage("player chat event receive = [" + receiver + "]");
 					if (receiver != null) {
 						chatman.sendPrivateMsg(sender, receiver, chatMessage);
 						return;
@@ -113,7 +101,6 @@ public class CivChat2Listener implements Listener {
 								+ "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 					}
 				}
-				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
 				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(),
 						asyncPlayerChatEvent.getRecipients());
 			}

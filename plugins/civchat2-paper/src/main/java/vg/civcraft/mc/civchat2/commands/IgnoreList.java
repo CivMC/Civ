@@ -1,36 +1,32 @@
-package vg.civcraft.mc.civchat2.command.commands;
+package vg.civcraft.mc.civchat2.commands;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civchat2.ChatStrings;
-import vg.civcraft.mc.civchat2.command.ChatCommand;
+import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.database.CivChatDAO;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public class IgnoreList extends ChatCommand {
-
-	public IgnoreList(String name) {
-
-		super(name);
-		setIdentifier("ignorelist");
-		setDescription("Lists the players & groups you are ignoring");
-		setUsage("/ignorelist");
-		setArguments(0, 0);
-		setSenderMustBePlayer(true);
-		setErrorOnTooManyArgs(false);
-	}
+@CivCommand(id = "ignorelist")
+public class IgnoreList extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-
-		List<UUID> players = DBM.getIgnoredPlayers(player().getUniqueId());
-		List<String> groups = DBM.getIgnoredGroups(player().getUniqueId());
+		Player player = (Player) sender;
+		CivChatDAO db = CivChat2.getInstance().getDatabaseManager();
+		List<UUID> players = db.getIgnoredPlayers(player.getUniqueId());
+		List<String> groups = db.getIgnoredGroups(player.getUniqueId());
 
 		// No players ignored
-		if (players == null || players.size() == 0) {
-			msg(ChatStrings.chatNotIgnoringAnyPlayers);
+		if (players == null || players.isEmpty()) {
+			player.sendMessage(ChatStrings.chatNotIgnoringAnyPlayers);
 		} else {
 			StringBuilder sb = new StringBuilder();
 			sb.append("<a>Ignored Players: \n<n>");
@@ -45,12 +41,12 @@ public class IgnoreList extends ChatCommand {
 			if (msg.endsWith(", ")) {
 				msg = msg.substring(0, msg.length() - 2);
 			}
-			msg(msg);
+			player.sendMessage(msg);
 		}
 
 		// No groups ignored
-		if (groups == null || groups.size() == 0) {
-			msg(ChatStrings.chatNotIgnoringAnyGroups);
+		if (groups == null || groups.isEmpty()) {
+			player.sendMessage(ChatStrings.chatNotIgnoringAnyGroups);
 			return true;
 		} else {
 			StringBuilder sb = new StringBuilder();
@@ -63,8 +59,13 @@ public class IgnoreList extends ChatCommand {
 			if (msg.endsWith(", ")) {
 				msg = msg.substring(0, msg.length() - 2);
 			}
-			msg(msg);
+			player.sendMessage(msg);
 			return true;
 		}
+	}
+
+	@Override
+	public List<String> tabComplete(CommandSender sender, String[] args) {
+		return new LinkedList<>();
 	}
 }

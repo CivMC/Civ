@@ -30,8 +30,7 @@ public class CivChat2Log {
 	}
 
 	public void debug(String msg) {
-
-		if (CivChat2.debugEnabled()) {
+		if (CivChat2.getInstance().debugEnabled()) {
 			log.info("[Debug] " + msg);
 		}
 	}
