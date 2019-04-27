@@ -56,7 +56,8 @@ public class GroupChat extends ChatCommand {
 			msg(ChatStrings.chatGroupNotFound);
 			return true;
 		}
-		if (!NameAPI.getGroupManager().hasAccess(group, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+		if (!NameAPI.getGroupManager().hasAccess(group, player().getUniqueId(),
+				PermissionType.getPermission("WRITE_CHAT"))) {
 			msg(ChatStrings.chatGroupNoPerms);
 			return true;
 		}

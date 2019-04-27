@@ -1,16 +1,16 @@
 package vg.civcraft.mc.civchat2.command.commands;
 
-import org.bukkit.command.CommandSender;
-
-import org.bukkit.entity.Player;
-import vg.civcraft.mc.civchat2.ChatStrings;
-import vg.civcraft.mc.civchat2.CivChat2;
-import vg.civcraft.mc.civchat2.command.ChatCommand;
+import static vg.civcraft.mc.civchat2.ChatStrings.localChatFormat;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import static vg.civcraft.mc.civchat2.ChatStrings.localChatFormat;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.civchat2.ChatStrings;
+import vg.civcraft.mc.civchat2.CivChat2;
+import vg.civcraft.mc.civchat2.command.ChatCommand;
 
 public class Exit extends ChatCommand {
 
@@ -30,8 +30,7 @@ public class Exit extends ChatCommand {
 			chatMan.removeGroupChat(player());
 			msg(ChatStrings.chatMovedToGlobal);
 			return true;
-		}
-		else {
+		} else {
 			StringBuilder chatMsg = new StringBuilder();
 			for (int i = 0; i < args.length; i++) {
 				chatMsg.append(args[i]);

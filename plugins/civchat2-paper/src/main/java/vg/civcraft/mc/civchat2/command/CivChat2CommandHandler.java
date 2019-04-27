@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civchat2.command;
 
-import vg.civcraft.mc.civmodcore.command.CommandHandler;
+import vg.civcraft.mc.civchat2.command.commands.Afk;
 import vg.civcraft.mc.civchat2.command.commands.Exit;
 import vg.civcraft.mc.civchat2.command.commands.GroupChat;
 import vg.civcraft.mc.civchat2.command.commands.Ignore;
@@ -8,10 +8,11 @@ import vg.civcraft.mc.civchat2.command.commands.IgnoreGroup;
 import vg.civcraft.mc.civchat2.command.commands.IgnoreList;
 import vg.civcraft.mc.civchat2.command.commands.Reply;
 import vg.civcraft.mc.civchat2.command.commands.Tell;
-import vg.civcraft.mc.civchat2.command.commands.Afk;
+import vg.civcraft.mc.civmodcore.command.CommandHandler;
 
 public class CivChat2CommandHandler extends CommandHandler {
 
+	@Override
 	public void registerCommands() {
 
 		addCommands(new Tell("tell"));

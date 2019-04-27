@@ -24,6 +24,7 @@ public class CivChat2Executor implements CommandExecutor {
 		this.logger = CivChat2.getCivChat2Log();
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 
 		ChatColor sayChat = ChatColor.valueOf(config.getOpChatColor());

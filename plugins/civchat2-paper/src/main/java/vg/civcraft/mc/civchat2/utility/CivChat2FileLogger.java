@@ -21,9 +21,9 @@ public class CivChat2FileLogger {
 		String reciversNames = getPlayersNames(recivers);
 		Location playerLocation = sender.getLocation();
 		String messageToLog = String.format(
-			"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GLOBAL], Recivers: [%s]",
-			sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
-			playerLocation.getBlockZ(), reciversNames);
+				"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GLOBAL], Recivers: [%s]",
+				sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
+				playerLocation.getBlockZ(), reciversNames);
 		logger.info(messageToLog);
 	}
 
@@ -31,9 +31,9 @@ public class CivChat2FileLogger {
 
 		Location playerLocation = sender.getLocation();
 		String messageToLog = String.format(
-			"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [PRIVATE], Reciver: [%s]",
-			sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
-			playerLocation.getBlockZ(), reciverName);
+				"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [PRIVATE], Reciver: [%s]",
+				sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
+				playerLocation.getBlockZ(), reciverName);
 		logger.info(messageToLog);
 	}
 
@@ -42,9 +42,9 @@ public class CivChat2FileLogger {
 		String reciversNames = getPlayersNames(recivers);
 		Location playerLocation = sender.getLocation();
 		String messageToLog = String.format(
-			"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GROUP], GroupName: [%s], Recivers: [%s]",
-			sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
-			playerLocation.getBlockZ(), groupName, reciversNames);
+				"Sender: [%s], Message: [%s], Location: [%d, %d, %d], Channel: [GROUP], GroupName: [%s], Recivers: [%s]",
+				sender.getName(), message, playerLocation.getBlockX(), playerLocation.getBlockY(),
+				playerLocation.getBlockZ(), groupName, reciversNames);
 		logger.info(messageToLog);
 	}
 

@@ -49,7 +49,7 @@ public class Reply extends ChatCommand {
 
 		if (args.length > 0) {
 			StringBuilder sb = new StringBuilder();
-			for (String s: args) {
+			for (String s : args) {
 				sb.append(s + " ");
 			}
 			chatMan.sendPrivateMsg(player, receiver, sb.toString());

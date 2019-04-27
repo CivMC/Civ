@@ -40,7 +40,7 @@ public class Tell extends ChatCommand {
 			return true;
 		}
 
-		if (! (receiver.isOnline())) {
+		if (!(receiver.isOnline())) {
 			msg(ChatStrings.chatPlayerIsOffline);
 			logger.debug(parse(ChatStrings.chatPlayerIsOffline));
 			return true;

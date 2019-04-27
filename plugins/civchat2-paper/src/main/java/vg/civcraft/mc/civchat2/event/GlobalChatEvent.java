@@ -26,6 +26,7 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the chat message
+	 * 
 	 * @return The chat message
 	 */
 	public String getMessage() {
@@ -36,12 +37,12 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	public static HandlerList getHandlerList() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	@Override
@@ -58,6 +59,7 @@ public class GlobalChatEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the format to use to display this chat message.
+	 * 
 	 * @return The message format
 	 */
 	public String getFormat() {

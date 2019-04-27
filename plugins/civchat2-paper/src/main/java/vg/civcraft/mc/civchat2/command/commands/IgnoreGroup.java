@@ -42,7 +42,7 @@ public class IgnoreGroup extends ChatCommand {
 				msg(ChatStrings.chatMovedToGlobal);
 			}
 			return true;
-		// Player removed from the list
+			// Player removed from the list
 		} else {
 			DBM.removeIgnoredGroup(name, ignore);
 			String debugMessage = "Player un-ignored Group, Player: " + name + " Group: " + ignore;

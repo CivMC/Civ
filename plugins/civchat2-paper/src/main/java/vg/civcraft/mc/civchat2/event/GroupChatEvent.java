@@ -25,6 +25,7 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the group name
+	 * 
 	 * @return The group name
 	 */
 	public String getGroup() {
@@ -34,6 +35,7 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the chat message
+	 * 
 	 * @return The chat message
 	 */
 	public String getMessage() {
@@ -44,12 +46,12 @@ public class GroupChatEvent extends PlayerEvent implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	public static HandlerList getHandlerList() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	@Override

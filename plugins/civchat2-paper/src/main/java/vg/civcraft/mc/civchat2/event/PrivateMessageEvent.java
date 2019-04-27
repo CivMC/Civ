@@ -25,6 +25,7 @@ public class PrivateMessageEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the message receiver
+	 * 
 	 * @return The message receiver
 	 */
 	public Player getReceiver() {
@@ -34,6 +35,7 @@ public class PrivateMessageEvent extends PlayerEvent implements Cancellable {
 
 	/**
 	 * Gets the chat message
+	 * 
 	 * @return The chat message
 	 */
 	public String getMessage() {
@@ -44,12 +46,12 @@ public class PrivateMessageEvent extends PlayerEvent implements Cancellable {
 	@Override
 	public HandlerList getHandlers() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	public static HandlerList getHandlerList() {
 
-	    return handlers;
+		return handlers;
 	}
 
 	@Override

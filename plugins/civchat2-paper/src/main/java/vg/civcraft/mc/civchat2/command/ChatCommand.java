@@ -77,7 +77,7 @@ public abstract class ChatCommand extends PlayerCommand {
 	protected List<String> findPlayers(String pattern) {
 
 		List<String> players = new ArrayList<String>();
-		for (Player p: Bukkit.getOnlinePlayers()) {
+		for (Player p : Bukkit.getOnlinePlayers()) {
 			if (p.getName().toLowerCase().startsWith(pattern.toLowerCase())) {
 				players.add(p.getName());
 			}
@@ -90,7 +90,7 @@ public abstract class ChatCommand extends PlayerCommand {
 		List<String> groupsToReturn = new ArrayList<String>();
 		GroupManager gm = NameAPI.getGroupManager();
 		List<String> groups = gm.getAllGroupNames(player().getUniqueId());
-		for (String group:groups) {
+		for (String group : groups) {
 			if (group.toLowerCase().startsWith(pattern.toLowerCase())) {
 				groupsToReturn.add(group);
 			}

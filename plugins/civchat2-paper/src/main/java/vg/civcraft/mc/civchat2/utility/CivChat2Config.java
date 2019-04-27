@@ -1,9 +1,10 @@
 package vg.civcraft.mc.civchat2.utility;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.ConfigurationSection;
 import java.util.Map;
 import java.util.TreeMap;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class CivChat2Config {
 

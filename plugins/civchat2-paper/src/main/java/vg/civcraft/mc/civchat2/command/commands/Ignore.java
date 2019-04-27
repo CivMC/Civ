@@ -42,7 +42,7 @@ public class Ignore extends ChatCommand {
 			logger.debug(debugMessage);
 			msg(ChatStrings.chatNowIgnoring, ignoreName);
 			return true;
-		// Player removed from the list
+			// Player removed from the list
 		} else {
 			DBM.removeIgnoredPlayer(name, ignoreName);
 			String debugMessage = "Player un-ignored another Player, Player: " + name + " IgnoredPlayer: " + ignoreName;

@@ -68,18 +68,21 @@ public class CivChat2Listener implements Listener {
 	public void PlayerChatEvent(final AsyncPlayerChatEvent asyncPlayerChatEvent) {
 
 		asyncPlayerChatEvent.setCancelled(true);
-		// This needs to be done sync to avoid a rare deadlock due to minecraft internals
+		// This needs to be done sync to avoid a rare deadlock due to minecraft
+		// internals
 		new BukkitRunnable() {
 
-		    @Override
-		    public void run() {
+			@Override
+			public void run() {
 
 				String chatMessage = asyncPlayerChatEvent.getMessage();
 				Player sender = asyncPlayerChatEvent.getPlayer();
 				UUID chatChannel = chatman.getChannel(sender);
 				Group groupChat = chatman.getGroupChatting(sender);
 
-				CivChat2.debugmessage(String.format("ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];", chatMessage, sender.getName(), chatChannel, groupChat));
+				CivChat2.debugmessage(String.format(
+						"ChatEvent properties: chatMessage =[ %s ], sender = [ %s ], chatChannel = [ %s ], groupchatting = [ %s ];",
+						chatMessage, sender.getName(), chatChannel, groupChat));
 				if (chatChannel != null) {
 					StringBuilder sb = new StringBuilder();
 					Player receiver = Bukkit.getPlayer(chatChannel);
@@ -90,8 +93,8 @@ public class CivChat2Listener implements Listener {
 					} else {
 						chatman.removeChannel(sender);
 						String offlineMessage = sb.append(ChatColor.GOLD)
-							.append( "The player you were chatting with has gone offline,")
-							.append(" you have been moved to regular chat").toString();
+								.append("The player you were chatting with has gone offline,")
+								.append(" you have been moved to regular chat").toString();
 						sb.delete(0, sb.length());
 						sender.sendMessage(offlineMessage);
 						return;
@@ -99,18 +102,21 @@ public class CivChat2Listener implements Listener {
 				}
 				if (groupChat != null) {
 					// Player is group chatting
-					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
+					if (NameAPI.getGroupManager().hasAccess(groupChat, sender.getUniqueId(),
+							PermissionType.getPermission("WRITE_CHAT"))) {
 						chatman.sendGroupMsg(sender, groupChat, chatMessage);
 						return;
-					// Player lost perm to write in the chat
+						// Player lost perm to write in the chat
 					} else {
 						chatman.removeGroupChat(sender);
-						sender.sendMessage(ChatColor.RED + "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
+						sender.sendMessage(ChatColor.RED
+								+ "You have been removed from groupchat because you were removed from the group or lost the permission required to groupchat");
 					}
 				}
 				CivChat2.debugmessage("PlayerChatEvent calling chatman.broadcastMessage()");
-				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(), asyncPlayerChatEvent.getRecipients());
-		    }
+				chatman.broadcastMessage(sender, chatMessage, asyncPlayerChatEvent.getFormat(),
+						asyncPlayerChatEvent.getRecipients());
+			}
 		}.runTask(CivChat2.getInstance());
 	}
 }

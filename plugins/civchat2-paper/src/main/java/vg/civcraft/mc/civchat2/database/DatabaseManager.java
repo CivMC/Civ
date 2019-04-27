@@ -68,11 +68,9 @@ public class DatabaseManager {
 
 	private void executeDatabaseStatements() {
 
-		db.execute("create table if not exists PlayersIgnoreList("
-				+ "player varchar(36) not null,"
+		db.execute("create table if not exists PlayersIgnoreList(" + "player varchar(36) not null,"
 				+ "ignoredPlayer varchar(36) not null);");
-		db.execute("create table if not exists GroupsIgnoreList("
-				+ "player varchar(36) not null,"
+		db.execute("create table if not exists GroupsIgnoreList(" + "player varchar(36) not null,"
 				+ "ignoredGroup varchar(255) not null);");
 	}
 
@@ -128,7 +126,8 @@ public class DatabaseManager {
 		try {
 			ResultSet rs = loadIgnoredPlayersList.executeQuery();
 			while (rs.next()) {
-				addIgnoredPlayerToMap(UUID.fromString(rs.getString("player")), UUID.fromString(rs.getString("ignoredPlayer")));
+				addIgnoredPlayerToMap(UUID.fromString(rs.getString("player")),
+						UUID.fromString(rs.getString("ignoredPlayer")));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -264,7 +263,7 @@ public class DatabaseManager {
 		return true;
 	}
 
-	public boolean addIgnoredGroup(String player, String group)  {
+	public boolean addIgnoredGroup(String player, String group) {
 
 		try {
 			return addIgnoredGroup(NameAPI.getUUID(player), group);
