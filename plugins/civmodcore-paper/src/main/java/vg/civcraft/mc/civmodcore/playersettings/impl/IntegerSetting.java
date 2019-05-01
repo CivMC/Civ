@@ -22,6 +22,7 @@ public class IntegerSetting extends StringInputSetting<Integer> {
 		return Integer.parseInt(serial);
 	}
 
+	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack stack = super.getGuiRepresentation(player);
 		if (showAmountInGui) {

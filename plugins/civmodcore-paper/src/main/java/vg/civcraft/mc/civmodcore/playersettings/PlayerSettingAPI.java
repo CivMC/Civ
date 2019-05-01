@@ -25,7 +25,7 @@ public class PlayerSettingAPI {
 	private static Map<String, PlayerSetting<?>> settingsByIdentifier = new HashMap<>();
 	private static Map<String, List<PlayerSetting<?>>> settingsByPlugin = new HashMap<>();
 
-	private static MenuSection mainMenu = new MenuSection("Config", null);
+	private static MenuSection mainMenu = new MenuSection("Config", "", null);
 
 	/**
 	 * @return GUI main menu

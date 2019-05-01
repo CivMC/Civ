@@ -18,26 +18,26 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 public class MenuSection extends MenuItem {
 
 	private Map<String, MenuItem> content;
-
 	private ItemStack itemRepresentation;
 
-	public MenuSection(String name, MenuSection parent) {
-		this(name, parent, new ItemStack(Material.BOOK));
+	public MenuSection(String name, String description, MenuSection parent) {
+		this(name, description, parent, new ItemStack(Material.BOOK));
 	}
 
-	public MenuSection(String name, MenuSection parent, ItemStack itemRepresentation) {
+	public MenuSection(String name, String description, MenuSection parent, ItemStack itemRepresentation) {
 		super(name, parent);
 		this.content = new TreeMap<>();
 		this.itemRepresentation = itemRepresentation;
 		ISUtils.setName(itemRepresentation, ChatColor.AQUA + name);
+		ISUtils.addLore(itemRepresentation, ChatColor.GOLD + description);
 	}
 
 	public void addItem(MenuItem item) {
 		content.put(item.getName(), item);
 	}
 	
-	public MenuSection createMenuSection(String name) {
-		MenuSection section = new MenuSection(name, this);
+	public MenuSection createMenuSection(String name, String description) {
+		MenuSection section = new MenuSection(name, description, this);
 		addItem(section);
 		return section;
 	}

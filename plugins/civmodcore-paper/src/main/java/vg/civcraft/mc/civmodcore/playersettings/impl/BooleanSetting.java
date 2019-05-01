@@ -22,6 +22,7 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 		return Boolean.valueOf(serial);
 	}
 
+	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack item;
 		if (getValue(player)) {
@@ -32,7 +33,7 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 		applyInfoToItemStack(item, player);
 		return item;
 	}
-
+	
 	@Override
 	public void handleMenuClick(Player player, MenuSection menu) {
 		setValue(player.getUniqueId(), !getValue(player.getUniqueId()));
@@ -42,6 +43,10 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 	@Override
 	protected String serialize(Boolean value) {
 		return String.valueOf(value);
+	}
+
+	public void toggleValue(UUID uuid) {
+		setValue(uuid, !getValue(uuid));
 	}
 
 	@Override

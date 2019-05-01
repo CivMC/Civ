@@ -1,8 +1,12 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.collect.Lists;
+
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -97,13 +101,16 @@ public class ConfigParsing {
 					ConfigurationSection enchantConfig = current.getConfigurationSection("enchants")
 							.getConfigurationSection(enchantKey);
 					if (!enchantConfig.isString("enchant")) {
-						log.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath() + ". Entry was ignored");
+						log.warning("No enchant specified for enchantment entry at " + enchantConfig.getCurrentPath()
+								+ ". Entry was ignored");
 						continue;
 					}
 					Enchantment enchant;
-					enchant = Enchantment.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
+					enchant = Enchantment
+							.getByKey(NamespacedKey.minecraft((enchantConfig.getString("enchant").toLowerCase())));
 					if (enchant == null) {
-						log.severe("Failed to parse enchantment " + enchantConfig.getString("enchant") + ", the entry was ignored");
+						log.severe("Failed to parse enchantment " + enchantConfig.getString("enchant")
+								+ ", the entry was ignored");
 						continue;
 					}
 					int level = enchantConfig.getInt("level", 1);
@@ -376,6 +383,40 @@ public class ConfigParsing {
 			log.warning("Invalid area type " + type + " at " + config.getCurrentPath());
 		}
 		return area;
+	}
+
+	/**
+	 * Parses a section which contains key-value mappings of a type to another type
+	 * 
+	 * @param <E>        Key type
+	 * @param <V>        Value type
+	 * @param parent     Configuration section containing the section with the
+	 *                   values
+	 * @param identifier Config identifier of the section containing the entries
+	 */
+	public static <K, V> void parseKeyValueMap(ConfigurationSection parent, String identifier, Logger logger,
+			Function<String, K> keyConverter, Function<String, V> valueConverter, Map<K, V> mapToUse) {
+		if (!parent.isConfigurationSection(identifier)) {
+			return;
+		}
+		ConfigurationSection section = parent.getConfigurationSection(identifier);
+		for (String keyString : section.getKeys(false)) {
+			if (!section.isString(keyString)) {
+				logger.warning(
+						"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
+				continue;
+			}
+			K keyinstance;
+			try {
+				keyinstance = keyConverter.apply(keyString);
+			} catch (IllegalArgumentException e) {
+				logger.warning("Failed to parse " + identifier + " " + keyString + " at " + section.getCurrentPath()
+						+ ": " + e.toString());
+				continue;
+			}
+			V value = valueConverter.apply(section.getString(keyString));
+			mapToUse.put(keyinstance, value);
+		}
 	}
 
 }
