@@ -1,12 +1,16 @@
 package vg.civcraft.mc.civmodcore.itemHandling;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.MemorySection;
+import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
+
 import net.minecraft.server.v1_13_R2.NBTBase;
 import net.minecraft.server.v1_13_R2.NBTTagByte;
 import net.minecraft.server.v1_13_R2.NBTTagByteArray;
@@ -19,10 +23,6 @@ import net.minecraft.server.v1_13_R2.NBTTagList;
 import net.minecraft.server.v1_13_R2.NBTTagLong;
 import net.minecraft.server.v1_13_R2.NBTTagShort;
 import net.minecraft.server.v1_13_R2.NBTTagString;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
 public class TagManager {
 	private static final Logger log = Bukkit.getLogger();

@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.io.ObjectInputFilter.Config;
 import java.util.List;
 import java.util.logging.Level;
 

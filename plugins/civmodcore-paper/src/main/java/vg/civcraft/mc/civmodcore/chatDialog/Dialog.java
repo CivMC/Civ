@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.chatDialog;
 
 import java.util.List;
+
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;

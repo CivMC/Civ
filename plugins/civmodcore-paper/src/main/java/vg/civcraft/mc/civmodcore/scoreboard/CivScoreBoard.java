@@ -30,7 +30,6 @@ public class CivScoreBoard {
 	public void set(Player p, String text) {
 		String oldText = get(p);
 		if (oldText != null) {
-			System.out.println("Resetting " + oldText);
 			p.getScoreboard().resetScores(oldText);
 		}
 		else {
@@ -38,7 +37,6 @@ public class CivScoreBoard {
 		}
 		Score score = getObjective(p).getScore(text);
 		score.setScore(0);
-		System.out.println("Setting score for " + text);
 		currentScoreText.put(p.getUniqueId(), text);
 	}
 
@@ -75,7 +73,6 @@ public class CivScoreBoard {
 		Scoreboard scb = p.getScoreboard();
 		Objective objective = scb.getObjective(title);
 		if (objective == null) {
-			System.out.println("Making new obj");
 			scb.getObjectives().forEach(o -> o.unregister());
 			scb.clearSlot(DisplaySlot.SIDEBAR);
 			objective = scb.registerNewObjective(title, "dummy");

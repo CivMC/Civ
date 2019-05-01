@@ -7,7 +7,6 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.DisplaySlot;
 
 public class ScoreBoardAPI {
 	

@@ -8,8 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_13_R2.NBTTagCompound;
-import net.minecraft.server.v1_13_R2.NBTTagList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -18,6 +17,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import net.minecraft.server.v1_13_R2.NBTTagCompound;
+import net.minecraft.server.v1_13_R2.NBTTagList;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum possible stack sizes. This offers

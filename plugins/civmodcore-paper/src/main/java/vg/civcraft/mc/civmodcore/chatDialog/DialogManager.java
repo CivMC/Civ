@@ -3,6 +3,7 @@ package vg.civcraft.mc.civmodcore.chatDialog;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+
 import org.bukkit.entity.Player;
 
 public class DialogManager {

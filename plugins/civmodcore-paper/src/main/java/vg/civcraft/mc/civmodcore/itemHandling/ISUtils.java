@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.itemHandling;
 
 import java.util.LinkedList;
 import java.util.List;
+
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
