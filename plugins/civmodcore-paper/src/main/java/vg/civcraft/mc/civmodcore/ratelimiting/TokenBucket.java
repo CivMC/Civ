@@ -17,6 +17,9 @@ public class TokenBucket {
 
 	public synchronized void refill(int maxTokens, int toAdd, long minDelay) {
 		int refillMultiplier = (int) ((System.currentTimeMillis() - lastRefill) / minDelay);
+		if (refillMultiplier >= 1) {
+			lastRefill += refillMultiplier * minDelay;
+		}
 		tokens = Math.max(maxTokens, tokens + toAdd * refillMultiplier);
 	}
 

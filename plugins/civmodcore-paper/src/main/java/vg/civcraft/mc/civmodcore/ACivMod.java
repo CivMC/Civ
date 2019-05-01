@@ -35,7 +35,7 @@ public abstract class ACivMod extends JavaPlugin {
 		if (handle == null) {
 			return newCommandHandler.executeCommand(sender, command, args);
 		} else {
-			return handle == null ? false : handle.execute(sender, command, args);
+			return handle.execute(sender, command, args);
 		}
 	}
 
