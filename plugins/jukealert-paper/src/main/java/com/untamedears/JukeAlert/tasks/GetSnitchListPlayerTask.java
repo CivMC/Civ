@@ -1,13 +1,13 @@
 
 package com.untamedears.JukeAlert.tasks;
 
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.chat.SendSnitchList;
-
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.Player;
+
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.chat.SendSnitchList;
 
 public class GetSnitchListPlayerTask implements Runnable {
 
@@ -33,6 +33,11 @@ public class GetSnitchListPlayerTask implements Runnable {
 		this.truncateNames = truncateNames;
 	}
 
+	public List<String> getInfo() {
+
+		return info;
+	}
+
 	@Override
 	public void run() {
 
@@ -40,10 +45,5 @@ public class GetSnitchListPlayerTask implements Runnable {
 		if (sendSnitchList != null) {
 			sendSnitchList.run();
 		}
-	}
-
-	public List<String> getInfo() {
-
-		return info;
 	}
 }

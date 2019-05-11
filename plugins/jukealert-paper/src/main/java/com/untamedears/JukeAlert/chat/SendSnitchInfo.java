@@ -8,21 +8,20 @@ import java.util.TimeZone;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
-import com.google.common.base.Strings;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
-
-import com.untamedears.JukeAlert.DeprecatedMethods;
+import com.google.common.base.Strings;
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchAction;
 import com.untamedears.JukeAlert.storage.JukeAlertLogger;
+
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class SendSnitchInfo implements Runnable {
 
@@ -40,7 +39,6 @@ public class SendSnitchInfo implements Runnable {
 
 	public SendSnitchInfo(List<SnitchAction> info, Player player, int offset, Snitch snitch, boolean shouldCensor,
 			boolean isGroup) {
-
 		this.info = info;
 		this.player = player;
 		this.offset = offset;
@@ -49,6 +47,7 @@ public class SendSnitchInfo implements Runnable {
 		this.isGroup = isGroup;
 	}
 
+	@Override
 	public void run() {
 
 		TextComponent playerSnitchInfoMessage;

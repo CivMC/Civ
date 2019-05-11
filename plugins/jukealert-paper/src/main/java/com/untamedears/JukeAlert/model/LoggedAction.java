@@ -31,41 +31,23 @@ public enum LoggedAction {
 	ENTITY_MOUNT(14, "Mount", ChatColor.RED, 3),
 	ENTITY_DISMOUNT(15, "Dismount", ChatColor.GOLD, 3);
 
-	private int value;
+	/**
+	 * Attempts to match a string to one of the LoggedAction actions
+	 * @param action - string representation of the action (case insensitive).
+	 *                 Either human-friendly (e.g. "Buket Fill") or one of the enum names (e.g. "BLOCK_BURN")
+	 * @return matching LoggedAction
+	 * @throws ParseException if the string couldn't be decoded to a LoggedAction
+	 */
+	public static LoggedAction fromString(String action) throws ParseException {
 
-	private String actionString;
-
-	private ChatColor actionColor;
-
-	private int actionTextType;
-
-	// Constructor, has to be private
-	private LoggedAction(int value, String actionString, ChatColor actionColor, int actionTextType) {
-
-		this.value = value;
-		this.actionString = actionString;
-		this.actionColor = actionColor;
-		this.actionTextType = actionTextType;
-	}
-
-	public int getLoggedActionId() {
-
-		return this.value;
-	}
-
-	public String getActionString() {
-
-		return this.actionString;
-	}
-
-	public ChatColor getActionColor() {
-
-		return this.actionColor;
-	}
-
-	public int getActionTextType() {
-
-		return this.actionTextType;
+		for (LoggedAction a : LoggedAction.values()) {
+			String actionName = a.toString();
+			String actionDisp = a.actionString;
+			if (actionName.equalsIgnoreCase(action) || actionDisp.equalsIgnoreCase(action)) {
+				return a;
+			}
+		}
+		throw new ParseException("Couldn't convert " + action + " to a LoggedAction", 0);
 	}
 
 	public static LoggedAction getFromId(int id) {
@@ -91,22 +73,40 @@ public enum LoggedAction {
 		}
 	}
 
-	/**
-	 * Attempts to match a string to one of the LoggedAction actions
-	 * @param action - string representation of the action (case insensitive).
-	 *                 Either human-friendly (e.g. "Buket Fill") or one of the enum names (e.g. "BLOCK_BURN")
-	 * @return matching LoggedAction
-	 * @throws ParseException if the string couldn't be decoded to a LoggedAction
-	 */
-	public static LoggedAction fromString(String action) throws ParseException {
+	private int value;
 
-		for (LoggedAction a : LoggedAction.values()) {
-			String actionName = a.toString();
-			String actionDisp = a.actionString;
-			if (actionName.equalsIgnoreCase(action) || actionDisp.equalsIgnoreCase(action)) {
-				return a;
-			}
-		}
-		throw new ParseException("Couldn't convert " + action + " to a LoggedAction", 0);
+	private String actionString;
+
+	private ChatColor actionColor;
+
+	private int actionTextType;
+
+	// Constructor, has to be private
+	private LoggedAction(int value, String actionString, ChatColor actionColor, int actionTextType) {
+
+		this.value = value;
+		this.actionString = actionString;
+		this.actionColor = actionColor;
+		this.actionTextType = actionTextType;
+	}
+
+	public ChatColor getActionColor() {
+
+		return this.actionColor;
+	}
+
+	public String getActionString() {
+
+		return this.actionString;
+	}
+
+	public int getActionTextType() {
+
+		return this.actionTextType;
+	}
+
+	public int getLoggedActionId() {
+
+		return this.value;
 	}
 }

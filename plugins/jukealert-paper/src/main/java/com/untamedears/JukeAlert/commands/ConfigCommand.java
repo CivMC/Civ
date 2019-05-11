@@ -1,12 +1,12 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-
 import com.untamedears.JukeAlert.util.RateLimiter;
+
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class ConfigCommand extends PlayerCommand {
 

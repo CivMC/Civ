@@ -5,15 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.md_5.bungee.api.chat.TextComponent;
-
-import com.untamedears.JukeAlert.JukeAlert;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class RateLimiter {
+import com.untamedears.JukeAlert.JukeAlert;
 
-	private RateLimiter() { }
+import net.md_5.bungee.api.chat.TextComponent;
+
+public class RateLimiter {
 
 	private static final int FRAME_COUNT = 4;
 
@@ -31,6 +30,17 @@ public class RateLimiter {
 		}
 	}
 
+	public static void advanceFrame() {
+
+		RateLimiter.currentFrame_ = (RateLimiter.currentFrame_ + 1) % FRAME_COUNT;
+		RateLimiter.playerMessageRates_.set(RateLimiter.currentFrame_, new HashMap<String, Integer>());
+	}
+
+	public static int getMaxRate() {
+
+		return messageRateLimitPerWindow_;
+	}
+
 	public static void initialize(JukeAlert plugin) {
 
 		messageRateLimitPerWindow_ = plugin.getConfigManager().getAlertRateLimit();
@@ -44,12 +54,6 @@ public class RateLimiter {
 				}
 			}
 		}, TICKS_TO_FRAME_ADVANCE, TICKS_TO_FRAME_ADVANCE);
-	}
-
-	public static void advanceFrame() {
-
-		RateLimiter.currentFrame_ = (RateLimiter.currentFrame_ + 1) % FRAME_COUNT;
-		RateLimiter.playerMessageRates_.set(RateLimiter.currentFrame_, new HashMap<String, Integer>());
 	}
 
 	public static void sendMessage(Player player, TextComponent message) {
@@ -74,15 +78,12 @@ public class RateLimiter {
 		player.spigot().sendMessage(message);
 	}
 
-	public static int getMaxRate() {
-
-		return messageRateLimitPerWindow_;
-	}
-
 	public static void setMaxRate(int rate) {
 
 		if (rate > 7) {
 			messageRateLimitPerWindow_ = rate;
 		}
 	}
+
+	private RateLimiter() { }
 }

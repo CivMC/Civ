@@ -12,12 +12,12 @@ import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.manager.ConfigManager;
+
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.group.Group;
-
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.manager.ConfigManager;
 
 // An Iterator that produces the Players associated with a specific Citadel
 //  group. First the founder, then the moderators, and lastly the members.
@@ -63,90 +63,6 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 		maxPlayers_ = config.getMaxPlayerAlertCount();
 	}
 
-	public OnlineGroupMembers maxPlayers(Integer value) {
-
-		if (alreadyIterating_) {
-			throw new UnsupportedOperationException();
-		}
-		if (value != null) {
-			maxPlayers_ = value;
-		}
-		return this;
-	}
-
-	public OnlineGroupMembers maxDistance(Double value) {
-
-		if (alreadyIterating_) {
-			throw new UnsupportedOperationException();
-		}
-		if (value != null) {
-			maxDistance_ = value;
-		}
-		return this;
-	}
-
-	public OnlineGroupMembers reference(Location loc) {
-
-		if (alreadyIterating_) {
-			throw new UnsupportedOperationException();
-		}
-		referenceLocation_ = loc;
-		return this;
-	}
-
-	public OnlineGroupMembers skipList(Set<String> list) {
-
-		if (alreadyIterating_) {
-			throw new UnsupportedOperationException();
-		}
-		skipList_ = list;
-
-		return this;
-	}
-
-	@Override  // Iterator<Player>
-	public Player next() {
-
-		startIterating();
-		if (next_ == null) {
-			throw new NoSuchElementException();
-		}
-		Player retval = next_;
-		next_ = getNextPlayer();
-		return retval;
-	}
-
-	@Override  // Iterator<Player>
-	public boolean hasNext() {
-
-		startIterating();
-		return next_ != null;
-	}
-
-	@Override  // Iterator<Player>
-	public void remove() {
-
-		throw new UnsupportedOperationException();
-	}
-
-	@Override  // Iterable<Player>
-	public Iterator<Player> iterator() {
-
-		if (alreadyIterating_) {
-			throw new UnsupportedOperationException();
-		}
-		startIterating();
-		return this;
-	}
-
-	private void startIterating() {
-
-		if (!alreadyIterating_) {
-			alreadyIterating_ = true;
-			next_ = getNextPlayer();
-		}
-	}
-
 	private Player getFounder() {
 
 		Group group = GroupManager.getGroup(groupName_);
@@ -156,30 +72,6 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 				return player;
 			}
 		}
-		return null;
-	}
-
-	private Player getNextModerator() {
-
-		if (mods_iter_ == null) {
-			List<UUID> uuids = GroupManager.getGroup(groupName_).getAllMembers();
-			Group g = GroupManager.getGroup(groupName_);
-			List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
-			for (UUID uuid: uuids) {
-				if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.isOwner(uuid)) {
-					mods.add(Bukkit.getOfflinePlayer(uuid));
-				}
-			}
-			mods_iter_ = mods.iterator();
-		}
-		while (mods_iter_.hasNext()) {
-			OfflinePlayer mod = mods_iter_.next();
-			Player player = mod.getPlayer();
-			if (player != null) {
-				return player;
-			}
-		}
-		mods_iter_ = null;
 		return null;
 	}
 
@@ -207,6 +99,49 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 		return null;
 	}
 
+	private Player getNextModerator() {
+
+		if (mods_iter_ == null) {
+			List<UUID> uuids = GroupManager.getGroup(groupName_).getAllMembers();
+			Group g = GroupManager.getGroup(groupName_);
+			List<OfflinePlayer> mods = new ArrayList<OfflinePlayer>();
+			for (UUID uuid: uuids) {
+				if (g.getPlayerType(uuid) != PlayerType.MEMBERS && !g.isOwner(uuid)) {
+					mods.add(Bukkit.getOfflinePlayer(uuid));
+				}
+			}
+			mods_iter_ = mods.iterator();
+		}
+		while (mods_iter_.hasNext()) {
+			OfflinePlayer mod = mods_iter_.next();
+			Player player = mod.getPlayer();
+			if (player != null) {
+				return player;
+			}
+		}
+		mods_iter_ = null;
+		return null;
+	}
+
+	private Player getNextPlayer() {
+
+		if (returnedCount_ >= maxPlayers_) {
+			return null;
+		}
+		Player player;
+		do {
+			player = getPlayerByState();
+			if (inFinalState()) {
+				returnedCount_ = maxPlayers_;
+				return null;
+			}
+			player = outOfRange(player);
+			player = playerIgnoringGroup(player);
+		} while (player == null);
+		++returnedCount_;
+		return player;
+	}
+
 	private Player getPlayerByState() {
 
 		Player player = null;
@@ -227,9 +162,60 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 		return player;
 	}
 
+	@Override  // Iterator<Player>
+	public boolean hasNext() {
+
+		startIterating();
+		return next_ != null;
+	}
+
 	private boolean inFinalState() {
 
 		return state_ >= 3;
+	}
+
+	@Override  // Iterable<Player>
+	public Iterator<Player> iterator() {
+
+		if (alreadyIterating_) {
+			throw new UnsupportedOperationException();
+		}
+		startIterating();
+		return this;
+	}
+
+	public OnlineGroupMembers maxDistance(Double value) {
+
+		if (alreadyIterating_) {
+			throw new UnsupportedOperationException();
+		}
+		if (value != null) {
+			maxDistance_ = value;
+		}
+		return this;
+	}
+
+	public OnlineGroupMembers maxPlayers(Integer value) {
+
+		if (alreadyIterating_) {
+			throw new UnsupportedOperationException();
+		}
+		if (value != null) {
+			maxPlayers_ = value;
+		}
+		return this;
+	}
+
+	@Override  // Iterator<Player>
+	public Player next() {
+
+		startIterating();
+		if (next_ == null) {
+			throw new NoSuchElementException();
+		}
+		Player retval = next_;
+		next_ = getNextPlayer();
+		return retval;
 	}
 
 	// If the player is out of range return null, otherwise return the player
@@ -262,22 +248,36 @@ public class OnlineGroupMembers implements Iterable<Player>, Iterator<Player> {
 		return player;
 	}
 
-	private Player getNextPlayer() {
+	public OnlineGroupMembers reference(Location loc) {
 
-		if (returnedCount_ >= maxPlayers_) {
-			return null;
+		if (alreadyIterating_) {
+			throw new UnsupportedOperationException();
 		}
-		Player player;
-		do {
-			player = getPlayerByState();
-			if (inFinalState()) {
-				returnedCount_ = maxPlayers_;
-				return null;
-			}
-			player = outOfRange(player);
-			player = playerIgnoringGroup(player);
-		} while (player == null);
-		++returnedCount_;
-		return player;
+		referenceLocation_ = loc;
+		return this;
+	}
+
+	@Override  // Iterator<Player>
+	public void remove() {
+
+		throw new UnsupportedOperationException();
+	}
+
+	public OnlineGroupMembers skipList(Set<String> list) {
+
+		if (alreadyIterating_) {
+			throw new UnsupportedOperationException();
+		}
+		skipList_ = list;
+
+		return this;
+	}
+
+	private void startIterating() {
+
+		if (!alreadyIterating_) {
+			alreadyIterating_ = true;
+			next_ = getNextPlayer();
+		}
 	}
 }

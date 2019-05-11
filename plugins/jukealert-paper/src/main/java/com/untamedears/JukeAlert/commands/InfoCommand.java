@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
@@ -27,14 +27,6 @@ public class InfoCommand extends PlayerCommand {
 
 	public class History {
 
-		public History(int snitchId, int page, LoggedAction filterAction, String filterPlayer) {
-
-			this.snitchId = snitchId;
-			this.page = page;
-			this.filterAction = filterAction;
-			this.filterPlayer = filterPlayer;
-		}
-
 		public int snitchId;
 
 		public int page;
@@ -42,6 +34,14 @@ public class InfoCommand extends PlayerCommand {
 		public LoggedAction filterAction;
 
 		public String filterPlayer;
+
+		public History(int snitchId, int page, LoggedAction filterAction, String filterPlayer) {
+
+			this.snitchId = snitchId;
+			this.page = page;
+			this.filterAction = filterAction;
+			this.filterPlayer = filterPlayer;
+		}
 	}
 
 	private static Map<UUID, History> playerPage_ = new TreeMap<UUID, History>();

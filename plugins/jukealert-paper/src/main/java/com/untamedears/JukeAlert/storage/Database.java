@@ -1,8 +1,5 @@
 package com.untamedears.JukeAlert.storage;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -10,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * MySql database
@@ -45,29 +44,18 @@ public class Database {
 		this.logger = logger;
 	}
 
-	public String getDb() {
+	/**
+	 * Closes the database connection.
+	 *
+	 * @since 0.1
+	 */
+	public void close() {
 
-		return db;
-	}
-
-	public String getHost() {
-
-		return host;
-	}
-
-	public String getPassword() {
-
-		return password;
-	}
-
-	public String getPrefix() {
-
-		return prefix;
-	}
-
-	public String getUser() {
-
-		return user;
+		try {
+			connection.close();
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "An error occured while closing the connection.", ex);
+		}
 	}
 
 	/**
@@ -92,52 +80,6 @@ public class Database {
 			this.logger.log(Level.SEVERE, "Could not connnect to the database!", ex);
 			return false;
 		}
-	}
-
-	/**
-	 * Closes the database connection.
-	 *
-	 * @since 0.1
-	 */
-	public void close() {
-
-		try {
-			connection.close();
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "An error occured while closing the connection.", ex);
-		}
-	}
-
-	/**
-	 * Are we connected to the database?
-	 *
-	 * @return Connected
-	 * @throws SQLException
-	 */
-	public boolean isConnected() {
-
-		try {
-			return connection.isValid(5);
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "isConnected error!", ex);
-		}
-		return false;
-	}
-
-	/**
-	 * Prepare the SQL statements
-	 *
-	 * @return PreparedStatement
-	 * @throws SQLException
-	 */
-	public PreparedStatement prepareStatement(String sqlStatement) {
-
-		try {
-			return connection.prepareStatement(sqlStatement);
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
-		}
-		return null;
 	}
 
 	/**
@@ -172,109 +114,6 @@ public class Database {
 			connect();
 			connection.prepareStatement(sql).executeUpdate();
 		}
-	}
-
-	/**
-	 * Executes a SQL query. Notes an exception w/o stack and does not retry
-	 *
-	 * @param sql The SQL query as a strign.
-	 */
-	public void silentExecute(String sql) {
-
-		try {
-			connection.prepareStatement(sql).executeUpdate();
-		} catch (SQLException ex) { // One quiet retry, scream on failure
-			this.logger.log(Level.WARNING, "Quiet execution of SQL failed, no retry attempted.");
-		}
-	}
-
-	/**
-	 * Gets a result set returned from an SQL query.
-	 *
-	 * @param sql
-	 * @return ResultSet
-	 */
-	public ResultSet getResultSet(String sql) {
-
-		try {
-			return connection.createStatement().executeQuery(sql);
-		} catch (SQLException ex) {
-			try {
-				connect();
-				return connection.createStatement().executeQuery(sql);
-			} catch (SQLException ex2) {
-				this.logger.log(Level.SEVERE, "Could not get result set from SQL statement!", ex2);
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * Gets a string from the database.
-	 *
-	 * @param sql
-	 * @return String
-	 *
-	 * @since 0.1
-	 */
-	public String getString(String sql) {
-
-		try {
-			ResultSet result = getResultSet(sql);
-			if (result == null) {
-				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
-				return null;
-			}
-			result.next();
-			return result.getString(1);
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
-		}
-		return null;
-	}
-
-	/**
-	 * Gets an integer from the database.
-	 *
-	 * @param sql
-	 * @return int
-	 */
-	public int getInteger(String sql) {
-
-		try {
-			ResultSet result = getResultSet(sql);
-			if (result == null) {
-				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
-				return 0;
-			}
-			result.next();
-			return result.getInt(1);
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
-		}
-		return 0;
-	}
-
-	/**
-	 * Gets a double from the database.
-	 *
-	 * @param sql
-	 * @return double
-	 */
-	public double getDouble(String sql) {
-
-		try {
-			ResultSet result = getResultSet(sql);
-			if (result == null) {
-				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
-				return 0;
-			}
-			result.next();
-			return result.getDouble(1);
-		} catch (SQLException ex) {
-			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
-		}
-		return 0;
 	}
 
 	/**
@@ -323,5 +162,165 @@ public class Database {
 			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
 		}
 		return null;
+	}
+
+	public String getDb() {
+
+		return db;
+	}
+
+	/**
+	 * Gets a double from the database.
+	 *
+	 * @param sql
+	 * @return double
+	 */
+	public double getDouble(String sql) {
+
+		try {
+			ResultSet result = getResultSet(sql);
+			if (result == null) {
+				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+				return 0;
+			}
+			result.next();
+			return result.getDouble(1);
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
+		}
+		return 0;
+	}
+
+	public String getHost() {
+
+		return host;
+	}
+
+	/**
+	 * Gets an integer from the database.
+	 *
+	 * @param sql
+	 * @return int
+	 */
+	public int getInteger(String sql) {
+
+		try {
+			ResultSet result = getResultSet(sql);
+			if (result == null) {
+				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+				return 0;
+			}
+			result.next();
+			return result.getInt(1);
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
+		}
+		return 0;
+	}
+
+	public String getPassword() {
+
+		return password;
+	}
+
+	public String getPrefix() {
+
+		return prefix;
+	}
+
+	/**
+	 * Gets a result set returned from an SQL query.
+	 *
+	 * @param sql
+	 * @return ResultSet
+	 */
+	public ResultSet getResultSet(String sql) {
+
+		try {
+			return connection.createStatement().executeQuery(sql);
+		} catch (SQLException ex) {
+			try {
+				connect();
+				return connection.createStatement().executeQuery(sql);
+			} catch (SQLException ex2) {
+				this.logger.log(Level.SEVERE, "Could not get result set from SQL statement!", ex2);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Gets a string from the database.
+	 *
+	 * @param sql
+	 * @return String
+	 *
+	 * @since 0.1
+	 */
+	public String getString(String sql) {
+
+		try {
+			ResultSet result = getResultSet(sql);
+			if (result == null) {
+				this.logger.log(Level.SEVERE, "Result Set Retrieval failed, null found instead");
+				return null;
+			}
+			result.next();
+			return result.getString(1);
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "Could not execute SQL statement!", ex);
+		}
+		return null;
+	}
+
+	public String getUser() {
+
+		return user;
+	}
+
+	/**
+	 * Are we connected to the database?
+	 *
+	 * @return Connected
+	 * @throws SQLException
+	 */
+	public boolean isConnected() {
+
+		try {
+			return connection.isValid(5);
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "isConnected error!", ex);
+		}
+		return false;
+	}
+
+	/**
+	 * Prepare the SQL statements
+	 *
+	 * @return PreparedStatement
+	 * @throws SQLException
+	 */
+	public PreparedStatement prepareStatement(String sqlStatement) {
+
+		try {
+			return connection.prepareStatement(sqlStatement);
+		} catch (SQLException ex) {
+			this.logger.log(Level.SEVERE, "Failed to prepare statement! " + sqlStatement, ex);
+		}
+		return null;
+	}
+
+	/**
+	 * Executes a SQL query. Notes an exception w/o stack and does not retry
+	 *
+	 * @param sql The SQL query as a strign.
+	 */
+	public void silentExecute(String sql) {
+
+		try {
+			connection.prepareStatement(sql).executeUpdate();
+		} catch (SQLException ex) { // One quiet retry, scream on failure
+			this.logger.log(Level.WARNING, "Quiet execution of SQL failed, no retry attempted.");
+		}
 	}
 }

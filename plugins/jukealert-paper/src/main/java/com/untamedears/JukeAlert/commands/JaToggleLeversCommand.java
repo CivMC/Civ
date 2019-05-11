@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
@@ -8,11 +8,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
+
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class JaToggleLeversCommand extends PlayerCommand {
 

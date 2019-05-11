@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
@@ -8,15 +8,14 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.model.Snitch;
+
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.model.Snitch;
 
 public class NameCommand extends PlayerCommand {
 

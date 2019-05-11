@@ -14,6 +14,10 @@ public class PlayerLoginSnitchEvent extends PlayerEvent {
 
 	private static final HandlerList handlers = new HandlerList();
 
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
 	private Snitch snitch;
 
 	public PlayerLoginSnitchEvent(Snitch snitch, Player player) {
@@ -21,17 +25,13 @@ public class PlayerLoginSnitchEvent extends PlayerEvent {
 		this.snitch = snitch;
 	}
 
-	public Snitch getSnitch() {
-		return snitch;
-	}
-
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
 	}
 
-	public static HandlerList getHandlerList() {
-		return handlers;
+	public Snitch getSnitch() {
+		return snitch;
 	}
 
 }

@@ -8,9 +8,17 @@ public class IgnoreList {
 
 	// Only going to be used for /jamute when they mute all groups for a small amount of time
 
-	private IgnoreList() { }
+	private static Map<UUID, Boolean> playerIgnoreAlls_ = new HashMap<>();
 
-	private static Map<UUID, Boolean> playerIgnoreAlls_ = new HashMap<UUID, Boolean>();
+	public static boolean doesPlayerIgnoreAll(UUID accountId) {
+
+		synchronized (playerIgnoreAlls_) {
+			if (!playerIgnoreAlls_.containsKey(accountId)) {
+				return false;
+			}
+			return playerIgnoreAlls_.get(accountId);
+		}
+	}
 
 	// Toggle the global ignore flag for a specific account. If the player isn't
 	//  noted in the map, enable the ignore bit
@@ -28,13 +36,5 @@ public class IgnoreList {
 		return newState;
 	}
 
-	public static boolean doesPlayerIgnoreAll(UUID accountId) {
-
-		synchronized (playerIgnoreAlls_) {
-			if (!playerIgnoreAlls_.containsKey(accountId)) {
-				return false;
-			}
-			return playerIgnoreAlls_.get(accountId);
-		}
-	}
+	private IgnoreList() { }
 }

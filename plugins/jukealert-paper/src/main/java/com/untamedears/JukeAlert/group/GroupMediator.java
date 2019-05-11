@@ -25,8 +25,8 @@ public class GroupMediator {
 
 	public List<String> getGroupsWithPermission(UUID accountId, PermissionType perm) {
 
-		List<String> returnValue = new ArrayList<String>();
-		List<Group> groups = new ArrayList<Group>();
+		List<String> returnValue = new ArrayList<>();
+		List<Group> groups = new ArrayList<>();
 		for (String group: groupManager.getAllGroupNames(accountId)) {
 			Group g = GroupManager.getGroup(group);
 			if (g == null) {

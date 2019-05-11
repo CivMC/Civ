@@ -7,7 +7,7 @@ import java.util.Date;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import com.untamedears.JukeAlert.DeprecatedMethods;
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
 
@@ -24,10 +24,6 @@ public class JukeInfoBatch {
 
 	private int batch_current_update_last_visit = 0;
 
-	public JukeInfoBatch(JukeAlertLogger _jal) {
-		this.JAL = _jal;
-	}
-
 	// Current working set is stored here
 	private PreparedStatement currentSet = null;
 
@@ -36,6 +32,10 @@ public class JukeInfoBatch {
 	private PreparedStatement currentLastVisitSet = null;
 
 	private Object currentLastVisitLock = new Object();
+
+	public JukeInfoBatch(JukeAlertLogger _jal) {
+		this.JAL = _jal;
+	}
 
 	// Add a set of last visit data
 	// NOTE: If it turns out that this is still too spammy, we can

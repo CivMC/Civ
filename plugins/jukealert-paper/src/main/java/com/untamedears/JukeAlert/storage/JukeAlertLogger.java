@@ -35,7 +35,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Vehicle;
 
-import com.untamedears.JukeAlert.DeprecatedMethods;
+import com.untamedears.ItemExchange.DeprecatedMethods;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.ChatFiller;
 import com.untamedears.JukeAlert.chat.SendSnitchList;
@@ -58,6 +58,170 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * @author Dylan Holmes
  */
 public class JukeAlertLogger {
+
+	protected class SnitchEnumerator implements Enumeration<Snitch> {
+
+		JukeAlertLogger logger_;
+
+		World world_;
+
+		ResultSet rs_;
+
+		Snitch next_;
+
+		public SnitchEnumerator(JukeAlertLogger logger, World world) {
+
+			logger_ = logger;
+			world_ = world;
+			try {
+				getAllSnitchesByWorldStmt.setString(1, world_.getName());
+				rs_ = getAllSnitchesByWorldStmt.executeQuery();
+				next_ = getNextSnitch();
+			} catch (SQLException ex) {
+				logger_.plugin.getLogger().log(Level.SEVERE, "Couldn't get first snitch in World " + world_ + "!   "
+					+ ex.toString());
+				rs_ = null;
+				next_ = null;
+			}
+		}
+
+		private Snitch getNextSnitch() {
+
+			try {
+				if (rs_ == null || !rs_.next()) {
+					rs_ = null;
+					return null;
+				}
+				double x = rs_.getInt("snitch_x");
+				double y = rs_.getInt("snitch_y");
+				double z = rs_.getInt("snitch_z");
+				String groupName = rs_.getString("snitch_group");
+				Group group = groupMediator.getGroupByName(groupName);
+				Location location = new Location(world_, x, y, z);
+				if (group == null) {
+					JukeAlert.getInstance().log(String.format(
+						"Group not found for (%s,%d,%d,%d): %s",
+						world_.getName(), (int) x, (int) y, (int) z, groupName));
+				}
+				Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"),
+					rs_.getBoolean("allow_triggering_lever"));
+				snitch.setId(rs_.getInt("snitch_id"));
+				snitch.setName(rs_.getString("snitch_name"));
+				return snitch;
+			} catch (SQLException ex) {
+				logger_.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world_
+					+ "!   " + ex.toString());
+				rs_ = null;
+			}
+			return null;
+		}
+
+		@Override
+		public boolean hasMoreElements() {
+
+			return next_ != null;
+		}
+
+		@Override
+		public Snitch nextElement() {
+
+			if (next_ == null) {
+				throw new NoSuchElementException();
+			}
+			Snitch retval = next_;
+			next_ = getNextSnitch();
+			if (next_ != null && lastSnitchID < next_.getId()) {
+				lastSnitchID = next_.getId();
+			}
+			return retval;
+		}
+	}
+
+	private static String getSnitchLogStmt;
+
+	private static String getSnitchLogFilterActionStmt;
+
+	private static String getSnitchLogFilterPlayerStmt;
+
+	private static String getSnitchLogFilterActionAndPlayerStmt;
+
+	public static String createInfoString(SnitchAction entry, boolean censorLocations, boolean group) {
+
+		String resultString = ChatColor.RED + "Error!";
+
+		final int snitchID = entry.getSnitchId();
+
+		final Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
+		final String name = (snitch == null) ? "" : snitch.getName();
+
+		final String initiator = ChatFiller.fillString(entry.getInitiateUser(), 22.0);
+		final String victim = entry.getVictim();
+		final int actionValue = entry.getSnitchActionId();
+		final LoggedAction action = entry.getAction();
+		final Material material = entry.getMaterial();
+
+		final int x = entry.getX();
+		final int y = entry.getY();
+		final int z = entry.getZ();
+
+		final String timestamp = new SimpleDateFormat("MM-dd HH:mm").format(entry.getDate());
+
+		String coords = String.format("[%d %d %d]", x, y, z);
+		if (censorLocations) {
+			coords = "[*** *** ***]";
+		}
+
+		if (action == LoggedAction.UNKNOWN) {
+			JukeAlert.getInstance().getLogger().log(Level.SEVERE, String.format(
+				"Unknown LoggedAction: {0}", actionValue));
+		}
+
+		String actionString = action.getActionString();
+		ChatColor actionColor = action.getActionColor();
+		int actionTextType = action.getActionTextType();
+		if (group) {
+			actionTextType = 4;
+		}
+
+		String actionText = "";
+		switch (actionTextType) {
+			default:
+			case 0:
+				break;
+			case 1:
+				actionText = timestamp;
+				break;
+			case 2:
+				actionText = String.format("%d %s", DeprecatedMethods.getMaterialId(material), coords);
+				break;
+			case 3:
+				actionText = victim;
+				// Add location data (if possible)
+				if (material != null && action != LoggedAction.KILL) {
+					int victim_id = DeprecatedMethods.getMaterialId(material);
+					if (victim_id >= 0) {
+						actionText = String.format("%d %s", victim_id, coords);
+					}
+				}
+				break;
+			case 4:
+				actionText = name;
+				break;
+		}
+		actionString = ChatFiller.fillString(actionString, 22.0);
+		final String formatting = "  %s%s %s%s%s %s";
+		resultString = String.format(formatting, ChatColor.GOLD, initiator, actionColor, actionString, ChatColor.WHITE,
+			actionText);
+
+		return resultString;
+	}
+
+	public static String snitchKey(final Location loc) {
+
+		return String.format(
+			"World: %s X: %d Y: %d Z: %d",
+			loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+	}
 
 	private final ConfigManager configManager;
 
@@ -117,14 +281,6 @@ public class JukeAlertLogger {
 
 	private PreparedStatement getAllSnitchLogs;
 
-	private static String getSnitchLogStmt;
-
-	private static String getSnitchLogFilterActionStmt;
-
-	private static String getSnitchLogFilterPlayerStmt;
-
-	private static String getSnitchLogFilterActionAndPlayerStmt;
-
 	private final int logsPerPage;
 
 	private int lastSnitchID;
@@ -153,6 +309,8 @@ public class JukeAlertLogger {
 	protected GroupMediator groupMediator;
 
 	protected PreparedStatement getAllSnitchesByWorldStmt;
+
+	public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
 
 	public JukeAlertLogger() {
 
@@ -197,9 +355,72 @@ public class JukeAlertLogger {
 		}, 20, 20); // 1 sec
 	}
 
-	public Database getDb() {
+	public void cullSnitchEntries() {
 
-		return db;
+		this.plugin.getLogger().log(Level.INFO, "Culling snitch entries...");
+		try {
+			cullSnitchEntriesStmt.executeUpdate();
+			cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt.executeUpdate();
+			this.plugin.getLogger().log(Level.INFO, "Snitch entry culling complete!");
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(
+				Level.SEVERE, String.format("Could not entry cull: %s", ex.toString()));
+		}
+	}
+
+	public Boolean deleteSnitchInfo(int snitchId) {
+
+		try {
+			if (this.softDelete) {
+				softDeleteSnitchLogStmt.setInt(1, snitchId);
+				softDeleteSnitchLogStmt.execute();
+			} else {
+				deleteSnitchLogStmt.setInt(1, snitchId);
+				deleteSnitchLogStmt.execute();
+			}
+			return true;
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(Level.SEVERE,
+				"Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+			return false;
+		}
+	}
+
+	public Boolean deleteSnitchInfo(Location loc) {
+
+		Boolean completed = false;
+		// Get the snitch's ID based on the location,
+		//  then use that to get the snitch details from the snitchesDetail table
+		int interestedSnitchId = -1;
+		jukeinfobatch.flush();
+		try {
+			// Params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
+			getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
+			getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
+			getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
+			getSnitchIdFromLocationStmt.setString(4, loc.getWorld().getName());
+			ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
+			// Make sure we got a result
+			boolean didFind = false;
+			while (snitchIdSet.next()) {
+				didFind = true;
+				interestedSnitchId = snitchIdSet.getInt("snitch_id");
+			}
+
+			// Only continue if we actually got a result from the first query
+			if (!didFind) {
+				this.plugin.getLogger().log(Level.SEVERE,
+					"Didn't get any results trying to find a snitch in the snitches table at location " + loc);
+			} else {
+				deleteSnitchInfo(interestedSnitchId);
+			}
+
+		} catch (SQLException ex1) {
+			completed = false;
+			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
+		}
+
+		return completed;
 	}
 
 	/**
@@ -454,6 +675,119 @@ public class JukeAlertLogger {
 		}
 	}
 
+	public Enumeration<Snitch> getAllSnitches(World world) {
+
+		return new SnitchEnumerator(this, world);
+	}
+
+	public Set<Integer> getAllSnitchIds() {
+
+		ResultSet rsKey = null;
+		Set<Integer> snitchIds = new TreeSet<>();
+		try {
+			rsKey = getAllSnitchIdsStmt.executeQuery();
+			while (rsKey.next()) {
+				int snitchId = rsKey.getInt("snitch_id");
+				snitchIds.add(snitchId);
+			}
+			return snitchIds;
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch IDs! " + ex.toString());
+		} finally {
+			if (rsKey != null) {
+				try {
+					rsKey.close();
+				} catch (Exception ex) {
+					;
+				}
+			}
+		}
+		return null;
+	}
+
+	public List<SnitchAction> getAllSnitchLogs(Snitch snitch) {
+
+		try {
+			synchronized (updateSnitchGroupStmt) {
+				getAllSnitchLogs.setInt(1, snitch.getId());
+				ResultSet rs = getAllSnitchLogs.executeQuery();
+				List<SnitchAction> log = new LinkedList<>();
+				while (rs.next()) {
+					int snitchActionId = rs.getInt("snitch_details_id");
+					Date date = new Date(rs.getTimestamp("snitch_log_time").getTime());
+					LoggedAction action = LoggedAction.getFromId(rs.getInt("snitch_logged_action"));
+					String initiatedUser = rs.getString("snitch_logged_initiated_user");
+					String victim = rs.getString("snitch_logged_victim_user");
+					int x = rs.getInt("snitch_logged_x");
+					int y = rs.getInt("snitch_logged_y");
+					int z = rs.getInt("snitch_logged_z");
+					Material mat = DeprecatedMethods.getMaterialById(rs.getInt("snitch_logged_materialid"));
+					log.add(new SnitchAction(snitchActionId, snitch.getId(), date, action, initiatedUser, victim,
+						x, y, z, mat));
+				}
+				return log;
+			}
+		} catch (SQLException ex) {
+			Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+			return null;
+		}
+	}
+
+	public Database getDb() {
+
+		return db;
+	}
+
+	public Set<String> getIgnoreUUIDs(String ignoredGroup) throws SQLException {
+
+		Set<String> ignoringUsers = new HashSet<String>();
+		String sql = "%" + ignoredGroup + "%";
+		getIgnoreUUIDSStmt.setString(1, sql);
+		ResultSet set = getIgnoreUUIDSStmt.executeQuery();
+
+		if (!set.next()) {
+			return null;
+		} else {
+			// Add the first value
+			String[] mutedGroups = set.getString(2).split("\\s+");
+			List<String> mutedGroupsSet = Arrays.asList(mutedGroups);
+			if (mutedGroupsSet.contains(ignoredGroup)) {
+				ignoringUsers.add(set.getString(1));
+			}
+			// Now if there is more loop through them
+			while (set.next()) {
+				// Create set of uuids
+				mutedGroups = set.getString(2).split("\\s+");
+				mutedGroupsSet = Arrays.asList(mutedGroups);
+				if (mutedGroupsSet.contains(ignoredGroup)) {
+					ignoringUsers.add(set.getString(1));
+				}
+			}
+		}
+		return ignoringUsers;
+	}
+
+	public Integer getLastSnitchID() {
+
+		return lastSnitchID;
+	}
+
+	public String getMutedGroups(UUID uuid) {
+
+		try {
+			getMutedGroupsStmt.setString(1, uuid.toString());
+			ResultSet set = getMutedGroupsStmt.executeQuery();
+			if (!set.next()) {
+				return null;
+			}
+			return set.getString(1);
+		} catch (SQLException e) {
+			this.plugin.getLogger().log(Level.SEVERE,
+					String.format("Could not retreive muted_group: %s", e.toString()));
+		}
+		return null;
+	}
+
 	public PreparedStatement getNewInsertSnitchLogStmt() {
 
 		return db.prepareStatement(String.format("INSERT INTO %s (snitch_id, snitch_log_time, "
@@ -467,6 +801,301 @@ public class JukeAlertLogger {
 
 		return db.prepareStatement(String.format(
 			"UPDATE %s SET last_semi_owner_visit_date = UTC_TIMESTAMP() WHERE snitch_id = ?;", snitchsTbl));
+	}
+
+	public List<SnitchAction> getSnitchGroupInfo(String group, int offset) {
+
+		List<SnitchAction> info = new ArrayList<SnitchAction>();
+
+		try {
+			getSnitchLogGroupStmt.setString(1, group);
+			getSnitchLogGroupStmt.setInt(2, offset);
+
+			ResultSet set = getSnitchLogGroupStmt.executeQuery();
+			if (set.isBeforeFirst()) {
+				while (set.next()) {
+					SnitchAction entry = resultToSnitchAction(set, true);
+					if (entry != null) {
+						info.add(entry);
+					}
+				}
+			}
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(Level.SEVERE,
+				"Could not get Snitch Details from the snitchesDetail table using the snitch group " + group, ex);
+		}
+
+		return info;
+	}
+
+	public List<SnitchAction> getSnitchInfo(int snitchId, int offset, LoggedAction filterAction, String filterPlayer) {
+
+		// Ensure that the supplied name is not null,
+		//  doesn't contain special characters, and is at most 16 characters long
+		if (filterPlayer == null) {
+			filterPlayer = "";
+		}
+		filterPlayer = filterPlayer.replaceAll("\\W", "");
+		if (filterPlayer.length() > 16) {
+			filterPlayer = filterPlayer.substring(0, 16);
+		}
+
+		List<SnitchAction> info = new ArrayList<SnitchAction>();
+		try {
+			PreparedStatement ps;
+			if (filterAction != null && !filterPlayer.isEmpty()) {
+				ps = db.prepareStatement(getSnitchLogFilterActionAndPlayerStmt);
+				ps.setInt(1,  snitchId);
+				ps.setByte(2, (byte) filterAction.getLoggedActionId());
+				ps.setString(3, "%" + filterPlayer + "%");
+				ps.setInt(4,  offset);
+				ps.setInt(5, logsPerPage);
+			} else if (filterAction != null && filterPlayer.isEmpty()) {
+				ps = db.prepareStatement(getSnitchLogFilterActionStmt);
+				ps.setInt(1, snitchId);
+				ps.setByte(2, (byte) filterAction.getLoggedActionId());
+				ps.setInt(3, offset);
+				ps.setInt(4, logsPerPage);
+			} else if (filterAction == null && !filterPlayer.isEmpty()) {
+				ps = db.prepareStatement(getSnitchLogFilterPlayerStmt);
+				ps.setInt(1,  snitchId);
+				ps.setString(2, "%" + filterPlayer + "%");
+				ps.setInt(3, offset);
+				ps.setInt(4, logsPerPage);
+			} else {
+				ps = db.prepareStatement(getSnitchLogStmt);
+				ps.setInt(1, snitchId);
+				ps.setInt(2, offset);
+				ps.setInt(3, logsPerPage);
+			}
+
+			ResultSet set = ps.executeQuery();
+			if (set != null && set.isBeforeFirst()) {
+				while (set.next()) {
+					SnitchAction entry = resultToSnitchAction(set, false);
+					if (entry != null) {
+						info.add(entry);
+					}
+				}
+			}
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(Level.SEVERE,
+				"Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
+		}
+
+		return info;
+	}
+
+	/**
+	 * Gets
+	 *
+	 * @limit events about that snitch.
+	 * @param loc - the location of the snitch
+	 * @param offset - the number of entries to start at (10 means you start at
+	 * the 10th entry and go to
+	 * @limit)
+	 * @param limit - the number of entries to limit
+	 * @return a Map of String/Date objects of the snitch entries, formatted
+	 * nicely
+	 */
+	public List<String> getSnitchInfo(Location loc, int offset) {
+
+		List<String> info = new ArrayList<String>();
+
+		// Get the snitch's ID based on the location,
+		//  then use that to get the snitch details from the snitchesDetail table
+		int interestedSnitchId = -1;
+		try {
+			// Params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
+			getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
+			getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
+			getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
+			getSnitchIdFromLocationStmt.setString(4, loc.getWorld().getName());
+
+			ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
+
+			// Make sure we got a result
+			boolean didFind = false;
+			while (snitchIdSet.next()) {
+				didFind = true;
+				interestedSnitchId = snitchIdSet.getInt("snitch_id");
+			}
+
+			// Only continue if we actually got a result from the first query
+			if (!didFind) {
+				this.plugin.getLogger().log(Level.SEVERE,
+					"Didn't get any results trying to find a snitch in the snitches table at location " + loc);
+			} else {
+				GetSnitchInfoTask task = new GetSnitchInfoTask(plugin, interestedSnitchId, offset);
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
+				return task.getInfo();
+			}
+		} catch (SQLException ex1) {
+			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
+		}
+
+		return info;
+	}
+
+	public synchronized SendSnitchList getSnitchList(Player player, int offset, List<String> groupNames,
+			boolean truncateNames) {
+
+		final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
+
+		final boolean showWorldColumn = plugin.getConfigManager().getMultipleWorldSupport();
+
+		double worldColWidth = 0;
+		double locationColWidth = 26;
+		double cullColWidth = 10;
+		double groupColWidth = 22;
+		double nameColWidth = 20;
+		if (showWorldColumn) {
+			worldColWidth = 10;
+			groupColWidth = 17;
+			nameColWidth = 15;
+		}
+
+		List<TextComponent> info = new ArrayList<>();
+		String worldName = "";
+		offset = (offset - 1) * 10;
+
+		try {
+			String uuidString = java.util.UUID.randomUUID().toString();
+			UUID accountId = player.getUniqueId();
+			List<String> allGroupNames = groupMediator.getGroupsWithPermission(accountId,
+				PermissionType.getPermission("LIST_SNITCHES"));
+
+			List<String> groupNamesToShow;
+			if (groupNames != null) {
+				groupNamesToShow = new ArrayList<>();
+				for (String groupName : groupNames) {
+					if (allGroupNames.contains(groupName)) {
+						groupNamesToShow.add(groupName);
+					}
+				}
+			} else {
+				groupNamesToShow = allGroupNames;
+			}
+
+			StringBuilder sb = new StringBuilder();
+			for (String groupName : groupNamesToShow) {
+				sb.append(groupName);
+				sb.append(uuidString);
+			}
+
+			getSnitchListStmt.setString(1, sb.toString());
+			getSnitchListStmt.setString(2, uuidString);
+			getSnitchListStmt.setInt(3, offset);
+
+			ResultSet set = getSnitchListStmt.executeQuery();
+			if (set.isBeforeFirst()) {
+				while (set.next()) {
+					String snitchWorld = set.getString("world");
+					int snitchX = Integer.parseInt(set.getString("x"));
+					int snitchY = Integer.parseInt(set.getString("y"));
+					int snitchZ = Integer.parseInt(set.getString("z"));
+					String snitchGroup = set.getString("SnitchGroup");
+					String snitchName = set.getString("SnitchName");
+					String snitchCullTimeFmt = "";
+					String snitchLocation = String.format("[%d %d %d]", snitchX, snitchY, snitchZ);
+
+					if (snitchWorld == null) {
+						snitchWorld = "";
+					}
+					if (worldName == null || worldName.isEmpty()) {
+						worldName = snitchWorld;
+					}
+					Integer snitchCullTimeSeconds = null;
+					if ((set.getInt("DoesSnitchRegisterEvents") == 1
+							&& daysFromLastAdminVisitForLoggedSnitchCulling >= 1) ||
+							(set.getInt("DoesSnitchRegisterEvents") == 0
+								&& daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) {
+						snitchCullTimeSeconds = set.getInt("TimeLeftAliveInSeconds");
+						snitchCullTimeFmt = String.format("%.2f", (
+							(snitchCullTimeSeconds < 0 ? 0 : snitchCullTimeSeconds) / 3600.0));
+					}
+					if (snitchGroup == null) {
+						snitchGroup = "";
+					}
+					if (snitchName == null) {
+						snitchName = "";
+					}
+					if (snitchCullTimeFmt == null) {
+						snitchCullTimeFmt = "";
+					}
+
+					String hoverText;
+					Location loc = new Location(Bukkit.getWorld(snitchWorld), snitchX, snitchY, snitchZ);
+					SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
+					Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
+					if (snitch == null) {
+						this.plugin.getLogger().log(Level.SEVERE,
+							String.format("Could not find snitch at [%s %d %d %d]. This should never happen.",
+								snitchWorld, snitchX, snitchY, snitchZ));
+						hoverText = "Error";
+					} else {
+						hoverText = snitch.getHoverText(null, snitchCullTimeSeconds);
+					}
+
+					// Building each line like this is a little ugly to look at,
+					//  but it avoids compounding position errors
+					String currLine = ChatColor.WHITE.toString();
+					if (showWorldColumn) {
+						currLine = ChatFiller.fillString(currLine + snitchWorld, worldColWidth,
+							ChatColor.GRAY + "..." + ChatColor.WHITE);
+					}
+					currLine = ChatFiller.fillString(currLine + snitchLocation, worldColWidth + locationColWidth);
+					currLine = ChatFiller.fillString(currLine + snitchCullTimeFmt, worldColWidth + locationColWidth +
+						cullColWidth, truncateChars);
+					if (truncateNames) {
+						currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth +
+							cullColWidth + groupColWidth, truncateChars);
+						currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth +
+							cullColWidth + groupColWidth + nameColWidth, truncateChars);
+					} else {
+						currLine = currLine + " " + snitchGroup;
+						currLine = currLine + " " + snitchName;
+					}
+					currLine += "\n";
+
+					TextComponent lineText = new TextComponent(currLine);
+					lineText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+						new ComponentBuilder(hoverText).create()));
+					info.add(lineText);
+				}
+			}
+		} catch (SQLException ex) {
+			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername "
+				+ player.getDisplayName(), ex);
+		}
+
+		if (showWorldColumn == true) {
+			return new SendSnitchList(info, "", player, (offset / 10) + 1);
+		}
+		else {
+			return new SendSnitchList(info, worldName, player, (offset / 10) + 1);
+		}
+	}
+
+	public void increaseLastSnitchID() {
+
+		lastSnitchID++;
+	}
+
+	private void initializeLastSnitchId() {
+
+		lastSnitchID = -1;
+		try {
+			ResultSet rsKey = getLastSnitchID.executeQuery();
+			if (rsKey.next()) {
+				lastSnitchID = rsKey.getInt("Auto_increment");
+			}
+		} catch (SQLException ex) {
+			lastSnitchID = -1;
+		}
+		if (lastSnitchID == -1) {
+			this.plugin.getLogger().log(Level.SEVERE, "Could not determine the last snitch id!");
+		}
 	}
 
 	private void initializeStatements() {
@@ -600,564 +1229,6 @@ public class JukeAlertLogger {
 		removeUUIDMutedStmt = db.prepareStatement(String.format("DELETE FROM %s WHERE uuid=? ;", mutedGroupsTbl));
 	}
 
-	private void initializeLastSnitchId() {
-
-		lastSnitchID = -1;
-		try {
-			ResultSet rsKey = getLastSnitchID.executeQuery();
-			if (rsKey.next()) {
-				lastSnitchID = rsKey.getInt("Auto_increment");
-			}
-		} catch (SQLException ex) {
-			lastSnitchID = -1;
-		}
-		if (lastSnitchID == -1) {
-			this.plugin.getLogger().log(Level.SEVERE, "Could not determine the last snitch id!");
-		}
-	}
-
-	public static String snitchKey(final Location loc) {
-
-		return String.format(
-			"World: %s X: %d Y: %d Z: %d",
-			loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-	}
-
-	protected class SnitchEnumerator implements Enumeration<Snitch> {
-
-		JukeAlertLogger logger_;
-
-		World world_;
-
-		ResultSet rs_;
-
-		Snitch next_;
-
-		public SnitchEnumerator(JukeAlertLogger logger, World world) {
-
-			logger_ = logger;
-			world_ = world;
-			try {
-				getAllSnitchesByWorldStmt.setString(1, world_.getName());
-				rs_ = getAllSnitchesByWorldStmt.executeQuery();
-				next_ = getNextSnitch();
-			} catch (SQLException ex) {
-				logger_.plugin.getLogger().log(Level.SEVERE, "Couldn't get first snitch in World " + world_ + "!   "
-					+ ex.toString());
-				rs_ = null;
-				next_ = null;
-			}
-		}
-
-		@Override
-		public boolean hasMoreElements() {
-
-			return next_ != null;
-		}
-
-		private Snitch getNextSnitch() {
-
-			try {
-				if (rs_ == null || !rs_.next()) {
-					rs_ = null;
-					return null;
-				}
-				double x = rs_.getInt("snitch_x");
-				double y = rs_.getInt("snitch_y");
-				double z = rs_.getInt("snitch_z");
-				String groupName = rs_.getString("snitch_group");
-				Group group = groupMediator.getGroupByName(groupName);
-				Location location = new Location(world_, x, y, z);
-				if (group == null) {
-					JukeAlert.getInstance().log(String.format(
-						"Group not found for (%s,%d,%d,%d): %s",
-						world_.getName(), (int) x, (int) y, (int) z, groupName));
-				}
-				Snitch snitch = new Snitch(location, group, rs_.getBoolean("snitch_should_log"),
-					rs_.getBoolean("allow_triggering_lever"));
-				snitch.setId(rs_.getInt("snitch_id"));
-				snitch.setName(rs_.getString("snitch_name"));
-				return snitch;
-			} catch (SQLException ex) {
-				logger_.plugin.getLogger().log(Level.SEVERE, "Could not get all Snitches from World " + world_
-					+ "!   " + ex.toString());
-				rs_ = null;
-			}
-			return null;
-		}
-
-		@Override
-		public Snitch nextElement() {
-
-			if (next_ == null) {
-				throw new NoSuchElementException();
-			}
-			Snitch retval = next_;
-			next_ = getNextSnitch();
-			if (next_ != null && lastSnitchID < next_.getId()) {
-				lastSnitchID = next_.getId();
-			}
-			return retval;
-		}
-	}
-
-	public Enumeration<Snitch> getAllSnitches(World world) {
-
-		return new SnitchEnumerator(this, world);
-	}
-
-	public void saveAllSnitches() {
-
-		// TODO: Save snitches
-		jukeinfobatch.flush();
-	}
-
-	/**
-	 * Gets
-	 *
-	 * @limit events about that snitch.
-	 * @param loc - the location of the snitch
-	 * @param offset - the number of entries to start at (10 means you start at
-	 * the 10th entry and go to
-	 * @limit)
-	 * @param limit - the number of entries to limit
-	 * @return a Map of String/Date objects of the snitch entries, formatted
-	 * nicely
-	 */
-	public List<String> getSnitchInfo(Location loc, int offset) {
-
-		List<String> info = new ArrayList<String>();
-
-		// Get the snitch's ID based on the location,
-		//  then use that to get the snitch details from the snitchesDetail table
-		int interestedSnitchId = -1;
-		try {
-			// Params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
-			getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
-			getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
-			getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
-			getSnitchIdFromLocationStmt.setString(4, loc.getWorld().getName());
-
-			ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
-
-			// Make sure we got a result
-			boolean didFind = false;
-			while (snitchIdSet.next()) {
-				didFind = true;
-				interestedSnitchId = snitchIdSet.getInt("snitch_id");
-			}
-
-			// Only continue if we actually got a result from the first query
-			if (!didFind) {
-				this.plugin.getLogger().log(Level.SEVERE,
-					"Didn't get any results trying to find a snitch in the snitches table at location " + loc);
-			} else {
-				GetSnitchInfoTask task = new GetSnitchInfoTask(plugin, interestedSnitchId, offset);
-				Bukkit.getScheduler().runTaskAsynchronously(plugin, task);
-				return task.getInfo();
-			}
-		} catch (SQLException ex1) {
-			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
-		}
-
-		return info;
-	}
-
-	public List<SnitchAction> getSnitchInfo(int snitchId, int offset, LoggedAction filterAction, String filterPlayer) {
-
-		// Ensure that the supplied name is not null,
-		//  doesn't contain special characters, and is at most 16 characters long
-		if (filterPlayer == null) {
-			filterPlayer = "";
-		}
-		filterPlayer = filterPlayer.replaceAll("\\W", "");
-		if (filterPlayer.length() > 16) {
-			filterPlayer = filterPlayer.substring(0, 16);
-		}
-
-		List<SnitchAction> info = new ArrayList<SnitchAction>();
-		try {
-			PreparedStatement ps;
-			if (filterAction != null && !filterPlayer.isEmpty()) {
-				ps = db.prepareStatement(getSnitchLogFilterActionAndPlayerStmt);
-				ps.setInt(1,  snitchId);
-				ps.setByte(2, (byte) filterAction.getLoggedActionId());
-				ps.setString(3, "%" + filterPlayer + "%");
-				ps.setInt(4,  offset);
-				ps.setInt(5, logsPerPage);
-			} else if (filterAction != null && filterPlayer.isEmpty()) {
-				ps = db.prepareStatement(getSnitchLogFilterActionStmt);
-				ps.setInt(1, snitchId);
-				ps.setByte(2, (byte) filterAction.getLoggedActionId());
-				ps.setInt(3, offset);
-				ps.setInt(4, logsPerPage);
-			} else if (filterAction == null && !filterPlayer.isEmpty()) {
-				ps = db.prepareStatement(getSnitchLogFilterPlayerStmt);
-				ps.setInt(1,  snitchId);
-				ps.setString(2, "%" + filterPlayer + "%");
-				ps.setInt(3, offset);
-				ps.setInt(4, logsPerPage);
-			} else {
-				ps = db.prepareStatement(getSnitchLogStmt);
-				ps.setInt(1, snitchId);
-				ps.setInt(2, offset);
-				ps.setInt(3, logsPerPage);
-			}
-
-			ResultSet set = ps.executeQuery();
-			if (set != null && set.isBeforeFirst()) {
-				while (set.next()) {
-					SnitchAction entry = resultToSnitchAction(set, false);
-					if (entry != null) {
-						info.add(entry);
-					}
-				}
-			}
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(Level.SEVERE,
-				"Could not get Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-		}
-
-		return info;
-	}
-
-	public synchronized SendSnitchList getSnitchList(Player player, int offset, List<String> groupNames,
-			boolean truncateNames) {
-
-		final String truncateChars = ChatColor.GRAY + "... " + ChatColor.WHITE;
-
-		final boolean showWorldColumn = plugin.getConfigManager().getMultipleWorldSupport();
-
-		double worldColWidth = (double) 0;
-		double locationColWidth = (double) 26;
-		double cullColWidth = (double) 10;
-		double groupColWidth = (double) 22;
-		double nameColWidth = (double) 20;
-		if (showWorldColumn) {
-			worldColWidth = (double) 10;
-			groupColWidth = (double) 17;
-			nameColWidth = (double) 15;
-		}
-
-		List<TextComponent> info = new ArrayList<TextComponent>();
-		String worldName = "";
-		offset = (offset - 1) * 10;
-
-		try {
-			String uuidString = java.util.UUID.randomUUID().toString();
-			UUID accountId = player.getUniqueId();
-			List<String> allGroupNames = groupMediator.getGroupsWithPermission(accountId,
-				PermissionType.getPermission("LIST_SNITCHES"));
-
-			List<String> groupNamesToShow;
-			if (groupNames != null) {
-				groupNamesToShow = new ArrayList<String>();
-				for (String groupName : groupNames) {
-					if (allGroupNames.contains(groupName)) {
-						groupNamesToShow.add(groupName);
-					}
-				}
-			} else {
-				groupNamesToShow = allGroupNames;
-			}
-
-			StringBuilder sb = new StringBuilder();
-			for (String groupName : groupNamesToShow) {
-				sb.append(groupName);
-				sb.append(uuidString);
-			}
-
-			getSnitchListStmt.setString(1, sb.toString());
-			getSnitchListStmt.setString(2, uuidString);
-			getSnitchListStmt.setInt(3, offset);
-
-			ResultSet set = getSnitchListStmt.executeQuery();
-			if (set.isBeforeFirst()) {
-				while (set.next()) {
-					String snitchWorld = set.getString("world");
-					int snitchX = Integer.parseInt(set.getString("x"));
-					int snitchY = Integer.parseInt(set.getString("y"));
-					int snitchZ = Integer.parseInt(set.getString("z"));
-					String snitchGroup = set.getString("SnitchGroup");
-					String snitchName = set.getString("SnitchName");
-					String snitchCullTimeFmt = "";
-					String snitchLocation = String.format("[%d %d %d]", snitchX, snitchY, snitchZ);
-
-					if (snitchWorld == null) {
-						snitchWorld = "";
-					}
-					if (worldName == null || worldName.isEmpty()) {
-						worldName = snitchWorld;
-					}
-					Integer snitchCullTimeSeconds = null;
-					if ((set.getInt("DoesSnitchRegisterEvents") == 1
-							&& daysFromLastAdminVisitForLoggedSnitchCulling >= 1) ||
-							(set.getInt("DoesSnitchRegisterEvents") == 0
-								&& daysFromLastAdminVisitForNonLoggedSnitchCulling >= 1)) {
-						snitchCullTimeSeconds = set.getInt("TimeLeftAliveInSeconds");
-						snitchCullTimeFmt = String.format("%.2f", (
-							(snitchCullTimeSeconds < 0 ? 0 : snitchCullTimeSeconds) / 3600.0));
-					}
-					if (snitchGroup == null) {
-						snitchGroup = "";
-					}
-					if (snitchName == null) {
-						snitchName = "";
-					}
-					if (snitchCullTimeFmt == null) {
-						snitchCullTimeFmt = "";
-					}
-
-					String hoverText;
-					Location loc = new Location(Bukkit.getWorld(snitchWorld), snitchX, snitchY, snitchZ);
-					SnitchManager snitchManager = JukeAlert.getInstance().getSnitchManager();
-					Snitch snitch = snitchManager.getSnitch(loc.getWorld(), loc);
-					if (snitch == null) {
-						this.plugin.getLogger().log(Level.SEVERE,
-							String.format("Could not find snitch at [%s %d %d %d]. This should never happen.",
-								snitchWorld, snitchX, snitchY, snitchZ));
-						hoverText = "Error";
-					} else {
-						hoverText = snitch.getHoverText(null, snitchCullTimeSeconds);
-					}
-
-					// Building each line like this is a little ugly to look at,
-					//  but it avoids compounding position errors
-					String currLine = ChatColor.WHITE.toString();
-					if (showWorldColumn) {
-						currLine = ChatFiller.fillString(currLine + snitchWorld, worldColWidth,
-							ChatColor.GRAY + "..." + ChatColor.WHITE);
-					}
-					currLine = ChatFiller.fillString(currLine + snitchLocation, worldColWidth + locationColWidth);
-					currLine = ChatFiller.fillString(currLine + snitchCullTimeFmt, worldColWidth + locationColWidth +
-						cullColWidth, truncateChars);
-					if (truncateNames) {
-						currLine = ChatFiller.fillString(currLine + snitchGroup, worldColWidth + locationColWidth +
-							cullColWidth + groupColWidth, truncateChars);
-						currLine = ChatFiller.fillString(currLine + snitchName, worldColWidth + locationColWidth +
-							cullColWidth + groupColWidth + nameColWidth, truncateChars);
-					} else {
-						currLine = currLine + " " + snitchGroup;
-						currLine = currLine + " " + snitchName;
-					}
-					currLine += "\n";
-
-					TextComponent lineText = new TextComponent(currLine);
-					lineText.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-						new ComponentBuilder(hoverText).create()));
-					info.add(lineText);
-				}
-			}
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch List using playername "
-				+ player.getDisplayName(), ex);
-		}
-
-		if (showWorldColumn == true) {
-			return new SendSnitchList(info, "", player, (offset / 10) + 1);
-		}
-		else {
-			return new SendSnitchList(info, worldName, player, (offset / 10) + 1);
-		}
-	}
-
-	public List<SnitchAction> getSnitchGroupInfo(String group, int offset) {
-
-		List<SnitchAction> info = new ArrayList<SnitchAction>();
-
-		try {
-			getSnitchLogGroupStmt.setString(1, group);
-			getSnitchLogGroupStmt.setInt(2, offset);
-
-			ResultSet set = getSnitchLogGroupStmt.executeQuery();
-			if (set.isBeforeFirst()) {
-				while (set.next()) {
-					SnitchAction entry = resultToSnitchAction(set, true);
-					if (entry != null) {
-						info.add(entry);
-					}
-				}
-			}
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(Level.SEVERE,
-				"Could not get Snitch Details from the snitchesDetail table using the snitch group " + group, ex);
-		}
-
-		return info;
-	}
-
-	public Boolean deleteSnitchInfo(Location loc) {
-
-		Boolean completed = false;
-		// Get the snitch's ID based on the location,
-		//  then use that to get the snitch details from the snitchesDetail table
-		int interestedSnitchId = -1;
-		jukeinfobatch.flush();
-		try {
-			// Params are x(int), y(int), z(int), world(tinyint), column returned: snitch_id (int)
-			getSnitchIdFromLocationStmt.setInt(1, loc.getBlockX());
-			getSnitchIdFromLocationStmt.setInt(2, loc.getBlockY());
-			getSnitchIdFromLocationStmt.setInt(3, loc.getBlockZ());
-			getSnitchIdFromLocationStmt.setString(4, loc.getWorld().getName());
-			ResultSet snitchIdSet = getSnitchIdFromLocationStmt.executeQuery();
-			// Make sure we got a result
-			boolean didFind = false;
-			while (snitchIdSet.next()) {
-				didFind = true;
-				interestedSnitchId = snitchIdSet.getInt("snitch_id");
-			}
-
-			// Only continue if we actually got a result from the first query
-			if (!didFind) {
-				this.plugin.getLogger().log(Level.SEVERE,
-					"Didn't get any results trying to find a snitch in the snitches table at location " + loc);
-			} else {
-				deleteSnitchInfo(interestedSnitchId);
-			}
-
-		} catch (SQLException ex1) {
-			completed = false;
-			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch Details! loc: " + loc, ex1);
-		}
-
-		return completed;
-	}
-
-	public Boolean deleteSnitchInfo(int snitchId) {
-
-		try {
-			if (this.softDelete) {
-				softDeleteSnitchLogStmt.setInt(1, snitchId);
-				softDeleteSnitchLogStmt.execute();
-			} else {
-				deleteSnitchLogStmt.setInt(1, snitchId);
-				deleteSnitchLogStmt.execute();
-			}
-			return true;
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(Level.SEVERE,
-				"Could not delete Snitch Details from the snitchesDetail table using the snitch id " + snitchId, ex);
-			return false;
-		}
-	}
-
-	public JukeInfoBatch jukeinfobatch = new JukeInfoBatch(this);
-
-	public void logSnitchVisit(Snitch snitch) {
-
-		jukeinfobatch.addLastVisitData(snitch);
-	}
-
-	/**
-	 * Logs info to a specific snitch with a time stamp.
-	 *
-	 * example:
-	 *
-	 * ------DATE-----------DETAIL------ 2013-4-24 12:14:35 : Bob made an entry
-	 * at [Nether(X: 56 Y: 87 Z: -1230)] 2013-4-25 12:14:35 : Bob broke a chest
-	 * at X: 896 Y: 1 Z: 8501 2013-4-28 12:14:35 : Bob killed Trevor. ----Type
-	 * /ja more to see more----
-	 *
-	 * @param snitch - the snitch that recorded this event, required
-	 * @param material - the block/item/whatever that was part of the event, if
-	 * there was one , null if no material was part of the event
-	 * @param loc - the location where this event occured, if any
-	 * @param date - the date this event occurred , required
-	 * @param action - the action that took place in this event
-	 * @param initiatedUser - the user who initiated the event, required
-	 * @param victimUser - the user who was victim of the event, can be null
-	 */
-	public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action,
-			String initiatedUser, String victimUser) {
-
-		jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
-	}
-
-	/**
-	 * logs a message that someone killed an entity
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that did the killing
-	 * @param entity - the entity that died
-	 */
-	public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
-
-		this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL,
-			player.getPlayerListName(), entity.getType().toString());
-	}
-
-	public void logSnitchExchangeEvent(Snitch snitch, Player player, Location loc) {
-
-		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.EXCHANGE, player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone killed another player
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that did the killing
-	 * @param victim - the player that died
-	 */
-	public void logSnitchPlayerKill(Snitch snitch, Player player, Player victim) {
-
-		// There is no material or location involved in this event
-		this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL,
-			player.getPlayerListName(), victim.getPlayerListName());
-	}
-
-	/**
-	 * Logs a message that someone ignited a block within the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that did the ignition
-	 * @param block - the block that was ignited
-	 */
-	public void logSnitchIgnite(Snitch snitch, Player player, Block block) {
-
-		// There is no material or location involved in this event
-		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.IGNITED,
-			player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone entered the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that entered the snitch's field
-	 * @param loc - the location of where the player entered
-	 */
-	public void logSnitchEntry(Snitch snitch, Location loc, Player player) {
-
-		// No material or victimUser for this event
-		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.ENTRY, player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone logged in in the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that logged in in the snitch's field
-	 * @param loc - the location of where the player logged in at
-	 */
-	public void logSnitchLogin(Snitch snitch, Location loc, Player player) {
-
-		// No material or victimUser for this event
-		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.LOGIN, player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone logged out in the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that logged out in the snitch's field
-	 * @param loc - the location of where the player logged out at
-	 */
-	public void logSnitchLogout(Snitch snitch, Location loc, Player player) {
-
-		// No material or victimUser for this event
-		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.LOGOUT, player.getPlayerListName(), null);
-	}
-
 	/**
 	 * Logs a message that someone broke a block within the snitch's field
 	 *
@@ -1172,6 +1243,12 @@ public class JukeAlertLogger {
 			player.getPlayerListName(), null);
 	}
 
+	public void logSnitchBlockBurn(Snitch snitch, Block block) {
+
+		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, "",
+			snitchDetailsTbl);
+	}
+
 	/**
 	 * Logs a message that someone placed a block within the snitch's field
 	 *
@@ -1184,103 +1261,6 @@ public class JukeAlertLogger {
 		// No victim user in this event
 		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_PLACE,
 			player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone emptied a bucket within the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that emptied the bucket
-	 * @param loc - the location of where the bucket empty occurred
-	 * @param item - the ItemStack representing the bucket that the player
-	 * emptied
-	 */
-	public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, Material item) {
-
-		// No victim user in this event
-		this.logSnitchInfo(snitch, item, loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
-	}
-
-	/**
-	 * Logs a message that someone destroyed a cart within the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that destroyed the cart
-	 * @param vehicle - the vehicle destroyed
-	 */
-	public void logSnitchCartDestroyed(Snitch snitch, Player player, Vehicle vehicle) {
-
-		this.logSnitchInfo(snitch, null, vehicle.getLocation(), new Date(), LoggedAction.VEHICLE_DESTROY,
-			player.getPlayerListName(), vehicle.getType().toString());
-	}
-
-	public void logSnitchMount(Snitch snitch, Player player, Entity mount) {
-
-		this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_MOUNT,
-			player.getPlayerListName(), mount.getType().toString());
-	}
-
-	public void logSnitchDismount(Snitch snitch, Player player, Entity mount) {
-
-		this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_DISMOUNT,
-			player.getPlayerListName(), mount.getType().toString());
-	}
-
-	/**
-	 * Logs a message that someone filled a bucket within the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that filled the bucket
-	 * @param block - the block that was 'put into' the bucket
-	 */
-	public void logSnitchBucketFill(Snitch snitch, Player player, Block block, Material mat) {
-
-		// No victim user in this event
-		this.logSnitchInfo(snitch, mat, block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getName(),
-			null);
-	}
-
-	/**
-	 * Logs a message that someone used a block within the snitch's field
-	 *
-	 * @param snitch - the snitch that recorded this event
-	 * @param player - the player that used something
-	 * @param block - the block that was used
-	 */
-	public void logUsed(Snitch snitch, Player player, Block block) {
-
-		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_USED,
-			player.getPlayerListName(), null);
-	}
-
-	// Logs the snitch being placed at World, x, y, z in the database
-	public void logSnitchPlace(final String world, final String group, final String name,
-			final int x, final int y, final int z, final boolean shouldLog) {
-
-		final ConfigManager lockedConfigManager = this.configManager;
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				try {
-					jukeinfobatch.flush();
-					synchronized (insertNewSnitchStmt) {
-						insertNewSnitchStmt.setString(1, world);
-						insertNewSnitchStmt.setString(2, name);
-						insertNewSnitchStmt.setInt(3, x);
-						insertNewSnitchStmt.setInt(4, y);
-						insertNewSnitchStmt.setInt(5, z);
-						insertNewSnitchStmt.setString(6, group);
-						insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
-						insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
-						insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
-						insertNewSnitchStmt.setBoolean(10, shouldLog);
-						insertNewSnitchStmt.execute();
-					}
-				} catch (SQLException ex) {
-					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
 	}
 
 	// Removes the snitch at the location of World, X, Y, Z from the database
@@ -1315,20 +1295,178 @@ public class JukeAlertLogger {
 		});
 	}
 
-	// Changes the group of which the snitch is registered to at the location of loc in the database
-	public void updateGroupSnitch(final Location loc, final String group) {
+	/**
+	 * Logs a message that someone emptied a bucket within the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that emptied the bucket
+	 * @param loc - the location of where the bucket empty occurred
+	 * @param item - the ItemStack representing the bucket that the player
+	 * emptied
+	 */
+	public void logSnitchBucketEmpty(Snitch snitch, Player player, Location loc, Material item) {
 
+		// No victim user in this event
+		this.logSnitchInfo(snitch, item, loc, new Date(), LoggedAction.BUCKET_EMPTY, player.getPlayerListName(), null);
+	}
+
+	/**
+	 * Logs a message that someone filled a bucket within the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that filled the bucket
+	 * @param block - the block that was 'put into' the bucket
+	 */
+	public void logSnitchBucketFill(Snitch snitch, Player player, Block block, Material mat) {
+
+		// No victim user in this event
+		this.logSnitchInfo(snitch, mat, block.getLocation(), new Date(), LoggedAction.BUCKET_FILL, player.getName(),
+			null);
+	}
+
+	/**
+	 * Logs a message that someone destroyed a cart within the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that destroyed the cart
+	 * @param vehicle - the vehicle destroyed
+	 */
+	public void logSnitchCartDestroyed(Snitch snitch, Player player, Vehicle vehicle) {
+
+		this.logSnitchInfo(snitch, null, vehicle.getLocation(), new Date(), LoggedAction.VEHICLE_DESTROY,
+			player.getPlayerListName(), vehicle.getType().toString());
+	}
+
+	public void logSnitchDismount(Snitch snitch, Player player, Entity mount) {
+
+		this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_DISMOUNT,
+			player.getPlayerListName(), mount.getType().toString());
+	}
+
+	/**
+	 * logs a message that someone killed an entity
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that did the killing
+	 * @param entity - the entity that died
+	 */
+	public void logSnitchEntityKill(Snitch snitch, Player player, Entity entity) {
+
+		this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL,
+			player.getPlayerListName(), entity.getType().toString());
+	}
+
+	/**
+	 * Logs a message that someone entered the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that entered the snitch's field
+	 * @param loc - the location of where the player entered
+	 */
+	public void logSnitchEntry(Snitch snitch, Location loc, Player player) {
+
+		// No material or victimUser for this event
+		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.ENTRY, player.getPlayerListName(), null);
+	}
+
+	public void logSnitchExchangeEvent(Snitch snitch, Player player, Location loc) {
+
+		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.EXCHANGE, player.getPlayerListName(), null);
+	}
+
+	/**
+	 * Logs a message that someone ignited a block within the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that did the ignition
+	 * @param block - the block that was ignited
+	 */
+	public void logSnitchIgnite(Snitch snitch, Player player, Block block) {
+
+		// There is no material or location involved in this event
+		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.IGNITED,
+			player.getPlayerListName(), null);
+	}
+
+	/**
+	 * Logs info to a specific snitch with a time stamp.
+	 *
+	 * example:
+	 *
+	 * ------DATE-----------DETAIL------ 2013-4-24 12:14:35 : Bob made an entry
+	 * at [Nether(X: 56 Y: 87 Z: -1230)] 2013-4-25 12:14:35 : Bob broke a chest
+	 * at X: 896 Y: 1 Z: 8501 2013-4-28 12:14:35 : Bob killed Trevor. ----Type
+	 * /ja more to see more----
+	 *
+	 * @param snitch - the snitch that recorded this event, required
+	 * @param material - the block/item/whatever that was part of the event, if
+	 * there was one , null if no material was part of the event
+	 * @param loc - the location where this event occured, if any
+	 * @param date - the date this event occurred , required
+	 * @param action - the action that took place in this event
+	 * @param initiatedUser - the user who initiated the event, required
+	 * @param victimUser - the user who was victim of the event, can be null
+	 */
+	public void logSnitchInfo(Snitch snitch, Material material, Location loc, Date date, LoggedAction action,
+			String initiatedUser, String victimUser) {
+
+		jukeinfobatch.addSet(snitch, material, loc, date, action, initiatedUser, victimUser);
+	}
+
+	/**
+	 * Logs a message that someone logged in in the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that logged in in the snitch's field
+	 * @param loc - the location of where the player logged in at
+	 */
+	public void logSnitchLogin(Snitch snitch, Location loc, Player player) {
+
+		// No material or victimUser for this event
+		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.LOGIN, player.getPlayerListName(), null);
+	}
+
+	/**
+	 * Logs a message that someone logged out in the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that logged out in the snitch's field
+	 * @param loc - the location of where the player logged out at
+	 */
+	public void logSnitchLogout(Snitch snitch, Location loc, Player player) {
+
+		// No material or victimUser for this event
+		this.logSnitchInfo(snitch, null, loc, new Date(), LoggedAction.LOGOUT, player.getPlayerListName(), null);
+	}
+
+	public void logSnitchMount(Snitch snitch, Player player, Entity mount) {
+
+		this.logSnitchInfo(snitch, null, mount.getLocation(), new Date(), LoggedAction.ENTITY_MOUNT,
+			player.getPlayerListName(), mount.getType().toString());
+	}
+
+	// Logs the snitch being placed at World, x, y, z in the database
+	public void logSnitchPlace(final String world, final String group, final String name,
+			final int x, final int y, final int z, final boolean shouldLog) {
+
+		final ConfigManager lockedConfigManager = this.configManager;
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
 			@Override
 			public void run() {
 				try {
-					synchronized (updateGroupStmt) {
-						updateGroupStmt.setString(1, group);
-						updateGroupStmt.setString(2, loc.getWorld().getName());
-						updateGroupStmt.setInt(3, loc.getBlockX());
-						updateGroupStmt.setInt(4, loc.getBlockY());
-						updateGroupStmt.setInt(5, loc.getBlockZ());
-						updateGroupStmt.execute();
+					jukeinfobatch.flush();
+					synchronized (insertNewSnitchStmt) {
+						insertNewSnitchStmt.setString(1, world);
+						insertNewSnitchStmt.setString(2, name);
+						insertNewSnitchStmt.setInt(3, x);
+						insertNewSnitchStmt.setInt(4, y);
+						insertNewSnitchStmt.setInt(5, z);
+						insertNewSnitchStmt.setString(6, group);
+						insertNewSnitchStmt.setInt(7, lockedConfigManager.getDefaultCuboidSize());
+						insertNewSnitchStmt.setInt(8, lockedConfigManager.getDefaultCuboidSize());
+						insertNewSnitchStmt.setInt(9, lockedConfigManager.getDefaultCuboidSize());
+						insertNewSnitchStmt.setBoolean(10, shouldLog);
+						insertNewSnitchStmt.execute();
 					}
 				} catch (SQLException ex) {
 					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
@@ -1337,201 +1475,87 @@ public class JukeAlertLogger {
 		});
 	}
 
-	// Updates the cuboid size of the snitch in the database
-	public void updateCubiodSize(final Location loc, final int x, final int y, final int z) {
+	/**
+	 * Logs a message that someone killed another player
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that did the killing
+	 * @param victim - the player that died
+	 */
+	public void logSnitchPlayerKill(Snitch snitch, Player player, Player victim) {
 
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				try {
-					synchronized (updateCuboidVolumeStmt) {
-						updateCuboidVolumeStmt.setInt(1, x);
-						updateCuboidVolumeStmt.setInt(2, y);
-						updateCuboidVolumeStmt.setInt(3, z);
-						updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
-						updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
-						updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
-						updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
-						updateCuboidVolumeStmt.execute();
-					}
-				} catch (SQLException ex) {
-					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
+		// There is no material or location involved in this event
+		this.logSnitchInfo(snitch, null, player.getLocation(), new Date(), LoggedAction.KILL,
+			player.getPlayerListName(), victim.getPlayerListName());
 	}
 
-	// Updates the name of the snitch in the database
-	public void updateSnitchName(final Snitch snitch, final String name) {
+	public void logSnitchVisit(Snitch snitch) {
 
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				try {
-					synchronized (updateSnitchNameStmt) {
-						updateSnitchNameStmt.setString(1, name);
-						updateSnitchNameStmt.setInt(2, snitch.getId());
-						updateSnitchNameStmt.execute();
-					}
-				} catch (SQLException ex) {
-					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
+		jukeinfobatch.addLastVisitData(snitch);
 	}
 
-	// Updates the ToggleLevers of the snitch in the database
-	public void updateSnitchToggleLevers(final Snitch snitch, final Boolean isEnabled) {
+	/**
+	 * Logs a message that someone used a block within the snitch's field
+	 *
+	 * @param snitch - the snitch that recorded this event
+	 * @param player - the player that used something
+	 * @param block - the block that was used
+	 */
+	public void logUsed(Snitch snitch, Player player, Block block) {
 
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				try {
-					synchronized (updateSnitchToggleLeversStmt) {
-						updateSnitchToggleLeversStmt.setBoolean(1, isEnabled);
-						updateSnitchToggleLeversStmt.setInt(2, snitch.getId());
-						updateSnitchToggleLeversStmt.execute();
-					}
-				} catch (SQLException ex) {
-					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
+		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_USED,
+			player.getPlayerListName(), null);
 	}
 
-	// Updates the group of the snitch in the database
-	public void updateSnitchGroup(final Snitch snitch, final String group) {
-
-		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-			@Override
-			public void run() {
-				try {
-					synchronized (updateSnitchGroupStmt) {
-						updateSnitchGroupStmt.setString(1, group);
-						updateSnitchGroupStmt.setInt(2, snitch.getId());
-						updateSnitchGroupStmt.execute();
-					}
-				} catch (SQLException ex) {
-					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-				}
-			}
-		});
-	}
-
-	public Integer getLastSnitchID() {
-
-		return lastSnitchID;
-	}
-
-	public void increaseLastSnitchID() {
-
-		lastSnitchID++;
-	}
-
-	public void logSnitchBlockBurn(Snitch snitch, Block block) {
-
-		this.logSnitchInfo(snitch, block.getType(), block.getLocation(), new Date(), LoggedAction.BLOCK_BURN, "",
-			snitchDetailsTbl);
-	}
-
-	public List<SnitchAction> getAllSnitchLogs(Snitch snitch) {
+	public boolean muteGroups(UUID uuid, String group2Mute) {
 
 		try {
-			synchronized (updateSnitchGroupStmt) {
-				getAllSnitchLogs.setInt(1, snitch.getId());
-				ResultSet rs = getAllSnitchLogs.executeQuery();
-				List<SnitchAction> log = new LinkedList<SnitchAction>();
-				while (rs.next()) {
-					int snitchActionId = rs.getInt("snitch_details_id");
-					Date date = new Date(rs.getTimestamp("snitch_log_time").getTime());
-					LoggedAction action = LoggedAction.getFromId(rs.getInt("snitch_logged_action"));
-					String initiatedUser = rs.getString("snitch_logged_initiated_user");
-					String victim = rs.getString("snitch_logged_victim_user");
-					int x = rs.getInt("snitch_logged_x");
-					int y = rs.getInt("snitch_logged_y");
-					int z = rs.getInt("snitch_logged_z");
-					Material mat = DeprecatedMethods.getMaterialById(rs.getInt("snitch_logged_materialid"));
-					log.add(new SnitchAction(snitchActionId, snitch.getId(), date, action, initiatedUser, victim,
-						x, y, z, mat));
-				}
-				return log;
+			muteGroupsStmt.setString(1, uuid.toString());
+			muteGroupsStmt.setString(2, group2Mute);
+			if (muteGroupsStmt.execute()) {
+				return true;
 			}
-		} catch (SQLException ex) {
-			Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
-			return null;
+		} catch (SQLException e) {
+			this.plugin.getLogger().log(Level.SEVERE,
+					String.format("Could not add muted_group: %s", e.toString()));
 		}
+		return false;
 	}
 
-	public static String createInfoString(SnitchAction entry, boolean censorLocations, boolean group) {
+	public boolean removeIgnoredGroup(String removeGroup, UUID uuid) {
 
-		String resultString = ChatColor.RED + "Error!";
-
-		final int snitchID = entry.getSnitchId();
-
-		final Snitch snitch = JukeAlert.getInstance().getSnitchManager().getSnitch(snitchID);
-		final String name = (snitch == null) ? "" : snitch.getName();
-
-		final String initiator = ChatFiller.fillString(entry.getInitiateUser(), 22.0);
-		final String victim = entry.getVictim();
-		final int actionValue = entry.getSnitchActionId();
-		final LoggedAction action = entry.getAction();
-		final Material material = entry.getMaterial();
-
-		final int x = entry.getX();
-		final int y = entry.getY();
-		final int z = entry.getZ();
-
-		final String timestamp = new SimpleDateFormat("MM-dd HH:mm").format(entry.getDate());
-
-		String coords = String.format("[%d %d %d]", x, y, z);
-		if (censorLocations) {
-			coords = "[*** *** ***]";
+		String curGroups = getMutedGroups(uuid);
+		if (curGroups.equals(removeGroup)) {
+			removeUUIDMuted(uuid);
+			return true;
 		}
-
-		if (action == LoggedAction.UNKNOWN) {
-			JukeAlert.getInstance().getLogger().log(Level.SEVERE, String.format(
-				"Unknown LoggedAction: {0}", actionValue));
+		String[] curGroupA = curGroups.split("\\s+");
+		List<String> groupList = new ArrayList<>(Arrays.asList(curGroupA));
+		groupList.remove(removeGroup);
+		// Back to string
+		String newGroups = StringUtils.join(groupList, " ");
+		try {
+			removeIgnoredGroupStmt.setString(1, newGroups);
+			removeIgnoredGroupStmt.setString(2, uuid.toString());
+			if (removeIgnoredGroupStmt.execute()) {
+				return true;
+			}
+		} catch (SQLException e) {
+			this.plugin.getLogger().log(Level.SEVERE,
+					String.format("Could not remove Ignored Group: %s", e.toString()));
 		}
-
-		String actionString = action.getActionString();
-		ChatColor actionColor = action.getActionColor();
-		int actionTextType = action.getActionTextType();
-		if (group) {
-			actionTextType = 4;
-		}
-
-		String actionText = "";
-		switch (actionTextType) {
-			default:
-			case 0:
-				break;
-			case 1:
-				actionText = timestamp;
-				break;
-			case 2:
-				actionText = String.format("%d %s", DeprecatedMethods.getMaterialId(material), coords);
-				break;
-			case 3:
-				actionText = victim;
-				// Add location data (if possible)
-				if (material != null && action != LoggedAction.KILL) {
-					int victim_id = DeprecatedMethods.getMaterialId(material);
-					if (victim_id >= 0) {
-						actionText = String.format("%d %s", victim_id, coords);
-					}
-				}
-				break;
-			case 4:
-				actionText = name;
-				break;
-		}
-		actionString = ChatFiller.fillString(actionString, 22.0);
-		final String formatting = "  %s%s %s%s%s %s";
-		resultString = String.format(formatting, ChatColor.GOLD, initiator, actionColor, actionString, ChatColor.WHITE,
-			actionText);
-
-		return resultString;
+		return false;
 	}
+
+	public void removeUUIDMuted(UUID uuid) {
+		 try {
+			 removeUUIDMutedStmt.setString(1, uuid.toString());
+			 removeUUIDMutedStmt.execute();
+		 } catch (SQLException e) {
+			 this.plugin.getLogger().log(Level.SEVERE,
+						String.format("Could not remove UUID Row: %s", e.toString()));
+		 }
+	 }
 
 	public SnitchAction resultToSnitchAction(ResultSet set, boolean isGroup) {
 
@@ -1560,73 +1584,56 @@ public class JukeAlertLogger {
 		return output;
 	}
 
-	public Set<Integer> getAllSnitchIds() {
+	public void saveAllSnitches() {
 
-		ResultSet rsKey = null;
-		Set<Integer> snitchIds = new TreeSet<Integer>();
-		try {
-			rsKey = getAllSnitchIdsStmt.executeQuery();
-			while (rsKey.next()) {
-				int snitchId = rsKey.getInt("snitch_id");
-				snitchIds.add(snitchId);
-			}
-			return snitchIds;
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(Level.SEVERE, "Could not get Snitch IDs! " + ex.toString());
-		} finally {
-			if (rsKey != null) {
+		// TODO: Save snitches
+		jukeinfobatch.flush();
+	}
+
+	// Updates the cuboid size of the snitch in the database
+	public void updateCubiodSize(final Location loc, final int x, final int y, final int z) {
+
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
 				try {
-					rsKey.close();
-				} catch (Exception ex) {
-					;
+					synchronized (updateCuboidVolumeStmt) {
+						updateCuboidVolumeStmt.setInt(1, x);
+						updateCuboidVolumeStmt.setInt(2, y);
+						updateCuboidVolumeStmt.setInt(3, z);
+						updateCuboidVolumeStmt.setString(4, loc.getWorld().getName());
+						updateCuboidVolumeStmt.setInt(5, loc.getBlockX());
+						updateCuboidVolumeStmt.setInt(6, loc.getBlockY());
+						updateCuboidVolumeStmt.setInt(7, loc.getBlockZ());
+						updateCuboidVolumeStmt.execute();
+					}
+				} catch (SQLException ex) {
+					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-		}
-		return null;
+		});
 	}
 
-	public void cullSnitchEntries() {
+	// Changes the group of which the snitch is registered to at the location of loc in the database
+	public void updateGroupSnitch(final Location loc, final String group) {
 
-		this.plugin.getLogger().log(Level.INFO, "Culling snitch entries...");
-		try {
-			cullSnitchEntriesStmt.executeUpdate();
-			cullSnitchEntriesAndSnitchesBasedOnVisitDateStmt.executeUpdate();
-			this.plugin.getLogger().log(Level.INFO, "Snitch entry culling complete!");
-		} catch (SQLException ex) {
-			this.plugin.getLogger().log(
-				Level.SEVERE, String.format("Could not entry cull: %s", ex.toString()));
-		}
-	}
-
-	public boolean muteGroups(UUID uuid, String group2Mute) {
-
-		try {
-			muteGroupsStmt.setString(1, uuid.toString());
-			muteGroupsStmt.setString(2, group2Mute);
-			if (muteGroupsStmt.execute()) {
-				return true;
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					synchronized (updateGroupStmt) {
+						updateGroupStmt.setString(1, group);
+						updateGroupStmt.setString(2, loc.getWorld().getName());
+						updateGroupStmt.setInt(3, loc.getBlockX());
+						updateGroupStmt.setInt(4, loc.getBlockY());
+						updateGroupStmt.setInt(5, loc.getBlockZ());
+						updateGroupStmt.execute();
+					}
+				} catch (SQLException ex) {
+					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
-		} catch (SQLException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
-					String.format("Could not add muted_group: %s", e.toString()));
-		}
-		return false;
-	}
-
-	public String getMutedGroups(UUID uuid) {
-
-		try {
-			getMutedGroupsStmt.setString(1, uuid.toString());
-			ResultSet set = getMutedGroupsStmt.executeQuery();
-			if (!set.next()) {
-				return null;
-			}
-			return set.getString(1);
-		} catch (SQLException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
-					String.format("Could not retreive muted_group: %s", e.toString()));
-		}
-		return null;
+		});
 	}
 
 	public boolean updateMutedGroups(UUID uuid, String group2Mute) {
@@ -1646,69 +1653,60 @@ public class JukeAlertLogger {
 		return false;
 	}
 
-	public Set<String> getIgnoreUUIDs(String ignoredGroup) throws SQLException {
+	// Updates the group of the snitch in the database
+	public void updateSnitchGroup(final Snitch snitch, final String group) {
 
-		Set<String> ignoringUsers = new HashSet<String>();
-		String sql = "%" + ignoredGroup + "%";
-		getIgnoreUUIDSStmt.setString(1, sql);
-		ResultSet set = getIgnoreUUIDSStmt.executeQuery();
-
-		if (!set.next()) {
-			return null;
-		} else {
-			// Add the first value
-			String[] mutedGroups = set.getString(2).split("\\s+");
-			List<String> mutedGroupsSet = Arrays.asList(mutedGroups);
-			if (mutedGroupsSet.contains(ignoredGroup)) {
-				ignoringUsers.add(set.getString(1));
-			}
-			// Now if there is more loop through them
-			while (set.next()) {
-				// Create set of uuids
-				mutedGroups = set.getString(2).split("\\s+");
-				mutedGroupsSet = Arrays.asList(mutedGroups);
-				if (mutedGroupsSet.contains(ignoredGroup)) {
-					ignoringUsers.add(set.getString(1));
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					synchronized (updateSnitchGroupStmt) {
+						updateSnitchGroupStmt.setString(1, group);
+						updateSnitchGroupStmt.setInt(2, snitch.getId());
+						updateSnitchGroupStmt.execute();
+					}
+				} catch (SQLException ex) {
+					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
 				}
 			}
-		}
-		return ignoringUsers;
+		});
 	}
 
-	public boolean removeIgnoredGroup(String removeGroup, UUID uuid) {
+	// Updates the name of the snitch in the database
+	public void updateSnitchName(final Snitch snitch, final String name) {
 
-		String curGroups = getMutedGroups(uuid);
-		if (curGroups.equals(removeGroup)) {
-			removeUUIDMuted(uuid);
-			return true;
-		}
-		String[] curGroupA = curGroups.split("\\s+");
-		List<String> groupList = new ArrayList<String>(Arrays.asList(curGroupA));
-		groupList.remove(removeGroup);
-		// Back to string
-		String newGroups = StringUtils.join(groupList, " ");
-		try {
-			removeIgnoredGroupStmt.setString(1, newGroups);
-			removeIgnoredGroupStmt.setString(2, uuid.toString());
-			if (removeIgnoredGroupStmt.execute()) {
-				return true;
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					synchronized (updateSnitchNameStmt) {
+						updateSnitchNameStmt.setString(1, name);
+						updateSnitchNameStmt.setInt(2, snitch.getId());
+						updateSnitchNameStmt.execute();
+					}
+				} catch (SQLException ex) {
+					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+				}
 			}
-		} catch (SQLException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
-					String.format("Could not remove Ignored Group: %s", e.toString()));
-		}
-		return false;
+		});
 	}
 
-	 public void removeUUIDMuted(UUID uuid) {
+	 // Updates the ToggleLevers of the snitch in the database
+	public void updateSnitchToggleLevers(final Snitch snitch, final Boolean isEnabled) {
 
-		 try {
-			 removeUUIDMutedStmt.setString(1, uuid.toString());
-			 removeUUIDMutedStmt.execute();
-		 } catch (SQLException e) {
-			 this.plugin.getLogger().log(Level.SEVERE,
-						String.format("Could not remove UUID Row: %s", e.toString()));
-		 }
-		 return;
-	 }
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+			@Override
+			public void run() {
+				try {
+					synchronized (updateSnitchToggleLeversStmt) {
+						updateSnitchToggleLeversStmt.setBoolean(1, isEnabled);
+						updateSnitchToggleLeversStmt.setInt(2, snitch.getId());
+						updateSnitchToggleLeversStmt.execute();
+					}
+				} catch (SQLException ex) {
+					Logger.getLogger(JukeAlertLogger.class.getName()).log(Level.SEVERE, null, ex);
+				}
+			}
+		});
+	}
 }

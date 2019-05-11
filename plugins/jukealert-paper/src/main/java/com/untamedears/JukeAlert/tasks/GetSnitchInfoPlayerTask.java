@@ -12,12 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.namelayer.group.Group;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.chat.SendSnitchInfo;
-import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.LoggedAction;
+import com.untamedears.JukeAlert.model.Snitch;
+
+import vg.civcraft.mc.namelayer.group.Group;
 
 /**
  *
@@ -49,31 +49,7 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 
 	private final JukeAlert plugin;
 
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor) {
-
-		this.snitch = snitch;
-		this.offset = offset;
-		this.player = player;
-		this.plugin = plugin;
-		this.shouldCensor = shouldCensor;
-		this.filterAction = null;
-		this.filterPlayer = "";
-	}
-
-	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor,
-			LoggedAction filterAction, String filterPlayer) {
-
-		this.snitch = snitch;
-		this.offset = offset;
-		this.player = player;
-		this.plugin = plugin;
-		this.shouldCensor = shouldCensor;
-		this.filterAction = filterAction;
-		this.filterPlayer = filterPlayer;
-	}
-
 	public GetSnitchInfoPlayerTask(JukeAlert plugin, Group group, int offset, Player player) {
-
 		Location loc = new Location(Bukkit.getWorld("world"), 0, 0, 0);
 		this.snitch = new Snitch(loc, group, true, false);
 		this.offset = offset;
@@ -85,9 +61,33 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 		this.filterPlayer = "";
 	}
 
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor) {
+		this.snitch = snitch;
+		this.offset = offset;
+		this.player = player;
+		this.plugin = plugin;
+		this.shouldCensor = shouldCensor;
+		this.filterAction = null;
+		this.filterPlayer = "";
+	}
+
+	public GetSnitchInfoPlayerTask(JukeAlert plugin, Snitch snitch, int offset, Player player, boolean shouldCensor,
+			LoggedAction filterAction, String filterPlayer) {
+		this.snitch = snitch;
+		this.offset = offset;
+		this.player = player;
+		this.plugin = plugin;
+		this.shouldCensor = shouldCensor;
+		this.filterAction = filterAction;
+		this.filterPlayer = filterPlayer;
+	}
+
+	public List<String> getInfo() {
+		return info;
+	}
+
 	@Override
 	public void run() {
-
 		SendSnitchInfo sendSnitchInfo;
 		if (group == null) {
 			sendSnitchInfo = new SendSnitchInfo(plugin.getJaLogger().getSnitchInfo(this.snitch.getId(), (offset - 1) * 10,
@@ -97,10 +97,5 @@ public class GetSnitchInfoPlayerTask implements Runnable {
 				this.player, offset, this.snitch, false, true);
 		}
 		sendSnitchInfo.run();
-	}
-
-	public List<String> getInfo() {
-
-		return info;
 	}
 }

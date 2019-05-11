@@ -78,6 +78,146 @@ public class ConfigManager {
 		this.load();
 	}
 
+	public int getAlertRateLimit() {
+
+		return alertRateLimit;
+	}
+
+	public Boolean getAllowTriggeringLevers() {
+
+		return allowTriggeringLevers;
+	}
+
+	public boolean getBroadcastAllServers() {
+
+		return broadcastAllServers;
+	}
+
+	public String getDatabase() {
+
+		return database;
+	}
+
+	public int getDaysFromLastAdminVisitForLoggedSnitchCulling() {
+
+		return daysFromLastAdminVisitForLoggedSnitchCulling;
+	}
+
+	public int getDaysFromLastAdminVisitForNonLoggedSnitchCulling() {
+
+		return daysFromLastAdminVisitForNonLoggedSnitchCulling;
+	}
+
+	public int getDefaultCuboidSize() {
+
+		return defaultCuboidSize;
+	}
+
+	public String getHost() {
+
+		return host;
+	}
+
+	public boolean getInvisibilityEnabled() {
+
+		return enableInvisibility;
+	}
+
+	public int getLogsPerPage() {
+
+		return logsPerPage;
+	}
+
+	public Double getMaxAlertDistanceAll() {
+
+		return maxAlertDistanceAll;
+	}
+
+	public Double getMaxAlertDistanceNs() {
+
+		return maxAlertDistanceNs;
+	}
+
+	public int getMaxPlayerAlertCount() {
+
+		return maxPlayerAlertCount;
+	}
+
+	public int getMaxSnitchEntryCount() {
+
+		return maxEntryCount;
+	}
+
+	public int getMaxSnitchEntryLifetime() {
+
+		return maxEntryLifetimeDays;
+	}
+
+	public int getMaxSnitchLifetime() {
+
+		return maxSnitchLifetimeDays;
+	}
+
+	public int getMinSnitchEntryLifetime() {
+
+		return minEntryLifetimeDays;
+	}
+
+	public boolean getMultipleWorldSupport() {
+
+		return multipleWorldSupport;
+	}
+
+	public String getPassword() {
+
+		return password;
+	}
+
+	public int getPort() {
+
+		return port;
+	}
+
+	public String getPrefix() {
+
+		return prefix;
+	}
+
+	public boolean getSnitchCullingEnabled() {
+
+		return snitchCullingEnabled;
+	}
+
+	public boolean getSnitchEntryCullingEnabled() {
+
+		return snitchEntryCullingEnabled;
+	}
+
+	public boolean getTaxReinforcementPerAlert() {
+
+		return taxReinforcementPerAlert;
+	}
+
+	public boolean getToggleRestartCheckGroup() {
+
+		return toggleRestartCheckGroup;
+	}
+
+	public String getUsername() {
+
+		return username;
+	}
+
+	public boolean isDisplayOwnerOnBreak() {
+
+		return displayOwnerOnBreak;
+	}
+
+	public boolean isSoftDelete() {
+
+		return softDelete;
+	}
+
 	/**
 	 * Load configuration
 	 */
@@ -123,69 +263,9 @@ public class ConfigManager {
 		broadcastAllServers = config.getBoolean("mercury.broadcastallservers", false);
 	}
 
-	public String getUsername() {
-
-		return username;
-	}
-
-	public void setUsername(String username) {
-
-		this.username = username;
-	}
-
-	public String getHost() {
-
-		return host;
-	}
-
-	public void setHost(String host) {
-
-		this.host = host;
-	}
-
-	public String getPassword() {
-
-		return password;
-	}
-
-	public void setPassword(String password) {
-
-		this.password = password;
-	}
-
-	public String getDatabase() {
-
-		return database;
-	}
-
 	public void setDatabase(String database) {
 
 		this.database = database;
-	}
-
-	public int getPort() {
-
-		return port;
-	}
-
-	public void setPort(int port) {
-
-		this.port = port;
-	}
-
-	public String getPrefix() {
-
-		return prefix;
-	}
-
-	public void setPrefix(String prefix) {
-
-		this.prefix = prefix;
-	}
-
-	public int getDefaultCuboidSize() {
-
-		return defaultCuboidSize;
 	}
 
 	public void setDefaultCuboidSize(int defaultCuboidSize) {
@@ -193,24 +273,9 @@ public class ConfigManager {
 		this.defaultCuboidSize = defaultCuboidSize;
 	}
 
-	public int getLogsPerPage() {
+	public void setHost(String host) {
 
-		return logsPerPage;
-	}
-
-	public int getDaysFromLastAdminVisitForNonLoggedSnitchCulling() {
-
-		return daysFromLastAdminVisitForNonLoggedSnitchCulling;
-	}
-
-	public int getDaysFromLastAdminVisitForLoggedSnitchCulling() {
-
-		return daysFromLastAdminVisitForLoggedSnitchCulling;
-	}
-
-	public Boolean getAllowTriggeringLevers() {
-
-		return allowTriggeringLevers;
+		this.host = host;
 	}
 
 	public void setLogsPerPage(int logsPerPage) {
@@ -218,88 +283,23 @@ public class ConfigManager {
 		this.logsPerPage = logsPerPage;
 	}
 
-	public boolean getSnitchEntryCullingEnabled() {
+	public void setPassword(String password) {
 
-		return snitchEntryCullingEnabled;
+		this.password = password;
 	}
 
-	public int getMaxSnitchEntryCount() {
+	public void setPort(int port) {
 
-		return maxEntryCount;
+		this.port = port;
 	}
 
-	public int getMinSnitchEntryLifetime() {
+	public void setPrefix(String prefix) {
 
-		return minEntryLifetimeDays;
+		this.prefix = prefix;
 	}
 
-	public int getMaxSnitchEntryLifetime() {
+	public void setUsername(String username) {
 
-		return maxEntryLifetimeDays;
-	}
-
-	public boolean getSnitchCullingEnabled() {
-
-		return snitchCullingEnabled;
-	}
-
-	public int getMaxSnitchLifetime() {
-
-		return maxSnitchLifetimeDays;
-	}
-
-	public Double getMaxAlertDistanceAll() {
-
-		return maxAlertDistanceAll;
-	}
-
-	public Double getMaxAlertDistanceNs() {
-
-		return maxAlertDistanceNs;
-	}
-
-	public int getMaxPlayerAlertCount() {
-
-		return maxPlayerAlertCount;
-	}
-
-	public boolean getTaxReinforcementPerAlert() {
-
-		return taxReinforcementPerAlert;
-	}
-
-	public int getAlertRateLimit() {
-
-		return alertRateLimit;
-	}
-
-	public boolean getInvisibilityEnabled() {
-
-		return enableInvisibility;
-	}
-
-	public boolean isDisplayOwnerOnBreak() {
-
-		return displayOwnerOnBreak;
-	}
-
-	public boolean isSoftDelete() {
-
-		return softDelete;
-	}
-
-	public boolean getMultipleWorldSupport() {
-
-		return multipleWorldSupport;
-	}
-
-	public boolean getToggleRestartCheckGroup() {
-
-		return toggleRestartCheckGroup;
-	}
-
-	public boolean getBroadcastAllServers() {
-
-		return broadcastAllServers;
+		this.username = username;
 	}
 }

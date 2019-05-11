@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import java.util.List;
 import java.util.UUID;
@@ -8,12 +8,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
+
 import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.group.Group;
-
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
 
 public class GroupCommand extends PlayerCommand {
 

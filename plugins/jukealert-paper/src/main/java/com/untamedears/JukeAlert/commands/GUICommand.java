@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import java.util.Iterator;
 import java.util.LinkedList;

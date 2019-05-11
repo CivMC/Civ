@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import java.util.Arrays;
 import java.util.List;
@@ -8,10 +8,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.util.IgnoreList;
+
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class JaMuteCommand extends PlayerCommand {
 
@@ -37,43 +37,6 @@ public class JaMuteCommand extends PlayerCommand {
 			sender.sendMessage(ChatColor.RED + " You do not have the ability to ignore groups!");
 		}
 		return true;
-	}
-
-	private void toggleIgnore(CommandSender sender, String groupName) {
-
-		final Player player = (Player) sender;
-		final UUID accountId = player.getUniqueId();
-		JukeAlert plugin = JukeAlert.getInstance();
-
-		if (groupName.equals("*")) {
-			if (IgnoreList.toggleIgnoreAll(accountId)) {
-					player.sendMessage("Ignoring all groups!");
-			} else {
-					player.sendMessage("Stopped ignoring all groups!");
-			}
-			return;
-		}
-
-		if (plugin.getJaLogger().getMutedGroups(accountId) == null) {
-			// No groups - mute first group
-			plugin.getJaLogger().muteGroups(accountId, groupName);
-			player.sendMessage("Added group \"" + groupName + "\" to ignore list! \n "
-				+ "Use /jamute on this group again to unmute");
-			return;
-		}
-
-		List<String> groups = (Arrays.asList(plugin.getJaLogger().getMutedGroups(accountId).split("\\s+")));
-
-		if (groups.contains(groupName)) {
-			// Unmute the group if it's in their list
-			plugin.getJaLogger().removeIgnoredGroup(groupName,  accountId);
-			player.sendMessage("Removed group \"" + groupName + "\" from ignore list!");
-		} else {
-			// Add the group
-			plugin.getJaLogger().updateMutedGroups(accountId, groupName);
-			player.sendMessage("Added group \"" + groupName + "\" to ignore list! \n "
-				+ "Use /jamute on this group again to unmute");
-		}
 	}
 
 	private void sendIgnoreGroupList(CommandSender sender) {
@@ -115,5 +78,42 @@ public class JaMuteCommand extends PlayerCommand {
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 
 		return null;
+	}
+
+	private void toggleIgnore(CommandSender sender, String groupName) {
+
+		final Player player = (Player) sender;
+		final UUID accountId = player.getUniqueId();
+		JukeAlert plugin = JukeAlert.getInstance();
+
+		if (groupName.equals("*")) {
+			if (IgnoreList.toggleIgnoreAll(accountId)) {
+					player.sendMessage("Ignoring all groups!");
+			} else {
+					player.sendMessage("Stopped ignoring all groups!");
+			}
+			return;
+		}
+
+		if (plugin.getJaLogger().getMutedGroups(accountId) == null) {
+			// No groups - mute first group
+			plugin.getJaLogger().muteGroups(accountId, groupName);
+			player.sendMessage("Added group \"" + groupName + "\" to ignore list! \n "
+				+ "Use /jamute on this group again to unmute");
+			return;
+		}
+
+		List<String> groups = (Arrays.asList(plugin.getJaLogger().getMutedGroups(accountId).split("\\s+")));
+
+		if (groups.contains(groupName)) {
+			// Unmute the group if it's in their list
+			plugin.getJaLogger().removeIgnoredGroup(groupName,  accountId);
+			player.sendMessage("Removed group \"" + groupName + "\" from ignore list!");
+		} else {
+			// Add the group
+			plugin.getJaLogger().updateMutedGroups(accountId, groupName);
+			player.sendMessage("Added group \"" + groupName + "\" to ignore list! \n "
+				+ "Use /jamute on this group again to unmute");
+		}
 	}
 }

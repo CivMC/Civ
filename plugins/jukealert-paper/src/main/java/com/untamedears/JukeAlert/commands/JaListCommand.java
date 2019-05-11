@@ -1,9 +1,8 @@
-package com.untamedears.JukeAlert.command.commands;
+package com.untamedears.JukeAlert.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 
 import org.bukkit.Bukkit;
@@ -11,10 +10,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.tasks.GetSnitchListPlayerTask;
+
+import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 
 public class JaListCommand extends PlayerCommand {
 

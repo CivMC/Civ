@@ -41,6 +41,26 @@ public class SnitchAction {
 		this.material = material;
 	}
 
+	public LoggedAction getAction() {
+
+		return action;
+	}
+
+	public Date getDate() {
+
+		return date;
+	}
+
+	public String getInitiateUser() {
+
+		return initiateUser;
+	}
+
+	public Material getMaterial() {
+
+		return material;
+	}
+
 	public int getSnitchActionId() {
 
 		return snitchActionId;
@@ -49,21 +69,6 @@ public class SnitchAction {
 	public int getSnitchId() {
 
 		return snitchId;
-	}
-
-	public Date getDate() {
-
-		return date;
-	}
-
-	public LoggedAction getAction() {
-
-		return action;
-	}
-
-	public String getInitiateUser() {
-
-		return initiateUser;
 	}
 
 	public String getVictim() {
@@ -84,10 +89,5 @@ public class SnitchAction {
 	public int getZ() {
 
 		return z;
-	}
-
-	public Material getMaterial() {
-
-		return material;
 	}
 }

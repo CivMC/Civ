@@ -8,12 +8,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.JukeAlert.model.Snitch;
+
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-
-import com.untamedears.JukeAlert.model.Snitch;
 
 public class SnitchOverviewGUI {
 
@@ -26,16 +26,9 @@ public class SnitchOverviewGUI {
 		this.player = p;
 	}
 
-	public void showScreen() {
-
-		MultiPageView view = new MultiPageView(player, constructSnitchClickables(), "Nearby snitches", true);
-		view.setMenuSlot(SnitchLogGUI.constructExitClick(), 3);
-		view.showScreen();
-	}
-
 	private List<IClickable> constructSnitchClickables() {
 
-		List<IClickable> clicks = new LinkedList<IClickable>();
+		List<IClickable> clicks = new LinkedList<>();
 		for (final Snitch snitch : snitches) {
 			ItemStack is = new ItemStack(Material.JUKEBOX);
 			ISUtils.setName(is, ChatColor.GOLD + snitch.getName());
@@ -52,5 +45,12 @@ public class SnitchOverviewGUI {
 			});
 		}
 		return clicks;
+	}
+
+	public void showScreen() {
+
+		MultiPageView view = new MultiPageView(player, constructSnitchClickables(), "Nearby snitches", true);
+		view.setMenuSlot(SnitchLogGUI.constructExitClick(), 3);
+		view.showScreen();
 	}
 }

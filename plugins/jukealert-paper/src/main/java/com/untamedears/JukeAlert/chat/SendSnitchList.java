@@ -2,11 +2,10 @@ package com.untamedears.JukeAlert.chat;
 
 import java.util.List;
 
-import com.google.common.base.Strings;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.google.common.base.Strings;
 import com.untamedears.JukeAlert.JukeAlert;
 
 import net.md_5.bungee.api.chat.TextComponent;
@@ -29,15 +28,16 @@ public class SendSnitchList implements Runnable {
 		this.offset = offset;
 	}
 
+	@Override
 	public void run() {
 
 		if (info != null && !info.isEmpty()) {
-			double locationColWidth = (double) 21;
-			double cullColWidth = (double) 17;
-			double groupColWidth = (double) 20;
+			double locationColWidth = 21;
+			double cullColWidth = 17;
+			double groupColWidth = 20;
 			if (JukeAlert.getInstance().getConfigManager().getMultipleWorldSupport() == true) {
-				locationColWidth = (double) 31;
-				groupColWidth = (double) 15;
+				locationColWidth = 31;
+				groupColWidth = 15;
 			}
 			String topLine = " Snitch List ";
 			if (worldName != null && !worldName.isEmpty()) {
