@@ -4,26 +4,34 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
+
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
+import vg.civcraft.mc.civmodcore.ratelimiting.TokenBucket;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
+@Deprecated
 public abstract class PlayerCommand implements Command {
 
-	private String name = "";
-	private String description = "";
+	protected String name = "";
+	protected String description = "";
 	private String usage = "";
-	private String identifier = "";
-	private int min = 0;
-	private int max = 0;
-	private boolean senderMustBePlayer = false;
-	private boolean errorOnTooManyArgs = true;
-	private CommandSender sender;
-	private String[] args;
+	protected String identifier = "";
+	protected int min = 0;
+	protected int max = 0;
+	protected boolean senderMustBePlayer = false;
+	protected boolean errorOnTooManyArgs = true;
+	protected CommandSender sender;
+	protected String[] args;
+	protected RateLimiter rateLimiter;
+	protected RateLimiter tabCompletionRateLimiter;
 
 	public PlayerCommand(String name) {
 		this.name = name;
 	}
 
 	@Override
+	@Deprecated
 	public String getName() {
 		return name;
 	}
@@ -69,10 +77,12 @@ public abstract class PlayerCommand implements Command {
 	}
 
 	@Override
+	@Deprecated
 	public void setArgs(String[] args) {
 		this.args = args;
 	}
 
+	@Deprecated
 	public String[] getArgs() {
 		return args;
 	}
@@ -114,12 +124,30 @@ public abstract class PlayerCommand implements Command {
 		return flag;
 	}
 
-	public void setSenderMustBePlayer(boolean senderMustBeConsole) {
-		this.senderMustBePlayer = senderMustBeConsole;
+	public void setSenderMustBePlayer(boolean senderMustBePlayer) {
+		this.senderMustBePlayer = senderMustBePlayer;
 	}
 
 	public void setErrorOnTooManyArgs(boolean errorOnTooManyArgs) {
 		this.errorOnTooManyArgs = errorOnTooManyArgs;
+	}
+	
+	public void setRateLimitingBehavior(int limit, int refillAmount, int refillIntervallInSeconds) {
+		this.rateLimiter = RateLimiting.createRateLimiter("COMMAND_" + identifier, 
+				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
+	}
+	
+	public void setTabCompletionRateLimitingBehavior(int limit, int refillAmount, int refillIntervallInSeconds) {
+		this.tabCompletionRateLimiter = RateLimiting.createRateLimiter("COMMAND_" + identifier, 
+				limit, limit, refillAmount, ((long) refillIntervallInSeconds) * 1000);
+	}
+	
+	public RateLimiter getRateLimiter() {
+		return rateLimiter;
+	}
+	
+	public RateLimiter getTabCompletionRateLimiter() {
+		return tabCompletionRateLimiter;
 	}
 
 	public Player player() {

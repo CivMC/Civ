@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.7.0</version>
+	<version>1.7.2</version>
 
 	<name>CivModCore</name>
 	<url>https://github.com/DevotedMC/CivModCore/</url>
@@ -50,7 +51,6 @@
 					<createDependencyReducedPom>false</createDependencyReducedPom>
 					<artifactSet>
 						<includes>
-							<include>org.mcstats.bukkit:metrics</include>
 							<include>com.zaxxer:HikariCP</include>
 							<include>org.slf4j:slf4j-api</include>
 							<include>org.apache.logging.log4j:log4j-slf4j-impl</include>
@@ -89,6 +89,16 @@
 						<phase>prepare-package</phase>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>8</source>
+					<target>8</target>
+					<!-- Needed to compile, because of the annotation processor -->
+					<compilerArgument>-proc:none</compilerArgument>
+				</configuration>
 			</plugin>
 		</plugins>
 
