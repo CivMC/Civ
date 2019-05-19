@@ -101,7 +101,7 @@ public class BSExclusion {
     public void delete() {
         allExclussionsID.remove(this.eid);
         try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
-                PreparedStatement ps = connection.prepareStatement("DELETE * FROM bs_exclusion WHERE eid = ?");) {
+                PreparedStatement ps = connection.prepareStatement("DELETE FROM bs_exclusion WHERE eid = ?");) {
             ps.setLong(1, eid);
             ps.execute();
         } catch (SQLException se) {
