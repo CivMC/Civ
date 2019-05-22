@@ -68,6 +68,9 @@ public class BSExclusions {
     }
 
     public void remove(BSExclusion excl) {
+    	if (exclusionList == null) {
+            fill();
+        }
         exclusionList.remove(excl);
     }
 
