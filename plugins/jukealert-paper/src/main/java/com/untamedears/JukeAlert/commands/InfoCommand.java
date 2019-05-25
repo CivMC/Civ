@@ -2,183 +2,107 @@ package com.untamedears.JukeAlert.commands;
 
 import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
 
-import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.ListIterator;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.model.LoggedAction;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.tasks.GetSnitchInfoPlayerTask;
+import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
+import com.untamedears.JukeAlert.model.actions.PlayerAction;
+import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
+import com.untamedears.JukeAlert.util.Utility;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
+import net.md_5.bungee.api.chat.TextComponent;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
+import vg.civcraft.mc.namelayer.NameAPI;
 
-public class InfoCommand extends PlayerCommand {
+@CivCommand(id = "jainfo")
+public class InfoCommand extends StandaloneCommand {
 
-	public class History {
-
-		public int snitchId;
-
-		public int page;
-
-		public LoggedAction filterAction;
-
-		public String filterPlayer;
-
-		public History(int snitchId, int page, LoggedAction filterAction, String filterPlayer) {
-
-			this.snitchId = snitchId;
-			this.page = page;
-			this.filterAction = filterAction;
-			this.filterPlayer = filterPlayer;
-		}
-	}
-
-	private static Map<UUID, History> playerPage_ = new TreeMap<UUID, History>();
-
-	private static final String[] autocompleteCommands = {"next", "censor", "action=", "player="};
-
-	public InfoCommand() {
-
-		super("Info");
-		setDescription("Displays information from a Snitch");
-		setUsage("/jainfo [<page number> or 'next'] [censor] [action=<action type>] [player=<player name>]");
-		setArguments(0, 6); // Max args = 6 because the action might be split into two
-		setIdentifier("jainfo");
-	}
+	private static final String[] autocompleteCommands = { "next", "censor", "action=", "player=" };
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-
-		if (sender instanceof Player) {
-			final Player player = (Player) sender;
-			final UUID accountId = player.getUniqueId();
-			final Snitch snitch = findLookingAtOrClosestSnitch(player, PermissionType.getPermission("READ_SNITCHLOG"));
-			if (snitch == null) {
-				player.sendMessage(
+		Player player = (Player) sender;
+		Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getReadLogs());
+		if (snitch == null) {
+			player.sendMessage(
 					ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
+			return true;
+		}
+		int offset = 0;
+		String filterAction = null;
+		String filterPlayer = null;
+		if (args.length == 1) {
+			try {
+				offset = Integer.parseInt(args[0]);
+			} catch (NumberFormatException e) {
+				sender.sendMessage(ChatColor.RED + args[0] + " is not a number");
 				return true;
 			}
-			final int snitchId = snitch.getId();
-			int offset = 1;
-			LoggedAction filterAction = null;
-			String filterPlayer = "";
-			boolean censorFlag = false;
-			boolean nextFlag = false;
-
-			if (args.length > 0) {
-				// Reassemble any arguments that are enclosed in quotes and were split
-				List<String> fixedArgs = new ArrayList<String>();
-				Scanner scanner = new Scanner(String.join(" ", args));
-				scanner.useDelimiter("\\s(?=([^\"]*\"[^\"]*\")*[^\"]*$)");
-				while (scanner.hasNext()) {
-					fixedArgs.add(scanner.next());
-				}
-				scanner.close();
-
-				// Parse each argument
-				for (String arg : fixedArgs) {
-					arg = arg.toLowerCase().trim();
-					if (arg.equals("next")) {
-						nextFlag = true;
-						continue;
-					} else if (arg.equals("censor")) {
-						censorFlag = true;
-						continue;
-					} else if (arg.startsWith("action=")) {
-						if (arg.length() > 7) {
-							String action = arg.substring(7);
-							// Strip quotes
-							action = action.replaceAll("^[\"']|[\"']$", "");
-							try {
-								filterAction = LoggedAction.fromString(action);
-							}
-							catch (ParseException p) {
-								sender.sendMessage(ChatColor.RED + "Couldn't parse action type '" + action + "'");
-								return false;
-							}
-							continue;
-						}
-					} else if (arg.startsWith("player=")) {
-						if (arg.length() > 7) {
-							String playerName = arg.substring(7);
-
-							if (playerName.length() > 16) {
-								sender.sendMessage(ChatColor.RED + "Player names must be 16 characters or less");
-								return false;
-							}
-							if (!playerName.matches("\\w+")) {
-								sender.sendMessage(
-									ChatColor.RED + "Player names can only contain letters, numbers, and underscores");
-								return false;
-							}
-
-							filterPlayer = playerName;
-							continue;
-						}
-					}
-					else {
-						try {
-							offset = Integer.parseInt(arg);
-							continue;
-						} catch (NumberFormatException e) {
-							;
-						}
-					}
-
-					sender.sendMessage(ChatColor.RED + "Unrecognized argument: '" + arg + "'");
-					return false;
-				}
-
-				// If the 'next' argument was supplied,
-				//  get the next page number (provided that the filters are all the same as last time)
-				if (nextFlag && playerPage_.containsKey(accountId)) {
-					final History hist = playerPage_.get(accountId);
-					if (hist != null
-							&& hist.snitchId == snitchId
-							&& hist.filterAction == filterAction
-							&& hist.filterPlayer.equals(filterPlayer)) {
-						offset = hist.page + 1;
-					} else {
-						offset = 1;
-					}
-				}
-			}
-			if (offset < 1) {
-				offset = 1;
-			}
-			playerPage_.put(accountId, new History(snitchId, offset, filterAction, filterPlayer));
-			sendLog(sender, snitch, offset, censorFlag, filterAction, filterPlayer);
-			return true;
-		} else {
-			sender.sendMessage(ChatColor.RED + " You do not own any snitches nearby!");
-			return false;
 		}
+		sendSnitchLog(player, snitch, offset, 8, filterAction, filterPlayer);
+		return true;
 	}
 
-	private void sendLog(CommandSender sender, Snitch snitch, int offset, boolean shouldCensor,
-			LoggedAction filterAction, String filterPlayer) {
-
-		Player player = (Player) sender;
-		GetSnitchInfoPlayerTask task = new GetSnitchInfoPlayerTask(JukeAlert.getInstance(), snitch, offset, player,
-			shouldCensor, filterAction, filterPlayer);
-		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), task);
+	public void sendSnitchLog(Player player, Snitch snitch, int offset, int pageLength, String actionType,
+			String filterPlayerName) {
+		List<LoggedSnitchAction> logs = snitch.getLoggingDelegate().getFullLogs();
+		if (filterPlayerName != null) {
+			UUID filterUUID = NameAPI.getUUID(filterPlayerName);
+			if (filterUUID == null) {
+				player.sendMessage(ChatColor.RED + filterPlayerName + " is not a player");
+				return;
+			}
+			List<LoggedSnitchAction> logCopy = new LinkedList<>();
+			for (LoggedSnitchAction log : logs) {
+				if (!log.hasPlayer()) {
+					continue;
+				}
+				PlayerAction playerAc = (PlayerAction) log;
+				if (playerAc.getPlayer().equals(filterUUID)) {
+					logCopy.add(log);
+				}
+			}
+			logs = logCopy;
+		}
+		if (actionType != null) {
+			List<LoggedSnitchAction> logCopy = new LinkedList<>();
+			for (LoggedSnitchAction log : logs) {
+				if (log.getIdentifier().equals(actionType)) {
+					logCopy.add(log);
+				}
+			}
+			logs = logCopy;
+		}
+		int initialOffset = pageLength * offset;
+		if (initialOffset >= logs.size()) {
+			TextComponent reply = Utility.genTextComponent(snitch);
+			reply.addExtra(ChatColor.GOLD + " has only " + logs.size() + " logs fitting your criteria");
+			player.spigot().sendMessage(reply);
+			return;
+		}
+		int currentPageSize = Math.min(pageLength, logs.size() - initialOffset);
+		ListIterator<LoggedSnitchAction> iter = logs.listIterator(initialOffset);
+		int currentSlot = 0;
+		TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
+		reply.addExtra(Utility.genTextComponent(snitch));
+		player.spigot().sendMessage(reply);
+		while (currentSlot++ < currentPageSize) {
+			player.spigot().sendMessage(iter.next().getChatRepresentation());
+		}
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-
-		List<String> completedArgs = new ArrayList<String>();
+		List<String> completedArgs = new ArrayList<>();
 		if (args.length > 0) {
 			// Copy all of the arguments except the last one to the output
 			for (int i = 0; i < args.length - 2; i++) {
