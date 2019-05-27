@@ -1,11 +1,10 @@
-package com.untamedears.JukeAlert;
+package com.untamedears.JukeAlert.model;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-import com.untamedears.JukeAlert.model.LoggingDelegate;
-import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.log.LoggingDelegate;
 
 import vg.civcraft.mc.namelayer.group.Group;
 

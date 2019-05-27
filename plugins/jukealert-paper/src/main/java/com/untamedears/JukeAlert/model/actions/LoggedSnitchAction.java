@@ -6,6 +6,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 public abstract class LoggedSnitchAction {
 	
 	protected final long time;
+	private CacheState state;
 	
 	public LoggedSnitchAction(long time) {
 		this.time = time;
@@ -16,6 +17,14 @@ public abstract class LoggedSnitchAction {
 	 */
 	public long getTime() {
 		return time;
+	}
+	
+	public void setCacheState(CacheState state) {
+		this.state = state;
+	}
+	
+	public CacheState getCacheState() {
+		return state;
 	}
 	
 	/**

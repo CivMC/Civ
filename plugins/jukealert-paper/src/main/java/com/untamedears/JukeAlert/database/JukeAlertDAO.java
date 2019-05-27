@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.storage;
+package com.untamedears.JukeAlert.database;
 
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;

@@ -1,10 +1,12 @@
-package com.untamedears.JukeAlert;
+package com.untamedears.JukeAlert.manager;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.inventory.ItemStack;
+
+import com.untamedears.JukeAlert.model.SnitchConfiguration;
 
 public class SnitchConfigManager {
 	

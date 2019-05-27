@@ -15,6 +15,7 @@ public class JukeAlertPermissionHandler {
 	private static PermissionType clearLogs;
 	private static PermissionType readLogs;
 	private static PermissionType renameSnitch;
+	private static PermissionType receiveAlerts;
 
 	@SuppressWarnings("unchecked")
 	public static void setup() {
@@ -41,6 +42,7 @@ public class JukeAlertPermissionHandler {
 		clearLogs = PermissionType.getPermission("CLEAR_SNITCHLOG");
 		readLogs = PermissionType.getPermission("READ_SNITCHLOG");
 		renameSnitch = PermissionType.getPermission("RENAME_SNITCH");
+		receiveAlerts = PermissionType.getPermission("SNITCH_NOTIFICATIONS");
 	}
 	
 	public static PermissionType getRenameSnitch() {
@@ -61,6 +63,10 @@ public class JukeAlertPermissionHandler {
 	
 	public static PermissionType getReadLogs() {
 		return readLogs;
+	}
+	
+	public static PermissionType getSnitchAlerts() {
+		return receiveAlerts;
 	}
 
 }

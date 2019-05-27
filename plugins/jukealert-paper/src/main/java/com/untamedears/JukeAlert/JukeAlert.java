@@ -2,11 +2,12 @@ package com.untamedears.JukeAlert;
 
 import org.bukkit.plugin.PluginManager;
 
+import com.untamedears.JukeAlert.database.JukeAlertDAO;
 import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.LoggableActionListener;
 import com.untamedears.JukeAlert.listener.SnitchLifeCycleListener;
 import com.untamedears.JukeAlert.manager.GlobalSnitchManager;
-import com.untamedears.JukeAlert.storage.JukeAlertDAO;
+import com.untamedears.JukeAlert.manager.SnitchConfigManager;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;

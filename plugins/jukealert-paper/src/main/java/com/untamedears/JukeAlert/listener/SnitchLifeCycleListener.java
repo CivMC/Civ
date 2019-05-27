@@ -4,8 +4,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.SnitchConfiguration;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.SnitchConfiguration;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 

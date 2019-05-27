@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.field.FieldManager;
 import com.untamedears.JukeAlert.model.field.SingleCuboidRangeManager;
+import com.untamedears.JukeAlert.model.log.LoggingDelegate;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;

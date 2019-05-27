@@ -7,6 +7,8 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.JukeAlert.model.SnitchConfiguration;
+
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
