@@ -16,6 +16,8 @@ commands:
         permission: kira.public
     syncdiscordchannel:
         permission: kira.public
+    kirareload:
+        permission: kira.op
 permissions:
     kira.public:
         default: true

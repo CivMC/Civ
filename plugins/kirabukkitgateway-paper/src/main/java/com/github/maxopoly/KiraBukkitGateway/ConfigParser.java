@@ -1,16 +1,26 @@
 package com.github.maxopoly.KiraBukkitGateway;
 
+import java.util.LinkedList;
+import java.util.List;
+import java.util.logging.Logger;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
+
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import com.github.maxopoly.KiraBukkitGateway.log.KiraLogAppender;
 import com.rabbitmq.client.ConnectionFactory;
 
 public class ConfigParser {
 
 	private KiraBukkitGatewayPlugin plugin;
 	private FileConfiguration config;
+	private Logger logger;
 
 	public ConfigParser(KiraBukkitGatewayPlugin plugin) {
 		this.plugin = plugin;
+		this.logger = plugin.getLogger();
 		reload();
 	}
 
@@ -47,6 +57,40 @@ public class ConfigParser {
 
 	public String getOutgoingQueueName() {
 		return config.getString("rabbitmq.outgoingQueue");
+	}
+	
+	public List<KiraLogAppender> getConsoleProcessors() {
+		List <KiraLogAppender> result = new LinkedList<>();
+		ConfigurationSection section = config.getConfigurationSection("console");
+		if (section == null) {
+			return result;
+		}
+		for(String key : section.getKeys(false)) {
+			if (!section.isConfigurationSection(key)) {
+				logger.warning("Ignoring invalid entry " + key + " at " + section.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = section.getConfigurationSection(key);
+			if (!current.isString("regex")) {
+				logger.warning("Console processor " + key  + " has no regex and was ignored");
+				continue;
+			}
+			String regex = current.getString("regex");
+			try {
+				Pattern.compile(regex);
+			}
+			catch (PatternSyntaxException e) {
+				logger.warning("Regex at " + key  + " is missformatted and was ignored");
+				continue;
+			}
+			if (!current.isString("key")) {
+				logger.warning("Console processor " + key  + " has no key and was ignored");
+				continue;
+			}
+			String sectionKey = current.getString("key");
+			result.add(new KiraLogAppender(sectionKey, regex));
+		}
+		return result;
 	}
 
 }
