@@ -7,6 +7,7 @@ import org.apache.logging.log4j.core.appender.AbstractAppender;
 import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 
 public class KiraLogAppender extends AbstractAppender {
 
@@ -23,7 +24,8 @@ public class KiraLogAppender extends AbstractAppender {
 	public void append(LogEvent event) {
 		String msg = event.getMessage().getFormattedMessage();
 		if (pattern.matcher(msg).matches()) {
-			KiraBukkitGatewayPlugin.getInstance().getRabbit().sendConsoleRelay(msg, key);
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().sendConsoleRelay(
+					KiraUtil.cleanUp(msg), key);
 		}
 	}
 
