@@ -53,6 +53,13 @@ public class RabbitCommands {
 		sendInternal("requestsession", json);
 	}
 
+	public void playerLoginFirstTime(String player) {
+		nonNullArgs(player);
+		JsonObject json = new JsonObject();
+		json.addProperty("player", player);
+		sendInternal("newPlayer", json);
+	}
+
 	public void playerLoginOut(String player, String action) {
 		nonNullArgs(player, action);
 		JsonObject json = new JsonObject();
