@@ -57,7 +57,7 @@ public class RabbitCommands {
 		nonNullArgs(player);
 		JsonObject json = new JsonObject();
 		json.addProperty("player", player);
-		sendInternal("newPlayer", json);
+		sendInternal("newplayer", json);
 	}
 
 	public void playerLoginOut(String player, String action) {
