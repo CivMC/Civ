@@ -20,10 +20,7 @@ public class SkynetListener implements Listener {
 
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
 	public void leave(PlayerQuitEvent e) {
-		
 		KiraBukkitGatewayPlugin.getInstance().getRabbit().playerLoginOut(e.getPlayer().getName(), "LOGOUT");
 	}
-
-
 
 }
