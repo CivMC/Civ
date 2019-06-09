@@ -6,7 +6,7 @@
 	<groupId>com.github.maxopoly</groupId>
 	<artifactId>KiraBukkitGateway</artifactId>
 	<packaging>jar</packaging>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>KiraBukkitGateway</name>
 	<url>https://github.com/maxopoly/KiraBukkitGateway</url>
 
