@@ -9,24 +9,24 @@ import org.bukkit.event.block.BlockBreakEvent;
 public class RealisticBiomesBlockBreakEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
 	
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+	
 	private BlockBreakEvent wrapped;
 	
 	public RealisticBiomesBlockBreakEvent(Block theBlock, Player player) {
 		super(false);
 		wrapped = new BlockBreakEvent(theBlock, player);
 	}
+
+	public BlockBreakEvent getEvent() {
+		return wrapped;
+	}
 	
 	@Override
 	public HandlerList getHandlers() {
 		return RealisticBiomesBlockBreakEvent.handlers;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
-	}
-	
-	public BlockBreakEvent getEvent() {
-		return wrapped;
 	}
 
 }
