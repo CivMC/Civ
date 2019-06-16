@@ -5,13 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.PluginManager;
 import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.listener.DectorRailActivateListener;
-import sh.okx.railswitch.listener.DetectorRailUseListener;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class RailSwitch extends ACivMod {
   private boolean timings;
@@ -28,13 +22,6 @@ public class RailSwitch extends ACivMod {
     }
 
     PluginManager pm = getServer().getPluginManager();
-    if (pm.isPluginEnabled("NameLayer")) {
-      List<GroupManager.PlayerType> modAndAbove = Arrays.asList(
-          GroupManager.PlayerType.MODS,
-          GroupManager.PlayerType.ADMINS,
-          GroupManager.PlayerType.OWNER);
-      PermissionType.registerPermission("CREATE_RAIL_SWITCH", modAndAbove, "Create a rail switch by right-clicking a detector rail");
-    }
 
     pm.registerEvents(new DectorRailActivateListener(this), this);
     //pm.registerEvents(new DetectorRailUseListener(this), this);
