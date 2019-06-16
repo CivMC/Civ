@@ -14,3 +14,7 @@
 1. Type `/dest <destination>`
 2. Go AFK
 3. Arrive
+
+### Example Video
+
+[![RailSwitch Demo Video](https://img.youtube.com/vi/GKku2fcB-wY/0.jpg)](https://www.youtube.com/watch?v=GKku2fcB-wY)
