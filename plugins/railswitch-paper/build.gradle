@@ -1,11 +1,16 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '5.0.0'
 }
 
 group 'sh.okx'
-version '1.0-SNAPSHOT'
+version '1.1'
 
 sourceCompatibility = 1.8
+
+shadowJar {
+    classifier = null
+}
 
 repositories {
     mavenCentral()
@@ -19,8 +24,9 @@ repositories {
 
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
-    compile 'vg.civcraft.mc.citadel:Citadel:3.9.0'
-    compile 'vg.civcraft.mc.civmodcore:CivModCore:1.6.1'
-    compile 'vg.civcraft.mc.namelayer:NameLayer:2.11.0'
-    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+    shadow 'vg.civcraft.mc.citadel:Citadel:3.9.0'
+    shadow 'vg.civcraft.mc.civmodcore:CivModCore:1.6.1'
+    shadow 'vg.civcraft.mc.namelayer:NameLayer:2.11.0'
+    shadow 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT'
+    compile 'com.zaxxer:HikariCP:3.3.1'
 }

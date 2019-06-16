@@ -1,18 +1,22 @@
 package sh.okx.railswitch.database;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import org.bukkit.entity.Player;
-import vg.civcraft.mc.civmodcore.dao.ConnectionPool;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Optional;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class RailSwitchDatabase {
-  //private String switchTable;
-  private String destTable;
+  private static final String DESTINATION_TABLE = "rsw_dest";
 
   private ConnectionPool pool;
   private Logger log;
@@ -20,11 +24,30 @@ public class RailSwitchDatabase {
   private String setPlayerDestination;
   private String getPlayerDestination;
 
-  public RailSwitchDatabase(String host, int port, String db, String user, String password, String prefix, Logger logger) {
-    log = logger;
-    pool = new ConnectionPool(logger, user, password, host, port, db, 10, 1000, 600000, 7200000);
+  private final LoadingCache<Player, Optional<String>> destinations = CacheBuilder.newBuilder()
+      .expireAfterAccess(10, TimeUnit.MINUTES)
+      .maximumSize(1000)
+      .build(new CacheLoader<Player, Optional<String>>() {
+        @Override
+        public Optional<String> load(Player key) throws Exception {
+          try (Connection connection = pool.getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(getPlayerDestination);
+            statement.setString(1, key.getUniqueId().toString());
 
-    destTable = prefix + "dest";
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+              return Optional.of(resultSet.getString("dest"));
+            } else {
+              return Optional.empty();
+            }
+          }
+        }
+      });
+
+  public RailSwitchDatabase(ConnectionPool pool, Logger logger) {
+    log = logger;
+    this.pool = pool;
+
     createTable();
     loadStatements();
   }
@@ -32,7 +55,7 @@ public class RailSwitchDatabase {
   private void createTable() {
     try (Connection connection = pool.getConnection()) {
       connection.createStatement().executeUpdate(
-          "CREATE TABLE IF NOT EXISTS `" + destTable + "` (" +
+          "CREATE TABLE IF NOT EXISTS `" + DESTINATION_TABLE + "` (" +
               "`uuid` VARCHAR(36) NOT NULL," +
               "`dest` VARCHAR(40) NOT NULL," +
               "PRIMARY KEY (`uuid`))");
@@ -44,13 +67,14 @@ public class RailSwitchDatabase {
   private void loadStatements() {
     setPlayerDestination = String.format(
         "REPLACE INTO `%1$s` VALUES (?, ?)",
-        destTable);
+        DESTINATION_TABLE);
     getPlayerDestination = String.format(
         "SELECT `dest` FROM `%1$s` WHERE `uuid`=?",
-        destTable);
+        DESTINATION_TABLE);
   }
 
   public void setPlayerDestination(Player player, String destination) {
+    destinations.put(player, Optional.of(destination));
     try (Connection connection = pool.getConnection()) {
       PreparedStatement statement = connection.prepareStatement(setPlayerDestination);
       statement.setString(1, player.getUniqueId().toString());
@@ -63,16 +87,9 @@ public class RailSwitchDatabase {
   }
 
   public String getPlayerDestination(Player player) {
-    try (Connection connection = pool.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement(getPlayerDestination);
-      statement.setString(1, player.getUniqueId().toString());
-
-      ResultSet resultSet = statement.executeQuery();
-      if (!resultSet.next()) {
-        return null;
-      }
-      return resultSet.getString("dest");
-    } catch (SQLException e) {
+    try {
+      return destinations.get(player).orElse(null);
+    } catch (ExecutionException e) {
       log.log(Level.SEVERE, "Could not get destination", e);
       return null;
     }
