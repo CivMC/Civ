@@ -25,7 +25,7 @@ public class RailSwitchDatabase {
   private String getPlayerDestination;
 
   private final LoadingCache<Player, Optional<String>> destinations = CacheBuilder.newBuilder()
-      .expireAfterAccess(10, TimeUnit.MINUTES)
+      .expireAfterAccess(10, TimeUnit.HOURS)
       .maximumSize(1000)
       .build(new CacheLoader<Player, Optional<String>>() {
         @Override
