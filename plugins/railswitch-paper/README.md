@@ -1,1 +1,16 @@
-RailSwitch
+# RailSwitch
+
+## How to use
+
+### Setup
+
+1. Place a sign in the block above a detector rail.
+2. The first line must be `[destination]` (case insentitive)
+3. The second, third and fourth lines can be a destination name
+4. When a player passes over the detector rail, it will only activate and emit redstone if a player set their destination as any of the three on the sign.
+
+### Using
+
+1. Type `/dest <destination>`
+2. Go AFK
+3. Arrive
