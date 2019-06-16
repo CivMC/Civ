@@ -1,0 +1,26 @@
+plugins {
+    id 'java'
+}
+
+group 'sh.okx'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://hub.spigotmc.org/nexus/content/groups/public/'
+    }
+    maven {
+        url 'http://build.devotedmc.com/plugin/repository/everything/'
+    }
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile 'vg.civcraft.mc.citadel:Citadel:3.9.0'
+    compile 'vg.civcraft.mc.civmodcore:CivModCore:1.6.1'
+    compile 'vg.civcraft.mc.namelayer:NameLayer:2.11.0'
+    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+}

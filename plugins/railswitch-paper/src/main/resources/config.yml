@@ -1,0 +1,9 @@
+mysql:
+  username: ''
+  host: localhost
+  password: ''
+  database: minecraft
+  port: 3306
+  prefix: ''
+
+timings: false

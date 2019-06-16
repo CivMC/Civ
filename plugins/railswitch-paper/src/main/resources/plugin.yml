@@ -1,0 +1,12 @@
+name: RailSwitch
+version: 1.0
+main: sh.okx.railswitch.RailSwitch
+author: Okx
+description: Easily make rail switches for automated destination selection
+depend: [CivModCore]
+softdepend: [Citadel, NameLayer]
+commands:
+  setdestination:
+    usage: /<command> <destination>
+    description: Set your rail destination
+    aliases: [dest, destination, switch, setswitch, setsw]
