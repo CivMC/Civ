@@ -34,12 +34,15 @@ public class ConsoleCommandHandler extends AbstractRequestHandler {
 			return;
 		}
 		PseudoConsoleSender console = new PseudoConsoleSender(sender, Bukkit.getConsoleSender());
-		Bukkit.getServer().dispatchCommand(console, command);
-		StringBuilder sb = new StringBuilder();
-		for(String s : console.getRepliesAndFinish()) {
-			sb.append(KiraUtil.cleanUp(s));
-			sb.append('\n');
-		}
-		output.addProperty("replymsg", sb.toString());
+		output.addProperty("replymsg", "Running " + command);
+		Bukkit.getScheduler().runTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
+			Bukkit.getServer().dispatchCommand(console, command);
+			StringBuilder sb = new StringBuilder();
+			for (String s : console.getRepliesAndFinish()) {
+				sb.append(KiraUtil.cleanUp(s));
+				sb.append('\n');
+			}
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender, sb.toString());
+		});
 	}
 }

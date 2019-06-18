@@ -26,13 +26,13 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
 		this.actualUser = actualUser;
 	}
 	
-	public List<String> getRepliesAndFinish() {
+	public synchronized List<String> getRepliesAndFinish() {
 		List<String> result = replies;
 		replies = null;
 		return result;
 	}
 	
-	private void handleReply(String input) {
+	private synchronized void handleReply(String input) {
 		if (replies != null) {
 			replies.add(input);
 			return;
