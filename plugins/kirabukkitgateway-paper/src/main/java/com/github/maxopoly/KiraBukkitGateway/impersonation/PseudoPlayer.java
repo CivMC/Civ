@@ -72,6 +72,7 @@ public class PseudoPlayer extends CraftPlayer {
 	private OfflinePlayer offlinePlayer;
 	private List<String> replies;
 	private long discordChannelId;
+	private PseudoSpigotPlayer spigotPlayer;
 
 	public PseudoPlayer(UUID uuid, long channelId) {
 		super((CraftServer) Bukkit.getServer(), PseudoPlayerIdentity.generate(uuid, ""));
@@ -85,9 +86,10 @@ public class PseudoPlayer extends CraftPlayer {
 		name = offlinePlayer.getName();
 		this.discordChannelId = channelId;
 		this.uuid = uuid;
+		this.spigotPlayer = new PseudoSpigotPlayer(this);
 		replies = new LinkedList<>();
 	}
-	
+
 	public synchronized List<String> collectReplies() {
 		List<String> replyCopy = replies;
 		replies = null;
@@ -757,8 +759,7 @@ public class PseudoPlayer extends CraftPlayer {
 	public synchronized void sendMessage(String msg) {
 		if (replies == null) {
 			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(uuid, msg, discordChannelId);
-		}
-		else {
+		} else {
 			replies.add(msg);
 		}
 	}
@@ -766,7 +767,7 @@ public class PseudoPlayer extends CraftPlayer {
 	@Override
 	public void sendMessage(String[] arg0) {
 		StringBuilder sb = new StringBuilder();
-		Arrays.stream(arg0).forEach(s -> sb.append(s+'\n'));
+		Arrays.stream(arg0).forEach(s -> sb.append(s + '\n'));
 		sendMessage(sb.toString());
 	}
 
@@ -1571,10 +1572,11 @@ public class PseudoPlayer extends CraftPlayer {
 			double arg6, double arg7, double arg8, T arg9) {
 		throw new InvalidCommandAttemptException();
 	}
-	/*
-	 * @Override public Spigot spigot() { throw new
-	 * InvalidCommandAttemptException(); }
-	 */ // TODO
+
+	@Override
+	public Player.Spigot spigot() {
+		return spigotPlayer;
+	}
 
 	@Override
 	public void stopSound(Sound arg0) {
