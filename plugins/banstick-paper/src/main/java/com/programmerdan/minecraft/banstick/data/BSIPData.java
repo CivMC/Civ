@@ -330,7 +330,7 @@ public class BSIPData {
 	 * @return a list; empty if nothing found.
 	 */
 	public static List<BSIPData> allByIP(BSIP ip) {
-		List<BSIPData> returns = new ArrayList<BSIPData>();
+		List<BSIPData> returns = new ArrayList<>();
 		try {
 			if (ip == null) {
 				BanStick.getPlugin().warning("Weird failure, allByIP with null IP");

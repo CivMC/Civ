@@ -325,6 +325,12 @@ public class BanStickDatabaseHandler {
                 + "second_pid BIGINT NOT NULL REFERENCES bs_player(pid),"
                 + " INDEX bs_exclusion_pid (first_pid, second_pid)"
 		        + ");");
+		data.registerMigration(2,  false, "CREATE TABLE IF NOT EXISTS bs_banned_registrars ("
+		        + "rid BIGINT AUTO_INCREMENT PRIMARY KEY,"
+	            + "create_time TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+                + "registered_as text unique,"
+                + " INDEX bs_banned_registrars_name (registered_as)"
+		        + ");");
 
 	}
 

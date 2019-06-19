@@ -87,6 +87,10 @@ commands:
      SHARED - Allows new bans on this player due to Share connection ban matches
    /<command> [name/uuid] [name/uuid]
      Immediately unpardons all shares between these two players.
+ banprovider:
+  description: Bans the entire provider of the last connection used by a player based on what its registered as
+  permission: banstick.banprovider
+  usage: banprovider <playerName>
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs
@@ -110,6 +114,9 @@ permissions:
   default: op
  banstick.lovetap:
   description: Basic info on a user
+  default: op
+ banstick.banprovider:
+  description: Allows banning providers
   default: op
  banstick.forgive:
   description: Allows delivery of mercy

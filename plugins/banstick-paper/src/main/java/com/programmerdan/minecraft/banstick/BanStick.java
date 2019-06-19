@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.banstick;
 
 import com.programmerdan.minecraft.banstick.data.BSLog;
+import com.programmerdan.minecraft.banstick.data.BSRegistrars;
 import com.programmerdan.minecraft.banstick.handler.BanStickCommandHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickEventHandler;
@@ -24,6 +25,7 @@ public class BanStick extends ACivMod {
 	private BanStickScrapeHandler scrapeHandler;
 	private BanStickImportHandler importHandler;
 	private BSLog logHandler;
+	private BSRegistrars bannedRegistrars;
 
 	private boolean slaveMode = false;
 
@@ -51,6 +53,7 @@ public class BanStick extends ACivMod {
 		registerScrapeHandler();
 		registerImportHandler();
 		registerLogHandler();
+		registerRegistrarHandler();
 	}
 
 	@Override
@@ -171,6 +174,19 @@ public class BanStick extends ACivMod {
 		} catch (Exception e) {
 			this.severe("Failed to set up ban log handler", e);
 		}
+	}
+	
+	private void registerRegistrarHandler() {
+		if (!this.isEnabled()) return;
+		try {
+			this.bannedRegistrars = new BSRegistrars();
+		} catch (Exception e) {
+			this.severe("Failed to set up registrar ban handler", e);
+		}
+	}
+	
+	public BSRegistrars getRegistrarHandler() {
+		return bannedRegistrars;
 	}
 
 	public BSLog getLogHandler() {

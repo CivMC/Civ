@@ -1,6 +1,7 @@
 package com.programmerdan.minecraft.banstick.handler;
 
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
@@ -320,6 +321,14 @@ public class BanStickEventHandler implements Listener {
 							List<BSIPData> proxyChecks = BSIPData.allByIP(bsPlayer.getLatestSession().getIP());
 							if (proxyChecks != null) {
 								for (BSIPData proxyCheck : proxyChecks) {
+									//check if entire provider is banned
+									if (BanStick.getPlugin().getRegistrarHandler().isBanned(proxyCheck)) {
+										BanHandler.doUUIDBan(player.getUniqueId(), true);
+										BanStick.getPlugin().info("Banning " + player.getName() + " for "
+												+ "blacklisted provider " + proxyCheck.getRegisteredAs());
+										doKickWithCheckup(player.getUniqueId(), bsPlayer.getBan());
+										return;
+									}
 									BanStick.getPlugin().debug("Check for bans on Proxy: {0}", proxyCheck.getId());
 									List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
 									for (int i = proxyBans.size() - 1 ; i >= 0; i-- ) {
@@ -403,8 +412,6 @@ public class BanStickEventHandler implements Listener {
 				}
 			}
 
-
-			return;
 		}
 
 	}

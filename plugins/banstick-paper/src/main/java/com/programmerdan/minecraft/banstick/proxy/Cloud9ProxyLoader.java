@@ -65,7 +65,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 				}
 				if (errors > 10) break;
 				try {
-					ArrayList<IPAddress> cidrFromRange = new ArrayList<IPAddress>();
+					ArrayList<IPAddress> cidrFromRange = new ArrayList<>();
 					String[] fields = line.split(",");
 					IPAddressString lowbound = new IPAddressString(fields[0]);
 					IPAddressString highbound = new IPAddressString(fields[1]);
@@ -127,7 +127,7 @@ public final class Cloud9ProxyLoader extends ProxyLoader {
 							boolean wasmatch = false;
 	
 							List<BSBan> ban = BSBan.byProxy(data, true);
-							if (!(ban == null || ban.size() == 0)) {
+							if (!(ban == null || ban.isEmpty())) {
 								// look for match; if unexpired, extend.
 								for (int i = ban.size() - 1 ; i >= 0; i-- ) {
 									BSBan pickOne = ban.get(i);

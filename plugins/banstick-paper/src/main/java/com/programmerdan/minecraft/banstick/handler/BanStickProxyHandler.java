@@ -27,8 +27,8 @@ public class BanStickProxyHandler {
 			return;
 		}
 		
-		loaders = new ArrayList<ProxyLoader>();
-		loaderTasks = new ArrayList<BukkitTask>();
+		loaders = new ArrayList<>();
+		loaderTasks = new ArrayList<>();
 		
 		
 		// now load all configured proxy list loaders.

@@ -41,8 +41,8 @@ tor:
 
 	private boolean banNewNodes = false;
 	
-	private List<TorList> torLists = new ArrayList<TorList>();
-	private List<BukkitTask> torListUpdaters = new ArrayList<BukkitTask>();
+	private List<TorList> torLists = new ArrayList<>();
+	private List<BukkitTask> torListUpdaters = new ArrayList<>();
 
 	public BanStickTorUpdater(FileConfiguration config) {
 		if (!configureTor(config.getConfigurationSection("tor"))) {
