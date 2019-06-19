@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway;
+package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,16 +14,20 @@ import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+
 public class PseudoConsoleSender implements ConsoleCommandSender {
 
 	private ConsoleCommandSender actualSender;
 	private List<String> replies;
 	private UUID actualUser;
+	private long discordChannelId;
 
-	public PseudoConsoleSender(UUID actualUser, ConsoleCommandSender actualSender) {
+	public PseudoConsoleSender(UUID actualUser, ConsoleCommandSender actualSender, long discordChannelId) {
 		this.actualSender = actualSender;
 		replies = new LinkedList<>();
 		this.actualUser = actualUser;
+		this.discordChannelId = discordChannelId;
 	}
 	
 	public synchronized List<String> getRepliesAndFinish() {
@@ -37,7 +41,7 @@ public class PseudoConsoleSender implements ConsoleCommandSender {
 			replies.add(input);
 			return;
 		}
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(actualUser, input);
+		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(actualUser, input, discordChannelId);
 	}
 
 	@Override

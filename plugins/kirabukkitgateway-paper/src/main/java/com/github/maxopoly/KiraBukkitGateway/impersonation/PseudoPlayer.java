@@ -1,8 +1,9 @@
-package com.github.maxopoly.KiraBukkitGateway;
+package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -62,13 +63,17 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
+
 public class PseudoPlayer extends CraftPlayer {
 
 	private String name;
 	private UUID uuid;
 	private OfflinePlayer offlinePlayer;
+	private List<String> replies;
+	private long discordChannelId;
 
-	public PseudoPlayer(UUID uuid) {
+	public PseudoPlayer(UUID uuid, long channelId) {
 		super((CraftServer) Bukkit.getServer(), PseudoPlayerIdentity.generate(uuid, ""));
 		if (uuid == null) {
 			throw new IllegalArgumentException("No null uuid allowed");
@@ -78,7 +83,15 @@ public class PseudoPlayer extends CraftPlayer {
 			throw new IllegalArgumentException("No such player known: " + uuid.toString());
 		}
 		name = offlinePlayer.getName();
+		this.discordChannelId = channelId;
 		this.uuid = uuid;
+		replies = new LinkedList<>();
+	}
+	
+	public synchronized List<String> collectReplies() {
+		List<String> replyCopy = replies;
+		replies = null;
+		return replyCopy;
 	}
 
 	public OfflinePlayer getOfflinePlayer() {
@@ -741,14 +754,19 @@ public class PseudoPlayer extends CraftPlayer {
 	}
 
 	@Override
-	public void sendMessage(String msg) {
-		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(uuid, msg);
+	public synchronized void sendMessage(String msg) {
+		if (replies == null) {
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(uuid, msg, discordChannelId);
+		}
+		else {
+			replies.add(msg);
+		}
 	}
 
 	@Override
 	public void sendMessage(String[] arg0) {
 		StringBuilder sb = new StringBuilder();
-		Arrays.stream(arg0).forEach(s -> sb.append(s));
+		Arrays.stream(arg0).forEach(s -> sb.append(s+'\n'));
 		sendMessage(sb.toString());
 	}
 
@@ -779,12 +797,12 @@ public class PseudoPlayer extends CraftPlayer {
 
 	@Override
 	public boolean hasPermission(String arg0) {
-		return KiraBukkitGatewayPlugin.getInstance().getVault().hasPermission(this, arg0);
+		return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0);
 	}
 
 	@Override
 	public boolean hasPermission(Permission arg0) {
-		return KiraBukkitGatewayPlugin.getInstance().getVault().hasPermission(this, arg0.getName());
+		return KiraBukkitGatewayPlugin.getInstance().getPermsWrapper().hasPermission(uuid, arg0.getName());
 	}
 
 	@Override

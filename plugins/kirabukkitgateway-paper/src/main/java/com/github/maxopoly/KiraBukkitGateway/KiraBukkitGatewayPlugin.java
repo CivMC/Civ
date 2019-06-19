@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 
 import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
 import com.github.maxopoly.KiraBukkitGateway.command.KiraCommandHandler;
+import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.SkynetListener;
@@ -24,10 +25,10 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 
 	private static KiraBukkitGatewayPlugin instance;
 
-	private VaultAPI vault;
 	private RabbitHandler rabbit;
 	private RabbitCommands rabbitCommands;
 	private AuthcodeManager authcodeManager;
+	private KiraLuckPermsWrapper permsWrapper;
 	private ConfigParser config;
 	private List <KiraLogAppender> logAppenders;
 
@@ -37,9 +38,9 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		super.onEnable();
 		instance = this;
 		authcodeManager = new AuthcodeManager(12);
-		vault = new VaultAPI();
 		reload();
 		setupPermissions();
+		this.permsWrapper = new KiraLuckPermsWrapper();
 		getServer().getPluginManager().registerEvents(new CivChatListener(), this);
 		getServer().getPluginManager().registerEvents(new JukeAlertListener(), this);
 		getServer().getPluginManager().registerEvents(new SkynetListener(), this);
@@ -85,10 +86,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 		rabbit.shutdown();
 	}
 
-	public VaultAPI getVault() {
-		return vault;
-	}
-
 	public static KiraBukkitGatewayPlugin getInstance() {
 		return instance;
 	}
@@ -99,6 +96,10 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 
 	public RabbitCommands getRabbit() {
 		return rabbitCommands;
+	}
+	
+	public KiraLuckPermsWrapper getPermsWrapper()  {
+		return permsWrapper;
 	}
 
 	@Override

@@ -2,7 +2,7 @@ name: ${project.name}
 main: com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin
 author: Maxopoly
 version: ${project.version}
-depend: [Vault, CivModCore, NameLayer, CivChat2]
+depend: [LuckPerms, CivModCore, NameLayer, CivChat2]
 softdepend: []
 commands:
 permissions:

@@ -28,12 +28,12 @@ public class RequestRelayCreationHandler extends RabbitInput {
 		long guildID = input.get("guildID").getAsLong();
 		if (group == null) {
 			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
-					"The group " + groupName + " does not exist");
+					"The group " + groupName + " does not exist", -1);
 			return;
 		}
 		if (!NameAPI.getGroupManager().hasAccess(group, sender, PermissionType.getPermission("KIRA_MANAGE_CHANNEL"))) {
 			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
-					"You don't have the required permission KIRA_MANAGE_CHANNEL for the group " + group.getName());
+					"You don't have the required permission KIRA_MANAGE_CHANNEL for the group " + group.getName(), -1);
 			return;
 		}
 		GroupManager gm = NameAPI.getGroupManager();
@@ -43,6 +43,6 @@ public class RequestRelayCreationHandler extends RabbitInput {
 		KiraBukkitGatewayPlugin.getInstance().getRabbit().createGroupChatChannel(group.getName(), members, sender,
 				guildID, channelID);
 		KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(sender,
-				"Confirmed permissions, proceeding with channel setup...");
+				"Confirmed permissions, proceeding with channel setup...", -1);
 	}
 }

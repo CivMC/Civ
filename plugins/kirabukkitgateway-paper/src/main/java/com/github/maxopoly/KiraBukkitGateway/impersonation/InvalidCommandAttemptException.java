@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway;
+package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 public class InvalidCommandAttemptException extends RuntimeException {
 

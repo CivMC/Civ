@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.GroupChatMessageHandler;
-import com.github.maxopoly.KiraBukkitGateway.rabbit.in.IngameCommandHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.RequestRelayCreationHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.RequestSessionHandler;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.in.SendMessageHandler;
@@ -19,13 +18,12 @@ public class RabbitInputHandler {
 	private Logger logger;
 
 	public RabbitInputHandler(Logger logger) {
-			this.commands = new HashMap<String, RabbitInput>();
+			this.commands = new HashMap<>();
 			this.logger = logger;
 			registerCommands();
 		}
 
 	private void registerCommands() {
-		registerCommand(new IngameCommandHandler());
 		registerCommand(new SendMessageHandler());
 		registerCommand(new GroupChatMessageHandler());
 		registerCommand(new RequestRelayCreationHandler());

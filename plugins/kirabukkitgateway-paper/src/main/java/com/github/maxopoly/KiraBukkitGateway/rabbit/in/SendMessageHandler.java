@@ -25,7 +25,8 @@ public class SendMessageHandler extends RabbitInput {
 			p.sendMessage(ChatColor.GOLD + msg);
 		}
 		else {
-			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(target, msg);
+			//player is offline, so we use their discord PM as backup
+			KiraBukkitGatewayPlugin.getInstance().getRabbit().replyToUser(target, msg, -1);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway;
+package com.github.maxopoly.KiraBukkitGateway.impersonation;
 
 import java.util.UUID;
 
@@ -17,7 +17,6 @@ public class PseudoPlayerIdentity extends EntityPlayer {
 	public PseudoPlayerIdentity(MinecraftServer minecraftserver, WorldServer worldserver, GameProfile gameprofile,
 			PlayerInteractManager playerinteractmanager) {
 		super(minecraftserver, worldserver, gameprofile, playerinteractmanager);
-		// TODO Auto-generated constructor stub
 	}
 
 	public static PseudoPlayerIdentity generate(UUID uuid, String name) {
@@ -25,7 +24,6 @@ public class PseudoPlayerIdentity extends EntityPlayer {
 		WorldServer worldServer = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
 		PlayerInteractManager playerInteractManager = new PlayerInteractManager(worldServer);
 		GameProfile gameProfile = new GameProfile(uuid, name);
-
 		return new PseudoPlayerIdentity(minecraftServer, worldServer, gameProfile, playerInteractManager);
 	}
 

@@ -12,11 +12,11 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class PermissionCheckHandler extends AbstractRequestHandler {
 
 	public PermissionCheckHandler() {
-		super("permissioncheck");
+		super("permissioncheck", false);
 	}
 
 	@Override
-	public void handle(JsonObject input, JsonObject output) {
+	public void handle(JsonObject input, JsonObject output, long channelId) {
 		boolean hasPerm = checkPerm(input);
 		output.addProperty("hasPermission", hasPerm);
 	}

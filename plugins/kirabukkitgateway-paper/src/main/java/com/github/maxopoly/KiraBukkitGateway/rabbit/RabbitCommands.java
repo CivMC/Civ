@@ -5,7 +5,9 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.PluginDescriptionFile;
 
+import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 import com.github.maxopoly.KiraBukkitGateway.listener.SnitchHitType;
 import com.github.maxopoly.KiraBukkitGateway.listener.SnitchType;
 import com.google.gson.Gson;
@@ -117,11 +119,12 @@ public class RabbitCommands {
 		sendInternal("addgroupmember", json);
 	}
 
-	public void replyToUser(UUID user, String msg) {
+	public void replyToUser(UUID user, String msg, long channelId) {
 		nonNullArgs(user, msg);
 		JsonObject json = new JsonObject();
 		json.addProperty("user", user.toString());
-		json.addProperty("msg", msg);
+		json.addProperty("msg", KiraUtil.cleanUp(msg));
+		json.addProperty("channel", channelId);
 		sendInternal("replytouser", json);
 	}
 

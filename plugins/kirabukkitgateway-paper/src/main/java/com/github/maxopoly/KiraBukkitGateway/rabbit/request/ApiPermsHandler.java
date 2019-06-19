@@ -14,11 +14,11 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class ApiPermsHandler extends AbstractRequestHandler {
 
 	public ApiPermsHandler() {
-		super("apiperms");
+		super("apiperms", false);
 	}
 
 	@Override
-	public void handle(JsonObject input, JsonObject output) {
+	public void handle(JsonObject input, JsonObject output, long channelId) {
 		UUID runner = UUID.fromString(input.get("uuid").getAsString());
 		JsonArray snitchArray = new JsonArray();
 		getGroupsWithPermission(runner, "SNITCH_NOTIFICATIONS").forEach(g -> snitchArray.add(g));
