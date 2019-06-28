@@ -36,42 +36,61 @@ public class PotionMetadata implements AdditionalMetadata {
 				default:
 				case UNCRAFTABLE:
 					this.name = "Uncraftable Potion";
+					break;
 				case WATER:
 					this.name = "Water Bottle";
+					break;
 				case MUNDANE:
 					this.name = "Mundane Potion";
+					break;
 				case THICK:
 					this.name = "Thick Potion";
+					break;
 				case AWKWARD:
 					this.name = "Awkward Potion";
+					break;
 				case NIGHT_VISION:
 					this.name = "Potion of Night Vision";
+					break;
 				case INVISIBILITY:
 					this.name = "Potion of Invisibility";
+					break;
 				case JUMP:
 					this.name = isUpgraded ? "Potion of Leaping II" : "Potion of Leaping";
+					break;
 				case FIRE_RESISTANCE:
 					this.name = "Potion of Fire Resistance";
+					break;
 				case SPEED:
 					this.name = isUpgraded ? "Potion of Swiftness II" : "Potion of Swiftness";
+					break;
 				case SLOWNESS:
 					this.name = "Potion of Slowness";
+					break;
 				case WATER_BREATHING:
 					this.name = "Potion of Water Breathing";
+					break;
 				case INSTANT_HEAL:
 					this.name = isUpgraded ? "Potion of Healing II" : "Potion of Healing";
+					break;
 				case INSTANT_DAMAGE:
 					this.name = isUpgraded ? "Potion of Harming II" : "Potion of Harming";
+					break;
 				case POISON:
 					this.name = isUpgraded ? "Potion of Poison II" : "Potion of Poison";
+					break;
 				case REGEN:
 					this.name = isUpgraded ? "Potion of Regeneration II" : "Potion of Regeneration";
+					break;
 				case STRENGTH:
 					this.name = isUpgraded ? "Potion of Strength II" : "Potion of Strength";
+					break;
 				case WEAKNESS:
 					this.name = "Potion of Weakness";
+					break;
 				case LUCK:
 					this.name = "Potion of Luck";
+					break;
 			}
 		}
 	}
