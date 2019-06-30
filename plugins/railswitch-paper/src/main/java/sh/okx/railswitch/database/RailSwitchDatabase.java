@@ -23,6 +23,7 @@ public class RailSwitchDatabase {
 
   private String setPlayerDestination;
   private String getPlayerDestination;
+  private String removePlayerDestination;
 
   private final LoadingCache<Player, Optional<String>> destinations = CacheBuilder.newBuilder()
       .expireAfterAccess(10, TimeUnit.HOURS)
@@ -71,6 +72,9 @@ public class RailSwitchDatabase {
     getPlayerDestination = String.format(
         "SELECT `dest` FROM `%1$s` WHERE `uuid`=?",
         DESTINATION_TABLE);
+    removePlayerDestination = String.format(
+        "DELETE FROM `%1$s` WHERE `uuid`=?`,",
+        DESTINATION_TABLE);
   }
 
   public void setPlayerDestination(Player player, String destination) {
@@ -83,6 +87,18 @@ public class RailSwitchDatabase {
       statement.executeUpdate();
     } catch (SQLException e) {
       log.log(Level.SEVERE, "Could not set destination", e);
+    }
+  }
+
+  public void removePlayerDestination(Player player) {
+    destinations.refresh(player);
+    try (Connection connection = pool.getConnection()) {
+      PreparedStatement statement = connection.prepareStatement(removePlayerDestination);
+      statement.setString(1, player.getUniqueId().toString());
+
+      statement.executeUpdate();
+    } catch (SQLException e) {
+      log.log(Level.SEVERE, "Could not remove destination", e);
     }
   }
 

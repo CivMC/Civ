@@ -1,5 +1,5 @@
 name: RailSwitch
-version: '1.1'
+version: '1.2'
 main: sh.okx.railswitch.RailSwitch
 author: Okx
 description: Easily make rail switches for automated destination selection

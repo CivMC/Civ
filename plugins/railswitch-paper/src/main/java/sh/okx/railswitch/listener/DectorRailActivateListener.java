@@ -72,13 +72,15 @@ public class DectorRailActivateListener implements Listener {
     }
 
     String destination = plugin.getDatabase().getPlayerDestination(player);
+    // don't activate rail if a destination is not set
     if (destination == null) {
-      return true;
+      return false;
     }
 
     // only activate redstone if the sign has a destination the player is set to
+    // if the sign has a * and a player has a destination set, activate it
     for (int i = 1; i < 4; i++) {
-      if (destination.equalsIgnoreCase(lines[i])) {
+      if (destination.equalsIgnoreCase(lines[i]) || lines[i].equals("*")) {
         return true;
       }
     }
