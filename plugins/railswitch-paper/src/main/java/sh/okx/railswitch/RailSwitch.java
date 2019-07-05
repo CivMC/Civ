@@ -64,7 +64,7 @@ public class RailSwitch extends JavaPlugin {
         && CharMatcher.inRange('0', '9')
         .or(CharMatcher.inRange('a', 'z'))
         .or(CharMatcher.inRange('A', 'Z'))
-        .or(CharMatcher.anyOf("!\"#$%&'()*+,-./;:<=>?@[]\\^_`{|}~")).matchesAllOf(message);
+        .or(CharMatcher.anyOf("!\"#$%&'()*+,-./;:<=>?@[]\\^_`{|}~ ")).matchesAllOf(message);
   }
 
   public boolean isTimings() {

@@ -27,9 +27,9 @@ public class SetDestinationCommand implements CommandExecutor {
       return true;
     }
 
-    String dest = args[0];
+    String dest = String.join(" ", args);
     if (!plugin.isValidDestination(dest)) {
-      player.sendMessage(ChatColor.RED + "Destinations can not be more than 40 characters and may only use alphanumerical characters and ASCII symbols.");
+      player.sendMessage(ChatColor.RED + "Destinations can not be more than 40 characters and may only use alphanumerical characters, ASCII symbols, and spaces.");
       return true;
     }
 
