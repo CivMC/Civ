@@ -257,16 +257,18 @@ public class ExchangeRule {
 
 			AdditionalMetadata additional = null;
 
-			if(material == Material.WRITTEN_BOOK) {
-				additional = BookMetadata.deserialize(showString(compiledRule[10]));
-			}
-			else if(material == Material.ENCHANTED_BOOK) {
-				additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[10]));
-			}
-			else if(material == Material.POTION) {
-				if(!compiledRule[10].isEmpty()) {
+			switch (material) {
+				case WRITTEN_BOOK:
+					additional = BookMetadata.deserialize(showString(compiledRule[10]));
+					break;
+				case ENCHANTED_BOOK:
+					additional = EnchantmentStorageMetadata.deserialize(showString(compiledRule[10]));
+					break;
+				case POTION:
+				case SPLASH_POTION:
+				case LINGERING_POTION:
 					additional = PotionMetadata.deserialize(showString(compiledRule[10]));
-				}
+					break;
 			}
 
 			Group group;
