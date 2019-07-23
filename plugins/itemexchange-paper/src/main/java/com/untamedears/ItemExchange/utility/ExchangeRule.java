@@ -632,7 +632,7 @@ public class ExchangeRule {
 		else {
 			stringBuilder.append(material.name() + ":").append(durability);
 		}
-		stringBuilder.append(displayName.equals("") ? "" : " \"" + displayName + "\"");
+		stringBuilder.append(displayName.equals("") ? "" : " \"" + displayName + ChatColor.WHITE + "\"");
 		return stringBuilder.toString();
 	}
 
