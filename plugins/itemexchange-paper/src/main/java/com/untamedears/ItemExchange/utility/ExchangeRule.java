@@ -3,11 +3,13 @@ package com.untamedears.ItemExchange.utility;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.UUID;
 
 import org.bukkit.ChatColor;
@@ -128,7 +130,6 @@ public class ExchangeRule {
 			else if(itemMeta instanceof PotionMeta) {
 				additional = new PotionMetadata((PotionMeta) itemMeta);
 			}
-			//I've removed the PotionMeta block since it is not required if only vanilla potions are used, PotionMeta support should be added in the future
 			if(itemMeta instanceof FireworkEffectMeta || itemMeta instanceof FireworkMeta || itemMeta instanceof LeatherArmorMeta || itemMeta instanceof MapMeta || itemMeta instanceof SkullMeta) {
 				throw new ExchangeRuleCreateException("This item is not yet supported by ItemExchange.");
 			}
@@ -547,47 +548,79 @@ public class ExchangeRule {
 	 * Checks if the given ItemStack follows the ItemRules except for the amount
 	 */
 	public boolean followsRules(ItemStack itemStack) {
-		// check material type and druability
-		boolean followsRules = DeprecatedMethods.getMaterialId(material) == DeprecatedMethods.getItemId(itemStack)
-				&& durability == itemStack.getDurability();
-		
-		// Check enchantments
-		if (itemStack.getEnchantments().size() > 0) {
-			followsRules = followsRules && itemStack.getEnchantments().entrySet().containsAll(requiredEnchantments.entrySet());
-			for (Enchantment excludedEnchantment : excludedEnchantments) {
-				followsRules = followsRules && !itemStack.getEnchantments().entrySet().contains(excludedEnchantment);
+		// If not the same material, return false
+		if (DeprecatedMethods.getMaterialId(material) != DeprecatedMethods.getItemId(itemStack)) {
+			return false;
+		}
+		// If not the same durability, return false
+		if (durability != itemStack.getDurability()) {
+			return false;
+		}
+		// Check required enchantments
+		Map<Enchantment, Integer> itemEnchants = itemStack.getEnchantments();
+		if (itemEnchants.isEmpty() != requiredEnchantments.isEmpty()) {
+			return false;
+		}
+		else if (!requiredEnchantments.isEmpty()) {
+			if (!unlistedEnchantmentsAllowed) {
+				if (itemEnchants.size() != requiredEnchantments.size()) {
+					return false;
+				}
+			}
+			else if (itemEnchants.size() < requiredEnchantments.size()) {
+				return false;
+			}
+			if (!itemEnchants.entrySet().containsAll(requiredEnchantments.entrySet())) {
+				return false;
 			}
 		}
-		else if (requiredEnchantments.size() > 0) {
-			followsRules = false;
+		// Check excluded enchantments
+		if (!excludedEnchantments.isEmpty()) {
+			if (!Collections.disjoint(itemEnchants.keySet(), excludedEnchantments)) {
+				return false;
+			}
 		}
-
-		if(additional != null)
-			followsRules = followsRules && additional.matches(itemStack);
-
-		// Check displayName and Lore
+		// Check additional meta
+		if (additional != null) {
+			if (!additional.matches(itemStack)) {
+				return false;
+			}
+		}
+		// Check item meta
+		boolean hasDisplayName = displayName != null && !displayName.isEmpty();
+		boolean hasLore = lore != null && lore.length > 0;
 		if (itemStack.hasItemMeta()) {
 			ItemMeta itemMeta = itemStack.getItemMeta();
-			if (itemMeta.hasDisplayName()) {
-				followsRules = followsRules && displayName.equals(itemMeta.getDisplayName());
+			// Check display name
+			if (itemMeta.hasDisplayName() != hasDisplayName) {
+				return false;
 			}
-			else {
-				followsRules = followsRules && displayName.equals("");
-			}
-			if (itemMeta.hasLore()) {
-				for (int i = 0; i < itemMeta.getLore().size() && i < lore.length; i++) {
-					followsRules = followsRules && lore[i].equals(itemMeta.getLore().get(i));
+			else if (hasDisplayName) {
+				if (!displayName.equals(itemMeta.getDisplayName())) {
+					return false;
 				}
-				followsRules = followsRules && itemMeta.getLore().size() == lore.length;
 			}
-			else {
-				followsRules = followsRules && lore.length == 0;
+			// Check lore
+			if (itemMeta.hasLore() != hasLore) {
+				return false;
+			}
+			else if (hasLore) {
+				List<String> itemLore = itemMeta.getLore();
+				if (itemLore.size() != lore.length) {
+					return false;
+				}
+				for (int i = 0; i < lore.length; i++) {
+					if (!Objects.equals(itemLore.get(i), lore[i])) {
+						return false;
+					}
+				}
 			}
 		}
-		else {
-			followsRules = followsRules && displayName.equals("") && lore.length == 0;
+		else if (hasDisplayName || hasLore) {
+			return false;
 		}
-		return followsRules;
+		// The items are identical
+		return true;
 	}
 
 	public String[] display(Player p) {
