@@ -112,7 +112,26 @@ public class PotionMetadata implements AdditionalMetadata {
 			serialized.append(0);	// Upgraded? 1 == TRUE
 		}
 		else {
-			serialized.append(this.base.getType().getEffectType().getId());
+			switch (this.base.getType()) {
+				case UNCRAFTABLE:
+					serialized.append(0);
+					break;
+				case WATER:
+					serialized.append(-1);
+					break;
+				case MUNDANE:
+					serialized.append(-2);
+					break;
+				case THICK:
+					serialized.append(-3);
+					break;
+				case AWKWARD:
+					serialized.append(-4);
+					break;
+				default:
+					serialized.append(this.base.getType().getEffectType().getId());
+					break;
+			}
 			serialized.append(ExchangeRule.tertiarySpacer);
 			serialized.append(this.base.isExtended() ? 1 : 0);
 			serialized.append(ExchangeRule.tertiarySpacer);
@@ -152,9 +171,28 @@ public class PotionMetadata implements AdditionalMetadata {
 					int effectId = Integer.parseInt(effectData[0]);
 					boolean isExtended = Integer.parseInt(effectData[1]) == 1;
 					boolean isUpgraded = Integer.parseInt(effectData[2]) == 1;
-					PotionEffectType effectType = PotionEffectType.getById(effectId);
-					PotionType potionType = PotionType.getByEffect(effectType);
-					metadata.base = new PotionData(potionType, isExtended, isUpgraded);
+					switch (effectId) {
+						case 0:
+							metadata.base = new PotionData(PotionType.UNCRAFTABLE, isExtended, isUpgraded);
+							break;
+						case -1:
+							metadata.base = new PotionData(PotionType.WATER, isExtended, isUpgraded);
+							break;
+						case -2:
+							metadata.base = new PotionData(PotionType.MUNDANE, isExtended, isUpgraded);
+							break;
+						case -3:
+							metadata.base = new PotionData(PotionType.THICK, isExtended, isUpgraded);
+							break;
+						case -4:
+							metadata.base = new PotionData(PotionType.AWKWARD, isExtended, isUpgraded);
+							break;
+						default:
+							PotionEffectType effectType = PotionEffectType.getById(effectId);
+							PotionType potionType = PotionType.getByEffect(effectType);
+							metadata.base = new PotionData(potionType, isExtended, isUpgraded);
+							break;
+					}
 				}
 				catch (Exception error) {
 					metadata.base = new PotionData(PotionType.WATER, false, false);
