@@ -596,7 +596,10 @@ public class ExchangeRule {
 		displayed.add(displayedItemStackInfo());
 		// Additional metadata (books, etc.)
 		if(additional != null) {
-			displayed.add(additional.getDisplayedInfo());
+			String info = additional.getDisplayedInfo();
+			if (info != null && !info.isEmpty()) {
+				displayed.add(info);
+			}
 		}
 
 		// Enchantments
