@@ -71,7 +71,7 @@ An existing exchange rule can be edited using the **/ieset** (or **/ies**) comma
   - **Lu** for Lure
   - **M** for Mending
   - **SW** for Sweeping Edge
-  - **Cob** for Curse of Binding
+  - **CoB** for Curse of Binding
   - **CoV** for Curse of Vanishing
  
   For example, **/ies e +P5**, followed by **/ies e -T1** would specify the item needs to have Protection 5, but is not allowed to have Thorns 1. Note that if the exchange rule is set to disallow all enchantments not explicitly required (see below), forbidding an enchantment is redundant.
