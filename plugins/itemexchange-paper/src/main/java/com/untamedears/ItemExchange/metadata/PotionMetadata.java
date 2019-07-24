@@ -21,7 +21,7 @@ import org.bukkit.potion.PotionType;
 public class PotionMetadata implements AdditionalMetadata {
 
 	private String name = "Uncraftable Potion";
-	private PotionData base = null;
+	private PotionData base = new PotionData(PotionType.UNCRAFTABLE, false, false);
 	private List<PotionEffect> effects = new ArrayList<>();
 
 	private PotionMetadata() {}
