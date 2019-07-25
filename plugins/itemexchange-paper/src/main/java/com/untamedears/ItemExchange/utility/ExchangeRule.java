@@ -549,7 +549,7 @@ public class ExchangeRule {
 	 */
 	public boolean followsRules(ItemStack itemStack) {
 		// If not the same material, return false
-		if (DeprecatedMethods.getMaterialId(material) != DeprecatedMethods.getItemId(itemStack)) {
+		if (!Objects.equals(material, itemStack.getType())) {
 			return false;
 		}
 		// If not the same durability, return false
@@ -558,21 +558,13 @@ public class ExchangeRule {
 		}
 		// Check required enchantments
 		Map<Enchantment, Integer> itemEnchants = itemStack.getEnchantments();
-		if (itemEnchants.isEmpty() != requiredEnchantments.isEmpty()) {
-			return false;
+		if (!unlistedEnchantmentsAllowed) {
+			if (itemEnchants.size() != requiredEnchantments.size()) {
+				return false;
+			}
 		}
-		else if (!requiredEnchantments.isEmpty()) {
-			if (!unlistedEnchantmentsAllowed) {
-				if (itemEnchants.size() != requiredEnchantments.size()) {
-					return false;
-				}
-			}
-			else if (itemEnchants.size() < requiredEnchantments.size()) {
-				return false;
-			}
-			if (!itemEnchants.entrySet().containsAll(requiredEnchantments.entrySet())) {
-				return false;
-			}
+		if (!itemEnchants.entrySet().containsAll(requiredEnchantments.entrySet())) {
+			return false;
 		}
 		// Check excluded enchantments
 		if (!excludedEnchantments.isEmpty()) {
