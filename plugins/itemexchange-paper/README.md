@@ -65,6 +65,14 @@ An existing exchange rule can be edited using the **/ieset** (or **/ies**) comma
   - **T** for Thorns
   - **R** for Respiration
   - **AA** for Aqua Affinity
+  - **DS** for Depth Strider
+  - **FW** for Frost Walker
+  - **LS** for Luck of the Sea
+  - **Lu** for Lure
+  - **M** for Mending
+  - **SW** for Sweeping Edge
+  - **CoB** for Curse of Binding
+  - **CoV** for Curse of Vanishing
  
   For example, **/ies e +P5**, followed by **/ies e -T1** would specify the item needs to have Protection 5, but is not allowed to have Thorns 1. Note that if the exchange rule is set to disallow all enchantments not explicitly required (see below), forbidding an enchantment is redundant.
 - **/ies allowenchantments** sets the exchange to allow all enchantments not explicitly specified by **/ies enchantment**.

@@ -1,6 +1,15 @@
+Air,,0,0
 Stone,,1,0
+Granite,,1,1
+Polished Granite,,1,2
+Diorite,,1,3
+Polished Diorite,,1,4
+Andesite,,1,5
+Polished Andesite,,1,6
 Grass Block,,2,0
 Dirt,,3,0
+Coarse Dirt,,3,1
+Podzol,,3,2
 Cobblestone,,4,0
 Oak Wood Planks,,5,0
 Spruce Wood Planks,,5,1
@@ -20,6 +29,7 @@ Water,,9,0
 Lava,,10,0
 Lava,,11,0
 Sand,,12,0
+Red Sand,,12,1
 Gravel,,13,0
 Gold Ore,,14,0
 Iron Ore,,15,0
@@ -33,6 +43,7 @@ Spruce Leaves,,18,1
 Birch Leaves,,18,2
 Jungle Leaves,,18,3
 Sponge,,19,0
+Wet Sponge,,19,1
 Glass,,20,0
 Lapis Lazuli Ore,,21,0
 Lapis Lazuli Block,,22,0
@@ -49,10 +60,10 @@ Cobweb,,30,0
 Dead Shrub,,31,0
 Grass,,31,1
 Fern,,31,2
-Dead Shrub,,32,0
+Dead Bush,,32,0
 Piston,,33,0
-Piston Head,,34,0
-Wool,,35,0
+Piston,,34,0
+White Wool,,35,0
 Orange Wool,,35,1
 Magenta Wool,,35,2
 Light Blue Wool,,35,3
@@ -68,12 +79,15 @@ Brown Wool,,35,12
 Green Wool,,35,13
 Red Wool,,35,14
 Black Wool,,35,15
-Extended Piston,,36,0
 Dandelion,,37,0
-Rose,,38,0
+Poppy,,38,0
 Blue Orchid,,38,1
 Allium,,38,2
 Azure Bluet,,38,3
+Red Tulip,,38,4
+Orange Tulip,,38,5
+White Tulip,,38,6
+Pink Tulip,,38,7
 Oxeye Daisy,,38,8
 Brown Mushroom,,39,0
 Red Mushroom,,40,0
@@ -81,38 +95,36 @@ Gold Block,,41,0
 Iron Block,,42,0
 Double Stone Slab,,43,0
 Double Sandstone Slab,,43,1
-Double Wood Slab,,43,2
+Double Oak Wood Slab,,43,2
 Double Cobblestone Slab,,43,3
 Double Brick Slab,,43,4
 Double Stone Brick Slab,,43,5
 Double Nether Brick Slab,,43,6
 Double Quartz Slab,,43,7
-Double Stone Slab,,43,8
-Double Sandstone Slab,,43,9
 Stone Slab,,44,0
 Sandstone Slab,,44,1
-Wood Slab,,44,2
-Cobble Slab,,44,3
+Oak Wood Slab,,44,2
+Cobblestone Slab,,44,3
 Brick Slab,,44,4
 Stone Brick Slab,,44,5
 Nether Brick Slab,,44,6
 Quartz Slab,,44,7
-Brick,,45,0
+Bricks,,45,0
 TNT,,46,0
-Bookcase,,47,0
-Moss Stone,,48,0
+Bookshelf,,47,0
+Mossy Cobblestone,,48,0
 Obsidian,,49,0
 Torch,,50,0
 Fire,,51,0
-Spawner Block,,52,0
-Oak Stairs,,53,0
+Mob Spawner,,52,0
+Oak Wood Stairs,,53,0
 Chest,,54,0
 Redstone,,55,0
 Diamond Ore,,56,0
 Diamond Block,,57,0
 Crafting Table,,58,0
-Wheat,,59,0
-Tilled Dirt,,60,0
+Wheat Crops,,59,0
+Farmland,,60,0
 Furnace,,61,0
 Furnace,,62,0
 Sign,,63,0
@@ -129,29 +141,47 @@ Redstone Ore,,73,0
 Redstone Ore,,74,0
 Redstone Torch,,75,0
 Redstone Torch,,76,0
-Button,,77,0
+Stone Button,,77,0
 Snow,,78,0
 Ice,,79,0
 Snow Block,,80,0
 Cactus,,81,0
-Clay Block,,82,0
+Clay,,82,0
 Sugarcane,,83,0
 Jukebox,,84,0
-Wooden Fence,,85,0
+Oak Fence,,85,0
 Pumpkin,,86,0
 Netherrack,,87,0
 Soul Sand,,88,0
 Glowstone,,89,0
-Nether Portal Block,,90,0
-Jack-O-Lantern,,91,0
+Nether Portal,,90,0
+Jack o'Lantern,,91,0
 Cake,,92,0
 Redstone Repeater,,93,0
 Redstone Repeater,,94,0
-Locked Chest,,95,0
-Trapdoor,,96,0
-Silverfish Stone,,97,0
-Silverfish Cobblestone,,97,1
-Silverfish Stone Brick,,97,2
+White Stained Glass,,95,0
+Orange Stained Glass,,95,1
+Magenta Stained Glass,,95,2
+Light Blue Stained Glass,,95,3
+Yellow Stained Glass,,95,4
+Lime Stained Glass,,95,5
+Pink Stained Glass,,95,6
+Gray Stained Glass,,95,7
+Light Gray Stained Glass,,95,8
+Cyan Stained Glass,,95,9
+Purple Stained Glass,,95,10
+Blue Stained Glass,,95,11
+Brown Stained Glass,,95,12
+Green Stained Glass,,95,13
+Red Stained Glass,,95,14
+Black Stained Glass,,95,15
+Wooden Trapdoor,,96,0
+Stone Monster Egg,,97,0
+Cobblestone Monster Egg,,97,1
+Stone Brick Monster Egg,,97,2
+Mossy Stone Brick Monster Egg,,97,3
+Cracked Stone Brick Monster Egg,,97,4
+Chiseled Stone Brick Monster Egg,,97,5
 Stone Brick,,98,0
 Mossy Stone Brick,,98,1
 Cracked Stone Brick,,98,2
@@ -160,9 +190,9 @@ Brown Mushroom Block,,99,0
 Red Mushroom Block,,100,0
 Iron Bars,,101,0
 Glass Pane,,102,0
-Melon Block,,103,0
-Pumpkin Vine,,104,0
-Melon Vine,,105,0
+Melon,,103,0
+Pumpkin Stem,,104,0
+Melon Stem,,105,0
 Vines,,106,0
 Fence Gate,,107,0
 Brick Stairs,,108,0
@@ -176,8 +206,8 @@ Nether Wart,,115,0
 Enchantment Table,,116,0
 Brewing Stand,,117,0
 Cauldron,,118,0
-End Portal Block,,119,0
-End Portal Frame,,120,0
+Ender Portal,,119,0
+Ender Portal Frame,,120,0
 End Stone,,121,0
 Dragon Egg,,122,0
 Redstone Lamp,,123,0
@@ -188,41 +218,35 @@ Double Birch Wood Slab,,125,2
 Double Jungle Wood Slab,,125,3
 Double Acacia Wood Slab,,125,4
 Double Dark Oak Wood Slab,,125,5
-Oak Slab,,126,0
-Spruce Slab,,126,1
-Birch Slab,,126,2
-Jungle Slab,,126,3
-Acacia Slab,,126,4
-Dark Oak Slab,,126,5
-Cocoa Plant,,127,0
+Oak Wood Slab,,126,0
+Spruce Wood Slab,,126,1
+Birch Wood Slab,,126,2
+Jungle Wood Slab,,126,3
+Acacia Wood Slab,,126,4
+Dark Oak Wood Slab,,126,5
+Cocoa,,127,0
 Sandstone Stairs,,128,0
 Emerald Ore,,129,0
 Ender Chest,,130,0
 Tripwire Hook,,131,0
 Tripwire,,132,0
 Emerald Block,,133,0
-Spruce Stairs,,134,0
-Birch Stairs,,135,0
-Jungle Stairs,,136,0
+Spruce Wood Stairs,,134,0
+Birch Wood Stairs,,135,0
+Jungle Wood Stairs,,136,0
 Command Block,,137,0
 Beacon,,138,0
 Cobblestone Wall,,139,0
 Mossy Cobblestone Wall,,139,1
 Flower Pot,,140,0
-Carrot,,141,0
-Potatoes,,142,0
-Knob,,143,0
-Skeleton Head,,144,0
-Wither Head,,144,1
-Zombie Head,,144,2
-Steve Head,,144,3
-Creeper Head,,144,4
+Carrot Crop,,141,0
+Potato Crop,,142,0
+Wooden Button,,143,0
+Skull,,144,0
 Anvil,,145,0
-Slightly Damaged Anvil,,145,1
-Very Damaged Anvil,,145,2
 Trapped Chest,,146,0
-Gold Weighted Pressure Plate,,147,0
-Iron Weighted Pressure Plate,,148,0
+Gold Pressure Plate,,147,0
+Iron Pressure Plate,,148,0
 Redstone Comparator,,149,0
 Redstone Comparator,,150,0
 Daylight Sensor,,151,0
@@ -233,30 +257,53 @@ Quartz Block,,155,0
 Chiseled Quartz Block,,155,1
 Pillar Quartz Block,,155,2
 Quartz Stairs,,156,0
-Pressure Plate Rail,,157,0
+Activator Rail,,157,0
 Dropper,,158,0
-White Stained Clay,,159,0
-Orange Stained Clay,,159,1
-Magenta Stained Clay,,159,2
-Light Blue Stained Clay,,159,3
-Yellow Stained Clay,,159,4
-Lime Stained Clay,,159,5
-Pink Stained Clay,,159,6
-Gray Stained Clay,,159,7
-Light Gray Stained Clay,,159,8
-Cyan Stained Clay,,159,9
-Purple Stained Clay,,159,10
-Blue Stained Clay,,159,11
-Brown Stained Clay,,159,12
-Green Stained Clay,,159,13
-Red Stained Clay,,159,14
-Black Stained Clay,,159,15
+White Terracotta,,159,0
+Orange Terracotta,,159,1
+Magenta Terracotta,,159,2
+Light Blue Terracotta,,159,3
+Yellow Terracotta,,159,4
+Lime Terracotta,,159,5
+Pink Terracotta,,159,6
+Gray Terracotta,,159,7
+Light Gray Terracotta,,159,8
+Cyan Terracotta,,159,9
+Purple Terracotta,,159,10
+Blue Terracotta,,159,11
+Brown Terracotta,,159,12
+Green Terracotta,,159,13
+Red Terracotta,,159,14
+Black Terracotta,,159,15
+White Stained Glass Pane,,160,0
+Orange Stained Glass Pane,,160,1
+Magenta Stained Glass Pane,,160,2
+Light Blue Stained Glass Pane,,160,3
+Yellow Stained Glass Pane,,160,4
+Lime Stained Glass Pane,,160,5
+Pink Stained Glass Pane,,160,6
+Gray Stained Glass Pane,,160,7
+Light Gray Stained Glass Pane,,160,8
+Cyan Stained Glass Pane,,160,9
+Purple Stained Glass Pane,,160,10
+Blue Stained Glass Pane,,160,11
+Brown Stained Glass Pane,,160,12
+Green Stained Glass Pane,,160,13
+Red Stained Glass Pane,,160,14
+Black Stained Glass Pane,,160,15
 Acacia Leaves,,161,0
 Dark Oak Leaves,,161,1
 Acacia Wood,,162,0
 Dark Oak Wood,,162,1
-Acacia Stairs,,163,0
-Dark Oak Stairs,,164,0
+Acacia Wood Stairs,,163,0
+Dark Oak Wood Stairs,,164,0
+Slime Block,,165,0
+Barrier,,166,0
+Iron Trapdoor,,167,0
+Prismarine,,168,0
+Prismarine Bricks,,168,1
+Dark Prismarine,,168,2
+Sea Lantern,,169,0
 Hay Bale,,170,0
 White Carpet,,171,0
 Orange Carpet,,171,1
@@ -274,15 +321,126 @@ Brown Carpet,,171,12
 Green Carpet,,171,13
 Red Carpet,,171,14
 Black Carpet,,171,15
-Hardened Clay,,172,0
+Terracotta,,172,0
 Coal Block,,173,0
+Packed Ice,,174,0
 Sunflower,,175,0
 Lilac,,175,1
 Double Tallgrass,,175,2
 Large Fern,,175,3
 Rose Bush,,175,4
 Peony,,175,5
-Iron Shovel,,256,0
+Banner,,176,0
+Banner,,177,0
+Inverted Daylight Sensor,,178,0
+Red Sandstone,,179,0
+Chiseled Red Sandstone,,179,1
+Smooth Red Sandstone,,179,2
+Red Sandstone Stairs,,180,0
+Double Red Sandstone Slab,,181,0
+Red Sandstone Slab,,182,0
+Spruce Fence Gate,,183,0
+Birch Fence Gate,,184,0
+Jungle Fence Gate,,185,0
+Dark Oak Fence Gate,,186,0
+Acacia Fence Gate,,187,0
+Spruce Fence,,188,0
+Birch Fence,,189,0
+Jungle Fence,,190,0
+Dark Oak Fence,,191,0
+Acacia Fence,,192,0
+Spruce Door,,193,0
+Birch Door,,194,0
+Jungle Door,,195,0
+Acacia Door,,196,0
+Dark Oak Door,,197,0
+End Rod,,198,0
+Chorus Plan,,199,0
+Chorus Flower,,200,0
+Purpur Block,,201,0
+Purpur Pillar,,202,0
+Purpur Stairs,,203,0
+Purpur Double Slab,,204,0
+Purpur Slab,,205,0
+End Stone Brick,,206,0
+Beetroot,,207,0
+Grass Path,,208,0
+End Gateway,,209,0
+Repeating Command Block,,210,0
+Chain Command Block,,211,0
+Frosted Ice,,212,0
+Magma Block,,213,0
+Nether Wart Block,,214,0
+Red Nether Brick,,215,0
+Bone Block,,216,0
+Structure Void,,217,0
+Observer,,218,0
+White Shulker Box,,219,0
+Orange Shulker Box,,220,0
+Magenta Shulker Box,,221,0
+Light Blue Shulker Box,,222,0
+Yellow Shulker Box,,223,0
+Lime Shulker Box,,224,0
+Pink Shulker Box,,225,0
+Gray Shulker Box,,226,0
+Light Gray Shulker Box,,227,0
+Cyan Shulker Box,,228,0
+Purple Shulker Box,,229,0
+Blue Shulker Box,,230,0
+Brown Shulker Box,,231,0
+Green Shulker Box,,232,0
+Red Shulker Box,,233,0
+Black Shulker Box,,234,0
+White Glazed Terracotta,,235,0
+Orange Glazed Terracotta,,236,0
+Magenta Glazed Terracotta,,237,0
+Light Blue Glazed Terracotta,,238,0
+Yellow Glazed Terracotta,,239,0
+Lime Glazed Terracotta,,240,0
+Pink Glazed Terracotta,,241,0
+Gray Glazed Terracotta,,242,0
+Light Gray Glazed Terracotta,,243,0
+Cyan Glazed Terracotta,,244,0
+Purple Glazed Terracotta,,245,0
+Blue Glazed Terracotta,,246,0
+Brown Glazed Terracotta,,247,0
+Green Glazed Terracotta,,248,0
+Red Glazed Terracotta,,249,0
+Black Glazed Terracotta,,250,0
+White Concrete,,251,0
+Orange Concrete,,251,1
+Magenta Concrete,,251,2
+Light Blue Concrete,,251,3
+Yellow Concrete,,251,4
+Lime Concrete,,251,5
+Pink Concrete,,251,6
+Gray Concrete,,251,7
+Light Gray Concrete,,251,8
+Cyan Concrete,,251,9
+Purple Concrete,,251,10
+Blue Concrete,,251,11
+Brown Concrete,,251,12
+Green Concrete,,251,13
+Red Concrete,,251,14
+Black Concrete,,251,15
+White Concrete Powder,,252,0
+Orange Concrete Powder,,252,1
+Magenta Concrete Powder,,252,2
+Light Blue Concrete Powder,,252,3
+Yellow Concrete Powder,,252,4
+Lime Concrete Powder,,252,5
+Pink Concrete Powder,,252,6
+Gray Concrete Powder,,252,7
+Light Gray Concrete Powder,,252,8
+Cyan Concrete Powder,,252,9
+Purple Concrete Powder,,252,10
+Blue Concrete Powder,,252,11
+Brown Concrete Powder,,252,12
+Green Concrete Powder,,252,13
+Red Concrete Powder,,252,14
+Black Concrete Powder,,252,15
+Structure Block,,255,0
+Iron Spade,,256,0
 Iron Pickaxe,,257,0
 Iron Axe,,258,0
 Flint and Steel,,259,0
@@ -294,35 +452,35 @@ Charcoal,,263,1
 Diamond,,264,0
 Iron Ingot,,265,0
 Gold Ingot,,266,0
-Iron Sword,,267,251
-Wooden Sword,,268,60
-Wooden Shovel,,269,0
-Wooden Pickaxe,,270,0
-Wooden Axe,,271,0
-Stone Sword,,272,132
-Stone Shovel,,273,0
+Iron Sword,,267,0
+Wood Sword,,268,0
+Wood Spade,,269,0
+Wood Pickaxe,,270,0
+Wood Axe,,271,0
+Stone Sword,,272,0
+Stone Spade,,273,0
 Stone Pickaxe,,274,0
 Stone Axe,,275,0
 Diamond Sword,,276,0
-Diamond Shovel,,277,0
+Diamond Spade,,277,0
 Diamond Pickaxe,,278,0
 Diamond Axe,,279,0
 Stick,,280,0
 Bowl,,281,0
-Mushroom Stew,,282,0
-Gold Sword,,283,33
-Gold Shovel,,284,0
+Mushroom Soup,,282,0
+Gold Sword,,283,0
+Gold Spade,,284,0
 Gold Pickaxe,,285,0
 Gold Axe,,286,0
 String,,287,0
 Feather,,288,0
-Gunpowder,,289,0
-Wooden Hoe,,290,0
+Sulphur,,289,0
+Wood Hoe,,290,0
 Stone Hoe,,291,0
 Iron Hoe,,292,0
 Diamond Hoe,,293,0
 Gold Hoe,,294,0
-Wheat Seeds,,295,0
+Seeds,,295,0
 Wheat,,296,0
 Bread,,297,0
 Leather Helmet,,298,0
@@ -341,10 +499,10 @@ Diamond Helmet,,310,0
 Diamond Chestplate,,311,0
 Diamond Leggings,,312,0
 Diamond Boots,,313,0
-Gold Helmet,,314,78
-Gold Chestplate,,315,113
-Gold Leggings,,316,106
-Gold Boots,,317,92
+Gold Helmet,,314,-218
+Gold Chestplate,,315,-218
+Gold Leggings,,316,-218
+Gold Boots,,317,-218
 Flint,,318,0
 Raw Porkchop,,319,0
 Cooked Porkchop,,320,0
@@ -352,7 +510,7 @@ Painting,,321,0
 Golden Apple,,322,0
 Enchanted Golden Apple,,322,1
 Sign,,323,0
-Wooden Door,,324,0
+Oak Door,,324,0
 Bucket,,325,0
 Water Bucket,,326,0
 Lava Bucket,,327,0
@@ -361,11 +519,11 @@ Saddle,,329,0
 Iron Door,,330,0
 Redstone,,331,0
 Snowball,,332,0
-Boat,,333,0
+Oak Boat,,333,0
 Leather,,334,0
 Milk Bucket,,335,0
 Clay Brick,,336,0
-Clay,,337,0
+Clay Ball,,337,0
 Sugar Cane,,338,0
 Paper,,339,0
 Book,,340,0
@@ -375,7 +533,7 @@ Powered Minecart,,343,0
 Egg,,344,0
 Compass,,345,0
 Fishing Rod,,346,0
-Watch,,347,0
+Clock,,347,0
 Glowstone Dust,,348,0
 Raw Fish,,349,0
 Raw Salmon,,349,1
@@ -384,8 +542,8 @@ Pufferfish,,349,3
 Cooked Fish,,350,0
 Cooked Salmon,,350,1
 Ink Sack,,351,0
-Rose Red Dye,,351,1
-Cactus Green Dye,,351,2
+Rose Red,,351,1
+Cactus Green,,351,2
 Cocoa Beans,,351,3
 Lapis Lazuli,,351,4
 Purple Dye,,351,5
@@ -394,7 +552,7 @@ Light Gray Dye,,351,7
 Gray Dye,,351,8
 Pink Dye,,351,9
 Lime Dye,,351,10
-Dandelion Yellow Dye,,351,11
+Dandelion Yellow,,351,11
 Light Blue Dye,,351,12
 Magenta Dye,,351,13
 Orange Dye,,351,14
@@ -402,12 +560,27 @@ Bone Meal,,351,15
 Bone,,352,0
 Sugar,,353,0
 Cake,,354,0
-Bed,,355,0
+White Bed,,355,0
+Orange Bed,,355,1
+Magenta Bed,,355,2
+Light Blue Bed,,355,3
+Yellow Bed,,355,4
+Lime Bed,,355,5
+Pink Bed,,355,6
+Gray Bed,,355,7
+Light Gray Bed,,355,8
+Cyan Bed,,355,9
+Purple Bed,,355,10
+Blue Bed,,355,11
+Brown Bed,,355,12
+Green Bed,,355,13
+Red Bed,,355,14
+Black Bed,,355,15
 Redstone Repeater,,356,0
 Cookie,,357,0
 Map,,358,0
 Shears,,359,0
-Melon Slice,,360,0
+Slice of Melon,,360,0
 Pumpkin Seeds,,361,0
 Melon Seeds,,362,0
 Raw Beef,,363,0
@@ -420,105 +593,61 @@ Blaze Rod,,369,0
 Ghast Tear,,370,0
 Gold Nugget,,371,0
 Nether Wart,,372,0
-Water Bottle,,373,0
-Awkward Potion,,373,16
-Thick Potion,,373,32
-Mundane Potion,,373,64
-Regeneration Potion,,373,8193
-Speed Potion,,373,8194
-Fire Resistance Potion,,373,8195
-Poison Potion,,373,8196
-Healing Potion,,373,8197
-Night Vision Potion,,373,8198
-Weakness Potion,,373,8200
-Strength Potion,,373,8201
-Slowness Potion,,373,8202
-Harming Potion,,373,8204
-Invisibility Potion,,373,8206
-Regeneration Potion 2,,373,8225
-Speed Potion 2,,373,8226
-Poison Potion 2,,373,8228
-Healing Potion 2,,373,8229
-Strength Potion 2,,373,8233
-Harming Potion 2,,373,8236
-Regeneration Potion Extended,,373,8257
-Speed Potion Extended,,373,8258
-Fire Resistance Potion Extended,,373,8259
-Poison Potion Extended,,373,8260
-Night Vision Potion Extended,,373,8262
-Weakness Potion Extended,,373,8264
-Strength Potion Extended,,373,8265
-Slowness Potion Extended,,373,8266
-Invisibility Potion Extended,,373,8270
-Regeneration Potion 2 Extended,,373,8289
-Speed Potion 2 Extended,,373,8290
-Poison Potion 2 Extended,,373,8292
-Strength Potion 2 Extended,,373,8297
-Splash Potion of Regeneration,,373,16385
-Splash Potion of Speed,,373,16386
-Splash Potion of Fire Resistance,,373,16387
-Splash Potion of Poison,,373,16388
-Splash Potion of Healing,,373,16389
-Splash Potion of Night Vision,,373,16390
-Splash Potion of Weakness,,373,16392
-Splash Potion of Strength,,373,16393
-Splash Potion of Slowness,,373,16394
-Splash Potion of Harming,,373,16396
-Splash Potion of Invisibility,,373,16398
-Splash Potion of Regeneration 2,,373,16417
-Splash Potion of Speed 2,,373,16418
-Splash Potion of Poison 2,,373,16420
-Splash Potion of Healing 2,,373,16421
-Splash Potion of Strength 2,,373,16425
-Splash Potion of Harming 2,,373,16428
-Splash Potion of Regeneration Extended,,373,16449
-Splash Potion of Speed Extended,,373,16450
-Splash Potion of Fire Resistance Extended,,373,16451
-Splash Potion of Fire Extended,,373,16452
-Splash Potion of Night Vision Extended,,373,16454
-Splash Potion of Weakness Extended,,373,16456
-Splash Potion Of Strength,,373,16457
-Splash Potion of Slowness Extended,,373,16458
-Splash Potion of Invisibility Extended,,373,16462
-Splash Potion of Extended Regeneration 2,,373,16481
-Splash Potion of Extended Speed 2,,373,16482
-Splash Potion of Extended Poison 2,,373,16484
-Splash Potion of Extended Strength 2,,373,16489
+Potion,,373,0
 Glass Bottle,,374,0
 Spider Eye,,375,0
 Fermented Spider Eye,,376,0
-Blace Powder,,377,0
+Blaze Powder,,377,0
 Magma Cream,,378,0
 Brewing Stand,,379,0
 Cauldron,,380,0
-Eye of Ender,,381,0
 Glistering Melon,,382,0
-Creeper Spawn Egg,,383,50
-Skeleton Spawn Egg,,383,51
-Spider Spawn Egg,,383,52
-Zombie Spawn Egg,,383,54
-Slime Spawn Egg,,383,55
-Ghast Spawn Egg,,383,56
-Zombie Pigmen Spawn Egg,,383,57
-Endermen Spawn Egg,,383,58
-Cave Spider Spawn Egg,,383,59
-Silverfish Spawn Egg,,383,60
-Blaze Spawn Egg,,383,61
-Magma Cube Spawn Egg,,383,62
-Bat Spawn Egg,,383,65
-Witch Spawn Egg,,383,66
-Pig Spawn Egg,,383,90
-Sheep Spawn Egg,,383,91
-Cow Spawn Egg,,383,92
-Chicken Spawn Egg,,383,93
-Squid Spawn Egg,,383,94
-Wolf Spawn Egg,,383,95
-Mooshroom Spawn Egg,,383,96
-Ocelot Spawn Egg,,383,98
-Horse Spawn Egg,,383,100
-Villager Spawn Egg,,383,120
-XP Bottle,,384,0
-Fire Charge,,385,0
+Eye of Ender,,381,0
+Spawn Elder Guardian,,383,2
+Spawn Wither Skeleton,,383,5
+Spawn Stray,,383,6
+Spawn Husk,,383,23
+Spawn Zombie Villager,,383,27
+Spawn Skeleton Horse,,383,28
+Spawn Zombie Horse,,383,29
+Spawn Donkey,,383,31
+Spawn Mule,,383,32
+Spawn Evoker,,383,34
+Spawn Vex,,383,35
+Spawn Vindicator,,383,36
+Spawn Creeper,,383,50
+Spawn Skeleton,,383,51
+Spawn Spider,,383,52
+Spawn Zombie,,383,54
+Spawn Slime,,383,55
+Spawn Ghast,,383,56
+Spawn Zombie Pigman,,383,57
+Spawn Enderman,,383,58
+Spawn Cave Spider,,383,59
+Spawn Silverfish,,383,60
+Spawn Blaze,,383,61
+Spawn Magma Cube,,383,62
+Spawn Bat,,383,65
+Spawn Witch,,383,66
+Spawn Endermite,,383,67
+Spawn Guardian,,383,68
+Spawn Shulker,,383,69
+Spawn Pig,,383,90
+Spawn Sheep,,383,91
+Spawn Cow,,383,92
+Spawn Chicken,,383,93
+Spawn Squid,,383,94
+Spawn Wolf,,383,95
+Spawn Mooshroom,,383,96
+Spawn Ocelot,,383,98
+Spawn Horse,,383,100
+Spawn Rabbit,,383,101
+Spawn Polar Bear,,383,102
+Spawn Llama,,383,103
+Spawn Parrot,,383,105
+Spawn Villager,,383,120
+Bottle o' Enchanting,,384,0
+Fireball,,385,0
 Book and Quill,,386,0
 Written Book,,387,0
 Emerald,,388,0
@@ -530,11 +659,12 @@ Baked Potato,,393,0
 Poisonous Potato,,394,0
 Empty Map,,395,0
 Golden Carrot,,396,0
-Skeleton Head,,397,0
-Wither Head,,397,1
+Skeleton Skull,,397,0
+Wither Skeleton Skull,,397,1
 Zombie Head,,397,2
 Player Head,,397,3
 Creeper Head,,397,4
+Dragon Head,,397,5
 Carrot on a Stick,,398,0
 Nether Star,,399,0
 Pumpkin Pie,,400,0
@@ -546,20 +676,74 @@ Nether Brick,,405,0
 Nether Quartz,,406,0
 TNT Minecart,,407,0
 Hopper Minecart,,408,0
+Prismarine Shard,,409,0
+Prismarine Crystals,,410,0
+Raw Rabbit,,411,0
+Cooked Rabbit,,412,0
+Rabbit Stew,,413,0
+Rabbit's Foot,,414,0
+Rabbit Hide,,415,0
+Armor Stand,,416,0
 Iron Horse Armor,,417,0
 Gold Horse Armor,,418,0
 Diamond Horse Armor,,419,0
 Lead,,420,0
 Name Tag,,421,0
-13 Disk,,2256,0
-Cat Disk,,2257,0
-Blocks Disk,,2258,0
-Chirp Disk,,2259,0
-Far Disk,,2260,0
-Mall Disk,,2261,0
-Mellohi Disk,,2262,0
-Stal Disk,,2263,0
-Strad Disk,,2264,0
-Ward Disk,,2265,0
-11 Disk,,2266,0
-Wait Disk,,2267,0
+Minecart with Command Block,,422,0
+Raw Mutton,,423,0
+Cooked Mutton,,424,0
+Black Banner,,425,0
+Red Banner,,425,1
+Green Banner,,425,2
+Brown Banner,,425,3
+Blue Banner,,425,4
+Purple Banner,,425,5
+Cyan Banner,,425,6
+Light Gray Banner,,425,7
+Gray Banner,,425,8
+Pink Banner,,425,9
+Lime Banner,,425,10
+Yellow Banner,,425,11
+Light Blue Banner,,425,12
+Magenta Banner,,425,13
+Orange Banner,,425,14
+White Banner,,425,15
+End Crystal,,426,0
+Spruce Door,,427,0
+Birch Door,,428,0
+Jungle Door,,429,0
+Acacia Door,,430,0
+Dark Oak Door,,431,0
+Chorus Fruit,,432,0
+Popped Chorus Fruit,,433,0
+Beetroot,,434,0
+Beetroot Seeds,,435,0
+Beetroot Soup,,436,0
+Dragon's Breath,,437,0
+Splash Potion,,438,0
+Spectral Arrow,,439,0
+Tipped Arrow,,440,0
+Lingering Potion,,441,0
+Shield,,442,0
+Elytra,,443,0
+Spruce Boat,,444,0
+Birch Boat,,445,0
+Jungle Boat,,446,0
+Acacia Boat,,447,0
+Dark Oak Boat,,448,0
+Totem of Undying,,449,0
+Shulker Shell,,450,0
+Iron Nugget,,452,0
+Knowledge Book,,453,0
+13 Disc,,2256,0
+Cat Disc,,2257,0
+Blocks Disc,,2258,0
+Chirp Disc,,2259,0
+Far Disc,,2260,0
+Mall Disc,,2261,0
+Mellohi Disc,,2262,0
+Stal Disc,,2263,0
+Strad Disc,,2264,0
+Ward Disc,,2265,0
+11 Disc,,2266,0
+Wait Disc,,2267,0
