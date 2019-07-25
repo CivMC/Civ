@@ -340,11 +340,17 @@ public class ExchangeRule {
 		try {
 			// Parse ruletype
 			RuleType ruleType = null;
-			if (args[0].equalsIgnoreCase("input")) {
-				ruleType = ExchangeRule.RuleType.INPUT;
-			}
-			else if (args[0].equalsIgnoreCase("output")) {
-				ruleType = ExchangeRule.RuleType.OUTPUT;
+			switch (args[0].toLowerCase()) {
+				case "i":
+				case "in":
+				case "input":
+					ruleType = ExchangeRule.RuleType.INPUT;
+					break;
+				case "o":
+				case "out":
+				case "output":
+					ruleType = ExchangeRule.RuleType.OUTPUT;
+					break;
 			}
 			if (ruleType != null) {
 				Material material = null;
