@@ -73,7 +73,7 @@ public class RailSwitchDatabase {
         "SELECT `dest` FROM `%1$s` WHERE `uuid`=?",
         DESTINATION_TABLE);
     removePlayerDestination = String.format(
-        "DELETE FROM `%1$s` WHERE `uuid`=?`,",
+        "DELETE FROM `%1$s` WHERE `uuid`=?",
         DESTINATION_TABLE);
   }
 
