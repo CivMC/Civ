@@ -28,7 +28,7 @@ public class PotionMetadata implements AdditionalMetadata {
 	
 	public PotionMetadata(PotionMeta meta) {
 		this.base = meta.getBasePotionData();
-		this.effects.addAll(meta.getCustomEffects());
+		this.effects.addAll(getCustomEffects(meta));
 		if (meta.hasDisplayName()) {
 			this.name = meta.getDisplayName();
 		}
@@ -233,10 +233,11 @@ public class PotionMetadata implements AdditionalMetadata {
 			return false;
 		}
 		// Check if custom effects were the same
-		if (this.effects.size() != potionMeta.getCustomEffects().size()) {
+		List<PotionEffect> effects = getCustomEffects(potionMeta);
+		if (this.effects.size() != effects.size()) {
 			return false;
 		}
-		if (!this.effects.containsAll(potionMeta.getCustomEffects())) {
+		if (!this.effects.containsAll(effects)) {
 			return false;
 		}
 		// Done, it's practically the same
@@ -246,6 +247,30 @@ public class PotionMetadata implements AdditionalMetadata {
 	@Override
 	public String getDisplayedInfo() {
 		return ChatColor.AQUA + "Potion Name: " + ChatColor.WHITE + this.name;
+	}
+
+	protected static List<PotionEffect> getCustomEffects(PotionMeta meta) {
+		if (meta == null || !meta.hasCustomEffects()) {
+			return new ArrayList<>();
+		}
+		List<PotionEffect> effects = new ArrayList<>();
+		for (PotionEffect effect : meta.getCustomEffects()) {
+			/**
+			 * Brewery uses the duration of Regeneration as a custom effect as a
+			 * unique identifier, so this effect must be removed otherwise brews
+			 * that are identical in every other way and even come from the same
+			 * batch will not match, so you could only sell one brew per rule.
+			 * @see <a href="https://github.com/DevotedMC/Brewery/blob/master/src/com/dre/brewery/Brew.java#L104">Brewery's code</a>
+			 * */
+			if (effect.getType().equals(PotionEffectType.REGENERATION)) {
+				if (effect.getDuration() < -1) {
+					continue;
+				}
+			}
+			// Otherwise add the effect
+			effects.add(effect);
+		}
+		return effects;
 	}
 
 }
