@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -218,67 +219,87 @@ public class ConfigParsing {
 	 * @param arg Parsed string containing the time format
 	 * @return How many ticks the given time value is
 	 */
-	public static long parseTime(String arg) {
+	public static long parseTime(String input) {
+		input = input.replace(" ", "").replace(",", "").toLowerCase();
 		long result = 0;
-		boolean set = true;
 		try {
-			result += Long.parseLong(arg);
-		} catch (NumberFormatException e) {
-			set = false;
-		}
-		if (set) {
+			result += Long.parseLong(input);
 			return result;
+		} catch (NumberFormatException e) {
 		}
-		while (!arg.equals("")) {
-			int length = 0;
-			switch (arg.charAt(arg.length() - 1)) {
-			case 't': // ticks
-				long ticks = getLastNumber(arg);
-				result += ticks;
-				length = String.valueOf(ticks).length() + 1;
-				break;
-			case 's': // seconds
-				long seconds = getLastNumber(arg);
-				result += 20 * seconds; // 20 ticks in a second
-				length = String.valueOf(seconds).length() + 1;
-				break;
-			case 'm': // minutes
-				long minutes = getLastNumber(arg);
-				result += 20 * 60 * minutes;
-				length = String.valueOf(minutes).length() + 1;
-				break;
-			case 'h': // hours
-				long hours = getLastNumber(arg);
-				result += 20 * 3600 * hours;
-				length = String.valueOf(hours).length() + 1;
-				break;
-			case 'd': // days, mostly here to define a 'never'
-				long days = getLastNumber(arg);
-				result += 20 * 3600 * 24 * days;
-				length = String.valueOf(days).length() + 1;
-				break;
-			default:
-				log.severe("Invalid time value in config:" + arg);
+		while (!input.equals("")) {
+			String typeSuffix = getSuffix(input, a -> Character.isLetter(a));
+			input = input.substring(0, input.length() - typeSuffix.length());
+			String numberSuffix = getSuffix(input, a -> Character.isDigit(a));
+			input = input.substring(0, input.length() - numberSuffix.length());
+			long duration;
+			if (numberSuffix.length() == 0) {
+				duration = 1;
+			} else {
+				duration = Long.parseLong(numberSuffix);
 			}
-			arg = arg.substring(0, arg.length() - length);
+			switch (typeSuffix) {
+			case "ms":
+			case "milli":
+			case "millis":
+				result += duration;
+				break;
+			case "s": // seconds
+			case "sec":
+			case "second":
+			case "seconds":
+				result += TimeUnit.SECONDS.toMillis(duration);
+				break;
+			case "m": // minutes
+			case "min":
+			case "minute":
+			case "minutes":
+				result += TimeUnit.MINUTES.toMillis(duration);
+				break;
+			case "h": // hours
+			case "hour":
+			case "hours":
+				result += TimeUnit.HOURS.toMillis(duration);
+				break;
+			case "d": // days
+			case "day":
+			case "days":
+				result += TimeUnit.DAYS.toMillis(duration);
+				break;
+			case "w": // weeks
+			case "week":
+			case "weeks":
+				result += TimeUnit.DAYS.toMillis(duration * 7);
+				break;
+			case "month": // weeks
+			case "months":
+				result += TimeUnit.DAYS.toMillis(duration * 30);
+				break;
+			case "never":
+			case "inf":
+			case "infinite":
+			case "perm":
+			case "perma":
+			case "forever":
+				// 1000 years counts as perma
+				result += TimeUnit.DAYS.toMillis(365 * 1000);
+			default:
+				// just ignore it
+			}
 		}
 		return result;
 	}
 
-	/**
-	 * Utility method used for time parsing
-	 */
-	private static long getLastNumber(String arg) {
+	private static String getSuffix(String arg, Predicate<Character> selector) {
 		StringBuilder number = new StringBuilder();
-		for (int i = arg.length() - 2; i >= 0; i--) {
-			if (Character.isDigit(arg.charAt(i))) {
+		for (int i = arg.length() - 1; i >= 0; i--) {
+			if (selector.test(arg.charAt(i))) {
 				number.insert(0, arg.substring(i, i + 1));
 			} else {
 				break;
 			}
 		}
-		long result = Long.parseLong(number.toString());
-		return result;
+		return number.toString();
 	}
 
 	/**

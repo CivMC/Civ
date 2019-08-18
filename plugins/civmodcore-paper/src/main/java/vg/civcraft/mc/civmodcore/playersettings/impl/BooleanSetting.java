@@ -28,7 +28,7 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 		if (getValue(player)) {
 			item = new ItemStack(Material.LIME_DYE);
 		} else {
-			item = new ItemStack(Material.ROSE_RED);
+			item = new ItemStack(Material.RED_DYE);
 		}
 		applyInfoToItemStack(item, player);
 		return item;
