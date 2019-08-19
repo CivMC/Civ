@@ -10,15 +10,9 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -40,25 +34,12 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		initApis(this);
 		this.newCommandHandler = new StandaloneCommandHandler(this);
 	}
 	
 	@Override
 	public void onDisable() {
 		PlayerSettingAPI.saveAll();
-	}
-
-	private static synchronized void initApis(ACivMod instance) {
-		if (!initializedAPIs) {
-			initializedAPIs = true;
-			instance.registerListener(new ClickableInventoryListener());
-			instance.registerListener(new ChatListener());
-			instance.registerListener(new ScoreBoardListener());
-			new NiceNames().loadNames();
-			new DialogManager();
-			ConfigurationSerialization.registerClass(ManagedDatasource.class);
-		}
 	}
 
 	protected void registerListener(Listener listener) {
