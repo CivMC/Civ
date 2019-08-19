@@ -13,7 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
@@ -41,9 +41,9 @@ public abstract class PlayerSetting<T> {
 	}
 
 	protected void applyInfoToItemStack(ItemStack item, UUID player) {
-		ISUtils.setName(item, niceName);
-		ISUtils.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
-		ISUtils.addLore(item, description);
+		ItemAPI.setDisplayName(item, niceName);
+		ItemAPI.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
+		ItemAPI.addLore(item, description);
 	}
 
 	/**

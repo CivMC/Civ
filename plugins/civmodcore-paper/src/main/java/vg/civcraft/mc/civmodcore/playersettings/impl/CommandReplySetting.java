@@ -8,8 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 public class CommandReplySetting extends StringSetting {
 	
@@ -63,10 +62,10 @@ public class CommandReplySetting extends StringSetting {
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack item = super.getGuiRepresentation(player);
-		ISUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
+		ItemAPI.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getExampleReply(player));
 		for(CommandArgument cArg : exampleArguments.values()) {
-			ISUtils.addLore(item, ChatColor.BLACK + "-------");
-			ISUtils.addLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with "  + cArg.description);
+			ItemAPI.addLore(item, ChatColor.BLACK + "-------");
+			ItemAPI.addLore(item, ChatColor.YELLOW + "%%" + cArg.identifier + "%% will be replaced with "  + cArg.description);
 		}
 		return item;
 	}

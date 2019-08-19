@@ -20,6 +20,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import net.minecraft.server.v1_14_R1.NBTTagCompound;
 import net.minecraft.server.v1_14_R1.NBTTagList;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum possible stack sizes. This offers
@@ -477,7 +478,7 @@ public class ItemMap {
 		List<ItemStack> items = new LinkedList<>();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			ItemStack is = entry.getKey().clone();
-			ISUtils.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
+			ItemAPI.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
 			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
 				int stacks = entry.getValue() / is.getType().getMaxStackSize();
 				int extra = entry.getValue() % is.getType().getMaxStackSize();
@@ -489,7 +490,7 @@ public class ItemMap {
 					out.append(" and " + extra);
 					out.append(" item" + (extra == 1 ? "" : "s"));
 				}
-				ISUtils.addLore(is, out.toString());
+				ItemAPI.addLore(is, out.toString());
 			}
 			items.add(is);
 		}
