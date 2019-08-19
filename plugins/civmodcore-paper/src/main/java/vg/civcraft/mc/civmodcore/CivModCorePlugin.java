@@ -11,12 +11,12 @@ import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
-public class CivModCorePlugin extends ACivMod {
+public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
 
 	@Override
-	public synchronized void onEnable() {
+	public void onEnable() {
 		super.onEnable();
 		instance = this;
 		// Save default resources
@@ -26,6 +26,7 @@ public class CivModCorePlugin extends ACivMod {
 		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		// Register commands, which must be done traditionally
+		// We can't use command annotations here as the annotation processor isn't available yet
 		this.newCommandHandler.registerCommand(new ConfigCommand());
 		// Load APIs
 		ItemAPI.loadItemNames();
@@ -35,7 +36,7 @@ public class CivModCorePlugin extends ACivMod {
 	}
 
 	@Override
-	public synchronized void onDisable() {
+	public void onDisable() {
 		super.onDisable();
 		instance = null;
 		// De-register listeners
