@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore;
 
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -27,6 +28,7 @@ public class CivModCorePlugin extends ACivMod {
 		// Register commands, which must be done traditionally
 		this.newCommandHandler.registerCommand(new ConfigCommand());
 		// Load APIs
+		ItemAPI.loadItemNames();
 		new NiceNames().loadNames();
 		new DialogManager();
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
@@ -39,6 +41,7 @@ public class CivModCorePlugin extends ACivMod {
 		// De-register listeners
 		HandlerList.unregisterAll(this);
 		// Unload APIs
+		ItemAPI.resetItemNames();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 	}
 
