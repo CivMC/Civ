@@ -42,9 +42,8 @@ public class CivModCorePlugin extends ACivMod {
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 	}
 
-	@Override
-	protected String getPluginName() {
-		return "CivModCore";
+	public static CivModCorePlugin getInstance() {
+		return instance;
 	}
 
 }

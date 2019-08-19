@@ -74,8 +74,6 @@ public abstract class ACivMod extends JavaPlugin {
 		this.handle = handle;
 	}
 
-	protected abstract String getPluginName();
-
 	/**
 	 * Simple SEVERE level logging.
 	 */
