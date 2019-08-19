@@ -66,5 +66,10 @@ public class TickCoolDownHandler<E> implements ICoolDownHandler<E> {
 	public long getTotalCoolDown() {
 		return cooldown;
 	}
+	
+	@Override
+	public void removeCooldown(E e) {
+		cds.remove(e);
+	}
 
 }
