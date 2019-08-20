@@ -77,11 +77,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
- 		if (args.length < 1) { // show help
-			return false;
-		}
-
-		return true;
+ 		return args.length >= 1;
 	}
 
 
@@ -185,9 +181,9 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 			Method method = clazz.getDeclaredMethod("getHandlerList");
 			HandlerList handler = (HandlerList) method.invoke(null);
 			RegisteredListener[] listeners = handler.getRegisteredListeners();
-			ArrayList<RegisteredListener> newOrdering = new ArrayList<RegisteredListener>(listeners.length);
-			ArrayList<RegisteredListener> thisLow = new ArrayList<RegisteredListener>();
-			ArrayList<RegisteredListener> thisHigh = new ArrayList<RegisteredListener>();
+			ArrayList<RegisteredListener> newOrdering = new ArrayList<>(listeners.length);
+			ArrayList<RegisteredListener> thisLow = new ArrayList<>();
+			ArrayList<RegisteredListener> thisHigh = new ArrayList<>();
 			for (RegisteredListener l : listeners) {
 				handler.unregister(l);
 				if (l.getPriority().equals(EventPriority.LOWEST)) {
@@ -236,8 +232,8 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 	@Override
 	public void dataBootstrap() {
 		if (config.isEnabled()) {
-			this.tracking = new ConcurrentHashMap<String, InsightStat>();
-			this.rebounders = new ArrayList<Class<? extends Event>>();
+			this.tracking = new ConcurrentHashMap<>();
+			this.rebounders = new ArrayList<>();
 		}
 	}
 

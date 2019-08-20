@@ -12,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -43,7 +44,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Dispenser;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -225,7 +225,6 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnabled() || config.isPotatoXPEnabled()) return;
 		try {
 			Material mat = event.getItemType();
-			if (mat == null) return;
 
 			if (Material.BAKED_POTATO.equals(mat)) {
 				event.setExpToDrop(0);
@@ -240,11 +239,8 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnabled()) return;
 		if (!config.isVillagerTrading()) {
 			Entity npc = event.getRightClicked();
-
-			if (npc != null) {
-				if (npc.getType().equals(EntityType.VILLAGER)) {
-					event.setCancelled(true);
-				}
+			if (npc.getType().equals(EntityType.VILLAGER)) {
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -275,9 +271,9 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnderChestUse()) {
 			Action action = event.getAction();
 			Material material = event.getClickedBlock().getType();
-			boolean ender_chest = action == Action.RIGHT_CLICK_BLOCK &&
+			boolean enderChest = action == Action.RIGHT_CLICK_BLOCK &&
 					material.equals(Material.ENDER_CHEST);
-			if (ender_chest) {
+			if (enderChest) {
 				event.setCancelled(true);
 			}
 		}
@@ -292,9 +288,9 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	}
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void disabledShulkerBoxHoppering(InventoryMoveItemEvent event) {
-		if (!config.isEnabled() || config.isShulkerBoxUse()) return;
-
-		if ((event.getDestination() == null) || (event.getSource() == null)) return;
+		if (!config.isEnabled() || config.isShulkerBoxUse()) {
+			return;
+		}
 		if (InventoryType.SHULKER_BOX.equals(event.getDestination().getType()) ||
 				InventoryType.SHULKER_BOX.equals(event.getSource().getType())) {
 			event.setCancelled(true);
@@ -379,7 +375,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e) {
 		if (config.isEnabled() && config.isBlockWaterInHell()) {
-			if ((e.getBlockClicked().getBiome() == Biome.HELL) && (e.getBucket() == Material.WATER_BUCKET)) {
+			if ((e.getBlockClicked().getBiome() == Biome.NETHER) && (e.getBucket() == Material.WATER_BUCKET)) {
 				e.setCancelled(true);
 				e.getItemStack().setType(Material.BUCKET);
 			}
@@ -388,16 +384,15 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onDispenseEvent(BlockDispenseEvent event) {
-		if (config.isEnabled() && config.isBlockWaterInHell()) {
-			if (event.getBlock().getType() == Material.DISPENSER) {
-				Dispenser disp = (Dispenser) event.getBlock().getState().getData();
-				Biome biome = event.getBlock().getRelative(disp.getFacing()).getBiome();
-
-				if (Biome.HELL.equals(biome) && event.getItem() != null && event.getItem().getType().equals(Material.WATER_BUCKET)) {
-					event.setItem(new ItemStack(Material.BUCKET, event.getItem().getAmount()));
-					event.setCancelled(true);
-				}
-
+		if (!config.isEnabled() || !config.isBlockWaterInHell()) {
+			return; 
+		}
+		if (event.getBlock().getType() == Material.DISPENSER) {
+			Dispenser disp = (Dispenser) event.getBlock().getBlockData();
+			Biome biome = event.getBlock().getRelative(disp.getFacing()).getBiome();
+			if (Biome.NETHER.equals(biome) && event.getItem().getType().equals(Material.WATER_BUCKET)) {
+				event.setItem(new ItemStack(Material.BUCKET, event.getItem().getAmount()));
+				event.setCancelled(true);
 			}
 		}
 	}
@@ -423,11 +418,8 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public void onVehicleExit(VehicleExitEvent event) {
 		if (config.isEnabled() && config.isMinecartTeleport()) {
 			final Vehicle vehicle = event.getVehicle();
-			if (vehicle == null) {
-				return;
-			}
 			final Entity passenger = event.getExited();
-			if (passenger == null || !(passenger instanceof Player)) {
+			if (!(passenger instanceof Player)) {
 				return;
 			}
 			final Player player = (Player) passenger;
@@ -445,13 +437,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public void onVehicleDestroy(VehicleDestroyEvent event) {
 		if (config.isEnabled() && config.isMinecartTeleport()) {
 			final Vehicle vehicle = event.getVehicle();
-			if (vehicle == null) {
-				return;
-			}
 			final List<Entity> passengers = vehicle.getPassengers();
-			if (passengers == null) {
-				return;
-			}
 			final Location vehicleLocation = vehicle.getLocation();
 			passengers.removeIf((passenger -> !(passenger instanceof Player)));
 			passengers.forEach((passenger) -> {
@@ -469,20 +455,15 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if (config.isEnabled() && config.isObsidianGenerators()) {
-			if (event.getBlock().getType() == Material.STATIONARY_LAVA ||
-					event.getBlock().getType() == Material.LAVA) {
+			if (event.getBlock().getType() == Material.LAVA) {
 				Block to = event.getToBlock();
 				if (to.getType() == Material.REDSTONE || to.getType() == Material.TRIPWIRE) {
-					if (to.getRelative(BlockFace.NORTH).getType() == Material.STATIONARY_WATER
-							|| to.getRelative(BlockFace.SOUTH).getType() == Material.STATIONARY_WATER
-							|| to.getRelative(BlockFace.WEST).getType() == Material.STATIONARY_WATER
-							|| to.getRelative(BlockFace.EAST).getType() == Material.STATIONARY_WATER
-							|| to.getRelative(BlockFace.NORTH).getType() == Material.WATER
+					if (to.getRelative(BlockFace.NORTH).getType() == Material.WATER
 							|| to.getRelative(BlockFace.SOUTH).getType() == Material.WATER
 							|| to.getRelative(BlockFace.WEST).getType() == Material.WATER
 							|| to.getRelative(BlockFace.EAST).getType() == Material.WATER) {
 							to.setType(Material.OBSIDIAN);
-						}
+					}
 				}
 			}
 		}

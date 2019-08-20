@@ -12,6 +12,8 @@ import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Dispenser;
+import org.bukkit.block.data.type.Hopper;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,8 +35,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.material.Dispenser;
-import org.bukkit.material.Hopper;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -162,7 +162,6 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (!config.isEnabled() || !config.isBlockElytraBreakBug()) return;
 		Block block = event.getBlock();
 		Player player = event.getPlayer();
-		if (block == null || player == null) return;
 
 		if (!player.getLocation().equals(block.getLocation())
 				&& player.getEyeLocation().getBlock().getType() != Material.AIR) {
@@ -173,7 +172,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityTeleport(EntityTeleportEvent event) {
-		if (!config.isEnabled() || config.canStorageTeleport()) return;
+		if (!config.isEnabled() || config.canStorageTeleport()) {
+			return;
+		}
 		if (event.getEntity() instanceof InventoryHolder) {
 			event.setCancelled(true);
 		}
@@ -181,7 +182,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onEntityPortal(EntityPortalEvent event) {
-		if (!config.isEnabled() || config.canStorageTeleport()) return;
+		if (!config.isEnabled() || config.canStorageTeleport()) {
+			return;
+		}
 		if (event.getEntity() instanceof InventoryHolder) {
 			event.setCancelled(true);
 		}
@@ -190,13 +193,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
-		if ((event.getDestination() == null) || (event.getSource() == null) ||
-				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
+		if (!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
 				!(InventoryType.HOPPER.equals(event.getSource().getType())) ||
 				!(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) || 
-				!(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) return;
-		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getState().getData();
-		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getState().getData();
+				!(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) {
+			return;
+		}
+		Hopper source = (Hopper) event.getSource().getLocation().getBlock().getBlockData();
+		Hopper dest = (Hopper) event.getDestination().getLocation().getBlock().getBlockData();
 		if (source.getFacing().getOppositeFace() == dest.getFacing()) {
 			//They're pointing into each other and will eventually dupe
 			event.setCancelled(true);
@@ -243,7 +247,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
 			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 
-			if (block.getType() == Material.ENDER_PORTAL) {
+			if (block.getType() == Material.END_PORTAL) {
 				event.setCancelled(true);
 			}
 		}
@@ -253,10 +257,10 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	public void onDispenseEvent(BlockDispenseEvent event) {
 		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
 			if (event.getBlock().getType() == Material.DISPENSER) {
-				Dispenser disp = (Dispenser) event.getBlock().getState().getData();
+				Dispenser disp = (Dispenser) event.getBlock().getBlockData();
 				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
 
-				if (type == Material.ENDER_PORTAL) {
+				if (type == Material.END_PORTAL) {
 					event.setCancelled(true);
 				}
 			}
@@ -268,12 +272,32 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (!config.isEnabled() || !config.stopBedBombing()) return;
 
 		Block b = event.getBlock();
-		if (!(b.getType() == Material.BED || b.getType() == Material.BED_BLOCK))
-			return;
-
+		switch (b.getType()) {
+			case BLACK_BED:
+			case BLUE_BED:
+			case BROWN_BED:
+			case CYAN_BED:
+			case GRAY_BED:
+			case GREEN_BED:
+			case LIME_BED:
+			case MAGENTA_BED:
+			case LIGHT_GRAY_BED:
+			case PURPLE_BED:
+			case PINK_BED:
+			case YELLOW_BED:
+			case WHITE_BED:
+			case RED_BED:
+			case ORANGE_BED:
+			case LIGHT_BLUE_BED:
+				break;
+			default:
+				return;
+		}
 		Environment env = b.getLocation().getWorld().getEnvironment();
 		Biome biome = b.getLocation().getBlock().getBiome();
-		if (env == Environment.NETHER || env == Environment.THE_END || Biome.HELL == biome || Biome.SKY == biome) {
+		if (env == Environment.NETHER || env == Environment.THE_END || Biome.NETHER == biome 
+				|| Biome.END_BARRENS == biome || Biome.END_HIGHLANDS == biome
+				|| Biome.END_MIDLANDS == biome || Biome.SMALL_END_ISLANDS == biome) {
 			event.setCancelled(true);
 		}
 	}
@@ -281,7 +305,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		if(config.isEnabled() && config.stopTreeWraparound()) {
-			int maxY = 0, minY = 257;
+			int maxY = 0;
+			int minY = 257;
 			for(BlockState bs : event.getBlocks()) {
 				final int y = bs.getLocation().getBlockY();
 				maxY = Math.max(maxY, y);
@@ -322,35 +347,108 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			case ENDER_CHEST:
 				height = 0.875;
 				break;
-			case STEP:
+			case ACACIA_SLAB:
+			case ANDESITE_SLAB:
+			case BIRCH_SLAB:
+			case BRICK_SLAB:
+			case COBBLESTONE_SLAB:
+			case CUT_RED_SANDSTONE_SLAB:
+			case CUT_SANDSTONE_SLAB:
+			case DARK_OAK_SLAB:
+			case DARK_PRISMARINE_SLAB:
+			case DIORITE_SLAB:
+			case END_STONE_BRICK_SLAB:
+			case GRANITE_SLAB:
+			case JUNGLE_SLAB:
+			case MOSSY_COBBLESTONE_SLAB:
+			case STONE_SLAB:
+			case STONE_BRICK_SLAB:
+			case SPRUCE_SLAB:
+			case SMOOTH_STONE_SLAB:
+			case SMOOTH_SANDSTONE_SLAB:
+			case SMOOTH_RED_SANDSTONE_SLAB:
+			case SMOOTH_QUARTZ_SLAB:
+			case SANDSTONE_SLAB:
+			case RED_SANDSTONE_SLAB:
+			case RED_NETHER_BRICK_SLAB:
+			case QUARTZ_SLAB:
+			case PURPUR_SLAB:
+			case PRISMARINE_SLAB:
+			case PRISMARINE_BRICK_SLAB:
+			case POLISHED_GRANITE_SLAB:
+			case POLISHED_DIORITE_SLAB:
+			case POLISHED_ANDESITE_SLAB:
+			case PETRIFIED_OAK_SLAB:
+			case OAK_SLAB:
+			case NETHER_BRICK_SLAB:
+			case MOSSY_STONE_BRICK_SLAB:
 				lowerBlockBypass = true;
 				height = 0.5;
 				break;
-			case WATER_LILY:
+			case LILY_PAD:
 				height = 0.016;
 				break;
-			case ENCHANTMENT_TABLE:
+			case ENCHANTING_TABLE:
 				lowerBlockBypass = true;
 				height = 0.75;
 				break;
-			case BED:
-			case BED_BLOCK:
+			case BLACK_BED:
+			case BLUE_BED:
+			case BROWN_BED:
+			case CYAN_BED:
+			case GRAY_BED:
+			case GREEN_BED:
+			case LIME_BED:
+			case MAGENTA_BED:
+			case LIGHT_GRAY_BED:
+			case PURPLE_BED:
+			case PINK_BED:
+			case YELLOW_BED:
+			case WHITE_BED:
+			case RED_BED:
+			case ORANGE_BED:
+			case LIGHT_BLUE_BED:
 				break;
 			case FLOWER_POT:
-			case FLOWER_POT_ITEM:
 				height = 0.375;
 				break;
-			case SKULL:
+			case SKELETON_SKULL:
+			case WITHER_SKELETON_WALL_SKULL:
+			case WITHER_SKELETON_SKULL:
+			case SKELETON_WALL_SKULL:
 				height = 0.5;
 				break;
 			default:
 				break;
 			}
 			switch (below.getType()) {
-			case FENCE:
-			case FENCE_GATE:
-			case NETHER_FENCE:
-			case COBBLE_WALL:
+			case ACACIA_FENCE:
+			case ACACIA_FENCE_GATE:
+			case BIRCH_FENCE:
+			case BIRCH_FENCE_GATE:
+			case DARK_OAK_FENCE:
+			case DARK_OAK_FENCE_GATE:
+			case JUNGLE_FENCE:
+			case JUNGLE_FENCE_GATE:
+			case SPRUCE_FENCE_GATE:
+			case SPRUCE_FENCE:
+			case OAK_FENCE_GATE:
+			case OAK_FENCE:
+			case NETHER_BRICK_FENCE:
+			case ANDESITE_WALL:
+			case BRICK_WALL:
+			case STONE_BRICK_WALL:
+			case COBBLESTONE_WALL:
+			case DIORITE_WALL:
+			case END_STONE_BRICK_WALL:
+			case GRANITE_WALL:
+			case SANDSTONE_WALL:
+			case RED_SANDSTONE_WALL:
+			case MOSSY_COBBLESTONE_WALL:
+			case MOSSY_STONE_BRICK_WALL:
+			case PRISMARINE_WALL:
+			case RED_NETHER_BRICK_WALL:
+			case NETHER_BRICK_WALL:
 				height = 0.5;
 				break;
 			default:

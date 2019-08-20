@@ -153,7 +153,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		Player player = event.getPlayer();
 		Location from = event.getFrom();
 		Location to = event.getTo();
-		sb.append(String.format(" %16s", player != null ? player.getName() : "--unknown--"));
+		sb.append(String.format(" %16s", player.getName()));
 		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
 		sb.append(" ->");
 		if (to != null) {

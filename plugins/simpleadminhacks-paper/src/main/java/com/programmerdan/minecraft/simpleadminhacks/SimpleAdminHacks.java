@@ -1,13 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
@@ -17,13 +10,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.google.common.reflect.ClassPath;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.

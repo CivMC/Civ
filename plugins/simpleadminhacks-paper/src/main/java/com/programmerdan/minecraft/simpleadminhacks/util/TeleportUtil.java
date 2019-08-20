@@ -13,6 +13,11 @@ import org.bukkit.util.Vector;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 
 public class TeleportUtil {
+	
+	private TeleportUtil() {
+		//static only, no constructor
+	}
+	
 	private static boolean checkForTeleportSpace(Location loc) {
 		final Block block = loc.getBlock();
 		final Material mat = block.getType();
@@ -51,7 +56,7 @@ public class TeleportUtil {
 		// Create a sliding window of block types and track how many of those
 		//  are solid. Keep fetching the block below the current block to move down.
 		int air_count = 0;
-		LinkedList<Material> air_window = new LinkedList<Material>();
+		LinkedList<Material> air_window = new LinkedList<>();
 		loc.setY((float)world.getMaxHeight() - 2);
 		Block block = world.getBlockAt(loc);
 		for (int i = 0; i < 4; ++i) {
@@ -64,8 +69,8 @@ public class TeleportUtil {
 		}
 		// Now that the window is prepared, scan down the Y-axis.
 		while (block.getY() >= 1) {
-			Material block_mat = block.getType();
-			if (block_mat.isSolid()) {
+			Material blockMat = block.getType();
+			if (blockMat.isSolid()) {
 				if (air_count == 4) {
 					player.setVelocity(new Vector());
 					loc = block.getLocation();
@@ -81,7 +86,7 @@ public class TeleportUtil {
 			} else {
 				++air_count;
 			}
-			air_window.addLast(block_mat);
+			air_window.addLast(blockMat);
 			if (!air_window.removeFirst().isSolid()) {
 				--air_count;
 			}

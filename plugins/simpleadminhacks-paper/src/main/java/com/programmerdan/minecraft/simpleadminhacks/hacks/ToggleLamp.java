@@ -1,10 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import java.util.logging.Level;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.entity.Player;
@@ -98,12 +97,9 @@ public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener
 				}
 			}
 		}
-		
-		try {
-			switchLamp(clickedBlock, !clickedBlockMat.equals(Material.REDSTONE_LAMP_ON));
-		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-			plugin().log(Level.SEVERE, "Error when toggling lamp: ", e);
-		}
+		Lightable lightable = (Lightable) clickedBlock.getBlockData();
+		lightable.setLit(lightable.isLit());
+		clickedBlock.setBlockData(lightable);
 		
 		eventPlayer.getWorld().playSound(clickedBlock.getLocation(), Sound.BLOCK_LEVER_CLICK, 0.5F, 1.0F);
 		

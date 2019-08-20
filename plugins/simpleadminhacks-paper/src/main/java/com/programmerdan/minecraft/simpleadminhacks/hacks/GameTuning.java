@@ -8,6 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
@@ -35,8 +36,10 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerBedEnterEvent.BedEnterResult;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.meta.SpawnEggMeta;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
@@ -202,28 +205,16 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			}
 		}
 	}
-
-	@SuppressWarnings("deprecation")
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void bedRClickToSetSpawn(PlayerInteractEvent event) {
-		if (!config.isEnabled() || !config.areDaytimeBedsEnabled() || 
-				event.getAction() != Action.RIGHT_CLICK_BLOCK || 
-				event.getClickedBlock().getType() != Material.bed) {
+	
+	@EventHandler
+	public void enterBed(PlayerBedEnterEvent e) {
+		if (!config.isEnabled() || !config.areDaytimeBedsEnabled()) {
 			return;
 		}
-
-		if (event.getClickedBlock() == null) return;
-
-		// Let plugins that already watch for and cancel this event have a turn, like ExilePearl
-		PlayerBedEnterEvent pbee = new PlayerBedEnterEvent(event.getPlayer(), event.getClickedBlock());
-		Bukkit.getServer().getPluginManager().callEvent(pbee);
-		if (pbee.isCancelled()) {
-			return;
+		if (e.getBedEnterResult() == BedEnterResult.NOT_POSSIBLE_NOW || e.getBedEnterResult() == BedEnterResult.NOT_SAFE) {
+			e.getPlayer().setBedSpawnLocation(e.getBed().getLocation(), false);
+			e.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
 		}
-
-		event.getPlayer().setBedSpawnLocation(event.getClickedBlock().getLocation(), false);
-		Location loc = event.getClickedBlock().getLocation();
-		event.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -251,7 +242,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPortalCreate(PortalCreateEvent event) {
 		if (config.isEnabled() && !config.isReturnNetherPortal()) {
-			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getName().equals("world_nether")) {
+			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getEnvironment() == Environment.NETHER) {
 				event.setCancelled(true);
 			}
 		}
@@ -305,12 +296,13 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(config.isEnabled() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			boolean cancel = !config.isEnderChestInventories() && event.getClickedBlock().getType() == Material.ENDER_CHEST;
-			cancel = cancel || (!config.canChangeSpawnerType() && event.getClickedBlock().getType() == Material.MOB_SPAWNER
-					&& event.getItem() != null && event.getItem().getType() == Material.MONSTER_EGG);
-			event.setCancelled(cancel);
+		if(!config.isEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
 		}
+		boolean cancel = !config.isEnderChestInventories() && event.getClickedBlock().getType() == Material.ENDER_CHEST;
+		cancel |= !config.canChangeSpawnerType() && event.getClickedBlock().getType() == Material.SPAWNER
+				&& event.getItem() != null && event.getItem().getItemMeta() instanceof SpawnEggMeta;
+		event.setCancelled(cancel);
 	}
 
 	@EventHandler

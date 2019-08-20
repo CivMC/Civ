@@ -42,7 +42,9 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     @Override
     public void registerListeners() {
-    	if (!config.isEnabled()) return;
+    	if (!config.isEnabled()) {
+    		return;
+    	}
         Bukkit.getPluginManager().registerEvents(this, plugin());
     }
 
@@ -51,7 +53,9 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 
     @Override
     public void dataBootstrap() {
-    	if (!config.isEnabled()) return;
+    	if (!config.isEnabled()) {
+    		return;
+    	}
         messages = new HashSet<>();
 
         manager = Citadel.getReinforcementManager();
@@ -80,15 +84,14 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
      */
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
     public void onBlockBreak(BlockBreakEvent eve) {
-    	if (!config.isEnabled()) return;
-    	if (eve.getPlayer() == null) return;
-    	if (eve.getBlock() == null) return;
+    	if (!config.isEnabled()) {
+    		return;
+    	}
     	Material bbe = eve.getBlock().getType();
-		if (bbe == null) return;
 		if (manager == null) manager = Citadel.getReinforcementManager();
         if (Material.CHEST.equals(bbe) || Material.TRAPPED_CHEST.equals(bbe)
         		|| Material.ENDER_CHEST.equals(bbe) || Material.FURNACE.equals(bbe)
-        		|| Material.BURNING_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
+        		|| Material.BLAST_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
         		|| Material.DROPPER.equals(bbe) || Material.HOPPER.equals(bbe)) {
             if(manager.isReinforced(eve.getBlock())) {
                 String name = eve.getPlayer().getDisplayName();

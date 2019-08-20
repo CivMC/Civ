@@ -418,7 +418,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		tickErrors = 0;
 
 		for (int i = 0; i < LQ_CYCLES; i++) {
-			hqTickMap[i] = new ConcurrentHashMap<String, ClassMethod>(100);
+			hqTickMap[i] = new ConcurrentHashMap<>(100);
 		}
 
 		lastTick = System.nanoTime();
@@ -431,7 +431,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		}, 0l, 1l);
 
 		tickVisualize = new TimingsMap();
-		bindVisualizers = new ConcurrentHashMap<String, BindTimingMap>();
+		bindVisualizers = new ConcurrentHashMap<>();
 
 		rootThread = Thread.currentThread().getId();
 		threadBean = ManagementFactory.getThreadMXBean();
@@ -1057,7 +1057,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 					.append(ChatColor.AQUA).append("\n   Elapsed Time: \n").append(ChatColor.BLUE)
 					.append(String.format(" %13d", hqToLqElapsedTime[checkTick])).append(ChatColor.AQUA).append("ns");
 
-			TreeMap<Long, String> reveals = new TreeMap<Long, String>();
+			TreeMap<Long, String> reveals = new TreeMap<>();
 
 			for (ClassMethod cm : hqTickMap[checkTick].values()) {
 					reveals.compute(cm.max(), (k, S) -> {

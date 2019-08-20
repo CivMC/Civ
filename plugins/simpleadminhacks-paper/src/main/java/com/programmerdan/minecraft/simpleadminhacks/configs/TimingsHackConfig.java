@@ -11,9 +11,9 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 public class TimingsHackConfig extends SimpleHackConfig {
 
-	private Short timingsMap;
-	private Map<String, Short> bindMaps;
-	private Map<Short, String> reverseBindMaps;
+	private Integer timingsMap;
+	private Map<String, Integer> bindMaps;
+	private Map<Integer, String> reverseBindMaps;
 
 	public TimingsHackConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -21,45 +21,45 @@ public class TimingsHackConfig extends SimpleHackConfig {
 
 	@Override
 	protected void wireup(ConfigurationSection config) {
-		timingsMap = config.contains("timingMap") ? (short) config.getInt("timingMap") : null;
-		bindMaps = new ConcurrentHashMap<String, Short>();
-		reverseBindMaps = new ConcurrentHashMap<Short, String>();
+		timingsMap = config.contains("timingMap") ? config.getInt("timingMap") : null;
+		bindMaps = new ConcurrentHashMap<>();
+		reverseBindMaps = new ConcurrentHashMap<>();
 		if (config.contains("bindings")) {
 			ConfigurationSection bindings = config.getConfigurationSection("bindings");
 			Set<String> keys = bindings.getKeys(false);
 			for (String key : keys) {
-				bindMaps.put(key, (short) bindings.getInt(key));
-				reverseBindMaps.put((short) bindings.getInt(key), key);
+				bindMaps.put(key, bindings.getInt(key));
+				reverseBindMaps.put(bindings.getInt(key), key);
 			}
 		}
 	}
 
-	public Short getTimingsMap() {
+	public Integer getTimingsMap() {
 		return timingsMap;
 	}
 
-	public void setTimingsMap(short mapId) {
-		timingsMap = mapId;
-		getBase().set("timingMap", mapId);
+	public void setTimingsMap(int i) {
+		timingsMap = i;
+		getBase().set("timingMap", i);
 	}
 
-	public Short getBindMap(String bind) {
+	public Integer getBindMap(String bind) {
 		if (bind == null) {
 			return null;
 		}
 		return bindMaps.get(bind);
 	}
 
-	public void setBindMap(String bind, short mapId) {
-		Short prior = bindMaps.replace(bind, mapId);
+	public void setBindMap(String bind, int i) {
+		Integer prior = bindMaps.replace(bind, i);
 		if (prior != null) {
 			reverseBindMaps.remove(prior);
 		}
-		reverseBindMaps.replace(mapId, bind);
-		getBase().set("bindings." + bind, mapId);
+		reverseBindMaps.replace(i, bind);
+		getBase().set("bindings." + bind, i);
 	}
 
-	public String getBindFromId(short mapId) {
-		return reverseBindMaps.get(mapId);
+	public String getBindFromId(int i) {
+		return reverseBindMaps.get(i);
 	}
 }
