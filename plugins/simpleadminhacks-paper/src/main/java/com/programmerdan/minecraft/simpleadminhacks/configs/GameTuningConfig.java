@@ -104,7 +104,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		this.preventFallingThroughBedrock = config.getBoolean("preventFallingThroughBedrock", true);
 
-		noPlace = new HashSet<Material>();
+		noPlace = new HashSet<>();
 		if(config.isList("noplace")) {
 			for(String entry : config.getStringList("noplace")) {
 				try {
@@ -124,8 +124,8 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 * @author ProgrammerDan
 	 */
 	private void wireupChunkLimits(ConfigurationSection config) {
-		this.blockEntityLimits = new HashMap<Material, Integer>();
-		this.exemptFromLimits = new HashSet<UUID>();
+		this.blockEntityLimits = new HashMap<>();
+		this.exemptFromLimits = new HashSet<>();
 		this.chunkLimitsEnabled = false;
 		if (config == null) return;
 

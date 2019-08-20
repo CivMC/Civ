@@ -48,7 +48,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 * Track standard quit events to monitor newfriend playtime on the day of join.
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void NewLeaveEvent(PlayerQuitEvent exit) {
+	public void newLeaveEvent(PlayerQuitEvent exit) {
 		if (!config.isEnabled()) return;
 		doLeave(exit.getPlayer());
 	}
@@ -57,7 +57,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 * Track standard kick events to monitor newfriend playtime on the day of join.
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void NewKickEvent(PlayerKickEvent exit) {
+	public void newKickEvent(PlayerKickEvent exit) {
 		if (!config.isEnabled()) return;
 		doLeave(exit.getPlayer());
 	}
@@ -95,7 +95,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 		newfriendNames.put(newUUID, newfriend.getName());
 		newfriendSessionTime.put(newUUID, new SessionTime(System.currentTimeMillis()));
 
-		if (config.getAnnounceBroadcast().size() > 0) {
+		if (!config.getAnnounceBroadcast().isEmpty()) {
 			// Prepare message
 			String cleanMessage = cleanMessage(join);
 
@@ -155,8 +155,8 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 
 	@Override
 	public void dataBootstrap() {
-		this.newfriendNames = new HashMap<UUID, String>();
-		this.newfriendSessionTime = new HashMap<UUID, SessionTime>();
+		this.newfriendNames = new HashMap<>();
+		this.newfriendSessionTime = new HashMap<>();
 	}
 
 	@Override
@@ -185,7 +185,7 @@ public class NewfriendAssist extends SimpleHack<NewfriendAssistConfig> implement
 	 */
 	@Override
 	public String status() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (config != null && config.isEnabled()) {
 			sb.append("NewfriendAssist.PlayerJoin/Quit/KickEvent monitoring active");
 		} else {

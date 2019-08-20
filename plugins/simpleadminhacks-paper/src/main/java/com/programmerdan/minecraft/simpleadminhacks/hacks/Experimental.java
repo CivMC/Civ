@@ -92,12 +92,10 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 		Player player = (Player) sender;
 		ItemStack item = player.getInventory().getItemInMainHand();
-		if (item != null) {
-			YamlConfiguration yml = new YamlConfiguration();
-			yml.set("template", item);
-			plugin().log(yml.saveToString());
-			sender.sendMessage(yml.saveToString());
-		}
+		YamlConfiguration yml = new YamlConfiguration();
+		yml.set("template", item);
+		plugin().log(yml.saveToString());
+		sender.sendMessage(yml.saveToString());
 		return true;
 	}
 
@@ -105,7 +103,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	private void monitorTeleportLow(PlayerTeleportEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isTeleportSpy()) return;
-		StringBuffer sb = new StringBuffer("[LO] ");
+		StringBuilder sb = new StringBuilder("[LO] ");
 		logTeleport(event, sb);
 	}
 
@@ -113,7 +111,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	private void monitorTeleportHigh(PlayerTeleportEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isTeleportSpy()) return;
-		StringBuffer sb = new StringBuffer("[HI] ");
+		StringBuilder sb = new StringBuilder("[HI] ");
 		logTeleport(event, sb);
 	}
 
@@ -133,38 +131,30 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 					this.cancel();
 					return;
 				}
-				if (playerUUID != null) {
-					Player player = plugin().getServer().getPlayer(playerUUID);
-					if (player != null) {
-						StringBuffer sb = new StringBuffer("Tracking: ");
-						sb.append(playerUUID);
-						logPlayer(player, sb);
-						plugin().log(sb.toString());
-					} else {
-						StringBuffer sb = new StringBuffer("Lost: ");
-						sb.append(playerUUID);
-						plugin().log(sb.toString());
-						this.cancel();
-					}
+				Player player = plugin().getServer().getPlayer(playerUUID);
+				if (player != null) {
+					StringBuilder sb = new StringBuilder("Tracking: ");
+					sb.append(playerUUID);
+					logPlayer(player, sb);
+					plugin().log(sb.toString());
 				} else {
+					StringBuilder sb = new StringBuilder("Lost: ");
+					sb.append(playerUUID);
+					plugin().log(sb.toString());
 					this.cancel();
 				}
 			}
 		}.runTaskTimer(plugin(), 2l, 4l);
 	}
 
-	private void logTeleport(PlayerTeleportEvent event, StringBuffer sb) {
+	private void logTeleport(PlayerTeleportEvent event, StringBuilder sb) {
 		sb.append(event.isCancelled() ? "C " : "A ");
 		sb.append(event.getCause().name());
 		Player player = event.getPlayer();
 		Location from = event.getFrom();
 		Location to = event.getTo();
 		sb.append(String.format(" %16s", player != null ? player.getName() : "--unknown--"));
-		if (from != null) {
-			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
-		} else {
-			sb.append(" (none)");
-		}
+		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
 		sb.append(" ->");
 		if (to != null) {
 			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", to.getWorld().getName(), to.getX(), to.getY(), to.getZ()));
@@ -177,37 +167,27 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		plugin().log(sb.toString());
 	}
 
-	private void logPlayer(final Player player, StringBuffer sb) {
+	private void logPlayer(final Player player, StringBuilder sb) {
 		sb.append(player.getWorld().getName());
 		Location feet = player.getLocation();
 		Location eyes = player.getEyeLocation();
-		if (feet != null) {
-			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", feet.getWorld().getName(), feet.getX(), feet.getY(), feet.getZ()));
-		} else {
-			sb.append(" (none)");
-		}
-		if (eyes != null) {
-			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", eyes.getWorld().getName(), eyes.getX(), eyes.getY(), eyes.getZ()));
-		} else {
-			sb.append(" (none)");
-		}
+		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", feet.getWorld().getName(), feet.getX(), feet.getY(), feet.getZ()));
+		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", eyes.getWorld().getName(), eyes.getX(), eyes.getY(), eyes.getZ()));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	private void monitorCombatLow(EntityDamageByEntityEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isCombatSpy()) return;
-		StringBuffer sb = new StringBuffer("[LO] ");
+		StringBuilder sb = new StringBuilder("[LO] ");
 		logCombat(event, sb);
 	}
 
-	private void logCombat(EntityDamageByEntityEvent event, StringBuffer sb) {
+	private void logCombat(EntityDamageByEntityEvent event, StringBuilder sb) {
 		sb.append(event.isCancelled() ? "C " : "A ");
 		sb.append(event.getCause().name());
 		sb.append(String.format(", %5.2f->%5.2f", event.getDamage(), event.getFinalDamage()));
-		sb.append(String.format(", %16s v %16s",
-			event.getDamager() != null ? event.getDamager().getName() : "--unknown--",
-			event.getEntity() != null ? event.getEntity().getName() : "--unknown--" ));
+		sb.append(String.format(", %16s v %16s", event.getDamager().getName(), event.getEntity().getName()));
 		for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
 			sb.append(", ").append(mod.name());
 			try {
@@ -223,7 +203,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	private void monitorCombatHigh(EntityDamageByEntityEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isCombatSpy()) return;
-		StringBuffer sb = new StringBuffer("[HI]: ");
+		StringBuilder sb = new StringBuilder("[HI]: ");
 		logCombat(event, sb);
 	}
 

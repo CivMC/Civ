@@ -43,7 +43,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 	 * @param event
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
-	public void CTEvent(PlayerCombatTagEvent event) {
+	public void ctEvent(PlayerCombatTagEvent event) {
 		if (!config.isEnabled()) return; // ignore if off
 		if (event.getVictim() == null || event.getAttacker() == null) return; // ignore non-pvp and admin-pvp
 		plugin().debug("  Victim: {0} Attacker: {1}", event.getVictim().getName(), event.getAttacker().getName());
@@ -99,7 +99,7 @@ public class CTAnnounce extends SimpleHack<CTAnnounceConfig> implements Listener
 
 	@Override
 	public void dataBootstrap() {
-		lastCTAnnounce = new ConcurrentHashMap<UUID, Long>();
+		lastCTAnnounce = new ConcurrentHashMap<>();
 	}
 
 	@Override

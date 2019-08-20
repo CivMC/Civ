@@ -63,7 +63,9 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		if (!this.elytraUse) plugin().log("  Elytra use is disabled");
 
 		this.chorusFruitUse = config.getBoolean("chorusFruitTeleportation", false);
-		if (!this.chorusFruitUse) plugin().log("  Chorus Fruit Teleportation is disabled");
+		if (!this.chorusFruitUse) {
+			plugin().log("  Chorus Fruit Teleportation is disabled");
+		}
 
  		this.weepingAngel = config.getBoolean("weepingAngel.enabled", false);
 		if (this.weepingAngel) {

@@ -29,7 +29,7 @@ public class BadBoyWatchConfig extends SimpleHackConfig {
 			Material.JUKEBOX,
 			Material.NOTE_BLOCK,
 			Material.BEACON,
-			Material.ENCHANTMENT_TABLE,
+			Material.ENCHANTING_TABLE,
 			Material.ENDER_CHEST,
 			Material.FURNACE,
 			Material.SPONGE);
@@ -48,7 +48,7 @@ public class BadBoyWatchConfig extends SimpleHackConfig {
 		plugin().log(Level.INFO, "  Minimum Breakpath Depth To Match: {0}", this.minDepthToMatch);
 		@SuppressWarnings("unchecked")
 		List<String> watch = (List<String>) config.getList("watchedMaterials");
-		this.watchedMaterials = new HashSet<Material>();
+		this.watchedMaterials = new HashSet<>();
 		if (watch == null || watch.isEmpty()) {
 			this.watchedMaterials.addAll(defaultWatched);
 			plugin().log(Level.INFO, "  Adding default watch set");

@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,7 +22,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.ToggleLampConfig;
 
-import net.minecraft.server.v1_12_R1.World;
+import net.minecraft.server.v1_14_R1.World;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
@@ -48,11 +48,9 @@ public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener
 		}
 		
 		Block clickedBlock = event.getClickedBlock();
-		
 		if(clickedBlock == null) {
 			return;
 		}
-		
 		
 		// if it wasn't a right click
 		if(event.getAction() != Action.RIGHT_CLICK_BLOCK) {
@@ -71,7 +69,7 @@ public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener
 		Player eventPlayer = event.getPlayer();
 		Material clickedBlockMat = clickedBlock.getType();
 
-		if(!(clickedBlockMat == Material.REDSTONE_LAMP_ON || clickedBlockMat == Material.REDSTONE_LAMP_OFF)) {
+		if(clickedBlockMat != Material.REDSTONE_LAMP) {
 			return;
 		}
 		
@@ -116,13 +114,10 @@ public class ToggleLamp extends SimpleHack<ToggleLampConfig> implements Listener
 	public void onBlockPhysics(BlockPhysicsEvent event) {
 		Block eventBlock = event.getBlock();
 		Material eventMat = eventBlock.getType();
-		
-		if(eventMat != Material.REDSTONE_LAMP_ON && eventMat != Material.REDSTONE_LAMP_OFF) {
+		if(eventMat != Material.REDSTONE_LAMP) {
 			return;
 		}
-		
-		boolean toggled = eventBlock.hasMetadata(META_TOGGLED) ? eventBlock.getMetadata(META_TOGGLED).get(0).asBoolean() : false;
-		
+		boolean toggled = eventBlock.hasMetadata(META_TOGGLED) && eventBlock.getMetadata(META_TOGGLED).get(0).asBoolean();
 		if(toggled) {
 			event.setCancelled(true);
 		}

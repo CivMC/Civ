@@ -12,5 +12,9 @@ public class BasicHackConfig extends SimpleHackConfig {
 	protected void wireup(ConfigurationSection config) {
 		//not needed
 	}
+	
+	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
+	}
 
 }

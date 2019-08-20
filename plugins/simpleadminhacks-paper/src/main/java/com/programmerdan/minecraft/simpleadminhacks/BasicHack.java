@@ -19,6 +19,9 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 	
 	@Override
 	public void enable() {
+		if(!config.isEnabled()) {
+			return;
+		}
 		dataBootstrap();
 		registerCommands();
 		registerListeners();

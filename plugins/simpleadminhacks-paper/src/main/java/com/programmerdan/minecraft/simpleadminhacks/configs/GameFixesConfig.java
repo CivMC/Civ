@@ -73,15 +73,30 @@ public class GameFixesConfig extends SimpleHackConfig {
 	}
 
 	private void wireUpArrays() {
-		bfArray = new ArrayList<BlockFace>();
-		railArray = new ArrayList<Material>();
-		pistonArray = new ArrayList<Material>();
+		bfArray = new ArrayList<>();
+		railArray = new ArrayList<>();
+		pistonArray = new ArrayList<>();
 
-		railArray.add(Material.RAILS);
+		railArray.add(Material.RAIL);
 		railArray.add(Material.ACTIVATOR_RAIL);
 		railArray.add(Material.DETECTOR_RAIL);
 		railArray.add(Material.POWERED_RAIL);
-		railArray.add(Material.CARPET);
+		railArray.add(Material.WHITE_CARPET);
+		railArray.add(Material.RED_CARPET);
+		railArray.add(Material.BLACK_CARPET);
+		railArray.add(Material.BLUE_CARPET);
+		railArray.add(Material.BROWN_CARPET);
+		railArray.add(Material.CYAN_CARPET);
+		railArray.add(Material.GRAY_CARPET);
+		railArray.add(Material.GREEN_CARPET);
+		railArray.add(Material.LIGHT_BLUE_CARPET);
+		railArray.add(Material.LIGHT_GRAY_CARPET);
+		railArray.add(Material.LIME_CARPET);
+		railArray.add(Material.YELLOW_CARPET);
+		railArray.add(Material.PURPLE_CARPET);
+		railArray.add(Material.PINK_CARPET);
+		railArray.add(Material.ORANGE_CARPET);
+		railArray.add(Material.MAGENTA_CARPET);
 
 		bfArray.add(BlockFace.NORTH);
 		bfArray.add(BlockFace.SOUTH);
@@ -90,10 +105,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 		bfArray.add(BlockFace.UP);
 		bfArray.add(BlockFace.DOWN);
 
-		pistonArray.add(Material.PISTON_BASE);
-		pistonArray.add(Material.PISTON_EXTENSION);
-		pistonArray.add(Material.PISTON_MOVING_PIECE);
-		pistonArray.add(Material.PISTON_STICKY_BASE);
+		pistonArray.add(Material.PISTON);
+		pistonArray.add(Material.PISTON_HEAD);
+		pistonArray.add(Material.MOVING_PISTON);
+		pistonArray.add(Material.STICKY_PISTON);
 	}
 
 	public boolean isBlockElytraBreakBug() {

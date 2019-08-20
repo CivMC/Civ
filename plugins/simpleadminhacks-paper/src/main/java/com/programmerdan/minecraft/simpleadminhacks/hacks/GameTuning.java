@@ -1,15 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,7 +16,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.SkeletonHorse;
-import org.bukkit.entity.WitherSkeleton;
 import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.entity.minecart.StorageMinecart;
 import org.bukkit.event.EventHandler;
@@ -28,9 +25,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -42,14 +37,11 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemStack;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
 import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
-
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the
@@ -67,8 +59,6 @@ import net.md_5.bungee.api.ChatColor;
  */
 public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener {
 	public static final String NAME = "GameTuning";
-
-	private Random rng = new Random();
 
 	public GameTuning(SimpleAdminHacks plugin, GameTuningConfig config) {
 		super(plugin, config);
@@ -159,20 +149,14 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		try {
 			Player player = event.getPlayer();
-			if (player == null) return;
-
 			Block block = event.getBlock();
-			if (block == null) return;
 
 			if (!config.applyChunkLimits(player.getUniqueId())) return;
 
 			Material mat = block.getType();
-			if (mat == null) return;
 
 			Integer limit = config.getChunkLimit(mat);
 			if (limit == null) return;
-
-			if (block.getChunk().getTileEntities() == null) return;
 
 			int current = 0;
 			for (BlockState state : block.getChunk().getTileEntities()) {
@@ -194,9 +178,9 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	public void chunkLimitsExploitExtend(BlockPistonExtendEvent event) {
 		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		List<Block> blocks = event.getBlocks();
-		if (blocks != null && blocks.size() > 0) {
+		if (!blocks.isEmpty()) {
 			for (Block b : blocks) {
-				if (b != null && b.getType() != null && config.getChunkLimit(b.getType()) != null) {
+				if (b != null && config.getChunkLimit(b.getType()) != null) {
 					event.setCancelled(true);
 					return; // TODO send message to nearby player warning of reason for stopping.
 				}
@@ -209,9 +193,9 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	public void chunkLimitsExploitRetract(BlockPistonRetractEvent event) {
 		if (!config.isEnabled() || !config.areChunkLimitsEnabled()) return;
 		List<Block> blocks = event.getBlocks();
-		if (blocks != null && blocks.size() > 0) {
+		if (!blocks.isEmpty()) {
 			for (Block b : blocks) {
-				if (b != null && b.getType() != null && config.getChunkLimit(b.getType()) != null) {
+				if (b != null && config.getChunkLimit(b.getType()) != null) {
 					event.setCancelled(true);
 					return; // TODO send message to nearby player warning of reason for stopping.
 				}
@@ -222,11 +206,12 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@SuppressWarnings("deprecation")
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void bedRClickToSetSpawn(PlayerInteractEvent event) {
-		if (!config.isEnabled() || !config.areDaytimeBedsEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK || event.getClickedBlock().getType() != Material.BED_BLOCK) {
+		if (!config.isEnabled() || !config.areDaytimeBedsEnabled() || 
+				event.getAction() != Action.RIGHT_CLICK_BLOCK || 
+				event.getClickedBlock().getType() != Material.bed) {
 			return;
 		}
 
-		if (event.getPlayer() == null) return;
 		if (event.getClickedBlock() == null) return;
 
 		// Let plugins that already watch for and cancel this event have a turn, like ExilePearl
@@ -340,7 +325,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(config.isEnabled() && !config.allowVillagerTrading()) {
 			Entity npc = event.getRightClicked();
-			if(npc != null && npc.getType() == EntityType.VILLAGER) {
+			if(npc.getType() == EntityType.VILLAGER) {
 				event.setCancelled(true);
 			}
 		}
