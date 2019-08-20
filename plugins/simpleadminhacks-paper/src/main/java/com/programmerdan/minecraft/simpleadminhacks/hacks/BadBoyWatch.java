@@ -112,8 +112,8 @@ public class BadBoyWatch extends SimpleHack<BadBoyWatchConfig> implements Listen
 
 	@Override
 	public void dataBootstrap() {
-		boys = new ConcurrentHashMap<UUID, BadBoyRecord>();
-		lowBoys = new ConcurrentHashMap<UUID, BadBoyRecord>();
+		boys = new ConcurrentHashMap<>();
+		lowBoys = new ConcurrentHashMap<>();
 	}
 
 	@Override

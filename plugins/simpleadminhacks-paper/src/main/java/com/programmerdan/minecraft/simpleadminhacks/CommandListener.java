@@ -67,7 +67,7 @@ public class CommandListener implements CommandExecutor {
 
 		sb.append(ChatColor.WHITE).append("List of hacks:\n");
 
-		for (SimpleHack<?> hack : plugin.getHacks()) {
+		for (SimpleHack<?> hack : plugin.getHackManager().getHacks()) {
 			sb.append("  ")
 				.append(ChatColor.AQUA).append(hack.getName())
 				.append(ChatColor.WHITE).append(": ");
@@ -87,7 +87,7 @@ public class CommandListener implements CommandExecutor {
 	 * Internal utility to get a hack from name.
 	 */
 	private SimpleHack<?> findHack(String hackName) {
-		for (SimpleHack<?> candidate : plugin.getHacks()) {
+		for (SimpleHack<?> candidate : plugin.getHackManager().getHacks()) {
 			if (candidate.getName().equals(hackName)) {
 				return candidate;
 			}

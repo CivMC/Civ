@@ -76,7 +76,7 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 
 		Vehicle vehicle = move.getVehicle();
 		if (vehicle == null) return;
-		if (vehicle.getPassengers() == null || vehicle.getPassengers().size() == 0) return;
+		if (vehicle.getPassengers() == null || vehicle.getPassengers().isEmpty()) return;
 
 		for (Entity e : vehicle.getPassengers()) {
 			if (e == null) continue;
@@ -148,7 +148,7 @@ public class InvisibleFixTwo extends SimpleHack<InvisibleFixTwoConfig> implement
 
 	@Override
 	public void dataBootstrap() {
-		updateMap = new HashMap<Integer, Long>();
+		updateMap = new HashMap<>();
 	}
 
 	@Override
