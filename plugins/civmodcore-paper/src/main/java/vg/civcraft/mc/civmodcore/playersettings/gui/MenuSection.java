@@ -10,10 +10,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
 public class MenuSection extends MenuItem {
 
@@ -28,8 +28,8 @@ public class MenuSection extends MenuItem {
 		super(name, parent);
 		this.content = new TreeMap<>();
 		this.itemRepresentation = itemRepresentation;
-		ISUtils.setName(itemRepresentation, ChatColor.AQUA + name);
-		ISUtils.addLore(itemRepresentation, ChatColor.GOLD + description);
+		ItemAPI.setDisplayName(itemRepresentation, ChatColor.AQUA + name);
+		ItemAPI.addLore(itemRepresentation, ChatColor.GOLD + description);
 	}
 
 	public void addItem(MenuItem item) {
@@ -60,7 +60,7 @@ public class MenuSection extends MenuItem {
 		}
 		MultiPageView pageView = new MultiPageView(player, clickables, getName(), true);
 		ItemStack parentItem = new ItemStack(Material.ARROW);
-		ISUtils.setName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
+		ItemAPI.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
 		if (parent != null) {
 			pageView.setMenuSlot(new Clickable(parentItem) {
 

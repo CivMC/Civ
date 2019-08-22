@@ -7,7 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.playersettings.StringInputSetting;
 
 public class DecimalFormatSetting extends StringInputSetting<DecimalFormat> {
@@ -48,7 +48,7 @@ public class DecimalFormatSetting extends StringInputSetting<DecimalFormat> {
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack item = super.getGuiRepresentation(player);
-		ISUtils.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
+		ItemAPI.addLore(item, ChatColor.GOLD + "Example: " + ChatColor.RESET + getValue(player).format(exampleValue));
 		return item;
 	}
 

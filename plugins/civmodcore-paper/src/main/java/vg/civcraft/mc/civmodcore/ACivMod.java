@@ -7,17 +7,12 @@ import java.util.logging.Level;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -39,7 +34,6 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		initApis(this);
 		this.newCommandHandler = new StandaloneCommandHandler(this);
 	}
 	
@@ -48,20 +42,11 @@ public abstract class ACivMod extends JavaPlugin {
 		PlayerSettingAPI.saveAll();
 	}
 
-	private static synchronized void initApis(ACivMod instance) {
-		if (!initializedAPIs) {
-			initializedAPIs = true;
-			instance.registerEvents();
-			new NiceNames().loadNames();
-			new DialogManager();
-			ConfigurationSerialization.registerClass(ManagedDatasource.class);
+	protected void registerListener(Listener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
-	}
-
-	private void registerEvents() {
-		getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
-		getServer().getPluginManager().registerEvents(new ChatListener(), this);
-		getServer().getPluginManager().registerEvents(new ScoreBoardListener(), this);
+		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
 	@Deprecated
@@ -88,8 +73,6 @@ public abstract class ACivMod extends JavaPlugin {
 	protected void setCommandHandler(CommandHandler handle) {
 		this.handle = handle;
 	}
-
-	protected abstract String getPluginName();
 
 	/**
 	 * Simple SEVERE level logging.

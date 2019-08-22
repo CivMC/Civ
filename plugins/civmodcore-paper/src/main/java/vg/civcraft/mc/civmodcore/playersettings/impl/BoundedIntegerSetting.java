@@ -5,8 +5,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 public class BoundedIntegerSetting extends IntegerSetting {
 
@@ -36,7 +35,7 @@ public class BoundedIntegerSetting extends IntegerSetting {
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ItemStack stack = super.getGuiRepresentation(player);
-		ISUtils.addLore(stack,
+		ItemAPI.addLore(stack,
 				String.format("%sMust be at least %d and at maximum %d", ChatColor.GOLD, lowerBound, upperBound));
 		return stack;
 	}
