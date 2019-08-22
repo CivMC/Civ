@@ -3,7 +3,6 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import java.util.List;
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

@@ -16,29 +16,6 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 	public BasicHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
 	}
-	
-	@Override
-	public void enable() {
-		if(!config.isEnabled()) {
-			return;
-		}
-		dataBootstrap();
-		registerCommands();
-		registerListeners();
-		onEnable();
-	}
-	
-	public void disable() {
-		unregisterListeners();
-		unregisterCommands();
-		dataCleanup();
-		onDisable();
-		this.config = null;
-	}
-	
-	public abstract void onEnable();
-	
-	public abstract void onDisable();
 
 	@Override
 	public void registerListeners() {
@@ -47,12 +24,12 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 
 	@Override
 	public void registerCommands() {
-		//no commands
+		//override in subclass if needed
 	}
 
 	@Override
 	public void dataBootstrap() {
-		//dont need this in a basic hack, use onEnable instead		
+		//override in subclass if needed
 	}
 
 	@Override
@@ -63,12 +40,12 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 
 	@Override
 	public void unregisterCommands() {
-		//no commands
+		//override in subclass if needed
 	}
 
 	@Override
 	public void dataCleanup() {
-		//dont need this in a basic hack, use onDisable instead
+		//override in subclass if needed
 		
 	}
 

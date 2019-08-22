@@ -48,9 +48,6 @@ hacks:
     stopBedBombingInHellBiomes: true
     preventTreeWraparound: true
     fixPearlGlitch: true
-    maxFluidHeight: 100
-    maxFluidAmount: 400
-    maxFluidTimer: 1200
   GameTuning:
     enabled: true
     chunkLimits:
@@ -86,14 +83,6 @@ hacks:
     allowVillagerTrading: false
     enderGrief: false
     witherGrief: false
-    #the following are random chances with max of 1000000
-    extraGhastSpawnRate: 0
-    extraWitherSpawnRate: 0
-    extraGhastPortalSpawnRate: 0
-    extraWitherPortalSpawnRate: 0
-    pigPortalSpawnMultiplier: 1000000
-    witherSkullDropRate: 10000
-    extraMagmaSpawnRate: 0
     allowEnchantedApples: false
     preventFallingThroughBedrock: true
     #a list of materials players shouldn't be allowed to place at all

@@ -14,20 +14,15 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.common.reflect.ClassPath;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.InvalidParameterValueException;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.ParameterParser;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.ParameterParsingFactory;
 
 public class HackManager {
 
 	private SimpleAdminHacks plugin;
 	private List<SimpleHack<?>> hacks;
-	private ParameterParsingFactory parsingFactory;
 
 	public HackManager(SimpleAdminHacks plugin) {
 		this.plugin = plugin;
 		this.hacks = new LinkedList<>();
-		this.parsingFactory = new ParameterParsingFactory();
 	}
 
 	public void reloadHacks() {
@@ -161,37 +156,19 @@ public class HackManager {
 			} else {
 				identifier = autoLoad.id();
 			}
-			String rawStringValue = config.getString(identifier);
-			if (rawStringValue == null) {
-				if (autoLoad.isRequired()) {
-					throw new IllegalArgumentException("Hack " + hackClass.getSimpleName() + " expects parameter "
-							+ identifier + ", but did not get it");
-				}
-				return;
-			}
-			ParameterParser<?> parser = parsingFactory.getParser(field.getClass());
-			if (parser == null) {
-				throw new IllegalStateException(field.getClass().getSimpleName() + " in " + hackClass.getSimpleName()
-						+ " does not have an autoloading parser");
-			}
 			Object value;
 			try {
-				value = parser.parse(rawStringValue);
-			} catch (InvalidParameterValueException ipve) {
-				plugin.log(Level.WARNING, "Failed to load parameter {0} for hack {1}  {2}", rawStringValue,
-						hackClass.getSimpleName(), ipve.toString());
-				if (autoLoad.isRequired()) {
-					throw new IllegalStateException(field.getClass().getSimpleName() + " in " + hackClass.getSimpleName()
-					+ " could not be loaded " + ipve.toString());
-				}
-				return;
+				value = config.getObject(identifier, field.getClass(), null);
+			} catch (Exception e) {
+				throw new IllegalArgumentException("Hack " + hackClass.getSimpleName() + " failed to read parameter "
+						+ identifier, e);
 			}
 			field.setAccessible(true);
 			try {
 				field.set(hack, value);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				throw new IllegalStateException(field.getClass().getSimpleName() + " in " + hackClass.getSimpleName()
-				+ " could not be set " + e.toString());
+						+ " could not be set " + e.toString());
 			}
 			plugin.log(Level.INFO, "Loaded '{0}' = '{1}'", identifier, value);
 		}

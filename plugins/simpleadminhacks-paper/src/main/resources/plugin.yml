@@ -1,7 +1,7 @@
 name: ${project.name}
 main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
-authors: []
+authors: [ProgrammerDan, Maxopoly]
 version: ${project.version}
 softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer]
 commands:
