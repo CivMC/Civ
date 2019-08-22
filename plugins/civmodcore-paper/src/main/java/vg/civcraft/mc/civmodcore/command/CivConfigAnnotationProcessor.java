@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civmodcore.command;
 
+import org.kohsuke.MetaInfServices;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +27,7 @@ import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
 
+@MetaInfServices
 @SupportedSourceVersion(value=SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("vg.civcraft.mc.civmodcore.command.CivCommand")
 public class CivConfigAnnotationProcessor extends AbstractProcessor {
