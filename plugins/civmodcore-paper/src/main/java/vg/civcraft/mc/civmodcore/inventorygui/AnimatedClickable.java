@@ -15,17 +15,16 @@ public class AnimatedClickable implements IClickable {
 	private int currentPos;
 
 	public AnimatedClickable(List<ItemStack> stacks, long timing) {
-		this.items = stacks;
-		this.timing = timing;
-		this.currentPos = 0;
 		if (stacks.size() == 0) {
 			throw new IllegalArgumentException("Can't create blinking clickable with empty item list");
 		}
+		this.items = stacks;
+		this.timing = timing;
+		this.currentPos = 0;
 	}
 
 	public ItemStack getNext() {
-		currentPos++;
-		if (currentPos == items.size()) {
+		if (++currentPos == items.size()) {
 			currentPos = 0;
 		}
 		return items.get(currentPos);
@@ -44,13 +43,11 @@ public class AnimatedClickable implements IClickable {
 	public void addedToInventory(final ClickableInventory inv, final int slot) {
 		// Schedule swapping out of item
 		new BukkitRunnable() {
-
 			@Override
 			public void run() {
 				inv.setItem(getNext(), slot);
 			}
 		}.runTaskTimer(CivModCorePlugin.getInstance(), timing, timing);
-
 	}
 
 	/**
