@@ -68,7 +68,6 @@ public class ConnectionPool {
 				this.datasource = null;
 			}
 		} else {
-			this.datasource = null;
 			logger.log(Level.SEVERE, "Database not configured and is unavaiable");
 		}
 	}

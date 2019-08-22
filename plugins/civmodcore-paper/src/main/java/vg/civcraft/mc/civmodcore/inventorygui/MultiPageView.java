@@ -15,19 +15,17 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
 public class MultiPageView {
 
 	private Player p;
-	private int currentPage;
+	private int currentPage = 0;
 	private List<IClickable> clickables;
 	private String invName;
 	private boolean adjustSize;
-	private IClickable[] extraMenuItems;
+	private IClickable[] extraMenuItems = new IClickable[7];
 
 	public MultiPageView(Player p, List<IClickable> clickables, String invName, boolean adjustSize) {
-		currentPage = 0;
 		this.p = p;
 		this.clickables = clickables;
 		this.invName = invName;
 		this.adjustSize = adjustSize;
-		extraMenuItems = new IClickable[7];
 	}
 
 	/**

@@ -38,9 +38,8 @@ public class DialogManager {
 	}
 
 	public void forceEndDialog(UUID uuid) {
-		Dialog dia = dialogs.get(uuid);
+		Dialog dia = dialogs.remove(uuid);
 		if (dia != null) {
-			dialogs.remove(uuid);
 			dia.end();
 		}
 	}
