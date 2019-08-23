@@ -1,38 +1,48 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.Supplier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.citadel.CitadelUtility;
-import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.citadel.model.WorldReinforcementManager;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class GlobalChunkMetaManager {
-	
+
 	private Map<UUID, Integer> uuidToInternalID;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
 	private ChunkDAO chunkDao;
-	
+	private ChunkMetaFactory metaFactory;
+
 	public GlobalChunkMetaManager(ChunkDAO chunkDao) {
 		this.uuidToInternalID = new TreeMap<>();
 		this.worldToManager = new TreeMap<>();
 		this.chunkDao = chunkDao;
+		this.metaFactory = chunkDao.getChunkMetaFactory();
+		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
 	}
-	
-	
-	public void registerRetrieval(JavaPlugin plugin, Class <? extends ChunkMeta> chunkMetaClass) {
-		
+
+	/**
+	 * Attempts to retrieve a meta for the given parameter. If none exists yet, the
+	 * given lambda will be used to create a new one, insert it and return it
+	 * 
+	 * @param pluginID Internal id of the plugin the meta belongs to
+	 * @param world    World the chunk is in
+	 * @param chunkX   X-coord of the chunk
+	 * @param chunkZ   Z-coord of the chunk
+	 * @param computer Lambda supplying the new ChunkMeta to insert if none exists
+	 *                 yet. May not produce null results
+	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
+	 *         supplier lambda is valid
+	 */
+	ChunkMeta computeIfAbsent(int pluginID, World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
+		return getWorldManager(world).computeIfAbsent(pluginID, chunkX, chunkZ, computer);
 	}
-	
+
 	/**
 	 * Saves all data out to the database
 	 */
@@ -42,92 +52,81 @@ public class GlobalChunkMetaManager {
 		}
 	}
 
+	ChunkDAO getChunkDAO() {
+		return chunkDao;
+	}
+
 	/**
-	 * Gets all data in a chunk. Only use this if you know what you're
-	 * doing
+	 * Retrieves ChunkMeta for the given plugin from the given chunk in the given
+	 * world. May be null if no such meta is specified yet
 	 * 
-	 * @param chunk Chunk to get data for
-	 * @return All reinforcements within the chunk
+	 * @param pluginID Internal id of the plugin the meta belongs to
+	 * @param world    World the chunk is in
+	 * @param chunkX   X-coord of the chunk
+	 * @param chunkZ   Z-coord of the chunk
+	 * @return Retrieved ChunkMeta for the given parameter, possibly null
 	 */
-	public Collection<Reinforcement> getAllReinforcements(Chunk chunk) {
-		if (chunk == null) {
-			throw new IllegalArgumentException("Chunk can not be null");
-		}
-		WorldReinforcementManager worldManager = worldToManager.get(chunk.getWorld().getUID());
+	ChunkMeta getChunkMeta(int pluginID, World world, int chunkX, int chunkZ) {
+		return getWorldManager(world).getChunkMeta(pluginID, chunkX, chunkZ);
+	}
+
+	ChunkMetaFactory getChunkMetaFactory() {
+		return metaFactory;
+	}
+
+	private WorldChunkMetaManager getWorldManager(World world) {
+		return worldToManager.get(world.getUID());
+	}
+
+	/**
+	 * Inserts ChunkMeta for the given plugin into the given chunk in the given
+	 * world. Will silently overwrite any existing data
+	 * 
+	 * @param pluginID Internal id of the plugin the meta belongs to
+	 * @param world    World the chunk is in
+	 * @param chunkX   X-coord of the chunk
+	 * @param chunkZ   Z-coord of the chunk
+	 */
+	void insertChunkMeta(int pluginID, World world, int chunkX, int chunkZ, ChunkMeta meta) {
+		meta.setPluginID(pluginID);
+		getWorldManager(world).insertChunkMeta(chunkX, chunkZ, meta);
+	}
+
+	void loadChunkData(Chunk chunk) {
+		WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
 		if (worldManager == null) {
-			throw new IllegalStateException("No world manager for reinforcement in " + chunk.getWorld().toString());
+			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
 		}
-		return worldManager.getAllReinforcements(chunk);
+		worldManager.loadChunk(chunk.getX(), chunk.getZ());
 	}
 
 	/**
-	 * Returns the Reinforcement for the specified block.
+	 * Registers a world for internal use
 	 * 
-	 * @param block Block to get reinforcement for
-	 * @return Reinforcement of the block if one exists, otherwise null
+	 * @param world World to prepare data structures for
+	 * @return Whether successfull or not
 	 */
-	public Reinforcement getReinforcement(Block block) {
-		return getReinforcement(block.getLocation());
-	}
-
-	/**
-	 * Returns the Reinforcement for the specified block. World is not checked at
-	 * this stage
-	 * 
-	 * @param block Location to get reinforcement for
-	 * @return Reinforcement at the location if one exists, otherwise null
-	 */
-	public Reinforcement getReinforcement(Location location) {
-		WorldReinforcementManager worldManager = worldToManager.get(location.getWorld().getUID());
-		if (worldManager == null) {
-			return null;
+	boolean registerWorld(World world) {
+		if (uuidToInternalID.containsKey(world.getUID())) {
+			return true;
 		}
-		return worldManager.getReinforcement(location);
-	}
-
-	/**
-	 * Inserts a new reinforcement into the cache. Should only be used for
-	 * reinforcements created just now
-	 * 
-	 * @param loc  Location of the reinforcement
-	 * @param rein Reinforcement created
-	 */
-	public void insertReinforcement(Reinforcement rein) {
-		WorldReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
-		if (worldManager == null) {
-			if (!registerWorld(rein.getLocation().getWorld())) {
-				throw new IllegalStateException("Failed to register world");
-			}
-			worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
-		}
-		worldManager.insertReinforcement(rein);
-	}
-
-	public boolean registerWorld(World world) {
-		int id = dao.getOrCreateWorldID(world);
+		int id = chunkDao.getOrCreateWorldID(world);
 		if (id == -1) {
 			// very bad
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		WorldReinforcementManager manager = new WorldReinforcementManager(dao, id, world);
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(chunkDao, id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}
 
 	/**
-	 * Removes a reinforcement from the immediate cache after it was destroyed
+	 * Registers all currently loaded worlds internally
 	 * 
-	 * @param rein The reinforcement destroyed
+	 * @return Whether all worlds were successfully loaded in or not. Errors here
+	 *         would most likely mean a non-working database setup
 	 */
-	public void removeReinforcement(Reinforcement rein) {
-		WorldReinforcementManager worldManager = worldToManager.get(rein.getLocation().getWorld().getUID());
-		if (worldManager == null) {
-			throw new IllegalStateException("No world manager for reinforcement at " + rein.getLocation().toString());
-		}
-		worldManager.removeReinforcement(rein);
-	}
-
 	public boolean setup() {
 		for (World world : Bukkit.getWorlds()) {
 			boolean worked = registerWorld(world);
@@ -138,22 +137,12 @@ public class GlobalChunkMetaManager {
 		return true;
 	}
 
-	public void loadChunkData(Chunk chunk) {
+	void unloadChunkData(Chunk chunk) {
 		WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
 		if (worldManager == null) {
 			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
 		}
-		worldManager.loadChunkData(chunk);
+		worldManager.unloadChunk(chunk.getX(), chunk.getZ());
 	}
-
-	public void unloadChunkData(Chunk chunk) {
-		WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
-		if (worldManager == null) {
-			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
-		}
-		worldManager.unloadChunkData(chunk);
-	}
-	
-	
 
 }

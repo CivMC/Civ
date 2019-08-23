@@ -1,10 +1,13 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Map.Entry;
 
-import org.json.simple.JSONObject;
-
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 /**
  * 
@@ -12,28 +15,95 @@ import com.google.gson.JsonObject;
  * Minecrafts in memory storage of blocks and meant to be used for y-local dense
  * concentration of data.
  * 
+ * You must create a subclass of this, which implement the static deserialize
+ * method with only a single JsonObject as parameter and passes the correct
+ * class object to the deserialize function of this class. If your subclass adds
+ * additional data to this you must adjust the serialize and deserialize methods
+ * as appropriate for these values to persist
+ * 
+ * Not thread-safe
+ * 
+ * DO NOT USE THIS WHEN THE ASSOCIATED CHUNK IS NOT LOADED
+ * 
  * @author maxopoly
  *
  * @param <T> Data type held within this chunk
  */
-public class BlockBasedChunkMeta<T extends DummyDataObject> extends ChunkMeta {
+public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 
 	private static final int CHUNK_HEIGHT = 256;
 	private static final int L1_SECTION_COUNT = 16;
-	private static final int L2_SECTION_COUNT = 16;
+	private static final int L2_SECTION_COUNT = CHUNK_HEIGHT / L1_SECTION_COUNT;
 	private static final int L3_X_SECTION_COUNT = 16;
-	private static final int L1_SECTION_LENGTH = CHUNK_HEIGHT / L1_SECTION_COUNT;
-	private static final int L2_SECTION_LENGTH = L1_SECTION_LENGTH / L2_SECTION_COUNT;
-	private static final int L3_X_SECTION_LENGTH = 16;
 	private static final int L4_Z_SECTION_LENGTH = 16;
+
+	@SuppressWarnings("unchecked")
+	public static <T extends BlockDataObject> BlockBasedChunkMeta<T> deserialize(JsonObject l1Object,
+			Class<T> dataClass) {
+		BlockBasedChunkMeta<T> meta = new BlockBasedChunkMeta<>(false);
+		Method instanciationMethod;
+		try {
+			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class);
+		} catch (NoSuchMethodException | SecurityException e1) {
+			CivModCorePlugin.getInstance().warning(dataClass.getName() + " does have not a deserialize method", e1);
+			return null;
+		}
+		for (Entry<String, JsonElement> l1Entry : l1Object.entrySet()) {
+			int l1Key = Integer.parseInt(l1Entry.getKey());
+			meta.data[l1Key] = new BlockDataObject[L2_SECTION_COUNT][][];
+			JsonObject l2Object = l1Entry.getValue().getAsJsonObject();
+			for (Entry<String, JsonElement> l2Entry : l2Object.entrySet()) {
+				int l2Key = Integer.parseInt(l2Entry.getKey());
+				meta.data[l1Key][l2Key] = new BlockDataObject[L3_X_SECTION_COUNT][];
+				JsonObject l3Object = l2Entry.getValue().getAsJsonObject();
+				for (Entry<String, JsonElement> l3Entry : l3Object.entrySet()) {
+					int l3Key = Integer.parseInt(l3Entry.getKey());
+					meta.data[l1Key][l2Key][l3Key] = new BlockDataObject[L4_Z_SECTION_LENGTH];
+					JsonObject l4Object = l3Entry.getValue().getAsJsonObject();
+					for (Entry<String, JsonElement> l4Entry : l4Object.entrySet()) {
+						int l4Key = Integer.parseInt(l4Entry.getKey());
+						T value;
+						try {
+							value = (T) instanciationMethod.invoke(null, l4Entry.getValue().getAsJsonObject());
+						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+							CivModCorePlugin.getInstance().warning("Failed to instanciate data", e);
+							return null;
+						}
+						meta.data[l1Key][l2Key][l3Key][l4Key] = value;
+					}
+				}
+			}
+		}
+		return meta;
+	}
 
 	// This has to be an array of the abstract super type and not the generic,
 	// because java struggles with instanciating
 	// generic arrays
-	private DummyDataObject[][][][] data;
+	private BlockDataObject[][][][] data;
 
-	public BlockBasedChunkMeta() {
-		data = new DummyDataObject[L1_SECTION_COUNT][][][];
+	public BlockBasedChunkMeta(boolean isNew) {
+		super(isNew);
+		data = new BlockDataObject[L1_SECTION_COUNT][][][];
+	}
+
+	/**
+	 * Retrieves data from the cache
+	 * 
+	 * @param x Relative x offset in the chunk within [0,16), also the total
+	 *          x-coordinate modulo 16
+	 * @param y Y-Level of the block
+	 * @param z Relative z offset in the chunk within [0,16), also the total
+	 *          z-coordinate modulo 16
+	 * @return Data retrieved for the given coordinates, possibly null
+	 */
+	@SuppressWarnings("unchecked")
+	public T get(int x, int y, int z) {
+		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
+		if (l4ZSection == null) {
+			return null;
+		}
+		return (T) l4ZSection[z];
 	}
 
 	/**
@@ -45,10 +115,10 @@ public class BlockBasedChunkMeta<T extends DummyDataObject> extends ChunkMeta {
 	 * @return Retrieved cache, may be null if none exists and creation was not
 	 *         requested
 	 */
-	private DummyDataObject[][][] getL2SubArray(int l1Offset, boolean create) {
-		DummyDataObject[][][] subArray = data[l1Offset];
+	private BlockDataObject[][][] getL2SubArray(int l1Offset, boolean create) {
+		BlockDataObject[][][] subArray = data[l1Offset];
 		if (create && subArray == null) {
-			subArray = new DummyDataObject[L2_SECTION_COUNT][][];
+			subArray = new BlockDataObject[L2_SECTION_COUNT][][];
 			data[l1Offset] = subArray;
 		}
 		return subArray;
@@ -64,10 +134,10 @@ public class BlockBasedChunkMeta<T extends DummyDataObject> extends ChunkMeta {
 	 * @return Retrieved cache, may be null if none exists and creation was not
 	 *         requested
 	 */
-	private DummyDataObject[][] getL3XSubArray(DummyDataObject[][][] l2Section, int l2Offset, boolean create) {
-		DummyDataObject[][] subArray = l2Section[l2Offset];
+	private BlockDataObject[][] getL3XSubArray(BlockDataObject[][][] l2Section, int l2Offset, boolean create) {
+		BlockDataObject[][] subArray = l2Section[l2Offset];
 		if (create && subArray == null) {
-			subArray = new DummyDataObject[L3_X_SECTION_COUNT][];
+			subArray = new BlockDataObject[L3_X_SECTION_COUNT][];
 			l2Section[l2Offset] = subArray;
 		}
 		return subArray;
@@ -83,13 +153,52 @@ public class BlockBasedChunkMeta<T extends DummyDataObject> extends ChunkMeta {
 	 * @return Retrieved cache, may be null if none exists and creation was not
 	 *         requested
 	 */
-	private DummyDataObject[] getL4ZSubArray(DummyDataObject[][] l3Section, int l3XOffset, boolean create) {
-		DummyDataObject[] subArray = l3Section[l3XOffset];
+	private BlockDataObject[] getL4ZSubArray(BlockDataObject[][] l3Section, int l3XOffset, boolean create) {
+		BlockDataObject[] subArray = l3Section[l3XOffset];
 		if (create && subArray == null) {
-			subArray = new DummyDataObject[L4_Z_SECTION_LENGTH];
+			subArray = new BlockDataObject[L4_Z_SECTION_LENGTH];
 			l3Section[l3XOffset] = subArray;
 		}
 		return subArray;
+	}
+
+	private BlockDataObject[] getL4ZSubArrayAbsolute(int x, int y, boolean create) {
+		int yOffsetL1 = y / L1_SECTION_COUNT;
+		BlockDataObject[][][] l2Section = getL2SubArray(yOffsetL1, create);
+		if (l2Section == null) {
+			return null;
+		}
+		int yOffsetL2 = y % L2_SECTION_COUNT;
+		BlockDataObject[][] l3XSection = getL3XSubArray(l2Section, yOffsetL2, create);
+		if (l3XSection == null) {
+			return null;
+		}
+		return getL4ZSubArray(l3XSection, x, create);
+	}
+
+	@Override
+	boolean isEmpty() {
+		for (BlockDataObject[][][] l2 : data) {
+			if (l2 == null) {
+				continue;
+			}
+			for (BlockDataObject[][] l3 : l2) {
+				if (l3 == null) {
+					continue;
+				}
+				for (BlockDataObject[] l4 : l3) {
+					if (l4 == null) {
+						continue;
+					}
+					for (BlockDataObject element : l4) {
+						if (element != null) {
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
 	}
 
 	/**
@@ -103,92 +212,49 @@ public class BlockBasedChunkMeta<T extends DummyDataObject> extends ChunkMeta {
 	 * @param blockData Data to insert
 	 */
 	public void put(int x, int y, int z, T blockData) {
-		DummyDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
+		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
 		l4ZSection[z] = blockData;
 	}
 
-	private DummyDataObject[] getL4ZSubArrayAbsolute(int x, int y, boolean create) {
-		int yOffsetL1 = y / L1_SECTION_COUNT;
-		DummyDataObject[][][] l2Section = getL2SubArray(yOffsetL1, create);
-		if (l2Section == null) {
-			return null;
-		}
-		int yOffsetL2 = y % L2_SECTION_COUNT;
-		DummyDataObject[][] l3XSection = getL3XSubArray(l2Section, yOffsetL2, create);
-		if (l3XSection == null) {
-			return null;
-		}
-		return getL4ZSubArray(l3XSection, x, create);
-	}
-
-	/**
-	 * Retrieves data from the cache
-	 * 
-	 * @param x Relative x offset in the chunk within [0,16), also the total
-	 *          x-coordinate modulo 16
-	 * @param y Y-Level of the block
-	 * @param z Relative z offset in the chunk within [0,16), also the total
-	 *          z-coordinate modulo 16
-	 * @return Data retrieved for the given coordinates, possibly null
-	 */
-	@SuppressWarnings("unchecked")
-	public T get(int x, int y, int z) {
-		DummyDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
-		if (l4ZSection == null) {
-			return null;
-		}
-		return (T) l4ZSection[z];
-	}
-
 	@Override
-	public JSONObject serialize() {
-		JSONObject l1Array = new JSONObject();
+	public JsonObject serialize() {
+		JsonObject l1Array = new JsonObject();
 		for (int i = 0; i < data.length; i++) {
-			DummyDataObject[][][] l2Cache = data[i];
+			BlockDataObject[][][] l2Cache = data[i];
 			if (l2Cache == null) {
 				continue;
 			}
-			JSONObject l2Array = new JSONObject();
+			JsonObject l2Array = new JsonObject();
 			for (int j = 0; j < l2Cache.length; j++) {
-				DummyDataObject[][] l3Cache = l2Cache[j];
+				BlockDataObject[][] l3Cache = l2Cache[j];
 				if (l3Cache == null) {
 					continue;
 				}
-				JSONObject l3Array = new JSONObject();
+				JsonObject l3Array = new JsonObject();
 				for (int k = 0; k < l3Cache.length; k++) {
-					DummyDataObject[] l4Cache = l3Cache[k];
+					BlockDataObject[] l4Cache = l3Cache[k];
 					if (l4Cache == null) {
 						continue;
 					}
-					JSONObject l4Array = new JSONObject();
+					JsonObject l4Array = new JsonObject();
 					for (int l = 0; l < l4Cache.length; l++) {
 						if (l4Cache[l] != null) {
-							l4Array.put(l, l4Cache[l]);
+							l4Array.add(String.valueOf(l), l4Cache[l].serialize());
 						}
 					}
-					if (!l4Array.isEmpty()) {
-						l3Array.put(k, l4Array);
+					if (l4Array.size() != 0) {
+						l3Array.add(String.valueOf(k), l4Array);
 					}
-
 				}
-				if (!l3Array.isEmpty()) {
-					l2Array.put(j, l3Array);
+				if (l3Array.size() != 0) {
+					l2Array.add(String.valueOf(j), l3Array);
 				}
 			}
-			if (!l2Array.isEmpty()) {
-				l1Array.put(i, l2Array);
+			if (l2Array.size() != 0) {
+				l1Array.add(String.valueOf(i), l2Array);
 			}
 		}
 		return l1Array;
-	}
-	
-	public static <T extends DummyDataObject> BlockBasedChunkMeta<T> deserialize(JSONObject json) {
-		BlockBasedChunkMeta<T> meta = new BlockBasedChunkMeta<>();
-		for(Object keyO : json.keySet()) {
-			int key = (int) keyO;
-		}
-		
-		Set <Object> gg = json.keySet();
 	}
 
 }
