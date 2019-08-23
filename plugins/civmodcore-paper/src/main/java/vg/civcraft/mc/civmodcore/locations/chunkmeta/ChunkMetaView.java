@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -43,18 +45,49 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		if (!metaFactory.registerPlugin(plugin.getName(), id, chunkMetaClass)) {
 			return null;
 		}
-		ChunkMetaView<T> view = new ChunkMetaView<>(id, globalManager);
+		ChunkMetaView<T> view = new ChunkMetaView<>(plugin, id, globalManager);
 		existingViews.put(plugin.getName(), view);
 		return view;
 	}
 
-	private int pluginID;
+	/**
+	 * Shuts down all active views and saves them to the database. Should only be called on server shutdown
+	 */
+	public static void saveAll() {
+		// copy keys so we can iterate safely
+		List<String> keys = new LinkedList<>(existingViews.keySet());
+		for (String key : keys) {
+			ChunkMetaView<? extends ChunkMeta> view = existingViews.get(key);
+			if (view != null) {
+				view.disable();
+			}
+		}
+	}
 
+	private int pluginID;
+	private JavaPlugin plugin;
 	private GlobalChunkMetaManager globalManager;
 
-	private ChunkMetaView(int pluginID, GlobalChunkMetaManager globalManager) {
+	private ChunkMetaView(JavaPlugin plugin, int pluginID, GlobalChunkMetaManager globalManager) {
+		this.plugin = plugin;
 		this.pluginID = pluginID;
 		this.globalManager = globalManager;
+	}
+
+	/**
+	 * Shuts down this instance, saving out all of its data to the database. No
+	 * calls to this instance should be made during or after this call, create a new
+	 * instance instead if neccessary
+	 */
+	public void disable() {
+		if (globalManager == null) {
+			// already shut down
+			return;
+		}
+		GlobalChunkMetaManager globalTemp = globalManager;
+		globalManager = null;
+		globalTemp.flushAll();
+		existingViews.remove(plugin.getName());
 	}
 
 	/**
@@ -102,6 +135,9 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		if (world == null) {
 			throw new IllegalArgumentException("World may not be null");
 		}
+		if (globalManager == null) {
+			throw new IllegalStateException("View already shut down, can not read data");
+		}
 		return (T) globalManager.getChunkMeta(pluginID, world, chunkX, chunkZ);
 	}
 
@@ -135,6 +171,9 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		if (world == null) {
 			throw new IllegalArgumentException("World may not be null");
 		}
+		if (globalManager == null) {
+			throw new IllegalStateException("View already shut down, can not read data");
+		}
 		globalManager.insertChunkMeta(pluginID, world, chunkX, chunkZ, meta);
 	}
 
@@ -152,6 +191,9 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 	 *         supplier lambda is valid
 	 */
 	public ChunkMeta computeIfAbsent(World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
+		if (globalManager == null) {
+			throw new IllegalStateException("View already shut down, can not read data");
+		}
 		return globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
 	}
 

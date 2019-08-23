@@ -27,10 +27,20 @@ public class ChunkDAO {
 	}
 
 	void deleteChunkData(int pluginID, int worldID, int x, int z) {
-
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement deleteChunk = insertConn.prepareStatement(
+						"delete from cmc_chunk_data where x = ? and z = ? and world_id = ? and plugin_id = ?;")) {
+			deleteChunk.setInt(1, x);
+			deleteChunk.setInt(2, z);
+			deleteChunk.setInt(3, worldID);
+			deleteChunk.setInt(4, pluginID);
+			deleteChunk.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to delete chunk data", e);
+		}
 	}
 
-	public ChunkMetaFactory getChunkMetaFactory() {
+	ChunkMetaFactory getChunkMetaFactory() {
 		return dataFactory;
 	}
 
@@ -100,7 +110,18 @@ public class ChunkDAO {
 	}
 
 	void insertChunkData(int pluginID, int worldID, int x, int z, ChunkMeta meta) {
-
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement insertChunk = insertConn.prepareStatement(
+						"insert into cmc_chunk_data (x, z, world_id, plugin_id, data) values(?,?,?,?,?)")) {
+			insertChunk.setInt(1, x);
+			insertChunk.setInt(2, z);
+			insertChunk.setInt(3, worldID);
+			insertChunk.setInt(4, pluginID);
+			insertChunk.setString(5, meta.serialize().toString());
+			insertChunk.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to insert chunk data", e);
+		}
 	}
 
 	void loadChunkData(int worldID, ChunkCoord coord) {
@@ -144,7 +165,18 @@ public class ChunkDAO {
 	}
 
 	void updateChunkData(int pluginID, int worldID, int x, int z, ChunkMeta meta) {
-
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement updateChunk = insertConn.prepareStatement(
+						"update cmc_chunk_data set data = ? where x = ? and z = ? and world_id = ? and plugin_id = ?;")) {
+			updateChunk.setString(1, meta.serialize().toString());
+			updateChunk.setInt(2, x);
+			updateChunk.setInt(3, z);
+			updateChunk.setInt(4, worldID);
+			updateChunk.setInt(5, pluginID);
+			updateChunk.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to update chunk data", e);
+		}
 	}
 
 	public boolean updateDatabase() {
