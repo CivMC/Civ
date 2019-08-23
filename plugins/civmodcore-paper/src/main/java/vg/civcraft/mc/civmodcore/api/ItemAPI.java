@@ -1,8 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import io.protonull.utilities.Equals;
-import io.protonull.utilities.Exists;
-import io.protonull.utilities.SplitString;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -22,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public final class ItemAPI {
@@ -55,7 +54,7 @@ public final class ItemAPI {
 	 * Two null'd items are not considered equal.
 	 * */
 	public static boolean areItemsEqual(ItemStack former, ItemStack latter) {
-		return Equals.notNull(former, latter);
+		return former != null && Objects.equals(former, latter);
 	}
 
 	/**
@@ -105,7 +104,7 @@ public final class ItemAPI {
 		}
 		ItemMeta meta = getItemMeta(item);
 		String name = meta.getDisplayName();
-		if (!Exists.string(name)) {
+		if (StringUtils.isEmpty(name)) {
 			return null;
 		}
 		return name;
@@ -123,7 +122,7 @@ public final class ItemAPI {
 			throw new IllegalArgumentException("Cannot set the display name; the item is not valid.");
 		}
 		ItemMeta meta = getItemMeta(item);
-		if (Exists.string(name)) {
+		if (StringUtils.isNotEmpty(name)) {
 			meta.setDisplayName(null);
 		}
 		else {
@@ -281,20 +280,20 @@ public final class ItemAPI {
 			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			String line = reader.readLine();
 			while (line != null) {
-				SplitString values = new SplitString(line, ",");
+				String [] values = line.split(",");
 				// If there's not at least three values (slug, data, name) then skip
-				if (values.size() < 3) {
+				if (values.length < 3) {
 					logger.warning("This material row does not have enough data: " + line);
 					continue;
 				}
 				// If a material cannot be found by the slug given, skip
-				Material material = Material.getMaterial(values.getElement(0));
+				Material material = Material.getMaterial(values[0]);
 				if (material == null) {
 					logger.warning("Could not find a material on this line: " + line);
 					continue;
 				}
 				// If the name is empty, skip
-				String name = values.getElement(2);
+				String name = values [2];
 				if (name.isEmpty()) {
 					logger.warning("This material has not been given a name: " + line);
 					continue;
@@ -322,10 +321,10 @@ public final class ItemAPI {
 		if (material != null) {
 			hash += material.hashCode();
 		}
-		if (Exists.string(displayName)) {
+		if (!StringUtils.isEmpty(displayName)) {
 			hash += displayName.hashCode();
 		}
-		if (Exists.collection(lore)) {
+		if (lore != null && !lore.isEmpty()) {
 			hash += lore.hashCode();
 		}
 		return hash;
@@ -393,7 +392,7 @@ public final class ItemAPI {
 		if (material == null) {
 			throw new IllegalArgumentException("Cannot set custom item name for material as the material is null.");
 		}
-		if (!Exists.string(name)) {
+		if (StringUtils.isEmpty(name)) {
 			throw new IllegalArgumentException("Cannot set custom item name for material as the name is null or empty.");
 		}
 		itemNames.put(generateItemHash(material, displayName, lore), name);
