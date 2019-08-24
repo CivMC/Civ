@@ -53,14 +53,6 @@ public abstract class ACivMod extends JavaPlugin {
 		}
 	}
 
-	@Deprecated
-	public boolean toBool(String value) {
-		if (value.equals("1") || value.equalsIgnoreCase("true")) {
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
 		if (handle == null) {
