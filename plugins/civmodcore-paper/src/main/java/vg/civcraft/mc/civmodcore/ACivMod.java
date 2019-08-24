@@ -5,11 +5,13 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public abstract class ACivMod extends JavaPlugin {

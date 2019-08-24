@@ -32,7 +32,7 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		if (existingViews.containsKey(plugin.getName())) {
 			return (ChunkMetaView<T>) existingViews.get(plugin.getName());
 		}
-		GlobalChunkMetaManager globalManager = CivModCorePlugin.getInstance().getChunkMetaManager();
+		GlobalChunkMetaManager globalManager = CivModCorePlugin.getChunkMetaManager();
 		if (globalManager == null) {
 			return null;
 		}
