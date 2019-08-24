@@ -8,12 +8,16 @@ import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaView;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
 public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
+	private GlobalChunkMetaManager chunkMetaManager;
 
 	@Override
 	public void onEnable() {
@@ -33,21 +37,37 @@ public final class CivModCorePlugin extends ACivMod {
 		new NiceNames().loadNames();
 		new DialogManager();
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
+		ManagedDatasource db;
+		try {
+			db = (ManagedDatasource) getConfig().get("database");
+		}
+		catch (Exception e) {
+			db = null;
+		}
+		ChunkDAO dao = new ChunkDAO(db, this);
+		if (dao.updateDatabase()) {
+			chunkMetaManager = new GlobalChunkMetaManager(dao);
+		}
 	}
 
 	@Override
 	public void onDisable() {
 		super.onDisable();
-		instance = null;
+		ChunkMetaView.saveAll();
 		// De-register listeners
 		HandlerList.unregisterAll(this);
 		// Unload APIs
 		ItemAPI.resetItemNames();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
+		instance = null;
 	}
 
 	public static CivModCorePlugin getInstance() {
 		return instance;
+	}
+	
+	public GlobalChunkMetaManager getChunkMetaManager() {
+		return chunkMetaManager;
 	}
 
 }

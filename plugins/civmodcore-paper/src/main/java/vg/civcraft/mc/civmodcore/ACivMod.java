@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.io.ObjectInputFilter.Config;
 import java.util.List;
 import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
