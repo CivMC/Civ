@@ -47,6 +47,12 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
+	public void saveDefaultResource(String path) {
+		if (getResource(path) == null) {
+			saveResource(path, false);
+		}
+	}
+
 	@Deprecated
 	public boolean toBool(String value) {
 		if (value.equals("1") || value.equalsIgnoreCase("true")) {
