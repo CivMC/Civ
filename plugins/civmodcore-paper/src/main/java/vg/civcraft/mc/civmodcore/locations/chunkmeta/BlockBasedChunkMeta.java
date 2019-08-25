@@ -40,9 +40,8 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	private static final int L4_Z_SECTION_LENGTH = 16;
 
 	@SuppressWarnings("unchecked")
-	public static <T extends BlockDataObject> BlockBasedChunkMeta<T> deserialize(JsonObject l1Object,
-			Class<T> dataClass) {
-		BlockBasedChunkMeta<T> meta = new BlockBasedChunkMeta<>(false);
+	public static <T extends BlockDataObject> BlockBasedChunkMeta<T> deserialize(BlockBasedChunkMeta<T> meta,
+			JsonObject l1Object, Class<T> dataClass) {
 		Method instanciationMethod;
 		try {
 			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class);
@@ -256,14 +255,16 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		@SuppressWarnings("unchecked")
 		T oldData = (T) l4ZSection[z];
 		if (oldData != null) {
-			l4ZSection [z] = null;
+			l4ZSection[z] = null;
 			setDirty(true);
 		}
 		return oldData;
 	}
 
 	/**
-	 * Removes the given data from this cache. Will throw an IAE if the data is not in the cache
+	 * Removes the given data from this cache. Will throw an IAE if the data is not
+	 * in the cache
+	 * 
 	 * @param blockData Data to remove
 	 */
 	public void remove(T blockData) {
@@ -287,11 +288,11 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 * 
 	 * @param location Location to remove data from, may not be null
 	 */
-	public void remove(Location location) {
+	public T remove(Location location) {
 		if (location == null) {
 			throw new IllegalArgumentException("Location to remove can not be null");
 		}
-		remove(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		return remove(location.getBlockX(), location.getBlockY(), location.getBlockZ());
 	}
 
 	@Override

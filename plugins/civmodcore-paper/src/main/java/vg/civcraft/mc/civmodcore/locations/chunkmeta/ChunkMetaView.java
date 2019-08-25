@@ -1,9 +1,5 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 import org.bukkit.Chunk;
@@ -11,64 +7,13 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+public class ChunkMetaView<T extends ChunkMeta> {
 
-public final class ChunkMetaView<T extends ChunkMeta> {
+	protected int pluginID;
+	protected JavaPlugin plugin;
+	protected GlobalChunkMetaManager globalManager;
 
-	private static Map<String, ChunkMetaView<? extends ChunkMeta>> existingViews = new HashMap<>();
-
-	/**
-	 * Access method to the entire chunk metadata API. You can use this method once
-	 * per plugin to obtain an access object for metadata created by your plugin
-	 * 
-	 * @param <T>            Metadata class for chunks
-	 * @param plugin         Plugin to get instance for
-	 * @param chunkMetaClass Class object for metadata class
-	 * @return Access object for the given plugins meta data or null if something
-	 *         went wrong
-	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends ChunkMeta> ChunkMetaView<T> registerPlugin(JavaPlugin plugin, Class<T> chunkMetaClass) {
-		if (existingViews.containsKey(plugin.getName())) {
-			return (ChunkMetaView<T>) existingViews.get(plugin.getName());
-		}
-		GlobalChunkMetaManager globalManager = CivModCorePlugin.getInstance().getChunkMetaManager();
-		if (globalManager == null) {
-			return null;
-		}
-		ChunkDAO chunkDAO = globalManager.getChunkDAO();
-		int id = chunkDAO.getOrCreatePluginID(plugin);
-		if (id == -1) {
-			return null;
-		}
-		ChunkMetaFactory metaFactory = globalManager.getChunkMetaFactory();
-		if (!metaFactory.registerPlugin(plugin.getName(), id, chunkMetaClass)) {
-			return null;
-		}
-		ChunkMetaView<T> view = new ChunkMetaView<>(plugin, id, globalManager);
-		existingViews.put(plugin.getName(), view);
-		return view;
-	}
-
-	/**
-	 * Shuts down all active views and saves them to the database. Should only be called on server shutdown
-	 */
-	public static void saveAll() {
-		// copy keys so we can iterate safely
-		List<String> keys = new LinkedList<>(existingViews.keySet());
-		for (String key : keys) {
-			ChunkMetaView<? extends ChunkMeta> view = existingViews.get(key);
-			if (view != null) {
-				view.disable();
-			}
-		}
-	}
-
-	private int pluginID;
-	private JavaPlugin plugin;
-	private GlobalChunkMetaManager globalManager;
-
-	private ChunkMetaView(JavaPlugin plugin, int pluginID, GlobalChunkMetaManager globalManager) {
+	ChunkMetaView(JavaPlugin plugin, int pluginID, GlobalChunkMetaManager globalManager) {
 		this.plugin = plugin;
 		this.pluginID = pluginID;
 		this.globalManager = globalManager;
@@ -87,7 +32,7 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		GlobalChunkMetaManager globalTemp = globalManager;
 		globalManager = null;
 		globalTemp.flushAll();
-		existingViews.remove(plugin.getName());
+		ChunkMetaAPI.removePlugin(plugin);
 	}
 
 	/**
@@ -174,6 +119,9 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 		if (globalManager == null) {
 			throw new IllegalStateException("View already shut down, can not read data");
 		}
+		if (!world.getChunkAt(chunkX, chunkZ).isLoaded()) {
+			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
+		}
 		globalManager.insertChunkMeta(pluginID, world, chunkX, chunkZ, meta);
 	}
 
@@ -190,11 +138,15 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
 	 *         supplier lambda is valid
 	 */
-	public ChunkMeta computeIfAbsent(World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
+	@SuppressWarnings("unchecked")
+	public T computeIfAbsent(World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
 		if (globalManager == null) {
 			throw new IllegalStateException("View already shut down, can not read data");
 		}
-		return globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
+		if (!world.getChunkAt(chunkX, chunkZ).isLoaded()) {
+			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
+		}
+		return (T) globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
 	}
 
 	/**
@@ -207,7 +159,7 @@ public final class ChunkMetaView<T extends ChunkMeta> {
 	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
 	 *         supplier lambda is valid
 	 */
-	public ChunkMeta computeIfAbsent(Chunk chunk, Supplier<ChunkMeta> computer) {
+	public T computeIfAbsent(Chunk chunk, Supplier<ChunkMeta> computer) {
 		return computeIfAbsent(chunk.getWorld(), chunk.getX(), chunk.getZ(), computer);
 	}
 
