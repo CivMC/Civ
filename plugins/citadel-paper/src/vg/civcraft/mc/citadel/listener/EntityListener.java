@@ -181,8 +181,9 @@ public class EntityListener implements Listener{
 				return;
 			}
 			// Otherwise prevent the player from putting item frames on other people's reinforced blocks
-			player.sendMessage(ChatColor.RED + "You cannot place those on blocks you don't have access to.");
+			player.sendMessage(ChatColor.RED + "You cannot place those on blocks you don't have permissions for.");
 			event.setCancelled(true);
+			Bukkit.getScheduler().runTaskLater(Citadel.getInstance(), player::updateInventory, 1L);
 			return;
 		}
 		// Previous code which will only run if reinforcement inheritance is disabled.
