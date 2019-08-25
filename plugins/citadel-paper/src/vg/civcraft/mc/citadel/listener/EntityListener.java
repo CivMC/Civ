@@ -370,10 +370,43 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void playerEntityInteractEvent(PlayerInteractEntityEvent event){
-		Entity entity = event.getRightClicked();
-		if (entity instanceof ItemFrame){
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void playerEntityInteractEvent(PlayerInteractEntityEvent event) {
+		// If Hanging Entity Reinforcements are disabled, back out
+		if (CitadelConfigManager.disableHangingReinforcement()) {
+			return;
+		}
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		if (!(event.getRightClicked() instanceof Hanging)) {
+			return;
+		}
+		Hanging entity = (Hanging) event.getRightClicked();
+		// If the Hanging entities inherit reinforcements
+		if (CitadelConfigManager.hangersInheritReinforcements()) {
+			Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+			Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
+			// If no player reinforcement is present, do nothing
+			if (!(reinforcement instanceof PlayerReinforcement)) {
+				return;
+			}
+			PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+			Group group = playerReinforcement.getGroup();
+			// If the player reinforcement doesn't have a group, do nothing
+			if (group == null) {
+				return;
+			}
+			Player player = event.getPlayer();
+			// If the player is a member of the group and has bypass permissions, do nothing
+			if (group.isMember(player.getUniqueId()) && playerReinforcement.canBypass(player)) {
+				return;
+			}
+			// Otherwise prevent interaction and notify the player they do not have perms
+			player.sendRawMessage(ChatColor.RED + "You do not have permission to alter that.");
+			event.setCancelled(true);
+			return;
+		}
+		// Previous code which will only run if reinforcement inheritance is disabled.
+		if (entity instanceof ItemFrame) {
 			Reinforcement rein = rm.getReinforcement(entity.getLocation());
 			if (rein == null || !(rein instanceof PlayerReinforcement))
 				return;
