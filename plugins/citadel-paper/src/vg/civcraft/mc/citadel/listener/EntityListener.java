@@ -25,6 +25,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -149,201 +150,155 @@ public class EntityListener implements Listener{
 		state.reset();
 	}
 
-
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void hangingPlaceEvent(HangingPlaceEvent event){
-		Player p = event.getPlayer();
-		Block b = event.getBlock().getRelative(event.getBlockFace());
-		if (rm.getReinforcement(b) != null) {
-			//reinforcement already exists in this location from an actual physical block, so we dont want to allow entity reinforcements here.
-			//We even dont want to allow placement here as otherwise we would have no way to tell whether the actual underlying block or the entitiy
-			//"owns" the reinforcement
-			event.setCancelled(true);
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingPlaceEvent(HangingPlaceEvent event) {
+		// If Hanging Entity Reinforcements is not enabled, back out
+		if (!CitadelConfigManager.hangersInheritReinforcements()) {
 			return;
 		}
-		Inventory inv = p.getInventory();
-		PlayerState state = PlayerState.get(p);
-		if (ReinforcementMode.REINFORCEMENT_FORTIFICATION != state.getMode()) {
+		Reinforcement reinforcement = rm.getReinforcement(event.getBlock());
+		// If no player reinforcement is present, do nothing
+		if (!(reinforcement instanceof PlayerReinforcement)) {
 			return;
 		}
-		if (!canPlace(b, p)){
-			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, mismatched reinforcement.");
-			event.setCancelled(true);
+		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+		Group group = playerReinforcement.getGroup();
+		// If the player reinforcement doesn't have a group, do nothing
+		if (group == null) {
 			return;
 		}
-		ReinforcementType type = state.getReinforcementType();
-		// Don't allow double reinforcing reinforceable plants
-		if (wouldPlantDoubleReinforce(b)) {
-			Utility.sendAndLog(p, ChatColor.RED, "Cancelled block place, crop would already be reinforced.");
-			event.setCancelled(true);
+		PermissionType permission = PermissionType.getPermission("REINFORCE");
+		// If the REINFORCE permission is not registered, do nothing
+		if (permission == null) {
+			Citadel.getInstance().warning("Could not get the REINFORCE permission from NameLayer. Is it loaded?");
 			return;
 		}
-		int required = type.getRequiredAmount();
-		if (type.getItemStack().isSimilar(p.getInventory().getItemInMainHand())){
-			required++;
+		Player player = event.getPlayer();
+		// If the player is a member of the group and has bypass permissions, do nothing
+		if (gm.hasAccess(group, player.getUniqueId(), permission)) {
+			return;
 		}
-		if (inv.containsAtLeast(type.getItemStack(), required)) {
-			try {
-				if (createPlayerReinforcement(p, state.getGroup(), b, type, p.getInventory().getItemInMainHand()) == null) {
-					Utility.sendAndLog(p, ChatColor.RED, String.format("%s is not a reinforcible material ", b.getType().name()));
-				} else {
-					state.checkResetMode();
-				}
-			} catch(ReinforcemnetFortificationCancelException ex){
-				Citadel.getInstance().getLogger().log(Level.WARNING, "ReinforcementFortificationCancelException occured in BlockListener, BlockPlaceEvent ", ex);
-			}
-		} else {
-			Utility.sendAndLog(p, ChatColor.YELLOW, String.format("%s depleted, left fortification mode ",
-					state.getReinforcementType().getMaterial().name()));
-			state.reset();
-			event.setCancelled(true);
-		}
+		// Otherwise prevent the player from putting item frames on other people's reinforced blocks
+		player.sendMessage(ChatColor.RED + "You cannot place those on blocks you don't have permissions for.");
+		event.setCancelled(true);
+		Bukkit.getScheduler().runTaskLater(Citadel.getInstance(), player::updateInventory, 1L);
 	}
 
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event){
-		Reinforcement rein = rm.getReinforcement(event.getEntity().getLocation()); if (rein == null){return;}
-		if (RemoveCause.PHYSICS.equals(event.getCause())){
-			//Checks if block entity was attached to was broken
-			if (event.getEntity().getLocation().getBlock().getRelative(
-					event.getEntity().getAttachedFace()).getType().equals(Material.AIR)){
-				//Comment out these next two lines to keep floating hanging entities if they are reinforced
-				rm.deleteReinforcement(rein);
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event) {
+		// If Hanging Entity Reinforcements is not enabled, back out
+		if (!CitadelConfigManager.hangersInheritReinforcements()) {
+			return;
+		}
+		Hanging entity = event.getEntity();
+		switch (event.getCause()) {
+			// Allow it to break if:
+			//  1) The host block broke
+			//  2) A block was placed over it
+			//  3) A plugin broke it
+			case OBSTRUCTION:
+			case PHYSICS:
+			case DEFAULT:
 				return;
-			} else {
-				event.setCancelled(true);
-				return;
+			// Prevent break if breaker is player and does not have BYPASS permissions
+			case ENTITY: {
+				if (event.getRemover() instanceof Player) {
+					Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+					Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
+					// If the reinforcement doesn't exist or isn't a player reinforcement, we can safely back out
+					// and let the entity be broken
+					if (!(reinforcement instanceof PlayerReinforcement)) {
+						return;
+					}
+					PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+					Group group = playerReinforcement.getGroup();
+					// If the player reinforcement somehow does not have a group, just back out
+					if (group == null) {
+						return;
+					}
+					Player player = (Player) event.getRemover();
+					// If the player is a member of the group and has bypass permissions, do nothing
+					if (playerReinforcement.canBypass(player)) {
+						return;
+					}
+					// Otherwise prevent interaction and notify the player they do not have perms
+					player.sendMessage(ChatColor.RED + "The host block is protecting this.");
+				}
 			}
 		}
-		Entity remover = event.getRemover(); if (!(remover instanceof Player)){event.setCancelled(true);return;}
-		Player player = (Player)remover;
-		Block block = event.getEntity().getLocation().getBlock();
-		boolean is_cancelled = true;
-		if (rein instanceof PlayerReinforcement) {
-			PlayerReinforcement pr = (PlayerReinforcement) rein;
-			PlayerState state = PlayerState.get(player);
-			ReinforcementMode mode = state.getMode();
-			if (ReinforcementMode.REINFORCEMENT_INFORMATION == mode){
-				Group group = pr.getGroup();
-				StringBuilder sb;
-				if (player.hasPermission("citadel.admin.ctinfodetails")) {
-					Utility.sendAndLog(player, ChatColor.GREEN, String.format(
-							"Loc[%s]", pr.getLocation().toString()));
-					String groupName = "!NULL!";
-					if (group != null) {
-						groupName = String.format("[%s]");
-					}
-					sb = new StringBuilder();
-					sb.append(String.format(" Group%s Durability[%d/%d]",
-							groupName,
-							pr.getDurability(),
-							ReinforcementType.getReinforcementType
-							(pr.getStackRepresentation()).getHitPoints()));
-					int maturationTime = timeUntilMature(pr);
-					if (maturationTime != 0) {
-						sb.append(" Immature[");
-						sb.append(maturationTime);
-						sb.append("]");
-					}
-					int acidTime = timeUntilAcidMature(pr);
-					if (CitadelConfigManager.getAcidBlock() == block.getType()) {
-						sb.append(" Acid ");
-						if (acidTime != 0) {
-							sb.append("Immature[");
-							sb.append(acidTime);
-							sb.append("]");
-						} else {
-							sb.append("Mature");
-						}
-					}
-					if (pr.isInsecure()) {
-						sb.append(" (Insecure)");
-					}
-					if (group.isDisciplined()) {
-						sb.append(" (Disciplined)");
-					}
-					sb.append("\nGroup id: " + pr.getGroupId());
+		event.setCancelled(true);
+	}
 
-					Utility.sendAndLog(player, ChatColor.GREEN, sb.toString());
-					event.setCancelled(is_cancelled);
-					return;
-				}
-			}
-			boolean admin_bypass = player.hasPermission("citadel.admin.bypassmode");
-			if (state.isBypassMode() && (pr.canBypass(player) || admin_bypass) && !pr.getGroup().isDisciplined()) {
-				reinforcementBroken(player, rein);
-				is_cancelled = false;
-			} else {
-
-				ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein, player, event.getEntity().getLocation().getBlock());
-
-				Bukkit.getPluginManager().callEvent(dre);
-
-				if(dre.isCancelled()) {
-					is_cancelled = true;
-				}
-				else {
-					is_cancelled = reinforcementDamaged(player, rein);
-				}
-			}
-			if (!is_cancelled) {
-				// The player reinforcement broke. Now check for natural
-				is_cancelled = createNaturalReinforcement(block, player) != null;
-			}
-		} else {
-			ReinforcementDamageEvent dre = new ReinforcementDamageEvent(rein, player, block);
-
-			Bukkit.getPluginManager().callEvent(dre);
-
-			if(dre.isCancelled()) {
-				is_cancelled = reinforcementDamaged(player, rein);
-				return;
-			}
-			else {
-				is_cancelled = reinforcementDamaged(player, rein);
-			}
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void playerEntityInteractEvent(PlayerInteractEntityEvent event) {
+		// If Hanging Entity Reinforcements is not enabled, back out
+		if (!CitadelConfigManager.hangersInheritReinforcements()) {
+			return;
 		}
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		if (!(event.getRightClicked() instanceof Hanging)) {
+			return;
+		}
+		Hanging entity = (Hanging) event.getRightClicked();
+		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+		Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
+		// If no player reinforcement is present, do nothing
+		if (!(reinforcement instanceof PlayerReinforcement)) {
+			return;
+		}
+		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+		Group group = playerReinforcement.getGroup();
+		// If the player reinforcement doesn't have a group, do nothing
+		if (group == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		// If the player is a member of the group and has bypass permissions, do nothing
+		if (playerReinforcement.canBypass(player)) {
+			return;
+		}
+		// Otherwise prevent interaction and notify the player they do not have perms
+		player.sendMessage(ChatColor.RED + "You do not have permission to alter that.");
+		event.setCancelled(true);
+	}
 
-		if (is_cancelled) {
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void entityDamageEvent(EntityDamageByEntityEvent event) {
+		// If Hanging Entity Reinforcements is not enabled, back out
+		if (!CitadelConfigManager.hangersInheritReinforcements()) {
+			return;
+		}
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		if (!(event.getEntity() instanceof Hanging)) {
+			return;
+		}
+		Hanging entity = (Hanging) event.getEntity();
+		// If the damager is not a player, prevent damage regardless
+		if (!(event.getDamager() instanceof Player)) {
 			event.setCancelled(true);
-			block.getDrops().clear();
+			return;
 		}
-	}
-
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void playerEntityInteractEvent(PlayerInteractEntityEvent event){
-		Entity entity = event.getRightClicked();
-		if (entity instanceof ItemFrame){
-			Reinforcement rein = rm.getReinforcement(entity.getLocation());
-			if (rein == null || !(rein instanceof PlayerReinforcement))
-				return;
-			PlayerReinforcement pr = (PlayerReinforcement)rein;
-			Group group = pr.getGroup(); if (group == null){return;}
-
-			if (group.isMember(event.getPlayer().getUniqueId()) == false){
-				event.setCancelled(true);
-				return;
-			}
+		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+		Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
+		// If the reinforcement doesn't exist or isn't a player reinforcement, we can safely back out
+		// and let the entity be broken
+		if (!(reinforcement instanceof PlayerReinforcement)) {
+			return;
 		}
-	}
-
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void entityDamageEvent(EntityDamageByEntityEvent event){
-		Entity entity = event.getEntity();
-		if (entity instanceof ItemFrame){
-			Reinforcement rein = rm.getReinforcement(entity.getLocation());
-			if (rein == null || !(rein instanceof PlayerReinforcement))
-				return;
-			Entity damager = event.getDamager(); if (!(damager instanceof Player)){event.setCancelled(true);return;}
-			Player player = (Player)damager;
-			PlayerReinforcement pr = (PlayerReinforcement)rein;
-			Group group = pr.getGroup(); if (group == null){return;}
-
-			if (group.isMember(player.getUniqueId()) == false){
-				event.setCancelled(true);
-				return;
-			}
+		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+		Group group = playerReinforcement.getGroup();
+		// If the player reinforcement somehow does not have a group, just back out
+		if (group == null) {
+			return;
 		}
+		Player player = (Player) event.getDamager();
+		// If the player is a member of the group and has bypass permissions, do nothing
+		if (playerReinforcement.canBypass(player)) {
+			return;
+		}
+		// Otherwise prevent interaction and notify the player they do not have perms
+		player.sendRawMessage(ChatColor.RED + "The host block is protecting this.");
+		event.setCancelled(true);
 	}
 
 	@EventHandler(priority=EventPriority.LOWEST)
