@@ -13,6 +13,9 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class ChunkMetaAPI {
 
+	private ChunkMetaAPI() {
+	}
+
 	private static Map<String, ChunkMetaView<? extends ChunkMeta>> existingViews = new HashMap<>();
 
 	/**

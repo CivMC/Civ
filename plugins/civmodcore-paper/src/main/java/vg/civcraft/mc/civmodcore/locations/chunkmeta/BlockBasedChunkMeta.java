@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -111,16 +112,27 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	/**
 	 * Retrieves data from the cache
 	 * 
-	 * @param location Location of the data
+	 * @param location Location of the data, may not be null
 	 * @return Data at the given location, possibly null if no data exists there
 	 */
-	@SuppressWarnings("unchecked")
 	public T get(Location location) {
-		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(location.getBlockX(), location.getBlockY(), false);
-		if (l4ZSection == null) {
-			return null;
+		if (location == null) {
+			throw new IllegalArgumentException("Location may not be null");
 		}
-		return (T) l4ZSection[location.getBlockZ()];
+		return get(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+	}
+
+	/**
+	 * Retrieves data from the cache
+	 * 
+	 * @param block Block the data is tied to, may not be null
+	 * @return Data for the given block, possibly null if no data exists for it
+	 */
+	public T get(Block block) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block may not be null");
+		}
+		return get(block.getX(), block.getY(), block.getZ());
 	}
 
 	/**
@@ -239,6 +251,19 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	}
 
 	/**
+	 * Inserts data for the given block into the cache
+	 * 
+	 * @param block     Block to insert data for, may not be null
+	 * @param blockData Data to insert
+	 */
+	public void put(Block block, T blockData) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block may not be null");
+		}
+		put(block.getX(), block.getY(), block.getZ(), blockData);
+	}
+
+	/**
 	 * Removes the entry at the given location if one exists and returns it
 	 * 
 	 * @param x X-Coord of the entry to remove
@@ -293,6 +318,18 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 			throw new IllegalArgumentException("Location to remove can not be null");
 		}
 		return remove(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+	}
+
+	/**
+	 * Removes the entry at the given block if one exists and returns it
+	 * 
+	 * @param location Block to remove data from, may not be null
+	 */
+	public T remove(Block block) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block to remove can not be null");
+		}
+		return remove(block.getLocation());
 	}
 
 	@Override

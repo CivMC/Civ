@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -37,7 +38,7 @@ public abstract class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D>, 
 	 * Gets the data at the given location
 	 * 
 	 * @param location Location to get data for
-	 * @return Location at the given data or null if no data exists there
+	 * @return Data at the given location or null if no data exists there
 	 */
 	public D get(Location location) {
 		T chunk = super.getChunkMeta(location);
@@ -45,6 +46,20 @@ public abstract class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D>, 
 			return null;
 		}
 		return chunk.get(location);
+	}
+
+	/**
+	 * Gets the data at the given location
+	 * 
+	 * @param block Block to get data for
+	 * @return Data tied to the given block or null if no data exists there
+	 */
+	public D get(Block block) {
+		T chunk = super.getChunkMeta(block.getLocation());
+		if (chunk == null) {
+			return null;
+		}
+		return chunk.get(block);
 	}
 
 	/**
@@ -72,6 +87,20 @@ public abstract class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D>, 
 			throw new IllegalArgumentException("No data loaded for the chunk at location " + location);
 		}
 		return chunk.remove(location);
+	}
+
+	/**
+	 * Attempts to remove data tied to the given block from the cache, if any exists
+	 * 
+	 * @param block Block to remove data for
+	 * @return Data removed, null if nothing was removed
+	 */
+	public D remove(Block block) {
+		T chunk = super.getChunkMeta(block.getLocation());
+		if (chunk == null) {
+			throw new IllegalArgumentException("No data loaded for the chunk at location " + block.getLocation());
+		}
+		return chunk.remove(block);
 	}
 
 	public abstract T getEmptyNewChunkCache();
