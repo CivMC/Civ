@@ -177,7 +177,7 @@ public class EntityListener implements Listener{
 			}
 			Player player = event.getPlayer();
 			// If the player is a member of the group and has bypass permissions, do nothing
-			if (group.isMember(player.getUniqueId()) &&  gm.hasAccess(group, player.getUniqueId(), permission)) {
+			if (gm.hasAccess(group, player.getUniqueId(), permission)) {
 				return;
 			}
 			// Otherwise prevent the player from putting item frames on other people's reinforced blocks
@@ -272,11 +272,11 @@ public class EntityListener implements Listener{
 						}
 						Player player = (Player) event.getRemover();
 						// If the player is a member of the group and has bypass permissions, do nothing
-						if (group.isMember(player.getUniqueId()) && playerReinforcement.canBypass(player)) {
+						if (playerReinforcement.canBypass(player)) {
 							return;
 						}
 						// Otherwise prevent interaction and notify the player they do not have perms
-						player.sendRawMessage(ChatColor.RED + "The host block is protecting this.");
+						player.sendMessage(ChatColor.RED + "The host block is protecting this.");
 						event.setCancelled(true);
 						return;
 					}
@@ -423,11 +423,11 @@ public class EntityListener implements Listener{
 			}
 			Player player = event.getPlayer();
 			// If the player is a member of the group and has bypass permissions, do nothing
-			if (group.isMember(player.getUniqueId()) && playerReinforcement.canBypass(player)) {
+			if (playerReinforcement.canBypass(player)) {
 				return;
 			}
 			// Otherwise prevent interaction and notify the player they do not have perms
-			player.sendRawMessage(ChatColor.RED + "You do not have permission to alter that.");
+			player.sendMessage(ChatColor.RED + "You do not have permission to alter that.");
 			event.setCancelled(true);
 			return;
 		}
@@ -479,7 +479,7 @@ public class EntityListener implements Listener{
 			}
 			Player player = (Player) event.getDamager();
 			// If the player is a member of the group and has bypass permissions, do nothing
-			if (group.isMember(player.getUniqueId()) && playerReinforcement.canBypass(player)) {
+			if (playerReinforcement.canBypass(player)) {
 				return;
 			}
 			// Otherwise prevent interaction and notify the player they do not have perms
