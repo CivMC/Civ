@@ -445,9 +445,48 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void entityDamageEvent(EntityDamageByEntityEvent event){
-		Entity entity = event.getEntity();
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void entityDamageEvent(EntityDamageByEntityEvent event) {
+		// If Hanging Entity Reinforcements are disabled, back out
+		if (CitadelConfigManager.disableHangingReinforcement()) {
+			return;
+		}
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		if (!(event.getEntity() instanceof Hanging)) {
+			return;
+		}
+		Hanging entity = (Hanging) event.getEntity();
+		// If the Hanging entities inherit reinforcements
+		if (CitadelConfigManager.hangersInheritReinforcements()) {
+			// If the damager is not a player, prevent damage regardless
+			if (!(event.getDamager() instanceof Player)) {
+				event.setCancelled(true);
+				return;
+			}
+			Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+			Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
+			// If the reinforcement doesn't exist or isn't a player reinforcement, we can safely back out
+			// and let the entity be broken
+			if (!(reinforcement instanceof PlayerReinforcement)) {
+				return;
+			}
+			PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+			Group group = playerReinforcement.getGroup();
+			// If the player reinforcement somehow does not have a group, just back out
+			if (group == null) {
+				return;
+			}
+			Player player = (Player) event.getDamager();
+			// If the player is a member of the group and has bypass permissions, do nothing
+			if (group.isMember(player.getUniqueId()) && playerReinforcement.canBypass(player)) {
+				return;
+			}
+			// Otherwise prevent interaction and notify the player they do not have perms
+			player.sendRawMessage(ChatColor.RED + "The host block is protecting this.");
+			event.setCancelled(true);
+			return;
+		}
+		// Previous code which will only run if reinforcement inheritance is disabled.
 		if (entity instanceof ItemFrame){
 			Reinforcement rein = rm.getReinforcement(entity.getLocation());
 			if (rein == null || !(rein instanceof PlayerReinforcement))
