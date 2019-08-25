@@ -149,9 +149,42 @@ public class EntityListener implements Listener{
 		state.reset();
 	}
 
-
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void hangingPlaceEvent(HangingPlaceEvent event){
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingPlaceEvent(HangingPlaceEvent event) {
+		// If Hanging Entity Reinforcements are disabled, back out
+		if (CitadelConfigManager.disableHangingReinforcement()) {
+			return;
+		}
+		// If the Hanging entities inherit reinforcements
+		if (CitadelConfigManager.hangersInheritReinforcements()) {
+			Reinforcement reinforcement = rm.getReinforcement(event.getBlock());
+			// If no player reinforcement is present, do nothing
+			if (!(reinforcement instanceof PlayerReinforcement)) {
+				return;
+			}
+			PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
+			Group group = playerReinforcement.getGroup();
+			// If the player reinforcement doesn't have a group, do nothing
+			if (group == null) {
+				return;
+			}
+			PermissionType permission = PermissionType.getPermission("REINFORCE");
+			// If the REINFORCE permission is not registered, do nothing
+			if (permission == null) {
+				Citadel.getInstance().warning("Could not get the REINFORCE permission from NameLayer. Is it loaded?");
+				return;
+			}
+			Player player = event.getPlayer();
+			// If the player is a member of the group and has bypass permissions, do nothing
+			if (group.isMember(player.getUniqueId()) &&  gm.hasAccess(group, player.getUniqueId(), permission)) {
+				return;
+			}
+			// Otherwise prevent the player from putting item frames on other people's reinforced blocks
+			player.sendMessage(ChatColor.RED + "You cannot place those on blocks you don't have access to.");
+			event.setCancelled(true);
+			return;
+		}
+		// Previous code which will only run if reinforcement inheritance is disabled.
 		Player p = event.getPlayer();
 		Block b = event.getBlock().getRelative(event.getBlockFace());
 		if (rm.getReinforcement(b) != null) {
