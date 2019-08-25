@@ -257,6 +257,10 @@ public class CitadelConfigManager {
 		return config.getBoolean("break_acided_block_naturally", false);
 	}
 
+	public static boolean disableHangingReinforcement() {
+		return config.getBoolean("disable_hanging_reinforcement", true);
+	}
+
 	public static boolean hangersInheritReinforcements() {
 		return config.getBoolean("hangers_inherit_reinforcement", true);
 	}
