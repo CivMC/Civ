@@ -25,6 +25,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -233,8 +234,34 @@ public class EntityListener implements Listener{
 		}
 	}
 
-	//@EventHandler(priority = EventPriority.HIGHEST)
-	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event){
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event) {
+		// If Hanging Entity Reinforcements are disabled, back out
+		if (CitadelConfigManager.disableHangingReinforcement()) {
+			return;
+		}
+		Hanging entity = event.getEntity();
+		// If the Hanging entities inherit reinforcements
+		if (CitadelConfigManager.hangersInheritReinforcements()) {
+			switch (event.getCause()) {
+				// Allow it to break if:
+				//  1) The host block broke
+				//  2) A block was placed over it
+				//  3) A plugin broke it
+				default:
+				case OBSTRUCTION:
+				case PHYSICS:
+				case DEFAULT:
+					return;
+				// Otherwise cancel the break
+				case ENTITY:
+					event.getRemover().sendMessage(ChatColor.RED + "The host block is protecting this.");
+				case EXPLOSION:
+					event.setCancelled(true);
+					return;
+			}
+		}
+		// Previous code which will only run if reinforcement inheritance is disabled.
 		Reinforcement rein = rm.getReinforcement(event.getEntity().getLocation()); if (rein == null){return;}
 		if (RemoveCause.PHYSICS.equals(event.getCause())){
 			//Checks if block entity was attached to was broken
