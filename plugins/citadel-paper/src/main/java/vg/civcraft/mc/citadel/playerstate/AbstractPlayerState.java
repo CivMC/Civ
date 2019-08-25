@@ -13,8 +13,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -57,7 +57,7 @@ public abstract class AbstractPlayerState {
 			}
 			return;
 		}
-		if (Utility.isPlant(e.getBlock())) {
+		if (CitadelUtility.isPlant(e.getBlock())) {
 			if (rein.hasPermission(e.getPlayer(), Citadel.cropsPerm)
 					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
 				// allow, because player has crop permission and the only reinforcement
@@ -66,7 +66,7 @@ public abstract class AbstractPlayerState {
 			}
 		}
 		if (hasAccess) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
+			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
 					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
 		}
 		e.setCancelled(true);
@@ -85,7 +85,7 @@ public abstract class AbstractPlayerState {
 	protected static void giveReinforcement(Location location, Player p, ReinforcementType type) {
 		HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(type.getItem().clone());
 		if (!notAdded.isEmpty()) {
-			Utility.dropItemAtLocation(location, type.getItem().clone());
+			CitadelUtility.dropItemAtLocation(location, type.getItem().clone());
 		}
 	}
 

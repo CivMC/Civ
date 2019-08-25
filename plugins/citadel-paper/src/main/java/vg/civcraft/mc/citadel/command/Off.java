@@ -21,7 +21,7 @@ public class Off extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 
 }

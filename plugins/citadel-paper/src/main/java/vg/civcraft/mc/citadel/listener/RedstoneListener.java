@@ -8,8 +8,13 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Switch;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,11 +25,6 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.material.Button;
-import org.bukkit.material.Door;
-import org.bukkit.material.MaterialData;
-import org.bukkit.material.Openable;
-import org.bukkit.material.PressurePlate;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
@@ -105,13 +105,13 @@ public class RedstoneListener implements Listener {
 		if (!(e.getClickedBlock().getBlockData() instanceof Switch)) {
 			return;
 		}
-		Button button = (Button) (e.getClickedBlock().getState().getData());
+		Switch button = (Switch) (e.getClickedBlock().getBlockData());
 		Block buttonBlock = e.getClickedBlock();
-		Block attachedBlock = e.getClickedBlock().getRelative(button.getAttachedFace().getOppositeFace());
+		Block attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
 		// prepare all sides of button itself
-		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getAttachedFace());
+		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getFacing());
 		// prepare all sides of the block attached to
-		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getAttachedFace().getOppositeFace());
+		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getFacing().getOppositeFace());
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
@@ -121,7 +121,7 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		Block block = bre.getBlock();
-		MaterialData blockData = block.getState().getData();
+		BlockData blockData = block.getBlockData();
 		if (!(blockData instanceof Openable)) {
 			return;
 		}
@@ -156,12 +156,12 @@ public class RedstoneListener implements Listener {
 	}
 
 	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
-		for (BlockFace face : BlockListener.all_sides) {
+		for (BlockFace face : BlockListener.ALL_SIDES) {
 			if (face == skip) {
 				continue;
 			}
 			Block rel = block.getRelative(face);
-			MaterialData blockData = rel.getState().getData();
+			BlockData blockData = rel.getBlockData();
 			if (!(blockData instanceof Openable)) {
 				continue;
 			}
@@ -187,7 +187,9 @@ public class RedstoneListener implements Listener {
 		if (e.getAction() != Action.PHYSICAL) {
 			return;
 		}
-		if (!(e.getClickedBlock().getState().getData() instanceof PressurePlate)) {
+		Material mat = e.getClickedBlock().getType();
+		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
+				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE && !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);

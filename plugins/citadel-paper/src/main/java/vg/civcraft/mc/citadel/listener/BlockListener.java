@@ -9,6 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.block.data.Openable;
+import org.bukkit.block.data.type.Comparator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -20,20 +22,18 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.material.Comparator;
-import org.bukkit.material.Openable;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class BlockListener implements Listener {
 
-	public static final List<BlockFace> all_sides = Arrays.asList(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
+	public static final List<BlockFace> ALL_SIDES = Arrays.asList(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
 			BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
 
-	public static final List<BlockFace> planar_sides = Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
+	public static final List<BlockFace> PLANAR_SIDES = Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
 			BlockFace.EAST);
 
 	private static final Material matfire = Material.FIRE;
@@ -42,7 +42,7 @@ public class BlockListener implements Listener {
 	public void blockBreakEvent(BlockBreakEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBreakBlock(event);
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void blockPlaceEvent(BlockPlaceEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBlockPlace(event);
@@ -97,12 +97,12 @@ public class BlockListener implements Listener {
 		if (event.getBlockPlaced().getType() != Material.COMPARATOR) {
 			return;
 		}
-		Comparator comparator = (Comparator) event.getBlockPlaced().getState().getData();
+		Comparator comparator = (Comparator) event.getBlockPlaced().getBlockData();
 		Block block = event.getBlockPlaced().getRelative(comparator.getFacing().getOppositeFace());
 		// Check if the comparator is placed against something with an inventory
 		if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(), block)) {
 			event.setCancelled(true);
-			Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+			CitadelUtility.sendAndLog(event.getPlayer(), ChatColor.RED,
 					"You can not place this because it'd allow bypassing a nearby reinforcement");
 			return;
 		}
@@ -111,9 +111,8 @@ public class BlockListener implements Listener {
 			if (ReinforcementLogic.isPreventingBlockAccess(event.getPlayer(),
 					block.getRelative(comparator.getFacing().getOppositeFace()))) {
 				event.setCancelled(true);
-				Utility.sendAndLog(event.getPlayer(), ChatColor.RED,
+				CitadelUtility.sendAndLog(event.getPlayer(), ChatColor.RED,
 						"You can not place this because it'd allow bypassing a nearby reinforcement");
-				return;
 			}
 		}
 	}
@@ -169,18 +168,18 @@ public class BlockListener implements Listener {
 		if (rein == null) {
 			return;
 		}
-		if (e.getClickedBlock().getState() instanceof Container) {
+		if (e.getClickedBlock().getBlockData() instanceof Container) {
 			if (!rein.hasPermission(e.getPlayer(), Citadel.chestPerm)) {
 				e.setCancelled(true);
-				Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
 			}
 			return;
 		}
-		if (e.getClickedBlock().getState().getData() instanceof Openable) {
+		if (e.getClickedBlock().getBlockData() instanceof Openable) {
 			if (!rein.hasPermission(e.getPlayer(), Citadel.doorPerm)) {
 				e.setCancelled(true);
-				Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
 			}
 		}
@@ -194,15 +193,13 @@ public class BlockListener implements Listener {
 		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
 			return;
 		}
-		for (BlockFace face : planar_sides) {
+		for (BlockFace face : PLANAR_SIDES) {
 			Block rel = e.getBlock().getRelative(face);
-			if (rel != null && rel.getType() == mat) {
-				if (ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
-					e.setCancelled(true);
-					Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
-							"You can not place this because it'd allow bypassing a nearby reinforcement");
-					break;
-				}
+			if (rel.getType() == mat && ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
+				e.setCancelled(true);
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
+						"You can not place this because it'd allow bypassing a nearby reinforcement");
+				break;
 			}
 		}
 	}
@@ -210,13 +207,10 @@ public class BlockListener implements Listener {
 	// remove reinforced air
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void removeReinforcedAir(BlockPlaceEvent e) {
-		if (e.getBlockReplacedState() == null) {
-			return;
-		}
 		if (e.getBlockReplacedState().getType() != Material.AIR) {
 			return;
 		}
-		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
+		Reinforcement rein = Citadel.getInstance().getChunkMetaManager().get(e.getBlock());
 		if (rein != null) {
 			rein.setHealth(-1);
 		}

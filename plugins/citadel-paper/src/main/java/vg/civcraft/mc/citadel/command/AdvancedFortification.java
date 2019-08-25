@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.AdvancedFortificationState;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
@@ -41,22 +41,22 @@ public class AdvancedFortification extends StandaloneCommand {
 		}
 		ItemStack mainHand = player.getInventory().getItemInMainHand();
 		if (mainHand.getType() == Material.AIR) {
-			Utility.sendAndLog(player, ChatColor.RED,
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"You need to hold an item in your main hand to specify the block type to reinforce");
 			return true;
 		}
 		ItemStack offHand = player.getInventory().getItemInOffHand();
 		if (offHand.getType() == Material.AIR) {
-			Utility.sendAndLog(player, ChatColor.RED, "You need to hold a reinforcement item in your off hand");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You need to hold a reinforcement item in your off hand");
 			return true;
 		}
 		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(offHand);
 		if (type == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "You can not reinforce with the item in your off hand");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with the item in your off hand");
 			return true;
 		}
 		if (!type.canBeReinforced(mainHand.getType())) {
-			Utility.sendAndLog(player, ChatColor.AQUA,
+			CitadelUtility.sendAndLog(player, ChatColor.AQUA,
 					type.getName() + ChatColor.RED + " can not reinforce " + mainHand.getType().name());
 			return true;
 		}
@@ -64,7 +64,7 @@ public class AdvancedFortification extends StandaloneCommand {
 		if (args.length == 0) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(player.getUniqueId());
 			if (groupName == null) {
-				Utility.sendAndLog(player, ChatColor.RED,
+				CitadelUtility.sendAndLog(player, ChatColor.RED,
 						"You don't have a default group and can thus not use this command without specifying a group");
 				return true;
 			}
@@ -74,13 +74,13 @@ public class AdvancedFortification extends StandaloneCommand {
 
 		Group group = GroupManager.getGroup(groupName);
 		if (group == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "The group " + groupName + " does not exist.");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "The group " + groupName + " does not exist.");
 			return true;
 		}
 		boolean hasAccess = NameAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
 				PermissionType.getPermission(Citadel.reinforcePerm));
 		if (!hasAccess) {
-			Utility.sendAndLog(player, ChatColor.RED, "You do not have permission to reinforce on " + group.getName());
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You do not have permission to reinforce on " + group.getName());
 			return true;
 		}
 		if (advFortState == null) {
@@ -100,7 +100,7 @@ public class AdvancedFortification extends StandaloneCommand {
 			return GroupTabCompleter.complete(args[0], PermissionType.getPermission(Citadel.reinforcePerm),
 					(Player) sender);
 		else {
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 	}
 

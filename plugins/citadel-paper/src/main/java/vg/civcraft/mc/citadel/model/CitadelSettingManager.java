@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.playerstate.InformationState;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
@@ -84,6 +84,6 @@ public class CitadelSettingManager {
 		args.put("max_health",reinHealthFormatter.format(type.getHealth()));
 		args.put("type", type.getName());
 		args.put("health_color", InformationState.getDamageColor(reinforcement.getHealth() / type.getHealth()).toString());
-		Utility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args));
+		CitadelUtility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args));
 	}
 }

@@ -5,20 +5,21 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import vg.civcraft.mc.citadel.database.CitadelReinforcementData;
+
 import vg.civcraft.mc.citadel.listener.BlockListener;
-import vg.civcraft.mc.citadel.listener.ChunkLoadListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.CitadelSettingManager;
-import vg.civcraft.mc.citadel.model.GlobalReinforcementManager;
 import vg.civcraft.mc.citadel.model.HologramManager;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -41,8 +42,7 @@ public class Citadel extends ACivMod {
 	}
 
 	private Logger logger;
-	private CitadelReinforcementData db;
-	private GlobalReinforcementManager worldManager;
+	private BlockBasedChunkMetaView<CitadelChunkData, Reinforcement> chunkMetaData;
 	private CitadelConfigManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
@@ -58,24 +58,12 @@ public class Citadel extends ACivMod {
 		return acidManager;
 	}
 
-	/**
-	 * @return The Database Manager for Citadel.
-	 */
-	public CitadelReinforcementData getCitadelDatabase() {
-		return db;
-	}
-
 	public CitadelConfigManager getConfigManager() {
 		return config;
 	}
 
-	@Override
-	public String getPluginName() {
-		return "Citadel";
-	}
-
-	public GlobalReinforcementManager getReinforcementManager() {
-		return worldManager;
+	public BlockBasedChunkMetaView<CitadelChunkData, Reinforcement> getChunkMetaManager() {
+		return chunkMetaData;
 	}
 
 	public ReinforcementTypeManager getReinforcementTypeManager() {
@@ -94,19 +82,9 @@ public class Citadel extends ACivMod {
 		return holoManager;
 	}
 
-	public boolean initializeDatabase() {
-		ManagedDatasource mds = config.getDatabase();
-		if (mds == null) {
-			return false;
-		}
-		db = new CitadelReinforcementData(mds, this, typeManager);
-		return db.startUp();
-	}
-
 	@Override
 	public void onDisable() {
-		// Pushes all reinforcements loaded to be saved to db.
-		worldManager.flushAll();
+		chunkMetaData.disable();
 		HandlerList.unregisterAll(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
@@ -134,14 +112,9 @@ public class Citadel extends ACivMod {
 		}
 		typeManager = new ReinforcementTypeManager();
 		config.getReinforcementTypes().forEach(t -> typeManager.register(t));
-		if (!initializeDatabase()) {
+		chunkMetaData = ChunkMetaAPI.registerBlockBasedPlugin(this, CitadelChunkData.class, () -> new CitadelChunkData(true));
+		if (chunkMetaData == null) {
 			logger.severe("Errors setting up database, shutting down");
-			Bukkit.shutdown();
-			return;
-		}
-		worldManager = new GlobalReinforcementManager(db);
-		if (!worldManager.setup()) {
-			logger.severe("Errors setting up world config, shutting down");
 			Bukkit.shutdown();
 			return;
 		}
@@ -163,17 +136,16 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
-		getServer().getPluginManager().registerEvents(new ChunkLoadListener(), this);
 	}
 
 	@SuppressWarnings("unchecked")
 	private void registerNameLayerPermissions() {
-		LinkedList<PlayerType> membersAndAbove = new LinkedList<PlayerType>();
+		LinkedList<PlayerType> membersAndAbove = new LinkedList<>();
 		membersAndAbove.add(PlayerType.MEMBERS);
 		membersAndAbove.add(PlayerType.MODS);
 		membersAndAbove.add(PlayerType.ADMINS);
 		membersAndAbove.add(PlayerType.OWNER);
-		LinkedList<PlayerType> modsAndAbove = new LinkedList<PlayerType>();
+		LinkedList<PlayerType> modsAndAbove = new LinkedList<>();
 		modsAndAbove.add(PlayerType.MODS);
 		modsAndAbove.add(PlayerType.ADMINS);
 		modsAndAbove.add(PlayerType.OWNER);

@@ -16,8 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -36,37 +36,37 @@ public class Acid extends StandaloneCommand {
 		while (itr.hasNext()) {
 			Block block = itr.next();
 			if (!acidMan.isPossibleAcidBlock(block)) {
-				Utility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
 				return true;
 			}
-			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+			Reinforcement reinforcement = Citadel.getInstance().getChunkMetaManager().get(block);
 			if (reinforcement == null) {
-				Utility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
 				return true;
 			}
 			if (!reinforcement.hasPermission(p, Citadel.acidPerm)) {
-				Utility.sendAndLog(p, ChatColor.RED,
+				CitadelUtility.sendAndLog(p, ChatColor.RED,
 						"You do not have sufficient permission to use acid blocks on this group.");
 				return true;
 			}
 			long neededTime = acidMan.getRemainingAcidMaturationTime(reinforcement);
 			if (neededTime > 0) {
-				Utility.sendAndLog(p, ChatColor.RED, "That acid block will be mature in "
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "That acid block will be mature in "
 						+ TextUtil.formatDuration(neededTime, TimeUnit.MILLISECONDS));
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
 			if (Material.AIR.equals(topFace.getType())) {
-				Utility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
 				return true;
 			}
 			Reinforcement topRein = ReinforcementLogic.getReinforcementProtecting(topFace);
 			if (topRein == null) {
-				Utility.sendAndLog(p, ChatColor.RED, "The block above doesn't have a reinforcement.");
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "The block above doesn't have a reinforcement.");
 				return true;
 			}
 			if (!acidMan.canAcidBlock(reinforcement.getType(), topRein.getType())) {
-				Utility.sendAndLog(p, ChatColor.RED,
+				CitadelUtility.sendAndLog(p, ChatColor.RED,
 						reinforcement.getType().getName() + " can not acid away " + topRein.getType().getName());
 				return true;
 			}
@@ -95,6 +95,6 @@ public class Acid extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

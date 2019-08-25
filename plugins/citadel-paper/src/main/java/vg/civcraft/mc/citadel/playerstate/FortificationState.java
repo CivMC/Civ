@@ -6,7 +6,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.group.Group;
 
@@ -37,7 +37,7 @@ public class FortificationState extends AbstractPlayerState {
 
 	@Override
 	public void handleBlockPlace(BlockPlaceEvent e) {
-		boolean hadError = Utility.attemptReinforcementCreation(e.getBlock(), type, group, e.getPlayer());
+		boolean hadError = CitadelUtility.attemptReinforcementCreation(e.getBlock(), type, group, e.getPlayer());
 		if (hadError) {
 			e.setCancelled(true);
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);

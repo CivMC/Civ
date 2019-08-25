@@ -7,8 +7,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementGroupChangeEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -46,7 +46,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		e.setCancelled(true);
 		// does group still exist?
 		if (!group.isValid()) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 					"The group " + group.getName() + " seems to have been deleted in the mean time");
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
@@ -54,25 +54,25 @@ public class ReinforcingState extends AbstractPlayerState {
 		Player player = e.getPlayer();
 		// does the player have an item?
 		if (e.getItem() == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "You have nothing in your hand to reinforce with");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have nothing in your hand to reinforce with");
 			return;
 		}
 		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getByItemStack(e.getItem());
 		// is it a valid item to reinforce with
 		if (type == null) {
-			Utility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
 			return;
 		}
 		// can the item reinforce the clicked block
 		if (!type.canBeReinforced(e.getClickedBlock().getType())) {
-			Utility.sendAndLog(player, ChatColor.RED,
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					type.getName() + " can not reinforce " + e.getClickedBlock().getType());
 			return;
 		}
 		// does the player have permission to reinforce on that group
 		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
 				PermissionType.getPermission(Citadel.reinforcePerm))) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 					"You seem to have lost permission to reinforce on " + group.getName());
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
@@ -81,7 +81,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		// if reinforcement exists, check if player has permission to edit it
 		if (rein != null) {
 			if (!rein.hasPermission(e.getPlayer(), Citadel.bypassPerm)) {
-				Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						"You do not have permission to bypass reinforcements on " + group.getName());
 				return;
 			}
@@ -90,12 +90,12 @@ public class ReinforcingState extends AbstractPlayerState {
 			// check inventory for reinforcement item
 			ItemMap toConsume = new ItemMap(type.getItem());
 			if (!toConsume.isContainedIn(player.getInventory())) {
-				Utility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
 				return;
 			}
 			// consume item from inventory
 			if (!toConsume.removeSafelyFrom(player.getInventory())) {
-				Utility.sendAndLog(e.getPlayer(), ChatColor.RED,
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						"Failed to remove reinforcement item from your inventory");
 				return;
 			}
@@ -109,7 +109,7 @@ public class ReinforcingState extends AbstractPlayerState {
 								+ e.getClickedBlock().getLocation().toString());
 			}
 			// just create new reinforcement
-			ReinforcementLogic.createReinforcement(e.getClickedBlock(), type, group);
+			ReinforcementLogic.createReinforcement(player, e.getClickedBlock(), type, group);
 		} else {
 			// replace existing one
 			boolean changedGroup = false;
@@ -130,15 +130,15 @@ public class ReinforcingState extends AbstractPlayerState {
 				if (!rcte.isCancelled()) {
 					giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
 					rein.setHealth(-1);
-					ReinforcementLogic.createReinforcement(rein.getLocation().getBlock(), type, group);
-					Utility.sendAndLog(player, ChatColor.GREEN,
+					ReinforcementLogic.createReinforcement(player, rein.getLocation().getBlock(), type, group);
+					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
 							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName());
 				} else if (changedGroup) {
-					Utility.sendAndLog(player, ChatColor.GREEN,
+					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
 							"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
 				}
 			} else if (changedGroup) {
-				Utility.sendAndLog(player, ChatColor.GREEN,
+				CitadelUtility.sendAndLog(player, ChatColor.GREEN,
 						"Updated group to " + ChatColor.LIGHT_PURPLE + group.getName());
 			}
 		}

@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
@@ -33,14 +33,14 @@ public class AreaReinforce extends StandaloneCommand {
 		ReinforcementType reinType = Citadel.getInstance().getReinforcementTypeManager()
 				.getByItemStack(p.getInventory().getItemInMainHand());
 		if (reinType == null) {
-			Utility.sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
+			CitadelUtility.sendAndLog(p, ChatColor.RED, "The item you are holding is not a possible reinforcement");
 			return true;
 		}
 		String groupName = null;
 		if (args.length == 6) {
 			groupName = NameAPI.getGroupManager().getDefaultGroup(uuid);
 			if (groupName == null) {
-				Utility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
+				CitadelUtility.sendAndLog(p, ChatColor.RED, "You need to set a default group \n Use /nlsdg to do so");
 				return true;
 			}
 		} else {
@@ -48,7 +48,7 @@ public class AreaReinforce extends StandaloneCommand {
 		}
 		Group group = GroupManager.getGroup(groupName);
 		if (group == null) {
-			Utility.sendAndLog(p, ChatColor.RED, "That group does not exist.");
+			CitadelUtility.sendAndLog(p, ChatColor.RED, "That group does not exist.");
 			return true;
 		}
 		// no additional group permission check here because the player is
@@ -69,7 +69,7 @@ public class AreaReinforce extends StandaloneCommand {
 			yMax = Math.max(y1, y2);
 			zMax = Math.max(z1, z2);
 		} catch (NumberFormatException e) {
-			Utility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
+			CitadelUtility.sendAndLog(p, ChatColor.RED, "One of the arguments you provided was not a number");
 			return false;
 		}
 		int count = 0;
@@ -85,17 +85,17 @@ public class AreaReinforce extends StandaloneCommand {
 						continue;
 					}
 					count++;
-					ReinforcementLogic.createReinforcement(current, reinType, group);
+					ReinforcementLogic.createReinforcement(p, current, reinType, group);
 				}
 			}
 		}
 
-		Utility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + "reinforcements");
+		CitadelUtility.sendAndLog(p, ChatColor.GREEN, "Successfully created " + count + "reinforcements");
 		return true;
 	}
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new ArrayList<String>();
+		return new ArrayList<>();
 	}
 }

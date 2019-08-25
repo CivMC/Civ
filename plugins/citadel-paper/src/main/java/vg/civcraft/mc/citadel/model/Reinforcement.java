@@ -2,50 +2,47 @@ package vg.civcraft.mc.citadel.model;
 
 import java.util.Random;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.google.gson.JsonObject;
+
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class Reinforcement {
+public class Reinforcement extends BlockDataObject {
 
 	private static Random rng = new Random();
 
 	private final long creationTime;
 	private ReinforcementType type;
-	private final Location loc;
 	private double health;
-	protected boolean isDirty;
-	protected boolean isNew;
 	private int groupId;
 	private boolean insecure;
-	private ChunkCache owningCache;
 
 	public Reinforcement(Location loc, ReinforcementType type, Group group) {
-		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), true, true, false);
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), false);
 	}
 
 	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
-			boolean isDirty, boolean isNew, boolean insecure) {
-		if (loc == null) {
-			throw new IllegalArgumentException("Location for reinforcement can not be null");
-		}
+			boolean insecure) {
+		super(loc);
 		if (type == null) {
 			throw new IllegalArgumentException("Reinforcement type for reinforcement can not be null");
 		}
-		this.loc = loc;
 		this.type = type;
 		this.creationTime = creationTime;
 		this.health = health;
-		this.isDirty = isDirty;
 		this.groupId = groupID;
-		this.isNew = isNew;
 		this.insecure = insecure;
 	}
 
@@ -85,13 +82,6 @@ public class Reinforcement {
 	}
 
 	/**
-	 * @return Location of the Reinforcement.
-	 */
-	public Location getLocation() {
-		return loc;
-	}
-
-	/**
 	 * Gets the center of the block at the location of this reinforcement.
 	 * getLocation() will return the integer coordinates of the reinforcement while
 	 * this location is offset by 0.5 to the center
@@ -99,7 +89,7 @@ public class Reinforcement {
 	 * @return Center of the block
 	 */
 	public Location getBlockCenter() {
-		Location copy = loc.clone();
+		Location copy = location.clone();
 		copy.add(0.5, 0.5, 0.5);
 		return copy;
 	}
@@ -135,13 +125,6 @@ public class Reinforcement {
 	}
 
 	/**
-	 * @return Whether this reinforcement needs to be saved to the database
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	/**
 	 * @return Whether the reinforcement is insecure, meaning it ignores Citadel
 	 *         restrictions on hoppers etc.
 	 */
@@ -156,31 +139,6 @@ public class Reinforcement {
 	 */
 	public boolean isMature() {
 		return System.currentTimeMillis() - creationTime > type.getMaturationTime();
-	}
-
-	/**
-	 * @return True if the reinforcement has not been written to the database since
-	 *         its creation
-	 */
-	public boolean isNew() {
-		return isNew;
-	}
-
-	/**
-	 * Sets if this reinforcement needs to be saved to the database or not. Will
-	 * automatically update the dirty flag of the cache holding this reinforcement
-	 * as well
-	 * 
-	 * @param dirty
-	 */
-	public void setDirty(boolean dirty) {
-		this.isDirty = dirty;
-		if (!dirty) {
-			// we saved to the database, so we are no longer new now
-			isNew = false;
-		} else {
-			owningCache.setDirty(true);
-		}
 	}
 
 	public void setGroup(Group group) {
@@ -200,16 +158,15 @@ public class Reinforcement {
 		this.health = health;
 		setDirty(true);
 		if (health <= 0) {
-			Citadel.getInstance().getReinforcementManager().removeReinforcement(this);
+			getOwningCache().remove(this);
 		}
 	}
-
-	/**
-	 * Sets which cache this reinforcement belongs to. Cache is expected to set this
-	 * when beginning to track the reinforcement
-	 */
-	void setOwningCache(ChunkCache cache) {
-		this.owningCache = cache;
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	protected BlockBasedChunkMeta<Reinforcement> getOwningCache() {
+		//doing this covariant overwrite makes typing easier in other places
+		return (BlockBasedChunkMeta<Reinforcement>) super.getOwningCache();
 	}
 
 	public void setType(ReinforcementType type) {
@@ -237,5 +194,30 @@ public class Reinforcement {
 		double relativeHealth = health / type.getHealth();
 		baseChance *= relativeHealth;
 		return rng.nextDouble() <= baseChance;
+	}
+	
+	@Override
+	public void concreteSerialize(JsonObject json) {
+		json.addProperty("c", creationTime);
+		json.addProperty("t", type.getID());
+		json.addProperty("h", health);
+		json.addProperty("g", groupId);
+		if (insecure) {
+			json.addProperty("i", "");
+		}
+	}
+	
+	public static Reinforcement deserialize(JsonObject json, ChunkMeta meta) {
+		long creationTime = json.get("c").getAsLong();
+		int reinforcementTypeId = json.get("t").getAsInt();
+		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getById(reinforcementTypeId);
+		if (type == null) {
+			Citadel.getInstance().getLogger().log(Level.SEVERE, "Could not load reinforcement with id " + reinforcementTypeId);
+		}
+		double health = json.get("h").getAsDouble();
+		int groupId = json.get("g").getAsInt();
+		boolean insecure = json.has("i");
+		Location loc = parseLocationFromJson(json, meta);
+		return new Reinforcement(loc, type, groupId, creationTime, health, insecure);		
 	}
 }

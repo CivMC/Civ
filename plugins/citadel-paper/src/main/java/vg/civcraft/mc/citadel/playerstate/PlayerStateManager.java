@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.Utility;
+import vg.civcraft.mc.citadel.CitadelUtility;
 
 public class PlayerStateManager {
 
@@ -39,7 +39,7 @@ public class PlayerStateManager {
 			state = new NormalState(player);
 		}
 		playerStateMap.put(player.getUniqueId(), state);
-		Utility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW + state.getName()
+		CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW + state.getName()
 				+ ChatColor.GOLD + " from " + ChatColor.YELLOW + existingState.getName());
 	}
 

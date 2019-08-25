@@ -3,6 +3,8 @@ package vg.civcraft.mc.citadel.reinforcementtypes;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 
+import vg.civcraft.mc.citadel.model.Reinforcement;
+
 public class ReinforcementEffect {
 	private Particle particle;
 	private float offsetX;
@@ -76,6 +78,15 @@ public class ReinforcementEffect {
 	 */
 	public void playEffect(Location location) {
 		location.getWorld().spawnParticle(particle, location, particleCount, offsetX, offsetY, offsetZ, speed, null);
+	}
+	
+	/**
+	 * Display an effect defined in the config around a reinforcement.
+	 * 
+	 * @param Reinforcement to play effect around
+	 */
+	public void playEffect(Reinforcement reinforcement) {
+		playEffect(reinforcement.getBlockCenter());
 	}
 
 	@Override

@@ -11,8 +11,8 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.Utility;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -85,7 +85,7 @@ public class InformationState extends AbstractPlayerState {
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		if (rein == null) {
-			Utility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
+			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
 			return;
 		}
 		Player player = e.getPlayer();
@@ -119,7 +119,7 @@ public class InformationState extends AbstractPlayerState {
 				sb.append(formatProgress(rein.getCreationTime(), rein.getType().getAcidTime(), "acid timer"));
 			}
 		}
-		Utility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
+		CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
 		HologramManager holoManager = Citadel.getInstance().getHologramManager();
 		if (holoManager != null) {
 			holoManager.showInfoHolo(rein, player);

@@ -23,7 +23,10 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
  * from anywhere.
  *
  */
-public class Utility {
+public class CitadelUtility {
+	
+	private CitadelUtility() {
+	}
 
 	/**
 	 * Overload for dropItemAtLocation(Location l, ItemStack is) that accepts a
@@ -57,15 +60,12 @@ public class Utility {
 	 */
 	public static void dropItemAtLocation(final Location l, final ItemStack is) {
 		// Schedule the item to drop 1 tick later
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Citadel.getInstance(), new Runnable() {
-			@Override
-			public void run() {
-				try {
-					l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
-				} catch (Exception e) {
-					Citadel.getInstance().getLogger().log(Level.WARNING,
-							"Utility dropItemAtLocation called but errored: ", e);
-				}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Citadel.getInstance(), () -> {
+			try {
+				l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
+			} catch (Exception e) {
+				Citadel.getInstance().getLogger().log(Level.WARNING, "Utility dropItemAtLocation called but errored: ",
+						e);
 			}
 		}, 1);
 	}
@@ -125,7 +125,7 @@ public class Utility {
 	public static boolean consumeReinforcementItems(Player player, ReinforcementType type) {
 		ItemMap toRemove = new ItemMap(type.getItem());
 		if (!toRemove.removeSafelyFrom(player.getInventory())) {
-			Utility.sendAndLog(player, ChatColor.RED,
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"Failed to remove items needed for " + type.getName() + " reinforcement from your inventory");
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return false;
@@ -137,7 +137,7 @@ public class Utility {
 			Player player) {
 		// check if group still exists
 		if (!group.isValid()) {
-			Utility.sendAndLog(player, ChatColor.RED,
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"The group " + group.getName() + " seems to have been deleted in the mean time");
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return true;
@@ -145,20 +145,20 @@ public class Utility {
 		// check if player still has permission
 		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
 				PermissionType.getPermission(Citadel.reinforcePerm))) {
-			Utility.sendAndLog(player, ChatColor.RED,
+			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"You seem to have lost permission to reinforce on " + group.getName());
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return true;
 		}
 		// check if reinforcement already exists
-		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		Reinforcement rein = Citadel.getInstance().getChunkMetaManager().get(block);
 		if (rein != null) {
 			// something like a slab, we just ignore this
 			return false;
 		}
 		// check if reinforcement can reinforce that block
 		if (!type.canBeReinforced(block.getType())) {
-			Utility.sendAndLog(player, ChatColor.RED, type.getName() + " can not reinforce " + block.getType());
+			CitadelUtility.sendAndLog(player, ChatColor.RED, type.getName() + " can not reinforce " + block.getType());
 			return true;
 		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
@@ -166,11 +166,11 @@ public class Utility {
 		int available = playerItems.getAmount(type.getItem());
 		if (available == 0) {
 			Citadel.getInstance().getStateManager().setState(player, null);
-			Utility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
+			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
 			return true;
 		}
 		// remove from inventory
-		if (!Utility.consumeReinforcementItems(player, type)) {
+		if (!CitadelUtility.consumeReinforcementItems(player, type)) {
 			return true;
 		}
 		// create reinforcement
@@ -178,7 +178,7 @@ public class Utility {
 			Citadel.getInstance().getLogger().info(player.getName() + " created reinforcement with " + type.getName()
 					+ " for " + block.getType().toString() + " at " + block.getLocation().toString());
 		}
-		ReinforcementLogic.createReinforcement(block, type, group);
+		ReinforcementLogic.createReinforcement(player, block, type, group);
 		return false;
 	}
 }
