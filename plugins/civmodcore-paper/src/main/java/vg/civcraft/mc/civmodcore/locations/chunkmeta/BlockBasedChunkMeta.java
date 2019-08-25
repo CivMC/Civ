@@ -45,7 +45,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 			JsonObject l1Object, Class<T> dataClass) {
 		Method instanciationMethod;
 		try {
-			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class);
+			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class, ChunkMeta.class);
 		} catch (NoSuchMethodException | SecurityException e1) {
 			CivModCorePlugin.getInstance().warning(dataClass.getName() + " does have not a deserialize method", e1);
 			return null;
@@ -66,7 +66,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 						int l4Key = Integer.parseInt(l4Entry.getKey());
 						T value;
 						try {
-							value = (T) instanciationMethod.invoke(null, l4Entry.getValue().getAsJsonObject());
+							value = (T) instanciationMethod.invoke(null, l4Entry.getValue().getAsJsonObject(), meta);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 							CivModCorePlugin.getInstance().warning("Failed to instanciate data", e);
 							return null;
@@ -101,7 +101,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 * @return Data retrieved for the given coordinates, possibly null
 	 */
 	@SuppressWarnings("unchecked")
-	public T get(int x, int y, int z) {
+	private T get(int x, int y, int z) {
 		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
 		if (l4ZSection == null) {
 			return null;
@@ -119,7 +119,8 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return get(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		return get(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(),
+				location.getBlockZ() % L4_Z_SECTION_LENGTH);
 	}
 
 	/**
@@ -132,7 +133,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		if (block == null) {
 			throw new IllegalArgumentException("Block may not be null");
 		}
-		return get(block.getX(), block.getY(), block.getZ());
+		return get(block.getLocation());
 	}
 
 	/**
@@ -240,7 +241,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 *                  z-coordinate modulo 16
 	 * @param blockData Data to insert, not null
 	 */
-	public void put(int x, int y, int z, T blockData) {
+	private void put(int x, int y, int z, T blockData) {
 		if (blockData == null) {
 			throw new IllegalArgumentException("Data may not be null");
 		}
@@ -248,6 +249,17 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
 		blockData.setOwningCache(this);
 		l4ZSection[z] = blockData;
+	}
+
+	/**
+	 * * Inserts data at the given location into the cache
+	 * 
+	 * @param location  Location to insert data at
+	 * @param blockData Data to insert
+	 */
+	public void put(Location location, T blockData) {
+		put(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(), location.getBlockZ() % L4_Z_SECTION_LENGTH,
+				blockData);
 	}
 
 	/**
@@ -260,7 +272,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		if (block == null) {
 			throw new IllegalArgumentException("Block may not be null");
 		}
-		put(block.getX(), block.getY(), block.getZ(), blockData);
+		put(block.getX() % L3_X_SECTION_COUNT, block.getY(), block.getZ() % L4_Z_SECTION_LENGTH, blockData);
 	}
 
 	/**
@@ -272,7 +284,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 * 
 	 * @return Removed data
 	 */
-	public T remove(int x, int y, int z) {
+	private T remove(int x, int y, int z) {
 		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
 		if (l4ZSection == null) {
 			return null;
@@ -317,7 +329,7 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 		if (location == null) {
 			throw new IllegalArgumentException("Location to remove can not be null");
 		}
-		return remove(location.getBlockX(), location.getBlockY(), location.getBlockZ());
+		return remove(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(), location.getBlockZ() % L4_Z_SECTION_LENGTH);
 	}
 
 	/**

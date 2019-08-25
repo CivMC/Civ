@@ -31,7 +31,7 @@ public abstract class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D>, 
 	public void put(D data) {
 		Location loc = data.getLocation();
 		T chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getBlockX() / 16, loc.getBlockZ() / 16);
-		chunk.put(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), data);
+		chunk.put(loc, data);
 	}
 
 	/**
