@@ -149,3 +149,4 @@ show_health_as_percent: true
 # Whether players are automatically put in reinforcement bypass mode on login
 default_bypass_mode: true
 break_acided_block_naturally: false
+hangers_inherit_reinforcement: true
