@@ -124,7 +124,7 @@ public class ChunkDAO {
 		}
 	}
 
-	void loadChunkData(int worldID, ChunkCoord coord) {
+	void loadChunkData(World world, int worldID, ChunkCoord coord) {
 		synchronized (coord) {
 			if (coord.isFullyLoaded()) {
 				return;
@@ -140,7 +140,7 @@ public class ChunkDAO {
 					while (rs.next()) {
 						String rawJsonString = rs.getString(1);
 						int pluginID = rs.getInt(2);
-						ChunkMeta meta = dataFactory.deserialize(rawJsonString, pluginID);
+						ChunkMeta meta = dataFactory.deserialize(rawJsonString, pluginID, world);
 						coord.addChunkMeta(meta);
 					}
 				}

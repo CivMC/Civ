@@ -47,14 +47,6 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
-	@Deprecated
-	public boolean toBool(String value) {
-		if (value.equals("1") || value.equalsIgnoreCase("true")) {
-			return true;
-		}
-		return false;
-	}
-
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
 		if (handle == null) {
@@ -130,7 +122,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message);
 		}
 	}
@@ -143,7 +135,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message, Object... vars) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message, vars);
 		}
 	}

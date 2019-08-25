@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.logging.Level;
 
+import org.bukkit.World;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -27,7 +29,7 @@ public class ChunkMetaFactory {
 		jsonParser = new JsonParser();
 	}
 
-	ChunkMeta deserialize(String rawJson, int pluginID) {
+	ChunkMeta deserialize(String rawJson, int pluginID, World world) {
 		JsonElement json = jsonParser.parse(rawJson);
 		Method method = pluginIdToDeserializeMethod.get(pluginID);
 		if (method == null) {
@@ -42,6 +44,7 @@ public class ChunkMetaFactory {
 		}
 		ChunkMeta meta = (ChunkMeta) generated;
 		meta.setPluginID(pluginID);
+		meta.setWorld(world);
 		return meta;
 	}
 

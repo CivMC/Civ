@@ -13,6 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.bukkit.World;
+
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
  * kept in a cache, into which is inserted when a chunk is loaded. When a chunk
@@ -31,6 +33,7 @@ public class WorldChunkMetaManager {
 
 	private final int worldID;
 	private final ChunkDAO dao;
+	private World world;
 	private final Map<ChunkCoord, ChunkCoord> metas;
 	/**
 	 * A synchronized TreeSet holding all chunk metadata belonging to unloaded
@@ -43,8 +46,9 @@ public class WorldChunkMetaManager {
 	private Thread chunkLoadingConsumer;
 	private Queue<ChunkCoord> chunkLoadingQueue;
 
-	public WorldChunkMetaManager(ChunkDAO dao, int worldID) {
+	public WorldChunkMetaManager(World world, ChunkDAO dao, int worldID) {
 		this.worldID = worldID;
+		this.world = world;
 		this.metas = new HashMap<>();
 		this.dao = dao;
 		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<ChunkCoord>((a, b) -> {
@@ -103,10 +107,12 @@ public class WorldChunkMetaManager {
 				return null;
 			}
 			coord = metas.putIfAbsent(coord, coord);
-			// up until here we are still sync from the ChunkLoadEvent, so we need to
-			// offload the actual db load to another thread
-			synchronized (chunkLoadingQueue) {
-				dao.loadChunkData(worldID, coord);
+			if (populate) {
+				// up until here we are still sync from the ChunkLoadEvent, so we need to
+				// offload the actual db load to another thread
+				synchronized (chunkLoadingQueue) {
+					chunkLoadingQueue.add(coord);
+				}
 			}
 			return coord;
 		}
@@ -139,10 +145,7 @@ public class WorldChunkMetaManager {
 	 * @param meta Metadata to insert
 	 */
 	void insertChunkMeta(int x, int z, ChunkMeta meta) {
-		ChunkCoord coord = getChunkCoord(x, z, false, false);
-		if (coord == null) {
-			throw new IllegalAccessError("Chunk currently not loaded");
-		}
+		ChunkCoord coord = getChunkCoord(x, z, true, false);
 		coord.addChunkMeta(meta);
 	}
 
@@ -209,7 +212,7 @@ public class WorldChunkMetaManager {
 						continue;
 					}
 				}
-				dao.loadChunkData(worldID, coord);
+				dao.loadChunkData(world, worldID, coord);
 			}
 		});
 		chunkLoadingConsumer.start();
