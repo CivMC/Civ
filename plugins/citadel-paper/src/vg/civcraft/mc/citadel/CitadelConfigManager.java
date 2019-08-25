@@ -258,7 +258,7 @@ public class CitadelConfigManager {
 	}
 
 	public static boolean hangersInheritReinforcements() {
-		return config.getBoolean("hangers_inherit_reinforcement", true);
+		return config.getBoolean("hangers_inherit_reinforcement", false);
 	}
 
 }
