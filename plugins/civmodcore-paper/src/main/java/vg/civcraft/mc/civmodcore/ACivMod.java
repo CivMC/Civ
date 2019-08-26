@@ -47,6 +47,12 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
+	public void saveDefaultResource(String path) {
+		if (getResource(path) == null) {
+			saveResource(path, false);
+		}
+	}
+
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
 		if (handle == null) {
