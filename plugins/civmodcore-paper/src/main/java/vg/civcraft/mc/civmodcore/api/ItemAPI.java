@@ -275,57 +275,59 @@ public final class ItemAPI {
 		resetItemNames();
 		Logger logger = Bukkit.getLogger();
 		// Load material names from materials.csv
-		try {
-			InputStream in = CivModCorePlugin.class.getResourceAsStream("/materials.csv");
-			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-			String line = reader.readLine();
-			while (line != null) {
-				String [] values = line.split(",");
-				// If there's not at least three values (slug, data, name) then skip
-				if (values.length < 3) {
-					logger.warning("This material row does not have enough data: " + line);
-					continue;
+		InputStream materialsCSV = CivModCorePlugin.class.getResourceAsStream("/materials.csv");
+		if (materialsCSV != null) {
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(materialsCSV));
+				String line = reader.readLine();
+				while (line != null) {
+					String [] values = line.split(",");
+					// If there's not at least three values (slug, data, name) then skip
+					if (values.length < 3) {
+						logger.warning("This material row does not have enough data: " + line);
+						continue;
+					}
+					// If a material cannot be found by the slug given, skip
+					Material material = Material.getMaterial(values[0]);
+					if (material == null) {
+						logger.warning("Could not find a material on this line: " + line);
+						continue;
+					}
+					// If the name is empty, skip
+					String name = values [2];
+					if (name.isEmpty()) {
+						logger.warning("This material has not been given a name: " + line);
+						continue;
+					}
+					// Put the material, data, and name into the system
+					itemNames.put(generateItemHash(material, null), name);
+					logger.info(String.format("Material parsed: %s = %s", material, name));
+					line = reader.readLine();
 				}
-				// If a material cannot be found by the slug given, skip
-				Material material = Material.getMaterial(values[0]);
-				if (material == null) {
-					logger.warning("Could not find a material on this line: " + line);
-					continue;
-				}
-				// If the name is empty, skip
-				String name = values [2];
-				if (name.isEmpty()) {
-					logger.warning("This material has not been given a name: " + line);
-					continue;
-				}
-				// Put the material, data, and name into the system
-				itemNames.put(generateItemHash(material, null, null), name);
-				logger.info(String.format("Material parsed: %s = %s", material, name));
-				line = reader.readLine();
+				reader.close();
 			}
-			reader.close();
+			catch (IOException | NullPointerException e) {
+				logger.warning("Could not load materials from materials.csv");
+				e.printStackTrace();
+			}
 		}
-		catch (IOException e) {
-			logger.warning("Could not load materials from materials.csv");
-			e.printStackTrace();
+		else {
+			logger.warning("Could not load materials from materials.csv as the file does not exist.");
 		}
 		// Load custom material names from config.yml
 		// TODO: Add a config parser for material names so that developers may set
 		//       item names based on an item's display name and or lore.
 		// Allow external plugins to add custom material names programmatically, let them know to do so
-		Bukkit.getServer().getPluginManager().callEvent(new MaterialNamesLoadEvent());
+		Bukkit.getServer().getPluginManager().callEvent(new LoadCustomItemNamesEvent());
 	}
 
-	private static int generateItemHash(Material material, String displayName, List<String> lore) {
+	private static int generateItemHash(Material material, String displayName) {
 		int hash = 0;
 		if (material != null) {
 			hash += material.hashCode();
 		}
 		if (!StringUtils.isEmpty(displayName)) {
 			hash += displayName.hashCode();
-		}
-		if (lore != null && !lore.isEmpty()) {
-			hash += lore.hashCode();
 		}
 		return hash;
 	}
@@ -336,7 +338,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given material is null.
 	 * */
 	public static String getItemName(Material material) {
-		return getItemName(material, null, null);
+		return getItemName(material, null);
 	}
 
 	/**
@@ -349,7 +351,7 @@ public final class ItemAPI {
 		if (item == null) {
 			return null;
 		}
-		return getItemName(item.getType(), getDisplayName(item), getLore(item));
+		return getItemName(item.getType(), getDisplayName(item));
 	}
 
 	/**
@@ -357,45 +359,64 @@ public final class ItemAPI {
 	 *
 	 * @throws IllegalArgumentException If the given material is null.
 	 * */
-	public static String getItemName(Material material, String displayName, List<String> lore) {
-		return itemNames.get(generateItemHash(material, displayName, lore));
+	public static String getItemName(Material material, String displayName) {
+		return itemNames.get(generateItemHash(material, displayName));
 	}
 
 	/**
-	 * Programmatically adds custom item names for a given material.
-	 *
-	 * @throws IllegalArgumentException If the given material is null, or if the name is null or empty.
+	 * This event is called after the item names have been loaded from materials.csv and the config.
 	 * */
-	public static void addCustomItemName(Material material, String name) {
-		addCustomItemName(material, null, null, name);
-	}
+	public static final class LoadCustomItemNamesEvent extends Event {
 
-	/**
-	 * Programmatically adds custom item names for a given item.
-	 * 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
-	 * */
-	public static void addCustomItemName(ItemStack item, String name) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot clear an item's lore; the item is not valid.");
-		}
-		addCustomItemName(item.getType(), getDisplayName(item), getLore(item), name);
-	}
+		private final Logger logger = Bukkit.getLogger();
 
-	/**
-	 * Programmatically adds custom item names for a given material, display name, and lore.
-	 *
-	 * @throws IllegalArgumentException If the given material is null, or if the name is null or empty.
-	 * */
-	public static void addCustomItemName(Material material, String displayName, List<String> lore, String name) {
-		if (material == null) {
-			throw new IllegalArgumentException("Cannot set custom item name for material as the material is null.");
+		/**
+		 * Adds a custom item name to an item.
+		 *
+		 * @param item The item to set the name to.
+		 * @param name The name to set to the item.
+		 *
+		 * @throws IllegalArgumentException If the item is null, or if the name is null or empty.
+		 * */
+		public void setCustomItemName(ItemStack item, String name) {
+			Preconditions.checkNotNull(item, "Cannot set a custom item's name if the item is null.");
+			Preconditions.checkNotNull(name, "Cannot set a custom item's name if the name is null.");
+			Preconditions.checkArgument(!name.isEmpty(), "Cannot set a custom item's name if the name is empty.");
+			String displayName = getDisplayName(item);
+			String previousName = itemNames.put(generateItemHash(item.getType(), displayName), name);
+			// Log the addition to item names.
+			StringBuilder logMessage = new StringBuilder();
+			if (displayName == null) {
+				logMessage.append(String.format("[%s]", item.getType()));
+			}
+			else {
+				logMessage.append(String.format("[%s \"%s\"]", item.getType(), displayName));
+			}
+			logMessage.append(" ");
+			if (previousName == null) {
+				logMessage.append(String.format("was set to: %s", name));
+			}
+			else {
+				logMessage.append(String.format("[%s] was replaced with: %s", previousName, name));
+			}
+			this.logger.info(logMessage.toString());
 		}
-		if (StringUtils.isEmpty(name)) {
-			throw new IllegalArgumentException("Cannot set custom item name for material as the name is null or empty.");
+
+		// ------------------------------------------------------------
+		// Obligatory for Spigot/Bukkit
+		// ------------------------------------------------------------
+
+		private static final HandlerList handlers = new HandlerList();
+
+		@Override @Nonnull
+		public HandlerList getHandlers() {
+			return handlers;
 		}
-		itemNames.put(generateItemHash(material, displayName, lore), name);
+
+		public static HandlerList getHandlerList() {
+			return handlers;
+		}
+
 	}
 
 }
