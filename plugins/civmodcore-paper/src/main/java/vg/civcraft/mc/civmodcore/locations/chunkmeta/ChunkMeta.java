@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
+import org.bukkit.World;
+
 import com.google.gson.JsonObject;
 
 /**
@@ -26,6 +28,7 @@ public abstract class ChunkMeta {
 	}
 	private int pluginID;
 	private boolean isDirty;
+	private World world;
 
 	private boolean isNew;
 
@@ -71,6 +74,13 @@ public abstract class ChunkMeta {
 	boolean isNew() {
 		return isNew;
 	}
+	
+	/**
+	 * @return World this cache is in
+	 */
+	public World getWorld() {
+		return world;
+	}
 
 	abstract JsonObject serialize();
 
@@ -92,6 +102,14 @@ public abstract class ChunkMeta {
 	 */
 	void setPluginID(int pluginID) {
 		this.pluginID = pluginID;
+	}
+	
+	/**
+	 * Sets the world this cache is in
+	 * @param world World the cache is in
+	 */
+	void setWorld(World world) {
+		this.world = world;
 	}
 
 }

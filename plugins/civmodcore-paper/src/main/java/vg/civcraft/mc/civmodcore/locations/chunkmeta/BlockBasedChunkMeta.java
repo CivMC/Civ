@@ -4,6 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map.Entry;
 
+import org.bukkit.Location;
+import org.bukkit.block.Block;
+
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -38,12 +41,11 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	private static final int L4_Z_SECTION_LENGTH = 16;
 
 	@SuppressWarnings("unchecked")
-	public static <T extends BlockDataObject> BlockBasedChunkMeta<T> deserialize(JsonObject l1Object,
-			Class<T> dataClass) {
-		BlockBasedChunkMeta<T> meta = new BlockBasedChunkMeta<>(false);
+	public static <T extends BlockDataObject> BlockBasedChunkMeta<T> deserialize(BlockBasedChunkMeta<T> meta,
+			JsonObject l1Object, Class<T> dataClass) {
 		Method instanciationMethod;
 		try {
-			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class);
+			instanciationMethod = dataClass.getMethod("deserialize", JsonObject.class, ChunkMeta.class);
 		} catch (NoSuchMethodException | SecurityException e1) {
 			CivModCorePlugin.getInstance().warning(dataClass.getName() + " does have not a deserialize method", e1);
 			return null;
@@ -64,11 +66,12 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 						int l4Key = Integer.parseInt(l4Entry.getKey());
 						T value;
 						try {
-							value = (T) instanciationMethod.invoke(null, l4Entry.getValue().getAsJsonObject());
+							value = (T) instanciationMethod.invoke(null, l4Entry.getValue().getAsJsonObject(), meta);
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 							CivModCorePlugin.getInstance().warning("Failed to instanciate data", e);
 							return null;
 						}
+						value.setOwningCache(meta);
 						meta.data[l1Key][l2Key][l3Key][l4Key] = value;
 					}
 				}
@@ -98,12 +101,39 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 * @return Data retrieved for the given coordinates, possibly null
 	 */
 	@SuppressWarnings("unchecked")
-	public T get(int x, int y, int z) {
+	private T get(int x, int y, int z) {
 		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
 		if (l4ZSection == null) {
 			return null;
 		}
 		return (T) l4ZSection[z];
+	}
+
+	/**
+	 * Retrieves data from the cache
+	 * 
+	 * @param location Location of the data, may not be null
+	 * @return Data at the given location, possibly null if no data exists there
+	 */
+	public T get(Location location) {
+		if (location == null) {
+			throw new IllegalArgumentException("Location may not be null");
+		}
+		return get(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(),
+				location.getBlockZ() % L4_Z_SECTION_LENGTH);
+	}
+
+	/**
+	 * Retrieves data from the cache
+	 * 
+	 * @param block Block the data is tied to, may not be null
+	 * @return Data for the given block, possibly null if no data exists for it
+	 */
+	public T get(Block block) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block may not be null");
+		}
+		return get(block.getLocation());
 	}
 
 	/**
@@ -209,11 +239,109 @@ public class BlockBasedChunkMeta<T extends BlockDataObject> extends ChunkMeta {
 	 * @param y         Y-Level of the block
 	 * @param z         Relative z offset in the chunk within [0,16), also the total
 	 *                  z-coordinate modulo 16
+	 * @param blockData Data to insert, not null
+	 */
+	private void put(int x, int y, int z, T blockData) {
+		if (blockData == null) {
+			throw new IllegalArgumentException("Data may not be null");
+		}
+		this.setDirty(true);
+		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
+		blockData.setOwningCache(this);
+		l4ZSection[z] = blockData;
+	}
+
+	/**
+	 * * Inserts data at the given location into the cache
+	 * 
+	 * @param location  Location to insert data at
 	 * @param blockData Data to insert
 	 */
-	public void put(int x, int y, int z, T blockData) {
-		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
-		l4ZSection[z] = blockData;
+	public void put(Location location, T blockData) {
+		put(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(), location.getBlockZ() % L4_Z_SECTION_LENGTH,
+				blockData);
+	}
+
+	/**
+	 * Inserts data for the given block into the cache
+	 * 
+	 * @param block     Block to insert data for, may not be null
+	 * @param blockData Data to insert
+	 */
+	public void put(Block block, T blockData) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block may not be null");
+		}
+		put(block.getX() % L3_X_SECTION_COUNT, block.getY(), block.getZ() % L4_Z_SECTION_LENGTH, blockData);
+	}
+
+	/**
+	 * Removes the entry at the given location if one exists and returns it
+	 * 
+	 * @param x X-Coord of the entry to remove
+	 * @param y Y-Coord of the entry to remove
+	 * @param z Z-Coord of the entry to remove
+	 * 
+	 * @return Removed data
+	 */
+	private T remove(int x, int y, int z) {
+		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
+		if (l4ZSection == null) {
+			return null;
+		}
+		@SuppressWarnings("unchecked")
+		T oldData = (T) l4ZSection[z];
+		if (oldData != null) {
+			l4ZSection[z] = null;
+			setDirty(true);
+		}
+		return oldData;
+	}
+
+	/**
+	 * Removes the given data from this cache. Will throw an IAE if the data is not
+	 * in the cache
+	 * 
+	 * @param blockData Data to remove
+	 */
+	public void remove(T blockData) {
+		if (blockData == null) {
+			throw new IllegalArgumentException("Can not remove null from the cache");
+		}
+		Location loc = blockData.getLocation();
+		BlockDataObject[] l4ZSection = getL4ZSubArrayAbsolute(loc.getBlockX(), loc.getBlockY(), false);
+		if (l4ZSection == null) {
+			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
+		}
+		if (l4ZSection[loc.getBlockZ()] != blockData) {
+			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
+		}
+		l4ZSection[loc.getBlockZ()] = null;
+		setDirty(true);
+	}
+
+	/**
+	 * Removes the entry at the given location if one exists and returns it
+	 * 
+	 * @param location Location to remove data from, may not be null
+	 */
+	public T remove(Location location) {
+		if (location == null) {
+			throw new IllegalArgumentException("Location to remove can not be null");
+		}
+		return remove(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(), location.getBlockZ() % L4_Z_SECTION_LENGTH);
+	}
+
+	/**
+	 * Removes the entry at the given block if one exists and returns it
+	 * 
+	 * @param location Block to remove data from, may not be null
+	 */
+	public T remove(Block block) {
+		if (block == null) {
+			throw new IllegalArgumentException("Block to remove can not be null");
+		}
+		return remove(block.getLocation());
 	}
 
 	@Override

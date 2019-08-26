@@ -5,13 +5,11 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public abstract class ACivMod extends JavaPlugin {
@@ -47,12 +45,6 @@ public abstract class ACivMod extends JavaPlugin {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
 		getServer().getPluginManager().registerEvents(listener, this);
-	}
-
-	public void saveDefaultResource(String path) {
-		if (getResource(path) == null) {
-			saveResource(path, false);
-		}
 	}
 
 	@Override
@@ -130,7 +122,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message);
 		}
 	}
@@ -143,7 +135,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message, Object... vars) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message, vars);
 		}
 	}

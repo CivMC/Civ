@@ -116,7 +116,7 @@ public class GlobalChunkMetaManager {
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		WorldChunkMetaManager manager = new WorldChunkMetaManager(chunkDao, id);
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, chunkDao, id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}
