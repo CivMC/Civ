@@ -1,42 +1,36 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.events.MaterialNamesLoadEvent;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Logger;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+/**
+ * Class of static APIs for Items. Replaces ISUtils.
+ * */
 public final class ItemAPI {
-	private ItemAPI() {} // Make the class effectively static
+	private ItemAPI() { } // Make the class effectively static
 
 	/**
-	 * Checks to see if an item is valid.
+	 * Checks if an ItemStack is valid. An ItemStack is considered valid if when added to an inventory, it shows as an
+	 * item with an amount within appropriate bounds. Therefore {@code new ItemStack(Material.AIR)} will not be
+	 * considered valid, nor will {@code new ItemStack(Material.STONE, 80)}
 	 *
-	 * An item is considered invalid if it is null or Air, or if the amount is negative or zero or above the item's maximum stack size.
+	 * @param item The item to validate.
+	 * @return Returns true if the item is valid.
 	 * */
 	public static boolean isValidItem(ItemStack item) {
 		if (item == null) {
 			return false;
 		}
-		Material material = item.getType();
-		if (material == Material.AIR) {
+		if (item.getType() == Material.AIR) {
 			return false;
 		}
 		if (item.getAmount() <= 0) {
@@ -51,57 +45,60 @@ public final class ItemAPI {
 	/**
 	 * Determines whether two item stacks are functionally identical.
 	 *
-	 * Two null'd items are not considered equal.
+	 * @param former The first item.
+	 * @param latter The second item.
+	 * @return Returns true if both items are equal and not null.
+	 *
+	 * @see ItemStack#equals(Object)
 	 * */
 	public static boolean areItemsEqual(ItemStack former, ItemStack latter) {
-		return former != null && Objects.equals(former, latter);
+		return former != null && former.equals(latter);
 	}
 
 	/**
 	 * Determines whether two item stacks are similar.
 	 *
-	 * This is very similar to .areItemsEqual(item, item), however this differs in that the item's amount is not considered.
-	 * @see ItemAPI#areItemsEqual(ItemStack, ItemStack)
+	 * @param former The first item.
+	 * @param latter The second item.
+	 * @return Returns true if both items are similar and not null.
 	 *
-	 * Two null'd items are not considered equal.
+	 * @see ItemStack#isSimilar(ItemStack)
 	 * */
 	public static boolean areItemsSimilar(ItemStack former, ItemStack latter) {
-		if (former == null || latter == null) {
-			return false;
-		}
-		return former.isSimilar(latter);
+		return former != null && former.isSimilar(latter);
 	}
 
 	/**
 	 * Retrieves the ItemMeta from an item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to retrieve meta from.
+	 * @return The item meta, which is never null.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is not null or if the item meta cannot be retrieved or
+	 *                                  generated.
 	 * */
 	@Nonnull
 	public static ItemMeta getItemMeta(ItemStack item) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot retrieve item meta; the item is not valid.");
-		}
+		Preconditions.checkNotNull(item, "Cannot retrieve the item's meta; the item is null.");
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) {
-			throw  new IllegalArgumentException("Cannot retrieve item meta; it has no meta nor was any generated. It's probably an invalid item.");
+			throw new IllegalArgumentException("Cannot retrieve item meta; it has no meta nor was any generated.");
 		}
 		return meta;
 	}
 
 	/**
-	 * Retrieves the display name from an item, which may be null.
-	 * It will return null if the display name is not set, or if the display name is empty.
+	 * Retrieves the display name from an item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to retrieve the display name from.
+	 * @return Returns the display name of an item. Will return null if there's no display name, or if it's empty.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	@Nullable
 	public static String getDisplayName(ItemStack item) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot retrieve the display name; the item is not valid.");
-		}
+		Preconditions.checkNotNull(item, "Cannot retrieve the item's display name; the item is null.");
 		ItemMeta meta = getItemMeta(item);
 		String name = meta.getDisplayName();
 		if (StringUtils.isEmpty(name)) {
@@ -111,18 +108,18 @@ public final class ItemAPI {
 	}
 
 	/**
-	 * Sets a display name to an item.
-	 * If the set name is null or empty, it will clear the item's display name.
+	 * Sets a display name to an item. A null or empty name will remove the display name from the item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to set the display name to.
+	 * @param name The display name to set on the item.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	public static void setDisplayName(ItemStack item, String name) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot set the display name; the item is not valid.");
-		}
+		Preconditions.checkNotNull(item, "Cannot set the item's display name; the item is null.");
 		ItemMeta meta = getItemMeta(item);
-		if (StringUtils.isNotEmpty(name)) {
+		if (StringUtils.isEmpty(name)) {
 			meta.setDisplayName(null);
 		}
 		else {
@@ -134,14 +131,15 @@ public final class ItemAPI {
 	/**
 	 * Retrieves the lore from an item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to retrieve the lore from.
+	 * @return Returns the lore, which is never null.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	@Nonnull
 	public static List<String> getLore(ItemStack item) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot retrieve the item's lore; the item is not valid.");
-		}
+		Preconditions.checkNotNull(item, "Cannot retrieve the item's lore; the item is null.");
 		List<String> lore = getItemMeta(item).getLore();
 		if (lore == null) {
 			return new ArrayList<>();
@@ -150,35 +148,33 @@ public final class ItemAPI {
 	}
 
 	/**
-	 * Sets the lore for an item, clearing our any lore that may have already been set.
-	 * This is a programmatically easier version to use as you may define the lore inline, e.g: ItemAPI.setLore(item, "Compacted Item");
+	 * Sets the lore for an item, replacing any lore that may have already been set.
 	 *
-	 * Do not use this to clear lore by setting null lore, instead use clearLore(item)
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
+	 *
 	 * @see ItemAPI#clearLore(ItemStack)
-	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
 	 * */
 	public static void setLore(ItemStack item, String... lines) {
 		setLore(item, Arrays.asList(lines));
 	}
 
 	/**
-	 * Sets the lore for an item, clearing our any lore that may have already been set.
+	 * Sets the lore for an item, replacing any lore that may have already been set.
 	 *
-	 * Do not use this to clear lore by setting null lore, instead use clearLore(item)
+	 * @param item The item to set the lore to.
+	 * @param lines The lore to set to the item.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
+	 *
 	 * @see ItemAPI#clearLore(ItemStack)
-	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
 	 * */
 	public static void setLore(ItemStack item, List<String> lines) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot set the item's lore; the item is not valid.");
-		}
-		if (lines == null) {
-			throw new IllegalArgumentException("Cannot set the item's lore; the lore was null. Use ItemAPI.clearLore(item) instead.");
-		}
+		Preconditions.checkNotNull(item, "Cannot set the item's lore; the item is null.");
 		ItemMeta meta = getItemMeta(item);
 		meta.setLore(lines);
 		item.setItemMeta(meta);
@@ -186,10 +182,12 @@ public final class ItemAPI {
 
 	/**
 	 * Appends lore to an item.
-	 * This is a programmatically easier version to use as you may define the lore inline, e.g: ItemAPI.addLore(item, "Compacted Item");
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
+	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
 	public static void addLore(ItemStack item, String... lines) {
 		addLore(item, Arrays.asList(lines));
@@ -198,8 +196,11 @@ public final class ItemAPI {
 	/**
 	 * Appends lore to an item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to append the lore to.
+	 * @param lines The lore to append to the item.
+	 *
+	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
+	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
 	public static void addLore(ItemStack item, List<String> lines) {
 		addLore(item, false, lines);
@@ -207,12 +208,13 @@ public final class ItemAPI {
 
 	/**
 	 * Adds lore to an item, either by appending or prepending.
-	 * This is a programmatically easier version to use as you may define the lore inline, e.g: ItemAPI.addLore(item, true, "Compacted Item");
 	 *
-	 * @param prepend If set to true, the lore will be prepended.
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
+	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
 	public static void addLore(ItemStack item, boolean prepend, String... lines) {
 		addLore(item, prepend, Arrays.asList(lines));
@@ -221,18 +223,16 @@ public final class ItemAPI {
 	/**
 	 * Adds lore to an item, either by appending or prepending.
 	 *
-	 * @param prepend If set to true, the lore will be prepended.
+	 * @param item The item to append the lore to.
+	 * @param prepend If set to true, the lore will be prepended instead of appended.
+	 * @param lines The lore to append to the item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
+	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
 	public static void addLore(ItemStack item, boolean prepend, List<String> lines) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot add to the item's lore; the item is not valid.");
-		}
-		if (lines == null) {
-			throw new IllegalArgumentException("Cannot add to the item's lore; the lore was null.");
-		}
+		Preconditions.checkNotNull(item, "Cannot add to the item's lore; the item is null.");
+		Preconditions.checkNotNull(lines, "Cannot add to the item's lore; the lore is null.");
 		List<String> lore = getLore(item);
 		if (prepend) {
 			Collections.reverse(lines);
@@ -249,174 +249,16 @@ public final class ItemAPI {
 	/**
 	 * Clears the lore from an item.
 	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
+	 * @param item The item to clear lore of.
+	 *
+	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
+	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	public static void clearLore(ItemStack item) {
-		if (!isValidItem(item)) {
-			throw new IllegalArgumentException("Cannot clear an item's lore; the item is not valid.");
-		}
+		Preconditions.checkNotNull(item, "Cannot clear the item's lore; the item is null.");
 		List<String> lore = getLore(item);
 		lore.clear();
 		setLore(item, lore);
-	}
-
-	// ------------------------------------------------------------
-	// Item Names
-	// ------------------------------------------------------------
-
-	private static Map<Integer, String> itemNames = new HashMap<>();
-
-	public static void resetItemNames() {
-		itemNames.clear();
-	}
-
-	public static void loadItemNames() {
-		resetItemNames();
-		Logger logger = Bukkit.getLogger();
-		// Load material names from materials.csv
-		InputStream materialsCSV = CivModCorePlugin.class.getResourceAsStream("/materials.csv");
-		if (materialsCSV != null) {
-			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(materialsCSV));
-				String line = reader.readLine();
-				while (line != null) {
-					String [] values = line.split(",");
-					// If there's not at least three values (slug, data, name) then skip
-					if (values.length < 3) {
-						logger.warning("This material row does not have enough data: " + line);
-						continue;
-					}
-					// If a material cannot be found by the slug given, skip
-					Material material = Material.getMaterial(values[0]);
-					if (material == null) {
-						logger.warning("Could not find a material on this line: " + line);
-						continue;
-					}
-					// If the name is empty, skip
-					String name = values [2];
-					if (name.isEmpty()) {
-						logger.warning("This material has not been given a name: " + line);
-						continue;
-					}
-					// Put the material, data, and name into the system
-					itemNames.put(generateItemHash(material, null), name);
-					logger.info(String.format("Material parsed: %s = %s", material, name));
-					line = reader.readLine();
-				}
-				reader.close();
-			}
-			catch (IOException | NullPointerException e) {
-				logger.warning("Could not load materials from materials.csv");
-				e.printStackTrace();
-			}
-		}
-		else {
-			logger.warning("Could not load materials from materials.csv as the file does not exist.");
-		}
-		// Load custom material names from config.yml
-		// TODO: Add a config parser for material names so that developers may set
-		//       item names based on an item's display name and or lore.
-		// Allow external plugins to add custom material names programmatically, let them know to do so
-		Bukkit.getServer().getPluginManager().callEvent(new LoadCustomItemNamesEvent());
-	}
-
-	private static int generateItemHash(Material material, String displayName) {
-		int hash = 0;
-		if (material != null) {
-			hash += material.hashCode();
-		}
-		if (!StringUtils.isEmpty(displayName)) {
-			hash += displayName.hashCode();
-		}
-		return hash;
-	}
-
-	/**
-	 * Gets the name of an item based off a material, e.g: POLISHED_GRANITE -> Polished Granite
-	 *
-	 * @throws IllegalArgumentException If the given material is null.
-	 * */
-	public static String getItemName(Material material) {
-		return getItemName(material, null);
-	}
-
-	/**
-	 * Gets the name of an item based off of its material, and its display name and lore if it has any.
-	 *
-	 * @throws IllegalArgumentException If the given item stack is not valid or if the item meta cannot be retrieved or generated.
-	 * @see ItemAPI#isValidItem(ItemStack)
-	 * */
-	public static String getItemName(ItemStack item) {
-		if (item == null) {
-			return null;
-		}
-		return getItemName(item.getType(), getDisplayName(item));
-	}
-
-	/**
-	 * Gets the name of an item based off of its material, and its display name and lore if it has any.
-	 *
-	 * @throws IllegalArgumentException If the given material is null.
-	 * */
-	public static String getItemName(Material material, String displayName) {
-		return itemNames.get(generateItemHash(material, displayName));
-	}
-
-	/**
-	 * This event is called after the item names have been loaded from materials.csv and the config.
-	 * */
-	public static final class LoadCustomItemNamesEvent extends Event {
-
-		private final Logger logger = Bukkit.getLogger();
-
-		/**
-		 * Adds a custom item name to an item.
-		 *
-		 * @param item The item to set the name to.
-		 * @param name The name to set to the item.
-		 *
-		 * @throws IllegalArgumentException If the item is null, or if the name is null or empty.
-		 * */
-		public void setCustomItemName(ItemStack item, String name) {
-			Preconditions.checkNotNull(item, "Cannot set a custom item's name if the item is null.");
-			Preconditions.checkNotNull(name, "Cannot set a custom item's name if the name is null.");
-			Preconditions.checkArgument(!name.isEmpty(), "Cannot set a custom item's name if the name is empty.");
-			String displayName = getDisplayName(item);
-			String previousName = itemNames.put(generateItemHash(item.getType(), displayName), name);
-			// Log the addition to item names.
-			StringBuilder logMessage = new StringBuilder();
-			if (displayName == null) {
-				logMessage.append(String.format("[%s]", item.getType()));
-			}
-			else {
-				logMessage.append(String.format("[%s \"%s\"]", item.getType(), displayName));
-			}
-			logMessage.append(" ");
-			if (previousName == null) {
-				logMessage.append(String.format("was set to: %s", name));
-			}
-			else {
-				logMessage.append(String.format("[%s] was replaced with: %s", previousName, name));
-			}
-			this.logger.info(logMessage.toString());
-		}
-
-		// ------------------------------------------------------------
-		// Obligatory for Spigot/Bukkit
-		// ------------------------------------------------------------
-
-		private static final HandlerList handlers = new HandlerList();
-
-		@Override @Nonnull
-		public HandlerList getHandlers() {
-			return handlers;
-		}
-
-		public static HandlerList getHandlerList() {
-			return handlers;
-		}
-
 	}
 
 }
