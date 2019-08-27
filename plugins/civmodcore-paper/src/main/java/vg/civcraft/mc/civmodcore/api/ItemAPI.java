@@ -26,7 +26,7 @@ public final class ItemAPI {
 	 * @param item The item to validate.
 	 * @return Returns true if the item is valid.
 	 * */
-	public static boolean isValidItem(ItemStack item) {
+	public static boolean isValidItem(@Nullable ItemStack item) {
 		if (item == null) {
 			return false;
 		}
@@ -51,7 +51,7 @@ public final class ItemAPI {
 	 *
 	 * @see ItemStack#equals(Object)
 	 * */
-	public static boolean areItemsEqual(ItemStack former, ItemStack latter) {
+	public static boolean areItemsEqual(@Nullable ItemStack former, @Nullable ItemStack latter) {
 		return former != null && former.equals(latter);
 	}
 
@@ -64,7 +64,7 @@ public final class ItemAPI {
 	 *
 	 * @see ItemStack#isSimilar(ItemStack)
 	 * */
-	public static boolean areItemsSimilar(ItemStack former, ItemStack latter) {
+	public static boolean areItemsSimilar(@Nullable ItemStack former, @Nullable ItemStack latter) {
 		return former != null && former.isSimilar(latter);
 	}
 
@@ -78,7 +78,7 @@ public final class ItemAPI {
 	 *                                  generated.
 	 * */
 	@Nonnull
-	public static ItemMeta getItemMeta(ItemStack item) {
+	public static ItemMeta getItemMeta(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot retrieve the item's meta; the item is null.");
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) {
@@ -97,7 +97,7 @@ public final class ItemAPI {
 	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	@Nullable
-	public static String getDisplayName(ItemStack item) {
+	public static String getDisplayName(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot retrieve the item's display name; the item is null.");
 		ItemMeta meta = getItemMeta(item);
 		String name = meta.getDisplayName();
@@ -116,7 +116,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
 	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
-	public static void setDisplayName(ItemStack item, String name) {
+	public static void setDisplayName(@Nonnull ItemStack item, @Nullable String name) {
 		Preconditions.checkNotNull(item, "Cannot set the item's display name; the item is null.");
 		ItemMeta meta = getItemMeta(item);
 		if (StringUtils.isEmpty(name)) {
@@ -138,7 +138,7 @@ public final class ItemAPI {
 	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
 	@Nonnull
-	public static List<String> getLore(ItemStack item) {
+	public static List<String> getLore(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot retrieve the item's lore; the item is null.");
 		List<String> lore = getItemMeta(item).getLore();
 		if (lore == null) {
@@ -158,7 +158,7 @@ public final class ItemAPI {
 	 *
 	 * @see ItemAPI#clearLore(ItemStack)
 	 * */
-	public static void setLore(ItemStack item, String... lines) {
+	public static void setLore(@Nonnull ItemStack item, @Nullable String... lines) {
 		setLore(item, Arrays.asList(lines));
 	}
 
@@ -173,7 +173,7 @@ public final class ItemAPI {
 	 *
 	 * @see ItemAPI#clearLore(ItemStack)
 	 * */
-	public static void setLore(ItemStack item, List<String> lines) {
+	public static void setLore(@Nonnull ItemStack item, @Nullable List<String> lines) {
 		Preconditions.checkNotNull(item, "Cannot set the item's lore; the item is null.");
 		ItemMeta meta = getItemMeta(item);
 		meta.setLore(lines);
@@ -189,7 +189,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
 	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
-	public static void addLore(ItemStack item, String... lines) {
+	public static void addLore(@Nonnull ItemStack item, @Nonnull String... lines) {
 		addLore(item, Arrays.asList(lines));
 	}
 
@@ -202,7 +202,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
 	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
-	public static void addLore(ItemStack item, List<String> lines) {
+	public static void addLore(@Nonnull ItemStack item, @Nonnull List<String> lines) {
 		addLore(item, false, lines);
 	}
 
@@ -216,7 +216,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
 	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
-	public static void addLore(ItemStack item, boolean prepend, String... lines) {
+	public static void addLore(@Nonnull ItemStack item, boolean prepend, @Nonnull String... lines) {
 		addLore(item, prepend, Arrays.asList(lines));
 	}
 
@@ -230,7 +230,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack or lore is null or if the {@link
 	 *                                  ItemAPI#getItemMeta(ItemStack) item's meta cannot be retrieved or generated.}
 	 * */
-	public static void addLore(ItemStack item, boolean prepend, List<String> lines) {
+	public static void addLore(@Nonnull ItemStack item, boolean prepend, @Nonnull List<String> lines) {
 		Preconditions.checkNotNull(item, "Cannot add to the item's lore; the item is null.");
 		Preconditions.checkNotNull(lines, "Cannot add to the item's lore; the lore is null.");
 		List<String> lore = getLore(item);
@@ -254,7 +254,7 @@ public final class ItemAPI {
 	 * @throws IllegalArgumentException If the given item stack is null or if the {@link ItemAPI#getItemMeta(ItemStack)
 	 *                                  item's meta cannot be retrieved or generated.}
 	 * */
-	public static void clearLore(ItemStack item) {
+	public static void clearLore(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot clear the item's lore; the item is null.");
 		List<String> lore = getLore(item);
 		lore.clear();

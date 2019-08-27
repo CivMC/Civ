@@ -88,7 +88,7 @@ public final class ItemNames {
 		Bukkit.getServer().getPluginManager().callEvent(new LoadCustomItemNamesEvent());
 	}
 
-	private static int generateItemHash(Material material, String displayName) {
+	private static int generateItemHash(@Nullable Material material, @Nullable String displayName) {
 		int hash = 0;
 		if (material != null) {
 			hash += material.hashCode();
@@ -108,7 +108,7 @@ public final class ItemNames {
 	 * @throws IllegalArgumentException If the given material is null.
 	 * */
 	@Nullable
-	public static String getItemName(Material material) {
+	public static String getItemName(@Nonnull Material material) {
 		Preconditions.checkNotNull(material, "Cannot retrieve the material's name; the material is null.");
 		return itemNames.get(generateItemHash(material, null));
 	}
@@ -120,7 +120,7 @@ public final class ItemNames {
 	 * @return Returns the item's name, or null is none is set.
 	 * */
 	@Nullable
-	public static String getItemName(ItemStack item) {
+	public static String getItemName(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot retrieve the item's name; the item is null.");
 		return itemNames.get(generateItemHash(item.getType(), ItemAPI.getDisplayName(item)));
 	}
@@ -140,7 +140,7 @@ public final class ItemNames {
 		 *
 		 * @throws IllegalArgumentException If the item is null, or if the name is null or empty.
 		 * */
-		public void setCustomItemName(ItemStack item, String name) {
+		public void setCustomItemName(@Nonnull ItemStack item, @Nonnull String name) {
 			Preconditions.checkNotNull(item, "Cannot set a custom item's name if the item is null.");
 			Preconditions.checkNotNull(name, "Cannot set a custom item's name if the name is null.");
 			Preconditions.checkArgument(!name.isEmpty(), "Cannot set a custom item's name if the name is empty.");
@@ -180,6 +180,7 @@ public final class ItemNames {
 		 *
 		 * @return Returns this event's handlers.
 		 * */
+		@Nonnull
 		public static HandlerList getHandlerList() {
 			return handlers;
 		}
