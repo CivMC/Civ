@@ -13,8 +13,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import org.bukkit.World;
-
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
  * kept in a cache, into which is inserted when a chunk is loaded. When a chunk
@@ -32,8 +30,6 @@ public class WorldChunkMetaManager {
 	private static final long UNLOAD_CHECK_INTERVAL = 5L * 60L * 1000L;
 
 	private final int worldID;
-	private final ChunkDAO dao;
-	private World world;
 	private final Map<ChunkCoord, ChunkCoord> metas;
 	/**
 	 * A synchronized TreeSet holding all chunk metadata belonging to unloaded
@@ -46,11 +42,9 @@ public class WorldChunkMetaManager {
 	private Thread chunkLoadingConsumer;
 	private Queue<ChunkCoord> chunkLoadingQueue;
 
-	public WorldChunkMetaManager(World world, ChunkDAO dao, int worldID) {
+	public WorldChunkMetaManager(int worldID) {
 		this.worldID = worldID;
-		this.world = world;
 		this.metas = new HashMap<>();
-		this.dao = dao;
 		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<ChunkCoord>((a, b) -> {
 			return Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
 		}));
@@ -58,9 +52,9 @@ public class WorldChunkMetaManager {
 		startChunkLoadingConsumer();
 	}
 
-	ChunkMeta computeIfAbsent(int pluginID, int x, int z, Supplier<ChunkMeta> computer) {
+	ChunkMeta<?> computeIfAbsent(int pluginID, int x, int z, Supplier<ChunkMeta<?>> computer) {
 		ChunkCoord coord = getChunkCoord(x, z, true, false);
-		ChunkMeta existing = coord.getMeta(pluginID);
+		ChunkMeta<?> existing = coord.getMeta(pluginID);
 		if (existing != null) {
 			return existing;
 		}
@@ -77,7 +71,7 @@ public class WorldChunkMetaManager {
 		synchronized (metas) {
 			for (ChunkCoord coord : metas.keySet()) {
 				synchronized (coord) {
-					coord.fullyPersist(dao, worldID);
+					coord.fullyPersist();
 				}
 			}
 		}
@@ -97,7 +91,7 @@ public class WorldChunkMetaManager {
 	 *         supposed to be generated
 	 */
 	private ChunkCoord getChunkCoord(int x, int z, boolean gen, boolean populate) {
-		ChunkCoord coord = new ChunkCoord(x, z);
+		ChunkCoord coord = new ChunkCoord(x, z, worldID);
 		synchronized (metas) {
 			ChunkCoord value = metas.get(coord);
 			if (value != null) {
@@ -112,6 +106,7 @@ public class WorldChunkMetaManager {
 				// offload the actual db load to another thread
 				synchronized (chunkLoadingQueue) {
 					chunkLoadingQueue.add(coord);
+					chunkLoadingQueue.notifyAll();
 				}
 			}
 			return coord;
@@ -128,7 +123,7 @@ public class WorldChunkMetaManager {
 	 * @param z        Z-coordinate of the chunk
 	 * @return ChunkMeta for the given parameter, possibly null if none existed
 	 */
-	ChunkMeta getChunkMeta(int pluginID, int x, int z) {
+	ChunkMeta<?> getChunkMeta(int pluginID, int x, int z) {
 		ChunkCoord coord = getChunkCoord(x, z, false, false);
 		if (coord == null) {
 			return null;
@@ -144,7 +139,7 @@ public class WorldChunkMetaManager {
 	 * @param z    Z-coordinate of the chunk
 	 * @param meta Metadata to insert
 	 */
-	void insertChunkMeta(int x, int z, ChunkMeta meta) {
+	void insertChunkMeta(int x, int z, ChunkMeta<?> meta) {
 		ChunkCoord coord = getChunkCoord(x, z, true, false);
 		coord.addChunkMeta(meta);
 	}
@@ -180,7 +175,7 @@ public class WorldChunkMetaManager {
 							&& coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
 						synchronized (metas) {
 							synchronized (coord) {
-								coord.fullyPersist(dao, worldID);
+								coord.fullyPersist();
 								metas.remove(coord);
 								iter.remove();
 								// coord is up for garbage collection at this point and all of its data has been
@@ -212,7 +207,7 @@ public class WorldChunkMetaManager {
 						continue;
 					}
 				}
-				dao.loadChunkData(world, worldID, coord);
+				coord.loadAll();
 			}
 		});
 		chunkLoadingConsumer.start();

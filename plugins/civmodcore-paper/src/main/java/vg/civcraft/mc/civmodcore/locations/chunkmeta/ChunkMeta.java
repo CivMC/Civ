@@ -2,7 +2,7 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import org.bukkit.World;
 
-import com.google.gson.JsonObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
 
 /**
  * Represents data for one specific chunk for one specific plugin.
@@ -14,23 +14,14 @@ import com.google.gson.JsonObject;
  * this package, except for setDirty(true)
  * 
  */
-public abstract class ChunkMeta {
+public abstract class ChunkMeta<S extends StorageEngine> {
 
-	/**
-	 * Subclasses need to implement this method to create instances of themselves
-	 * when loaded from the database
-	 * 
-	 * @param json JsonObject to deserialize from
-	 * @return Newly created instance
-	 */
-	public static ChunkMeta deserialize(JsonObject json) {
-		throw new IllegalAccessError();
-	}
-	private int pluginID;
-	private boolean isDirty;
-	private World world;
+	protected int pluginID;
+	protected World world;
+	protected final S storage;
+	protected ChunkCoord chunkCoord;
 
-	private boolean isNew;
+	private CacheState cacheState;
 
 	/**
 	 * 
@@ -38,9 +29,23 @@ public abstract class ChunkMeta {
 	 *              database before. Should always be true for any instanciations
 	 *              outside of this package
 	 */
-	public ChunkMeta(boolean isNew) {
-		this.isDirty = isNew;
-		this.isNew = isNew;
+	public ChunkMeta(boolean isNew, S storage) {
+		this.cacheState = isNew ? CacheState.NEW : CacheState.NORMAL;
+		this.storage = storage;
+	}
+
+	/**
+	 * Deletes the instances data from the storage
+	 * 
+	 */
+	public abstract void delete();
+
+	/**
+	 * @return Whether this instance has data changed since it was last synced with
+	 *         the database and needs to be written back there
+	 */
+	public CacheState getCacheState() {
+		return cacheState;
 	}
 
 	/**
@@ -51,12 +56,17 @@ public abstract class ChunkMeta {
 	}
 
 	/**
-	 * @return Whether this instance has data changed since it was last synced with
-	 *         the database and needs to be written back there
+	 * @return World this cache is in
 	 */
-	boolean isDirty() {
-		return isDirty;
+	public World getWorld() {
+		return world;
 	}
+
+	/**
+	 * Inserts this instances data into the storage *
+	 * 
+	 */
+	public abstract void insert();
 
 	/**
 	 * Instances may be filled with data and emptied later on without the instance
@@ -65,36 +75,26 @@ public abstract class ChunkMeta {
 	 * 
 	 * @return Is this instance void of any data which needs to be persisted
 	 */
-	abstract boolean isEmpty();
+	public abstract boolean isEmpty();
 
 	/**
-	 * @return Whether this instance is new, meaning it has never been written to
-	 *         the database
+	 * Loads this instances data from the storage engine
+	 * 
 	 */
-	boolean isNew() {
-		return isNew;
-	}
-	
-	/**
-	 * @return World this cache is in
-	 */
-	public World getWorld() {
-		return world;
-	}
-
-	abstract JsonObject serialize();
+	public abstract void populate();
 
 	/**
-	 * Sets the dirty flag, which specifies whether this instance has changed since
+	 * Sets the cache state, which specifies whether this instance has changed since
 	 * it was last synced with the database and needs to be written back there
 	 * 
 	 * @param dirty New dirty state
 	 */
-	void setDirty(boolean dirty) {
-		this.isDirty = dirty;
-		if (!dirty && isNew) {
-			isNew = false;
-		}
+	public void setCacheState(CacheState state) {
+		this.cacheState = this.cacheState.progress(state);
+	}
+
+	void setChunkCoord(ChunkCoord chunk) {
+		this.chunkCoord = chunk;
 	}
 
 	/**
@@ -103,13 +103,19 @@ public abstract class ChunkMeta {
 	void setPluginID(int pluginID) {
 		this.pluginID = pluginID;
 	}
-	
+
 	/**
 	 * Sets the world this cache is in
+	 * 
 	 * @param world World the cache is in
 	 */
 	void setWorld(World world) {
 		this.world = world;
 	}
+
+	/**
+	 * Updates the instances data in the storage
+	 */
+	public abstract void update();
 
 }

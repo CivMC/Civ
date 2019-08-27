@@ -16,13 +16,11 @@ public class GlobalChunkMetaManager {
 	private Map<UUID, Integer> uuidToInternalID;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
 	private ChunkDAO chunkDao;
-	private ChunkMetaFactory metaFactory;
 
 	public GlobalChunkMetaManager(ChunkDAO chunkDao) {
 		this.uuidToInternalID = new TreeMap<>();
 		this.worldToManager = new TreeMap<>();
 		this.chunkDao = chunkDao;
-		this.metaFactory = chunkDao.getChunkMetaFactory();
 		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
 	}
 
@@ -39,7 +37,8 @@ public class GlobalChunkMetaManager {
 	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
 	 *         supplier lambda is valid
 	 */
-	ChunkMeta computeIfAbsent(int pluginID, World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
+	public ChunkMeta<?> computeIfAbsent(int pluginID, World world, int chunkX, int chunkZ,
+			Supplier<ChunkMeta<?>> computer) {
 		return getWorldManager(world).computeIfAbsent(pluginID, chunkX, chunkZ, computer);
 	}
 
@@ -52,7 +51,7 @@ public class GlobalChunkMetaManager {
 		}
 	}
 
-	ChunkDAO getChunkDAO() {
+	public ChunkDAO getChunkDAO() {
 		return chunkDao;
 	}
 
@@ -66,12 +65,8 @@ public class GlobalChunkMetaManager {
 	 * @param chunkZ   Z-coord of the chunk
 	 * @return Retrieved ChunkMeta for the given parameter, possibly null
 	 */
-	ChunkMeta getChunkMeta(int pluginID, World world, int chunkX, int chunkZ) {
+	public ChunkMeta<?> getChunkMeta(int pluginID, World world, int chunkX, int chunkZ) {
 		return getWorldManager(world).getChunkMeta(pluginID, chunkX, chunkZ);
-	}
-
-	ChunkMetaFactory getChunkMetaFactory() {
-		return metaFactory;
 	}
 
 	private WorldChunkMetaManager getWorldManager(World world) {
@@ -87,7 +82,7 @@ public class GlobalChunkMetaManager {
 	 * @param chunkX   X-coord of the chunk
 	 * @param chunkZ   Z-coord of the chunk
 	 */
-	void insertChunkMeta(int pluginID, World world, int chunkX, int chunkZ, ChunkMeta meta) {
+	public void insertChunkMeta(int pluginID, World world, int chunkX, int chunkZ, ChunkMeta<?> meta) {
 		meta.setPluginID(pluginID);
 		getWorldManager(world).insertChunkMeta(chunkX, chunkZ, meta);
 	}
@@ -116,7 +111,7 @@ public class GlobalChunkMetaManager {
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, chunkDao, id);
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}

@@ -183,7 +183,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 				idleTimeout, maxLifetime);
 
 		this.firstMigration = Integer.MAX_VALUE;
-		this.migrations = new TreeMap<Integer, Migration>();
+		this.migrations = new TreeMap<>();
 		this.lastMigration = Integer.MIN_VALUE;
 
 		this.postExecutor = Executors.newSingleThreadExecutor();
@@ -540,7 +540,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		public Callable<Boolean> postMigration;
 
 		public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-			this.migrations = new LinkedList<String>(Arrays.asList(migrations));
+			this.migrations = new LinkedList<>(Arrays.asList(migrations));
 			this.ignoreErrors = ignoreErrors;
 			this.postMigration = postMigration;
 		}
@@ -548,7 +548,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 
 	@Override
 	public Map<String, Object> serialize() {
-		Map<String, Object> data = new HashMap<String, Object>();
+		Map<String, Object> data = new HashMap<>();
 		data.put("plugin", plugin.getName());
 		data.put("user", connections.getHikariDataSource().getUsername());
 		data.put("password", connections.getHikariDataSource().getPassword());

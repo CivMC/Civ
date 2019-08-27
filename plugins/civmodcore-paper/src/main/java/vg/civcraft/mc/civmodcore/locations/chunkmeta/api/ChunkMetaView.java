@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.locations.chunkmeta;
+package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
 import java.util.function.Supplier;
 
@@ -7,7 +7,10 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public class ChunkMetaView<T extends ChunkMeta> {
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+
+public class ChunkMetaView<T extends ChunkMeta<?>> {
 
 	protected int pluginID;
 	protected JavaPlugin plugin;
@@ -17,6 +20,44 @@ public class ChunkMetaView<T extends ChunkMeta> {
 		this.plugin = plugin;
 		this.pluginID = pluginID;
 		this.globalManager = globalManager;
+	}
+
+	/**
+	 * Attempts to retrieve metadata for the given chunk. If none exists yet, the
+	 * given lambda will be used to create a new one, insert it and return it
+	 * 
+	 * @param chunk    Chunk to get/insert metadata for
+	 * @param computer Lambda supplying the new ChunkMeta to insert if none exists
+	 *                 yet. May not produce null results
+	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
+	 *         supplier lambda is valid
+	 */
+	public T computeIfAbsent(Chunk chunk, Supplier<ChunkMeta<?>> computer) {
+		return computeIfAbsent(chunk.getWorld(), chunk.getX(), chunk.getZ(), computer);
+	}
+
+	/**
+	 * Attempts to retrieve metadata for the chunk at the given chunk coords in the
+	 * given world. If none exists yet, the given lambda will be used to create a
+	 * new one, insert it and return it
+	 * 
+	 * @param world    World the chunk is in
+	 * @param chunkX   X-coord of the chunk
+	 * @param chunkZ   Z-coord of the chunk
+	 * @param computer Lambda supplying the new ChunkMeta to insert if none exists
+	 *                 yet. May not produce null results
+	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
+	 *         supplier lambda is valid
+	 */
+	@SuppressWarnings("unchecked")
+	public T computeIfAbsent(World world, int chunkX, int chunkZ, Supplier<ChunkMeta<?>> computer) {
+		if (globalManager == null) {
+			throw new IllegalStateException("View already shut down, can not read data");
+		}
+		if (!world.getChunkAt(chunkX, chunkZ).isLoaded()) {
+			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
+		}
+		return (T) globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
 	}
 
 	/**
@@ -123,44 +164,6 @@ public class ChunkMetaView<T extends ChunkMeta> {
 			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
 		}
 		globalManager.insertChunkMeta(pluginID, world, chunkX, chunkZ, meta);
-	}
-
-	/**
-	 * Attempts to retrieve metadata for the chunk at the given chunk coords in the
-	 * given world. If none exists yet, the given lambda will be used to create a
-	 * new one, insert it and return it
-	 * 
-	 * @param world    World the chunk is in
-	 * @param chunkX   X-coord of the chunk
-	 * @param chunkZ   Z-coord of the chunk
-	 * @param computer Lambda supplying the new ChunkMeta to insert if none exists
-	 *                 yet. May not produce null results
-	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
-	 *         supplier lambda is valid
-	 */
-	@SuppressWarnings("unchecked")
-	public T computeIfAbsent(World world, int chunkX, int chunkZ, Supplier<ChunkMeta> computer) {
-		if (globalManager == null) {
-			throw new IllegalStateException("View already shut down, can not read data");
-		}
-		if (!world.getChunkAt(chunkX, chunkZ).isLoaded()) {
-			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
-		}
-		return (T) globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
-	}
-
-	/**
-	 * Attempts to retrieve metadata for the given chunk. If none exists yet, the
-	 * given lambda will be used to create a new one, insert it and return it
-	 * 
-	 * @param chunk    Chunk to get/insert metadata for
-	 * @param computer Lambda supplying the new ChunkMeta to insert if none exists
-	 *                 yet. May not produce null results
-	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
-	 *         supplier lambda is valid
-	 */
-	public T computeIfAbsent(Chunk chunk, Supplier<ChunkMeta> computer) {
-		return computeIfAbsent(chunk.getWorld(), chunk.getX(), chunk.getZ(), computer);
 	}
 
 }

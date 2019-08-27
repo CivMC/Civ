@@ -1,8 +1,10 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.Supplier;
 
 public class ChunkCoord {
 
@@ -17,7 +19,7 @@ public class ChunkCoord {
 	/**
 	 * Each ChunkMeta belongs to one plugin, they are identified by the plugin id
 	 */
-	private Map<Integer, ChunkMeta> chunkMetas;
+	private Map<Integer, ChunkMeta<?>> chunkMetas;
 	/**
 	 * Set to true once all data has been loaded for this chunk and stays true for
 	 * the entire life time of this object
@@ -33,16 +35,19 @@ public class ChunkCoord {
 	 */
 	private int z;
 
-	ChunkCoord(int x, int z) {
+	private int worldID;
+
+	ChunkCoord(int x, int z, int worldID) {
 		this.x = x;
 		this.z = z;
+		this.worldID = worldID;
 		this.chunkMetas = new TreeMap<>();
 		this.isFullyLoaded = false;
 		this.lastLoadingTime = -1;
 		this.lastUnloadingTime = -1;
 	}
 
-	void addChunkMeta(ChunkMeta chunkMeta) {
+	void addChunkMeta(ChunkMeta<?> chunkMeta) {
 		chunkMetas.put(chunkMeta.getPluginID(), chunkMeta);
 	}
 
@@ -50,7 +55,7 @@ public class ChunkCoord {
 	public boolean equals(Object o) {
 		if (o instanceof ChunkCoord) {
 			ChunkCoord pair = (ChunkCoord) o;
-			return pair.x == x && pair.z == z;
+			return pair.x == x && pair.z == z && pair.worldID == worldID;
 		}
 		return false;
 	}
@@ -58,26 +63,25 @@ public class ChunkCoord {
 	/**
 	 * Writes all data held by this instance to the datavase
 	 * 
-	 * @param dao     DAO to write to
-	 * @param worldID ID of the world this instance is in
+	 * @param dao DAO to write to
+	 * @pa boolean isFullyLoaded() { return isFullyLoaded; }ram worldID ID of the
+	 *     world this instance is in
 	 */
-	void fullyPersist(ChunkDAO dao, int worldID) {
-		for (ChunkMeta chunkMeta : chunkMetas.values()) {
-			if (!chunkMeta.isDirty()) {
-				continue;
+	void fullyPersist() {
+		for (ChunkMeta<?> chunkMeta : chunkMetas.values()) {
+			switch (chunkMeta.getCacheState()) {
+			case NORMAL:
+				break;
+			case MODIFIED:
+				chunkMeta.update();
+				break;
+			case NEW:
+				chunkMeta.insert();
+				break;
+			case DELETED:
+				chunkMeta.delete();
 			}
-			if (chunkMeta.isEmpty()) {
-				if (!chunkMeta.isNew()) {
-					dao.deleteChunkData(chunkMeta.getPluginID(), worldID, x, z);
-				}
-			} else {
-				if (chunkMeta.isNew()) {
-					dao.insertChunkData(chunkMeta.getPluginID(), worldID, worldID, worldID, chunkMeta);
-				} else {
-					dao.updateChunkData(chunkMeta.getPluginID(), worldID, worldID, worldID, chunkMeta);
-				}
-			}
-			chunkMeta.setDirty(false);
+			chunkMeta.setCacheState(CacheState.NORMAL);
 		}
 	}
 
@@ -97,7 +101,7 @@ public class ChunkCoord {
 		return lastUnloadingTime;
 	}
 
-	ChunkMeta getMeta(int pluginID) {
+	ChunkMeta<?> getMeta(int pluginID) {
 		if (!isFullyLoaded) {
 			// check before taking monitor. This is fine, because the loaded flag will never
 			// switch from true to false,
@@ -117,11 +121,18 @@ public class ChunkCoord {
 		return chunkMetas.get(pluginID);
 	}
 
-	int getX() {
+	/**
+	 * @return Internal ID of the world this chunk is in
+	 */
+	public int getWorldID() {
+		return worldID;
+	}
+
+	public int getX() {
 		return x;
 	}
 
-	int getZ() {
+	public int getZ() {
 		return z;
 	}
 
@@ -130,8 +141,25 @@ public class ChunkCoord {
 		return Objects.hash(x, z);
 	}
 
-	boolean isFullyLoaded() {
-		return isFullyLoaded;
+	/**
+	 * Loads data for all plugins for this chunk
+	 */
+	void loadAll() {
+		synchronized (this) {
+			if (isFullyLoaded) {
+				return;
+			}
+
+			for (Entry<Integer, Supplier<ChunkMeta<?>>> generator : ChunkMetaFactory.getInstance()
+					.getEmptyChunkFunctions()) {
+				ChunkMeta<?> chunk = generator.getValue().get();
+				chunk.setChunkCoord(this);
+				chunk.setPluginID(generator.getKey());
+				chunk.populate();
+			}
+			this.notifyAll();
+			isFullyLoaded = true;
+		}
 	}
 
 	/**
@@ -148,14 +176,5 @@ public class ChunkCoord {
 	 */
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
-	}
-
-	/**
-	 * Used by the database to tell that all data tied to this chunk has been fully
-	 * loaded and to resume pending blocked data reads
-	 */
-	public synchronized void setFullyLoaded() {
-		isFullyLoaded = true;
-		notifyAll();
 	}
 }

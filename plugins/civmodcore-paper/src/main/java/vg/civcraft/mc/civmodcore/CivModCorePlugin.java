@@ -9,9 +9,9 @@ import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaAPI;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaView;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaView;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
 
