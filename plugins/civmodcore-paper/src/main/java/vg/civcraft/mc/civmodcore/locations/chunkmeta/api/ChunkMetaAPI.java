@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -34,24 +35,26 @@ public class ChunkMetaAPI {
 	 * @return API access object for block based chunk metadata
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends StorageEngine> BlockBasedChunkMetaView<T, D> registerBlockBasedPlugin(
+	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends StorageEngine> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
 			JavaPlugin plugin, Supplier<T> emptyChunkCreator) {
 		if (existingViews.containsKey(plugin.getName())) {
 			ChunkMetaView<T> chunkMetaView = (ChunkMetaView<T>) existingViews.get(plugin.getName());
-			return (BlockBasedChunkMetaView<T, D>) chunkMetaView;
+			return (BlockBasedChunkMetaView<T, D, S>) chunkMetaView;
 		}
 		GlobalChunkMetaManager globalManager = CivModCorePlugin.getInstance().getChunkMetaManager();
 		if (globalManager == null) {
+			plugin.getLogger().log(Level.SEVERE, "Could not start chunk meta data, manager was null");
 			return null;
 		}
 		ChunkDAO chunkDAO = globalManager.getChunkDAO();
 		int id = chunkDAO.getOrCreatePluginID(plugin);
 		if (id == -1) {
+			plugin.getLogger().log(Level.SEVERE, "Could not init chunk meta data, could not retrieve plugin id from db");
 			return null;
 		}
 		ChunkMetaFactory metaFactory = ChunkMetaFactory.getInstance();
 		metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
-		BlockBasedChunkMetaView<T, D> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
+		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
 				emptyChunkCreator);
 		existingViews.put(plugin.getName(), (ChunkMetaView<?>) view);
 		return view;

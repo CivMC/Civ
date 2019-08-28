@@ -66,6 +66,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	@SuppressWarnings("unchecked")
 	protected D get(int x, int y, int z) {
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
+		System.out.println("Get " + x + " " + y + " "+  z);
 		if (l4ZSection == null) {
 			return null;
 		}
@@ -82,8 +83,8 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return get(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(),
-				location.getBlockZ() % L4_Z_SECTION_LENGTH);
+		return get(modulo(location.getBlockX(), L3_X_SECTION_COUNT), location.getBlockY(),
+				modulo(location.getBlockZ(), L4_Z_SECTION_LENGTH));
 	}
 
 	/**
@@ -159,7 +160,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		}
 		return getL4ZSubArray(l3XSection, x, create);
 	}
-	
+
 	public boolean isEmpty() {
 		for (BlockDataObject<D>[][][] l2 : data) {
 			if (l2 == null) {
@@ -194,7 +195,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (block == null) {
 			throw new IllegalArgumentException("Block may not be null");
 		}
-		put(block.getX() % L3_X_SECTION_COUNT, block.getY(), block.getZ() % L4_Z_SECTION_LENGTH, blockData, true);
+		put(modulo(block.getX(), L3_X_SECTION_COUNT), block.getY(), modulo(block.getZ(), L4_Z_SECTION_LENGTH), blockData, true);
 	}
 
 	/**
@@ -207,13 +208,14 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	 *                  z-coordinate modulo 16
 	 * @param blockData Data to insert, not null
 	 */
-	protected void put(int x, int y, int z, D blockData, boolean isNew) {
+	public void put(int x, int y, int z, D blockData, boolean isNew) {
 		if (blockData == null) {
 			throw new IllegalArgumentException("Data may not be null");
 		}
 		if (isNew) {
-		setCacheState(CacheState.MODIFIED);
+			setCacheState(CacheState.MODIFIED);
 		}
+		System.out.println("Put " + x + " " + y + " "+  z);
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
 		blockData.setOwningCache(this);
 		l4ZSection[z] = blockData;
@@ -226,7 +228,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	 * @param blockData Data to insert
 	 */
 	public final void put(Location location, D blockData) {
-		put(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(), location.getBlockZ() % L4_Z_SECTION_LENGTH,
+		put(modulo(location.getBlockX(), L3_X_SECTION_COUNT), location.getBlockY(), modulo(location.getBlockZ(), L4_Z_SECTION_LENGTH),
 				blockData, true);
 	}
 
@@ -297,8 +299,17 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (location == null) {
 			throw new IllegalArgumentException("Location to remove can not be null");
 		}
-		return remove(location.getBlockX() % L3_X_SECTION_COUNT, location.getBlockY(),
-				location.getBlockZ() % L4_Z_SECTION_LENGTH);
+		return remove(modulo(location.getBlockX(), L3_X_SECTION_COUNT), location.getBlockY(),
+				modulo(location.getBlockZ(), L4_Z_SECTION_LENGTH));
+	}
+	
+	public static int modulo(int a, int modulo) {
+		//javas % operator can return negative numbers, which we do not want
+		int result = a % modulo;
+		if (result < 0) {
+			result += modulo;
+		}
+		return result;
 	}
 
 }

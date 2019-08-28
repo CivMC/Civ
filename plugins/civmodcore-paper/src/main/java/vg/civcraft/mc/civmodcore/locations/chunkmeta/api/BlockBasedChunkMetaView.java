@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
 
 /**
  * API view for block based chunk metas, which adds convenience methods for
@@ -19,7 +20,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
  * @param <T> BlockBasedChunkMeta subclass
  * @param <D> BlockDataObject subclass
  */
-public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D extends BlockDataObject<D>>
+public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends StorageEngine>
 		extends ChunkMetaView<T> {
 	
 	private Supplier<T> chunkProducer;
@@ -40,6 +41,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 		if (chunk == null) {
 			return null;
 		}
+		validateY(block.getY());
 		return chunk.get(block);
 	}
 
@@ -52,8 +54,10 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 	public D get(Location location) {
 		T chunk = super.getChunkMeta(location);
 		if (chunk == null) {
+			System.out.println("No chunk");
 			return null;
 		}
+		validateY(location.getBlockY());
 		return chunk.get(location);
 	}
 
@@ -68,7 +72,11 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 	 * @param data Data to insert
 	 */
 	public void put(D data) {
+		if (data == null) {
+			throw new IllegalArgumentException("Data to insert can not be null");
+		}
 		Location loc = data.getLocation();
+		validateY(loc.getBlockY());
 		T chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getBlockX() / 16, loc.getBlockZ() / 16);
 		chunk.put(loc, data);
 	}
@@ -84,6 +92,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 		if (chunk == null) {
 			throw new IllegalArgumentException("No data loaded for the chunk at location " + block.getLocation());
 		}
+		validateY(block.getY());
 		return chunk.remove(block);
 	}
 
@@ -97,6 +106,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 		if (chunk == null) {
 			throw new IllegalArgumentException("No data loaded for the chunk at location " + data.getLocation());
 		}
+		validateY(data.getLocation().getBlockY());
 		chunk.remove(data);
 	}
 
@@ -111,7 +121,17 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, ?>, D exte
 		if (chunk == null) {
 			throw new IllegalArgumentException("No data loaded for the chunk at location " + location);
 		}
+		validateY(location.getBlockY());
 		return chunk.remove(location);
+	}
+	
+	private void validateY(int y) {
+		if (y < 0) {
+			throw new IllegalArgumentException("Y-level of data may not be less than 0");
+		}
+		if (y > 255) {
+			throw new IllegalArgumentException("Y-level of data may not be more than 255");
+		}
 	}
 
 }

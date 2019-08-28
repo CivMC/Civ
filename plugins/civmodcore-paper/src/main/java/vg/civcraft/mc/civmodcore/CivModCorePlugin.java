@@ -35,6 +35,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Register commands, which must be done traditionally
 		// We can't use command annotations here as the annotation processor isn't available yet
 		this.newCommandHandler.registerCommand(new ConfigCommand());
+		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Load Database
 		try {
 			database = (ManagedDatasource) getConfig().get("database");
@@ -47,12 +48,18 @@ public final class CivModCorePlugin extends ACivMod {
 		ItemNames.loadItemNames();
 		new NiceNames().loadNames();
 		new DialogManager();
-		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		if (database != null) {
 			ChunkDAO dao = new ChunkDAO(database, this);
 			if (dao.updateDatabase()) {
 				chunkMetaManager = new GlobalChunkMetaManager(dao);
+				info("Setup database successfully");
 			}
+			else {
+				warning("Could not setup database");
+			}
+		}
+		else {
+			warning("Could not setup database, none specified in config");
 		}
 	}
 

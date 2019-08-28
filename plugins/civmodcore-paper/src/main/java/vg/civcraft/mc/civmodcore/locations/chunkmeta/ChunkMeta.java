@@ -47,6 +47,13 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 	public CacheState getCacheState() {
 		return cacheState;
 	}
+	
+	/**
+	 * @return ChunkCoord describing where this instance is
+	 */
+	public ChunkCoord getChunkCoord() {
+		return chunkCoord;
+	}
 
 	/**
 	 * Gets the id of the plugin to which plugin this instance belongs to

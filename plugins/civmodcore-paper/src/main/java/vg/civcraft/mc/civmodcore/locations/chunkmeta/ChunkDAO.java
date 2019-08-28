@@ -26,11 +26,11 @@ public class ChunkDAO {
 	public int getOrCreatePluginID(JavaPlugin plugin) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertPlugin = insertConn
-						.prepareStatement("select id from cmc_plugins where uuid = ?;")) {
+						.prepareStatement("select id from cmc_plugins where name = ?;")) {
 			insertPlugin.setString(1, plugin.getName());
 			try (ResultSet rs = insertPlugin.executeQuery()) {
 				if (rs.next()) {
-					return rs.getInt(1);
+					return rs.getShort(1);
 				}
 			}
 		} catch (SQLException e) {
@@ -47,7 +47,7 @@ public class ChunkDAO {
 					logger.info("Failed to insert plugin");
 					return -1;
 				}
-				return rs.getInt(1);
+				return rs.getShort(1);
 			}
 		} catch (SQLException e) {
 			logger.severe("Failed to insert plugin into db: " + e.toString());
@@ -62,7 +62,7 @@ public class ChunkDAO {
 			insertWorld.setString(1, world.getUID().toString());
 			try (ResultSet rs = insertWorld.executeQuery()) {
 				if (rs.next()) {
-					return rs.getInt(1);
+					return rs.getShort(1);
 				}
 			}
 		} catch (SQLException e) {
@@ -80,7 +80,7 @@ public class ChunkDAO {
 					logger.info("Failed to insert world");
 					return -1;
 				}
-				return rs.getInt(1);
+				return rs.getShort(1);
 			}
 		} catch (SQLException e) {
 			logger.severe("Failed to insert world into db: " + e.toString());
@@ -90,12 +90,12 @@ public class ChunkDAO {
 
 	private void registerMigrations() {
 		db.registerMigration(1, false,
-				"create table cmc_worlds (id int not null auto_increment primary key, uuid char(36) not null, "
+				"create table if not exists cmc_worlds (id smallint unsigned not null auto_increment primary key, uuid char(36) not null, "
 						+ "name text not null, constraint uniqueUuid unique(uuid));",
-				"create table cmc_plugins (id int not null auto_increment primary key, name text not null, "
+				"create table if not exists cmc_plugins (id smallint unsigned not null auto_increment primary key, name varchar(255) not null, "
 						+ "constraint uniqueName unique(name));",
-				"create table cmc_chunk_data (x int not null, z int not null, world_id int not null references cmc_worlds(id), "
-						+ "plugin_id int not null references cmc_plugins(id), data text not null,"
+				"create table if not exists cmc_chunk_data (x int not null, z int not null, world_id smallint unsigned not null references cmc_worlds(id), "
+						+ "plugin_id smallint unsigned not null references cmc_plugins(id), data text not null,"
 						+ "primary key cmc_chunk_lookup(world_id, x, z, plugin_id));");
 	}
 

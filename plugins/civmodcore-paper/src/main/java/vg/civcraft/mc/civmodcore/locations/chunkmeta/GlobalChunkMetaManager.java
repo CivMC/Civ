@@ -21,7 +21,17 @@ public class GlobalChunkMetaManager {
 		this.uuidToInternalID = new TreeMap<>();
 		this.worldToManager = new TreeMap<>();
 		this.chunkDao = chunkDao;
+		for (World world : Bukkit.getWorlds()) {
+			registerWorld(world);
+		}
 		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
+		Bukkit.getScheduler().scheduleSyncDelayedTask(CivModCorePlugin.getInstance(), () -> {
+			for (World world : Bukkit.getWorlds()) {
+				for (Chunk chunk : world.getLoadedChunks()) {
+					loadChunkData(chunk);
+				}
+			}
+		}, 1L);
 	}
 
 	/**
@@ -111,7 +121,7 @@ public class GlobalChunkMetaManager {
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
-		WorldChunkMetaManager manager = new WorldChunkMetaManager(id);
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
 	}

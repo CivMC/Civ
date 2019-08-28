@@ -13,6 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import org.bukkit.World;
+
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
  * kept in a cache, into which is inserted when a chunk is loaded. When a chunk
@@ -41,9 +43,11 @@ public class WorldChunkMetaManager {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 	private Thread chunkLoadingConsumer;
 	private Queue<ChunkCoord> chunkLoadingQueue;
+	private World world;
 
-	public WorldChunkMetaManager(int worldID) {
+	public WorldChunkMetaManager(World world, int worldID) {
 		this.worldID = worldID;
+		this.world = world;
 		this.metas = new HashMap<>();
 		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<ChunkCoord>((a, b) -> {
 			return Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
@@ -59,6 +63,7 @@ public class WorldChunkMetaManager {
 			return existing;
 		}
 		existing = computer.get();
+		existing.setChunkCoord(coord);
 		existing.setPluginID(pluginID);
 		coord.addChunkMeta(existing);
 		return existing;
@@ -91,7 +96,7 @@ public class WorldChunkMetaManager {
 	 *         supposed to be generated
 	 */
 	private ChunkCoord getChunkCoord(int x, int z, boolean gen, boolean populate) {
-		ChunkCoord coord = new ChunkCoord(x, z, worldID);
+		ChunkCoord coord = new ChunkCoord(x, z, worldID, world);
 		synchronized (metas) {
 			ChunkCoord value = metas.get(coord);
 			if (value != null) {
@@ -100,7 +105,7 @@ public class WorldChunkMetaManager {
 			if (!gen) {
 				return null;
 			}
-			coord = metas.putIfAbsent(coord, coord);
+			metas.put(coord, coord);
 			if (populate) {
 				// up until here we are still sync from the ChunkLoadEvent, so we need to
 				// offload the actual db load to another thread
@@ -141,6 +146,7 @@ public class WorldChunkMetaManager {
 	 */
 	void insertChunkMeta(int x, int z, ChunkMeta<?> meta) {
 		ChunkCoord coord = getChunkCoord(x, z, true, false);
+		meta.setChunkCoord(coord);
 		coord.addChunkMeta(meta);
 	}
 

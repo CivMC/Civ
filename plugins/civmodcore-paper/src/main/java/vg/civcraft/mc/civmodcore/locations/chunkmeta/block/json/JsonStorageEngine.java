@@ -31,8 +31,8 @@ public class JsonStorageEngine implements StorageEngine {
 						"delete from cmc_chunk_data where x = ? and z = ? and world_id = ? and plugin_id = ?;")) {
 			deleteChunk.setInt(1, x);
 			deleteChunk.setInt(2, z);
-			deleteChunk.setInt(3, worldID);
-			deleteChunk.setInt(4, pluginID);
+			deleteChunk.setShort(3, (short) worldID);
+			deleteChunk.setShort(4, (short) pluginID);
 			deleteChunk.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete chunk data", e);
@@ -45,8 +45,8 @@ public class JsonStorageEngine implements StorageEngine {
 						"insert into cmc_chunk_data (x, z, world_id, plugin_id, data) values(?,?,?,?,?)")) {
 			insertChunk.setInt(1, x);
 			insertChunk.setInt(2, z);
-			insertChunk.setInt(3, worldID);
-			insertChunk.setInt(4, pluginID);
+			insertChunk.setShort(3, (short) worldID);
+			insertChunk.setShort(4, (short) pluginID);
 			insertChunk.setString(5, serializedChunk.toString());
 			insertChunk.execute();
 		} catch (SQLException e) {
@@ -60,8 +60,8 @@ public class JsonStorageEngine implements StorageEngine {
 						"select ccd.data from cmc_chunk_data where x = ? and z = ? and world_id = ? and plugin_id = ?;")) {
 			getData.setInt(1, x);
 			getData.setInt(2, z);
-			getData.setInt(3, worldID);
-			getData.setInt(4, pluginID);
+			getData.setShort(3, (short) worldID);
+			getData.setShort(4, (short) pluginID);
 			try (ResultSet rs = getData.executeQuery()) {
 				if (rs.next()) {
 					return (JsonObject) jsonParser.parse(rs.getString(1));
@@ -82,8 +82,8 @@ public class JsonStorageEngine implements StorageEngine {
 			updateChunk.setString(1, serializedChunk.toString());
 			updateChunk.setInt(2, x);
 			updateChunk.setInt(3, z);
-			updateChunk.setInt(4, worldID);
-			updateChunk.setInt(5, pluginID);
+			updateChunk.setShort(4, (short) worldID);
+			updateChunk.setShort(5, (short) pluginID);
 			updateChunk.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update chunk data", e);

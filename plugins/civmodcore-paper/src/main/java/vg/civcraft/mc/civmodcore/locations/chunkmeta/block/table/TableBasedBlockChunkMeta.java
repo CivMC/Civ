@@ -77,7 +77,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 	public void populate() {
 		storage.fill(this, data -> {
 			Location loc = data.getLocation();
-			put(loc.getBlockX() % 16, loc.getBlockY(), loc.getBlockZ() % 16, data, false);
+			put(modulo(loc.getBlockX(), 16), loc.getBlockY(), modulo(loc.getBlockZ(), 16), data, false);
 		});
 	}
 

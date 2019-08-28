@@ -103,7 +103,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return getChunkMeta(location.getWorld(), location.getBlockX() / 16, location.getBlockZ() / 16);
+		return getChunkMeta(location.getWorld(), location.getChunk().getX(), location.getChunk().getZ());
 	}
 
 	/**

@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 
+import org.bukkit.World;
+
 public class ChunkCoord {
 
 	/**
@@ -36,15 +38,24 @@ public class ChunkCoord {
 	private int z;
 
 	private int worldID;
+	private World world;
 
-	ChunkCoord(int x, int z, int worldID) {
+	ChunkCoord(int x, int z, int worldID, World world) {
 		this.x = x;
 		this.z = z;
 		this.worldID = worldID;
+		this.world = world;
 		this.chunkMetas = new TreeMap<>();
 		this.isFullyLoaded = false;
 		this.lastLoadingTime = -1;
 		this.lastUnloadingTime = -1;
+	}
+	
+	/**
+	 * @return World this instance is in
+	 */
+	public World getWorld() {
+		return world;
 	}
 
 	void addChunkMeta(ChunkMeta<?> chunkMeta) {
