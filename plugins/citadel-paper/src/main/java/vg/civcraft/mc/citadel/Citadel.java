@@ -13,13 +13,16 @@ import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.CitadelSettingManager;
+import vg.civcraft.mc.citadel.model.CitadelStorage;
 import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockBasedChunkMetaView;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -42,7 +45,7 @@ public class Citadel extends ACivMod {
 	}
 
 	private Logger logger;
-	private BlockBasedChunkMetaView<CitadelChunkData, Reinforcement> chunkMetaData;
+	private ReinforcementManager reinManager;
 	private CitadelConfigManager config;
 	private AcidManager acidManager;
 	private ReinforcementTypeManager typeManager;
@@ -62,14 +65,14 @@ public class Citadel extends ACivMod {
 		return config;
 	}
 
-	public BlockBasedChunkMetaView<CitadelChunkData, Reinforcement> getChunkMetaManager() {
-		return chunkMetaData;
+	public ReinforcementManager getReinforcementManager() {
+		return reinManager;
 	}
 
 	public ReinforcementTypeManager getReinforcementTypeManager() {
 		return typeManager;
 	}
-	
+
 	public CitadelSettingManager getSettingManager() {
 		return settingManager;
 	}
@@ -84,7 +87,7 @@ public class Citadel extends ACivMod {
 
 	@Override
 	public void onDisable() {
-		chunkMetaData.disable();
+		reinManager.shutDown();
 		HandlerList.unregisterAll(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
@@ -112,12 +115,20 @@ public class Citadel extends ACivMod {
 		}
 		typeManager = new ReinforcementTypeManager();
 		config.getReinforcementTypes().forEach(t -> typeManager.register(t));
-		chunkMetaData = ChunkMetaAPI.registerBlockBasedPlugin(this, CitadelChunkData.class, () -> new CitadelChunkData(true));
-		if (chunkMetaData == null) {
+		CitadelStorage storage = new CitadelStorage(this.logger, config.getDatabase());
+		if (!storage.updateDatabase()) {
 			logger.severe("Errors setting up database, shutting down");
 			Bukkit.shutdown();
 			return;
 		}
+		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData = 
+				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> {return new CitadelChunkData(false, storage);});
+		if (chunkMetaData == null) {
+			logger.severe("Errors setting up chunk metadata API, shutting down");
+			Bukkit.shutdown();
+			return;
+		}
+		reinManager = new ReinforcementManager(chunkMetaData);
 		stateManager = new PlayerStateManager();
 		acidManager = new AcidManager(config.getAcidMaterials());
 		settingManager = new CitadelSettingManager();

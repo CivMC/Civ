@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class ReinforcementTypeManager {
 
 	private Map<ItemStack, ReinforcementType> typesByItem;
-	private Map<Integer, ReinforcementType> typesById;
+	private Map<Short, ReinforcementType> typesById;
 
 	public ReinforcementTypeManager() {
 		typesByItem = new HashMap<>();
@@ -21,7 +21,7 @@ public class ReinforcementTypeManager {
 		return typesById.values();
 	}
 
-	public ReinforcementType getById(int id) {
+	public ReinforcementType getById(short id) {
 		return typesById.get(id);
 	}
 

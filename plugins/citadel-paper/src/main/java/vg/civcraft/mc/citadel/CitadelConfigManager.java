@@ -155,11 +155,11 @@ public class CitadelConfigManager extends CoreConfigManager {
 		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
 		String name = config.getString("name");
 		double maturationScale = config.getInt("scale_amount", 1);
-		double health = config.getDouble("hit_points", 100);
+		float health = (float) config.getDouble("hit_points", 100);
 		double returnChance = config.getDouble("return_chance", 1.0);
 		List<Material> reinforceables = parseMaterialList(config, "reinforceables");
 		List<Material> nonReinforceables = parseMaterialList(config, "non_reinforceables");
-		int id = config.getInt("id", -1);
+		short id = (short) config.getInt("id", -1);
 		long decayTimer = ConfigParsing
 				.parseTime(config.getString("decay_timer", String.valueOf(globalDecayTimer / 1000L) + "s"));
 		double decayMultiplier = config.getDouble("decay_multiplier", globalDecayMultiplier);

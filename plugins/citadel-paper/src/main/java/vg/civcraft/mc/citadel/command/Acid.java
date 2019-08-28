@@ -39,7 +39,7 @@ public class Acid extends StandaloneCommand {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
 				return true;
 			}
-			Reinforcement reinforcement = Citadel.getInstance().getChunkMetaManager().get(block);
+			Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(block.getLocation());
 			if (reinforcement == null) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
 				return true;

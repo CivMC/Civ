@@ -21,7 +21,7 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 
 	public AdvancedFortificationState(Player p) {
 		super(p);
-		setups = new HashMap<ItemStack, ReinforcingSetup>();
+		setups = new HashMap<>();
 	}
 
 	@Override
@@ -33,11 +33,6 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 	public void handleBlockPlace(BlockPlaceEvent e) {
 		ItemStack placed = e.getItemInHand();
 		Player player = e.getPlayer();
-		if (placed == null) {
-			// no idea if this can even happen, but let's be safe
-			CitadelUtility.sendAndLog(player, ChatColor.RED, "No block found in your hand?");
-			return;
-		}
 		// check if we have a setup for this block, weneed a copy for lookup so we can
 		// set amount to 1
 		ItemStack lookUpCopy = placed.clone();

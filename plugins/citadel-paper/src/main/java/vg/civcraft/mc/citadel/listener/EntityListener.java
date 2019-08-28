@@ -22,9 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockBasedChunkMetaView;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -113,14 +111,13 @@ public class EntityListener implements Listener {
 	// prevent creating golems from reinforced blocks
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
 	public void spawn(CreatureSpawnEvent cse) {
-		BlockBasedChunkMetaView<CitadelChunkData, Reinforcement> chunkManager = Citadel.getInstance().getChunkMetaManager();
 		EntityType type = cse.getEntityType();
 		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER
 				&& type != EntityType.SILVERFISH) {
 			return;
 		}
 		for (Block block : getGolemBlocks(type, cse.getLocation().getBlock())) {
-			Reinforcement reinforcement = chunkManager.get(block);
+			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
 			if (reinforcement != null) {
 				cse.setCancelled(true);
 			}

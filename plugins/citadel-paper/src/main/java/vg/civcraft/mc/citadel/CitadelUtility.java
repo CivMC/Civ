@@ -151,7 +151,7 @@ public class CitadelUtility {
 			return true;
 		}
 		// check if reinforcement already exists
-		Reinforcement rein = Citadel.getInstance().getChunkMetaManager().get(block);
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
 		if (rein != null) {
 			// something like a slab, we just ignore this
 			return false;

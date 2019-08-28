@@ -210,7 +210,7 @@ public class BlockListener implements Listener {
 		if (e.getBlockReplacedState().getType() != Material.AIR) {
 			return;
 		}
-		Reinforcement rein = Citadel.getInstance().getChunkMetaManager().get(e.getBlock());
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());
 		if (rein != null) {
 			rein.setHealth(-1);
 		}

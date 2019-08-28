@@ -2,40 +2,35 @@ package vg.civcraft.mc.citadel.model;
 
 import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.google.gson.JsonObject;
-
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockBasedChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.BlockDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class Reinforcement extends BlockDataObject {
+public class Reinforcement extends TableBasedDataObject {
 
 	private static Random rng = new Random();
 
 	private final long creationTime;
 	private ReinforcementType type;
-	private double health;
+	private float health;
 	private int groupId;
 	private boolean insecure;
 
 	public Reinforcement(Location loc, ReinforcementType type, Group group) {
-		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), false);
+		this(loc, type, group.getGroupId(), System.currentTimeMillis(), type.getHealth(), false, true);
 	}
 
-	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, double health,
-			boolean insecure) {
-		super(loc);
+	public Reinforcement(Location loc, ReinforcementType type, int groupID, long creationTime, float health,
+			boolean insecure, boolean isNew) {
+		super(loc, isNew);
 		if (type == null) {
 			throw new IllegalArgumentException("Reinforcement type for reinforcement can not be null");
 		}
@@ -77,7 +72,7 @@ public class Reinforcement extends BlockDataObject {
 	/**
 	 * @return Current health
 	 */
-	public double getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
@@ -146,7 +141,7 @@ public class Reinforcement extends BlockDataObject {
 			throw new IllegalArgumentException("Group can not be set to null for a reinforcement");
 		}
 		this.groupId = group.getGroupId();
-		setDirty(true);
+		setCacheState(CacheState.MODIFIED);
 	}
 
 	/**
@@ -154,24 +149,20 @@ public class Reinforcement extends BlockDataObject {
 	 * 
 	 * @param health new health value
 	 */
-	public void setHealth(double health) {
+	public void setHealth(float health) {
 		this.health = health;
-		setDirty(true);
 		if (health <= 0) {
 			getOwningCache().remove(this);
+			setCacheState(CacheState.DELETED);
 		}
-	}
-	
-	@Override
-	@SuppressWarnings("unchecked")
-	protected BlockBasedChunkMeta<Reinforcement> getOwningCache() {
-		//doing this covariant overwrite makes typing easier in other places
-		return (BlockBasedChunkMeta<Reinforcement>) super.getOwningCache();
+		else {
+			setCacheState(CacheState.MODIFIED);
+		}
 	}
 
 	public void setType(ReinforcementType type) {
 		this.type = type;
-		setDirty(true);
+		setCacheState(CacheState.MODIFIED);
 	}
 
 	/**
@@ -179,7 +170,7 @@ public class Reinforcement extends BlockDataObject {
 	 */
 	public void toggleInsecure() {
 		insecure = !insecure;
-		setDirty(true);
+		setCacheState(CacheState.MODIFIED);
 	}
 
 	/**
@@ -194,30 +185,5 @@ public class Reinforcement extends BlockDataObject {
 		double relativeHealth = health / type.getHealth();
 		baseChance *= relativeHealth;
 		return rng.nextDouble() <= baseChance;
-	}
-	
-	@Override
-	public void concreteSerialize(JsonObject json) {
-		json.addProperty("c", creationTime);
-		json.addProperty("t", type.getID());
-		json.addProperty("h", health);
-		json.addProperty("g", groupId);
-		if (insecure) {
-			json.addProperty("i", "");
-		}
-	}
-	
-	public static Reinforcement deserialize(JsonObject json, ChunkMeta meta) {
-		long creationTime = json.get("c").getAsLong();
-		int reinforcementTypeId = json.get("t").getAsInt();
-		ReinforcementType type = Citadel.getInstance().getReinforcementTypeManager().getById(reinforcementTypeId);
-		if (type == null) {
-			Citadel.getInstance().getLogger().log(Level.SEVERE, "Could not load reinforcement with id " + reinforcementTypeId);
-		}
-		double health = json.get("h").getAsDouble();
-		int groupId = json.get("g").getAsInt();
-		boolean insecure = json.has("i");
-		Location loc = parseLocationFromJson(json, meta);
-		return new Reinforcement(loc, type, groupId, creationTime, health, insecure);		
 	}
 }

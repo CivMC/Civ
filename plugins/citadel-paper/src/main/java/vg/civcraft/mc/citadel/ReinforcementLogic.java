@@ -19,7 +19,7 @@ public class ReinforcementLogic {
 
 	public static Reinforcement createReinforcement(Player player, Block block, ReinforcementType type, Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
-		Citadel.getInstance().getChunkMetaManager().put(rein);
+		Citadel.getInstance().getReinforcementManager().putReinforcement(rein);
 		if (type.getCreationEffect() != null) {
 			type.getCreationEffect().playEffect(rein);
 		}
@@ -28,9 +28,8 @@ public class ReinforcementLogic {
 	}
 
 	public static void damageReinforcement(Reinforcement rein, double damage) {
-		rein.setHealth(rein.getHealth() - damage);
+		rein.setHealth((float) (rein.getHealth() - damage));
 		if (rein.isBroken()) {
-			Citadel.getInstance().getChunkMetaManager().remove(rein);
 			if (rein.getType().getDestructionEffect() != null) {
 				rein.getType().getDestructionEffect().playEffect(rein);
 			}
@@ -38,7 +37,6 @@ public class ReinforcementLogic {
 			if (rein.getType().getDamageEffect() != null) {
 				rein.getType().getDamageEffect().playEffect(rein);
 			}
-			rein.setDirty(true);
 		}
 	}
 
@@ -56,11 +54,11 @@ public class ReinforcementLogic {
 	}
 
 	public static Reinforcement getReinforcementAt(Location loc) {
-		return Citadel.getInstance().getChunkMetaManager().get(loc);
+		return Citadel.getInstance().getReinforcementManager().getReinforcement(loc);
 	}
 
 	public static Reinforcement getReinforcementProtecting(Block b) {
-		Reinforcement directReinforcement = Citadel.getInstance().getChunkMetaManager().get(b.getLocation());
+		Reinforcement directReinforcement = getReinforcementAt(b.getLocation());
 		if (directReinforcement != null) {
 			return directReinforcement;
 		}
@@ -180,7 +178,7 @@ public class ReinforcementLogic {
 
 	public static Reinforcement resolveDoubleChestReinforcement(Block block) {
 		Material mat = block.getType();
-		Reinforcement rein = Citadel.getInstance().getChunkMetaManager().get(block);
+		Reinforcement rein = getReinforcementAt(block.getLocation());
 		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
 			return rein;
 		}
@@ -189,7 +187,7 @@ public class ReinforcementLogic {
 			if (relative.getType() != mat) {
 				continue;
 			}
-			rein = Citadel.getInstance().getChunkMetaManager().get(relative);
+			rein = getReinforcementAt(relative.getLocation());
 			if (rein != null) {
 				return rein;
 			}

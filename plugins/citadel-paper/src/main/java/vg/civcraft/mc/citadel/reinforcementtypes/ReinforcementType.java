@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class ReinforcementType {
 
-	private double health;
+	private float health;
 	private double returnChance;
 	private ItemStack item;
 	private long maturationTime;
@@ -22,15 +22,15 @@ public class ReinforcementType {
 	private Set<Material> allowedReinforceables;
 	private Set<Material> disallowedReinforceables;
 	private Set<Material> globalBlackList;
-	private int id;
+	private short id;
 	private String name;
 	private long decayTimer;
 	private double decayMultiplier;
 
-	public ReinforcementType(double health, double returnChance, ItemStack item, long maturationTime, long acidTime,
+	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime,
 			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
 			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
-			Collection<Material> disallowedReinforceables, int id, String name, Collection<Material> globalBlackList,
+			Collection<Material> disallowedReinforceables, short id, String name, Collection<Material> globalBlackList,
 			long decayTimer, double decayMultiplier) {
 		this.health = health;
 		this.name = name;
@@ -65,11 +65,7 @@ public class ReinforcementType {
 			return false;
 		}
 		if (allowedReinforceables == null) {
-			if (disallowedReinforceables == null || !disallowedReinforceables.contains(mat)) {
-				return true;
-			} else {
-				return false;
-			}
+			return disallowedReinforceables == null || !disallowedReinforceables.contains(mat);
 		}
 		return allowedReinforceables.contains(mat);
 	}
@@ -93,14 +89,14 @@ public class ReinforcementType {
 	/**
 	 * @return Maximum health
 	 */
-	public double getHealth() {
+	public float getHealth() {
 		return health;
 	}
 
 	/**
 	 * @return The unique id identifying this config
 	 */
-	public int getID() {
+	public short getID() {
 		return id;
 	}
 
