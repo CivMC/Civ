@@ -1,8 +1,9 @@
 package vg.civcraft.mc.namelayer.permission;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,7 +11,6 @@ import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 
@@ -22,15 +22,15 @@ public class PermissionType {
 	private static int maximumExistingId;
 	
 	public static void initialize() {
-		permissionByName = new HashMap<String, PermissionType>();
-		permissionById = new TreeMap<Integer, PermissionType>();
+		permissionByName = new HashMap<>();
+		permissionById = new TreeMap<>();
 		maximumExistingId = 0;
 		Map <Integer,String> dbRegisteredPerms = NameLayerPlugin.getGroupManagerDao().getPermissionMapping();
 		for(Entry <Integer,String> perm : dbRegisteredPerms.entrySet()) {
 			int id = perm.getKey();
 			String name = perm.getValue();
 			maximumExistingId = Math.max(maximumExistingId, id);
-			internalRegisterPermission(id, name, new LinkedList<>(), null);
+			internalRegisterPermission(id, name, new ArrayList<>(), null);
 		}
 		registerNameLayerPermissions();
 	}
@@ -43,11 +43,11 @@ public class PermissionType {
 		return permissionById.get(id);
 	}
 	
-	public static void registerPermission(String name, List <PlayerType> defaultPermLevels) {
+	public static void registerPermission(String name, List<PlayerType> defaultPermLevels) {
 		registerPermission(name, defaultPermLevels, null);
 	}
 	
-	public static void registerPermission(String name, List <PlayerType> defaultPermLevels, String description) {
+	public static void registerPermission(String name, List<PlayerType> defaultPermLevels, String description) {
 		if (name == null ) {
 			Bukkit.getLogger().severe("Could not register permission, name was null");
 			return;
@@ -79,54 +79,43 @@ public class PermissionType {
 	}
 	
 	private static void registerNameLayerPermissions() {
-		LinkedList <PlayerType> members = new LinkedList<GroupManager.PlayerType>();
-		LinkedList <PlayerType> modAndAbove = new LinkedList<GroupManager.PlayerType>();
-		LinkedList <PlayerType> adminAndAbove = new LinkedList<GroupManager.PlayerType>();
-		LinkedList <PlayerType> owner = new LinkedList<GroupManager.PlayerType>();
-		LinkedList <PlayerType> all = new LinkedList <GroupManager.PlayerType>();
-		members.add(PlayerType.MEMBERS);
-		modAndAbove.add(PlayerType.MODS);
-		modAndAbove.add(PlayerType.ADMINS);
-		modAndAbove.add(PlayerType.OWNER);
-		adminAndAbove.add(PlayerType.ADMINS);
-		adminAndAbove.add(PlayerType.OWNER);
-		owner.add(PlayerType.OWNER);
-		all.add(PlayerType.MEMBERS);
-		all.add(PlayerType.MODS);
-		all.add(PlayerType.ADMINS);
-		all.add(PlayerType.OWNER);
+		List<PlayerType> members = Arrays.asList(PlayerType.MEMBERS);
+		List<PlayerType> modAndAbove = Arrays.asList(PlayerType.MODS, PlayerType.ADMINS, PlayerType.OWNER);
+		List<PlayerType> adminAndAbove = Arrays.asList(PlayerType.ADMINS, PlayerType.OWNER);
+		List<PlayerType> owner = Arrays.asList(PlayerType.OWNER);
+		List<PlayerType> all = Arrays.asList(PlayerType.MEMBERS, PlayerType.MODS, PlayerType.ADMINS, PlayerType.OWNER);
+
 		//clone the list every time so changing the list of one perm later doesn't affect other perms
 		
 		//allows adding/removing members
-		registerPermission("MEMBERS", (LinkedList <PlayerType>)modAndAbove.clone(), "Allows inviting new members and removing existing members");
+		registerPermission("MEMBERS", new ArrayList<>(modAndAbove), "Allows inviting new members and removing existing members");
 		//allows blacklisting/unblacklisting players and viewing the blacklist
-		registerPermission("BLACKLIST", (LinkedList <PlayerType>)modAndAbove.clone(), "Allows viewing this group's blacklist, adding players to the blacklist "
+		registerPermission("BLACKLIST", new ArrayList<>(modAndAbove), "Allows viewing this group's blacklist, adding players to the blacklist "
 				+ "and removing players from the blacklist");
 		//allows adding/removing mods
-		registerPermission("MODS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows inviting new mods and removing existing mods");
+		registerPermission("MODS", new ArrayList<>(adminAndAbove), "Allows inviting new mods and removing existing mods");
 		//allows adding/modifying a password for the group
-		registerPermission("PASSWORD", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows viewing this groups password and changing or removing it");
+		registerPermission("PASSWORD", new ArrayList<>(adminAndAbove), "Allows viewing this groups password and changing or removing it");
 		//allows to list the permissions for each permission group
-		registerPermission("LIST_PERMS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Allows viewing how permission for this group are set up");
+		registerPermission("LIST_PERMS", new ArrayList<>(adminAndAbove), "Allows viewing how permission for this group are set up");
 		//allows to see general group stats
-		registerPermission("GROUPSTATS", (LinkedList <PlayerType>)adminAndAbove.clone(), "Gives access to various group statistics such as member "
+		registerPermission("GROUPSTATS", new ArrayList<>(adminAndAbove), "Gives access to various group statistics such as member "
 				+ "counts by permission type, who owns the group etc.");
 		//allows to add/remove admins
-		registerPermission("ADMINS", (LinkedList <PlayerType>)owner.clone(), "Allows inviting new admins and removing existing admins");
+		registerPermission("ADMINS", new ArrayList<>(owner), "Allows inviting new admins and removing existing admins");
 		//allows to add/remove owners
-		registerPermission("OWNER", (LinkedList <PlayerType>)owner.clone(), "Allows inviting new owners and removing existing owners");
+		registerPermission("OWNER", new ArrayList<>(owner), "Allows inviting new owners and removing existing owners");
 		//allows to modify the permissions for different permissions groups
-		registerPermission("PERMS", (LinkedList <PlayerType>)owner.clone(), "Allows modifying permissions for this group");
+		registerPermission("PERMS", new ArrayList<>(owner), "Allows modifying permissions for this group");
 		//allows deleting the group
-		registerPermission("DELETE", (LinkedList <PlayerType>)owner.clone(), "Allows deleting this group");
+		registerPermission("DELETE", new ArrayList<>(owner), "Allows deleting this group");
 		//allows merging the group with another one
-		registerPermission("MERGE", (LinkedList <PlayerType>)owner.clone(), "Allows merging this group into another or merging another group into this one");
+		registerPermission("MERGE", new ArrayList<>(owner), "Allows merging this group into another or merging another group into this one");
 		//allows linking this group to another
-		registerPermission("LINKING", (LinkedList <PlayerType>)owner.clone(), "Allows linking this group to another group as a supergroup or a subgroup");
+		registerPermission("LINKING", new ArrayList<>(owner), "Allows linking this group to another group as a supergroup or a subgroup");
 		//allows opening the gui
-		registerPermission("OPEN_GUI", (LinkedList <PlayerType>)all.clone(), "Allows opening the GUI for this group");
-		
-		
+		registerPermission("OPEN_GUI", new ArrayList<>(all), "Allows opening the GUI for this group");
+
 		//perm level given to members when they join with a password
 		registerPermission("JOIN_PASSWORD", members);
 	}

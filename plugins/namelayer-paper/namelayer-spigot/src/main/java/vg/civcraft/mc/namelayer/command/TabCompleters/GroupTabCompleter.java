@@ -11,6 +11,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 /**
  * Created by isaac on 2/2/2015.
  */
@@ -19,30 +23,31 @@ public class GroupTabCompleter {
         UUID uuid = NameAPI.getUUID(sender.getName());
         GroupManager gm = NameAPI.getGroupManager();
         List<String> groups = gm.getAllGroupNames(uuid);
-        List<String> fitting_groups = new LinkedList<>();
-        List<String> result = new LinkedList<>();
+        List<String> fittingGroups = new ArrayList<>();
+        List<String> result = new ArrayList<>();
 
         if (lastArg != null){
             for (String group : groups){
                 if (group.toLowerCase().startsWith(lastArg.toLowerCase())){
-                    fitting_groups.add(group);
-                } else {
+                    fittingGroups.add(group);
                 }
-            }
+			}
         } else {
-            fitting_groups = groups;
+            fittingGroups = groups;
         }
 
         if (accessLevel == null) {
-            for (String group_name: fitting_groups){
-                Group group  = GroupManager.getGroup(group_name);
-                if (group.isMember(uuid))
-                    result.add(group_name);
+            for (String groupName : fittingGroups){
+                Group group  = GroupManager.getGroup(groupName);
+                if (group != null && group.isMember(uuid)) {
+					        result.add(groupName);
+				        }
             }
         } else {
-            for (String group_name : fitting_groups) {
-                if (gm.hasAccess(group_name, uuid, accessLevel)) 
-                    result.add(group_name);
+            for (String groupName : fittingGroups) {
+                if (gm.hasAccess(groupName, uuid, accessLevel)) {
+					result.add(groupName);
+				}
             }
         }
         return result;

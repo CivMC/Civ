@@ -41,13 +41,7 @@ public class ProfileModifier implements ProfileInterface {
 			
 			((CraftServer)Bukkit.getServer()).getServer().getUserCache().a(prof);
 			// end
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
+		} catch (NoSuchFieldException | SecurityException | IllegalArgumentException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

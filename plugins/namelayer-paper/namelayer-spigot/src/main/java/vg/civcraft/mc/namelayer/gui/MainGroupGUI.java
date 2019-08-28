@@ -1,12 +1,13 @@
 package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import org.bukkit.util.StringUtil;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -54,19 +56,19 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		showMembers = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 		showMods = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MODS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 		showAdmins = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("ADMINS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 		showOwners = gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("OWNER"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 		currentPage = 0;
 		showScreen();
 	}
@@ -164,7 +166,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * Creates a list of all Clickables representing members, invitees and
 	 * blacklisted players, if they are supposed to be displayed. This is whats
 	 * directly fed into the middle of the gui
-	 * 
 	 */
 	private List<Clickable> constructClickables() {
 		List<Clickable> clicks = new ArrayList<Clickable>();
@@ -213,9 +214,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					};
 				} else {
 					ItemAPI.addLore(is, ChatColor.RED
-							+ "You dont have permission to remove",
+							+ "You don't have permission to remove",
 							ChatColor.RED + NameAPI.getCurrentName(uuid)
-									+ "from the blacklist");
+						  + "from the blacklist");
 					c = new DecorationStack(is);
 				}
 				clicks.add(c);
@@ -287,25 +288,25 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							// this
 							boolean allowed = false;
 							switch (pType) {
-							case MEMBERS:
-								allowed = gm.hasAccess(g, p.getUniqueId(),
-										PermissionType.getPermission("MEMBERS"));
-								break;
-							case MODS:
-								allowed = gm.hasAccess(g, p.getUniqueId(),
-										PermissionType.getPermission("MODS"));
-								break;
-							case ADMINS:
-								allowed = gm.hasAccess(g, p.getUniqueId(),
-										PermissionType.getPermission("ADMINS"));
-								break;
-							case OWNER:
-								allowed = gm.hasAccess(g, p.getUniqueId(),
-										PermissionType.getPermission("OWNER"));
-								break;
-							default:
-								allowed = false;
-								break;
+								case MEMBERS:
+									allowed = gm.hasAccess(g, p.getUniqueId(),
+											PermissionType.getPermission("MEMBERS"));
+									break;
+								case MODS:
+									allowed = gm.hasAccess(g, p.getUniqueId(),
+											PermissionType.getPermission("MODS"));
+									break;
+								case ADMINS:
+									allowed = gm.hasAccess(g, p.getUniqueId(),
+											PermissionType.getPermission("ADMINS"));
+									break;
+								case OWNER:
+									allowed = gm.hasAccess(g, p.getUniqueId(),
+											PermissionType.getPermission("OWNER"));
+									break;
+								default:
+									allowed = false;
+									break;
 							}
 							if (!allowed) {
 								p.sendMessage(ChatColor.RED
@@ -336,32 +337,32 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		for (UUID uuid : g.getAllMembers()) {
 			Clickable c = null;
 			switch (g.getPlayerType(uuid)) {
-			case MEMBERS:
-				if (showMembers) {
-					c = constructMemberClickable(Material.LEATHER_CHESTPLATE,
-							uuid, PlayerType.MEMBERS);
-				}
-				break;
-			case MODS:
-				if (showMods) {
-					c = constructMemberClickable(modMat(),
-							uuid, PlayerType.MODS);
-				}
-				break;
-			case ADMINS:
-				if (showAdmins) {
-					c = constructMemberClickable(Material.IRON_CHESTPLATE,
-							uuid, PlayerType.ADMINS);
-				}
-				break;
-			case OWNER:
-				if (showOwners) {
-					c = constructMemberClickable(Material.DIAMOND_CHESTPLATE,
-							uuid, PlayerType.OWNER);
-				}
-				break;
-			default:
-				// should never happen
+				case MEMBERS:
+					if (showMembers) {
+						c = constructMemberClickable(Material.LEATHER_CHESTPLATE,
+								uuid, PlayerType.MEMBERS);
+					}
+					break;
+				case MODS:
+					if (showMods) {
+						c = constructMemberClickable(modMat(),
+								uuid, PlayerType.MODS);
+					}
+					break;
+				case ADMINS:
+					if (showAdmins) {
+						c = constructMemberClickable(Material.IRON_CHESTPLATE,
+								uuid, PlayerType.ADMINS);
+					}
+					break;
+				case OWNER:
+					if (showOwners) {
+						c = constructMemberClickable(Material.DIAMOND_CHESTPLATE,
+								uuid, PlayerType.OWNER);
+					}
+					break;
+				default:
+					// should never happen
 			}
 			if (c != null) {
 				clicks.add(c);
@@ -376,11 +377,11 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * group member types
 	 */
 	private Clickable setupMemberTypeToggle(final PlayerType pType,
-			boolean initialState) {
+											boolean initialState) {
 		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
 				getAccordingPermission(pType))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 		ItemStack is = MenuUtils.toggleButton(initialState, ChatColor.GOLD
 				+ "Show " + PlayerType.getNiceRankName(pType) + "s", canEdit);
 		Clickable c;
@@ -390,18 +391,18 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				@Override
 				public void clicked(Player arg0) {
 					switch (pType) {
-					case MEMBERS:
-						showMembers = !showMembers;
-						break;
-					case MODS:
-						showMods = !showMods;
-						break;
-					case ADMINS:
-						showAdmins = !showAdmins;
-						break;
-					case OWNER:
-						showOwners = !showOwners;
-						break;
+						case MEMBERS:
+							showMembers = !showMembers;
+							break;
+						case MODS:
+							showMods = !showMods;
+							break;
+						case ADMINS:
+							showAdmins = !showAdmins;
+							break;
+						case OWNER:
+							showOwners = !showOwners;
+							break;
 					}
 					currentPage = 0;
 					showScreen();
@@ -420,7 +421,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * gui, which represent members
 	 */
 	private Clickable constructMemberClickable(Material material,
-			final UUID toDisplay, PlayerType rank) {
+											   final UUID toDisplay, PlayerType rank) {
 		Clickable c;
 		ItemStack is = new ItemStack(material);
 		ItemMeta im = is.getItemMeta();
@@ -461,7 +462,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * Called when the icon representing a member in the middle of the gui is
 	 * clicked, this opens up a detailed view where you can select what to do
 	 * (promoting/removing)
-	 * 
+	 *
 	 * @param uuid
 	 */
 	public void showDetail(final UUID uuid) {
@@ -508,7 +509,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * easily construct the clickables needed
 	 */
 	private Clickable setupDetailSlot(Material slotMaterial,
-			final UUID toChange, final PlayerType pType) {
+									  final UUID toChange, final PlayerType pType) {
 		final PlayerType rank = g.getCurrentRank(toChange);
 		ItemStack mod = new ItemStack(slotMaterial);
 		ItemMeta im = mod.getItemMeta();
@@ -540,7 +541,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					mod,
 					ChatColor.GOLD
 							+ demoteOrPromote(g.getPlayerType(toChange), pType,
-									true) + " this player to "
+							true) + " this player to "
 							+ PlayerType.getNiceRankName(pType));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
 				ItemAPI.addLore(mod, ChatColor.RED
@@ -591,7 +592,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				p.sendMessage(ChatColor.RED
 						+ "This player is no longer on the group and can't be "
 						+ demoteOrPromote(g.getCurrentRank(toChange), newRank,
-								false) + "d");
+						false) + "d");
 				return;
 			}
 			if (g.isOwner(toChange)) {
@@ -630,7 +631,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					+ NameAPI.getCurrentName(toChange)
 					+ " has been "
 					+ demoteOrPromote(g.getCurrentRank(toChange), newRank,
-							false) + "d to " + getRankName(toChange));
+					false) + "d to " + getRankName(toChange));
 		} else {
 			p.sendMessage(ChatColor.RED
 					+ "You have lost permission to remove this player");
@@ -729,38 +730,27 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				public void clicked(final Player p) {
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
 					ClickableInventory.forceCloseInventory(p);
-					Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
+					new Dialog(p, NameLayerPlugin.getInstance()) {
 
 						@Override
-						public List<String> onTabComplete(String word,
-								String[] msg) {
-							List<String> names;
-							names = new LinkedList<String>();
-							for (Player p : Bukkit.getOnlinePlayers()) {
-								names.add(p.getName());
-							}
-							if (word.equals("")) {
-								return names;
-							}
-							List<String> result = new LinkedList<String>();
-							String comp = word.toLowerCase();
-							for (String s : names) {
-								if (s.toLowerCase().startsWith(comp)) {
-									result.add(s);
-								}
-							}
-							return result;
+						public List<String> onTabComplete(String word, String[] msg) {
+							List<String> players = Bukkit.getOnlinePlayers().stream()
+									.filter(p -> !g.isMember(p.getUniqueId()))
+									.map(Player::getName)
+									.collect(Collectors.toList());
+							players.add("cancel");
+
+							return StringUtil.copyPartialMatches(word, players, new ArrayList<>());
 						}
 
 						@Override
 						public void onReply(String[] message) {
-							if (message [0].equalsIgnoreCase("cancel")) {
+							if (message[0].equalsIgnoreCase("cancel")) {
 								showScreen();
 								return;
 							}
 							if (gm.hasAccess(g, p.getUniqueId(),
 									PermissionType.getPermission("BLACKLIST"))) {
-								boolean didSomething = false;
 								for (String playerName : message) {
 									UUID blackUUID = NameAPI
 											.getUUID(playerName);
@@ -771,8 +761,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 									}
 									if (g.isMember(blackUUID)) {
 										p.sendMessage(ChatColor.RED
-												+ NameAPI
-														.getCurrentName(blackUUID)
+												+ NameAPI.getCurrentName(blackUUID)
 												+ " is currently a member of this group and can't be blacklisted");
 										continue;
 									}
@@ -780,21 +769,18 @@ public class MainGroupGUI extends AbstractGroupGUI {
 											.getBlackList();
 									if (bl.isBlacklisted(g, blackUUID)) {
 										p.sendMessage(ChatColor.RED
-												+ NameAPI
-														.getCurrentName(blackUUID)
+												+ NameAPI.getCurrentName(blackUUID)
 												+ " is already blacklisted");
 										continue;
 									}
-									didSomething = true;
 									NameLayerPlugin
 											.log(Level.INFO,
 													p.getName()
 															+ " blacklisted "
-															+ NameAPI
-																	.getCurrentName(blackUUID)
+															+ NameAPI.getCurrentName(blackUUID)
 															+ " for group "
 															+ g.getName()
-															+ "via gui");
+															+ " via gui");
 									bl.addBlacklistMember(g, blackUUID, true);
 									p.sendMessage(ChatColor.GREEN
 											+ NameAPI.getCurrentName(blackUUID)
@@ -848,7 +834,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							@Override
 							public List<String> onTabComplete(
 									String wordCompleted, String[] fullMessage) {
-								return new LinkedList<>();
+								return Collections.emptyList();
 							}
 
 							@Override
@@ -1078,7 +1064,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g
-									.getAllMembers(PlayerType.MEMBERS).size())
+							.getAllMembers(PlayerType.MEMBERS).size())
 							+ " members");
 		}
 		if (gm.hasAccess(g, p.getUniqueId(),
@@ -1088,7 +1074,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.MODS)
-									.size()) + " mods");
+							.size()) + " mods");
 		}
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("ADMINS"))
@@ -1097,7 +1083,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.ADMINS)
-									.size()) + " admins");
+							.size()) + " admins");
 		}
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("OWNER"))
@@ -1106,7 +1092,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.OWNER)
-									.size()) + " owner");
+							.size()) + " owner");
 		}
 		if (hasGroupStatsPerm) {
 			ItemAPI.addLore(
@@ -1124,12 +1110,11 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	/**
 	 * Utility to get a "nice" version of the rank the given player has in the
 	 * group this gui is based on
-	 * 
-	 * @param uuid
-	 *            Player whose rank name should be checked
+	 *
+	 * @param uuid Player whose rank name should be checked
 	 * @return Rankname of the given player ready to be put into the gui or null
-	 *         if the given UUID was null or the player didn't have an explicit
-	 *         rank in the group
+	 * if the given UUID was null or the player didn't have an explicit
+	 * rank in the group
 	 */
 	private String getRankName(UUID uuid) {
 		if (uuid == null) {
@@ -1144,22 +1129,21 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	/**
 	 * Gets the permission needed to make changes to the given PlayerType
-	 * 
-	 * @param pt
-	 *            PlayerType to get permission for
+	 *
+	 * @param pt PlayerType to get permission for
 	 * @return Permission belonging to the given PlayerType or null if the
-	 *         permission was NOT_BLACKLISTED or null
+	 * permission was NOT_BLACKLISTED or null
 	 */
 	public static PermissionType getAccordingPermission(PlayerType pt) {
 		switch (pt) {
-		case MEMBERS:
-			return PermissionType.getPermission("MEMBERS");
-		case MODS:
-			return PermissionType.getPermission("MODS");
-		case ADMINS:
-			return PermissionType.getPermission("ADMINS");
-		case OWNER:
-			return PermissionType.getPermission("OWNER");
+			case MEMBERS:
+				return PermissionType.getPermission("MEMBERS");
+			case MODS:
+				return PermissionType.getPermission("MODS");
+			case ADMINS:
+				return PermissionType.getPermission("ADMINS");
+			case OWNER:
+				return PermissionType.getPermission("OWNER");
 		}
 		return null;
 	}
@@ -1168,7 +1152,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * Utility to determine whether the player is being promoted or demoted
 	 */
 	private static String demoteOrPromote(PlayerType oldRank,
-			PlayerType newRank, boolean upperCaseFirstLetter) {
+										  PlayerType newRank, boolean upperCaseFirstLetter) {
 		String res = PlayerType.getID(oldRank) <= PlayerType.getID(newRank) ? "promote"
 				: "demote";
 		if (upperCaseFirstLetter) {
@@ -1178,27 +1162,27 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	}
 
 	private List<Clickable> getRecursiveInheritedMembers(Group g) {
-		List<Clickable> clicks = new LinkedList<>();
+		List<Clickable> clicks = new ArrayList<>();
 		if (g.hasSuperGroup()) {
 			clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
 		}
 		for (UUID uuid : g.getAllMembers()) {
 			ItemStack is;
 			switch (g.getPlayerType(uuid)) {
-			case MEMBERS:
-				is = new ItemStack(Material.LEATHER_CHESTPLATE);
-				break;
-			case MODS:
-				is = modStack();
-				break;
-			case ADMINS:
-				is = new ItemStack(Material.IRON_CHESTPLATE);
-				break;
-			case OWNER:
-				is = new ItemStack(Material.DIAMOND_CHESTPLATE);
-				break;
-			default:
-				continue;
+				case MEMBERS:
+					is = new ItemStack(Material.LEATHER_CHESTPLATE);
+					break;
+				case MODS:
+					is = modStack();
+					break;
+				case ADMINS:
+					is = new ItemStack(Material.IRON_CHESTPLATE);
+					break;
+				case OWNER:
+					is = new ItemStack(Material.DIAMOND_CHESTPLATE);
+					break;
+				default:
+					continue;
 			}
 			ItemAPI.setDisplayName(is, NameAPI.getCurrentName(uuid));
 			ItemAPI.addLore(is, ChatColor.AQUA + "Inherited "
@@ -1212,12 +1196,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		return gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("MODS"))
+				PermissionType.getPermission("MODS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("ADMINS"))
+				PermissionType.getPermission("ADMINS"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("OWNER"))
+				PermissionType.getPermission("OWNER"))
 				|| gm.hasAccess(g, p.getUniqueId(),
-						PermissionType.getPermission("GROUPSTATS"));
+				PermissionType.getPermission("GROUPSTATS"));
 	}
 }
