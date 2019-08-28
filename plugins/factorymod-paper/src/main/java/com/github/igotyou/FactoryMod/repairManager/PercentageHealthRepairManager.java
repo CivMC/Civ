@@ -51,8 +51,7 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	}
 
 	public String getHealth() {
-		return String.valueOf(health / (maximumHealth / 100)) + "." + String.valueOf(health % (maximumHealth / 100))
-				+ " %";
+		return String.valueOf(health / (maximumHealth / 100)) + "." + (health % (maximumHealth / 100) + " %");
 	}
 
 	public void repair(int amount) {
@@ -65,18 +64,13 @@ public class PercentageHealthRepairManager implements IRepairManager {
 		if (breakTime == 0) {
 			breakTime = System.currentTimeMillis();
 		}
-		FactoryMod.getPlugin().getServer().getScheduler()
-				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), new Runnable() {
-
-					@Override
-					public void run() {
+		FactoryMod.getInstance().getServer().getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getInstance(), ()->{
 						if (factory.getMultiBlockStructure().relevantBlocksDestroyed()) {
 							LoggingUtils.log(factory.getLogData() + " removed because blocks were destroyed");
-							FactoryMod.getManager().removeFactory(factory);
+							FactoryMod.getInstance().getManager().removeFactory(factory);
 							returnStuff(factory);
 						}
-
-					}
 				});
 	}
 
@@ -89,17 +83,15 @@ public class PercentageHealthRepairManager implements IRepairManager {
 	}
 
 	public static void returnStuff(Factory factory) {
-		double rate = FactoryMod.getManager().getEgg(factory.getName()).getReturnRate();
+		double rate = FactoryMod.getInstance().getManager().getEgg(factory.getName()).getReturnRate();
 		if (rate == 0.0) {
 			return;
 		}
-		for (Entry<ItemStack, Integer> items : FactoryMod.getManager().getTotalSetupCost(factory).getEntrySet()) {
+		for (Entry<ItemStack, Integer> items : FactoryMod.getInstance().getManager().getTotalSetupCost(factory).getEntrySet()) {
 			int returnAmount = (int) (items.getValue() * rate);
 			ItemMap im = new ItemMap();
 			im.addItemAmount(items.getKey(), returnAmount);
 			for (ItemStack is : im.getItemStackRepresentation()) {
-				if (is.getDurability() == -1)
-					is.setDurability((short) 0);
 				factory.getMultiBlockStructure().getCenter().getWorld()
 						.dropItemNaturally(factory.getMultiBlockStructure().getCenter(), is);
 			}

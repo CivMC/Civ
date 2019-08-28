@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -56,7 +56,7 @@ public class PylonRecipe extends InputRecipe {
 		ItemMap currOut = getCurrentOutput();
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		for (ItemStack is : currOut.getItemStackRepresentation()) {
-			ISUtils.setLore(is, ChatColor.GOLD + "Currently there are "
+			ItemAPI.setLore(is, ChatColor.GOLD + "Currently there are "
 					+ FurnCraftChestFactory.getPylonFactories() == null ? "0"
 					: FurnCraftChestFactory.getPylonFactories().size()
 							+ " pylons on the map", ChatColor.RED
@@ -81,7 +81,7 @@ public class PylonRecipe extends InputRecipe {
 		} else {
 			res = out.get(0);
 		}
-		ISUtils.setName(res, getName());
+		ItemAPI.setDisplayName(res, getName());
 		return res;
 	}
 

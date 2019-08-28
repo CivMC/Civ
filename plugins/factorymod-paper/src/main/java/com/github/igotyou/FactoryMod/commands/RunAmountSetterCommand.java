@@ -16,7 +16,6 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 @CivCommand(id = "fmsrc")
@@ -38,7 +37,7 @@ public class RunAmountSetterCommand extends StandaloneCommand {
 			p.sendMessage(ChatColor.RED + args [0] + " is not a number");
 			return true;
 		}
-		FactoryModManager manager = FactoryMod.getManager();
+		FactoryModManager manager = FactoryMod.getInstance().getManager();
 		for(Block b : p.getLineOfSight((Set <Material>)null, 15)) {
 			Factory f = manager.getFactoryAt(b);
 			if (f instanceof FurnCraftChestFactory) {

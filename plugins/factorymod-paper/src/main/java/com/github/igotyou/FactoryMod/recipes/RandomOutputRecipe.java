@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RandomOutputRecipe extends InputRecipe {
@@ -62,7 +62,7 @@ public class RandomOutputRecipe extends InputRecipe {
 			}
 		}
 		if (toAdd == null) {
-			FactoryMod.getPlugin().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
+			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
 			return;
 		}
 		if (toRemove.isContainedIn(i)) {
@@ -93,7 +93,7 @@ public class RandomOutputRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = lowestChanceMap.getItemStackRepresentation().get(0);
-		ISUtils.setName(is, name);
+		ItemAPI.setDisplayName(is, name);
 		return is;
 	}
 
@@ -107,7 +107,7 @@ public class RandomOutputRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List <ItemStack> items = lowestChanceMap.getItemStackRepresentation();
 		for (ItemStack is : items) {
-			ISUtils.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
+			ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE + "Randomized output");
 		}
 		return items;
 	}

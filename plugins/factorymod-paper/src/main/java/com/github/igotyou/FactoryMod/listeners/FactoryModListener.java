@@ -6,7 +6,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -15,16 +14,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.Tree;
-
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.model.Reinforcement;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
@@ -49,7 +41,7 @@ public class FactoryModListener implements Listener {
 			if (c != null) {
 				// let creative player interact without breaking it
 				if (e.getPlayer().getGameMode() == GameMode.CREATIVE
-						&& e.getPlayer().getInventory().getItemInMainHand() != null && e.getPlayer().getInventory()
+						&&e.getPlayer().getInventory()
 								.getItemInMainHand().getType() == manager.getFactoryInteractionMaterial()) {
 					e.setCancelled(true);
 					return;

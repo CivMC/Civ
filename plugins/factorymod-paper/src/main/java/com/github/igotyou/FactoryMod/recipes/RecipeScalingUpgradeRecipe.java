@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RecipeScalingUpgradeRecipe extends InputRecipe {
@@ -86,16 +86,16 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = new ItemStack(Material.PAPER);
 		if (toUpgrade == null) {
-			ISUtils.addLore(is, ChatColor.RED + "ERROR ERROR ERROR ERROR");
+			ItemAPI.addLore(is, ChatColor.RED + "ERROR ERROR ERROR ERROR");
 			return is;
 		}
 		if (newRank == 1) {
-			ISUtils.addLore(is, ChatColor.GOLD + "Unlock " + toUpgrade.getName());
+			ItemAPI.addLore(is, ChatColor.GOLD + "Unlock " + toUpgrade.getName());
 		}
 		else {
-			ISUtils.addLore(is, ChatColor.GOLD + "Upgrade " + toUpgrade.getName() + " to rank " + newRank);
+			ItemAPI.addLore(is, ChatColor.GOLD + "Upgrade " + toUpgrade.getName() + " to rank " + newRank);
 		}
-		ISUtils.addLore(is, ChatColor.GOLD + "Up to " + toUpgrade.getModifier().getMaximumMultiplierForRank(newRank)
+		ItemAPI.addLore(is, ChatColor.GOLD + "Up to " + toUpgrade.getModifier().getMaximumMultiplierForRank(newRank)
 				+ " output multiplier");
 		return is;
 	}

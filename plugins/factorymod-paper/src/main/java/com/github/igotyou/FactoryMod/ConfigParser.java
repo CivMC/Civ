@@ -124,7 +124,7 @@ public class ConfigParser {
 
 				@Override
 				public void run() {
-					FactoryMod.getManager().saveFactories();
+					FactoryMod.getInstance().getManager().saveFactories();
 
 				}
 			}.runTaskTimerAsynchronously(plugin, savingIntervall, savingIntervall);
@@ -137,9 +137,9 @@ public class ConfigParser {
 		manager = new FactoryModManager(plugin, factoryInteractionMaterial,
 				citadelEnabled, nameLayerEnabled, redstonePowerOn, redstoneRecipeChange,
 				logInventories, factoryRenames);
-		upgradeEggs = new HashMap<String, IFactoryEgg>();
-		recipeLists = new HashMap<IFactoryEgg, List<String>>();
-		recipeScalingUpgradeMapping = new HashMap<RecipeScalingUpgradeRecipe, String[]>();
+		upgradeEggs = new HashMap<>();
+		recipeLists = new HashMap<>();
+		recipeScalingUpgradeMapping = new HashMap<>();
 		parseFactories(config.getConfigurationSection("factories"));
 		parseRecipes(config.getConfigurationSection("recipes"));
 		manager.setForceInclude(forceRecipes);
@@ -164,9 +164,9 @@ public class ConfigParser {
 	 *            ConfigurationSection containing the recipe configurations
 	 */
 	private void parseRecipes(ConfigurationSection config) {
-		recipes = new HashMap<String, IRecipe>();
-		forceRecipes = new HashSet<String>();
-		List <String> recipeKeys = new LinkedList<String>();
+		recipes = new HashMap<>();
+		forceRecipes = new HashSet<>();
+		List <String> recipeKeys = new LinkedList<>();
 		for (String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
 			if (current == null) {
@@ -183,7 +183,7 @@ public class ConfigParser {
 				boolean foundParent = false;
 				while(!foundParent) {
 					//keep track of already parsed sections, so we dont get stuck forever in cyclic dependencies
-					List <String> children = new LinkedList<String>();
+					List <String> children = new LinkedList<>();
 					children.add(currentIdent);
 					if (current.isString("inherit")) {
 						//parent is defined for this recipe
@@ -597,7 +597,7 @@ public class ConfigParser {
 				break;
 			}
 			manager.addCompactLore(compactedLore);
-			List<Material> excluded = new LinkedList<Material>();
+			List<Material> excluded = new LinkedList<>();
 			if (config.isList("excluded_materials")) {
 				for (String mat : config.getStringList("excluded_materials")) {
 					try {
@@ -730,7 +730,7 @@ public class ConfigParser {
 			break;
 		case "RANDOM":
 			ConfigurationSection outputSect = config.getConfigurationSection("outputs");
-			Map <ItemMap, Double> outputs = new HashMap<ItemMap, Double>();
+			Map <ItemMap, Double> outputs = new HashMap<>();
 			ItemMap displayThis = null;
 			if (outputSect == null) {
 				if (parentRecipe instanceof RandomOutputRecipe) {
@@ -793,7 +793,7 @@ public class ConfigParser {
 				break;
 			}
 			List <String> appliedLore = config.getStringList("appliedLore");
-			if (appliedLore == null || appliedLore.size() == 0) {
+			if (appliedLore == null || appliedLore.isEmpty()) {
 				if (parentRecipe instanceof LoreEnchantRecipe) {
 					appliedLore = ((LoreEnchantRecipe) parentRecipe).getAppliedLore();
 				}
@@ -804,7 +804,7 @@ public class ConfigParser {
 				}
 			}
 			List <String> overwrittenLore = config.getStringList("overwrittenLore");
-			if (overwrittenLore == null || overwrittenLore.size() == 0) {
+			if (overwrittenLore == null || overwrittenLore.isEmpty()) {
 				if (parentRecipe instanceof LoreEnchantRecipe) {
 					overwrittenLore = ((LoreEnchantRecipe) parentRecipe).getOverwrittenLore();
 				}
@@ -878,14 +878,14 @@ public class ConfigParser {
 		for(String key : config.getKeys(false)) {
 			ConfigurationSection current = config.getConfigurationSection(key);
 			List<ItemStack> list = parseItemMapDirectly(current).getItemStackRepresentation();
-			return list.size() > 0 ? list.get(0) : null;
+			return list.isEmpty() ? null : list.get(0);
 		}
 
 		return null;
 	}
 
 	private Map <String,String> parseRenames(ConfigurationSection config) {
-		Map <String,String> renames = new TreeMap<String, String>();
+		Map <String,String> renames = new TreeMap<>();
 		if (config != null) {
 			for(String key : config.getKeys(false)) {
 				String oldName = config.getConfigurationSection(key).getString("oldName");
@@ -903,10 +903,10 @@ public class ConfigParser {
 	}
 
 	public void assignRecipesToFactories() {
-		HashSet <IRecipe> usedRecipes = new HashSet<IRecipe>();
+		HashSet <IRecipe> usedRecipes = new HashSet<>();
 		for (Entry<IFactoryEgg, List<String>> entry : recipeLists.entrySet()) {
 			if (entry.getKey() instanceof FurnCraftChestEgg) {
-				List<IRecipe> recipeList = new LinkedList<IRecipe>();
+				List<IRecipe> recipeList = new LinkedList<>();
 				for (String recipeName : entry.getValue()) {
 					IRecipe rec = recipes.get(recipeName);
 					if (rec instanceof DummyParsingRecipe) {

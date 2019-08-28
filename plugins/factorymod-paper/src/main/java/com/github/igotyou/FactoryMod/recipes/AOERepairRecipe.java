@@ -13,7 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -62,7 +62,7 @@ public class AOERepairRecipe extends InputRecipe {
 		List<ItemStack> bla = imp.getItemStackRepresentation();
 		for (ItemStack item : bla) {
 			item.setAmount(new ItemMap(i).getAmount(essence) - essenceCount);
-			ISUtils.addLore(item, ChatColor.YELLOW + "Will repair "
+			ItemAPI.addLore(item, ChatColor.YELLOW + "Will repair "
 					+ facCounter + " nearby factories total");
 		}
 		return bla;
@@ -70,14 +70,14 @@ public class AOERepairRecipe extends InputRecipe {
 
 	private List<FurnCraftChestFactory> getNearbyFactoriesSortedByDistance(
 			Location loc) {
-		LinkedList<FurnCraftChestFactory> list = new LinkedList<FurnCraftChestFactory>();
-		Map<FurnCraftChestFactory, Double> distances = new HashMap<FurnCraftChestFactory, Double>();
-		for (Factory f : FactoryMod.getManager().getNearbyFactories(loc, range)) {
+		LinkedList<FurnCraftChestFactory> list = new LinkedList<>();
+		Map<FurnCraftChestFactory, Double> distances = new HashMap<>();
+		for (Factory f : FactoryMod.getInstance().getManager().getNearbyFactories(loc, range)) {
 			if (f instanceof FurnCraftChestFactory) {
 				double dist = f.getMultiBlockStructure().getCenter()
 						.distance(loc);
 				distances.put((FurnCraftChestFactory) f, dist);
-				if (list.size() == 0) {
+				if (list.isEmpty()) {
 					list.add((FurnCraftChestFactory) f);
 				} else {
 					for (int j = 0; j < list.size(); j++) {
@@ -107,7 +107,7 @@ public class AOERepairRecipe extends InputRecipe {
 					.getRepairManager();
 			int diff = 100 - rm.getRawHealth();
 			if (diff >= repairPerEssence) {
-				ISUtils.addLore(
+				ItemAPI.addLore(
 						is,
 						ChatColor.LIGHT_PURPLE
 								+ "Will repair "
@@ -126,7 +126,7 @@ public class AOERepairRecipe extends InputRecipe {
 				break;
 			}
 		}
-		List<ItemStack> bla = new LinkedList<ItemStack>();
+		List<ItemStack> bla = new LinkedList<>();
 		bla.add(is);
 		return bla;
 	}

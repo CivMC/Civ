@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -48,7 +48,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		im.removeEnchant(enchant);
 		im.addEnchant(enchant, level, true);
 		is.setItemMeta(im);
-		ISUtils.setName(is, name);
+		ItemAPI.setDisplayName(is, name);
 		return is;
 	}
 
@@ -59,7 +59,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		im.addEnchant(enchant, level, true);
 		is.setItemMeta(im);
 		if (i != null) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -81,7 +81,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = tool.getItemStackRepresentation().get(0);
-		ISUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+		ItemAPI.addLore(toSt, ChatColor.GREEN + "Enough materials for "
 				+ new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;

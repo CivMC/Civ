@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -86,13 +86,13 @@ public class ProductionRecipe extends InputRecipe {
 			double additionalChance = (((double) entry.getValue()) * factor) - currentOut.getAmount(entry.getKey());
 			if (Math.abs(additionalChance) > 0.00000001) {
 				ItemStack is = entry.getKey().clone();
-				ISUtils.addLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
+				ItemAPI.addLore(is, ChatColor.GOLD + decimalFormatting.format(additionalChance) + " chance for additional item");
 				stacks.add(is);
 			}
 		}
 		int possibleRuns = input.getMultiplesContainedIn(i);
 		for (ItemStack is : stacks) {
-			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
+			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns) + " runs");
 		}
 		return stacks;
 	}
@@ -139,7 +139,7 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	public ItemStack getRecipeRepresentation() {
-		ISUtils.setName(this.recipeRepresentation, getName());
+		ItemAPI.setDisplayName(this.recipeRepresentation, getName());
 		return this.recipeRepresentation.clone();
 	}
 

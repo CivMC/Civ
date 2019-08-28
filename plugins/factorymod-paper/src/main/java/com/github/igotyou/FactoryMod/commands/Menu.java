@@ -11,7 +11,6 @@ import com.github.igotyou.FactoryMod.utility.FactoryCommandUtils;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 @CivCommand(id = "fm")
@@ -23,7 +22,7 @@ public class Menu extends StandaloneCommand {
 			sender.sendMessage(ChatColor.MAGIC + "Fuck off console man");
 			return true;
 		}
-		MenuBuilder mb = FactoryMod.getMenuBuilder();
+		MenuBuilder mb = FactoryMod.getInstance().getMenuBuilder();
 		Player p = (Player) sender;
 		if (p.isInsideVehicle()) {
 			p.sendMessage(ChatColor.RED + "You can't use this command in vehicles");

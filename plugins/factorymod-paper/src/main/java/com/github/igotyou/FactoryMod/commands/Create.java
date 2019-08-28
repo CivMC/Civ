@@ -11,7 +11,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -31,7 +30,7 @@ public class Create extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		FactoryModManager manager = FactoryMod.getManager();
+		FactoryModManager manager = FactoryMod.getInstance().getManager();
 		String name = FactoryCommandUtils.getFactoryName(args);
 		IFactoryEgg egg = manager.getEgg(name);
 		if (egg == null) {
@@ -39,7 +38,7 @@ public class Create extends StandaloneCommand {
 			// check for lower/uppercase miss spellings
 			for (Entry<String, IFactoryEgg> entry : manager.getAllEggs()
 					.entrySet()) {
-				if (entry.getKey().toLowerCase().equals(comp)) {
+				if (entry.getKey().equalsIgnoreCase(comp)) {
 					egg = entry.getValue();
 					break;
 				}

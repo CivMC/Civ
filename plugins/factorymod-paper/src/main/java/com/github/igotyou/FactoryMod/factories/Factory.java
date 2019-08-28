@@ -2,12 +2,8 @@ package com.github.igotyou.FactoryMod.factories;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.DirectionalContainer;
-import org.bukkit.material.MaterialData;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
@@ -120,8 +116,8 @@ public abstract class Factory implements Runnable {
 	public abstract void attemptToActivate(Player p, boolean onStartUp);
 
 	public void scheduleUpdate() {
-		threadId = FactoryMod.getPlugin().getServer().getScheduler()
-				.scheduleSyncDelayedTask(FactoryMod.getPlugin(), this, (long) updateTime);
+		threadId = FactoryMod.getInstance().getServer().getScheduler()
+				.scheduleSyncDelayedTask(FactoryMod.getInstance(), this, (long) updateTime);
 	}
 
 	public void turnFurnaceOn(Block f) {
@@ -129,16 +125,8 @@ public abstract class Factory implements Runnable {
 			return;
 		}
 		Furnace furnace = (Furnace) f.getState();
-		ItemStack[] oldContents = furnace.getInventory().getContents();
-		BlockFace facing = ((DirectionalContainer) furnace.getData()).getFacing();
-		furnace.getInventory().clear();
-		furnace = (Furnace) f.getState();
-		MaterialData data = furnace.getData();
-		((DirectionalContainer) data).setFacingDirection(facing);
-		furnace.setData(data);
 		furnace.setBurnTime(Short.MAX_VALUE);
 		furnace.update();
-		furnace.getInventory().setContents(oldContents);
 	}
 
 	public String getLogData() {
@@ -146,8 +134,9 @@ public abstract class Factory implements Runnable {
 	}
 
 	public void turnFurnaceOff(Block f) {
-		// Since we are turning it off that implies its on, that means we should
-		// check if the furnace is burning.
+		if (f.getType() != Material.FURNACE) {
+			return;
+		}
 		Furnace furnace = (Furnace) f.getState();
 		furnace.setBurnTime((short) 0);
 		furnace.update();

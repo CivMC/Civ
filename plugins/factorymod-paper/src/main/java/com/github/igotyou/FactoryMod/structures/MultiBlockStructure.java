@@ -12,7 +12,6 @@ import org.bukkit.block.BlockFace;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
@@ -42,7 +41,7 @@ public abstract class MultiBlockStructure {
 	 *         and of the given material type
 	 */
 	public static List<Block> searchForBlockOnAllSides(Block b, Material m) {
-		LinkedList<Block> result = new LinkedList<Block>();
+		LinkedList<Block> result = new LinkedList<>();
 		for (BlockFace face : allBlockSides) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
@@ -62,7 +61,7 @@ public abstract class MultiBlockStructure {
 	 *         and of the given material type
 	 */
 	public static List<Block> searchForBlockOnSides(Block b, Material m) {
-		LinkedList<Block> result = new LinkedList<Block>();
+		LinkedList<Block> result = new LinkedList<>();
 		for (BlockFace face : northEastWestSouthSides) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
@@ -73,7 +72,7 @@ public abstract class MultiBlockStructure {
 	}
 
 	public static void initializeBlockFaceMap() {
-		dataBlockFaceConversion = new TreeMap<Integer, BlockFace>();
+		dataBlockFaceConversion = new TreeMap<>();
 		dataBlockFaceConversion.put(0, BlockFace.DOWN);
 		dataBlockFaceConversion.put(8, BlockFace.DOWN);
 		dataBlockFaceConversion.put(1, BlockFace.UP);
@@ -122,7 +121,7 @@ public abstract class MultiBlockStructure {
 	public abstract List<Block> getRelevantBlocks();
 
 	public static List<Block> getAdjacentBlocks(Block b) {
-		List<Block> blocks = new LinkedList<Block>();
+		List<Block> blocks = new LinkedList<>();
 		for (BlockFace face : allBlockSides) {
 			blocks.add(b.getRelative(face));
 		}
@@ -140,7 +139,7 @@ public abstract class MultiBlockStructure {
 	 *         group
 	 */
 	public static boolean citadelRedstoneChecks(Block here) {
-		if (!FactoryMod.getManager().isCitadelEnabled()) {
+		if (!FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			return true;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(here);
@@ -162,7 +161,7 @@ public abstract class MultiBlockStructure {
 
 	public boolean blockedByExistingFactory() {
 		for (Block b : getRelevantBlocks()) {
-			if (FactoryMod.getManager().factoryExistsAt(b.getLocation())) {
+			if (FactoryMod.getInstance().getManager().factoryExistsAt(b.getLocation())) {
 				return true;
 			}
 		}

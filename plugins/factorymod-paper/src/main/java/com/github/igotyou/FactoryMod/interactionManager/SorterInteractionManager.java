@@ -10,29 +10,37 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 public class SorterInteractionManager implements IInteractionManager {
+	
 	private Sorter sorter;
 	private BlockFurnaceStructure bfs;
 	private MenuBuilder mb;
+	private FactoryModManager manager;
 
 	public SorterInteractionManager(Sorter sorter) {
+		if (sorter != null) {
 		setSorter(sorter);
-		mb = FactoryMod.getMenuBuilder();
+		}
+		mb = FactoryMod.getInstance().getMenuBuilder();
+		manager = FactoryMod.getInstance().getManager();
 	}
 
 	public SorterInteractionManager() {
-		mb = FactoryMod.getMenuBuilder();
+		this(null);
 	}
 
 	public void setSorter(Sorter sorter) {
@@ -52,38 +60,33 @@ public class SorterInteractionManager implements IInteractionManager {
 	}
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
-		if (FactoryMod.getManager().isCitadelEnabled()) {
+		if (manager.isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
 			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
 				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
-				FactoryMod.sendResponse("FactoryNoPermission", p);
 				return;
 			}
 		}
 		if (b.equals(bfs.getFurnace())) {
 			if (p.getInventory().getItemInMainHand().getType()
-					.equals(FactoryMod.getManager().getFactoryInteractionMaterial())) {
+					.equals(manager.getFactoryInteractionMaterial())) {
 				sorter.attemptToActivate(p, false);
 			}
 		} else { // center
 			if (p.isSneaking() && p.getInventory().getItemInMainHand().getType()
-					.equals(FactoryMod.getManager().getFactoryInteractionMaterial())) {
+					.equals(manager.getFactoryInteractionMaterial())) {
 				mb.showSorterFace(p, sorter, bf);
 				return;
 			}
 			ItemStack is = p.getInventory().getItemInMainHand();
-			if (is == null) {
-				return;
-				// no item in hand
-			}
 			BlockFace side = sorter.getSide(is);
 			if (side == null) {
 				sorter.addAssignment(bf, is);
-				p.sendMessage(ChatColor.GREEN + "Added " + NiceNames.getName(is) + " to " + bf.toString());
+				p.sendMessage(ChatColor.GREEN + "Added " + ItemNames.getItemName(is) + " to " + bf.toString());
 			} else {
 				if (side == bf) {
 					sorter.removeAssignment(is);
-					p.sendMessage(ChatColor.GOLD + "Removed " + NiceNames.getName(is) + " from " + side.toString());
+					p.sendMessage(ChatColor.GOLD + "Removed " + ItemNames.getItemName(is) + " from " + side.toString());
 				} else {
 					p.sendMessage(ChatColor.RED + "This item is already associated with " + side.toString());
 				}
@@ -92,24 +95,21 @@ public class SorterInteractionManager implements IInteractionManager {
 	}
 
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
-		int threshold = FactoryMod.getManager().getRedstonePowerOn();
+		int threshold = manager.getRedstonePowerOn();
 		if (!factoryBlock.getLocation()
 				.equals(((BlockFurnaceStructure) sorter.getMultiBlockStructure()).getFurnace().getLocation())) {
 			return;
 		}
 		if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && sorter.isActive()) {
-			if ((!FactoryMod.getManager().isCitadelEnabled()
+			if ((!manager.isCitadelEnabled()
 					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock()))) {
 				sorter.deactivate();
 			}
 		} else if (e.getOldCurrent() < threshold && e.getNewCurrent() >= threshold && !sorter.isActive()) {
-			if (!FactoryMod.getManager().isCitadelEnabled()
+			if (!manager.isCitadelEnabled()
 					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
 				sorter.attemptToActivate(null, false);
 			}
-		} else {
-			return;
 		}
-
 	}
 }

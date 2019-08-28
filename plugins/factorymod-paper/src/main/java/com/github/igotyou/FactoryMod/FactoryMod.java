@@ -1,51 +1,42 @@
 package com.github.igotyou.FactoryMod;
 
-import org.bukkit.entity.Player;
-
 import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
-import vg.civcraft.mc.civmenu.guides.ResponseManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryMod extends ACivMod {
-	private static FactoryModManager manager;
+	private FactoryModManager manager;
 	private static FactoryMod plugin;
-	private static MenuBuilder mb;
-	private static ResponseManager rm;
+	private MenuBuilder menuBuilder;
 
+	@Override
 	public void onEnable() {
 		super.onEnable();
 		plugin = this;
 		MultiBlockStructure.initializeBlockFaceMap();
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
-		mb = new MenuBuilder(cp.getDefaultMenuFactory());
+		menuBuilder = new MenuBuilder(cp.getDefaultMenuFactory());
 		manager.loadFactories();
 		registerListeners();
-		if (getServer().getPluginManager().isPluginEnabled("CivMenu")) {
-			rm = ResponseManager.getResponseManager(this);
-		}
 		info("Successfully enabled");
 	}
 
+	@Override
 	public void onDisable() {
 		manager.shutDown();
 		plugin.info("Shutting down");
 	}
 
-	public static FactoryModManager getManager() {
+	public FactoryModManager getManager() {
 		return manager;
 	}
 
-	public String getPluginName() {
-		return "FactoryMod";
-	}
-
-	public static FactoryMod getPlugin() {
+	public static FactoryMod getInstance() {
 		return plugin;
 	}
 
@@ -61,16 +52,7 @@ public class FactoryMod extends ACivMod {
 		}
 	}
 
-	public static MenuBuilder getMenuBuilder() {
-		return mb;
-	}
-
-	/**
-	 * Sends a CivMenu response
-	 */
-	public static void sendResponse(String event, Player p) {
-		if (rm != null) {
-			rm.sendMessageForEvent(event, p);
-		}
+	public MenuBuilder getMenuBuilder() {
+		return menuBuilder;
 	}
 }

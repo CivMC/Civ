@@ -124,7 +124,7 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public List<Block> getRelevantBlocks() {
-		LinkedList<Block> result = new LinkedList<Block>();
+		LinkedList<Block> result = new LinkedList<>();
 		result.add(getCraftingTable());
 		result.add(getFurnace());
 		result.add(getChest());
@@ -132,7 +132,7 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	}
 
 	public List<Location> getAllBlocks() {
-		LinkedList<Location> result = new LinkedList<Location>();
+		LinkedList<Location> result = new LinkedList<>();
 		result.add(craftingTable);
 		result.add(furnace);
 		result.add(chest);

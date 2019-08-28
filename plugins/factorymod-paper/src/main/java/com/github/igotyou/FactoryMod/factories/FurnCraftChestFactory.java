@@ -18,12 +18,9 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -32,7 +29,6 @@ import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
 import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import com.github.igotyou.FactoryMod.powerManager.IPowerManager;
-import com.github.igotyou.FactoryMod.recipes.FactoryMaterialReturnRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
@@ -67,16 +63,16 @@ public class FurnCraftChestFactory extends Factory {
 			double citadelBreakReduction) {
 		super(im, rm, ipm, mbs, updateTime, name);
 		this.active = false;
-		this.runCount = new HashMap<IRecipe, Integer>();
-		this.recipeLevel = new HashMap<IRecipe, Integer>();
-		this.recipes = new ArrayList<IRecipe>();
+		this.runCount = new HashMap<>();
+		this.recipeLevel = new HashMap<>();
+		this.recipes = new ArrayList<>();
 		this.citadelBreakReduction = citadelBreakReduction;
 		this.autoSelect = false;
 		for (IRecipe rec : recipes) {
 			addRecipe(rec);
 		}
 		if (pylonFactories == null) {
-			pylonFactories = new HashSet<FurnCraftChestFactory>();
+			pylonFactories = new HashSet<>();
 		}
 		for (IRecipe rec : recipes) {
 			if (rec instanceof PylonRecipe) {
@@ -91,7 +87,7 @@ public class FurnCraftChestFactory extends Factory {
 	 *         should be
 	 */
 	public Inventory getInventory() {
-		if (!(getChest().getType() == Material.CHEST)) {
+		if (getChest().getType() != Material.CHEST) {
 			return null;
 		}
 		Chest chestBlock = (Chest) (getChest().getState());
@@ -103,7 +99,7 @@ public class FurnCraftChestFactory extends Factory {
 	 *         should be
 	 */
 	public FurnaceInventory getFurnaceInventory() {
-		if (!(getFurnace().getType() == Material.FURNACE)) {
+		if (getFurnace().getType() != Material.FURNACE) {
 			return null;
 		}
 		Furnace furnaceBlock = (Furnace) (getFurnace().getState());
@@ -186,7 +182,7 @@ public class FurnCraftChestFactory extends Factory {
 			}
 			return;
 		}
-		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getManager().isCitadelEnabled()) {
+		if (!onStartUp && currentRecipe instanceof Upgraderecipe && FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			// only allow permitted members to upgrade the factory
 			Reinforcement rein = ReinforcementLogic.getReinforcementAt(mbs.getCenter());
 			if (rein != null) {
@@ -527,12 +523,12 @@ public class FurnCraftChestFactory extends Factory {
 		this.pm = new FurnacePowerManager(getFurnace(), fuel, fuelConsumptionIntervall);
 		this.rm = new PercentageHealthRepairManager(maximumHealth, maximumHealth, 0, damageAmountPerDecayIntervall,
 				gracePeriod);
-		if (recipes.size() != 0) {
+		if (!recipes.isEmpty()) {
 			setRecipe(recipes.get(0));
 		} else {
 			currentRecipe = null;
 		}
-		runCount = new HashMap<IRecipe, Integer>();
+		runCount = new HashMap<>();
 		for (IRecipe rec : recipes) {
 			runCount.put(rec, 0);
 		}

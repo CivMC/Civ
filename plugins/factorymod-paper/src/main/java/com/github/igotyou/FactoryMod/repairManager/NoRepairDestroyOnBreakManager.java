@@ -22,10 +22,10 @@ public class NoRepairDestroyOnBreakManager implements IRepairManager {
 
 	public void breakIt() {
 		FactoryMod
-				.getPlugin()
+				.getInstance()
 				.getServer()
 				.getScheduler()
-				.scheduleSyncDelayedTask(FactoryMod.getPlugin(),
+				.scheduleSyncDelayedTask(FactoryMod.getInstance(),
 						new Runnable() {
 
 							@Override
@@ -34,7 +34,7 @@ public class NoRepairDestroyOnBreakManager implements IRepairManager {
 										.relevantBlocksDestroyed()) {
 									LoggingUtils.log(factory.getLogData()
 											+ " removed because blocks were destroyed");
-									FactoryMod.getManager().removeFactory(
+									FactoryMod.getInstance().getManager().removeFactory(
 											factory);
 									PercentageHealthRepairManager
 											.returnStuff(factory);

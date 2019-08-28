@@ -72,8 +72,8 @@ public class FactoryModManager {
 
 		if(nameLayerEnabled) {
 			//register our own permissions
-			List <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
-			List <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+			List <PlayerType> memberAndAbove = new LinkedList<>();
+			List <PlayerType> modAndAbove = new LinkedList<>();
 			memberAndAbove.add(PlayerType.MEMBERS);
 			memberAndAbove.add(PlayerType.MODS);
 			memberAndAbove.add(PlayerType.ADMINS);
@@ -86,16 +86,16 @@ public class FactoryModManager {
 			// TODO: "REFUND_FACTORY", ownerAndAbove
 		}
 
-		factoryCreationRecipes = new HashMap<Class<? extends MultiBlockStructure>, HashMap<ItemMap, IFactoryEgg>>();
-		locations = new HashMap<Location, Factory>();
-		eggs = new HashMap<String, IFactoryEgg>();
-		possibleCenterBlocks = new HashSet<Material>();
-		possibleInteractionBlock = new HashSet<Material>();
-		factories = new HashSet<Factory>();
-		totalSetupCosts = new HashMap<IFactoryEgg, ItemMap>();
-		recipes = new HashMap<String, IRecipe>();
-		compactLore = new HashSet<String>();
-		forceInclude = new HashSet<String>();
+		factoryCreationRecipes = new HashMap<>();
+		locations = new HashMap<>();
+		eggs = new HashMap<>();
+		possibleCenterBlocks = new HashSet<>();
+		possibleInteractionBlock = new HashSet<>();
+		factories = new HashSet<>();
+		totalSetupCosts = new HashMap<>();
+		recipes = new HashMap<>();
+		compactLore = new HashSet<>();
+		forceInclude = new HashSet<>();
 
 		// Normal furnace, craftingtable, chest factories
 		possibleCenterBlocks.add(Material.CRAFTING_TABLE);
@@ -287,18 +287,13 @@ public class FactoryModManager {
 										+ "Successfully created " + f.getName());
 								LoggingUtils.log(f.getLogData()
 										+ " was created by " + p.getName());
-								FactoryMod.sendResponse("FactoryCreation", p);
 							}
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no factory with the given creation materials");
-							FactoryMod.sendResponse(
-									"WrongFactoryCreationItems", p);
 						}
 					}
 					return;
-				} else {
-					FactoryMod.sendResponse("WrongFactoryBlockSetup", p);
 				}
 			}
 			if (b.getType() == Material.DISPENSER) {
@@ -343,21 +338,17 @@ public class FactoryModManager {
 										+ "Successfully created " + f.getName());
 								LoggingUtils.log(f.getLogData()
 										+ " was created by " + p.getName());
-								FactoryMod.sendResponse("PipeCreation", p);
 							}
 
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no pipe with the given creation materials");
-							FactoryMod
-									.sendResponse("WrongPipeCreationItems", p);
 						}
 					}
 					return;
 				} else {
 					p.sendMessage(ChatColor.RED
 							+ "This pipe is not set up the right way");
-					FactoryMod.sendResponse("WrongPipeBlockSetup", p);
 				}
 			}
 			if (b.getType() == Material.DROPPER) {
@@ -391,20 +382,16 @@ public class FactoryModManager {
 										+ "Successfully created " + f.getName());
 								LoggingUtils.log(f.getLogData()
 										+ " was created by " + p.getName());
-								FactoryMod.sendResponse("SorterCreation", p);
 							}
 
 						} else {
 							p.sendMessage(ChatColor.RED
 									+ "There is no sorter with the given creation materials");
-							FactoryMod.sendResponse("WrongSorterCreationItems",
-									p);
 						}
 					}
 				} else {
 					p.sendMessage(ChatColor.RED
 							+ "This sorter is not set up the right way");
-					FactoryMod.sendResponse("WrongSorterBlockSetup", p);
 				}
 			}
 		}
@@ -466,7 +453,7 @@ public class FactoryModManager {
 	 *         away from the given location
 	 */
 	public List<Factory> getNearbyFactories(Location l, int range) {
-		List<Factory> facs = new LinkedList<Factory>();
+		List<Factory> facs = new LinkedList<>();
 		for (Factory f : factories) {
 			if (f.getMultiBlockStructure().getCenter().distance(l) <= range) {
 				facs.add(f);
@@ -500,11 +487,7 @@ public class FactoryModManager {
 	public void addFactoryCreationEgg(Class <? extends MultiBlockStructure> blockStructureClass,
 			ItemMap recipe, IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-				.get(blockStructureClass);
-		if (eggs == null) {
-			eggs = new HashMap<ItemMap, IFactoryEgg>();
-			factoryCreationRecipes.put(blockStructureClass, eggs);
-		}
+				.computeIfAbsent(blockStructureClass, (a) -> new HashMap<ItemMap, IFactoryEgg>());
 		eggs.put(recipe, egg);
 		this.eggs.put(egg.getName(), egg);
 	}
@@ -604,7 +587,7 @@ public class FactoryModManager {
 	 */
 	public HashSet<Factory> getAllFactories() {
 		synchronized (factories) {
-			return new HashSet<Factory>(factories);
+			return new HashSet<>(factories);
 		}
 	}
 
@@ -622,7 +605,6 @@ public class FactoryModManager {
 
 	/**
 	 * Registers a recipe and add it to the recipe tracking.
-	 * @param recipe Recipe to register
 	 */
 	public void registerRecipe(IRecipe recipe) {
 		recipes.put(recipe.getIdentifier(), recipe);

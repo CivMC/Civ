@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
@@ -148,7 +148,7 @@ public class CompactingRecipe extends InputRecipe {
 	 * Applies the lore and set the amount to 1. Dont call this directly if you want to compact items for players
 	 */
 	private void compactStack(ItemStack is) {
-		ISUtils.addLore(is,compactedLore);
+		ItemAPI.addLore(is,compactedLore);
 		is.setAmount(1);
 	}
 
@@ -158,7 +158,7 @@ public class CompactingRecipe extends InputRecipe {
 			case 16: return 16;
 			case 1: return 8;
 			default:
-				FactoryMod.getPlugin().warning("Unknown max stacksize for type " + m.toString());
+				FactoryMod.getInstance().warning("Unknown max stacksize for type " + m.toString());
 		}
 		return 999999; //prevents compacting in error case, because never enough will fit in a chest
 	}

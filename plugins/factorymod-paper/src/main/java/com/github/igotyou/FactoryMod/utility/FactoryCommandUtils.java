@@ -8,20 +8,24 @@ import org.bukkit.command.CommandSender;
 import com.github.igotyou.FactoryMod.FactoryMod;
 
 public class FactoryCommandUtils {
+	
+	private FactoryCommandUtils() {
+	}
+	
 	public static List<String> tabCompleteFactory(CommandSender arg0, String[] arg1) {
-		List<String> fac = new LinkedList<String>();
+		List<String> fac = new LinkedList<>();
 		String entered = getFactoryName(arg1);
 		entered = entered.toLowerCase();
-		for (String name : FactoryMod.getManager().getAllEggs().keySet()) {
+		for (String name : FactoryMod.getInstance().getManager().getAllEggs().keySet()) {
 			if (name.toLowerCase().startsWith(entered)) {
 				fac.add(name);
 			}
 		}
-		if (fac.size() == 0) {
+		if (fac.isEmpty()) {
 			return fac;
 		}
 		if (fac.size() > 1) {
-			List<String> res = new LinkedList<String>();
+			List<String> res = new LinkedList<>();
 			for (String s : fac) {
 				String toAdd = s.split(" ")[arg1.length - 1];
 				if (!res.contains(toAdd)) {

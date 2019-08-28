@@ -11,13 +11,16 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import com.github.igotyou.FactoryMod.FactoryMod;
 
 public class LoggingUtils {
+	
+	private LoggingUtils() {
+	}
 
 	public static void log(String msg) {
-		FactoryMod.getPlugin().getLogger().log(Level.INFO, msg);
+		FactoryMod.getInstance().getLogger().log(Level.INFO, msg);
 	}
 
 	public static void debug(String msg) {
-		FactoryMod.getPlugin().debug(msg);
+		FactoryMod.getInstance().debug(msg);
 	}
 
 	private static String serializeInventory(Inventory i) {
@@ -25,7 +28,7 @@ public class LoggingUtils {
 	}
 
 	public static void logInventory(Block b) {
-		if (FactoryMod.getManager().logInventories()
+		if (FactoryMod.getInstance().getManager().logInventories()
 				&& b.getState() instanceof InventoryHolder) {
 			log("Contents of "
 					+ b.getType().toString()
@@ -38,7 +41,7 @@ public class LoggingUtils {
 	}
 
 	public static void logInventory(Inventory i, String msg) {
-		if (FactoryMod.getManager().logInventories()) {
+		if (FactoryMod.getInstance().getManager().logInventories()) {
 			log(msg + serializeInventory(i));
 		}
 	}

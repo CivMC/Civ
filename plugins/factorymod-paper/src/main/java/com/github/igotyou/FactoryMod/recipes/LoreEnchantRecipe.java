@@ -9,7 +9,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -43,19 +43,19 @@ public class LoreEnchantRecipe extends InputRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		for (String s : appliedLore) {
-			ISUtils.addLore(is, s);
+			ItemAPI.addLore(is, s);
 		}
-		ISUtils.setName(is, name);
+		ItemAPI.setDisplayName(is, name);
 		return is;
 	}
 
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		for (String s : appliedLore) {
-			ISUtils.addLore(is, s);
+			ItemAPI.addLore(is, s);
 		}
 		if (i != null) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -72,16 +72,16 @@ public class LoreEnchantRecipe extends InputRecipe {
 			List<ItemStack> bla = input.getItemStackRepresentation();
 			ItemStack is = tool.getItemStackRepresentation().get(0);
 			for (String s : overwritenLore) {
-				ISUtils.addLore(is, s);
+				ItemAPI.addLore(is, s);
 			}
 			return bla;
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = tool.getItemStackRepresentation().get(0);
 		for (String s : overwritenLore) {
-			ISUtils.addLore(toSt, s);
+			ItemAPI.addLore(toSt, s);
 		}
-		ISUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
+		ItemAPI.addLore(toSt, ChatColor.GREEN + "Enough materials for " + new ItemMap(toSt).getMultiplesContainedIn(i)
 				+ " runs");
 		returns.add(toSt);
 		return returns;

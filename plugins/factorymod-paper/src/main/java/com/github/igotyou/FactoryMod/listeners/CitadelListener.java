@@ -18,7 +18,7 @@ public class CitadelListener implements Listener {
 	private Random rng;
 
 	public CitadelListener() {
-		this.manager = FactoryMod.getManager();
+		this.manager = FactoryMod.getInstance().getManager();
 		this.rng = new Random();
 	}
 

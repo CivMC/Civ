@@ -54,7 +54,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fpm, fccs, updateTime, name, recipes, citadelBreakReduction);
 		fccim.setFactory(fccf);
 		phrm.setFactory(fccf);
-		if (recipes.size() != 0) {
+		if (!recipes.isEmpty()) {
 			fccf.setRecipe(recipes.get(0));
 		}
 		return fccf;
@@ -107,7 +107,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fuel, fuelConsumptionIntervall);
 		FurnCraftChestInteractionManager fccim = new FurnCraftChestInteractionManager();
 		PercentageHealthRepairManager phrm = new PercentageHealthRepairManager(health, maximumHealth, breakTime, healthPerDamagePeriod, breakGracePeriod);
-		List <IRecipe> currRecipes = new ArrayList <IRecipe> ();
+		List <IRecipe> currRecipes = new ArrayList<> ();
 		for(String recName : recipeStrings) {
 			boolean found = false;
 			for(IRecipe exRec : currRecipes) {
@@ -117,9 +117,9 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				}
 			}
 			if (!found) {
-				IRecipe rec = FactoryMod.getManager().getRecipe(recName);
+				IRecipe rec = FactoryMod.getInstance().getManager().getRecipe(recName);
 				if (rec == null) {
-					FactoryMod.getPlugin().warning("Factory at " + blocks.get(0).toString() + " had recipe " + recName + " saved, but it could not be loaded from the config");
+					FactoryMod.getInstance().warning("Factory at " + blocks.get(0).toString() + " had recipe " + recName + " saved, but it could not be loaded from the config");
 				}
 				else {
 					currRecipes.add(rec);
@@ -135,7 +135,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 				fccf.setRecipe(recipe);
 			}
 		}
-		if (fccf.getCurrentRecipe() == null && currRecipes.size() != 0) {
+		if (fccf.getCurrentRecipe() == null && !currRecipes.isEmpty()) {
 			fccf.setRecipe(currRecipes.get(0));
 		}
 		if (productionTimer != 0) {

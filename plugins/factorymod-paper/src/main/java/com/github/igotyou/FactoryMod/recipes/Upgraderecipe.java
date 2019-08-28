@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
@@ -49,7 +49,7 @@ public class Upgraderecipe extends InputRecipe {
 		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		res.setItemMeta(im);
-		ISUtils.setName(res, name);
+		ItemAPI.setDisplayName(res, name);
 		return res;
 	}
 
@@ -72,10 +72,10 @@ public class Upgraderecipe extends InputRecipe {
 		}
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			if (possibleRuns.getAmount(is) != 0) {
-				ISUtils.addLore(is, ChatColor.GREEN
+				ItemAPI.addLore(is, ChatColor.GREEN
 						+ "Enough of this material available to upgrade");
 			} else {
-				ISUtils.addLore(is, ChatColor.RED
+				ItemAPI.addLore(is, ChatColor.RED
 						+ "Not enough of this materials available to upgrade");
 			}
 			result.add(is);
@@ -86,21 +86,21 @@ public class Upgraderecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> res = new LinkedList<ItemStack>();
 		ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
-		ISUtils.setName(cr, egg.getName());
-		ISUtils.setLore(cr, ChatColor.LIGHT_PURPLE
+		ItemAPI.setDisplayName(cr, egg.getName());
+		ItemAPI.setLore(cr, ChatColor.LIGHT_PURPLE
 				+ "Upgrade to get new and better recipes");
 		res.add(cr);
 		ItemStack fur = new ItemStack(Material.FURNACE);
-		ISUtils.setName(fur, egg.getName());
-		ISUtils.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
+		ItemAPI.setDisplayName(fur, egg.getName());
+		ItemAPI.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
 		for (IRecipe rec : ((FurnCraftChestEgg) egg).getRecipes()) {
-			ISUtils.addLore(fur, ChatColor.YELLOW + rec.getName());
+			ItemAPI.addLore(fur, ChatColor.YELLOW + rec.getName());
 		}
 		res.add(fur);
 		ItemStack che = new ItemStack(Material.CHEST);
-		ISUtils.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
+		ItemAPI.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
 				ChatColor.LIGHT_PURPLE + "revert upgrades!");
-		ISUtils.setName(che, egg.getName());
+		ItemAPI.setDisplayName(che, egg.getName());
 		res.add(che);
 		return res;
 	}

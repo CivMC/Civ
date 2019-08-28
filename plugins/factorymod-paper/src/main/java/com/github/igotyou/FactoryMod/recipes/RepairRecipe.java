@@ -7,7 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -31,7 +31,7 @@ public class RepairRecipe extends InputRecipe {
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		ItemStack furn = new ItemStack(Material.FURNACE);
-		ISUtils.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
+		ItemAPI.setLore(furn, "+" + String.valueOf(healthPerRun) + " health");
 		result.add(furn);
 		return result;
 	}
@@ -60,7 +60,7 @@ public class RepairRecipe extends InputRecipe {
 
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.FURNACE);
-		ISUtils.setName(res, getName());
+		ItemAPI.setDisplayName(res, getName());
 		return res;
 	}
 

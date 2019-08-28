@@ -46,7 +46,7 @@ public class FileHandler {
 	private static int saveFileVersion = 2;
 
 	public FileHandler(FactoryModManager manager, Map <String, String> factoryRenames) {
-		plugin = FactoryMod.getPlugin();
+		plugin = FactoryMod.getInstance();
 		this.factoryRenames = factoryRenames;
 		this.manager = manager;
 		saveFile = new File(plugin.getDataFolder().getAbsolutePath()
@@ -106,7 +106,7 @@ public class FileHandler {
 					Pipe p = (Pipe) f;
 					config.set(current + ".type", "PIPE");
 					config.set(current + ".runtime", p.getRunTime());
-					List<String> mats = new LinkedList<String>();
+					List<String> mats = new LinkedList<>();
 					List<Material> materials = p.getAllowedMaterials();
 					if (materials != null) {
 						for (Material m : materials) {
@@ -179,7 +179,7 @@ public class FileHandler {
 			String type = current.getString("type");
 			String name = current.getString("name");
 			int runtime = current.getInt("runtime");
-			List<Location> blocks = new LinkedList<Location>();
+			List<Location> blocks = new LinkedList<>();
 			Set <String> blockKeys = current.getConfigurationSection("blocks").getKeys(false);
 			Collections.sort(new LinkedList <String> (blockKeys));
 			for (String blockKey : blockKeys) {
@@ -196,7 +196,7 @@ public class FileHandler {
 			case "FCC":
 				if (loadedVersion == 1) {
 					//need to sort the locations properly, because they werent previously
-					List <Location> sortedList = new LinkedList<Location>();
+					List <Location> sortedList = new LinkedList<>();
 					int totalX = 0;
 					int totalY = 0;
 					int totalZ = 0;
@@ -261,7 +261,7 @@ public class FileHandler {
 
 				boolean autoSelect = current.getBoolean("autoSelect", false);
 				if (recipes == null) {
-					recipes = new LinkedList<String>();
+					recipes = new LinkedList<>();
 				}
 				FurnCraftChestFactory fac = (FurnCraftChestFactory) egg.revive(blocks, health, selectedRecipe,
 						runtime, breakTime, recipes);
@@ -319,7 +319,7 @@ public class FileHandler {
 						name = replaceName;
 					}
 				}
-				List<Material> mats = new LinkedList<Material>();
+				List<Material> mats = new LinkedList<>();
 				if (current.isSet("materials")) {
 					for (String mat : current.getStringList("materials")) {
 						mats.add(Material.valueOf(mat));
@@ -327,7 +327,7 @@ public class FileHandler {
 				} else {
 					mats = null;
 				}
-				if (mats.size() == 0) {
+				if (mats.isEmpty()) {
 					mats = null;
 				}
 				Factory p = pipeEgg.revive(blocks, mats, runtime);
@@ -335,7 +335,7 @@ public class FileHandler {
 				counter++;
 				break;
 			case "SORTER":
-				Map<BlockFace, ItemMap> assignments = new HashMap<BlockFace, ItemMap>();
+				Map<BlockFace, ItemMap> assignments = new HashMap<>();
 				SorterEgg sorterEgg = (SorterEgg) eggs.get(name);
 				if (sorterEgg == null) {
 					String replaceName = factoryRenames.get(name);

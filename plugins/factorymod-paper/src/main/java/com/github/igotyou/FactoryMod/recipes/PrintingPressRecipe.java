@@ -13,7 +13,7 @@ import java.util.WeakHashMap;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
@@ -31,7 +31,7 @@ public abstract class PrintingPressRecipe extends InputRecipe {
 
 		res = tag.enrichWithNBT(res);
 
-		ISUtils.setName(res, name);
+		ItemAPI.setDisplayName(res, name);
 
 		return res;
 	}

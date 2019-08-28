@@ -25,10 +25,7 @@ public class CompactItemListener implements Listener {
 	public void blockPlaceEvent(BlockPlaceEvent e) {
 		if (isCompacted(e.getItemInHand())) {
 			e.setCancelled(true);
-			Player p = e.getPlayer();
-			if (p != null) {
-				p.sendMessage("You can not place compacted blocks");
-			}
+			e.getPlayer().sendMessage("You can not place compacted blocks");
 		}
 
 	}
@@ -43,7 +40,7 @@ public class CompactItemListener implements Listener {
 			if (isCompacted(is)) {
 				e.setCancelled(true);
 				HumanEntity h = e.getWhoClicked();
-				if (h instanceof Player && h != null) {
+				if (h instanceof Player) {
 					((Player) h)
 							.sendMessage("You can not craft with compacted items");
 				}
@@ -64,7 +61,7 @@ public class CompactItemListener implements Listener {
 			return false;
 		}
 		for(String lore : im.getLore()) {
-			if (FactoryMod.getManager().isCompactLore(lore)) {
+			if (FactoryMod.getInstance().getManager().isCompactLore(lore)) {
 				return true;
 			}
 		}

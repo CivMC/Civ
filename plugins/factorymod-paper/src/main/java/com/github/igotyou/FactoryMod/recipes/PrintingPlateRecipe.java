@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
@@ -55,8 +55,8 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
 				is = addTags(i, serialNumber, is);
 
-				ISUtils.setName(is, itemName);
-				ISUtils.setLore(is,
+				ItemAPI.setDisplayName(is, itemName);
+				ItemAPI.setLore(is,
 						serialNumber,
 						ChatColor.WHITE + bookMeta.getTitle(),
 						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
@@ -125,7 +125,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		int possibleRuns = this.input.getMultiplesContainedIn(i);
 
 		for (ItemStack is : stacks) {
-			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for "
 					+ String.valueOf(possibleRuns) + " runs");
 		}
 

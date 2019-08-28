@@ -10,7 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
@@ -48,7 +48,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		for (RandomEnchant re : enchants) {
 			is.addEnchantment(re.enchant, re.level);
 		}
-		ISUtils.setName(is, name);
+		ItemAPI.setDisplayName(is, name);
 		return is;
 	}
 
@@ -60,7 +60,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = new ItemStack(tool);
-		ISUtils.addLore(toSt, ChatColor.GREEN + "Enough materials for "
+		ItemAPI.addLore(toSt, ChatColor.GREEN + "Enough materials for "
 				+ new ItemMap(toSt).getMultiplesContainedIn(i) + " runs");
 		returns.add(toSt);
 		return returns;
@@ -72,7 +72,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 			is.addEnchantment(re.enchant, re.level);
 		}
 		if (i != null) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.GREEN
 							+ "Enough materials for "
@@ -82,12 +82,12 @@ public class RandomEnchantingRecipe extends InputRecipe {
 									.getMultiplesContainedIn(i))) + " runs");
 		}
 		for (RandomEnchant re : enchants) {
-			ISUtils.addLore(is,
+			ItemAPI.addLore(is,
 					ChatColor.YELLOW + String.valueOf(re.chance * 100)
 							+ " % chance for " + NiceNames.getName(re.enchant)
 							+ " " + String.valueOf(re.level));
 		}
-		ISUtils.addLore(is, ChatColor.LIGHT_PURPLE
+		ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE
 				+ "At least one guaranteed");
 		List<ItemStack> stacks = new LinkedList<ItemStack>();
 		stacks.add(is);

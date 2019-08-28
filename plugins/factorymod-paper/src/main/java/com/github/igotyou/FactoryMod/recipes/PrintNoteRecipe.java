@@ -15,7 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
@@ -122,7 +122,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
-		ISUtils.setName(paper, this.title);
+		ItemAPI.setDisplayName(paper, this.title);
 
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
 		stacks.add(paper);
@@ -135,7 +135,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		int possibleRuns = input.getMultiplesContainedIn(i);
 
 		for (ItemStack is : stacks) {
-			ISUtils.addLore(is, ChatColor.GREEN + "Enough materials for "
+			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for "
 					+ String.valueOf(possibleRuns) + " runs");
 		}
 
@@ -145,7 +145,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.PAPER);
 
-		ISUtils.setName(res, getName());
+		ItemAPI.setDisplayName(res, getName());
 
 		return res;
 	}

@@ -18,12 +18,11 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -50,12 +49,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	@Override
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
-		int threshold = FactoryMod.getManager().getRedstonePowerOn();
+		int threshold = FactoryMod.getInstance().getManager().getRedstonePowerOn();
 		if (!(factoryBlock.getLocation().equals(fccf.getFurnace().getLocation()) && e.getOldCurrent() >= threshold
 				&& e.getNewCurrent() < threshold)) {
 			return;
 		}
-		if (FactoryMod.getManager().isCitadelEnabled()) {
+		if (FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			if (!MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
 				return;
 			}
@@ -71,7 +70,6 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 	public void blockBreak(Player p, Block b) {
 		if (p != null && !fccf.getRepairManager().inDisrepair()) {
 			p.sendMessage(ChatColor.DARK_RED + "You broke the factory, it is in disrepair now");
-			FactoryMod.sendResponse("FactoryBreak", p);
 		}
 		if (fccf.isActive()) {
 			fccf.deactivate();
@@ -81,17 +79,16 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	@Override
 	public void leftClick(Player p, Block b, BlockFace bf) {
-		if (p.getInventory().getItemInMainHand().getType() != FactoryMod.getManager().getFactoryInteractionMaterial()) {
+		if (p.getInventory().getItemInMainHand().getType() != FactoryMod.getInstance().getManager().getFactoryInteractionMaterial()) {
 			return;
 		}
-		if (FactoryMod.getManager().isCitadelEnabled()) {
+		if (FactoryMod.getInstance().getManager().isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
 			if (rein != null) {
 				Group g = rein.getGroup();
 				if (!NameAPI.getGroupManager().hasAccess(g.getName(), p.getUniqueId(),
 						PermissionType.getPermission("USE_FACTORY"))) {
 					p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
-					FactoryMod.sendResponse("FactoryNoPermission", p);
 					return;
 				}
 			}
@@ -203,13 +200,13 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				InputRecipe recipe = (InputRecipe) (rec);
 				ItemStack recStack = recipe.getRecipeRepresentation();
 				int runcount = fccf.getRunCount(recipe);
-				ISUtils.addLore(recStack, ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+				ItemAPI.addLore(recStack, ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
 				if (recipe instanceof ProductionRecipe) {
 					ProductionRecipe prod = (ProductionRecipe) recipe;
 					if (prod.getModifier() != null) {
-						ISUtils.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
-								+ String.valueOf(fccf.getRecipeLevel(recipe)) + " ★");
-						ISUtils.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
+						ItemAPI.addLore(recStack, ChatColor.BOLD + "   " + ChatColor.GOLD
+								+ fccf.getRecipeLevel(recipe) + " ★");
+						ItemAPI.addLore(recStack, ChatColor.GREEN + "Current output multiplier: " + decimalFormatting
 								.format(prod.getModifier().getFactor(fccf.getRecipeLevel(recipe), runcount)));
 					}
 				}
@@ -222,7 +219,6 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 						} else {
 							fccf.setRecipe(recipes.get(this));
 							p.sendMessage(ChatColor.GREEN + "Switched recipe to " + recipes.get(this).getName());
-							FactoryMod.sendResponse("RecipeSwitch", p);
 						}
 
 					}
@@ -231,8 +227,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				ci.addSlot(c);
 			}
 			ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
-			ISUtils.setName(autoSelectStack, "Toggle auto select");
-			ISUtils.addLore(autoSelectStack,
+			ItemAPI.setDisplayName(autoSelectStack, "Toggle auto select");
+			ItemAPI.addLore(autoSelectStack,
 					ChatColor.GOLD + "Auto select will make the factory automatically select any "
 							+ "recipe it can run whenever you activate it.",
 					ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
@@ -247,12 +243,12 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			};
 			ci.setSlot(autoClick, (rows * 9) - 2);
 			ItemStack menuStack = new ItemStack(Material.PAINTING);
-			ISUtils.setName(menuStack, "Open menu");
-			ISUtils.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
+			ItemAPI.setDisplayName(menuStack, "Open menu");
+			ItemAPI.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
 			Clickable menuC = new Clickable(menuStack) {
 				@Override
 				public void clicked(Player arg0) {
-					FactoryMod.getMenuBuilder().openFactoryBrowser(arg0, fccf.getName());
+					FactoryMod.getInstance().getMenuBuilder().openFactoryBrowser(arg0, fccf.getName());
 				}
 			};
 			ci.setSlot(menuC, (rows * 9) - 1);
@@ -264,10 +260,8 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			if (fccf.isActive()) {
 				fccf.deactivate();
 				p.sendMessage(ChatColor.RED + "Deactivated " + fccf.getName());
-				FactoryMod.sendResponse("FactoryActivation", p);
 			} else {
 				fccf.attemptToActivate(p, false);
-				FactoryMod.sendResponse("FactoryDeactivation", p);
 			}
 		}
 	}

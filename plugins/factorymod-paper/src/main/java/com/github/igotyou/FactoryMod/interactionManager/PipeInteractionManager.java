@@ -10,12 +10,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -31,8 +27,8 @@ public class PipeInteractionManager implements IInteractionManager {
 	private FactoryModManager manager;
 
 	public PipeInteractionManager() {
-		this.manager = FactoryMod.getManager();
-		this.mb = FactoryMod.getMenuBuilder();
+		this.manager = FactoryMod.getInstance().getManager();
+		this.mb = FactoryMod.getInstance().getMenuBuilder();
 	}
 
 	public void setPipe(Pipe pipe) {
@@ -45,12 +41,10 @@ public class PipeInteractionManager implements IInteractionManager {
 
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		ItemStack hand = p.getInventory().getItemInMainHand();
-		if (FactoryMod.getManager().isCitadelEnabled()) {
+		if (manager.isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
 			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
-				Group g = rein.getGroup();
 				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
-				FactoryMod.sendResponse("FactoryNoPermission", p);
 				return;
 			}
 		}
@@ -83,23 +77,21 @@ public class PipeInteractionManager implements IInteractionManager {
 	}
 
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
-		int threshold = FactoryMod.getManager().getRedstonePowerOn();
+		int threshold = manager.getRedstonePowerOn();
 		if (!factoryBlock.getLocation()
 				.equals(((PipeStructure) pipe.getMultiBlockStructure()).getFurnace().getLocation())) {
 			return;
 		}
 		if (e.getOldCurrent() >= threshold && e.getNewCurrent() < threshold && pipe.isActive()) {
-			if ((!FactoryMod.getManager().isCitadelEnabled()
+			if ((!manager.isCitadelEnabled()
 					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock()))) {
 				pipe.deactivate();
 			}
 		} else if (e.getOldCurrent() < threshold && e.getNewCurrent() >= threshold && !pipe.isActive()) {
-			if (!FactoryMod.getManager().isCitadelEnabled()
+			if (!manager.isCitadelEnabled()
 					|| MultiBlockStructure.citadelRedstoneChecks(e.getBlock())) {
 				pipe.attemptToActivate(null, false);
 			}
-		} else {
-			return;
 		}
 	}
 

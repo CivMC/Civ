@@ -8,7 +8,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -75,7 +75,7 @@ public class DecompactingRecipe extends InputRecipe {
 		List<ItemStack> result = new LinkedList<ItemStack>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
-			ISUtils.addLore(is, compactedLore);
+			ItemAPI.addLore(is, compactedLore);
 			is.setAmount(1);
 			result.add(is);
 			return result;

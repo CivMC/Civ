@@ -84,7 +84,7 @@ public class PipeStructure extends MultiBlockStructure {
 		this.start = blocks.get(0);
 		this.furnace = blocks.get(1);
 		this.end = blocks.get(blocks.size() - 1);
-		List<Location> glass = new LinkedList<Location>();
+		List<Location> glass = new LinkedList<>();
 		for (int i = 2; i < blocks.size()-1;i++) {
 			glass.add(blocks.get(i));
 		}
@@ -103,7 +103,7 @@ public class PipeStructure extends MultiBlockStructure {
 	}
 
 	public List<Location> getAllBlocks() {
-		List<Location> res = new LinkedList<Location>();
+		List<Location> res = new LinkedList<>();
 		res.add(start);
 		res.add(furnace);
 		res.addAll(glassPipe);
@@ -112,7 +112,7 @@ public class PipeStructure extends MultiBlockStructure {
 	}
 
 	public List<Block> getRelevantBlocks() {
-		List<Block> res = new LinkedList<Block>();
+		List<Block> res = new LinkedList<>();
 		res.add(start.getBlock());
 		res.add(furnace.getBlock());
 		return res;
