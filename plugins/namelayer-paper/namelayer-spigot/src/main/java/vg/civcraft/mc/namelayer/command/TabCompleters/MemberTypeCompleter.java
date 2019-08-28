@@ -6,6 +6,8 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import java.util.ArrayList;
 import java.util.List;
 
+import vg.civcraft.mc.namelayer.GroupManager;
+
 /**
  * Created by isaac on 2/2/2015.
  *
@@ -15,14 +17,14 @@ public class MemberTypeCompleter {
     public static List<String> complete(String lastArg) {
         GroupManager.PlayerType[] types = GroupManager.PlayerType.values();
         List<String> typeStrings = new ArrayList<>(types.length);
-		for (GroupManager.PlayerType type : types){
-			typeStrings.add(type.toString());
-		}
+        for (GroupManager.PlayerType type : types){
+          typeStrings.add(type.toString());
+        }
 
-		if (lastArg == null) {
-			return typeStrings;
-		}
+        if (lastArg == null) {
+          return typeStrings;
+        }
 
-		return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
+		    return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
     }
 }

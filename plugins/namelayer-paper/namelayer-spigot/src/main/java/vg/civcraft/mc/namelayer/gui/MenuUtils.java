@@ -7,7 +7,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 public class MenuUtils {
 	public static ItemStack toggleButton(boolean initState, String name, boolean canModify) {
@@ -19,18 +19,18 @@ public class MenuUtils {
 		}
 		if (initState) {
 			if (canModify) {
-				ISUtils.addLore(is, ChatColor.GOLD + "Currently turned on", ChatColor.AQUA + "Click to turn off");
+				ItemAPI.addLore(is, ChatColor.GOLD + "Currently turned on", ChatColor.AQUA + "Click to turn off");
 			}
 		}
 		else {
 			if  (canModify) {
-				ISUtils.addLore(is, ChatColor.GOLD + "Currently turned off", ChatColor.AQUA + "Click to turn on");
+				ItemAPI.addLore(is, ChatColor.GOLD + "Currently turned off", ChatColor.AQUA + "Click to turn on");
 			}
 		}
 		if (!canModify) {
-			ISUtils.addLore(is, ChatColor.RED + "You don't have permission to", ChatColor.RED + "modify this setting");
+			ItemAPI.addLore(is, ChatColor.RED + "You don't have permission to", ChatColor.RED + "modify this setting");
 		}
-		ISUtils.setName(is, name);
+		ItemAPI.setDisplayName(is, name);
 		return is;
 	}
 	

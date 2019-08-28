@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;

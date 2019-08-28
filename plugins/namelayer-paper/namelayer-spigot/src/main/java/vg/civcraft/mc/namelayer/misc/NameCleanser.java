@@ -26,7 +26,7 @@ public class NameCleanser {
 		try {
 			List<String> badWords = config.getStringList("bad_words");
 			ConfigurationSection opts = config.getConfigurationSection("opts");
-			List<List<Character>> options = new ArrayList<List<Character>>();
+			List<List<Character>> options = new ArrayList<>();
 			for(String key : opts.getKeys(false)) {
 				options.add(opts.getCharacterList(key));
 			}

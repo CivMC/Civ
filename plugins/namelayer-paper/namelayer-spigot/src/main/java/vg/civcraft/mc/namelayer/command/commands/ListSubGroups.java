@@ -3,7 +3,6 @@ package vg.civcraft.mc.namelayer.command.commands;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,6 @@ import com.google.common.collect.Sets;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;

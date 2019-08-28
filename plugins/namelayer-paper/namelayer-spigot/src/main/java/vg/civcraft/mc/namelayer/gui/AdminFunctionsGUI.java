@@ -13,11 +13,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import org.bukkit.util.StringUtil;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
@@ -37,31 +37,17 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ClickableInventory ci = new ClickableInventory(27, g.getName());
 		// linking
 		ItemStack linkStack = new ItemStack(Material.GOLD_INGOT);
-		ISUtils.setName(linkStack, ChatColor.GOLD + "Link group");
+		ItemAPI.setDisplayName(linkStack, ChatColor.GOLD + "Link group");
 		Clickable linkClick;
-		//Linking is currently disabled
-//		if (gm.hasAccess(g, p.getUniqueId(),
-//				PermissionType.getPermission("LINKING"))) {
-//			linkClick = new Clickable(linkStack) {
-//				@Override
-//				public void clicked(Player p) {
-//					showLinkingMenu();
-//				}
-//			};
-//		} else {
-//			ISUtils.addLore(linkStack, ChatColor.RED
-//					+ "You don't have permission to do this");
-//			linkClick = new DecorationStack(linkStack);
-//		}
 
-		ISUtils.addLore(linkStack, ChatColor.RED
+		ItemAPI.addLore(linkStack, ChatColor.RED
 									+ "Sorry, group linking is not a currently supported feature.");
 							linkClick = new DecorationStack(linkStack);
 
 		ci.setSlot(linkClick, 10);
 		// merging
 		ItemStack mergeStack = new ItemStack(Material.SPONGE);
-		ISUtils.setName(mergeStack, ChatColor.GOLD + "Merge group");
+		ItemAPI.setDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
 		Clickable mergeClick;
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MERGE"))) {
@@ -72,14 +58,14 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(mergeStack, ChatColor.RED
+			ItemAPI.addLore(mergeStack, ChatColor.RED
 					+ "You don't have permission to do this");
 			mergeClick = new DecorationStack(mergeStack);
 		}
 		ci.setSlot(mergeClick, 12);
 		// transferring group
 		ItemStack transferStack = new ItemStack(Material.PACKED_ICE);
-		ISUtils.setName(transferStack, ChatColor.GOLD
+		ItemAPI.setDisplayName(transferStack, ChatColor.GOLD
 				+ "Transfer group to new primary owner");
 		Clickable transferClick;
 		if (g.isOwner(p.getUniqueId())) {
@@ -90,14 +76,14 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(transferStack, ChatColor.RED
+			ItemAPI.addLore(transferStack, ChatColor.RED
 					+ "You don't have permission to do this");
 			transferClick = new DecorationStack(transferStack);
 		}
 		ci.setSlot(transferClick, 14);
 		// deleting group
 		ItemStack deletionStack = new ItemStack(Material.BARRIER);
-		ISUtils.setName(deletionStack, ChatColor.GOLD + "Delete group");
+		ItemAPI.setDisplayName(deletionStack, ChatColor.GOLD + "Delete group");
 		Clickable deletionClick;
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("DELETE"))) {
@@ -108,7 +94,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(deletionStack, ChatColor.RED
+			ItemAPI.addLore(deletionStack, ChatColor.RED
 					+ "You don't have permission to do this");
 			deletionClick = new DecorationStack(deletionStack);
 		}
@@ -116,7 +102,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
 		// back button
 		ItemStack backToOverview = goBackStack(); 
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
+		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -176,17 +162,17 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 				ClickableInventory confirmInv = new ClickableInventory(27,
 						g.getName());
 				ItemStack info = new ItemStack(Material.PAPER);
-				ISUtils.setName(info, ChatColor.GOLD + "Transfer group to "
+				ItemAPI.setDisplayName(info, ChatColor.GOLD + "Transfer group to "
 						+ playerName);
-				ISUtils.addLore(info, ChatColor.RED
+				ItemAPI.addLore(info, ChatColor.RED
 						+ "Are you sure that you want to", ChatColor.RED
 						+ "transfer this group? You can not undo this!");
 				ItemStack yes = yesStack();
-				ISUtils.setName(yes,
-						ChatColor.GOLD + "Yes, transfer	 " + g.getName()
+				ItemAPI.setDisplayName(yes,
+						ChatColor.GOLD + "Yes, transfer " + g.getName()
 								+ " to " + playerName);
 				ItemStack no = noStack();
-				ISUtils.setName(no,
+				ItemAPI.setDisplayName(no,
 						ChatColor.GOLD + "No, don't transfer " + g.getName());
 				confirmInv.setSlot(new Clickable(yes) {
 
@@ -224,14 +210,14 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 	private void showDeletionMenu() {
 		ClickableInventory confirmInv = new ClickableInventory(27, g.getName());
 		ItemStack info = new ItemStack(Material.PAPER);
-		ISUtils.setName(info, ChatColor.GOLD + "Delete group");
-		ISUtils.addLore(info, ChatColor.RED + "Are you sure that you want to",
+		ItemAPI.setDisplayName(info, ChatColor.GOLD + "Delete group");
+		ItemAPI.addLore(info, ChatColor.RED + "Are you sure that you want to",
 				ChatColor.RED + "delete this group? You can not undo this!");
 		
 		ItemStack yes = yesStack();
-		ISUtils.setName(yes, ChatColor.GOLD + "Yes, delete " + g.getName());
+		ItemAPI.setDisplayName(yes, ChatColor.GOLD + "Yes, delete " + g.getName());
 		ItemStack no = noStack();
-		ISUtils.setName(no, ChatColor.GOLD + "No, keep " + g.getName());
+		ItemAPI.setDisplayName(no, ChatColor.GOLD + "No, keep " + g.getName());
 		confirmInv.setSlot(new Clickable(yes) {
 
 			@Override

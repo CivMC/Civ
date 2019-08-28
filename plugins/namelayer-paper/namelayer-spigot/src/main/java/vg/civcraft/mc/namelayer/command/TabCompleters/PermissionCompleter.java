@@ -6,6 +6,8 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 import java.util.ArrayList;
 import java.util.List;
 
+import vg.civcraft.mc.namelayer.permission.PermissionType;
+
 /**
  * Created by isaac on 2/2/2015.
  *
@@ -20,9 +22,9 @@ public class PermissionCompleter {
         }
 
         if (lastArg == null) {
-        	return typeStrings;
-		} else {
-        	return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
-		}
+          	return typeStrings;
+        } else {
+            return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
+        }
     }
 }
