@@ -59,9 +59,9 @@ public class MenuSection extends MenuItem {
 			clickables.add(item.getMenuRepresentation(player));
 		}
 		MultiPageView pageView = new MultiPageView(player, clickables, getName(), true);
-		ItemStack parentItem = new ItemStack(Material.ARROW);
-		ItemAPI.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
 		if (parent != null) {
+			ItemStack parentItem = new ItemStack(Material.ARROW);
+			ItemAPI.setDisplayName(parentItem, ChatColor.AQUA + "Go back to " + parent.getName());
 			pageView.setMenuSlot(new Clickable(parentItem) {
 
 				@Override

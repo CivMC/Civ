@@ -167,6 +167,7 @@ public class ChunkCoord {
 				chunk.setChunkCoord(this);
 				chunk.setPluginID(generator.getKey());
 				chunk.populate();
+				addChunkMeta(chunk);
 			}
 			this.notifyAll();
 			isFullyLoaded = true;

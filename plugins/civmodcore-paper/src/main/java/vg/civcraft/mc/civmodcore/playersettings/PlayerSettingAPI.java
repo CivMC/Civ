@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map.Entry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
@@ -98,10 +100,13 @@ public class PlayerSettingAPI {
 				folder.mkdirs();
 			}
 			File file = new File(folder, fileName);
-			if (!file.isFile()) {
-				return;
+			YamlConfiguration config;
+			if (file.isFile()) {
+				config = YamlConfiguration.loadConfiguration(file);
 			}
-			YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+			else {
+				config = new YamlConfiguration();
+			}
 			for (PlayerSetting<?> setting : pluginEntry.getValue()) {
 				ConfigurationSection section;
 				if (config.isConfigurationSection(setting.getIdentifier())) {
@@ -112,6 +117,11 @@ public class PlayerSettingAPI {
 				for (Entry<String, String> entry : setting.dumpAllSerialized().entrySet()) {
 					section.set(entry.getKey(), entry.getValue());
 				}
+			}
+			try {
+				config.save(file);
+			} catch (IOException e) {
+				CivModCorePlugin.getInstance().severe("Failed to save settings", e);
 			}
 		}
 	}

@@ -33,6 +33,7 @@ public abstract class PlayerSetting<T> {
 	public PlayerSetting(JavaPlugin owningPlugin, T defaultValue, String niceName, String identifier, ItemStack gui,
 			String description) {
 		values = new TreeMap<>();
+		this.defaultValue = defaultValue;
 		this.owningPlugin = owningPlugin;
 		this.niceName = niceName;
 		this.identifier = identifier;
@@ -55,7 +56,7 @@ public abstract class PlayerSetting<T> {
 	protected abstract T deserialize(String serial);
 
 	Map<String, String> dumpAllSerialized() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		for (Entry<UUID, T> entry : values.entrySet()) {
 			result.put(entry.getKey().toString(), serialize(entry.getValue()));
 		}
@@ -180,7 +181,7 @@ public abstract class PlayerSetting<T> {
 	 */
 	public void registerListener(SettingChangeListener<T> listener) {
 		if (this.listeners == null) {
-			this.listeners = new LinkedList<SettingChangeListener<T>>();
+			this.listeners = new LinkedList<>();
 		}
 		this.listeners.add(listener);
 	}

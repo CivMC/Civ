@@ -54,7 +54,6 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	public D get(Location location) {
 		T chunk = super.getChunkMeta(location);
 		if (chunk == null) {
-			System.out.println("No chunk");
 			return null;
 		}
 		validateY(location.getBlockY());
@@ -77,7 +76,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		}
 		Location loc = data.getLocation();
 		validateY(loc.getBlockY());
-		T chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getBlockX() / 16, loc.getBlockZ() / 16);
+		T chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
 		chunk.put(loc, data);
 	}
 

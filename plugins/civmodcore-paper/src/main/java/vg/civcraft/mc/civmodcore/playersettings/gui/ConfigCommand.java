@@ -26,5 +26,10 @@ public class ConfigCommand extends StandaloneCommand {
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new LinkedList<>();
 	}
+	
+	@Override
+	public String getIdentifier() {
+		return "config";
+	}
 
 }

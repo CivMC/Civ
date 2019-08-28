@@ -66,7 +66,6 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	@SuppressWarnings("unchecked")
 	protected D get(int x, int y, int z) {
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, false);
-		System.out.println("Get " + x + " " + y + " "+  z);
 		if (l4ZSection == null) {
 			return null;
 		}
@@ -215,7 +214,6 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (isNew) {
 			setCacheState(CacheState.MODIFIED);
 		}
-		System.out.println("Put " + x + " " + y + " "+  z);
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
 		blockData.setOwningCache(this);
 		l4ZSection[z] = blockData;
@@ -255,14 +253,14 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 			throw new IllegalArgumentException("Can not remove null from the cache");
 		}
 		Location loc = blockData.getLocation();
-		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(loc.getBlockX(), loc.getBlockY(), false);
+		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(loc.getChunk().getX(), loc.getBlockY(), false);
 		if (l4ZSection == null) {
 			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
 		}
 		if (l4ZSection[loc.getBlockZ()] != blockData) {
 			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
 		}
-		l4ZSection[loc.getBlockZ()] = null;
+		l4ZSection[loc.getChunk().getZ()] = null;
 		setCacheState(CacheState.MODIFIED);
 	}
 

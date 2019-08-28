@@ -37,7 +37,7 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		PlayerSettingAPI.saveAll();
+		
 	}
 
 	protected void registerListener(Listener listener) {
