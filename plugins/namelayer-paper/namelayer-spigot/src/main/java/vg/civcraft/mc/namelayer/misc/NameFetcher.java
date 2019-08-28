@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -34,10 +35,10 @@ public class NameFetcher implements Callable<Map<UUID, String>> {
             if (name == null) {
                 continue;
             }
-            String cause = response.get("cause").getAsString();
-            String errorMessage = response.get("errorMessage").getAsString();
-            if (cause != null && cause.length() > 0) {
-                throw new IllegalStateException(errorMessage);
+            JsonElement cause = response.get("cause");
+            JsonElement errorMessage = response.get("errorMessage");
+            if (cause != null && cause.toString().length() > 0) {
+                throw new IllegalStateException(errorMessage.getAsString());
             }
             uuidStringMap.put(uuid, name);
         }
