@@ -1,7 +1,6 @@
 package vg.civcraft.mc.namelayer.command.commands;
 
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,9 +50,7 @@ public class UpdateName extends PlayerCommandMiddle {
 					NameLayerPlugin.getInstance(), new Runnable() {
 						@Override
 						public void run() {
-							List<UUID> uuids = new LinkedList<UUID>();
-							uuids.add(uuid);
-							NameFetcher fetcher = new NameFetcher(uuids);
+							NameFetcher fetcher = new NameFetcher(Collections.singletonList(uuid));
 							Map<UUID, String> fetchedNames = null;
 							try {
 								fetchedNames = fetcher.call();
@@ -129,9 +126,7 @@ public class UpdateName extends PlayerCommandMiddle {
 			return null;
 		}
 		if (newNames.get(((Player) sender).getUniqueId()) != null) {
-			List<String> conf = new LinkedList<String>();
-			conf.add("CONFIRM");
-			return conf;
+			return Collections.singletonList("CONFIRM");
 		}
 		return null;
 	}

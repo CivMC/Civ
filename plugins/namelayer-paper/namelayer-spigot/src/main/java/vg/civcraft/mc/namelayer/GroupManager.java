@@ -1,12 +1,9 @@
 package vg.civcraft.mc.namelayer;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -32,8 +29,8 @@ public class GroupManager{
 	private static GroupManagerDao groupManagerDao;
 	private PermissionHandler permhandle;
 	
-	private static Map<String, Group> groupsByName = new ConcurrentHashMap<String, Group>();
-	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<Integer, Group>();
+	private static Map<String, Group> groupsByName = new ConcurrentHashMap<>();
+	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<>();
 	
 	public GroupManager(){
 		groupManagerDao = NameLayerPlugin.getGroupManagerDao();
@@ -42,7 +39,7 @@ public class GroupManager{
 	
 	/**
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
-	 * @param The group to create to db.
+	 * @param group the group to create to db.
 	 */
 	public int createGroup(Group group){
 		return createGroup(group,true);
@@ -432,7 +429,7 @@ public class GroupManager{
 		if (p != null && (p.isOp() || p.hasPermission("namelayer.admin"))) {
 			return true;
 		}
-		if (group == null || player == null || perm == null) {
+		if (group == null || perm == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "hasAccess failed, caller passed in null", new Exception());
 			return false;
 		}
@@ -443,26 +440,25 @@ public class GroupManager{
 				return false;
 			}
 		}
-		GroupPermission perms = getPermissionforGroup(group);
-		for(PlayerType rank : getRecursivePlayerTypes(group, player)) {
-			if (perms.hasPermission(rank, perm)) {
-				//player has right rank in the group itself or at least one super group
+		return hasPlayerInheritsPerms(group, player, perm);
+	}
+
+	/**
+	 * Checks if a player has a permission in a group or one of its parent groups
+	 * @param group the group, and its parents etc to check
+	 * @param player the player
+	 * @param perm the permission to check
+	 * @return if the player has the specified permission in a group or one of its parents
+	 */
+	private boolean hasPlayerInheritsPerms(Group group, UUID player, PermissionType perm) {
+		while (group != null) {
+			PlayerType type = group.getPlayerType(player);
+			if (type != null && getPermissionforGroup(group).hasPermission(type, perm)) {
 				return true;
 			}
-		}		
+			group = group.getSuperGroup();
+		}
 		return false;
-	}
-	
-	private List<PlayerType> getRecursivePlayerTypes(Group group, UUID player) {
-		List<PlayerType> perms = new LinkedList<PlayerType>();
-		PlayerType type = group.getPlayerType(player);
-		if (type != null) {
-			perms.add(type);
-		}
-		if (group.hasSuperGroup()) {
-			perms.addAll(getRecursivePlayerTypes(group.getSuperGroup(), player));
-		}
-		return perms;
 	}
 			
 	// == PERMISSION HANDLING ============================================================= //
@@ -478,7 +474,7 @@ public class GroupManager{
 	public List<String> getAllGroupNames(UUID uuid){
 		if (uuid == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "getAllGroupNames failed, caller passed in null", new Exception());
-			return new ArrayList<String>();
+			return new ArrayList<>();
 		}
 		return groupManagerDao.getGroupNames(uuid);
 	}
@@ -491,11 +487,7 @@ public class GroupManager{
 		Map <PlayerType, List <PermissionType>> defaultPermMapping = new HashMap<GroupManager.PlayerType, List<PermissionType>>();
 		for(PermissionType perm : PermissionType.getAllPermissions()) {
 			for(PlayerType type : perm.getDefaultPermLevels()) {
-				List <PermissionType> perms = defaultPermMapping.get(type);
-				if (perms == null) {
-					perms = new LinkedList<PermissionType>();
-					defaultPermMapping.put(type, perms);
-				}
+				List<PermissionType> perms = defaultPermMapping.computeIfAbsent(type, k -> new ArrayList<>());
 				perms.add(perm);
 			}
 		}

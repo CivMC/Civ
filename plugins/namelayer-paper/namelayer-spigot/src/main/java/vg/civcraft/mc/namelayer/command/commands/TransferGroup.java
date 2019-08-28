@@ -31,7 +31,7 @@ public class TransferGroup extends PlayerCommandMiddle{
 			return true;
 		}
 		Player p = (Player) sender;
-		Group g = gm.getGroup(args[0]);
+		Group g = GroupManager.getGroup(args[0]);
 		if (groupIsNull(sender, args[0], g)) {
 			return true;
 		}

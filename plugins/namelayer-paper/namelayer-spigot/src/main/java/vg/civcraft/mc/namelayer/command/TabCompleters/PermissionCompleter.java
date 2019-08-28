@@ -1,8 +1,9 @@
 package vg.civcraft.mc.namelayer.command.TabCompleters;
 
+import org.bukkit.util.StringUtil;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,25 +12,17 @@ import java.util.List;
  * Used by tab completers to get a list of user types
  */
 public class PermissionCompleter {
-
-
     public static List<String> complete(String lastArg) {
-        List<String> type_strings = new LinkedList<>();
-        List<String> result = new LinkedList<>();
+        List<String> typeStrings = new ArrayList<>();
 
-        for (PermissionType type: PermissionType.getAllPermissions()){
-            type_strings.add(type.getName());
+        for (PermissionType type : PermissionType.getAllPermissions()) {
+            typeStrings.add(type.getName());
         }
 
-        if (lastArg != null) {
-            for(String type: type_strings){
-                if (type.toLowerCase().startsWith(lastArg.toLowerCase()))
-                    result.add(type);
-            }
-        } else {
-            result = type_strings;
-        }
-
-        return result;
+        if (lastArg == null) {
+        	return typeStrings;
+		} else {
+        	return StringUtil.copyPartialMatches(lastArg, typeStrings, new ArrayList<>());
+		}
     }
 }
