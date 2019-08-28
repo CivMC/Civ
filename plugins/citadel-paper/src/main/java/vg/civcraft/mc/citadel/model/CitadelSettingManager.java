@@ -32,7 +32,11 @@ public class CitadelSettingManager {
 	public CitadelSettingManager() {
 		initSettings();
 	}
-
+	
+	public BooleanSetting getBypass() {
+		return byPass;
+	}
+	
 	void initSettings() {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Citadel",
 				"Citadel and reinforcement related settings");
@@ -62,7 +66,7 @@ public class CitadelSettingManager {
 
 		ctiEnemy = new CommandReplySetting(Citadel.getInstance(),
 				ChatColor.RED + "Reinforced at %%health_color%%%%perc_health%% (%%health%%/%%max_health%%)"
-						+ ChatColor.RED + " health with " + ChatColor.AQUA + "%%%type%%%",
+						+ ChatColor.RED + " health with " + ChatColor.AQUA + "%%type%%",
 				"CTI Message Enemy", "citadel_cti_enemy", new ItemStack(Material.RED_TERRACOTTA),
 				"The message received when interacting with enemy reinforcements");
 		ctiEnemy.registerArgument("perc_health", "33.33", "the percentage health of the reinforcement");

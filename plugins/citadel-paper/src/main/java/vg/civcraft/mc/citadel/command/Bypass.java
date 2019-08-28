@@ -7,10 +7,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 
 @CivCommand(id = "ctb")
@@ -19,7 +19,7 @@ public class Bypass extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
+		BooleanSetting setting = Citadel.getInstance().getSettingManager().getBypass();
 		boolean enabled = setting.getValue(player);
 		if (enabled) {
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN, "Bypass mode has been disabled.");

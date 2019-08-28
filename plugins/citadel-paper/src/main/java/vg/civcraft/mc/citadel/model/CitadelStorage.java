@@ -133,7 +133,6 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 					boolean insecure = rs.getBoolean(8);
 					Reinforcement rein = new Reinforcement(location, type, groupID, creationTime, health, insecure,
 							false);
-					System.out.println("Loading at " + location.toString());
 					insertFunction.accept(rein);
 				}
 			}
