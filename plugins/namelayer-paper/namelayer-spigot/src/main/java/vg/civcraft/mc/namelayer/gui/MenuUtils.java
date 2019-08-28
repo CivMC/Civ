@@ -1,6 +1,6 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,9 +41,9 @@ public class MenuUtils {
 	/**
 	 * Doesn't work
 	 */
-	public static List <String> splitLore(String lore) {
+	public static List<String> splitLore(String lore) {
 		System.out.println("Splitting " + lore);
-		LinkedList <String> splitLore = new LinkedList<String>();
+		List<String> splitLore = new ArrayList<>();
 		int maxLineLength = 50;
 		StringBuilder sb = new StringBuilder();
 		String [] split = lore.split(" ");

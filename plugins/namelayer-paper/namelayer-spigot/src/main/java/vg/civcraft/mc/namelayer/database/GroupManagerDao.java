@@ -9,7 +9,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -341,12 +340,12 @@ public class GroupManagerDao {
 						try (Connection connection = db.getConnection();
 								PreparedStatement permInit = connection.prepareStatement(addPermissionById);
 								PreparedStatement permReg = connection.prepareStatement(registerPermission); ) {
-							Map <String, Integer> permIds = new HashMap<String, Integer>();
+							Map <String, Integer> permIds = new HashMap<>();
 
-							LinkedList<Object[]> unspool = new LinkedList<Object[]>();
+							List<Object[]> unspool = new ArrayList<>();
 							int maximumId = 0;
 							try (Statement getOldPerms = connection.createStatement();
-									ResultSet res = getOldPerms.executeQuery("select * from permissions");) {
+									ResultSet res = getOldPerms.executeQuery("SELECT * FROM permissions")) {
 								while(res.next()) {
 									unspool.add(new Object[]{res.getInt(1), res.getString(2), res.getString(3)});
 									if (res.getInt(1) > maximumId) maximumId = res.getInt(1);
@@ -928,7 +927,7 @@ public class GroupManagerDao {
 		});
 	}
 
-	public void addPermission(String groupName, String role, List <PermissionType> perms){
+	public void addPermission(String groupName, String role, List <PermissionType> perms) {
 		try (Connection connection = db.getConnection();
 				PreparedStatement addPermission = connection.prepareStatement(GroupManagerDao.addPermission)){
 			for(PermissionType perm : perms) {
@@ -1057,7 +1056,7 @@ public class GroupManagerDao {
 	
 	public void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
 		try (Connection connection = db.getConnection();) {
-			List <Integer> groups = new LinkedList<Integer>();
+			List <Integer> groups = new ArrayList<>();
 			try (Statement getAllGroupIds = connection.createStatement();
 					ResultSet set = getAllGroupIds.executeQuery(GroupManagerDao.getAllGroupIds);) {
 				// unpack ids;
@@ -1691,7 +1690,7 @@ public class GroupManagerDao {
 				PreparedStatement getGroupIDs = connection.prepareStatement(GroupManagerDao.getGroupIDs);){
 			getGroupIDs.setString(1, groupName);
 			try (ResultSet set = getGroupIDs.executeQuery();) {
-				LinkedList<Integer> ids = new LinkedList<Integer>();
+				List<Integer> ids = new ArrayList<>();
 			
 				while (set.next()) {
 					ids.add(set.getInt(1));

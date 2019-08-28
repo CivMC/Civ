@@ -1,9 +1,10 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -11,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import org.bukkit.util.StringUtil;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -129,22 +131,13 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
 			@Override
 			public List<String> onTabComplete(String word, String[] arg1) {
-				List<String> names;
-				names = new LinkedList<>();
-				for (Player p : Bukkit.getOnlinePlayers()) {
-					names.add(p.getName());
-				}
-				if (word.equals("")) {
-					return names;
-				}
-				List<String> result = new LinkedList<>();
-				String comp = word.toLowerCase();
-				for (String s : names) {
-					if (s.toLowerCase().startsWith(comp)) {
-						result.add(s);
-					}
-				}
-				return result;
+				List<String> players = Bukkit.getOnlinePlayers().stream()
+						.filter(p -> g.isMember(p.getUniqueId()))
+						.map(Player::getName)
+						.collect(Collectors.toList());
+				players.add("cancel");
+
+				return StringUtil.copyPartialMatches(word, players, new ArrayList<>());
 			}
 
 			@Override

@@ -3,8 +3,8 @@ package vg.civcraft.mc.namelayer.gui;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -235,12 +235,12 @@ public class GUIGroupOverview {
 				p.sendMessage(ChatColor.YELLOW
 						+ "Enter the name of your new group or \"cancel\" to exit this prompt");
 				ClickableInventory.forceCloseInventory(p);
-				Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
+				new Dialog(p, NameLayerPlugin.getInstance()) {
 
 					@Override
 					public List<String> onTabComplete(String wordCompleted,
 							String[] fullMessage) {
-						return new LinkedList<String>();
+						return Collections.emptyList();
 					}
 
 					@Override
@@ -348,11 +348,11 @@ public class GUIGroupOverview {
 			public void clicked(final Player p) {
 				p.sendMessage(ChatColor.YELLOW + "Enter the name of the group or \"cancel\" to leave this prompt");
 				ClickableInventory.forceCloseInventory(p);
-				Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
+				new Dialog(p, NameLayerPlugin.getInstance()) {
 					
 					@Override
 					public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-						return new LinkedList<String>();
+						return Collections.emptyList();
 					}
 					
 					@Override
@@ -383,7 +383,7 @@ public class GUIGroupOverview {
 							
 							@Override
 							public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-								return new LinkedList<String>();
+								return Collections.emptyList();
 							}
 							
 							@Override

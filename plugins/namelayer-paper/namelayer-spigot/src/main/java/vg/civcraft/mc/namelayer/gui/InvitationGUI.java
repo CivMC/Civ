@@ -1,9 +1,10 @@
 package vg.civcraft.mc.namelayer.gui;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -13,6 +14,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import org.bukkit.util.StringUtil;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -62,11 +64,11 @@ public class InvitationGUI extends AbstractGroupGUI{
 				
 				@Override
 				public void clicked(Player arg0) {
-					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to invite or \"cancel\" to exit this prompt. You may also enter the names"
-							+ "of multiple players, separated with spaces to invite all of them");
+					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to invite or \"cancel\" to exit this prompt. You may also enter the names "
+							+ "of multiple players, separated with spaces to invite all of them.");
 					selectedType = pType;
 					ClickableInventory.forceCloseInventory(arg0);
-					Dialog enterName = new Dialog(arg0, NameLayerPlugin.getInstance()) {
+					new Dialog(arg0, NameLayerPlugin.getInstance()) {
 						public void onReply(String [] message) {
 							if (gm.hasAccess(g, p.getUniqueId(), MainGroupGUI.getAccordingPermission(selectedType))) {
 								for(String s : message) {
@@ -80,7 +82,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 										continue;
 									}
 									if (g.isMember(inviteUUID)) { // So a player can't demote someone who is above them.
-										p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) +" is already a member of " + g.getName());
+										p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(inviteUUID) + " is already a member of " + g.getName());
 										continue;
 									}
 									if(NameLayerPlugin.getBlackList().isBlacklisted(g, inviteUUID)) {
@@ -93,41 +95,28 @@ public class InvitationGUI extends AbstractGroupGUI{
 													+ " to group " + g.getName()
 													+ "via gui");
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
-									
 
 									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
 								}
-							}
-							else {
-								p.sendMessage(ChatColor.RED + "You lost permission to invite a player to this rank");
+							} else {
+								p.sendMessage(ChatColor.RED + "You do not have permission to invite a player to this rank");
 							}
 							parent.showScreen();
 						}
 						
-						public List <String> onTabComplete(String word, String [] msg) {
-							List <String> names;
-							names = new LinkedList<String>();
-							for(Player p : Bukkit.getOnlinePlayers()) {
-								names.add(p.getName());
-							}
-							names.add("cancel");
-							if (word.equals("")) {
-								return names;
-							}
-							List <String> result = new LinkedList<String>();
-							String comp = word.toLowerCase();
-							for(String s : names) {
-								if (s.toLowerCase().startsWith(comp)) {
-									result.add(s);
-								}
-							}
-							return result;
+						public List<String> onTabComplete(String word, String[] msg) {
+							List<String> players = Bukkit.getOnlinePlayers().stream()
+									.filter(p -> !g.isMember(p.getUniqueId()))
+									.map(Player::getName)
+									.collect(Collectors.toList());
+							players.add("cancel");
+
+							return StringUtil.copyPartialMatches(word, players, new ArrayList<>());
 						}
 					};
 				}
 			};
-		}
-		else {
+		} else {
 			ItemAPI.addLore(is, ChatColor.RED + "You don't have permission to invite " + niceRankName);
 			c = new DecorationStack(is);
 		}
