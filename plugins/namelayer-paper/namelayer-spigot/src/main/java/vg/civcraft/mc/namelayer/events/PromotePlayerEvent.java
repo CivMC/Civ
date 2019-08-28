@@ -2,14 +2,14 @@ package vg.civcraft.mc.namelayer.events;
 
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 
 public class PromotePlayerEvent extends Event implements Cancellable{
 	private static final HandlerList handlers = new HandlerList();

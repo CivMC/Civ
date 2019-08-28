@@ -13,12 +13,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -59,7 +59,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 				produceSelectionClickable(Material.DIAMOND_CHESTPLATE,
 						PlayerType.OWNER), 17);
 		ItemStack backStack = new ItemStack(Material.ARROW);
-		ISUtils.setName(backStack, ChatColor.GOLD
+		ItemAPI.setDisplayName(backStack, ChatColor.GOLD
 				+ "Go back to member management");
 		ci.setSlot(new Clickable(backStack) {
 
@@ -78,11 +78,11 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
 		Clickable c;
-		ISUtils.setName(is, ChatColor.GOLD + "View and edit permissions for "
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "View and edit permissions for "
 				+ PlayerType.getNiceRankName(pType));
 		if (!gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("LIST_PERMS"))) {
-			ISUtils.addLore(is, ChatColor.RED + "You are not allowed to list",
+			ItemAPI.addLore(is, ChatColor.RED + "You are not allowed to list",
 					ChatColor.RED + "permissions for this group");
 			c = new DecorationStack(is);
 		} else {
@@ -119,7 +119,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			final boolean hasPerm = gp.hasPermission(pType, perm);
 			if (hasPerm) {
 				is = yesStack();
-				ISUtils.addLore(
+				ItemAPI.addLore(
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
@@ -127,20 +127,20 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 								+ "this permission");
 			} else {
 				is = noStack();
-				ISUtils.addLore(
+				ItemAPI.addLore(
 						is,
 						ChatColor.DARK_AQUA
 								+ PlayerType.getNiceRankName(pType)
 								+ "s currently don't have", ChatColor.DARK_AQUA
 								+ "this permission");
 			}
-			ISUtils.setName(is, perm.getName());
+			ItemAPI.setDisplayName(is, perm.getName());
 			String desc = perm.getDescription();
 			if (desc != null) {
-				ISUtils.addLore(is, ChatColor.GREEN + desc);
+				ItemAPI.addLore(is, ChatColor.GREEN + desc);
 			}
 			if (canEdit) {
-				ISUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
+				ItemAPI.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {
 
 					@Override
@@ -183,7 +183,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ISUtils.setName(back, ChatColor.GOLD + "Go to previous page");
+			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -199,7 +199,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (currentPage + 1)) <= clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
+			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -214,7 +214,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		}
 
 		ItemStack backToOverview = goBackStack(); 
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Go back");
+		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Go back");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override

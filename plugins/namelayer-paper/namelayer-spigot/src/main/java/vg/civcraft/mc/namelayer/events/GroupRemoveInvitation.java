@@ -6,8 +6,6 @@ import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-
 public class GroupRemoveInvitation extends Event implements Cancellable{
 	private static final HandlerList handlers = new HandlerList();
 	

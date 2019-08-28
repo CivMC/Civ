@@ -67,12 +67,6 @@ public class NameLayerPlugin extends ACivMod{
 		}
 	}
 	
-	// Calling this for ACivMod
-	@Override
-	public void onLoad(){
-		super.onLoad();
-	}
-	
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
@@ -215,26 +209,6 @@ public class NameLayerPlugin extends ACivMod{
 					message +
 					"\n --------------------------------------");
 	}
-	/**
-	 * Updates the version number for a plugin. You must specify what 
-	 * the current version number is.
-	 * @param currentVersion- The current version of the plugin.
-	 * @param pluginName- The plugin name.
-	 * @return Returns the new version of the db.
-	 */
-	@Deprecated
-	public static void insertVersionNum(int currentVersion, String pluginName){
-		throw new UnsupportedOperationException("insertVersionNum is no longer supported. Extend CivModCore and use ManagedDatasource"); 
-	}
-	/**
-	 * Checks the version of a specific plugin's db.
-	 * @param name- The name of the plugin.
-	 * @return Returns the version of the plugin or 0 if none was found.
-	 */
-	@Deprecated
-	public static int getVersionNum(String pluginName){
-		throw new UnsupportedOperationException("getVersionNum is no longer supported. Extend CivModCore and use ManagedDatasource");
-	}
 	
 	public static String getSpecialAdminGroup(){
 		return "Name_Layer_Special";
@@ -242,11 +216,6 @@ public class NameLayerPlugin extends ACivMod{
 	
 	public static boolean createGroupOnFirstJoin() {
 		return createGroupOnFirstJoin;
-	}
-
-	@Override
-	protected String getPluginName() {
-		return "NameLayerPlugin";
 	}
 
 	public int getGroupLimit(){

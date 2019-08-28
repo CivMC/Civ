@@ -13,14 +13,14 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -40,8 +40,8 @@ public class InvitationGUI extends AbstractGroupGUI{
 		ClickableInventory ci = new ClickableInventory(27, g.getName());
 	
 		ItemStack explain = new ItemStack(Material.PAPER);
-		ISUtils.setName(explain, ChatColor.GOLD + "Select an option");
-		ISUtils.addLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
+		ItemAPI.setDisplayName(explain, ChatColor.GOLD + "Select an option");
+		ItemAPI.addLore(explain, ChatColor.AQUA + "Please select the rank ", ChatColor.AQUA + "you want the invited player to have");
 		ci.setSlot(new DecorationStack(explain), 4);
 		ci.setSlot(produceOptionStack(Material.LEATHER_CHESTPLATE, "member", PlayerType.MEMBERS, PermissionType.getPermission("MEMBERS")), 10);
 		ci.setSlot(produceOptionStack(modMat(), "mod", PlayerType.MODS, PermissionType.getPermission("MODS")), 12);
@@ -55,7 +55,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 		ItemMeta im = is.getItemMeta();
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
-		ISUtils.setName(is, ChatColor.GOLD + "Invite as " + niceRankName);
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Invite as " + niceRankName);
 		Clickable c;
 		if (gm.hasAccess(g, p.getUniqueId(), perm)) {
 			c = new Clickable(is) {
@@ -128,7 +128,7 @@ public class InvitationGUI extends AbstractGroupGUI{
 			};
 		}
 		else {
-			ISUtils.addLore(is, ChatColor.RED + "You don't have permission to invite " + niceRankName);
+			ItemAPI.addLore(is, ChatColor.RED + "You don't have permission to invite " + niceRankName);
 			c = new DecorationStack(is);
 		}
 		return c;

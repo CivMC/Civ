@@ -1,9 +1,5 @@
 package vg.civcraft.mc.namelayer.misc;
 
-import com.google.common.collect.ImmutableList;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -13,12 +9,16 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import com.google.common.collect.ImmutableList;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 //All credit for this code to evilmidget38
 //Original source: https://gist.github.com/evilmidget38/a5c971d2f2b2c3b3fb37
 
 public class NameFetcher implements Callable<Map<UUID, String>> {
     private static final String PROFILE_URL = "https://sessionserver.mojang.com/session/minecraft/profile/";
-    private final JSONParser jsonParser = new JSONParser();
+    private final JsonParser jsonParser = new JsonParser();
     private final List<UUID> uuids;
     public NameFetcher(List<UUID> uuids) {
         this.uuids = ImmutableList.copyOf(uuids);
@@ -26,16 +26,16 @@ public class NameFetcher implements Callable<Map<UUID, String>> {
 
     @Override
     public Map<UUID, String> call() throws Exception {
-        Map<UUID, String> uuidStringMap = new HashMap<UUID, String>();
+        Map<UUID, String> uuidStringMap = new HashMap<>();
         for (UUID uuid: uuids) {
             HttpURLConnection connection = (HttpURLConnection) new URL(PROFILE_URL+uuid.toString().replace("-", "")).openConnection();
-            JSONObject response = (JSONObject) jsonParser.parse(new InputStreamReader(connection.getInputStream()));
-            String name = (String) response.get("name");
+            JsonObject response = (JsonObject) jsonParser.parse(new InputStreamReader(connection.getInputStream()));
+            String name = response.get("name").getAsString();
             if (name == null) {
                 continue;
             }
-            String cause = (String) response.get("cause");
-            String errorMessage = (String) response.get("errorMessage");
+            String cause = response.get("cause").getAsString();
+            String errorMessage = response.get("errorMessage").getAsString();
             if (cause != null && cause.length() > 0) {
                 throw new IllegalStateException(errorMessage);
             }

@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -19,12 +19,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -95,7 +94,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		// back button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ISUtils.setName(back, ChatColor.GOLD + "Go to previous page");
+			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -111,7 +110,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		// next button
 		if ((45 * (currentPage + 1)) <= clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
+			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
@@ -139,7 +138,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 		// exit button
 		ItemStack backToOverview = goBackStack(); 
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Close");
+		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Close");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -182,11 +181,11 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				meta.setColor(Color.BLACK);
 				meta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 				is.setItemMeta(meta);
-				ISUtils.setName(is, NameAPI.getCurrentName(uuid));
+				ItemAPI.setDisplayName(is, NameAPI.getCurrentName(uuid));
 				Clickable c;
 				if (gm.hasAccess(g, p.getUniqueId(),
 						PermissionType.getPermission("BLACKLIST"))) {
-					ISUtils.addLore(is, ChatColor.GREEN + "Click to remove "
+					ItemAPI.addLore(is, ChatColor.GREEN + "Click to remove "
 							+ NameAPI.getCurrentName(uuid), ChatColor.GREEN
 							+ "from the blacklist");
 					c = new Clickable(is) {
@@ -213,7 +212,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						}
 					};
 				} else {
-					ISUtils.addLore(is, ChatColor.RED
+					ItemAPI.addLore(is, ChatColor.RED
 							+ "You dont have permission to remove",
 							ChatColor.RED + NameAPI.getCurrentName(uuid)
 									+ "from the blacklist");
@@ -233,32 +232,32 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				is.setItemMeta(im);
 				final String playerName = NameAPI
 						.getCurrentName(entry.getKey());
-				ISUtils.setName(is, ChatColor.GOLD + playerName);
+				ItemAPI.setDisplayName(is, ChatColor.GOLD + playerName);
 				boolean canRevoke = false;
 				switch (entry.getValue()) {
 				case MEMBERS:
-					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Member");
+					ItemAPI.addLore(is, ChatColor.AQUA + "Invited as: Member");
 					if (gm.hasAccess(g, p.getUniqueId(),
 							PermissionType.getPermission("MEMBERS"))) {
 						canRevoke = true;
 					}
 					break;
 				case MODS:
-					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Mod");
+					ItemAPI.addLore(is, ChatColor.AQUA + "Invited as: Mod");
 					if (gm.hasAccess(g, p.getUniqueId(),
 							PermissionType.getPermission("MODS"))) {
 						canRevoke = true;
 					}
 					break;
 				case ADMINS:
-					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Admin");
+					ItemAPI.addLore(is, ChatColor.AQUA + "Invited as: Admin");
 					if (gm.hasAccess(g, p.getUniqueId(),
 							PermissionType.getPermission("ADMINS"))) {
 						canRevoke = true;
 					}
 					break;
 				case OWNER:
-					ISUtils.addLore(is, ChatColor.AQUA + "Invited as: Owner");
+					ItemAPI.addLore(is, ChatColor.AQUA + "Invited as: Owner");
 					if (gm.hasAccess(g, p.getUniqueId(),
 							PermissionType.getPermission("OWNER"))) {
 						canRevoke = true;
@@ -269,7 +268,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 				Clickable c = null;
 				if (canRevoke) {
-					ISUtils.addLore(is, ChatColor.GREEN
+					ItemAPI.addLore(is, ChatColor.GREEN
 							+ "Click to revoke this invite");
 					c = new Clickable(is) {
 
@@ -325,7 +324,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 						}
 					};
 				} else {
-					ISUtils.addLore(is, ChatColor.RED
+					ItemAPI.addLore(is, ChatColor.RED
 							+ "You don't have permission to revoke this invite");
 					c = new DecorationStack(is);
 				}
@@ -427,18 +426,18 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ItemMeta im = is.getItemMeta();
 		im.addItemFlags(ItemFlag.HIDE_ATTRIBUTES);
 		is.setItemMeta(im);
-		ISUtils.setName(is, ChatColor.GOLD + NameAPI.getCurrentName(toDisplay));
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + NameAPI.getCurrentName(toDisplay));
 		if (g.isOwner(toDisplay)) { // special case for primary owner
-			ISUtils.addLore(is, ChatColor.AQUA + "Rank: Primary Owner");
-			ISUtils.addLore(is, ChatColor.RED + "You don't have permission",
+			ItemAPI.addLore(is, ChatColor.AQUA + "Rank: Primary Owner");
+			ItemAPI.addLore(is, ChatColor.RED + "You don't have permission",
 					ChatColor.RED + "to modify the rank of this player");
 			c = new DecorationStack(is);
 
 		} else {
-			ISUtils.addLore(is, ChatColor.AQUA + "Rank: "
+			ItemAPI.addLore(is, ChatColor.AQUA + "Rank: "
 					+ getRankName(toDisplay));
 			if (gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(rank))) {
-				ISUtils.addLore(is, ChatColor.GREEN
+				ItemAPI.addLore(is, ChatColor.GREEN
 						+ "Click to modify this player's", ChatColor.GREEN
 						+ "rank or to remove them");
 				c = new Clickable(is) {
@@ -449,7 +448,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					}
 				};
 			} else {
-				ISUtils.addLore(is,
+				ItemAPI.addLore(is,
 						ChatColor.RED + "You don't have permission",
 						ChatColor.RED + "to modify the rank of this player");
 				c = new DecorationStack(is);
@@ -474,9 +473,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		String playerName = NameAPI.getCurrentName(uuid);
 
 		ItemStack info = new ItemStack(Material.PAPER);
-		ISUtils.setName(info, ChatColor.GOLD + playerName);
+		ItemAPI.setDisplayName(info, ChatColor.GOLD + playerName);
 		String rankName = getRankName(uuid);
-		ISUtils.addLore(info, ChatColor.GOLD + "Current rank: " + rankName);
+		ItemAPI.addLore(info, ChatColor.GOLD + "Current rank: " + rankName);
 		ci.setSlot(new DecorationStack(info), 4);
 
 		Clickable memberClick = setupDetailSlot(Material.LEATHER_CHESTPLATE,
@@ -493,7 +492,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		ci.setSlot(ownerClick, 16);
 
 		ItemStack backToOverview = goBackStack(); 
-		ISUtils.setName(backToOverview, ChatColor.GOLD + "Back to overview");
+		ItemAPI.setDisplayName(backToOverview, ChatColor.GOLD + "Back to overview");
 		ci.setSlot(new Clickable(backToOverview) {
 
 			@Override
@@ -517,9 +516,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		mod.setItemMeta(im);
 		Clickable modClick;
 		if (rank == pType) {
-			ISUtils.setName(mod, ChatColor.GOLD + "Remove this player");
+			ItemAPI.setDisplayName(mod, ChatColor.GOLD + "Remove this player");
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
-				ISUtils.addLore(mod, ChatColor.RED
+				ItemAPI.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
 				modClick = new DecorationStack(mod);
 			} else {
@@ -537,14 +536,14 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				};
 			}
 		} else {
-			ISUtils.setName(
+			ItemAPI.setDisplayName(
 					mod,
 					ChatColor.GOLD
 							+ demoteOrPromote(g.getPlayerType(toChange), pType,
 									true) + " this player to "
 							+ PlayerType.getNiceRankName(pType));
 			if (!gm.hasAccess(g, p.getUniqueId(), getAccordingPermission(pType))) {
-				ISUtils.addLore(mod, ChatColor.RED
+				ItemAPI.addLore(mod, ChatColor.RED
 						+ "You dont have permission to do this");
 				modClick = new DecorationStack(mod);
 			} else {
@@ -721,7 +720,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	private Clickable getAddBlackListClickable() {
 		Clickable c;
 		ItemStack is = blacklistStack();
-		ISUtils.setName(is, ChatColor.GOLD + "Add player to blacklist");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Add player to blacklist");
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("BLACKLIST"))) {
 			c = new Clickable(is) {
@@ -812,7 +811,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(is, ChatColor.RED
+			ItemAPI.addLore(is, ChatColor.RED
 					+ "You don't have permission to do this");
 			c = new DecorationStack(is);
 		}
@@ -821,16 +820,16 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getPasswordClickable() {
 		Clickable c;
-		ItemStack is = new ItemStack(Material.SIGN);
-		ISUtils.setName(is, ChatColor.GOLD + "Add or change password");
+		ItemStack is = new ItemStack(Material.OAK_SIGN);
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Add or change password");
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("PASSWORD"))) {
 			String pass = g.getPassword();
 			if (pass == null) {
-				ISUtils.addLore(is, ChatColor.AQUA
+				ItemAPI.addLore(is, ChatColor.AQUA
 						+ "This group doesn't have a password currently");
 			} else {
-				ISUtils.addLore(is, ChatColor.AQUA
+				ItemAPI.addLore(is, ChatColor.AQUA
 						+ "The current password is: " + ChatColor.YELLOW + pass);
 			}
 			c = new Clickable(is) {
@@ -849,7 +848,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							@Override
 							public List<String> onTabComplete(
 									String wordCompleted, String[] fullMessage) {
-								return new LinkedList<String>();
+								return new LinkedList<>();
 							}
 
 							@Override
@@ -899,7 +898,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(is, ChatColor.RED
+			ItemAPI.addLore(is, ChatColor.RED
 					+ "You don't have permission to do this");
 			c = new DecorationStack(is);
 		}
@@ -908,7 +907,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getPermOptionClickable() {
 		ItemStack permStack = permsStack();
-		ISUtils.setName(permStack, ChatColor.GOLD
+		ItemAPI.setDisplayName(permStack, ChatColor.GOLD
 				+ "View and manage group permissions");
 		Clickable permClickable;
 		if (gm.hasAccess(g, p.getUniqueId(),
@@ -922,7 +921,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				}
 			};
 		} else {
-			ISUtils.addLore(permStack, ChatColor.RED
+			ItemAPI.addLore(permStack, ChatColor.RED
 					+ "You don't have permission", ChatColor.RED + "to do this");
 			permClickable = new DecorationStack(permStack);
 		}
@@ -931,7 +930,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getInvitePlayerClickable() {
 		ItemStack inviteStack = new ItemStack(Material.COOKIE);
-		ISUtils.setName(inviteStack, ChatColor.GOLD + "Invite new member");
+		ItemAPI.setDisplayName(inviteStack, ChatColor.GOLD + "Invite new member");
 		return new Clickable(inviteStack) {
 
 			@Override
@@ -944,17 +943,17 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	private Clickable getDefaultGroupStack() {
 		Clickable c;
 		ItemStack is = defaultStack();
-		ISUtils.setName(is, ChatColor.GOLD + "Default group");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Default group");
 		final String defGroup = gm.getDefaultGroup(p.getUniqueId());
 		if (defGroup != null && defGroup.equals(g.getName())) {
-			ISUtils.addLore(is, ChatColor.AQUA
+			ItemAPI.addLore(is, ChatColor.AQUA
 					+ "This group is your current default group");
 			c = new DecorationStack(is);
 		} else {
-			ISUtils.addLore(is, ChatColor.AQUA
+			ItemAPI.addLore(is, ChatColor.AQUA
 					+ "Click to make this group your default group");
 			if (defGroup != null) {
-				ISUtils.addLore(is, ChatColor.BLUE
+				ItemAPI.addLore(is, ChatColor.BLUE
 						+ "Your current default group is : " + defGroup);
 			}
 			c = new Clickable(is) {
@@ -984,8 +983,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 	private Clickable getAdminStuffClickable() {
 		ItemStack is = new ItemStack(Material.DIAMOND);
-		ISUtils.setName(is, ChatColor.GOLD + "Owner functions");
-		Clickable c = new Clickable(is) {
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Owner functions");
+		return new Clickable(is) {
 
 			@Override
 			public void clicked(Player p) {
@@ -994,7 +993,6 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				subGui.showScreen();
 			}
 		};
-		return c;
 	}
 
 	/**
@@ -1003,9 +1001,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	private Clickable getLeaveGroupClickable() {
 		Clickable c;
 		ItemStack is = new ItemStack(Material.IRON_DOOR);
-		ISUtils.setName(is, ChatColor.GOLD + "Leave group");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Leave group");
 		if (g.isOwner(p.getUniqueId())) {
-			ISUtils.addLore(is, ChatColor.RED + "You cant leave this group,",
+			ItemAPI.addLore(is, ChatColor.RED + "You cant leave this group,",
 					ChatColor.RED + "because you own it");
 			c = new DecorationStack(is);
 		} else {
@@ -1016,15 +1014,15 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					ClickableInventory confirmInv = new ClickableInventory(27,
 							g.getName());
 					ItemStack info = new ItemStack(Material.PAPER);
-					ISUtils.setName(info, ChatColor.GOLD + "Leave group");
-					ISUtils.addLore(info, ChatColor.RED
+					ItemAPI.setDisplayName(info, ChatColor.GOLD + "Leave group");
+					ItemAPI.addLore(info, ChatColor.RED
 							+ "Are you sure that you want to", ChatColor.RED
 							+ "leave this group? You can not undo this!");
 					ItemStack yes = yesStack();
-					ISUtils.setName(yes,
+					ItemAPI.setDisplayName(yes,
 							ChatColor.GOLD + "Yes, leave " + g.getName());
 					ItemStack no = noStack();
-					ISUtils.setName(no,
+					ItemAPI.setDisplayName(no,
 							ChatColor.GOLD + "No, stay in " + g.getName());
 					confirmInv.setSlot(new Clickable(yes) {
 
@@ -1067,8 +1065,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	private Clickable getInfoStack() {
 		Clickable c;
 		ItemStack is = new ItemStack(Material.PAPER);
-		ISUtils.setName(is, ChatColor.GOLD + "Stats for " + g.getName());
-		ISUtils.addLore(is,
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Stats for " + g.getName());
+		ItemAPI.addLore(is,
 				ChatColor.DARK_AQUA + "Your current rank: " + ChatColor.YELLOW
 						+ PlayerType.getNiceRankName(g.getPlayerType(p.getUniqueId())));
 		boolean hasGroupStatsPerm = gm.hasAccess(g, p.getUniqueId(),
@@ -1076,7 +1074,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MEMBERS"))
 				|| hasGroupStatsPerm) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g
@@ -1086,7 +1084,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("MODS"))
 				|| hasGroupStatsPerm) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.MODS)
@@ -1095,7 +1093,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("ADMINS"))
 				|| hasGroupStatsPerm) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.ADMINS)
@@ -1104,19 +1102,19 @@ public class MainGroupGUI extends AbstractGroupGUI {
 		if (gm.hasAccess(g, p.getUniqueId(),
 				PermissionType.getPermission("OWNER"))
 				|| hasGroupStatsPerm) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.AQUA
 							+ String.valueOf(g.getAllMembers(PlayerType.OWNER)
 									.size()) + " owner");
 		}
 		if (hasGroupStatsPerm) {
-			ISUtils.addLore(
+			ItemAPI.addLore(
 					is,
 					ChatColor.DARK_AQUA
 							+ String.valueOf(g.getAllMembers().size())
 							+ " total group members");
-			ISUtils.addLore(is, ChatColor.DARK_AQUA + "Group owner: "
+			ItemAPI.addLore(is, ChatColor.DARK_AQUA + "Group owner: "
 					+ ChatColor.YELLOW + NameAPI.getCurrentName(g.getOwner()));
 		}
 		c = new DecorationStack(is);
@@ -1180,7 +1178,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	}
 
 	private List<Clickable> getRecursiveInheritedMembers(Group g) {
-		List<Clickable> clicks = new LinkedList<Clickable>();
+		List<Clickable> clicks = new LinkedList<>();
 		if (g.hasSuperGroup()) {
 			clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
 		}
@@ -1202,8 +1200,8 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			default:
 				continue;
 			}
-			ISUtils.setName(is, NameAPI.getCurrentName(uuid));
-			ISUtils.addLore(is, ChatColor.AQUA + "Inherited "
+			ItemAPI.setDisplayName(is, NameAPI.getCurrentName(uuid));
+			ItemAPI.addLore(is, ChatColor.AQUA + "Inherited "
 					+ getRankName(uuid) + " from " + g.getName());
 			clicks.add(new DecorationStack(is));
 		}
