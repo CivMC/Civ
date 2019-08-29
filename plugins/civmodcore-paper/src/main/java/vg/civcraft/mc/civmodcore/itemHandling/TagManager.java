@@ -24,6 +24,7 @@ import net.minecraft.server.v1_14_R1.NBTTagLong;
 import net.minecraft.server.v1_14_R1.NBTTagShort;
 import net.minecraft.server.v1_14_R1.NBTTagString;
 
+@Deprecated
 public class TagManager {
 	private static final Logger log = Bukkit.getLogger();
 
