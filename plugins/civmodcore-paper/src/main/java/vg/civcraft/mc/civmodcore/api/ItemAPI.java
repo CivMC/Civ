@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * Class of static APIs for Items. Replaces ISUtils.
  * */
 public final class ItemAPI {
+
 	private ItemAPI() { } // Make the class effectively static
 
 	/**
@@ -72,7 +73,7 @@ public final class ItemAPI {
 	 * Retrieves the ItemMeta from an item.
 	 *
 	 * @param item The item to retrieve meta from.
-	 * @return The item meta, which is never null.
+	 * @return Returns the item meta, which is never null.
 	 *
 	 * @throws IllegalArgumentException If the given item stack is not null or if the item meta cannot be retrieved or
 	 *                                  generated.

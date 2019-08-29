@@ -1,34 +1,37 @@
-Po,ARROW_DAMAGE,Power
-Fl,ARROW_FIRE,Flame
-I,ARROW_INFINITE,Infinite
-Pu,ARROW_KNOCKBACK,Punch
-S,DAMAGE_ALL,Sharpness
-BoA,DAMAGE_ARTHROPODS,Bane of Arthropods
-Sm,DAMAGE_UNDEAD,Smite
-E,DIG_SPEED,Efficiency
-U,DURABILITY,Unbreaking
-FA,FIRE_ASPECT,Fire Aspect
-K,KNOCKBACK,Knockback
-F,LOOT_BONUS_BLOCKS,Fortune
-L,LOOT_BONUS_MOBS,Looting
-R,OXYGEN,Respiration
-P,PROTECTION_ENVIRONMENTAL,Protection
-BP,PROTECTION_EXPLOSIONS,Blast Protection
-FF,PROTECTION_FALL,Feather Falling
-FP,PROTECTION_FIRE,Fire Protection
-PP,PROTECTION_PROJECTILE,Projectile Protection
-ST,SILK_TOUCH,Silk Touch
-T,THORNS,Thorns
-AA,WATER_WORKER,Aqua Affinity
-DS,DEPTH_STRIDER,Depth Strider
-Lo,LOYALTY,Loyalty
-V,VANISHING_CURSE,Vanishing Curse
-Lk,LUCK,Luck
-BC,BINDING_CURSE,Binding Curse
-M,MENDING,Mending
-FW,FROST_WALKER,Frost Walker
-Lu,LURE,Lure
-C,CHANNELING,Channeling
-SE,SWEEPING_EDGE,Sweeping Edge
-Ri,RIPTIDE,Riptide
-Im,IMPALING,Impaling
+ARROW_DAMAGE,Power
+ARROW_FIRE,Flame
+ARROW_INFINITE,Infinity
+ARROW_KNOCKBACK,Punch
+BINDING_CURSE,Curse of Binding
+CHANNELING,Channeling
+DAMAGE_ALL,Sharpness
+DAMAGE_ARTHROPODS,Bane of Arthropods
+DAMAGE_UNDEAD,Smite
+DEPTH_STRIDER,Depth Strider
+DIG_SPEED,Efficiency
+DURABILITY,Unbreaking
+FIRE_ASPECT,Fire Aspect
+FROST_WALKER,Frost Walker
+IMPALING,Impaling
+KNOCKBACK,Knockback
+LOOT_BONUS_BLOCKS,Fortune
+LOOT_BONUS_MOBS,Looting
+LOYALTY,Loyalty
+LUCK,Luck of the Sea
+LURE,Lure
+MENDING,Mending
+MULTISHOT,Multishot
+OXYGEN,Respiration
+PIERCING,Piercing
+PROTECTION_ENVIRONMENTAL,Protection
+PROTECTION_EXPLOSIONS,Blast Protection
+PROTECTION_FALL,Feather Falling
+PROTECTION_FIRE,Fire Protection
+PROTECTION_PROJECTILE,Projectile Protection
+QUICK_CHARGE,Quick Charge
+RIPTIDE,Riptide
+SILK_TOUCH,Silk Touch
+SWEEPING_EDGE,Sweeping Edge
+THORNS,Thorns
+VANISHING_CURSE,Curse of Vanishing
+WATER_WORKER,Aqua Affinity

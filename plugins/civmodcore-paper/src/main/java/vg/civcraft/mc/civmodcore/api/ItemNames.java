@@ -66,16 +66,16 @@ public final class ItemNames {
 						logger.warning("This material has not been given a name: " + line);
 						continue;
 					}
-					// Put the material, data, and name into the system
+					// Put the material and name into the system
 					itemNames.put(generateItemHash(material, null), name);
 					logger.info(String.format("Material parsed: %s = %s", material, name));
 					line = reader.readLine();
 				}
 				reader.close();
 			}
-			catch (IOException | NullPointerException e) {
+			catch (IOException | NullPointerException error) {
 				logger.warning("Could not load materials from materials.csv");
-				e.printStackTrace();
+				error.printStackTrace();
 			}
 		}
 		else {
