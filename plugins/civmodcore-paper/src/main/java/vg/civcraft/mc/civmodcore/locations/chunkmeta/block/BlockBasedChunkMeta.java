@@ -253,14 +253,14 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 			throw new IllegalArgumentException("Can not remove null from the cache");
 		}
 		Location loc = blockData.getLocation();
-		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(loc.getChunk().getX(), loc.getBlockY(), false);
+		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(modulo(loc.getBlockX(), 16), loc.getBlockY(), false);
 		if (l4ZSection == null) {
 			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
 		}
-		if (l4ZSection[loc.getBlockZ()] != blockData) {
+		if (l4ZSection[modulo(loc.getBlockZ(), 16)] != blockData) {
 			throw new IllegalArgumentException("Can not remove block data from cache, it is already gone");
 		}
-		l4ZSection[loc.getChunk().getZ()] = null;
+		l4ZSection[modulo(loc.getBlockZ(), 16)] = null;
 		setCacheState(CacheState.MODIFIED);
 	}
 
