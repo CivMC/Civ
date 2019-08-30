@@ -21,7 +21,7 @@ public abstract class Dialog {
 	}
 
 	public Dialog(Player player, JavaPlugin plugin, final String toDisplay) {
-		DialogManager.instance.registerDialog(player, this);
+		DialogManager.registerDialog(player, this);
 		this.player = player;
 
 		convo = new ConversationFactory(plugin).withModality(false).withLocalEcho(false)

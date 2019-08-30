@@ -8,24 +8,17 @@ import org.bukkit.entity.Player;
 
 public class DialogManager {
 
-	private static Map<UUID, Dialog> dialogs;
+	private static Map<UUID, Dialog> dialogs = new TreeMap<>();
 
-	public static DialogManager instance;
-
-	public DialogManager() {
-		instance = this;
-		dialogs = new TreeMap<>();
-	}
-
-	public Dialog getDialog(Player p) {
+	public static Dialog getDialog(Player p) {
 		return getDialog(p.getUniqueId());
 	}
 
-	public Dialog getDialog(UUID uuid) {
+	public static Dialog getDialog(UUID uuid) {
 		return dialogs.get(uuid);
 	}
 
-	public void registerDialog(Player p, Dialog dialog) {
+	public static void registerDialog(Player p, Dialog dialog) {
 		Dialog current = dialogs.get(p.getUniqueId());
 		if (current != null) {
 			current.end();
@@ -33,11 +26,11 @@ public class DialogManager {
 		dialogs.put(p.getUniqueId(), dialog);
 	}
 
-	public void forceEndDialog(Player p) {
+	public static void forceEndDialog(Player p) {
 		forceEndDialog(p.getUniqueId());
 	}
 
-	public void forceEndDialog(UUID uuid) {
+	public static void forceEndDialog(UUID uuid) {
 		Dialog dia = dialogs.remove(uuid);
 		if (dia != null) {
 			dia.end();

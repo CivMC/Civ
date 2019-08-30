@@ -15,7 +15,7 @@ public class ChatListener implements Listener {
 			e.getSender().sendMessage("You are not human");
 			return;
 		}
-		Dialog dia = DialogManager.instance.getDialog((Player) e.getSender());
+		Dialog dia = DialogManager.getDialog((Player) e.getSender());
 		if (dia != null) {
 			String[] split = e.getBuffer().split(" ");
 			e.setCompletions(dia.onTabComplete(split.length > 0 ? split[split.length - 1] : "", split));
@@ -24,7 +24,7 @@ public class ChatListener implements Listener {
 
 	@EventHandler
 	public void logoff(PlayerQuitEvent e) {
-		DialogManager.instance.forceEndDialog(e.getPlayer());
+		DialogManager.forceEndDialog(e.getPlayer());
 	}
 
 }
