@@ -46,8 +46,10 @@ public final class EnchantmentNames {
 				while (line != null) {
 					String [] values = line.split(",");
 					// If there's not at least three values (slug, initials, name) then skip
-					if (values.length < 3) {
+					if (values.length < 2) {
 						logger.warning("This enchantment row does not have enough data: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
 					// If the Enchantment cannot be found by the slug given, then skip
@@ -55,12 +57,16 @@ public final class EnchantmentNames {
 					Enchantment enchantment = Enchantment.getByName(values[0]);
 					if (enchantment == null) {
 						logger.warning("Could not find an enchantment on this line: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
 					// If the name is empty, skip
 					String name = values [2];
 					if (name.isEmpty()) {
 						logger.warning("This enchantment has not been given a name: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
 					// Put the enchantment and name into the system
