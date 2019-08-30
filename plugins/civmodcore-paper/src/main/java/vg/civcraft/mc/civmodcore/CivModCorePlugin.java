@@ -2,12 +2,12 @@ package vg.civcraft.mc.civmodcore;
 
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
@@ -47,7 +47,7 @@ public final class CivModCorePlugin extends ACivMod {
 		}
 		// Load APIs
 		ItemNames.loadItemNames();
-		new NiceNames().loadNames();
+		EnchantmentNames.loadEnchantmentNames();
 		new DialogManager();
 		if (database != null) {
 			ChunkDAO dao = new ChunkDAO(database, this);
@@ -71,6 +71,7 @@ public final class CivModCorePlugin extends ACivMod {
 		HandlerList.unregisterAll(this);
 		// Unload APIs
 		ItemNames.resetItemNames();
+		EnchantmentNames.resetEnchantmentNames();
 		ChunkMetaAPI.saveAll();
 		chunkMetaManager = null;
 		// Disconnect database

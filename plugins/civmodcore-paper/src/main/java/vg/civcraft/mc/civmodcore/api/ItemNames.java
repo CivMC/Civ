@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,30 +53,35 @@ public final class ItemNames {
 					// If there's not at least three values (slug, data, name) then skip
 					if (values.length < 3) {
 						logger.warning("This material row does not have enough data: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
 					// If a material cannot be found by the slug given, skip
 					Material material = Material.getMaterial(values[0]);
 					if (material == null) {
 						logger.warning("Could not find a material on this line: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
 					// If the name is empty, skip
 					String name = values [2];
 					if (name.isEmpty()) {
 						logger.warning("This material has not been given a name: " + line);
+						// Go to the next line
+						line = reader.readLine();
 						continue;
 					}
-					// Put the material, data, and name into the system
+					// Put the material and name into the system
 					itemNames.put(generateItemHash(material, null), name);
 					logger.info(String.format("Material parsed: %s = %s", material, name));
 					line = reader.readLine();
 				}
 				reader.close();
 			}
-			catch (IOException | NullPointerException e) {
-				logger.warning("Could not load materials from materials.csv");
-				e.printStackTrace();
+			catch (IOException error) {
+				logger.log(Level.WARNING, "Could not load materials from materials.csv", error);
 			}
 		}
 		else {
