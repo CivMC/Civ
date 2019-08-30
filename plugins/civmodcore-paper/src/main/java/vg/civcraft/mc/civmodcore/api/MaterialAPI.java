@@ -163,49 +163,6 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is at its core, a pot.
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a pot, or a potted plant.
-	 * */
-	public static boolean isPot(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case FLOWER_POT:
-			case POTTED_ACACIA_SAPLING:
-			case POTTED_ALLIUM:
-			case POTTED_AZURE_BLUET:
-			case POTTED_BAMBOO:
-			case POTTED_BIRCH_SAPLING:
-			case POTTED_BLUE_ORCHID:
-			case POTTED_BROWN_MUSHROOM:
-			case POTTED_CACTUS:
-			case POTTED_CORNFLOWER:
-			case POTTED_DANDELION:
-			case POTTED_DARK_OAK_SAPLING:
-			case POTTED_DEAD_BUSH:
-			case POTTED_FERN:
-			case POTTED_JUNGLE_SAPLING:
-			case POTTED_LILY_OF_THE_VALLEY:
-			case POTTED_OAK_SAPLING:
-			case POTTED_ORANGE_TULIP:
-			case POTTED_OXEYE_DAISY:
-			case POTTED_PINK_TULIP:
-			case POTTED_POPPY:
-			case POTTED_RED_MUSHROOM:
-			case POTTED_RED_TULIP:
-			case POTTED_SPRUCE_SAPLING:
-			case POTTED_WHITE_TULIP:
-			case POTTED_WITHER_ROSE:
-				return true;
-			default:
-				return false;
-		}
-	}
-
-	/**
 	 * Checks whether a material is a crop. Something is a crop if it's a plant that can grow, excluding Saplings.
 	 *
 	 * @param material The material to check.
