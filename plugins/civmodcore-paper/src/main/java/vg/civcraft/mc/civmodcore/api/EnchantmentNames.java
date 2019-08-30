@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -77,8 +78,7 @@ public final class EnchantmentNames {
 				reader.close();
 			}
 			catch (IOException error) {
-				logger.warning("Could not load enchantments from enchantments.csv");
-				error.printStackTrace();
+				logger.log(Level.WARNING, "Could not load enchantments from enchantments.csv", error);
 			}
 		}
 		else {

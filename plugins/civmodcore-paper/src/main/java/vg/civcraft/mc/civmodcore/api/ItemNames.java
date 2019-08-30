@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -79,9 +80,8 @@ public final class ItemNames {
 				}
 				reader.close();
 			}
-			catch (IOException | NullPointerException error) {
-				logger.warning("Could not load materials from materials.csv");
-				error.printStackTrace();
+			catch (IOException error) {
+				logger.log(Level.WARNING, "Could not load materials from materials.csv", error);
 			}
 		}
 		else {
