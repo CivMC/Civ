@@ -63,6 +63,9 @@ public class EntityListener implements Listener {
 		while (iterator.hasNext()) {
 			Block block = iterator.next();
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+			if (rein == null) {
+				continue;
+			}
 			ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein));
 			if (!rein.isBroken()) {
 				iterator.remove();
