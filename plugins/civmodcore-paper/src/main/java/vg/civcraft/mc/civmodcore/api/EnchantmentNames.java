@@ -62,7 +62,7 @@ public final class EnchantmentNames {
 						continue;
 					}
 					// If the name is empty, skip
-					String name = values [2];
+					String name = values[1];
 					if (name.isEmpty()) {
 						logger.warning("This enchantment has not been given a name: " + line);
 						// Go to the next line
