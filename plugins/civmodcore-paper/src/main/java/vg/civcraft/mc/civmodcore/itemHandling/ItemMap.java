@@ -107,6 +107,16 @@ public class ItemMap {
 			totalItems += input.getAmount();
 		}
 	}
+	
+	/**
+	 * Adds all the items contained in this instance to the given inventory
+	 * @param inventory Inventory to add items to
+	 */
+	public void addToInventory(Inventory inventory) {
+		for(ItemStack is : getItemStackRepresentation()) {
+			inventory.addItem(is);
+		}
+	}
 
 	/**
 	 * Removes the given ItemStack from this map. Only the amount of the given ItemStack will be removed, not all of
