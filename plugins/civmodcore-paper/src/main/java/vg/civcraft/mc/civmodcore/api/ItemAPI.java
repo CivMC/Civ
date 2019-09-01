@@ -160,6 +160,9 @@ public final class ItemAPI {
 	 * @see ItemAPI#clearLore(ItemStack)
 	 * */
 	public static void setLore(@Nonnull ItemStack item, @Nullable String... lines) {
+		if (lines == null) {
+			ItemAPI.clearLore(item);
+		}
 		setLore(item, Arrays.asList(lines));
 	}
 
