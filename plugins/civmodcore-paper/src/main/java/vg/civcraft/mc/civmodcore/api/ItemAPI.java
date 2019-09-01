@@ -31,7 +31,7 @@ public final class ItemAPI {
 		if (item == null) {
 			return false;
 		}
-		if (item.getType() == Material.AIR) {
+		if (MaterialAPI.isAir(item.getType())) {
 			return false;
 		}
 		if (item.getAmount() <= 0) {
@@ -160,6 +160,9 @@ public final class ItemAPI {
 	 * @see ItemAPI#clearLore(ItemStack)
 	 * */
 	public static void setLore(@Nonnull ItemStack item, @Nullable String... lines) {
+		if (lines == null) {
+			ItemAPI.clearLore(item);
+		}
 		setLore(item, Arrays.asList(lines));
 	}
 
@@ -257,9 +260,7 @@ public final class ItemAPI {
 	 * */
 	public static void clearLore(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot clear the item's lore; the item is null.");
-		List<String> lore = getLore(item);
-		lore.clear();
-		setLore(item, lore);
+		setLore(item, Collections.emptyList());
 	}
 
 }

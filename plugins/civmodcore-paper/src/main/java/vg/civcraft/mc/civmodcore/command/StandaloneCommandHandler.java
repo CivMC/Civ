@@ -95,7 +95,7 @@ public class StandaloneCommandHandler {
 	}
 
 	public List<String> tabCompleteCommand(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
-		StandaloneCommand command = commands.get(cmd.getName());
+		StandaloneCommand command = commands.get(cmd.getName().toLowerCase());
 		if (command == null) {
 			plugin.getLogger().warning(
 					"Could not tab complete command " + cmd.getName() + ", no implementation was provided");

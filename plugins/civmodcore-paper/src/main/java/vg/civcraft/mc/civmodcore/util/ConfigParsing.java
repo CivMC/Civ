@@ -70,7 +70,7 @@ public class ConfigParsing {
 			m = null;
 		} finally {
 			if (m == null) {
-				log.severe("Failed to find material" + m + " in section " + current.getCurrentPath());
+				log.severe("Failed to find material " + current.getString("material") + " in section " + current.getCurrentPath());
 				return im;
 			}
 		}
@@ -216,7 +216,7 @@ public class ConfigParsing {
 	 * have to be sorted and may even list the same unit multiple times for
 	 * different values, but the values are not allowed to be separated by anything
 	 *
-	 * @param arg Parsed string containing the time format
+	 * @param input Parsed string containing the time format
 	 * @return How many ticks the given time value is
 	 */
 	public static long parseTime(String input) {
