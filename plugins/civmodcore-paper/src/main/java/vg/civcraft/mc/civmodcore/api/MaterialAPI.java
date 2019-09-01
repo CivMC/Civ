@@ -181,6 +181,7 @@ public final class MaterialAPI {
 			case CACTUS:
 			case CARROTS:
 			case CHORUS_FLOWER:
+			case CHORUS_PLANT:
 			case COCOA:
 			case KELP:
 			case MELON_STEM:
