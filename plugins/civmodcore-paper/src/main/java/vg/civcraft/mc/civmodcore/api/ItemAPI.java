@@ -260,9 +260,7 @@ public final class ItemAPI {
 	 * */
 	public static void clearLore(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot clear the item's lore; the item is null.");
-		List<String> lore = getLore(item);
-		lore.clear();
-		setLore(item, lore);
+		setLore(item, Collections.emptyList());
 	}
 
 }
