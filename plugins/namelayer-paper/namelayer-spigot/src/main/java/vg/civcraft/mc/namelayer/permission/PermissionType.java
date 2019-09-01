@@ -43,19 +43,19 @@ public class PermissionType {
 		return permissionById.get(id);
 	}
 	
-	public static void registerPermission(String name, List<PlayerType> defaultPermLevels) {
-		registerPermission(name, defaultPermLevels, null);
+	public static PermissionType registerPermission(String name, List<PlayerType> defaultPermLevels) {
+		return registerPermission(name, defaultPermLevels, null);
 	}
 	
-	public static void registerPermission(String name, List<PlayerType> defaultPermLevels, String description) {
+	public static PermissionType registerPermission(String name, List<PlayerType> defaultPermLevels, String description) {
 		if (name == null ) {
 			Bukkit.getLogger().severe("Could not register permission, name was null");
-			return;
+			return null;
 		}
 		PermissionType existing = permissionByName.get(name);
 		if (existing != null) {
 			existing.update(defaultPermLevels, description);
-			return;
+			return existing;
 		}
 		//not in db yet
 		int id = maximumExistingId + 1;
@@ -65,6 +65,7 @@ public class PermissionType {
 		if (!defaultPermLevels.isEmpty()) {
 			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, perm);
 		}
+		return perm;
 	}
 
 	private static PermissionType internalRegisterPermission(int id, String name, List <PlayerType> defaultPermLevels, String description) {
