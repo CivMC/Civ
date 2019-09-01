@@ -162,8 +162,9 @@ public final class ItemAPI {
 	public static void setLore(@Nonnull ItemStack item, @Nullable String... lines) {
 		if (lines == null) {
 			ItemAPI.clearLore(item);
+		} else {
+			setLore(item, Arrays.asList(lines));
 		}
-		setLore(item, Arrays.asList(lines));
 	}
 
 	/**
