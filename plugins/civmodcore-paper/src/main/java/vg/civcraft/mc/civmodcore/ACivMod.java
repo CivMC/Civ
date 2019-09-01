@@ -128,7 +128,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message) {
-		if (getConfig().getBoolean("debug", false)) {
+		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message);
 		}
 	}
@@ -141,7 +141,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message, Object... vars) {
-		if (getConfig().getBoolean("debug", false)) {
+		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
 			getLogger().log(Level.INFO, message, vars);
 		}
 	}
