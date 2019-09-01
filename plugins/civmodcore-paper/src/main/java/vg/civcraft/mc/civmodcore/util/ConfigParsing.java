@@ -70,7 +70,7 @@ public class ConfigParsing {
 			m = null;
 		} finally {
 			if (m == null) {
-				log.severe("Failed to find material" + m + " in section " + current.getCurrentPath());
+				log.severe("Failed to find material " + current.getString("material") + " in section " + current.getCurrentPath());
 				return im;
 			}
 		}
