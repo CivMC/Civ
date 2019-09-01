@@ -34,6 +34,9 @@ public final class ItemAPI {
 		if (item.getType() == Material.AIR) {
 			return false;
 		}
+		if (!item.getType().isItem()) {
+			return false;
+		}
 		if (item.getAmount() <= 0) {
 			return false;
 		}
