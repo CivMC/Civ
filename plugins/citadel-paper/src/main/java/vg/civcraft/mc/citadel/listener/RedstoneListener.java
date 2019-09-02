@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,6 +17,7 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.Switch;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -30,38 +32,25 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class RedstoneListener implements Listener {
 
 	private static boolean isAuthorizedPlayerNear(Reinforcement reinforcement, double distance) {
 		Location reinLocation = reinforcement.getLocation();
-		double min_x = reinLocation.getX() - distance;
-		double min_z = reinLocation.getZ() - distance;
-		double max_x = reinLocation.getX() + distance;
-		double max_z = reinLocation.getZ() + distance;
-		boolean result = false;
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (player.isDead()) {
-				continue;
-			}
-			Location playerLocation = player.getLocation();
-			double player_x = playerLocation.getX();
-			double player_z = playerLocation.getZ();
-			// Simple bounding box check to quickly rule out Players
-			// before doing the more expensive playerLocation.distance
-			if (player_x < min_x || player_x > max_x || player_z < min_z || player_z > max_z) {
-				continue;
-			}
-			if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getDoors())) {
-				continue;
-			}
-			double distanceSquared = playerLocation.distance(reinLocation);
-			if (distanceSquared <= distance) {
-				result = true;
-				break;
-			}
+
+		if (reinLocation.getWorld() == null) {
+			return false;
 		}
-		return result;
+
+		// distance is radius, not diameter
+		double diameter = distance * 2;
+		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, diameter, diameter, diameter,
+				e -> e instanceof Player
+						&& !e.isDead()
+						&& reinforcement.hasPermission(e.getUniqueId(), Citadel.doorPerm)
+						&& e.getLocation().distanceSquared(reinLocation) <= diameter * diameter);
+		return !entities.isEmpty();
 	}
 
 	private double maxRedstoneDistance;
@@ -73,7 +62,7 @@ public class RedstoneListener implements Listener {
 		this.authorizations = new HashMap<>();
 		Bukkit.getScheduler().scheduleSyncRepeatingTask(Citadel.getInstance(), () -> {
 			authorizations.clear();
-		}, 1L, 1L);
+		}, 1, 1);
 	}
 
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
@@ -157,11 +146,7 @@ public class RedstoneListener implements Listener {
 	}
 
 	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
-		for (BlockFace face : BlockListener.ALL_SIDES) {
-			if (face == skip) {
-				continue;
-			}
-			Block rel = block.getRelative(face);
+		for (Block rel : BlockAPI.getAllSides(block, f -> f != skip)) {
 			BlockData blockData = rel.getBlockData();
 			if (!(blockData instanceof Openable)) {
 				continue;
@@ -189,8 +174,10 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		Material mat = e.getClickedBlock().getType();
-		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
-				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE && !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
+		if (mat != Material.STONE_PRESSURE_PLATE
+				&& mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
+				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE
+				&& !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);

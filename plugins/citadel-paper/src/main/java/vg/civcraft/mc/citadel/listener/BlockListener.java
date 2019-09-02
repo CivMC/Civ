@@ -1,8 +1,5 @@
 package vg.civcraft.mc.citadel.listener;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -29,14 +26,9 @@ import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class BlockListener implements Listener {
-
-	public static final List<BlockFace> ALL_SIDES = Arrays.asList(BlockFace.UP, BlockFace.DOWN, BlockFace.NORTH,
-			BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
-
-	public static final List<BlockFace> PLANAR_SIDES = Arrays.asList(BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST,
-			BlockFace.EAST);
 
 	private static final Material matfire = Material.FIRE;
 
@@ -195,8 +187,7 @@ public class BlockListener implements Listener {
 		if (mat != Material.CHEST && mat != Material.TRAPPED_CHEST) {
 			return;
 		}
-		for (BlockFace face : PLANAR_SIDES) {
-			Block rel = e.getBlock().getRelative(face);
+		for (Block rel : BlockAPI.getPlanarSides(e.getBlock())) {
 			if (rel.getType() == mat && ReinforcementLogic.isPreventingBlockAccess(e.getPlayer(), rel)) {
 				e.setCancelled(true);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
