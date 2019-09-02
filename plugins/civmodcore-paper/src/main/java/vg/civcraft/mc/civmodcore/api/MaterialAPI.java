@@ -3,7 +3,7 @@ package vg.civcraft.mc.civmodcore.api;
 import org.bukkit.Material;
 
 /**
- * Class of static APIs for Materials. Some material functions are located on classes more suited for them, such as 
+ * Class of static APIs for Materials. Some material functions are located on classes more suited for them, such as
  * {@link SpawnEggAPI#isSpawnEgg(Material) SpawnEggAPI.isSpawnEgg()}, but is also a supplement to Bukkit's
  * {@link org.bukkit.Tag Tag} class that fulfills a similar function.
  * */
@@ -43,6 +43,9 @@ public final class MaterialAPI {
 		if (material == null) {
 			return false;
 		}
+		if (isStrippedLog(material)) {
+			return true;
+		}
 		switch (material) {
 			case ACACIA_LOG:
 			case BIRCH_LOG:
@@ -50,12 +53,6 @@ public final class MaterialAPI {
 			case JUNGLE_LOG:
 			case OAK_LOG:
 			case SPRUCE_LOG:
-			case STRIPPED_ACACIA_LOG:
-			case STRIPPED_BIRCH_LOG:
-			case STRIPPED_DARK_OAK_LOG:
-			case STRIPPED_JUNGLE_LOG:
-			case STRIPPED_OAK_LOG:
-			case STRIPPED_SPRUCE_LOG:
 				return true;
 			default:
 				return false;
@@ -72,6 +69,9 @@ public final class MaterialAPI {
 		if (material == null) {
 			return false;
 		}
+		if (isStrippedPlank(material)) {
+			return true;
+		}
 		switch (material) {
 			case ACACIA_WOOD:
 			case BIRCH_WOOD:
@@ -79,12 +79,6 @@ public final class MaterialAPI {
 			case JUNGLE_WOOD:
 			case OAK_WOOD:
 			case SPRUCE_WOOD:
-			case STRIPPED_ACACIA_WOOD:
-			case STRIPPED_BIRCH_WOOD:
-			case STRIPPED_DARK_OAK_WOOD:
-			case STRIPPED_JUNGLE_WOOD:
-			case STRIPPED_OAK_WOOD:
-			case STRIPPED_SPRUCE_WOOD:
 				return true;
 			default:
 				return false;
@@ -101,18 +95,36 @@ public final class MaterialAPI {
 		if (material == null) {
 			return false;
 		}
+		return isStrippedLog(material) || isStrippedPlank(material);
+	}
+
+	public static boolean isStrippedLog(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case STRIPPED_ACACIA_LOG:
-			case STRIPPED_ACACIA_WOOD:
 			case STRIPPED_BIRCH_LOG:
-			case STRIPPED_BIRCH_WOOD:
 			case STRIPPED_DARK_OAK_LOG:
-			case STRIPPED_DARK_OAK_WOOD:
 			case STRIPPED_JUNGLE_LOG:
-			case STRIPPED_JUNGLE_WOOD:
 			case STRIPPED_OAK_LOG:
-			case STRIPPED_OAK_WOOD:
 			case STRIPPED_SPRUCE_LOG:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	public static boolean isStrippedPlank(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case STRIPPED_ACACIA_WOOD:
+			case STRIPPED_BIRCH_WOOD:
+			case STRIPPED_DARK_OAK_WOOD:
+			case STRIPPED_JUNGLE_WOOD:
+			case STRIPPED_OAK_WOOD:
 			case STRIPPED_SPRUCE_WOOD:
 				return true;
 			default:
