@@ -33,7 +33,7 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 	public void handleBlockPlace(BlockPlaceEvent e) {
 		ItemStack placed = e.getItemInHand();
 		Player player = e.getPlayer();
-		// check if we have a setup for this block, weneed a copy for lookup so we can
+		// check if we have a setup for this block, we need a copy for lookup so we can
 		// set amount to 1
 		ItemStack lookUpCopy = placed.clone();
 		lookUpCopy.setAmount(1);

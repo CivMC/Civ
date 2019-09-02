@@ -6,7 +6,7 @@ import org.bukkit.event.HandlerList;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 /**
- * Called when a reinforcement is damaged by a player
+ * Called when a reinforcement is damaged by a player, but not when it is damaged by other entities or natural causes
  *
  */
 public class ReinforcementDamageEvent extends ReinforcementEvent {
@@ -17,9 +17,9 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 		return handlers;
 	}
 
-	private double damageDone;
+	private float damageDone;
 
-	public ReinforcementDamageEvent(Player player, Reinforcement rein, double damageDone) {
+	public ReinforcementDamageEvent(Player player, Reinforcement rein, float damageDone) {
 		super(player, rein);
 		this.damageDone = damageDone;
 	}
@@ -29,7 +29,7 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 	 * 
 	 * @return Total damage
 	 */
-	public double getDamageDone() {
+	public float getDamageDone() {
 		return damageDone;
 	}
 
@@ -43,7 +43,7 @@ public class ReinforcementDamageEvent extends ReinforcementEvent {
 	 * 
 	 * @param damageDone Damage to do
 	 */
-	public void setDamageDone(double damageDone) {
+	public void setDamageDone(float damageDone) {
 		this.damageDone = damageDone;
 	}
 }

@@ -1,6 +1,5 @@
 package vg.civcraft.mc.citadel;
 
-import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -23,20 +22,8 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class Citadel extends ACivMod {
-
-	public static final String chestPerm = "CHESTS";
-	public static final String bypassPerm = "BYPASS_REINFORCEMENT";
-	public static final String cropsPerm = "CROPS";
-	public static final String insecurePerm = "INSECURE_REINFORCEMENT";
-	public static final String reinforcePerm = "REINFORCE";
-	public static final String doorPerm = "DOORS";
-	public static final String acidPerm = "ACIDBLOCK";
-	public static final String infoPerm = "REINFORCEMENT_INFO";
-	public static final String repairPerm = "REPAIR_REINFORCEMENT";
 
 	private static Citadel instance;
 
@@ -135,7 +122,7 @@ public class Citadel extends ACivMod {
 		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
 			holoManager = new HologramManager();
 		}
-		registerNameLayerPermissions();
+		CitadelPermissionHandler.setup();
 		registerListeners();
 	}
 
@@ -147,36 +134,5 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
-	}
-
-	@SuppressWarnings("unchecked")
-	private void registerNameLayerPermissions() {
-		LinkedList<PlayerType> membersAndAbove = new LinkedList<>();
-		membersAndAbove.add(PlayerType.MEMBERS);
-		membersAndAbove.add(PlayerType.MODS);
-		membersAndAbove.add(PlayerType.ADMINS);
-		membersAndAbove.add(PlayerType.OWNER);
-		LinkedList<PlayerType> modsAndAbove = new LinkedList<>();
-		modsAndAbove.add(PlayerType.MODS);
-		modsAndAbove.add(PlayerType.ADMINS);
-		modsAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission(reinforcePerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
-				"Allows reinforcing blocks on this group");
-		PermissionType.registerPermission(acidPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
-				"Allows activating acid blocks reinforced on this group");
-		PermissionType.registerPermission(infoPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
-				"Allows viewing information on reinforcements reinforced on this group");
-		PermissionType.registerPermission(bypassPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
-				"Allows bypassing reinforcements reinforced on this group");
-		PermissionType.registerPermission(repairPerm, (LinkedList<PlayerType>) modsAndAbove.clone(),
-				"Allows repairing reinforcements reinforced on this group");
-		PermissionType.registerPermission(doorPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
-				"Allows opening doors reinforced on this group");
-		PermissionType.registerPermission(chestPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
-				"Allows opening containers like chests reinforced on this group");
-		PermissionType.registerPermission(cropsPerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
-				"Allows harvesting crops growing on soil reinforced on this group");
-		PermissionType.registerPermission(insecurePerm, (LinkedList<PlayerType>) membersAndAbove.clone(),
-				"Allows toggling the insecure flag on reinforcements");
 	}
 }

@@ -7,6 +7,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementChangeTypeEvent;
@@ -16,7 +17,6 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class ReinforcingState extends AbstractPlayerState {
 
@@ -71,7 +71,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		}
 		// does the player have permission to reinforce on that group
 		if (!NameAPI.getGroupManager().hasAccess(group, e.getPlayer().getUniqueId(),
-				PermissionType.getPermission(Citadel.reinforcePerm))) {
+				CitadelPermissionHandler.getReinforce())) {
 			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 					"You seem to have lost permission to reinforce on " + group.getName());
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
@@ -80,7 +80,7 @@ public class ReinforcingState extends AbstractPlayerState {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		// if reinforcement exists, check if player has permission to edit it
 		if (rein != null) {
-			if (!rein.hasPermission(e.getPlayer(), Citadel.bypassPerm)) {
+			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass())) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						"You do not have permission to bypass reinforcements on " + group.getName());
 				return;
@@ -129,8 +129,8 @@ public class ReinforcingState extends AbstractPlayerState {
 				Bukkit.getPluginManager().callEvent(rcte);
 				if (!rcte.isCancelled()) {
 					giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
-					rein.setHealth(-1);
-					ReinforcementLogic.createReinforcement(player, rein.getLocation().getBlock(), type, group);
+					rein.setType(type);
+					rein.resetCreationTime();
 					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
 							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName());
 				} else if (changedGroup) {

@@ -16,7 +16,6 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * Just a useful class with general and misplaced methods that can be called
@@ -144,7 +143,7 @@ public class CitadelUtility {
 		}
 		// check if player still has permission
 		if (!NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(),
-				PermissionType.getPermission(Citadel.reinforcePerm))) {
+				CitadelPermissionHandler.getReinforce())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"You seem to have lost permission to reinforce on " + group.getName());
 			Citadel.getInstance().getStateManager().setState(player, null);
@@ -178,7 +177,6 @@ public class CitadelUtility {
 			Citadel.getInstance().getLogger().info(player.getName() + " created reinforcement with " + type.getName()
 					+ " for " + block.getType().toString() + " at " + block.getLocation().toString());
 		}
-		ReinforcementLogic.createReinforcement(player, block, type, group);
-		return false;
+		return ReinforcementLogic.createReinforcement(player, block, type, group) == null;
 	}
 }

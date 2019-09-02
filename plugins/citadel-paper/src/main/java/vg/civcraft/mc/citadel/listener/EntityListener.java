@@ -33,7 +33,7 @@ public class EntityListener implements Listener {
 	protected GroupManager gm = NameAPI.getGroupManager();
 
 	// prevent zombies from breaking reinforced doors
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void breakDoor(EntityBreakDoorEvent ebde) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ebde.getBlock());
 		if (rein != null) {
@@ -44,7 +44,7 @@ public class EntityListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void changeBlock(EntityChangeBlockEvent ecbe) {
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ecbe.getBlock());
 		if (rein != null) {
@@ -56,7 +56,7 @@ public class EntityListener implements Listener {
 	}
 
 	// apply explosion damage to reinforcements
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void explode(EntityExplodeEvent eee) {
 		Iterator<Block> iterator = eee.blockList().iterator();
 		// we can edit the result by removing blocks from the list
@@ -91,7 +91,7 @@ public class EntityListener implements Listener {
 		return blocks;
 	}
 
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		final UUID uuid = p.getUniqueId();
@@ -112,7 +112,7 @@ public class EntityListener implements Listener {
 	}
 
 	// prevent creating golems from reinforced blocks
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
 	public void spawn(CreatureSpawnEvent cse) {
 		EntityType type = cse.getEntityType();
 		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER

@@ -18,11 +18,13 @@ import com.gmail.filoghost.holographicdisplays.api.Hologram;
 import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.playerstate.InformationState;
 
 public class HologramManager {
 
-	//distance from center to diagonal corner is 0.5 * sqrt(2) and we add 10 % for good measure
+	// distance from center to diagonal corner is 0.5 * sqrt(2) and we add 10 % for
+	// good measure
 	private static final double holoOffSet = 0.55 * Math.sqrt(2);
 
 	private Map<Location, Map<UUID, PlayerHolo>> holograms;
@@ -97,7 +99,7 @@ public class HologramManager {
 			// we intentionally cache permission to avoid having to look it up often
 			// showing a bit too much information if the player gets kicked while a holo is
 			// already visible does not matter
-			this.hasPermission = reinforcement.hasPermission(player, Citadel.infoPerm);
+			this.hasPermission = reinforcement.hasPermission(player, CitadelPermissionHandler.getInfo());
 		}
 
 		void show() {

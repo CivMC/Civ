@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.playerstate.AbstractPlayerState;
 import vg.civcraft.mc.citadel.playerstate.AdvancedFortificationState;
@@ -21,7 +22,6 @@ import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 @CivCommand(id = "cta")
 public class AdvancedFortification extends StandaloneCommand {
@@ -78,7 +78,7 @@ public class AdvancedFortification extends StandaloneCommand {
 			return true;
 		}
 		boolean hasAccess = NameAPI.getGroupManager().hasAccess(group.getName(), player.getUniqueId(),
-				PermissionType.getPermission(Citadel.reinforcePerm));
+				CitadelPermissionHandler.getReinforce());
 		if (!hasAccess) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You do not have permission to reinforce on " + group.getName());
 			return true;
@@ -94,10 +94,10 @@ public class AdvancedFortification extends StandaloneCommand {
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		if (args.length == 0)
-			return GroupTabCompleter.complete(null, PermissionType.getPermission(Citadel.reinforcePerm),
+			return GroupTabCompleter.complete(null, CitadelPermissionHandler.getReinforce(),
 					(Player) sender);
 		else if (args.length == 1)
-			return GroupTabCompleter.complete(args[0], PermissionType.getPermission(Citadel.reinforcePerm),
+			return GroupTabCompleter.complete(args[0], CitadelPermissionHandler.getReinforce(),
 					(Player) sender);
 		else {
 			return new ArrayList<>();

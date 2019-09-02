@@ -1,13 +1,15 @@
 package vg.civcraft.mc.citadel.playerstate;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -35,13 +37,13 @@ public class PatchState extends AbstractPlayerState {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "This block is not reinforced");
 			return;
 		}
-		if (!rein.hasPermission(player, Citadel.repairPerm)) {
+		if (!rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"You do not have permission to repair reinforcements on this group");
 			return;
 		}
 		if (rein.getHealth() >= rein.getType().getHealth()) {
-			if (rein.hasPermission(player, Citadel.infoPerm)) {
+			if (rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD,
 						"Reinforcement is already at " + InformationState.formatHealth(rein) + ChatColor.GOLD
 								+ " health with " + ChatColor.AQUA + rein.getType().getName() + ChatColor.GOLD + " on "
@@ -58,19 +60,18 @@ public class PatchState extends AbstractPlayerState {
 					+ rein.getType().getName() + ChatColor.GOLD + " reinforcements");
 			return;
 		}
+		ReinforcementRepairEvent repairEvent = new ReinforcementRepairEvent(e.getPlayer(), rein);
+		Bukkit.getPluginManager().callEvent(repairEvent);
+		if (repairEvent.isCancelled()) {
+			return;
+		}
 		if (!rein.rollForItemReturn()) {
 			if (!CitadelUtility.consumeReinforcementItems(player, rein.getType())) {
 				return;
 			}
 		}
-		if (Citadel.getInstance().getConfigManager().logCreation()) {
-			Citadel.getInstance().getLogger()
-					.info(player.getName() + " recreated reinforcement with " + rein.getType().getName() + " for "
-							+ e.getClickedBlock().getType().toString() + " at "
-							+ e.getClickedBlock().getLocation().toString() + " via repair");
-		}
-		rein.setHealth(-1);
-		ReinforcementLogic.createReinforcement(player, rein.getLocation().getBlock(), rein.getType(), rein.getGroup());
+		rein.setHealth(rein.getType().getHealth());
+		rein.resetCreationTime();
 	}
 
 }

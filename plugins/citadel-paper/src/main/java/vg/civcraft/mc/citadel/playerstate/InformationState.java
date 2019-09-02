@@ -11,6 +11,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.AcidManager;
@@ -92,7 +93,7 @@ public class InformationState extends AbstractPlayerState {
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			e.setCancelled(true);
 		}
-		if (!rein.hasPermission(player, Citadel.infoPerm)) {
+		if (!rein.hasPermission(player, CitadelPermissionHandler.getInfo())) {
 			Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
 			return;
 		}

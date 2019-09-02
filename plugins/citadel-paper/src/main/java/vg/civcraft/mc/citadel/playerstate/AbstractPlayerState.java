@@ -12,7 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
@@ -43,7 +43,7 @@ public abstract class AbstractPlayerState {
 			// no reinforcement, normal break which we dont care about
 			return;
 		}
-		boolean hasAccess = rein.hasPermission(e.getPlayer(), Citadel.bypassPerm);
+		boolean hasAccess = rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass());
 		BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
 		boolean hasByPass = setting.getValue(e.getPlayer());
 		if (hasAccess && hasByPass) {
@@ -51,14 +51,16 @@ public abstract class AbstractPlayerState {
 			Bukkit.getPluginManager().callEvent(bypassEvent);
 			if (bypassEvent.isCancelled()) {
 				e.setCancelled(true);
+				return;
 			}
 			if (rein.rollForItemReturn()) {
 				giveReinforcement(e.getBlock().getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
 			}
+			rein.setHealth(-1);
 			return;
 		}
 		if (CitadelUtility.isPlant(e.getBlock())) {
-			if (rein.hasPermission(e.getPlayer(), Citadel.cropsPerm)
+			if (rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getCrops())
 					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
 				// allow, because player has crop permission and the only reinforcement
 				// protecting is in the soil
@@ -70,7 +72,7 @@ public abstract class AbstractPlayerState {
 					"You could bypass this reinforcement " + "if you turn bypass mode on with '/ctb'");
 		}
 		e.setCancelled(true);
-		double damage = ReinforcementLogic.getDamageApplied(rein);
+		float damage = ReinforcementLogic.getDamageApplied(rein);
 		ReinforcementDamageEvent dre = new ReinforcementDamageEvent(e.getPlayer(), rein, damage);
 		Bukkit.getPluginManager().callEvent(dre);
 		if (dre.isCancelled()) {

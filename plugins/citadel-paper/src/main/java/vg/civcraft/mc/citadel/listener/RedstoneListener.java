@@ -27,6 +27,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
@@ -51,7 +52,7 @@ public class RedstoneListener implements Listener {
 			if (player_x < min_x || player_x > max_x || player_z < min_z || player_z > max_z) {
 				continue;
 			}
-			if (!reinforcement.hasPermission(player, Citadel.doorPerm)) {
+			if (!reinforcement.hasPermission(player, CitadelPermissionHandler.getDoors())) {
 				continue;
 			}
 			double distanceSquared = playerLocation.distance(reinLocation);
@@ -97,7 +98,7 @@ public class RedstoneListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void pressButton(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
@@ -146,7 +147,7 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		for (UUID uuid : playersActivating) {
-			if (rein.hasPermission(uuid, Citadel.doorPerm)) {
+			if (rein.hasPermission(uuid, CitadelPermissionHandler.getDoors())) {
 				// single valid perm is enough to open
 				return;
 			}

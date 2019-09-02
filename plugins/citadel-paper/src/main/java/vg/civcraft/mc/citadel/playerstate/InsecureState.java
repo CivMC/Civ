@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -32,7 +32,7 @@ public class InsecureState extends AbstractPlayerState {
 			return;
 		}
 		e.setCancelled(true);
-		if (rein.hasPermission(e.getPlayer(), Citadel.insecurePerm)) {
+		if (rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getInsecure())) {
 			rein.toggleInsecure();
 			if (rein.isInsecure()) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW,

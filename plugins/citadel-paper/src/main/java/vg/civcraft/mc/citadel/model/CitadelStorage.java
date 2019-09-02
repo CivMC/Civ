@@ -64,18 +64,19 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 	public void update(Reinforcement data, ChunkCoord coord) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement updateRein = insertConn.prepareStatement(
-						"update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ? where "
+						"update ctdl_reinforcements set type_id = ?, health = ?, group_id = ?, insecure = ?, creation_time = ? where "
 								+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
 			updateRein.setShort(1, data.getType().getID());
 			updateRein.setFloat(2, data.getHealth());
 			updateRein.setInt(3, data.getGroupId());
 			updateRein.setBoolean(4, data.isInsecure());
-			updateRein.setInt(5, coord.getX());
-			updateRein.setInt(6, coord.getZ());
-			updateRein.setShort(7, (short) coord.getWorldID());
-			updateRein.setByte(8, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			updateRein.setByte(9, (byte) data.getLocation().getBlockY());
-			updateRein.setByte(10,(byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
+			updateRein.setTimestamp(5, new Timestamp(data.getCreationTime()));
+			updateRein.setInt(6, coord.getX());
+			updateRein.setInt(7, coord.getZ());
+			updateRein.setShort(8, (short) coord.getWorldID());
+			updateRein.setByte(9, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
+			updateRein.setByte(10, (byte) data.getLocation().getBlockY());
+			updateRein.setByte(11,(byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			updateRein.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update reinforcement in db: ", e);

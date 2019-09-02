@@ -24,9 +24,11 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class BlockListener implements Listener {
 
@@ -38,17 +40,17 @@ public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void blockBreakEvent(BlockBreakEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBreakBlock(event);
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void blockPlaceEvent(BlockPlaceEvent event) {
 		Citadel.getInstance().getStateManager().getState(event.getPlayer()).handleBlockPlace(event);
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void blockBurn(BlockBurnEvent bbe) {
 		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(bbe.getBlock());
 		if (reinforcement == null) {
@@ -78,7 +80,7 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void blockPhysEvent(BlockPhysicsEvent event) {
 		Block block = event.getBlock();
 		if (block.getType().hasGravity()) {
@@ -117,7 +119,7 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void interact(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
 			return;
@@ -126,7 +128,7 @@ public class BlockListener implements Listener {
 	}
 
 	// prevent placing water inside of reinforced blocks
-	@EventHandler(priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.LOW)
 	public void liquidDumpEvent(PlayerBucketEmptyEvent event) {
 		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 		if (block.getType().equals(Material.AIR) || block.getType().isSolid()) {
@@ -148,7 +150,7 @@ public class BlockListener implements Listener {
 	}
 
 	// prevent breaking reinforced blocks through plant growth
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		for (BlockState block_state : event.getBlocks()) {
 			if (ReinforcementLogic.getReinforcementProtecting(block_state.getBlock()) != null) {
@@ -159,7 +161,7 @@ public class BlockListener implements Listener {
 	}
 
 	// prevent opening reinforced things
-	@EventHandler(priority = EventPriority.LOWEST)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void openContainer(PlayerInteractEvent e) {
 		if (!e.hasBlock()) {
 			return;
@@ -169,7 +171,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Container) {
-			if (!rein.hasPermission(e.getPlayer(), Citadel.chestPerm)) {
+			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
@@ -177,7 +179,7 @@ public class BlockListener implements Listener {
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
-			if (!rein.hasPermission(e.getPlayer(), Citadel.doorPerm)) {
+			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
 				e.setCancelled(true);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
@@ -207,7 +209,7 @@ public class BlockListener implements Listener {
 	// remove reinforced air
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void removeReinforcedAir(BlockPlaceEvent e) {
-		if (e.getBlockReplacedState().getType() != Material.AIR) {
+		if (!MaterialAPI.isAir(e.getBlockReplacedState().getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(e.getBlock());

@@ -2,6 +2,7 @@ package vg.civcraft.mc.citadel.listener;
 
 import org.bukkit.block.Container;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
@@ -13,7 +14,7 @@ public class InventoryListener implements Listener {
 
 	// prevent sucking reinforcements out of reinforced containers with hoppers on
 	// different groups or filling into them
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory sourceInv = event.getSource();
 		Reinforcement sourceRein = null;

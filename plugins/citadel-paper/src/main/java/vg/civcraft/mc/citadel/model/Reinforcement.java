@@ -18,7 +18,7 @@ public class Reinforcement extends TableBasedDataObject {
 
 	private static Random rng = new Random();
 
-	private final long creationTime;
+	private long creationTime;
 	private ReinforcementType type;
 	private float health;
 	private int groupId;
@@ -95,17 +95,32 @@ public class Reinforcement extends TableBasedDataObject {
 	public ReinforcementType getType() {
 		return type;
 	}
-
-	public boolean hasPermission(Player p, String permission) {
-		return hasPermission(p.getUniqueId(), permission);
-	}
-
-	public boolean hasPermission(UUID uuid, String permission) {
+	
+	/**
+	 * Checks whether the player with the given UUID has the given permission on the group this reinforcement belongs to
+	 * @param player UUID of the player to check permissions for, not null
+	 * @param permission Permission to check, not null
+	 * @return True if the player has the given permission on this reinforcements group, false otherwise
+	 */
+	public boolean hasPermission(UUID uuid, PermissionType permission) {
+		if (permission == null) {
+			throw new IllegalArgumentException("PermissionType may not be null");
+		}
 		Group g = getGroup();
 		if (g == null) {
 			return false;
 		}
-		return NameAPI.getGroupManager().hasAccess(g, uuid, PermissionType.getPermission(permission));
+		return NameAPI.getGroupManager().hasAccess(g, uuid, permission);
+	}
+	
+	/**
+	 * Checks whether the given player has the given permission on the group this reinforcement belongs to
+	 * @param player Player to check permissions for, not null
+	 * @param permission Permission to check, not null
+	 * @return True if the player has the given permission on this reinforcements group, false otherwise
+	 */
+	public boolean hasPermission(Player player, PermissionType permission) {
+		return hasPermission(player.getUniqueId(), permission);
 	}
 
 	/**
@@ -141,7 +156,7 @@ public class Reinforcement extends TableBasedDataObject {
 			throw new IllegalArgumentException("Group can not be set to null for a reinforcement");
 		}
 		this.groupId = group.getGroupId();
-		setCacheState(CacheState.MODIFIED);
+		setDirty();
 	}
 
 	/**
@@ -156,13 +171,13 @@ public class Reinforcement extends TableBasedDataObject {
 			setCacheState(CacheState.DELETED);
 		}
 		else {
-			setCacheState(CacheState.MODIFIED);
+			setDirty();
 		}
 	}
 
 	public void setType(ReinforcementType type) {
 		this.type = type;
-		setCacheState(CacheState.MODIFIED);
+		setDirty();
 	}
 
 	/**
@@ -170,7 +185,14 @@ public class Reinforcement extends TableBasedDataObject {
 	 */
 	public void toggleInsecure() {
 		insecure = !insecure;
-		setCacheState(CacheState.MODIFIED);
+		setDirty();
+	}
+	
+	/**
+	 * Resets the timestamp at which the reinforcement was created to the current one
+	 */
+	public void resetCreationTime() {
+		this.creationTime = System.currentTimeMillis();
 	}
 
 	/**

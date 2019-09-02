@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
@@ -44,7 +45,7 @@ public class Acid extends StandaloneCommand {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not reinforced.");
 				return true;
 			}
-			if (!reinforcement.hasPermission(p, Citadel.acidPerm)) {
+			if (!reinforcement.hasPermission(p, CitadelPermissionHandler.getAcidblock())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED,
 						"You do not have sufficient permission to use acid blocks on this group.");
 				return true;

@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
+import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -19,16 +20,28 @@ public class ReinforcementLogic {
 
 	public static Reinforcement createReinforcement(Player player, Block block, ReinforcementType type, Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
+		ReinforcementCreationEvent event = new ReinforcementCreationEvent(player, rein);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isCancelled()) {
+			return null;
+		}
 		Citadel.getInstance().getReinforcementManager().putReinforcement(rein);
 		if (type.getCreationEffect() != null) {
 			type.getCreationEffect().playEffect(rein);
 		}
-		Bukkit.getPluginManager().callEvent(new ReinforcementCreationEvent(player, rein));
 		return rein;
 	}
 
-	public static void damageReinforcement(Reinforcement rein, double damage) {
-		rein.setHealth((float) (rein.getHealth() - damage));
+	public static void damageReinforcement(Reinforcement rein, float damage) {
+		float futureHealth = rein.getHealth() - damage;
+		if (futureHealth <= 0) {
+			ReinforcementDestructionEvent event = new ReinforcementDestructionEvent(rein, damage);
+			Bukkit.getPluginManager().callEvent(event);
+			if (event.isCancelled()) {
+				return;
+			}
+		}
+		rein.setHealth(futureHealth);
 		if (rein.isBroken()) {
 			if (rein.getType().getDestructionEffect() != null) {
 				rein.getType().getDestructionEffect().playEffect(rein);
@@ -40,8 +53,8 @@ public class ReinforcementLogic {
 		}
 	}
 
-	public static double getDamageApplied(Reinforcement reinforcement) {
-		double damageAmount = 1.0;
+	public static float getDamageApplied(Reinforcement reinforcement) {
+		float damageAmount = 1.0f;
 		if (!reinforcement.isMature()) {
 			double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
 			double progress = timeExisted / reinforcement.getType().getMaturationTime();
@@ -171,7 +184,7 @@ public class ReinforcementLogic {
 			if (rein.isInsecure()) {
 				return false;
 			}
-			return !rein.hasPermission(player, Citadel.chestPerm);
+			return !rein.hasPermission(player, CitadelPermissionHandler.getChests());
 		}
 		return false;
 	}
