@@ -53,6 +53,30 @@ public class PlayerReinforcement extends Reinforcement{
 		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("BYPASS_REINFORCEMENT"));
 	}
 
+	public boolean canPlaceOrBreakHangingEntity(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("HANGING_PLACE_BREAK"));
+	}
+
+	public boolean canPutInOrTakeFromItemFrame(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("ITEM_FRAME_PUT_TAKE"));
+	}
+
+	public boolean canRotateItemInItemFrame(Player p) {
+		checkValid();
+		if (g == null) {
+			return false;
+		}
+		return gm.hasAccess(g, p.getUniqueId(), PermissionType.getPermission("ITEM_FRAME_ROTATE"));
+	}
+
 	public boolean canAccessCrops(Player p) {
 		checkValid();
 		if (g == null) {

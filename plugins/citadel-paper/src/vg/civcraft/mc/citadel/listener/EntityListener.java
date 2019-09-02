@@ -1,16 +1,9 @@
 package vg.civcraft.mc.citadel.listener;
 
-import static vg.civcraft.mc.citadel.Utility.canPlace;
-import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
-import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
+import org.bukkit.inventory.ItemStack;
 import static vg.civcraft.mc.citadel.Utility.explodeReinforcement;
 import static vg.civcraft.mc.citadel.Utility.getRealBlock;
 import static vg.civcraft.mc.citadel.Utility.maybeReinforcementDamaged;
-import static vg.civcraft.mc.citadel.Utility.reinforcementBroken;
-import static vg.civcraft.mc.citadel.Utility.reinforcementDamaged;
-import static vg.civcraft.mc.citadel.Utility.timeUntilAcidMature;
-import static vg.civcraft.mc.citadel.Utility.timeUntilMature;
-import static vg.civcraft.mc.citadel.Utility.wouldPlantDoubleReinforce;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -23,7 +16,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Hanging;
 import org.bukkit.entity.ItemFrame;
@@ -37,25 +29,19 @@ import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent.RemoveCause;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelConfigManager;
 import vg.civcraft.mc.citadel.PlayerState;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.ReinforcementMode;
 import vg.civcraft.mc.citadel.Utility;
-import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
-import vg.civcraft.mc.citadel.misc.ReinforcemnetFortificationCancelException;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -152,30 +138,28 @@ public class EntityListener implements Listener{
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void hangingPlaceEvent(HangingPlaceEvent event) {
-		// If Hanging Entity Reinforcements is not enabled, back out
+		// If Hanging Entity Reinforcements is not enabled, allow placement
 		if (!CitadelConfigManager.hangersInheritReinforcements()) {
 			return;
 		}
 		Reinforcement reinforcement = rm.getReinforcement(event.getBlock());
-		// If no player reinforcement is present, do nothing
+		// If no player reinforcement is present, allow placement
 		if (!(reinforcement instanceof PlayerReinforcement)) {
 			return;
 		}
 		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
 		Group group = playerReinforcement.getGroup();
-		// If the player reinforcement doesn't have a group, do nothing
+		// If the player reinforcement doesn't have a group, allow placement
 		if (group == null) {
 			return;
 		}
-		PermissionType permission = PermissionType.getPermission("REINFORCE");
-		// If the REINFORCE permission is not registered, do nothing
-		if (permission == null) {
-			Citadel.getInstance().warning("Could not get the REINFORCE permission from NameLayer. Is it loaded?");
+		// If the reinforcement is insecure, allow placement
+		if (playerReinforcement.isInsecure()) {
 			return;
 		}
 		Player player = event.getPlayer();
-		// If the player is a member of the group and has bypass permissions, do nothing
-		if (gm.hasAccess(group, player.getUniqueId(), permission)) {
+		// If the player has the HANGING_PLACE_BREAK permission, allow placement
+		if (playerReinforcement.canPlaceOrBreakHangingEntity(player)) {
 			return;
 		}
 		// Otherwise prevent the player from putting item frames on other people's reinforced blocks
@@ -186,11 +170,10 @@ public class EntityListener implements Listener{
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event) {
-		// If Hanging Entity Reinforcements is not enabled, back out
+		// If Hanging Entity Reinforcements is not enabled, allow break
 		if (!CitadelConfigManager.hangersInheritReinforcements()) {
 			return;
 		}
-		Hanging entity = event.getEntity();
 		switch (event.getCause()) {
 			// Allow it to break if:
 			//  1) The host block broke
@@ -203,22 +186,26 @@ public class EntityListener implements Listener{
 			// Prevent break if breaker is player and does not have BYPASS permissions
 			case ENTITY: {
 				if (event.getRemover() instanceof Player) {
+					Hanging entity = event.getEntity();
 					Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
 					Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
-					// If the reinforcement doesn't exist or isn't a player reinforcement, we can safely back out
-					// and let the entity be broken
+					// If the reinforcement isn't a player reinforcement, allow break
 					if (!(reinforcement instanceof PlayerReinforcement)) {
 						return;
 					}
 					PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
 					Group group = playerReinforcement.getGroup();
-					// If the player reinforcement somehow does not have a group, just back out
+					// If the player reinforcement somehow does not have a group, allow break
 					if (group == null) {
 						return;
 					}
 					Player player = (Player) event.getRemover();
-					// If the player is a member of the group and has bypass permissions, do nothing
-					if (playerReinforcement.canBypass(player)) {
+					// If the reinforcement is insecure, allow break
+					if (playerReinforcement.isInsecure()) {
+						return;
+					}
+					// If the player has the HANGING_PLACE_BREAK permissions, allow break
+					if (playerReinforcement.canPlaceOrBreakHangingEntity(player)) {
 						return;
 					}
 					// Otherwise prevent interaction and notify the player they do not have perms
@@ -231,31 +218,47 @@ public class EntityListener implements Listener{
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void playerEntityInteractEvent(PlayerInteractEntityEvent event) {
-		// If Hanging Entity Reinforcements is not enabled, back out
+		// If Hanging Entity Reinforcements is not enabled, allow interaction
 		if (!CitadelConfigManager.hangersInheritReinforcements()) {
 			return;
 		}
-		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, allow interaction
 		if (!(event.getRightClicked() instanceof Hanging)) {
 			return;
 		}
 		Hanging entity = (Hanging) event.getRightClicked();
 		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
 		Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
-		// If no player reinforcement is present, do nothing
+		// If no player reinforcement is present, allow interaction
 		if (!(reinforcement instanceof PlayerReinforcement)) {
 			return;
 		}
 		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
 		Group group = playerReinforcement.getGroup();
-		// If the player reinforcement doesn't have a group, do nothing
+		// If the player reinforcement doesn't have a group, allow interaction
 		if (group == null) {
 			return;
 		}
 		Player player = event.getPlayer();
-		// If the player is a member of the group and has bypass permissions, do nothing
-		if (playerReinforcement.canBypass(player)) {
-			return;
+		// Item Frame specific behaviour
+		if (entity instanceof ItemFrame) {
+			// If the reinforcement is insecure, then allow all alterations
+			if (playerReinforcement.isInsecure()) {
+				return;
+			}
+			ItemStack heldItem = ((ItemFrame) entity).getItem();
+			// If the item frame has an item and the player has the ITEM_FRAME_ROTATE permission
+			// then allow the item to be rotated.
+			if (heldItem != null && heldItem.getType() != Material.AIR) {
+				if (playerReinforcement.canRotateItemInItemFrame(player)) {
+					return;
+				}
+			}
+			// Otherwise if the player has the ITEM_FRAME_PUT_TAKE permission, then allow them
+			// to place items into an empty item frame.
+			else if (playerReinforcement.canPutInOrTakeFromItemFrame(player)) {
+				return;
+			}
 		}
 		// Otherwise prevent interaction and notify the player they do not have perms
 		player.sendMessage(ChatColor.RED + "You do not have permission to alter that.");
@@ -264,11 +267,11 @@ public class EntityListener implements Listener{
 
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void entityDamageEvent(EntityDamageByEntityEvent event) {
-		// If Hanging Entity Reinforcements is not enabled, back out
+		// If Hanging Entity Reinforcements is not enabled, allow damage
 		if (!CitadelConfigManager.hangersInheritReinforcements()) {
 			return;
 		}
-		// If the entity isn't a Item Frame, Painting, or LeashHitch, back out
+		// If the entity isn't a Item Frame, Painting, or LeashHitch, allow damage
 		if (!(event.getEntity() instanceof Hanging)) {
 			return;
 		}
@@ -280,24 +283,34 @@ public class EntityListener implements Listener{
 		}
 		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
 		Reinforcement reinforcement = rm.getReinforcement(host.getLocation());
-		// If the reinforcement doesn't exist or isn't a player reinforcement, we can safely back out
-		// and let the entity be broken
+		// If the reinforcement isn't a player reinforcement, allow damage
 		if (!(reinforcement instanceof PlayerReinforcement)) {
 			return;
 		}
 		PlayerReinforcement playerReinforcement = (PlayerReinforcement) reinforcement;
 		Group group = playerReinforcement.getGroup();
-		// If the player reinforcement somehow does not have a group, just back out
+		// If the player reinforcement somehow does not have a group, allow damage
 		if (group == null) {
 			return;
 		}
 		Player player = (Player) event.getDamager();
-		// If the player is a member of the group and has bypass permissions, do nothing
-		if (playerReinforcement.canBypass(player)) {
-			return;
+		// Item Frame specific behaviour
+		if (entity instanceof ItemFrame) {
+			// If the item frame is holding an item
+			ItemStack heldItem = ((ItemFrame) entity).getItem();
+			if (heldItem != null && heldItem.getType() != Material.AIR) {
+				// If the reinforcement is insecure, then allow the item to be dropped
+				if (playerReinforcement.isInsecure()) {
+					return;
+				}
+				// Also allow if the player has the ITEM_FRAME_PUT_TAKE permission
+				if (playerReinforcement.canPutInOrTakeFromItemFrame(player)) {
+					return;
+				}
+			}
 		}
 		// Otherwise prevent interaction and notify the player they do not have perms
-		player.sendRawMessage(ChatColor.RED + "The host block is protecting this.");
+		player.sendMessage(ChatColor.RED + "The host block is protecting this.");
 		event.setCancelled(true);
 	}
 
