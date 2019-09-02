@@ -138,6 +138,9 @@ public class Citadel extends ACivMod{
 		PermissionType.registerPermission("CHESTS",(LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission("CROPS",(LinkedList<PlayerType>) membersAndAbove.clone());
 		PermissionType.registerPermission("INSECURE_REINFORCEMENT",(LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission("HANGING_PLACE_BREAK", (LinkedList<PlayerType>) modsAndAbove.clone());
+		PermissionType.registerPermission("ITEM_FRAME_PUT_TAKE",(LinkedList<PlayerType>) membersAndAbove.clone());
+		PermissionType.registerPermission("ITEM_FRAME_ROTATE",(LinkedList<PlayerType>) membersAndAbove.clone());
 	}
 	
 	
