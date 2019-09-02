@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel.listener;
 
+import org.bukkit.inventory.ItemStack;
 import static vg.civcraft.mc.citadel.Utility.canPlace;
 import static vg.civcraft.mc.citadel.Utility.createNaturalReinforcement;
 import static vg.civcraft.mc.citadel.Utility.createPlayerReinforcement;
@@ -167,6 +168,10 @@ public class EntityListener implements Listener{
 		if (group == null) {
 			return;
 		}
+		// If the reinforcement is insecure, then allow the block placement
+		if (playerReinforcement.isInsecure()) {
+			return;
+		}
 		PermissionType permission = PermissionType.getPermission("REINFORCE");
 		// If the REINFORCE permission is not registered, do nothing
 		if (permission == null) {
@@ -217,7 +222,11 @@ public class EntityListener implements Listener{
 						return;
 					}
 					Player player = (Player) event.getRemover();
-					// If the player is a member of the group and has bypass permissions, do nothing
+					// If the reinforcement is insecure, allow the break
+					if (playerReinforcement.isInsecure()) {
+						return;
+					}
+					// If the player has bypass permissions, allow the break
 					if (playerReinforcement.canBypass(player)) {
 						return;
 					}
@@ -253,7 +262,21 @@ public class EntityListener implements Listener{
 			return;
 		}
 		Player player = event.getPlayer();
-		// If the player is a member of the group and has bypass permissions, do nothing
+		// Item Frame specific behaviour
+		if (entity instanceof ItemFrame) {
+			// If the reinforcement is insecure, then allow all alterations
+			if (playerReinforcement.isInsecure()) {
+				return;
+			}
+			// If player can access doors, allow rotation alterations
+			ItemStack heldItem = ((ItemFrame) entity).getItem();
+			if (heldItem != null && heldItem.getType() != Material.AIR) {
+				if (playerReinforcement.canAccessDoors(player)) {
+					return;
+				}
+			}
+		}
+		// If the player has bypass permissions, allow all alterations
 		if (playerReinforcement.canBypass(player)) {
 			return;
 		}
@@ -290,6 +313,16 @@ public class EntityListener implements Listener{
 		// If the player reinforcement somehow does not have a group, just back out
 		if (group == null) {
 			return;
+		}
+		// If the hanging entity is an item frame and it holds an item and the reinforcement is
+		// insecure, then allow the item frame to be damaged, which will drop the item.
+		if (entity instanceof ItemFrame) {
+			if (playerReinforcement.isInsecure()) {
+				ItemStack heldItem = ((ItemFrame) entity).getItem();
+				if (heldItem != null && heldItem.getType() != Material.AIR) {
+					return;
+				}
+			}
 		}
 		Player player = (Player) event.getDamager();
 		// If the player is a member of the group and has bypass permissions, do nothing
