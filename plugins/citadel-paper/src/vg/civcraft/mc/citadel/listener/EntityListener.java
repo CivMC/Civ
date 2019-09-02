@@ -153,7 +153,7 @@ public class EntityListener implements Listener{
 		if (group == null) {
 			return;
 		}
-		// If the reinforcement is insecure, then allow the block placement
+		// If the reinforcement is insecure, then allow placement
 		if (playerReinforcement.isInsecure()) {
 			return;
 		}
