@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civchat2;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
@@ -64,16 +66,12 @@ public class CivChat2 extends ACivMod {
 		getServer().getPluginManager().registerEvents(chatListener, this);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void registerNameLayerPermissions() {
-
-		LinkedList<PlayerType> memberAndAbove = new LinkedList<PlayerType>();
-		memberAndAbove.add(PlayerType.MEMBERS);
-		memberAndAbove.add(PlayerType.MODS);
-		memberAndAbove.add(PlayerType.ADMINS);
-		memberAndAbove.add(PlayerType.OWNER);
-		PermissionType.registerPermission("READ_CHAT", (LinkedList<PlayerType>) memberAndAbove.clone());
-		PermissionType.registerPermission("WRITE_CHAT", (LinkedList<PlayerType>) memberAndAbove.clone());
+		List<PlayerType> memberAndAbove = Arrays.asList(PlayerType.MEMBERS, PlayerType.MODS, PlayerType.ADMINS , PlayerType.OWNER);
+		PermissionType.registerPermission("READ_CHAT", new ArrayList<>(memberAndAbove), 
+				"Allows receiving messages sent in the group chat");
+		PermissionType.registerPermission("WRITE_CHAT", new ArrayList<>(memberAndAbove), 
+				"Allows sending messages to the group chat");
 	}
 
 	public static CivChat2 getInstance() {
@@ -90,10 +88,5 @@ public class CivChat2 extends ACivMod {
 
 	public CivChatDAO getDatabaseManager() {
 		return this.databaseManager;
-	}
-
-	@Override
-	protected String getPluginName() {
-		return "CivChat2";
 	}
 }
