@@ -14,6 +14,7 @@ import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class ReinforcementLogic {
@@ -195,8 +196,7 @@ public class ReinforcementLogic {
 		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
 			return rein;
 		}
-		for (BlockFace face : BlockListener.PLANAR_SIDES) {
-			Block relative = block.getRelative(face);
+		for (Block relative : BlockAPI.getPlanarSides(block)) {
 			if (relative.getType() != mat) {
 				continue;
 			}

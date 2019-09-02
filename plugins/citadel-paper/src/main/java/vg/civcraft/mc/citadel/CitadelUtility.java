@@ -71,39 +71,39 @@ public class CitadelUtility {
 
 	public static boolean isPlant(Block plant) {
 		switch (plant.getType()) {
-		case DANDELION:
-		case POPPY:
-		case BLUE_ORCHID:
-		case ALLIUM:
-		case AZURE_BLUET:
-		case ORANGE_TULIP:
-		case RED_TULIP:
-		case PINK_TULIP:
-		case WHITE_TULIP:
-		case OXEYE_DAISY:
-		case ACACIA_SAPLING:
-		case BIRCH_SAPLING:
-		case DARK_OAK_SAPLING:
-		case JUNGLE_SAPLING:
-		case OAK_SAPLING:
-		case SPRUCE_SAPLING:
-		case WHEAT:
-		case CARROTS:
-		case POTATOES:
-		case BEETROOTS:
-		case MELON_STEM:
-		case PUMPKIN_STEM:
-		case ATTACHED_MELON_STEM:
-		case ATTACHED_PUMPKIN_STEM:
-		case NETHER_WART_BLOCK:
-		case SUGAR_CANE:
-		case CACTUS:
-		case SUNFLOWER:
-		case LILAC:
-		case PEONY:
-			return true;
-		default:
-			return false;
+			case DANDELION:
+			case POPPY:
+			case BLUE_ORCHID:
+			case ALLIUM:
+			case AZURE_BLUET:
+			case ORANGE_TULIP:
+			case RED_TULIP:
+			case PINK_TULIP:
+			case WHITE_TULIP:
+			case OXEYE_DAISY:
+			case ACACIA_SAPLING:
+			case BIRCH_SAPLING:
+			case DARK_OAK_SAPLING:
+			case JUNGLE_SAPLING:
+			case OAK_SAPLING:
+			case SPRUCE_SAPLING:
+			case WHEAT:
+			case CARROTS:
+			case POTATOES:
+			case BEETROOTS:
+			case MELON_STEM:
+			case PUMPKIN_STEM:
+			case ATTACHED_MELON_STEM:
+			case ATTACHED_PUMPKIN_STEM:
+			case NETHER_WART_BLOCK:
+			case SUGAR_CANE:
+			case CACTUS:
+			case SUNFLOWER:
+			case LILAC:
+			case PEONY:
+				return true;
+			default:
+				return false;
 		}
 	}
 
