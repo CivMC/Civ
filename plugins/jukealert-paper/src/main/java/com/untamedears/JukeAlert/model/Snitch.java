@@ -9,25 +9,22 @@ import com.untamedears.JukeAlert.model.field.FieldManager;
 import com.untamedears.JukeAlert.model.field.SingleCuboidRangeManager;
 import com.untamedears.JukeAlert.model.log.LoggingDelegate;
 
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class Snitch {
+public class Snitch extends TableBasedDataObject {
 
 	private int snitchId;
 	private String name;
-	private Location location;
-
+	private int typeID;
 	private int groupID;
 	private LoggingDelegate loggingDelegate;
 	private FieldManager fieldManager;
 	private boolean shouldToggleLevers;
 	private long lastRefresh;
-
-	private boolean isNew;
-	private boolean isDirty;
 
 	/**
 	 * Constructor for freshly created snitches
@@ -37,15 +34,21 @@ public class Snitch {
 	 * @param loggingDelegate    Logging handler
 	 * @param shouldToggleLevers Should snitch toggle adjacent levers
 	 */
-	public Snitch(Location loc, Group group, LoggingDelegate loggingDelegate, boolean shouldToggleLevers, int range) {
-		this.groupID = group.getGroupId();
+	public Snitch(Location loc, boolean isNew, int groupID, LoggingDelegate loggingDelegate, boolean shouldToggleLevers, int range, int typeID) {
+		super(loc, isNew);
+		this.groupID = groupID;
 		this.loggingDelegate = loggingDelegate;
-		this.location = loc;
 		this.shouldToggleLevers = shouldToggleLevers;
 		this.name = "";
-		this.isNew = true;
-		this.isDirty = true;
 		this.fieldManager = new SingleCuboidRangeManager(loc, range, this);
+		this.typeID = typeID;
+	}
+	
+	/**
+	 * @return Identifying type id given to this instance by the config it was created from
+	 */
+	public int getTypeID() {
+		return typeID;
 	}
 
 	/**
@@ -96,13 +99,6 @@ public class Snitch {
 	}
 
 	/**
-	 * @return Location of the snitch block
-	 */
-	public Location getLocation() {
-		return location;
-	}
-
-	/**
 	 * @return Custom name of the snitch, empty String by default
 	 */
 	public String getName() {
@@ -126,7 +122,7 @@ public class Snitch {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		this.isDirty = true;
+		setDirty();
 	}
 
 	public void setLoggingDelegate(LoggingDelegate delegate) {
@@ -135,42 +131,13 @@ public class Snitch {
 
 	public void setShouldToggleLevers(boolean shouldToggleLevers) {
 		if (this.shouldToggleLevers != shouldToggleLevers) {
-			this.isDirty = true;
+			setDirty();
 		}
 		this.shouldToggleLevers = shouldToggleLevers;
 	}
 
 	public boolean shouldToggleLevers() {
 		return shouldToggleLevers;
-	}
-
-	/**
-	 * @return Whether the snitch has experienced changes that need to be saved to
-	 *         the database
-	 */
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	/**
-	 * @return Whether the snitch is new and hasn't been saved to the database yet
-	 *         or not
-	 */
-	public boolean isNew() {
-		return isNew;
-	}
-
-	/**
-	 * Sets whether this snitch has new data that needs to be saved in the database
-	 * or not
-	 * 
-	 * @param dirty New dirty state
-	 */
-	public void setDirty(boolean dirty) {
-		if (!dirty) {
-			isNew = false;
-		}
-		this.isDirty = dirty;
 	}
 	
 	public LoggingDelegate getLoggingDelegate() {
@@ -189,6 +156,6 @@ public class Snitch {
 	 */
 	public void refresh() {
 		this.lastRefresh = System.currentTimeMillis();
-		this.isDirty = true;
+		setDirty();
 	}
 }

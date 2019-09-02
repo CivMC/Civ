@@ -13,20 +13,20 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 
 public class SnitchLogGUI {
 
 	public static IClickable constructExitClick() {
 		ItemStack is = new ItemStack(Material.OAK_DOOR);
-		ISUtils.setName(is, ChatColor.GOLD + "Exit");
-		ISUtils.addLore(is, ChatColor.AQUA + "Click to exit GUI");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Exit");
+		ItemAPI.addLore(is, ChatColor.AQUA + "Click to exit GUI");
 		return new Clickable(is) {
 			@Override
 			public void clicked(Player p) {
@@ -47,7 +47,7 @@ public class SnitchLogGUI {
 
 	private IClickable constructClearClick() {
 		ItemStack is = new ItemStack(Material.TNT);
-		ISUtils.setName(is, ChatColor.GOLD + "Clear all logs");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Clear all logs");
 		return new Clickable(is) {
 			@Override
 			public void clicked(Player p) {
@@ -67,18 +67,18 @@ public class SnitchLogGUI {
 
 	private IClickable constructInfoStack() {
 		ItemStack is = new ItemStack(Material.PAPER);
-		ISUtils.setName(is, ChatColor.GOLD + "Logs for " + snitch.getName());
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Logs for " + snitch.getName());
 		Location loc = snitch.getLocation();
-		ISUtils.addLore(is,
+		ItemAPI.addLore(is,
 				ChatColor.AQUA + "Located at " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
-		ISUtils.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
+		ItemAPI.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
 		return new DecorationStack(is);
 	}
 
 	private IClickable constructLeverToggleClick() {
 		ItemStack is = new ItemStack(Material.LEVER);
-		ISUtils.setName(is, ChatColor.GOLD + "Toggle lever activation by redstone");
-		ISUtils.addLore(is, ChatColor.AQUA + "Currently turned " + (snitch.shouldToggleLevers() ? "on" : "off"));
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Toggle lever activation by redstone");
+		ItemAPI.addLore(is, ChatColor.AQUA + "Currently turned " + (snitch.shouldToggleLevers() ? "on" : "off"));
 		return new Clickable(is) {
 			@Override
 			public void clicked(Player p) {
@@ -91,8 +91,8 @@ public class SnitchLogGUI {
 	}
 
 	private IClickable constructNameChanceClick() {
-		ItemStack is = new ItemStack(Material.SIGN);
-		ISUtils.setName(is, ChatColor.GOLD + "Rename this snitch");
+		ItemStack is = new ItemStack(Material.OAK_SIGN);
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Rename this snitch");
 		return new Clickable(is) {
 			@Override
 			public void clicked(Player p) {

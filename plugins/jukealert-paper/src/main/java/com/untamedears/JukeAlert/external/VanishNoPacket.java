@@ -7,37 +7,33 @@ import org.kitteh.vanish.VanishPlugin;
 
 public class VanishNoPacket {
 
-	private PluginManager pluginManager_;
+	private PluginManager pluginManager;
 
-	private VanishPlugin vanishPlugin_ = null;
+	private VanishPlugin vanishPlugin;
 
 	public VanishNoPacket() {
-
-		pluginManager_ = Bukkit.getPluginManager();
+		pluginManager = Bukkit.getPluginManager();
 	}
 
 	public boolean isEnabled() {
-
-		if (vanishPlugin_ != null) {
+		if (vanishPlugin != null) {
 			return true;
 		}
-		vanishPlugin_ = (VanishPlugin) pluginManager_.getPlugin("VanishNoPacket");
-		return vanishPlugin_ != null;
+		vanishPlugin = (VanishPlugin) pluginManager.getPlugin("VanishNoPacket");
+		return vanishPlugin != null;
 	}
 
 	public boolean isPlayerInvisible(Player player) {
-
 		if (!isEnabled()) {
 			return false;
 		}
-		return vanishPlugin_.getManager().isVanished(player);
+		return vanishPlugin.getManager().isVanished(player);
 	}
 
 	public boolean isPlayerVisible(Player player) {
-
 		if (!isEnabled()) {
 			return true;
 		}
-		return !vanishPlugin_.getManager().isVanished(player);
+		return !vanishPlugin.getManager().isVanished(player);
 	}
 }

@@ -9,9 +9,11 @@ import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 public class FullyLoggingDelegate extends BroadCastingOnlyDelegate {
 	
 	private List<LoggedSnitchAction> actions;
+	private boolean hasLoadedAll;
 
 	public FullyLoggingDelegate() {
-		actions = new LinkedList<>();
+		this.actions = new LinkedList<>();
+		this.hasLoadedAll = false;
 	}
 	
 
@@ -29,6 +31,18 @@ public class FullyLoggingDelegate extends BroadCastingOnlyDelegate {
 	@Override
 	public void deleteAllLogs() {
 		actions.clear();
+	}
+	
+	private void loadLogs() {
+		
+	}
+	
+	@Override
+	public void setSnitch(Snitch snitch) {
+		super.setSnitch(snitch);
+		if (snitch.getId() != -1) {
+			loadLogs();
+		}
 	}
 	
 	

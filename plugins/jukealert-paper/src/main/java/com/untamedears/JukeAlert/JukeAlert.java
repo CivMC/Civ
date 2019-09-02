@@ -1,16 +1,23 @@
 package com.untamedears.JukeAlert;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.JukeAlert.database.JukeAlertDAO;
-import com.untamedears.JukeAlert.group.GroupMediator;
 import com.untamedears.JukeAlert.listener.LoggableActionListener;
 import com.untamedears.JukeAlert.listener.SnitchLifeCycleListener;
-import com.untamedears.JukeAlert.manager.GlobalSnitchManager;
-import com.untamedears.JukeAlert.manager.SnitchConfigManager;
+import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.SnitchChunkData;
+import com.untamedears.JukeAlert.model.SnitchTypeManager;
+import com.untamedears.JukeAlert.model.SnitchQTEntry;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class JukeAlert extends ACivMod {
 
@@ -19,35 +26,31 @@ public class JukeAlert extends ACivMod {
 	public static JukeAlert getInstance() {
 		return instance;
 	}
+	
 	private JukeAlertDAO dao;
 	private JAConfigManager configManager;
-	private GlobalSnitchManager snitchManager;
-	private GroupMediator groupMediator;
-	private SnitchConfigManager snitchConfigManager;
+	private SnitchTypeManager snitchConfigManager;
+	private SnitchManager snitchManager;
+	private SparseQuadTree<SnitchQTEntry> quadTree;
 
 	public JAConfigManager getConfigManager() {
 		return configManager;
 	}
-
-	public GroupMediator getGroupMediator() {
-		return groupMediator;
-	}
 	
-	public SnitchConfigManager getSnitchConfigManager() {
+	public SnitchTypeManager getSnitchConfigManager() {
 		return snitchConfigManager;
 	}
 
 	public JukeAlertDAO getDAO() {
 		return dao;
 	}
-
-	@Override
-	protected String getPluginName() {		
-		return "JukeAlert";
-	}
-
-	public GlobalSnitchManager getSnitchManager() {
+	
+	public SnitchManager getSnitchManager() {
 		return snitchManager;
+	}
+	
+	public SparseQuadTree<SnitchQTEntry> getQuadTree() {
+		return quadTree;
 	}
 
 	@Override
@@ -58,18 +61,34 @@ public class JukeAlert extends ACivMod {
 	public void onEnable() {
 		instance = this;
 		super.onEnable();
-		configManager = new JAConfigManager(this);
-		configManager.parse();
-		snitchConfigManager = new SnitchConfigManager(configManager.getSnitchConfigs());
-		groupMediator = new GroupMediator();
-		snitchManager = new GlobalSnitchManager();
+		quadTree = new SparseQuadTree<>(1);
+		snitchConfigManager = new SnitchTypeManager();
+		configManager = new JAConfigManager(this, snitchConfigManager);
+		if (!configManager.parse()) {
+			Bukkit.shutdown();
+			return;
+		}
+		dao = new JukeAlertDAO(getLogger(), configManager.getDatabase());
+		if (!dao.updateDatabase()) {
+			getLogger().severe("Errors setting up database, shutting down");
+			Bukkit.shutdown();
+			return;
+		}
+		BlockBasedChunkMetaView<SnitchChunkData, TableBasedDataObject, TableStorageEngine<Snitch>> chunkMetaData = 
+				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> {return new SnitchChunkData(false, dao);});
+		if (chunkMetaData == null) {
+			getLogger().severe("Errors setting up chunk metadata API, shutting down");
+			Bukkit.shutdown();
+			return;
+		}
+		snitchManager = new SnitchManager(chunkMetaData, quadTree);
 		registerJukeAlertEvents();
 		JukeAlertPermissionHandler.setup();
 	}
 
 	private void registerJukeAlertEvents() {
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new LoggableActionListener(), this);
-		pm.registerEvents(new SnitchLifeCycleListener(), this);
+		pm.registerEvents(new LoggableActionListener(snitchManager), this);
+		pm.registerEvents(new SnitchLifeCycleListener(snitchManager, snitchConfigManager), this);
 	}
 }

@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public abstract class PlayerAction extends LoggedSnitchAction {
@@ -35,7 +35,7 @@ public abstract class PlayerAction extends LoggedSnitchAction {
 	}
 
 	protected void enrichGUIItem(ItemStack item) {
-		ISUtils.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
+		ItemAPI.addLore(item, String.format("%sPlayer: %s", ChatColor.GOLD, getPlayerName()),
 				String.format("%sTime: %s", ChatColor.LIGHT_PURPLE,
 						timeFormatter.format(LocalDateTime.ofEpochSecond(time / 1000, 0, ZoneOffset.UTC))));
 	}

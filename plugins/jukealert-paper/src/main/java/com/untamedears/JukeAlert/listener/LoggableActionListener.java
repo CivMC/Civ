@@ -16,8 +16,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 
+import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
-import com.untamedears.JukeAlert.manager.GlobalSnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 import com.untamedears.JukeAlert.model.actions.impl.EntryAction;
@@ -26,10 +26,14 @@ import com.untamedears.JukeAlert.model.actions.impl.LogoutAction;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 public class LoggableActionListener implements Listener {
-
-	private GlobalSnitchManager snitchManager;
 	
-	private final VanishNoPacket vanishNoPacket = new VanishNoPacket();
+	private final VanishNoPacket vanishNoPacket;
+	private final SnitchManager snitchManager;
+	
+	public LoggableActionListener(SnitchManager snitchManager) {
+		this.snitchManager = snitchManager;
+		this.vanishNoPacket = new VanishNoPacket();
+	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void enterSnitchProximity(PlayerMoveEvent event) {

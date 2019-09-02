@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.manager.GlobalSnitchManager;
+import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 
 import net.md_5.bungee.api.chat.ComponentBuilder;
@@ -52,11 +52,11 @@ public class Utility {
 	}
 
 	public static Snitch getSnitchUnderCursor(Player player) {
-		GlobalSnitchManager manager = JukeAlert.getInstance().getSnitchManager();
+		SnitchManager snitchMan = JukeAlert.getInstance().getSnitchManager();
 		Iterator<Block> itr = new BlockIterator(player, 40); // Within 2.5 chunks
 		while (itr.hasNext()) {
 			Block block = itr.next();
-			Snitch found = manager.getSnitchAt(block.getLocation());
+			Snitch found = snitchMan.getSnitchAt(block.getLocation());
 			if (found != null) {
 				return found;
 			}

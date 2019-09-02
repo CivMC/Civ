@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.bukkit.Location;
 
-import com.untamedears.JukeAlert.manager.SnitchQTEntry;
+import com.untamedears.JukeAlert.model.SnitchQTEntry;
 
 public interface FieldManager {
 

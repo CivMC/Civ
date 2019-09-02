@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.model.log;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,12 +25,11 @@ public class BroadCastingOnlyDelegate extends LoggingDelegate {
 		case "LOGOUT":
 			sendMessage(snitch.getGroup(), action.getChatRepresentation());
 		}
-
 	}
 
 	@Override
 	public List<LoggedSnitchAction> getFullLogs() {
-		return new LinkedList<>();
+		return Collections.emptyList();
 	}
 
 	@Override

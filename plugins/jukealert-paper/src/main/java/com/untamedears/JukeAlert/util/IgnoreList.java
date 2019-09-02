@@ -8,15 +8,15 @@ public class IgnoreList {
 
 	// Only going to be used for /jamute when they mute all groups for a small amount of time
 
-	private static Map<UUID, Boolean> playerIgnoreAlls_ = new HashMap<>();
+	private static Map<UUID, Boolean> playerIgnoreAlls = new HashMap<>();
 
 	public static boolean doesPlayerIgnoreAll(UUID accountId) {
 
-		synchronized (playerIgnoreAlls_) {
-			if (!playerIgnoreAlls_.containsKey(accountId)) {
+		synchronized (playerIgnoreAlls) {
+			if (!playerIgnoreAlls.containsKey(accountId)) {
 				return false;
 			}
-			return playerIgnoreAlls_.get(accountId);
+			return playerIgnoreAlls.get(accountId);
 		}
 	}
 
@@ -25,13 +25,13 @@ public class IgnoreList {
 	public static boolean toggleIgnoreAll(UUID accountId) {
 
 		boolean newState;
-		synchronized (playerIgnoreAlls_) {
-			if (!playerIgnoreAlls_.containsKey(accountId)) {
+		synchronized (playerIgnoreAlls) {
+			if (!playerIgnoreAlls.containsKey(accountId)) {
 				newState = true;
 			} else {
-				newState = !playerIgnoreAlls_.get(accountId);
+				newState = !playerIgnoreAlls.get(accountId);
 			}
-			playerIgnoreAlls_.put(accountId, newState);
+			playerIgnoreAlls.put(accountId, newState);
 		}
 		return newState;
 	}
