@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.command.defaults.BukkitCommand;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -95,11 +94,11 @@ public class StandaloneCommandHandler {
 		return worked;
 	}
 
-	public List<String> tabCompleteCommand(CommandSender sender, Command cmd, String[] args) {
-		StandaloneCommand command = commands.get(cmd.getIdentifier().toLowerCase());
+	public List<String> tabCompleteCommand(CommandSender sender, org.bukkit.command.Command cmd, String[] args) {
+		StandaloneCommand command = commands.get(cmd.getName().toLowerCase());
 		if (command == null) {
 			plugin.getLogger().warning(
-					"Could not tab complete command " + cmd.getIdentifier() + ", no implementation was provided");
+					"Could not tab complete command " + cmd.getName() + ", no implementation was provided");
 			return new LinkedList<String>();
 		}
 		if (sender instanceof Player) {

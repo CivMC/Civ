@@ -1,10 +1,11 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import net.minecraft.server.v1_13_R2.IChatBaseComponent;
-import net.minecraft.server.v1_13_R2.PacketPlayOutTitle;
-import net.minecraft.server.v1_13_R2.PlayerConnection;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+
+import net.minecraft.server.v1_14_R1.IChatBaseComponent;
+import net.minecraft.server.v1_14_R1.PacketPlayOutTitle;
+import net.minecraft.server.v1_14_R1.PlayerConnection;
 
 /**
  * Allows sending titles to players with full customization, which the bukkit/spigot API doesnt offer. A title consists

@@ -45,4 +45,11 @@ public interface ICoolDownHandler<E> {
 	 */
 	long getTotalCoolDown();
 
+	/**
+	 * Removed the cooldown for the given object
+	 * 
+	 * @param e 
+	 *            Object to check
+	 */
+	void removeCooldown(E e);
 }

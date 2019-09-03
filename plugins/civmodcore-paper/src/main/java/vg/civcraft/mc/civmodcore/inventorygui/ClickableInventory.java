@@ -1,14 +1,18 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * Represents an inventory filled with Clickables. Whenever one of those is clicked by a player, the clickables specific
@@ -29,6 +33,8 @@ public class ClickableInventory {
 	private Inventory inventory;
 
 	private IClickable[] clickables;
+	
+	private List<BukkitTask> runnables;
 
 	/**
 	 * Creates a new ClickableInventory
@@ -39,10 +45,17 @@ public class ClickableInventory {
 	 *            name of the inventory which is shown at the top when a player has it open
 	 */
 	public ClickableInventory(InventoryType type, String name) {
-		if (name != null && name.length() > 32) {
+		if (name == null) {
+			throw new IllegalArgumentException("Inventory name may not be null");
+		}
+		if (type == null) {
+			throw new IllegalArgumentException("Inventory type may not be null");
+		}
+		if (name.length() > 32) {
 			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
+		this.runnables = new LinkedList<>();
 		inventory = Bukkit.createInventory(null, type, name);
 		this.clickables = new IClickable[inventory.getSize() + 1];
 	}
@@ -57,7 +70,10 @@ public class ClickableInventory {
 	 *            name of the inventory which is shown at the top when a player has it open
 	 */
 	public ClickableInventory(int size, String name) {
-		if (name != null && name.length() > 32) {
+		if (name == null) {
+			throw new IllegalArgumentException("Inventory name may not be null");
+		}
+		if (name.length() > 32) {
 			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
@@ -192,6 +208,10 @@ public class ClickableInventory {
 	void setItem(ItemStack is, int slot) {
 		inventory.setItem(slot, is);
 	}
+	
+	public void registerTask(BukkitTask runnable) {
+		this.runnables.add(runnable);
+	}
 
 	/**
 	 * Closes a players clickable inventory if he has one open. This will also close any other inventory the player has
@@ -201,10 +221,7 @@ public class ClickableInventory {
 	 *            Player whose inventory is closed
 	 */
 	public static void forceCloseInventory(Player p) {
-		if (p != null) {
-			p.closeInventory();
-			openInventories.remove(p.getUniqueId());
-		}
+		inventoryClosed(p, true);
 	}
 
 	/**
@@ -214,8 +231,27 @@ public class ClickableInventory {
 	 *            Player who closed the inventory
 	 */
 	public static void inventoryWasClosed(Player p) {
+		inventoryClosed(p, false);
+	}
+	
+	private static void inventoryClosed(Player p, boolean force) {
 		if (p != null) {
-			openInventories.remove(p.getUniqueId());
+			if (force) {
+				p.closeInventory();
+			}
+			ClickableInventory inv = openInventories.remove(p.getUniqueId());
+			if (inv != null) {
+				stopRunnables(inv);
+			}
+		}
+	}
+	
+	private static void stopRunnables(ClickableInventory ci) {
+		if (ci.inventory.getViewers().size() == 1) {
+			//last one is closing
+			for(BukkitTask runnable : ci.runnables) {
+				runnable.cancel();
+			}
 		}
 	}
 

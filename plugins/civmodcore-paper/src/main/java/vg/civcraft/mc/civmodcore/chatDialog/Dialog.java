@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.chatDialog;
 
 import java.util.List;
+
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.ConversationFactory;
@@ -11,7 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class Dialog {
 
-	private Player player;
+	protected Player player;
 
 	private Conversation convo;
 
@@ -20,7 +21,7 @@ public abstract class Dialog {
 	}
 
 	public Dialog(Player player, JavaPlugin plugin, final String toDisplay) {
-		DialogManager.instance.registerDialog(player, this);
+		DialogManager.registerDialog(player, this);
 		this.player = player;
 
 		convo = new ConversationFactory(plugin).withModality(false).withLocalEcho(false)

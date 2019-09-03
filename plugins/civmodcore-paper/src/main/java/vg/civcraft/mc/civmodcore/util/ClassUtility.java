@@ -1,8 +1,10 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import com.google.common.reflect.ClassPath;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import com.google.common.reflect.ClassPath;
+
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class ClassUtility {
@@ -20,7 +22,7 @@ public class ClassUtility {
 			} else {
 
 				String packageName = pack.getName();
-				ClassLoader classloader = plugin.classLoader;
+				ClassLoader classloader = plugin.getClass().getClassLoader();
 				ClassPath path = ClassPath.from(classloader);
 
 				for (ClassPath.ClassInfo info : path.getTopLevelClassesRecursive(packageName)) {

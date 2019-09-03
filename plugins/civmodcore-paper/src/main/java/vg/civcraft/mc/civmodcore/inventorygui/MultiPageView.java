@@ -1,11 +1,12 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.List;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 /**
  * Utility to automate creating views, which have multiple pages and automatically adjust their size
@@ -14,19 +15,17 @@ import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
 public class MultiPageView {
 
 	private Player p;
-	private int currentPage;
+	private int currentPage = 0;
 	private List<IClickable> clickables;
 	private String invName;
 	private boolean adjustSize;
-	private IClickable[] extraMenuItems;
+	private IClickable[] extraMenuItems = new IClickable[7];
 
 	public MultiPageView(Player p, List<IClickable> clickables, String invName, boolean adjustSize) {
-		currentPage = 0;
 		this.p = p;
 		this.clickables = clickables;
 		this.invName = invName;
 		this.adjustSize = adjustSize;
-		extraMenuItems = new IClickable[7];
 	}
 
 	/**
@@ -51,7 +50,7 @@ public class MultiPageView {
 		// back button
 		if (currentPage > 0) {
 			ItemStack back = new ItemStack(Material.ARROW);
-			ISUtils.setName(back, ChatColor.GOLD + "Go to previous page");
+			ItemAPI.setDisplayName(back, ChatColor.GOLD + "Go to previous page");
 			Clickable baCl = new Clickable(back) {
 
 				@Override
@@ -67,7 +66,7 @@ public class MultiPageView {
 		// next button
 		if ((getContentSize() * (currentPage + 1)) < clickables.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
-			ISUtils.setName(forward, ChatColor.GOLD + "Go to next page");
+			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override

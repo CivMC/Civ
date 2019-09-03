@@ -1,29 +1,100 @@
 package vg.civcraft.mc.civmodcore;
 
-/**
- * The sole purpose of this class is to make Spigot recognize this library as a plugin and automatically load the
- * classes onto the classpath for us.
- * <p>
- * Replaces Dummy class.
- */
-public class CivModCorePlugin extends ACivMod {
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.HandlerList;
+import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
+import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
+import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
+import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
+
+import java.sql.SQLException;
+
+public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
+	private GlobalChunkMetaManager chunkMetaManager ;
+	private ManagedDatasource database;
 
 	@Override
 	public void onEnable() {
 		super.onEnable();
-		// needed for some of the apis
 		instance = this;
+		// Save default resources
+		saveDefaultResource("enchantments.csv");
+		// Register listeners
+		registerListener(new ClickableInventoryListener());
+		registerListener(new ChatListener());
+		registerListener(new ScoreBoardListener());
+		// Register commands, which must be done traditionally
+		// We can't use command annotations here as the annotation processor isn't available yet
+		this.newCommandHandler.registerCommand(new ConfigCommand());
+		ConfigurationSerialization.registerClass(ManagedDatasource.class);
+		// Load Database
+		try {
+			database = (ManagedDatasource) getConfig().get("database");
+		}
+		catch (Exception error) {
+			warning("Cannot get database from config.", error);
+			database = null;
+		}
+		// Load APIs
+		ItemNames.loadItemNames();
+		EnchantmentNames.loadEnchantmentNames();
+		new DialogManager();
+		if (database != null) {
+			ChunkDAO dao = new ChunkDAO(database, this);
+			if (dao.updateDatabase()) {
+				chunkMetaManager = new GlobalChunkMetaManager(dao);
+				info("Setup database successfully");
+			}
+			else {
+				warning("Could not setup database");
+			}
+		}
+		else {
+			warning("Could not setup database, none specified in config");
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		super.onDisable();
+		// De-register listeners
+		HandlerList.unregisterAll(this);
+		// Unload APIs
+		ItemNames.resetItemNames();
+		EnchantmentNames.resetEnchantmentNames();
+		ChunkMetaAPI.saveAll();
+		chunkMetaManager = null;
+		// Disconnect database
+		if (database != null) {
+			try {
+				database.close();
+			}
+			catch (SQLException error) {
+				warning("Was unable to close the database.", error);
+			}
+			database = null;
+		}
+		PlayerSettingAPI.saveAll();
+		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
+		instance = null;
 	}
 
 	public static CivModCorePlugin getInstance() {
 		return instance;
 	}
-
-	@Override
-	protected String getPluginName() {
-		return "CivModCore";
+	
+	public GlobalChunkMetaManager getChunkMetaManager() {
+		return chunkMetaManager;
 	}
 
 }

@@ -21,9 +21,9 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.util.Elements;
+import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 import javax.tools.StandardLocation;
-import javax.tools.Diagnostic.Kind;
 
 @SupportedSourceVersion(value=SourceVersion.RELEASE_8)
 @SupportedAnnotationTypes("vg.civcraft.mc.civmodcore.command.CivCommand")

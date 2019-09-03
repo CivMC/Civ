@@ -8,16 +8,19 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.logging.Logger;
-import net.minecraft.server.v1_13_R2.NBTTagCompound;
-import net.minecraft.server.v1_13_R2.NBTTagList;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_13_R2.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.NBTTagList;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum possible stack sizes. This offers
@@ -102,6 +105,16 @@ public class ItemMap {
 				items.put(is, input.getAmount());
 			}
 			totalItems += input.getAmount();
+		}
+	}
+	
+	/**
+	 * Adds all the items contained in this instance to the given inventory
+	 * @param inventory Inventory to add items to
+	 */
+	public void addToInventory(Inventory inventory) {
+		for(ItemStack is : getItemStackRepresentation()) {
+			inventory.addItem(is);
 		}
 	}
 
@@ -234,46 +247,20 @@ public class ItemMap {
 	}
 
 	/**
-	 * Gets a submap of this instance which contains all stacks with the same material and durability as the given one
-	 * and their respective amounts
-	 *
-	 * @param m
-	 *            Material to search for
-	 * @param durability
-	 *            Durability to search for
-	 * @return New ItemMap with all ItemStack and their amount whose material and durability matches the given one
-	 */
-	public ItemMap getStacksByMaterialDurability(Material m, int durability) {
-		ItemMap result = new ItemMap();
-		for (ItemStack is : items.keySet()) {
-			if (is.getType() == m && is.getDurability() == durability) {
-				result.addItemAmount(is.clone(), items.get(is));
-			}
-		}
-		return result;
-	}
-
-	public ItemMap getStacksByMaterialDurability(ItemStack is) {
-		return getStacksByMaterialDurability(is.getType(), is.getDurability());
-	}
-
-	/**
-	 * Gets a submap of this instance which contains all stacks with the same material, durability and enchants as the
+	 * Gets a submap of this instance which contains all stacks with the same material and enchants as the
 	 * given one and their respective amounts
 	 *
 	 * @param m
 	 *            Material to search for
-	 * @param durability
-	 *            Durability to search for
 	 * @param enchants
 	 *            Enchants to search for
-	 * @return New ItemMap with all ItemStack and their amount whose material, durability and enchants matches the given
+	 * @return New ItemMap with all ItemStack and their amount whose material and enchants matches the given
 	 *         one
 	 */
-	public ItemMap getStacksByMaterialDurabilityEnchants(Material m, int durability, Map<Enchantment, Integer> enchants) {
+	public ItemMap getStacksByMaterialEnchants(Material m, Map<Enchantment, Integer> enchants) {
 		ItemMap result = new ItemMap();
 		for (ItemStack is : items.keySet()) {
-			if (is.getType() == m && is.getDurability() == durability && is.getItemMeta() != null
+			if (is.getType() == m && is.getItemMeta() != null
 					&& is.getItemMeta().getEnchants().equals(enchants)) {
 				result.addItemAmount(is.clone(), items.get(is));
 			}
@@ -281,13 +268,12 @@ public class ItemMap {
 		return result;
 	}
 
-	public ItemMap getStacksByMaterialDurabilityEnchants(ItemStack is) {
+	public ItemMap getStacksByMaterialEnchants(ItemStack is) {
 		if (is.getItemMeta() != null) {
-			return getStacksByMaterialDurabilityEnchants(is.getType(), is.getDurability(), is.getItemMeta()
+			return getStacksByMaterialEnchants(is.getType(), is.getItemMeta()
 					.getEnchants());
 		} else {
-			return getStacksByMaterialDurabilityEnchants(is.getType(), is.getDurability(),
-					new HashMap<Enchantment, Integer>());
+			return getStacksByMaterialEnchants(is.getType(), new HashMap<Enchantment, Integer>());
 		}
 	}
 
@@ -322,8 +308,7 @@ public class ItemMap {
 		int amount = 0;
 		for (Entry<ItemStack, Integer> entry : matSubMap.getEntrySet()) {
 			ItemStack current = entry.getKey();
-			if ((is.getDurability() == -1 || is.getDurability() == current.getDurability())
-					&& is.getItemMeta().equals(current.getItemMeta())) {
+			if (is.getItemMeta().equals(current.getItemMeta())) {
 				amount += entry.getValue();
 			}
 		}
@@ -395,11 +380,11 @@ public class ItemMap {
 
 	@Override
 	public String toString() {
-		String res = "";
+		StringBuilder res = new StringBuilder();
 		for (ItemStack is : getItemStackRepresentation()) {
-			res += is.toString() + ";";
+			res.append(is.toString() + ";");
 		}
-		return res;
+		return res.toString();
 	}
 
 	/**
@@ -503,7 +488,7 @@ public class ItemMap {
 		List<ItemStack> items = new LinkedList<>();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			ItemStack is = entry.getKey().clone();
-			ISUtils.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
+			ItemAPI.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
 			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {
 				int stacks = entry.getValue() / is.getType().getMaxStackSize();
 				int extra = entry.getValue() % is.getType().getMaxStackSize();
@@ -515,7 +500,7 @@ public class ItemMap {
 					out.append(" and " + extra);
 					out.append(" item" + (extra == 1 ? "" : "s"));
 				}
-				ISUtils.addLore(is, out.toString());
+				ItemAPI.addLore(is, out.toString());
 			}
 			items.add(is);
 		}
@@ -583,7 +568,7 @@ public class ItemMap {
 	private static ItemStack createMapConformCopy(ItemStack is) {
 		ItemStack copy = is.clone();
 		copy.setAmount(1);
-		net.minecraft.server.v1_13_R2.ItemStack s = CraftItemStack.asNMSCopy(copy);
+		net.minecraft.server.v1_14_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		if (s == null) {
 			log.info("Attempted to create map conform copy of " + copy.toString()
 					+ ", but couldn't because this item can't be held in inventories since Minecraft 1.8");
@@ -610,7 +595,7 @@ public class ItemMap {
 		ItemStack copy = is.clone();
 		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
 		copy.setAmount(amt);
-		net.minecraft.server.v1_13_R2.ItemStack s = CraftItemStack.asNMSCopy(copy);
+		net.minecraft.server.v1_14_R1.ItemStack s = CraftItemStack.asNMSCopy(copy);
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + copy.toString());
 			return null;

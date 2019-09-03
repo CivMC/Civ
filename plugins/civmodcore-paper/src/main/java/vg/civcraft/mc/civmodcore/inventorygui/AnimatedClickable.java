@@ -1,9 +1,12 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.List;
+
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
+
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class AnimatedClickable implements IClickable {
@@ -13,17 +16,16 @@ public class AnimatedClickable implements IClickable {
 	private int currentPos;
 
 	public AnimatedClickable(List<ItemStack> stacks, long timing) {
+		if (stacks.isEmpty()) {
+			throw new IllegalArgumentException("Can't create blinking clickable with empty item list");
+		}
 		this.items = stacks;
 		this.timing = timing;
 		this.currentPos = 0;
-		if (stacks.size() == 0) {
-			throw new IllegalArgumentException("Can't create blinking clickable with empty item list");
-		}
 	}
 
 	public ItemStack getNext() {
-		currentPos++;
-		if (currentPos == items.size()) {
+		if (++currentPos == items.size()) {
 			currentPos = 0;
 		}
 		return items.get(currentPos);
@@ -41,14 +43,13 @@ public class AnimatedClickable implements IClickable {
 	@Override
 	public void addedToInventory(final ClickableInventory inv, final int slot) {
 		// Schedule swapping out of item
-		new BukkitRunnable() {
-
+		BukkitTask task = new BukkitRunnable() {
 			@Override
 			public void run() {
 				inv.setItem(getNext(), slot);
 			}
 		}.runTaskTimer(CivModCorePlugin.getInstance(), timing, timing);
-
+		inv.registerTask(task);
 	}
 
 	/**

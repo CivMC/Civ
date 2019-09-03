@@ -5,17 +5,12 @@ import java.util.logging.Level;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.interfaces.ApiManager;
-import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -25,10 +20,6 @@ public abstract class ACivMod extends JavaPlugin {
 	protected StandaloneCommandHandler newCommandHandler;
 
 	private static boolean initializedAPIs = false;
-
-	public ClassLoader classLoader = null;
-
-	public ApiManager apis;
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -41,36 +32,34 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		initApis(this);
 		this.newCommandHandler = new StandaloneCommandHandler(this);
 	}
-
-	private static synchronized void initApis(ACivMod instance) {
-		if (!initializedAPIs) {
-			initializedAPIs = true;
-			instance.registerEvents();
-			new NiceNames().loadNames();
-			new DialogManager();
-			ConfigurationSerialization.registerClass(ManagedDatasource.class);
-		}
+	
+	@Override
+	public void onDisable() {
+		
 	}
 
-	private void registerEvents() {
-		getServer().getPluginManager().registerEvents(new ClickableInventoryListener(), this);
-		getServer().getPluginManager().registerEvents(new ChatListener(), this);
+	protected void registerListener(Listener listener) {
+		if (listener == null) {
+			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
+		}
+		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
-	@Deprecated
-	public boolean toBool(String value) {
-		if (value.equals("1") || value.equalsIgnoreCase("true")) {
-			return true;
+	public void saveDefaultResource(String path) {
+		if (getResource(path) == null) {
+			saveResource(path, false);
 		}
-		return false;
 	}
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		return handle == null ? null : handle.complete(sender, cmd, args);
+		if (handle == null) {
+			return newCommandHandler.tabCompleteCommand(sender, cmd, args);
+		} else {
+			return handle.complete(sender, cmd, args);
+		}
 	}
 
 	public CommandHandler getCommandHandler() {
@@ -80,8 +69,6 @@ public abstract class ACivMod extends JavaPlugin {
 	protected void setCommandHandler(CommandHandler handle) {
 		this.handle = handle;
 	}
-
-	protected abstract String getPluginName();
 
 	/**
 	 * Simple SEVERE level logging.

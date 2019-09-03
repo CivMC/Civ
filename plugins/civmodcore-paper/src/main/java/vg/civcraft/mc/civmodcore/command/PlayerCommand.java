@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
-import vg.civcraft.mc.civmodcore.ratelimiting.TokenBucket;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 @Deprecated

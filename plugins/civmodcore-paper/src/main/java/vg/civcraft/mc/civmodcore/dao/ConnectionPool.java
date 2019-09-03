@@ -1,12 +1,13 @@
 package vg.civcraft.mc.civmodcore.dao;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Handy Connection Pool / Database wrapper for use by all plugins.
@@ -67,7 +68,6 @@ public class ConnectionPool {
 				this.datasource = null;
 			}
 		} else {
-			this.datasource = null;
 			logger.log(Level.SEVERE, "Database not configured and is unavaiable");
 		}
 	}
