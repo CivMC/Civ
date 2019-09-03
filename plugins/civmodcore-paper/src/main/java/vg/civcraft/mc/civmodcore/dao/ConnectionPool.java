@@ -37,7 +37,7 @@ public class ConnectionPool {
 	 * @param database
 	 *            The database to use
 	 * @param poolSize
-	 *            The maximum size of the connection pool (< 10 recommended)
+	 *            The maximum size of the connection pool (under 10 recommended)
 	 * @param connectionTimeout
 	 *            The longest a query can run until timeout occurs (1-5s recommended)
 	 * @param idleTimeout
