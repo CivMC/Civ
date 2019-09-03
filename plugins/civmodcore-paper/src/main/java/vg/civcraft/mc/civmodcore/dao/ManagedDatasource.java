@@ -33,25 +33,36 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  * 
  * To convert existing plugins, do the following:
  *
- * 1. Take existing database version code and refactor it. a. Any CREATE, UPDATE, ALTER, or similar statements, convert
+ * <ol><li> Take existing database version code and refactor it.
+ * <ol><li> Any CREATE, UPDATE, ALTER, or similar statements, convert
  * to a List of Strings and pass them into ManagedDatasource as a Migration using
- * {@link #registerMigration(Integer, boolean, String...)} b. Find your prepared statements. Convert the string
- * resources as static final in your plugin's DAO layer. c. Remove any "is database alive" check code. It's not needed.
- * d. Remove any version management code that remains e. DO react to the results of the {@link #upgradeDatabase} call.
- * i. If false is returned, terminate your plugin. ii. If false is returned and your plugin is critical to a host of
- * other plugins, terminate the server. iii. If an Exception is thrown, I strongly recommend you consider it a "false"
- * return value and react accordingly. f. Note: Create a "first" migration at index -1 that ignores errors and copies
+ * {@link #registerMigration(int, boolean, String...)}</li>
+ * <li>Find your prepared statements. Convert the string resources as static final in your plugin's DAO layer.</li>
+ * <li>Remove any "is database alive" check code. It's not needed.</li>
+ * <li>Remove any version management code that remains</li>
+ * <li>DO react to the results of the {@link #updateDatabase} call.
+ * <ol><li> If false is returned, terminate your plugin. <li>
+ * <li>If false is returned and your plugin is critical to a host of other plugins, terminate the server.</li>
+ * <li>If an Exception is thrown, I strongly recommend you consider it a "false" return value and react 
+ * accordingly.</li></ol></li>
+ * <li>Note: Create a "first" migration at index -1 that ignores errors and copies
  * any "current" migration state data from the db_version or equivalent table into the <code>managed_plugin_data</code>
- * table. 2. Throughout your plugin, ensure that PreparedStatements are "created" new each request and against a newly
+ * table.</li></ol></li>
+ * <li>Throughout your plugin, ensure that PreparedStatements are "created" new each request and against a newly
  * retrieved Connection (using {@link #getConnection()} of this class). Don't worry about PrepareStatements. The driver
- * will manage caching them efficiently. 3. Make sure you release Connections using {@link Connection#close()} as soon
- * as you can (when done with them). a. Don't hold on to Connections. b. Close them. c. Use "try-with-resources"
- * where-ever possible so that they are auto-closed. 4. If you have loops to insert a bunch of similar records, convert
- * it to a batch. Find instructions in {@link #ManagedDatasource}. 5. If you have special needs like atomic
+ * will manage caching them efficiently.</li>
+ * <li>Make sure you release Connections using {@link Connection#close()} as soon as you can 
+ * (when done with them).
+ * <ol><li>Don't hold on to Connections.</li>
+ * <li>Close them.</li>
+ * <li>Use "try-with-resources" where-ever possible so that they are auto-closed.</li></ol></li>
+ * <li>If you have loops to insert a bunch of similar records, convert
+ * it to a batch. Find instructions in {@link #ManagedDatasource}.</li>
+ * <li>If you have special needs like atomic
  * multi-statement, do all your work on a single Connection and return it to a clean state when you are done. (turn
- * auto-commit back on, ensure all transactions are committed, etc.)
+ * auto-commit back on, ensure all transactions are committed, etc.)</li></ol>
  *
- * That should cover most cases. Note that points 2 & 3 are critical. Point 1 is required. Point 4 and 5 are highly
+ * That should cover most cases. Note that points 2 and 3 are critical. Point 1 is required. Point 4 and 5 are highly
  * recommended.
  * 
  * @author ProgrammerDan

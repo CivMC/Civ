@@ -3,6 +3,8 @@ CivModCore
 
 Versions:
 
+* 1.7.5 - Spigot 1.14.4 (No explicit support for 1.14 prior to 1.14.4)
+
 * 1.7.0 - Spigot 1.13.2 (No explicit support for 1.13 or 1.13.1)
 
 * 1.6.1 - Spigot 1.12 (Mercury Removed -- incompatible with plugins that rely on Mercury hooks)
@@ -25,16 +27,10 @@ To use CivModCore, your Main Plugin class must extend ACivMod:
     {
     
     }
-
-In addition to that, you must override getPluginName for log messages:
-
-    protected String getPluginName() {
-        return "MyPluginsName";
-    }
     
 CivModCore implements onEnable/onLoad, and as such an extending plugin must Override and call super:
 
-https://github.com/Bergecraft/CivModCore/blob/master/src/vg/civcraft/mc/civmodcore/ACivMod.java#L108
+https://github.com/DevotedMC/CivModCore/blob/master/src/main/java/vg/civcraft/mc/civmodcore/ACivMod.java#L34
 
     @Override
     public void onEnable()

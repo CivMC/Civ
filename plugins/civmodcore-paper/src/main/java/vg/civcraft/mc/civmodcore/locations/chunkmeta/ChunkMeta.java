@@ -94,7 +94,7 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 	 * Sets the cache state, which specifies whether this instance has changed since
 	 * it was last synced with the database and needs to be written back there
 	 * 
-	 * @param dirty New dirty state
+	 * @param state New dirty state
 	 */
 	public void setCacheState(CacheState state) {
 		this.cacheState = this.cacheState.progress(state);

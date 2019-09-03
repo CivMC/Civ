@@ -410,11 +410,14 @@ public class ConfigParsing {
 	/**
 	 * Parses a section which contains key-value mappings of a type to another type
 	 * 
-	 * @param <E>        Key type
-	 * @param <V>        Value type
-	 * @param parent     Configuration section containing the section with the
-	 *                   values
-	 * @param identifier Config identifier of the section containing the entries
+	 * @param <K>            Key type
+	 * @param <V>            Value type
+	 * @param parent         Configuration section containing the section with the values
+	 * @param identifier     Config identifier of the section containing the entries
+	 * @param logger         The logger to write in progress work to
+	 * @param keyConverter   Converts strings to type K
+	 * @param valueConverter Converts strings to type V
+	 * @param mapToUse       The map to place parsed keys and values.
 	 */
 	public static <K, V> void parseKeyValueMap(ConfigurationSection parent, String identifier, Logger logger,
 			Function<String, K> keyConverter, Function<String, V> valueConverter, Map<K, V> mapToUse) {

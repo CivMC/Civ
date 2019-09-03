@@ -233,7 +233,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	/**
 	 * Removes the entry at the given block if one exists and returns it
 	 * 
-	 * @param location Block to remove data from, may not be null
+	 * @param block Block to remove data from, may not be null
 	 */
 	public final D remove(Block block) {
 		if (block == null) {

@@ -50,7 +50,7 @@ public class RateLimiter {
 	/**
 	 * Attempts to pull a token for the player with the given UUID
 	 * 
-	 * @param uuid UUID of the player
+	 * @param player Bukkit Player object for the player
 	 * @return True if a token was available and successfully consumed, false
 	 *         otherwise
 	 */

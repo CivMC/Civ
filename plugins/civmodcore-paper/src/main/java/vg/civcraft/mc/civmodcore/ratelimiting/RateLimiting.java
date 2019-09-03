@@ -38,7 +38,7 @@ public class RateLimiting {
 	 * with the given name
 	 * 
 	 * @param limiterName Name of the rate limiter
-	 * @param uuid        UUID of the player
+	 * @param player      UUID of the player
 	 * @return True if a token was available and successfully consumed, false
 	 *         otherwise
 	 */
