@@ -88,11 +88,31 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     		return;
     	}
     	Material bbe = eve.getBlock().getType();
-		if (manager == null) manager = Citadel.getReinforcementManager();
+	if (manager == null) manager = Citadel.getReinforcementManager();
+	// the list of items with inventories has grown a bit (1.14)
         if (Material.CHEST.equals(bbe) || Material.TRAPPED_CHEST.equals(bbe)
         		|| Material.ENDER_CHEST.equals(bbe) || Material.FURNACE.equals(bbe)
         		|| Material.BLAST_FURNACE.equals(bbe) || Material.DISPENSER.equals(bbe)
-        		|| Material.DROPPER.equals(bbe) || Material.HOPPER.equals(bbe)) {
+        		|| Material.DROPPER.equals(bbe) || Material.HOPPER.equals(bbe)
+			|| Material.BARREL.equals(bbe) || Material.SMOKER.equals(bbe)
+			|| Material.BLACK_SHULKER_BOX.equals(bbe)
+			|| Material.BLUE_SHULKER_BOX.equals(bbe)
+			|| Material.BROWN_SHULKER_BOX.equals(bbe)
+			|| Material.CYAN_SHULKER_BOX.equals(bbe)
+			|| Material.GRAY_SHULKER_BOX.equals(bbe)
+			|| Material.GREEN_SHULKER_BOX.equals(bbe)
+			|| Material.LIGHT_BLUE_SHULKER_BOX.equals(bbe)
+			|| Material.LIGHT_GRAY_SHULKER_BOX.equals(bbe)
+			|| Material.LIME_SHULKER_BOX.equals(bbe)
+			|| Material.MAGENTA_SHULKER_BOX.equals(bbe)
+			|| Material.ORANGE_SHULKER_BOX.equals(bbe)
+			|| Material.PINK_SHULKER_BOX.equals(bbe)
+			|| Material.PURPLE_SHULKER_BOX.equals(bbe)
+			|| Material.RED_SHULKER_BOX.equals(bbe)
+			|| Material.SHULKER_BOX.equals(bbe)
+			|| Material.WHITE_SHULKER_BOX.equals(bbe)
+			|| Material.YELLOW_SHULKER_BOX.equals(bbe)
+			|| Material.LECTERN.equals(bbe) || Material.BREWING_STAND.equals(bbe)) {
             if(manager.isReinforced(eve.getBlock())) {
                 String name = eve.getPlayer().getDisplayName();
                 Location loc = eve.getBlock().getLocation();

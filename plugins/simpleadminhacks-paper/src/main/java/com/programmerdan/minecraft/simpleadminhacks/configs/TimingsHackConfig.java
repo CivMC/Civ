@@ -38,9 +38,9 @@ public class TimingsHackConfig extends SimpleHackConfig {
 		return timingsMap;
 	}
 
-	public void setTimingsMap(int i) {
-		timingsMap = i;
-		getBase().set("timingMap", i);
+	public void setTimingsMap(int mapId) {
+		timingsMap = mapId;
+		getBase().set("timingMap", mapId);
 	}
 
 	public Integer getBindMap(String bind) {
@@ -50,16 +50,16 @@ public class TimingsHackConfig extends SimpleHackConfig {
 		return bindMaps.get(bind);
 	}
 
-	public void setBindMap(String bind, int i) {
-		Integer prior = bindMaps.replace(bind, i);
+	public void setBindMap(String bind, int mapId) {
+		Integer prior = bindMaps.replace(bind, mapId);
 		if (prior != null) {
 			reverseBindMaps.remove(prior);
 		}
-		reverseBindMaps.replace(i, bind);
-		getBase().set("bindings." + bind, i);
+		reverseBindMaps.replace(mapId, bind);
+		getBase().set("bindings." + bind, mapId);
 	}
 
-	public String getBindFromId(int i) {
-		return reverseBindMaps.get(i);
+	public String getBindFromId(int mapId) {
+		return reverseBindMaps.get(mapId);
 	}
 }

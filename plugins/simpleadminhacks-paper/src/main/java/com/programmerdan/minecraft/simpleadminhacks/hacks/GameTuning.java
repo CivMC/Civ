@@ -210,7 +210,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		if (!config.isEnabled() || !config.areDaytimeBedsEnabled()) {
 			return;
 		}
-		if (e.getBedEnterResult() == BedEnterResult.NOT_POSSIBLE_NOW || e.getBedEnterResult() == BedEnterResult.NOT_SAFE) {
+		if (BedEnterResult.NOT_POSSIBLE_NOW.equals(e.getBedEnterResult()) || BedEnterResult.NOT_SAFE.equals(e.getBedEnterResult())) {
 			e.getPlayer().setBedSpawnLocation(e.getBed().getLocation(), false);
 			e.getPlayer().sendTitle("", config.getDaytimeBedSpawnSetMessage());
 		}
@@ -227,7 +227,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPortalTravel(PlayerPortalEvent event) {
-		if(config.isEnabled() && event.getCause() == PlayerTeleportEvent.TeleportCause.NETHER_PORTAL) {
+		if(config.isEnabled() && PlayerTeleportEvent.TeleportCause.NETHER_PORTAL.equals(event.getCause())) {
 			if(!config.allowNetherTravel()) {
 				event.setCancelled(true);
 			} else if (config.isOneToOneNether()) {
@@ -241,7 +241,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onPortalCreate(PortalCreateEvent event) {
 		if (config.isEnabled() && !config.isReturnNetherPortal()) {
-			if (event.getReason() == PortalCreateEvent.CreateReason.FIRE && event.getWorld().getEnvironment() == Environment.NETHER) {
+			if (PortalCreateEvent.CreateReason.FIRE.equals(event.getReason()) && Environment.NETHER.equals(event.getWorld().getEnvironment())) {
 				event.setCancelled(true);
 			}
 		}
@@ -295,11 +295,11 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler
 	public void onPlayerInteract(PlayerInteractEvent event) {
-		if(!config.isEnabled() || event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+		if(!config.isEnabled() || !Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) {
 			return;
 		}
-		boolean cancel = !config.isEnderChestInventories() && event.getClickedBlock().getType() == Material.ENDER_CHEST;
-		cancel |= !config.canChangeSpawnerType() && event.getClickedBlock().getType() == Material.SPAWNER
+		boolean cancel = !config.isEnderChestInventories() && Material.ENDER_CHEST.equals(event.getClickedBlock().getType());
+		cancel |= !config.canChangeSpawnerType() && Material.SPAWNER.equals(event.getClickedBlock().getType())
 				&& event.getItem() != null && event.getItem().getItemMeta() instanceof SpawnEggMeta;
 		event.setCancelled(cancel);
 	}
@@ -316,7 +316,8 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 		if(config.isEnabled() && !config.allowVillagerTrading()) {
 			Entity npc = event.getRightClicked();
-			if(npc.getType() == EntityType.VILLAGER) {
+			// consistency, preserving null check
+			if(npc != null && EntityType.VILLAGER.equals(npc.getType())) {
 				event.setCancelled(true);
 			}
 		}
@@ -325,8 +326,8 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onEntityChangeBLock(EntityChangeBlockEvent event) {
 		if(config.isEnabled() &&
-				(!config.isEnderGrief() && event.getEntityType() == EntityType.ENDERMAN) ||
-				(!config.isWitherGrief() && event.getEntityType() == EntityType.WITHER)) {
+				(!config.isEnderGrief() && EntityType.ENDERMAN.equals(event.getEntityType())) ||
+				(!config.isWitherGrief() && EntityType.WITHER.equals(event.getEntityType()))) {
 			event.setCancelled(true);
 		}
 	}
@@ -334,7 +335,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1
-				&& event.getPlayer().getGameMode() == GameMode.SURVIVAL) {
+				&& GameMode.SURVIVAL.equals(event.getPlayer().getGameMode())) {
 			TeleportUtil.tryToTeleportVertically(event.getPlayer(), event.getTo(), "falling into the void");
 		}
 	}

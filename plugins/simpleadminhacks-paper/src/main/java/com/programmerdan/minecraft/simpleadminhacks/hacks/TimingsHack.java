@@ -30,6 +30,7 @@ import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
 import org.bukkit.map.MapRenderer;
@@ -256,9 +257,10 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				view.getRenderers().forEach(view::removeRenderer);
 				view.addRenderer(this.tickVisualize);
 
-				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+				ItemStack viewMap = new ItemStack(Material.MAP, 1);
 
-				ItemMeta mapMeta = viewMap.getItemMeta();
+				MapMeta mapMeta = (MapMeta) viewMap.getItemMeta();
+				mapMeta.setMapView(view);
 				mapMeta.setDisplayName("Tick Health Monitor");
 				mapMeta.setLore(Arrays.asList(
 						"TPS",
@@ -286,7 +288,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 
 			// Delay a few ticks, then give into inventory a map that shows the class % of TPS use
 			MapView view = null;
-			Short mapId = config.getBindMap(args[0]);
+			Integer mapId = config.getBindMap(args[0]);
 			if (mapId != null) {
 				view = Bukkit.getMap(config.getBindMap(args[0]));
 				if (!bindVisualizers.containsKey(args[0])) {
@@ -303,9 +305,10 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 				view.getRenderers().forEach(view::removeRenderer);
 				view.addRenderer(this.bindVisualizers.get(args[0]));
 
-				ItemStack viewMap = new ItemStack(Material.MAP, 1, view.getId());
+				ItemStack viewMap = new ItemStack(Material.MAP);
 
-				ItemMeta mapMeta = viewMap.getItemMeta();
+				MapMeta mapMeta = (MapMeta) viewMap.getItemMeta();
+				mapMeta.setMapView(view);
 				mapMeta.setDisplayName(args[0] + " Utilization Monitor");
 				mapMeta.setLore(Arrays.asList(
 						args[0],
@@ -338,7 +341,7 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 	@EventHandler(ignoreCancelled = true)
 	public void onMapInit(MapInitializeEvent event) {
 		MapView view = event.getMap();
-		if (config.getTimingsMap() != null && view.getId() == config.getTimingsMap().shortValue()) { 
+		if (config.getTimingsMap() != null && view.getId() == config.getTimingsMap()) { 
 			view.getRenderers().forEach(view::removeRenderer);
 			view.addRenderer(this.tickVisualize);
 		} else {
@@ -360,21 +363,21 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 		PlayerInventory inventory = player.getInventory();
 		ItemStack newHeld = inventory.getItem(event.getNewSlot());
 		if (newHeld != null && newHeld.getType().equals(Material.MAP)) {
-			ItemMeta baseMeta = newHeld.getItemMeta();
+			MapMeta baseMeta = (MapMeta) newHeld.getItemMeta();
 			if (baseMeta.hasLore()) {
 				try {
 					String ID = baseMeta.getLore().get(0);
 
 					if (ID.equals("TPS")) {
-						MapView view = Bukkit.getMap(newHeld.getDurability());
+						MapView view = baseMeta.hasMapView() ? baseMeta.getMapView() : Bukkit.getMap(baseMeta.getMapId());
 						if (view.getRenderers().size() == 1 && !view.getRenderers().get(0).equals(this.tickVisualize)) {
 							view.getRenderers().forEach(view::removeRenderer);
 							view.addRenderer(this.tickVisualize);
 						}
 					} else {
-						String bind = config.getBindFromId(newHeld.getDurability());
+						String bind = config.getBindFromId(baseMeta.getMapId());
 						if (bind.equalsIgnoreCase(ID)) {
-							MapView view = Bukkit.getMap(newHeld.getDurability());
+							MapView view = baseMeta.hasMapView() ? baseMeta.getMapView() : Bukkit.getMap(baseMeta.getMapId());
 							BindTimingMap bindViz = null;
 							if (!this.bindVisualizers.containsKey(bind)) {
 								bindVisualizers.put(bind, new BindTimingMap(bind)); // on demand binding.

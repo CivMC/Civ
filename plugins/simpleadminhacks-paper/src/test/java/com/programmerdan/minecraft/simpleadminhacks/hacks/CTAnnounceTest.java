@@ -68,7 +68,7 @@ public class CTAnnounceTest {
 		PlayerCombatTagEvent cte = new PlayerCombatTagEvent(null, null, 30);
 
 		try {
-			instance.CTEvent(cte);
+			instance.ctEvent(cte);
 
 			assertTrue(true);
 		} catch( NullPointerException npe) {
@@ -148,7 +148,7 @@ public class CTAnnounceTest {
 		online.add(att);
 		when(plugin.serverOnlineBroadcast(anyString())).thenReturn(online.size());
 
-		instance.CTEvent(cte);
+		instance.ctEvent(cte);
 		// Now we make sure everyone got notified, and only once.
 
 		// OPs got notified
@@ -169,7 +169,7 @@ public class CTAnnounceTest {
 		}
 
 		// This one should get throttled right away.
-		instance.CTEvent(cte);
+		instance.ctEvent(cte);
 
 		// verify that console was _not_ alerted again (e.g. still only one message)
 		verify(plugin).serverSendConsoleMessage(anyString());
@@ -180,7 +180,7 @@ public class CTAnnounceTest {
 		}
 
 		// This one should not get throttled.
-		instance.CTEvent(cte);
+		instance.ctEvent(cte);
 
 		// verify that console was alerted again (e.g. second throttled, third succeeded)
 		verify(plugin, times(2)).serverSendConsoleMessage(anyString());
