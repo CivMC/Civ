@@ -83,6 +83,7 @@ hacks:
     allowVillagerTrading: false
     enderGrief: false
     witherGrief: false
+    dragonGrief: true
     allowEnchantedApples: false
     preventFallingThroughBedrock: true
     #a list of materials players shouldn't be allowed to place at all

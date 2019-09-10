@@ -163,7 +163,7 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		Player player = event.getPlayer();
 		Location from = event.getFrom();
 		Location to = event.getTo();
-		// Must of these nullchecks will gen warnings with compile time contracts. 
+		// Most of these nullchecks will gen warnings with compile time contracts. 
 		// Experience tells me these can be violated at runtime due to spigot failures,
 		// esp moving between worlds with corresponding state desync. Leaving them in
 		// consequentially.

@@ -26,6 +26,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -324,13 +325,31 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
-	public void onEntityChangeBLock(EntityChangeBlockEvent event) {
+	public void onEntityChangeBlock(EntityChangeBlockEvent event) {
 		if(config.isEnabled() &&
 				(!config.isEnderGrief() && EntityType.ENDERMAN.equals(event.getEntityType())) ||
-				(!config.isWitherGrief() && EntityType.WITHER.equals(event.getEntityType()))) {
+				(!config.isWitherGrief() && EntityType.WITHER.equals(event.getEntityType())) ||
+				(!config.isDragonGrief() && EntityType.ENDER_DRAGON.equals(event.getEntityType()))) {
 			event.setCancelled(true);
 		}
 	}
+
+	/**
+	 * Speculative handler for dragon fireballs and exploding wither skulls
+	 *
+	 * Some examples online prefer event.getEntity() instanceof DragonFireball and WitherSkull, could try that
+	 * if this does not work
+	 */
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onEntityExplodeEvent(EntityExplodeEvent event) {
+		if (config.isEnabled() &&
+				(!config.isDragonGrief() && EntityType.DRAGON_FIREBALL.equals(event.getEntityType())) ||
+				(!config.isWitherGrief() && EntityType.WITHER_SKULL.equals(event.getEntityType()))) {
+			event.setCancelled(true);
+			// note this might not prevent block breaks, check on that (1.14)
+		}
+	}
+
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {

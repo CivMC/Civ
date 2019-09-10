@@ -116,7 +116,7 @@ clickable-on, clickable-off light sources without additional redstone infrastruc
 
 ### HumbugBatchOne
 
-A new BasicHack (thanks Maxopoly) which encompases a number of previously unincluded
+A new BasicHack (thanks Maxopoly) which encompasses a number of previously unincluded
 Humbug gameplay modifications. Specifically, sheep wool dying, anvil use, enchanting table use,
 cauldrons sourcing infinite water, disabling ender dragon, disabling iron farms,
 disabling ender crystal damage, disable mining fatigue, and equipping banners as hats.
