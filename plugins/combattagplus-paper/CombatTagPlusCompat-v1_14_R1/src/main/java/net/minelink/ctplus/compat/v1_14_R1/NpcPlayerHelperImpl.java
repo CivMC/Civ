@@ -97,6 +97,12 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             ItemStack item = entity.getEquipment(slot);
             if (item == null) continue;
 
+            // Set the attribute for this equipment to consider armor values and enchantments
+            // Actually getAttributeMap().a() is used with the previous item, to clear the Attributes
+            entity.getAttributeMap().a(item.a(slot));
+            entity.getAttributeMap().b(item.a(slot));
+
+            // This is also called by super.tick(), but the flag this.bx is not public
             Packet packet = new PacketPlayOutEntityEquipment(entity.getId(), slot, item);
             entity.getWorldServer().getChunkProvider().broadcast(entity, packet);
         }
