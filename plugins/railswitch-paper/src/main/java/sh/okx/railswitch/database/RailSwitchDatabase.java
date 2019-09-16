@@ -11,7 +11,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,9 +25,9 @@ public class RailSwitchDatabase {
   private String setPlayerDestination;
   private String getPlayerDestination;
   private String removePlayerDestination;
+  private ExecutorService service = Executors.newSingleThreadExecutor();
 
   private final LoadingCache<Player, Optional<String>> destinations = CacheBuilder.newBuilder()
-      .expireAfterAccess(10, TimeUnit.HOURS)
       .maximumSize(1000)
       .build(new CacheLoader<Player, Optional<String>>() {
         @Override
@@ -79,35 +80,39 @@ public class RailSwitchDatabase {
 
   public void setPlayerDestination(Player player, String destination) {
     destinations.put(player, Optional.of(destination));
-    try (Connection connection = pool.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement(setPlayerDestination);
-      statement.setString(1, player.getUniqueId().toString());
-      statement.setString(2, destination);
+    service.execute(() -> {
+      try (Connection connection = pool.getConnection()) {
+        PreparedStatement statement = connection.prepareStatement(setPlayerDestination);
+        statement.setString(1, player.getUniqueId().toString());
+        statement.setString(2, destination);
 
-      statement.executeUpdate();
-    } catch (SQLException e) {
-      log.log(Level.SEVERE, "Could not set destination", e);
-    }
+        statement.executeUpdate();
+      } catch (SQLException e) {
+        log.log(Level.SEVERE, "Could not set destination", e);
+      }
+    });
   }
 
   public void removePlayerDestination(Player player) {
-    destinations.refresh(player);
-    try (Connection connection = pool.getConnection()) {
-      PreparedStatement statement = connection.prepareStatement(removePlayerDestination);
-      statement.setString(1, player.getUniqueId().toString());
+    destinations.put(player, Optional.empty());
+    service.execute(() -> {
+      try (Connection connection = pool.getConnection()) {
+        PreparedStatement statement = connection.prepareStatement(removePlayerDestination);
+        statement.setString(1, player.getUniqueId().toString());
 
-      statement.executeUpdate();
-    } catch (SQLException e) {
-      log.log(Level.SEVERE, "Could not remove destination", e);
-    }
+        statement.executeUpdate();
+      } catch (SQLException e) {
+        log.log(Level.SEVERE, "Could not remove destination", e);
+      }
+    });
   }
 
-  public String getPlayerDestination(Player player) {
+  public Optional<String> getPlayerDestination(Player player) {
     try {
-      return destinations.get(player).orElse(null);
+      return destinations.get(player);
     } catch (ExecutionException e) {
       log.log(Level.SEVERE, "Could not get destination", e);
-      return null;
+      return Optional.empty();
     }
   }
 }

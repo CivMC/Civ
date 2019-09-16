@@ -19,10 +19,12 @@ import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
-public class DectorRailActivateListener implements Listener {
+import java.util.Optional;
+
+public class DetectorRailActivateListener implements Listener {
   private final RailSwitch plugin;
 
-  public DectorRailActivateListener(RailSwitch plugin) {
+  public DetectorRailActivateListener(RailSwitch plugin) {
     this.plugin = plugin;
   }
 
@@ -71,16 +73,16 @@ public class DectorRailActivateListener implements Listener {
       return true;
     }
 
-    String destination = plugin.getDatabase().getPlayerDestination(player);
+    Optional<String> destination = plugin.getDatabase().getPlayerDestination(player);
     // don't activate rail if a destination is not set
-    if (destination == null) {
+    if (!destination.isPresent()) {
       return false;
     }
 
     // only activate redstone if the sign has a destination the player is set to
     // if the sign has a * and a player has a destination set, activate it
     for (int i = 1; i < 4; i++) {
-      if (destination.equalsIgnoreCase(lines[i]) || lines[i].equals("*")) {
+      if (destination.get().equalsIgnoreCase(lines[i]) || lines[i].equals("*")) {
         return true;
       }
     }

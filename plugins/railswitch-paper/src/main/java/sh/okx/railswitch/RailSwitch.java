@@ -8,7 +8,7 @@ import sh.okx.railswitch.database.ConnectionPool;
 import sh.okx.railswitch.database.MySQLConnectionPool;
 import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.database.SQLiteConnectionPool;
-import sh.okx.railswitch.listener.DectorRailActivateListener;
+import sh.okx.railswitch.listener.DetectorRailActivateListener;
 
 public class RailSwitch extends JavaPlugin {
   private boolean timings;
@@ -26,7 +26,7 @@ public class RailSwitch extends JavaPlugin {
 
     PluginManager pm = getServer().getPluginManager();
 
-    pm.registerEvents(new DectorRailActivateListener(this), this);
+    pm.registerEvents(new DetectorRailActivateListener(this), this);
     getCommand("setdestination").setExecutor(new SetDestinationCommand(this));
   }
 

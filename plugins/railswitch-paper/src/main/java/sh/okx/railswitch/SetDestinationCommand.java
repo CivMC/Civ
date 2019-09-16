@@ -33,7 +33,11 @@ public class SetDestinationCommand implements CommandExecutor {
       return true;
     }
 
+    long start = System.currentTimeMillis();
     plugin.getDatabase().setPlayerDestination(player, dest);
+    if (plugin.isTimings()) {
+      plugin.getLogger().info("Set destination took " + (System.currentTimeMillis() - start) + "ms");
+    }
     player.sendMessage(ChatColor.GREEN + "Set your rail destination to: " + dest);
     return true;
   }
