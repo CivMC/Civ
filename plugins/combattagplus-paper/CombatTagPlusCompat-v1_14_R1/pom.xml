@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>CombatTagPlusCompat-v1_13_R2</artifactId>
+    <artifactId>CombatTagPlusCompat-v1_14_R1</artifactId>
 
     <repositories>
         <repository>
@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.14.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

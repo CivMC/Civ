@@ -141,6 +141,12 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+        	<groupId>net.minelink</groupId>
+        	<artifactId>CombatTagPlusCompat-v1_14_R1</artifactId>
+        	<version>1.3.2-SNAPSHOT</version>
+        	<scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>net.minelink</groupId>
             <artifactId>CombatTagPlusHook</artifactId>
             <version>1.3.2-SNAPSHOT</version>

@@ -1,25 +1,25 @@
 package net.minelink.ctplus.compat.v1_14_R1;
 
-import net.minecraft.server.v1_13_R2.EntityPlayer;
-import net.minecraft.server.v1_13_R2.EnumItemSlot;
-import net.minecraft.server.v1_13_R2.FoodMetaData;
-import net.minecraft.server.v1_13_R2.ItemStack;
-import net.minecraft.server.v1_13_R2.MinecraftServer;
-import net.minecraft.server.v1_13_R2.NBTCompressedStreamTools;
-import net.minecraft.server.v1_13_R2.NBTTagCompound;
-import net.minecraft.server.v1_13_R2.NBTTagList;
-import net.minecraft.server.v1_13_R2.Packet;
-import net.minecraft.server.v1_13_R2.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_13_R2.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_13_R2.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_13_R2.WorldNBTStorage;
-import net.minecraft.server.v1_13_R2.WorldServer;
+import net.minecraft.server.v1_14_R1.EntityPlayer;
+import net.minecraft.server.v1_14_R1.EnumItemSlot;
+import net.minecraft.server.v1_14_R1.FoodMetaData;
+import net.minecraft.server.v1_14_R1.ItemStack;
+import net.minecraft.server.v1_14_R1.MinecraftServer;
+import net.minecraft.server.v1_14_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.NBTTagList;
+import net.minecraft.server.v1_14_R1.Packet;
+import net.minecraft.server.v1_14_R1.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_14_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_14_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_14_R1.WorldNBTStorage;
+import net.minecraft.server.v1_14_R1.WorldServer;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_13_R2.CraftWorld;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -48,7 +48,6 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         }
 
         worldServer.addEntity(npcPlayer);
-        worldServer.getPlayerChunkMap().addPlayer(npcPlayer);
 
         return npcPlayer.getBukkitEntity();
     }
@@ -70,7 +69,6 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
 
         WorldServer worldServer = MinecraftServer.getServer().getWorldServer(entity.dimension);
         worldServer.removeEntity(entity);
-        worldServer.getPlayerChunkMap().removePlayer(entity);
     }
 
     @Override
@@ -104,7 +102,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
 
             Packet packet = new PacketPlayOutEntityEquipment(entity.getId(), slot, item);
 
-            for (Object o : entity.world.players) {
+            for (Object o : entity.world.getPlayers()) {
                 if (!(o instanceof EntityPlayer)) continue;
 
                 EntityPlayer p = (EntityPlayer) o;
@@ -178,7 +176,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
 
         for (WorldServer worldServer : MinecraftServer.getServer().getWorlds()) {
-            for (Object o : worldServer.players) {
+            for (Object o : worldServer.getPlayers()) {
                 if (!(o instanceof NpcPlayer)) continue;
 
                 NpcPlayer npcPlayer = (NpcPlayer) o;
@@ -193,7 +191,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         EntityPlayer p = ((CraftPlayer) player).getHandle();
 
         for (WorldServer worldServer : MinecraftServer.getServer().getWorlds()) {
-            for (Object o : worldServer.players) {
+            for (Object o : worldServer.getPlayers()) {
                 if (!(o instanceof NpcPlayer)) continue;
 
                 NpcPlayer npcPlayer = (NpcPlayer) o;

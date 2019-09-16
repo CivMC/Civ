@@ -2,11 +2,11 @@ package net.minelink.ctplus.compat.v1_14_R1;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.server.v1_13_R2.EnumProtocol;
-import net.minecraft.server.v1_13_R2.EnumProtocolDirection;
-import net.minecraft.server.v1_13_R2.NetworkManager;
-import net.minecraft.server.v1_13_R2.Packet;
-import net.minecraft.server.v1_13_R2.PacketListener;
+import net.minecraft.server.v1_14_R1.EnumProtocol;
+import net.minecraft.server.v1_14_R1.EnumProtocolDirection;
+import net.minecraft.server.v1_14_R1.NetworkManager;
+import net.minecraft.server.v1_14_R1.Packet;
+import net.minecraft.server.v1_14_R1.PacketListener;
 
 import javax.crypto.SecretKey;
 import java.net.SocketAddress;
