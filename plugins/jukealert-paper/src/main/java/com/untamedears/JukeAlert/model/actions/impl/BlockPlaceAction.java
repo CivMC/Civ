@@ -6,11 +6,18 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.untamedears.JukeAlert.model.actions.BlockAction;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public class BlockPlaceAction extends BlockAction {
+	
+	public static final String ID = "BLOCK_PLACE";
+	
+	public BlockPlaceAction(long time, UUID player, Location location, String materialString) {
+		this(time, player, location, JAUtility.parseMaterial(materialString));
+	}
 
 	public BlockPlaceAction(long time, UUID player, Location location, Material material) {
 		super(time, player, location, material);
@@ -18,7 +25,7 @@ public class BlockPlaceAction extends BlockAction {
 
 	@Override
 	public String getIdentifier() {
-		return "BLOCK_PLACE";
+		return ID;
 	}
 
 	@Override

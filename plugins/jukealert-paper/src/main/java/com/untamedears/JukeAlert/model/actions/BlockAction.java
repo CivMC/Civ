@@ -29,5 +29,10 @@ public abstract class BlockAction extends PlayerAction {
 	public Material getMaterial() {
 		return material;
 	}
+	
+	@Override
+	public LoggedActionPersistence getPersistence() {
+		return new LoggedActionPersistence(getPlayer(), location, time, material.name());
+	}
 
 }

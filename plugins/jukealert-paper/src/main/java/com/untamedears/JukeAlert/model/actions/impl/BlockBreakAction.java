@@ -6,19 +6,26 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.untamedears.JukeAlert.model.actions.BlockAction;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public class BlockBreakAction extends BlockAction {
+	
+	public static final String ID = "BLOCK_BREAK";
 
+	public BlockBreakAction(long time, UUID player, Location location, String materialString) {
+		this(time, player, location, JAUtility.parseMaterial(materialString));
+	}
+	
 	public BlockBreakAction(long time, UUID player, Location location, Material material) {
 		super(time, player, location, material);
 	}
 
 	@Override
 	public String getIdentifier() {
-		return "BLOCK_BREAK";
+		return ID;
 	}
 
 	@Override

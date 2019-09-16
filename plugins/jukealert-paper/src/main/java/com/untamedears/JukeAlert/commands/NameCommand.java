@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
+import static com.untamedears.JukeAlert.util.JAUtility.findLookingAtOrClosestSnitch;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
-import com.untamedears.JukeAlert.util.Utility;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
@@ -39,7 +39,7 @@ public class NameCommand extends StandaloneCommand {
 		String prevName = snitch.getName();
 		snitch.setName(name);
 		TextComponent lineText = new TextComponent(ChatColor.AQUA + " Changed snitch name to ");
-		lineText.addExtra(Utility.genTextComponent(snitch));
+		lineText.addExtra(JAUtility.genTextComponent(snitch));
 		lineText.addExtra(ChatColor.AQUA + " from " + ChatColor.GOLD + prevName);
 		player.spigot().sendMessage(lineText);
 		return true;

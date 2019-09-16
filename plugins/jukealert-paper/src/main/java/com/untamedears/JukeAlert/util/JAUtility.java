@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.util.BlockIterator;
@@ -20,9 +21,9 @@ import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 // Static methods only
-public class Utility {
+public class JAUtility {
 	
-	private Utility() {
+	private JAUtility() {
 		
 	}
 
@@ -82,4 +83,13 @@ public class Utility {
 		sb.append(String.format("%sGroup: %s%s%n", ChatColor.GOLD, ChatColor.AQUA, snitch.getGroup().getName()));
 		text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(sb.toString()).create()));
 	}
+	
+	public static Material parseMaterial(String id) {
+		try {
+			return Material.valueOf(id);
+		}
+		catch (IllegalArgumentException e) {
+			return Material.STONE;
+		}
+ 	}
 }

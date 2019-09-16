@@ -9,6 +9,7 @@ import com.untamedears.JukeAlert.listener.SnitchLifeCycleListener;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchChunkData;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
+import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
 import com.untamedears.JukeAlert.model.SnitchQTEntry;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
@@ -32,9 +33,14 @@ public class JukeAlert extends ACivMod {
 	private SnitchTypeManager snitchConfigManager;
 	private SnitchManager snitchManager;
 	private SparseQuadTree<SnitchQTEntry> quadTree;
+	private LoggedActionFactory loggedActionFactory;
 
 	public JAConfigManager getConfigManager() {
 		return configManager;
+	}
+	
+	public LoggedActionFactory getLoggedActionFactory() {
+		return loggedActionFactory;
 	}
 	
 	public SnitchTypeManager getSnitchConfigManager() {
@@ -62,6 +68,7 @@ public class JukeAlert extends ACivMod {
 		instance = this;
 		super.onEnable();
 		quadTree = new SparseQuadTree<>(1);
+		loggedActionFactory = new LoggedActionFactory();
 		snitchConfigManager = new SnitchTypeManager();
 		configManager = new JAConfigManager(this, snitchConfigManager);
 		if (!configManager.parse()) {

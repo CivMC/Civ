@@ -21,5 +21,7 @@ public abstract class LoggingDelegate {
 	public abstract List<LoggedSnitchAction> getFullLogs();
 	
 	public abstract void deleteAllLogs();
+	
+	public abstract void persist();
 
 }

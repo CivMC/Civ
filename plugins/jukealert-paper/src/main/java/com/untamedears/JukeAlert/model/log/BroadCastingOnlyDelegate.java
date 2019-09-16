@@ -50,4 +50,9 @@ public class BroadCastingOnlyDelegate extends LoggingDelegate {
 		}
 	}
 
+	@Override
+	public void persist() {
+		//nothing to do
+	}
+
 }

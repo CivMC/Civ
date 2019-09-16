@@ -37,5 +37,7 @@ public abstract class LoggedSnitchAction {
 	public abstract TextComponent getChatRepresentation();
 	
 	public abstract boolean hasPlayer();
+	
+	public abstract LoggedActionPersistence getPersistence();
 
 }

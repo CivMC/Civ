@@ -43,5 +43,10 @@ public abstract class PlayerAction extends LoggedSnitchAction {
 	public String getPlayerName() {
 		return NameAPI.getCurrentName(player);
 	}
+	
+	@Override
+	public LoggedActionPersistence getPersistence() {
+		return new LoggedActionPersistence(player, null, time, null);
+	}
 
 }

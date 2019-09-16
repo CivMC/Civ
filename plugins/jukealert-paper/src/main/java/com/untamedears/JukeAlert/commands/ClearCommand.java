@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
+import static com.untamedears.JukeAlert.util.JAUtility.findLookingAtOrClosestSnitch;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
-import com.untamedears.JukeAlert.util.Utility;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
@@ -29,7 +29,7 @@ public class ClearCommand extends StandaloneCommand {
 			return true;
 		}
 		snitch.getLoggingDelegate().deleteAllLogs();
-		sender.sendMessage(ChatColor.GREEN + "Deleted all logs for snitch " + Utility.genTextComponent(snitch));
+		sender.sendMessage(ChatColor.GREEN + "Deleted all logs for snitch " + JAUtility.genTextComponent(snitch));
 		return true;
 	}
 

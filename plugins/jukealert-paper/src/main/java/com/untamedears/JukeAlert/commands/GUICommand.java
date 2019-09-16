@@ -14,7 +14,7 @@ import com.untamedears.JukeAlert.gui.SnitchLogGUI;
 import com.untamedears.JukeAlert.gui.SnitchOverviewGUI;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
-import com.untamedears.JukeAlert.util.Utility;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
@@ -25,7 +25,7 @@ public class GUICommand extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		Snitch cursorSnitch = Utility.getSnitchUnderCursor(player);
+		Snitch cursorSnitch = JAUtility.getSnitchUnderCursor(player);
 		if (cursorSnitch != null && cursorSnitch.hasPermission(player, JukeAlertPermissionHandler.getReadLogs())) {
 			SnitchLogGUI gui = new SnitchLogGUI(player, cursorSnitch);
 			gui.showScreen();

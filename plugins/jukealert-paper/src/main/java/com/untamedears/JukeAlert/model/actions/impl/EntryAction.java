@@ -16,6 +16,8 @@ import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class EntryAction extends PlayerAction {
+	
+	public static final String ID = "ENTRY";
 
 	public EntryAction(long time, UUID player) {
 		super(time, player);
@@ -23,7 +25,7 @@ public class EntryAction extends PlayerAction {
 
 	@Override
 	public String getIdentifier() {
-		return "ENTRY";
+		return ID;
 	}
 
 	@Override

@@ -6,16 +6,23 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
+import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
+import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 import com.untamedears.JukeAlert.model.factory.SnitchConfigFactory;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -41,8 +48,12 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						+ "world_id int not null, name varchar(255), last_refresh timestamp not null, toggle_lever bool not null,"
 						+ "index snitchChunkLookUp(chunk_x, chunk_z, world_id), "
 						+ "index snitchLocLookUp(x,y,z, world_id), unique uniqueLoc (world_id, x, y ,z));",
-				"create table if not exists ja_snitch_entries_player (id int not null auto_increment primary key, uuid char(36), "
-						+ "snitch_id int references ja_snitches(id));");
+				"create table if not exists ja_snitch_actions(id int not null auto_increment primary key, name varchar(255) not null,"
+				+ "constraint unique_name unique(name));",
+				"create table if not exists ja_snitch_entries (id int not null auto_increment primary key, "
+						+ "snitch_id int, type_id int references ja_snitch_actions(id), "
+						+ "uuid char(36) not null, x int not null, y int not null, z int not null, creation_time timestamp not null,"
+						+ "victim varchar(255), index `snitch_action_index`(snitch_id));");
 	}
 
 	@Override
@@ -114,7 +125,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectSnitch = insertConn.prepareStatement(
 						"select x, y, z, type_id, group_id, name, last_refresh, toggle_lever from ja_snitches "
-						+ "where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
+								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
 			selectSnitch.setInt(1, chunkData.getChunkCoord().getX());
 			selectSnitch.setInt(2, chunkData.getChunkCoord().getZ());
 			selectSnitch.setShort(3, (short) chunkData.getChunkCoord().getWorldID());
@@ -141,7 +152,80 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load snitch from db: ", e);
 		}
-
 	}
+	
+	public int getOrCreateActionID(String name) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement selectId = insertConn
+						.prepareStatement("select id from ja_snitch_actions where name = ?;")) {
+			selectId.setString(1, name);
+			try (ResultSet rs = selectId.executeQuery()) {
+				if (rs.next()) {
+					return rs.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to check for existence of action in db: " + e);
+			return -1;
+		}
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement insertAction = insertConn.prepareStatement(
+						"insert into ja_snitch_actions (name) values(?);", Statement.RETURN_GENERATED_KEYS);) {
+			insertAction.setString(1, name);
+			insertAction.execute();
+			try (ResultSet rs = insertAction.getGeneratedKeys()) {
+				if (!rs.next()) {
+					logger.info("Failed to insert plugin");
+					return -1;
+				}
+				return rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE,"Failed to insert action into db:", e);
+			return -1;
+		}
+	}
+	
+	public List<LoggedSnitchAction> loadLogs(Snitch snitch) {
+		int id = snitch.getId();
+		if (id == -1) {
+			throw new IllegalArgumentException("Id for loading logs can not be null");
+		}
+		List<LoggedSnitchAction> result = new ArrayList<>();
+		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement loadActions = insertConn.prepareStatement(
+						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creatione_time, jse.victim"
+						+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
+						+ "jse.type_id = jsa.id where snitch_id = ?;");) {
+			loadActions.setInt(1, id);
+			try (ResultSet rs = loadActions.executeQuery()) {
+				while(rs.next()) {
+					String identifier = rs.getString(1);
+					UUID uuid = UUID.fromString(rs.getString(2));
+					int x = rs.getInt(3);
+					int y = rs.getInt(4);
+					int z = rs.getInt(5);
+					long time = rs.getTimestamp(6).getTime();
+					String victim = rs.getString(7);
+					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
+					LoggedSnitchAction action = factory.produce(identifier, uuid, loc, time, victim);
+					if (action != null) {
+						result.add(action);
+					}
+				}
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE,"Failed to load snitch logs from db:", e);
+			return new ArrayList<>();
+		}
+		return result;
+	}
+	
+	public void insertLog() {
+		
+	}
+	
+	
 
 }

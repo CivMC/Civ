@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.commands;
 
-import static com.untamedears.JukeAlert.util.Utility.findLookingAtOrClosestSnitch;
+import static com.untamedears.JukeAlert.util.JAUtility.findLookingAtOrClosestSnitch;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,7 +16,7 @@ import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 import com.untamedears.JukeAlert.model.actions.PlayerAction;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
-import com.untamedears.JukeAlert.util.Utility;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
@@ -84,7 +84,7 @@ public class InfoCommand extends StandaloneCommand {
 		}
 		int initialOffset = pageLength * offset;
 		if (initialOffset >= logs.size()) {
-			TextComponent reply = Utility.genTextComponent(snitch);
+			TextComponent reply = JAUtility.genTextComponent(snitch);
 			reply.addExtra(ChatColor.GOLD + " has only " + logs.size() + " logs fitting your criteria");
 			player.spigot().sendMessage(reply);
 			return;
@@ -93,7 +93,7 @@ public class InfoCommand extends StandaloneCommand {
 		ListIterator<LoggedSnitchAction> iter = logs.listIterator(initialOffset);
 		int currentSlot = 0;
 		TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
-		reply.addExtra(Utility.genTextComponent(snitch));
+		reply.addExtra(JAUtility.genTextComponent(snitch));
 		player.spigot().sendMessage(reply);
 		while (currentSlot++ < currentPageSize) {
 			player.spigot().sendMessage(iter.next().getChatRepresentation());

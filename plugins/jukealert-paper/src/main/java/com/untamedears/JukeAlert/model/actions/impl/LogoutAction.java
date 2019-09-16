@@ -17,6 +17,8 @@ import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LogoutAction extends PlayerAction {
+	
+	public static final String ID = "LOGOUT";
 
 	public LogoutAction(long time, UUID player) {
 		super(time, player);
@@ -24,7 +26,7 @@ public class LogoutAction extends PlayerAction {
 
 	@Override
 	public String getIdentifier() {
-		return "LOGOUT";
+		return ID;
 	}
 
 	@Override
