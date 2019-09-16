@@ -93,24 +93,12 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             throw new IllegalArgumentException();
         }
 
-        Location l = player.getLocation();
-        int rangeSquared = 512 * 512;
-
         for (EnumItemSlot slot : EnumItemSlot.values()) {
             ItemStack item = entity.getEquipment(slot);
             if (item == null) continue;
 
             Packet packet = new PacketPlayOutEntityEquipment(entity.getId(), slot, item);
-
-            for (Object o : entity.world.getPlayers()) {
-                if (!(o instanceof EntityPlayer)) continue;
-
-                EntityPlayer p = (EntityPlayer) o;
-                Location loc = p.getBukkitEntity().getLocation();
-                if (l.getWorld().equals(loc.getWorld()) && l.distanceSquared(loc) <= rangeSquared) {
-                    p.playerConnection.sendPacket(packet);
-                }
-            }
+            entity.getWorldServer().getChunkProvider().broadcast(entity, packet);
         }
     }
 
