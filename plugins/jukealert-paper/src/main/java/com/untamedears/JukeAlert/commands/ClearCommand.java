@@ -10,8 +10,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 import com.untamedears.JukeAlert.util.JAUtility;
+import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;

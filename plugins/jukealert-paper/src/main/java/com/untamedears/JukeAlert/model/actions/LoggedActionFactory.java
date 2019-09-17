@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.actions.impl.BlockBreakAction;
 import com.untamedears.JukeAlert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.JukeAlert.model.actions.impl.EntryAction;
@@ -15,14 +16,20 @@ import com.untamedears.JukeAlert.model.actions.impl.LogoutAction;
 public class LoggedActionFactory {
 
 	private Map<String, LoggedActionProvider> providers;
+	private Map<String, Integer> identifierToInternal;
 
 	public LoggedActionFactory() {
 		this.providers = new HashMap<>();
+		this.identifierToInternal = new HashMap<>();
 		registerInternalProviders();
 	}
 
 	public void registerProvider(String identifier, LoggedActionProvider provider) {
-		providers.put(identifier, provider);
+		int internal = JukeAlert.getInstance().getDAO().getOrCreateActionID(identifier);
+		if (internal != -1)  {
+			providers.put(identifier, provider);
+			identifierToInternal.put(identifier, internal);
+		}
 	}
 	
 	public LoggedSnitchAction produce(String id, UUID player, Location location, long time, String victim) {
@@ -31,6 +38,14 @@ public class LoggedActionFactory {
 			return null;
 		}
 		return provider.get(player, location, time, victim);
+	}
+	
+	public int getInternalID(String name) {
+		Integer id = identifierToInternal.get(name);
+		if (id == null) {
+			return -1;
+		}
+		return id;
 	}
 
 	private void registerInternalProviders() {

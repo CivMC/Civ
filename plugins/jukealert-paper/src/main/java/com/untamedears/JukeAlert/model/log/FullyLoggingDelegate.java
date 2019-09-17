@@ -1,10 +1,14 @@
 package com.untamedears.JukeAlert.model.log;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.untamedears.JukeAlert.JukeAlert;
+import com.untamedears.JukeAlert.database.JukeAlertDAO;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.actions.CacheState;
+import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 
 public class FullyLoggingDelegate extends BroadCastingOnlyDelegate {
@@ -21,6 +25,7 @@ public class FullyLoggingDelegate extends BroadCastingOnlyDelegate {
 	public void addAction(LoggedSnitchAction action) {
 		super.addAction(action);
 		actions.add(action);
+		snitch.setDirty();
 	}
 
 	@Override
@@ -67,13 +72,22 @@ public class FullyLoggingDelegate extends BroadCastingOnlyDelegate {
 
 	@Override
 	public void persist() {
-		for (LoggedSnitchAction action : actions) {
+		JukeAlertDAO dao = JukeAlert.getInstance().getDAO();
+		LoggedActionFactory fac = JukeAlert.getInstance().getLoggedActionFactory();
+		Iterator<LoggedSnitchAction> iter = actions.iterator();
+		while (iter.hasNext()) {
+			LoggedSnitchAction action = iter.next();
 			switch (action.getCacheState()) {
 			case NEW:
-				
+				int id = fac.getInternalID(action.getIdentifier());
+				if (id != -1) {
+					dao.insertLog(id, snitch, action.getPersistence());
+					action.setCacheState(CacheState.NORMAL);
+				}
 				continue;
 			case DELETED:
-				
+				dao.deleteLog(action);
+				iter.remove();
 				continue;
 			case NORMAL:
 				continue;

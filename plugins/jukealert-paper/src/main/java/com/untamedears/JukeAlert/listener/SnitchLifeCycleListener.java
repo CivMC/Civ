@@ -4,9 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -38,6 +40,19 @@ public class SnitchLifeCycleListener implements Listener {
 		SnitchConfigFactory type = configManager.getConfig(inHand);
 		if (type != null) {
 			pendingSnitches.put(event.getBlock().getLocation(), type);
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onBlockBreak(BlockBreakEvent event) {
+		Block block = event.getBlock();
+		SnitchConfigFactory snitchConfig = pendingSnitches.remove(block.getLocation());
+		if (snitchConfig == null) {
+			return;
+		}
+		if (block.getType() == snitchConfig.getItem().getType()) {
+			event.setDropItems(false);
+			block.getWorld().dropItemNaturally(block.getLocation(), snitchConfig.getItem());
 		}
 	}
 

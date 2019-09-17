@@ -8,7 +8,6 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -16,12 +15,12 @@ import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
+import com.untamedears.JukeAlert.model.actions.LoggedActionPersistence;
 import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 import com.untamedears.JukeAlert.model.factory.SnitchConfigFactory;
 
@@ -49,7 +48,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						+ "index snitchChunkLookUp(chunk_x, chunk_z, world_id), "
 						+ "index snitchLocLookUp(x,y,z, world_id), unique uniqueLoc (world_id, x, y ,z));",
 				"create table if not exists ja_snitch_actions(id int not null auto_increment primary key, name varchar(255) not null,"
-				+ "constraint unique_name unique(name));",
+						+ "constraint unique_name unique(name));",
 				"create table if not exists ja_snitch_entries (id int not null auto_increment primary key, "
 						+ "snitch_id int, type_id int references ja_snitch_actions(id), "
 						+ "uuid char(36) not null, x int not null, y int not null, z int not null, creation_time timestamp not null,"
@@ -85,6 +84,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
 		}
+		snitch.getLoggingDelegate().persist();
 	}
 
 	@Override
@@ -105,6 +105,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
 		}
+		snitch.getLoggingDelegate().persist();
 	}
 
 	@Override
@@ -153,7 +154,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			logger.log(Level.SEVERE, "Failed to load snitch from db: ", e);
 		}
 	}
-	
+
 	public int getOrCreateActionID(String name) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectId = insertConn
@@ -181,11 +182,11 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 				return rs.getInt(1);
 			}
 		} catch (SQLException e) {
-			logger.log(Level.SEVERE,"Failed to insert action into db:", e);
+			logger.log(Level.SEVERE, "Failed to insert action into db:", e);
 			return -1;
 		}
 	}
-	
+
 	public List<LoggedSnitchAction> loadLogs(Snitch snitch) {
 		int id = snitch.getId();
 		if (id == -1) {
@@ -222,10 +223,47 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		return result;
 	}
 	
-	public void insertLog() {
-		
+	public void deleteLog(LoggedSnitchAction log) {
+		if (log.getID() == -1) {
+			return;
+		}
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement deleteLog = insertConn
+						.prepareStatement("delete from ja_snitch_entries where id = ?;")) {
+			deleteLog.setInt(1, log.getID());
+			deleteLog.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to delete snitch log", e);
+		}
 	}
-	
-	
+
+	public int insertLog(int typeID, Snitch snitch, LoggedActionPersistence data) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement insertSnitch = insertConn.prepareStatement(
+						"insert into ja_snitch_entries (snitch_id, type_id, uuid, x, y , z, creation_time,"
+								+ "victim) (?,?,?, ?,?,?, ?,?);",
+						Statement.RETURN_GENERATED_KEYS)) {
+			insertSnitch.setInt(1, snitch.getId());
+			insertSnitch.setInt(2, typeID);
+			insertSnitch.setString(3, data.getPlayer().toString());
+			insertSnitch.setInt(4, data.getX());
+			insertSnitch.setInt(5, data.getY());
+			insertSnitch.setInt(6, data.getZ());
+			insertSnitch.setTimestamp(7, new Timestamp(data.getTime()));
+			insertSnitch.setString(8, data.getVictim());
+			insertSnitch.execute();
+			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
+				if (!rs.next()) {
+					logger.severe("Failed to insert snitch log, no key retrieved");
+				}
+				else {
+					return rs.getInt(1);
+				}
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to insert new snitch log: ", e);
+		}
+		return -1;
+	}
 
 }

@@ -13,8 +13,8 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.gui.SnitchLogGUI;
 import com.untamedears.JukeAlert.gui.SnitchOverviewGUI;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 import com.untamedears.JukeAlert.util.JAUtility;
+import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;

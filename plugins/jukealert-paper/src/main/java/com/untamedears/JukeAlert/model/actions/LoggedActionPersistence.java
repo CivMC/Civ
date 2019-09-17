@@ -30,6 +30,27 @@ public class LoggedActionPersistence {
 		return location;
 	}
 	
+	public int getX() {
+		if (location == null) {
+			return 0;
+		}
+		return location.getBlockX();
+	}
+	
+	public int getY() {
+		if (location == null) {
+			return 0;
+		}
+		return location.getBlockY();
+	}
+	
+	public int getZ() {
+		if (location == null) {
+			return 0;
+		}
+		return location.getBlockZ();
+	}
+	
 	public String getVictim() {
 		return victim;
 	}

@@ -8,9 +8,9 @@ import com.untamedears.JukeAlert.listener.LoggableActionListener;
 import com.untamedears.JukeAlert.listener.SnitchLifeCycleListener;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchChunkData;
+import com.untamedears.JukeAlert.model.SnitchQTEntry;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
-import com.untamedears.JukeAlert.model.SnitchQTEntry;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;

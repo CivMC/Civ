@@ -45,6 +45,6 @@ public abstract class SnitchConfigFactory {
 	 * @return Item used to create instances of this snitch
 	 */
 	public ItemStack getItem() {
-		return item;
+		return item.clone();
 	}
 }

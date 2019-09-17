@@ -7,6 +7,7 @@ public abstract class LoggedSnitchAction {
 	
 	protected final long time;
 	private CacheState state;
+	private int id;
 	
 	public LoggedSnitchAction(long time) {
 		this.time = time;
@@ -17,6 +18,14 @@ public abstract class LoggedSnitchAction {
 	 */
 	public long getTime() {
 		return time;
+	}
+	
+	public void setID(int id) {
+		this.id = id;
+	}
+	
+	public int getID() {
+		return id;
 	}
 	
 	public void setCacheState(CacheState state) {
