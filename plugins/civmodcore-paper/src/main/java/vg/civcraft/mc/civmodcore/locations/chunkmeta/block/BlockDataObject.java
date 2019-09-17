@@ -16,8 +16,6 @@ public abstract class BlockDataObject<D extends BlockDataObject<D>> {
 		this.location = location;
 	}
 	
-	public abstract void delete();
-	
 	public Location getLocation() {
 		return location;
 	}
