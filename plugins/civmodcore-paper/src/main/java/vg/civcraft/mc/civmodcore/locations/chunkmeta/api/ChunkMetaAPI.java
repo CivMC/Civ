@@ -28,8 +28,8 @@ public class ChunkMetaAPI {
 	 * 
 	 * @param <T>               BlockBasedChunkMeta subclass
 	 * @param <D>               BlockDataObject subclass
+	 * @param <S>               StorageEngine subclass
 	 * @param plugin            Your plugin
-	 * @param chunkMetaClass    BlockBasedChunkMeta subclass class object
 	 * @param emptyChunkCreator Lambda supplying new empty instances of your
 	 *                          BlockBasedChunkMeta class
 	 * @return API access object for block based chunk metadata

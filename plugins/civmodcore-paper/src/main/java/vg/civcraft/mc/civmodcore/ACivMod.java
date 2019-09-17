@@ -122,7 +122,7 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at
+	 * Live activatable debug message (using plugin's config.yml top level debug tag to decide) at
 	 * INFO level.
 	 *
 	 * Skipped if DebugLog is false.
@@ -134,7 +134,7 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Live activatable debug message (using {@link Config#DebugLog} to decide) at
+	 * Live activatable debug message (using plugin's config.yml top level debug tag to decide) at
 	 * INFO level with ellipsis notation shorcut for defered injection argument
 	 * array.
 	 *

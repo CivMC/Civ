@@ -95,7 +95,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 	 * Retrieves chunk metadata for the given chunk with the given for this specific
 	 * plugin
 	 * 
-	 * @param chunk Chunk to get metadata for
+	 * @param location Location of the chunk to get metadata for
 	 * @return ChunkMeta for the requested chunk owned by this plugin, possibly null
 	 *         if no such data exists yet
 	 */
