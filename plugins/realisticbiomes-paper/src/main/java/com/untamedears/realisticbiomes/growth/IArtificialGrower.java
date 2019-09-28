@@ -17,6 +17,8 @@ public abstract class IArtificialGrower {
 		case COCOA:
 			return new AgeableGrower(3, 1);
 		case ACACIA_SAPLING:
+		case OAK_SAPLING:
+		case BIRCH_SAPLING:
 			return new TreeGrower();
 		default:
 			throw new IllegalArgumentException(material.name() + " can not be grown");

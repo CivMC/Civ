@@ -1,18 +1,16 @@
 package com.untamedears.realisticbiomes;
 
-import org.bukkit.Chunk;
 import org.bukkit.block.Block;
 
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.model.GlobalPlantManager;
 import com.untamedears.realisticbiomes.model.Plant;
 
 public class PlantLogicManager {
 	
-	private GlobalPlantManager plantManager;
+	private PlantManager plantManager;
 	private GrowthConfigManager growthConfigManager;
 	
-	public PlantLogicManager(GlobalPlantManager plantManager, GrowthConfigManager growthConfigManager) {
+	public PlantLogicManager(PlantManager plantManager, GrowthConfigManager growthConfigManager) {
 		this.plantManager = plantManager;
 		this.growthConfigManager = growthConfigManager;
 	}
@@ -29,19 +27,7 @@ public class PlantLogicManager {
 		if (plant == null) {
 			return;
 		}
-		plantManager.removePlant(plant);
-	}
-	
-	public void handleChunkLoad(Chunk chunk) {
-		if (plantManager != null) {
-			plantManager.loadChunkData(chunk);
-		}
-	}
-	
-	public void handleChunkUnload(Chunk chunk) {
-		if (plantManager != null) {
-			plantManager.unloadChunkData(chunk);
-		}
+		plantManager.deletePlant(plant);
 	}
 	
 	public void handlePlantCreation(Block block) {
@@ -53,8 +39,17 @@ public class PlantLogicManager {
 			return;
 		}
 		Plant plant = new Plant(block.getLocation());
-		plant.innerUpdateGrowthTime(growthConfig.updatePlant(plant, block));
-		plantManager.insertPlant(plant);
+		initGrowthTime(plant);
+		plantManager.putPlant(plant);
+	}
+	
+	public void initGrowthTime(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block.getType());
+		if (growthConfig == null || !growthConfig.isPersistent()) {
+			return;
+		}
+		plant.setNextGrowthTime(growthConfig.updatePlant(plant));
 	}
 
 }

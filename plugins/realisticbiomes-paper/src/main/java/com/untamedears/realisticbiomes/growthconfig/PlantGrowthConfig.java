@@ -246,7 +246,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 *         still growing or Long.MAX_VALUE if it will never grow or is already
 	 *         full grown
 	 */
-	public long updatePlant(Plant plant, Block block) {
+	public long updatePlant(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		if (!biomeGrowthConfig.canGrowIn(block.getBiome())) {
 			return Long.MAX_VALUE;
 		}

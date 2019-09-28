@@ -86,7 +86,7 @@ public class RBUtils {
 			return Material.BROWN_MUSHROOM;
 		case RED_MUSHROOM:
 			return Material.RED_MUSHROOM;
-			
+
 		default:
 			return null;
 		}
@@ -142,9 +142,9 @@ public class RBUtils {
 	public static boolean isSoilBlock(Material material) {
 		return material == Material.DIRT || material == Material.GRASS || material == Material.FARMLAND;
 	}
-	
+
 	public static TreeType getTreeType(Block block) {
-		switch(block.getType()) {
+		switch (block.getType()) {
 		case ACACIA_SAPLING:
 			return TreeType.ACACIA;
 		case BIRCH_SAPLING:
@@ -152,11 +152,13 @@ public class RBUtils {
 		case OAK_SAPLING:
 			return TreeType.TREE;
 		case JUNGLE_SAPLING:
-			
+			return TreeType.JUNGLE;
 		case DARK_OAK_SAPLING:
 			return TreeType.DARK_OAK;
 		case SPRUCE_SAPLING:
-			
+			return TreeType.REDWOOD;
+		default:
+			throw new IllegalArgumentException();
 		}
 	}
 }

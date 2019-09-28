@@ -29,9 +29,9 @@ public class TreeGrower extends AgeableGrower {
 		if (!(block.getBlockData() instanceof Sapling)) {
 			return;
 		}
-		Sapling sapling = (Sapling) block.getBlockData();
-		sapling.get
-		growOnTop(block, (int) progress);		
+		Sapling sapling = (Sapling) block.getBlockData();	
+		//TODO remap properly
+		block.getLocation().getWorld().generateTree(block.getLocation(), TreeType.BIRCH);
 	}
 
 	@Override
@@ -42,12 +42,6 @@ public class TreeGrower extends AgeableGrower {
 		Ageable ageable = ((Ageable) block.getBlockData());
 		ageable.setAge(stage);
 		block.setBlockData(ageable, true);
-	}
-	
-	private void growTree(Block block) {
-		block.getLocation().getWorld().generateTree(block.getLocation(), TreeType.)
-	}
-
-	
+	}	
 
 }

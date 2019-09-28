@@ -10,8 +10,6 @@ import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -54,16 +52,6 @@ public class PlantListener implements Listener {
 	@EventHandler
 	public void onBlockPlace(BlockPlaceEvent event) {
 		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock());
-	}
-
-	@EventHandler
-	public void onChunkLoad(ChunkLoadEvent e) {
-		plugin.getPlantLogicManager().handleChunkLoad(e.getChunk());
-	}
-
-	@EventHandler
-	public void onChunkUnload(ChunkUnloadEvent e) {
-		plugin.getPlantLogicManager().handleChunkUnload(e.getChunk());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

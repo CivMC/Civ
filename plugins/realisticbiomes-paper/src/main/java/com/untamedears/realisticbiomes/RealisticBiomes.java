@@ -1,14 +1,20 @@
 package com.untamedears.realisticbiomes;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.realisticbiomes.listener.AnimalListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
-import com.untamedears.realisticbiomes.model.GlobalPlantManager;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class RealisticBiomes extends ACivMod {
 
@@ -20,14 +26,19 @@ public class RealisticBiomes extends ACivMod {
 
 	private GrowthConfigManager growthConfigManager;
 	private RBConfigManager configManager;
-	private GlobalPlantManager plantManager;
+	private PlantManager plantManager;
 	private AnimalConfigManager animalManager;
 	private PlantLogicManager plantLogicManager;
+	private PlantProgressManager plantProgressManager;
 
 	private RBDAO dao;
 
 	public RBConfigManager getConfigManager() {
 		return configManager;
+	}
+
+	public PlantProgressManager getPlantProgressManager() {
+		return plantProgressManager;
 	}
 
 	public RBDAO getDAO() {
@@ -41,20 +52,15 @@ public class RealisticBiomes extends ACivMod {
 	public PlantLogicManager getPlantLogicManager() {
 		return plantLogicManager;
 	}
-	
-	public GlobalPlantManager getPlantManager() {
-		return plantManager;
-	}
 
-	@Override
-	protected String getPluginName() {
-		return "RealisticBiomes";
+	public PlantManager getPlantManager() {
+		return plantManager;
 	}
 
 	@Override
 	public void onDisable() {
 		if (plantManager != null) {
-			plantManager.flushAll();
+			plantManager.shutDown();
 		}
 	}
 
@@ -69,14 +75,22 @@ public class RealisticBiomes extends ACivMod {
 		animalManager = new AnimalConfigManager();
 		growthConfigManager = new GrowthConfigManager(configManager.getPlantGrowthConfigs());
 		if (configManager.hasPersistentGrowthConfigs()) {
-			this.dao = new RBDAO(configManager.getDatabase(), plugin);
-			if (!dao.update()) {
+			this.dao = new RBDAO(getLogger(), configManager.getDatabase());
+			if (!dao.updateDatabase()) {
+				Bukkit.shutdown();
 				return;
 			}
-			plantManager = new GlobalPlantManager(dao);
-			if (!plantManager.setup()) {
+			plantProgressManager = new PlantProgressManager();
+			BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData = ChunkMetaAPI
+					.registerBlockBasedPlugin(this, () -> {
+						return new RBChunkCache(false, dao);
+					});
+			if (chunkMetaData == null) {
+				getLogger().severe("Errors setting up chunk metadata API, shutting down");
+				Bukkit.shutdown();
 				return;
 			}
+			plantManager = new PlantManager(chunkMetaData);
 		}
 		plantLogicManager = new PlantLogicManager(plantManager, growthConfigManager);
 		registerListeners();

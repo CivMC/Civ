@@ -1,0 +1,39 @@
+package com.untamedears.realisticbiomes;
+
+import org.bukkit.Bukkit;
+
+import com.untamedears.realisticbiomes.model.RBChunkCache;
+import com.untamedears.realisticbiomes.model.time.ProgressTracker;
+
+/**
+ * Keeps track of which plant needs to be updated next
+ *
+ */
+public class PlantProgressManager {
+
+	private ProgressTracker<RBChunkCache> tracker;
+
+	public PlantProgressManager() {
+		this.tracker = new ProgressTracker<>();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(RealisticBiomes.getInstance(), 
+				this::processUpdates, 1L, 1L);
+	}
+
+	public void processUpdates() {
+		tracker.processItems();
+	}
+
+	public void addChunk(RBChunkCache cache) {
+		tracker.addItem(cache);
+	}
+
+	public void removeChunk(RBChunkCache cache) {
+		tracker.removeItem(cache);
+	}
+
+	public void updateTime(RBChunkCache cache, long time) {
+		tracker.updateItem(cache, time);
+		cache.updateInternalProgressTime(time);
+	}
+
+}

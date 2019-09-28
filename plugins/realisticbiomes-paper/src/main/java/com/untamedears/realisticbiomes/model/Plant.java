@@ -1,32 +1,27 @@
 package com.untamedears.realisticbiomes.model;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 
-public class Plant {
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.time.ProgressTrackable;
+
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.util.BukkitComparators;
+
+public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	
 	private long creationTime;
-	private final Location location;
-	private boolean isNew;
-	private boolean isDirty;
-	private boolean isDeleted;
 	private long nextUpdate;
 	
-	private ChunkCache owningCache;
-	
 	public Plant(Location location) {
-		this(System.currentTimeMillis(), location, true, true);
+		this(System.currentTimeMillis(), location, true);
 	}
 	
-	public Plant(long creationTime, Location location, boolean isNew, boolean dirty) {
+	public Plant(long creationTime, Location location, boolean isNew) {
+		super(location, isNew);
 		this.creationTime = creationTime;
-		this.location = location;
-		this.isDirty = dirty;
-		this.isNew = isNew;
-	}
-	
-	public void delete() {
-		this.isDirty = true;
-		this.isDeleted = true;
 	}
 	
 	/**
@@ -37,48 +32,43 @@ public class Plant {
 	}
 	
 	/**
-	 * @return Where is the plant
+	 * Use this method to set the next update, not setNextUpdate()
+	 * @param time
 	 */
-	public Location getLocation() {
-		return location;
-	}
-	
-	public long getNextGrowthTime() {
-		return nextUpdate;
-	}
-	
-	public void innerUpdateGrowthTime(long time) {
-		this.nextUpdate = time;
-	}
-	
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-	
-	public boolean isDirty() {
-		return isDirty;
-	}
-	
-	public boolean isNew() {
-		return isNew;
-	}
-	
-	public void setDirty(boolean dirty) {
-		this.isDirty = dirty;
-		if (!isDirty) {
-			isNew = false;
-		}
-		else {
-			owningCache.setDirty(true);
-		}
-	}
-	
 	public void setNextGrowthTime(long time) {
-		this.owningCache.updateNextGrowthTime(this, time);
-	}
-	
-	public void setOwningCache(ChunkCache cache) {
-		this.owningCache = cache;
+		((RBChunkCache)getOwningCache()).updateGrowthTime(this, time);
 	}
 
+	@Override
+	public long getNextUpdate() {
+		return nextUpdate;
+	}
+
+	/**
+	 * Internal method, don't use this
+	 */
+	@Override
+	public void updateInternalProgressTime(long update) {
+		this.nextUpdate = update;
+	}
+
+	@Override
+	public int compareTo(ProgressTrackable o) {
+		return BukkitComparators.getLocation().compare(getLocation(), ((Plant) o).getLocation());
+	}
+
+	@Override
+	public void updateState() {
+		Block block = location.getBlock();
+		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager().getPlantGrowthConfig(block.getType());
+		if (growthConfig == null) {
+			nextUpdate = Long.MAX_VALUE;
+			getOwningCache().remove(this);
+			return;
+		}
+		this.nextUpdate = growthConfig.updatePlant(this);
+		if (this.nextUpdate == Long.MAX_VALUE) {
+			getOwningCache().remove(this);
+		}
+	}
 }
