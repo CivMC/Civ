@@ -5,10 +5,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 
-public class ChunkCoord implements Comparable<ChunkCoord>{
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+
+public class ChunkCoord implements Comparable<ChunkCoord> {
 
 	/**
 	 * When was this chunk last loaded in Minecraft as UNIX timestamp
@@ -50,7 +53,7 @@ public class ChunkCoord implements Comparable<ChunkCoord>{
 		this.lastLoadingTime = -1;
 		this.lastUnloadingTime = -1;
 	}
-	
+
 	/**
 	 * @return World this instance is in
 	 */
@@ -166,7 +169,14 @@ public class ChunkCoord implements Comparable<ChunkCoord>{
 				ChunkMeta<?> chunk = generator.getValue().get();
 				chunk.setChunkCoord(this);
 				chunk.setPluginID(generator.getKey());
-				chunk.populate();
+				try {
+					chunk.populate();
+				} catch (Exception e) {
+					// need to catch everything here, otherwise we block the main thread forever
+					// once it tries to read this
+					CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, 
+							"Failed to load chunk data", e);
+				}
 				addChunkMeta(chunk);
 			}
 			this.notifyAll();

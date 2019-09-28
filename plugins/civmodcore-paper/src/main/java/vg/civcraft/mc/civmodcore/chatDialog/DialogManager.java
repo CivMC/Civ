@@ -9,6 +9,8 @@ import org.bukkit.entity.Player;
 public class DialogManager {
 
 	private static Map<UUID, Dialog> dialogs = new TreeMap<>();
+	
+	private DialogManager() {}
 
 	public static Dialog getDialog(Player p) {
 		return getDialog(p.getUniqueId());
