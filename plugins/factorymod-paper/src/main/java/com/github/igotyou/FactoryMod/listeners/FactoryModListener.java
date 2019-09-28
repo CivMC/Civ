@@ -22,6 +22,8 @@ import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
+
 public class FactoryModListener implements Listener {
 	private FactoryModManager manager;
 
@@ -57,7 +59,7 @@ public class FactoryModListener implements Listener {
 		if (e.getOldCurrent() == e.getNewCurrent()) {
 			return;
 		}
-		for (BlockFace face : MultiBlockStructure.allBlockSides) {
+		for (BlockFace face : BlockAPI.ALL_SIDES) {
 			Factory f = manager.getFactoryAt(e.getBlock().getRelative(face));
 			if (f != null) {
 				f.getInteractionManager().redStoneEvent(e, e.getBlock().getRelative(face));

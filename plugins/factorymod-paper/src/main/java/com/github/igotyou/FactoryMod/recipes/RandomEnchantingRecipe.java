@@ -10,9 +10,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
@@ -84,12 +84,12 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		for (RandomEnchant re : enchants) {
 			ItemAPI.addLore(is,
 					ChatColor.YELLOW + String.valueOf(re.chance * 100)
-							+ " % chance for " + NiceNames.getName(re.enchant)
-							+ " " + String.valueOf(re.level));
+							+ " % chance for " + EnchantmentNames.getEnchantmentName(re.enchant)
+							+ " " + re.level);
 		}
 		ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE
 				+ "At least one guaranteed");
-		List<ItemStack> stacks = new LinkedList<ItemStack>();
+		List<ItemStack> stacks = new LinkedList<>();
 		stacks.add(is);
 		return stacks;
 	}

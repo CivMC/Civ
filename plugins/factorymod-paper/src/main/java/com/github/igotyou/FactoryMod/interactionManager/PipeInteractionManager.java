@@ -43,7 +43,7 @@ public class PipeInteractionManager implements IInteractionManager {
 		ItemStack hand = p.getInventory().getItemInMainHand();
 		if (manager.isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
-			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
+			if (rein != null && !rein.hasPermission(p, FactoryMod.getInstance().getPermissionManager().getUseFactory())) {
 				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
 				return;
 			}

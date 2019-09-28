@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.inventory.InventoryHolder;
 
 /**
@@ -37,10 +38,9 @@ public class PipeStructure extends MultiBlockStructure {
 		if (furnace == null) {
 			return;
 		}
-		glassPipe = new LinkedList<Location>();
-
-		Block currentBlock = startBlock.getRelative(dataBlockFaceConversion
-				.get((int) (startBlock.getState().getRawData())));
+		glassPipe = new LinkedList<>();
+		Dispenser disp = (Dispenser) startBlock.getBlockData();
+		Block currentBlock = startBlock.getRelative(disp.getFacing());
 
 		Block previousBlock = null;
 		if (currentBlock.getType() != pipeMaterial) {

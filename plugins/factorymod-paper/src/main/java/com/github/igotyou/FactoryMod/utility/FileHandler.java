@@ -19,6 +19,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -33,7 +34,6 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
-import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
 public class FileHandler {
 	private FactoryMod plugin;
@@ -118,7 +118,7 @@ public class FileHandler {
 					Sorter s = (Sorter) f;
 					config.set(current + ".runtime", s.getRunTime());
 					config.set(current + ".type", "SORTER");
-					for (BlockFace face : MultiBlockStructure.allBlockSides) {
+					for (BlockFace face : BlockAPI.ALL_SIDES) {
 						config.set(current + ".faces." + face.toString(), s
 								.getItemsForSide(face)
 								.getItemStackRepresentation().toArray());

@@ -18,8 +18,6 @@ import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -69,22 +67,6 @@ public class FactoryModManager {
 		this.redstonePowerOn = redstonePowerOn;
 		this.redstoneRecipeChange = redstoneRecipeChange;
 		this.fileHandler = new FileHandler(this, factoryRenames);
-
-		if(nameLayerEnabled) {
-			//register our own permissions
-			List <PlayerType> memberAndAbove = new LinkedList<>();
-			List <PlayerType> modAndAbove = new LinkedList<>();
-			memberAndAbove.add(PlayerType.MEMBERS);
-			memberAndAbove.add(PlayerType.MODS);
-			memberAndAbove.add(PlayerType.ADMINS);
-			memberAndAbove.add(PlayerType.OWNER);
-			modAndAbove.add(PlayerType.MODS);
-			modAndAbove.add(PlayerType.ADMINS);
-			modAndAbove.add(PlayerType.OWNER);
-			PermissionType.registerPermission("USE_FACTORY", memberAndAbove);
-			PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove);
-			// TODO: "REFUND_FACTORY", ownerAndAbove
-		}
 
 		factoryCreationRecipes = new HashMap<>();
 		locations = new HashMap<>();

@@ -2,8 +2,6 @@ package com.github.igotyou.FactoryMod.structures;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,6 +12,7 @@ import com.github.igotyou.FactoryMod.FactoryMod;
 
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 /**
  * Physical representation of a factory. This may be any shape as long as the
@@ -21,13 +20,6 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
  *
  */
 public abstract class MultiBlockStructure {
-	public static BlockFace[] allBlockSides = new BlockFace[] { BlockFace.UP,
-			BlockFace.DOWN, BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH,
-			BlockFace.NORTH };
-	public static BlockFace[] northEastWestSouthSides = new BlockFace[] {
-			BlockFace.EAST, BlockFace.WEST, BlockFace.SOUTH, BlockFace.NORTH };
-
-	protected static Map<Integer, BlockFace> dataBlockFaceConversion;
 
 	/**
 	 * Checks all sides of the given block for blocks with the given material
@@ -42,7 +34,7 @@ public abstract class MultiBlockStructure {
 	 */
 	public static List<Block> searchForBlockOnAllSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<>();
-		for (BlockFace face : allBlockSides) {
+		for (BlockFace face : BlockAPI.ALL_SIDES) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
 				result.add(side);
@@ -62,29 +54,13 @@ public abstract class MultiBlockStructure {
 	 */
 	public static List<Block> searchForBlockOnSides(Block b, Material m) {
 		LinkedList<Block> result = new LinkedList<>();
-		for (BlockFace face : northEastWestSouthSides) {
+		for (BlockFace face : BlockAPI.PLANAR_SIDES) {
 			Block side = b.getRelative(face);
 			if (side.getType() == m) {
 				result.add(side);
 			}
 		}
 		return result;
-	}
-
-	public static void initializeBlockFaceMap() {
-		dataBlockFaceConversion = new TreeMap<>();
-		dataBlockFaceConversion.put(0, BlockFace.DOWN);
-		dataBlockFaceConversion.put(8, BlockFace.DOWN);
-		dataBlockFaceConversion.put(1, BlockFace.UP);
-		dataBlockFaceConversion.put(9, BlockFace.UP);
-		dataBlockFaceConversion.put(2, BlockFace.NORTH);
-		dataBlockFaceConversion.put(10, BlockFace.NORTH);
-		dataBlockFaceConversion.put(3, BlockFace.SOUTH);
-		dataBlockFaceConversion.put(11, BlockFace.SOUTH);
-		dataBlockFaceConversion.put(4, BlockFace.WEST);
-		dataBlockFaceConversion.put(12, BlockFace.WEST);
-		dataBlockFaceConversion.put(5, BlockFace.EAST);
-		dataBlockFaceConversion.put(13, BlockFace.EAST);
 	}
 
 	/**
@@ -122,7 +98,7 @@ public abstract class MultiBlockStructure {
 
 	public static List<Block> getAdjacentBlocks(Block b) {
 		List<Block> blocks = new LinkedList<>();
-		for (BlockFace face : allBlockSides) {
+		for (BlockFace face : BlockAPI.ALL_SIDES) {
 			blocks.add(b.getRelative(face));
 		}
 		return blocks;
@@ -147,7 +123,7 @@ public abstract class MultiBlockStructure {
 			return true;
 		}
 		int prGID = rein.getGroup().getGroupId();
-		for (BlockFace face : MultiBlockStructure.allBlockSides) {
+		for (BlockFace face : BlockAPI.ALL_SIDES) {
 			Block rel = here.getRelative(face);
 			if (here.isBlockFacePowered(face)) {
 				Reinforcement relRein = ReinforcementLogic.getReinforcementProtecting(rel);

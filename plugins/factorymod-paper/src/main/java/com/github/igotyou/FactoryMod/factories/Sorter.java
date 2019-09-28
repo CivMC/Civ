@@ -14,6 +14,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
@@ -40,7 +41,7 @@ public class Sorter extends Factory {
 		this.sortAmount = sortAmount;
 		runTime = 0;
 		this.matsPerSide = matsPerSide;
-		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
+		for (BlockFace bf : BlockAPI.ALL_SIDES) {
 			assignedMaterials.put(bf, new ItemMap());
 		}
 	}
@@ -169,7 +170,7 @@ public class Sorter extends Factory {
 		Block center = mbs.getCenter().getBlock();
 		Inventory inv = getCenterInventory();
 		int leftToSort = sortAmount;
-		for (BlockFace bf : MultiBlockStructure.allBlockSides) {
+		for (BlockFace bf : BlockAPI.ALL_SIDES) {
 			if (center.getRelative(bf).getState() instanceof InventoryHolder) {
 				Block b = center.getRelative(bf);
 				if (b.getType() == Material.CHEST || b.getType() == Material.TRAPPED_CHEST) {

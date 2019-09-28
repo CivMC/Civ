@@ -7,15 +7,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
-import vg.civcraft.mc.civmodcore.itemHandling.NiceNames;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -62,7 +56,7 @@ public class SorterInteractionManager implements IInteractionManager {
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		if (manager.isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
-			if (rein != null && !rein.hasPermission(p, "USE_FACTORY")) {
+			if (rein != null && !rein.hasPermission(p, FactoryMod.getInstance().getPermissionManager().getUseFactory())) {
 				p.sendMessage(ChatColor.RED + "You dont have permission to interact with this factory");
 				return;
 			}
