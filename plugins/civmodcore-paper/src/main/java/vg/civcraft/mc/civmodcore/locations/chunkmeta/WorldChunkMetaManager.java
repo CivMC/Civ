@@ -31,7 +31,7 @@ public class WorldChunkMetaManager {
 	private static final long UNLOAD_DELAY = 5L * 60L * 1000L;
 	private static final long UNLOAD_CHECK_INTERVAL = 5L * 60L * 1000L;
 
-	private final int worldID;
+	private final short worldID;
 	private final Map<ChunkCoord, ChunkCoord> metas;
 	/**
 	 * A synchronized TreeSet holding all chunk metadata belonging to unloaded
@@ -45,7 +45,7 @@ public class WorldChunkMetaManager {
 	private Queue<ChunkCoord> chunkLoadingQueue;
 	private World world;
 
-	public WorldChunkMetaManager(World world, int worldID) {
+	public WorldChunkMetaManager(World world, short worldID) {
 		this.worldID = worldID;
 		this.world = world;
 		this.metas = new HashMap<>();

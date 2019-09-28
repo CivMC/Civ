@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 import org.bukkit.World;
 
-public class ChunkCoord {
+public class ChunkCoord implements Comparable<ChunkCoord>{
 
 	/**
 	 * When was this chunk last loaded in Minecraft as UNIX timestamp
@@ -37,10 +37,10 @@ public class ChunkCoord {
 	 */
 	private int z;
 
-	private int worldID;
+	private short worldID;
 	private World world;
 
-	ChunkCoord(int x, int z, int worldID, World world) {
+	ChunkCoord(int x, int z, short worldID, World world) {
 		this.x = x;
 		this.z = z;
 		this.worldID = worldID;
@@ -135,7 +135,7 @@ public class ChunkCoord {
 	/**
 	 * @return Internal ID of the world this chunk is in
 	 */
-	public int getWorldID() {
+	public short getWorldID() {
 		return worldID;
 	}
 
@@ -188,5 +188,18 @@ public class ChunkCoord {
 	 */
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public int compareTo(ChunkCoord o) {
+		int worldComp = Short.compare(this.worldID, o.getWorldID());
+		if (worldComp != 0) {
+			return worldComp;
+		}
+		int xComp = Integer.compare(this.x, o.getX());
+		if (xComp != 0) {
+			return worldComp;
+		}
+		return Integer.compare(this.z, o.getZ());
 	}
 }

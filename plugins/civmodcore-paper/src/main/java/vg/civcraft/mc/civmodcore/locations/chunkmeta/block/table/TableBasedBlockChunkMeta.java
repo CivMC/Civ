@@ -67,6 +67,8 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 	public void remove(TableBasedDataObject blockData) {
 		super.remove(blockData);
 		blockData.setCacheState(CacheState.DELETED);
+		//this may look weird, but is what happens if the data was NEW previously, never written to the
+		//db and doesn't need to be deleted from there either
 		if (blockData.getCacheState() != CacheState.NORMAL) {
 			modifiedEntries.add((D) blockData);
 		}
