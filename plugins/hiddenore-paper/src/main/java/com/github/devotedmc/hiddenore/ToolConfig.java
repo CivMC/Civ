@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
@@ -50,6 +50,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class ToolConfig {
 	private ItemStack template;
 	private boolean ignoreAmount;
+	private boolean ignoreDurability;
 	private boolean ignoreEnchants;
 	private boolean ignoreOtherEnchants;
 	private boolean ignoreEnchantsLvl;
@@ -70,6 +71,7 @@ public class ToolConfig {
 			Double dropChanceModifier, Double minAmountModifier, Double maxAmountModifier) {
 		this.template = template;
 		this.ignoreAmount = ignoreAmount;
+		this.ignoreDurability = ignoreDurability;
 		this.ignoreEnchants = ignoreEnchants;
 		this.ignoreOtherEnchants = ignoreOtherEnchants;
 		this.ignoreEnchantsLvl = ignoreEnchantsLvl;
@@ -110,6 +112,10 @@ public class ToolConfig {
 	
 	public boolean ignoreAmount() {
 		return ignoreAmount;
+	}
+	
+	public boolean ignoreDurability() {
+		return ignoreDurability;
 	}
 	
 	public boolean ignoreEnchants() {
@@ -232,6 +238,10 @@ public class ToolConfig {
 				
 				if (compmeta == null) continue; // toolmeta != null but compmeta == null
 				// both non-null.
+				if (!comp.ignoreDurability && (!(comp instanceof Damageable)  || !(toolmeta instanceof Damageable) ||
+						((Damageable) comp).getDamage() != ((Damageable) toolmeta).getDamage())) {
+					continue;
+				}
 				if (!comp.ignoreName() && !(toolmeta.hasDisplayName() ? 
 						toolmeta.getDisplayName().equals(compmeta.getDisplayName()) : !compmeta.hasDisplayName() ) ) continue;
 				if (!comp.ignoreLore() &&
