@@ -14,7 +14,7 @@ public class XPConfig {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append("chance: ").append(chance)
 			.append(" min: ").append(minAmount)
 			.append(" max: ").append(maxAmount);

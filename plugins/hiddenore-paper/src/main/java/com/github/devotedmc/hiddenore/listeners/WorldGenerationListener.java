@@ -66,7 +66,7 @@ public class WorldGenerationListener implements Listener {
 			worldUUID = null;
 		}
 		if (config.contains("replace")) {
-			toReplace = new HashSet<Material>();
+			toReplace = new HashSet<>();
 			for (String replace : config.getStringList("replace")) {
 				Material rMat = Material.matchMaterial(replace);
 				if (rMat != null) {

@@ -21,7 +21,7 @@ public class HiddenOreEvent extends Event implements Cancellable {
 		super(false);
 		this.player = player;
 		this.dropLocation = dropLocation;
-		this.drops = new ArrayList<ItemStack>(drops);
+		this.drops = new ArrayList<>(drops);
 	}
 
 	private boolean cancel = false;
