@@ -28,7 +28,7 @@ public class PersistentGrowthConfig extends BiomeGrowthConfig {
 	public double getNaturalProgressChance(Biome biome) {
 		return 0.0;
 	}
-	
+
 	public long getTotalGrowthTimeNeeded(Biome biome) {
 		double biomeMult = getBiomeMultiplier(biome);
 		return (long) (timeNeeded / biomeMult);

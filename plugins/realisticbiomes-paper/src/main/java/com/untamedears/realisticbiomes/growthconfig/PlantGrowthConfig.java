@@ -17,6 +17,7 @@ import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class PlantGrowthConfig extends AbstractGrowthConfig {
@@ -117,7 +118,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double naturalRate = Math.pow((double) naturalLight / (double) MAX_LIGHT, 2);
 		double greenHouseRate = 0.0;
 		if (block.getLightFromBlocks() >= 12) {
-			for (BlockFace face : RBUtils.adjacentSides) {
+			for (BlockFace face : BlockAPI.ALL_SIDES) {
 				Block adjacent = block.getRelative(face);
 				Double multiplier = greenHouseRates.get(adjacent.getType());
 				if (multiplier != null) {
@@ -231,10 +232,21 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		return allowBoneMeal;
 	}
 
+	/**
+	 * Checks whether the given plant is fully grown
+	 * 
+	 * @param plant Plant to check
+	 * @return True if the plant has reached its maximum growth stage, false
+	 *         otherwise
+	 */
+	public boolean isFullyGrown(Plant plant) {
+		return grower.getMaxStage() == grower.getStage(plant.getLocation().getBlock());
+	}
+
 	public boolean isPersistent() {
 		return biomeGrowthConfig instanceof PersistentGrowthConfig;
 	}
-	
+
 	/**
 	 * Updates the world state of the plant to match its intended state based on its
 	 * creation time and calculates the next time stamp at which the plant should be
@@ -266,7 +278,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		if (intendedState == grower.getMaxStage()) {
 			return Long.MAX_VALUE;
 		}
-		double incPerStage = (double) grower.getIncrementPerStage();
+		double incPerStage = grower.getIncrementPerStage();
 		double nextProgressStage = (intendedState + incPerStage) / grower.getMaxStage();
 		nextProgressStage = Math.min(nextProgressStage, 1.0);
 		long timeFromCreationTillNextStage = (long) (totalTime * nextProgressStage);

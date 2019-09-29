@@ -3,18 +3,22 @@ package com.untamedears.realisticbiomes.utils;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 
 public class RBUtils {
 
-	public static final BlockFace[] cardinalSides = new BlockFace[] { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
-			BlockFace.WEST };
-
-	public static final BlockFace[] adjacentSides = new BlockFace[] { BlockFace.NORTH, BlockFace.SOUTH, BlockFace.EAST,
-			BlockFace.WEST, BlockFace.DOWN, BlockFace.UP };
-
 	public static boolean canGrowFruits(Material material) {
 		return material == Material.MELON_STEM || material == Material.PUMPKIN_STEM;
+	}
+
+	public static Material getFruit(Material mat) {
+		switch (mat) {
+		case MELON_SEEDS:
+			return Material.MELON;
+		case PUMPKIN_SEEDS:
+			return Material.PUMPKIN;
+		default:
+			return null;
+		}
 	}
 
 	public static Material getRemappedMaterial(Material mat) {
@@ -92,57 +96,6 @@ public class RBUtils {
 		}
 	}
 
-	public static int getVerticalSoilOffset(Material mat) {
-		switch (mat) {
-		case COCOA:
-			return -1;
-		default:
-			return -2;
-		}
-	}
-
-	/**
-	 * Find an air block over dirt, grass or farmland adjacent to given block.
-	 * 
-	 * @param block Center to search from
-	 * @return free block or null if none
-	 */
-	public static Block getViableFruitSpot(Block stemBlock) {
-		for (BlockFace face : cardinalSides) {
-			Block candidate = stemBlock.getRelative(face);
-			if (candidate.getType() == Material.AIR) {
-				Material soil = candidate.getRelative(BlockFace.DOWN).getType();
-				if (soil == Material.DIRT || soil == Material.FARMLAND || soil == Material.GRASS) {
-					return candidate;
-				}
-			}
-		}
-		return null;
-	}
-
-	public static boolean isBoneMealable(Material material) {
-		return isCrop(material) || isSapling(material);
-	}
-
-	public static boolean isColumnPlant(Material material) {
-		return material == Material.CACTUS || material == Material.SUGAR_CANE;
-	}
-
-	public static boolean isCrop(Material material) {
-		return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES
-				|| material == Material.CARROTS || material == Material.NETHER_WART_BLOCK;
-	}
-
-	public static boolean isSapling(Material material) {
-		return material == Material.ACACIA_SAPLING || material == Material.BIRCH_SAPLING
-				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
-				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING;
-	}
-
-	public static boolean isSoilBlock(Material material) {
-		return material == Material.DIRT || material == Material.GRASS || material == Material.FARMLAND;
-	}
-
 	public static TreeType getTreeType(Block block) {
 		switch (block.getType()) {
 		case ACACIA_SAPLING:
@@ -160,5 +113,31 @@ public class RBUtils {
 		default:
 			throw new IllegalArgumentException();
 		}
+	}
+
+	public static int getVerticalSoilOffset(Material mat) {
+		if (mat == Material.COCOA) {
+			return -1;
+		}
+		return -2;
+	}
+
+	public static boolean isBoneMealable(Material material) {
+		return isCrop(material) || isSapling(material);
+	}
+
+	public static boolean isCrop(Material material) {
+		return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES
+				|| material == Material.CARROTS || material == Material.NETHER_WART_BLOCK;
+	}
+
+	public static boolean isSapling(Material material) {
+		return material == Material.ACACIA_SAPLING || material == Material.BIRCH_SAPLING
+				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
+				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING;
+	}
+
+	private RBUtils() {
+
 	}
 }

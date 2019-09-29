@@ -37,10 +37,6 @@ public class RealisticBiomes extends ACivMod {
 		return configManager;
 	}
 
-	public PlantProgressManager getPlantProgressManager() {
-		return plantProgressManager;
-	}
-
 	public RBDAO getDAO() {
 		return dao;
 	}
@@ -55,6 +51,10 @@ public class RealisticBiomes extends ACivMod {
 
 	public PlantManager getPlantManager() {
 		return plantManager;
+	}
+
+	public PlantProgressManager getPlantProgressManager() {
+		return plantProgressManager;
 	}
 
 	@Override

@@ -7,7 +7,6 @@ import org.bukkit.block.Biome;
 public abstract class BiomeGrowthConfig {
 
 	protected final Map<Biome, Double> biomeMultipliers;
-	
 
 	public BiomeGrowthConfig(Map<Biome, Double> biomeMapping) {
 		this.biomeMultipliers = biomeMapping;
@@ -16,7 +15,7 @@ public abstract class BiomeGrowthConfig {
 	public boolean canGrowIn(Biome biome) {
 		return getBiomeMultiplier(biome) > 0;
 	}
-	
+
 	/**
 	 * Gets the multiplier applied by this config in a specific biome
 	 * 
@@ -30,9 +29,9 @@ public abstract class BiomeGrowthConfig {
 		}
 		return mult;
 	}
-	
+
 	public abstract double getNaturalProgressChance(Biome biome);
-	
+
 	public abstract boolean isPersistent();
-	
+
 }

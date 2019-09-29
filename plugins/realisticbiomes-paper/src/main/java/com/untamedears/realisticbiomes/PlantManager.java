@@ -18,22 +18,22 @@ public class PlantManager {
 		this.chunkMetaData = chunkMetaData;
 	}
 
-	public Plant getPlant(Location location) {
-		return (Plant) chunkMetaData.get(location);
+	public void deletePlant(Plant plant) {
+		chunkMetaData.remove(plant);
 	}
 
 	public Plant getPlant(Block block) {
 		return getPlant(block.getLocation());
 	}
 
+	public Plant getPlant(Location location) {
+		return (Plant) chunkMetaData.get(location);
+	}
+
 	public void putPlant(Plant plant) {
 		chunkMetaData.put(plant);
 	}
-	
-	public void deletePlant(Plant plant) {
-		chunkMetaData.remove(plant);
-	}
- 
+
 	void shutDown() {
 		chunkMetaData.disable();
 	}

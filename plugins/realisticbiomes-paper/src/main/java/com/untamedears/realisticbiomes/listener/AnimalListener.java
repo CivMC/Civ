@@ -16,17 +16,17 @@ import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 public class AnimalListener implements Listener {
 
 	private final AnimalConfigManager animalManager;
-	
+
 	public AnimalListener(AnimalConfigManager animalManager) {
 		this.animalManager = animalManager;
 	}
 
 	@EventHandler
 	public void spawnEntity(CreatureSpawnEvent event) {
-		if(event.getSpawnReason() == SpawnReason.BREEDING) {
+		if (event.getSpawnReason() == SpawnReason.BREEDING) {
 			EntityType type = event.getEntityType();
 			Block block = event.getLocation().getBlock();
-			
+
 			if (!willSpawn(type, block)) {
 				event.setCancelled(true);
 			}
@@ -35,10 +35,10 @@ public class AnimalListener implements Listener {
 
 	@EventHandler
 	public void spawnItem(ItemSpawnEvent event) {
-		if (event.getEntity() instanceof Player){
+		if (event.getEntity() instanceof Player) {
 			return;
 		}
-		if(event.getEntity().getItemStack().getType() == Material.EGG) {
+		if (event.getEntity().getItemStack().getType() == Material.EGG) {
 			if (!willSpawn(EntityType.CHICKEN, event.getLocation().getBlock())) {
 				event.setCancelled(true);
 			}
@@ -48,7 +48,7 @@ public class AnimalListener implements Listener {
 	private boolean willSpawn(EntityType type, Block b) {
 		AnimalMateConfig config = animalManager.getAnimalMateConfig(type);
 		if (config == null) {
-			//vanilla
+			// vanilla
 			return true;
 		}
 		return Math.random() < config.getRate(b.getBiome());

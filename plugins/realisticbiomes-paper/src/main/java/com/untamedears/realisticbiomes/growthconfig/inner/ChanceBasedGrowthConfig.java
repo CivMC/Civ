@@ -11,14 +11,14 @@ import org.bukkit.block.Biome;
  *
  */
 public class ChanceBasedGrowthConfig extends BiomeGrowthConfig {
-	
+
 	private double baseMultiplier;
 
 	public ChanceBasedGrowthConfig(double baseMultiplier, Map<Biome, Double> biomeMapping) {
 		super(biomeMapping);
 		this.baseMultiplier = baseMultiplier;
 	}
-	
+
 	@Override
 	public double getNaturalProgressChance(Biome biome) {
 		double biomeMult = getBiomeMultiplier(biome);
@@ -29,7 +29,7 @@ public class ChanceBasedGrowthConfig extends BiomeGrowthConfig {
 	public boolean isPersistent() {
 		return false;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Chance based growth with " + baseMultiplier + " base multiplier";

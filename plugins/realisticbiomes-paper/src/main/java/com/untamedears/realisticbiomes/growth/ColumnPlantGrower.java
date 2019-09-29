@@ -4,15 +4,43 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-
-public class ColumnPlantGrower extends AgeableGrower {
+public class ColumnPlantGrower extends IArtificialGrower {
 
 	private int maxHeight;
 
 	public ColumnPlantGrower(int maxHeight) {
-		super(1, 1);
 		this.maxHeight = maxHeight;
+	}
+
+	@Override
+	public int getIncrementPerStage() {
+		return 1;
+	}
+
+	@Override
+	public int getMaxStage() {
+		return maxHeight;
+	}
+
+	private Block getRelativeBlock(Block block, BlockFace face) {
+		Material mat = block.getType();
+		Block bottomBlock = block;
+		// not actually using this variable, but just having it here as a fail safe
+		for (int i = 0; i < 257; i++) {
+			Block below = bottomBlock.getRelative(face);
+			if (below.getType() != mat) {
+				break;
+			}
+			bottomBlock = below;
+		}
+		return bottomBlock;
+	}
+
+	@Override
+	public int getStage(Block block) {
+		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
+		Block top = getRelativeBlock(block, BlockFace.UP);
+		return Math.min(top.getY() - bottom.getY(), maxHeight);
 	}
 
 	private void growOnTop(Block block, int howMany) {
@@ -37,19 +65,11 @@ public class ColumnPlantGrower extends AgeableGrower {
 	}
 
 	@Override
-	public void setPersistentProgress(PlantGrowthConfig config, Block block, double progress) {
-		if (progress < 1.0) {
-			return;
-		}
-		growOnTop(block, (int) progress);
-	}
-
-	@Override
 	public void setStage(Block block, int stage) {
 		if (stage == 0) {
 			return;
 		}
-		growOnTop(block, 1);
+		growOnTop(block, stage);
 	}
 
 }

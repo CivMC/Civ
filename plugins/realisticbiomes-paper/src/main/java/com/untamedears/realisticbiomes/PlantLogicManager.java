@@ -6,15 +6,15 @@ import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 
 public class PlantLogicManager {
-	
+
 	private PlantManager plantManager;
 	private GrowthConfigManager growthConfigManager;
-	
+
 	public PlantLogicManager(PlantManager plantManager, GrowthConfigManager growthConfigManager) {
 		this.plantManager = plantManager;
 		this.growthConfigManager = growthConfigManager;
 	}
-	
+
 	public void handleBlockDestruction(Block block) {
 		if (plantManager == null) {
 			return;
@@ -29,7 +29,7 @@ public class PlantLogicManager {
 		}
 		plantManager.deletePlant(plant);
 	}
-	
+
 	public void handlePlantCreation(Block block) {
 		if (plantManager == null) {
 			return;
@@ -39,10 +39,10 @@ public class PlantLogicManager {
 			return;
 		}
 		Plant plant = new Plant(block.getLocation());
-		initGrowthTime(plant);
 		plantManager.putPlant(plant);
+		initGrowthTime(plant);
 	}
-	
+
 	public void initGrowthTime(Plant plant) {
 		Block block = plant.getLocation().getBlock();
 		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block.getType());

@@ -7,8 +7,8 @@ import com.untamedears.realisticbiomes.model.time.ProgressTracker;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 
-public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable{
-	
+public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable {
+
 	private ProgressTracker<Plant> tracker;
 	private long nextUpdate;
 
@@ -17,7 +17,17 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 		tracker = new ProgressTracker<>();
 		this.nextUpdate = Long.MAX_VALUE;
 	}
-	
+
+	@Override
+	public int compareTo(ProgressTrackable o) {
+		return getChunkCoord().compareTo(((RBChunkCache) o).getChunkCoord());
+	}
+
+	@Override
+	public long getNextUpdate() {
+		return nextUpdate;
+	}
+
 	public void updateGrowthTime(Plant plant, long time) {
 		if (time < nextUpdate) {
 			RealisticBiomes.getInstance().getPlantProgressManager().updateTime(this, time);
@@ -26,18 +36,8 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 	}
 
 	@Override
-	public long getNextUpdate() {
-		return nextUpdate;
-	}
-
-	@Override
 	public void updateInternalProgressTime(long update) {
 		this.nextUpdate = update;
-	}
-
-	@Override
-	public int compareTo(ProgressTrackable o) {
-		return getChunkCoord().compareTo(((RBChunkCache) o).getChunkCoord());
 	}
 
 	@Override

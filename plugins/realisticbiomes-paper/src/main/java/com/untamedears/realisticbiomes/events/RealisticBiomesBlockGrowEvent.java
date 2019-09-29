@@ -8,13 +8,13 @@ import org.bukkit.event.block.BlockGrowEvent;
 
 public final class RealisticBiomesBlockGrowEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
-	
+
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
-	
+
 	private BlockGrowEvent wrapped;
-	
+
 	public RealisticBiomesBlockGrowEvent(Block block, BlockState newState) {
 		super(false);
 		wrapped = new BlockGrowEvent(block, newState);
@@ -23,7 +23,7 @@ public final class RealisticBiomesBlockGrowEvent extends Event {
 	public BlockGrowEvent getEvent() {
 		return wrapped;
 	}
-	
+
 	@Override
 	public HandlerList getHandlers() {
 		return RealisticBiomesBlockGrowEvent.handlers;

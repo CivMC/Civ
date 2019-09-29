@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.TreeSet;
 
 public class ProgressTracker<T extends ProgressTrackable> {
-	
+
 	private TreeSet<T> queueItems;
-	
+
 	public ProgressTracker() {
 		this.queueItems = new TreeSet<>((a, b) -> {
 			int timeDiff = Long.compare(a.getNextUpdate(), b.getNextUpdate());
@@ -18,13 +18,17 @@ public class ProgressTracker<T extends ProgressTrackable> {
 			return timeDiff;
 		});
 	}
-	
+
+	public void addItem(T trackable) {
+		queueItems.add(trackable);
+	}
+
 	public long processItems() {
 		long nextOne = Long.MAX_VALUE;
 		long time = System.currentTimeMillis();
 		Iterator<T> iter = queueItems.iterator();
-		List <T> toReadd = new LinkedList<>();
-		while(iter.hasNext()) {
+		List<T> toReadd = new LinkedList<>();
+		while (iter.hasNext()) {
 			T item = iter.next();
 			if (item.getNextUpdate() > time) {
 				nextOne = Math.min(nextOne, item.getNextUpdate());
@@ -36,21 +40,17 @@ public class ProgressTracker<T extends ProgressTrackable> {
 				toReadd.add(item);
 			}
 		}
-		for(T item : toReadd) {
+		for (T item : toReadd) {
 			nextOne = Math.min(nextOne, item.getNextUpdate());
 			addItem(item);
 		}
 		return nextOne;
 	}
-	
-	public void addItem(T trackable) {
-		queueItems.add(trackable);
-	}
-	
+
 	public void removeItem(T trackable) {
 		queueItems.remove(trackable);
 	}
-	
+
 	public void updateItem(T trackable, long nextTime) {
 		queueItems.remove(trackable);
 		trackable.updateInternalProgressTime(nextTime);

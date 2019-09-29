@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -33,7 +34,7 @@ public class PlayerListener implements Listener {
 	}
 
 	// show plant progress when right clicking it with stick
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteractCrop(PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
@@ -57,16 +58,13 @@ public class PlayerListener implements Listener {
 	}
 
 	// show animal rates when right clicking them with stick
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-		if (item == null || item.getType() == Material.STICK) {
+		if (item == null || item.getType() != Material.STICK) {
 			return;
 		}
 		Entity entity = event.getRightClicked();
-		if (entity == null) {
-			return;
-		}
 		AnimalMateConfig animalConfig = animalManager.getAnimalMateConfig(entity.getType());
 		double rate;
 		if (animalConfig == null) {
@@ -79,7 +77,7 @@ public class PlayerListener implements Listener {
 	}
 
 	// show growth rates when hitting floor with crop
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteractEvent(PlayerInteractEvent event) {
 		if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;

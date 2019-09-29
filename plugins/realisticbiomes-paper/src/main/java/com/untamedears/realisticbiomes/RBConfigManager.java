@@ -172,10 +172,11 @@ public class RBConfigManager extends CoreConfigManager {
 			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, material, greenHouseRates, soilBoniPerLevel,
 					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight);
 			result.add(growthConfig);
-			logger.info("Successfully parsed growth config for " + material.toString() + " as " + biomeGrowth.toString() +" with green house rates "
-					+ greenHouseRates.toString() + ", with soil boni " + soilBoniPerLevel.toString()
-					+ ", maximum soil layers: " + maximumSoilLayers + ", maximum soil bonus: " + maximumSoilBonus
-					+ ", bonemeal: " + allowBoneMeal + ", needs light: " + needsLight);
+			logger.info("Successfully parsed growth config for " + material.toString() + " as " + biomeGrowth.toString()
+					+ " with green house rates " + greenHouseRates.toString() + ", with soil boni "
+					+ soilBoniPerLevel.toString() + ", maximum soil layers: " + maximumSoilLayers
+					+ ", maximum soil bonus: " + maximumSoilBonus + ", bonemeal: " + allowBoneMeal + ", needs light: "
+					+ needsLight);
 
 		}
 		return result;

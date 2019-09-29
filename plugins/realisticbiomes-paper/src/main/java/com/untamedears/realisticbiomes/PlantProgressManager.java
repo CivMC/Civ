@@ -15,16 +15,15 @@ public class PlantProgressManager {
 
 	public PlantProgressManager() {
 		this.tracker = new ProgressTracker<>();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(RealisticBiomes.getInstance(), 
-				this::processUpdates, 1L, 1L);
-	}
-
-	public void processUpdates() {
-		tracker.processItems();
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(RealisticBiomes.getInstance(), this::processUpdates, 1L, 1L);
 	}
 
 	public void addChunk(RBChunkCache cache) {
 		tracker.addItem(cache);
+	}
+
+	public void processUpdates() {
+		tracker.processItems();
 	}
 
 	public void removeChunk(RBChunkCache cache) {

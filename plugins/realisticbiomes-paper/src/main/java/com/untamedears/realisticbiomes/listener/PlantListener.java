@@ -23,24 +23,24 @@ public class PlantListener implements Listener {
 		this.plugin = plugin;
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPistonExtendEvent event) {
 		for (Block block : event.getBlocks()) {
 			plugin.getPlantLogicManager().handleBlockDestruction(block);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPistonRetractEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
 	}
 
-	@EventHandler(ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
 		Material material = event.getBlock().getType();
 		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getPlantGrowthConfig(material);
@@ -49,12 +49,12 @@ public class PlantListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock());
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onStructureGrow(StructureGrowEvent event) {
 		// disable bonemeal
 		if (event.isFromBonemeal()) {

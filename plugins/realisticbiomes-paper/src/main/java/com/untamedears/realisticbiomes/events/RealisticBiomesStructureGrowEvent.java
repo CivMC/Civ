@@ -12,13 +12,13 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 public class RealisticBiomesStructureGrowEvent extends Event {
 	private static final HandlerList handlers = new HandlerList();
-	
+
 	public static HandlerList getHandlerList() {
 		return handlers;
 	}
-	
+
 	private StructureGrowEvent wrapped;
-	
+
 	public RealisticBiomesStructureGrowEvent(Location location, TreeType species, boolean bonemeal, Player player,
 			List<BlockState> blocks) {
 		super(false);
@@ -28,7 +28,7 @@ public class RealisticBiomesStructureGrowEvent extends Event {
 	public StructureGrowEvent getEvent() {
 		return wrapped;
 	}
-	
+
 	@Override
 	public HandlerList getHandlers() {
 		return RealisticBiomesStructureGrowEvent.handlers;
