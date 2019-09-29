@@ -97,7 +97,7 @@ public class ScrapeFreeProxyList extends ScraperWorker {
 						boolean wasmatch = false;
 
 						List<BSBan> ban = BSBan.byProxy(dataMatch, true);
-						if (!(ban == null || ban.size() == 0)) {
+						if (!(ban == null || ban.isEmpty())) {
 							// look for match; if unexpired, extend.
 							for (int i = ban.size() - 1 ; i >= 0; i-- ) {
 								BSBan pickOne = ban.get(i);

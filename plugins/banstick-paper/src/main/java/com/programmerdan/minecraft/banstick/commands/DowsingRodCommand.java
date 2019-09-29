@@ -17,7 +17,6 @@ import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class DowsingRodCommand  implements CommandExecutor {
@@ -51,7 +50,7 @@ public class DowsingRodCommand  implements CommandExecutor {
 		 */
 		int page = 0;
 		int perpage = 20;
-		ArrayList<String> sorts = new ArrayList<String>();
+		ArrayList<String> sorts = new ArrayList<>();
 		boolean hasPage = false;
 		
 		for (String arg : arguments) {
@@ -96,7 +95,7 @@ public class DowsingRodCommand  implements CommandExecutor {
 		
 		int[] widths = new int[sorts.size() + 1];
 		Arrays.fill(widths, 20);
-		ArrayList<String[]> toDisplay = new ArrayList<String[]>(perpage);
+		ArrayList<String[]> toDisplay = new ArrayList<>(perpage);
 		
 		StringBuilder subString = new StringBuilder();
 		StringBuilder queryString = new StringBuilder();
@@ -137,7 +136,7 @@ public class DowsingRodCommand  implements CommandExecutor {
 			requestLen = System.currentTimeMillis() - requestLen;
 		}
 		
-		if (toDisplay.size() == 0) {
+		if (toDisplay.isEmpty()) {
 			sender.sendMessage(ChatColor.YELLOW + "No results. " + ChatColor.DARK_GRAY + " took " + requestLen + " ms");
 			return true;
 		} else {

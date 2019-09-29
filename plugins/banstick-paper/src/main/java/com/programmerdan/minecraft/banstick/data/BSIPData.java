@@ -22,8 +22,8 @@ import inet.ipaddr.IPAddress;
 import net.md_5.bungee.api.ChatColor;
 
 public class BSIPData {
-	private static Map<Long, BSIPData> allIPDataID = new HashMap<Long, BSIPData>();
-	private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<WeakReference<BSIPData>>();
+	private static Map<Long, BSIPData> allIPDataID = new HashMap<>();
+	private static ConcurrentLinkedQueue<WeakReference<BSIPData>> dirtyIPData = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
 	
 	private BSIPData() {}
@@ -228,7 +228,7 @@ public class BSIPData {
 	 * @return A list of IPDatas in the same region, or nothing if none found.
 	 */
 	public static List<BSIPData> bySameCity(BSIPData source) {
-		List<BSIPData> found = new ArrayList<BSIPData>();
+		List<BSIPData> found = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getSame = connection.prepareStatement("SELECT * FROM bs_ip_data WHERE country = ? and region = ? and city = ? and idid != ? and valid = true ORDER BY create_time");) {
 			getSame.setString(1, source.getCountry());
@@ -613,7 +613,7 @@ public class BSIPData {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.WHITE).append(getIP().toString()).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);
@@ -678,7 +678,7 @@ public class BSIPData {
 		if (showIPs) {
 			return toString();
 		}
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.WHITE).append(getIP().toFullString(showIPs)).append(" - ");
 		if (!valid) {
 			sb.append(ChatColor.RED).append("[Invalid] ").append(ChatColor.WHITE);

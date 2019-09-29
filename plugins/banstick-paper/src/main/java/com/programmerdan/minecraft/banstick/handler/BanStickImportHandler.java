@@ -37,7 +37,7 @@ public class BanStickImportHandler {
 			return;
 		}
 		
-		workers = new ArrayList<ImportWorker>();
+		workers = new ArrayList<>();
 		
 
 		try {

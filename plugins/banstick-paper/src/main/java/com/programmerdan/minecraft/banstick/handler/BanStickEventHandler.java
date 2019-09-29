@@ -1,7 +1,6 @@
 package com.programmerdan.minecraft.banstick.handler;
 
 import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.containers.BanResult;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
@@ -381,7 +380,7 @@ public class BanStickEventHandler implements Listener {
 		if (proxyCheck.getProxy() >= proxyThreshold && enableNewProxyBans) {
 			List<BSBan> proxyBans = BSBan.byProxy(proxyCheck, false);
 			BSBan newBan = null;
-			if (proxyBans != null && proxyBans.size() > 0) {
+			if (proxyBans != null && !proxyBans.isEmpty()) {
 				for (BSBan checkBan : proxyBans) {
 					if (checkBan.getBanEndTime() != null && checkBan.getBanEndTime().after(new Date())) {
 						newBan = checkBan;
@@ -389,7 +388,7 @@ public class BanStickEventHandler implements Listener {
 					}
 				}
 			}
-			if (newBan == null && (proxyBans == null || proxyBans.size() == 0)) {
+			if (newBan == null && (proxyBans == null || proxyBans.isEmpty())) {
 				newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 			}
 

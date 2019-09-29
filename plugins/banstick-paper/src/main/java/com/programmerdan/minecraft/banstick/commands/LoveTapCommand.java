@@ -67,11 +67,11 @@ public class LoveTapCommand  implements CommandExecutor {
 							for (BSIP bsip : contains) {
 								List<BSBan> bans = BSBan.byIP(bsip, false);
 								List<BSSession> sessions = BSSession.byIP(bsip);
-								Set<Long> playerIds = new HashSet<Long>();
-								List<BSPlayer> players = new ArrayList<BSPlayer>();
-								List<BSBan> playerBans = new ArrayList<BSBan>();
-								StringBuffer playerList = new StringBuffer();
-								StringBuffer playerBanList = new StringBuffer();
+								Set<Long> playerIds = new HashSet<>();
+								List<BSPlayer> players = new ArrayList<>();
+								List<BSBan> playerBans = new ArrayList<>();
+								StringBuilder playerList = new StringBuilder();
+								StringBuilder playerBanList = new StringBuilder();
 								for (BSSession session : sessions) {
 									BSPlayer player = session.getPlayer();
 									if (playerIds.contains(player.getId())) {
@@ -118,7 +118,7 @@ public class LoveTapCommand  implements CommandExecutor {
 									playerBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent playerStr = new TextComponent(Integer.toString(players == null ? 0 : players.size()));
 									playerStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									if (players.size() > 0) {
+									if (!players.isEmpty()) {
 										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
 									}
 								playerBase.addExtra(playerStr);
@@ -129,7 +129,7 @@ public class LoveTapCommand  implements CommandExecutor {
 									pBanBase.setColor(net.md_5.bungee.api.ChatColor.AQUA);
 								TextComponent pBanStr = new TextComponent(Integer.toString(playerBans == null ? 0 : playerBans.size()));
 									pBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									if (playerBans.size() > 0) {
+									if (!playerBans.isEmpty()) {
 										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
 									}
 								pBanBase.addExtra(pBanStr);
@@ -269,7 +269,7 @@ public class LoveTapCommand  implements CommandExecutor {
 				
 				List<BSShare> shares = player.getAllShares();
 				
-				StringBuffer sb = new StringBuffer();
+				StringBuilder sb = new StringBuilder();
 				if (history != null) {
 					sb.append(ChatColor.BLUE).append("Session History: ").append(ChatColor.DARK_AQUA).append("(First Join: ")
 						.append(ChatColor.WHITE).append(player.getFirstAdd()).append(ChatColor.DARK_AQUA).append(")\n");

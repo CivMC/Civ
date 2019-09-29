@@ -28,12 +28,11 @@ import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.TextComponent;
 
 public class DrillDownCommand  implements CommandExecutor {
 
-	public static enum Action {
+	public enum Action {
 		PLAYER,
 		IPDATASUMMARY,
 		SUMMARY,
@@ -80,7 +79,7 @@ public class DrillDownCommand  implements CommandExecutor {
 		
 		//int page = 0;
 		//int perpage = 20;
-		ArrayList<String> values = new ArrayList<String>();
+		ArrayList<String> values = new ArrayList<>();
 		StringBuilder nextValue = new StringBuilder();
 		//boolean hasPage = false;
 		boolean foundAnchor = false;
@@ -197,21 +196,21 @@ public class DrillDownCommand  implements CommandExecutor {
 					}
 					Set<BSIP> ips = null;
 					if (Action.IP.equals(action) || Action.SUMMARY.equals(action)) {
-						ips = new HashSet<BSIP>();
+						ips = new HashSet<>();
 					}
 					Set<BSPlayer> players = null;
 					if (Action.PLAYER.equals(action) || Action.SUMMARY.equals(action)) {
-						players = new HashSet<BSPlayer>();
+						players = new HashSet<>();
 					}
 					Set<BSIPData> datas = null;
 					if (Action.SUMMARY.equals(action) || Action.IPDATASUMMARY.equals(action)) {
-						datas = new HashSet<BSIPData>();
+						datas = new HashSet<>();
 					}
 					Map<Long, Set<BSIP>> dataIPs = null;
 					Map<Long, Set<BSPlayer>> dataPlayers = null;
 					if (Action.IPDATASUMMARY.equals(action)) {
-						dataIPs = new HashMap<Long, Set<BSIP>>();
-						dataPlayers = new HashMap<Long, Set<BSPlayer>>();
+						dataIPs = new HashMap<>();
+						dataPlayers = new HashMap<>();
 					}
 					try (ResultSet results = complex.executeQuery()) {
 						while(results.next()) {
@@ -236,7 +235,7 @@ public class DrillDownCommand  implements CommandExecutor {
 								datas.add(data);
 								Set<BSIP> contained = dataIPs.get(data.getId());
 								if (contained == null) {
-									contained = new HashSet<BSIP>();
+									contained = new HashSet<>();
 									dataIPs.put(data.getId(), contained);
 								}
 								contained.add(ip);
@@ -254,7 +253,7 @@ public class DrillDownCommand  implements CommandExecutor {
 										} else { // IPDATASUMMARY
 											Set<BSPlayer> playerSet = dataPlayers.get(data.getId());
 											if (playerSet == null) {
-												playerSet = new HashSet<BSPlayer>();
+												playerSet = new HashSet<>();
 												dataPlayers.put(data.getId(), playerSet);
 											}
 											playerSet.add(session.getPlayer());
@@ -266,7 +265,7 @@ public class DrillDownCommand  implements CommandExecutor {
 						}
 					}
 					if (Action.SUMMARY.equals(action)) {
-						StringBuffer sb = new StringBuffer();
+						StringBuilder sb = new StringBuilder();
 						for (int i = 1; i < arguments.length; i++) {
 							sb.append(" ").append(arguments[i]);
 						}

@@ -69,7 +69,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 			return false;
 		}
 		
-		this.toCheck = new ConcurrentLinkedQueue<WeakReference<BSIP>>();
+		this.toCheck = new ConcurrentLinkedQueue<>();
 		
 		this.maxBatch = config.getInt("maxBatch", 50);
 		this.period = config.getLong("period", 20);
@@ -122,8 +122,8 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 		}
 		if (this.toCheck.isEmpty()) return;
 		try {
-			Set<Long> hardStaged = new HashSet<Long>();
-			List<Map<String, String>> source = new ArrayList<Map<String, String>>();
+			Set<Long> hardStaged = new HashSet<>();
+			List<Map<String, String>> source = new ArrayList<>();
 			
 			int cBatch = 0;
 			while (cBatch < this.maxBatch && !this.toCheck.isEmpty()) {
@@ -140,7 +140,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 					address = address.getLower(); // strip cidr
 				}
 				
-				Map<String, String> newEntry = new HashMap<String, String>();
+				Map<String, String> newEntry = new HashMap<>();
 				newEntry.put("query", address.toString());
 				source.add(newEntry);
 				cBatch ++;

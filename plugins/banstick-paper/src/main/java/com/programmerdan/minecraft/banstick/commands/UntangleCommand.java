@@ -88,27 +88,24 @@ public class UntangleCommand implements CommandExecutor {
     }
 
     public static UUID resolveName(String input) {
-        UUID playerId = null;
         if (input.length() <= 16) {
             // interpret as player name
             try {
                 return NameAPI.getUUID(input);
             } catch (NoClassDefFoundError ncde) {
             }
-            if (playerId == null) {
-                Player match = Bukkit.getPlayer(input);
-                if (match != null) {
-                    return match.getUniqueId();
-                } else {
-                    OfflinePlayer offPlay = Bukkit.getOfflinePlayer(input);
-                    if (offPlay != null) {
-                        return offPlay.getUniqueId();
-                    }
+              Player match = Bukkit.getPlayer(input);
+              if (match != null) {
+                  return match.getUniqueId();
+              } else {
+                  OfflinePlayer offPlay = Bukkit.getOfflinePlayer(input);
+                  if (offPlay != null) {
+                      return offPlay.getUniqueId();
+                   }
                 }
-            }
         } else if (input.length() == 36) {
             try {
-                playerId = UUID.fromString(input);
+                return UUID.fromString(input);
             } catch (IllegalArgumentException iae) {
                 return null;
             }

@@ -147,7 +147,7 @@ public class TakeItBackCommand implements CommandExecutor {
 			BSPlayer player2 = BSPlayer.byUUID(secondPlayerId);
 			List<BSShare> shares = player.sharesWith(player2);
 			int pardonsRevoked = 0;
-			if (shares != null && shares.size() > 0) {
+			if (shares != null && !shares.isEmpty()) {
 				for (BSShare share : shares) {
 					if (share.isPardoned()) {
 						share.setPardonTime(null);

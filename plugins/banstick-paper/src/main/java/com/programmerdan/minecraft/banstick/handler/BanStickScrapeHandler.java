@@ -39,7 +39,7 @@ public class BanStickScrapeHandler {
 			return;
 		}
 		
-		workers = new ArrayList<ScraperWorker>();
+		workers = new ArrayList<>();
 		
 		// now load all configured proxy list loaders.
 		// Build using constructor then launch repeating task

@@ -48,7 +48,7 @@ public class BSLog extends BukkitRunnable{
 		return period;
 	}
 	
-	static enum Action {
+	enum Action {
 		BAN,
 		UNBAN,
 		CHANGE
@@ -68,7 +68,7 @@ public class BSLog extends BukkitRunnable{
 		}
 	}
 	
-	private static ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<LogEntry>();
+	private static ConcurrentLinkedQueue<LogEntry> toSave = new ConcurrentLinkedQueue<>();
 
 	@Override
 	public void run() {

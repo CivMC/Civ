@@ -24,14 +24,14 @@ public class BanResult {
 	private Set<BSBan> bans;
 	
 	public BanResult() {
-		playerBans = new HashSet<BSPlayer>();
-		bans = new HashSet<BSBan>();
+		playerBans = new HashSet<>();
+		bans = new HashSet<>();
 	}
 	
 	public static SimpleDateFormat usualDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public void informCommandSender(CommandSender sender) {
-		if (bans.size() == 0 && playerBans.size() == 0) {
+		if (bans.isEmpty() && playerBans.isEmpty()) {
 			sender.sendMessage("No bans issued.");
 		}
 		StringBuilder sb = new StringBuilder();

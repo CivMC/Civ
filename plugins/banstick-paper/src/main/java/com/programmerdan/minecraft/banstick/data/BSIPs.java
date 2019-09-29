@@ -47,7 +47,7 @@ public class BSIPs {
 		if (ipList == null) {
 			fill();
 		}
-		if (ipList.size() == 0) return null;
+		if (ipList.isEmpty()) return null;
 		return BSIP.byId(ipList.get(ipList.size() - 1));
 	}
 	
@@ -55,7 +55,7 @@ public class BSIPs {
 		if (ipList == null) {
 			fill();
 		}
-		List<BSIP> ret = new ArrayList<BSIP>(ipList.size());
+		List<BSIP> ret = new ArrayList<>(ipList.size());
 		for (Long iid : ipList) {
 			ret.add(BSIP.byId(iid));
 		}
@@ -85,10 +85,10 @@ public class BSIPs {
 	
 	private void fill() {
 		if (ipList == null) {
-			ipList = new ArrayList<Long>();
+			ipList = new ArrayList<>();
 		}
 		if (ipSet == null) {
-			ipSet = new HashSet<Long>();
+			ipSet = new HashSet<>();
 		}
 
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
@@ -104,7 +104,7 @@ public class BSIPs {
 						ipList.add(rs.getLong(1));
 					}
 				}
-				if (ipList.size() == 0 || ipSet.size() == 0) {
+				if (ipList.isEmpty() || ipSet.isEmpty()) {
 					BanStick.getPlugin().warning("No IPs for " + forPlayer.getName());
 				}
 			}

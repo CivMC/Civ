@@ -20,6 +20,7 @@ public class BSRegistrars {
 
 	public BSRegistrars() {
 		registrars = loadRegistrarsFromDB();
+		BanStick.getPlugin().getLogger().info("Loaded " + registrars + " banned registrars from database");
 	}
 	
 	public boolean isBanned(BSIPData data) {

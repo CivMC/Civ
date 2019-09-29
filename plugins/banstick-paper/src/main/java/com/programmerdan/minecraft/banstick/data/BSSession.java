@@ -20,8 +20,8 @@ import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 public class BSSession {
 
-	private static Map<Long, BSSession> allSessionID = new HashMap<Long, BSSession>();
-	private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<WeakReference<BSSession>>();
+	private static Map<Long, BSSession> allSessionID = new HashMap<>();
+	private static ConcurrentLinkedQueue<WeakReference<BSSession>> dirtySessions = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
 	
 	private long sid;
@@ -312,7 +312,7 @@ public class BSSession {
 	 * @return the display string
 	 */
 	public String toFullString(boolean showIP) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(getPlayer().getName()).append(" [");
 		if (showIP) {
 			sb.append(getIP().toString());

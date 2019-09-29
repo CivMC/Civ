@@ -201,15 +201,6 @@ public class BanStick extends ACivMod {
 		return BanStick.instance;
 	}
 
-	/**
-	 *
-	 * @return the name of this plugin.
-	 */
-	@Override
-	protected String getPluginName() {
-		return "BanStick";
-	}
-
 	public void saveCache() {
 		this.databaseHandler.doShutdown();
 	}

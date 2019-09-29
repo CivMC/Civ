@@ -29,7 +29,6 @@ public class ForgiveCommand implements CommandExecutor {
 
 	public static String name = "forgive";
 	
-	@SuppressWarnings("deprecation")
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String cmdString, String[] arguments) {
 		if (arguments.length < 1) return false;
@@ -195,7 +194,7 @@ public class ForgiveCommand implements CommandExecutor {
 					}
 					if (match) {
 						return true;
-					} else if (pardons.size() > 0) {
+					} else if (!pardons.isEmpty()) {
 						toForgive = pardons.get(0);
 						UUID playerId2 = null;
 						if (toForgive.length() <= 16) {
@@ -229,7 +228,7 @@ public class ForgiveCommand implements CommandExecutor {
 							List<BSShare> shares = player.sharesWith(player2);
 							int banLifted = 0;
 							int pardonsGranted = 0;
-							if (shares != null && shares.size() > 0) {
+							if (shares != null && !shares.isEmpty()) {
 								sender.sendMessage(ChatColor.GREEN + "Checking " + shares.size() + " shared sessions for ones needing pardon");
 								boolean alsoUnban = pardons.size() > 1 && "ALL".equalsIgnoreCase(pardons.get(1));
 								for (BSShare share : shares) {

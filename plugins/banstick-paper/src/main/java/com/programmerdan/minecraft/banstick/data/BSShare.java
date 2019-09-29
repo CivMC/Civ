@@ -23,8 +23,8 @@ import org.bukkit.ChatColor;
 
 public class BSShare {
 
-	private static Map<Long, BSShare> allShareID = new HashMap<Long, BSShare>();
-	private static ConcurrentLinkedQueue<WeakReference<BSShare>> dirtyShares = new ConcurrentLinkedQueue<WeakReference<BSShare>>();
+	private static Map<Long, BSShare> allShareID = new HashMap<>();
+	private static ConcurrentLinkedQueue<WeakReference<BSShare>> dirtyShares = new ConcurrentLinkedQueue<>();
 	private boolean dirty;
 	
 	private long sid;
@@ -128,7 +128,7 @@ public class BSShare {
 	}
 
 	public static List<BSShare> byPlayer(BSPlayer player) {
-		List<BSShare> shares = new ArrayList<BSShare>();
+		List<BSShare> shares = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_pid = ? OR second_pid = ?");) {
 			getId.setLong(1, player.getId());
@@ -151,7 +151,7 @@ public class BSShare {
 	}
 	
 	public static List<BSShare> bySession(BSSession session) {
-		List<BSShare> shares = new ArrayList<BSShare>();
+		List<BSShare> shares = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getId = connection.prepareStatement("SELECT * FROM bs_share WHERE first_sid = ? OR second_sid = ?");) {
 			getId.setLong(1, session.getId());
@@ -308,7 +308,7 @@ public class BSShare {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		if (this.isPardoned()) {
 			sb.append(ChatColor.GREEN).append("[Pardoned] ");
 		}
@@ -324,7 +324,7 @@ public class BSShare {
 		if (showIPs) {
 			return toString();
 		} else {
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			if (this.isPardoned()) {
 				sb.append(ChatColor.GREEN).append("[Pardoned] ");
 			}
