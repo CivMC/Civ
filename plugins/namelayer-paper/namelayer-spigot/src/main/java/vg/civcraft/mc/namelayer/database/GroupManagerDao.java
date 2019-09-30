@@ -1223,7 +1223,7 @@ public class GroupManagerDao {
 	
 	/**
 	 * Adds the uuid to the db if they should auto accept groups when invited.
-	 * @param uuid
+	 * @param uuid sets up this player by uuid to accept groups async
 	 */
 	public void autoAcceptGroupsAsync(final UUID uuid){
 		plugin.getServer().getScheduler().runTaskAsynchronously(plugin, new Runnable(){
@@ -1679,8 +1679,8 @@ public class GroupManagerDao {
 	 * we arbitrarily define primacy as the one with the most members for ease of accounting
 	 * and backwards compatibility.
 	 *  
-	 * @param groupName
-	 * @return
+	 * @param groupName the group name to get IDs for
+	 * @return the list of IDs for this group name
 	 */
 	public List<Integer> getAllIDs(String groupName) {
 		if (groupName == null) {

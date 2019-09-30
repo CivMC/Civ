@@ -463,7 +463,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * clicked, this opens up a detailed view where you can select what to do
 	 * (promoting/removing)
 	 *
-	 * @param uuid
+	 * @param uuid the UUID to show the inventory to
 	 */
 	public void showDetail(final UUID uuid) {
 		if (!validGroup()) {
