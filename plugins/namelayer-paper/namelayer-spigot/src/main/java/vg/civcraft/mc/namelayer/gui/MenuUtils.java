@@ -40,6 +40,9 @@ public class MenuUtils {
 	
 	/**
 	 * Doesn't work
+	 *
+	 * @param lore the lore to split
+	 * @return a split list of lores
 	 */
 	public static List<String> splitLore(String lore) {
 		System.out.println("Splitting " + lore);

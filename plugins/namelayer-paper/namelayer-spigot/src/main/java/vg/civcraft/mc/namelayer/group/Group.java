@@ -258,8 +258,7 @@ public class Group {
 	
 	/**
 	 * Removes the invite of a Player
-	 * @param uuid- The UUID of the player.
-	 * @param saveToDB - remove the invitation from the DB. 
+	 * @param uuid - The UUID of the player.
 	 */
 	public void removeInvite(UUID uuid){
 		removeInvite(uuid, true);
@@ -380,8 +379,9 @@ public class Group {
 
 	/**
 	 * 
-	 * @param supergroup
-	 * @param subgroup
+	 * @param supergroup the base group
+	 * @param subgroup the group to link under it
+	 * @param saveToDb - add link to the DB. 
 	 * @return true if linking succeeded, false otherwise.
 	 */
 	public static boolean link(Group supergroup, Group subgroup, boolean saveToDb) {
@@ -414,8 +414,9 @@ public class Group {
 	
 	/**
 	 * 
-	 * @param supergroup
-	 * @param subgroup
+	 * @param supergroup the main group
+	 * @param subgroup the sub group to unlink
+	 * @return true if unlink succeeded, false otherwise
 	 */
 	public static boolean unlink(Group supergroup, Group subgroup){
 		return unlink(supergroup,subgroup, true);
@@ -497,7 +498,7 @@ public class Group {
 	public UUID getOwner() { return owner; }
 	
 	/**
-	 * @param uuid
+	 * @param uuid the uuid of owner
 	 * @return true if the UUID belongs to the owner of the group, false otherwise.
 	 */
 	public boolean isOwner(UUID uuid) { return owner.equals(uuid); }
@@ -586,6 +587,8 @@ public class Group {
 	/**
 	 * Updates/replaces the group id list with a new one. Clears the old one, adds these,
 	 * and ensures that the "main" id is added to the list as well.
+	 *
+	 * @param ids the list of IDs to replace
 	 */
 	public void setGroupIds(List<Integer> ids) {
 		this.ids.clear();

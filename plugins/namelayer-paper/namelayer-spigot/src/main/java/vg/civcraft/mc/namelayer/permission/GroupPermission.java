@@ -32,7 +32,7 @@ public class GroupPermission {
 	 * Checks if a certain PlayerType has the given permission. DONT USE THIS DIRECTLY. Use GroupManager.hasAccess() instead!
 	 * @param playerType The PlayerType in question.
 	 * @param perm The PermissionType to check for.
-	 * @return
+	 * @return return true if this type of player has this type of perm, false otherwise
 	 */
 	public boolean hasPermission(PlayerType playerType, PermissionType perm){
 		if (playerType == null || perm == null) {

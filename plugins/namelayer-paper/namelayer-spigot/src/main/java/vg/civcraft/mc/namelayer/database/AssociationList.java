@@ -89,8 +89,8 @@ public class AssociationList {
 
 	/**
 	 * returns null if no uuid was found
-	 * @param playername
-	 * @return
+	 * @param playername the player's name
+	 * @return the UUID of the player, or null
 	 */
 	public UUID getUUID(String playername){
 		try (Connection connection = db.getConnection();
@@ -111,8 +111,8 @@ public class AssociationList {
 
 	/**
 	 *  returns null if no playername was found
-	 * @param uuid
-	 * @return
+	 * @param uuid get the current server's name for this UUId
+	 * @return the player's name if found
 	 */
 	public String getCurrentName(UUID uuid){
 		try (Connection connection = db.getConnection();
@@ -161,8 +161,10 @@ public class AssociationList {
 	/**
 	 * This method returns all player info in the table.  It is used mainly
 	 * by NameAPI class to prepopulate the maps.  
-	 * As such PlayerMappingInfo.nameMapping will return Map<String, UUID> 
-	 * while PlayerMappingInfo.uuidMapping will return Map<UUID, String>
+	 * As such PlayerMappingInfo.nameMapping will return Map&lt;String, UUID&gt;
+	 * while PlayerMappingInfo.uuidMapping will return Map&lt;UUID, String&gt;
+	 *
+	 * @return the player mapping info is possible
 	 */
 	public PlayerMappingInfo getAllPlayerInfo(){
 		Map<String, UUID> nameMapping = new HashMap<String, UUID>();

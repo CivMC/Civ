@@ -40,6 +40,7 @@ public class GroupManager{
 	/**
 	 * Saves the group into caching and saves it into the db. Also fires the GroupCreateEvent.
 	 * @param group the group to create to db.
+	 * @return the internal ID of the group created.
 	 */
 	public int createGroup(Group group){
 		return createGroup(group,true);
@@ -229,6 +230,9 @@ public class GroupManager{
 	 * _for now_ simply invalidating the cache on servers.
 	 *
 	 * Eventually, we'll need to go line-by-line through the db code and just replicate in cache. That day is not today.
+	 *
+	 * @param group the origin group
+	 * @param toMerge the group to merge in
 	 */
 	public void doneMergeGroup(Group group, Group toMerge) {
 		if (group == null || toMerge == null) {
@@ -407,6 +411,9 @@ public class GroupManager{
 	/**
 	 * DO NOT WORK WITH THE PERMISSION OBJECT ITSELF TO DETERMINE ACCESS. Use the methods provided in this class instead, as they
 	 * respect all the permission inheritation stuff
+	 * 
+	 * @param group the group to retrieve permissions from
+	 * @return the actual permissions for this object or null
 	 */
 	public GroupPermission getPermissionforGroup(Group group){
 		if (group == null) {
@@ -504,7 +511,7 @@ public class GroupManager{
 
 	/**
 	 * Invalidates a group from cache.
-	 * @param group
+	 * @param group the group to invalidate cache for
 	 */
 	public static void invalidateCache(String group){
 		if (group == null) {
