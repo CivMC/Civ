@@ -45,17 +45,10 @@ public class ClickableInventory {
 	 *            name of the inventory which is shown at the top when a player has it open
 	 */
 	public ClickableInventory(InventoryType type, String name) {
-		if (name == null) {
-			throw new IllegalArgumentException("Inventory name may not be null");
-		}
+		this(name);
 		if (type == null) {
 			throw new IllegalArgumentException("Inventory type may not be null");
 		}
-		if (name.length() > 32) {
-			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
-			name = name.substring(0, 32);
-		}
-		this.runnables = new LinkedList<>();
 		inventory = Bukkit.createInventory(null, type, name);
 		this.clickables = new IClickable[inventory.getSize() + 1];
 	}
@@ -70,6 +63,12 @@ public class ClickableInventory {
 	 *            name of the inventory which is shown at the top when a player has it open
 	 */
 	public ClickableInventory(int size, String name) {
+		this(name);
+		inventory = Bukkit.createInventory(null, size, name);
+		this.clickables = new IClickable[size + 1];
+	}
+	
+	private ClickableInventory(String name) {
 		if (name == null) {
 			throw new IllegalArgumentException("Inventory name may not be null");
 		}
@@ -77,8 +76,7 @@ public class ClickableInventory {
 			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
-		inventory = Bukkit.createInventory(null, size, name);
-		this.clickables = new IClickable[size + 1];
+		this.runnables = new LinkedList<>();
 	}
 
 	/**
