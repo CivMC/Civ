@@ -7,7 +7,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -168,7 +167,6 @@ public class Reinforcement extends TableBasedDataObject {
 		this.health = health;
 		if (health <= 0) {
 			getOwningCache().remove(this);
-			setCacheState(CacheState.DELETED);
 		}
 		else {
 			setDirty();

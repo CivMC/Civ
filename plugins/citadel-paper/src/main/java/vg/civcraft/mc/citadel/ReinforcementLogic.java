@@ -11,7 +11,6 @@ import org.bukkit.inventory.InventoryHolder;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
-import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;

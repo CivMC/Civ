@@ -41,7 +41,6 @@ public class CitadelSettingManager {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Citadel",
 				"Citadel and reinforcement related settings");
 		byPass = new BooleanSetting(Citadel.getInstance(), true, "Bypass", "citadelBypass",
-				new ItemStack(Material.DIAMOND_PICKAXE),
 				"Allows you to bypass reinforcements you have permission for and break them in a single break");
 		PlayerSettingAPI.registerSetting(byPass, menu);
 
