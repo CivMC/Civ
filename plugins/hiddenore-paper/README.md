@@ -4,6 +4,10 @@ Brought to you by the developers from https://www.reddit.com/r/Devoted and https
 
 Massively configurable, low-impact plugin to allow post world generation ore balance, via either drops, or ad-hoc generation of ores into the blocks of the world on-demand. It works as a wonderful anti-xray plugin, and as a powerful incentive tool for mining.
 
+## Notes on Minecraft 1.14
+
+Largely unchanged from 1.13, however it is worth noting that if you previouly used the durability match for "first hit", "last hit" or specific durability hit bonuses, you will need to recreate those configs, as durability is now in the metadata for items.
+
 ## Notes on Minecraft 1.13
 
 Minecraft 1.13, and Bukkit/Spigot's implementation, introduces a wrinkle for my admittedly "deprecated" approach to sub types of materials; namely,
@@ -86,6 +90,8 @@ I'm probably missing some other details but that's it for now.
 * Better documentation
 
 ### Feature Augment List:
+
+**v1.6.0** Generaly update to 1.14.4. Thanks Maxopoly!
 
 **v1.5.3** Some general fixes and improvements to block-level exploit tracking.
 
