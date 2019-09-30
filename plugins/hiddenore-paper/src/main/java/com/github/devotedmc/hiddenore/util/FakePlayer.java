@@ -11,12 +11,15 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Achievement;
+import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
+import org.bukkit.FluidCollisionMode;
 import org.bukkit.GameMode;
 import org.bukkit.Instrument;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Note;
 import org.bukkit.Particle;
 import org.bukkit.Server;
@@ -30,6 +33,7 @@ import org.bukkit.advancement.AdvancementProgress;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
@@ -38,8 +42,10 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
+import org.bukkit.entity.memory.MemoryKey;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -56,10 +62,13 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionAttachment;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.BoundingBox;
+import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
 @SuppressWarnings("deprecation")
@@ -96,11 +105,6 @@ public class FakePlayer implements Player {
 			}
 
 			@Override
-			public String getName() {
-				return null;
-			}
-
-			@Override
 			public ItemStack getItem(int index) {
 				return null;
 			}
@@ -133,11 +137,6 @@ public class FakePlayer implements Player {
 			public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
 			}
 
-			/*@Override
-			public boolean contains(int materialId) {
-				return false;
-			}*/
-
 			@Override
 			public boolean contains(Material material) throws IllegalArgumentException {
 				return false;
@@ -147,11 +146,6 @@ public class FakePlayer implements Player {
 			public boolean contains(ItemStack item) {
 				return false;
 			}
-
-			/*@Override
-			public boolean contains(int materialId, int amount) {
-				return false;
-			}*/
 
 			@Override
 			public boolean contains(Material material, int amount) throws IllegalArgumentException {
@@ -168,11 +162,6 @@ public class FakePlayer implements Player {
 				return false;
 			}
 
-			/*@Override
-			public HashMap<Integer, ? extends ItemStack> all(int materialId) {
-				return null;
-			}*/
-
 			@Override
 			public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
 				return null;
@@ -182,11 +171,6 @@ public class FakePlayer implements Player {
 			public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
 				return null;
 			}
-
-			/*@Override
-			public int first(int materialId) {
-				return 0;
-			}*/
 
 			@Override
 			public int first(Material material) throws IllegalArgumentException {
@@ -202,11 +186,7 @@ public class FakePlayer implements Player {
 			public int firstEmpty() {
 				return 0;
 			}
-
-			/*@Override
-			public void remove(int materialId) {
-			}*/
-
+			
 			@Override
 			public void remove(Material material) throws IllegalArgumentException {
 			}
@@ -225,11 +205,6 @@ public class FakePlayer implements Player {
 
 			@Override
 			public List<HumanEntity> getViewers() {
-				return null;
-			}
-
-			@Override
-			public String getTitle() {
 				return null;
 			}
 
@@ -2002,5 +1977,143 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void updateCommands() {
+	}
+
+	@Override
+	public boolean sleep(Location location, boolean force) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void wakeup(boolean setSpawnLocation) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Location getBedLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean discoverRecipe(NamespacedKey recipe) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int discoverRecipes(Collection<NamespacedKey> recipes) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean undiscoverRecipe(NamespacedKey recipe) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public int undiscoverRecipes(Collection<NamespacedKey> recipes) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Block getTargetBlockExact(int maxDistance) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Block getTargetBlockExact(int maxDistance, FluidCollisionMode fluidCollisionMode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RayTraceResult rayTraceBlocks(double maxDistance) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public RayTraceResult rayTraceBlocks(double maxDistance, FluidCollisionMode fluidCollisionMode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getMemory(MemoryKey<T> memoryKey) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> void setMemory(MemoryKey<T> memoryKey, T memoryValue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public double getAbsorptionAmount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void setAbsorptionAmount(double arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BoundingBox getBoundingBox() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setRotation(float yaw, float pitch) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public BlockFace getFacing() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Pose getPose() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public PersistentDataContainer getPersistentDataContainer() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sendSignChange(Location loc, String[] lines, DyeColor dyeColor) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int getClientViewDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void openBook(ItemStack book) {
+		// TODO Auto-generated method stub
+		
 	}
 }

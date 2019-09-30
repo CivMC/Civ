@@ -72,7 +72,6 @@ public class BlockBreakListener implements Listener {
 	 * 
 	 * @param event
 	 */
-	@SuppressWarnings("deprecation")
 	private void doBlockBreak(BlockBreakEvent event) {
 		Block b = event.getBlock();
 		BlockData bd = b.getBlockData();
@@ -122,7 +121,7 @@ public class BlockBreakListener implements Listener {
 
 		boolean hasDrop = false;
 
-		StringBuffer alertUser = new StringBuffer().append(Config.instance.defaultPrefix);
+		StringBuilder alertUser = new StringBuilder().append(Config.instance.defaultPrefix);
 
 		String biomeName = b.getBiome().name();
 
@@ -234,7 +233,7 @@ public class BlockBreakListener implements Listener {
 	 * @return true if everything went well, false if the generate was cancelled or other error.
 	 */
 	private Boolean doDrops(boolean clearBlock, Block sourceBlock, BlockBreakEvent event, Player player, String biomeName, ToolConfig dropTool, 
-			String dropName, DropConfig dropConfig, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer) {
+			String dropName, DropConfig dropConfig, String blockName, BlockConfig blockConfig, StringBuilder alertBuffer) {
 		// Remove block, drop special drop and cancel the event
 		if (!clearBlock) {
 			HiddenOreGenerateEvent hoge = new HiddenOreGenerateEvent(player, sourceBlock, Material.AIR);
@@ -251,13 +250,13 @@ public class BlockBreakListener implements Listener {
 		
 		final List<ItemStack> items = dropConfig.renderDrop(biomeName, dropTool);
 		final Location sourceLocation = sourceBlock.getLocation();
-		if (items.size() > 0) {
+		if (!items.isEmpty()) {
 			doActualDrops(items, sourceLocation, player, dropName, blockName, blockConfig, alertBuffer);
 		}
 
 		if (dropConfig.transformIfAble) {
 			final List<ItemStack> transform = dropConfig.renderTransform(biomeName, dropTool);
-			if (transform.size() > 0) {
+			if (!transform.isEmpty()) {
 				doActualGenerate(transform, sourceLocation, player, dropName, blockName, blockConfig, 
 						alertBuffer, dropConfig);
 			}
@@ -271,7 +270,7 @@ public class BlockBreakListener implements Listener {
 	}
 
 	private void doActualDrops(final List<ItemStack> items, final Location sourceLocation, final Player player,
-			String dropName, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer) {
+			String dropName, String blockName, BlockConfig blockConfig, StringBuilder alertBuffer) {
 		final HiddenOreEvent hoe = new HiddenOreEvent(player, sourceLocation, items);
 		Bukkit.getPluginManager().callEvent(hoe);
 		if (!hoe.isCancelled()) {
@@ -288,14 +287,14 @@ public class BlockBreakListener implements Listener {
 			// Correct stats output.
 			for (ItemStack item: hoe.getDrops()) {
 				String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? item.getItemMeta().getDisplayName() : item.getType().name();
-				log("STAT: Player {0} at {1} broke {2} - dropping {3} {4}:{5}", 
+				log("STAT: Player {0} at {1} broke {2} - dropping {3} {4}", 
 						player.getDisplayName(), player.getLocation(), blockName, 
-						item.getAmount(), name, item.getDurability());
+						item.getAmount(), name);
 			}
 			
 			if (Config.isAlertUser()) {
 				if (blockConfig.hasCustomPrefix(dropName)) {
-					StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
+					StringBuilder customAlerts = new StringBuilder(blockConfig.getPrefix(dropName));
 
 					for (ItemStack item : hoe.getDrops()) {
 						String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
@@ -320,7 +319,7 @@ public class BlockBreakListener implements Listener {
 	}
 
 	private void doActualGenerate(final List<ItemStack> items, final Location sourceLocation, final Player player,
-			String dropName, String blockName, BlockConfig blockConfig, StringBuffer alertBuffer, DropConfig dropConfig) {
+			String dropName, String blockName, BlockConfig blockConfig, StringBuilder alertBuffer, DropConfig dropConfig) {
 		int maxWalk = 0;
 		int cPlace = 0;
 		double cAttempt = 0;
@@ -381,10 +380,9 @@ public class BlockBreakListener implements Listener {
 				String name = xform.hasItemMeta() && xform.getItemMeta().hasDisplayName() ? 
 						xform.getItemMeta().getDisplayName() : Config.getPrettyName(xform.getType().name());
 						
-				log("STAT: Player {0} at {1} broke {2} - replacing with {3} {4}:{5} as {6}", 
+				log("STAT: Player {0} at {1} broke {2} - replacing with {3} {4} as {6}", 
 						player.getDisplayName(), player.getLocation(), blockName, 
-						xform.getAmount()- cPlace, name, xform.getDurability(),
-						expressed);
+						xform.getAmount()- cPlace, name, expressed);
 				
 				// Anything to tell anyone about?
 				if (cPlace < xform.getAmount() && Config.isAlertUser()) {

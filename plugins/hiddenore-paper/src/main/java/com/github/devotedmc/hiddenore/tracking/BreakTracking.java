@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -47,8 +46,8 @@ public class BreakTracking {
 	private Location[] recent;
 
 	public BreakTracking() {
-		track = new HashMap<UUID, Map<Long, short[]>>();
-		map = new HashMap<UUID, Map<Long, long[][][]>>();
+		track = new HashMap<>();
+		map = new HashMap<>();
 		recent = new Location[RECENT_MAX];
 		recentPtr = 0;
 	}
@@ -74,7 +73,7 @@ public class BreakTracking {
 						break;
 					}
 					UUID uid = UUID.fromString(uuid);
-					Map<Long, short[]> world = new HashMap<Long, short[]>();
+					Map<Long, short[]> world = new HashMap<>();
 					track.put(uid, world);
 
 					long ccnt = 0l;
@@ -114,8 +113,7 @@ public class BreakTracking {
 		if (!tf.exists()) {
 			HiddenOre.getPlugin().getLogger().info("No map save exists to load");
 		} else {
-			try {
-				DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tf)));
+			try (DataInputStream dis = new DataInputStream(new BufferedInputStream(new FileInputStream(tf)))){
 
 				String uuid = null;
 				boolean active = true;

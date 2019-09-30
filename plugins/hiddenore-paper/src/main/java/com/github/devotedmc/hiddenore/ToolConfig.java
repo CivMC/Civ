@@ -4,12 +4,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 /**
@@ -62,8 +62,8 @@ public class ToolConfig {
 	private double maxAmountModifier;
 	private double dropChanceModifier;
 	
-	private static Map<String, ToolConfig> tools = new HashMap<String, ToolConfig>();
-	private static List<String> toolList = new LinkedList<String>();
+	private static Map<String, ToolConfig> tools = new HashMap<>();
+	private static List<String> toolList = new LinkedList<>();
 	
 	protected ToolConfig(ItemStack template, boolean ignoreAmount, boolean ignoreDurability,
 			boolean ignoreEnchants, boolean ignoreOtherEnchants, boolean ignoreEnchantsLvl, 
@@ -85,11 +85,10 @@ public class ToolConfig {
 	
 	@Override
 	public String toString() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		sb.append(template);
 		sb.append(",ignore:");
 		if (this.ignoreAmount) sb.append("amount");
-		if (this.ignoreDurability) sb.append("durability");
 		if (this.ignoreMeta) {
 			sb.append("meta");
 		} else {
@@ -156,8 +155,8 @@ public class ToolConfig {
 	}
 	
 	public static void clear() {
-		tools = new HashMap<String, ToolConfig>();
-		toolList = new LinkedList<String>();
+		tools = new HashMap<>();
+		toolList = new LinkedList<>();
 	}
 	
 	public static void initTool(ConfigurationSection tool) {
@@ -227,8 +226,6 @@ public class ToolConfig {
 					continue;
 				}
 				if (compare.getType() != tool.getType()) continue;
-				if (!comp.ignoreDurability() && 
-						compare.getDurability() != tool.getDurability()) continue;
 				if (!comp.ignoreAmount() && compare.getAmount() != tool.getAmount()) continue;
 
 				// Short circuit of metachecks.
@@ -241,6 +238,10 @@ public class ToolConfig {
 				
 				if (compmeta == null) continue; // toolmeta != null but compmeta == null
 				// both non-null.
+				if (!comp.ignoreDurability && (!(comp instanceof Damageable)  || !(toolmeta instanceof Damageable) ||
+						((Damageable) comp).getDamage() != ((Damageable) toolmeta).getDamage())) {
+					continue;
+				}
 				if (!comp.ignoreName() && !(toolmeta.hasDisplayName() ? 
 						toolmeta.getDisplayName().equals(compmeta.getDisplayName()) : !compmeta.hasDisplayName() ) ) continue;
 				if (!comp.ignoreLore() &&
