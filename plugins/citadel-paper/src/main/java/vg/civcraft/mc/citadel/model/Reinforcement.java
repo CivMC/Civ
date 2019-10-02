@@ -97,7 +97,7 @@ public class Reinforcement extends TableBasedDataObject {
 	
 	/**
 	 * Checks whether the player with the given UUID has the given permission on the group this reinforcement belongs to
-	 * @param player UUID of the player to check permissions for, not null
+	 * @param uuid UUID of the player to check permissions for, not null
 	 * @param permission Permission to check, not null
 	 * @return True if the player has the given permission on this reinforcements group, false otherwise
 	 */
