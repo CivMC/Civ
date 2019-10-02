@@ -138,12 +138,12 @@ public class DropConfig {
 	/**
 	 * Gives even chance of any amount.
 	 * 
-	 * @param drop
-	 * @param biome
+	 * @param modify modification to drop based on tool
+	 * @param biome the biome at play
 	 * @return Items that can be rendered.
 	 */
 	public List<ItemStack> renderDrop(String biome, ToolConfig modify) {
-		/** multipliers **/
+		/* multipliers */
 		double min = getMinAmount(biome) + (modify != null ? modify.getMinAmountModifier() : 0.0);
 		double max = getMaxAmount(biome) + (modify != null ? modify.getMaxAmountModifier() : 0.0);
 		double amount = (min == max) ? min : (double) ((max - min) * Math.random() + min);
@@ -163,8 +163,8 @@ public class DropConfig {
 	/**
 	 * Gives even chance of any amount. 
 	 * 
-	 * @param modify
-	 * @param biome
+	 * @param modify modification to drop based on tool
+	 * @param biome the biome at play
 	 * @return Items that can be transformed.
 	 */
 	public List<ItemStack> renderTransform(String biome, ToolConfig modify) {
@@ -188,8 +188,8 @@ public class DropConfig {
 	/**
 	 * Gives chance to drop XP
 	 * 
-	 * @param biome
-	 * @param modify
+	 * @param biome the biome at play
+	 * @param modify the tool config to modify XP
 	 * @return XP to drop
 	 */
 	public int renderXP(String biome, ToolConfig modify) {

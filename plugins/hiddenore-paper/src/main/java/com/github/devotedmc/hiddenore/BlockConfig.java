@@ -41,8 +41,8 @@ public class BlockConfig {
 	 * Allows check against an expanded list of valid blocks that ores can generate in -- companion blocks, effectively.
 	 * For instance, if you separately configure stone types but want generation in stone of all types;
 	 * 
-	 * @param check
-	 * @return
+	 * @param check the block to check
+	 * @return true if we can generate into this block
 	 */
 	public boolean checkGenerateBlock(Block check) {
 		if (checkBlock(check)) return true;

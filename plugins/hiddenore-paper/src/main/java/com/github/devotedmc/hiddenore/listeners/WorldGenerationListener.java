@@ -35,7 +35,7 @@ public class WorldGenerationListener implements Listener {
 	
 	/**
 	 * When creating, pass in a config with three sub-elements. Now supports UUID reference of world.
-	 * <br/>
+	 * <br>
 	 * <code>
 	 *   world: world_name (or UUID)
 	 *   replace:
@@ -43,7 +43,7 @@ public class WorldGenerationListener implements Listener {
 	 *   - REDSTONE_ORE
 	 *   with: STONE
 	 * </code>
-	 * <br/>
+	 * <br>
 	 * This should be specified per world.
 	 * 
 	 * @param config The world-specific config.

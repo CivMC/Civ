@@ -50,6 +50,8 @@ public class BlockBreakListener implements Listener {
 
 	/**
 	 * Core method of interest, captures block breaks and checks if we care; if we do, continue
+	 *
+	 * @param event The break event to check
 	 */
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {

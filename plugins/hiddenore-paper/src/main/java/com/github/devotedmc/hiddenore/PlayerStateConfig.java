@@ -39,7 +39,7 @@ public class PlayerStateConfig {
 	/**
 	 * All states are applied successively
 	 * 
-	 * @param player
+	 * @param player the player to apply adjustments to
 	 * @return value 0+ indicating adjustment to chance
 	 */
 	public double statusRate(Player player) {

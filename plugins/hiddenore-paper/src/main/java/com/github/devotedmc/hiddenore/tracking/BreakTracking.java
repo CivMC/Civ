@@ -303,8 +303,8 @@ public class BreakTracking {
 	/**
 	 * This has a specific purpose of tracking a generation of an ore. For breaks or manipulations, use trackBreak.
 	 * 
-	 * @param loc
-	 * @return
+	 * @param loc the location to track gen
+	 * @return true if new gen, false otherwise
 	 */
 	public boolean trackGen(Location loc) {
 		if (!Config.isMapActive()) return true;
@@ -368,8 +368,8 @@ public class BreakTracking {
 	 * 
 	 * As of 1.5.3, checks the recent list for a match, just in case.
 	 * 
-	 * @param loc
-	 * @return
+	 * @param loc the location to check
+	 * @return true if ok to gen, otherwise false
 	 */
 	public boolean testGen(Location loc) {
 		int j = recentPtr;
@@ -422,9 +422,8 @@ public class BreakTracking {
 	 * 
 	 * Basically, once a block is exposed it doesn't transform.
 	 * 
-	 * @param loc
-	 * @param exp TODO
-	 * @return
+	 * @param loc the location to check after a break
+	 * @param exp expand to nearby layers/chunks?
 	 */
 	public void postTrackBreak(Location loc, boolean exp) {
 		if (!Config.isMapActive()) return;
@@ -495,8 +494,8 @@ public class BreakTracking {
 	 * Tracks a first order break or manip.
 	 * Locks that location from generating new drop opportunities or from transforming.
 	 * 
-	 * @param loc
-	 * @return
+	 * @param loc the location to check
+	 * @return true if OK to break, false otherwise
 	 */
 	public boolean trackBreak(Location loc) {
 		long initChunk = 0l;
