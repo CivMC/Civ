@@ -44,7 +44,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		db.registerMigration(2, false,
 				"create table if not exists ja_snitches (id int not null auto_increment primary key, group_id int, "
 						+ "type_id int not null, chunk_x int not null, chunk_z int not null, x int not null, y int not null, z int not null, "
-						+ "world_id int not null, name varchar(255), last_refresh timestamp not null, toggle_lever bool not null,"
+						+ "world_id int not null, name varchar(255),"
 						+ "index snitchChunkLookUp(chunk_x, chunk_z, world_id), "
 						+ "index snitchLocLookUp(x,y,z, world_id), unique uniqueLoc (world_id, x, y ,z));",
 				"create table if not exists ja_snitch_actions(id int not null auto_increment primary key, name varchar(255) not null,"
