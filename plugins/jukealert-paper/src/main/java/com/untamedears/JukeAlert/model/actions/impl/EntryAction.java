@@ -8,14 +8,14 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.untamedears.JukeAlert.model.actions.PlayerAction;
+import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public class EntryAction extends PlayerAction {
+public class EntryAction extends LoggablePlayerAction {
 	
 	public static final String ID = "ENTRY";
 
@@ -44,5 +44,4 @@ public class EntryAction extends PlayerAction {
 		return new TextComponent(
 				String.format("%sEntry  %s%s", ChatColor.GOLD, ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
 	}
-
 }

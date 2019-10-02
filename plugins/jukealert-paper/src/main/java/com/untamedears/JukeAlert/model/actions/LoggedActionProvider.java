@@ -7,6 +7,6 @@ import org.bukkit.Location;
 @FunctionalInterface
 public interface LoggedActionProvider {
 	
-	public LoggedSnitchAction get(UUID player, Location location, long time, String victim);
+	public LoggableAction get(UUID player, Location location, long time, String victim);
 
 }

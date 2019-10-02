@@ -1,6 +1,6 @@
 package com.untamedears.JukeAlert.model.actions;
 
-public enum CacheState {
+public enum ActionCacheState {
 
 	NEW, NORMAL, DELETED;
 

@@ -11,11 +11,11 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public abstract class PlayerAction extends LoggedSnitchAction {
+public abstract class PlayerAction extends SnitchAction {
 
 	private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 
-	private final UUID player;
+	protected final UUID player;
 
 	public PlayerAction(long time, UUID player) {
 		super(time);
@@ -42,11 +42,6 @@ public abstract class PlayerAction extends LoggedSnitchAction {
 
 	public String getPlayerName() {
 		return NameAPI.getCurrentName(player);
-	}
-	
-	@Override
-	public LoggedActionPersistence getPersistence() {
-		return new LoggedActionPersistence(player, null, time, null);
 	}
 
 }

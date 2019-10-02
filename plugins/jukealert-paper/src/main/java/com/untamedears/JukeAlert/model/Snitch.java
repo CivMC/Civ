@@ -1,13 +1,16 @@
 package com.untamedears.JukeAlert.model;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.appender.AbstractSnitchAppender;
 import com.untamedears.JukeAlert.model.field.FieldManager;
-import com.untamedears.JukeAlert.model.field.SingleCuboidRangeManager;
-import com.untamedears.JukeAlert.model.log.LoggingDelegate;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -19,36 +22,69 @@ public class Snitch extends TableBasedDataObject {
 
 	private int snitchId;
 	private String name;
-	private int typeID;
 	private int groupID;
-	private LoggingDelegate loggingDelegate;
+	private Map<Class<? extends AbstractSnitchAppender>, AbstractSnitchAppender> appenders;
 	private FieldManager fieldManager;
-	private boolean shouldToggleLevers;
-	private long lastRefresh;
+	private SnitchFactory type;
+	private boolean active;
 
 	/**
-	 * Constructor for freshly created snitches
 	 * 
-	 * @param loc                Location of the snitch
-	 * @param group              Group the snitch belongs to
-	 * @param loggingDelegate    Logging handler
-	 * @param shouldToggleLevers Should snitch toggle adjacent levers
+	 * Constructor used when loading snitches from the database
+	 * 
+	 * @param loc          Location of the snitch
+	 * @param isNew        Whether the snitch is new, should always be false when
+	 *                     calling from outside this class
+	 * @param groupID      ID of the group the snitch is reinforced on
+	 * @param fieldManager FieldManager to control the range of the snitch
+	 * @param type         FieldManager to control the range of the snitch
+	 * @param name         Name of the snitch
 	 */
-	public Snitch(Location loc, boolean isNew, int groupID, LoggingDelegate loggingDelegate, boolean shouldToggleLevers, int range, int typeID) {
+	public Snitch(int snitchID, Location loc, boolean isNew, int groupID, Function<Snitch, FieldManager> fieldManagerFunc,
+			SnitchFactory type, String name) {
 		super(loc, isNew);
+		this.snitchId = snitchID;
 		this.groupID = groupID;
-		this.loggingDelegate = loggingDelegate;
-		this.shouldToggleLevers = shouldToggleLevers;
-		this.name = "";
-		this.fieldManager = new SingleCuboidRangeManager(loc, range, this);
-		this.typeID = typeID;
+		this.name = name;
+		this.fieldManager = fieldManagerFunc.apply(this);
+		this.type = type;
+		this.appenders = new HashMap<>();
 	}
-	
+
 	/**
-	 * @return Identifying type id given to this instance by the config it was created from
+	 * Adds a new appender to this snitch
+	 * 
+	 * @param appender Appender to add
 	 */
-	public int getTypeID() {
-		return typeID;
+	public void addAppender(AbstractSnitchAppender appender) {
+		appenders.put(appender.getClass(), appender);
+	}
+
+	/**
+	 * Checks whether this instance has an appender of the given type
+	 * 
+	 * @param appenderClass Class of the appender to check fpr
+	 * @return True if this instance has such an appender, false otherwise
+	 */
+	public boolean hasAppender(Class<? extends AbstractSnitchAppender> appenderClass) {
+		return appenders.containsKey(appenderClass);
+	}
+
+	/**
+	 * Gets this instances appender of the given type
+	 * 
+	 * @param appenderClass Type of the appender to retrieve
+	 * @return Appender of this instance of null if no such appender is held
+	 */
+	public AbstractSnitchAppender getAppender(Class<? extends AbstractSnitchAppender> appenderClass) {
+		return appenders.get(appenderClass);
+	}
+
+	/**
+	 * @return Type/Config of this snitch
+	 */
+	public SnitchFactory getType() {
+		return type;
 	}
 
 	/**
@@ -125,37 +161,17 @@ public class Snitch extends TableBasedDataObject {
 		setDirty();
 	}
 
-	public void setLoggingDelegate(LoggingDelegate delegate) {
-		this.loggingDelegate = delegate;
-	}
-
-	public void setShouldToggleLevers(boolean shouldToggleLevers) {
-		if (this.shouldToggleLevers != shouldToggleLevers) {
-			setDirty();
+	/**
+	 * Takes an action and processes it through all appenders tied to this snitch
+	 * 
+	 * @param action Action to pass through
+	 */
+	public void processAction(SnitchAction action) {
+		for(AbstractSnitchAppender appender : appenders.values()) {
+			if (!active && !appender.runWhenSnitchInactive()) {
+				continue;
+			}
+			appender.acceptAction(action);
 		}
-		this.shouldToggleLevers = shouldToggleLevers;
-	}
-
-	public boolean shouldToggleLevers() {
-		return shouldToggleLevers;
-	}
-	
-	public LoggingDelegate getLoggingDelegate() {
-		return loggingDelegate;
-	}
-	
-	/**
-	 * @return UNIX time stamp of when this snitch was last refreshed
-	 */
-	public long getLastRefresh() {
-		return lastRefresh;
-	}
-	
-	/**
-	 * Resets the snitchs refresh timer
-	 */
-	public void refresh() {
-		this.lastRefresh = System.currentTimeMillis();
-		setDirty();
 	}
 }

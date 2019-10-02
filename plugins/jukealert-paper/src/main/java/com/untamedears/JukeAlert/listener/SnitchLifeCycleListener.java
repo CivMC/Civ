@@ -14,8 +14,8 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.SnitchFactory;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
-import com.untamedears.JukeAlert.model.factory.SnitchConfigFactory;
 
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -23,11 +23,11 @@ import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class SnitchLifeCycleListener implements Listener {
-	
+
 	private SnitchTypeManager configManager;
 	private SnitchManager snitchManager;
-	private Map<Location, SnitchConfigFactory> pendingSnitches;
-	
+	private Map<Location, SnitchFactory> pendingSnitches;
+
 	public SnitchLifeCycleListener(SnitchManager snitchManager, SnitchTypeManager configManager) {
 		this.configManager = configManager;
 		this.snitchManager = snitchManager;
@@ -37,16 +37,16 @@ public class SnitchLifeCycleListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
-		SnitchConfigFactory type = configManager.getConfig(inHand);
+		SnitchFactory type = configManager.getConfig(inHand);
 		if (type != null) {
 			pendingSnitches.put(event.getBlock().getLocation(), type);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		SnitchConfigFactory snitchConfig = pendingSnitches.remove(block.getLocation());
+		SnitchFactory snitchConfig = pendingSnitches.remove(block.getLocation());
 		if (snitchConfig == null) {
 			return;
 		}
@@ -59,25 +59,25 @@ public class SnitchLifeCycleListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void createReinforcement(ReinforcementCreationEvent e) {
 		Location location = e.getReinforcement().getLocation();
-		SnitchConfigFactory snitchConfig = pendingSnitches.get(location);
+		SnitchFactory snitchConfig = pendingSnitches.get(location);
 		if (snitchConfig == null) {
 			return;
 		}
 		pendingSnitches.remove(location);
-		Snitch snitch = snitchConfig.create(location, e.getReinforcement().getGroup(), e.getPlayer());
+		Snitch snitch = snitchConfig.create(-1, location, "", e.getReinforcement().getGroupId(), true);
 		snitchManager.addSnitch(snitch);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void reinforcementDestroyed(ReinforcementDestructionEvent e) {
 		reinforcementGone(e.getReinforcement());
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void reinforcementDestroyed(ReinforcementBypassEvent e) {
 		reinforcementGone(e.getReinforcement());
 	}
-	
+
 	private void reinforcementGone(Reinforcement rein) {
 		Snitch snitch = snitchManager.getSnitchAt(rein.getLocation());
 		if (snitch != null) {

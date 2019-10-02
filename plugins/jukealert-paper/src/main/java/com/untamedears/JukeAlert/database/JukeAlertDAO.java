@@ -18,11 +18,11 @@ import org.bukkit.World;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.SnitchFactory;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
+import com.untamedears.JukeAlert.model.actions.LoggableAction;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
 import com.untamedears.JukeAlert.model.actions.LoggedActionPersistence;
-import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
-import com.untamedears.JukeAlert.model.factory.SnitchConfigFactory;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;
@@ -52,19 +52,23 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 				"create table if not exists ja_snitch_entries (id int not null auto_increment primary key, "
 						+ "snitch_id int, type_id int references ja_snitch_actions(id), "
 						+ "uuid char(36) not null, x int not null, y int not null, z int not null, creation_time timestamp not null,"
-						+ "victim varchar(255), index `snitch_action_index`(snitch_id));");
+						+ "victim varchar(255), index `snitch_action_index`(snitch_id));",
+						"create table if not exists ja_snitch_refresh (id int primary key references ja_snitches(id) on delete cascade,"
+						+ "last_refresh timestamp not null)",
+						"create table if not exists ja_snitch_lever (id int primary key references ja_snitches(id) on delete cascade,"
+								+ "toggle_lever bool not null)");
 	}
 
 	@Override
 	public void insert(Snitch snitch, ChunkCoord coord) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertSnitch = insertConn.prepareStatement(
-						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, chunk_x, chunk_z, name, last_refresh,toggle_lever) "
-								+ "(?,?, ?,?,?, ?,?,?, ?,?,?);",
+						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, chunk_x, chunk_z, name) "
+								+ "(?,?, ?,?,?, ?,?,?, ?);",
 						Statement.RETURN_GENERATED_KEYS)) {
 			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
 			insertSnitch.setInt(1, groupId);
-			insertSnitch.setInt(2, snitch.getTypeID());
+			insertSnitch.setInt(2, snitch.getType().getID());
 			insertSnitch.setInt(3, snitch.getLocation().getBlockX());
 			insertSnitch.setInt(4, snitch.getLocation().getBlockY());
 			insertSnitch.setInt(5, snitch.getLocation().getBlockZ());
@@ -72,8 +76,6 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			insertSnitch.setInt(7, coord.getX());
 			insertSnitch.setInt(8, coord.getZ());
 			insertSnitch.setString(9, snitch.getName());
-			insertSnitch.setTimestamp(10, new Timestamp(snitch.getLastRefresh()));
-			insertSnitch.setBoolean(11, snitch.shouldToggleLevers());
 			try (ResultSet rs = insertSnitch.executeQuery()) {
 				if (!rs.next()) {
 					throw new IllegalStateException(
@@ -84,19 +86,16 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
 		}
-		snitch.getLoggingDelegate().persist();
 	}
 
 	@Override
 	public void update(Snitch snitch, ChunkCoord coord) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement updateSnitch = insertConn.prepareStatement(
-						"update ja_snitches set name = ?, last_refresh = ?, group_id = ?, toggle_lever = ? where id = ?;")) {
+						"update ja_snitches set name = ?, group_id = ? where id = ?;")) {
 			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
 			updateSnitch.setString(1, snitch.getName());
-			updateSnitch.setTimestamp(2, new Timestamp(snitch.getLastRefresh()));
-			updateSnitch.setInt(3, groupId);
-			updateSnitch.setBoolean(4, snitch.shouldToggleLevers());
+			updateSnitch.setInt(2, groupId);
 			if (snitch.getId() == -1) {
 				throw new IllegalStateException("Snitch id can not be null during update");
 			}
@@ -105,7 +104,6 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
 		}
-		snitch.getLoggingDelegate().persist();
 	}
 
 	@Override
@@ -125,7 +123,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectSnitch = insertConn.prepareStatement(
-						"select x, y, z, type_id, group_id, name, last_refresh, toggle_lever from ja_snitches "
+						"select x, y, z, type_id, group_id, name, id from ja_snitches "
 								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
 			selectSnitch.setInt(1, chunkData.getChunkCoord().getX());
 			selectSnitch.setInt(2, chunkData.getChunkCoord().getZ());
@@ -137,16 +135,15 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					int z = rs.getInt(3);
 					Location location = new Location(world, x, y, z);
 					int typeID = rs.getInt(4);
-					SnitchConfigFactory type = configMan.getConfig(typeID);
+					SnitchFactory type = configMan.getConfig(typeID);
 					if (type == null) {
 						logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
 						continue;
 					}
 					int groupID = rs.getInt(5);
 					String name = rs.getString(6);
-					long lastRefresh = rs.getTimestamp(7).getTime();
-					boolean triggerLevers = rs.getBoolean(8);
-					Snitch snitch = type.recreate(location, name, groupID, lastRefresh, triggerLevers);
+					int id = rs.getInt(7);
+					Snitch snitch = type.create(id, location, name, groupID, false);
 					insertFunction.accept(snitch);
 				}
 			}
@@ -187,12 +184,12 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		}
 	}
 
-	public List<LoggedSnitchAction> loadLogs(Snitch snitch) {
+	public List<LoggableAction> loadLogs(Snitch snitch) {
 		int id = snitch.getId();
 		if (id == -1) {
 			throw new IllegalArgumentException("Id for loading logs can not be null");
 		}
-		List<LoggedSnitchAction> result = new ArrayList<>();
+		List<LoggableAction> result = new ArrayList<>();
 		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement loadActions = insertConn.prepareStatement(
@@ -210,7 +207,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					long time = rs.getTimestamp(6).getTime();
 					String victim = rs.getString(7);
 					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
-					LoggedSnitchAction action = factory.produce(identifier, uuid, loc, time, victim);
+					LoggableAction action = factory.produce(identifier, uuid, loc, time, victim);
 					if (action != null) {
 						result.add(action);
 					}
@@ -223,7 +220,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		return result;
 	}
 	
-	public void deleteLog(LoggedSnitchAction log) {
+	public void deleteLog(LoggableAction log) {
 		if (log.getID() == -1) {
 			return;
 		}
@@ -264,6 +261,36 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			logger.log(Level.SEVERE, "Failed to insert new snitch log: ", e);
 		}
 		return -1;
+	}
+	
+	public void setRefreshTimer(int snitchID, long timer) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement setTimer = insertConn
+						.prepareStatement("insert into ja_snitch_refresh (id, last_fresh) values(?,?) on duplicate key update last_fresh = ?;")) {
+			setTimer.setInt(1, snitchID);
+			setTimer.setTimestamp(2, new Timestamp(timer));
+			setTimer.setTimestamp(3, new Timestamp(timer));
+			setTimer.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to update refresh timer", e);
+		}
+	}
+	
+	public long getRefreshTimer(int snitchID) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement selectId = insertConn
+						.prepareStatement("select last_fresh from ja_snitch_refresh where id = ?;")) {
+			selectId.setInt(1, snitchID);
+			try (ResultSet rs = selectId.executeQuery()) {
+				if (rs.next()) {
+					return rs.getTimestamp(1).getTime();
+				}
+				return -1;
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to retrieve refresh timer", e);
+			return -1;
+		}
 	}
 
 }

@@ -32,7 +32,7 @@ public class LoggedActionFactory {
 		}
 	}
 	
-	public LoggedSnitchAction produce(String id, UUID player, Location location, long time, String victim) {
+	public LoggableAction produce(String id, UUID player, Location location, long time, String victim) {
 		LoggedActionProvider provider = providers.get(id);
 		if (provider == null) {
 			return null;

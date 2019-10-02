@@ -13,8 +13,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
 import com.untamedears.JukeAlert.model.actions.PlayerAction;
+import com.untamedears.JukeAlert.model.actions.SnitchAction;
 import com.untamedears.JukeAlert.util.JAUtility;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
@@ -54,15 +54,15 @@ public class InfoCommand extends StandaloneCommand {
 
 	public void sendSnitchLog(Player player, Snitch snitch, int offset, int pageLength, String actionType,
 			String filterPlayerName) {
-		List<LoggedSnitchAction> logs = snitch.getLoggingDelegate().getFullLogs();
+		List<SnitchAction> logs = snitch.getLoggingDelegate().getFullLogs();
 		if (filterPlayerName != null) {
 			UUID filterUUID = NameAPI.getUUID(filterPlayerName);
 			if (filterUUID == null) {
 				player.sendMessage(ChatColor.RED + filterPlayerName + " is not a player");
 				return;
 			}
-			List<LoggedSnitchAction> logCopy = new LinkedList<>();
-			for (LoggedSnitchAction log : logs) {
+			List<SnitchAction> logCopy = new LinkedList<>();
+			for (SnitchAction log : logs) {
 				if (!log.hasPlayer()) {
 					continue;
 				}
@@ -74,8 +74,8 @@ public class InfoCommand extends StandaloneCommand {
 			logs = logCopy;
 		}
 		if (actionType != null) {
-			List<LoggedSnitchAction> logCopy = new LinkedList<>();
-			for (LoggedSnitchAction log : logs) {
+			List<SnitchAction> logCopy = new LinkedList<>();
+			for (SnitchAction log : logs) {
 				if (log.getIdentifier().equals(actionType)) {
 					logCopy.add(log);
 				}
@@ -90,7 +90,7 @@ public class InfoCommand extends StandaloneCommand {
 			return;
 		}
 		int currentPageSize = Math.min(pageLength, logs.size() - initialOffset);
-		ListIterator<LoggedSnitchAction> iter = logs.listIterator(initialOffset);
+		ListIterator<SnitchAction> iter = logs.listIterator(initialOffset);
 		int currentSlot = 0;
 		TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
 		reply.addExtra(JAUtility.genTextComponent(snitch));

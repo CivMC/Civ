@@ -1,7 +1,5 @@
 package com.untamedears.JukeAlert.commands;
 
-import static com.untamedears.JukeAlert.util.JAUtility.findLookingAtOrClosestSnitch;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,7 +20,7 @@ public class ClearCommand extends StandaloneCommand {
 	@Override
 	public boolean execute(final CommandSender sender, String[] args) {
 		Player player = (Player) sender;
-		Snitch snitch = findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getClearLogs());
+		Snitch snitch = JAUtility.findLookingAtOrClosestSnitch(player, JukeAlertPermissionHandler.getClearLogs());
 		if (snitch == null) {
 			sender.sendMessage(
 					ChatColor.RED + "You do not own any snitches nearby or lack permission to delete their logs!");

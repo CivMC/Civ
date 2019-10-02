@@ -5,12 +5,12 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-public abstract class BlockAction extends PlayerAction {
+public abstract class LoggableBlockAction extends LoggablePlayerAction {
 
 	private final Location location;
 	private final Material material;
 
-	public BlockAction(long time, UUID player, Location location, Material material) {
+	public LoggableBlockAction(long time, UUID player, Location location, Material material) {
 		super(time, player);
 		this.location = location;
 		this.material = material;

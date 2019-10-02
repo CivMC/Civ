@@ -31,7 +31,7 @@ public class JukeAlertPermissionHandler {
 		readLogs = PermissionType.registerPermission("READ_SNITCHLOG", new ArrayList<>(memberAndAbove));
 		renameSnitch = PermissionType.registerPermission("RENAME_SNITCH", new ArrayList<>(modAndAbove));
 		snitchImmune = PermissionType.registerPermission("SNITCH_IMMUNE", new ArrayList<>(memberAndAbove));
-		lookupSnitch = PermissionType.registerPermission("LOOKUP_SNITCH", new ArrayList<>(modAndAbove));
+		lookupSnitch = PermissionType.registerPermission("DETECT_SNITCH", new ArrayList<>(memberAndAbove));
 		clearLogs = PermissionType.registerPermission("CLEAR_SNITCHLOG", new ArrayList<>(modAndAbove));
 		toggleLever = PermissionType.registerPermission("SNITCH_TOGGLE_LEVER", new ArrayList<>(modAndAbove));
 	}

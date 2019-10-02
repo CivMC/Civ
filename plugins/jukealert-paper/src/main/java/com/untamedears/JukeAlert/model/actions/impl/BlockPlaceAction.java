@@ -5,13 +5,13 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-import com.untamedears.JukeAlert.model.actions.BlockAction;
+import com.untamedears.JukeAlert.model.actions.LoggableBlockAction;
 import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
-public class BlockPlaceAction extends BlockAction {
+public class BlockPlaceAction extends LoggableBlockAction {
 	
 	public static final String ID = "BLOCK_PLACE";
 	

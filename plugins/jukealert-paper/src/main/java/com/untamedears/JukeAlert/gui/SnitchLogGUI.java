@@ -11,7 +11,11 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
+import com.untamedears.JukeAlert.model.actions.LoggableAction;
+import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.appender.LeverToggleAppender;
+import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
+import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
@@ -37,29 +41,40 @@ public class SnitchLogGUI {
 
 	private Player player;
 	private Snitch snitch;
-	private List<LoggedSnitchAction> actions;
+	private List<LoggableAction> actions;
+	private SnitchLogAppender logAppender;
 
 	public SnitchLogGUI(Player p, Snitch snitch) {
 		this.player = p;
 		this.snitch = snitch;
-		this.actions = snitch.getLoggingDelegate().getFullLogs();
+		this.logAppender = (SnitchLogAppender) snitch.getAppender(SnitchLogAppender.class);
+		if (logAppender != null) {
+			this.actions = logAppender.getFullLogs();
+		}
 	}
 
 	private IClickable constructClearClick() {
 		ItemStack is = new ItemStack(Material.TNT);
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Clear all logs");
-		return new Clickable(is) {
-			@Override
-			public void clicked(Player p) {
-				snitch.getLoggingDelegate().deleteAllLogs();
-				ClickableInventory.forceCloseInventory(player);
-			}
-		};
+		if (snitch.hasPermission(player, JukeAlertPermissionHandler.getClearLogs())) {
+			return new Clickable(is) {
+				@Override
+				public void clicked(Player p) {
+					if (snitch.hasPermission(player, JukeAlertPermissionHandler.getClearLogs())) {
+						logAppender.deleteLogs();
+						ClickableInventory.forceCloseInventory(player);
+					}
+				}
+			};
+		}
+		ItemAPI.addLore(is, ChatColor.RED + "You do not have permission to do this");
+		return new DecorationStack(is);
+
 	}
 
 	private List<IClickable> constructContent() {
 		List<IClickable> clicks = new ArrayList<>();
-		for (LoggedSnitchAction action : actions) {
+		for (LoggableAction action : actions) {
 			clicks.add(action.getGUIRepresentation());
 		}
 		return clicks;
@@ -72,25 +87,33 @@ public class SnitchLogGUI {
 		ItemAPI.addLore(is,
 				ChatColor.AQUA + "Located at " + loc.getBlockX() + ", " + loc.getBlockY() + ", " + loc.getBlockZ());
 		ItemAPI.addLore(is, ChatColor.YELLOW + "Group: " + snitch.getGroup().getName());
+		ItemAPI.addLore(is, ChatColor.YELLOW + "Type: " + snitch.getType().getName());
 		return new DecorationStack(is);
 	}
 
 	private IClickable constructLeverToggleClick() {
+		LeverToggleAppender leverAppender = (LeverToggleAppender) snitch.getAppender(LeverToggleAppender.class);
 		ItemStack is = new ItemStack(Material.LEVER);
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Toggle lever activation by redstone");
-		ItemAPI.addLore(is, ChatColor.AQUA + "Currently turned " + (snitch.shouldToggleLevers() ? "on" : "off"));
-		return new Clickable(is) {
-			@Override
-			public void clicked(Player p) {
-				boolean currentState = snitch.shouldToggleLevers();
-				snitch.setShouldToggleLevers(!currentState);
-				p.sendMessage(ChatColor.GREEN + "Toggled lever activation " + (currentState ? "off" : "on"));
-				showScreen();
-			}
-		};
+		ItemAPI.addLore(is, ChatColor.AQUA + "Currently turned " + ((leverAppender.shouldToggle()) ? "on" : "off"));
+		if (snitch.hasPermission(player, JukeAlertPermissionHandler.getToggleLevers())) {
+			return new Clickable(is) {
+				@Override
+				public void clicked(Player p) {
+					if (snitch.hasPermission(player, JukeAlertPermissionHandler.getToggleLevers())) {
+						leverAppender.switchState();
+						p.sendMessage(ChatColor.GREEN + "Toggled lever activation "
+								+ (leverAppender.shouldToggle() ? "off" : "on"));
+						showScreen();
+					}
+				}
+			};
+		}
+		ItemAPI.addLore(is, ChatColor.RED + "You do not have permission to do this");
+		return new DecorationStack(is);
 	}
 
-	private IClickable constructNameChanceClick() {
+	private IClickable constructNameChangeClick() {
 		ItemStack is = new ItemStack(Material.OAK_SIGN);
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Rename this snitch");
 		return new Clickable(is) {
@@ -124,9 +147,13 @@ public class SnitchLogGUI {
 	public void showScreen() {
 		MultiPageView view = new MultiPageView(player, constructContent(),
 				snitch.getName().substring(0, Math.min(32, snitch.getName().length())), true);
-		view.setMenuSlot(constructClearClick(), 1);
-		view.setMenuSlot(constructLeverToggleClick(), 5);
-		view.setMenuSlot(constructNameChanceClick(), 2);
+		if (logAppender != null) {
+			view.setMenuSlot(constructClearClick(), 1);
+		}
+		if (snitch.hasAppender(LeverToggleAppender.class)) {
+			view.setMenuSlot(constructLeverToggleClick(), 5);
+		}
+		view.setMenuSlot(constructNameChangeClick(), 2);
 		view.setMenuSlot(constructExitClick(), 4);
 		view.setMenuSlot(constructInfoStack(), 3);
 		view.showScreen();

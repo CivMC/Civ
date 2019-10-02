@@ -9,14 +9,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
-import com.untamedears.JukeAlert.model.actions.PlayerAction;
+import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
-public class LogoutAction extends PlayerAction {
+public class LogoutAction extends LoggablePlayerAction {
 	
 	public static final String ID = "LOGOUT";
 
@@ -45,5 +45,4 @@ public class LogoutAction extends PlayerAction {
 	public TextComponent getChatRepresentation() {
 		return new TextComponent(String.format("%sLogout  %s%s", ChatColor.GOLD, ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
 	}
-
 }

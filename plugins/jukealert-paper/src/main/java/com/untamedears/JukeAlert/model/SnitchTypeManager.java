@@ -1,65 +1,132 @@
 package com.untamedears.JukeAlert.model;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.JukeAlert.JukeAlert;
-import com.untamedears.JukeAlert.model.factory.LoggingSnitchFactory;
-import com.untamedears.JukeAlert.model.factory.NonLoggingSnitchFactory;
-import com.untamedears.JukeAlert.model.factory.SnitchConfigFactory;
+import com.untamedears.JukeAlert.model.appender.AbstractSnitchAppender;
+import com.untamedears.JukeAlert.model.appender.BroadcastEntryAppender;
+import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 
 public class SnitchTypeManager {
 
-	private Map<String, Class<? extends SnitchConfigFactory>> rawSnitchConfigs;
-	private Map<ItemStack, SnitchConfigFactory> configFactoriesByItem;
-	private Map<Integer, SnitchConfigFactory> configFactoriesById;
+	private Map<String, Class<? extends AbstractSnitchAppender>> appenderClasses;
+	private Map<ItemStack, SnitchFactory> configFactoriesByItem;
+	private Map<Integer, SnitchFactory> configFactoriesById;
 
 	public SnitchTypeManager() {
-		rawSnitchConfigs = new HashMap<>();
+		appenderClasses = new HashMap<>();
 		configFactoriesByItem = new HashMap<>();
 		configFactoriesById = new HashMap<>();
-		registerSnitchTypes();
-	}
-	
-	private void registerSnitchTypes() {
-		rawSnitchConfigs.put("NON-LOGGING", NonLoggingSnitchFactory.class);
-		rawSnitchConfigs.put("LOGGING", LoggingSnitchFactory.class);
+		registerAppenderTypes();
 	}
 
-	public void parseFromConfig(ConfigurationSection config) {
+	private void registerAppenderTypes() {
+		registerAppenderType(BroadcastEntryAppender.ID, BroadcastEntryAppender.class);
+		registerAppenderType(SnitchLogAppender.ID, SnitchLogAppender.class);
+	}
+
+	private void registerAppenderType(String id, Class<? extends AbstractSnitchAppender> clazz) {
+		appenderClasses.put(id.toLowerCase(), clazz);
+	}
+
+	public boolean parseFromConfig(ConfigurationSection config) {
 		Logger logger = JukeAlert.getInstance().getLogger();
-		String type = config.getString("type").toUpperCase();
-		if (type == null) {
-			logger.warning(
-					"Snitch config specified at " + config.getCurrentPath() + " did not have a type, it was ignored");
-			return;
+		ItemStack item = config.getItemStack("item", null);
+		if (item == null) {
+			logger.warning("Snitch type at " + config.getCurrentPath() + " had no item specified");
+			return false;
 		}
-		Class<? extends SnitchConfigFactory> clazz = rawSnitchConfigs.get(type);
-		if (clazz == null) {
-			logger.warning("Snitch config specified at " + config.getCurrentPath() + " had unknown type " + type
-					+ ", it was ignored");
-			return;
+		if (!config.isInt("id")) {
+			logger.warning("Snitch type at " + config.getCurrentPath() + " had no id specified");
+			return false;
 		}
-		SnitchConfigFactory configFactory;
-		try {
-			configFactory = clazz.getConstructor().newInstance();
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| NoSuchMethodException | SecurityException e) {
-			logger.log(Level.SEVERE, "Failed setup snitch config factory", e);
-			return;
+		int id = config.getInt("id");
+		if (!config.isString("name")) {
+			logger.warning("Snitch type at " + config.getCurrentPath() + " had no name specified");
+			return false;
 		}
-		if (!configFactory.parse(config, logger)) {
-			logger.warning("Ignoring snitch config at " + config.getCurrentPath());
-			return;
+		String name = config.getString("name");
+		if (!config.isInt("range")) {
+			logger.warning("Snitch type at " + config.getCurrentPath() + " had no range specified");
+			return false;
 		}
+		int range = config.getInt("range");
+		List<Function<Snitch, AbstractSnitchAppender>> appender = new ArrayList<>();
+		if (config.isConfigurationSection("appender")) {
+			ConfigurationSection appenderSection = config.getConfigurationSection("appender");
+			for (String key : appenderSection.getKeys(false)) {
+				if (!appenderSection.isConfigurationSection(key)) {
+					logger.warning("Ignorinig invalid entry " + key + " at " + appenderSection);
+					continue;
+				}
+				Class<? extends AbstractSnitchAppender> appenderClass = appenderClasses.get(key.toLowerCase());
+				if (appenderClass == null) {
+					logger.warning("Appender " + key + " at " + appenderSection + " is of an unknown type");
+					// this is not something we should just ignore, disregard entire config in this
+					// case
+					return false;
+				}
+				ConfigurationSection entrySection = appenderSection.getConfigurationSection(key);
+				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstanciation(
+						appenderClass, entrySection);
+				appender.add(instanciation);
+			}
+		}
+		SnitchFactory configFactory = new SnitchFactory(item, range, name, id, appender);
 		configFactoriesById.put(configFactory.getID(), configFactory);
 		configFactoriesByItem.put(configFactory.getItem(), configFactory);
+		return true;
+	}
+
+	/**
+	 * Creates a function which will instanciate the appender based on the
+	 * ConfigurationSection give to it
+	 * 
+	 * @param clazz Class of the appender
+	 * @return Function to instanciate appenders of the given class or null if the
+	 *         appender has no appropriate constructor
+	 */
+	private Function<Snitch, AbstractSnitchAppender> getAppenderInstanciation(
+			Class<? extends AbstractSnitchAppender> clazz, ConfigurationSection config) {
+		try {
+			Constructor<? extends AbstractSnitchAppender> constructor = clazz
+					.getConstructor(Snitch.class, ConfigurationSection.class);
+			return (s) -> {
+				try {
+					return constructor.newInstance(s,config);
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+						| InvocationTargetException e) {
+					return null;
+				}
+			};
+		} catch (NoSuchMethodException | SecurityException e) {
+			// no config section constructor, which is fine if the appender does not have
+			// any parameter, in which case it only has a constructor with the snitch as parameter
+			try {
+				Constructor<? extends AbstractSnitchAppender> constructor = clazz.getConstructor(Snitch.class);
+				return (s) -> {
+					try {
+						return constructor.newInstance(s);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
+							| InvocationTargetException e1) {
+						return null;
+					}
+				};
+			} catch (NoSuchMethodException | SecurityException e1) {
+				// No appropriate constructor, the appender has a bug
+				return null;
+			}
+		}
 	}
 
 	/**
@@ -69,7 +136,7 @@ public class SnitchTypeManager {
 	 * @return Configuration with the given ItemStack or null if no such config
 	 *         exists
 	 */
-	public SnitchConfigFactory getConfig(ItemStack is) {
+	public SnitchFactory getConfig(ItemStack is) {
 		if (is == null) {
 			return null;
 		}
@@ -77,8 +144,8 @@ public class SnitchTypeManager {
 		copy.setAmount(1);
 		return configFactoriesByItem.get(copy);
 	}
-	
-	public SnitchConfigFactory getConfig(int id) {
+
+	public SnitchFactory getConfig(int id) {
 		return configFactoriesById.get(id);
 	}
 

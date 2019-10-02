@@ -19,17 +19,17 @@ import org.bukkit.event.vehicle.VehicleMoveEvent;
 import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggedSnitchAction;
+import com.untamedears.JukeAlert.model.actions.SnitchAction;
 import com.untamedears.JukeAlert.model.actions.impl.EntryAction;
 import com.untamedears.JukeAlert.model.actions.impl.LoginAction;
 import com.untamedears.JukeAlert.model.actions.impl.LogoutAction;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 public class LoggableActionListener implements Listener {
-	
+
 	private final VanishNoPacket vanishNoPacket;
 	private final SnitchManager snitchManager;
-	
+
 	public LoggableActionListener(SnitchManager snitchManager) {
 		this.snitchManager = snitchManager;
 		this.vanishNoPacket = new VanishNoPacket();
@@ -64,7 +64,7 @@ public class LoggableActionListener implements Listener {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
@@ -75,9 +75,9 @@ public class LoggableActionListener implements Listener {
 	public void playerQuitEvent(PlayerQuitEvent event) {
 		handleSnitchLogout(event.getPlayer());
 	}
-	
+
 	public void playerKickEvent(PlayerKickEvent event) {
-		//TODO Old JA had this listener, is it really needed?
+		// TODO Old JA had this listener, is it really needed?
 		handleSnitchLogout(event.getPlayer());
 	}
 
@@ -85,14 +85,14 @@ public class LoggableActionListener implements Listener {
 		handlePlayerAction(player, () -> new LogoutAction(System.currentTimeMillis(), player.getUniqueId()));
 	}
 
-	private void handlePlayerAction(Player player, Supplier<LoggedSnitchAction> actionCreator) {
+	private void handlePlayerAction(Player player, Supplier<SnitchAction> actionCreator) {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
 		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(player.getLocation());
 		for (Snitch snitch : snitches) {
 			if (!snitch.hasPermission(player, JukeAlertPermissionHandler.getSnitchImmune())) {
-				snitch.getLoggingDelegate().addAction(actionCreator.get());
+				snitch.processAction(actionCreator.get());
 			}
 		}
 	}
@@ -103,13 +103,7 @@ public class LoggableActionListener implements Listener {
 		}
 		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(location);
 		for (Snitch snitch : snitches) {
-			if (!snitch.hasPermission(player, JukeAlertPermissionHandler.getSnitchImmune())) {
-				snitch.getLoggingDelegate()
-						.addAction(new EntryAction(System.currentTimeMillis(), player.getUniqueId()));
-			}
-			if (snitch.hasPermission(player, JukeAlertPermissionHandler.getListSnitches())) {
-				snitch.refresh();
-			}
+			snitch.processAction(new EntryAction(System.currentTimeMillis(), player.getUniqueId()));
 		}
 	}
 
