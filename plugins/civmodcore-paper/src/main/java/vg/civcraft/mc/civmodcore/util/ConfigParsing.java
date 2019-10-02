@@ -198,8 +198,7 @@ public class ConfigParsing {
 	}
 
 	public static long parseTime(String arg, TimeUnit unit) {
-		long inTicks = parseTime(arg);
-		long millis = inTicks * 50;
+		long millis = parseTime(arg);
 		return unit.convert(millis, TimeUnit.MILLISECONDS);
 	}
 
@@ -217,7 +216,7 @@ public class ConfigParsing {
 	 * different values, but the values are not allowed to be separated by anything
 	 *
 	 * @param input Parsed string containing the time format
-	 * @return How many ticks the given time value is
+	 * @return How many milliseconds the given time value is
 	 */
 	public static long parseTime(String input) {
 		input = input.replace(" ", "").replace(",", "").toLowerCase();
@@ -228,9 +227,9 @@ public class ConfigParsing {
 		} catch (NumberFormatException e) {
 		}
 		while (!input.equals("")) {
-			String typeSuffix = getSuffix(input, a -> Character.isLetter(a));
+			String typeSuffix = getSuffix(input, Character::isLetter);
 			input = input.substring(0, input.length() - typeSuffix.length());
-			String numberSuffix = getSuffix(input, a -> Character.isDigit(a));
+			String numberSuffix = getSuffix(input, Character::isDigit);
 			input = input.substring(0, input.length() - numberSuffix.length());
 			long duration;
 			if (numberSuffix.length() == 0) {
@@ -274,6 +273,11 @@ public class ConfigParsing {
 			case "month": // weeks
 			case "months":
 				result += TimeUnit.DAYS.toMillis(duration * 30);
+				break;
+			case "y":
+			case "year":
+			case "years":
+				result += TimeUnit.DAYS.toMillis(duration * 365);
 				break;
 			case "never":
 			case "inf":

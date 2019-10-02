@@ -281,7 +281,6 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		@SuppressWarnings("unchecked")
 		D oldData = (D) l4ZSection[z];
 		if (oldData != null) {
-			oldData.delete();
 			l4ZSection[z] = null;
 			setCacheState(CacheState.MODIFIED);
 		}

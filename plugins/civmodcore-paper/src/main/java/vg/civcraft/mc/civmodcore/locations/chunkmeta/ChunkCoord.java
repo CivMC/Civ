@@ -5,10 +5,13 @@ import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Supplier;
+import java.util.logging.Level;
 
 import org.bukkit.World;
 
-public class ChunkCoord {
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+
+public class ChunkCoord implements Comparable<ChunkCoord> {
 
 	/**
 	 * When was this chunk last loaded in Minecraft as UNIX timestamp
@@ -37,10 +40,10 @@ public class ChunkCoord {
 	 */
 	private int z;
 
-	private int worldID;
+	private short worldID;
 	private World world;
 
-	ChunkCoord(int x, int z, int worldID, World world) {
+	ChunkCoord(int x, int z, short worldID, World world) {
 		this.x = x;
 		this.z = z;
 		this.worldID = worldID;
@@ -50,7 +53,7 @@ public class ChunkCoord {
 		this.lastLoadingTime = -1;
 		this.lastUnloadingTime = -1;
 	}
-	
+
 	/**
 	 * @return World this instance is in
 	 */
@@ -135,7 +138,7 @@ public class ChunkCoord {
 	/**
 	 * @return Internal ID of the world this chunk is in
 	 */
-	public int getWorldID() {
+	public short getWorldID() {
 		return worldID;
 	}
 
@@ -166,7 +169,14 @@ public class ChunkCoord {
 				ChunkMeta<?> chunk = generator.getValue().get();
 				chunk.setChunkCoord(this);
 				chunk.setPluginID(generator.getKey());
-				chunk.populate();
+				try {
+					chunk.populate();
+				} catch (Exception e) {
+					// need to catch everything here, otherwise we block the main thread forever
+					// once it tries to read this
+					CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, 
+							"Failed to load chunk data", e);
+				}
 				addChunkMeta(chunk);
 			}
 			this.notifyAll();
@@ -188,5 +198,18 @@ public class ChunkCoord {
 	 */
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
+	}
+
+	@Override
+	public int compareTo(ChunkCoord o) {
+		int worldComp = Short.compare(this.worldID, o.getWorldID());
+		if (worldComp != 0) {
+			return worldComp;
+		}
+		int xComp = Integer.compare(this.x, o.getX());
+		if (xComp != 0) {
+			return worldComp;
+		}
+		return Integer.compare(this.z, o.getZ());
 	}
 }

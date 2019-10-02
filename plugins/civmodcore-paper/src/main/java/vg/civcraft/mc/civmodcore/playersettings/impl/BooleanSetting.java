@@ -12,9 +12,9 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 public class BooleanSetting extends PlayerSetting<Boolean> {
 
-	public BooleanSetting(JavaPlugin owningPlugin, Boolean defaultValue, String name, String identifier, ItemStack gui,
+	public BooleanSetting(JavaPlugin owningPlugin, Boolean defaultValue, String name, String identifier,
 			String description) {
-		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		super(owningPlugin, defaultValue, name, identifier, new ItemStack(Material.STONE), description);
 	}
 
 	@Override

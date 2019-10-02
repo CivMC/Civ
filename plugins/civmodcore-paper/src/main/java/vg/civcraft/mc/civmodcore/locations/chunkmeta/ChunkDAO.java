@@ -55,7 +55,7 @@ public class ChunkDAO {
 		}
 	}
 
-	int getOrCreateWorldID(World world) {
+	short getOrCreateWorldID(World world) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertWorld = insertConn
 						.prepareStatement("select id from cmc_worlds where uuid = ?;")) {

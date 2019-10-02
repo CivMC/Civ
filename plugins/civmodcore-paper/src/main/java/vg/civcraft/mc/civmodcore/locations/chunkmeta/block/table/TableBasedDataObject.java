@@ -14,11 +14,6 @@ public class TableBasedDataObject extends BlockDataObject<TableBasedDataObject> 
 		this.cacheState = isNew ? CacheState.NEW : CacheState.NORMAL;
 	}
 
-	@Override
-	public void delete() {
-		this.cacheState = CacheState.DELETED;
-	}
-
 	public CacheState getCacheState() {
 		return cacheState;
 	}
@@ -27,11 +22,14 @@ public class TableBasedDataObject extends BlockDataObject<TableBasedDataObject> 
 		setCacheState(CacheState.MODIFIED);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void setCacheState(CacheState state) {
+		CacheState oldState = this.cacheState;
 		this.cacheState = this.cacheState.progress(state);
-		if (state == CacheState.MODIFIED) {
-			getOwningCache().setCacheState(state);
+		if (cacheState != CacheState.NORMAL && cacheState != oldState) {
+			getOwningCache().setCacheState(CacheState.MODIFIED);
+			((TableBasedBlockChunkMeta<TableBasedDataObject>) getOwningCache()).reportChange(this);
 		}
 	}
 

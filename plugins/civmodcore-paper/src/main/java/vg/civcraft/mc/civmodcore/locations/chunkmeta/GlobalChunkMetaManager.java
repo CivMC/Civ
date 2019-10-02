@@ -13,7 +13,7 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class GlobalChunkMetaManager {
 
-	private Map<UUID, Integer> uuidToInternalID;
+	private Map<UUID, Short> uuidToInternalID;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
 	private ChunkDAO chunkDao;
 
@@ -115,7 +115,7 @@ public class GlobalChunkMetaManager {
 		if (uuidToInternalID.containsKey(world.getUID())) {
 			return true;
 		}
-		int id = chunkDao.getOrCreateWorldID(world);
+		short id = chunkDao.getOrCreateWorldID(world);
 		if (id == -1) {
 			// very bad
 			return false;
