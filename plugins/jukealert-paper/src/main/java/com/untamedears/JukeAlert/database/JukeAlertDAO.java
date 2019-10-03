@@ -276,6 +276,36 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		}
 	}
 	
+	public void setToggleLever(int snitchID, boolean toggle) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement setTimer = insertConn
+						.prepareStatement("insert into ja_snitch_lever (id, toggle_lever) values(?,?) on duplicate key update toggle_lever = ?;")) {
+			setTimer.setInt(1, snitchID);
+			setTimer.setBoolean(2, toggle);
+			setTimer.setBoolean(3, toggle);
+			setTimer.execute();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to update toggle lever", e);
+		}
+	}
+	
+	public boolean getToggleLever(int snitchID) {
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement selectId = insertConn
+						.prepareStatement("select toggle_lever from ja_snitch_lever where id = ?;")) {
+			selectId.setInt(1, snitchID);
+			try (ResultSet rs = selectId.executeQuery()) {
+				if (rs.next()) {
+					return rs.getBoolean(1);
+				}
+				return false;
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to retrieve toggle lever", e);
+			return false;
+		}
+	}
+	
 	public long getRefreshTimer(int snitchID) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectId = insertConn

@@ -12,9 +12,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.actions.LoggableAction;
 import com.untamedears.JukeAlert.model.actions.PlayerAction;
 import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 import com.untamedears.JukeAlert.util.JAUtility;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
@@ -48,22 +51,24 @@ public class InfoCommand extends StandaloneCommand {
 				return true;
 			}
 		}
-		sendSnitchLog(player, snitch, offset, 8, filterAction, filterPlayer);
+		int pageLength = JukeAlert.getInstance().getSettingsManager().getJaInfoLength(player.getUniqueId());
+		sendSnitchLog(player, snitch, offset, pageLength, filterAction, filterPlayer);
 		return true;
 	}
 
 	public void sendSnitchLog(Player player, Snitch snitch, int offset, int pageLength, String actionType,
 			String filterPlayerName) {
-		List<SnitchAction> logs = snitch.getLoggingDelegate().getFullLogs();
+		SnitchLogAppender logAppender = (SnitchLogAppender) snitch.getAppender(SnitchLogAppender.class);
+		List<LoggableAction> logs = logAppender.getFullLogs();
 		if (filterPlayerName != null) {
 			UUID filterUUID = NameAPI.getUUID(filterPlayerName);
 			if (filterUUID == null) {
 				player.sendMessage(ChatColor.RED + filterPlayerName + " is not a player");
 				return;
 			}
-			List<SnitchAction> logCopy = new LinkedList<>();
-			for (SnitchAction log : logs) {
-				if (!log.hasPlayer()) {
+			List<LoggableAction> logCopy = new LinkedList<>();
+			for (LoggableAction log : logs) {
+				if (!((SnitchAction) log).hasPlayer()) {
 					continue;
 				}
 				PlayerAction playerAc = (PlayerAction) log;
@@ -74,9 +79,9 @@ public class InfoCommand extends StandaloneCommand {
 			logs = logCopy;
 		}
 		if (actionType != null) {
-			List<SnitchAction> logCopy = new LinkedList<>();
-			for (SnitchAction log : logs) {
-				if (log.getIdentifier().equals(actionType)) {
+			List<LoggableAction> logCopy = new LinkedList<>();
+			for (LoggableAction log : logs) {
+				if (((SnitchAction) log).getIdentifier().equals(actionType)) {
 					logCopy.add(log);
 				}
 			}
@@ -90,7 +95,7 @@ public class InfoCommand extends StandaloneCommand {
 			return;
 		}
 		int currentPageSize = Math.min(pageLength, logs.size() - initialOffset);
-		ListIterator<SnitchAction> iter = logs.listIterator(initialOffset);
+		ListIterator<LoggableAction> iter = logs.listIterator(initialOffset);
 		int currentSlot = 0;
 		TextComponent reply = new TextComponent(ChatColor.GOLD + "--- Page " + offset + " for ");
 		reply.addExtra(JAUtility.genTextComponent(snitch));

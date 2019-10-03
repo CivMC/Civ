@@ -1,5 +1,6 @@
 package com.untamedears.JukeAlert.model.appender;
 
+import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.SnitchAction;
 
@@ -9,6 +10,9 @@ public class LeverToggleAppender extends AbstractSnitchAppender {
 
 	public LeverToggleAppender(Snitch snitch) {
 		super(snitch);
+		if (snitch.getId() != -1) {
+			this.shouldToggle = JukeAlert.getInstance().getDAO().getToggleLever(snitch.getId());
+		}
 	}
 
 	@Override
@@ -18,8 +22,7 @@ public class LeverToggleAppender extends AbstractSnitchAppender {
 
 	@Override
 	public void acceptAction(SnitchAction action) {
-		// TODO Auto-generated method stub
-		
+		//TODO Trigger levers
 	}
 	
 	public boolean shouldToggle() {

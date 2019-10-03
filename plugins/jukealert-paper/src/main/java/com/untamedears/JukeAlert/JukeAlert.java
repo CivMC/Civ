@@ -11,6 +11,7 @@ import com.untamedears.JukeAlert.model.SnitchChunkData;
 import com.untamedears.JukeAlert.model.SnitchQTEntry;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
+import com.untamedears.JukeAlert.util.JASettingsManager;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
@@ -34,9 +35,14 @@ public class JukeAlert extends ACivMod {
 	private SnitchManager snitchManager;
 	private SparseQuadTree<SnitchQTEntry> quadTree;
 	private LoggedActionFactory loggedActionFactory;
+	private JASettingsManager settingsManager;
 
 	public JAConfigManager getConfigManager() {
 		return configManager;
+	}
+	
+	public JASettingsManager getSettingsManager() {
+		return settingsManager;
 	}
 	
 	public LoggedActionFactory getLoggedActionFactory() {

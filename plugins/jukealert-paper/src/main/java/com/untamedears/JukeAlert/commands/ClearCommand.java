@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 import com.untamedears.JukeAlert.util.JAUtility;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
@@ -26,7 +27,13 @@ public class ClearCommand extends StandaloneCommand {
 					ChatColor.RED + "You do not own any snitches nearby or lack permission to delete their logs!");
 			return true;
 		}
-		snitch.getLoggingDelegate().deleteAllLogs();
+		SnitchLogAppender logAppender = (SnitchLogAppender) snitch.getAppender(SnitchLogAppender.class);
+		if (logAppender == null) {
+			sender.sendMessage(
+					ChatColor.RED + "This " + snitch.getType().getName() + " does not keep any logs");
+			return true;
+		}
+		logAppender.deleteLogs();
 		sender.sendMessage(ChatColor.GREEN + "Deleted all logs for snitch " + JAUtility.genTextComponent(snitch));
 		return true;
 	}
