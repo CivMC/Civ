@@ -50,5 +50,4 @@ public class QTBoxImpl implements QTBox {
 	public int qtZMax() {
 		return upperZBound;
 	}
-
 }
