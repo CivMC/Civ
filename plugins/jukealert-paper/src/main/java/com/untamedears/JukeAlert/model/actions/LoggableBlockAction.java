@@ -5,13 +5,15 @@ import java.util.UUID;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
+import com.untamedears.JukeAlert.model.Snitch;
+
 public abstract class LoggableBlockAction extends LoggablePlayerAction {
 
-	private final Location location;
-	private final Material material;
+	protected final Location location;
+	protected final Material material;
 
-	public LoggableBlockAction(long time, UUID player, Location location, Material material) {
-		super(time, player);
+	public LoggableBlockAction(long time, Snitch snitch, UUID player, Location location, Material material) {
+		super(time, snitch, player);
 		this.location = location;
 		this.material = material;
 	}

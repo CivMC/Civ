@@ -15,6 +15,9 @@ import org.bukkit.inventory.ItemStack;
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.appender.AbstractSnitchAppender;
 import com.untamedears.JukeAlert.model.appender.BroadcastEntryAppender;
+import com.untamedears.JukeAlert.model.appender.DormantCullingAppender;
+import com.untamedears.JukeAlert.model.appender.LeverToggleAppender;
+import com.untamedears.JukeAlert.model.appender.ShowOwnerOnDestroyAppender;
 import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 
 public class SnitchTypeManager {
@@ -33,6 +36,9 @@ public class SnitchTypeManager {
 	private void registerAppenderTypes() {
 		registerAppenderType(BroadcastEntryAppender.ID, BroadcastEntryAppender.class);
 		registerAppenderType(SnitchLogAppender.ID, SnitchLogAppender.class);
+		registerAppenderType(LeverToggleAppender.ID, LeverToggleAppender.class);
+		registerAppenderType(DormantCullingAppender.ID, DormantCullingAppender.class);
+		registerAppenderType(ShowOwnerOnDestroyAppender.ID, ShowOwnerOnDestroyAppender.class);
 	}
 
 	private void registerAppenderType(String id, Class<? extends AbstractSnitchAppender> clazz) {
@@ -42,6 +48,7 @@ public class SnitchTypeManager {
 	public boolean parseFromConfig(ConfigurationSection config) {
 		Logger logger = JukeAlert.getInstance().getLogger();
 		ItemStack item = config.getItemStack("item", null);
+		StringBuilder sb = new StringBuilder();
 		if (item == null) {
 			logger.warning("Snitch type at " + config.getCurrentPath() + " had no item specified");
 			return false;
@@ -60,8 +67,17 @@ public class SnitchTypeManager {
 			logger.warning("Snitch type at " + config.getCurrentPath() + " had no range specified");
 			return false;
 		}
+		sb.append("Successfully parsed type ");
+		sb.append(name);
+		sb.append(" with id: ");
+		sb.append(id);
+		sb.append(", item: ");
+		sb.append(item.toString());
 		int range = config.getInt("range");
-		List<Function<Snitch, AbstractSnitchAppender>> appender = new ArrayList<>();
+		sb.append(", range: ");
+		sb.append(range);
+		sb.append(", appenders: ");
+		List<Function<Snitch, AbstractSnitchAppender>> appenderInstanciations = new ArrayList<>();
 		if (config.isConfigurationSection("appender")) {
 			ConfigurationSection appenderSection = config.getConfigurationSection("appender");
 			for (String key : appenderSection.getKeys(false)) {
@@ -79,12 +95,18 @@ public class SnitchTypeManager {
 				ConfigurationSection entrySection = appenderSection.getConfigurationSection(key);
 				Function<Snitch, AbstractSnitchAppender> instanciation = getAppenderInstanciation(
 						appenderClass, entrySection);
-				appender.add(instanciation);
+				appenderInstanciations.add(instanciation);
+				sb.append(appenderClass.getSimpleName());
+				sb.append("   ");
 			}
 		}
-		SnitchFactory configFactory = new SnitchFactory(item, range, name, id, appender);
+		if (appenderInstanciations.isEmpty()) {
+			logger.warning("Snitch config at "  + config.getCurrentPath() + " has no appenders, this is likely not what you intended");
+		}
+		SnitchFactory configFactory = new SnitchFactory(item, range, name, id, appenderInstanciations);
 		configFactoriesById.put(configFactory.getID(), configFactory);
 		configFactoriesByItem.put(configFactory.getItem(), configFactory);
+		logger.info(sb.toString());
 		return true;
 	}
 

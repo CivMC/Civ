@@ -22,9 +22,9 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 // Static methods only
 public class JAUtility {
-	
+
 	private JAUtility() {
-		
+
 	}
 
 	public static Snitch findClosestSnitch(Location loc, PermissionType perm, UUID player) {
@@ -64,10 +64,10 @@ public class JAUtility {
 		}
 		return null;
 	}
-	
+
 	public static TextComponent genTextComponent(Snitch snitch) {
-		String name = snitch.getName().isEmpty() ? "Snitch" : snitch.getName();
-		TextComponent textComponent = new TextComponent(name);
+		String name = snitch.getName().isEmpty() ? snitch.getType().getName() : snitch.getName();
+		TextComponent textComponent = new TextComponent(ChatColor.AQUA + name);
 		addSnitchHoverText(textComponent, snitch);
 		return textComponent;
 	}
@@ -83,13 +83,24 @@ public class JAUtility {
 		sb.append(String.format("%sGroup: %s%s%n", ChatColor.GOLD, ChatColor.AQUA, snitch.getGroup().getName()));
 		text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(sb.toString()).create()));
 	}
-	
+
 	public static Material parseMaterial(String id) {
 		try {
 			return Material.valueOf(id);
-		}
-		catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			return Material.STONE;
 		}
- 	}
+	}
+	
+	public static boolean isSameWorld(Location loc1, Location loc2) {
+		return loc1.getWorld().getUID().equals(loc2.getWorld().getUID());
+	}
+
+	public static String formatLocation(Location location, boolean includeWorld) {
+		if (includeWorld) {
+			return String.format("[%s %d %d %d]", location.getWorld().getName(), location.getBlockX(), location.getBlockY(),
+					location.getBlockZ());
+		}
+		return String.format("[%d %d %d]", location.getBlockX(), location.getBlockY(), location.getBlockZ());
+	}
 }

@@ -37,22 +37,29 @@ public class SnitchManager {
 
 	public void addSnitch(Snitch snitch) {
 		chunkData.put(snitch);
-		for(SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
+		for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
 			quadTree.add(qt);
 		}
 	}
-	
+
+	/**
+	 * Removes the given snitch from the QtBox field tracking and the per chunk
+	 * block data tracking.
+	 * 
+	 * Removal from culling timers has to be done outside this call
+	 * 
+	 * @param snitch Snitch to remove
+	 */
 	public void removeSnitch(Snitch snitch) {
 		chunkData.remove(snitch);
-		for(SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
+		for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
 			quadTree.remove(qt);
 		}
 	}
 
 	public Set<Snitch> getSnitchesCovering(Location location) {
-		return quadTree.find(location.getBlockX(), location.getBlockZ(), true).stream()
-				.map(SnitchQTEntry::getSnitch).filter(s -> s.getFieldManager().isInside(location))
-				.collect(Collectors.toSet());
+		return quadTree.find(location.getBlockX(), location.getBlockZ(), true).stream().map(SnitchQTEntry::getSnitch)
+				.filter(s -> s.getFieldManager().isInside(location)).collect(Collectors.toSet());
 	}
 
 }

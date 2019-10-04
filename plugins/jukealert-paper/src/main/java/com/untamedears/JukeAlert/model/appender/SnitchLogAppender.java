@@ -37,7 +37,7 @@ public class SnitchLogAppender extends AbstractSnitchAppender {
 		if (snitch.hasPermission(log.getPlayer(), JukeAlertPermissionHandler.getSnitchImmune())) {
 			return;
 		}
-		actions.add((LoggablePlayerAction)action);
+		actions.add(log);
 		getSnitch().setDirty();
 	}
 

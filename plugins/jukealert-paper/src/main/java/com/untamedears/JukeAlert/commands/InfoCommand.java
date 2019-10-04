@@ -101,7 +101,7 @@ public class InfoCommand extends StandaloneCommand {
 		reply.addExtra(JAUtility.genTextComponent(snitch));
 		player.spigot().sendMessage(reply);
 		while (currentSlot++ < currentPageSize) {
-			player.spigot().sendMessage(iter.next().getChatRepresentation());
+			player.spigot().sendMessage(iter.next().getChatRepresentation(player.getLocation()));
 		}
 	}
 

@@ -6,6 +6,8 @@ import com.untamedears.JukeAlert.model.actions.SnitchAction;
 
 public class LeverToggleAppender extends AbstractSnitchAppender {
 	
+	public static final String ID = "levertoggle";
+	
 	private boolean shouldToggle;
 
 	public LeverToggleAppender(Snitch snitch) {

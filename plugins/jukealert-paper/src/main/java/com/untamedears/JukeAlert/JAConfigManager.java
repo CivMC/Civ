@@ -15,6 +15,7 @@ public class JAConfigManager extends CoreConfigManager {
 
 	public JAConfigManager(ACivMod plugin, SnitchTypeManager typeMan) {
 		super(plugin);
+		this.typeMan = typeMan;
 	}
 	
 	public ManagedDatasource getDatabase() {

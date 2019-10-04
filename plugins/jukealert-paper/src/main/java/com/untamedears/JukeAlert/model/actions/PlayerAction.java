@@ -8,6 +8,8 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.JukeAlert.model.Snitch;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -17,8 +19,8 @@ public abstract class PlayerAction extends SnitchAction {
 
 	protected final UUID player;
 
-	public PlayerAction(long time, UUID player) {
-		super(time);
+	public PlayerAction(long time, Snitch snitch, UUID player) {
+		super(time, snitch);
 		this.player = player;
 	}
 

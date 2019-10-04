@@ -40,8 +40,8 @@ public class Snitch extends TableBasedDataObject {
 	 * @param type         FieldManager to control the range of the snitch
 	 * @param name         Name of the snitch
 	 */
-	public Snitch(int snitchID, Location loc, boolean isNew, int groupID, Function<Snitch, FieldManager> fieldManagerFunc,
-			SnitchFactory type, String name) {
+	public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
+			Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactory type, String name) {
 		super(loc, isNew);
 		this.snitchId = snitchID;
 		this.groupID = groupID;
@@ -49,6 +49,7 @@ public class Snitch extends TableBasedDataObject {
 		this.fieldManager = fieldManagerFunc.apply(this);
 		this.type = type;
 		this.appenders = new HashMap<>();
+		this.active = true;
 	}
 
 	/**
@@ -167,11 +168,29 @@ public class Snitch extends TableBasedDataObject {
 	 * @param action Action to pass through
 	 */
 	public void processAction(SnitchAction action) {
-		for(AbstractSnitchAppender appender : appenders.values()) {
+		for (AbstractSnitchAppender appender : appenders.values()) {
 			if (!active && !appender.runWhenSnitchInactive()) {
 				continue;
 			}
+
 			appender.acceptAction(action);
 		}
+	}
+
+	/**
+	 * Sets the active state of the snitch. Certain appenders may choose not to run
+	 * if the snitch is inactive
+	 * 
+	 * @param active Whether the snitch should be active or not
+	 */
+	public void setActiveStatus(boolean active) {
+		this.active = active;
+	}
+
+	/**
+	 * Forces all appenders of this snitch to persist their current state
+	 */
+	public void persistAppenders() {
+		appenders.values().forEach(AbstractSnitchAppender::persist);
 	}
 }

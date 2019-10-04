@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.SnitchAction;
-import com.untamedears.JukeAlert.model.actions.impl.DestroySnitchAction;
+import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction;
 
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -15,7 +15,7 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
 
-	public static final String ID = "showowner";
+	public static final String ID = "showownerondestroy";
 
 	public ShowOwnerOnDestroyAppender(Snitch snitch) {
 		super(snitch);

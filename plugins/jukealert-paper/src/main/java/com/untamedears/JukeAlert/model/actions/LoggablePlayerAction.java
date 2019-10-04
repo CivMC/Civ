@@ -2,13 +2,15 @@ package com.untamedears.JukeAlert.model.actions;
 
 import java.util.UUID;
 
+import com.untamedears.JukeAlert.model.Snitch;
+
 public abstract class LoggablePlayerAction extends PlayerAction implements LoggableAction {
 	
 	private ActionCacheState state;
 	private int id;
 
-	public LoggablePlayerAction(long time, UUID player) {
-		super(time, player);
+	public LoggablePlayerAction(long time, Snitch snitch, UUID player) {
+		super(time, snitch, player);
 		state = ActionCacheState.NEW;
 	}
 	

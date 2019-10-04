@@ -4,12 +4,15 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
+import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -17,11 +20,11 @@ import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LogoutAction extends LoggablePlayerAction {
-	
+
 	public static final String ID = "LOGOUT";
 
-	public LogoutAction(long time, UUID player) {
-		super(time, player);
+	public LogoutAction(long time, Snitch snitch, UUID player) {
+		super(time, snitch, player);
 	}
 
 	@Override
@@ -42,7 +45,13 @@ public class LogoutAction extends LoggablePlayerAction {
 	}
 
 	@Override
-	public TextComponent getChatRepresentation() {
-		return new TextComponent(String.format("%sLogout  %s%s", ChatColor.GOLD, ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
+	public TextComponent getChatRepresentation(Location reference) {
+		boolean sameWorld = JAUtility.isSameWorld(snitch.getLocation(), reference);
+		TextComponent comp = new TextComponent(String.format("%s%sLogout%s  %s%s  ", ChatColor.GOLD, ChatColor.BOLD,
+				ChatColor.RESET, ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
+		comp.addExtra(JAUtility.genTextComponent(snitch));
+		comp.addExtra(
+				String.format(" %s%s", ChatColor.YELLOW, JAUtility.formatLocation(snitch.getLocation(), !sameWorld)));
+		return comp;
 	}
 }

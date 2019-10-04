@@ -38,9 +38,9 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	@Override
 	public void registerMigrations() {
 		// TODO convert old data
-		db.registerMigration(1, false, () -> {
+	/*	db.registerMigration(1, false, () -> {
 			return true;
-		}, "");
+		}, ""); */
 		db.registerMigration(2, false,
 				"create table if not exists ja_snitches (id int not null auto_increment primary key, group_id int, "
 						+ "type_id int not null, chunk_x int not null, chunk_z int not null, x int not null, y int not null, z int not null, "
@@ -64,7 +64,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertSnitch = insertConn.prepareStatement(
 						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, chunk_x, chunk_z, name) "
-								+ "(?,?, ?,?,?, ?,?,?, ?);",
+								+ "values(?,?, ?,?,?, ?,?,?, ?);",
 						Statement.RETURN_GENERATED_KEYS)) {
 			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
 			insertSnitch.setInt(1, groupId);
@@ -76,7 +76,8 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			insertSnitch.setInt(7, coord.getX());
 			insertSnitch.setInt(8, coord.getZ());
 			insertSnitch.setString(9, snitch.getName());
-			try (ResultSet rs = insertSnitch.executeQuery()) {
+			insertSnitch.execute();
+			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
 				if (!rs.next()) {
 					throw new IllegalStateException(
 							"Inserting snitch at " + snitch.getLocation() + " did not generate an id");
@@ -86,6 +87,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert new snitch: ", e);
 		}
+		snitch.persistAppenders();
 	}
 
 	@Override
@@ -104,6 +106,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
 		}
+		snitch.persistAppenders();
 	}
 
 	@Override
@@ -207,7 +210,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					long time = rs.getTimestamp(6).getTime();
 					String victim = rs.getString(7);
 					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
-					LoggableAction action = factory.produce(identifier, uuid, loc, time, victim);
+					LoggableAction action = factory.produce(snitch, identifier, uuid, loc, time, victim);
 					if (action != null) {
 						result.add(action);
 					}
@@ -238,7 +241,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertSnitch = insertConn.prepareStatement(
 						"insert into ja_snitch_entries (snitch_id, type_id, uuid, x, y , z, creation_time,"
-								+ "victim) (?,?,?, ?,?,?, ?,?);",
+								+ "victim) values(?,?,?, ?,?,?, ?,?);",
 						Statement.RETURN_GENERATED_KEYS)) {
 			insertSnitch.setInt(1, snitch.getId());
 			insertSnitch.setInt(2, typeID);

@@ -1,10 +1,10 @@
 package com.untamedears.JukeAlert.model.field;
 
 import java.util.Collection;
-import java.util.List;
 
 import org.bukkit.Location;
 
+import com.google.common.collect.Lists;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchQTEntry;
 
@@ -27,7 +27,7 @@ public class SingleCuboidRangeManager implements FieldManager {
 
 	@Override
 	public Collection<SnitchQTEntry> getQTEntries() {
-		return List.of(entry);
+		return Lists.asList(entry, new SnitchQTEntry[0]);
 	}
 
 }

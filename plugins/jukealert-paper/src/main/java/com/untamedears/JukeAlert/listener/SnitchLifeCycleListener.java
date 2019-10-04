@@ -2,9 +2,11 @@ package com.untamedears.JukeAlert.listener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,6 +18,8 @@ import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchFactory;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
+import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction;
+import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction.Cause;
 
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -27,14 +31,16 @@ public class SnitchLifeCycleListener implements Listener {
 	private SnitchTypeManager configManager;
 	private SnitchManager snitchManager;
 	private Map<Location, SnitchFactory> pendingSnitches;
+	private Logger logger;
 
-	public SnitchLifeCycleListener(SnitchManager snitchManager, SnitchTypeManager configManager) {
+	public SnitchLifeCycleListener(SnitchManager snitchManager, SnitchTypeManager configManager, Logger logger) {
 		this.configManager = configManager;
 		this.snitchManager = snitchManager;
+		this.logger = logger;
 		this.pendingSnitches = new HashMap<>();
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
 		SnitchFactory type = configManager.getConfig(inHand);
@@ -65,6 +71,9 @@ public class SnitchLifeCycleListener implements Listener {
 		}
 		pendingSnitches.remove(location);
 		Snitch snitch = snitchConfig.create(-1, location, "", e.getReinforcement().getGroupId(), true);
+		Player p = e.getPlayer();
+		logger.info(String.format("Created snitch of type %s at %s by %s", snitch.getType().getName(),
+				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
 		snitchManager.addSnitch(snitch);
 	}
 
@@ -82,6 +91,9 @@ public class SnitchLifeCycleListener implements Listener {
 		Snitch snitch = snitchManager.getSnitchAt(rein.getLocation());
 		if (snitch != null) {
 			snitchManager.removeSnitch(snitch);
+			snitch.processAction(new DestroySnitchAction(System.currentTimeMillis(), snitch, null, Cause.PLAYER));
+			logger.info(String.format("Destroyed snitch of type %s at %s", snitch.getType().getName(),
+					snitch.getLocation().toString()));
 		}
 	}
 

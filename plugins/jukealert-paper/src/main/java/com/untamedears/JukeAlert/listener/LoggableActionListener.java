@@ -1,7 +1,14 @@
 package com.untamedears.JukeAlert.listener;
 
 import java.util.Collection;
-import java.util.function.Supplier;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
+import java.util.function.Function;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
@@ -20,7 +27,8 @@ import com.untamedears.JukeAlert.SnitchManager;
 import com.untamedears.JukeAlert.external.VanishNoPacket;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.SnitchAction;
-import com.untamedears.JukeAlert.model.actions.impl.EntryAction;
+import com.untamedears.JukeAlert.model.actions.impl.EnterFieldAction;
+import com.untamedears.JukeAlert.model.actions.impl.LeaveFieldAction;
 import com.untamedears.JukeAlert.model.actions.impl.LoginAction;
 import com.untamedears.JukeAlert.model.actions.impl.LogoutAction;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
@@ -29,10 +37,12 @@ public class LoggableActionListener implements Listener {
 
 	private final VanishNoPacket vanishNoPacket;
 	private final SnitchManager snitchManager;
+	private final Map<UUID, Set<Snitch>> insideFields;
 
 	public LoggableActionListener(SnitchManager snitchManager) {
 		this.snitchManager = snitchManager;
 		this.vanishNoPacket = new VanishNoPacket();
+		this.insideFields = new TreeMap<>();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -68,7 +78,9 @@ public class LoggableActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		handlePlayerAction(player, () -> new LoginAction(System.currentTimeMillis(), player.getUniqueId()));
+		handlePlayerAction(player, (s) -> new LoginAction(System.currentTimeMillis(), s, player.getUniqueId()));
+		insideFields.put(event.getPlayer().getUniqueId(), 
+				new HashSet<>(snitchManager.getSnitchesCovering(event.getPlayer().getLocation())));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
@@ -82,17 +94,17 @@ public class LoggableActionListener implements Listener {
 	}
 
 	private void handleSnitchLogout(Player player) {
-		handlePlayerAction(player, () -> new LogoutAction(System.currentTimeMillis(), player.getUniqueId()));
+		handlePlayerAction(player, (s) -> new LogoutAction(System.currentTimeMillis(), s, player.getUniqueId()));
 	}
 
-	private void handlePlayerAction(Player player, Supplier<SnitchAction> actionCreator) {
+	private void handlePlayerAction(Player player, Function<Snitch, SnitchAction> actionCreator) {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
 		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(player.getLocation());
 		for (Snitch snitch : snitches) {
 			if (!snitch.hasPermission(player, JukeAlertPermissionHandler.getSnitchImmune())) {
-				snitch.processAction(actionCreator.get());
+				snitch.processAction(actionCreator.apply(snitch));
 			}
 		}
 	}
@@ -101,10 +113,19 @@ public class LoggableActionListener implements Listener {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
-		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(location);
-		for (Snitch snitch : snitches) {
-			snitch.processAction(new EntryAction(System.currentTimeMillis(), player.getUniqueId()));
-		}
+		Collection<Snitch> insideNow = snitchManager.getSnitchesCovering(location);
+		Set<Snitch> previouslyIn = insideFields.get(player.getUniqueId());
+		insideNow.stream().filter(s -> !previouslyIn.contains(s)).forEach(s -> {
+			s.processAction(new EnterFieldAction(System.currentTimeMillis(), s, player.getUniqueId()));
+			previouslyIn.add(s);
+		});
+		List<Snitch> toRemove = new LinkedList<>();
+		previouslyIn.stream().filter(s -> !insideNow.contains(s)).forEach(s -> {
+			s.processAction(new LeaveFieldAction(System.currentTimeMillis(), s, player.getUniqueId()));
+			toRemove.add(s);
+		});
+		//need to do this afterwards to avoid ConcurrentModificationExceptions
+		previouslyIn.removeAll(toRemove);
 	}
 
 	private boolean isPlayerSnitchImmune(Player player) {
