@@ -1,8 +1,9 @@
-package vg.civcraft.mc.civmodcore.playersettings.impl;
+package vg.civcraft.mc.civmodcore.playersettings.impl.collection;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.UUID;
+import java.util.function.Function;
 
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -10,7 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingTypeManager;
 
-public class ListSetting<T> extends PlayerSetting<List<T>> {
+public class AbstractCollectionSetting<C extends Collection<T>, T> extends PlayerSetting<C> {
 
 	private static final char SEPARATOR = ',';
 	private static final String SEPARATOR_STRING = String.valueOf(SEPARATOR);
@@ -20,32 +21,34 @@ public class ListSetting<T> extends PlayerSetting<List<T>> {
 	private static final String SEPARATOR_REPLACE = ESCAPE_STRING + SEPARATOR_STRING;
 
 	private PlayerSetting<T> elementSetting;
+	private Function<C,C> newFunction;
 
-	public ListSetting(JavaPlugin owningPlugin, List<T> defaultValue, String name, String identifier, ItemStack gui,
-			String description, Class<T> elementClass) {
+	public AbstractCollectionSetting(JavaPlugin owningPlugin, C defaultValue, String name, String identifier,
+			ItemStack gui, String description, Class<T> elementClass, Function<C,C> newFunction) {
 		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		this.newFunction = newFunction;
 		if (defaultValue == null) {
-			defaultValue = new ArrayList<>();
+			defaultValue = newFunction.apply(null);
 		}
 		elementSetting = SettingTypeManager.getSetting(elementClass);
 		if (elementSetting == null) {
 			throw new IllegalArgumentException("Can not keep " + elementClass.getName()
-					+ " in list, because it was not registed in SettingTypeManager");
+					+ " in collection, because it was not registed in SettingTypeManager");
 		}
 	}
-	
+
 	public void addElement(UUID uuid, T element) {
-		//need to clone list here to avoid problems with reused default values
-		List <T> list = new ArrayList<>(getValue(uuid));
-		list.add(element);
-		setValue(uuid, list);
+		// need to clone list here to avoid problems with reused default values
+		C collection = newFunction.apply(getValue(uuid));
+		collection.add(element);
+		setValue(uuid, collection);
 	}
-	
+
 	public boolean removeElement(UUID uuid, T element) {
-		List <T> list = getValue(uuid);
-		return list.remove(element);
+		C collection = getValue(uuid);
+		return collection.remove(element);
 	}
-	
+
 	public boolean contains(UUID uuid, T element) {
 		return getValue(uuid).contains(element);
 	}
@@ -76,8 +79,8 @@ public class ListSetting<T> extends PlayerSetting<List<T>> {
 	}
 
 	@Override
-	public List<T> deserialize(String serial) {
-		List<T> result = new ArrayList<>();
+	public C deserialize(String serial) {
+		C result = newFunction.apply(null);
 		boolean escape = false;
 		int startingIndex = 0;
 		for (int i = 0; i < serial.length(); i++) {
@@ -110,27 +113,31 @@ public class ListSetting<T> extends PlayerSetting<List<T>> {
 	}
 
 	@Override
-	public String serialize(List<T> value) {
+	public String serialize(C value) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < value.size() - 1; i++) {
-			T element = value.get(i);
+		Iterator<T> iter = value.iterator();
+		while (iter.hasNext()) {
+			T element = iter.next();
 			String serialized = elementSetting.serialize(element);
 			String escaped = escape(serialized);
 			sb.append(escaped);
-			sb.append(SEPARATOR);
+			if (iter.hasNext()) {
+				sb.append(SEPARATOR);
+			}
 		}
-		sb.append(escape(elementSetting.serialize(value.get(value.size() - 1))));
 		return sb.toString();
 	}
 
 	@Override
-	public String toText(List<T> value) {
+	public String toText(C value) {
 		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < value.size() - 1; i++) {
-			sb.append(elementSetting.toText(value.get(i)));
-			sb.append(", ");
+		Iterator<T> iter = value.iterator();
+		while (iter.hasNext()) {
+			sb.append(elementSetting.toText(iter.next()));
+			if (iter.hasNext()) {
+				sb.append(", ");
+			}
 		}
-		sb.append(elementSetting.toText(value.get(value.size() - 1)));
 		return sb.toString();
 	}
 
