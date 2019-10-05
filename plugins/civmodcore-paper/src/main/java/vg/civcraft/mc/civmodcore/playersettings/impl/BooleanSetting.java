@@ -18,8 +18,20 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 	}
 
 	@Override
-	protected Boolean deserialize(String serial) {
-		return Boolean.valueOf(serial);
+	public Boolean deserialize(String serial) {
+		switch (serial.toLowerCase()) {
+		case "1":
+		case "true":
+		case "t":
+			return true;
+		case "0":
+		case "false":
+		case "f":
+			return false;
+		case "null":
+			return null;
+		}
+		throw new IllegalArgumentException(serial + " is not a valid boolean value");
 	}
 
 	@Override
@@ -33,7 +45,7 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 		applyInfoToItemStack(item, player);
 		return item;
 	}
-	
+
 	@Override
 	public void handleMenuClick(Player player, MenuSection menu) {
 		setValue(player.getUniqueId(), !getValue(player.getUniqueId()));
@@ -41,7 +53,7 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 	}
 
 	@Override
-	protected String serialize(Boolean value) {
+	public String serialize(Boolean value) {
 		return String.valueOf(value);
 	}
 
@@ -50,7 +62,23 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 	}
 
 	@Override
-	protected String toText(Boolean value) {
+	public String toText(Boolean value) {
 		return String.valueOf(value);
+	}
+
+	@Override
+	public boolean isValidValue(String input) {
+		switch (input.toLowerCase()) {
+		case "1":
+		case "true":
+		case "t":
+		case "0":
+		case "false":
+		case "f":
+		case "null":
+			return true;
+		default:
+			return false;
+		}
 	}
 }

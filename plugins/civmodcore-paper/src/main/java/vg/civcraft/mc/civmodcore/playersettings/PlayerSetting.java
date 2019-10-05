@@ -53,7 +53,7 @@ public abstract class PlayerSetting<T> {
 	 * @param serial
 	 * @return
 	 */
-	protected abstract T deserialize(String serial);
+	public abstract T deserialize(String serial);
 
 	Map<String, String> dumpAllSerialized() {
 		Map<String, String> result = new HashMap<>();
@@ -127,15 +127,30 @@ public abstract class PlayerSetting<T> {
 	 * Called when this setting is clicked in a menu to adjust its value
 	 * 
 	 */
-	public abstract void handleMenuClick(Player player, MenuSection menu);
-
+	public void handleMenuClick(Player player, MenuSection menu) {
+		new MenuDialog(player, this, menu, "Invalid input");
+	}
+	
+	public void setValueFromString(UUID player, String inputValue) {
+		T value = deserialize(inputValue);
+		setValue(player, value);
+	}
+	
+	/**
+	 * Input validation to confirm player entered values are not malformed
+	 * 
+	 * @param input Input string to test
+	 * @return True if the input can be parsed as valid value, false otherwise
+	 */
+	public abstract boolean isValidValue(String input);
+	
 	void load(String player, String serial) {
 		UUID uuid = UUID.fromString(player);
 		T value = deserialize(serial);
 		setValue(uuid, value);
 	}
 
-	protected abstract String serialize(T value);
+	public abstract String serialize(T value);
 
 	/**
 	 * Sets the given value for the given player. Null values are only allowed if
@@ -203,5 +218,5 @@ public abstract class PlayerSetting<T> {
 	 * @param value Value to get text for
 	 * @return GUI text
 	 */
-	protected abstract String toText(T value);
+	public abstract String toText(T value);
 }

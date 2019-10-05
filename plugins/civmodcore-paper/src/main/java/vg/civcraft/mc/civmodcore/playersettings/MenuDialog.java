@@ -11,11 +11,11 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 public class MenuDialog extends Dialog {
 	
-	private StringInputSetting<?> setting;
+	private PlayerSetting<?> setting;
 	private MenuSection menu;
 	private String errorMsg;
 
-	public MenuDialog(Player player, StringInputSetting<?> setting, MenuSection menu, String errorMsg) {
+	public MenuDialog(Player player, PlayerSetting<?> setting, MenuSection menu, String errorMsg) {
 		super(player, setting.getOwningPlugin(), ChatColor.GOLD + "Enter a new value for " + setting.getNiceName());
 		this.setting = setting;
 		this.menu = menu;
