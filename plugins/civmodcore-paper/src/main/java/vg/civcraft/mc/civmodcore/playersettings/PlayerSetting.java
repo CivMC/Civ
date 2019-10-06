@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuItem;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
@@ -44,7 +45,9 @@ public abstract class PlayerSetting<T> {
 	protected void applyInfoToItemStack(ItemStack item, UUID player) {
 		ItemAPI.setDisplayName(item, niceName);
 		ItemAPI.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
-		ItemAPI.addLore(item, description);
+		if (description != null) {
+			ItemAPI.addLore(item, description);
+		}
 	}
 
 	/**
