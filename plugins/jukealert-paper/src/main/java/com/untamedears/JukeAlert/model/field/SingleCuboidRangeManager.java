@@ -17,6 +17,7 @@ public class SingleCuboidRangeManager implements FieldManager {
 	public SingleCuboidRangeManager(int range, Snitch snitch) {
 		entry = new SnitchQTEntry(snitch, snitch.getLocation(), range);
 		this.snitch = snitch;
+		this.range = range;
 	}
 
 	@Override
