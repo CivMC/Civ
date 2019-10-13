@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggableAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableAction;
 import com.untamedears.JukeAlert.model.appender.LeverToggleAppender;
 import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;

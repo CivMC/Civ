@@ -1,7 +1,7 @@
 package com.untamedears.JukeAlert.model.appender;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 
 /**
  * Adds some kind of functionality to a snitch

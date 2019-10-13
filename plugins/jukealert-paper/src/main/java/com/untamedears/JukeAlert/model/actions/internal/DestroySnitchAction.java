@@ -3,7 +3,7 @@ package com.untamedears.JukeAlert.model.actions.internal;
 import java.util.UUID;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.PlayerAction;
+import com.untamedears.JukeAlert.model.actions.abstr.PlayerAction;
 
 public class DestroySnitchAction extends PlayerAction {
 	

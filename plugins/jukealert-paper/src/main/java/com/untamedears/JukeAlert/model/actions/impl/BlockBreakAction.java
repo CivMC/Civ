@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggableBlockAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableBlockAction;
 import com.untamedears.JukeAlert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;

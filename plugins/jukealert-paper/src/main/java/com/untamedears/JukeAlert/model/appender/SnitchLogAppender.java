@@ -8,10 +8,10 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.database.JukeAlertDAO;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.actions.ActionCacheState;
-import com.untamedears.JukeAlert.model.actions.LoggableAction;
-import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggablePlayerAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;
 
 public class SnitchLogAppender extends AbstractSnitchAppender {

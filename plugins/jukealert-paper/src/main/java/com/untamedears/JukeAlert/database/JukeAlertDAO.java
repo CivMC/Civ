@@ -20,9 +20,9 @@ import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
 import com.untamedears.JukeAlert.model.SnitchFactory;
 import com.untamedears.JukeAlert.model.SnitchTypeManager;
-import com.untamedears.JukeAlert.model.actions.LoggableAction;
 import com.untamedears.JukeAlert.model.actions.LoggedActionFactory;
 import com.untamedears.JukeAlert.model.actions.LoggedActionPersistence;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableAction;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;

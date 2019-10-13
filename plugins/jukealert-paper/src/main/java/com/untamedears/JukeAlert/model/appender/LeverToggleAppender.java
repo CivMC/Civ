@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.appender.config.LeverToggleConfig;
 
 public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleConfig> {

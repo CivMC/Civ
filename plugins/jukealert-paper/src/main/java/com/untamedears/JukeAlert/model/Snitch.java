@@ -8,7 +8,7 @@ import java.util.function.Function;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.appender.AbstractSnitchAppender;
 import com.untamedears.JukeAlert.model.field.FieldManager;
 

@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.model.actions;
+package com.untamedears.JukeAlert.model.actions.abstr;
 
 import com.untamedears.JukeAlert.model.Snitch;
 

@@ -4,8 +4,8 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggablePlayerAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.JukeAlert.model.appender.config.DormantCullingConfig;

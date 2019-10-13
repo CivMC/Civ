@@ -5,6 +5,7 @@ import java.util.UUID;
 import org.bukkit.Location;
 
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableAction;
 
 @FunctionalInterface
 public interface LoggedActionProvider {

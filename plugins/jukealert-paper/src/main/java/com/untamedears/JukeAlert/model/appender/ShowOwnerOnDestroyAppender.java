@@ -6,7 +6,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.actions.internal.DestroySnitchAction;
 
 import vg.civcraft.mc.namelayer.GroupManager;

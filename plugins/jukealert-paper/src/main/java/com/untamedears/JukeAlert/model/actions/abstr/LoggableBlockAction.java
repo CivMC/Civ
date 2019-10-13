@@ -1,4 +1,4 @@
-package com.untamedears.JukeAlert.model.actions;
+package com.untamedears.JukeAlert.model.actions.abstr;
 
 import java.util.UUID;
 
@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 
 import com.untamedears.JukeAlert.model.Snitch;
+import com.untamedears.JukeAlert.model.actions.LoggedActionPersistence;
 
 public abstract class LoggableBlockAction extends LoggablePlayerAction {
 

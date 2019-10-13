@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggableAction;
-import com.untamedears.JukeAlert.model.actions.PlayerAction;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggableAction;
+import com.untamedears.JukeAlert.model.actions.abstr.PlayerAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.appender.SnitchLogAppender;
 import com.untamedears.JukeAlert.util.JAUtility;
 import com.untamedears.JukeAlert.util.JukeAlertPermissionHandler;

@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 
 import com.untamedears.JukeAlert.JukeAlert;
 import com.untamedears.JukeAlert.model.Snitch;
-import com.untamedears.JukeAlert.model.actions.LoggablePlayerAction;
-import com.untamedears.JukeAlert.model.actions.SnitchAction;
+import com.untamedears.JukeAlert.model.actions.abstr.LoggablePlayerAction;
+import com.untamedears.JukeAlert.model.actions.abstr.SnitchAction;
 import com.untamedears.JukeAlert.model.actions.impl.EnterFieldAction;
 import com.untamedears.JukeAlert.model.actions.impl.LoginAction;
 import com.untamedears.JukeAlert.model.actions.impl.LogoutAction;
