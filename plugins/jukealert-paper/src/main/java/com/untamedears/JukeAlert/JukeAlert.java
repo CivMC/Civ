@@ -72,6 +72,7 @@ public class JukeAlert extends ACivMod {
 
 	@Override
 	public void onDisable() {
+		
 	}
 
 	@Override
@@ -101,6 +102,7 @@ public class JukeAlert extends ACivMod {
 		}
 		snitchManager = new SnitchManager(chunkMetaData, quadTree);
 		loggedActionFactory = new LoggedActionFactory();
+		settingsManager = new JASettingsManager();
 		registerJukeAlertEvents();
 		JukeAlertPermissionHandler.setup();
 	}

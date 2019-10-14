@@ -10,18 +10,18 @@ import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public interface LoggableAction {
 	
-	public IClickable getGUIRepresentation();
+	IClickable getGUIRepresentation();
 	
-	public TextComponent getChatRepresentation(Location reference);
+	TextComponent getChatRepresentation(Location reference);
 	
-	public LoggedActionPersistence getPersistence();
+	LoggedActionPersistence getPersistence();
 	
-	public void setID(int id);
+	void setID(int id);
 	
-	public int getID();
+	int getID();
 	
-	public void setCacheState(ActionCacheState state);
+	void setCacheState(ActionCacheState state);
 	
-	public ActionCacheState getCacheState();
+	ActionCacheState getCacheState();
 
 }

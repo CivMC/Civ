@@ -7,7 +7,7 @@ import java.util.List;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class JukeAlertPermissionHandler {
+public final class JukeAlertPermissionHandler {
 
 	private JukeAlertPermissionHandler() {
 	}

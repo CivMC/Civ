@@ -8,8 +8,8 @@ import com.untamedears.JukeAlert.model.SnitchQTEntry;
 
 public interface FieldManager {
 
-	public boolean isInside(Location location);
+	boolean isInside(Location location);
 	
-	public Collection<SnitchQTEntry> getQTEntries();
+	Collection<SnitchQTEntry> getQTEntries();
 	
 }

@@ -21,7 +21,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 // Static methods only
-public class JAUtility {
+public final class JAUtility {
 
 	private JAUtility() {
 

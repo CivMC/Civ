@@ -101,7 +101,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			if (snitch.getId() == -1) {
 				throw new IllegalStateException("Snitch id can not be null during update");
 			}
-			updateSnitch.setInt(4, snitch.getId());
+			updateSnitch.setInt(3, snitch.getId());
 			updateSnitch.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update snitch: ", e);
@@ -130,7 +130,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
 			selectSnitch.setInt(1, chunkData.getChunkCoord().getX());
 			selectSnitch.setInt(2, chunkData.getChunkCoord().getZ());
-			selectSnitch.setShort(3, (short) chunkData.getChunkCoord().getWorldID());
+			selectSnitch.setShort(3, chunkData.getChunkCoord().getWorldID());
 			try (ResultSet rs = selectSnitch.executeQuery()) {
 				while (rs.next()) {
 					int x = rs.getInt(1);
