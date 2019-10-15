@@ -26,10 +26,10 @@ commands:
       max-args: 6
       player-only: true
    jalist:
-      description: Lists all snitches you have access to
-      usage: /jalist <page number> [groups=<group1>,<group2>,...]
+      description: Lists all snitches you have access to if given no arguments or the ones on the given groups
+      usage: /jalist [group1] [group2] [group3]
       min-args: 0
-      max-args: 10
+      max-args: 20
       player-only: true
    jaclear:
       description: Deletes all logs a snitch has

@@ -1,5 +1,6 @@
 package com.untamedears.jukealert.commands;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -52,7 +53,7 @@ public class GUICommand extends StandaloneCommand {
 			gui.showScreen();
 			return true;
 		}
-		SnitchOverviewGUI gui = new SnitchOverviewGUI(player, new LinkedList<>(snitches));
+		SnitchOverviewGUI gui = new SnitchOverviewGUI(player, new ArrayList<>(snitches), "Nearby snitches", true);
 		gui.showScreen();
 		return true;
 	}

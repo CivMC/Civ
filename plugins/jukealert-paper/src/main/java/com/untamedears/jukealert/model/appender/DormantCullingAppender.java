@@ -65,6 +65,36 @@ public class DormantCullingAppender extends ConfigurableSnitchAppender<DormantCu
 	public long getLastRefresh() {
 		return lastRefresh;
 	}
+	
+	/**
+	 * @return Is the snitch currently dormant, meaning no longer active, but not entirely culled yet
+	 */
+	public boolean isDormant() {
+		long elapsed = getTimeSinceLastRefresh();
+		if (elapsed >= config.getTotalLifeTime()) {
+			return false;
+		}
+		return elapsed >= config.getLifetime();
+	}
+	
+	public long getTimeUntilCulling() {
+		return config.getTotalLifeTime() - getTimeSinceLastRefresh();
+	}
+	
+	public long getTimeUntilDormant() {
+		return config.getLifetime() - getTimeSinceLastRefresh();
+	}
+	
+	/**
+	 * @return Is the snitch currently active, meaning neither culled nor dormant
+	 */
+	public boolean isActive() {
+		long elapsed = getTimeSinceLastRefresh();
+		if (elapsed >= config.getTotalLifeTime()) {
+			return false;
+		}
+		return elapsed < config.getLifetime();
+	}
 
 	public void refreshTimer() {
 		this.lastRefresh = System.currentTimeMillis();

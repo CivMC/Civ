@@ -28,7 +28,7 @@ public class SnitchFactory {
 	}
 
 	public Snitch create(int snitchID, Location location, String name, int groupID, boolean isNew) {
-		Snitch snitch = new Snitch(snitchID, location, isNew, groupID, (s) -> new SingleCuboidRangeManager(range, s),
+		Snitch snitch = new Snitch(snitchID, location, isNew, groupID, s -> new SingleCuboidRangeManager(range, s),
 				this, name);
 		for(Function<Snitch, AbstractSnitchAppender> appenderFunc : appenders) {
 			AbstractSnitchAppender appender = appenderFunc.apply(snitch);
