@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
@@ -19,6 +20,7 @@ public class SettingTypeManager {
 	}
 	
 	static {
+		settings = new HashMap<>();
 		registerType(Boolean.class, new BooleanSetting(null, false, null, null, null));
 		registerType(Integer.class, new IntegerSetting(null, 0, null, null, null, null, false));
 		registerType(Float.class, new FloatSetting(null, 0.0f, null, null, null, null));

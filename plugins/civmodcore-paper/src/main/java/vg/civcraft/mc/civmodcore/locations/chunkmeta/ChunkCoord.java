@@ -179,8 +179,8 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
 				}
 				addChunkMeta(chunk);
 			}
-			this.notifyAll();
 			isFullyLoaded = true;
+			this.notifyAll();
 		}
 	}
 
