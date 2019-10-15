@@ -40,6 +40,11 @@ public class InfoCommand extends StandaloneCommand {
 					ChatColor.RED + " You do not own any snitches nearby or lack permission to view their logs!");
 			return true;
 		}
+		if (!snitch.hasAppender(SnitchLogAppender.class)) {
+			player.sendMessage(ChatColor.RED + "This " + snitch.getType().getName() + " named " + snitch.getName()
+					+ " can not save logs");
+			return true;
+		}
 		int offset = 0;
 		String filterAction = null;
 		String filterPlayer = null;

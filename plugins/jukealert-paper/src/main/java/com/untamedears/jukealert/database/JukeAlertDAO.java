@@ -18,6 +18,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.untamedears.jukealert.JukeAlert;
+import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchFactory;
 import com.untamedears.jukealert.model.SnitchTypeManager;
@@ -127,6 +128,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	public void fill(TableBasedBlockChunkMeta<Snitch> chunkData, Consumer<Snitch> insertFunction) {
 		World world = chunkData.getChunkCoord().getWorld();
 		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
+		SnitchManager snitchMan = JukeAlert.getInstance().getSnitchManager();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectSnitch = insertConn
 						.prepareStatement("select x, y, z, type_id, group_id, name, id from ja_snitches "
@@ -151,6 +153,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					int id = rs.getInt(7);
 					Snitch snitch = type.create(id, location, name, groupID, false);
 					insertFunction.accept(snitch);
+					snitchMan.addSnitchToQuadTree(snitch);
 				}
 			}
 		} catch (SQLException e) {
@@ -199,7 +202,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement loadActions = insertConn.prepareStatement(
-						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creatione_time, jse.victim"
+						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim"
 								+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
 								+ "jse.type_id = jsa.id where snitch_id = ?;");) {
 			loadActions.setInt(1, id);

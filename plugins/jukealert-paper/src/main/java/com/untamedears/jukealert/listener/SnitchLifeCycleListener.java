@@ -79,15 +79,22 @@ public class SnitchLifeCycleListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void reinforcementDestroyed(ReinforcementDestructionEvent e) {
-		reinforcementGone(e.getReinforcement());
+		Player source;
+		if (e.getSource() instanceof Player) {
+			source = (Player) e.getSource();
+		}
+		else {
+			source = null;
+		}
+		reinforcementGone(e.getReinforcement(), source);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void reinforcementDestroyed(ReinforcementBypassEvent e) {
-		reinforcementGone(e.getReinforcement());
+		reinforcementGone(e.getReinforcement(), e.getPlayer());
 	}
 
-	private void reinforcementGone(Reinforcement rein) {
+	private void reinforcementGone(Reinforcement rein, Player source) {
 		Snitch snitch = snitchManager.getSnitchAt(rein.getLocation());
 		if (snitch != null) {
 			snitchManager.removeSnitch(snitch);

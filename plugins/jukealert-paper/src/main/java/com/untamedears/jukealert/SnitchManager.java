@@ -37,11 +37,16 @@ public class SnitchManager {
 
 	public void addSnitch(Snitch snitch) {
 		chunkData.put(snitch);
+		addSnitchToQuadTree(snitch);
+	}
+
+	public void addSnitchToQuadTree(Snitch snitch) {
 		for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
 			quadTree.add(qt);
 		}
 	}
-
+	 
+	
 	/**
 	 * Removes the given snitch from the QtBox field tracking and the per chunk
 	 * block data tracking.
