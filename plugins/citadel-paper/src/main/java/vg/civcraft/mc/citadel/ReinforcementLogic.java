@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bed;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
 
@@ -16,7 +17,9 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class ReinforcementLogic {
+public final class ReinforcementLogic {
+	
+	private ReinforcementLogic() {}
 
 	public static Reinforcement createReinforcement(Player player, Block block, ReinforcementType type, Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
@@ -32,10 +35,10 @@ public class ReinforcementLogic {
 		return rein;
 	}
 
-	public static void damageReinforcement(Reinforcement rein, float damage) {
+	public static void damageReinforcement(Reinforcement rein, float damage, Entity source) {
 		float futureHealth = rein.getHealth() - damage;
 		if (futureHealth <= 0) {
-			ReinforcementDestructionEvent event = new ReinforcementDestructionEvent(rein, damage);
+			ReinforcementDestructionEvent event = new ReinforcementDestructionEvent(rein, damage, source);
 			Bukkit.getPluginManager().callEvent(event);
 			if (event.isCancelled()) {
 				return;
@@ -54,7 +57,7 @@ public class ReinforcementLogic {
 	}
 
 	public static float getDamageApplied(Reinforcement reinforcement) {
-		float damageAmount = 1.0f;
+		float damageAmount = 1.0F;
 		if (!reinforcement.isMature()) {
 			double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
 			double progress = timeExisted / reinforcement.getType().getMaturationTime();

@@ -79,7 +79,7 @@ public abstract class AbstractPlayerState {
 			return;
 		}
 		damage = dre.getDamageDone();
-		ReinforcementLogic.damageReinforcement(rein, damage);
+		ReinforcementLogic.damageReinforcement(rein, damage, e.getPlayer());
 	}
 
 	public abstract void handleInteractBlock(PlayerInteractEvent e);

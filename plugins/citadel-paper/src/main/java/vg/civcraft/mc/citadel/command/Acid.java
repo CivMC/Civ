@@ -87,7 +87,7 @@ public class Acid extends StandaloneCommand {
 			}
 			reinforcement.setHealth(-1);
 			// play particles for top block
-			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1);
+			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			topFace.breakNaturally();
 		}
