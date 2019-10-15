@@ -32,6 +32,10 @@ public class TextUtil {
 		return tags;
 	}
 	
+	public static String formatDuration(long time) {
+		return formatDuration(time, TimeUnit.MILLISECONDS);
+	}
+	
 	public static String formatDuration(long time, TimeUnit unit) {
 		long totalSeconds = TimeUnit.SECONDS.convert(time, unit);
 		long seconds = totalSeconds % 60;
