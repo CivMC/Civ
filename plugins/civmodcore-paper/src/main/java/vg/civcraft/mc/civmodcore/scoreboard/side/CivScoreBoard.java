@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.scoreboard.side;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
@@ -40,10 +41,16 @@ public class CivScoreBoard {
 
 			@Override
 			public void run() {
-				for (Entry<UUID, String> entry : currentScoreText.entrySet()) {
+				Iterator<Entry<UUID, String>>  iter = currentScoreText.entrySet().iterator();
+				while(iter.hasNext()) {
+					Entry <UUID, String> entry = iter.next();
 					Player player = Bukkit.getPlayer(entry.getKey());
 					if (player != null) {
 						String newText = updateFunction.apply(player, entry.getValue());
+						if (newText == null) {
+							iter.remove();
+							continue;
+						}
 						if (!newText.equals(entry.getValue())) {
 							internalUpdate(player, entry.getValue(), newText);
 							entry.setValue(newText);
