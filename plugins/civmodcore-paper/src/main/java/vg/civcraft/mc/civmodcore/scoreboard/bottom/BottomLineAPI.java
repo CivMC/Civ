@@ -32,13 +32,13 @@ public class BottomLineAPI {
 		run.runTaskTimer(CivModCorePlugin.getInstance(), 15, 15);
 	}
 
-	public BottomLine createBottomLine(String identifier, int priority) {
+	public static BottomLine createBottomLine(String identifier, int priority) {
 		BottomLine line = new BottomLine(identifier, priority);
 		lines.add(line);
 		return line;
 	}
 
-	public void deleteBottomLine(BottomLine line) {
+	public static void deleteBottomLine(BottomLine line) {
 		lines.remove(line);
 	}
 	
