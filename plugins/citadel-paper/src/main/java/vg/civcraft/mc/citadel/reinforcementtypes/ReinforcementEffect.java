@@ -83,7 +83,7 @@ public class ReinforcementEffect {
 	/**
 	 * Display an effect defined in the config around a reinforcement.
 	 * 
-	 * @param Reinforcement to play effect around
+	 * @param reinforcement Reinforcement to play effect around
 	 */
 	public void playEffect(Reinforcement reinforcement) {
 		playEffect(reinforcement.getBlockCenter());

@@ -171,6 +171,7 @@ public final class ReinforcementLogic {
 	 * Checks if at the given block is a container, which is not insecure and which
 	 * the player can not access due to missing perms
 	 * 
+	 * @param player the player attempting to access stuff
 	 * @param block Block to check for
 	 * @return True if the player can not do something like placing an adjacent
 	 *         chest or comparator, false otherwise

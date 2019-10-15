@@ -20,7 +20,8 @@ public class AcidManager {
 	/**
 	 * Checks if acid blocking is enabled for this reinforcement type
 	 * 
-	 * @param rein Reinforcement type to check for
+	 * @param acidBlock acid Reinforcement type to check for
+	 * @param victim victim block Reinforcement type
 	 * @return True if the reinforcement type can acid block other reinforcements
 	 *         and has an acid timer configured
 	 */
