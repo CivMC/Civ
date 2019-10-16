@@ -33,12 +33,13 @@ public class JASettingsManager {
 		jaListSize = new BoundedIntegerSetting(JukeAlert.getInstance(), 8, "/jalist items per page", "jaListListSize",
 				new ItemStack(Material.NOTE_BLOCK), "How many entries should shown per page of /jalist", true, 1, 50);
 		PlayerSettingAPI.registerSetting(jaListSize, menu);
-		ignoreAllAlerts = new BooleanSetting(JukeAlert.getInstance(), false, "Ignore all snitch alters",
+		ignoreAllAlerts = new BooleanSetting(JukeAlert.getInstance(), false, "Ignore all snitch alerts",
 				"jaIgnoreAllSnitchAlerts", "Mutes all snitch notifications if enabled");
 		PlayerSettingAPI.registerSetting(ignoreAllAlerts, menu);
 		ignoredGroupAlerts = new SetSetting<>(JukeAlert.getInstance(), "Ignored group alerts", "jaIgnoredSnitchGroups",
 				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alers from them",
 				String.class);
+		PlayerSettingAPI.registerSetting(ignoredGroupAlerts, menu);
 	}
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {

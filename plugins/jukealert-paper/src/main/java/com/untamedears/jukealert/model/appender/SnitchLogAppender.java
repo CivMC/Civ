@@ -4,6 +4,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.model.Snitch;
@@ -12,17 +14,18 @@ import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
+import com.untamedears.jukealert.model.appender.config.LimitedActionTriggerConfig;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 
-public class SnitchLogAppender extends AbstractSnitchAppender {
+public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionTriggerConfig> {
 
 	public static final String ID = "log";
 
 	private List<LoggableAction> actions;
 	private boolean hasLoadedAll;
 
-	public SnitchLogAppender(Snitch snitch) {
-		super(snitch);
+	public SnitchLogAppender(Snitch snitch, ConfigurationSection config) {
+		super(snitch, config);
 		this.actions = new LinkedList<>();
 		this.hasLoadedAll = false;
 		loadLogs();
@@ -31,6 +34,9 @@ public class SnitchLogAppender extends AbstractSnitchAppender {
 	@Override
 	public void acceptAction(SnitchAction action) {
 		if (action.isLifeCycleEvent() || !action.hasPlayer()) {
+			return;
+		}
+		if (!config.isTrigger(action.getIdentifier())) {
 			return;
 		}
 		LoggablePlayerAction log = (LoggablePlayerAction) action;
@@ -99,6 +105,11 @@ public class SnitchLogAppender extends AbstractSnitchAppender {
 	@Override
 	public boolean runWhenSnitchInactive() {
 		return false;
+	}
+
+	@Override
+	public Class<LimitedActionTriggerConfig> getConfigClass() {
+		return LimitedActionTriggerConfig.class;
 	}
 
 }
