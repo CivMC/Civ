@@ -1,8 +1,7 @@
 # alters the base CPS for all players, set enabled to false to disable
 alterAttack:
   enabled: true
-  speed: 25
-  invulnerableTicks: 10
+  speed: 1024
   
 cleanerCombat:
   maxReach: 6.0
@@ -11,15 +10,27 @@ cleanerCombat:
     weak: false
     strong: false
     knockback: false
-    crit: true
+    crit: false
   knockback:
-    horizontal: 1.0
-    vertical: 1.0
+    horizontal: 0.379
+    vertical: 0.69
+    sprint:
+      horizontal: 1.41
+      vertical: 1.1
+    air:
+      horizontal: 0.44
+      vertical: 7.0
+    water:
+      horizontal: 1.0
+      vertical: 0.5
+  attackerMotionModifier: 0.6
+  stopSprinting: true
   noCooldown:
     enabled: true
     cps:
       limit: 9
       counterInterval: 1000
+  potionCutOffDistance: 1.8
     
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
@@ -63,13 +74,41 @@ weaponModification:
   woodAxe:
     material: WOODEN_AXE
     damage: 1
+  diamondSword:
+    material: DIAMOND_SWORD
+    damage: 6
+  ironSword:
+    material: IRON_SWORD
+    damage: 5
+  stoneSword:
+    material: STONE_SWORD
+    damage: 4
+  goldSword:
+    material: GOLDEN_SWORD
+    damage: 4
+  woodSword:
+    material: WOODEN_SWORD
+    damage: 3
+    
+armourModification:
+   diamondHelmet:
+      material: DIAMOND_HELMET
+      toughness: 4
+   diamondChestplate:
+      material: DIAMOND_CHESTPLATE
+      toughness: 4
+   diamondLeggings:
+      material: DIAMOND_LEGGINGS
+      toughness: 4
+   diamondBoots:
+      material: DIAMOND_BOOTS
+      toughness: 4
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
 disabledEnchantments:
  - MENDING
  - FROST_WALKER
- 
  
 potions:
 #Allows applying a multiplier to the intensity of potions. Intensities <= 1.0 will always work fine, but intensities > 1 
@@ -143,10 +182,26 @@ velocity:
 damageModifiers: 
 #Decrease all damage by 20 % 
   ALL:
-    multiplier: 0.8
+    multiplier: 0.5
+    mode: DIRECT
 #Increase sword damage by 25 %
+  SHARPNESS_ENCHANT:
+    multiplier: 1.0
+    mode: DIRECT
   SWORD:
-    multiplier: 1.25
+    mode: DIRECT
+    multiplier: 1.0
   CRIT:
+    mode: DIRECT
+    multiplier: 0.86
+  STRENGTH_EFFECT:
+    mode: DIRECT
     multiplier: 0.8
     
+invulnerableTicks:
+  FIRE: 1
+  FIRE_TICK: 1 
+  POISON: 1
+  PROJECTILE: 1
+  DROWNING: 1
+  ENTITY_ATTACK: 9

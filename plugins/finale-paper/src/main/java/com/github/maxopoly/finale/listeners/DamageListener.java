@@ -8,18 +8,20 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_13_R2.entity.CraftPlayer;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.metadata.MetadataValue;
@@ -29,8 +31,6 @@ import org.bukkit.potion.PotionEffectType;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
-
-import net.minecraft.server.v1_13_R2.EntityPlayer;
 
 public class DamageListener implements Listener {
 
@@ -49,19 +49,19 @@ public class DamageListener implements Listener {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void damageEntity(EntityDamageByEntityEvent e) {
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
 		DamageModificationConfig generalModifier = modifiers.get(DamageModificationConfig.Type.ALL);
 		if (generalModifier != null) {
-			e.setDamage(generalModifier.modify(e.getDamage()));
+			double damage = generalModifier.modify(e.getDamage());
+			e.setDamage(damage);
 		}
 		if (!(e.getDamager() instanceof LivingEntity)) {
 			if (e.getDamager().getType() == EntityType.ARROW) {
 				handleArrow(e);
-
 			}
 			return;
 		}
@@ -70,7 +70,8 @@ public class DamageListener implements Listener {
 		if (strengthModifier != null) {
 			PotionEffect strengthEffect = damager.getPotionEffect(PotionEffectType.INCREASE_DAMAGE);
 			if (strengthEffect != null) {
-				e.setDamage(strengthModifier.modify(e.getDamage(), strengthEffect.getAmplifier() + 1));
+				double damage = strengthModifier.modify(e.getDamage(), strengthEffect.getAmplifier() + 1);
+				e.setDamage(damage);
 			}
 		}
 
@@ -82,12 +83,14 @@ public class DamageListener implements Listener {
 		if (swordModifier != null) {
 			ItemStack is = attacker.getInventory().getItemInMainHand();
 			if (is != null && swords.contains(is.getType())) {
-				e.setDamage(swordModifier.modify(e.getDamage()));
+				double damage = swordModifier.modify(e.getDamage());
+				e.setDamage(damage);
 			}
 			int sharpnessLevel = is.getEnchantmentLevel(Enchantment.DAMAGE_ALL);
 			DamageModificationConfig sharpnessModifier = modifiers.get(DamageModificationConfig.Type.SHARPNESS_ENCHANT);
 			if (sharpnessLevel != 0 && sharpnessModifier != null) {
-				e.setDamage(sharpnessModifier.modify(e.getDamage(), sharpnessLevel));
+				double damage = sharpnessModifier.modify(e.getDamage(), sharpnessLevel);
+				e.setDamage(damage);
 			}
 		}
 	}
@@ -135,7 +138,28 @@ public class DamageListener implements Listener {
 	@EventHandler
 	public void onCrit(CritHitEvent e) {
 		DamageModificationConfig critModifier = modifiers.get(DamageModificationConfig.Type.CRIT);
-		e.setCritMultiplier(critModifier.modify(e.getCritMultiplier()));
+		double critMult = critModifier.modify(e.getCritMultiplier());
+		e.setCritMultiplier(critMult);
+	}
+	
+	@EventHandler()
+	public void enderPearlThrown(PlayerTeleportEvent event) {
+		if (event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL) return;
+
+		Player player = event.getPlayer();
+		if (player.getNoDamageTicks() > 0) {
+			return;
+		}
+		// see
+		// https://bukkit.org/threads/whats-up-with-setnodamageticks.141901/#post-1638021
+		Bukkit.getScheduler().scheduleSyncDelayedTask(Finale.getPlugin(), new Runnable() {
+
+			@Override
+			public void run() {
+				player.setNoDamageTicks(0);
+			}
+			
+		}, 1L);
 	}
 
 }

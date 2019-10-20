@@ -7,8 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.util.Vector;
 
-import net.minecraft.server.v1_13_R2.MathHelper;
-
 public class RevertedVelocityConfig extends VelocityConfig {
 
 	public RevertedVelocityConfig(double horizontal, double vertical, double power, double pitchOffset) {

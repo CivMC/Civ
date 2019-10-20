@@ -15,10 +15,12 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.potion.PotionType;
 
 import com.github.maxopoly.finale.combat.CombatConfig;
 import com.github.maxopoly.finale.combat.CombatSoundConfig;
+import com.github.maxopoly.finale.misc.ArmourModifier;
 import com.github.maxopoly.finale.misc.DamageModificationConfig;
 import com.github.maxopoly.finale.misc.MultiplierMode;
 import com.github.maxopoly.finale.misc.SaturationHealthRegenHandler;
@@ -82,7 +84,6 @@ public class ConfigParser {
 	public CombatConfig getCombatConfig() {
 		return combatConfig;
 	}
-
 	public boolean useSideBarForPearlCooldown() {
 		return sideBarPearlCooldown;
 	}
@@ -103,8 +104,6 @@ public class ConfigParser {
 		plugin.info("Attack speed modification enabled: " + attackEnabled);
 		double attackSpeed = config.getDouble("alterAttack.speed", 9.4);
 		plugin.info("Modified attack speed: " + attackSpeed);
-		int invulnerableTicks = config.getInt("alterAttack.invulnerableTicks", 10);
-		plugin.info("Modified invulnerable ticks: " + invulnerableTicks);
 		// Food Health Regen modifications for all players
 		boolean regenEnabled = config.getBoolean("foodHealthRegen.enabled", false);
 		SaturationHealthRegenHandler regenhandler = regenEnabled
@@ -117,6 +116,8 @@ public class ConfigParser {
 		this.pearlEnabled = parsePearls(config.getConfigurationSection("pearls"));
 		plugin.info("Ender pearl additions: " + pearlEnabled);
 		WeaponModifier weapMod = parseWeaponModification(config.getConfigurationSection("weaponModification"));
+		ArmourModifier armourMod = parseArmourModification(config.getConfigurationSection("armourModification"));
+		Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks = parseInvulnerabilityTicks(config.getConfigurationSection("invulnerableTicks"));
 
 		disabledEnchants = parseDisableEnchantments(config);
 		potionHandler = parsePotionChanges(config.getConfigurationSection("potions"));
@@ -125,7 +126,7 @@ public class ConfigParser {
 		combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
 
 		// Initialize the manager
-		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, regenhandler, weapMod,
+		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, regenhandler, weapMod, armourMod,
 				potionHandler, combatConfig);
 		plugin.info("Successfully parsed config");
 		return manager;
@@ -202,7 +203,9 @@ public class ConfigParser {
 		if (config == null || !config.getBoolean("enabled", false)) {
 			return false;
 		}
-		pearlCooldown = parseTime(config.getString("cooldown", "10s"));
+		String cooldown = config.getString("cooldown", "10s");
+		System.out.println("cooldown: " + cooldown);
+		pearlCooldown = parseTime(cooldown);
 		plugin.info("Pearl cooldown set to " + pearlCooldown / 20 + " seconds");
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
@@ -348,16 +351,78 @@ public class ConfigParser {
 		return wm;
 	}
 	
+	private ArmourModifier parseArmourModification(ConfigurationSection config) {
+		ArmourModifier am = new ArmourModifier();
+		if (config == null) {
+			return am;
+		}
+		for (String key : config.getKeys(false)) {
+			ConfigurationSection current = config.getConfigurationSection(key);
+			if (current == null) {
+				plugin.warning("Found invalid value " + key + " at " + config + " only mapping values allowed here");
+				continue;
+			}
+			String matString = current.getString("material");
+			if (matString == null) {
+				plugin.warning("Found no material specified at " + current + ". Skipping attack damage adjustment");
+				continue;
+			}
+			Material mat;
+			try {
+				mat = Material.valueOf(matString);
+			} catch (IllegalArgumentException e) {
+				plugin.warning("Found invalid material " + matString + " specified at " + current
+						+ ". Skipping attack damage adjustment for it");
+				continue;
+			}
+			double toughness = current.getDouble("toughness", -1);
+			double armour = current.getDouble("armour", -1);
+			plugin.info("Modifying " + matString + ": toughness: " + toughness + ", armour: " + armour);
+			am.addArmour(mat, toughness, armour);
+		}
+		return am;
+	}
+	
 	private CombatConfig parseCombatConfig(ConfigurationSection config) {
 		double maxReach = config.getDouble("maxReach", 6.0);
 		boolean sweepEnabled = config.getBoolean("sweepEnabled", false);
 		double horizontalKb = 1.0;
 		double verticalKb = 1.0;
+		double sprintHorizontal = 1.0;
+		double sprintVertical = 1.0;
+		double airHorizontal = 1.0;
+		double airVertical = 1.0;
+		double waterHorizontal = 1.0;
+		double waterVertical = 1.0;
+		double attackMotionModifier = 0.6;
+		boolean stopSprinting = true;
+		double potionCutOffDistance = 1.8;
 		if (config.isConfigurationSection("knockback")) {
 			ConfigurationSection kbSection = config.getConfigurationSection("knockback");
-			horizontalKb = kbSection.getDouble("horizontalKb", horizontalKb);
-			verticalKb = kbSection.getDouble("verticalKb", verticalKb);
+			horizontalKb = kbSection.getDouble("horizontal", horizontalKb);
+			verticalKb = kbSection.getDouble("vertical", verticalKb);
+			sprintHorizontal = kbSection.getDouble("sprint.horizontal", sprintHorizontal);
+			sprintVertical = kbSection.getDouble("sprint.vertical", sprintVertical);
+			airHorizontal = kbSection.getDouble("air.horizontal", airHorizontal);
+			airVertical = kbSection.getDouble("air.vertical", airVertical);
+			waterHorizontal = kbSection.getDouble("water.horizontal", waterHorizontal);
+			waterVertical = kbSection.getDouble("water.vertical", waterVertical);
 		}
+		attackMotionModifier = config.getDouble("attackMotionModifier", attackMotionModifier);
+		stopSprinting = config.getBoolean("stopSprinting", stopSprinting);
+		potionCutOffDistance = config.getDouble("potionCutOffDistance", potionCutOffDistance);
+		plugin.info("Setting horizontalKb to " + horizontalKb);
+		plugin.info("Setting verticalKb to " + verticalKb);
+		plugin.info("Setting sprintHorizontal to " + sprintHorizontal);
+		plugin.info("Setting sprintVertical to " + sprintVertical);
+		plugin.info("Setting airHorizontal to " + airHorizontal);
+		plugin.info("Setting airVertical to " + airVertical);
+		plugin.info("Setting waterHorizontal to " + waterHorizontal);
+		plugin.info("Setting waterVertical to " + waterVertical);
+		plugin.info("Setting attackMotionModifier to " + attackMotionModifier);
+		plugin.info("Setting stopSprinting to " + stopSprinting);
+		plugin.info("Setting potionCutOffDistance to " + potionCutOffDistance);
+		
 		boolean weakSoundEnabled = false;
 		boolean strongSoundEnabled = false;
 		boolean knockbackSoundEnabled = false;
@@ -369,6 +434,11 @@ public class ConfigParser {
 			knockbackSoundEnabled = soundsSection.getBoolean("knockback", knockbackSoundEnabled);
 			critSoundEnabled = soundsSection.getBoolean("crit", critSoundEnabled);
 		}
+		plugin.info("Weak sounds are " + (weakSoundEnabled ? "ON" : "OFF"));
+		plugin.info("Strong sounds are " + (strongSoundEnabled ? "ON" : "OFF"));
+		plugin.info("Knockback sounds are " + (knockbackSoundEnabled ? "ON" : "OFF"));
+		plugin.info("Crit sounds are " + (critSoundEnabled ? "ON" : "OFF"));
+		
 		CombatSoundConfig combatSounds = new CombatSoundConfig(weakSoundEnabled, strongSoundEnabled, knockbackSoundEnabled, critSoundEnabled);
 		boolean noCooldown = true;
 		int cpsLimit = 9;
@@ -382,7 +452,28 @@ public class ConfigParser {
 				cpsCounterInterval = cpsSection.getLong("counterInterval", cpsCounterInterval);
 			}
 		}
-		return new CombatConfig(noCooldown, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds, horizontalKb, verticalKb);
+		return new CombatConfig(noCooldown, cpsLimit, cpsCounterInterval, maxReach, sweepEnabled, combatSounds, horizontalKb, verticalKb,
+				sprintHorizontal, sprintVertical, airHorizontal, airVertical, waterHorizontal, waterVertical, attackMotionModifier, stopSprinting, potionCutOffDistance);
+	}
+	
+	private Map<EntityDamageEvent.DamageCause, Integer> parseInvulnerabilityTicks(ConfigurationSection config) {
+		Map<EntityDamageEvent.DamageCause, Integer> invulnTicks = new HashMap<>();
+		for (String key : config.getKeys(false)) {
+			EntityDamageEvent.DamageCause cause;
+			try {
+				cause = EntityDamageEvent.DamageCause.valueOf(key.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				plugin.warning("Failed to parse tick invulnerability modification " + key + " at " + config.getCurrentPath()
+						+ ". It was skipped");
+				continue;
+			}
+			
+			int ticks = config.getInt(key);
+			invulnTicks.put(cause, ticks);
+			plugin.info("Applying tick invulnerability modification for " + cause.toString() + ", ticks: " + ticks);
+		}
+		return invulnTicks;
 	}
 }
+
 
