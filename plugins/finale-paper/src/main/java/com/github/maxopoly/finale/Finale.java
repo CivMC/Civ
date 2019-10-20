@@ -22,7 +22,7 @@ public class Finale extends ACivMod {
 	public static Finale getPlugin() {
 		return instance;
 	}
-
+	
 	private FinaleManager manager;
 
 	private CombatTagPlusManager ctpManager;
@@ -35,11 +35,6 @@ public class Finale extends ACivMod {
 
 	public FinaleManager getManager() {
 		return manager;
-	}
-
-	@Override
-	public String getPluginName() {
-		return "Finale";
 	}
 
 	private void initExternalManagers() {

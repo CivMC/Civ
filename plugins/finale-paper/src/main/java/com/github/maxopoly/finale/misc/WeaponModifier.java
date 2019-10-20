@@ -9,10 +9,10 @@ public class WeaponModifier {
 
 	private class WeaponConfig {
 		private Material mat;
-		private int damage;
+		private double damage;
 		private double attackSpeed;
 
-		private WeaponConfig(Material mat, int damage, double attackSpeed) {
+		private WeaponConfig(Material mat, double damage, double attackSpeed) {
 			this.mat = mat;
 			this.damage = damage;
 			this.attackSpeed = attackSpeed;
@@ -22,7 +22,7 @@ public class WeaponModifier {
 			return attackSpeed;
 		}
 
-		public int getDamage() {
+		public double getDamage() {
 			return damage;
 		}
 
@@ -49,7 +49,7 @@ public class WeaponModifier {
 		return config.getAttackSpeed();
 	}
 
-	public int getDamage(Material m) {
+	public double getDamage(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
 			return -1;

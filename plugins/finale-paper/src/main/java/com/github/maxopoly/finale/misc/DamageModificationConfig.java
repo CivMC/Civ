@@ -3,7 +3,7 @@ package com.github.maxopoly.finale.misc;
 public class DamageModificationConfig {
 
 	public enum Type {
-		ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT
+		ALL, SWORD, SHARPNESS_ENCHANT, STRENGTH_EFFECT, ARROW, POWER_ENCHANT, CRIT
 	}
 
 	private double multiplier;
@@ -28,7 +28,9 @@ public class DamageModificationConfig {
 
 	public double modify(double damage, int level) {
 		damage += level * flatAddition;
-		return damage * mode.apply(damage, multiplier, level);
+		double multi = mode.apply(damage, multiplier, level);
+		//System.out.println("damage: " + damage + " multiplier: " + multi);
+		return damage * multi;
 	}
 
 }

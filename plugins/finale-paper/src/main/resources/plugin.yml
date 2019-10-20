@@ -2,14 +2,23 @@ name: ${project.name}
 main: com.github.maxopoly.finale.Finale
 author: Maxopoly
 version: ${project.version}
-depend: [CivModCore]
+depend: [CivModCore, ProtocolLib]
 softdepend: [CombatTagPlus]
 api-version: 1.13
 commands:
     finalereload:
         permission: finale.op
         aliases: [reloadfinale]
+    cps:
+        description: Show CPS.
+        permission: finale.cps
+    combatconfig:
+        description: View/modify combat config values.
+        permission: finale.cmv
 permissions:
     finale.op:
         default: op
-api-version: 1.13
+    finale.cps:
+        default: op
+    finale.cmv:
+        default: op
