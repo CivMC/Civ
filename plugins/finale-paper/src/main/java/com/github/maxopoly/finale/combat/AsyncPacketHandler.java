@@ -33,8 +33,6 @@ import com.github.maxopoly.finale.Finale;
 import com.google.common.collect.Sets;
 
 import net.md_5.bungee.api.ChatColor;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
-import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 
 public class AsyncPacketHandler extends PacketAdapter implements Listener {
 	

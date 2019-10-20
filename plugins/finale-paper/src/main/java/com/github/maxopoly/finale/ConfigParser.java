@@ -4,6 +4,7 @@ import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -171,7 +172,7 @@ public class ConfigParser {
 	}
 
 	private Collection<Enchantment> parseDisableEnchantments(ConfigurationSection config) {
-		List<Enchantment> enchants = new LinkedList<Enchantment>();
+		List<Enchantment> enchants = new LinkedList<>();
 		if (!config.isList("disabledEnchantments")) {
 			return enchants;
 		}
@@ -225,7 +226,7 @@ public class ConfigParser {
 			return new PotionHandler(new HashMap<>(), 1.0);
 		}
 		ConfigurationSection potIntensitySection = config.getConfigurationSection("potIntensity");
-		Map<PotionType, List<PotionModification>> potionMods = new HashMap<>();
+		Map<PotionType, List<PotionModification>> potionMods = new EnumMap<>(PotionType.class);
 		if (potIntensitySection != null) {
 			for (String key : potIntensitySection.getKeys(false)) {
 				ConfigurationSection current = potIntensitySection.getConfigurationSection(key);
@@ -281,7 +282,7 @@ public class ConfigParser {
 		if (config == null) {
 			return new VelocityHandler(new HashMap<>());
 		}
-		Map<EntityType, VelocityConfig> velocityConfigs = new HashMap<>();
+		Map<EntityType, VelocityConfig> velocityConfigs = new EnumMap<>(EntityType.class);
 		for (String key : config.getKeys(false)) {
 			if (!config.isConfigurationSection(key)) {
 				plugin.warning("Ignoring invalid entry " + key + " at " + config.getCurrentPath());
