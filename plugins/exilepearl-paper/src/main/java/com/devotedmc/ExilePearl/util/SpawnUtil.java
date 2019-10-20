@@ -10,7 +10,7 @@ import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import me.josvth.randomspawn.RandomSpawn;
 
 public class SpawnUtil {
-	
+
 	/**
 	 * Spawns a player in the world without killing them
 	 * Uses Randomspawn if available, otherwise natural spawn
@@ -20,7 +20,7 @@ public class SpawnUtil {
 	public static void spawnPlayer(Player player, World world) {
 		player.teleport(chooseSpawn(world).add(0, 0.5, 0));
 	}
-	
+
 	public static Location chooseSpawn(World world) {
 		Location spawn = null;
 		if(ExilePearlPlugin.getApi().isRandomSpawnEnabled()) {

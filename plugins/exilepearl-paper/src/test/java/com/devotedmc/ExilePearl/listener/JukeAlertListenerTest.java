@@ -18,23 +18,23 @@ import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
 public class JukeAlertListenerTest {
-	
+
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
 	private JukeAlertListener dut;
-	
+
 	final UUID uid = UUID.randomUUID();
 	final Player player = mock(Player.class);
 
 	@Before
 	public void setUp() throws Exception {
 		config = mock(PearlConfig.class);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(config);
-		
+
 		dut = new JukeAlertListener(pearlApi);
-		
+
 		when(player.getUniqueId()).thenReturn(uid);
 	}
 
@@ -50,7 +50,7 @@ public class JukeAlertListenerTest {
 	public void testOnSnitchPlaced() {
 		Block block = mock(Block.class);
 		when(block.getType()).thenReturn(Material.JUKEBOX);
-		
+
 		BlockPlaceEvent e = new BlockPlaceEvent(block, null, null, null, player, true, null);
 		when(config.canPerform(ExileRule.SNITCH)).thenReturn(true);
 		dut.onSnitchPlaced(e);
@@ -66,17 +66,17 @@ public class JukeAlertListenerTest {
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onSnitchPlaced(e);
 		assertFalse(e.isCancelled());
-		
+
 		e = new BlockPlaceEvent(block, null, null, null, player, true, null);
 		when(config.canPerform(ExileRule.SNITCH)).thenReturn(false);
 		dut.onSnitchPlaced(e);
 		assertTrue(e.isCancelled());
-		
+
 		when(block.getType()).thenReturn(Material.NOTE_BLOCK);
 		e = new BlockPlaceEvent(block, null, null, null, player, true, null);
 		dut.onSnitchPlaced(e);
 		assertTrue(e.isCancelled());
-		
+
 		when(block.getType()).thenReturn(Material.STONE);
 		e = new BlockPlaceEvent(block, null, null, null, player, true, null);
 		dut.onSnitchPlaced(e);

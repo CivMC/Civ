@@ -10,7 +10,7 @@ import com.devotedmc.ExilePearl.config.Configurable;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable {
-	
+
 	/**
 	 * Records damage that a player deals to another player
 	 * @param playerId The player ID being harmed
@@ -18,7 +18,7 @@ public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable
 	 * @param amount The damage amount
 	 */
 	void recordDamage(UUID playerId, Player damager, double amount); 
-	
+
 	/**
 	 * Records damage that a player deals to another player
 	 * @param player The player being harmed
@@ -26,7 +26,7 @@ public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable
 	 * @param amount The damage amount
 	 */
 	void recordDamage(Player player, Player damager, double amount); 
-	
+
 	/**
 	 * Gets a sorted list of damaging players.
 	 * 
@@ -37,7 +37,7 @@ public interface DamageLogger extends Configurable, Listener, ExilePearlRunnable
 	 * @return The damaging players
 	 */
 	List<Player> getSortedDamagers(UUID playerId);
-	
+
 	/**
 	 * Gets a sorted list of damaging players.
 	 * 

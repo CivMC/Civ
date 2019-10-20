@@ -262,7 +262,7 @@ public class Document implements Map<String, Object> {
 	public Document getDocument(final String key) {
     	return (Document)get(key);
     }
-	
+
 	public UUID getUUID(final String key) {
     	return UUID.fromString(getString(key));
     }
@@ -394,7 +394,7 @@ public class Document implements Map<String, Object> {
 	 */
     private static Map<String, Object> parseConfigurationSection(ConfigurationSection mem) {
     	Document doc = new Document();
-		
+
 		for(Entry<String, Object> e : mem.getValues(false).entrySet()) {
 			String k = e.getKey();
 			Object o = e.getValue();
@@ -405,10 +405,10 @@ public class Document implements Map<String, Object> {
 				doc.put(k, o);
 			}
 		}
-		
+
 		return doc;
 	}
-	
+
 	/**
 	 * Recursively adds all document data to a Bukkit configuration section
 	 * @param mem The bukkit configuration section
@@ -426,20 +426,20 @@ public class Document implements Map<String, Object> {
 				mem.set(k, o);
 			}
 		}
-		
+
 		return mem;
 	}
-	
+
 	private static Document serializeLocation(Location l) {
 		Document doc = new Document("world", l.getWorld().getName())
 		.append("x", l.getBlockX())
 		.append("y", l.getBlockY())
 		.append("z", l.getBlockZ());
-		
+
 		return doc;
 	}
     
-	
+
 	private static Location deserializeLocation(Document doc) {
 		try {
 			String worldName = doc.getString("world");

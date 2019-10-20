@@ -10,7 +10,7 @@ import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 
 public class CivChatListener extends RuleListener {
 
-	
+
 	public CivChatListener(ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}

@@ -7,11 +7,11 @@ import java.util.UUID;
 import com.devotedmc.ExilePearl.ExilePearl;
 
 class RamStorage implements PluginStorage {
-	
+
 	private HashMap<UUID, ExilePearl> pearls = new HashMap<UUID, ExilePearl>();
-	
+
 	public RamStorage() {
-		
+
 	}
 
 	@Override
@@ -40,7 +40,7 @@ class RamStorage implements PluginStorage {
 
 	@Override
 	public void updatePearlType(ExilePearl pearl) { }
-	
+
 	@Override
 	public void updatePearlKiller(ExilePearl pearl) { }
 

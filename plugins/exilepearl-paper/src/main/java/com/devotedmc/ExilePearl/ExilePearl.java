@@ -17,7 +17,7 @@ import com.devotedmc.ExilePearl.holder.PearlHolder;
  * @author Gordon
  */
 public interface ExilePearl {
-	
+
 	/**
 	 * Gets the pearl item name
 	 * @return The item name
@@ -29,7 +29,7 @@ public interface ExilePearl {
 	 * @return The player ID
 	 */
 	UUID getPlayerId();
-	
+
 	/**
 	 * Gets the unique pearl ID
 	 * @return The pearl ID
@@ -41,13 +41,13 @@ public interface ExilePearl {
 	 * @return The exiled player 
 	 */
 	Player getPlayer();
-	
+
 	/**
 	 * Gets the pearl type
 	 * @return The pearl type
 	 */
 	PearlType getPearlType();
-	
+
 	/**
 	 * Sets the pearl type
 	 * @param type The pearl type
@@ -119,19 +119,19 @@ public interface ExilePearl {
      * @return The location of the pearl
      */
 	Location getLocation();
-	
+
 	/**
 	 * Sets the killer ID
 	 * @param killerId The killer ID
 	 */
 	void setKillerId(UUID killerId);
-	
+
 	/**
 	 * Gets the ID of the killing player
 	 * @return The ID of the killing player
 	 */
 	UUID getKillerId();
-	
+
 	/**
 	 * Gets the name of the killing player
 	 * @return The name of the killing player
@@ -167,43 +167,43 @@ public interface ExilePearl {
 	 * @return true if the location is verified
 	 */
 	boolean verifyLocation();
-	
+
 	/**
 	 * Validates that an item stack is the exile pearl
 	 * @param is The item stack
 	 * @return true if validation passes
 	 */
 	boolean validateItemStack(ItemStack is);
-	
+
 	/**
 	 * Enables storage updates when writing values
 	 */
 	void enableStorage();
-	
+
 	/**
 	 * Broadcasts the pearl location to all the listeners
 	 */
 	void performBroadcast();
-	
+
 	/**
 	 * Adds a broadcast target
 	 * @param bcast The broadcast target
 	 */
 	void addBroadcastListener(BroadcastListener bcast);
-	
+
 	/**
 	 * Removes a broadcast target
 	 * @param bcast The broadcast target
 	 */
 	void removeBroadcastListener(Object bcast);
-	
+
 	/**
 	 * Checks if the pearl is broadcasting to an object
 	 * @param o The object to check
 	 * @return true if it is broadcasting
 	 */
 	boolean isBroadcastingTo(Object o);
-	
+
 	/**
 	 * Gets last recorded appearance online for the player
 	 * held by this pearl
@@ -211,7 +211,7 @@ public interface ExilePearl {
 	 * @return last online Date
 	 */
 	Date getLastOnline();
-	
+
 	/**
 	 * Resets the recorded appearance online for a player
 	 * held by this pearl
@@ -219,27 +219,27 @@ public interface ExilePearl {
 	 * @param online The new latest Seen Date.
 	 */
 	void setLastOnline(Date online);
-	
+
 	/**
 	 * Gets whether or not the pearled player is summoned
 	 * This is always false for exiled players, summoning only works for upgraded PrisonPearls
 	 * @return true if the player is summoned
 	 */
 	boolean isSummoned();
-	
+
 	/**
 	 * Sets the summoned state of a player
 	 * Can only be true if pearl is of prison type
 	 * @param summoned The summoned value
 	 */
 	void setSummoned(boolean summoned);
-	
+
 	/**
 	 * Gets the location where player should be returned from summon
 	 * @return The location
 	 */
 	Location getReturnLocation();
-	
+
 	/**
 	 * Sets the location where a player should be returned from summon
 	 * @param loc The location

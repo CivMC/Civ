@@ -25,19 +25,19 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  *
  */
 class FileStorage implements PluginStorage {
-	
+
 	private final File pearlFile;
 	private final PearlFactory pearlFactory;
 	private final PearlLogger logger;
-	
+
 	private Document doc = new Document();
 	private Document pearlDoc;
-	
+
 	public FileStorage(final File file, final PearlFactory pearlFactory, final PearlLogger logger) {
 		Guard.ArgumentNotNull(file, "file");
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(logger, "logger");
-		
+
 		this.pearlFile = file;
 		this.pearlFactory = pearlFactory;
 		this.logger = logger;
@@ -46,7 +46,7 @@ class FileStorage implements PluginStorage {
 	@Override
 	public Collection<ExilePearl> loadAllPearls() {
 		HashSet<ExilePearl> pearls = new HashSet<ExilePearl>();
-		
+
 		FileConfiguration fileConfig = YamlConfiguration.loadConfiguration(pearlFile);
 		doc = new Document(fileConfig);
 		pearlDoc = doc.getDocument("pearls");
@@ -56,7 +56,7 @@ class FileStorage implements PluginStorage {
 			writeFile();
 			return pearls;
 		}
-		
+
 		for(Entry<String, Object> entry : pearlDoc.entrySet()) {
 			try {
 				UUID playerId = UUID.fromString(entry.getKey());
@@ -66,7 +66,7 @@ class FileStorage implements PluginStorage {
 				ex.printStackTrace();
 			}
 		}
-		
+
 		return pearls;
 	}
 
@@ -86,7 +86,7 @@ class FileStorage implements PluginStorage {
 		if(pearl.isSummoned()) {
 			insert.append("returnLoc", pearl.getReturnLocation());
 		}
-		
+
 		pearlDoc.append(pearl.getPlayerId().toString(), insert);
 		writeFile();
 	}
@@ -126,25 +126,25 @@ class FileStorage implements PluginStorage {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("killer_id", pearl.getKillerId().toString());
 		writeFile();
 	}
-	
+
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("last_seen", pearl.getLastOnline());
 		writeFile();
 	}
-	
+
 	@Override
 	public void updatePearlSummoned(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("summoned", pearl.isSummoned());
 		writeFile();
 	}
-	
+
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
 		pearlDoc.getDocument(pearl.getPlayerId().toString()).append("returnLoc", pearl.getReturnLocation());
 		writeFile();
 	}
-	
+
 	private void writeFile() {
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(pearlFile);
 		doc.savetoConfig(config);

@@ -23,8 +23,11 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PotionSplashEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,14 +45,14 @@ import net.minelink.ctplus.compat.api.NpcIdentity;
 
 @RunWith(TestBukkitRunner.class)
 public class CoreDamageLoggerTest {
-	
+
 	private static final int INTERVAL = 20;
-	
+
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
 	private Clock clock;
 	private CoreDamageLogger dut;
-	
+
 	private TestPlayer player = createOnlinePlayer("player");
 	private TestPlayer d1 = createOnlinePlayer("d1");
 	private TestPlayer d2 = createOnlinePlayer("d2");
@@ -66,70 +69,69 @@ public class CoreDamageLoggerTest {
 		when(config.getDamageLogDecayAmount()).thenReturn(1d);
 		when(config.getDamageLogMaxDamage()).thenReturn(10d);
 		when(config.getDamageLogPotionDamage()).thenReturn(2d);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getClock()).thenReturn(clock);
 		when(pearlApi.getPearlConfig()).thenReturn(config);
-		
+
 		dut = new CoreDamageLogger(pearlApi);
 		dut.loadConfig(config);
 	}
-	
+
 	@Test
 	public void testCoreDamageLogger() {
 		// Null arguments throw exceptions
 		Throwable e = null;
 		try { new CoreDamageLogger(null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
-		
+
 		assertEquals("Damage Logger", dut.getTaskName());
 	}
-	
+
 	@Test
 	public void testStartStop() {
 		final BukkitScheduler scheduler = getServer().getScheduler();
 		reset(scheduler);
-		
+
 		assertFalse(dut.isRunning());
-		
+
 		dut.start();
 		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, INTERVAL, INTERVAL);
 		assertTrue(dut.isRunning());
-		
+
 		dut.start();
 		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, INTERVAL, INTERVAL);
 		assertTrue(dut.isRunning());
-		
+
 		dut.stop();
 		verify(scheduler).cancelTask(anyInt());
 		assertFalse(dut.isRunning());
 	}
-	
+
 	@Test
 	public void testRestart() {
 		final BukkitScheduler scheduler = getServer().getScheduler();
 		reset(scheduler);
-		
+
 		when(config.getDamageLogInterval()).thenReturn(40);
 		dut.loadConfig(config);
-		
+
 		dut.restart();
 		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, 40, 40);
 		assertTrue(dut.isRunning());
-		
+
 		dut.restart();
 		verify(scheduler).cancelTask(anyInt());
 		assertTrue(dut.isRunning());
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testEntityDamage() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		// t = 100
 		// d1 = 5
 		// d2 = 0
@@ -151,7 +153,7 @@ public class CoreDamageLoggerTest {
 		assertEquals(2, damagers.size());
 		assertEquals(d2, damagers.get(0));
 		assertEquals(d1, damagers.get(1));
-		
+
 		// t = 102
 		// d1 = 6
 		// d2 = 10
@@ -163,7 +165,7 @@ public class CoreDamageLoggerTest {
 		assertEquals(2, damagers.size());
 		assertEquals(d1, damagers.get(0));
 		assertEquals(d2, damagers.get(1));
-		
+
 		// t = 103
 		// d1 = 6
 		// d2 = 10
@@ -190,14 +192,14 @@ public class CoreDamageLoggerTest {
 		assertEquals(d2, damagers.get(0));
 		assertEquals(d3, damagers.get(1));
 		assertEquals(d1, damagers.get(2));
-		
+
 		// Offline players are ignored
 		when(d2.isOnline()).thenReturn(false);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(2, damagers.size());
 		assertEquals(d3, damagers.get(0));
 		assertEquals(d1, damagers.get(1));
-		
+
 		// The damager still exists when he comes back online
 		when(d2.isOnline()).thenReturn(true);
 		damagers = dut.getSortedDamagers(player);
@@ -205,7 +207,7 @@ public class CoreDamageLoggerTest {
 		assertEquals(d2, damagers.get(0));
 		assertEquals(d3, damagers.get(1));
 		assertEquals(d1, damagers.get(2));
-		
+
 		// t = 103
 		// d1 = 6
 		// d2 = 10
@@ -220,7 +222,7 @@ public class CoreDamageLoggerTest {
 		assertEquals(d2, damagers.get(0));
 		assertEquals(d3, damagers.get(1));
 		assertEquals(d1, damagers.get(2));
-		
+
 		// This will kick off d1
 		dut.run();
 		damagers = dut.getSortedDamagers(player);
@@ -228,7 +230,7 @@ public class CoreDamageLoggerTest {
 		assertFalse(damagers.contains(d1));
 		assertEquals(d2, damagers.get(0));
 		assertEquals(d3, damagers.get(1));
-		
+
 		// t = 104
 		// d1 = 5
 		// d2 = 4
@@ -249,168 +251,161 @@ public class CoreDamageLoggerTest {
 		assertEquals(2, damagers.size());
 		assertEquals(d1, damagers.get(0));
 		assertEquals(d2, damagers.get(1));
-		
+
 		// This will kick off d2
 		dut.run();
 		dut.run();
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
-		
+
 		// This will kick off d1
 		dut.run();
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testEntityDeath() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(d1, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
-		
+
 		EntityDeathEvent deathEvent = new EntityDeathEvent(player, null);
 		dut.onEntityDeath(deathEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testPlayerQuit() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(d1, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
-		
+
 		PlayerQuitEvent quitEvent = new PlayerQuitEvent(player, null);
 		dut.onPlayerQuit(quitEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testPlayerPearled() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(d1, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
-		
+
 		ExilePearl pearl = mock(ExilePearl.class);
 		when(pearl.getPlayerId()).thenReturn(player.uid);
-		
+
 		PlayerPearledEvent pearlEvent = new PlayerPearledEvent(pearl);
 		dut.onPlayerPearled(pearlEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testWolfDamage() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		Wolf wolf = mock(Wolf.class);
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(wolf, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		when(wolf.getOwner()).thenReturn(d1);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testArrowDamage() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		Arrow arrow = mock(Arrow.class);
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(arrow, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		when(arrow.getShooter()).thenReturn(d1);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testNpcDamage() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		Player npcPlayer = mock(Player.class);
 		NpcIdentity npcIdentity = new NpcIdentity(player);
 		when(pearlApi.getPlayerAsTaggedNpc(npcPlayer)).thenReturn(npcIdentity);
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(d1, npcPlayer, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
 	}
-	
-	@SuppressWarnings("deprecation")
+
 	@Test
 	public void testSnowballDamage() {
 		dut.start();
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		Snowball snowball = mock(Snowball.class);
-		
+
 		EntityDamageByEntityEvent damageEvent = new EntityDamageByEntityEvent(snowball, player, null, 5);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		when(snowball.getShooter()).thenReturn(d1);
 		dut.onEntityDamageByEntity(damageEvent);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
 	}
-	
+
 	@Test
 	public void testPotionDamage() {
 		dut.start();
@@ -418,35 +413,38 @@ public class CoreDamageLoggerTest {
 
 		List<Player> damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		ThrownPotion potion = mock(ThrownPotion.class);
 		when(potion.getShooter()).thenReturn(d1);
 		Collection<PotionEffect> effects = new ArrayList<PotionEffect>();
 		when(potion.getEffects()).thenReturn(effects);
-		
+
 		HashMap<LivingEntity, Double> affected = new HashMap<LivingEntity, Double>();
 		affected.put(player, 1.0);
-		
+
 		// No effect so no damage
 		PotionSplashEvent e = new PotionSplashEvent(potion, affected);
 		dut.onPotionSplashEvent(e);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(0, damagers.size());
-		
+
 		// Add an effect
 		effects.add(new PotionEffect(PotionEffectType.POISON, 10, 1));
 		ItemStack is = new ItemStack(Material.SPLASH_POTION, 1);
-		is.setDurability((short)(1 << 5)); // This makes it a poison II potion
-		
+		PotionMeta im = (PotionMeta) is.getItemMeta();
+		// This makes it a poison II potion
+		im.setBasePotionData(new PotionData(PotionType.POISON, false, true));
+		is.setItemMeta(im);
+
 		when(potion.getItem()).thenReturn(is);
 		affected.put(player, 0.75); // 75% strength
-		
+
 		e = new PotionSplashEvent(potion, affected);
 		dut.onPotionSplashEvent(e);
 		damagers = dut.getSortedDamagers(player);
 		assertEquals(1, damagers.size());
 		assertEquals(d1, damagers.get(0));
-		
+
 		// The damage should be at 2 * 2 * 0.75 = 3
 		dut.run();
 		dut.run();

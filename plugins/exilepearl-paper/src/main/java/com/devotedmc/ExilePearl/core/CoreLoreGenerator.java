@@ -32,17 +32,17 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * @author Gordon
  */
 final class CoreLoreGenerator implements LoreProvider {
-	
+
 	// These need to match!
 	private static String PlayerNameStringFormat = "<a>Player: <n>%s <gray>#%s";
 	private static String PlayerNameStringFormatRegex = "<a>Player: <n>.+ <gray>#(.+)";
-	
+
 	private final PearlConfig config;
 	private final SimpleDateFormat dateFormat;
-	
+
 	public CoreLoreGenerator(final PearlConfig config) {
 		Guard.ArgumentNotNull(config, "config");
-		
+
 		this.config = config;
 		this.dateFormat = new SimpleDateFormat("MM/dd/yyyy");
 	}
@@ -59,19 +59,19 @@ final class CoreLoreGenerator implements LoreProvider {
 	public List<String> generateLoreWithModifiedHealth(ExilePearl pearl, int healthValue) {
 		return generateLoreInternal(pearl, healthValue, true);
 	}
-	
+
 	@Override
 	public List<String> generateLoreWithModifiedType(ExilePearl pearl, PearlType type) {
 		List<String> lore = generateLoreInternal(pearl, pearl.getHealth(), true);
 		lore.set(0, parse("<l>%s", type.getTitle()));
 		return lore;
 	}
-	
+
 	private List<String> generateLoreInternal(ExilePearl pearl, int health, boolean addCommandHelp) {
 		List<String> lore = new ArrayList<String>();
 
 		Integer healthPercent = Math.min(100, Math.max(0, (int)Math.round(((double)health / config.getPearlHealthMaxValue()) * 100)));
-		
+
 		lore.add(parse("<l>%s", pearl.getItemName()));
 		lore.add(parse(PlayerNameStringFormat, pearl.getPlayerName(), Integer.toString(pearl.getPearlId(), 36).toUpperCase()));
 		lore.add(parse("<a>Health: <n>%s%%", healthPercent.toString()));
@@ -90,7 +90,7 @@ final class CoreLoreGenerator implements LoreProvider {
 				lore.add(parse("<a>Cost per %s using %s:<n> %s", config.getPearlHealthDecayHumanInterval(), item, Integer.toString(repairsPerHumanInterval)));
 			}
 		}
-		
+
 		if(pearl.getPearlType() == PearlType.EXILE) {
 			Set<RepairMaterial> upgrade = config.getUpgradeMaterials();
 			if(upgrade != null) {
@@ -104,12 +104,12 @@ final class CoreLoreGenerator implements LoreProvider {
 				}
 			}
 		}
-		
+
 		int decayTimeout = config.getPearlHealthDecayTimeout();
 		if ( (new Date()).getTime() - pearl.getLastOnline().getTime() >= (decayTimeout * 60 * 1000)) {
 			lore.add(parse("<h>Health Decay suspended due to Inactivity"));
 		}
-		
+
 		if (addCommandHelp) {
 			// Generate some helpful commands
 			lore.add(parse(""));
@@ -168,8 +168,8 @@ final class CoreLoreGenerator implements LoreProvider {
 
 		return UUID.fromString(lore.get(1));
 	}
-	
-	
+
+
 	/**
 	 * Gets whether the pearl lore is valid
 	 * @param is The item stack to check
@@ -188,7 +188,7 @@ final class CoreLoreGenerator implements LoreProvider {
 		if (im == null || !im.hasEnchants() || !im.hasItemFlag(ItemFlag.HIDE_ENCHANTS)) {
 			return null;
 		}
-		
+
 		List<String> lore = im.getLore();
 		if (lore == null || lore.size() < 5) { // technically six but leaving as five for conversion purposes
 			return null;

@@ -13,10 +13,10 @@ public class CmdAdminSetKiller extends PearlCommand {
 		this.aliases.add("setkiller");
 
 		this.setHelpShort("Sets the killer of a pearl.");
-		
+
 		this.commandArgs.add(requiredPearlPlayer());
 		this.commandArgs.add(requiredPlayerOrUUID("killer"));
-		
+
 		this.permission = Permission.SET_KILLER.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
@@ -28,7 +28,7 @@ public class CmdAdminSetKiller extends PearlCommand {
 			msg("<i>No player was found matching <c>%s", argAsString(0));
 			return;
 		}
-		
+
 		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl == null) {
 			msg("<i>No pearl was found matching <c>%s", argAsString(0));
@@ -40,7 +40,7 @@ public class CmdAdminSetKiller extends PearlCommand {
 			msg("<i>No player found matching <c>%s", argAsString(1));
 			return;
 		}
-		
+
 		pearl.setKillerId(killerId);
 		msg("<g>You updated the pearl killer of player %s to %s", pearl.getPlayerName(), pearl.getKillerName());
 	}

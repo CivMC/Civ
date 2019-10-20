@@ -52,15 +52,18 @@ public class TestItemFactory implements ItemFactory {
 	public Color getDefaultLeatherColor() {
 		return null;
 	}
-	
+
     private ItemMeta getItemMetaIntenal(Material material) {
         switch (material) {
         case AIR:
             return null;
         case WRITTEN_BOOK:
-        case BOOK_AND_QUILL:
+        case WRITABLE_BOOK:
         	return mock(BookMeta.class);
-        case SKULL_ITEM:
+        case SKELETON_SKULL:
+        case CREEPER_HEAD:
+        case PLAYER_HEAD:
+        case ZOMBIE_HEAD:
         	return mock(SkullMeta.class);
         case LEATHER_HELMET:
         case LEATHER_CHESTPLATE:
@@ -74,13 +77,44 @@ public class TestItemFactory implements ItemFactory {
         	return mock(PotionMeta.class);
         case MAP:
         	return mock(PotionMeta.class);
-        case FIREWORK:
+        case FIREWORK_ROCKET:
         	return mock(PotionMeta.class);
-        case FIREWORK_CHARGE:
+        case FIREWORK_STAR:
         	return mock(FireworkEffectMeta.class);
         case ENCHANTED_BOOK:
         	return mock(EnchantmentStorageMeta.class);
-        case BANNER:
+        case BLACK_BANNER:
+        case BLUE_BANNER:
+        case BROWN_BANNER:
+        case RED_BANNER:
+        case YELLOW_BANNER:
+        case GREEN_BANNER:
+        case LIME_BANNER:
+        case LIGHT_BLUE_BANNER:
+        case WHITE_BANNER:
+        case PURPLE_BANNER:
+        case PINK_BANNER:
+        case CYAN_BANNER:
+        case GRAY_BANNER:
+        case LIGHT_GRAY_BANNER:
+        case ORANGE_BANNER:
+        case MAGENTA_BANNER:
+        case BLACK_WALL_BANNER:
+        case BLUE_WALL_BANNER:
+        case BROWN_WALL_BANNER:
+        case RED_WALL_BANNER:
+        case YELLOW_WALL_BANNER:
+        case GREEN_WALL_BANNER:
+        case LIME_WALL_BANNER:
+        case LIGHT_BLUE_WALL_BANNER:
+        case WHITE_WALL_BANNER:
+        case PURPLE_WALL_BANNER:
+        case PINK_WALL_BANNER:
+        case CYAN_WALL_BANNER:
+        case GRAY_WALL_BANNER:
+        case LIGHT_GRAY_WALL_BANNER:
+        case ORANGE_WALL_BANNER:
+        case MAGENTA_WALL_BANNER:
         	return mock(BannerMeta.class);
         case FURNACE:
         case CHEST:
@@ -88,21 +122,31 @@ public class TestItemFactory implements ItemFactory {
         case JUKEBOX:
         case DISPENSER:
         case DROPPER:
-        case SIGN:
-        case MOB_SPAWNER:
+        case ACACIA_SIGN:
+        case ACACIA_WALL_SIGN:
+        case BIRCH_SIGN:
+        case BIRCH_WALL_SIGN:
+        case DARK_OAK_SIGN: 
+        case DARK_OAK_WALL_SIGN:
+        case JUNGLE_SIGN:
+        case JUNGLE_WALL_SIGN:
+        case OAK_SIGN:
+        case OAK_WALL_SIGN:
+        case SPRUCE_WALL_SIGN:
+        case SPRUCE_SIGN:
+        case SPAWNER:
         case NOTE_BLOCK:
-        case PISTON_BASE:
-        case BREWING_STAND_ITEM:
-        case ENCHANTMENT_TABLE:
-        case COMMAND:
-        case COMMAND_REPEATING:
-        case COMMAND_CHAIN:
+        case PISTON:
+        case BREWING_STAND:
+        case ENCHANTING_TABLE:
+        case COMMAND_BLOCK:
+        case CHAIN_COMMAND_BLOCK:
+        case REPEATING_COMMAND_BLOCK:
         case BEACON:
         case DAYLIGHT_DETECTOR:
-        case DAYLIGHT_DETECTOR_INVERTED:
         case HOPPER:
-        case REDSTONE_COMPARATOR:
-        case FLOWER_POT_ITEM:
+        case COMPARATOR:
+        case FLOWER_POT:
         case SHIELD:
         case STRUCTURE_BLOCK:
 		return mock(BlockStateMeta.class);
@@ -110,5 +154,11 @@ public class TestItemFactory implements ItemFactory {
     		return mock(ItemMeta.class);
         }
     }
+
+	@Override
+	public Material updateMaterial(ItemMeta meta, Material material) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

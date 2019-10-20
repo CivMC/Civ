@@ -40,7 +40,7 @@ class MySqlStorage implements PluginStorage {
 			"setting varchar(255) NOT NULL," +
 			"value varchar(255) NOT NULL," +
 			"PRIMARY KEY (setting));";
-	
+
 	private static final String createPearlTable = "create table if not exists exilepearls( " +
 			"uid varchar(36) not null," +
 			"killer_id varchar(36) not null," +
@@ -54,7 +54,7 @@ class MySqlStorage implements PluginStorage {
 			"pearled_on long not null," +
 			"freed_offline bool," +
 			"PRIMARY KEY (uid));";
-	
+
 	private static final String createSummonTable = "create table if not exists returnlocations( " +
 			"uid varchar(36) not null," +
 			"world varchar(36) not null," +
@@ -62,7 +62,7 @@ class MySqlStorage implements PluginStorage {
 			"y int not null," +
 			"z int not null," +
 			"PRIMARY KEY (uid));";
-	
+
 	private static final String migration0001PearlTable = "alter table exilepearls " +
 			"add column last_seen long not null;";
 	private static final String migration0001PearlTable2 = "update exilepearls " +
@@ -127,13 +127,13 @@ class MySqlStorage implements PluginStorage {
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Failed to create the plugin table.");
 			}
-			
+
 			try (PreparedStatement preparedStatement = connection.prepareStatement(createPearlTable)) {
 				preparedStatement.execute();
 			} catch (SQLException ex) {
 				logger.log(Level.SEVERE, "Failed to create the pearl table.");
 			}
-			
+
 			try (PreparedStatement preparedStatement = connection.prepareStatement(createSummonTable)) {
 				preparedStatement.execute();
 			} catch (SQLException ex) {
@@ -145,18 +145,18 @@ class MySqlStorage implements PluginStorage {
 
 		if (isFirstRun()) {
 			logger.log(Level.WARNING, "ExilePearl is running for the first time.");
-			
+
 			applyMigration0001();
 			applyMigration0002();
-			
+
 			if (config.getMigratePrisonPearl()) {
 				migratePrisonPearl();
 			}
-			
+
 			// add new migrations here.
-			
+
 			setHasRun();
-			
+
 			updateDatabaseVersion();
 		} else if (getDatabaseVersion() < DATABASE_VERSION) {
 			boolean success = true;
@@ -169,7 +169,7 @@ class MySqlStorage implements PluginStorage {
 			}
 			// and new migrations here.
 			// if (getDatabaseVersion() < 4) { // next migration
-			
+
 			if (success) {
 				updateDatabaseVersion();
 			} else {
@@ -177,7 +177,7 @@ class MySqlStorage implements PluginStorage {
 			}
 		}
 	}
-	
+
 	private boolean applyMigration0001() {
 		try (Connection connection = db.getConnection();) {
 			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0001PearlTable)) {
@@ -186,7 +186,7 @@ class MySqlStorage implements PluginStorage {
 				logger.log(Level.SEVERE, "Failed to add last_seen");
 				return false;
 			}
-			
+
 			try (PreparedStatement preparedStatement = connection.prepareStatement(migration0001PearlTable2)) {
 				preparedStatement.execute();
 			} catch (SQLException ex) {
@@ -198,7 +198,7 @@ class MySqlStorage implements PluginStorage {
 		}
 		return false;
 	}
-	
+
 	private boolean applyMigration0002() {
 		try (Connection connection = db.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement(migration0002PearlTable);) {
@@ -229,7 +229,7 @@ class MySqlStorage implements PluginStorage {
 		                Object value = resultSet.getObject(key);
 		                doc.put(key, value);
 		            }
-					
+
 					// Translate the date and location to the expected format
 					doc.append("pearled_on", new Date(Long.parseLong(doc.getString("pearled_on"))));
 					doc.append("last_seen", new Date(Long.parseLong(doc.getString("last_seen"))));
@@ -239,7 +239,7 @@ class MySqlStorage implements PluginStorage {
 							.append("z", doc.getInteger("z")));
 					doc.append("type", doc.getInteger("ptype", 0));
 					doc.append("summoned", doc.getBoolean("summoned"));
-					
+
 					pearls.add(pearlFactory.createExilePearl(doc.getUUID("uid"), doc));
 				} catch (Exception ex) {
 					logger.log(Level.WARNING, "Failed to load pearl record: %s", resultSet.toString());
@@ -381,7 +381,7 @@ class MySqlStorage implements PluginStorage {
 			logFailedPearlOperation(ex, pearl, "update 'killer_id'");
 		}
 	}
-	
+
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
@@ -401,7 +401,7 @@ class MySqlStorage implements PluginStorage {
 	@Override
 	public void updatePearlSummoned(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		
+
 		try (Connection connection = db.getConnection();
 				PreparedStatement ps = connection.prepareStatement("UPDATE exilepearls SET summoned = ? WHERE uid = ?"); ) {
 			ps.setBoolean(1, pearl.isSummoned());
@@ -411,11 +411,11 @@ class MySqlStorage implements PluginStorage {
 			logFailedPearlOperation(ex, pearl, "update 'summoned'");
 		}
 	}
-	
+
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
-		
+
 		try (Connection connection = db.getConnection();) {
 			if(pearl.getReturnLocation() != null) {
 				try (PreparedStatement ps = connection.prepareStatement("INSERT INTO returnlocations (uid, world, x, y, z) VALUES (?, ?, ?, ?, ?);")) {
@@ -441,13 +441,13 @@ class MySqlStorage implements PluginStorage {
 			logFailedPearlOperation(ex, pearl, "update return location");
 		}
 	}
-	
+
 	/**
 	 * Migrate prison pearl data
 	 */
 	private void migratePrisonPearl() {
 		logger.log(Level.WARNING, "Attempting to perform PrisonPearl data migration.");
-		
+
 		ConnectionPool migrateDb = new ConnectionPool(logger.getPluginLogger(), 
 				config.getMySqlUsername(), 
 				config.getMySqlPassword(), 
@@ -483,7 +483,7 @@ class MySqlStorage implements PluginStorage {
 				while (set.next()) {
 					try {
 						UUID playerId = UUID.fromString(set.getString("uuid"));
-						
+
 						String w = set.getString("world");
 						World world = Bukkit.getWorld(w);
 						int x = set.getInt("x");

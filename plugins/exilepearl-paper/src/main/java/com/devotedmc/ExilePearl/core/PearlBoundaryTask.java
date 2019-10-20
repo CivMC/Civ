@@ -14,7 +14,9 @@ import org.bukkit.Chunk;
 import org.bukkit.EntityEffect;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -45,29 +47,33 @@ import com.google.common.collect.ImmutableList;
 final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 	private Set<UUID> pearledPlayers = new HashSet<UUID>();
-	
+
 	private int radius = 1000;
 	private double bastionDamage = 1;
-	
+
 	public static final int KNOCKBACK = 3; 
-	
-	//these material IDs are acceptable for places to teleport player; breathable blocks and water
-	public static final LinkedHashSet<Integer> safeOpenBlocks = new LinkedHashSet<Integer>(Arrays.asList(
-		 new Integer[] { 
-				 0, 6, 8, 9, 27, 28, 30, 31, 32, 37, 38, 39, 40, 50, 55, 
-				 59, 63, 64, 65, 66, 68, 69, 70, 71, 72, 75, 76, 77, 78, 
-				 83, 90, 93, 94, 96, 104, 105, 106, 115, 131, 132, 141, 
-				 142, 149, 150, 157, 171, 175, 177}
-	));
-	
-	public static final LinkedHashSet<Integer> okBaseBlocks = new LinkedHashSet<Integer>(Arrays.asList(
-		new Integer[] {
-				17, 18, 161, 162}
-	));
+
+	//these material IDs are acceptable for places to teleport player; breathable blocks and water	
+	public static final LinkedHashSet<Material> safeOpenBlocks = new LinkedHashSet<>(Arrays.asList(
+			 new Material[] { 
+					Material.AIR, Material.WATER, Material.RAIL, Material.ACTIVATOR_RAIL, 
+					Material.POWERED_RAIL, Material.DETECTOR_RAIL, Material.GRASS, Material.FERN,
+					Material.LARGE_FERN, Material.DEAD_BUSH, Material.BROWN_MUSHROOM, Material.RED_MUSHROOM,
+					Material.TORCH, Material.REDSTONE_WIRE, Material.WHEAT, Material.LADDER, Material.LEVER, Material.STONE_PRESSURE_PLATE}
+		));
+
+	public static final LinkedHashSet<Material> okBaseBlocks = new LinkedHashSet<>();
 
 	//these material IDs are ones we don't want to drop the player onto, like cactus or lava or fire or activated Ender portal
-	public static final LinkedHashSet<Integer> painfulBlocks = 
-			new LinkedHashSet<Integer>(Arrays.asList( new Integer[] {10, 11, 51, 81, 119} ));
+	public static final LinkedHashSet<Material> painfulBlocks = 
+			new LinkedHashSet<>(Arrays.asList( new Material[] {Material.LAVA, Material.FIRE, Material.CACTUS, Material.END_PORTAL} ));
+	
+	static {
+		safeOpenBlocks.addAll(Tag.BUTTONS.getValues());
+		safeOpenBlocks.addAll(Tag.CARPETS.getValues());
+		okBaseBlocks.addAll(Tag.LOGS.getValues());
+		okBaseBlocks.addAll(Tag.LEAVES.getValues());
+	}
 
 	public PearlBoundaryTask(final ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -84,10 +90,10 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public int getTickInterval() {
 		return TICKS_PER_SECOND;
 	}
-	
+
 	@Override
 	public void start() {		
-		
+
 		// Track any players who are already online
 		for(ExilePearl p : pearlApi.getPearls()) {
 			Player player = p.getPlayer();
@@ -95,7 +101,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 				pearledPlayers.add(player.getUniqueId());
 			}
 		}
-		
+
 		super.start();
 		if (enabled) {
 			pearlApi.log("Using pearl radius value of %d.", radius);
@@ -121,7 +127,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 */
 	private void checkPlayer(UUID playerId) {
 		Player player = pearlApi.getPlayer(playerId);
-		
+
 		if (player == null || !player.isOnline()) {
 			return;
 		}
@@ -136,12 +142,12 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (pearl == null) {
 			return;
 		}
-		
+
 		// Ignore if dead already
 		if (player.isDead()) {
 			return;
 		}
-		
+
 		if (!pushoutBastion(player)) {
 			checkBastion(player);
 		}
@@ -166,14 +172,14 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
-		
+
 		player.teleport(newLoc, TeleportCause.PLUGIN);
 		msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
 	}
-	
+
 	private Location getCorrectedLocation(Location pearlLocation, Location playerLocation, boolean flying) {
-		
+
 		double x = pearlLocation.getX();
 		double z = pearlLocation.getZ();
 		double xLoc = playerLocation.getX();
@@ -193,12 +199,12 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 		xLoc = x + dX * f;
 		zLoc = z + dZ * f;
-		
+
 		int ixLoc = Location.locToBlock(xLoc);
 		int izLoc = Location.locToBlock(zLoc);
-		
+
 		Location wbTest = new Location(playerLocation.getWorld(), xLoc, yLoc, zLoc);
-		
+
 		// Jump to other side of circle if this location is outside the world border
 		if (!pearlApi.isLocationInsideBorder(wbTest)) {
 			xLoc = x - dX * f;
@@ -219,19 +225,18 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
 		return new Location(playerLocation.getWorld(), Math.round(xLoc) + 0.5, yLoc, Math.round(zLoc) + 0.5, playerLocation.getYaw(), playerLocation.getPitch());
 	}
-	
+
 	// find closest safe Y position from the starting position
-	@SuppressWarnings("deprecation")
 	private double getSafeY(World world, int X, int Y, int Z, boolean flying)
 	{
 		// artificial height limit of 127 added for Nether worlds since CraftBukkit still incorrectly returns 255 for their max height, leading to players sent to the "roof" of the Nether
 		final boolean isNether = world.getEnvironment() == World.Environment.NETHER;
-		int limTop = isNether ? 125 : world.getMaxHeight() - 2;
+		int limTop = isNether ? 125 : (world.getMaxHeight() - 2);
 		final int highestBlockBoundary = Math.min(world.getHighestBlockYAt(X, Z) + 1, limTop);
 
 		// if Y is larger than the world can be and user can fly, return Y - Unless we are in the Nether, we might not want players on the roof
 		if (flying && Y > limTop && !isNether)
-			return (double) Y;
+			return Y;
 
 		// make sure Y values are within the boundaries of the world.
 		if (Y > limTop)
@@ -253,23 +258,23 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		if (!isNether && !flying) {
 			limTop = highestBlockBoundary;
 			// Expanding Y search method adapted from Acru's code in the Nether plugin
-	
+
 			// look full up first. Start at highest Y; we want to prefer landing on the surface.
 			int lastOkY = -1;
 			for(int y2 = limTop - 1; (y2 >= Y); y2--){
 				// Look above.
 				if (isSafeSpot(world, X, y2, Z, flying)) {
-					Integer below = (Integer)world.getBlockTypeIdAt(X, y2 - 1, Z);
+					Material below = world.getBlockAt(X, y2 - 1, Z).getType();
 					if (okBaseBlocks.contains(below)) {
 						lastOkY = y2;
 					} else {
-						return (double)y2;
+						return y2;
 					}
 				}
 			}
 			// We don't prefer to teleport into trees, but beats caves. If we found an option, take it.
 			if (lastOkY > -1) {
-				return (double) lastOkY;
+				return lastOkY;
 			}
 		} else {
 			// look full up first, starting from active Y (try to preserve level height for nether and flying)
@@ -278,7 +283,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 				if(y2 < limTop)
 				{
 					if (isSafeSpot(world, X, y2, Z, flying))
-						return (double)y2;
+						return y2;
 				}
 			}
 		}
@@ -288,15 +293,15 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			if(y1 > 0)
 			{
 				if (isSafeSpot(world, X, y1, Z, flying))
-					return (double)y1;
+					return y1;
 			}
 		}
 		// this should help prevent so many cavespawns on pushback.
 
 		return -1.0;	// no safe Y location?!?!? Must be a rare spot in a Nether world or something
 	}
-	
-	
+
+
 	/**
 	 * Checks if a particular spot consists of 2 breathable blocks over something relatively solid
 	 * @param world The world
@@ -306,21 +311,20 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	 * @param flying whether the player is flying
 	 * @return true if the spot is safe
 	 */
-	@SuppressWarnings("deprecation")
 	private boolean isSafeSpot(World world, int X, int Y, int Z, boolean flying)
 	{
-		boolean safe = safeOpenBlocks.contains((Integer)world.getBlockTypeIdAt(X, Y, Z))		// target block open and safe
-					&& safeOpenBlocks.contains((Integer)world.getBlockTypeIdAt(X, Y + 1, Z));	// above target block open and safe
+		boolean safe = safeOpenBlocks.contains(world.getBlockAt(X, Y, Z).getType())		// target block open and safe
+					&& safeOpenBlocks.contains(world.getBlockAt(X, Y + 1, Z).getType());	// above target block open and safe
 		if (!safe || flying)
 			return safe;
 
-		Integer below = (Integer)world.getBlockTypeIdAt(X, Y - 1, Z);
+		Material below = world.getBlockAt(X, Y - 1, Z).getType();
 		return (safe
-			 && (!safeOpenBlocks.contains(below) || below == 8 || below == 9)	// below target block not open/breathable (so presumably solid), or is water
+			 && (!safeOpenBlocks.contains(below) || below == Material.WATER)	// below target block not open/breathable (so presumably solid), or is water
 			 && !painfulBlocks.contains(below)									// below target block not painful
 			);
 	}
-	
+
 
 	/**
 	 * Tracks pearled players that log in 
@@ -332,7 +336,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			pearledPlayers.add(e.getPlayer().getUniqueId());
 		}
 	}
-	
+
 	/**
 	 * Stops tracking pearled players that log out
 	 * @param e The event args
@@ -353,7 +357,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			pearledPlayers.add(e.getPearl().getPlayerId());
 		}
 	}
-	
+
 	/**
 	 * Stops tracking freed players
 	 * @param e The event args
@@ -362,13 +366,13 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public void onPlayerFreed(PlayerFreedEvent e) {
 		pearledPlayers.remove(e.getPearl().getPlayerId());
 	}
-	
+
 	@Override
 	public void loadConfig(PearlConfig config) {
 		this.radius = config.getRulePearlRadius();
 		this.bastionDamage = config.getBastionDamage();
 	}
-	
+
 	/**
 	 * Gets whether a player is being tracked
 	 * @param player The player to check
@@ -377,7 +381,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 	public boolean isPlayerTracked(Player player) {
 		return pearledPlayers.contains(player.getUniqueId());
 	}
-	
+
 	/**
 	 * Checks whether the exiled player is inside any bastion fields they don't have
 	 * permission on and deals them damage if they are.
@@ -391,7 +395,7 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 			msg(player, "<b>You aren't allowed in this bastion field when exiled.");
 		}
 	}
-	
+
 	/**
 	 * Makes a best effort to push a player out of overlapping bastion fields using some fancy vector math.
 	 * Will work with all current types of bastions, square and circle, and resolves the vector intersections
@@ -425,13 +429,13 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 				return false;
 
 			Location newLoc = new Location(loc.getWorld(), tLoc.getX(), yLoc, tLoc.getZ(), tLoc.getYaw(), tLoc.getPitch());
-			
+
 			player.teleport(newLoc, TeleportCause.PLUGIN);
-			
+
 			msg(player, "<b>You aren't allowed to enter this bastion field when exiled.");
 			return true;
 		}
-		
+
 		return false;
 	}
 }

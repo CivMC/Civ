@@ -69,9 +69,9 @@ import com.devotedmc.ExilePearl.util.EntityDamageEventWrapper;
  *
  */
 public class ExileListener extends RuleListener implements Configurable {
-	
+
 	private Set<String> protectedAnimals = new HashSet<String>();
-	
+
 	/**
 	 * Creates a new ExileListener instance
 	 * @param pearlApi The PearlApi instance
@@ -91,12 +91,12 @@ public class ExileListener extends RuleListener implements Configurable {
 			return;
 		}
 		Player p = e.getPearl().getPlayer();
-		
+
 		if (p != null && p.isOnline()) {
 			e.getPearl().getPlayer().setBedSpawnLocation(null, true);
 		}
 	}
-	
+
 
 	/**
 	 * Clears the bed of exiled players when they log in
@@ -113,7 +113,7 @@ public class ExileListener extends RuleListener implements Configurable {
 			e.getPlayer().setBedSpawnLocation(prison ? pearlApi.getPearlConfig().getPrisonWorld().getSpawnLocation().add(0, 0.5, 0) : null, true);
 		}
 	}
-	
+
 
 	/**
 	 * Prevent exiled players from using a bed
@@ -196,42 +196,37 @@ public class ExileListener extends RuleListener implements Configurable {
 		if (player == null) {
 			return;
 		}
-		
+
 		if (e.getEntity() instanceof Player) {
 			checkAndCancelRule(ExileRule.PVP, e, player);
 			return;
 		}
-		
+
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		
-		// Let players kill mythic mobs
-		if (pearlApi.isMythicMob(e.getEntity())) {
-			return;
-		}
-		
+
 		LivingEntity living = (LivingEntity)e.getEntity();
 		String name = living.getCustomName();
-		
+
 		if (name != null && name != "") {
 			checkAndCancelRule(ExileRule.KILL_PETS, e, player);
 			return;
 		}
-		
+
 		if (!isRuleActive(ExileRule.KILL_MOBS, player.getUniqueId())) {
 			return;
 		}
-		
+
 		for(String animal : protectedAnimals) {
 			Class<?> clazz = null;
-			
+
 			try {
 				clazz = Class.forName("org.bukkit.entity." + animal);
 			} catch (Exception ex) {
 				continue;
 			}
-			
+
 			if (clazz != null && clazz.isInstance(living)) {
 				checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
 				return;
@@ -245,42 +240,37 @@ public class ExileListener extends RuleListener implements Configurable {
 		if (player == null) {
 			return;
 		}
-		
+
 		if (e.getEntity() instanceof Player) {
 			checkAndCancelRule(ExileRule.PVP, e, player);
 			return;
 		}
-		
+
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
-		
-		// Let players kill mythic mobs
-		if (pearlApi.isMythicMob(e.getEntity())) {
-			return;
-		}
-		
+
 		LivingEntity living = (LivingEntity)e.getEntity();
 		String name = living.getCustomName();
-		
+
 		if (name != null && name != "") {
 			checkAndCancelRule(ExileRule.KILL_PETS, e, player);
 			return;
 		}
-		
+
 		if (!isRuleActive(ExileRule.KILL_MOBS, player.getUniqueId())) {
 			return;
 		}
-		
+
 		for(String animal : protectedAnimals) {
 			Class<?> clazz = null;
-			
+
 			try {
 				clazz = Class.forName("org.bukkit.entity." + animal);
 			} catch (Exception ex) {
 				continue;
 			}
-			
+
 			if (clazz != null && clazz.isInstance(living)) {
 				checkAndCancelRule(ExileRule.KILL_MOBS, e, player);
 				return;
@@ -289,7 +279,7 @@ public class ExileListener extends RuleListener implements Configurable {
 	}
 
 
-	
+
 	/**
 	 * Prevent exiled players from drinking potions
 	 * @param e The event
@@ -315,7 +305,7 @@ public class ExileListener extends RuleListener implements Configurable {
 			checkAndCancelRule(ExileRule.USE_POTIONS, e, (Player)e.getEntity().getShooter());
 		}
 	}
-	
+
 	/**
 	 * Prevent exiled players from using lingering splash potions
 	 * @param e The event
@@ -358,7 +348,7 @@ public class ExileListener extends RuleListener implements Configurable {
 			msg(e.getPlayer(), Lang.ruleCantDoThat, ExileRule.COLLECT_XP.getActionString());
 		}
 	}
-	
+
 	/**
 	 * Prevents exiled players from placing certain blocks
 	 * @param e The event
@@ -370,7 +360,7 @@ public class ExileListener extends RuleListener implements Configurable {
 			checkAndCancelRule(ExileRule.PLACE_TNT, e, e.getPlayer());
 		}
 	}
-	
+
 	/**
 	 * Prevents exiled players from moving restricted items like lava and TNT
 	 * into dispensers, hoppers, and droppers
@@ -383,7 +373,7 @@ public class ExileListener extends RuleListener implements Configurable {
 		InventoryAction action = e.getAction();
 		ItemStack item;
 		InventoryHolder holder = null; 
-		
+
 		if(action == InventoryAction.PLACE_ALL
 				|| action == InventoryAction.PLACE_SOME
 				|| action == InventoryAction.PLACE_ONE) {
@@ -393,28 +383,28 @@ public class ExileListener extends RuleListener implements Configurable {
 				return;
 			}
 			holder = e.getView().getTopInventory().getHolder();
-			
+
 		} else if(action == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 			item = e.getCurrentItem();
 			boolean clickedTop = e.getRawSlot() < e.getView().getTopInventory().getSize();
 			if (item == null || clickedTop) { // allow remove from top but not shift INTO top
 				return;
 			}
-			
+
 			holder = e.getView().getTopInventory().getHolder(); // we're canceling bottom
 			// inventory click but only if _top_ inventory is specific type.
 		} else {
 			return;
 		}
-			
+
 		if (item == null || holder == null) {
 			return;
 		}
-		
+
 		if (!(holder instanceof Dispenser || holder instanceof Dropper || holder instanceof Hopper)) {
 			return;
 		}
-		
+
 		Material m = item.getType();
 		if (m == Material.TNT) {
 			checkAndCancelRule(ExileRule.PLACE_TNT, e, player, false);
@@ -422,7 +412,7 @@ public class ExileListener extends RuleListener implements Configurable {
 		else if (m == Material.LAVA_BUCKET || m == Material.WATER_BUCKET) {
 			checkAndCancelRule(ExileRule.USE_BUCKET, e, player, false);
 		}
-		
+
 		if (e.isCancelled()) {
 			msg(player, Lang.ruleCantDoThat, "do that");
 		}

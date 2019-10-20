@@ -26,7 +26,7 @@ class DamageLog {
 	private final Clock clock;
 	private final UUID playerId;
 	private final Map<UUID, DamageRecord> damagers = new HashMap<UUID, DamageRecord>();
-	
+
 	/**
 	 * Creates a new DamageLog instance
 	 * @param playerId The player Id
@@ -34,11 +34,11 @@ class DamageLog {
 	public DamageLog(Clock clock, UUID playerId) {
 		Guard.ArgumentNotNull(clock, "clock");
 		Guard.ArgumentNotNull(playerId, "playerId");
-		
+
 		this.clock = clock;
 		this.playerId = playerId;
 	}
-	
+
 	/**
 	 * Gets the player ID
 	 * @return The player ID
@@ -62,7 +62,7 @@ class DamageLog {
 
 		rec.recordDamage(amount, maxAmount);
 	}
-	
+
 	/**
 	 * Decays all the damage records by a given amount.
 	 * 
@@ -85,7 +85,7 @@ class DamageLog {
 		}
 		return damagers.size() > 0;
 	}
-	
+
 	/**
 	 * Gets the time-sorted damagers
 	 * The first object in the list will be the most recent damager and
@@ -94,7 +94,7 @@ class DamageLog {
 	 */
 	public List<DamageRecord> getTimeSortedDamagers() {
 		List<DamageRecord> recs = new LinkedList<DamageRecord>(damagers.values());
-		
+
 		Collections.sort(recs, new Comparator<DamageRecord>() {
 		     public int compare(DamageRecord o1, DamageRecord o2) {
 		         if(o1.getTime() == o2.getTime()) {
@@ -103,10 +103,10 @@ class DamageLog {
 		         return o1.getTime() > o2.getTime() ? -1 : 1;
 		     }
 		});
-		
+
 		return recs;
 	}
-	
+
 	/**
 	 * Gets the damage-sorted damagers
 	 * The first object in the list will be the player who damaged the most and
@@ -115,7 +115,7 @@ class DamageLog {
 	 */
 	public List<DamageRecord> getDamageSortedDamagers() {
 		List<DamageRecord> recs = new LinkedList<DamageRecord>(damagers.values());
-		
+
 		Collections.sort(recs, new Comparator<DamageRecord>() {
 		     public int compare(DamageRecord o1, DamageRecord o2) {
 		         if(o1.getAmount() == o2.getAmount()) {
@@ -124,10 +124,10 @@ class DamageLog {
 		         return o1.getAmount() > o2.getAmount() ? -1 : 1;
 		     }
 		});
-		
+
 		return recs;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "DamageLog{player: " + playerId.toString() + ", damagers:{" + damagers + "}}";

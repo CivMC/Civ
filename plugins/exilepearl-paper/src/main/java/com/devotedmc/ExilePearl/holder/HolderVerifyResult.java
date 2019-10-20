@@ -22,10 +22,10 @@ public enum HolderVerifyResult
 	IN_PLAYER_INVENTORY_VIEW("in player inventory view", true),
 	IN_VIEWER_HAND("in viewer hand", true),
 	CREATVE_MODE("creative mode", true);
-	
+
 	private final String text;
 	private final boolean isValid;
-	
+
 	/**
 	 * Creates a new HolderVerifyResult instance
 	 * @param text The name of the result
@@ -33,16 +33,16 @@ public enum HolderVerifyResult
 	 */
 	private HolderVerifyResult(final String text, final boolean isValid) {
 		Guard.ArgumentNotNullOrEmpty(text, "text");
-		
+
 		this.text = text;
 		this.isValid = isValid;
 	}
-	
+
 	@Override
 	public String toString() {
 		return text;
 	}
-	
+
 	public boolean isValid() {
 		return isValid;
 	}

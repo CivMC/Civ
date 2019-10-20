@@ -8,11 +8,11 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
  * @author Gordon
  */
 public class CmdLegacy extends PearlCommand {
-	
+
 	public CmdLegacy(ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("pp");
-		
+
 		this.visibility = CommandVisibility.INVISIBLE;
 	}
 

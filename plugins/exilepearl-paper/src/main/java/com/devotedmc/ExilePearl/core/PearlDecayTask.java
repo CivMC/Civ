@@ -8,7 +8,7 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
  * @author Gordon
  */
 final class PearlDecayTask extends ExilePearlTask {
-	
+
 	private int interval = 60;
 
 	/**
@@ -17,10 +17,10 @@ final class PearlDecayTask extends ExilePearlTask {
 	public PearlDecayTask(final ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
-	
+
 	@Override
 	public void start() {
-		
+
 		super.start();
 		if (enabled) {
 			pearlApi.log("Pearl decay will run every %d minutes.", interval);
@@ -45,14 +45,14 @@ final class PearlDecayTask extends ExilePearlTask {
 		if (!enabled) {
 			return;
 		}
-		
+
 		pearlApi.getPearlManager().decayPearls();
 	}
-	
+
 	@Override
 	public void loadConfig(PearlConfig config) {
 		int newInterval = pearlApi.getPearlConfig().getPearlHealthDecayIntervalMin();
-		
+
 		if (newInterval != interval) {
 			this.interval = newInterval;
 

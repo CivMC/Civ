@@ -70,6 +70,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlType;
@@ -97,8 +98,8 @@ public class PlayerListener implements Listener, Configurable {
 
 	private Map<PearlType, Set<RepairMaterial>> repairMaterials = new HashMap<PearlType, Set<RepairMaterial>>();
 	private Set<RepairMaterial> upgradeMaterials = new HashSet<RepairMaterial>();
-	
-	
+
+
 	private boolean useHelpItem = false;
 	private String helpItemName = "";
 	private List<String> helpItemText = new ArrayList<String>();
@@ -241,7 +242,7 @@ public class PlayerListener implements Listener, Configurable {
 			pearlApi.log("Prevented pearl from despawning at %s for player %s.", pearl.getLocation().toString(), pearl.getPlayerName());
 		}
 	}
-	
+
 
 	/**
 	 * Prevent chunk that contain pearls from unloading
@@ -254,13 +255,12 @@ public class PlayerListener implements Listener, Configurable {
 			if (!(entity instanceof Item)) {
 				continue;
 			}
-			
+
 			Item item = (Item)entity;
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
-			
+
 			if (pearl != null) {
-				e.setCancelled(true);
-				pearlApi.log("Prevented chunk (%d, %d) from unloading because it contained an exile pearl for player %s.", chunk.getX(), chunk.getZ(), pearl.getPlayerName());
+				ExilePearlPlugin.getApi().freePearl(pearl, PearlFreeReason.CHUNK_UNLOADED);
 			}
 		}
 	}
@@ -523,7 +523,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		updatePearl(pearl, (Player) e.getPlayer());
+		updatePearl(pearl, e.getPlayer());
 	}
 
 
@@ -538,7 +538,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		final UUID playerId;
-		
+
 		// If the player was an NPC, grab the ID from it
 		NpcIdentity npcId = null;
 		try {
@@ -556,13 +556,13 @@ public class PlayerListener implements Listener, Configurable {
 		   && e.getEntity().getLocation().getWorld().equals(pearlApi.getPearlConfig().getPrisonWorld())){
 			return;
 		}
-		
+
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
-		
+
 		Player killer = null;
 		ExilePearl pearl = null;
-		
+
 		for(Player damager : damagers) {
 			int firstpearl = Integer.MAX_VALUE;
 			for (Entry<Integer, ? extends ItemStack> entry : damager.getInventory().all(Material.ENDER_PEARL).entrySet()) {
@@ -576,12 +576,12 @@ public class PlayerListener implements Listener, Configurable {
 			if (firstpearl == Integer.MAX_VALUE) {
 				continue;
 			}
-			
+
 			// Check if pearl in the hotbar
 			if (pearlApi.getPearlConfig().getMustPrisonPearlHotBar() && firstpearl > 8) {
 				continue; 
 			}
-			
+
 			pearl = pearlApi.exilePlayer(playerId, damager);
 			if (pearl == null) {
 				// Check if player is already exiled
@@ -601,9 +601,9 @@ public class PlayerListener implements Listener, Configurable {
 			killer = damager;
 			break;
 		}
-		
+
 		if (killer != null) {
-			
+
 			// Notify other damagers if they were not awarded the pearl
 			for(Player damager : damagers) {
 				if (damager != killer) {
@@ -706,16 +706,16 @@ public class PlayerListener implements Listener, Configurable {
 
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Material m = e.getClickedBlock().getType();
-			if (m == Material.CHEST || m == Material.WORKBENCH
+			if (m == Material.CHEST || m == Material.CRAFTING_TABLE
 					|| m == Material.FURNACE || m == Material.DISPENSER
 					|| m == Material.BREWING_STAND)
 				return;
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
-		
+
 		Player player = e.getPlayer();
-		
+
 		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
 			msg(player, Lang.pearlCantThrow);
 			e.setCancelled(true);
@@ -729,7 +729,7 @@ public class PlayerListener implements Listener, Configurable {
 			msg(player, Lang.pearlYouFreed, pearl.getPlayerName());
 		}
 	}
-	
+
 	/**
 	 * Prevent pearling with an exile pearl
 	 * @param e The event
@@ -739,20 +739,20 @@ public class PlayerListener implements Listener, Configurable {
 		if (!(e.getEntity() instanceof EnderPearl)) {
 			return;
 		}
-		
+
 		final Player p = (Player)e.getEntity().getShooter();
 		if (p == null) {
 			return;
 		}
-		
+
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(p.getInventory().getItemInMainHand());
 		if (pearl == null) {
 			return;
 		}
-		
+
 		msg(p, Lang.pearlCantThrow);
 		e.setCancelled(true);
-		
+
 		// Need to schedule this or else the re-created pearl doesn't show up
 		Bukkit.getScheduler().scheduleSyncDelayedTask(pearlApi, new Runnable() {
 			@Override
@@ -779,8 +779,8 @@ public class PlayerListener implements Listener, Configurable {
 		msg(imprisoner, Lang.pearlYouBound, e.getPearl().getPlayerName());
 		msg(imprisoned, Lang.pearlYouWereBound, e.getPearl().getKillerName());
 	}
-	
-	
+
+
 	/**
 	 * Handled exiled players re-spawning
 	 * @param e The event args
@@ -798,8 +798,8 @@ public class PlayerListener implements Listener, Configurable {
 			}
 		}
 	}
-	
-	
+
+
 	/**
 	 * Removes the help item when dropped
 	 * @param e The event args
@@ -811,7 +811,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 	}
 
-	
+
 	/**
 	 * Prevents placing the help item
 	 * @param e The event args
@@ -853,7 +853,7 @@ public class PlayerListener implements Listener, Configurable {
 		if (inv == null) {
 			return;
 		}
-		
+
 		ItemStack result = inv.getResult();
 		if (result == null) {
 			return;
@@ -882,9 +882,9 @@ public class PlayerListener implements Listener, Configurable {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		ItemMap invItems = new ItemMap(inv);
-		
+
 		if(pearl.getPearlType() == PearlType.EXILE) {
 			RepairMaterial upgradeItem = null;
 			for(RepairMaterial item : upgradeMaterials) {
@@ -908,9 +908,9 @@ public class PlayerListener implements Listener, Configurable {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		RepairMaterial repairItem = null;
-		
+
 		// Find the repair material that is being used for crafting
 		for(RepairMaterial item : repairMaterials.get(pearl.getPearlType())) {
 			if (invItems.getAmount(item.getStack()) > 0) {
@@ -918,13 +918,13 @@ public class PlayerListener implements Listener, Configurable {
 				break;
 			}
 		}
-		
+
 		// Quit if no repair item was found
 		if (repairItem == null) {
 			inv.setResult(new ItemStack(Material.AIR));
 			return;
 		}
-		
+
 		// Get the total possible repair amount. This doesn't need to be limited
 		// because the lore generator will cap at 100%
 		int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
@@ -948,10 +948,10 @@ public class PlayerListener implements Listener, Configurable {
 		if (pearl == null) {
 			return;
 		}
-		
+
 		ItemMap invItems = new ItemMap(inv);
 		RepairMaterial repairItem = null;
-		
+
 		// Find the repair material that is being used for crafting
 		for(RepairMaterial item : repairMaterials.get(pearl.getPearlType())) {
 			if (invItems.getAmount(item.getStack()) > 0) {
@@ -959,7 +959,7 @@ public class PlayerListener implements Listener, Configurable {
 				break;
 			}
 		}
-		
+
 		// Quit if no repair items were found in the crafting inventory
 		if (repairItem != null) {
 			int maxHealth = pearlApi.getPearlConfig().getPearlHealthMaxValue();
@@ -1005,14 +1005,14 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		//try to find an upgrade recipe
 		RepairMaterial upgradeItem = null;
-		
+
 		for(RepairMaterial item : upgradeMaterials) {
 			if(invItems.getAmount(item.getStack()) >= item.getRepairAmount()) {
 				upgradeItem = item;
 				break;
 			}
 		}
-		
+
 		if(upgradeItem != null) {
 			//just using the repair amount as a stack size because fuck it
 			int upgradeMatsRequired = upgradeItem.getRepairAmount();
@@ -1050,7 +1050,7 @@ public class PlayerListener implements Listener, Configurable {
 			pearlApi.log("The pearl for player %s was upgraded to a Prison Pearl.", pearl.getPlayerName());
 		}
 	}
-	
+
 	@EventHandler
 	public void onPlayerPortal(PlayerPortalEvent event) {
 		ExilePearl pearl = pearlApi.getPearl(event.getPlayer().getUniqueId());
@@ -1063,7 +1063,7 @@ public class PlayerListener implements Listener, Configurable {
 	public void loadConfig(PearlConfig config) {
 		repairMaterials.clear();
 		upgradeMaterials.clear();
-		
+
 		try {
 			// This item is basically used as a trigger to catch the recipe being created
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
@@ -1071,7 +1071,7 @@ public class PlayerListener implements Listener, Configurable {
 			im.addEnchant(Enchantment.DURABILITY, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
-			
+
 			for(PearlType type : PearlType.values()) {
 				repairMaterials.put(type, config.getRepairMaterials(type));
 			}
@@ -1084,40 +1084,40 @@ public class PlayerListener implements Listener, Configurable {
 					Bukkit.getServer().addRecipe(r1);
 				}
 			}
-			
+
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
 		}
-		
+
 		try {
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
 			ItemMeta im = resultItem.getItemMeta();
 			im.addEnchant(Enchantment.DURABILITY, 1, true);
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
-			
+
 			upgradeMaterials.addAll(config.getUpgradeMaterials());
-			
+
 			for(RepairMaterial mat : upgradeMaterials) {
 				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
 				r1.addIngredient(1, Material.ENDER_PEARL);
 				r1.addIngredient(1, mat.getStack().getData());
-				
+
 				Bukkit.getServer().addRecipe(r1);
 			}
 		} catch (Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to register pearl upgrade recipes.");
 		}
-		
+
 		useHelpItem = config.getUseHelpItem();
 		helpItemName = config.getHelpItemName();
-		
+
 		helpItemText.clear();
 		for(String s : config.getHelpItemText()) {
 			helpItemText.add(TextUtil.parse(s));
 		}
 	}
-	
+
 	/**
 	 * Checks whether an item is the help item
 	 * @param is The item stack to check
@@ -1127,15 +1127,15 @@ public class PlayerListener implements Listener, Configurable {
 		if (is.getType() != Material.STICK) {
 			return false;
 		}
-		
+
 		ItemMeta im = is.getItemMeta();
 		if (im == null) {
 			return false;
 		}
-		
+
 		return im.getEnchantLevel(Enchantment.DURABILITY) == 2;
 	}
-	
+
 	/**
 	 * Removes the item item from a player's inventory
 	 * @param player The player
@@ -1149,7 +1149,7 @@ public class PlayerListener implements Listener, Configurable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Gives the help item to a player
 	 * @param player The player

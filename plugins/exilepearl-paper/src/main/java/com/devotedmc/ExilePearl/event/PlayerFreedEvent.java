@@ -14,16 +14,16 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  * @author Gordon
  */
 public class PlayerFreedEvent extends Event implements Cancellable {
-	
+
 	private final ExilePearl pearl;
 	private final PearlFreeReason reason;
-	
+
 	private boolean cancelled;
-	
+
 	// Handler list for spigot events
 	private static final HandlerList handlers = new HandlerList();
-	
-	
+
+
 	/**
 	 * Creates a new PlayerPearledEvent instance. Called when a player is freed.
 	 * @param pearl The pearl instance
@@ -32,11 +32,11 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	public PlayerFreedEvent(final ExilePearl pearl, final PearlFreeReason reason) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		Guard.ArgumentNotNull(reason, "reason");
-		
+
 		this.pearl = pearl;
 		this.reason = reason;
 	}
-	
+
 	/**
 	 * Gets the exile pearl
 	 * @return The exile pearl
@@ -44,7 +44,7 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	public ExilePearl getPearl() {
 		return pearl;
 	}
-	
+
 	/**
 	 * Gets the freeing reason
 	 * @return The freeing reason
@@ -52,7 +52,7 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	public PearlFreeReason getReason() {
 		return reason;
 	}
-	
+
 	/**
 	 * Gets whether the event is cancelled
 	 * @return true if the event is cancelled
@@ -61,7 +61,7 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	public boolean isCancelled() {
 		return cancelled;
 	}
-	
+
 	/**
 	 * Sets whether the event is cancelled
 	 * @param cancelled whether the event is cancelled
@@ -70,12 +70,12 @@ public class PlayerFreedEvent extends Event implements Cancellable {
 	public void setCancelled(boolean cancelled) {
 		this.cancelled = cancelled;
 	}
-	
+
 	@Override
 	public HandlerList getHandlers() {
 	    return handlers;
 	}
-	
+
 	public static HandlerList getHandlerList() {
 	    return handlers;
 	}

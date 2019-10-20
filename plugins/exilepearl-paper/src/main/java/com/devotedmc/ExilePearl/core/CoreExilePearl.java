@@ -47,7 +47,7 @@ final class CoreExilePearl implements ExilePearl {
 
 	// The player provider instance
 	private final ExilePearlApi pearlApi;
-	
+
 	// The storage instance
 	private final PearlUpdateStorage storage;
 
@@ -78,7 +78,7 @@ final class CoreExilePearl implements ExilePearl {
 		Guard.ArgumentNotNull(playerId, "playerId");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
 		Guard.ArgumentNotNull(holder, "holder");
-		
+
 		this.pearlApi = pearlApi;
 		this.storage = storage;
 		this.playerId = playerId;
@@ -98,30 +98,30 @@ final class CoreExilePearl implements ExilePearl {
 	public UUID getPlayerId() {
 		return playerId;
 	}
-	
+
 
 	@Override
 	public int getPearlId() {
 		return pearlId;
 	}
-	
-	
+
+
 	@Override
 	public Player getPlayer() {
 		return pearlApi.getPlayer(playerId);
 	}
-	
-	
+
+
 	@Override
 	public PearlType getPearlType() {
 		return pearlType;
 	}
 
-	
+
 	@Override
 	public void setPearlType(PearlType pearlType) {
 		this.pearlType = pearlType;
-		
+
 		if(storageEnabled) {
 			storage.updatePearlType(this);
 		}
@@ -138,7 +138,7 @@ final class CoreExilePearl implements ExilePearl {
 	public void setPearledOn(Date pearledOn) {
 		Guard.ArgumentNotNull(pearledOn, "pearledOn");
 		checkPearlValid();
-		
+
 		this.pearledOn = pearledOn;
 	}
 
@@ -184,23 +184,23 @@ final class CoreExilePearl implements ExilePearl {
 		Guard.ArgumentNotNull(item, "item");
 		setHolderInternal(new ItemHolder(item));
 	}
-	
-	
+
+
 	/**
 	 * Internal method for updating the holder
 	 * @param holder The new holder instance
 	 */
 	private void setHolderInternal(PearlHolder holder) {
 		checkPearlValid();
-		
+
 		// Do nothing if the holder is the same
 		if (holder.equals(holders.getLast())) {
 			return;
 		}
-		
+
 		PearlHolder from = holders.peekLast();
 		holders.add(holder);
-		
+
 		// Generate a moved event
 		Bukkit.getPluginManager().callEvent(new PearlMovedEvent(this, from, holder));
 
@@ -241,7 +241,7 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
     public void setHealth(int health) {
 		checkPearlValid();
-		
+
     	if (health < 0) {
     		health = 0;
     	}
@@ -264,7 +264,7 @@ final class CoreExilePearl implements ExilePearl {
 	public Location getLocation() {
 		return this.holders.peekLast().getLocation();
 	}
-	
+
 
 	@Override
 	public void setKillerId(UUID killerId) {
@@ -323,9 +323,9 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setFreedOffline(boolean freedOffline) {
 		checkPearlValid();
-		
+
 		this.freedOffline = freedOffline;
-		
+
 		if (storageEnabled) {
 			storage.updatePearlFreedOffline(this);
 		}
@@ -359,7 +359,7 @@ final class CoreExilePearl implements ExilePearl {
 		Guard.ArgumentNotNull(is, "is");
 
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
-		
+
 		if (pearlId == this.pearlId) {
 
 			// re-create the item stack to update the values
@@ -416,7 +416,7 @@ final class CoreExilePearl implements ExilePearl {
 	public void enableStorage() {
 		storageEnabled = true;
 	}
-	
+
 	/**
 	 * Checks to make sure the pearl being operated on is valid
 	 */
@@ -425,7 +425,7 @@ final class CoreExilePearl implements ExilePearl {
 			throw new RuntimeException(String.format("Tried to modify exile pearl for player %s that is no longer valid.", getPlayerName()));
 		}
 	}
-	
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
@@ -437,7 +437,7 @@ final class CoreExilePearl implements ExilePearl {
             .append(freedOffline)
             .toHashCode();
     }
-	
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -465,7 +465,7 @@ final class CoreExilePearl implements ExilePearl {
 		Location l = getHolder().getLocation();
 		String name = getHolder().getName();		
 		TextUtil.msg(getPlayer(), Lang.pearlPearlIsHeld, name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-		
+
 		for(BroadcastListener b : bcastListeners) {
 			b.broadcast(this);
 		}
@@ -504,17 +504,17 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public void setLastOnline(Date online) {
 		lastSeen = online;
-		
+
 		if (storageEnabled) {
 			storage.updatePearlLastOnline(this);
 		}
 	}
-	
+
 	@Override
 	public boolean isSummoned() {
 		return summoned;
 	}
-	
+
 	@Override
 	public void setSummoned(boolean summoned) {
 		if(pearlType != PearlType.PRISON) return;
@@ -523,12 +523,12 @@ final class CoreExilePearl implements ExilePearl {
 			storage.updatePearlSummoned(this);
 		}
 	}
-	
+
 	@Override
 	public Location getReturnLocation() {
 		return returnLoc;
 	}
-	
+
 	@Override
 	public void setReturnLocation(Location loc) {
 		if(pearlType != PearlType.PRISON) return;

@@ -11,7 +11,7 @@ public class CmdSummonConfirm extends PearlCommand {
 	public CmdSummonConfirm(ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("confirm");
-		
+
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Confirms a summon request.");
 	}
@@ -22,7 +22,7 @@ public class CmdSummonConfirm extends PearlCommand {
 			msg(Lang.summoningNotEnabled);
 			return;
 		}
-		
+
 		ExilePearl pearl = plugin.getPearl(player().getUniqueId());
 		if(pearl == null || pearl.getPearlType() != PearlType.PRISON) {
 			msg(Lang.onlyPrisonedPlayers);

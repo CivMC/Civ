@@ -23,14 +23,14 @@ public class CmdAdminExileAny extends PearlCommand {
 		this.aliases.add("exileany");
 
 		this.setHelpShort("Exiles a player.");
-		
+
 		this.commandArgs.add(requiredPlayerOrUUID("player"));
 		this.commandArgs.add(optionalPlayerOrUUID("killed by"));
 		this.commandArgs.add(optional("world"));
 		this.commandArgs.add(optional("x"));
 		this.commandArgs.add(optional("y"));
 		this.commandArgs.add(optional("z"));
-		
+
 		this.permission = Permission.EXILE_ANY.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
@@ -40,13 +40,13 @@ public class CmdAdminExileAny extends PearlCommand {
 		UUID playerId = argAsPlayerOrUUID(0);
 		UUID killerId = argAsPlayerOrUUID(1);
 		Inventory inv = null;
-		
+
 		if (playerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		String playerName = plugin.getRealPlayerName(playerId);
-		
+
 		// Use the command sender as killer if none is specified
 		if(args.size() < 2) {
 			if(senderIsConsole) {
@@ -56,7 +56,7 @@ public class CmdAdminExileAny extends PearlCommand {
 				killerId = player().getUniqueId();
 			}
 		}
-		
+
 		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl != null) {
 			if(pearl.getFreedOffline()) {
@@ -68,16 +68,16 @@ public class CmdAdminExileAny extends PearlCommand {
 				return;
 			}
 		}
-		
+
 		if (killerId == null) {
 			killerId = player().getUniqueId();
 		}
-		
+
 		if (killerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
-		
+
 		if (senderIsConsole || args.size() > 2) {
 			if (args.size() < 6) {
 				if (senderIsConsole) {
@@ -87,48 +87,48 @@ public class CmdAdminExileAny extends PearlCommand {
 					return;
 				}
 			}
-			
+
 			World world = Bukkit.getWorld(argAsString(2));
 			Integer x = argAsInt(3);
 			Integer y = argAsInt(4);
 			Integer z = argAsInt(5);
-			
+
 			if (world == null || x == null || y == null || z == null) {
 				msg("<i>Invalid location");
 				return;
 			}
-			
+
 			Block b = world.getBlockAt(x, y, z);
 			BlockState bs = b.getState();
 			if (bs == null || (!(bs instanceof InventoryHolder))) {
 				msg(Lang.locNotInventory);
 				return;
 			}
-			
+
 			inv = ((InventoryHolder)bs).getInventory();
-			
+
 			if (inv.firstEmpty() == -1) {
 				msg("<i>That inventory is full.");
 				return;
 			}
-			
+
 			pearl = plugin.exilePlayer(playerId, killerId, b.getLocation());
 		} else {
 			inv = player().getInventory();
-			
+
 			if (inv.firstEmpty() == -1) {
 				msg("<i>You need an open inventory slot to do that.");
 				return;
 			}
-			
+
 			pearl = plugin.exilePlayer(playerId, killerId, new PlayerHolder(player()));
 		}
-		
+
 		if (pearl == null) {
 			msg("<b>Tried to exile player <c>%s <b>but the operation failed.", playerName);
 			return;
 		}
-		
+
 		// Place the pearl in the inventory
 		inv.setItem(inv.firstEmpty(), pearl.createItemStack());
 		msg("<g>You exiled the player <c>%s", pearl.getPlayerName());

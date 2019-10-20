@@ -13,13 +13,13 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.PearlLogger;
 
 public class AsyncStorageWriterTest {
-	
+
 	private PluginStorage storage;
 	private PearlLogger logger;
 	private AsyncStorageWriter writer;
 	private ExilePearl pearl;
-	
-	
+
+
 	@Before
 	public void setUp() throws Exception {
 		storage = mock(PluginStorage.class);
@@ -30,12 +30,12 @@ public class AsyncStorageWriterTest {
 
 	@Test
 	public void testAsyncStorageWriter() {
-		
+
 		// Null arguments throw exceptions
 		Throwable e = null;
 		try { new AsyncStorageWriter(null, logger); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
-		
+
 		e = null;
 		try { new AsyncStorageWriter(storage, null); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NullArgumentException);
@@ -44,30 +44,30 @@ public class AsyncStorageWriterTest {
 	@Test
 	public void testConnectDisconnect() throws Exception {
 		assertFalse(writer.isConnected());
-		
+
 		when(storage.connect()).thenReturn(false);
 		assertFalse(writer.connect());
 		verify(storage).connect();
-		
+
 		Throwable e = null;
 		try { writer.pearlInsert(pearl); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NotYetConnectedException);
-		
+
 		when(storage.connect()).thenReturn(true);
 		assertTrue(writer.connect());
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.isConnected());
-		
+
 		e = null;
 		try { writer.pearlInsert(pearl); } catch (Throwable ex) { e = ex; }
 		assertNull(e);
-		
+
 		verify(storage, timeout(5000)).pearlInsert(pearl);;
-		
+
 		writer.disconnect();
 		assertFalse(writer.isConnected());
 		verify(storage).disconnect();
-		
+
 		e = null;
 		try { writer.pearlInsert(pearl); } catch (Throwable ex) { e = ex; }
 		assertTrue(e instanceof NotYetConnectedException);
@@ -78,7 +78,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.loadAllPearls();
 		verify(storage).loadAllPearls();
 	}
@@ -88,7 +88,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.pearlInsert(pearl);
 		verify(storage, timeout(5000)).pearlInsert(pearl);
 	}
@@ -98,7 +98,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.pearlRemove(pearl);
 		verify(storage, timeout(5000)).pearlRemove(pearl);
 	}
@@ -108,7 +108,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.updatePearlLocation(pearl);
 		verify(storage, timeout(5000)).updatePearlLocation(pearl);
 	}
@@ -118,7 +118,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.updatePearlHealth(pearl);
 		verify(storage, timeout(5000)).updatePearlHealth(pearl);
 	}
@@ -128,7 +128,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.updatePearlFreedOffline(pearl);
 		verify(storage, timeout(5000)).updatePearlFreedOffline(pearl);
 	}
@@ -138,7 +138,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.updatePearlType(pearl);
 		verify(storage, timeout(5000)).updatePearlType(pearl);
 	}
@@ -148,7 +148,7 @@ public class AsyncStorageWriterTest {
 		when(storage.connect()).thenReturn(true);
 		when(storage.isConnected()).thenReturn(true);
 		assertTrue(writer.connect());
-		
+
 		writer.updatePearlKiller(pearl);
 		verify(storage, timeout(5000)).updatePearlKiller(pearl);
 	}

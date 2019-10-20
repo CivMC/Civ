@@ -15,17 +15,17 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 public class EntityDamageEventWrapper {
 
 	private final EntityDamageByEntityEvent event;
-	
+
 	public EntityDamageEventWrapper(final EntityDamageByEntityEvent event) {
 		Guard.ArgumentNotNull(event, "event");
-		
+
 		this.event = event;
 	}
-	
+
 	public EntityDamageByEntityEvent getEvent() {
 		return event;
 	}
-	
+
 	/**
 	 * Gets the damager or indirect damager from any projectile.
 	 * @return The damager player

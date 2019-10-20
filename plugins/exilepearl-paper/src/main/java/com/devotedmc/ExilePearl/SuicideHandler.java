@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import com.devotedmc.ExilePearl.util.ExilePearlRunnable;
 
 public interface SuicideHandler extends ExilePearlRunnable, Listener {
-	
+
 	/**
 	 * Adds a player to the suicide queue
 	 * @param player The player to add

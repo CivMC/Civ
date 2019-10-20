@@ -9,7 +9,7 @@ public class CmdReturn extends PearlCommand {
 	public CmdReturn(ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("return");
-		
+
 		this.senderMustBePlayer = true;
 		this.helpShort = "Returns a summoned player";
 	}

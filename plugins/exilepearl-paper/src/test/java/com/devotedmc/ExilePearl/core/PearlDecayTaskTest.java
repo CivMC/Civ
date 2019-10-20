@@ -17,7 +17,7 @@ import com.devotedmc.testbukkit.TestBukkitRunner;
 
 @RunWith(TestBukkitRunner.class)
 public class PearlDecayTaskTest {
-	
+
 	private PearlConfig pearlConfig;
 	private PearlManager manager;
 	private ExilePearlApi pearlApi;
@@ -25,16 +25,16 @@ public class PearlDecayTaskTest {
 
 	@Before
 	public void setUp() throws Exception {
-		
+
 		pearlConfig = mock(PearlConfig.class);
 		when(pearlConfig.getPearlHealthDecayIntervalMin()).thenReturn(60);
-		
+
 		manager = mock(PearlManager.class);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(pearlConfig);
 		when(pearlApi.getPearlManager()).thenReturn(manager);
-		
+
 		dut = new PearlDecayTask(pearlApi);
 	}
 
@@ -50,17 +50,17 @@ public class PearlDecayTaskTest {
 	public void testStartStop() {
 		final BukkitScheduler scheduler = TestBukkit.getServer().getScheduler();
 		reset(scheduler);
-		
+
 		assertFalse(dut.isRunning());
-		
+
 		dut.start();
 		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
-		
+
 		dut.start();
 		verify(scheduler).scheduleSyncRepeatingTask(pearlApi, dut, 72000, 72000);
 		assertTrue(dut.isRunning());
-		
+
 		dut.stop();
 		verify(scheduler).cancelTask(anyInt());
 		assertFalse(dut.isRunning());

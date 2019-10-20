@@ -13,28 +13,28 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class PlayerBroadcastListener implements BroadcastListener {
-	
+
 	private final UUID playerId;
-	
+
 	public PlayerBroadcastListener(final Player player) {
 		Guard.ArgumentNotNull(player, "player");
-		
+
 		this.playerId = player.getUniqueId();
 	}
-	
+
 	@Override
 	public void broadcast(ExilePearl pearl) {
 		Location l = pearl.getHolder().getLocation();
 		String holderName = pearl.getHolder().getName();
-		
+
 		String msg = TextUtil.parse(Lang.pearlBroadcast, pearl.getPlayerName(), holderName, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-		
+
 		Player p = Bukkit.getPlayer(playerId);
 		if (p != null && p.isOnline()) {
 			p.sendMessage(msg);
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
         if (this == o) {
@@ -48,7 +48,7 @@ public class PlayerBroadcastListener implements BroadcastListener {
 
 		return playerId.equals(other.playerId);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return playerId.hashCode();

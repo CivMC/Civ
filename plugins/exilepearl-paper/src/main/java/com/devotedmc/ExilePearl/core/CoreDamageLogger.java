@@ -40,7 +40,7 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 
 	private final Map<UUID, DamageLog> damageLogs = new HashMap<UUID, DamageLog>();
-	
+
 	private List<PotionEffectType> damagePotions = Arrays.asList(PotionEffectType.HARM, PotionEffectType.POISON, PotionEffectType.WEAKNESS);
 
 	// The bits for indicating whether a given potion is upgraded or extended
@@ -98,7 +98,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 	public void recordDamage(UUID playerId, Player damager, double amount) {
 		Guard.ArgumentNotNull(playerId, "playerId");
 		Guard.ArgumentNotNull(damager, "damager");
-		
+
 		DamageLog rec = damageLogs.get(playerId);
 		if (rec == null) {
 			rec = new DamageLog(pearlApi.getClock(), playerId);
@@ -109,7 +109,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		pearlApi.log("%s dealt %.1f damage to %s", pearlApi.getRealPlayerName(damager.getUniqueId()), amount, pearlApi.getRealPlayerName(playerId));
 		rec.recordDamage(damager, amount, maxDamage);
 	}
-	
+
 	@Override
 	public void recordDamage(Player player, Player damager, double amount) {
 		Guard.ArgumentNotNull(player, "player");
@@ -120,14 +120,14 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 	@Override
 	public List<Player> getSortedDamagers(UUID playerId) {
 		Guard.ArgumentNotNull(playerId, "playerId");
-		
+
 		final List<Player> players = new ArrayList<Player>();
 		final DamageLog log = damageLogs.get(playerId);
-		
+
 		if (log == null) {
 			return players;
 		}
-		
+
 		// Algorithm 0 sorts by most recent
 		// Algorithm 1 sorts by greatest damage
 		Collection<DamageRecord> recs = null;
@@ -136,24 +136,24 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		} else {
 			recs = log.getDamageSortedDamagers();
 		}
-		
+
 		for (DamageRecord rec : recs) {
 			Player p = Bukkit.getPlayer(rec.getDamager());
 			if (p != null && p.isOnline()) {
 				players.add(p);
 			}
 		}
-		
+
 		return players;
 	}
-	
-	
+
+
 	@Override
 	public List<Player> getSortedDamagers(Player player) {
 		Guard.ArgumentNotNull(player, "player");
 		return getSortedDamagers(player.getUniqueId());
 	}
-	
+
 
 	@Override
 	public void loadConfig(PearlConfig config) {
@@ -164,7 +164,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		decayAmount = Math.max(0, config.getDamageLogDecayAmount());
 		maxDamage = Math.max(0, config.getDamageLogMaxDamage());
 		potionDamage = Math.max(0, config.getDamageLogPotionDamage());
-		
+
 		if (algorithm < 0 || algorithm > 1) {
 			algorithm = 0;
 		}
@@ -227,9 +227,9 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		if (!(e.getEntity() instanceof Player)) {
 			return;
 		}
-		
+
 		final UUID playerId;
-		
+
 		// If the player was an NPC, grab the ID from it
 		NpcIdentity npcId = null;
 		try {
@@ -266,8 +266,8 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		if (!(shooter instanceof Player)) {
 			return;
 		}
-		
-		
+
+
 		Player damager = (Player) shooter;
 
 		boolean isDamagePotion = false;
@@ -282,7 +282,7 @@ final class CoreDamageLogger extends ExilePearlTask implements DamageLogger {
 		if (!isDamagePotion) {
 			return;
 		}
-		
+
 		// If a potion is upgraded or extended it will deal twice the base damage
 		double damage = potionDamage;
 		if ((e.getEntity().getItem().getDurability() & POTION_MULTIPLIER_MASK) > 0) {

@@ -46,7 +46,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.collect.ImmutableSet;
 
 public class TestPluginManager implements PluginManager {
-	
+
     private final Server server;
     private final List<Plugin> plugins = new ArrayList<Plugin>();
     private final Map<String, Plugin> lookupNames = new HashMap<String, Plugin>();
@@ -100,7 +100,7 @@ public class TestPluginManager implements PluginManager {
 	public Plugin loadPlugin(File file) throws InvalidPluginException, InvalidDescriptionException, UnknownDependencyException {
 		return null;
 	}
-	
+
 	public JavaPlugin loadPlugin(TestPlugin<?> p) throws InvalidPluginException, UnknownDependencyException {
 		final JavaPlugin plugin;
 		try {
@@ -121,7 +121,7 @@ public class TestPluginManager implements PluginManager {
 	public Plugin[] loadPlugins(File directory) {
 		return loadPlugins();
 	}
-	
+
 	public Plugin[] loadPlugins() {
         List<Plugin> result = new ArrayList<Plugin>();
         
@@ -172,7 +172,7 @@ public class TestPluginManager implements PluginManager {
             }
         }
 	}
-	
+
     private void fireEvent(Event event) {
         HandlerList handlers = event.getHandlers();
         RegisteredListener[] listeners = handlers.getRegisteredListeners();
@@ -237,7 +237,7 @@ public class TestPluginManager implements PluginManager {
             getEventListeners(event).register(new RegisteredListener(listener, executor, priority, plugin, ignoreCancelled));
         }
 	}
-	
+
     private HandlerList getEventListeners(Class<? extends Event> type) {
         try {
             Method method = getRegistrationClass(type).getDeclaredMethod("getHandlerList");
@@ -316,7 +316,7 @@ public class TestPluginManager implements PluginManager {
             }
         }
 	}
-	
+
 	private void loaderEnablePlugin(Plugin plugin) {
         if (!plugin.isEnabled()) {
             plugin.getLogger().info("Enabling " + plugin.getDescription().getFullName());
@@ -338,7 +338,7 @@ public class TestPluginManager implements PluginManager {
             server.getPluginManager().callEvent(new PluginEnableEvent(plugin));
         }
 	}
-	
+
 	private void loaderDisablePlugin(Plugin plugin) {
         if (plugin.isEnabled()) {
             plugin.getLogger().info("Disabling " + plugin.getDescription().getFullName());
@@ -402,7 +402,7 @@ public class TestPluginManager implements PluginManager {
             calculatePermissionDefault(perm);
         }
 	}
-	
+
     private void calculatePermissionDefault(Permission perm) {
         if ((perm.getDefault() == PermissionDefault.OP) || (perm.getDefault() == PermissionDefault.TRUE)) {
             defaultPerms.get(true).add(perm);
@@ -413,7 +413,7 @@ public class TestPluginManager implements PluginManager {
             dirtyPermissibles(false);
         }
     }
-	
+
     private void dirtyPermissibles(boolean op) {
         Set<Permissible> permissibles = getDefaultPermSubscriptions(op);
 
@@ -506,7 +506,7 @@ public class TestPluginManager implements PluginManager {
 	public boolean useTimings() {
         return useTimings;
 	}
-	
+
     /**
      * Sets whether or not per event timing code should be used
      *

@@ -30,30 +30,30 @@ public enum ExileRule {
 	MILK_COWS("MILK_COWS", "Milk Cows using Bucket"),
 	FILL_CAULDRON("FILL_CAULDRON", "Fill Cauldron using Bucket")
 	;
-	
+
 	private final String text;
 	private final String actionText;
-	
+
 	private ExileRule(final String text, final String actionText) {
 		Guard.ArgumentNotNullOrEmpty(text, "text");
 		Guard.ArgumentNotNullOrEmpty(actionText, "actionText");
-		
+
 		this.text = text;
 		this.actionText = actionText;
 	}
-	
+
 	@Override
 	public String toString() {
 		return text;
 	}
-	
+
 	public String getActionString() {
 		return actionText;
 	}
-	
+
 	public static ExileRule fromString(String text) {
 		switch (text.toUpperCase()) {
-		
+
 		case "PEARL_RADIUS":
 			return PEARL_RADIUS;
 		case "DAMAGE_REINFORCEMENT":
@@ -92,7 +92,7 @@ public enum ExileRule {
 			return USE_ANVIL;
 		case "PLACE_TNT":
 			return PLACE_TNT;
-		
+
 		default:
 			return null;
 		}

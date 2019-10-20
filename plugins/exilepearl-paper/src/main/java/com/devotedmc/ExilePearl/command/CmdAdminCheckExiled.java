@@ -14,9 +14,9 @@ public class CmdAdminCheckExiled extends PearlCommand {
 		this.aliases.add("check");
 
 		this.setHelpShort("Checks if a player is exiled");
-		
+
 		this.commandArgs.add(requiredPearlPlayer());
-		
+
 		this.permission = Permission.CHECK.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
@@ -24,13 +24,13 @@ public class CmdAdminCheckExiled extends PearlCommand {
 	@Override
 	public void perform() {
 		UUID playerId = argAsPlayerOrUUID(0);
-		
+
 		if (playerId == null) {
 			msg(Lang.unknownPlayer);
 			return;
 		}
 		String playerName = plugin.getRealPlayerName(playerId);
-		
+
 		ExilePearl pearl = plugin.getPearl(playerId);
 		if (pearl == null) {
 			msg("<i>The player <c>%s is not exiled.", playerName);
@@ -40,7 +40,7 @@ public class CmdAdminCheckExiled extends PearlCommand {
 			msg("<i>%s has been freed but hasn't logged in yet.", playerName);
 			return;
 		}
-		
+
 		msg("<g>Found exile pearl for player %s", playerName);
 
 		for (String s : plugin.getLoreProvider().generatePearlInfo(pearl)) {

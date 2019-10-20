@@ -14,12 +14,12 @@ public enum Permission
 	SET_KILLER("setkiller"),
 	CONFIG("config")
 	;
-	
+
 	/**
 	 * The node string that is referenced for permissions
 	 */
 	public final String node;
-	
+
 	Permission(final String node) {
 		this.node = "exilepearl." + node;
 	}

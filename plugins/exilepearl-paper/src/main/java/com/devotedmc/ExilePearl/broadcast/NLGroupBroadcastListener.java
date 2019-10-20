@@ -14,22 +14,22 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public class NLGroupBroadcastListener implements BroadcastListener {
-	
+
 	private final Group group;
-	
+
 	public NLGroupBroadcastListener(final Group group) {
 		Guard.ArgumentNotNull(group, "group");
-		
+
 		this.group = group;
 	}
-	
+
 	@Override
 	public void broadcast(ExilePearl pearl) {
 		Location l = pearl.getHolder().getLocation();
 		String name = pearl.getHolder().getName();
-		
+
 		String msg = TextUtil.parse(Lang.groupPearlBroadcast, group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
-		
+
 		for (UUID uid : group.getCurrentMembers()) {
 			Player p = Bukkit.getPlayer(uid);
 			if (p != null && p.isOnline()) {
@@ -37,7 +37,7 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 			}
 		}
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
         if (this == o) {

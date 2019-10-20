@@ -16,7 +16,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.plugin.Plugin;
 
 public class TestConsoleCommandSender implements ConsoleCommandSender {
-	
+
     protected final TestConversationTracker conversationTracker = new TestConversationTracker();
     private final PermissibleBase perm;
     
@@ -152,7 +152,7 @@ public class TestConsoleCommandSender implements ConsoleCommandSender {
         }
         
     };
-	
+
 	@Override
 	public Spigot spigot() {
 		return spigot;

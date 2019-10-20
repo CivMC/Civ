@@ -36,7 +36,6 @@ import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import com.wimbli.WorldBorder.BorderData;
 import com.wimbli.WorldBorder.WorldBorder;
 
-import io.lumine.xikage.mythicmobs.MythicMobs;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.manager.BastionBlockManager;
@@ -61,7 +60,6 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.generator.ChunkGenerator;
@@ -527,11 +525,6 @@ final class ExilePearlCore implements ExilePearlApi {
 	}
 
 	@Override
-	public boolean isMythicMobsEnabled() {
-		return Bukkit.getPluginManager().isPluginEnabled("MythicMobs");
-	}
-
-	@Override
 	public LoreProvider getLoreProvider() {
 		return loreGenerator;
 	}
@@ -663,15 +656,6 @@ final class ExilePearlCore implements ExilePearlApi {
 			ex.printStackTrace();
 		}
 
-		return false;
-	}
-
-
-	@Override
-	public boolean isMythicMob(Entity entity) {
-		if (isMythicMobsEnabled()) {
-			return MythicMobs.inst().getAPIHelper().isMythicMob(entity);
-		}
 		return false;
 	}
 

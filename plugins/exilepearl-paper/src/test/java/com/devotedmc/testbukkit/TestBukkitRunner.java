@@ -11,14 +11,14 @@ import javassist.CtConstructor;
 import javassist.CtMethod;
 
 public class TestBukkitRunner extends BlockJUnit4ClassRunner {
-	
+
 	private static boolean modifiedJavaPlugin = false;
 
 	public TestBukkitRunner(Class<?> clazz) throws InitializationError {
 		super(clazz);
-		
+
 		rewireJavaPlugin();
-		
+
 		Class<? extends TestServer> serverClass = TestServer.class;
 		boolean useLogger = false;
 		TestOptions testOptions = clazz.getDeclaredAnnotation(TestOptions.class);
@@ -26,7 +26,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
 			useLogger = testOptions.useLogger();
 			serverClass = testOptions.server();
 		}
-		
+
 		TestServer server = TestBukkit.getServer();
     	if (server == null) {
     		try {
@@ -40,7 +40,7 @@ public class TestBukkitRunner extends BlockJUnit4ClassRunner {
     	}
 	}
 
-	
+
 	/**
 	 * Modifies the code for JavaPlugin so that it can actually 
 	 * be invoked outside of a Bukkit instance

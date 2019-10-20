@@ -17,9 +17,9 @@ public class CmdPearlLocate extends PearlCommand {
 
 	@Override
 	public void perform() {
-		
+
 		ExilePearl pearl = plugin.getPearl(player().getUniqueId());
-		
+
 		if (pearl == null) {
 			msg(Lang.pearlNotExiled);
 			return;
@@ -27,7 +27,7 @@ public class CmdPearlLocate extends PearlCommand {
 
 		if (pearl.verifyLocation()) {
 			pearl.performBroadcast();
-			
+
 		} else {
 			plugin.freePearl(pearl, PearlFreeReason.VALIDATION_FAILED);
 		}

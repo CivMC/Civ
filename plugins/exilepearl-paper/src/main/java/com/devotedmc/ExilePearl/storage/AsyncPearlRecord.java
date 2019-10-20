@@ -7,7 +7,7 @@ import com.devotedmc.ExilePearl.ExilePearl;
  * @author Gordon
  */
 class AsyncPearlRecord {
-	
+
 	/**
 	 * The type of database write action
 	 */
@@ -24,10 +24,10 @@ class AsyncPearlRecord {
 		UPDATE_SUMMONED,
 		UPDATE_RETURN_LOCATION
 	}
-	
+
 	private final ExilePearl pearl;
 	private final WriteType writeType;
-	
+
 	/**
 	 * Creates a new AsyncPearlRecord instance
 	 * @param pearl The pearl instance
@@ -37,7 +37,7 @@ class AsyncPearlRecord {
 		this.pearl = pearl;
 		this.writeType = writeType;
 	}
-	
+
 	/**
 	 * Gets the pearl instance
 	 * @return The pearl instance
@@ -45,7 +45,7 @@ class AsyncPearlRecord {
 	public ExilePearl getPearl() {
 		return pearl;
 	}
-	
+
 	/**
 	 * Gets the write type
 	 * @return The write type

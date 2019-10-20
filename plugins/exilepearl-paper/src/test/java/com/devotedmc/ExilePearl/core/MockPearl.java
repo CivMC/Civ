@@ -25,7 +25,7 @@ import com.devotedmc.ExilePearl.broadcast.BroadcastListener;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 
 public class MockPearl implements ExilePearl {
-	
+
 	private PlayerProvider nameProvider;
 	private UUID playerId;
 	private UUID killedBy;
@@ -36,7 +36,7 @@ public class MockPearl implements ExilePearl {
 	private Date lastOnline;
 	private int health;
 	private boolean freedOffline;
-	
+
 	public MockPearl(final PlayerProvider nameProvider, final UUID playerId, final UUID killedBy, int pearlId, Location loc) {
 		this.nameProvider = nameProvider;
 		this.playerId = playerId;
@@ -168,7 +168,7 @@ public class MockPearl implements ExilePearl {
 		ItemStack is = mock(ItemStack.class);
 		when(is.getType()).thenReturn(Material.ENDER_PEARL);
 		when(is.getAmount()).thenReturn(1);
-		
+
 		ItemMeta im = Mockito.mock(ItemMeta.class);
 		final String playerName = getPlayerName();
 		when(im.getDisplayName()).thenReturn(playerName);
@@ -187,14 +187,14 @@ public class MockPearl implements ExilePearl {
 		if (is.getItemMeta() == null) {
 			return false;
 		}
-		
+
 		ItemMeta im = is.getItemMeta();
 		ItemMeta other = createItemStack().getItemMeta();
-		
+
 		if (im.getDisplayName() != other.getDisplayName()) {
 			return false;
 		}
-		
+
 		List<String> lore1 = im.getLore();
 		List<String> lore2 = other.getLore();
 		return lore1.equals(lore2);
@@ -203,7 +203,7 @@ public class MockPearl implements ExilePearl {
 	@Override
 	public void enableStorage() {		
 	}
-	
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 31) // two randomly chosen prime numbers
@@ -216,7 +216,7 @@ public class MockPearl implements ExilePearl {
             .append(pearlType)
             .toHashCode();
     }
-	
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -242,19 +242,19 @@ public class MockPearl implements ExilePearl {
 	@Override
 	public void performBroadcast() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void addBroadcastListener(BroadcastListener bcast) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeBroadcastListener(Object bcast) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -267,7 +267,7 @@ public class MockPearl implements ExilePearl {
 	public void setKillerId(UUID killerId) {
 		this.killedBy = killerId;
 	}
-	
+
 	@Override
 	public Date getLastOnline() {
 		return this.lastOnline;
@@ -287,7 +287,7 @@ public class MockPearl implements ExilePearl {
 	@Override
 	public void setSummoned(boolean summoned) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -299,6 +299,6 @@ public class MockPearl implements ExilePearl {
 	@Override
 	public void setReturnLocation(Location loc) {
 		// TODO Auto-generated method stub
-		
+
 	}
 }

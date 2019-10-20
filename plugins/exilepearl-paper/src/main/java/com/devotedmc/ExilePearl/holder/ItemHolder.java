@@ -17,14 +17,14 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 public class ItemHolder implements PearlHolder {
 
 	private final Item item;
-	
+
 	/**
 	 * Creates a new ItemHolder instance
 	 * @param item The item
 	 */
 	public ItemHolder(final Item item) {
 		Guard.ArgumentNotNull(item, "item");
-		
+
 		this.item = item;
 	}
 
@@ -42,7 +42,7 @@ public class ItemHolder implements PearlHolder {
 	public HolderVerifyResult validate(ExilePearl pearl) {
 		 // Location holder
 		Chunk chunk = item.getLocation().getChunk();
-		
+
 		for (Entity entity : chunk.getEntities()) {
 			if (entity.equals(item)) {
 				if (pearl.validateItemStack(item.getItemStack())) {
@@ -52,7 +52,7 @@ public class ItemHolder implements PearlHolder {
 		}
 		return HolderVerifyResult.ENTITY_NOT_IN_CHUNK;
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
         if (this == o) {

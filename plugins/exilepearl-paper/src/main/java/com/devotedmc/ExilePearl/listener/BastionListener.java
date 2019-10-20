@@ -11,7 +11,7 @@ import isaac.bastion.event.BastionDamageEvent;
 
 public class BastionListener extends RuleListener {
 
-	
+
 	public BastionListener(ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
@@ -24,7 +24,7 @@ public class BastionListener extends RuleListener {
 	public void onBastionCreate(BastionCreateEvent e) {
 		checkAndCancelRule(ExileRule.CREATE_BASTION, e, e.getPlayer());
 	}
-	
+
 	/**
 	 * Prevents exiled players from damaging bastions
 	 * @param e The event args

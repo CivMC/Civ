@@ -10,7 +10,7 @@ public class CmdAdminReload extends PearlCommand {
 		this.aliases.add("reload");
 
 		this.setHelpShort("Reloads the entire plugin.");
-		
+
 		this.permission = Permission.RELOAD.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
@@ -19,13 +19,13 @@ public class CmdAdminReload extends PearlCommand {
 	public void perform() {
 		try {
 			msg("<i>Performing plugin reload.");
-			
+
 			msg("<i>Disabling plugin.");
 			plugin.onDisable();
 
 			msg("<i>Enabling plugin.");
 			plugin.onEnable();
-			
+
 			msg("<g>Plugin reload complete.");
 		} catch(Exception ex) {
 			msg("<b>Plugin reload failed.");

@@ -23,19 +23,19 @@ import static vg.civcraft.mc.civmodcore.util.TextUtil.*;
  * @author Gordon
  */
 final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
-	
+
 	private int timeout = 180;
-	
+
 	class SuicideRecord {
 		public final Location location;
 		public int seconds;
-		
+
 		public SuicideRecord(final Location location, final int seconds) {
 			this.location = location;
 			this.seconds = seconds;
 		}
 	}
-	
+
 	private final HashMap<UUID, SuicideRecord> players = new HashMap<UUID, SuicideRecord>();
 	private final HashSet<UUID> toRemove = new HashSet<UUID>();
 
@@ -45,7 +45,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 	public PlayerSuicideTask(final ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
-	
+
 	@Override
 	public String getTaskName() {
 		return "Player Suicide";
@@ -63,14 +63,14 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 		if (!enabled) {
 			return;
 		}
-		
+
 		toRemove.clear();
-		
+
 		for (Entry<UUID, SuicideRecord> rec : players.entrySet()) {
 			Player p = pearlApi.getPlayer(rec.getKey());
 			int seconds = rec.getValue().seconds - 1;
 			rec.getValue().seconds = seconds;
-			
+
 			if (seconds > 0) {
 				// Notify every 10 seconds and last 5 seconds
 				if (seconds <= 5 || seconds % 10 == 0) {
@@ -80,7 +80,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 				toRemove.add(rec.getKey());
 			}
 		}
-		
+
 		for(UUID uid : toRemove) {
 			players.remove(uid);
 			Player p = pearlApi.getPlayer(uid);
@@ -102,7 +102,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 	public boolean isAdded(UUID uid) {
 		return players.containsKey(uid);
 	}
-	
+
 	/**
 	 * Cancels a pending suicide if the player moves
 	 * @param e
@@ -115,7 +115,7 @@ final class PlayerSuicideTask extends ExilePearlTask implements SuicideHandler {
 			msg(e.getPlayer(), Lang.suicideCancelled);
 		}
 	}
-	
+
 	@Override
 	public void loadConfig(PearlConfig config) {
 		this.timeout = pearlApi.getPearlConfig().getSuicideTimeoutSeconds();

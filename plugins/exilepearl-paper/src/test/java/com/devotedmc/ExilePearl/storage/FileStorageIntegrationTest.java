@@ -63,13 +63,13 @@ public class FileStorageIntegrationTest {
 					pearl.setPearledOn(doc.getDate("pearled_on"));
 					pearl.setFreedOffline(doc.getBoolean("freed_offline"));
 					return pearl;
-					
+
 				} catch (Exception ex) {
 					return null;
 				}
 			}
 		});
-		
+
 		testDir.mkdirs();
         assertTrue(testDir.exists());
         
@@ -112,7 +112,7 @@ public class FileStorageIntegrationTest {
 		// Load initial pearl table and verify size is zero
 		Collection<ExilePearl> loadedPearls = storage.loadAllPearls();
 		assertEquals(0, loadedPearls.size());
-		
+
 		PlayerProvider playerProvider = mock(PlayerProvider.class);
 		when(playerProvider.getRealPlayerName(any(UUID.class))).thenAnswer(new Answer<String>() {
 
@@ -121,7 +121,7 @@ public class FileStorageIntegrationTest {
 				try {
 					UUID uid1 = (UUID)invocation.getArguments()[0];
 					return "player: " + uid1.hashCode();
-					
+
 				} catch (Exception ex) {
 					return null;
 				}
@@ -216,8 +216,8 @@ public class FileStorageIntegrationTest {
 		storage.updatePearlFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
-		
-		
+
+
 		///
 		/// Test changing the type
 		///
@@ -233,8 +233,8 @@ public class FileStorageIntegrationTest {
 		storage.updatePearlType(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
-		
-		
+
+
 		///
 		/// Test changing the killer
 		///

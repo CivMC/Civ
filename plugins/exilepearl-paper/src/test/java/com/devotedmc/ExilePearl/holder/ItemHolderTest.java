@@ -19,21 +19,21 @@ import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
 public class ItemHolderTest {
-	
+
 	private Item item;
 	private Location loc;
 	private ItemHolder holder;
 
 	@Before
 	public void setUp() throws Exception {
-		
+
 		World w = mock(World.class);
 		when(w.getName()).thenReturn("world");
-		
+
 		loc = new Location(w, 0, 1, 2);
 		item = mock(Item.class);
 		when(item.getLocation()).thenReturn(loc);
-		
+
 		holder = new ItemHolder(item);
 	}
 
@@ -62,19 +62,19 @@ public class ItemHolderTest {
 
 		Chunk chunk = mock(Chunk.class);
 		when(loc.getChunk()).thenReturn(chunk);
-		
+
 		Entity[] entities = new Entity[0];
 		when(chunk.getEntities()).thenReturn(entities);
-		
+
 		// Pearl shouldn't be found
 		assertEquals(holder.validate(pearl), HolderVerifyResult.ENTITY_NOT_IN_CHUNK);
-		
+
 		entities = new Entity[1];
 		when(item.getItemStack()).thenReturn(pearlStack);
 		when(item.getLocation()).thenReturn(loc);
 		entities[0] = item;
 		when(chunk.getEntities()).thenReturn(entities);
-		
+
 		// Pearl should now be found
 		assertEquals(holder.validate(pearl), HolderVerifyResult.ON_GROUND);
 	}

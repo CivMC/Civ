@@ -73,7 +73,7 @@ public class MySqlStorageIntegrationTest {
 					pearl.setPearledOn(doc.getDate("pearled_on"));
 					pearl.setFreedOffline(doc.getBoolean("freed_offline"));
 					return pearl;
-					
+
 				} catch (Exception ex) {
 					return null;
 				}
@@ -160,7 +160,7 @@ public class MySqlStorageIntegrationTest {
 
 	@Test
 	public void testPearls() throws SQLException {
-		
+
 		// Clear out the existing values
 		try (Connection connection = db.getConnection();
 				PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM exilepearls;"); ) {
@@ -262,8 +262,8 @@ public class MySqlStorageIntegrationTest {
 		storage.updatePearlFreedOffline(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
-		
-		
+
+
 		///
 		/// Test changing the type
 		///
@@ -279,8 +279,8 @@ public class MySqlStorageIntegrationTest {
 		storage.updatePearlType(updatePearl);
 		loadedPearls = storage.loadAllPearls();
 		assertTrue(loadedPearls.contains(updatePearl));
-		
-		
+
+
 		///
 		/// Test changing the killer
 		///

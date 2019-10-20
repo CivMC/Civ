@@ -18,12 +18,12 @@ public class CmdPearlBroadcastAccept extends PearlCommand {
 	@Override
 	protected void perform() {
 		ExilePearl pearl = plugin.getPearlManager().getBroadcastRequest(player());
-		
+
 		if (pearl == null) {
 			msg(Lang.pearlNoBcastRequest);
 			return;
 		}
-		
+
 		pearl.addBroadcastListener(new PlayerBroadcastListener(player()));
 		plugin.getPearlManager().removeBroadcastRequest(player());
 		msg(Lang.pearlGettingBcasts, pearl.getPlayerName());

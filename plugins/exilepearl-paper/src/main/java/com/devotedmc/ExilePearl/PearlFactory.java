@@ -12,7 +12,7 @@ import com.devotedmc.ExilePearl.holder.PearlHolder;
  * @author Gordon
  */
 public interface PearlFactory {
-	
+
 	/**
 	 * Creates an exile pearl instance
 	 * @param uid The prisoner UUID
@@ -21,7 +21,7 @@ public interface PearlFactory {
 	 * @return The new exile pearl instance
 	 */
 	ExilePearl createExilePearl(UUID uid, Player killedBy, int pearlId);
-	
+
 	/**
 	 * Creates an exile pearl instance
 	 * @param uid The prisoner UUID
@@ -39,7 +39,7 @@ public interface PearlFactory {
 	 * @return The new exile pearl instance
 	 */
 	ExilePearl createExilePearl(UUID uid, Document doc);
-	
+
 	/**
 	 * Creates a migrated pearl instance
 	 * @param uid The prisoner UUID

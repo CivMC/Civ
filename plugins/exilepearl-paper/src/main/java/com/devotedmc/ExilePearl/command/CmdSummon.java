@@ -10,11 +10,11 @@ public class CmdSummon extends PearlCommand {
 	public CmdSummon(ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("summon");
-		
+
 		this.senderMustBePlayer = true;
 		this.setHelpShort("Summon a prisoner");
 	}
-	
+
 	@Override
 	public void perform() {
 		if(!plugin.getPearlConfig().allowSummoning()) {

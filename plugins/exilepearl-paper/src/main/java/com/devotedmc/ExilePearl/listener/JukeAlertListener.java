@@ -10,7 +10,7 @@ import com.devotedmc.ExilePearl.ExileRule;
 
 public class JukeAlertListener extends RuleListener {
 
-	
+
 	public JukeAlertListener(ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}

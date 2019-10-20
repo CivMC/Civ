@@ -23,22 +23,22 @@ import com.devotedmc.ExilePearl.PlayerProvider;
 import com.devotedmc.ExilePearl.core.MockPearl;
 
 public class PlayerHolderTest {
-	
+
 	private Player player;
 	private Location loc;
 	private PlayerHolder holder;
 
 	@Before
 	public void setUp() throws Exception {
-		
+
 		World w = mock(World.class);
 		when(w.getName()).thenReturn("world");
-		
+
 		loc = new Location(w, 0, 1, 2);
 		player = mock(Player.class);
 		when(player.getLocation()).thenReturn(loc);
 		when(player.getName()).thenReturn("Player");
-		
+
 		holder = new PlayerHolder(player);
 	}
 
@@ -64,21 +64,21 @@ public class PlayerHolderTest {
 	public void testValidate() {
 		MockPearl pearl = new MockPearl(mock(PlayerProvider.class), UUID.randomUUID(), UUID.randomUUID(), 1, loc);
 		final ItemStack pearlStack = pearl.createItemStack();
-		
+
 		assertEquals(holder.validate(pearl), HolderVerifyResult.PLAYER_NOT_ONLINE);
-		
+
 		when(player.isOnline()).thenReturn(true);
 		ItemStack cursorItem = mock(ItemStack.class);
 		when(player.getItemOnCursor()).thenReturn(cursorItem);
-		
+
 		PlayerInventory inv = mock(PlayerInventory.class);
 		when(player.getInventory()).thenReturn(inv);
-		
+
 		PlayerInventory craftInv = mock(PlayerInventory.class);
 		InventoryView inView = mock(InventoryView.class);
 		when(inView.getTopInventory()).thenReturn(craftInv);
 		when(player.getOpenInventory()).thenReturn(inView);		
-		
+
 		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
 
 		HashMap<Integer, ItemStack> invItems = new HashMap<Integer, ItemStack>();
@@ -90,12 +90,12 @@ public class PlayerHolderTest {
 				return invItems;
 			}
 		});
-		
+
 		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_PLAYER_INVENTORY);
-		
+
 		invItems.clear();
 		assertEquals(holder.validate(pearl), HolderVerifyResult.DEFAULT);
-		
+
 		// Check crafting inventory
 		HashMap<Integer, ItemStack> craftItems = new HashMap<Integer, ItemStack>();
 		craftItems.put(0, pearlStack);
@@ -108,7 +108,7 @@ public class PlayerHolderTest {
 		});
 
 		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_PLAYER_INVENTORY_VIEW);
-		
+
 		when(player.getItemOnCursor()).thenReturn(pearlStack);
 		assertEquals(holder.validate(pearl), HolderVerifyResult.IN_HAND);
 	}

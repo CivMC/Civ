@@ -17,7 +17,7 @@ import vg.civcraft.mc.civmodcore.util.Guard;
 import static vg.civcraft.mc.civmodcore.util.TextUtil.msg;
 
 public class RuleListener implements Listener {
-	
+
 	protected final ExilePearlApi pearlApi;
 	protected final PearlConfig config;
 	  
@@ -27,11 +27,11 @@ public class RuleListener implements Listener {
 	 */
 	public RuleListener(final ExilePearlApi pearlApi) {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
-		
+
 		this.pearlApi = pearlApi;
 		this.config = pearlApi.getPearlConfig();
 	}
-	
+
 	/**
 	 * Gets whether a rule is active for the given player
 	 * @param rule The exile rule
@@ -41,8 +41,8 @@ public class RuleListener implements Listener {
 	protected boolean isRuleActive(ExileRule rule, UUID playerId) {
 		return pearlApi.isPlayerExiled(playerId) && !config.canPerform(rule) && pearlApi.getPearl(playerId).getPearlType() == PearlType.EXILE;
 	}
-	
-	
+
+
 	/**
 	 * Checks if a rule is active for a given player and cancels it
 	 * @param rule The rule to check
@@ -54,7 +54,7 @@ public class RuleListener implements Listener {
 		if (event == null || player == null) {
 			return;
 		}
-		
+
 		UUID playerId = player.getUniqueId();
 		if (isRuleActive(rule, playerId)) {
 			((Cancellable)event).setCancelled(true);
@@ -63,7 +63,7 @@ public class RuleListener implements Listener {
 			}
 		}
 	}
-	
+
 	/**
 	 * Checks if a rule is active for a given player and cancels.
 	 * It also notifies the player.

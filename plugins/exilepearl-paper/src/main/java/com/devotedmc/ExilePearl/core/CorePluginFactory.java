@@ -33,20 +33,20 @@ import vg.civcraft.mc.civmodcore.util.Guard;
  * @author Gordon
  */
 public final class CorePluginFactory implements PearlFactory {
-	
+
 	private final ExilePearlApi pearlApi;
-	
+
 	public static ExilePearlApi createCore(final Plugin plugin) {
 		return new ExilePearlCore(plugin);
 	}
-	
+
 	/**
 	 * Creates a new ExilePearlFactory instance
 	 * @param plugin The plugin instance
 	 */
 	public CorePluginFactory(final ExilePearlApi plugin) {
 		Guard.ArgumentNotNull(plugin, "plugin");
-		
+
 		this.pearlApi = plugin;
 	}
 
@@ -54,7 +54,7 @@ public final class CorePluginFactory implements PearlFactory {
 	public ExilePearl createExilePearl(UUID uid, Document doc) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(doc, "doc");
-		
+
 		try {
 			UUID killedBy = UUID.fromString(doc.getString("killer_id"));
 			int pearlId = doc.getInteger("pearl_id");
@@ -65,7 +65,7 @@ public final class CorePluginFactory implements PearlFactory {
 			boolean freedOffline = doc.getBoolean("freed_offline", false);
 			boolean summoned = doc.getBoolean("summoned", false);
 			Location returnLoc = doc.getLocation("returnLoc");
-			
+
 			ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy, pearlId, new BlockHolder(loc.getBlock()));
 			pearl.setPearlType(PearlType.valueOf(doc.getInteger("type", 0)));
 			pearl.setHealth(health);
@@ -76,7 +76,7 @@ public final class CorePluginFactory implements PearlFactory {
 			pearl.setReturnLocation(returnLoc);
 			pearl.enableStorage();
 			return pearl;
-			
+
 		} catch(Exception ex) {
 			pearlApi.log(Level.SEVERE, "Failed to create pearl for ID=%s, ", uid.toString(), doc);
 			return null;
@@ -87,7 +87,7 @@ public final class CorePluginFactory implements PearlFactory {
 	public ExilePearl createExilePearl(UUID uid, Player killedBy, int pearlId) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedBy, "killedBy");
-		
+
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedBy.getUniqueId(), pearlId, new PlayerHolder(killedBy));
 		pearl.enableStorage();
 		return pearl;
@@ -98,7 +98,7 @@ public final class CorePluginFactory implements PearlFactory {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(killedById, "killedById");
 		Guard.ArgumentNotNull(holder, "holder");
-		
+
 		ExilePearl pearl = new CoreExilePearl(pearlApi, pearlApi.getStorageProvider().getStorage(), uid, killedById, pearlId, holder);
 		pearl.enableStorage();
 		return pearl;
@@ -108,7 +108,7 @@ public final class CorePluginFactory implements PearlFactory {
 	public ExilePearl createdMigratedPearl(UUID uid, Document doc) {
 		Guard.ArgumentNotNull(uid, "uid");
 		Guard.ArgumentNotNull(doc, "doc");
-		
+
 		doc.append("health", pearlApi.getPearlConfig().getPearlHealthMaxValue() / 2); // set health to half max health
 		return createExilePearl(uid, doc);
 	}
@@ -128,7 +128,7 @@ public final class CorePluginFactory implements PearlFactory {
 	public BorderHandler createPearlBorderHandler() {
 		return new PearlBoundaryTask(pearlApi);
 	}
-	
+
 	public BrewHandler createBrewHandler() {
 		if (Bukkit.getPluginManager().isPluginEnabled("Brewery")) {
 			return new BreweryHandler();
@@ -145,7 +145,7 @@ public final class CorePluginFactory implements PearlFactory {
 	public PearlConfig createPearlConfig() {
 		return new CorePearlConfig(pearlApi, pearlApi);
 	}
-	
+
 	public DamageLogger createDamageLogger() {
 		return new CoreDamageLogger(pearlApi);
 	}

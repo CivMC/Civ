@@ -20,7 +20,7 @@ public enum PearlType {
 		if (value == null) {
 			return null;
 		}
-		
+
 		switch(value) {
 		case 0:
 			return EXILE;
@@ -30,12 +30,12 @@ public enum PearlType {
 			return null;
 		}
 	}
-	
+
 	public static PearlType fromString(String value) {
 		if (value == null) {
 			return null;
 		}
-		
+
 		switch(value.toLowerCase()) {
 		case "exile":
 			return EXILE;
@@ -45,7 +45,7 @@ public enum PearlType {
 			return null;
 		}
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}

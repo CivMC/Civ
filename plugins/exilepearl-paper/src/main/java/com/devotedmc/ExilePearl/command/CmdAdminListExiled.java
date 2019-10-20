@@ -15,7 +15,7 @@ public class CmdAdminListExiled extends PearlCommand {
 		this.aliases.add("list");
 
 		this.setHelpShort("Lists all the exiled players.");
-		
+
 		this.permission = Permission.LIST.node;
 		this.visibility = CommandVisibility.SECRET;
 	}
@@ -25,10 +25,10 @@ public class CmdAdminListExiled extends PearlCommand {
 		final StringBuilder sb = new StringBuilder("\n");
 		final Collection<ExilePearl> pearls = plugin.getPearls();
 		int lineLength = 0;
-		
+
 		sb.append(TextUtil.titleize("Exiled Players") + "\n");
 		sb.append(String.format("<i>There are <c>%d <i>players exiled.\n <n>", pearls.size()));
-		
+
 		for(ExilePearl pearl : pearls) {
 			sb.append(pearl.getPlayerName() + ", ");
 			lineLength += (pearl.getPlayerName().length() + 2);
@@ -40,7 +40,7 @@ public class CmdAdminListExiled extends PearlCommand {
 		if (pearls.size() > 0) {
 			sb.setLength(sb.length() - 2);
 		}
-		
+
 		msg(sb.toString());
 	}
 }

@@ -7,15 +7,15 @@ import isaac.bastion.BastionBlock;
 
 public class BastionWrapper {
 	private BastionBlock bastion;
-	
+
 	public BastionWrapper(BastionBlock bastion) {
 		this.bastion = bastion;
 	}
-	
+
 	public BastionBlock getBastion() {
 		return bastion;
 	}
-	
+
 	public Vector getPushout(Location player, int KNOCKBACK) {
 		Location bastionLocation = bastion.getLocation();
 		if (!player.getWorld().getUID().equals(bastionLocation.getWorld().getUID())) return null; // what?
@@ -24,7 +24,7 @@ public class BastionWrapper {
 		double zd = player.getZ() - bastionLocation.getZ();
 		double dist = Math.sqrt(xd*xd + zd*zd);		
 		Vector vector = null;
-		
+
 		if (bastion.getType().isSquare()) {
 			// get linear distance
 			if (xd == 0.0 & zd == 0.0) {

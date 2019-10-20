@@ -15,31 +15,31 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.google.common.base.Charsets;
 
 public class TestPlugin<T extends JavaPlugin> {
-	
+
 	private final Class<T> clazz;
 	private final PluginDescriptionFile description;
 	private YamlConfiguration config = new YamlConfiguration();
 	private JavaPlugin instance = null;
-	
+
 	public TestPlugin(final Class<T> clazz) throws Exception {
 		this.clazz = clazz;
-		
+
 		// Make sure the class is loaded
 		getClass().getClassLoader().loadClass(clazz.getName());
-		
+
 		try {
 			description = new PluginDescriptionFile(getResource("plugin.yml"));
 		} catch (Exception ex) {
 			throw new  InvalidDescriptionException(ex);
 		}
-		
+
         final InputStream configStream = getResource("config.yml");
         if (configStream == null) {
             return;
         }
         config = YamlConfiguration.loadConfiguration(new InputStreamReader(configStream, Charsets.UTF_8));
 	}
-	
+
 	/**
 	 * Gets the plugin class
 	 * @return The plugin class
@@ -47,7 +47,7 @@ public class TestPlugin<T extends JavaPlugin> {
 	public Class<? extends JavaPlugin> getPluginClass() {
 		return clazz;
 	}
-	
+
 	/**
 	 * Gets the plugin name
 	 * @return The plugin name
@@ -55,7 +55,7 @@ public class TestPlugin<T extends JavaPlugin> {
 	public String getName() {
 		return description.getName();
 	}
-	
+
 	/**
 	 * Gets the plugin description
 	 * @return The plugin description
@@ -63,7 +63,7 @@ public class TestPlugin<T extends JavaPlugin> {
 	public PluginDescriptionFile getDescription() {
 		return  description;
 	}
-	
+
 	/**
 	 * Gets the Yaml config
 	 * @return The Yaml config
@@ -71,8 +71,8 @@ public class TestPlugin<T extends JavaPlugin> {
 	public YamlConfiguration getConfig() {
 		return config;
 	}
-	
-	
+
+
 	/**
 	 * Sets the Yaml config
 	 * @param config The new config
@@ -80,7 +80,7 @@ public class TestPlugin<T extends JavaPlugin> {
 	public void setConfig(YamlConfiguration config) {
 		this.config = config;
 	}
-	
+
 	/**
 	 * Sets a configuration value
 	 * @param path The config item path
@@ -90,17 +90,17 @@ public class TestPlugin<T extends JavaPlugin> {
 		config.set(path, value);
 		return this;
 	}
-	
-	
+
+
 	@SuppressWarnings("unchecked")
 	public T getInstance() {
 		return (T)instance;
 	}
-	
+
 	public void setInstance(JavaPlugin instance) {
 		this.instance = instance;
 	}
-	
+
 	/**
 	 * Gets a resource
 	 * @param filename The resource name

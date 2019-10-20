@@ -17,23 +17,23 @@ import com.devotedmc.ExilePearl.config.PearlConfig;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 
 public class CivChatListenerTest {
-	
+
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
 	private CivChatListener dut;
-	
+
 	final UUID uid = UUID.randomUUID();
 	final Player player = mock(Player.class);
 
 	@Before
 	public void setUp() throws Exception {
 		config = mock(PearlConfig.class);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(config);
-		
+
 		dut = new CivChatListener(pearlApi);
-		
+
 		when(player.getUniqueId()).thenReturn(uid);
 	}
 
@@ -62,7 +62,7 @@ public class CivChatListenerTest {
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onChatEvent(e);
 		assertFalse(e.isCancelled());
-		
+
 		e = new GlobalChatEvent(player, "", "");
 		when(config.canPerform(ExileRule.CHAT)).thenReturn(false);
 		dut.onChatEvent(e);

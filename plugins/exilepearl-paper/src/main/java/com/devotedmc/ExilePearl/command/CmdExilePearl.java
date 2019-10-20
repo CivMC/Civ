@@ -3,34 +3,34 @@ package com.devotedmc.ExilePearl.command;
 import com.devotedmc.ExilePearl.ExilePearlApi;
 
 public class CmdExilePearl extends PearlCommand {
-	
+
 	private static CmdExilePearl instance;
-	
+
 	public static CmdExilePearl instance() {
 		return instance;
 	}
-	
+
 	public final PearlCommand cmdLocate;
 	public final PearlCommand cmdFree;
 	public final PearlCommand cmdBcast;
 	public final PearlCommand cmdBcastConfirm;
 	public final PearlCommand cmdBcastSilence;
-	
+
 	public CmdExilePearl(ExilePearlApi pearlApi) {
 		super(pearlApi);
 		this.aliases.add("ep");
-		
+
 		this.setHelpShort("The ExilePearl command");
 		this.getLongHelp().add("<n>Use <c>/ep help <n>for command help.");
-		
+
 		cmdLocate = new CmdPearlLocate(plugin);
 		cmdFree = new CmdPearlFree(plugin);
 		cmdBcast = new CmdPearlBroadcast(plugin);
 		cmdBcastConfirm = new CmdPearlBroadcastAccept(plugin);
 		cmdBcastSilence = new CmdPearlBroadcastSilence(plugin);
-		
+
 		addSubCommand(plugin.getAutoHelp());
-		
+
 		addSubCommand(cmdLocate);
 		addSubCommand(cmdFree);
 		addSubCommand(cmdBcast);
@@ -39,7 +39,7 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(new CmdSummon(plugin));
 		addSubCommand(new CmdReturn(plugin));
 		addSubCommand(new CmdSummonConfirm(plugin));
-		
+
 		// Admin commands
 		addSubCommand(new CmdConfig(plugin));
 		addSubCommand(new CmdAdminDecay(plugin));
@@ -51,7 +51,7 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(new CmdAdminCheckExiled(plugin));
 		addSubCommand(new CmdAdminListExiled(plugin));
 		addSubCommand(new CmdAdminReload(plugin));
-		
+
 		instance = this;
 	}
 

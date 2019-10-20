@@ -6,7 +6,7 @@ package com.devotedmc.ExilePearl.config;
  * @author Gordon
  */
 public interface Configurable {
-	
+
 	/**
 	 * Loads configuration data
 	 * @param config The config

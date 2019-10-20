@@ -23,15 +23,15 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	private final BlockingQueue<AsyncPearlRecord> queue = new LinkedBlockingQueue<AsyncPearlRecord>();
 	private Thread thread;
 	private boolean isEnabled;
-	
+
 	public AsyncStorageWriter(final PluginStorage storage, final PearlLogger logger) {
 		Guard.ArgumentNotNull(storage, "storage");
 		Guard.ArgumentNotNull(logger, "logger");
-		
+
 		this.storage = storage;
 		this.logger = logger;
 	}
-	
+
 	@Override
 	public boolean connect() {
 		if (storage.connect()) {
@@ -55,7 +55,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public boolean isConnected() {
 		return isEnabled && storage.isConnected();
 	}
-	
+
 	@Override
 	public Collection<ExilePearl> loadAllPearls() {
 		return storage.loadAllPearls();
@@ -65,7 +65,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void pearlInsert(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.INSERT));
 	}
 
@@ -73,7 +73,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void pearlRemove(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.REMOVE));
 	}
 
@@ -81,7 +81,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void updatePearlLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LOCATION));
 	}
 
@@ -89,7 +89,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void updatePearlHealth(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_HEALTH));
 	}
 
@@ -97,7 +97,7 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void updatePearlFreedOffline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_FREED_OFFLINE));
 	}
 
@@ -105,23 +105,23 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void updatePearlType(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_TYPE));
 	}
-	
+
 	@Override
 	public void updatePearlKiller(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_KILLER));
 	}
-	
+
 	@Override
 	public void updatePearlLastOnline(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_LAST_SEEN));
 	}
 
@@ -129,23 +129,23 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 	public void updatePearlSummoned(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_SUMMONED));
 	}
-	
+
 
 	@Override
 	public void updateReturnLocation(ExilePearl pearl) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		checkRunning();
-		
+
 		queue.add(new AsyncPearlRecord(pearl, WriteType.UPDATE_RETURN_LOCATION));
 	}
 
 	@Override
 	public void run() {
 		logger.log("The async database thread is running.");
-		
+
 		while (isEnabled) {
 			try {
 				processAsyncRecord(queue.poll(100, TimeUnit.MILLISECONDS));
@@ -153,65 +153,65 @@ class AsyncStorageWriter implements PluginStorage, Runnable {
 				e.printStackTrace();
 			}
 		}
-		
+
 		isEnabled = false;
 		logger.log("The async storage thread has terminated.");
 	}
-	
-	
+
+
 	private void processAsyncRecord(AsyncPearlRecord record) {
 		if (record == null || !isEnabled) {
 			return;
 		}
-		
+
 		switch(record.getWriteType()) {
 		case INSERT:
 			storage.pearlInsert(record.getPearl());
 			break;
-			
+
 		case REMOVE:
 			storage.pearlRemove(record.getPearl());
 			break;
-			
+
 		case UPDATE_LOCATION:
 			storage.updatePearlLocation(record.getPearl());
 			break;
-			
+
 		case UPDATE_HEALTH:
 			storage.updatePearlHealth(record.getPearl());
 			break;
-			
+
 		case UPDATE_FREED_OFFLINE:
 			storage.updatePearlFreedOffline(record.getPearl());
 			break;
-			
+
 		case UPDATE_TYPE:
 			storage.updatePearlType(record.getPearl());
 			break;
-			
+
 		case UPDATE_KILLER:
 			storage.updatePearlKiller(record.getPearl());
 			break;
-			
+
 		case UPDATE_LAST_SEEN:
 			storage.updatePearlLastOnline(record.getPearl());
 			break;
-		
+
 		case UPDATE_SUMMONED:
 			storage.updatePearlSummoned(record.getPearl());
 			break;
-			
+
 		case UPDATE_RETURN_LOCATION:
 			storage.updateReturnLocation(record.getPearl());
 			break;
-			
+
 		case TERMINATE:
 		default:
 			break;
 		}
 	}
-	
-	
+
+
 	private void checkRunning() {
 		if (!isEnabled) {
 			throw new NotYetConnectedException();

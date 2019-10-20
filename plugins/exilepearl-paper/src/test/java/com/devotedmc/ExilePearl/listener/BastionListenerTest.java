@@ -20,23 +20,23 @@ import isaac.bastion.event.BastionDamageEvent;
 import isaac.bastion.event.BastionDamageEvent.Cause;
 
 public class BastionListenerTest {
-	
+
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
 	private BastionListener dut;
-	
+
 	final UUID uid = UUID.randomUUID();
 	final Player player = mock(Player.class);
 
 	@Before
 	public void setUp() throws Exception {
 		config = mock(PearlConfig.class);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(config);
-		
+
 		dut = new BastionListener(pearlApi);
-		
+
 		when(player.getUniqueId()).thenReturn(uid);
 	}
 
@@ -65,7 +65,7 @@ public class BastionListenerTest {
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onBastionCreate(e);
 		assertFalse(e.isCancelled());
-		
+
 		e = new BastionCreateEvent(mock(BastionBlock.class), player);
 		when(config.canPerform(ExileRule.CREATE_BASTION)).thenReturn(false);
 		dut.onBastionCreate(e);
@@ -89,16 +89,16 @@ public class BastionListenerTest {
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onBastionDamage(e);
 		assertFalse(e.isCancelled());
-		
+
 		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.BLOCK_PLACED, 1.0);
 		when(config.canPerform(ExileRule.DAMAGE_BASTION)).thenReturn(false);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());
-		
+
 		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.PEARL, 1.0);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());
-		
+
 		e = new BastionDamageEvent(mock(BastionBlock.class), player, Cause.ELYTRA, 1.0);
 		dut.onBastionDamage(e);
 		assertTrue(e.isCancelled());

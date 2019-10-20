@@ -28,7 +28,7 @@ public enum StorageType {
 			return FILE;
 		}
 	}
-	
+
 	public int getNum() {
 		return num;
 	}

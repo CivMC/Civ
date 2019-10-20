@@ -14,28 +14,29 @@ import com.devotedmc.ExilePearl.ExilePearlApi;
 import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.config.PearlConfig;
 
-import vg.civcraft.mc.citadel.events.AcidBlockEvent;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
+import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDamageEvent;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class CitadelListenerTest {
-	
+
 	private ExilePearlApi pearlApi;
 	private PearlConfig config;
 	private CitadelListener dut;
-	
+
 	final UUID uid = UUID.randomUUID();
 	final Player player = mock(Player.class);
 
 	@Before
 	public void setUp() throws Exception {
 		config = mock(PearlConfig.class);
-		
+
 		pearlApi = mock(ExilePearlApi.class);
 		when(pearlApi.getPearlConfig()).thenReturn(config);
-		
+
 		dut = new CitadelListener(pearlApi);
-		
+
 		when(player.getUniqueId()).thenReturn(uid);
 	}
 
@@ -49,31 +50,31 @@ public class CitadelListenerTest {
 
 	@Test
 	public void testOnReinforcementDamage() {
-		PlayerReinforcement rein = mock(PlayerReinforcement.class);
-		
-		ReinforcementDamageEvent e = new ReinforcementDamageEvent(rein, player, null);
+		Reinforcement rein = mock(Reinforcement.class);
+
+		ReinforcementDamageEvent e = new ReinforcementDamageEvent(player,rein, 1.0F);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(true);
 		dut.onReinforcementDamage(e);
 		assertFalse(e.isCancelled());
 
-		e = new ReinforcementDamageEvent(rein, player, null);
+		e = new ReinforcementDamageEvent(player,rein, 1.0F);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(false);
 		dut.onReinforcementDamage(e);
 		assertFalse(e.isCancelled());
 
-		e = new ReinforcementDamageEvent(rein, player, null);
+		e = new ReinforcementDamageEvent(player,rein, 1.0F);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(true);
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onReinforcementDamage(e);
 		assertFalse(e.isCancelled());
-		
-		e = new ReinforcementDamageEvent(rein, player, null);
+
+		e = new ReinforcementDamageEvent(player,rein, 1.0F);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(false);
 		dut.onReinforcementDamage(e);
 		assertTrue(e.isCancelled());
-		
-		when(rein.canBypass(player)).thenReturn(true);
-		e = new ReinforcementDamageEvent(rein, player, null);
+
+		when(rein.hasPermission(player, CitadelPermissionHandler.getBypass())).thenReturn(true);
+		e = new ReinforcementDamageEvent(player,rein, 1.0F);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(false);
 		dut.onReinforcementDamage(e);
 		assertFalse(e.isCancelled());
@@ -81,23 +82,23 @@ public class CitadelListenerTest {
 
 	@Test
 	public void testOnAcidBlockEvent() {
-		AcidBlockEvent e = new AcidBlockEvent(player, null, null);
+		ReinforcementAcidBlockedEvent e = new ReinforcementAcidBlockedEvent(player, null, null);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(true);
 		dut.onAcidBlockEvent(e);
 		assertFalse(e.isCancelled());
 
-		e = new AcidBlockEvent(player, null, null);
+		e = new ReinforcementAcidBlockedEvent(player, null, null);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(false);
 		dut.onAcidBlockEvent(e);
 		assertFalse(e.isCancelled());
 
-		e = new AcidBlockEvent(player, null, null);
+		e = new ReinforcementAcidBlockedEvent(player, null, null);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(true);
 		when(pearlApi.isPlayerExiled(uid)).thenReturn(true);
 		dut.onAcidBlockEvent(e);
 		assertFalse(e.isCancelled());
-		
-		e = new AcidBlockEvent(player, null, null);
+
+		e = new ReinforcementAcidBlockedEvent(player, null, null);
 		when(config.canPerform(ExileRule.DAMAGE_REINFORCEMENT)).thenReturn(false);
 		dut.onAcidBlockEvent(e);
 		assertTrue(e.isCancelled());

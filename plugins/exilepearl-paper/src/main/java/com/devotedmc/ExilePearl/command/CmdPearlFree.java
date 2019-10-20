@@ -25,7 +25,7 @@ public class CmdPearlFree extends PearlCommand {
 			msg(Lang.pearlMustBeHoldingPearl);
 			return;
 		}
-		
+
 		if (plugin.freePearl(pearl, PearlFreeReason.FREED_BY_PLAYER)) {
 			msg(Lang.pearlYouFreed, pearl.getPlayerName());
 			player().getInventory().setItemInMainHand(new ItemStack(Material.AIR));

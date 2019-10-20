@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -28,18 +29,25 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.BanList;
 import org.bukkit.BanList.Type;
 import org.bukkit.GameMode;
+import org.bukkit.Keyed;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Server;
+import org.bukkit.StructureType;
+import org.bukkit.Tag;
 import org.bukkit.UnsafeValues;
 import org.bukkit.Warning.WarningState;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.advancement.Advancement;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarFlag;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandException;
 import org.bukkit.command.CommandSender;
@@ -58,6 +66,7 @@ import org.bukkit.inventory.ItemFactory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.Recipe;
+import org.bukkit.loot.LootTable;
 import org.bukkit.map.MapView;
 import org.bukkit.permissions.Permissible;
 import org.bukkit.permissions.Permission;
@@ -80,7 +89,7 @@ import net.md_5.bungee.api.chat.BaseComponent;
 
 @SuppressWarnings("deprecation")
 public class TestServer implements Server {
-	
+
     private final String serverName = "TestBukkit";
     private final String serverVersion = "0.0.0";
     private final String bukkitVersion = "0.0.0";
@@ -150,16 +159,16 @@ public class TestServer implements Server {
 				if (level.equals("WARNING")) {
 					level = "WARN";
 				}
-				
+
 				Throwable thrown = record.getThrown();
 				if (thrown != null) {
 					thrown.printStackTrace();
 				}
-				
+
 				return String.format("[%s %s]: %s\n", df.format(new Date(record.getMillis())), level, formatMessage(record));
 			}
 		};
-		
+
 		logger.setUseParentHandlers(false);
 		ConsoleHandler handler = new ConsoleHandler();
         handler.setFormatter(formatter);
@@ -192,7 +201,7 @@ public class TestServer implements Server {
         enablePlugins();
 
 	}
-	
+
     public void loadPlugins() {
         Plugin[] plugins = pluginManager.loadPlugins();
         for (Plugin plugin : plugins) {
@@ -296,16 +305,6 @@ public class TestServer implements Server {
 	@Override
 	public String getIp() {
 		return "localhost";
-	}
-
-	@Override
-	public String getServerName() {
-		return serverName;
-	}
-
-	@Override
-	public String getServerId() {
-		return "";
 	}
 
 	@Override
@@ -450,7 +449,7 @@ public class TestServer implements Server {
 	public List<World> getWorlds() {
         return new ArrayList<World>(worlds.values());
 	}
-	
+
 	public List<TestWorld> getTestWorlds() {
         return new ArrayList<TestWorld>(worlds.values());
 	}
@@ -484,11 +483,6 @@ public class TestServer implements Server {
             }
         }
         return null;
-	}
-
-	@Override
-	public MapView getMap(short id) {
-		throw new UnsupportedOperationException();
 	}
 
 	@Override
@@ -808,7 +802,7 @@ public class TestServer implements Server {
 	public UnsafeValues getUnsafe() {
 		return null;
 	}
-	
+
     private final Spigot spigot = new Spigot()
     {
 
@@ -842,7 +836,7 @@ public class TestServer implements Server {
 	public Spigot spigot() {
 		return spigot;
 	}
-	
+
     public World createTestWorld(WorldCreator creator) {    	
     	TestWorld testWorld = TestWorld.create(creator.name(), creator.environment(), creator.type());
     	worlds.put(testWorld.getName(), testWorld);
@@ -911,7 +905,7 @@ public class TestServer implements Server {
 	@Override
 	public void reloadData() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -934,6 +928,98 @@ public class TestServer implements Server {
 
 	@Override
 	public Iterator<Advancement> advancementIterator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public MapView getMap(int id) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ItemStack createExplorerMap(World world, Location location, StructureType structureType) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ItemStack createExplorerMap(World world, Location location, StructureType structureType, int radius,
+			boolean findUnexplored) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public KeyedBossBar createBossBar(NamespacedKey key, String title, BarColor color, BarStyle style,
+			BarFlag... flags) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Iterator<KeyedBossBar> getBossBars() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public KeyedBossBar getBossBar(NamespacedKey key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean removeBossBar(NamespacedKey key) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public BlockData createBlockData(Material material) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BlockData createBlockData(Material material, Consumer<BlockData> consumer) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BlockData createBlockData(String data) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BlockData createBlockData(Material material, String data) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T extends Keyed> Tag<T> getTag(String registry, NamespacedKey tag, Class<T> clazz) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T extends Keyed> Iterable<Tag<T>> getTags(String registry, Class<T> clazz) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public LootTable getLootTable(NamespacedKey key) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Entity> selectEntities(CommandSender sender, String selector) throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
 	}

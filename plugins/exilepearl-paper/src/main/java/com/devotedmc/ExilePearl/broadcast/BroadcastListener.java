@@ -8,13 +8,13 @@ import com.devotedmc.ExilePearl.ExilePearl;
  *
  */
 public interface BroadcastListener {
-	
+
 	/**
 	 * Broadcasts the pearl location
 	 * @param pearl The pearl to broadcast
 	 */
 	void broadcast(ExilePearl pearl);
-	
+
 	/**
 	 * Gets whether the broadcast listener contains an underlying object
 	 * @param o the object to check

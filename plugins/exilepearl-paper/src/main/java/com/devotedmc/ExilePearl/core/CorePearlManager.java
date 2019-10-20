@@ -55,13 +55,13 @@ final class CorePearlManager implements PearlManager {
 	private final ExilePearlApi pearlApi;
 	private final PearlFactory pearlFactory;
 	private final StorageProvider storage;
-	
+
 	private final Map<UUID, ExilePearl> pearls = new HashMap<UUID, ExilePearl>();
 	private final Map<UUID, ExilePearl> bcastRequests = new HashMap<UUID, ExilePearl>();
-	
+
 	private ICoolDownHandler<UUID> summonRequests = new MilliSecCoolDownHandler<UUID>(120000);
-	
-	
+
+
 	/**
 	 * Creates a new PearlManager instance
 	 * @param logger The logging instance
@@ -72,13 +72,13 @@ final class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNull(pearlApi, "pearlApi");
 		Guard.ArgumentNotNull(pearlFactory, "pearlFactory");
 		Guard.ArgumentNotNull(storage, "storage");
-		
+
 		this.pearlApi = pearlApi;
 		this.pearlFactory = pearlFactory;
 		this.storage = storage;
 	}
-	
-	
+
+
 	/**
 	 * Loads all the pearls from the database
 	 */
@@ -89,8 +89,8 @@ final class CorePearlManager implements PearlManager {
 		}
 		pearlApi.log("Loaded %d pearls from storage.", pearls.size());
 	}
-	
-	
+
+
 	/**
 	 * Gets the pearled players
 	 * @return The collection of pearled players
@@ -99,32 +99,32 @@ final class CorePearlManager implements PearlManager {
 	public Collection<ExilePearl> getPearls() {
 		return Collections.unmodifiableCollection(pearls.values().stream().filter(p -> !p.getFreedOffline()).collect(Collectors.toSet()));
 	}
-	
-	
+
+
 	@Override
 	public ExilePearl exilePlayer(final UUID exiledId, final UUID killerId, Location location) {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
 		Guard.ArgumentNotNull(killerId, "killerId");
 		Guard.ArgumentNotNull(location, "location");
-		
+
 		final Block block = location.getBlock();
 		final BlockState bs = block.getState();
 		if (bs == null || (!(bs instanceof InventoryHolder))) {
 			return null;
 		}
-		
+
 		return exilePlayer(exiledId, killerId, new BlockHolder(block));
 	}
-	
+
 	@Override
 	public ExilePearl exilePlayer(UUID exiledId, Player killer) {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
 		Guard.ArgumentNotNull(killer, "killer");
-		
+
 		if (!killer.isOnline()) {
 			return null;
 		}
-		
+
 		return exilePlayer(exiledId, killer.getUniqueId(), new PlayerHolder(killer));
 	}
 
@@ -133,14 +133,14 @@ final class CorePearlManager implements PearlManager {
 		Guard.ArgumentNotNull(exiledId, "exiledId");
 		Guard.ArgumentNotNull(killerId, "killerId");
 		Guard.ArgumentNotNull(holder, "holder");
-		
+
 		if (pearlApi.isPlayerExiled(exiledId)) {
 			ExilePearl pearl = pearlApi.getPearl(exiledId);
 			if(!(pearl.getPearlType() == PearlType.PRISON && pearlApi.getPearlConfig().allowPearlStealing())) {
 				return null;
 			}
 		}
-		
+
 		final ExilePearl pearl = pearlFactory.createExilePearl(exiledId, killerId, createUniquePearlId(), holder);
 
 		PlayerPearledEvent e = new PlayerPearledEvent(pearl);
@@ -148,16 +148,16 @@ final class CorePearlManager implements PearlManager {
 		if (e.isCancelled()) {
 			return null;
 		}
-		
+
 		pearls.put(pearl.getPlayerId(), pearl);
 		storage.getStorage().pearlInsert(pearl);
 
 		pearl.setHealth(pearlApi.getPearlConfig().getPearlHealthStartValue());
-		
+
 		return pearl;
 	}
-	
-	
+
+
 	/**
 	 * Frees a pearl's player
 	 * @param pearl The pearl to free
@@ -166,19 +166,19 @@ final class CorePearlManager implements PearlManager {
 	public boolean freePearl(ExilePearl pearl, PearlFreeReason reason) {
 		Guard.ArgumentNotNull(pearl, "pearl");
 		Guard.ArgumentNotNull(reason, "reason");
-		
+
 		// Don't call the event if the pearl was already freed while they were offline
 		if (!pearl.getFreedOffline()) {
 			PlayerFreedEvent e = new PlayerFreedEvent(pearl, reason);
 			Bukkit.getPluginManager().callEvent(e);
-			
+
 			if (e.isCancelled()) {
 				return false; // The event was cancelled
 			}
 		}
-		
+
 		Player player = pearlApi.getPlayer(pearl.getPlayerId());
-		
+
 		// If the player is online, do the full remove, otherwise mark the pearl
 		// as free offline and it will be removed when they log in
 		if ((player != null && player.isOnline()) || reason == PearlFreeReason.FORCE_FREED_BY_ADMIN) {
@@ -197,14 +197,14 @@ final class CorePearlManager implements PearlManager {
 			pearl.setFreedOffline(true);
 		}
 		pearlApi.log("Player %s was freed for reason %s.", pearl.getPlayerName(), reason.toString());
-		
+
 		return true;
 	}
 
 	@Override
 	public ExilePearl getPearl(String name) {
 		Guard.ArgumentNotNullOrEmpty(name, "name");
-		
+
 		for(ExilePearl pearl :pearls.values()) {
 			if (pearl.getPlayerName().equalsIgnoreCase(name)) {
 				return pearl;
@@ -212,8 +212,8 @@ final class CorePearlManager implements PearlManager {
 		}
 		return null;
 	}
-	
-	
+
+
 	@Override
 	public ExilePearl getPearl(UUID uid) {
 		Guard.ArgumentNotNull(uid, "uid");
@@ -238,7 +238,7 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public ExilePearl getPearlFromItemStack(ItemStack is) {
-		
+
 		ExilePearl pearl = null;
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 		if (pearlId != 0) {
@@ -248,20 +248,20 @@ final class CorePearlManager implements PearlManager {
 			}
 			return pearl;
 		}
-		
+
 		// Check if this is a legacy pearl
 		UUID legacyId = pearlApi.getLoreProvider().getPlayerIdFromLegacyPearl(is);
 		if (legacyId == null) {
 			return null;
 		}
-		
+
 		// If an existing pearl is found, just use that
 		pearl = pearls.get(legacyId);
 		if (pearl == null) {
 			pearlApi.log(Level.SEVERE, "Found legacy PrisonPearl item for player %s but no pearl was found.", legacyId.toString());
 			return null;
 		}
-		
+
 		return pearl;
 	}
 
@@ -270,11 +270,11 @@ final class CorePearlManager implements PearlManager {
 	public void decayPearls() {
 		PearlDecayEvent e = new PearlDecayEvent(DecayAction.START);
 		Bukkit.getPluginManager().callEvent(e);
-		
+
 		if (e.isCancelled()) {
 			return;
 		}
-		
+
 		pearlApi.log("Performing pearl decay.");
 		long startTime = System.currentTimeMillis();
 
@@ -286,7 +286,7 @@ final class CorePearlManager implements PearlManager {
 
 		// Iterate through all the pearls and reduce the health
 		for (ExilePearl pearl : pearls) {
-			
+
 			// Ignore freed offline pearls
 			if (pearl.getFreedOffline()) {
 				continue;
@@ -297,40 +297,40 @@ final class CorePearlManager implements PearlManager {
 				pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
 				pearlsToFree.add(pearl);
 			}
-			
+
 			if (decayTimeout > 0 && pearl.getPlayer() != null) {
 				// player is online now!
 				pearl.setLastOnline(new Date());
 			}
-			
+
 			// convert timeout to milliseconds and compare against last time online.
 			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
 				pearl.setHealth(pearl.getHealth() - decayAmount);
 			}
-			
+
 			if (pearl.getHealth() == 0) {
 				pearlApi.log("Freeing pearl for player %s because the health reached 0.", pearl.getPlayerName());
 				pearlsToFree.add(pearl);
 			}
-			
+
 			if (!pearl.verifyLocation()) {
 				pearlApi.log("Freeing pearl for player %s because the verification failed.", pearl.getPlayerName());
 				pearlsToFree.add(pearl);
 			}
 		}
-		
+
 		// Free the pending pearls
 		for (ExilePearl pearl : pearlsToFree) {
 			freePearl(pearl, PearlFreeReason.HEALTH_DECAY);
 		}
-		
+
 		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());
-		
+
 		e = new PearlDecayEvent(DecayAction.COMPLETE);
 		Bukkit.getPluginManager().callEvent(e);
 	}
-	
-	
+
+
 	/**
 	 * Gets a unique pearlId
 	 * @return The unique pearl ID
@@ -338,7 +338,7 @@ final class CorePearlManager implements PearlManager {
 	private int createUniquePearlId() {
 		Random rand = new Random();
 		int pearlId = 0;
-		
+
 		while(pearlId == 0) {
 			pearlId = rand.nextInt(Integer.MAX_VALUE >> 1);
 			if (getPearlById(pearlId) != null) {
@@ -346,10 +346,10 @@ final class CorePearlManager implements PearlManager {
 				continue;
 			}
 		}
-		
+
 		return pearlId;
 	}
-	
+
 	private ExilePearl getPearlById(int pearlId) {
 		for(ExilePearl p : pearls.values()) {
 			if (p.getPearlId() == pearlId) {
@@ -376,21 +376,21 @@ final class CorePearlManager implements PearlManager {
 	public void removeBroadcastRequest(Player player) {
 		bcastRequests.remove(player.getUniqueId());
 	}
-	
+
 	private void clearPearlBroadcasts(ExilePearl pearl) {
 		Set<UUID> toRemove = new HashSet<UUID>();
-		
+
 		for(Entry<UUID, ExilePearl> entry : bcastRequests.entrySet()) {
 			if (entry.getValue().equals(pearl)) {
 				toRemove.add(entry.getKey());
 			}
 		}
-		
+
 		for(UUID uid : toRemove) {
 			bcastRequests.remove(uid);
 		}
 	}
-	
+
 	@Override
 	public boolean summonPearl(ExilePearl pearl, Player summoner) {
 		if(pearl.getPearlType() == PearlType.PRISON && pearl.getPlayer().isOnline()
@@ -407,7 +407,7 @@ final class CorePearlManager implements PearlManager {
 		}
 		return false;
 	}
-	
+
 	@Override
 	public boolean returnPearl(ExilePearl pearl) {
 		if(pearl.isSummoned() && pearl.getPlayer().isOnline() && !pearl.getPlayer().isDead()) {
@@ -424,7 +424,7 @@ final class CorePearlManager implements PearlManager {
 		}
 		return false;
 	}
-	
+
 	public boolean requestSummon(ExilePearl pearl) {
 		if(summonRequests.onCoolDown(pearl.getPlayerId())) {
 			return false;
@@ -437,7 +437,7 @@ final class CorePearlManager implements PearlManager {
 	public boolean awaitingSummon(ExilePearl pearl) {
 		return summonRequests.onCoolDown(pearl.getPlayerId());
 	}
-	
+
 	private void dropInventory(Player player) {
 		Inventory inv = player.getInventory();
 		final Location loc = player.getLocation();
@@ -453,7 +453,7 @@ final class CorePearlManager implements PearlManager {
 				public void run() {
 					world.dropItemNaturally(loc, item);
 				}
-				
+
 			});
 		}
 	}

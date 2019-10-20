@@ -6,13 +6,13 @@ import java.util.logging.Logger;
 import com.devotedmc.ExilePearl.PearlLogger;
 
 public class TestPearlLogger implements PearlLogger {
-	
+
 	private final Logger logger;
-	
+
 	public TestPearlLogger(final Logger logger) {
 		this.logger = logger;
 	}
-	
+
 	public Logger getLogger() {
 		return logger;
 	}

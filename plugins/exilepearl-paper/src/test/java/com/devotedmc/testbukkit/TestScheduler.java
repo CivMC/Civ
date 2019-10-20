@@ -3,6 +3,7 @@ package com.devotedmc.testbukkit;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.function.Consumer;
 
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -80,12 +81,6 @@ public class TestScheduler implements BukkitScheduler {
 
 	@Override
 	public void cancelTasks(Plugin plugin) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void cancelAllTasks() {
 		// TODO Auto-generated method stub
 
 	}
@@ -190,6 +185,45 @@ public class TestScheduler implements BukkitScheduler {
 			throws IllegalArgumentException {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public void runTask(Plugin plugin, Consumer<BukkitTask> task) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runTaskAsynchronously(Plugin plugin, Consumer<BukkitTask> task) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runTaskLater(Plugin plugin, Consumer<BukkitTask> task, long delay) throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runTaskLaterAsynchronously(Plugin plugin, Consumer<BukkitTask> task, long delay)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runTaskTimer(Plugin plugin, Consumer<BukkitTask> task, long delay, long period)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void runTaskTimerAsynchronously(Plugin plugin, Consumer<BukkitTask> task, long delay, long period)
+			throws IllegalArgumentException {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

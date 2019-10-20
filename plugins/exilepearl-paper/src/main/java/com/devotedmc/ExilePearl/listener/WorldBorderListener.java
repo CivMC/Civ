@@ -15,7 +15,7 @@ import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 public class WorldBorderListener extends RuleListener {
 
 	private HashSet<ExilePearl> toFree = new HashSet<ExilePearl>();
-	
+
 	public WorldBorderListener(ExilePearlApi pearlApi) {
 		super(pearlApi);
 	}
@@ -28,13 +28,13 @@ public class WorldBorderListener extends RuleListener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onPearlDecay(PearlDecayEvent e) {
 		boolean autoFree = pearlApi.getPearlConfig().getShouldAutoFreeWorldBorder();
-		
+
 		if (!autoFree || e.getAction() != DecayAction.COMPLETE) {
 			return;
 		}
-		
+
 		toFree.clear();
-		
+
 		// Free any pearls outside world border
 		for (ExilePearl pearl : pearlApi.getPearls()) {
 			Location l = pearl.getLocation();
@@ -42,7 +42,7 @@ public class WorldBorderListener extends RuleListener {
 				toFree.add(pearl);
 			}
 		}
-		
+
 		for (ExilePearl pearl : toFree) {
 			pearlApi.freePearl(pearl, PearlFreeReason.OUTSIDE_WORLD_BORDER);
 		}
