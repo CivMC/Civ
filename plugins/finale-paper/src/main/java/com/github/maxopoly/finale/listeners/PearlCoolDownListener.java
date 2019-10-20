@@ -1,11 +1,8 @@
 package com.github.maxopoly.finale.listeners;
 
 import java.text.DecimalFormat;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.UUID;
+import java.util.function.BiFunction;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -19,8 +16,10 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
 
-import vg.civcraft.mc.civmodcore.scoreboard.CivScoreBoard;
-import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
 
 public class PearlCoolDownListener implements Listener {
@@ -39,43 +38,77 @@ public class PearlCoolDownListener implements Listener {
 	private boolean combatTag;
 	private boolean setVanillaCooldown;
 	private boolean useSideBar;
-	private CivScoreBoard scoreBoard;
-	private Set<UUID> onCooldown;
+	private boolean useActionBar;
 
 	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager,
-			boolean setVanillaCooldown, boolean useSideBar) {
+			boolean setVanillaCooldown, boolean useSideBar, boolean useActionBar) {
 		instance = this;
-		this.cds = new TickCoolDownHandler<UUID>(Finale.getPlugin(), cooldown);
+		this.cds = new TickCoolDownHandler<UUID>(Finale.getPlugin(), cooldown / 20);
 		this.ctpManager = ctpManager;
 		this.combatTag = combatTag;
 		this.setVanillaCooldown = setVanillaCooldown;
 		this.useSideBar = useSideBar;
-		if (useSideBar) {
-			onCooldown = Collections.synchronizedSet(new TreeSet<>());
-			scoreBoard = ScoreBoardAPI.createBoard("finalePearlCoolDown");
-			Bukkit.getScheduler().scheduleSyncRepeatingTask(Finale.getPlugin(), () -> {
-				Iterator<UUID> iter = onCooldown.iterator();
-				while (iter.hasNext()) {
-					UUID uuid = iter.next();
-					Player p = Bukkit.getPlayer(uuid);
-					if (!cds.onCoolDown(uuid)) {
-						iter.remove();
-						if (p != null) {
-							scoreBoard.hide(p);
-						}
-						continue;
-					}
-					if (p != null) {
-						scoreBoard.set(p, ChatColor.LIGHT_PURPLE + "Pearl: " + formatCoolDown(uuid) + " sec");
-					}
-				}
-
-			}, 1L, 1L);
-		}
+		this.useActionBar = useActionBar;
 	}
 
 	public long getCoolDown() {
 		return cds.getTotalCoolDown();
+	}
+	
+	private BottomLine cooldownBottomLine;
+	
+	public BottomLine getCooldownBottomLine() {
+		if (cooldownBottomLine == null) {
+			cooldownBottomLine = BottomLineAPI.createBottomLine("pearlCooldown", 1);
+			cooldownBottomLine.updatePeriodically(getCooldownBiFunction(), 1L);
+		}
+		return cooldownBottomLine;
+	}
+	
+	private CivScoreBoard cooldownBoard;
+	
+	public CivScoreBoard getCooldownBoard() {
+		if (cooldownBoard == null) {
+			cooldownBoard = ScoreBoardAPI.createBoard("pearlCooldown");
+			cooldownBoard.updatePeriodically(getCooldownBiFunction(), 1L);
+		}
+		return cooldownBoard;
+	}
+	
+	public String getCooldownText(Player shooter) {
+		return ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(shooter.getUniqueId()) + ChatColor.DARK_PURPLE + "s";
+	}
+	
+	public void putOnCooldown(Player shooter) {
+		cds.putOnCoolDown(shooter.getUniqueId());
+		if (setVanillaCooldown) {
+			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), new Runnable() {
+				@Override
+				public void run() {
+					// -1, because this is delayed by one tick
+					shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown() - 1);
+				}
+			}, 1);
+		}
+		
+		if (useActionBar) {
+			BottomLine bottomLine = getCooldownBottomLine();
+			bottomLine.updatePlayer(shooter, getCooldownText(shooter));
+		}
+		if (useSideBar) {
+			CivScoreBoard board = getCooldownBoard();
+			board.set(shooter, getCooldownText(shooter)); 
+		}
+	}
+	
+	public BiFunction<Player, String, String> getCooldownBiFunction() {
+		return (shooter, oldText) -> {
+			if (!cds.onCoolDown(shooter.getUniqueId())) {
+				return null; 
+			}
+			
+			return getCooldownText(shooter);
+		};
 	}
 
 	@EventHandler
@@ -100,26 +133,16 @@ public class PearlCoolDownListener implements Listener {
 		if (combatTag && ctpManager != null) {
 			ctpManager.tag((Player) e.getEntity().getShooter(), null);
 		}
-		if (useSideBar) {
-			onCooldown.add(shooter.getUniqueId());
-		}
+		
 		// put pearl on cooldown
-		cds.putOnCoolDown(shooter.getUniqueId());
-		if (setVanillaCooldown) {
-			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), new Runnable() {
-				@Override
-				public void run() {
-					// -1, because this is delayed by one tick
-					shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown() - 1);
-				}
-			}, 1);
-		}
+		putOnCooldown(shooter);
 	}
 
+	private DecimalFormat df = new DecimalFormat("#.#");
+	
 	private String formatCoolDown(UUID uuid) {
 		long cd = cds.getRemainingCoolDown(uuid);
-		DecimalFormat df = new DecimalFormat("0.0");
-		return df.format((cd / 20.0));
+		return df.format(((cd * 20.0) / 1000.0));
 	}
 
 }

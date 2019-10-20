@@ -22,7 +22,7 @@ public class Finale extends ACivMod {
 	public static Finale getPlugin() {
 		return instance;
 	}
-
+	
 	private FinaleManager manager;
 
 	private CombatTagPlusManager ctpManager;
@@ -35,11 +35,6 @@ public class Finale extends ACivMod {
 
 	public FinaleManager getManager() {
 		return manager;
-	}
-
-	@Override
-	public String getPluginName() {
-		return "Finale";
 	}
 
 	private void initExternalManagers() {
@@ -73,7 +68,7 @@ public class Finale extends ACivMod {
 		if (config.isPearlEnabled()) {
 			Bukkit.getPluginManager()
 					.registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
-							ctpManager, config.setVanillaPearlCooldown(), config.useSideBarForPearlCoolDown()), this);
+							ctpManager, config.setVanillaPearlCooldown(), config.useSideBarForPearlCooldown(), config.useActionBarForPearlCooldown()), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);

@@ -8,7 +8,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -34,10 +34,7 @@ public class PlayerListener implements Listener {
 	}
 
 	@EventHandler
-	public void damageEntity(EntityDamageByEntityEvent e) {
-		if (e.getDamager().getType() != EntityType.PLAYER) {
-			return;
-		}
+	public void damageEntity(EntityDamageEvent e) {
 		if (!(e.getEntity() instanceof LivingEntity)) {
 			return;
 		}
@@ -52,8 +49,13 @@ public class PlayerListener implements Listener {
 
 			@Override
 			public void run() {
-				victim.setNoDamageTicks(manager.getInvulnerableTicks() - 1);
+				Integer ticks = manager.getInvulnerableTicks().get(e.getCause());
+				if (ticks == null) {
+					return;
+				}
+				victim.setNoDamageTicks(ticks - 1);
 			}
+			
 		}, 1L);
 	}
 
@@ -71,7 +73,7 @@ public class PlayerListener implements Listener {
 			Player p = (Player) e.getEntity();
 
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-			double spigotRegenExhaustion = ((net.minecraft.server.v1_13_R2.World) ((org.bukkit.craftbukkit.v1_13_R2.CraftWorld) p
+			double spigotRegenExhaustion = ((net.minecraft.server.v1_14_R1.World) ((org.bukkit.craftbukkit.v1_14_R1.CraftWorld) p
 					.getWorld()).getHandle()).spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 

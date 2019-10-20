@@ -12,14 +12,14 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.potion.PotionType;
 
+import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.potion.PotionHandler;
 import com.github.maxopoly.finale.potion.PotionModification;
 
 public class PotionListener implements Listener {
 
-	private static final double healthPerPotionLevel = 4;
+	private static final double healthPerPotionLevel = 7;
 
 	public static PotionEffect fromPotionData(PotionData data) {
 		PotionEffectType type = data.getType().getEffectType();
@@ -72,17 +72,24 @@ public class PotionListener implements Listener {
 		if (multiplier == 1.0) {
 			return;
 		}
-		PotionMeta potMeta = (PotionMeta) e.getPotion().getItem().getItemMeta();
-		PotionEffect potEffect = fromPotionData(potMeta.getBasePotionData());
-		if (potMeta.getBasePotionData().getType() != PotionType.INSTANT_HEAL) {
+		
+		//PotionMeta potMeta = (PotionMeta) e.getPotion().getItem().getItemMeta();
+		PotionEffect healingEffect = e.getPotion().getEffects().stream().filter(eff -> eff.getType() == PotionEffectType.HEAL).findFirst().orElse(null);
+		if (healingEffect == null) {
 			return;
 		}
+		
+		double cutOffDistance = Finale.getPlugin().getManager().getCombatConfig().getPotionCutOffDistance();
 		for (LivingEntity entity : e.getAffectedEntities()) {
-			double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-			double modifiedHealth = entity.getHealth();
-			modifiedHealth += e.getIntensity(entity) * multiplier * (potEffect.getAmplifier() + 1)
-					* healthPerPotionLevel;
-			entity.setHealth(Math.min(maxHealth, modifiedHealth));
+			double distToPotionSquared = e.getPotion().getLocation().distanceSquared(entity.getLocation());
+			double cutOffSquared = cutOffDistance*cutOffDistance;
+			if (distToPotionSquared <= cutOffDistance*cutOffDistance) {
+				double maxHealth = entity.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+				double modifiedHealth = entity.getHealth();
+				modifiedHealth += e.getIntensity(entity) * multiplier * (healingEffect.getAmplifier() + 1)
+						* healthPerPotionLevel;
+				entity.setHealth(Math.min(maxHealth, modifiedHealth));
+			}
 			e.setIntensity(entity, 0.0);
 		}
 	}
@@ -107,23 +114,35 @@ public class PotionListener implements Listener {
 		if (potMod == null) {
 			return;
 		}
-		PotionMeta potMeta = (PotionMeta) e.getPotion().getItem().getItemMeta();
-		PotionEffect potEffect = fromPotionData(potMeta.getBasePotionData());
-		double multiplier = potMod.getMultiplier();
-		// for multipler <= 1 we can just change the intensity. That does not work for
-		// more than 1 though, because MC internally enforces a max intensity of 1
-		potEffect = new PotionEffect(potEffect.getType(), (int) (potEffect.getDuration() * multiplier),
-				potEffect.getAmplifier());
-		if (multiplier <= 1.0) {
-			for (LivingEntity ent : e.getAffectedEntities()) {
-				e.setIntensity(ent, e.getIntensity(ent) * multiplier);
+		//PotionMeta potMeta = (PotionMeta) e.getPotion().getItem().getItemMeta();
+		double cutOffDistance = Finale.getPlugin().getManager().getCombatConfig().getPotionCutOffDistance();
+		e.getPotion().getEffects().forEach(potEffect -> {
+			double multiplier = potMod.getMultiplier();
+			// for multipler <= 1 we can just change the intensity. That does not work for
+			// more than 1 though, because MC internally enforces a max intensity of 1
+			potEffect = new PotionEffect(potEffect.getType(), (int) (potEffect.getDuration() * multiplier),
+					potEffect.getAmplifier());
+			if (multiplier <= 1.0) {
+				for (LivingEntity ent : e.getAffectedEntities()) {
+					double distToPotionSquared = e.getPotion().getLocation().distanceSquared(ent.getLocation().add(0, 0.5, 0));
+					double cutOffSquared = cutOffDistance*cutOffDistance;
+					if (distToPotionSquared <= cutOffSquared) {
+						e.setIntensity(ent, e.getIntensity(ent) * multiplier);
+					} else {
+						e.setIntensity(ent, 0.0);
+					}
+				}
+			} else {
+				for (LivingEntity ent : e.getAffectedEntities()) {
+					double distToPotionSquared = e.getPotion().getLocation().distanceSquared(ent.getLocation().add(0, 0.5, 0));
+					double cutOffSquared = cutOffDistance*cutOffDistance;
+					e.setIntensity(ent, 0.0);
+					if (distToPotionSquared <= cutOffSquared) {
+						ent.addPotionEffect(potEffect, false);
+					}
+				}
 			}
-		} else {
-			for (LivingEntity ent : e.getAffectedEntities()) {
-				e.setIntensity(ent, 0.0);
-				ent.addPotionEffect(potEffect, false);
-			}
-		}
+		});
 	}
 
 }

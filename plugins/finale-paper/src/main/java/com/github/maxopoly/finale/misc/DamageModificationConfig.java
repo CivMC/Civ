@@ -28,7 +28,9 @@ public class DamageModificationConfig {
 
 	public double modify(double damage, int level) {
 		damage += level * flatAddition;
-		return damage * mode.apply(damage, multiplier, level);
+		double multi = mode.apply(damage, multiplier, level);
+		//System.out.println("damage: " + damage + " multiplier: " + multi);
+		return damage * multi;
 	}
 
 }

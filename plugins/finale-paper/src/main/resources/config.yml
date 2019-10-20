@@ -1,8 +1,37 @@
 # alters the base CPS for all players, set enabled to false to disable
 alterAttack:
   enabled: true
-  speed: 9.4
-  invulnerableTicks: 10
+  speed: 1024
+  
+cleanerCombat:
+  maxReach: 6.0
+  sweepEnabled: false
+  sounds:
+    weak: false
+    strong: false
+    knockback: false
+    crit: false
+  knockback:
+    horizontal: 0.379
+    vertical: 0.69
+    sprint:
+      horizontal: 1.41
+      vertical: 1.1
+    air:
+      horizontal: 0.44
+      vertical: 7.0
+    water:
+      horizontal: 1.0
+      vertical: 0.5
+  attackerMotionModifier: 0.6
+  stopSprinting: true
+  noCooldown:
+    enabled: true
+    cps:
+      limit: 9
+      counterInterval: 1000
+  potionCutOffDistance: 1.8
+    
 # gives full control over health / regen, default is full reversion to 1.8 mechanics
 foodHealthRegen:
   enabled: true
@@ -17,9 +46,11 @@ pearls:
 #Enable custom cooldown?
   enabled: true
 #Custom pearl cooldown
-  cooldown: 10s
+  cooldown: 16s
 #Display in sidebar as score board entry?
-  useSideBar: true
+  useSideBar: false
+#Display in actionbar?
+  useActionBar: true
 #Combat tag using CTP when pearling?
   combatTag: true
 #Whether to set the vanilla cooldown (gray overlay) for players upon pearling. This will keep them from pearling client side, 
@@ -30,26 +61,54 @@ pearls:
 weaponModification:
   diamondAxe:
     material: DIAMOND_AXE
-    damage: 6
+    damage: 5
   ironAxe:
     material: IRON_AXE
-    damage: 5
+    damage: 4
   stoneAxe:
     material: STONE_AXE
-    damage: 4
+    damage: 3
   goldAxe:
-    material: GOLD_AXE
-    damage: 3
+    material: GOLDEN_AXE
+    damage: 2
   woodAxe:
-    material: WOOD_AXE
+    material: WOODEN_AXE
+    damage: 1
+  diamondSword:
+    material: DIAMOND_SWORD
+    damage: 6
+  ironSword:
+    material: IRON_SWORD
+    damage: 5
+  stoneSword:
+    material: STONE_SWORD
+    damage: 4
+  goldSword:
+    material: GOLDEN_SWORD
+    damage: 4
+  woodSword:
+    material: WOODEN_SWORD
     damage: 3
+    
+armourModification:
+   diamondHelmet:
+      material: DIAMOND_HELMET
+      toughness: 4
+   diamondChestplate:
+      material: DIAMOND_CHESTPLATE
+      toughness: 4
+   diamondLeggings:
+      material: DIAMOND_LEGGINGS
+      toughness: 4
+   diamondBoots:
+      material: DIAMOND_BOOTS
+      toughness: 4
 
 #allows disabling enchantments. Use official spigot identifiers from https://hub.spigotmc.org/javadocs/spigot/org/bukkit/enchantments/Enchantment.html
 #This will not remove them from enchanting, but simply remove the enchant as soon as the item is touched
 disabledEnchantments:
  - MENDING
  - FROST_WALKER
- 
  
 potions:
 #Allows applying a multiplier to the intensity of potions. Intensities <= 1.0 will always work fine, but intensities > 1 
@@ -84,7 +143,7 @@ potions:
     splash:
 #All splash pots reduced
       splash: true
-      multiplier: 0.8
+      multiplier: 1.0
 #Except for health
     health:
       type: INSTANT_HEAL
@@ -96,18 +155,15 @@ velocity:
 #In newer Minecraft versions when a player launches a projectile the players velocity will be added to the projectiles base velocity. This can lead to 
 #weird behavior sometimes and reverted with this setting. Add entity types (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) 
 #of projectiles to the list to revert their behavior regarding initial velocity to 1.7
-  revertedVelocity:
-   - SPLASH_POTION
-   - ENDER_PEARL
-   - ARROW
-
-
-#This let's you apply a general multiplier to the launch velocity of any kind of projectile. Entry key is the 
-#entity type (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/entity/EntityType.html) and value is the multiplier.
-  multiplier:
-#Increase pearl velocity by 20 % for example
-    ENDER_PEARL: 1.2
-    
+  ENDER_PEARL:
+     type: REVERTED
+     power: 1.2
+  SPLASH_POTION:
+     type: REVERTED
+     power: 0.5
+     vertical: 0.4
+     horizontal: 0.4
+     pitchOffset: -20
     
 #This option allows modifying the damage dealt by/to players based on certain properties. All entries look like this:
 
@@ -126,8 +182,26 @@ velocity:
 damageModifiers: 
 #Decrease all damage by 20 % 
   ALL:
-    multiplier: 0.8
+    multiplier: 0.5
+    mode: DIRECT
 #Increase sword damage by 25 %
+  SHARPNESS_ENCHANT:
+    multiplier: 1.0
+    mode: DIRECT
   SWORD:
-    multiplier: 1.25
+    mode: DIRECT
+    multiplier: 1.0
+  CRIT:
+    mode: DIRECT
+    multiplier: 0.86
+  STRENGTH_EFFECT:
+    mode: DIRECT
+    multiplier: 0.8
     
+invulnerableTicks:
+  FIRE: 1
+  FIRE_TICK: 1 
+  POISON: 1
+  PROJECTILE: 1
+  DROWNING: 1
+  ENTITY_ATTACK: 9
