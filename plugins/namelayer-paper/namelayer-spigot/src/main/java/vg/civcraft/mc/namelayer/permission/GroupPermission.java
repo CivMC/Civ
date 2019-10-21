@@ -1,8 +1,11 @@
 package vg.civcraft.mc.namelayer.permission;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -64,28 +67,30 @@ public class GroupPermission {
 		}
 		return x;
 	}
+
 	/**
 	 * Adds a PermissionType to a PlayerType.
 	 * @param pType- The PlayerType.
 	 * @param permType- The PermissionType.
 	 * @return Returns false if the PlayerType already has the permission.
 	 */
-	public boolean addPermission(PlayerType ptype, PermissionType permtype){
+	public boolean addPermission(PlayerType ptype, PermissionType permtype) {
 		return addPermission(ptype,permtype,true);
 	}
-	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (perms.get(pType).contains(permType))
+
+	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb) {
+		List<PermissionType> playerPerms = perms.get(pType);
+		if (playerPerms == null || playerPerms.contains(permType)) {
 			return false;
-		List<PermissionType> types = perms.get(pType);
-		types.add(permType);
-		List <PermissionType> toAdd = new LinkedList<PermissionType>();
-		toAdd.add(permType);
-		if (savetodb){
-			db.addPermission(group.getName(), pType.name(), toAdd);
-			Mercury.addPerm(group.getName(),pType.name(), permType.getName());
+		}
+		playerPerms.add(permType);
+		if (savetodb) {
+			db.addPermission(group.getName(), pType.name(), Collections.singletonList(permType));
+			Mercury.addPerm(group.getName(), pType.name(), permType.getName());
 		}
 		return true;
 	}
+
 	/**
 	 * Removes the PermissionType from a PlayerType.
 	 * @param pType- The PlayerType to get the PermissionType removed from.
@@ -96,17 +101,19 @@ public class GroupPermission {
 		return removePermission(ptype,permtype,true);
 	}
 	
-	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (!perms.get(pType).contains(permType))
+	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb) {
+		List<PermissionType> playerPerms = perms.get(pType);
+		if (playerPerms == null || !playerPerms.contains(permType)) {
 			return false;
-		List<PermissionType> types = perms.get(pType);
-		types.remove(permType);
-		if (savetodb){
-			db.removePermission(group.getName(), pType, permType);
+		}
+		playerPerms.remove(permType);
+		if (savetodb) {
+			db.removePermissionAsync(group.getName(), pType, permType);
 			Mercury.remPerm(group.getName(), pType.name(), permType.getName());
 		}
 		return true;
 	}
+
 	/**
 	 * Returns the first PlayerType with a specific permission.
 	 * @param type- The PermissionType you are looking for.
