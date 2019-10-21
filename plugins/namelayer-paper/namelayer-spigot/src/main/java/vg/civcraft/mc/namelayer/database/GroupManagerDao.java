@@ -953,7 +953,7 @@ public class GroupManagerDao {
 	}
 	
 	public Map<PlayerType, List<PermissionType>> getPermissions(String group){
-		Map<PlayerType, List<PermissionType>> perms = new HashMap<PlayerType, List<PermissionType>>();
+		Map<PlayerType, List<PermissionType>> perms = new HashMap<>();
 		try (Connection connection = db.getConnection();
 				PreparedStatement getPermission = connection.prepareStatement(GroupManagerDao.getPermission)){
 			getPermission.setString(1, group);

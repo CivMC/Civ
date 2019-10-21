@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.scheduler.BukkitRunnable;
+
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.GroupManagerDao;
@@ -72,12 +74,19 @@ public class GroupPermission {
 		return addPermission(pType, permType, true);
 	}
 	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (perms.get(pType).contains(permType))
+		if (perms.get(pType).contains(permType)) {
 			return false;
+		}
 		List<PermissionType> types = perms.get(pType);
 		types.add(permType);
 		if (savetodb){
-			db.addPermission(group.getName(), pType.name(), Collections.singletonList(permType));
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
+					db.addPermission(group.getName(), pType.name(), Collections.singletonList(permType));
+				}
+			}.runTaskAsynchronously(NameLayerPlugin.getInstance());
 		}
 		return true;
 	}
@@ -92,12 +101,19 @@ public class GroupPermission {
 	}
 	
 	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (!perms.get(pType).contains(permType))
+		if (!perms.get(pType).contains(permType)) {
 			return false;
+		}
 		List<PermissionType> types = perms.get(pType);
 		types.remove(permType);
 		if (savetodb){
+			new BukkitRunnable() {
+				
+				@Override
+				public void run() {
 			db.removePermission(group.getName(), pType, permType);
+				}
+			}.runTaskAsynchronously(NameLayerPlugin.getInstance());
 		}
 		return true;
 	}
