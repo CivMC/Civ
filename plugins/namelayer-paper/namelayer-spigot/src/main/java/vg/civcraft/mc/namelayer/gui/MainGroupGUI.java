@@ -128,6 +128,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 
 		// options
 
+		ci.setSlot(getSuperMenuClickable(), 45);
 		ci.setSlot(createInheritedMemberToggle(), 46);
 		ci.setSlot(createInviteToggle(), 47);
 		ci.setSlot(setupMemberTypeToggle(PlayerType.MEMBERS, showMembers), 48);
@@ -168,7 +169,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 	 * directly fed into the middle of the gui
 	 */
 	private List<Clickable> constructClickables() {
-		List<Clickable> clicks = new ArrayList<Clickable>();
+		List<Clickable> clicks = new ArrayList<>();
 		if (showInheritedMembers) {
 			if (g.hasSuperGroup()) {
 				clicks.addAll(getRecursiveInheritedMembers(g.getSuperGroup()));
@@ -965,6 +966,19 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			};
 		}
 		return c;
+	}
+	
+	private Clickable getSuperMenuClickable() {
+		ItemStack is = new ItemStack(Material.DIAMOND);
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Return to overview for all your groups");
+		return new Clickable(is) {
+
+			@Override
+			public void clicked(Player p) {
+				GUIGroupOverview gui = new GUIGroupOverview(p);
+				gui.showScreen();
+			}
+		};
 	}
 
 	private Clickable getAdminStuffClickable() {
