@@ -143,3 +143,4 @@ permissions:
    banstick.forgive: true
    banstick.ips: true
    banstick.alts: true
+api-version: 1.14
