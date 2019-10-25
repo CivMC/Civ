@@ -18,6 +18,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
@@ -30,6 +31,7 @@ import org.bukkit.block.Hopper;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
@@ -40,6 +42,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.ItemDespawnEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
@@ -96,13 +99,13 @@ public class PlayerListener implements Listener, Configurable {
 
 	private final ExilePearlApi pearlApi;
 
-	private Map<PearlType, Set<RepairMaterial>> repairMaterials = new HashMap<PearlType, Set<RepairMaterial>>();
-	private Set<RepairMaterial> upgradeMaterials = new HashSet<RepairMaterial>();
+	private Map<PearlType, Set<RepairMaterial>> repairMaterials = new HashMap<>();
+	private Set<RepairMaterial> upgradeMaterials = new HashSet<>();
 
 
 	private boolean useHelpItem = false;
 	private String helpItemName = "";
-	private List<String> helpItemText = new ArrayList<String>();
+	private List<String> helpItemText = new ArrayList<>();
 
 	/**
 	 * Creates a new PlayerListener instance
@@ -387,15 +390,17 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param e The event args
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-	public void onPlayerPickupPearl(PlayerPickupItemEvent e) {
+	public void onPlayerPickupPearl(EntityPickupItemEvent e) {
 		Item item = e.getItem();
-
+		if (e.getEntityType() != EntityType.PLAYER) {
+			return;
+		}
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
 		if (pearl == null) {
 			return;
 		}
 
-		if (pearlApi.isPlayerExiled(e.getPlayer())) {
+		if (pearlApi.isPlayerExiled((Player)e.getEntity())) {
 			e.setCancelled(true);
 		}
 	}
@@ -1077,7 +1082,7 @@ public class PlayerListener implements Listener, Configurable {
 			}
 			for(Set<RepairMaterial> set : repairMaterials.values()) {
 				for(RepairMaterial mat : set) {
-					ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+					ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "repairPearl"), resultItem);
 					r1.addIngredient(1, Material.ENDER_PEARL);
 					r1.addIngredient(1, mat.getStack().getData());
 
@@ -1099,7 +1104,7 @@ public class PlayerListener implements Listener, Configurable {
 			upgradeMaterials.addAll(config.getUpgradeMaterials());
 
 			for(RepairMaterial mat : upgradeMaterials) {
-				ShapelessRecipe r1 = new ShapelessRecipe(resultItem);
+				ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "upgradePearl"),resultItem);
 				r1.addIngredient(1, Material.ENDER_PEARL);
 				r1.addIngredient(1, mat.getStack().getData());
 

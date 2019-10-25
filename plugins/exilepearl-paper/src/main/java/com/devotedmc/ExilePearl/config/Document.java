@@ -20,7 +20,7 @@ public class Document implements Map<String, Object> {
      * Creates an empty Document instance.
      */
     public Document() {
-        documentAsMap = new LinkedHashMap<String, Object>();
+        documentAsMap = new LinkedHashMap<>();
     }
 
     /**
@@ -30,7 +30,7 @@ public class Document implements Map<String, Object> {
      * @param value value
      */
     public Document(final String key, final Object value) {
-        documentAsMap = new LinkedHashMap<String, Object>();
+        documentAsMap = new LinkedHashMap<>();
         append(key, value);
     }
 
@@ -40,7 +40,7 @@ public class Document implements Map<String, Object> {
      * @param map initial map
      */
     public Document(final Map<String, Object> map) {
-        documentAsMap = new LinkedHashMap<String, Object>(map);
+        documentAsMap = new LinkedHashMap<>(map);
     }
     
     public Document(final ConfigurationSection configSection) {
@@ -232,14 +232,14 @@ public class Document implements Map<String, Object> {
         Object o = get(key);
         
         if (o == null) {
-        	return new ArrayList<String>();
+        	return new ArrayList<>();
         }
         List<String> list;
         
         try {
         	list = (List<String>)o;
         } catch(Exception ex) {
-        	list = new ArrayList<String>();
+        	list = new ArrayList<>();
         }
         return list;
     }
