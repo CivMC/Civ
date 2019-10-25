@@ -9,4 +9,4 @@ commands:
   pp:
     description: Legacy prison pearl commands
     aliases: [pplocate, ppl, ppfree, ppf, ppbroadcast, ppb, ppconfirm, ppsilence]
-  
+api-version: 1.14
