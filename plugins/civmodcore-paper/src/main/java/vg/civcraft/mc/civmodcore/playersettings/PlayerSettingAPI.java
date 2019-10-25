@@ -57,6 +57,9 @@ public class PlayerSettingAPI {
 		}
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		ConfigurationSection section = config.getConfigurationSection(setting.getIdentifier());
+		if (section == null) {
+			return;
+		}
 		for (String key : section.getKeys(false)) {
 			setting.load(key, section.getString(key));
 		}
