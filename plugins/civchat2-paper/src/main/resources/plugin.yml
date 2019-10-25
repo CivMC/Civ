@@ -83,3 +83,4 @@ permissions:
    CivChat2.*:
       description: Gives access to /sayall
       default: op
+api-version: 1.14
