@@ -124,3 +124,4 @@ permissions:
     simpleadmin.timings:
       description: Gives the ability to view and manage /...timings commands
       default: op
+api-version: 1.14
