@@ -64,7 +64,7 @@ public class CivSpyBungee extends Plugin implements Listener {
 						config.getInt("interval", 60000), config.getInt("interval", 60000), TimeUnit.MILLISECONDS);
 
 				logger.info("Setting up CivSpyBungee Player Tracking");
-				this.players = new HashMap<UUID, Long>();
+				this.players = new HashMap<>();
 				getProxy().getPluginManager().registerListener(this, this);
 			} else {
 				logger.severe("Database not connected, CivSpyBungee going dark.");
@@ -146,9 +146,9 @@ public class CivSpyBungee extends Plugin implements Listener {
 		}
 		
 		Integer poolSize = dbStuff.getInt("poolsize", 10);
-		Long connectionTimeout = dbStuff.getLong("connectionTimeout", 10000l);
-		Long idleTimeout = dbStuff.getLong("idleTimeout", 600000l);
-		Long maxLifetime = dbStuff.getLong("maxLifetime", 7200000l);
+		Long connectionTimeout = dbStuff.getLong("connectionTimeout", 10000L);
+		Long idleTimeout = dbStuff.getLong("idleTimeout", 600_000L);
+		Long maxLifetime = dbStuff.getLong("maxLifetime", 7_200_000L);
 		
 		return new Database(logger, user, password, host, port, db,
 				poolSize, connectionTimeout, idleTimeout, maxLifetime);
@@ -201,7 +201,9 @@ public class CivSpyBungee extends Plugin implements Listener {
 	 */
 	public void session(UUID player) {
 		Long start = players.get(player);
-		if (start == null) return;
+		if (start == null) {
+			return;
+		}
 		db.insertData("bungee.session", player, System.currentTimeMillis() - start);
 	}
 }
