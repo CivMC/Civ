@@ -8,12 +8,10 @@ import java.util.logging.Logger;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.TippedArrow;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageByBlockEvent;
@@ -73,13 +71,11 @@ public final class HuntingListener extends ServerDataListener {
 			String killerName = null;
 			String killerTool = null;
 			boolean killerIsEntity = false;
-			boolean killerIsPlayer = false;
 			if (died.getKiller() != null) {
 				Player killer = died.getKiller();
 				killerTool = ItemStackToString.toString(killer.getEquipment().getItemInMainHand());
 				killerName = killer.getUniqueId().toString();
 				killerIsEntity = true;
-				killerIsPlayer = true;
 			} else if (died.getLastDamageCause() != null) {
 				EntityDamageEvent ede = died.getLastDamageCause();
 				if (ede instanceof EntityDamageByEntityEvent) {

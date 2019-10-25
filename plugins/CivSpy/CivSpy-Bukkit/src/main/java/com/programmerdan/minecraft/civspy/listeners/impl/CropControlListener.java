@@ -11,12 +11,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 
-import com.programmerdan.minecraft.cropcontrol.events.CropControlDropEvent;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 import com.programmerdan.minecraft.civspy.util.ItemStackToString;
+import com.programmerdan.minecraft.cropcontrol.events.CropControlDropEvent;
 
 /**
  * Contributes <code>cropcontrol.drop.TYPE</code> stats when crop control triggers a drop.

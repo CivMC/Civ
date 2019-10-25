@@ -2,10 +2,10 @@ package com.programmerdan.minecraft.civspy.listeners;
 
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.programmerdan.minecraft.civspy.DataListener;
 import com.programmerdan.minecraft.civspy.DataManager;
-
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Convenience wrapper of DataListener that embeds Server name handling. Optionally adds configuration section handling.

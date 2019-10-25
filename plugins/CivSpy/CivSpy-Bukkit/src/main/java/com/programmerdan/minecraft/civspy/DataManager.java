@@ -1,19 +1,19 @@
 package com.programmerdan.minecraft.civspy;
 
 import java.lang.ref.WeakReference;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map.Entry;
-import java.util.logging.Logger;
-import java.util.logging.Level;
-import java.util.concurrent.Executors;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedTransferQueue;
 import java.util.concurrent.TimeUnit;
-import java.util.LinkedList;
-import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Represents a self-monitoring manager that accepts data into a queue and asynchronously pulls data

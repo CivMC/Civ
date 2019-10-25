@@ -9,9 +9,9 @@ import org.bukkit.Location;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.event.inventory.CraftItemEvent;
 
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;

@@ -1,8 +1,9 @@
 package com.programmerdan.minecraft.civspy;
 
 import java.util.logging.Logger;
-import org.bukkit.configuration.file.FileConfiguration;
+
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 
 import com.programmerdan.minecraft.civspy.database.Database;
 

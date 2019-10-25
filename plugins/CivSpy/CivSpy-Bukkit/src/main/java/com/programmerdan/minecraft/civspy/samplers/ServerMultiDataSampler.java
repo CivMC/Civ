@@ -2,10 +2,10 @@ package com.programmerdan.minecraft.civspy.samplers;
 
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.ConfigurationSection;
+
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.MultiDataSampler;
-
-import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Abstract wrapper expecting server name at construction. Optionally, configuration section.

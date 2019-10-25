@@ -95,6 +95,12 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
+			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<artifactId>CivModCore</artifactId>
+			<version>1.7.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>civspy-api</artifactId>
 			<version>1.1</version>

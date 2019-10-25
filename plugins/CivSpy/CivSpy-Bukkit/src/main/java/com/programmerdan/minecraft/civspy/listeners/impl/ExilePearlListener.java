@@ -7,10 +7,10 @@ import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 
-import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
-import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.ExilePearl;
+import com.devotedmc.ExilePearl.event.PearlMovedEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
+import com.devotedmc.ExilePearl.event.PlayerPearledEvent;
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;

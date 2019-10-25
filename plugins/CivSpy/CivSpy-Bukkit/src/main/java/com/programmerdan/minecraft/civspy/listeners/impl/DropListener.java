@@ -11,8 +11,8 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.programmerdan.minecraft.civspy.DataManager;

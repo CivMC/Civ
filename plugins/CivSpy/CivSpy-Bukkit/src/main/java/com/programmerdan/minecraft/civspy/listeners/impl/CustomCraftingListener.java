@@ -11,15 +11,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.inventory.ItemStack;
 
-import haveric.recipeManager.api.events.RecipeManagerCraftEvent;
-import haveric.recipeManager.recipes.ItemResult;
-import haveric.recipeManager.recipes.WorkbenchRecipe;
-
 import com.programmerdan.minecraft.civspy.DataManager;
 import com.programmerdan.minecraft.civspy.DataSample;
 import com.programmerdan.minecraft.civspy.PointDataSample;
 import com.programmerdan.minecraft.civspy.listeners.ServerDataListener;
 import com.programmerdan.minecraft.civspy.util.ItemStackToString;
+
+import haveric.recipeManager.api.events.RecipeManagerCraftEvent;
+import haveric.recipeManager.recipes.ItemResult;
+import haveric.recipeManager.recipes.PreparableResultRecipe;
 
 /**
  * Listener that records crafting recipe use.
@@ -45,17 +45,21 @@ public final class CustomCraftingListener extends ServerDataListener {
 	 * 
 	 */
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled=true)
-	public void CraftListen(RecipeManagerCraftEvent event) {
+	public void craftListen(RecipeManagerCraftEvent event) {
 		try {
 			Player player = event.getPlayer();
-			if (player == null) return;
+			if (player == null) {
+				return;
+			}
 			UUID id = player.getUniqueId();
 	
 			Location location = player.getLocation();
 			Chunk chunk = location.getChunk();
 			
-			WorkbenchRecipe recipe = event.getRecipe();
-			if (recipe == null) return;
+			PreparableResultRecipe recipe = event.getRecipe();
+			if (recipe == null) {
+				return;
+			}
 			
 			ItemResult result = event.getResult();
 			if (result == null) {

@@ -1,21 +1,20 @@
 package com.programmerdan.minecraft.civspy;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.io.IOException;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.event.HandlerList;
-
-import com.programmerdan.minecraft.civspy.database.Database;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import com.google.common.reflect.ClassPath;
-import java.lang.reflect.Constructor;
+import com.programmerdan.minecraft.civspy.database.Database;
 
 
 /**

@@ -1,13 +1,12 @@
 package com.programmerdan.minecraft.civspy.listeners.impl;
 
-import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockRedstoneEvent;
