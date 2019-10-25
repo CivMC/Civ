@@ -58,7 +58,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     	}
         messages = new HashSet<>();
 
-        manager = Citadel.getReinforcementManager();
+        manager = Citadel.getInstance().getReinforcementManager();
         messenger = new Messenger();
 
         Bukkit.getScheduler().runTaskTimer(plugin(), messenger, 0, config.getDelay() * 20);
@@ -88,7 +88,9 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
     		return;
     	}
     	Material bbe = eve.getBlock().getType();
-	if (manager == null) manager = Citadel.getReinforcementManager();
+	if (manager == null) {
+		manager = Citadel.getInstance().getReinforcementManager();
+	}
 	// the list of items with inventories has grown a bit (1.14)
         if (Material.CHEST.equals(bbe) || Material.TRAPPED_CHEST.equals(bbe)
         		|| Material.ENDER_CHEST.equals(bbe) || Material.FURNACE.equals(bbe)
@@ -113,7 +115,7 @@ public class ReinforcedChestBreak extends SimpleHack<ReinforcedChestBreakConfig>
 			|| Material.WHITE_SHULKER_BOX.equals(bbe)
 			|| Material.YELLOW_SHULKER_BOX.equals(bbe)
 			|| Material.LECTERN.equals(bbe) || Material.BREWING_STAND.equals(bbe)) {
-            if(manager.isReinforced(eve.getBlock())) {
+            if(manager.getReinforcement(eve.getBlock()) != null) {
                 String name = eve.getPlayer().getDisplayName();
                 Location loc = eve.getBlock().getLocation();
 
