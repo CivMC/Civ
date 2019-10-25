@@ -65,11 +65,12 @@ Similar to Game Fixes, but distinct in that the intent here is on hacks that _tu
 or alter existing mechanics without fully disabling them or without fixing them. 
 Things like altering armor damage reduction or tool impact would be good fits.
 
-### HackBot
+### ~~HackBot~~
 
-An experimental module whose complexity is approaching divorce from SAH, this is
+(Removed in 1.2.4)
+~~An experimental module whose complexity is approaching divorce from SAH, this is
 a bit of mid-work code that allows operators to define static Bots that show up
-like "real" players but aren't.
+like "real" players but aren't.~~
 
 ### Introbook
 
@@ -84,12 +85,13 @@ Host of the `/invsee` command, gives insight into active player inventory, armor
 health and more. I hope / intend to add another portion to this that allows online
 and offline inventory management via `/invmod` but this is as of now not started.
 
-### InvisibleFix and InvisibleFixTwo
+### ~~InvisibleFix and InvisibleFixTwo~~
 
-My hope is to remove these in time, but for 1.9 and 1.10 minecraft players
+(Removed in 1.3.0)
+~~My hope is to remove these in time, but for 1.9 and 1.10 minecraft players
 go invisible all the time. Both of these hacks use different approaches to help
 preserve the visiblity of players. The second hack is the more invasive, sending
-explicit location packets when the situation indicates its usefulness.
+explicit location packets when the situation indicates its usefulness.~~
 
 ### NewfriendAssist
 
@@ -106,6 +108,23 @@ are actively breaking reinforced containers.
 
 This one is pretty Devoted iteration 3 specific. Allows tracking server wide of
 all breaks or builds under a specific y level.
+
+### ToggleLamp
+
+A solid piece of contributed code, this hack lets redstone lamps be used as
+clickable-on, clickable-off light sources without additional redstone infrastructure.
+
+### HumbugBatchOne
+
+A new BasicHack (thanks Maxopoly) which encompasses a number of previously unincluded
+Humbug gameplay modifications. Specifically, sheep wool dying, anvil use, enchanting table use,
+cauldrons sourcing infinite water, disabling ender dragon, disabling iron farms,
+disabling ender crystal damage, disable mining fatigue, and equipping banners as hats.
+
+
+### PortalSpawnModifier
+
+Another new BasicHack which allows control of the spawn of creatures rate from nether portals
 
 ### TimingsHack
 

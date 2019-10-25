@@ -239,7 +239,10 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnabled()) return;
 		if (!config.isVillagerTrading()) {
 			Entity npc = event.getRightClicked();
-			if (npc.getType().equals(EntityType.VILLAGER)) {
+			// Don't recall specifically but considering I had this null check
+			// alone... I probably had an NPE here at some point. Probably plugin
+			// with plugin interactions.
+			if (npc != null && EntityType.VILLAGER.equals(npc.getType())) {
 				event.setCancelled(true);
 			}
 		}
@@ -249,7 +252,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public void disableWitherSpawning(CreatureSpawnEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isWitherSpawning()) {
-			if (event.getEntityType().equals(EntityType.WITHER)) {
+			if (EntityType.WITHER.equals(event.getEntityType())) {
 				event.setCancelled(true);
 			}
 		}
@@ -259,7 +262,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public void disableEnderChestPlacement(BlockPlaceEvent event) {
 		if (!config.isEnabled()) return;
 		if (!config.isEnderChestPlacement()) {
-			if (event.getBlock().getType().equals(Material.ENDER_CHEST)) {
+			if (Material.ENDER_CHEST.equals(event.getBlock().getType())) {
 				event.setCancelled(true);
 			}
 		}
@@ -272,7 +275,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			Action action = event.getAction();
 			Material material = event.getClickedBlock().getType();
 			boolean enderChest = action == Action.RIGHT_CLICK_BLOCK &&
-					material.equals(Material.ENDER_CHEST);
+					Material.ENDER_CHEST.equals(material);
 			if (enderChest) {
 				event.setCancelled(true);
 			}
@@ -311,7 +314,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	public void disableChorusFruitTeleportation(PlayerTeleportEvent event) {
 		if (!config.isEnabled() || config.isChorusFruitTeleportation()) return;
 
-		if (event.getCause().equals(PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT)) {
+		if (PlayerTeleportEvent.TeleportCause.CHORUS_FRUIT.equals(event.getCause())) {
 			event.setCancelled(true);
 		}
 	}
@@ -375,7 +378,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e) {
 		if (config.isEnabled() && config.isBlockWaterInHell()) {
-			if ((e.getBlockClicked().getBiome() == Biome.NETHER) && (e.getBucket() == Material.WATER_BUCKET)) {
+			if (Biome.NETHER.equals(e.getBlockClicked().getBiome()) && Material.WATER_BUCKET.equals(e.getBucket())) {
 				e.setCancelled(true);
 				e.getItemStack().setType(Material.BUCKET);
 			}
@@ -387,10 +390,10 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!config.isEnabled() || !config.isBlockWaterInHell()) {
 			return; 
 		}
-		if (event.getBlock().getType() == Material.DISPENSER) {
+		if (Material.DISPENSER.equals(event.getBlock().getType())) {
 			Dispenser disp = (Dispenser) event.getBlock().getBlockData();
 			Biome biome = event.getBlock().getRelative(disp.getFacing()).getBiome();
-			if (Biome.NETHER.equals(biome) && event.getItem().getType().equals(Material.WATER_BUCKET)) {
+			if (Biome.NETHER.equals(biome) && Material.WATER_BUCKET.equals(event.getItem().getType())) {
 				event.setItem(new ItemStack(Material.BUCKET, event.getItem().getAmount()));
 				event.setCancelled(true);
 			}
@@ -438,6 +441,9 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (config.isEnabled() && config.isMinecartTeleport()) {
 			final Vehicle vehicle = event.getVehicle();
 			final List<Entity> passengers = vehicle.getPassengers();
+			if (passengers.isEmpty()) {
+				return;
+			}
 			final Location vehicleLocation = vehicle.getLocation();
 			passengers.removeIf((passenger -> !(passenger instanceof Player)));
 			passengers.forEach((passenger) -> {
@@ -455,13 +461,13 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
 		if (config.isEnabled() && config.isObsidianGenerators()) {
-			if (event.getBlock().getType() == Material.LAVA) {
+			if (Material.LAVA.equals(event.getBlock().getType())) {
 				Block to = event.getToBlock();
-				if (to.getType() == Material.REDSTONE || to.getType() == Material.TRIPWIRE) {
-					if (to.getRelative(BlockFace.NORTH).getType() == Material.WATER
-							|| to.getRelative(BlockFace.SOUTH).getType() == Material.WATER
-							|| to.getRelative(BlockFace.WEST).getType() == Material.WATER
-							|| to.getRelative(BlockFace.EAST).getType() == Material.WATER) {
+				if (Material.REDSTONE.equals(to.getType()) || Material.TRIPWIRE.equals(to.getType())) {
+					if (Material.WATER.equals(to.getRelative(BlockFace.NORTH).getType())
+							|| Material.WATER.equals(to.getRelative(BlockFace.SOUTH).getType())
+							|| Material.WATER.equals(to.getRelative(BlockFace.WEST).getType())
+							|| Material.WATER.equals(to.getRelative(BlockFace.EAST).getType())) {
 							to.setType(Material.OBSIDIAN);
 					}
 				}

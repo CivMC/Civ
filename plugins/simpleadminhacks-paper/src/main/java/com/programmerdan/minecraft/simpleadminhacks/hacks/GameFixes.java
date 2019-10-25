@@ -193,7 +193,12 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onInventoryMoveItem(InventoryMoveItemEvent event) {
 		if (!config.isEnabled() || !config.isStopHopperDupe()) return;
-		if (!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
+		// I recollect inventory handling to be the single biggest source of NPEs, so I'll add
+		// back in the nullcheck, although I do hope Spigot has addressed the sources with the
+		// addition of their annotations.
+		//
+		if ((event.getDestination() == null) || (event.getSource() == null) ||
+				!(InventoryType.HOPPER.equals(event.getDestination().getType())) ||
 				!(InventoryType.HOPPER.equals(event.getSource().getType())) ||
 				!(Material.HOPPER.equals(event.getDestination().getLocation().getBlock().getType())) || 
 				!(Material.HOPPER.equals(event.getSource().getLocation().getBlock().getType()))) {
@@ -247,7 +252,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
 			Block block = event.getBlockClicked().getRelative(event.getBlockFace());
 
-			if (block.getType() == Material.END_PORTAL) {
+			if (Material.END_PORTAL.equals(block.getType())) {
 				event.setCancelled(true);
 			}
 		}
@@ -256,11 +261,11 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onDispenseEvent(BlockDispenseEvent event) {
 		if (config.isEnabled() && config.isStopEndPortalDeletion()) {
-			if (event.getBlock().getType() == Material.DISPENSER) {
+			if (Material.DISPENSER.equals(event.getBlock().getType())) {
 				Dispenser disp = (Dispenser) event.getBlock().getBlockData();
 				Material type = event.getBlock().getRelative(disp.getFacing()).getType();
 
-				if (type == Material.END_PORTAL) {
+				if (Material.END_PORTAL.equals(type)) {
 					event.setCancelled(true);
 				}
 			}
@@ -295,9 +300,10 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 		Environment env = b.getLocation().getWorld().getEnvironment();
 		Biome biome = b.getLocation().getBlock().getBiome();
-		if (env == Environment.NETHER || env == Environment.THE_END || Biome.NETHER == biome 
-				|| Biome.END_BARRENS == biome || Biome.END_HIGHLANDS == biome
-				|| Biome.END_MIDLANDS == biome || Biome.SMALL_END_ISLANDS == biome) {
+		if (Environment.NETHER.equals(env) || Environment.THE_END.equals(env) || Biome.NETHER.equals(biome) 
+				|| Biome.END_BARRENS.equals(biome) || Biome.END_HIGHLANDS.equals(biome)
+				|| Biome.END_MIDLANDS.equals(biome) || Biome.SMALL_END_ISLANDS.equals(biome)
+				|| Biome.THE_END.equals(biome)) {
 			event.setCancelled(true);
 		}
 	}
@@ -416,6 +422,14 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 			case WITHER_SKELETON_WALL_SKULL:
 			case WITHER_SKELETON_SKULL:
 			case SKELETON_WALL_SKULL:
+			case PLAYER_HEAD:
+			case PLAYER_WALL_HEAD:
+			case CREEPER_HEAD:
+			case CREEPER_WALL_HEAD:
+			case DRAGON_HEAD:
+			case DRAGON_WALL_HEAD:
+			case ZOMBIE_HEAD:
+			case ZOMBIE_WALL_HEAD:
 				height = 0.5;
 				break;
 			default:

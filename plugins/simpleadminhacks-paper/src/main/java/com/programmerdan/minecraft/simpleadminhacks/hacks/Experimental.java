@@ -92,10 +92,14 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 
 		Player player = (Player) sender;
 		ItemStack item = player.getInventory().getItemInMainHand();
-		YamlConfiguration yml = new YamlConfiguration();
-		yml.set("template", item);
-		plugin().log(yml.saveToString());
-		sender.sendMessage(yml.saveToString());
+		if (item != null && item.getType().isItem()) { // spigot claims @Notnull but unclear how well enforced
+			YamlConfiguration yml = new YamlConfiguration();
+			yml.set("template", item);
+			plugin().log(yml.saveToString());
+			sender.sendMessage(yml.saveToString());
+		} else {
+			sender.sendMessage("No valid item in main hand");
+		}
 		return true;
 	}
 
@@ -131,16 +135,22 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 					this.cancel();
 					return;
 				}
-				Player player = plugin().getServer().getPlayer(playerUUID);
-				if (player != null) {
-					StringBuilder sb = new StringBuilder("Tracking: ");
-					sb.append(playerUUID);
-					logPlayer(player, sb);
-					plugin().log(sb.toString());
+				// I recall running into situation where this UUID nulled out, don't remember how
+				// so, I check.
+				if (playerUUID != null) {
+					Player player = plugin().getServer().getPlayer(playerUUID);
+					if (player != null) {
+						StringBuilder sb = new StringBuilder("Tracking: ");
+						sb.append(playerUUID);
+						logPlayer(player, sb);
+						plugin().log(sb.toString());
+					} else {
+						StringBuilder sb = new StringBuilder("Lost: ");
+						sb.append(playerUUID);
+						plugin().log(sb.toString());
+						this.cancel();
+					}
 				} else {
-					StringBuilder sb = new StringBuilder("Lost: ");
-					sb.append(playerUUID);
-					plugin().log(sb.toString());
 					this.cancel();
 				}
 			}
@@ -153,8 +163,16 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		Player player = event.getPlayer();
 		Location from = event.getFrom();
 		Location to = event.getTo();
-		sb.append(String.format(" %16s", player.getName()));
-		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
+		// Most of these nullchecks will gen warnings with compile time contracts. 
+		// Experience tells me these can be violated at runtime due to spigot failures,
+		// esp moving between worlds with corresponding state desync. Leaving them in
+		// consequentially.
+		sb.append(String.format(" %16s", player != null ? player.getName() : "--unknown--"));
+		if (from != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", from.getWorld().getName(), from.getX(), from.getY(), from.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
 		sb.append(" ->");
 		if (to != null) {
 			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", to.getWorld().getName(), to.getX(), to.getY(), to.getZ()));
@@ -171,8 +189,18 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 		sb.append(player.getWorld().getName());
 		Location feet = player.getLocation();
 		Location eyes = player.getEyeLocation();
-		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", feet.getWorld().getName(), feet.getX(), feet.getY(), feet.getZ()));
-		sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", eyes.getWorld().getName(), eyes.getX(), eyes.getY(), eyes.getZ()));
+		// Similar comment here, most/all these nullchecks are from observed failures. 
+		// I truly hope Spigot has eliminated all sources of these but I'm not the trusting type.
+		if (feet != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", feet.getWorld().getName(), feet.getX(), feet.getY(), feet.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
+		if (eyes != null) {
+			sb.append(String.format(" %s,%5.0f,%3.0f,%5.0f", eyes.getWorld().getName(), eyes.getX(), eyes.getY(), eyes.getZ()));
+		} else {
+			sb.append(" (none)");
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
@@ -186,8 +214,12 @@ public class Experimental extends SimpleHack<ExperimentalConfig> implements List
 	private void logCombat(EntityDamageByEntityEvent event, StringBuilder sb) {
 		sb.append(event.isCancelled() ? "C " : "A ");
 		sb.append(event.getCause().name());
+		// These null checks defend against specific kinds of malformed damage events, which can occur
+		// at runtime or while running with older plugins.
 		sb.append(String.format(", %5.2f->%5.2f", event.getDamage(), event.getFinalDamage()));
-		sb.append(String.format(", %16s v %16s", event.getDamager().getName(), event.getEntity().getName()));
+		sb.append(String.format(", %16s v %16s", 
+				event.getDamager() != null ? event.getDamager().getName() : "--unknown--", 
+				event.getEntity() != null ? event.getEntity().getName() : "--unknown--"));
 		for (EntityDamageEvent.DamageModifier mod : EntityDamageEvent.DamageModifier.values()) {
 			sb.append(", ").append(mod.name());
 			try {

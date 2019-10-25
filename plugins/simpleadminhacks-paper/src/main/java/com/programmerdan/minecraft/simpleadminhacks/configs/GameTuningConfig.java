@@ -49,6 +49,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	private boolean enderGrief;
 	private boolean witherGrief;
+	private boolean dragonGrief;
 
 	private boolean preventFallingThroughBedrock;
 
@@ -101,6 +102,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		this.witherGrief = config.getBoolean("witherGrief", false);
 		if (!witherGrief) plugin().log("Wither grief is disabled.");
+
+		this.dragonGrief = config.getBoolean("dragonGrief", true);
+		if (!dragonGrief) plugin().log("Dragon grief is disabled.");
 
 		this.preventFallingThroughBedrock = config.getBoolean("preventFallingThroughBedrock", true);
 
@@ -287,6 +291,10 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	public boolean isWitherGrief() {
 		return witherGrief;
+	}
+
+	public boolean isDragonGrief() {
+		return dragonGrief;
 	}
 
 	public boolean isPreventFallingThroughBedrock() {
