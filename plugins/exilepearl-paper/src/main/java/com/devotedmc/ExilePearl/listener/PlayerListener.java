@@ -70,6 +70,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
@@ -1068,7 +1069,6 @@ public class PlayerListener implements Listener, Configurable {
 	public void loadConfig(PearlConfig config) {
 		repairMaterials.clear();
 		upgradeMaterials.clear();
-
 		try {
 			// This item is basically used as a trigger to catch the recipe being created
 			ItemStack resultItem = new ItemStack(Material.STONE_BUTTON, 1);
@@ -1077,6 +1077,7 @@ public class PlayerListener implements Listener, Configurable {
 			im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 			resultItem.setItemMeta(im);
 
+			
 			for(PearlType type : PearlType.values()) {
 				repairMaterials.put(type, config.getRepairMaterials(type));
 			}
@@ -1091,7 +1092,7 @@ public class PlayerListener implements Listener, Configurable {
 			}
 
 		} catch (Exception ex) {
-			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes.");
+			pearlApi.log(Level.SEVERE, "Failed to register the pearl repair recipes " + ex.toString());
 		}
 
 		try {
@@ -1111,7 +1112,7 @@ public class PlayerListener implements Listener, Configurable {
 				Bukkit.getServer().addRecipe(r1);
 			}
 		} catch (Exception ex) {
-			pearlApi.log(Level.SEVERE, "Failed to register pearl upgrade recipes.");
+			pearlApi.log(Level.SEVERE, "Failed to register pearl upgrade recipes." + ex.toString());
 		}
 
 		useHelpItem = config.getUseHelpItem();
