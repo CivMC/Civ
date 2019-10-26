@@ -127,6 +127,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * Attempts to turn the factory on and does all the checks needed to ensure
 	 * that the factory is allowed to turn on
 	 */
+	@Override
 	public void attemptToActivate(Player p, boolean onStartUp) {
 		LoggingUtils.debug((p != null ? p.getName() : "Redstone") + " is attempting to activate " + getLogData());
 		mbs.recheckComplete();
@@ -202,7 +203,7 @@ public class FurnCraftChestFactory extends Factory {
 			return;
 		}
 		if (p != null) {
-			int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() != -1 ? ((InputRecipe) currentRecipe)
+			int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0 ? ((InputRecipe) currentRecipe)
 					.getFuelConsumptionIntervall() : pm.getPowerConsumptionIntervall();
 			if (((FurnacePowerManager) pm).getFuelAmountAvailable() < (currentRecipe.getProductionTime() / consumptionIntervall)) {
 				p.sendMessage(ChatColor.RED
@@ -219,6 +220,7 @@ public class FurnCraftChestFactory extends Factory {
 	 * what you are doing, use attemptToActivate() instead to ensure the factory
 	 * is allowed to turn on
 	 */
+	@Override
 	public void activate() {
 		LoggingUtils.log("Activating " + getLogData() + ", because of " + (activator != null ? 
 				Bukkit.getPlayer(activator) : "Redstone"));
@@ -233,6 +235,7 @@ public class FurnCraftChestFactory extends Factory {
 	/**
 	 * Turns the factory off.
 	 */
+	@Override
 	public void deactivate() {
 		LoggingUtils.log("Deactivating " + getLogData());
 		if (active) {
@@ -293,6 +296,7 @@ public class FurnCraftChestFactory extends Factory {
 	/**
 	 * Called by the manager each update cycle
 	 */
+	@Override
 	public void run() {
 		if (active && mbs.isComplete()) {
 			// if the materials required to produce the current recipe are in
@@ -301,7 +305,7 @@ public class FurnCraftChestFactory extends Factory {
 				// if the factory has been working for less than the required
 				// time for the recipe
 				if (currentProductionTimer < currentRecipe.getProductionTime()) {
-					int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() != -1
+					int consumptionIntervall = ((InputRecipe) currentRecipe).getFuelConsumptionIntervall() > 0
 							? ((InputRecipe) currentRecipe).getFuelConsumptionIntervall()
 							: pm.getPowerConsumptionIntervall();
 

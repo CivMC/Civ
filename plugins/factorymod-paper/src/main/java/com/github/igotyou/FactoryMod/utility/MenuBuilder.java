@@ -496,7 +496,7 @@ public class MenuBuilder {
 				}
 			}
 		}
-		int fuelInterval = rec.getFuelConsumptionIntervall() != -1? rec.getFuelConsumptionIntervall() : egg.getFuelConsumptionIntervall();
+		int fuelInterval = rec.getFuelConsumptionIntervall() > 0 ? rec.getFuelConsumptionIntervall() : egg.getFuelConsumptionIntervall();
 		int fuelConsumed = rec.getProductionTime()/fuelInterval;
 		ItemStack fuels = egg.getFuel().clone();
 		fuels.setAmount(fuelConsumed);

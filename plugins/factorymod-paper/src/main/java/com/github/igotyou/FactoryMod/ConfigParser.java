@@ -2,11 +2,16 @@ package com.github.igotyou.FactoryMod;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMapDirectly;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTimeAsTicks;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
+import java.util.TreeMap;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -101,8 +106,8 @@ public class ConfigParser {
 			plugin.warning("You have usage of yaml identifiers turned off, names will be used instead to identify factories and recipes. This behavior"
 					+ " is not recommended and not compatible with config inheritation");
 		}
-		defaultUpdateTime = (int) parseTime(config.getString(
-				"default_update_time", "250ms")) / 50;
+		defaultUpdateTime = parseTimeAsTicks(config.getString(
+				"default_update_time", "250ms"));
 		defaultHealth = config.getInt("default_health", 10000);
 		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
 		if (dFuel.getTotalUniqueItemAmount() > 0) {
@@ -110,17 +115,17 @@ public class ConfigParser {
 		} else {
 			plugin.warning("No default_fuel specified. Should be an ItemMap.");
 		}
-		defaultFuelConsumptionTime = (int) parseTime(config.getString(
-				"default_fuel_consumption_intervall", "20")) / 50;
+		defaultFuelConsumptionTime = parseTimeAsTicks(config.getString(
+				"default_fuel_consumption_intervall", "20"));
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
 		defaultBreakGracePeriod = parseTime(config
 				.getString("default_break_grace_period"));
 		defaultDamagePerBreakPeriod = config.getInt("default_decay_amount", 21);
-		long savingIntervall = parseTime(config.getString("saving_intervall", "15m")) / 50;
+		long savingIntervall = parseTimeAsTicks(config.getString("saving_intervall", "15m"));
 		//save factories on a regular base, unless disabled
-		if (savingIntervall != -1) {
+		if (savingIntervall > 0) {
 			new BukkitRunnable() {
 
 				@Override
@@ -359,7 +364,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime")) / 50;
+			update = parseTimeAsTicks(config.getString("updatetime"));
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -377,12 +382,12 @@ public class ConfigParser {
 		}
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
-			fuelIntervall = (int) parseTime(config
-					.getString("fuel_consumption_intervall")) / 50;
+			fuelIntervall = parseTimeAsTicks(config
+					.getString("fuel_consumption_intervall"));
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
-		int sortTime = (int) parseTime(config.getString("sort_time")) / 50;
+		int sortTime = parseTimeAsTicks(config.getString("sort_time"));
 		int sortamount = config.getInt("sort_amount");
 		int matsPerSide = config.getInt("maximum_materials_per_side");
 		return new SorterEgg(name, update, fuel, fuelIntervall, sortTime,
@@ -399,7 +404,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime")) / 50;
+			update = parseTimeAsTicks(config.getString("updatetime"));
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -417,13 +422,13 @@ public class ConfigParser {
 		}
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
-			fuelIntervall = (int) parseTime(config
-					.getString("fuel_consumption_intervall")) / 50;
+			fuelIntervall = parseTimeAsTicks(config
+					.getString("fuel_consumption_intervall"));
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
-		int transferTimeMultiplier = (int) parseTime(config
-				.getString("transfer_time_multiplier")) / 50;
+		int transferTimeMultiplier = parseTimeAsTicks(config
+				.getString("transfer_time_multiplier"));
 		int transferAmount = config.getInt("transfer_amount");
 		byte color = (byte) config.getInt("glass_color");
 		int maxLength = config.getInt("maximum_length");
@@ -441,7 +446,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime")) / 50;
+			update = parseTimeAsTicks(config.getString("updatetime"));
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -466,7 +471,7 @@ public class ConfigParser {
 		}
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
-			fuelIntervall = (int) parseTime(config
+			fuelIntervall = parseTimeAsTicks(config
 					.getString("fuel_consumption_intervall")) / 50;
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
@@ -494,7 +499,7 @@ public class ConfigParser {
 	}
 
 	public void enableFactoryDecay(ConfigurationSection config) {
-		long interval = parseTime(config.getString("decay_intervall")) / 50;
+		long interval = parseTimeAsTicks(config.getString("decay_intervall"));
 		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, 
 						new FactoryGarbageCollector(), interval, interval);
 	}
@@ -534,7 +539,7 @@ public class ConfigParser {
 		}
 		int productionTime;
 		if (parentRecipe == null) {
-			productionTime = (int) parseTime(prodTime, TimeUnit.MILLISECONDS) / 50;
+			productionTime = parseTimeAsTicks(prodTime);
 		}
 		else {
 			productionTime = parentRecipe.getProductionTime();
@@ -865,7 +870,7 @@ public class ConfigParser {
 			result = null;
 		}
 		if (result != null) {
-			((InputRecipe)result).setFuelConsumptionIntervall((int)parseTime(config.getString("fuel_consumption_intervall", "-1")) / 50);
+			((InputRecipe)result).setFuelConsumptionIntervall(parseTimeAsTicks(config.getString("fuel_consumption_intervall", "0")));
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
