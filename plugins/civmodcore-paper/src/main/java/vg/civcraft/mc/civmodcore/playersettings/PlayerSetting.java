@@ -6,6 +6,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 import java.util.ArrayList;
@@ -82,7 +83,13 @@ public abstract class PlayerSetting<T> {
 	 * @return ItemStack to show for this setting
 	 */
 	public ItemStack getGuiRepresentation(UUID player) {
-		ItemStack copy = visualization.clone();
+		ItemStack copy;
+		if (visualization == null) {
+			copy = new ItemStack(MaterialAPI.getMaterialHash(getValue(player)));
+		}
+		else {
+			copy = visualization.clone();
+		}
 		applyInfoToItemStack(copy, player);
 		return copy;
 	}
