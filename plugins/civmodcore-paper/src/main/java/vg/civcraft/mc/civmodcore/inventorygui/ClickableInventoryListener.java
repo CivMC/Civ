@@ -31,7 +31,7 @@ public class ClickableInventoryListener implements Listener {
 	@EventHandler
 	public void inventoryClose(InventoryCloseEvent e) {
 		// for some reason getPlayer apparently isnt always a player here, but
-		// just a LivingEntity
+		// just a HumanEntity
 		if (!(e.getPlayer() instanceof Player)) {
 			return;
 		}

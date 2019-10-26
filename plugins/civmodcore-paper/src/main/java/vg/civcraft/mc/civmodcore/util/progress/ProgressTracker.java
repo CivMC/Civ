@@ -1,7 +1,7 @@
 package vg.civcraft.mc.civmodcore.util.progress;
 
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeSet;
 
@@ -29,7 +29,7 @@ public class ProgressTracker<T extends ProgressTrackable> {
 		long nextOne = Long.MAX_VALUE;
 		long time = System.currentTimeMillis();
 		Iterator<T> iter = queueItems.iterator();
-		List<T> toReadd = new LinkedList<>();
+		List<T> toReAdd = new ArrayList<>();
 		while (iter.hasNext()) {
 			T item = iter.next();
 			if (item.getNextUpdate() > time) {
@@ -39,10 +39,10 @@ public class ProgressTracker<T extends ProgressTrackable> {
 			iter.remove();
 			item.updateState();
 			if (item.getNextUpdate() > 0) {
-				toReadd.add(item);
+				toReAdd.add(item);
 			}
 		}
-		for (T item : toReadd) {
+		for (T item : toReAdd) {
 			nextOne = Math.min(nextOne, item.getNextUpdate());
 			addItem(item);
 		}

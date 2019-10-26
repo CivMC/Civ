@@ -1,14 +1,7 @@
 package vg.civcraft.mc.civmodcore.itemHandling;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Logger;
-
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.NBTTagList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,10 +10,16 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagList;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum possible stack sizes. This offers
@@ -273,7 +272,7 @@ public class ItemMap {
 			return getStacksByMaterialEnchants(is.getType(), is.getItemMeta()
 					.getEnchants());
 		} else {
-			return getStacksByMaterialEnchants(is.getType(), new HashMap<Enchantment, Integer>());
+			return getStacksByMaterialEnchants(is.getType(), new HashMap<>());
 		}
 	}
 
@@ -426,8 +425,8 @@ public class ItemMap {
 	 *
 	 * @return List of stacksize conform ItemStacks
 	 */
-	public LinkedList<ItemStack> getItemStackRepresentation() {
-		LinkedList<ItemStack> result = new LinkedList<>();
+	public List<ItemStack> getItemStackRepresentation() {
+		List<ItemStack> result = new ArrayList<>();
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			ItemStack is = entry.getKey();
 			Integer amount = entry.getValue();
@@ -485,8 +484,9 @@ public class ItemMap {
 	 * @return UI representation of large ItemMap
 	 */
 	public List<ItemStack> getLoredItemCountRepresentation() {
-		List<ItemStack> items = new LinkedList<>();
-		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
+		Set<Entry<ItemStack, Integer>> entrySet = getEntrySet();
+		List<ItemStack> items = new ArrayList<>(entrySet.size());
+		for (Entry<ItemStack, Integer> entry : entrySet) {
 			ItemStack is = entry.getKey().clone();
 			ItemAPI.addLore(is, ChatColor.GOLD + "Total item count: " + entry.getValue());
 			if (entry.getValue() > entry.getKey().getType().getMaxStackSize()) {

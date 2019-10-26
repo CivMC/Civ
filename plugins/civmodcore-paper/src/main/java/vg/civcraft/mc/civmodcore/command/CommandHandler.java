@@ -1,17 +1,16 @@
 package vg.civcraft.mc.civmodcore.command;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Deprecated
 public abstract class CommandHandler {
@@ -83,7 +82,7 @@ public abstract class CommandHandler {
 				completeArg = args[args.length - 1].toLowerCase();
 			}
 			if (completes == null) {
-				completes = new LinkedList<String>();
+				completes = new ArrayList<>();
 				for (Player p : Bukkit.getOnlinePlayers()) {
 					if (p.getName().toLowerCase().startsWith(completeArg)) {
 						completes.add(p.getName());

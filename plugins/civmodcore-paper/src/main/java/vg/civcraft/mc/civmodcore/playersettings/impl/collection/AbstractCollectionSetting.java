@@ -1,19 +1,10 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl.collection;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -23,7 +14,14 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingTypeManager;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
-public class AbstractCollectionSetting<C extends Collection<T>, T> extends PlayerSetting<C> {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+
+public abstract class AbstractCollectionSetting<C extends Collection<T>, T> extends PlayerSetting<C> {
 
 	private static final char SEPARATOR = ',';
 	private static final String SEPARATOR_STRING = String.valueOf(SEPARATOR);
@@ -39,9 +37,6 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 			ItemStack gui, String description, Class<T> elementClass, Function<C, C> newFunction) {
 		super(owningPlugin, defaultValue, name, identifier, gui, description);
 		this.newFunction = newFunction;
-		if (defaultValue == null) {
-			defaultValue = newFunction.apply(null);
-		}
 		elementSetting = SettingTypeManager.getSetting(elementClass);
 		if (elementSetting == null) {
 			throw new IllegalArgumentException("Can not keep " + elementClass.getName()
@@ -98,7 +93,7 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 			}
 		}
 		// final element not checked by the loop, because there's no comma after it
-		return elementSetting.isValidValue(input.substring(startingIndex, input.length()));
+		return elementSetting.isValidValue(input.substring(startingIndex));
 	}
 
 	@Override
@@ -123,12 +118,12 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 			}
 		}
 		// final element not checked by the loop, because there's no comma after it
-		result.add(elementSetting.deserialize(removeEscapes(serial.substring(startingIndex, serial.length()))));
+		result.add(elementSetting.deserialize(removeEscapes(serial.substring(startingIndex))));
 		return result;
 	}
 
 	private static String removeEscapes(String val) {
-		return val.replaceAll(SEPARATOR_REPLACE, SEPARATOR_REPLACE).replaceAll(ESCAPE_REPLACE, ESCAPE_STRING);
+		return val.replaceAll(SEPARATOR_REPLACE, SEPARATOR_STRING).replaceAll(ESCAPE_REPLACE, ESCAPE_STRING);
 	}
 
 	private static String escape(String val) {
@@ -166,8 +161,9 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 
 	@Override
 	public void handleMenuClick(Player player, MenuSection menu) {
-		List<IClickable> clickables = new LinkedList<>();
-		for (T element : getValue(player)) {
+		C value = getValue(player);
+		List<IClickable> clickables = new ArrayList<>(value.size());
+		for (T element : value) {
 			elementSetting.setValue(player, element);
 			ItemStack is = elementSetting.getGuiRepresentation(player.getUniqueId());
 			ItemAPI.setDisplayName(is, ChatColor.GOLD + elementSetting.toText(element));
@@ -198,7 +194,7 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 
 			@Override
 			public void clicked(Player p) {
-				new Dialog(p, CivModCorePlugin.getInstance(), ChatColor.GOLD + "Enter the name of the entry to add") {
+				new Dialog(p, getOwningPlugin(), ChatColor.GOLD + "Enter the name of the entry to add") {
 
 					@Override
 					public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
@@ -207,13 +203,7 @@ public class AbstractCollectionSetting<C extends Collection<T>, T> extends Playe
 
 					@Override
 					public void onReply(String[] message) {
-						StringBuilder sb = new StringBuilder();
-						for (int i = 0; i < message.length - 1; i++) {
-							sb.append(message[i]);
-							sb.append(' ');
-						}
-						sb.append(message[message.length - 1]);
-						String full = sb.toString();
+						String full = String.join(" ", message);
 						if (!elementSetting.isValidValue(full)) {
 							p.sendMessage(ChatColor.RED + "You entered an invalid value");
 						} else {

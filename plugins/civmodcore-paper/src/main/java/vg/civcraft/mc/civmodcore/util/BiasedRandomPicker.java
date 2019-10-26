@@ -37,7 +37,7 @@ public class BiasedRandomPicker<E> {
 		}
 		this.originalChances = chances;
 		this.rng = new Random();
-		this.chances = new TreeMap<Double, E>();
+		this.chances = new TreeMap<>();
 		double totalChance = 0.0;
 		for (Entry<E, Double> entry : chances.entrySet()) {
 			if (entry.getValue() == null) {
