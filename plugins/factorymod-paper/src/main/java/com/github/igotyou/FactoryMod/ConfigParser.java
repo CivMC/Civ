@@ -6,6 +6,7 @@ import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -101,7 +102,7 @@ public class ConfigParser {
 					+ " is not recommended and not compatible with config inheritation");
 		}
 		defaultUpdateTime = (int) parseTime(config.getString(
-				"default_update_time", "5"));
+				"default_update_time", "250ms")) / 50;
 		defaultHealth = config.getInt("default_health", 10000);
 		ItemMap dFuel = parseItemMap(config.getConfigurationSection("default_fuel"));
 		if (dFuel.getTotalUniqueItemAmount() > 0) {
@@ -110,14 +111,14 @@ public class ConfigParser {
 			plugin.warning("No default_fuel specified. Should be an ItemMap.");
 		}
 		defaultFuelConsumptionTime = (int) parseTime(config.getString(
-				"default_fuel_consumption_intervall", "20"));
+				"default_fuel_consumption_intervall", "20")) / 50;
 		defaultReturnRate = config.getDouble("default_return_rate", 0.0);
 		int redstonePowerOn = config.getInt("redstone_power_on", 7);
 		int redstoneRecipeChange = config.getInt("redstone_recipe_change", 2);
-		defaultBreakGracePeriod = 50 * parseTime(config
+		defaultBreakGracePeriod = parseTime(config
 				.getString("default_break_grace_period"));
 		defaultDamagePerBreakPeriod = config.getInt("default_decay_amount", 21);
-		long savingIntervall = parseTime(config.getString("saving_intervall", "15m"));
+		long savingIntervall = parseTime(config.getString("saving_intervall", "15m")) / 50;
 		//save factories on a regular base, unless disabled
 		if (savingIntervall != -1) {
 			new BukkitRunnable() {
@@ -358,7 +359,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime"));
+			update = (int) parseTime(config.getString("updatetime")) / 50;
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -377,11 +378,11 @@ public class ConfigParser {
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
 			fuelIntervall = (int) parseTime(config
-					.getString("fuel_consumption_intervall"));
+					.getString("fuel_consumption_intervall")) / 50;
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
-		int sortTime = (int) parseTime(config.getString("sort_time"));
+		int sortTime = (int) parseTime(config.getString("sort_time")) / 50;
 		int sortamount = config.getInt("sort_amount");
 		int matsPerSide = config.getInt("maximum_materials_per_side");
 		return new SorterEgg(name, update, fuel, fuelIntervall, sortTime,
@@ -398,7 +399,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime"));
+			update = (int) parseTime(config.getString("updatetime")) / 50;
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -417,12 +418,12 @@ public class ConfigParser {
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
 			fuelIntervall = (int) parseTime(config
-					.getString("fuel_consumption_intervall"));
+					.getString("fuel_consumption_intervall")) / 50;
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
 		int transferTimeMultiplier = (int) parseTime(config
-				.getString("transfer_time_multiplier"));
+				.getString("transfer_time_multiplier")) / 50;
 		int transferAmount = config.getInt("transfer_amount");
 		byte color = (byte) config.getInt("glass_color");
 		int maxLength = config.getInt("maximum_length");
@@ -440,7 +441,7 @@ public class ConfigParser {
 		}
 		int update;
 		if (config.contains("updatetime")) {
-			update = (int) parseTime(config.getString("updatetime"));
+			update = (int) parseTime(config.getString("updatetime")) / 50;
 		} else {
 			update = defaultUpdateTime;
 		}
@@ -466,14 +467,14 @@ public class ConfigParser {
 		int fuelIntervall;
 		if (config.contains("fuel_consumption_intervall")) {
 			fuelIntervall = (int) parseTime(config
-					.getString("fuel_consumption_intervall"));
+					.getString("fuel_consumption_intervall")) / 50;
 		} else {
 			fuelIntervall = defaultFuelConsumptionTime;
 		}
 		long gracePeriod;
 		if (config.contains("grace_period")) {
 			//milliseconds
-			gracePeriod = 50 * parseTime(config.getString("grace_period"));
+			gracePeriod = parseTime(config.getString("grace_period"));
 		}
 		else {
 			gracePeriod = defaultBreakGracePeriod;
@@ -493,7 +494,7 @@ public class ConfigParser {
 	}
 
 	public void enableFactoryDecay(ConfigurationSection config) {
-		long interval = parseTime(config.getString("decay_intervall"));
+		long interval = parseTime(config.getString("decay_intervall")) / 50;
 		plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, 
 						new FactoryGarbageCollector(), interval, interval);
 	}
@@ -533,7 +534,7 @@ public class ConfigParser {
 		}
 		int productionTime;
 		if (parentRecipe == null) {
-			productionTime = (int) parseTime(prodTime);
+			productionTime = (int) parseTime(prodTime, TimeUnit.MILLISECONDS) / 50;
 		}
 		else {
 			productionTime = parentRecipe.getProductionTime();
@@ -864,7 +865,7 @@ public class ConfigParser {
 			result = null;
 		}
 		if (result != null) {
-			((InputRecipe)result).setFuelConsumptionIntervall((int)parseTime(config.getString("fuel_consumption_intervall", "-1")));
+			((InputRecipe)result).setFuelConsumptionIntervall((int)parseTime(config.getString("fuel_consumption_intervall", "-1")) / 50);
 			plugin.info("Parsed recipe " + name);
 		}
 		return result;
