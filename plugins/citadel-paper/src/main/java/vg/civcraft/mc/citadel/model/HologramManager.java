@@ -131,8 +131,8 @@ public class HologramManager {
 		void updateLocation() {
 			Location current = player.getLocation();
 			// Location.equals would also check pitch/yaw
-			if (current.getX() == cachedPlayerLocation.getX() && current.getY() == cachedPlayerLocation.getY()
-					&& current.getZ() == cachedPlayerLocation.getZ()) {
+			if (current.getBlockX() == cachedPlayerLocation.getBlockX() && current.getBlockY() == cachedPlayerLocation.getBlockY()
+					&& current.getBlockZ() == cachedPlayerLocation.getBlockZ()) {
 				return;
 			}
 			Location updated = getHoloLocation(reinforcement, player);

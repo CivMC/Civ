@@ -95,6 +95,7 @@ public class InformationState extends AbstractPlayerState {
 		}
 		if (!rein.hasPermission(player, CitadelPermissionHandler.getInfo())) {
 			Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
+			showHolo(rein, player);
 			return;
 		}
 		StringBuilder sb = new StringBuilder();
@@ -121,10 +122,14 @@ public class InformationState extends AbstractPlayerState {
 			}
 		}
 		CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
+		showHolo(rein, player);
+				
+	}
+	
+	private void showHolo(Reinforcement rein, Player player) {
 		HologramManager holoManager = Citadel.getInstance().getHologramManager();
 		if (holoManager != null) {
 			holoManager.showInfoHolo(rein, player);
 		}
-				
 	}
 }

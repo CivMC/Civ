@@ -126,4 +126,4 @@ commands:
 permissions:
   citadel.admin:
     default: op
-api-version: 1.13
+api-version: 1.14

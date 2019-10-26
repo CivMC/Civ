@@ -112,7 +112,7 @@ public class EntityListener implements Listener {
 	}
 
 	// prevent creating golems from reinforced blocks
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void spawn(CreatureSpawnEvent cse) {
 		EntityType type = cse.getEntityType();
 		if (type != EntityType.IRON_GOLEM && type != EntityType.SNOWMAN && type != EntityType.WITHER

@@ -24,8 +24,8 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class BlockListener implements Listener {
 
@@ -122,7 +122,7 @@ public class BlockListener implements Listener {
 	@EventHandler(priority = EventPriority.LOW)
 	public void liquidDumpEvent(PlayerBucketEmptyEvent event) {
 		Block block = event.getBlockClicked().getRelative(event.getBlockFace());
-		if (block.getType().equals(Material.AIR) || block.getType().isSolid()) {
+		if (block.getType() == Material.AIR || block.getType().isSolid()) {
 			return;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
@@ -131,9 +131,12 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockFromToEvent(BlockFromToEvent event) {
 		// prevent water/lava from spilling reinforced blocks away
+		if (event.getToBlock().getY() < 0) {
+			return;
+		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getToBlock());
 		if (rein != null) {
 			event.setCancelled(true);

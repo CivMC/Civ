@@ -142,6 +142,7 @@ public final class ReinforcementLogic {
 				// block is upper half of a door
 				return block.getRelative(BlockFace.DOWN);
 			}
+			return block;
 		case BLACK_BED:
 		case BLUE_BED:
 		case BROWN_BED:
@@ -162,6 +163,7 @@ public final class ReinforcementLogic {
 			if (bed.getPart() == Bed.Part.HEAD) {
 				return block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
 			}
+			return block;
 		default:
 			return block;
 		}
