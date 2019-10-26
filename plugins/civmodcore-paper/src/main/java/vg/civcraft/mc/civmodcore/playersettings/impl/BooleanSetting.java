@@ -13,23 +13,27 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 public class BooleanSetting extends PlayerSetting<Boolean> {
 
 	public BooleanSetting(JavaPlugin owningPlugin, Boolean defaultValue, String name, String identifier,
-			String description) {
+						  String description) {
 		super(owningPlugin, defaultValue, name, identifier, new ItemStack(Material.STONE), description);
 	}
 
 	@Override
 	public Boolean deserialize(String serial) {
 		switch (serial.toLowerCase()) {
-		case "1":
-		case "true":
-		case "t":
-			return true;
-		case "0":
-		case "false":
-		case "f":
-			return false;
-		case "null":
-			return null;
+			case "1":
+			case "true":
+			case "t":
+			case "y":
+			case "yes":
+				return true;
+			case "0":
+			case "false":
+			case "f":
+			case "n":
+			case "no":
+				return false;
+			case "null":
+				return null;
 		}
 		throw new IllegalArgumentException(serial + " is not a valid boolean value");
 	}
@@ -69,16 +73,20 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 	@Override
 	public boolean isValidValue(String input) {
 		switch (input.toLowerCase()) {
-		case "1":
-		case "true":
-		case "t":
-		case "0":
-		case "false":
-		case "f":
-		case "null":
-			return true;
-		default:
-			return false;
+			case "1":
+			case "true":
+			case "t":
+			case "y":
+			case "yes":
+			case "0":
+			case "false":
+			case "f":
+			case "n":
+			case "no":
+			case "null":
+				return true;
+			default:
+				return false;
 		}
 	}
 }

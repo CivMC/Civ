@@ -1,13 +1,12 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+
+import java.util.Collections;
+import java.util.List;
 
 public class MenuDialog extends Dialog {
 	
@@ -24,18 +23,7 @@ public class MenuDialog extends Dialog {
 
 	@Override
 	public void onReply(String[] message) {
-		StringBuilder sb = new StringBuilder();
-		for(String part : message) {
-			sb.append(part);
-			sb.append(" ");
-		}
-		String result;
-		if (sb.length() == 0) {
-			result = "";
-		}
-		else {
-			result = sb.substring(0, sb.length() - 1);
-		}
+		String result = String.join(" ", message);
 		if (!setting.isValidValue(result)) {
 			player.sendMessage(ChatColor.RED + errorMsg);
 			menu.showScreen(player);
@@ -48,7 +36,7 @@ public class MenuDialog extends Dialog {
 
 	@Override
 	public List<String> onTabComplete(String wordCompleted, String[] fullMessage) {
-		return new LinkedList<>();
+		return Collections.emptyList();
 	}
 
 }

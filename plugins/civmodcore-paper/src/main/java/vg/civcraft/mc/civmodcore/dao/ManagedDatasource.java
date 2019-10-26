@@ -6,9 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.SQLWarning;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.TreeMap;
@@ -69,8 +70,8 @@ import vg.civcraft.mc.civmodcore.ACivMod;
  */
 public class ManagedDatasource implements ConfigurationSerializable {
 
-	private static final long MAX_WAIT_FOR_LOCK = 600000l;
-	private static final long WAIT_PERIOD = 500l;
+	private static final long MAX_WAIT_FOR_LOCK = 600000L;
+	private static final long WAIT_PERIOD = 500L;
 
 	private ConnectionPool connections;
 	private Logger logger;
@@ -364,7 +365,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 
 	}
 
-	private boolean doMigration(Integer migration, LinkedList<String> queries, boolean ignoreErrors,
+	private boolean doMigration(Integer migration, List<String> queries, boolean ignoreErrors,
 			Callable<Boolean> post) {
 		try (Connection connection = getConnection();) {
 			for (String query : queries) {
@@ -546,12 +547,12 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	}
 
 	private static class Migration {
-		public LinkedList<String> migrations;
+		public List<String> migrations;
 		public boolean ignoreErrors;
 		public Callable<Boolean> postMigration;
 
 		public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-			this.migrations = new LinkedList<>(Arrays.asList(migrations));
+			this.migrations = new ArrayList<>(Arrays.asList(migrations));
 			this.ignoreErrors = ignoreErrors;
 			this.postMigration = postMigration;
 		}

@@ -1,18 +1,18 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * Represents an inventory filled with Clickables. Whenever one of those is clicked by a player, the clickables specific
@@ -76,7 +76,7 @@ public class ClickableInventory {
 			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
 			name = name.substring(0, 32);
 		}
-		this.runnables = new LinkedList<>();
+		this.runnables = new ArrayList<>();
 	}
 
 	/**

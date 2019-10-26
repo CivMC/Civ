@@ -1,21 +1,20 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import com.google.common.base.Preconditions;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuItem;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
  * Contains a value for every players for one setting
@@ -33,6 +32,8 @@ public abstract class PlayerSetting<T> {
 
 	public PlayerSetting(JavaPlugin owningPlugin, T defaultValue, String niceName, String identifier, ItemStack gui,
 			String description) {
+		Preconditions.checkNotNull(gui, "GUI ItemStack can not be null.");
+
 		values = new TreeMap<>();
 		this.defaultValue = defaultValue;
 		this.owningPlugin = owningPlugin;
@@ -199,7 +200,7 @@ public abstract class PlayerSetting<T> {
 	 */
 	public void registerListener(SettingChangeListener<T> listener) {
 		if (this.listeners == null) {
-			this.listeners = new LinkedList<>();
+			this.listeners = new ArrayList<>();
 		}
 		this.listeners.add(listener);
 	}

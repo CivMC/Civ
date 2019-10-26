@@ -1,12 +1,12 @@
 package vg.civcraft.mc.civmodcore;
 
-import java.util.LinkedList;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
-
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
 
 public abstract class CoreConfigManager {
 
@@ -52,7 +52,7 @@ public abstract class CoreConfigManager {
 		if (!config.isList(key)) {
 			return null;
 		}
-		List<T> result = new LinkedList<>();
+		List<T> result = new ArrayList<>();
 		for (String entry : config.getStringList(key)) {
 			T item = function.apply(entry);
 			if (item != null) {
