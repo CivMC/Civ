@@ -20,6 +20,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.block.Barrel;
+import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.BrewingStand;
 import org.bukkit.block.Chest;
@@ -56,7 +58,6 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -70,11 +71,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.Plugin;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
-import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlType;
@@ -95,7 +94,6 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * Handles events related to prison pearls
  * @author GFQ
  */
-@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener, Configurable {
 
 	private final ExilePearlApi pearlApi;
@@ -263,9 +261,21 @@ public class PlayerListener implements Listener, Configurable {
 			Item item = (Item)entity;
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
 
-			if (pearl != null) {
-				ExilePearlPlugin.getApi().freePearl(pearl, PearlFreeReason.CHUNK_UNLOADED);
+			if (pearl == null) {
+				return;
 			}
+			Block block = item.getLocation().getBlock();
+			if (block.getType() != Material.BARREL) {
+				block.setType(Material.BARREL);
+			}
+			Barrel barrel = (Barrel) block.getState();
+			Map <Integer, ItemStack> notAdded = barrel.getInventory().addItem(item.getItemStack());
+			if (!notAdded.isEmpty()) {
+				pearlApi.freePearl(pearl, PearlFreeReason.CHUNK_UNLOADED);
+				continue;
+			}
+			updatePearlHolder(pearl, barrel, null);
+			item.remove();
 		}
 	}
 
@@ -340,6 +350,8 @@ public class PlayerListener implements Listener, Configurable {
 			updatePearl(pearl, (Hopper) holder);
 		} else if (holder instanceof BrewingStand) {
 			updatePearl(pearl, (BrewingStand) holder);
+		} else if (holder instanceof Barrel) {
+			updatePearl(pearl, (Barrel) holder);
 		} else if (holder instanceof Player) {
 			updatePearl(pearl, (Player) holder);
 		}else {
@@ -521,15 +533,14 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param e The event args
 	 */
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onPlayerPickupItem(PlayerPickupItemEvent e) {
+	public void onPlayerPickupItem(EntityPickupItemEvent e) {
 		Item item = e.getItem();
 
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
-		if (pearl == null) {
+		if (pearl == null || e.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
-
-		updatePearl(pearl, e.getPlayer());
+		updatePearl(pearl, (Player)e.getEntity());
 	}
 
 
@@ -714,7 +725,7 @@ public class PlayerListener implements Listener, Configurable {
 			Material m = e.getClickedBlock().getType();
 			if (m == Material.CHEST || m == Material.CRAFTING_TABLE
 					|| m == Material.FURNACE || m == Material.DISPENSER
-					|| m == Material.BREWING_STAND)
+					|| m == Material.BREWING_STAND || m == Material.BARREL)
 				return;
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
