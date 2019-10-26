@@ -45,7 +45,7 @@ public class BanStickIPHubHandler extends BukkitRunnable {
 	
 	private String key;
 	
-	private final String target = "http://v2.api.iphub.info/ip/";
+	private final String target = "http://v2.api.iphub.info/ip";
 	
 	public BanStickIPHubHandler(FileConfiguration config) {
 		if (!configure(config.getConfigurationSection("iphub"))) {
