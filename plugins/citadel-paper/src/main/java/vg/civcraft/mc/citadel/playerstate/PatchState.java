@@ -10,6 +10,7 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
+import vg.civcraft.mc.citadel.listener.InformationModeListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -45,12 +46,12 @@ public class PatchState extends AbstractPlayerState {
 		if (rein.getHealth() >= rein.getType().getHealth()) {
 			if (rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD,
-						"Reinforcement is already at " + InformationState.formatHealth(rein) + ChatColor.GOLD
+						"Reinforcement is already at " + InformationModeListener.formatHealth(rein) + ChatColor.GOLD
 								+ " health with " + ChatColor.AQUA + rein.getType().getName() + ChatColor.GOLD + " on "
 								+ ChatColor.LIGHT_PURPLE + rein.getGroup().getName());
 			} else {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Reinforcement is already at "
-						+ InformationState.formatHealth(rein) + ChatColor.GOLD + " health");
+						+ InformationModeListener.formatHealth(rein) + ChatColor.GOLD + " health");
 			}
 			return;
 		}

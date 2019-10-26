@@ -1,4 +1,4 @@
-package vg.civcraft.mc.citadel.playerstate;
+package vg.civcraft.mc.citadel.listener;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -6,8 +6,10 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
@@ -19,12 +21,11 @@ import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-public class InformationState extends AbstractPlayerState {
+public class InformationModeListener implements Listener {
 
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
-	
-	
+
 	public static ChatColor getDamageColor(double relativeHealth) {
 		if (relativeHealth >= 1.0) {
 			return ChatColor.GREEN;
@@ -66,70 +67,70 @@ public class InformationState extends AbstractPlayerState {
 				TextUtil.formatDuration(timeNeeded - timeTaken, TimeUnit.MILLISECONDS));
 	}
 
-	public InformationState(Player p) {
-		super(p);
-	}
-
-	@Override
-	public String getName() {
-		return "Information mode";
-	}
-
-	@Override
-	public void handleBlockPlace(BlockPlaceEvent e) {
-	}
-
-	@Override
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void handleInteractBlock(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
+		Player player = e.getPlayer();
+		boolean showChat = Citadel.getInstance().getSettingManager().shouldShowChatInCti(player.getUniqueId());
 		if (rein == null) {
-			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
+			if (showChat) {
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
+			}
 			return;
 		}
-		Player player = e.getPlayer();
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			e.setCancelled(true);
 		}
+		boolean showHolo = Citadel.getInstance().getSettingManager().shouldShowHologramInCti(player.getUniqueId());
 		if (!rein.hasPermission(player, CitadelPermissionHandler.getInfo())) {
-			Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
-			showHolo(rein, player);
+			if (showChat) {
+				Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
+			}
+			if (showHolo) {
+				showHolo(rein, player);
+			}
 			return;
 		}
-		StringBuilder sb = new StringBuilder();
-		sb.append(String.format("Reinforced at %s%s health with %s%s %son %s%s ", formatHealth(rein), ChatColor.GREEN,
-				ChatColor.AQUA, rein.getType().getName(), ChatColor.GREEN, ChatColor.LIGHT_PURPLE,
-				rein.getGroup().getName()));
-		if (!rein.isMature()) {
-			sb.append(ChatColor.GOLD);
-			sb.append(formatProgress(rein.getCreationTime(), rein.getType().getMaturationTime(), "mature"));
-			sb.append(" ");
-		}
-		if (rein.isInsecure()) {
-			sb.append(ChatColor.AQUA);
-			sb.append("(Insecure)");
-		}
-		AcidManager acidMan = Citadel.getInstance().getAcidManager();
-		if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
-			sb.append(ChatColor.GOLD);
-			long remainingTime = acidMan.getRemainingAcidMaturationTime(rein);
-			if (remainingTime == 0) {
-				sb.append("Acid ready");
-			} else {
-				sb.append(formatProgress(rein.getCreationTime(), rein.getType().getAcidTime(), "acid timer"));
+		if (showChat) {
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("Reinforced at %s%s health with %s%s %son %s%s ", formatHealth(rein),
+					ChatColor.GREEN, ChatColor.AQUA, rein.getType().getName(), ChatColor.GREEN, ChatColor.LIGHT_PURPLE,
+					rein.getGroup().getName()));
+			if (!rein.isMature()) {
+				sb.append(ChatColor.GOLD);
+				sb.append(formatProgress(rein.getCreationTime(), rein.getType().getMaturationTime(), "mature"));
+				sb.append(" ");
 			}
+			if (rein.isInsecure()) {
+				sb.append(ChatColor.AQUA);
+				sb.append("(Insecure)");
+			}
+			AcidManager acidMan = Citadel.getInstance().getAcidManager();
+			if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
+				sb.append(ChatColor.GOLD);
+				long remainingTime = acidMan.getRemainingAcidMaturationTime(rein);
+				if (remainingTime == 0) {
+					sb.append("Acid ready");
+				} else {
+					sb.append(formatProgress(rein.getCreationTime(), rein.getType().getAcidTime(), "acid timer"));
+				}
+			}
+			CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
 		}
-		CitadelUtility.sendAndLog(player, ChatColor.GREEN, sb.toString().trim());
-		showHolo(rein, player);
-				
+		if (showHolo) {
+			showHolo(rein, player);
+		}
+
 	}
-	
-	private void showHolo(Reinforcement rein, Player player) {
+
+	private static void showHolo(Reinforcement rein, Player player) {
 		HologramManager holoManager = Citadel.getInstance().getHologramManager();
 		if (holoManager != null) {
 			holoManager.showInfoHolo(rein, player);
 		}
 	}
+
 }
