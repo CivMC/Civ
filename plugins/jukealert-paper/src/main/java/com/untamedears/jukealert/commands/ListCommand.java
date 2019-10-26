@@ -38,12 +38,12 @@ public class ListCommand extends StandaloneCommand {
 		for (String groupName : groups) {
 			Group group = GroupManager.getGroup(groupName);
 			if (group == null) {
-				sender.sendMessage(ChatColor.RED + "The group " + group + " does not exist");
+				sender.sendMessage(ChatColor.RED + "The group " + groupName + " does not exist");
 				continue;
 			}
 			if (!gm.hasAccess(group, player.getUniqueId(), JukeAlertPermissionHandler.getListSnitches())) {
 				sender.sendMessage(
-						ChatColor.RED + "You do not have permission to list snitches for the group " + group);
+						ChatColor.RED + "You do not have permission to list snitches for the group " + group.getName());
 				continue;
 			}
 			groupIds.addAll(group.getGroupIds());
