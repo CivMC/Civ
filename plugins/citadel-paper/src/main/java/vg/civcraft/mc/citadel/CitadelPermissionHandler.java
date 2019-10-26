@@ -8,7 +8,7 @@ import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class CitadelPermissionHandler {
-	
+
 	private CitadelPermissionHandler() {
 	}
 
@@ -21,10 +21,11 @@ public class CitadelPermissionHandler {
 	private static PermissionType acidPerm;
 	private static PermissionType infoPerm;
 	private static PermissionType repairPerm;
-	
-	
+	private static PermissionType modifyBlockPerm;
+
 	public static void setup() {
-		List<PlayerType> membersAndAbove = Arrays.asList(PlayerType.MEMBERS, PlayerType.MODS, PlayerType.ADMINS, PlayerType.OWNER);
+		List<PlayerType> membersAndAbove = Arrays.asList(PlayerType.MEMBERS, PlayerType.MODS, PlayerType.ADMINS,
+				PlayerType.OWNER);
 		List<PlayerType> modAndAbove = Arrays.asList(PlayerType.MODS, PlayerType.ADMINS, PlayerType.OWNER);
 		reinforcePerm = PermissionType.registerPermission("REINFORCE", new ArrayList<>(modAndAbove),
 				"Allows reinforcing blocks on this group");
@@ -44,8 +45,14 @@ public class CitadelPermissionHandler {
 				"Allows harvesting crops growing on soil reinforced on this group");
 		insecurePerm = PermissionType.registerPermission("INSECURE_REINFORCEMENT", new ArrayList<>(membersAndAbove),
 				"Allows toggling the insecure flag on reinforcements");
+		modifyBlockPerm = PermissionType.registerPermission("MODIFY_BLOCK", new ArrayList<>(modAndAbove),
+				"Allows modifying reinforced blocks like flipping levers, strippling logs etc.");
 	}
 	
+	public static PermissionType getModifyBlocks() {
+		return modifyBlockPerm;
+	}
+
 	public static PermissionType getChests() {
 		return chestPerm;
 	}
@@ -57,27 +64,27 @@ public class CitadelPermissionHandler {
 	public static PermissionType getBypass() {
 		return bypassPerm;
 	}
-	
+
 	public static PermissionType getReinforce() {
 		return reinforcePerm;
 	}
-	
+
 	public static PermissionType getAcidblock() {
 		return acidPerm;
 	}
-	
+
 	public static PermissionType getCrops() {
 		return cropsPerm;
 	}
-	
+
 	public static PermissionType getInsecure() {
 		return insecurePerm;
 	}
-	
+
 	public static PermissionType getInfo() {
 		return infoPerm;
 	}
-	
+
 	public static PermissionType getRepair() {
 		return repairPerm;
 	}

@@ -71,7 +71,7 @@ public class CitadelSettingManager {
 		
 		showHologramInCti = new BooleanSetting(Citadel.getInstance(), true, "Show holograms in information mode",
 				"citadelCtiShowHologram", "Should holograms be shown in reinforcement information mode");
-		PlayerSettingAPI.registerSetting(showChatMsgInCti, menu);
+		PlayerSettingAPI.registerSetting(showHologramInCti, menu);
 		
 		MenuSection commandSection = menu.createMenuSection("Command replies",
 				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
