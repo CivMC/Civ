@@ -196,6 +196,10 @@ public class ConfigParsing {
 		im.addItemStack(toAdd);
 		return im;
 	}
+	
+	public static int parseTimeAsTicks(String arg) {
+		return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
+	}
 
 	public static long parseTime(String arg, TimeUnit unit) {
 		long millis = parseTime(arg);
