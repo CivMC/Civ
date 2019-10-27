@@ -50,11 +50,10 @@ public class RemoveMember extends PlayerCommandMiddle {
 		}
 		
 		String playerName = NameAPI.getCurrentName(uuid);
-		PlayerType t = group.getPlayerType(executor); // playertype for the player running the command.
 		PlayerType toBeRemoved = group.getPlayerType(uuid);
 		if (toBeRemoved == null){
-			p.sendMessage(ChatColor.RED + "That player is not on the group.");
-			return true;
+			//hides who is actually on the group
+			toBeRemoved = PlayerType.MEMBERS;
 		}
 		boolean allowed = false;
 		switch (toBeRemoved){ // depending on the type the executor wants to add the player to
@@ -107,7 +106,8 @@ public class RemoveMember extends PlayerCommandMiddle {
 			}
 		}
 		if (args.length == 2) {
-			return GroupMemberTabCompleter.complete(args[0],args[1], (Player) sender);
+			return null;
+			//return GroupMemberTabCompleter.complete(args[0],args[1], (Player) sender);
 		}
 
 		return null;

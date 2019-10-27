@@ -152,7 +152,8 @@ public class PromotePlayer extends PlayerCommandMiddle{
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
 
 		} else if (args.length == 2)
-			return GroupMemberTabCompleter.complete(args[0], args[1], (Player) sender);
+			return null;
+			//return GroupMemberTabCompleter.complete(args[0], args[1], (Player) sender);
 		else if (args.length == 3)
 			return MemberTypeCompleter.complete(args[2]);
 

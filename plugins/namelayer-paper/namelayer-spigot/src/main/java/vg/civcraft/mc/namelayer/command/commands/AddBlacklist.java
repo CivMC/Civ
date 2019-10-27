@@ -9,6 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
@@ -35,7 +36,7 @@ public class AddBlacklist extends PlayerCommandMiddle {
 			return true;
 		}
 		Player p = (Player) arg0;
-		Group g = gm.getGroup(arg1[0]);
+		Group g = GroupManager.getGroup(arg1[0]);
 		if (g == null) {
 			p.sendMessage(ChatColor.RED + "This group does not exist");
 			return true;
@@ -78,7 +79,7 @@ public class AddBlacklist extends PlayerCommandMiddle {
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
 
 		} else if (args.length == 2) {
-			List<String> namesToReturn = new ArrayList<String>();
+			List<String> namesToReturn = new ArrayList<>();
 			for (Player p: Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(args[0].toLowerCase()))
 					namesToReturn.add(p.getName());

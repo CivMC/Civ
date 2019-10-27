@@ -17,7 +17,7 @@ public class GroupMemberTabCompleter {
 		Group g = GroupManager.getGroup(groupName);
 		if (g != null) {
 			if (NameAPI.getGroupManager().hasAccess(groupName, sender.getUniqueId(), PermissionType.getPermission("MEMBERS"))) {
-				ArrayList<String> result = new ArrayList<String>();
+				ArrayList<String> result = new ArrayList<>();
 				List<UUID> uuids = g.getMembersByName(playerName);
 				for (UUID uuid : uuids) {
 					result.add(NameAPI.getCurrentName(uuid));

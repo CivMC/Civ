@@ -55,15 +55,6 @@ public class InvitePlayer extends PlayerCommandMiddle{
 			s.sendMessage(ChatColor.RED + "The player has never played before.");
 			return true;
 		}
-		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
-			s.sendMessage(ChatColor.RED + "Player is already a member. "
-					+ "Use /promoteplayer to change their PlayerType.");
-			return true;
-		}
-		if(NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
-			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
-			return true;
-		}
 		final PlayerType pType = targetType != null ? PlayerType.getPlayerType(targetType) : PlayerType.MEMBERS;
 		if (pType == null) {
 			if (p != null) {
@@ -107,11 +98,24 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				s.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
 				return true;
 			}
+		}
+		
+		if (group.isCurrentMember(targetAccount)) { // So a player can't demote someone who is above them.
+			s.sendMessage(ChatColor.RED + "Player is already a member. "
+					+ "Use /promoteplayer to change their PlayerType.");
+			return true;
+		}
+		if(NameLayerPlugin.getBlackList().isBlacklisted(group, targetAccount)) {
+			s.sendMessage(ChatColor.RED + "This player is currently blacklisted, you have to unblacklist him with /removeblacklist before inviting him to the group");
+			return true;
+		}
+		if (!isAdmin) {
 			sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
-		} else {
+		}
+		else {
 			sendInvitation(group, pType, targetAccount, null, true);
 		}
-
+		
 		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
 		return true;
 	}
@@ -177,9 +181,8 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				return GroupTabCompleter.complete(null, null, (Player) sender);
 			else
 				return GroupTabCompleter.complete(args[0], null, (Player)sender);
-
 		} else if (args.length == 2) {
-			List<String> namesToReturn = new ArrayList<String>();
+			List<String> namesToReturn = new ArrayList<>();
 			for (Player p: Bukkit.getOnlinePlayers()) {
 				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
 					namesToReturn.add(p.getName());
