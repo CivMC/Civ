@@ -268,6 +268,7 @@ public class PlayerListener implements Listener, Configurable {
 			if (block.getType() != Material.BARREL) {
 				block.setType(Material.BARREL);
 			}
+			block.getDrops().clear();
 			Barrel barrel = (Barrel) block.getState();
 			Map <Integer, ItemStack> notAdded = barrel.getInventory().addItem(item.getItemStack());
 			if (!notAdded.isEmpty()) {
