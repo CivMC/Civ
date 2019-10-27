@@ -123,11 +123,12 @@ public class SnitchTypeManager {
 		try {
 			Constructor<? extends AbstractSnitchAppender> constructor = clazz
 					.getConstructor(Snitch.class, ConfigurationSection.class);
-			return (s) -> {
+			return s -> {
 				try {
 					return constructor.newInstance(s,config);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException e) {
+					e.printStackTrace();
 					return null;
 				}
 			};
@@ -136,16 +137,18 @@ public class SnitchTypeManager {
 			// any parameter, in which case it only has a constructor with the snitch as parameter
 			try {
 				Constructor<? extends AbstractSnitchAppender> constructor = clazz.getConstructor(Snitch.class);
-				return (s) -> {
+				return s -> {
 					try {
 						return constructor.newInstance(s);
 					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 							| InvocationTargetException e1) {
+						e1.printStackTrace();
 						return null;
 					}
 				};
 			} catch (NoSuchMethodException | SecurityException e1) {
 				// No appropriate constructor, the appender has a bug
+				e1.printStackTrace();
 				return null;
 			}
 		}

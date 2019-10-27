@@ -25,6 +25,7 @@ import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -154,6 +155,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					Snitch snitch = type.create(id, location, name, groupID, false);
 					insertFunction.accept(snitch);
 					snitchMan.addSnitchToQuadTree(snitch);
+					snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 				}
 			}
 		} catch (SQLException e) {
@@ -274,7 +276,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	public void setRefreshTimer(int snitchID, long timer) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement setTimer = insertConn.prepareStatement(
-						"insert into ja_snitch_refresh (id, last_fresh) values(?,?) on duplicate key update last_fresh = ?;")) {
+						"insert into ja_snitch_refresh (id, last_refresh) values(?,?) on duplicate key update last_refresh = ?;")) {
 			setTimer.setInt(1, snitchID);
 			setTimer.setTimestamp(2, new Timestamp(timer));
 			setTimer.setTimestamp(3, new Timestamp(timer));
@@ -317,7 +319,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	public long getRefreshTimer(int snitchID) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectId = insertConn
-						.prepareStatement("select last_fresh from ja_snitch_refresh where id = ?;")) {
+						.prepareStatement("select last_refresh from ja_snitch_refresh where id = ?;")) {
 			selectId.setInt(1, snitchID);
 			try (ResultSet rs = selectId.executeQuery()) {
 				if (rs.next()) {

@@ -18,6 +18,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
@@ -37,6 +39,8 @@ import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.external.VanishNoPacket;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
+import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
+import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
@@ -92,6 +96,18 @@ public class LoggableActionListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onBlockPlace(BlockPlaceEvent event) {
+		handlePlayerAction(event.getPlayer(), s -> new BlockPlaceAction(System.currentTimeMillis(), s,
+				event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlock().getType()));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onBlockBreak(BlockBreakEvent event) {
+		handlePlayerAction(event.getPlayer(), s -> new BlockBreakAction(System.currentTimeMillis(), s,
+				event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlock().getType()));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEntityKill(EntityDeathEvent event) {
 		LivingEntity victim = event.getEntity();
 		if (victim.getKiller() == null) {
@@ -104,8 +120,8 @@ public class LoggableActionListener implements Listener {
 			return;
 		}
 		String victimName = getEntityName(victim);
-		handlePlayerAction(killer, s -> new KillLivingEntityAction(System.currentTimeMillis(), s,
-				killer.getUniqueId(), victim.getLocation(), victimName));
+		handlePlayerAction(killer, s -> new KillLivingEntityAction(System.currentTimeMillis(), s, killer.getUniqueId(),
+				victim.getLocation(), victimName));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

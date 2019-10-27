@@ -2,6 +2,7 @@ package com.untamedears.jukealert.listener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 
 import org.bukkit.Location;
@@ -20,6 +21,7 @@ import com.untamedears.jukealert.model.SnitchFactory;
 import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
+import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
 import vg.civcraft.mc.citadel.events.ReinforcementBypassEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
@@ -75,6 +77,7 @@ public class SnitchLifeCycleListener implements Listener {
 		logger.info(String.format("Created snitch of type %s at %s by %s", snitch.getType().getName(),
 				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
 		snitchManager.addSnitch(snitch);
+		snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -98,7 +101,8 @@ public class SnitchLifeCycleListener implements Listener {
 		Snitch snitch = snitchManager.getSnitchAt(rein.getLocation());
 		if (snitch != null) {
 			snitchManager.removeSnitch(snitch);
-			snitch.processAction(new DestroySnitchAction(System.currentTimeMillis(), snitch, null, Cause.PLAYER));
+			UUID uuid = source != null ? source.getUniqueId() : null;
+			snitch.processAction(new DestroySnitchAction(System.currentTimeMillis(), snitch, uuid, Cause.PLAYER));
 			logger.info(String.format("Destroyed snitch of type %s at %s", snitch.getType().getName(),
 					snitch.getLocation().toString()));
 		}

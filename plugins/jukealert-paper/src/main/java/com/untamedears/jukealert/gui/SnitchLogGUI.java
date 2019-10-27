@@ -74,11 +74,15 @@ public class SnitchLogGUI {
 	private List<IClickable> constructContent() {
 		List<IClickable> clicks = new ArrayList<>();
 		if (actions != null) {
-		for (LoggableAction action : actions) {
-			clicks.add(action.getGUIRepresentation());
-		}
-		}
-		else {
+			for (LoggableAction action : actions) {
+				clicks.add(action.getGUIRepresentation());
+			}
+			if (actions.isEmpty()) {
+				ItemStack is = new ItemStack(Material.BARRIER);
+				ItemAPI.setDisplayName(is, ChatColor.RED + "This snitch has no logs currently");
+				clicks.add(new DecorationStack(is));
+			}
+		} else {
 			ItemStack is = new ItemStack(Material.BARRIER);
 			ItemAPI.setDisplayName(is, ChatColor.RED + "This snitch can not create logs");
 			clicks.add(new DecorationStack(is));

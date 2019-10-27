@@ -3,6 +3,7 @@ package com.untamedears.jukealert.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.bukkit.Location;
@@ -191,6 +192,15 @@ public class Snitch extends TableBasedDataObject {
 	 * Forces all appenders of this snitch to persist their current state
 	 */
 	public void persistAppenders() {
-		appenders.values().forEach(AbstractSnitchAppender::persist);
+		applyToAppenders(AbstractSnitchAppender::persist);
+	}
+
+	/**
+	 * Applies the given consumer to all appenders of this snitch instance
+	 * 
+	 * @param con Function to apply
+	 */
+	public void applyToAppenders(Consumer<AbstractSnitchAppender> con) {
+		appenders.values().forEach(con);
 	}
 }

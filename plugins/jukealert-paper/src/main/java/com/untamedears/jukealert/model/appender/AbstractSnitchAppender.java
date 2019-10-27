@@ -43,5 +43,10 @@ public abstract class AbstractSnitchAppender {
 	 * @param action Action which happened
 	 */
 	public abstract void acceptAction(SnitchAction action);
+	
+	/**
+	 * Called after the instance is created and was inserted into its surrounding cache structure
+	 */
+	public void postSetup() {}
 
 }

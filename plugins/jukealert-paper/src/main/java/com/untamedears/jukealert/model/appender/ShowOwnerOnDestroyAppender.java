@@ -3,6 +3,7 @@ package com.untamedears.jukealert.model.appender;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import com.untamedears.jukealert.model.Snitch;
@@ -40,7 +41,7 @@ public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
 		if (player == null) {
 			return;
 		}
-		Group group = GroupManager.getGroup(snitch.getId());
+		Group group = snitch.getGroup();
 		String groupName;
 		String ownerName;
 		if (group == null) {
@@ -50,8 +51,9 @@ public class ShowOwnerOnDestroyAppender extends AbstractSnitchAppender {
 			groupName = group.getName();
 			ownerName = NameAPI.getCurrentName(group.getOwner());
 		}
-		player.sendMessage(
-				String.format("%s was reinforced on %s owned by %s", snitch.getType().getName(), groupName, ownerName));
+		player.sendMessage(String.format("%s%s %swas reinforced on %s%s%s owned by %s%s", ChatColor.GOLD,
+				snitch.getType().getName(), ChatColor.YELLOW, ChatColor.GREEN, groupName, ChatColor.YELLOW,
+				ChatColor.LIGHT_PURPLE, ownerName));
 	}
 
 }

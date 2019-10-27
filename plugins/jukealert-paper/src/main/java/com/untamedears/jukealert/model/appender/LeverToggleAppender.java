@@ -59,8 +59,7 @@ public class LeverToggleAppender extends ConfigurableSnitchAppender<LeverToggleC
 
 	@Override
 	public Class<LeverToggleConfig> getConfigClass() {
-		// TODO Auto-generated method stub
-		return null;
+		return LeverToggleConfig.class;
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.model.appender;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -12,10 +13,10 @@ import com.untamedears.jukealert.model.appender.config.AppenderConfig;
 
 public abstract class ConfigurableSnitchAppender<C extends AppenderConfig> extends AbstractSnitchAppender {
 
-	private static Map<String, AppenderConfig> configs;
+	private static Map<String, AppenderConfig> configs = new HashMap<>();
 
 	private static AppenderConfig retrieveConfig(Class<? extends AppenderConfig> clazz, ConfigurationSection config) {
-		return configs.computeIfAbsent(config.getCurrentPath(), (s) -> {
+		return configs.computeIfAbsent(config.getCurrentPath(), s -> {
 			try {
 				return clazz.getConstructor(ConfigurationSection.class).newInstance(config);
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException

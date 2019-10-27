@@ -29,11 +29,15 @@ public class DormantCullingAppender extends ConfigurableSnitchAppender<DormantCu
 			lastRefresh = System.currentTimeMillis();
 		} else {
 			lastRefresh = JukeAlert.getInstance().getDAO().getRefreshTimer(snitch.getId());
-			if (lastRefresh == -1) {
-				// no data in db due to recent config change, let's use the current time and
-				// mark it for saving later
-				refreshTimer();
-			}
+		}
+	}
+	
+	@Override
+	public void postSetup() {
+		if (lastRefresh == -1) {
+			// no data in db due to recent config change, let's use the current time and
+			// mark it for saving later
+			refreshTimer();
 		}
 		nextUpdate = calcFutureUpdate();
 		JukeAlert.getInstance().getSnitchCullManager().addCulling(this);

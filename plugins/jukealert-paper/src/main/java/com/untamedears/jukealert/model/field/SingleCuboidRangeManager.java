@@ -23,7 +23,7 @@ public class SingleCuboidRangeManager implements FieldManager {
 	@Override
 	public boolean isInside(Location location) {
 		int y = snitch.getLocation().getBlockY();
-		 return location.getBlockY() <= (y + range) && location.getBlockY() >= (y - range);
+		return location.getBlockY() <= (y + range) && location.getBlockY() >= (y - range);
 	}
 
 	@Override

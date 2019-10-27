@@ -28,7 +28,13 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 		super(snitch, config);
 		this.actions = new LinkedList<>();
 		this.hasLoadedAll = false;
-		loadLogs();
+		if (snitch.getId() != -1) {
+			loadLogs();
+		}
+		else {
+			hasLoadedAll = true;
+			actions = new LinkedList<>();
+		}
 	}
 
 	@Override
