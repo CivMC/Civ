@@ -23,6 +23,7 @@ public class HackManager {
 	public HackManager(SimpleAdminHacks plugin) {
 		this.plugin = plugin;
 		this.hacks = new LinkedList<>();
+		reloadHacks();
 	}
 
 	public void reloadHacks() {
