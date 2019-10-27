@@ -2,7 +2,6 @@ package vg.civcraft.mc.citadel.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;

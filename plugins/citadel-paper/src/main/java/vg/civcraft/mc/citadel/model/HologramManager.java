@@ -24,14 +24,16 @@ public class HologramManager {
 
 	// distance from center to diagonal corner is 0.5 * sqrt(2) and we add 10 % for
 	// good measure
-	private static final double holoOffSet = 0.55 * Math.sqrt(2);
+	private static final double HOLOOFFSET = 0.55 * Math.sqrt(2);
 
 	private Map<Location, Map<UUID, PlayerHolo>> holograms;
 	private Set<PlayerHolo> activeHolos;
+	private CitadelSettingManager settingMan;
 
-	public HologramManager() {
+	public HologramManager(CitadelSettingManager settingMan) {
 		this.holograms = new HashMap<>();
 		this.activeHolos = new HashSet<>();
+		this.settingMan = settingMan;
 		new BukkitRunnable() {
 
 			@Override
@@ -67,7 +69,7 @@ public class HologramManager {
 		vector.normalize();
 		// holoOffSet is a good distance to ensure we fully move the hologram out of the
 		// block
-		vector.multiply(holoOffSet);
+		vector.multiply(HOLOOFFSET);
 		baseLoc.add(vector);
 		return baseLoc;
 	}
@@ -75,7 +77,7 @@ public class HologramManager {
 	private void updateHolograms() {
 		for (Iterator<PlayerHolo> iter = activeHolos.iterator(); iter.hasNext();) {
 			PlayerHolo holo = iter.next();
-			if (!holo.update(5000)) {
+			if (!holo.update()) {
 				iter.remove();
 			}
 		}
@@ -90,11 +92,13 @@ public class HologramManager {
 		private boolean hasPermission;
 		private Location cachedPlayerLocation;
 		private double cachedHealth;
+		private long cullDelay;
 
 		public PlayerHolo(Player player, Reinforcement reinforcement) {
 			this.player = player;
 			this.reinforcement = reinforcement;
 			this.timeStamp = System.currentTimeMillis();
+			this.cullDelay = settingMan.getHologramDuration(player.getUniqueId());
 			// we intentionally cache permission to avoid having to look it up often
 			// showing a bit too much information if the player gets kicked while a holo is
 			// already visible does not matter
@@ -113,7 +117,7 @@ public class HologramManager {
 			updateText();
 		}
 
-		boolean update(long cullDelay) {
+		boolean update() {
 			if (System.currentTimeMillis() - timeStamp > cullDelay) {
 				delete();
 				return false;

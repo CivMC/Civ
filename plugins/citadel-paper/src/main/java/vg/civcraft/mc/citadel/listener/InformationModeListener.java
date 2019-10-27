@@ -72,6 +72,9 @@ public class InformationModeListener implements Listener {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
+		if (!Citadel.getInstance().getSettingManager().getInformationMode().getValue(e.getPlayer())) {
+			return;
+		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		Player player = e.getPlayer();
 		boolean showChat = Citadel.getInstance().getSettingManager().shouldShowChatInCti(player.getUniqueId());

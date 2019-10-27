@@ -63,16 +63,17 @@ public class CitadelConfigManager extends CoreConfigManager {
 		Particle effect;
 		try {
 			String effectName = config.getString("type");
-			effect = effectName.equals("FLYING_GLYPH") ? Particle.ENCHANTMENT_TABLE : Particle.valueOf(effectName);
+			effect = Particle.valueOf(effectName);
 		} catch (IllegalArgumentException e) {
 			logger.warning("Invalid effect at: " + config.getCurrentPath());
 			return null;
 		}
-		float offsetX = (float) config.getDouble("offsetX", 0);
-		float offsetY = (float) config.getDouble("offsetY", 0);
-		float offsetZ = (float) config.getDouble("offsetZ", 0);
+		float offSet = (float) config.getDouble("offset", 0);
+		float offsetX = (float) config.getDouble("offsetX", offSet);
+		float offsetY = (float) config.getDouble("offsetY", offSet);
+		float offsetZ = (float) config.getDouble("offsetZ", offSet);
 		float speed = (float) config.getDouble("speed", 1);
-		int amount = config.getInt("particleCount", 1);
+		int amount = config.getInt("particleCount", 50);
 		return new ReinforcementEffect(effect, offsetX, offsetY, offsetZ, speed, amount);
 	}
 

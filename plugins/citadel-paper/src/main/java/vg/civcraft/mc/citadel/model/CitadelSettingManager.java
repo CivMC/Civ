@@ -17,6 +17,7 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.CommandReplySetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DecimalFormatSetting;
 
@@ -26,6 +27,8 @@ public class CitadelSettingManager {
 	private BooleanSetting informationMode;
 	private BooleanSetting showChatMsgInCti;
 	private BooleanSetting showHologramInCti;
+
+	private BoundedIntegerSetting hologramDuration;
 
 	private CommandReplySetting ctiNotReinforced;
 	// private CommandReplySetting ctiAllied;
@@ -41,17 +44,21 @@ public class CitadelSettingManager {
 	public BooleanSetting getBypass() {
 		return byPass;
 	}
-	
+
 	public BooleanSetting getInformationMode() {
 		return informationMode;
 	}
-	
+
 	public boolean shouldShowChatInCti(UUID uuid) {
 		return showChatMsgInCti.getValue(uuid);
 	}
-	
+
 	public boolean shouldShowHologramInCti(UUID uuid) {
 		return showHologramInCti.getValue(uuid);
+	}
+	
+	public int getHologramDuration(UUID uuid) {
+		return hologramDuration.getValue(uuid);
 	}
 
 	void initSettings() {
@@ -68,11 +75,17 @@ public class CitadelSettingManager {
 		showChatMsgInCti = new BooleanSetting(Citadel.getInstance(), true, "Show chat message in information mode",
 				"citadelCtiShowChatMsg", "Should chat messages be shown in reinforcement information mode");
 		PlayerSettingAPI.registerSetting(showChatMsgInCti, menu);
-		
+
 		showHologramInCti = new BooleanSetting(Citadel.getInstance(), true, "Show holograms in information mode",
 				"citadelCtiShowHologram", "Should holograms be shown in reinforcement information mode");
 		PlayerSettingAPI.registerSetting(showHologramInCti, menu);
-		
+
+		hologramDuration = new BoundedIntegerSetting(Citadel.getInstance(), 5000, "Hologram visibility duration",
+				"citadelHologramCullTimer", new ItemStack(Material.CLOCK),
+				"How long should holograms in information mode remain visible, measured in milli seconds", false, 1000,
+				30000);
+		PlayerSettingAPI.registerSetting(hologramDuration, menu);
+
 		MenuSection commandSection = menu.createMenuSection("Command replies",
 				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
 
@@ -93,7 +106,7 @@ public class CitadelSettingManager {
 		PlayerSettingAPI.registerSetting(ctiReinforcementHealth, commandSection);
 
 		ctiEnemy = new CommandReplySetting(Citadel.getInstance(),
-				ChatColor.RED + "Reinforced at %%health_color%%%%perc_health%% (%%health%%/%%max_health%%)"
+				ChatColor.RED + "Reinforced at %%health_color%%%%perc_health%%% (%%health%%/%%max_health%%)"
 						+ ChatColor.RED + " health with " + ChatColor.AQUA + "%%type%%",
 				"CTI Message Enemy", "citadel_cti_enemy", new ItemStack(Material.RED_TERRACOTTA),
 				"The message received when interacting with enemy reinforcements");

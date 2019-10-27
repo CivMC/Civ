@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 
 import vg.civcraft.mc.citadel.listener.BlockListener;
 import vg.civcraft.mc.citadel.listener.EntityListener;
+import vg.civcraft.mc.citadel.listener.InformationModeListener;
 import vg.civcraft.mc.citadel.listener.InventoryListener;
 import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
@@ -120,7 +121,7 @@ public class Citadel extends ACivMod {
 		acidManager = new AcidManager(config.getAcidMaterials());
 		settingManager = new CitadelSettingManager();
 		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-			holoManager = new HologramManager();
+			holoManager = new HologramManager(settingManager);
 		}
 		CitadelPermissionHandler.setup();
 		registerListeners();
@@ -133,6 +134,7 @@ public class Citadel extends ACivMod {
 		getServer().getPluginManager().registerEvents(new BlockListener(), this);
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
+		getServer().getPluginManager().registerEvents(new InformationModeListener(), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
 	}
 }
