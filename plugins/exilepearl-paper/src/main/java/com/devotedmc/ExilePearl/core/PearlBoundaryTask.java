@@ -46,7 +46,7 @@ import com.google.common.collect.ImmutableList;
  */
 final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 
-	private Set<UUID> pearledPlayers = new HashSet<UUID>();
+	private Set<UUID> pearledPlayers = new HashSet<>();
 
 	private int radius = 1000;
 	private double bastionDamage = 1;
@@ -172,10 +172,11 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 
 		Location newLoc = getCorrectedLocation(pearlLocation, playerLocation, pearl.getPlayer().isFlying());
-
-		player.teleport(newLoc, TeleportCause.PLUGIN);
-		msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
+		if (newLoc != null) {
+			player.teleport(newLoc, TeleportCause.PLUGIN);
+			msg(pearl.getPlayer(), "<i>You can't come within %d blocks of your pearl at (%d, %d).", radius, 
 				pearl.getLocation().getBlockX(), pearl.getLocation().getBlockZ());
+		}
 	}
 
 	private Location getCorrectedLocation(Location pearlLocation, Location playerLocation, boolean flying) {
@@ -220,8 +221,9 @@ final class PearlBoundaryTask extends ExilePearlTask implements BorderHandler {
 		}
 
 		yLoc = getSafeY(playerLocation.getWorld(), ixLoc, Location.locToBlock(yLoc), izLoc, flying);
-		if (yLoc == -1)
+		if (yLoc == -1) {
 			return null;
+		}
 
 		return new Location(playerLocation.getWorld(), Math.round(xLoc) + 0.5, yLoc, Math.round(zLoc) + 0.5, playerLocation.getYaw(), playerLocation.getPitch());
 	}
