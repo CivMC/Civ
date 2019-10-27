@@ -3,6 +3,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
 import org.bukkit.entity.Player;
@@ -33,6 +34,10 @@ public class ArthropodEggHack extends BasicHack {
 
 	public ArthropodEggHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
+	}
+	
+	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
 	}
 
 	@EventHandler

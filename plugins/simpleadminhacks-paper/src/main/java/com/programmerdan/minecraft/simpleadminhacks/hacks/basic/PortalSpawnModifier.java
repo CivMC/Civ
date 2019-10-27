@@ -5,6 +5,7 @@ import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -30,6 +31,10 @@ public class PortalSpawnModifier extends BasicHack {
 	
 	@AutoLoad
 	private double witherHeadDropChance;
+	
+	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
+	}
 
 	public PortalSpawnModifier(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);

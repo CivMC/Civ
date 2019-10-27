@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -46,15 +47,15 @@ public class HackManager {
 							try {
 								Method genBasic = clazz.getMethod("generate", SimpleAdminHacks.class,
 										ConfigurationSection.class);
-								hackingConfig = (SimpleHackConfig) genBasic.invoke(null, this, hackConfig);
+								hackingConfig = (SimpleHackConfig) genBasic.invoke(null, plugin, hackConfig);
 							} catch (IllegalAccessException failure) {
 								plugin.log(Level.WARNING,
-										"Creating configuration for hack {0} failed, illegal access failure",
-										clazz.getName());
+										"Creating configuration for hack {0} failed, illegal access failure: {1}",
+										clazz.getName(), failure.toString());
 							} catch (IllegalArgumentException failure) {
 								plugin.log(Level.WARNING,
-										"Creating configuration for hack {0} failed, illegal argument failure",
-										clazz.getName());
+										"Creating configuration for hack {0} failed, illegal argument failure: {1}",
+										clazz.getName(), failure.toString());
 							} catch (InvocationTargetException failure) {
 								plugin.log(Level.WARNING,
 										"Creating configuration for hack {0} failed, invocation target failure",
@@ -72,7 +73,7 @@ public class HackManager {
 							try {
 								Constructor<?> constructBasic = clazz.getConstructor(SimpleAdminHacks.class,
 										hackingConfig.getClass());
-								hack = (SimpleHack<?>) constructBasic.newInstance(this, hackingConfig);
+								hack = (SimpleHack<?>) constructBasic.newInstance(plugin, hackingConfig);
 								plugin.log(Level.INFO, "Created a new Hack of type {0}", clazz.getSimpleName());
 							} catch (InvalidConfigException ice) {
 								plugin.log(Level.WARNING, "Failed to activate {0} hack, configuration failed",
@@ -97,7 +98,7 @@ public class HackManager {
 					plugin.log(Level.INFO, "Unable to load discovered class {0} due to dependency failure",
 							clsInfo.getName());
 				} catch (Exception e) {
-					plugin.log(Level.WARNING, "Failed to complete hack discovery {0}", clsInfo.getName());
+					plugin.log(Level.WARNING, "Failed to complete hack discovery of {0}: {1}", clsInfo.getName(), e.toString());
 				}
 			}
 		} catch (Exception e) {
@@ -157,12 +158,24 @@ public class HackManager {
 			} else {
 				identifier = autoLoad.id();
 			}
+			Class<?> clazz;
+			if (field.getType().getName().split("\\.").length == 1) {
+				//unwrap primitives
+				clazz = Array.get(Array.newInstance(field.getType(),1),0).getClass();
+			}
+			else {
+				clazz = field.getType();
+			}
 			Object value;
 			try {
-				value = config.getObject(identifier, field.getClass(), null);
+				value = config.getObject(identifier, clazz, null);
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Hack " + hackClass.getSimpleName() + " failed to read parameter "
 						+ identifier, e);
+			}
+			if (value == null) {
+				plugin.log(Level.WARNING, "Hack {0} had no value for option {1}", hackClass.getSimpleName(), identifier);
+				continue;
 			}
 			field.setAccessible(true);
 			try {
@@ -171,7 +184,7 @@ public class HackManager {
 				throw new IllegalStateException(field.getClass().getSimpleName() + " in " + hackClass.getSimpleName()
 						+ " could not be set " + e.toString());
 			}
-			plugin.log(Level.INFO, "Loaded '{0}' = '{1}'", identifier, value);
+			plugin.log(Level.INFO, "Loaded {0} = {1}", identifier, value);
 		}
 	}
 

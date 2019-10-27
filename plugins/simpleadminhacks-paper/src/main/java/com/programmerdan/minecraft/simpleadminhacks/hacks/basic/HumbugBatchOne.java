@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -56,6 +57,10 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean canEquipBanners;
+	
+	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
+	}
 
 	public HumbugBatchOne(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
