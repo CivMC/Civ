@@ -9,8 +9,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.Cancellable;
 
+import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
@@ -176,6 +177,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			sb.append(decimalFormat.format(progress * 100));
 			sb.append(" % grown");
 		} else {
+			if (isFullyGrown(block)) {
+				sb.append(" is fully grown ");
+				return sb.toString();
+			}
 			long totalTime = getPersistentGrowthTime(block);
 			long passedTime = System.currentTimeMillis() - plant.getCreationTime();
 			long timeRemaining = Math.max(0, totalTime - passedTime);
@@ -215,14 +220,14 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * 
 	 * @param event Growth event happening
 	 */
-	public void handleAttemptedGrowth(BlockGrowEvent event) {
-		double chance = biomeGrowthConfig.getNaturalProgressChance(event.getBlock().getBiome());
+	public void handleAttemptedGrowth(Cancellable event, Block block) {
+		double chance = biomeGrowthConfig.getNaturalProgressChance(block.getBiome());
 		if (chance == 0) {
 			event.setCancelled(true);
 			return;
 		}
-		chance *= (1.0 + getSoilBonus(event.getBlock()));
-		chance *= getLightMultiplier(event.getBlock());
+		chance *= (1.0 + getSoilBonus(block));
+		chance *= getLightMultiplier(block);
 		if (rng.nextDouble() > chance) {
 			event.setCancelled(true);
 		}
@@ -239,8 +244,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * @return True if the plant has reached its maximum growth stage, false
 	 *         otherwise
 	 */
-	public boolean isFullyGrown(Plant plant) {
-		return grower.getMaxStage() == grower.getStage(plant.getLocation().getBlock());
+	public boolean isFullyGrown(Block block) {
+		return grower.getMaxStage() == grower.getStage(block);
 	}
 
 	public boolean isPersistent() {
@@ -276,6 +281,14 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			grower.setStage(block, intendedState);
 		}
 		if (intendedState == grower.getMaxStage()) {
+			if (RBUtils.resetProgressOnGrowth(block.getType())) {
+				plant.resetCreationTime();
+				//a new different config may now be responsible, for example if we just grew a melon stem
+				PlantGrowthConfig newConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
+						.getPlantGrowthConfig(block);
+				//this should not lead to recursion horror, assuming the grower behavior is bug free
+				return newConfig.updatePlant(plant);
+			}
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();

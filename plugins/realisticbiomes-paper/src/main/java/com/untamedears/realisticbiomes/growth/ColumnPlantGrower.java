@@ -6,23 +6,7 @@ import org.bukkit.block.BlockFace;
 
 public class ColumnPlantGrower extends IArtificialGrower {
 
-	private int maxHeight;
-
-	public ColumnPlantGrower(int maxHeight) {
-		this.maxHeight = maxHeight;
-	}
-
-	@Override
-	public int getIncrementPerStage() {
-		return 1;
-	}
-
-	@Override
-	public int getMaxStage() {
-		return maxHeight;
-	}
-
-	private Block getRelativeBlock(Block block, BlockFace face) {
+	public static Block getRelativeBlock(Block block, BlockFace face) {
 		Material mat = block.getType();
 		Block bottomBlock = block;
 		// not actually using this variable, but just having it here as a fail safe
@@ -36,18 +20,40 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		return bottomBlock;
 	}
 
+	private int maxHeight;
+
+	public ColumnPlantGrower(int maxHeight) {
+		this.maxHeight = maxHeight;
+	}
+
+	@Override
+	public int getIncrementPerStage() {
+		return 1;
+	}
+
+	@Override
+	public int getMaxStage() {
+		return 1;
+	}
+
 	@Override
 	public int getStage(Block block) {
 		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
 		Block top = getRelativeBlock(block, BlockFace.UP);
-		return Math.min(top.getY() - bottom.getY(), maxHeight);
+		if (top.getY() - bottom.getY() < maxHeight) {
+			//can grow more
+			return 0;
+		}
+		//fully grown
+		return 1;
 	}
 
 	private void growOnTop(Block block, int howMany) {
 		int counter = 1;
-		Block onTop = block.getRelative(BlockFace.UP);
+		Block onTop = block;
 		while (counter < maxHeight && howMany > 0) {
 			counter++;
+			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
 				onTop.setType(block.getType());

@@ -3,6 +3,9 @@ package com.untamedears.realisticbiomes.utils;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
+import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 
 public class RBUtils {
 
@@ -19,6 +22,13 @@ public class RBUtils {
 		default:
 			return null;
 		}
+	}
+
+	public static Block getRealPlantBlock(Block block) {
+		if (isColumnPlant(block.getType())) {
+			return ColumnPlantGrower.getRelativeBlock(block, BlockFace.DOWN);
+		}
+		return block;
 	}
 
 	public static Material getRemappedMaterial(Material mat) {
@@ -90,7 +100,9 @@ public class RBUtils {
 			return Material.BROWN_MUSHROOM;
 		case RED_MUSHROOM:
 			return Material.RED_MUSHROOM;
-
+		case CHORUS_FLOWER:
+		case CHORUS_PLANT:
+			return Material.CHORUS_FLOWER;
 		default:
 			return null;
 		}
@@ -126,6 +138,10 @@ public class RBUtils {
 		return isCrop(material) || isSapling(material);
 	}
 
+	public static boolean isColumnPlant(Material mat) {
+		return mat == Material.CACTUS || mat == Material.SUGAR_CANE;
+	}
+
 	public static boolean isCrop(Material material) {
 		return material == Material.BEETROOTS || material == Material.WHEAT || material == Material.POTATOES
 				|| material == Material.CARROTS || material == Material.NETHER_WART_BLOCK;
@@ -135,6 +151,15 @@ public class RBUtils {
 		return material == Material.ACACIA_SAPLING || material == Material.BIRCH_SAPLING
 				|| material == Material.DARK_OAK_SAPLING || material == Material.JUNGLE_SAPLING
 				|| material == Material.OAK_SAPLING || material == Material.SPRUCE_SAPLING;
+	}
+
+	public static boolean isStem(Material mat) {
+		return mat == Material.PUMPKIN_STEM || mat == Material.ATTACHED_PUMPKIN_STEM 
+				|| mat == Material.MELON_STEM|| mat == Material.ATTACHED_MELON_STEM ; 
+	}
+
+	public static boolean resetProgressOnGrowth(Material mat) {
+		return isColumnPlant(mat) || isStem(mat);
 	}
 
 	private RBUtils() {

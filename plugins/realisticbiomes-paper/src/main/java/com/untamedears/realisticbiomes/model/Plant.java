@@ -1,16 +1,14 @@
 package com.untamedears.realisticbiomes.model;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.model.time.ProgressTrackable;
-import com.untamedears.realisticbiomes.utils.RBUtils;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.util.BukkitComparators;
+import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
 
 public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
@@ -37,10 +35,15 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	public long getCreationTime() {
 		return creationTime;
 	}
-
+	
 	@Override
 	public long getNextUpdate() {
 		return nextUpdate;
+	}
+
+	public void resetCreationTime() {
+		creationTime = System.currentTimeMillis();
+		setDirty();
 	}
 
 	/**
@@ -64,28 +67,12 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	public void updateState() {
 		Block block = location.getBlock();
 		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
-				.getPlantGrowthConfig(block.getType());
+				.getPlantGrowthConfig(block);
 		if (growthConfig == null) {
 			nextUpdate = Long.MAX_VALUE;
 			getOwningCache().remove(this);
 			return;
 		}
-		if (growthConfig.isFullyGrown(this)) {
-			// fruit based
-			Material fruitMaterial = RBUtils.getFruit(block.getType());
-			if (fruitMaterial == null) {
-				nextUpdate = Long.MAX_VALUE;
-				return;
-			}
-			growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager().getPlantGrowthConfig(fruitMaterial);
-			if (growthConfig != null) {
-				nextUpdate = growthConfig.updatePlant(this);
-				return;
-			}
-			nextUpdate = Long.MAX_VALUE;
-		} else {
-			// normal crop
-			nextUpdate = growthConfig.updatePlant(this);
-		}
+		nextUpdate = growthConfig.updatePlant(this);
 	}
 }

@@ -3,7 +3,8 @@ package com.untamedears.realisticbiomes;
 import org.bukkit.Bukkit;
 
 import com.untamedears.realisticbiomes.model.RBChunkCache;
-import com.untamedears.realisticbiomes.model.time.ProgressTracker;
+
+import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
 
 /**
  * Keeps track of which plant needs to be updated next

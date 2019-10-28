@@ -45,8 +45,8 @@ public class PlayerListener implements Listener {
 		if (event.getItem().getType() != Material.STICK) {
 			return;
 		}
-		Block block = event.getClickedBlock();
-		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(block.getType());
+		Block block = RBUtils.getRealPlantBlock(event.getClickedBlock());
+		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(block);
 		if (plantConfig == null) {
 			return;
 		}
@@ -54,14 +54,14 @@ public class PlayerListener implements Listener {
 		if (RealisticBiomes.getInstance().getPlantManager() != null) {
 			plant = RealisticBiomes.getInstance().getPlantManager().getPlant(block);
 		}
-		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(event.getClickedBlock(), plant));
+		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));
 	}
 
 	// show animal rates when right clicking them with stick
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerInteractEntityEvent(PlayerInteractEntityEvent event) {
 		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-		if (item == null || item.getType() != Material.STICK) {
+		if (item.getType() != Material.STICK) {
 			return;
 		}
 		Entity entity = event.getRightClicked();
@@ -89,7 +89,7 @@ public class PlayerListener implements Listener {
 		if (material == null) {
 			return;
 		}
-		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(material);
+		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigStraight(material);
 		if (plantConfig == null) {
 			event.getPlayer().sendMessage(
 					ChatColor.GOLD + "Growth behavior for " + material.toString() + " is entirely vanilla");

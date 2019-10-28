@@ -1,11 +1,12 @@
 package com.untamedears.realisticbiomes.model;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.model.time.ProgressTrackable;
-import com.untamedears.realisticbiomes.model.time.ProgressTracker;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
+import vg.civcraft.mc.civmodcore.util.progress.ProgressTracker;
 
 public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements ProgressTrackable {
 
@@ -26,6 +27,19 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 	@Override
 	public long getNextUpdate() {
 		return nextUpdate;
+	}
+
+	@Override
+	protected TableBasedDataObject remove(int x, int y, int z) {
+		Plant data = (Plant) super.remove(x, y, z);
+		tracker.removeItem(data);
+		return data;
+	}
+
+	@Override
+	public void remove(TableBasedDataObject blockData) {
+		super.remove(blockData);
+		tracker.removeItem((Plant) blockData);
 	}
 
 	public void updateGrowthTime(Plant plant, long time) {

@@ -6,10 +6,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -39,13 +41,18 @@ public class PlantListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
 	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void onExplosion(BlockExplodeEvent event) {
+		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
+	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material material = event.getBlock().getType();
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getPlantGrowthConfig(material);
+		Material newType = event.getNewState().getType();
+		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getGrowthConfigStraight(newType);
 		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event);
+			growthConfig.handleAttemptedGrowth(event, event.getBlock());
 		}
 	}
 
@@ -59,6 +66,12 @@ public class PlantListener implements Listener {
 		// disable bonemeal
 		if (event.isFromBonemeal()) {
 			event.setCancelled(true);
+		}
+		// handle trees etc.
+		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
+				.getPlantGrowthConfig(event.getLocation().getBlock());
+		if (growthConfig != null) {
+			growthConfig.handleAttemptedGrowth(event, event.getLocation().getBlock());
 		}
 	}
 }
