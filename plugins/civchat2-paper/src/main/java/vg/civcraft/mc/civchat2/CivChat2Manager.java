@@ -213,9 +213,9 @@ public class CivChat2Manager {
 
 						receiver.sendMessage(
 								String.format(messageFormat, newColor + senderName, newColor + chatMessage));
+						receivers.add(receiver.getName());
 					}
 				}
-				receivers.add(receiver.getName());
 			}
 		}
 		receivers.remove(sender.getName());
@@ -351,8 +351,8 @@ public class CivChat2Manager {
 		}
 
 		Set<String> players = new HashSet<>();
-		for (UUID uuid : membersUUID) {
-			players.add(NameAPI.getCurrentName(uuid));
+		for (Player player : members) {
+			players.add(NameAPI.getCurrentName(player.getUniqueId()));
 		}
 		players.remove(senderName);
 		chatLog.logGroupMessage(sender, message, group.getName(), players);
