@@ -22,71 +22,95 @@ import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 import java.util.Optional;
 
 public class DetectorRailActivateListener implements Listener {
+
+  private static final String NORMAL_SWITCH_TYPE = "[destination]";
+  private static final String INVERTED_SWITCH_TYPE = "[!destination]";
+
   private final RailSwitch plugin;
+  private long timingsStartTime = System.currentTimeMillis();
 
   public DetectorRailActivateListener(RailSwitch plugin) {
     this.plugin = plugin;
   }
 
-  @EventHandler
-  public void on(BlockRedstoneEvent e) {
-    Block block = e.getBlock();
-    // check if block is a detector rail
-    if (block == null || block.getType() != Material.DETECTOR_RAIL || e.getNewCurrent() != 15) {
-      return;
-    }
-
-    Player nearestPlayer = findNearestPlayerInMinecart(block.getLocation());
-    if (nearestPlayer == null) {
-      // vanilla behaviour if no player
-      return;
-    }
-
-    // check if the player has the same destination as
-    // the destination on the detector rail
-    long start = System.currentTimeMillis();
-    boolean activate = isActivateRail(nearestPlayer, block.getLocation());
+  private void concludeTiming() {
     if (plugin.isTimings()) {
-      plugin.getLogger().info("Took " + (System.currentTimeMillis() - start) + "ms");
-    }
-    if (!activate) {
-      e.setNewCurrent(0);
+      plugin.getLogger().info("Took " + (System.currentTimeMillis() - timingsStartTime) + "ms");
     }
   }
 
-  private boolean isActivateRail(Player player, Location location) {
-    Block above = location.getBlock().getRelative(BlockFace.UP);
+  @EventHandler
+  public void onRailSwitch(BlockRedstoneEvent event) {
+    // If Citadel is not enabled, do nothing
+    if (!Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
+      return;
+    }
+    // If the block is null or empty, do nothing
+    Block block = event.getBlock();
+    if (block == null) {
+      return;
+    }
+    // If the block is not a detector rail, do nothing
+    if (block.getType() != Material.DETECTOR_RAIL) {
+      return;
+    }
+    // If the detector rail is not being activated, do nothing
+    if (event.getNewCurrent() != 15) {
+      return;
+    }
+    // If the block above the detector rail is not a sign, do nothing
+    Block above = block.getRelative(BlockFace.UP);
     if (!(above.getState() instanceof Sign)) {
-      // true = don't change vanilla behaviour
-      return true;
+      return;
     }
-    Sign sign = (Sign) above.getState();
-    String[] lines = sign.getLines();
-    if (!"[destination]".equalsIgnoreCase(lines[0])) {
-      return true;
+    // If the sign is not a rail switch sign, do nothing
+    String[] lines = ((Sign) above.getState()).getLines();
+    if (!(lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE) || lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE))) {
+      return;
     }
-
-    // sign and rail must be on the same reinforcement group
-    // to prevent abuse
-    if (Bukkit.getPluginManager().isPluginEnabled("Citadel")
-            && !isSameReinforcementGroup(above.getLocation(), location)) {
-      return true;
+    // Start timings here - there's some expensive calls coming up
+    timingsStartTime = System.currentTimeMillis();
+    // If detector rail and the sign are not on the same reinforcement group, do nothing
+    if (!isSameReinforcementGroup(block.getLocation(), above.getLocation())) {
+      concludeTiming();
+      return;
     }
-
+    // If the player riding the cart cannot be found, do nothing
+    Player player = findNearestPlayerInMinecart(block.getLocation());
+    if (player == null) {
+      concludeTiming();
+      return;
+    }
+    // Determine if the destination is present on the sign
     Optional<String> destination = plugin.getDatabase().getPlayerDestination(player);
-    // don't activate rail if a destination is not set
-    if (!destination.isPresent()) {
-      return false;
-    }
-
-    // only activate redstone if the sign has a destination the player is set to
-    // if the sign has a * and a player has a destination set, activate it
-    for (int i = 1; i < 4; i++) {
-      if (destination.get().equalsIgnoreCase(lines[i]) || lines[i].equals("*")) {
-        return true;
+    boolean matched = false;
+    boolean wildcard = false;
+    if (destination.isPresent()) {
+      for (String line : lines) {
+        if (line.equals("*")) {
+          matched = true;
+          wildcard = true;
+          break;
+        }
+        if (line.equalsIgnoreCase(destination.get())) {
+          matched = true;
+          break;
+        }
       }
     }
-    return false;
+    // Determine the behaviour of the switch by its type
+    if (lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE)) {
+      if (!matched) {
+        event.setNewCurrent(0);
+      }
+    }
+    else if (lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE)) {
+      if (matched) {
+        event.setNewCurrent(0);
+      }
+    }
+    // Calculate how much time this process took
+    concludeTiming();
   }
 
   private boolean isSameReinforcementGroup(Location a, Location b) {
