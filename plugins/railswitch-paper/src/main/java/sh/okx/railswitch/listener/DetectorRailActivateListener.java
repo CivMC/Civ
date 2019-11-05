@@ -41,10 +41,6 @@ public class DetectorRailActivateListener implements Listener {
 
   @EventHandler
   public void onRailSwitch(BlockRedstoneEvent event) {
-    // If Citadel is not enabled, do nothing
-    if (!Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
-      return;
-    }
     // If the block is null or empty, do nothing
     Block block = event.getBlock();
     if (block == null) {
@@ -71,9 +67,11 @@ public class DetectorRailActivateListener implements Listener {
     // Start timings here - there's some expensive calls coming up
     timingsStartTime = System.currentTimeMillis();
     // If detector rail and the sign are not on the same reinforcement group, do nothing
-    if (!isSameReinforcementGroup(block.getLocation(), above.getLocation())) {
-      concludeTiming();
-      return;
+    if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
+      if (!isSameReinforcementGroup(block.getLocation(), above.getLocation())) {
+        concludeTiming();
+        return;
+      }
     }
     // If the player riding the cart cannot be found, do nothing
     Player player = findNearestPlayerInMinecart(block.getLocation());
