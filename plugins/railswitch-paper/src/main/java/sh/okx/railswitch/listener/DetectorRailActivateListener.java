@@ -27,88 +27,59 @@ public class DetectorRailActivateListener implements Listener {
   private static final String INVERTED_SWITCH_TYPE = "[!destination]";
 
   private final RailSwitch plugin;
-  private long timingsStartTime = System.currentTimeMillis();
 
   public DetectorRailActivateListener(RailSwitch plugin) {
     this.plugin = plugin;
   }
 
-  private void concludeTiming() {
-    if (plugin.isTimings()) {
-      plugin.getLogger().info("Took " + (System.currentTimeMillis() - timingsStartTime) + "ms");
-    }
-  }
-
   @EventHandler
   public void onRailSwitch(BlockRedstoneEvent event) {
-    // If the block is null or empty, do nothing
     Block block = event.getBlock();
-    if (block == null) {
+    if (block == null
+        || block.getType() != Material.DETECTOR_RAIL
+        || event.getNewCurrent() != 15) {
       return;
     }
-    // If the block is not a detector rail, do nothing
-    if (block.getType() != Material.DETECTOR_RAIL) {
-      return;
-    }
-    // If the detector rail is not being activated, do nothing
-    if (event.getNewCurrent() != 15) {
-      return;
-    }
-    // If the block above the detector rail is not a sign, do nothing
+
     Block above = block.getRelative(BlockFace.UP);
     if (!(above.getState() instanceof Sign)) {
       return;
     }
-    // If the sign is not a rail switch sign, do nothing
+
     String[] lines = ((Sign) above.getState()).getLines();
-    if (!(lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE) || lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE))) {
+    if (!(lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE)
+        || lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE))) {
       return;
     }
-    // Start timings here - there's some expensive calls coming up
-    timingsStartTime = System.currentTimeMillis();
-    // If detector rail and the sign are not on the same reinforcement group, do nothing
-    if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
-      if (!isSameReinforcementGroup(block.getLocation(), above.getLocation())) {
-        concludeTiming();
-        return;
-      }
+
+    if (Bukkit.getPluginManager().isPluginEnabled("Citadel")
+        && !isSameReinforcementGroup(block.getLocation(), above.getLocation())) {
+      return;
     }
-    // If the player riding the cart cannot be found, do nothing
+
     Player player = findNearestPlayerInMinecart(block.getLocation());
     if (player == null) {
-      concludeTiming();
       return;
     }
-    // Determine if the destination is present on the sign
+
     Optional<String> destination = plugin.getDatabase().getPlayerDestination(player);
-    boolean matched = false;
-    boolean wildcard = false;
-    if (destination.isPresent()) {
-      for (String line : lines) {
-        if (line.equals("*")) {
-          matched = true;
-          wildcard = true;
-          break;
-        }
-        if (line.equalsIgnoreCase(destination.get())) {
-          matched = true;
-          break;
-        }
+
+    boolean matched = destination.map(d -> isSignMatchDestination(lines, d)).orElse(false);
+
+    if (lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE) && !matched) {
+      event.setNewCurrent(0);
+    } else if (lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE) && matched) {
+      event.setNewCurrent(0);
+    }
+  }
+
+  private boolean isSignMatchDestination(String[] lines, String destination) {
+    for (String line : lines) {
+      if ("*".equals(line) || destination.equalsIgnoreCase(line)) {
+        return true;
       }
     }
-    // Determine the behaviour of the switch by its type
-    if (lines[0].equalsIgnoreCase(NORMAL_SWITCH_TYPE)) {
-      if (!matched) {
-        event.setNewCurrent(0);
-      }
-    }
-    else if (lines[0].equalsIgnoreCase(INVERTED_SWITCH_TYPE)) {
-      if (matched) {
-        event.setNewCurrent(0);
-      }
-    }
-    // Calculate how much time this process took
-    concludeTiming();
+    return false;
   }
 
   private boolean isSameReinforcementGroup(Location a, Location b) {

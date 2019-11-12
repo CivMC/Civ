@@ -1,5 +1,5 @@
 name: RailSwitch
-version: '1.2.1'
+version: '1.2.2'
 main: sh.okx.railswitch.RailSwitch
 author: Okx
 api-version: '1.14'
