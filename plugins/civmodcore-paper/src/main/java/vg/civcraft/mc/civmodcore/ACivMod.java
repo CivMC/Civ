@@ -13,7 +13,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -22,8 +21,6 @@ public abstract class ACivMod extends JavaPlugin {
 
 	protected StandaloneCommandHandler newCommandHandler;
 
-	private static boolean initializedAPIs = false;
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (handle == null) {
