@@ -68,8 +68,6 @@ public final class CivModCorePlugin extends ACivMod {
 	@Override
 	public void onDisable() {
 		super.onDisable();
-		// De-register listeners
-		HandlerList.unregisterAll(this);
 		// Unload APIs
 		ItemNames.resetItemNames();
 		EnchantmentNames.resetEnchantmentNames();

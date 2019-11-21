@@ -3,8 +3,10 @@ package vg.civcraft.mc.civmodcore;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,7 +39,8 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
-		
+		HandlerList.unregisterAll(this);
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	protected void registerListener(Listener listener) {
