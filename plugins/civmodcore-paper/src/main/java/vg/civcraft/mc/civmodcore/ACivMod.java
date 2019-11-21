@@ -17,16 +17,16 @@ import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 public abstract class ACivMod extends JavaPlugin {
 
 	@Deprecated
-	protected CommandHandler handle;
+	protected CommandHandler handle = null;
 
 	protected StandaloneCommandHandler newCommandHandler;
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (handle == null) {
-			return newCommandHandler.executeCommand(sender, command, args);
+			return this.newCommandHandler.executeCommand(sender, command, args);
 		} else {
-			return handle.execute(sender, command, args);
+			return this.handle.execute(sender, command, args);
 		}
 	}
 
@@ -63,15 +63,15 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		if (handle == null) {
-			return newCommandHandler.tabCompleteCommand(sender, cmd, args);
+		if (this.handle == null) {
+			return this.newCommandHandler.tabCompleteCommand(sender, cmd, args);
 		} else {
-			return handle.complete(sender, cmd, args);
+			return this.handle.complete(sender, cmd, args);
 		}
 	}
 
 	public CommandHandler getCommandHandler() {
-		return handle;
+		return this.handle;
 	}
 
 	protected void setCommandHandler(CommandHandler handle) {
