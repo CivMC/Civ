@@ -8,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
@@ -48,6 +49,13 @@ public abstract class ACivMod extends JavaPlugin {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
 		getServer().getPluginManager().registerEvents(listener, this);
+	}
+
+	protected boolean isPluginEnabled(Plugin plugin) {
+		if (plugin == null) {
+			return false;
+		}
+		return getServer().getPluginManager().isPluginEnabled(plugin);
 	}
 
 	public void saveDefaultResource(String path) {
