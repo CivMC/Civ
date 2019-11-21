@@ -3,7 +3,7 @@ CivModCore
 
 Versions:
 
-* 1.7.5 - Spigot 1.14.4 (No explicit support for 1.14 prior to 1.14.4)
+* 1.7.6 - Spigot 1.14.4 (No explicit support for 1.14 prior to 1.14.4)
 
 * 1.7.0 - Spigot 1.13.2 (No explicit support for 1.13 or 1.13.1)
 
