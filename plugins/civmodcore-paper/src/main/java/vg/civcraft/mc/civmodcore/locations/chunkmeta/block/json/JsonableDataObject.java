@@ -22,13 +22,6 @@ public abstract class JsonableDataObject extends BlockDataObject<JsonableDataObj
 
 	public abstract void concreteSerialize(JsonObject base);
 
-	@Override
-	public void delete() {
-		// dont need to do anything here, because the chunk will reserialize everything
-		// anyway and simply deleting this instance from the chunks tracking is good
-		// enough
-	}
-
 	protected JsonObject serialize() {
 		JsonObject json = new JsonObject();
 		JsonObject inner = new JsonObject();

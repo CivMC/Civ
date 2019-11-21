@@ -1,20 +1,5 @@
 package vg.civcraft.mc.civmodcore.command;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -25,10 +10,24 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.SimplePluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
-
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 public class StandaloneCommandHandler {
 
@@ -37,7 +36,7 @@ public class StandaloneCommandHandler {
 
 	public StandaloneCommandHandler(JavaPlugin plugin) {
 		this.plugin = plugin;
-		this.commands = new HashMap<String, StandaloneCommand>();
+		this.commands = new HashMap<>();
 		loadAll();
 	}
 
@@ -99,23 +98,23 @@ public class StandaloneCommandHandler {
 		if (command == null) {
 			plugin.getLogger().warning(
 					"Could not tab complete command " + cmd.getName() + ", no implementation was provided");
-			return new LinkedList<String>();
+			return Collections.emptyList();
 		}
 		if (sender instanceof Player) {
 			if (!command.canBeRunByPlayers()) {
 				sender.sendMessage(ChatColor.RED + "This command can only be used from console");
-				return new LinkedList<String>();
+				return Collections.emptyList();
 			}
 			if (command.isRateLimitedToTabComplete((Player) sender)) {
 				sender.sendMessage(ChatColor.RED
 						+ "You are rate limited and have to wait before tab completing this command again");
-				return new LinkedList<String>();
+				return Collections.emptyList();
 			}
 		} else {
 			// console
 			if (!command.canBeRunByConsole()) {
 				sender.sendMessage(ChatColor.RED + "This command can only be used by players");
-				return new LinkedList<String>();
+				return Collections.emptyList();
 			}
 		}
 		return command.tabComplete(sender, args);

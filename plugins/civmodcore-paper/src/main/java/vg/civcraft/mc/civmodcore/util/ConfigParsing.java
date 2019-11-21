@@ -196,10 +196,13 @@ public class ConfigParsing {
 		im.addItemStack(toAdd);
 		return im;
 	}
+	
+	public static int parseTimeAsTicks(String arg) {
+		return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
+	}
 
 	public static long parseTime(String arg, TimeUnit unit) {
-		long inTicks = parseTime(arg);
-		long millis = inTicks * 50;
+		long millis = parseTime(arg);
 		return unit.convert(millis, TimeUnit.MILLISECONDS);
 	}
 
@@ -208,8 +211,7 @@ public class ConfigParsing {
 	 * readable time values easily, instead of having to specify every amount in
 	 * ticks or seconds. The unit of a number specifed by the letter added after it,
 	 * for example 5h means 5 hours or 34s means 34 seconds. Possible modifiers are:
-	 * t (ticks), s (seconds), m (minutes), h (hours) and d (days). If no letter is
-	 * added the value will be parsed as ticks.
+	 * t (ticks), s (seconds), m (minutes), h (hours) and d (days)
 	 * <p>
 	 * Additionally you can combine those amounts in any way you want, for example
 	 * you can specify 3h5m43s as 3 hours, 5 minutes and 43 seconds. This doesn't
@@ -217,7 +219,7 @@ public class ConfigParsing {
 	 * different values, but the values are not allowed to be separated by anything
 	 *
 	 * @param input Parsed string containing the time format
-	 * @return How many ticks the given time value is
+	 * @return How many milliseconds the given time value is
 	 */
 	public static long parseTime(String input) {
 		input = input.replace(" ", "").replace(",", "").toLowerCase();
@@ -228,9 +230,9 @@ public class ConfigParsing {
 		} catch (NumberFormatException e) {
 		}
 		while (!input.equals("")) {
-			String typeSuffix = getSuffix(input, a -> Character.isLetter(a));
+			String typeSuffix = getSuffix(input, Character::isLetter);
 			input = input.substring(0, input.length() - typeSuffix.length());
-			String numberSuffix = getSuffix(input, a -> Character.isDigit(a));
+			String numberSuffix = getSuffix(input, Character::isDigit);
 			input = input.substring(0, input.length() - numberSuffix.length());
 			long duration;
 			if (numberSuffix.length() == 0) {
@@ -274,6 +276,11 @@ public class ConfigParsing {
 			case "month": // weeks
 			case "months":
 				result += TimeUnit.DAYS.toMillis(duration * 30);
+				break;
+			case "y":
+			case "year":
+			case "years":
+				result += TimeUnit.DAYS.toMillis(duration * 365);
 				break;
 			case "never":
 			case "inf":
@@ -410,11 +417,14 @@ public class ConfigParsing {
 	/**
 	 * Parses a section which contains key-value mappings of a type to another type
 	 * 
-	 * @param <E>        Key type
-	 * @param <V>        Value type
-	 * @param parent     Configuration section containing the section with the
-	 *                   values
-	 * @param identifier Config identifier of the section containing the entries
+	 * @param <K>            Key type
+	 * @param <V>            Value type
+	 * @param parent         Configuration section containing the section with the values
+	 * @param identifier     Config identifier of the section containing the entries
+	 * @param logger         The logger to write in progress work to
+	 * @param keyConverter   Converts strings to type K
+	 * @param valueConverter Converts strings to type V
+	 * @param mapToUse       The map to place parsed keys and values.
 	 */
 	public static <K, V> void parseKeyValueMap(ConfigurationSection parent, String identifier, Logger logger,
 			Function<String, K> keyConverter, Function<String, V> valueConverter, Map<K, V> mapToUse) {

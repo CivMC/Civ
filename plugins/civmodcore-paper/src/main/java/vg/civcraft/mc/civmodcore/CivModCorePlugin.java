@@ -13,7 +13,8 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
-import vg.civcraft.mc.civmodcore.scoreboard.ScoreBoardListener;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 
 import java.sql.SQLException;
 
@@ -48,7 +49,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Load APIs
 		ItemNames.loadItemNames();
 		EnchantmentNames.loadEnchantmentNames();
-		new DialogManager();
+		BottomLineAPI.init();
 		if (database != null) {
 			ChunkDAO dao = new ChunkDAO(database, this);
 			if (dao.updateDatabase()) {

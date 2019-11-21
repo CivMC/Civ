@@ -1,14 +1,13 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+
+import java.util.Collections;
+import java.util.List;
 
 public class ConfigCommand extends StandaloneCommand {
 
@@ -24,7 +23,7 @@ public class ConfigCommand extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return new LinkedList<>();
+		return Collections.emptyList();
 	}
 	
 	@Override

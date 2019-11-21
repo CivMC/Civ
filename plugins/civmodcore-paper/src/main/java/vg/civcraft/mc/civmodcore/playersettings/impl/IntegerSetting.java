@@ -5,9 +5,9 @@ import java.util.UUID;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.playersettings.StringInputSetting;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
-public class IntegerSetting extends StringInputSetting<Integer> {
+public class IntegerSetting extends PlayerSetting<Integer> {
 
 	private boolean showAmountInGui;
 
@@ -18,7 +18,7 @@ public class IntegerSetting extends StringInputSetting<Integer> {
 	}
 
 	@Override
-	protected Integer deserialize(String serial) {
+	public Integer deserialize(String serial) {
 		return Integer.parseInt(serial);
 	}
 
@@ -42,12 +42,12 @@ public class IntegerSetting extends StringInputSetting<Integer> {
 	}
 
 	@Override
-	protected String serialize(Integer value) {
+	public String serialize(Integer value) {
 		return String.valueOf(value);
 	}
 
 	@Override
-	protected String toText(Integer value) {
+	public String toText(Integer value) {
 		return String.valueOf(value);
 	}
 

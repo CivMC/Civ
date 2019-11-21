@@ -1,17 +1,17 @@
 package vg.civcraft.mc.civmodcore.dao;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
-
 /**
  * Handy Connection Pool / Database wrapper for use by all plugins.
- * 
+ *
  * @author ProgrammerDan
  *
  */
@@ -19,11 +19,11 @@ public class ConnectionPool {
 
 	private HikariDataSource datasource;
 
-	private Logger logger;
+	private final Logger logger;
 
 	/**
 	 * Creates the Database connection pool backed by HikariCP.
-	 * 
+	 *
 	 * @param log
 	 *            The logger to use
 	 * @param user
@@ -37,7 +37,7 @@ public class ConnectionPool {
 	 * @param database
 	 *            The database to use
 	 * @param poolSize
-	 *            The maximum size of the connection pool (< 10 recommended)
+	 *            The maximum size of the connection pool (under 10 recommended)
 	 * @param connectionTimeout
 	 *            The longest a query can run until timeout occurs (1-5s recommended)
 	 * @param idleTimeout
@@ -74,7 +74,7 @@ public class ConnectionPool {
 
 	/**
 	 * Gets a single connection from the pool for use. Checks for null database first.
-	 * 
+	 *
 	 * @return A new Connection
 	 * @throws SQLException
 	 */
@@ -85,7 +85,7 @@ public class ConnectionPool {
 
 	/**
 	 * Closes all connections and this connection pool.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	public void close() throws SQLException {
@@ -96,7 +96,7 @@ public class ConnectionPool {
 
 	/**
 	 * Quick test; either ends or throws an exception if data source isn't configured.
-	 * 
+	 *
 	 * @throws SQLException
 	 */
 	public void available() throws SQLException {
@@ -107,7 +107,7 @@ public class ConnectionPool {
 
 	/**
 	 * Available for direct use within this package, use the provided public methods for anything else
-	 * 
+	 *
 	 * @return DataSource being used
 	 */
 	HikariDataSource getHikariDataSource() {

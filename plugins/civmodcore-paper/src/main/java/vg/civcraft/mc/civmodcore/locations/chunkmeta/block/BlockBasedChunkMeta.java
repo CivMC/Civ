@@ -233,7 +233,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	/**
 	 * Removes the entry at the given block if one exists and returns it
 	 * 
-	 * @param location Block to remove data from, may not be null
+	 * @param block Block to remove data from, may not be null
 	 */
 	public final D remove(Block block) {
 		if (block == null) {
@@ -281,7 +281,6 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		@SuppressWarnings("unchecked")
 		D oldData = (D) l4ZSection[z];
 		if (oldData != null) {
-			oldData.delete();
 			l4ZSection[z] = null;
 			setCacheState(CacheState.MODIFIED);
 		}

@@ -5,9 +5,9 @@ import java.text.DecimalFormat;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.playersettings.StringInputSetting;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
-public class FloatSetting extends StringInputSetting<Float> {
+public class FloatSetting extends PlayerSetting<Float> {
 
 	private DecimalFormat formatter;
 
@@ -28,7 +28,7 @@ public class FloatSetting extends StringInputSetting<Float> {
 	}
 
 	@Override
-	protected Float deserialize(String serial) {
+	public Float deserialize(String serial) {
 		return Float.parseFloat(serial);
 	}
 
@@ -43,12 +43,12 @@ public class FloatSetting extends StringInputSetting<Float> {
 	}
 
 	@Override
-	protected String serialize(Float value) {
+	public String serialize(Float value) {
 		return String.valueOf(value);
 	}
 
 	@Override
-	protected String toText(Float value) {
+	public String toText(Float value) {
 		return formatter.format(value);
 	}
 

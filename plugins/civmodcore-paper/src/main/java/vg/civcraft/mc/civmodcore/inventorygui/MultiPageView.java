@@ -1,12 +1,12 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
-import java.util.List;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+
+import java.util.List;
 
 /**
  * Utility to automate creating views, which have multiple pages and automatically adjust their size
@@ -81,10 +81,9 @@ public class MultiPageView {
 		}
 		int extraSlot = getContentSize() + 2;
 		for (IClickable click : extraMenuItems) {
-			if (click == null) {
-				continue;
+			if (click != null) {
+				ci.setSlot(click, extraSlot++);
 			}
-			ci.setSlot(click, extraSlot++);
 		}
 		return ci;
 	}

@@ -1,14 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
@@ -17,6 +9,13 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.logging.Level;
 
 public class ChunkMetaAPI {
 
@@ -28,8 +27,8 @@ public class ChunkMetaAPI {
 	 * 
 	 * @param <T>               BlockBasedChunkMeta subclass
 	 * @param <D>               BlockDataObject subclass
+	 * @param <S>               StorageEngine subclass
 	 * @param plugin            Your plugin
-	 * @param chunkMetaClass    BlockBasedChunkMeta subclass class object
 	 * @param emptyChunkCreator Lambda supplying new empty instances of your
 	 *                          BlockBasedChunkMeta class
 	 * @return API access object for block based chunk metadata
@@ -70,7 +69,7 @@ public class ChunkMetaAPI {
 	 */
 	public static void saveAll() {
 		// copy keys so we can iterate safely
-		List<String> keys = new LinkedList<>(existingViews.keySet());
+		List<String> keys = new ArrayList<>(existingViews.keySet());
 		for (String key : keys) {
 			ChunkMetaView<?> view = existingViews.get(key);
 			if (view != null) {

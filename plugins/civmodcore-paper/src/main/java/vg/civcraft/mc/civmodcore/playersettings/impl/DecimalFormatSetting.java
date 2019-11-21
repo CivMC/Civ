@@ -8,9 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.playersettings.StringInputSetting;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
-public class DecimalFormatSetting extends StringInputSetting<DecimalFormat> {
+public class DecimalFormatSetting extends PlayerSetting<DecimalFormat> {
 
 	private double exampleValue;
 
@@ -21,7 +21,7 @@ public class DecimalFormatSetting extends StringInputSetting<DecimalFormat> {
 	}
 
 	@Override
-	protected DecimalFormat deserialize(String serial) {
+	public DecimalFormat deserialize(String serial) {
 		return new DecimalFormat(serial);
 	}
 
@@ -36,12 +36,12 @@ public class DecimalFormatSetting extends StringInputSetting<DecimalFormat> {
 	}
 
 	@Override
-	protected String serialize(DecimalFormat value) {
+	public String serialize(DecimalFormat value) {
 		return value.toPattern();
 	}
 
 	@Override
-	protected String toText(DecimalFormat value) {
+	public String toText(DecimalFormat value) {
 		return value.toPattern();
 	}
 

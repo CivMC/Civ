@@ -1,25 +1,26 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Supplier;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-
 public class GlobalChunkMetaManager {
 
-	private Map<UUID, Integer> uuidToInternalID;
+	private Map<UUID, Short> uuidToInternalID;
+	private Map<Short, UUID> internalIDToUuid;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
 	private ChunkDAO chunkDao;
 
 	public GlobalChunkMetaManager(ChunkDAO chunkDao) {
 		this.uuidToInternalID = new TreeMap<>();
 		this.worldToManager = new TreeMap<>();
+		this.internalIDToUuid = new TreeMap<>();
 		this.chunkDao = chunkDao;
 		for (World world : Bukkit.getWorlds()) {
 			registerWorld(world);
@@ -115,12 +116,13 @@ public class GlobalChunkMetaManager {
 		if (uuidToInternalID.containsKey(world.getUID())) {
 			return true;
 		}
-		int id = chunkDao.getOrCreateWorldID(world);
+		short id = chunkDao.getOrCreateWorldID(world);
 		if (id == -1) {
 			// very bad
 			return false;
 		}
 		uuidToInternalID.put(world.getUID(), id);
+		internalIDToUuid.put(id, world.getUID());
 		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
 		worldToManager.put(world.getUID(), manager);
 		return true;
@@ -140,6 +142,19 @@ public class GlobalChunkMetaManager {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * Gets the world object mapped to an internal id
+	 * @param id ID to get world for
+	 * @return World if a matching one for the given id exists and the world is loaded currently
+	 */
+	public World getWorldByInternalID(short id) {
+		UUID uuid = internalIDToUuid.get(id);
+		if (uuid == null) {
+			return null;
+		}
+		return Bukkit.getWorld(uuid);
 	}
 
 	void unloadChunkData(Chunk chunk) {
