@@ -9,6 +9,8 @@
 3. The second, third and fourth lines can be destination names.
 4. When a player passes over the detector rail, it will only activate and emit redstone if a player set their destination as any of the three on the sign.
 
+You may also use `[!destination]`, which will activate the rail if a player's destination is **not** on the signs.
+
 ### Usage
 
 1. Type `/dest <destination>`
