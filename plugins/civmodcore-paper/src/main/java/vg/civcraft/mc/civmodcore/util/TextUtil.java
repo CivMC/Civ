@@ -108,33 +108,84 @@ public class TextUtil {
 	}
 
 	public static String parseColorAmp(String string) {
-		string = string.replaceAll("(§([a-z0-9]))", "\u00A7$2");
-		string = string.replaceAll("(&([a-z0-9]))", "\u00A7$2");
+		string = string.replaceAll("(§([a-zA-Z0-9]))", "\u00A7$2");
+		string = string.replaceAll("(&([a-zA-Z0-9]))", "\u00A7$2");
 		string = string.replace("&&", "&");
 		return string;
 	}
 
 	public static String parseColorAcc(String string) {
-		return string.replace("`e", "").replace("`r", ChatColor.RED.toString())
-				.replace("`R", ChatColor.DARK_RED.toString()).replace("`y", ChatColor.YELLOW.toString())
-				.replace("`Y", ChatColor.GOLD.toString()).replace("`g", ChatColor.GREEN.toString())
-				.replace("`G", ChatColor.DARK_GREEN.toString()).replace("`a", ChatColor.AQUA.toString())
-				.replace("`A", ChatColor.DARK_AQUA.toString()).replace("`b", ChatColor.BLUE.toString())
-				.replace("`B", ChatColor.DARK_BLUE.toString()).replace("`p", ChatColor.LIGHT_PURPLE.toString())
-				.replace("`P", ChatColor.DARK_PURPLE.toString()).replace("`k", ChatColor.BLACK.toString())
-				.replace("`s", ChatColor.GRAY.toString()).replace("`S", ChatColor.DARK_GRAY.toString())
-				.replace("`w", ChatColor.WHITE.toString());
+		return string.
+				replace("`0", ChatColor.BLACK.toString()).
+				replace("`1", ChatColor.DARK_BLUE.toString()).
+				replace("`2", ChatColor.DARK_GREEN.toString()).
+				replace("`3", ChatColor.DARK_AQUA.toString()).
+				replace("`4", ChatColor.DARK_RED.toString()).
+				replace("`5", ChatColor.DARK_PURPLE.toString()).
+				replace("`6", ChatColor.GOLD.toString()).
+				replace("`7", ChatColor.GRAY.toString()).
+				replace("`8", ChatColor.DARK_GRAY.toString()).
+				replace("`9", ChatColor.BLUE.toString()).
+				replace("`A", ChatColor.GREEN.toString()).
+				replace("`a", ChatColor.GREEN.toString()).
+				replace("`B", ChatColor.AQUA.toString()).
+				replace("`b", ChatColor.AQUA.toString()).
+				replace("`C", ChatColor.RED.toString()).
+				replace("`c", ChatColor.RED.toString()).
+				replace("`D", ChatColor.LIGHT_PURPLE.toString()).
+				replace("`d", ChatColor.LIGHT_PURPLE.toString()).
+				replace("`E", ChatColor.YELLOW.toString()).
+				replace("`e", ChatColor.YELLOW.toString()).
+				replace("`F", ChatColor.WHITE.toString()).
+				replace("`f", ChatColor.WHITE.toString()).
+				replace("`L", ChatColor.BOLD.toString()).
+				replace("`l", ChatColor.BOLD.toString()).
+				replace("`M", ChatColor.STRIKETHROUGH.toString()).
+				replace("`m", ChatColor.STRIKETHROUGH.toString()).
+				replace("`N", ChatColor.UNDERLINE.toString()).
+				replace("`n", ChatColor.UNDERLINE.toString()).
+				replace("`O", ChatColor.ITALIC.toString()).
+				replace("`o", ChatColor.ITALIC.toString()).
+				replace("`R", ChatColor.RESET.toString()).
+				replace("`r", ChatColor.RESET.toString());
 	}
 
 	public static String parseColorTags(String string) {
-		return string.replace("<empty>", "").replace("<black>", "\u00A70").replace("<navy>", "\u00A71")
-				.replace("<green>", "\u00A72").replace("<teal>", "\u00A73").replace("<red>", "\u00A74")
-				.replace("<purple>", "\u00A75").replace("<gold>", "\u00A76").replace("<silver>", "\u00A77")
-				.replace("<gray>", "\u00A78").replace("<blue>", "\u00A79").replace("<lime>", "\u00A7a")
-				.replace("<aqua>", "\u00A7b").replace("<rose>", "\u00A7c").replace("<pink>", "\u00A7d")
-				.replace("<yellow>", "\u00A7e").replace("<white>", "\u00A7f")
-				.replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString()).replace("<bold>", ChatColor.BOLD.toString())
-				.replace("<it>", ChatColor.ITALIC.toString()).replace("<reset>", ChatColor.RESET.toString());
+		return string.
+				replace("<black>", ChatColor.BLACK.toString()).
+				replace("<dblue>", ChatColor.DARK_BLUE.toString()).
+				replace("<dgreen>", ChatColor.DARK_GREEN.toString()).
+				replace("<daqua>", ChatColor.DARK_AQUA.toString()).
+				replace("<dred>", ChatColor.DARK_RED.toString()).
+				replace("<dpurple>", ChatColor.DARK_PURPLE.toString()).
+				replace("<gold>", ChatColor.GOLD.toString()).
+				replace("<lgray>", ChatColor.GRAY.toString()).
+				replace("<dgray>", ChatColor.DARK_GRAY.toString()).
+				replace("<blue>", ChatColor.BLUE.toString()).
+				replace("<green>", ChatColor.GREEN.toString()).
+				replace("<aqua>", ChatColor.AQUA.toString()).
+				replace("<red>", ChatColor.RED.toString()).
+				replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString()).
+				replace("<yellow>", ChatColor.YELLOW.toString()).
+				replace("<white>", ChatColor.WHITE.toString()).
+				replace("<b>", ChatColor.BOLD.toString()).
+				replace("<s>", ChatColor.STRIKETHROUGH.toString()).
+				replace("<u>", ChatColor.UNDERLINE.toString()).
+				replace("<i>", ChatColor.ITALIC.toString()).
+				replace("<r>", ChatColor.RESET.toString()).
+				// Legacy support
+				replace("<empty>", "").
+				replace("<navy>", ChatColor.DARK_BLUE.toString()).
+				replace("<teal>", ChatColor.DARK_AQUA.toString()).
+				replace("<silver>", ChatColor.GRAY.toString()).
+				replace("<gray>", ChatColor.DARK_GRAY.toString()). // REEE why name this gray?
+				replace("<lime>", ChatColor.GREEN.toString()).
+				replace("<lime>", ChatColor.GREEN.toString()).
+				replace("<rose>", ChatColor.RED.toString()).
+				replace("<pink>", ChatColor.LIGHT_PURPLE.toString()).
+				replace("<bold>", ChatColor.BOLD.toString()).
+				replace("<it>", ChatColor.ITALIC.toString()).
+				replace("<reset>", ChatColor.RESET.toString());
 	}
 
 	// -------------------------------------------- //
