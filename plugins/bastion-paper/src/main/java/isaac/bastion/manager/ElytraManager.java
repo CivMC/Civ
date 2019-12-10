@@ -35,8 +35,8 @@ public class ElytraManager {
 	
 	public ElytraManager() {
 		storage = Bastion.getBastionStorage();
-		throttle = new ConcurrentHashMap<UUID, Long>();
-		lastMoves = new ConcurrentHashMap<UUID, Long>();
+		throttle = new ConcurrentHashMap<>();
+		lastMoves = new ConcurrentHashMap<>();
 	}
 	
 	public void clearThrottle(UUID player) {
@@ -105,7 +105,7 @@ public class ElytraManager {
 		}
 		
 		// only allocate if we're going to use it.
-		Set<BastionBlock> impact = new TreeSet<BastionBlock>();
+		Set<BastionBlock> impact = new TreeSet<>();
 		BastionType noImpact = null;
 		boolean breakElytra = false;
 		boolean damageElytra = false;
@@ -199,7 +199,7 @@ public class ElytraManager {
 	}
 	
 	private Set<BastionBlock> simpleCollide(Set<BastionBlock> possible, Vector velocity, Location start, Location end, Player player) {
-		Set<BastionBlock> couldCollide = new TreeSet<BastionBlock>();
+		Set<BastionBlock> couldCollide = new TreeSet<>();
 		for (BastionBlock bastion : possible) {
 			Location loc = bastion.getLocation().clone();
 			loc.setY(0);

@@ -11,10 +11,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import isaac.bastion.Permissions;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,12 +20,15 @@ import org.bukkit.entity.Player;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
+import isaac.bastion.Permissions;
 import isaac.bastion.event.BastionDamageEvent;
 import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -39,7 +38,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class BastionBlockManager {
 	private static Random rng = new Random();
 	
-	private HashMap<UUID, HashMap<String, Long>> cooldowns = new HashMap<UUID, HashMap<String, Long>>();
+	private HashMap<UUID, HashMap<String, Long>> cooldowns = new HashMap<>();
 	private BastionBlockStorage storage;
 
 	public BastionBlockManager() {
@@ -60,12 +59,12 @@ public class BastionBlockManager {
 	 * Common handler for erosion.
 	 */
 	private void erodeFromAction(Player player, Set<BastionBlock> blocking, Cause cause) {
-		HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<BastionType, Set<BastionBlock>>();
+		HashMap<BastionType, Set<BastionBlock>> typeMap = new HashMap<>();
 		for(BastionBlock block : blocking) {
 			if(cause == Cause.PEARL && !block.getType().isBlockPearls()) continue;
 			Set<BastionBlock> set = typeMap.get(block.getType());
 			if(set == null) {
-				set = new HashSet<BastionBlock>();
+				set = new HashSet<>();
 				typeMap.put(block.getType(), set); 
 			}
 			set.add(block);
@@ -83,7 +82,7 @@ public class BastionBlockManager {
 					bastion.erode(damage);
 				}
 			} else if (type.getBlocksToErode() > 0) { // erode some
-				List<BastionBlock> ordered = new LinkedList<BastionBlock>(bastions);
+				List<BastionBlock> ordered = new LinkedList<>(bastions);
 				for(int i = 0; i < ordered.size() && i < type.getBlocksToErode(); i++) {
 					int erode = rng.nextInt(ordered.size());
 					BastionBlock bastion = ordered.get(erode);
@@ -128,24 +127,23 @@ public class BastionBlockManager {
 	public Set<BastionBlock> shouldStopBlock(Block origin, Set<Block> result, UUID player) {
 		if (player != null) {
 			Player playerB = Bukkit.getPlayer(player);
-			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<BastionBlock>();
+			if (playerB != null && playerB.hasPermission("Bastion.bypass")) return new CopyOnWriteArraySet<>();
 		}
 
-		Set<BastionBlock> toReturn = new HashSet<BastionBlock>();
-		Set<UUID> accessors = new HashSet<UUID>();
+		Set<BastionBlock> toReturn = new HashSet<>();
+		Set<UUID> accessors = new HashSet<>();
 		if (player != null) {
 			accessors.add(player);
 		}
 
 		if (origin != null) {
-			Reinforcement reinforcement = Citadel.getReinforcementManager().
-					getReinforcement(origin);
-			if (reinforcement instanceof PlayerReinforcement) {
-				accessors.add(((PlayerReinforcement)reinforcement).getGroup().getOwner());
-			}
-
-			for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {
-				accessors.add(bastion.getOwner());
+			Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(origin);
+			if (reinforcement != null) {
+				accessors.add(reinforcement.getGroup().getOwner());
+	
+				for (BastionBlock bastion: this.getBlockingBastions(origin.getLocation())) {
+					accessors.add(bastion.getOwner());
+				}
 			}
 		}
 
@@ -170,7 +168,7 @@ public class BastionBlockManager {
 
 		if (preblocking.size() == 0) return preblocking; // don't allocate if nothing to do.
 
-		Set<BastionBlock> blocking = new HashSet<BastionBlock>();
+		Set<BastionBlock> blocking = new HashSet<>();
 
 		for (BastionBlock bastion : preblocking) {
 			if (!bastion.getType().isOnlyDirectDestruction()) {
@@ -187,7 +185,7 @@ public class BastionBlockManager {
 		Set<? extends QTBox> possible = storage.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
-		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+		List<BastionBlock> possibleRandom = new LinkedList<>((Set<BastionBlock>)possible);
 		Collections.shuffle(possibleRandom);
 
 		for (BastionBlock bastion : possibleRandom) {
@@ -202,7 +200,7 @@ public class BastionBlockManager {
 		Set<? extends QTBox> possible = storage.forLocation(loc);
 
 		@SuppressWarnings("unchecked")
-		List<BastionBlock> possibleRandom = new LinkedList<BastionBlock>((Set<BastionBlock>)possible);
+		List<BastionBlock> possibleRandom = new LinkedList<>((Set<BastionBlock>)possible);
 		Collections.shuffle(possibleRandom);
 
 		for (BastionBlock bastion : possibleRandom) {
@@ -223,7 +221,7 @@ public class BastionBlockManager {
 		}
 
 		if (bastions == null) {
-			return new CopyOnWriteArraySet<BastionBlock>();
+			return new CopyOnWriteArraySet<>();
 		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
@@ -247,7 +245,7 @@ public class BastionBlockManager {
 		}
 
 		if (bastions == null) {
-			return new CopyOnWriteArraySet<BastionBlock>();
+			return new CopyOnWriteArraySet<>();
 		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
@@ -271,7 +269,7 @@ public class BastionBlockManager {
 		}
 
 		if (bastions == null) {
-			return new CopyOnWriteArraySet<BastionBlock>();
+			return new CopyOnWriteArraySet<>();
 		}
 		
 		Iterator<BastionBlock> i = bastions.iterator();
@@ -368,12 +366,12 @@ public class BastionBlockManager {
 		return sb.toString();
 	}
 
-	public Boolean changeBastionGroup(Player player, PlayerReinforcement reinforcement, Location location) {
+	public Boolean changeBastionGroup(Player player, Reinforcement reinforcement, Location location) {
 		BastionBlock bastion = storage.getBastionBlock(location);
 
 		if(bastion == null) return null;
 		
-		PlayerReinforcement oldReinf = bastion.getReinforcement();
+		Reinforcement oldReinf = bastion.getReinforcement();
 
 		if (NameAPI.getGroupManager().hasAccess(reinforcement.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE)) &&
 				NameAPI.getGroupManager().hasAccess(oldReinf.getGroup(), player.getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE))) {

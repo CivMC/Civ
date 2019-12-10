@@ -4,8 +4,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.logging.Level;
 
-import isaac.bastion.manager.BastionBlockManager;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -19,7 +17,6 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -28,8 +25,9 @@ import org.bukkit.util.Vector;
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
+import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.storage.BastionBlockStorage;
-import vg.civcraft.mc.citadel.Utility;
+import net.md_5.bungee.api.chat.TextComponent;
 
 public class BastionBreakListener implements Listener {
 
@@ -59,7 +57,7 @@ public class BastionBreakListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		// we will only reach this is allowed by Citadel -- e.g. is not cancelled.
-		Block block = Utility.getRealBlock(event.getBlock());
+		Block block = event.getBlock();
 		BastionType type = storage.getTypeAtLocation(block.getLocation());
 		if (type == null) {
 			type = storage.getAndRemovePendingBastion(block.getLocation());
@@ -85,9 +83,9 @@ public class BastionBreakListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		Iterator<Block> iterator = event.blockList().iterator();
-		HashSet<Block> blocks = new HashSet<Block>();
+		HashSet<Block> blocks = new HashSet<>();
 		while(iterator.hasNext()) {
-			Block block = Utility.getRealBlock(iterator.next());
+			Block block = iterator.next();
 			BastionType type = storage.getTypeAtLocation(block.getLocation());
 			if (type == null) {
 				type = storage.getAndRemovePendingBastion(block.getLocation());
@@ -107,9 +105,9 @@ public class BastionBreakListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockExplode(BlockExplodeEvent event) {
 		Iterator<Block> iterator = event.blockList().iterator();
-		HashSet<Block> blocks = new HashSet<Block>();
+		HashSet<Block> blocks = new HashSet<>();
 		while(iterator.hasNext()) {
-			Block block = Utility.getRealBlock(iterator.next());
+			Block block = iterator.next();
 			BastionType type = storage.getTypeAtLocation(block.getLocation());
 			if (type == null) {
 				type = storage.getAndRemovePendingBastion(block.getLocation());
@@ -123,26 +121,6 @@ public class BastionBreakListener implements Listener {
 				dropBastionItem(block.getLocation(), type, null, null);
 				iterator.remove(); // don't explode it, we've got it covered now.
 			}
-		}
-	}
-	
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onEntityDoorBreak(EntityBreakDoorEvent event) {
-		// we will only reach this if citadel allows
-		Block block = Utility.getRealBlock(event.getBlock());
-		BastionType type = storage.getTypeAtLocation(block.getLocation());
-		if (type == null) {
-			type = storage.getAndRemovePendingBastion(block.getLocation());
-		}
-		if(type != null) {
-			BastionBlock bastion = storage.getBastionBlock(block.getLocation());
-			if (bastion != null) {
-				bastion.destroy();
-			}
-			event.setCancelled(true);
-			block.setType(Material.AIR);
-			event.getBlock().setType(Material.AIR);
-			dropBastionItem(block.getLocation(), type, null, null);
 		}
 	}
 
@@ -190,7 +168,7 @@ public class BastionBreakListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBurn(BlockBurnEvent event) {
-		Block block = Utility.getRealBlock(event.getBlock());
+		Block block = event.getBlock();
 		BastionType type = storage.getTypeAtLocation(block.getLocation());
 		if (type == null) {
 			type = storage.getAndRemovePendingBastion(block.getLocation());

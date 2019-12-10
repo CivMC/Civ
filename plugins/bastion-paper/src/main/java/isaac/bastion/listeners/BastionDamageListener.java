@@ -1,17 +1,17 @@
 package isaac.bastion.listeners;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import isaac.bastion.Permissions;
-import isaac.bastion.manager.BastionGroupManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -28,11 +28,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.Dispenser;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
+import isaac.bastion.Permissions;
 import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.manager.EnderPearlManager;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -47,13 +48,13 @@ public final class BastionDamageListener implements Listener {
 		pearlManager = new EnderPearlManager();
 	}
 	
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
+		Set<Block> blocks = new CopyOnWriteArraySet<>();
 		blocks.add(event.getBlock());
 		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
 		
-		if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
+		if ((!blocking.isEmpty()) && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);
 			
 			event.setCancelled(true);
@@ -63,45 +64,30 @@ public final class BastionDamageListener implements Listener {
 
 	@EventHandler (ignoreCancelled = true)
 	public void onWaterFlow(BlockFromToEvent  event){
-		Set<Block> blocks = new CopyOnWriteArraySet<Block>();
-		blocks.add(event.getToBlock());
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getBlock(),blocks, null);
-		
-		if(blocking.size() != 0){
+		Set<Block> blocks = new HashSet<>();
+		blocks.add(event.getToBlock());		
+		if(stopBlockEvent(null, event.getBlock(), blocks)){
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler (ignoreCancelled = true)
 	public void onTreeGrow(StructureGrowEvent event){
-		HashSet<Block> blocks = new HashSet<Block>();
+		HashSet<Block> blocks = new HashSet<>();
 		for(BlockState state: event.getBlocks()) {
 			blocks.add(state.getBlock());
 		}
-		
-		Player player = event.getPlayer();
-		UUID playerName = null;
-		if (player != null) {
-			playerName = player.getUniqueId();
-		}
-		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getLocation().getBlock(), blocks, playerName);
-		
-		if (blocking.size() != 0) {
+		if (stopBlockEvent(event.getPlayer(), event.getLocation().getBlock(), blocks)) {
 			event.setCancelled(true);
 		}
 	}
 
 	@EventHandler (ignoreCancelled = true)
 	public void onPistonExtend(BlockPistonExtendEvent  event){
-		Block piston = event.getBlock();
-		Set<Block> involved = new HashSet<Block>();
+		Set<Block> involved = new HashSet<>();
 		event.getBlocks().forEach( b -> {involved.add(b); involved.add(b.getRelative(event.getDirection())); } );
-		involved.add(piston.getRelative(event.getDirection()));
-		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(piston, involved, null);
-		
-		if (blocking.size() != 0) {
+		involved.add(event.getBlock().getRelative(event.getDirection()));
+		if (stopBlockEvent(null, event.getBlock(), involved)) {
 			event.setCancelled(true);
 		}
 	}
@@ -109,51 +95,45 @@ public final class BastionDamageListener implements Listener {
 	/* Symmetry */
 	@EventHandler (ignoreCancelled = true)
 	public void onPistonRetract(BlockPistonRetractEvent  event){
-		Block piston = event.getBlock();
-		Set<Block> involved = new HashSet<Block>();
+		Set<Block> involved = new HashSet<>();
 		event.getBlocks().forEach( b -> {involved.add(b); involved.add(b.getRelative(event.getDirection())); } );
-		involved.add(piston.getRelative(event.getDirection()));
-		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(piston, involved, null);
-		
-		if (blocking.size() != 0) {
+		involved.add(event.getBlock().getRelative(event.getDirection()));
+		if (stopBlockEvent(null, event.getBlock(), involved)) {
 			event.setCancelled(true);
 		}
 	}
 	
 	@EventHandler (ignoreCancelled = true)
 	public void onBucketEmpty(PlayerBucketEmptyEvent  event){
-		Set<Block> blocks = new HashSet<Block>();
-		blocks.add(event.getBlockClicked().getRelative(event.getBlockFace()));
-		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, event.getPlayer().getUniqueId());
-		
-		if (blocking.size() != 0) {
+		if (stopBlockEvent(event.getPlayer(), event.getBlockClicked().getRelative(event.getBlockFace()))) {
 			event.setCancelled(true);
 		}
+	}
+	
+	private boolean stopBlockEvent(Player player, Block block) {
+		Set<Block> blocks = new HashSet<>();
+		blocks.add(block);
+		return stopBlockEvent(player, block, blocks);
+	}
+	
+	private boolean stopBlockEvent(Player player, Block source, Collection<Block> block) {
+		Set<Block> blocks = new HashSet<>();
+		blocks.addAll(block);
+		UUID uuid = player != null ? player.getUniqueId() : null;
+		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(source, blocks, uuid);
+		return !blocking.isEmpty();
 	}
 	
 	@EventHandler (ignoreCancelled = true)
 	public void onDispense(BlockDispenseEvent  event){
 		if (!(event.getItem().getType() == Material.WATER_BUCKET || event.getItem().getType() == Material.LAVA_BUCKET || event.getItem().getType() == Material.FLINT_AND_STEEL)) return;
 		
-		Set<Block> blocks = new HashSet<Block>();
-		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getState().getData()).getFacing()));
-		
-		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(event.getBlock(), blocks, null);
-
-		if(blocking.size() != 0) {
+		Set<Block> blocks = new HashSet<>();
+		blocks.add(event.getBlock().getRelative( ((Dispenser) event.getBlock().getBlockData()).getFacing()));
+		if(stopBlockEvent(null, event.getBlock(), blocks)) {
 			event.setCancelled(true);
 		}
 	}
-	
-	/*@EventHandler (ignoreCancelled = true)
-	public void onBlockBreak(BlockBreakEvent event) {
-		BastionBlock bastion = Bastion.getBastionStorage().getBastionBlock(event.getBlock().getLocation());
-		if (bastion != null) {
-			bastion.destroy();
-		}
-	}*/
 	
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
 	public void handleEnderPearlLanded(PlayerTeleportEvent event){

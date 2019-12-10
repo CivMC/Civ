@@ -4,11 +4,12 @@
 
 package isaac.bastion.commands;
 
-import isaac.bastion.Bastion;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import isaac.bastion.Bastion;
 
 public class GroupCommandManager implements CommandExecutor {
 	public enum CommandType { Add, Delete, List }

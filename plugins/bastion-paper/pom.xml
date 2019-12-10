@@ -6,7 +6,7 @@
   <groupId>isaac</groupId>
   <artifactId>Bastion</artifactId>
   <packaging>jar</packaging>
-  <version>2.2.4</version>
+  <version>2.3.0</version>
   <name>Bastion</name>
   <url>https://github.com/DevotedMC/Bastion</url>
   
@@ -39,31 +39,25 @@
      <dependency>
      	<groupId>org.spigotmc</groupId>
         <artifactId>spigot</artifactId>
-        <version>1.12-R0.1-SNAPSHOT</version>
+        <version>1.14.4-R0.1-SNAPSHOT</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>vg.civcraft.mc.namelayer</groupId>
         <artifactId>NameLayer</artifactId>
-        <version>2.11.0</version>
+        <version>2.13.0</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>vg.civcraft.mc.citadel</groupId>
         <artifactId>Citadel</artifactId>
-        <version>3.9.0</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-    	<groupId>com.untamedears</groupId>
-        <artifactId>Humbug</artifactId>
-        <version>1.11.0</version>
+        <version>4.0.1</version>
         <scope>provided</scope>
     </dependency>
     <dependency>
     	<groupId>vg.civcraft.mc.civmodcore</groupId>
     	<artifactId>CivModCore</artifactId>
-    	<version>1.6.0</version>
+    	<version>1.7.5</version>
     	<scope>provided</scope>
     </dependency>
   </dependencies>

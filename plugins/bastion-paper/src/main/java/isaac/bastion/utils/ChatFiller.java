@@ -5,11 +5,11 @@
 
 package isaac.bastion.utils;
 
-import org.bukkit.ChatColor;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.ChatColor;
 
 public class ChatFiller {
 	/**

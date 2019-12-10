@@ -28,15 +28,15 @@ public class CitadelListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
-		Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getBlock().getLocation(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		Set<BastionBlock> blocking = new CopyOnWriteArraySet<BastionBlock>();
+		Set<BastionBlock> preblocking = blockManager.getBlockingBastions(event.getReinforcement().getLocation(), event.getPlayer(), PermissionType.getPermission(Permissions.BASTION_PLACE));
+		Set<BastionBlock> blocking = new CopyOnWriteArraySet<>();
 		for(BastionBlock bastion : preblocking) {
 			BastionType type = bastion.getType();
 			if(type.isBlockReinforcements()) {
 				blocking.add(bastion);
 			}
 		}
-		if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
+		if ((!blocking.isEmpty()) && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 			event.setCancelled(true);
 			event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);

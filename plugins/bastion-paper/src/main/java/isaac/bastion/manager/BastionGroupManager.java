@@ -4,24 +4,25 @@
 
 package isaac.bastion.manager;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionGroup;
 import isaac.bastion.Permissions;
 import isaac.bastion.storage.BastionGroupStorage;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.PlayerState;
-import vg.civcraft.mc.citadel.ReinforcementMode;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.*;
 
 public class BastionGroupManager {
 	private static class FoundGroups {
@@ -66,7 +67,7 @@ public class BastionGroupManager {
 
 		List<BastionGroup> bastionGroups = this.storage.getBastionGroups(group);
 
-		if(bastionGroups.size() == 0) {
+		if(bastionGroups.isEmpty()) {
 			player.sendMessage(ChatColor.YELLOW + "There are no groups in bastion group [" + groupName + "]");
 			return;
 		}
@@ -101,35 +102,20 @@ public class BastionGroupManager {
 	}
 
 	public boolean canPlaceBlock(Player player, Set<BastionBlock> bastionBlocks) {
-		PlayerState state = PlayerState.get(player);
-		ReinforcementMode placementMode = state.getMode();
-		Group allowedGroup = state.getGroup();
-
-		if(placementMode != ReinforcementMode.REINFORCEMENT && placementMode != ReinforcementMode.REINFORCEMENT_FORTIFICATION
-				|| allowedGroup == null
-				|| !allowedGroup.isValid()
-				)
-		{
-			return false;
-		}
-
 		for(BastionBlock bastionBlock : bastionBlocks) {
-			Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(bastionBlock.getLocation());
-			PlayerReinforcement playerRein = rein != null && (rein instanceof PlayerReinforcement) ? (PlayerReinforcement)rein : null;
-
-			if(playerRein != null && !this.storage.isAllowedGroup(playerRein.getGroup(), allowedGroup)) return false;
+			Reinforcement rein = bastionBlock.getReinforcement();
+			if(rein != null && !this.storage.isAllowedGroup(rein.getGroup(), rein.getGroup())) {
+				return false;
+			}
 		}
 
 		return true;
 	}
 
 	public Group findFirstAllowedGroup(Player player, BastionBlock bastionBlock) {
-		Reinforcement rein = Citadel.getReinforcementManager().getReinforcement(bastionBlock.getLocation());
-		PlayerReinforcement playerRein = rein != null && (rein instanceof PlayerReinforcement) ? (PlayerReinforcement)rein : null;
+		Reinforcement rein = bastionBlock.getReinforcement();
 
-		if(playerRein == null) return null;
-
-		List<BastionGroup> bastionGroups = this.storage.getBastionGroups(playerRein.getGroup());
+		List<BastionGroup> bastionGroups = this.storage.getBastionGroups(rein.getGroup());
 
 		for(BastionGroup bastionGroup : bastionGroups) {
 			for(int allowedGroupId : bastionGroup.getAllowedGroupIds()) {

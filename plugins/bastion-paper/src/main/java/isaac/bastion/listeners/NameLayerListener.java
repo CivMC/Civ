@@ -4,14 +4,15 @@
 
 package isaac.bastion.listeners;
 
-import isaac.bastion.storage.BastionBlockStorage;
+import java.util.List;
+
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
+import isaac.bastion.storage.BastionBlockStorage;
 import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
-
-import java.util.List;
 
 public class NameLayerListener implements Listener {
 	private BastionBlockStorage storage;

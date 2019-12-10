@@ -19,29 +19,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import com.untamedears.humbug.CustomNMSEntityEnderPearl;
-
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
-import isaac.bastion.BastionType;
 import isaac.bastion.storage.BastionBlockStorage;
 
-@SuppressWarnings("deprecation")
 public class EnderPearlManager {
 	public static final int MAX_TELEPORT = 800;
 	private BastionBlockStorage storage;
-	private boolean humbugLoaded = true;
 	
 	private FlightTask task;
 	
 	public EnderPearlManager() {
 		storage = Bastion.getBastionStorage();
 		task = new FlightTask();
-		try {
-			Class.forName("com.untamedears.humbug.CustomNMSEntityEnderPearl");
-		} catch (ClassNotFoundException e) {
-			humbugLoaded = false;
-		}
 	}
 
 	public void handlePearlLaunched(EnderPearl pearl) {
@@ -50,9 +40,6 @@ public class EnderPearlManager {
 
 	private void getBlocking(EnderPearl pearl) {
 		double gravity = 0.03F;
-		if(humbugLoaded && pearl instanceof CustomNMSEntityEnderPearl) {
-			gravity = ((CustomNMSEntityEnderPearl)pearl).getYAdjust();
-		}
 
 		Vector speed = pearl.getVelocity();
 		Vector twoDSpeed = speed.clone();
@@ -225,7 +212,7 @@ public class EnderPearlManager {
 		double ba = squareLoc.getX() - startLoc.getX();
 		double bb = squareLoc.getZ() - startLoc.getZ();
 		
-		List<Location> results=new ArrayList<Location>();
+		List<Location> results=new ArrayList<>();
 		Location so = null;
 		double s = 0.0d;
 		if (xl != 0){
@@ -461,7 +448,7 @@ public class EnderPearlManager {
 				
 				if (blocking.getType().damageFirstBastion() && !Bastion.getBastionManager().onCooldown(player.getUniqueId(), blocking.getType())) {
 					blocking.erode(blocking.getErosionFromPearl());
-					pearl.getWorld().spigot().playEffect(pearl.getLocation(), Effect.EXPLOSION, 0, 0, 1, 1, 1, 1, 50, 32);
+					pearl.getWorld().playEffect(pearl.getLocation(), Effect.ENDEREYE_LAUNCH, 1);
 				}
 				
 				if (blocking.getType().isBlockMidair()) {

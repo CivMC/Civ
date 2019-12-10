@@ -1,26 +1,30 @@
 package isaac.bastion;
 
 import java.util.LinkedList;
+import java.util.logging.Level;
 
-import isaac.bastion.commands.BastionListCommand;
-import isaac.bastion.commands.GroupCommandManager;
-import isaac.bastion.listeners.*;
-import isaac.bastion.manager.BastionGroupManager;
-import isaac.bastion.storage.BastionGroupStorage;
-import isaac.bastion.storage.Database;
 import org.bukkit.configuration.ConfigurationSection;
 
 import isaac.bastion.commands.BastionCommandManager;
+import isaac.bastion.commands.BastionListCommand;
+import isaac.bastion.commands.GroupCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
+import isaac.bastion.listeners.BastionBreakListener;
+import isaac.bastion.listeners.BastionDamageListener;
+import isaac.bastion.listeners.BastionInteractListener;
+import isaac.bastion.listeners.CitadelListener;
+import isaac.bastion.listeners.ElytraListener;
+import isaac.bastion.listeners.NameLayerListener;
 import isaac.bastion.manager.BastionBlockManager;
+import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.storage.BastionBlockStorage;
+import isaac.bastion.storage.BastionGroupStorage;
+import isaac.bastion.storage.Database;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
-
-import java.util.logging.Level;
 
 public final class Bastion extends ACivMod {
 	private static Bastion plugin;
@@ -30,6 +34,7 @@ public final class Bastion extends ACivMod {
 	private static BastionGroupManager groupManager;
 	private static CommonSettings commonSettings;
 
+	@Override
 	public void onEnable() 	{
 		super.onEnable();
 		plugin = this;
@@ -40,7 +45,7 @@ public final class Bastion extends ACivMod {
 		setupDatabase();
 		registerNameLayerPermissions();
 		blockManager = new BastionBlockManager();
-		groupManager = new BastionGroupManager(this.groupStorage);
+		groupManager = new BastionGroupManager(Bastion.groupStorage);
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
@@ -50,6 +55,7 @@ public final class Bastion extends ACivMod {
 		setupCommands();
 	}
 	
+	@Override
 	public void onDisable() {
 		blockStorage.close();
 		groupStorage.close();
@@ -139,18 +145,18 @@ public final class Bastion extends ACivMod {
 	public static CommonSettings getCommonSettings() { return commonSettings; }
 
 	private void registerNameLayerPermissions() {
-		LinkedList <PlayerType> memberAndAbove = new LinkedList<PlayerType>();
+		LinkedList <PlayerType> memberAndAbove = new LinkedList<>();
 		memberAndAbove.add(PlayerType.MEMBERS);
 		memberAndAbove.add(PlayerType.MODS);
 		memberAndAbove.add(PlayerType.ADMINS);
 		memberAndAbove.add(PlayerType.OWNER);
 
-		LinkedList <PlayerType> modAndAbove = new LinkedList<PlayerType>();
+		LinkedList <PlayerType> modAndAbove = new LinkedList<>();
 		modAndAbove.add(PlayerType.MODS);
 		modAndAbove.add(PlayerType.ADMINS);
 		modAndAbove.add(PlayerType.OWNER);
 
-		LinkedList <PlayerType> adminAndAbove = new LinkedList<PlayerType>();
+		LinkedList <PlayerType> adminAndAbove = new LinkedList<>();
 		adminAndAbove.add(PlayerType.ADMINS);
 		adminAndAbove.add(PlayerType.OWNER);
 

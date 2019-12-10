@@ -2,23 +2,32 @@ package isaac.bastion.storage;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import org.bukkit.*;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import isaac.bastion.Bastion;
 import isaac.bastion.BastionBlock;
 import isaac.bastion.BastionType;
 import isaac.bastion.event.BastionCreateEvent;
 import isaac.bastion.manager.EnderPearlManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
@@ -37,24 +46,25 @@ public class BastionBlockStorage {
 	
 	private HashMap<Location, BastionType> pendingBastions;
 	
-	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed, fraction) values (?,?,?,?,?,?,?);";
-	private static final String updateBastion = "update bastion_blocks set placed=?,fraction=? where bastion_id=?;";
+	private static final String addBastion = "insert into bastion_blocks (bastion_type, loc_x, loc_y, loc_z, loc_world, placed) values (?,?,?,?,?,?);";
+	private static final String updateBastion = "update bastion_blocks set placed=? where bastion_id=?;";
 	private static final String deleteBastion = "delete from bastion_blocks where bastion_id=?;";
 	private static final String setDead = "update bastion_blocks set dead=1 where bastion_id=?;";
 	private static final String deleteDead = "delete from bastion_blocks where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
 	private static final String moveDead = "update bastion_blocks set loc_world=?, loc_x=?, loc_y=?, loc_z=? where loc_world=? and loc_x=? and loc_y=? and loc_z=?;";
 	
 	public BastionBlockStorage(ManagedDatasource db, Logger log) {
-		blocks = new HashMap<World, SparseQuadTree>();
-		changed = new TreeSet<BastionBlock>();
-		bastions = new TreeSet<BastionBlock>();
+		blocks = new HashMap<>();
+		changed = new TreeSet<>();
+		bastions = new TreeSet<>();
 		groups = new HashMap<>();
-		dead = new HashMap<Location, String>();
-		pendingBastions = new HashMap<Location, BastionType>();
+		dead = new HashMap<>();
+		pendingBastions = new HashMap<>();
 		this.db = db;
 		this.log = log;
 		long saveDelay = 86400000 / Bastion.getPlugin().getConfig().getLong("mysql.savesPerDay", 64);
 		taskId = new BukkitRunnable(){
+			@Override
 			public void run(){
 				update();
 			}
@@ -77,7 +87,7 @@ public class BastionBlockStorage {
 	 */
 	public boolean createBastion(Location loc, BastionType type, Player owner) {
 		long placed = System.currentTimeMillis();
-		BastionBlock bastion = new BastionBlock(loc, placed, 0, -1, type);
+		BastionBlock bastion = new BastionBlock(loc, placed, -1, type);
 		BastionCreateEvent event = new BastionCreateEvent(bastion, owner);
 		Bukkit.getPluginManager().callEvent(event);
 		if(event.isCancelled()) return false;
@@ -89,7 +99,6 @@ public class BastionBlockStorage {
 			ps.setInt(4, loc.getBlockZ());
 			ps.setString(5, loc.getWorld().getName());
 			ps.setLong(6, placed);
-			ps.setDouble(7, 0);
 			ps.executeUpdate();
 			int id = -1;
 			try (ResultSet nid = ps.getGeneratedKeys();) {
@@ -188,8 +197,7 @@ public class BastionBlockStorage {
 		try (Connection conn = db.getConnection();
 				PreparedStatement ps = conn.prepareStatement(updateBastion)) {
 			ps.setLong(1, bastion.getPlaced());
-			ps.setDouble(2, bastion.getBalance());
-			ps.setInt(3, bastion.getId());
+			ps.setInt(2, bastion.getId());
 			ps.executeUpdate();
 		} catch (SQLException e) {
 			log.log(Level.WARNING, "Failed to update bastion at " + bastion.getLocation().toString(), e);
@@ -225,7 +233,7 @@ public class BastionBlockStorage {
 		double maxDistanceSquared = maxDistance * maxDistance;
 		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 		
-		Set<BastionBlock> result = new TreeSet<BastionBlock>();
+		Set<BastionBlock> result = new TreeSet<>();
 		
 		for(QTBox box : boxes) {
 			if(box instanceof BastionBlock) {
@@ -252,7 +260,7 @@ public class BastionBlockStorage {
 	 */
 	public Set<BastionBlock> getPossibleFlightBlocking(double maxDistance, Location...locs) {
 		Set<QTBox> boxes = null;
-		Set<BastionBlock> result = new TreeSet<BastionBlock>();		
+		Set<BastionBlock> result = new TreeSet<>();		
 		double maxDistanceSquared = maxDistance * maxDistance;
 		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
 		
@@ -329,13 +337,12 @@ public class BastionBlockStorage {
 					int z = result.getInt("loc_z");
 					int id = result.getInt("bastion_id");
 					long placed = result.getLong("placed");
-					double balance = result.getDouble("fraction");
 					BastionType type = BastionType.getBastionType(result.getString("bastion_type"));
 					boolean died = result.getBoolean("dead");
 					Location loc = new Location(world, x, y, z);
-					BastionBlock block = new BastionBlock(loc, placed, balance, id, type);
+					BastionBlock block = new BastionBlock(loc, placed, id, type);
 					//Check if it's a ghost bastion, if so remove from the db
-					if(loc.getBlock().getType() != type.getMaterial().getItemType() ) { // can't set data why check with it
+					if(loc.getBlock().getType() != type.getMaterial()) { // can't set data why check with it
 						deleteBastion(block);
 						continue;
 					}
@@ -374,7 +381,7 @@ public class BastionBlockStorage {
 			}
 		}
 
-		PlayerReinforcement rein = bastion.getReinforcement();
+		Reinforcement rein = bastion.getReinforcement();
 
 		if(rein != null) {
 			bastion.setListGroupId(rein.getGroupId());

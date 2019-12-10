@@ -2,7 +2,6 @@ package isaac.bastion;
 
 import java.util.LinkedHashMap;
 import java.util.List;
-
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -10,17 +9,15 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class BastionType {
 	
-	private static LinkedHashMap<String, BastionType> types = new LinkedHashMap<String, BastionType>();
+	private static LinkedHashMap<String, BastionType> types = new LinkedHashMap<>();
 	private static String defaultType;
 	private static int maxRadius = 0;
 
 	private String name;
-	private MaterialData material;
 	private String itemName;
 	private List<String> lore;
 	private String shortName;
@@ -52,11 +49,12 @@ public class BastionType {
 	private int regenTime;
 	private boolean allowPearlingOut;
 	private boolean blockReinforcements;
+	private Material material;
 	
 	public BastionType(
 			String name,
-			MaterialData material,
 			String itemName,
+			Material material,
 			List<String> lore,
 			String shortName,
 			boolean square,
@@ -122,13 +120,6 @@ public class BastionType {
 		this.blockReinforcements = blockReinforcements;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
-	}
-
-	/**
-	 * @return The material for this bastion type
-	 */
-	public MaterialData getMaterial() {
-		return material;
 	}
 
 	/**
@@ -367,6 +358,10 @@ public class BastionType {
 		return regenTime;
 	}
 	
+	public Material getMaterial() {
+		return material;
+	}
+	
 	/**
 	 * Gets the name of the bastion type
 	 * This is used to reduce space in maps elsewhere
@@ -383,10 +378,12 @@ public class BastionType {
 		return blockReinforcements;
 	}
 
+	@Override
 	public int hashCode() {
 		return name.hashCode();
 	}
 	
+	@Override
 	public boolean equals(Object obj) {
 		if(!(obj instanceof BastionType)) return false;
 		BastionType other = (BastionType) obj;
@@ -398,10 +395,10 @@ public class BastionType {
 	 * @return The bastion item
 	 */
 	public ItemStack getItemRepresentation() {
-		ItemStack is = material.toItemStack(1);
+		ItemStack is = new ItemStack(material);
 		if ((lore == null || lore.size() == 0) && itemName == null) return is;
 
-		ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(material.getItemType());
+		ItemMeta im = is.hasItemMeta() ? is.getItemMeta() : Bukkit.getItemFactory().getItemMeta(material);
 		if (im == null) {
 			Bastion.getPlugin().getLogger().log(Level.WARNING, "Invalid Bastion configuration, unable to represent as an item for {0}", name);
 			return is;
@@ -433,6 +430,7 @@ public class BastionType {
 		for(BastionType type : types.values()) {
 			if(type.erosionTime > 0) {
 				new BukkitRunnable() {
+					@Override
 					public void run() {
 						Bastion.getPlugin().getLogger().log(Level.INFO, "Erosion task begin, found " + 
 								Bastion.getBastionStorage().getBastionsForType(type).size() + " to erode");
@@ -446,6 +444,7 @@ public class BastionType {
 			}
 			if(type.regenTime > 0) {
 				new BukkitRunnable() {
+					@Override
 					public void run() {
 						Bastion.getPlugin().getLogger().log(Level.INFO, "Regen task begin, found " + 
 								Bastion.getBastionStorage().getBastionsForType(type).size() + " to regen");
@@ -465,7 +464,7 @@ public class BastionType {
 		return types.get(name);
 	}
 	
-	public static BastionType getBastionType(MaterialData mat, String itemName, List<String> lore) {
+	public static BastionType getBastionType(Material mat, String itemName, List<String> lore) {
 		if (lore != null && lore.size() == 0) lore = null;
 		for (BastionType type : types.values()) {
 			//StringBuilder sb = new StringBuilder();
@@ -497,13 +496,12 @@ public class BastionType {
 		return defaultType;
 	}
 	
-	@SuppressWarnings("deprecation")
 	public static BastionType getBastionType(ConfigurationSection config) {
 		String name = config.getName();
-		Material mat = Material.getMaterial(config.getString("block.material"));
-		if(!mat.isBlock()) return null;
-		byte data = config.contains("block.durability") ? (byte)config.getInt("block.durability") : 0;
-		MaterialData material = new MaterialData(mat, data);
+		Material material = Material.getMaterial(config.getString("block.material"));
+		if(!material.isBlock())  {
+			return null;
+		}
 		String itemName = config.getString("block.name");
 		List<String> lore = config.getStringList("block.lore");
 		String shortName = config.getString("shortName");
@@ -544,7 +542,7 @@ public class BastionType {
 		}
 		boolean explodeOnBlock = config.getBoolean("elytra.explodeOnBlock");
 		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
-		return new BastionType(name, material, itemName, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
+		return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
 				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements);

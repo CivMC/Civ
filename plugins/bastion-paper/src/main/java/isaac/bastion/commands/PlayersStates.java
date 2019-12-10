@@ -1,31 +1,24 @@
 package isaac.bastion.commands;
 
-import isaac.bastion.Bastion;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.citadel.CitadelConfigManager;
+import isaac.bastion.Bastion;
 
 public class PlayersStates {
 	static public enum Mode {
 		NORMAL,INFO,DELETE,OFF,BASTION,MATURE
 	}
-	static private Map<UUID,Mode> playersModes = new HashMap<UUID,Mode>();
-	static private Map<UUID,Integer> playersCallback = new HashMap<UUID,Integer>();
+	static private Map<UUID,Mode> playersModes = new HashMap<>();
+	static private Map<UUID,Integer> playersCallback = new HashMap<>();
 
 	static public boolean playerInMode(Player player, Mode mode){
 		Mode result = playersModes.get(player.getUniqueId());
 		return result == mode;
-	}
-
-	static public void touchPlayer(Player player){
-		registerReturnToNormal(player, playersModes.get(player.getUniqueId()));
 	}
 
 	static private class CallBack implements Runnable{
@@ -46,7 +39,7 @@ public class PlayersStates {
 		}
 	}
 
-	static public void setModeForPlayer(Player player, Mode mode){
+	public static void setModeForPlayer(Player player, Mode mode){
 		if (mode==null) {
 			mode = Mode.NORMAL;
 		}
@@ -61,31 +54,13 @@ public class PlayersStates {
 		player.sendMessage(ChatColor.GREEN + "Bastion " + mode.name() + " mode on");
 
 		playersModes.put(pid, mode);
-		registerReturnToNormal(player,mode);
 	}
 	
-	static public void toggleModeForPlayer(Player player, Mode mode) {
+	public static void toggleModeForPlayer(Player player, Mode mode) {
 		Mode old = playersModes.get(player.getUniqueId());
 		if (old == mode) {
 			mode = Mode.NORMAL;
 		}
 		setModeForPlayer(player, mode);
-	}
-
-	static private void registerReturnToNormal(Player player, Mode fromMode){
-		Integer previousId = playersCallback.get(player.getUniqueId());
-
-		if (previousId != null) {
-			Bukkit.getScheduler().cancelTask(previousId);
-		}
-		if (fromMode != Mode.NORMAL) {
-			Integer id=Bukkit.getScheduler().runTaskLater(
-					Bastion.getPlugin(),
-					new CallBack(player.getUniqueId(), Mode.NORMAL),
-					20L * CitadelConfigManager.getPlayerStateReset()).getTaskId();
-
-			playersCallback.put(player.getUniqueId(), id);
-		}
-
 	}
 }

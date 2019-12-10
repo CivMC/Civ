@@ -4,7 +4,7 @@ main: isaac.bastion.Bastion
 author: spaceFountain
 authors: [Rourke750, ProgrammerDan, Maxopoly, TealNerd, Aleksey-Terzi]
 depend: [CivModCore, Citadel, NameLayer]
-softdepend: [Humbug]
+softdepend:
 commands:
    Bastion:
       description: Base command for Bastion
@@ -68,3 +68,4 @@ permissions:
     Bastion.dev:
         description: Special debug commands and different responses to existing commands
         default: op
+api-version: 1.14
