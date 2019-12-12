@@ -10,6 +10,8 @@ import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.database.SQLiteConnectionPool;
 import sh.okx.railswitch.listener.DetectorRailActivateListener;
 
+import java.util.Arrays;
+
 public class RailSwitch extends JavaPlugin {
   private boolean timings;
   private RailSwitchDatabase database;
@@ -60,8 +62,14 @@ public class RailSwitch extends JavaPlugin {
    * make sure the message doesn't have any weirdness
    */
   public boolean isValidDestination(String message) {
-    return message.length() <= 40
-        && CharMatcher.inRange('0', '9')
+    // Each destination must be fewer than 40 characters.
+    for (String dest : message.split(" ")) {
+      if (dest.length() <= 40) {
+          return false;
+      }
+    }
+
+    return CharMatcher.inRange('0', '9')
         .or(CharMatcher.inRange('a', 'z'))
         .or(CharMatcher.inRange('A', 'Z'))
         .or(CharMatcher.anyOf("!\"#$%&'()*+,-./;:<=>?@[]\\^_`{|}~ ")).matchesAllOf(message);
