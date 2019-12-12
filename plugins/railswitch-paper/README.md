@@ -17,6 +17,10 @@ You may also use `[!destination]`, which will activate the rail if a player's de
 2. Go AFK
 3. Arrive
 
+You can also use spaces in a `/dest` command as an "or" operator, like `/dest <destination1> <destination2>`. In this command, RailSwitch will route players towards signs that contain either `<destination1>` or `<destination2>`. 
+
+Another way to think about it is that `/dest` takes multiple arguments. Each argument is a destination that will be checked as you pass a sign.
+
 ### Example Video
 
 [![RailSwitch Demo Video](https://img.youtube.com/vi/GKku2fcB-wY/0.jpg)](https://www.youtube.com/watch?v=GKku2fcB-wY)

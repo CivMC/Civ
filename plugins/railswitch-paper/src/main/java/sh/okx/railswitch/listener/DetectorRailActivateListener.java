@@ -78,6 +78,15 @@ public class DetectorRailActivateListener implements Listener {
       if ("*".equals(line) || destination.equalsIgnoreCase(line)) {
         return true;
       }
+
+      // Use spaces as an "or" operator, allowing for more advanced routing.
+      // We preserve the check above for backwards compatibility.
+      String[] destinations = destination.split(" ");
+      for (String dest : destinations) {
+        if (dest.equalsIgnoreCase(line)) {
+          return true;
+        }
+      }
     }
     return false;
   }
