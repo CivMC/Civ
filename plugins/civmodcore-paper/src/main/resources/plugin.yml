@@ -1,6 +1,6 @@
 name: ${project.name}
 version: ${project.version}
-authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull]
+authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd]
 main: ${project.groupId}.${project.name}Plugin
 api-version: 1.13
 dev-url: null
