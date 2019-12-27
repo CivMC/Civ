@@ -1,15 +1,14 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
+import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
-
-import org.bukkit.World;
-
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class ChunkCoord implements Comparable<ChunkCoord> {
 
@@ -76,8 +75,7 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
 
 	/**
 	 * Writes all data held by this instance to the datavase
-	 * 
-	 * @param dao DAO to write to
+	 *
 	 * @pa boolean isFullyLoaded() { return isFullyLoaded; }ram worldID ID of the
 	 *     world this instance is in
 	 */
@@ -179,8 +177,8 @@ public class ChunkCoord implements Comparable<ChunkCoord> {
 				}
 				addChunkMeta(chunk);
 			}
-			this.notifyAll();
 			isFullyLoaded = true;
+			this.notifyAll();
 		}
 	}
 

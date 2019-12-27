@@ -7,6 +7,6 @@ import java.util.UUID;
  */
 public interface SettingChangeListener<T> {
 	
-	public void handle(UUID player, PlayerSetting<T> setting, T oldValue, T newValue);
+	void handle(UUID player, PlayerSetting<T> setting, T oldValue, T newValue);
 
 }

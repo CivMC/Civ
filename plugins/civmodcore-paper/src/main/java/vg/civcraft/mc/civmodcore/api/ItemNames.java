@@ -51,7 +51,7 @@ public final class ItemNames {
 				while (line != null) {
 					String [] values = line.split(",");
 					// If there's not at least three values (slug, data, name) then skip
-					if (values.length < 3) {
+					if (values.length < 2) {
 						logger.warning("This material row does not have enough data: " + line);
 						// Go to the next line
 						line = reader.readLine();
@@ -66,7 +66,7 @@ public final class ItemNames {
 						continue;
 					}
 					// If the name is empty, skip
-					String name = values[2];
+					String name = values[1];
 					if (name.isEmpty()) {
 						logger.warning("This material has not been given a name: " + line);
 						// Go to the next line

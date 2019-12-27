@@ -1,6 +1,12 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Material;
+import org.bukkit.Tag;
+
+import com.google.common.math.IntMath;
 
 /**
  * Class of static APIs for Materials. Some material functions are located on classes more suited for them, such as
@@ -8,6 +14,61 @@ import org.bukkit.Material;
  * {@link org.bukkit.Tag Tag} class that fulfills a similar function.
  * */
 public final class MaterialAPI {
+	
+	
+	private static final List<Material> hashMaterials = new ArrayList<>();
+	
+	static {
+		hashMaterials.addAll(Tag.WOOL.getValues());
+		hashMaterials.add(Material.BLACK_STAINED_GLASS);
+		hashMaterials.add(Material.WHITE_STAINED_GLASS);
+		hashMaterials.add(Material.YELLOW_STAINED_GLASS);
+		hashMaterials.add(Material.RED_STAINED_GLASS);
+		hashMaterials.add(Material.LIME_STAINED_GLASS);
+		hashMaterials.add(Material.GRAY_STAINED_GLASS);
+		hashMaterials.add(Material.BLUE_STAINED_GLASS);
+		hashMaterials.add(Material.LIGHT_GRAY_STAINED_GLASS);
+		hashMaterials.add(Material.LIGHT_BLUE_STAINED_GLASS);
+		hashMaterials.add(Material.GREEN_STAINED_GLASS);
+		hashMaterials.add(Material.BROWN_STAINED_GLASS);
+		hashMaterials.add(Material.PINK_STAINED_GLASS);
+		hashMaterials.add(Material.PURPLE_STAINED_GLASS);
+		hashMaterials.add(Material.CYAN_STAINED_GLASS);
+		hashMaterials.add(Material.MAGENTA_STAINED_GLASS);
+		hashMaterials.add(Material.ORANGE_STAINED_GLASS);
+		hashMaterials.add(Material.BLACK_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.WHITE_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.YELLOW_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.RED_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.LIME_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.GRAY_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.BLUE_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.LIGHT_BLUE_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.GREEN_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.BROWN_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.PINK_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.PURPLE_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.CYAN_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.MAGENTA_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.ORANGE_STAINED_GLASS_PANE);
+		hashMaterials.add(Material.BLACK_CONCRETE);
+		hashMaterials.add(Material.WHITE_CONCRETE);
+		hashMaterials.add(Material.YELLOW_CONCRETE);
+		hashMaterials.add(Material.RED_CONCRETE);
+		hashMaterials.add(Material.LIME_CONCRETE);
+		hashMaterials.add(Material.GRAY_CONCRETE);
+		hashMaterials.add(Material.BLUE_CONCRETE);
+		hashMaterials.add(Material.LIGHT_GRAY_CONCRETE);
+		hashMaterials.add(Material.LIGHT_BLUE_CONCRETE);
+		hashMaterials.add(Material.GREEN_CONCRETE);
+		hashMaterials.add(Material.BROWN_CONCRETE);
+		hashMaterials.add(Material.PINK_CONCRETE);
+		hashMaterials.add(Material.PURPLE_CONCRETE);
+		hashMaterials.add(Material.CYAN_CONCRETE);
+		hashMaterials.add(Material.MAGENTA_CONCRETE);
+		hashMaterials.add(Material.ORANGE_CONCRETE);
+	}
 
 	private MaterialAPI() { } // Make the class effectively static
 
@@ -300,6 +361,20 @@ public final class MaterialAPI {
 			default:
 				return false;
 		}
+	}
+	
+	/**
+	 * Gets a random material based on the given objects hashcode
+	 * @param o Object to base returned material on
+	 * @return Material hash of the given object
+	 */
+	public static Material getMaterialHash(Object o) {
+		if (o == null) {
+			return hashMaterials.get(0);
+		}
+		int hash = o.hashCode();
+		int index = IntMath.mod(hash, hashMaterials.size());
+		return hashMaterials.get(index);
 	}
 
 }

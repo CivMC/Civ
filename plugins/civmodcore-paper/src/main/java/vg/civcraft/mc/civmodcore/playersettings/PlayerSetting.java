@@ -1,20 +1,21 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import com.google.common.base.Preconditions;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
  * Contains a value for every players for one setting
@@ -32,6 +33,8 @@ public abstract class PlayerSetting<T> {
 
 	public PlayerSetting(JavaPlugin owningPlugin, T defaultValue, String niceName, String identifier, ItemStack gui,
 			String description) {
+		Preconditions.checkNotNull(gui, "GUI ItemStack can not be null.");
+
 		values = new TreeMap<>();
 		this.defaultValue = defaultValue;
 		this.owningPlugin = owningPlugin;
@@ -44,7 +47,9 @@ public abstract class PlayerSetting<T> {
 	protected void applyInfoToItemStack(ItemStack item, UUID player) {
 		ItemAPI.setDisplayName(item, niceName);
 		ItemAPI.addLore(item, ChatColor.LIGHT_PURPLE + "Value: " + ChatColor.RESET + toText(getValue(player)));
-		ItemAPI.addLore(item, description);
+		if (description != null) {
+			ItemAPI.addLore(item, description);
+		}
 	}
 
 	/**
@@ -53,7 +58,7 @@ public abstract class PlayerSetting<T> {
 	 * @param serial
 	 * @return
 	 */
-	protected abstract T deserialize(String serial);
+	public abstract T deserialize(String serial);
 
 	Map<String, String> dumpAllSerialized() {
 		Map<String, String> result = new HashMap<>();
@@ -78,7 +83,13 @@ public abstract class PlayerSetting<T> {
 	 * @return ItemStack to show for this setting
 	 */
 	public ItemStack getGuiRepresentation(UUID player) {
-		ItemStack copy = visualization.clone();
+		ItemStack copy;
+		if (visualization == null) {
+			copy = new ItemStack(MaterialAPI.getMaterialHash(getValue(player)));
+		}
+		else {
+			copy = visualization.clone();
+		}
 		applyInfoToItemStack(copy, player);
 		return copy;
 	}
@@ -127,15 +138,30 @@ public abstract class PlayerSetting<T> {
 	 * Called when this setting is clicked in a menu to adjust its value
 	 * 
 	 */
-	public abstract void handleMenuClick(Player player, MenuSection menu);
-
+	public void handleMenuClick(Player player, MenuSection menu) {
+		new MenuDialog(player, this, menu, "Invalid input");
+	}
+	
+	public void setValueFromString(UUID player, String inputValue) {
+		T value = deserialize(inputValue);
+		setValue(player, value);
+	}
+	
+	/**
+	 * Input validation to confirm player entered values are not malformed
+	 * 
+	 * @param input Input string to test
+	 * @return True if the input can be parsed as valid value, false otherwise
+	 */
+	public abstract boolean isValidValue(String input);
+	
 	void load(String player, String serial) {
 		UUID uuid = UUID.fromString(player);
 		T value = deserialize(serial);
 		setValue(uuid, value);
 	}
 
-	protected abstract String serialize(T value);
+	public abstract String serialize(T value);
 
 	/**
 	 * Sets the given value for the given player. Null values are only allowed if
@@ -181,7 +207,7 @@ public abstract class PlayerSetting<T> {
 	 */
 	public void registerListener(SettingChangeListener<T> listener) {
 		if (this.listeners == null) {
-			this.listeners = new LinkedList<>();
+			this.listeners = new ArrayList<>();
 		}
 		this.listeners.add(listener);
 	}
@@ -203,5 +229,5 @@ public abstract class PlayerSetting<T> {
 	 * @param value Value to get text for
 	 * @return GUI text
 	 */
-	protected abstract String toText(T value);
+	public abstract String toText(T value);
 }

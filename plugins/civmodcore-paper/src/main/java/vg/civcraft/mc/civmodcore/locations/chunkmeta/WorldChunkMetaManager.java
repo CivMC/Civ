@@ -1,19 +1,19 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
+import org.bukkit.World;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import org.bukkit.World;
 
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is
@@ -49,7 +49,7 @@ public class WorldChunkMetaManager {
 		this.worldID = worldID;
 		this.world = world;
 		this.metas = new HashMap<>();
-		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<ChunkCoord>((a, b) -> {
+		this.unloadingQueue = Collections.synchronizedSet(new TreeSet<>((a, b) -> {
 			return Math.toIntExact(a.getLastMCUnloadingTime() - b.getLastMCUnloadingTime());
 		}));
 		registerUnloadRunnable();
@@ -196,7 +196,7 @@ public class WorldChunkMetaManager {
 	}
 
 	private void startChunkLoadingConsumer() {
-		this.chunkLoadingQueue = new LinkedList<>();
+		this.chunkLoadingQueue = new LinkedBlockingQueue<>();
 		chunkLoadingConsumer = new Thread(() -> {
 			while (true) {
 				ChunkCoord coord;

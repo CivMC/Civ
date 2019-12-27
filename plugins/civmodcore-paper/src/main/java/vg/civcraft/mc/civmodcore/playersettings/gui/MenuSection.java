@@ -1,19 +1,18 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class MenuSection extends MenuItem {
 
@@ -54,7 +53,7 @@ public class MenuSection extends MenuItem {
 	}
 
 	public void showScreen(Player player) {
-		List<IClickable> clickables = new LinkedList<>();
+		List<IClickable> clickables = new ArrayList<>(content.size());
 		for (MenuItem item : content.values()) {
 			clickables.add(item.getMenuRepresentation(player));
 		}

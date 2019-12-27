@@ -1,14 +1,13 @@
 package vg.civcraft.mc.civmodcore.command;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Function;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Function;
 
 public abstract class StandaloneCommand {
 	
@@ -91,7 +90,7 @@ public abstract class StandaloneCommand {
 	}
 	
 	protected static <T> List<String> doTabComplete(String arg, Collection<T> suppliers, Function<T, String> function, boolean caseSensitive) {
-		List<String> result = new LinkedList<>();
+		List<String> result = new ArrayList<>();
 		if (!caseSensitive) {
 			arg = arg.toLowerCase();
 		}

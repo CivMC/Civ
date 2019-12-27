@@ -23,7 +23,7 @@ public class RateLimiter {
 	 * @param refillIntervall How often buckets are refilled in milli seconds
 	 */
 	RateLimiter(int initialCapacity, int maxTokens, int refillAmount, long refillIntervall) {
-		this.buckets = new TreeMap<UUID, TokenBucket>();
+		this.buckets = new TreeMap<>();
 		this.initialCapacity = initialCapacity;
 		this.maximumTokens = maxTokens;
 		this.refillIntervall = refillIntervall;

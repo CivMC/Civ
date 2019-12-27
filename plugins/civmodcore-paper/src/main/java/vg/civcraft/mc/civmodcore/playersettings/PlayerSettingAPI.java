@@ -1,19 +1,18 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * Allows creating settings, which will automatically be available in players
@@ -22,7 +21,7 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
  */
 public class PlayerSettingAPI {
 
-	private static final String fileName = "civ-player-settings.yml";
+	private static final String FILE_NAME = "civ-player-settings.yml";
 
 	private static Map<String, PlayerSetting<?>> settingsByIdentifier = new HashMap<>();
 	private static Map<String, List<PlayerSetting<?>>> settingsByPlugin = new HashMap<>();
@@ -51,12 +50,15 @@ public class PlayerSettingAPI {
 		if (!folder.isDirectory()) {
 			return;
 		}
-		File file = new File(folder, fileName);
+		File file = new File(folder, FILE_NAME);
 		if (!file.isFile()) {
 			return;
 		}
 		YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
 		ConfigurationSection section = config.getConfigurationSection(setting.getIdentifier());
+		if (section == null) {
+			return;
+		}
 		for (String key : section.getKeys(false)) {
 			setting.load(key, section.getString(key));
 		}
@@ -75,11 +77,7 @@ public class PlayerSettingAPI {
 	public static void registerSetting(PlayerSetting<?> setting, MenuSection menu) {
 		loadValues(setting);
 		settingsByIdentifier.put(setting.getIdentifier(), setting);
-		List<PlayerSetting<?>> specificList = settingsByPlugin.get(setting.getOwningPlugin().getName());
-		if (specificList == null) {
-			specificList = new LinkedList<>();
-			settingsByPlugin.put(setting.getOwningPlugin().getName(), specificList);
-		}
+		List<PlayerSetting<?>> specificList = settingsByPlugin.computeIfAbsent(setting.getOwningPlugin().getName(), k -> new ArrayList<>());
 		if (specificList.contains(setting)) {
 			throw new IllegalArgumentException("You can not register a setting twice");
 		}
@@ -99,7 +97,7 @@ public class PlayerSettingAPI {
 			if (!folder.isDirectory()) {
 				folder.mkdirs();
 			}
-			File file = new File(folder, fileName);
+			File file = new File(folder, FILE_NAME);
 			YamlConfiguration config;
 			if (file.isFile()) {
 				config = YamlConfiguration.loadConfiguration(file);

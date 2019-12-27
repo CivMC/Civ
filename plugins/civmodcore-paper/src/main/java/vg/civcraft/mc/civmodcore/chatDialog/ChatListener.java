@@ -12,7 +12,6 @@ public class ChatListener implements Listener {
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void tabComplete(TabCompleteEvent e) {
 		if (!(e.getSender() instanceof Player)) {
-			e.getSender().sendMessage("You are not human");
 			return;
 		}
 		Dialog dia = DialogManager.getDialog((Player) e.getSender());

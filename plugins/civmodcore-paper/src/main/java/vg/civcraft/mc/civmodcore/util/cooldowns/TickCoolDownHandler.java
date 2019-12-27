@@ -26,12 +26,8 @@ public class TickCoolDownHandler<E> implements ICoolDownHandler<E> {
 	public TickCoolDownHandler(JavaPlugin executingPlugin, long cooldown) {
 		this.cooldown = cooldown;
 		cds = new HashMap<>();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(executingPlugin, new Runnable() {
-
-			@Override
-			public void run() {
-				tickCounter++; // increment every tick
-			}
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(executingPlugin, () -> {
+			tickCounter++; // increment every tick
 		}, 1L, 1L);
 	}
 

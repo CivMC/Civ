@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.scoreboard.bottom;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 import java.util.Map.Entry;
@@ -45,15 +46,20 @@ public class BottomLine implements Comparable<BottomLine>{
 
 			@Override
 			public void run() {
-				for (Entry<UUID, String> entry : texts.entrySet()) {
+				Iterator<Entry<UUID, String>>  iter = texts.entrySet().iterator();
+				while (iter.hasNext()) {
+					Entry <UUID, String> entry = iter.next();
 					Player player = Bukkit.getPlayer(entry.getKey());
 					if (player != null) {
 						String newText = updateFunction.apply(player, entry.getValue());
+						if (newText == null) {
+							iter.remove();
+							continue;
+						}
 						if (!newText.equals(entry.getValue()) ) {
 							entry.setValue(newText);
 							BottomLineAPI.refreshIndividually(player.getUniqueId());
 						}
-						
 					}
 				}
 			}

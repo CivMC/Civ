@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.locations;
 
+import java.util.HashSet;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -14,17 +15,16 @@ import java.util.TreeSet;
 public class SparseQuadTree<T extends QTBox> {
 
 	public enum Quadrant {
-		ROOT, NW, SW, NE, SE
+		ROOT, NORTH_WEST, SOUTH_WEST, NORTH_EAST, SOUTH_EAST
 	}
 
-	public final int MAX_NODE_SIZE = 32;
+	public static final int MAX_NODE_SIZE = 32;
 
 	protected Integer borderSize = 0;
 
 	protected Quadrant quadrant;
 
 	protected Integer middleX;
-
 	protected Integer middleZ;
 
 	protected int size;
@@ -33,22 +33,17 @@ public class SparseQuadTree<T extends QTBox> {
 
 	protected Set<T> boxes;
 
-	protected SparseQuadTree<T> nw_;
-
-	protected SparseQuadTree<T> ne_;
-
-	protected SparseQuadTree<T> sw_;
-
-	protected SparseQuadTree<T> se_;
+	protected SparseQuadTree<T> northWest;
+	protected SparseQuadTree<T> northEast;
+	protected SparseQuadTree<T> southWest;
+	protected SparseQuadTree<T> southEast;
 
 	public SparseQuadTree() {
-		boxes = new TreeSet<>();
-		borderSize = 0;
-		quadrant = Quadrant.ROOT;
+		this(0);
 	}
 
 	public SparseQuadTree(Integer borderSize) {
-		boxes = new TreeSet<>();
+		boxes = new HashSet<>();
 		if (borderSize == null || borderSize < 0) {
 			throw new IllegalArgumentException("borderSize == null || borderSize < 0");
 		}
@@ -57,7 +52,7 @@ public class SparseQuadTree<T extends QTBox> {
 	}
 
 	protected SparseQuadTree(Integer borderSize, Quadrant quadrant) {
-		this.boxes = new TreeSet<>();
+		this.boxes = new HashSet<>();
 		this.borderSize = borderSize;
 		this.quadrant = quadrant;
 	}
@@ -77,18 +72,18 @@ public class SparseQuadTree<T extends QTBox> {
 		}
 		if (box.qtXMin() - borderSize <= middleX) {
 			if (box.qtZMin() - borderSize <= middleZ) {
-				nw_.add(box);
+				northWest.add(box);
 			}
 			if (box.qtZMax() + borderSize > middleZ) {
-				sw_.add(box);
+				southWest.add(box);
 			}
 		}
 		if (box.qtXMax() + borderSize > middleX) {
 			if (box.qtZMin() - borderSize <= middleZ) {
-				ne_.add(box);
+				northEast.add(box);
 			}
 			if (box.qtZMax() + borderSize > middleZ) {
-				se_.add(box);
+				southEast.add(box);
 			}
 		}
 	}
@@ -97,29 +92,29 @@ public class SparseQuadTree<T extends QTBox> {
 		return String.format("(%d,%d %d,%d)", box.qtXMin(), box.qtZMin(), box.qtXMax(), box.qtZMax());
 	}
 
-	public Set<T> find(int x, int y) {
-		return this.find(x, y, false);
+	public Set<T> find(int x, int z) {
+		return this.find(x, z, false);
 	}
 
-	public Set<T> find(int x, int y, boolean includeBorder) {
+	public Set<T> find(int x, int z, boolean includeBorder) {
 		int border = 0;
 		if (includeBorder) {
 			border = borderSize;
 		}
 		if (boxes != null) {
-			Set<T> result = new TreeSet<>();
+			Set<T> result = new HashSet<>();
 			// These two loops are the same except for the second doesn't include the
 			// border adjustment for a little added performance.
 			if (includeBorder) {
 				for (T box : boxes) {
-					if (box.qtXMin() - border <= x && box.qtXMax() + border >= x && box.qtZMin() - border <= y
-							&& box.qtZMax() + border >= y) {
+					if (box.qtXMin() - border <= x && box.qtXMax() + border >= x && box.qtZMin() - border <= z
+							&& box.qtZMax() + border >= z) {
 						result.add(box);
 					}
 				}
 			} else {
 				for (T box : boxes) {
-					if (box.qtXMin() <= x && box.qtXMax() >= x && box.qtZMin() <= y && box.qtZMax() >= y) {
+					if (box.qtXMin() <= x && box.qtXMax() >= x && box.qtZMin() <= z && box.qtZMax() >= z) {
 						result.add(box);
 					}
 				}
@@ -127,16 +122,16 @@ public class SparseQuadTree<T extends QTBox> {
 			return result;
 		}
 		if (x <= middleX) {
-			if (y <= middleZ) {
-				return nw_.find(x, y, includeBorder);
+			if (z <= middleZ) {
+				return northWest.find(x, z, includeBorder);
 			} else {
-				return sw_.find(x, y, includeBorder);
+				return southWest.find(x, z, includeBorder);
 			}
 		}
-		if (y <= middleZ) {
-			return ne_.find(x, y, includeBorder);
+		if (z <= middleZ) {
+			return northEast.find(x, z, includeBorder);
 		}
-		return se_.find(x, y, includeBorder);
+		return southEast.find(x, z, includeBorder);
 	}
 
 	public int getBorderSize() {
@@ -150,11 +145,11 @@ public class SparseQuadTree<T extends QTBox> {
 		}
 		--size;
 		if (size == 0) {
-			boxes = new TreeSet<>();
-			nw_ = null;
-			ne_ = null;
-			sw_ = null;
-			se_ = null;
+			boxes = new HashSet<>();
+			northWest = null;
+			northEast = null;
+			southWest = null;
+			southEast = null;
 			return;
 		}
 		if (boxes != null) {
@@ -163,18 +158,18 @@ public class SparseQuadTree<T extends QTBox> {
 		}
 		if (box.qtXMin() - borderSize <= middleX) {
 			if (box.qtZMin() - borderSize <= middleZ) {
-				nw_.remove(box);
+				northWest.remove(box);
 			}
 			if (box.qtZMax() + borderSize > middleZ) {
-				sw_.remove(box);
+				southWest.remove(box);
 			}
 		}
 		if (box.qtXMax() + borderSize > middleX) {
 			if (box.qtZMin() - borderSize <= middleZ) {
-				ne_.remove(box);
+				northEast.remove(box);
 			}
 			if (box.qtZMax() + borderSize > middleZ) {
-				se_.remove(box);
+				southEast.remove(box);
 			}
 		}
 	}
@@ -191,39 +186,39 @@ public class SparseQuadTree<T extends QTBox> {
 		if (boxes == null || boxes.size() <= maxNodeSize) {
 			return;
 		}
-		nw_ = new SparseQuadTree<>(borderSize, Quadrant.NW);
-		ne_ = new SparseQuadTree<>(borderSize, Quadrant.NE);
-		sw_ = new SparseQuadTree<>(borderSize, Quadrant.SW);
-		se_ = new SparseQuadTree<>(borderSize, Quadrant.SE);
+		northWest = new SparseQuadTree<>(borderSize, Quadrant.NORTH_WEST);
+		northEast = new SparseQuadTree<>(borderSize, Quadrant.NORTH_EAST);
+		southWest = new SparseQuadTree<>(borderSize, Quadrant.SOUTH_WEST);
+		southEast = new SparseQuadTree<>(borderSize, Quadrant.SOUTH_EAST);
 		SortedSet<Integer> xAxis = new TreeSet<>();
-		SortedSet<Integer> yAxis = new TreeSet<>();
+		SortedSet<Integer> zAxis = new TreeSet<>();
 		for (QTBox box : boxes) {
 			int x;
-			int y;
+			int z;
 			switch (quadrant) {
-			case NW:
+			case NORTH_WEST:
 				x = box.qtXMin();
-				y = box.qtZMin();
+				z = box.qtZMin();
 				break;
-			case NE:
+			case NORTH_EAST:
 				x = box.qtXMax();
-				y = box.qtZMin();
+				z = box.qtZMin();
 				break;
-			case SW:
+			case SOUTH_WEST:
 				x = box.qtXMin();
-				y = box.qtZMax();
+				z = box.qtZMax();
 				break;
-			case SE:
+			case SOUTH_EAST:
 				x = box.qtXMax();
-				y = box.qtZMax();
+				z = box.qtZMax();
 				break;
 			default:
 				x = box.qtXMid();
-				y = box.qtZMid();
+				z = box.qtZMid();
 				break;
 			}
 			xAxis.add(x);
-			yAxis.add(y);
+			zAxis.add(z);
 		}
 		int counter = 0;
 		int ender = (xAxis.size() / 2) - 1;
@@ -235,8 +230,8 @@ public class SparseQuadTree<T extends QTBox> {
 			++counter;
 		}
 		counter = 0;
-		ender = (yAxis.size() / 2) - 1;
-		for (Integer i : yAxis) {
+		ender = (zAxis.size() / 2) - 1;
+		for (Integer i : zAxis) {
 			if (counter >= ender) {
 				middleZ = i;
 				break;
@@ -246,50 +241,50 @@ public class SparseQuadTree<T extends QTBox> {
 		for (T box : boxes) {
 			if (box.qtXMin() - borderSize <= middleX) {
 				if (box.qtZMin() - borderSize <= middleZ) {
-					nw_.add(box, true);
+					northWest.add(box, true);
 				}
 				if (box.qtZMax() + borderSize > middleZ) {
-					sw_.add(box, true);
+					southWest.add(box, true);
 				}
 			}
 			if (box.qtXMax() + borderSize > middleX) {
 				if (box.qtZMin() - borderSize <= middleZ) {
-					ne_.add(box, true);
+					northEast.add(box, true);
 				}
 				if (box.qtZMax() + borderSize > middleZ) {
-					se_.add(box, true);
+					southEast.add(box, true);
 				}
 			}
 		}
-		if (nw_.size() == boxes.size() || sw_.size() == boxes.size() || ne_.size() == boxes.size()
-				|| se_.size() == boxes.size()) {
+		if (northWest.size() == boxes.size() || southWest.size() == boxes.size() || northEast.size() == boxes.size()
+				|| southEast.size() == boxes.size()) {
 			// Splitting failed as we split into an identically sized quadrent. Update
 			// this nodes max size for next time and throw away the work we did.
 			maxNodeSize = boxes.size() * 2;
 			return;
 		}
 		boolean sizeAdjusted = false;
-		if (nw_.size() >= maxNodeSize) {
-			maxNodeSize = nw_.size() * 2;
+		if (northWest.size() >= maxNodeSize) {
+			maxNodeSize = northWest.size() * 2;
 			sizeAdjusted = true;
 		}
-		if (sw_.size() >= maxNodeSize) {
-			maxNodeSize = sw_.size() * 2;
+		if (southWest.size() >= maxNodeSize) {
+			maxNodeSize = southWest.size() * 2;
 			sizeAdjusted = true;
 		}
-		if (ne_.size() >= maxNodeSize) {
-			maxNodeSize = ne_.size() * 2;
+		if (northEast.size() >= maxNodeSize) {
+			maxNodeSize = northEast.size() * 2;
 			sizeAdjusted = true;
 		}
-		if (se_.size() >= maxNodeSize) {
-			maxNodeSize = se_.size() * 2;
+		if (southEast.size() >= maxNodeSize) {
+			maxNodeSize = southEast.size() * 2;
 			sizeAdjusted = true;
 		}
 		if (sizeAdjusted) {
-			nw_.setMaxNodeSize(maxNodeSize);
-			sw_.setMaxNodeSize(maxNodeSize);
-			ne_.setMaxNodeSize(maxNodeSize);
-			se_.setMaxNodeSize(maxNodeSize);
+			northWest.setMaxNodeSize(maxNodeSize);
+			southWest.setMaxNodeSize(maxNodeSize);
+			northEast.setMaxNodeSize(maxNodeSize);
+			southEast.setMaxNodeSize(maxNodeSize);
 		}
 		boxes = null;
 	}
@@ -307,13 +302,13 @@ public class SparseQuadTree<T extends QTBox> {
 			return sb.toString();
 		}
 		sb.append(String.format("{{%d,%d}", middleX, middleZ));
-		sb.append(nw_.toString());
+		sb.append(northWest.toString());
 		sb.append(',');
-		sb.append(sw_.toString());
+		sb.append(southWest.toString());
 		sb.append(',');
-		sb.append(ne_.toString());
+		sb.append(northEast.toString());
 		sb.append(',');
-		sb.append(se_.toString());
+		sb.append(southEast.toString());
 		sb.append('}');
 		return sb.toString();
 	}

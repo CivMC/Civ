@@ -1,8 +1,8 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import java.util.Comparator;
-
 import org.bukkit.Location;
+
+import java.util.Comparator;
 
 public class BukkitComparators {
 	

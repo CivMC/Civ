@@ -3,9 +3,9 @@ package vg.civcraft.mc.civmodcore.playersettings.impl;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import vg.civcraft.mc.civmodcore.playersettings.StringInputSetting;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
-public class StringSetting extends StringInputSetting<String> {
+public class StringSetting extends PlayerSetting<String> {
 
 	public StringSetting(JavaPlugin plugin, String defaultValue, String name, String identifier, ItemStack gui,
 			String description) {
@@ -13,7 +13,7 @@ public class StringSetting extends StringInputSetting<String> {
 	}
 
 	@Override
-	protected String deserialize(String serial) {
+	public String deserialize(String serial) {
 		return serial;
 	}
 
@@ -23,12 +23,12 @@ public class StringSetting extends StringInputSetting<String> {
 	}
 
 	@Override
-	protected String serialize(String value) {
+	public String serialize(String value) {
 		return value;
 	}
 
 	@Override
-	protected String toText(String value) {
+	public String toText(String value) {
 		return value;
 	}
 

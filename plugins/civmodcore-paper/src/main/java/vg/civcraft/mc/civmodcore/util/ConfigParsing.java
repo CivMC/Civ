@@ -196,6 +196,10 @@ public class ConfigParsing {
 		im.addItemStack(toAdd);
 		return im;
 	}
+	
+	public static int parseTimeAsTicks(String arg) {
+		return (int) (parseTime(arg, TimeUnit.MILLISECONDS) / 50L);
+	}
 
 	public static long parseTime(String arg, TimeUnit unit) {
 		long millis = parseTime(arg);
@@ -207,8 +211,7 @@ public class ConfigParsing {
 	 * readable time values easily, instead of having to specify every amount in
 	 * ticks or seconds. The unit of a number specifed by the letter added after it,
 	 * for example 5h means 5 hours or 34s means 34 seconds. Possible modifiers are:
-	 * t (ticks), s (seconds), m (minutes), h (hours) and d (days). If no letter is
-	 * added the value will be parsed as ticks.
+	 * t (ticks), s (seconds), m (minutes), h (hours) and d (days)
 	 * <p>
 	 * Additionally you can combine those amounts in any way you want, for example
 	 * you can specify 3h5m43s as 3 hours, 5 minutes and 43 seconds. This doesn't

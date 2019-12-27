@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class TextUtil {
-	private static Map<String, String> tags = new HashMap<String, String>();
+	private static Map<String, String> tags = new HashMap<>();
 
 	static {
 		tags.put("g", TextUtil.parseColor("<lime>")); // good
@@ -30,6 +30,10 @@ public class TextUtil {
 
 	public static Map<String, String> getTags() {
 		return tags;
+	}
+	
+	public static String formatDuration(long time) {
+		return formatDuration(time, TimeUnit.MILLISECONDS);
 	}
 	
 	public static String formatDuration(long time, TimeUnit unit) {
@@ -212,7 +216,7 @@ public class TextUtil {
 	}
 
 	public static ArrayList<String> getPage(List<String> lines, int pageHumanBased, String title) {
-		ArrayList<String> ret = new ArrayList<String>();
+		ArrayList<String> ret = new ArrayList<>();
 		int pageZeroBased = pageHumanBased - 1;
 		int pageheight = 9;
 		int pagecount = (lines.size() / pageheight) + 1;

@@ -145,7 +145,7 @@ public class TagManager {
 	@Deprecated
 	public List<Short> getShortList(String key) {
 		NBTTagList tagList = this.tag.getList(key, 2);
-		List<Short> list = new ArrayList<Short>();
+		List<Short> list = new ArrayList<>();
 
 		for (int i = 0; i < tagList.size(); ++i) {
 			list.add(tagList.d(i));
