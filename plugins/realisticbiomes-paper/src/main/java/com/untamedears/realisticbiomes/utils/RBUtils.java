@@ -33,6 +33,9 @@ public class RBUtils {
 
 	public static Material getRemappedMaterial(Material mat) {
 		switch (mat) {
+		case BAMBOO:
+		case BAMBOO_SAPLING:
+			return Material.BAMBOO;
 		case CARROT:
 		case CARROTS:
 			return Material.CARROT;
