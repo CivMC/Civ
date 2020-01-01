@@ -5,12 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
@@ -72,6 +67,20 @@ public class PlantListener implements Listener {
 				.getPlantGrowthConfig(event.getLocation().getBlock());
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getLocation().getBlock());
+		}
+	}
+
+	/*
+	 * If Bamboo and Kelp stop answering to these events, this spigot bug might have been solved and should contain more
+	 * info on how to update accordingly:
+	 *   https://hub.spigotmc.org/jira/browse/SPIGOT-5312
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onBlockSpread(BlockSpreadEvent event) {
+		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
+				.getPlantGrowthConfig(event.getBlock());
+		if (growthConfig != null) {
+			growthConfig.handleAttemptedGrowth(event, event.getBlock());
 		}
 	}
 }
