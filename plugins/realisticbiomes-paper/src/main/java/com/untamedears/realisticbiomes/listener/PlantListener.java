@@ -78,9 +78,9 @@ public class PlantListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getBlock());
+				.getPlantGrowthConfig(event.getSource());
 		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getBlock());
+			growthConfig.handleAttemptedGrowth(event, event.getSource());
 		}
 	}
 }
