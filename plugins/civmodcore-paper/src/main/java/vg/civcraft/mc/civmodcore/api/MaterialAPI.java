@@ -14,12 +14,12 @@ import org.bukkit.Tag;
  *  - Material.ACACIA_WOOD
  *  - Material.STRIPPED_ACACIA_LOG
  *  - Material.STRIPPED_ACACIA_WOOD
-
+ *
  * Tag.ANVIL:-
  *  - Material.ANVIL
  *  - Material.CHIPPED_ANVIL
  *  - Material.DAMAGED_ANVIL
-
+ *
  * Tag.BAMBOO_PLANTABLE_ON:-
  *  - Material.BAMBOO
  *  - Material.BAMBOO_SAPLING
@@ -31,7 +31,7 @@ import org.bukkit.Tag;
  *  - Material.PODZOL
  *  - Material.RED_SAND
  *  - Material.SAND
-
+ *
  * Tag.BANNERS:-
  *  - Material.BLACK_BANNER
  *  - Material.BLACK_WALL_BANNER
@@ -65,7 +65,7 @@ import org.bukkit.Tag;
  *  - Material.WHITE_WALL_BANNER
  *  - Material.YELLOW_BANNER
  *  - Material.YELLOW_WALL_BANNER
-
+ *
  * Tag.BEDS:-
  *  - Material.BLACK_BED
  *  - Material.BLUE_BED
@@ -83,13 +83,13 @@ import org.bukkit.Tag;
  *  - Material.RED_BED
  *  - Material.WHITE_BED
  *  - Material.YELLOW_BED
-
+ *
  * Tag.BIRCH_LOGS:-
  *  - Material.BIRCH_LOG
  *  - Material.BIRCH_WOOD
  *  - Material.STRIPPED_BIRCH_LOG
  *  - Material.STRIPPED_BIRCH_WOOD
-
+ *
  * Tag.BUTTONS:-
  *  - Material.ACACIA_BUTTON
  *  - Material.BIRCH_BUTTON
@@ -98,7 +98,7 @@ import org.bukkit.Tag;
  *  - Material.OAK_BUTTON
  *  - Material.SPRUCE_BUTTON
  *  - Material.STONE_BUTTON
-
+ *
  * Tag.CARPETS:-
  *  - Material.BLACK_CARPET
  *  - Material.BLUE_CARPET
@@ -116,7 +116,7 @@ import org.bukkit.Tag;
  *  - Material.RED_CARPET
  *  - Material.WHITE_CARPET
  *  - Material.YELLOW_CARPET
-
+ *
  * Tag.CORALS:-
  *  - Material.BRAIN_CORAL
  *  - Material.BRAIN_CORAL_FAN
@@ -128,34 +128,34 @@ import org.bukkit.Tag;
  *  - Material.HORN_CORAL_FAN
  *  - Material.TUBE_CORAL
  *  - Material.TUBE_CORAL_FAN
-
+ *
  * Tag.CORAL_BLOCKS:-
  *  - Material.BRAIN_CORAL_BLOCK
  *  - Material.BUBBLE_CORAL_BLOCK
  *  - Material.FIRE_CORAL_BLOCK
  *  - Material.HORN_CORAL_BLOCK
  *  - Material.TUBE_CORAL_BLOCK
-
+ *
  * Tag.CORAL_PLANTS:-
  *  - Material.BRAIN_CORAL
  *  - Material.BUBBLE_CORAL
  *  - Material.FIRE_CORAL
  *  - Material.HORN_CORAL
  *  - Material.TUBE_CORAL
-
+ *
  * Tag.DARK_OAK_LOGS:-
  *  - Material.DARK_OAK_LOG
  *  - Material.DARK_OAK_WOOD
  *  - Material.STRIPPED_DARK_OAK_LOG
  *  - Material.STRIPPED_DARK_OAK_WOOD
-
+ *
  * Tag.DIRT_LIKE:-
  *  - Material.COARSE_DIRT
  *  - Material.DIRT
  *  - Material.GRASS_BLOCK
  *  - Material.MYCELIUM
  *  - Material.PODZOL
-
+ *
  * Tag.DOORS:-
  *  - Material.ACACIA_DOOR
  *  - Material.BIRCH_DOOR
@@ -164,7 +164,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_DOOR
  *  - Material.OAK_DOOR
  *  - Material.SPRUCE_DOOR
-
+ *
  * Tag.ENDERMAN_HOLDABLE:-
  *  - Material.ALLIUM
  *  - Material.AZURE_BLUET
@@ -196,7 +196,7 @@ import org.bukkit.Tag;
  *  - Material.TNT
  *  - Material.WHITE_TULIP
  *  - Material.WITHER_ROSE
-
+ *
  * Tag.FENCES:-
  *  - Material.ACACIA_FENCE
  *  - Material.BIRCH_FENCE
@@ -205,7 +205,7 @@ import org.bukkit.Tag;
  *  - Material.NETHER_BRICK_FENCE
  *  - Material.OAK_FENCE
  *  - Material.SPRUCE_FENCE
-
+ *
  * Tag.FLOWER_POTS:-
  *  - Material.FLOWER_POT
  *  - Material.POTTED_ACACIA_SAPLING
@@ -233,13 +233,13 @@ import org.bukkit.Tag;
  *  - Material.POTTED_SPRUCE_SAPLING
  *  - Material.POTTED_WHITE_TULIP
  *  - Material.POTTED_WITHER_ROSE
-
+ *
  * Tag.ICE:-
  *  - Material.BLUE_ICE
  *  - Material.FROSTED_ICE
  *  - Material.ICE
  *  - Material.PACKED_ICE
-
+ *
  * Tag.IMPERMEABLE:-
  *  - Material.BLACK_STAINED_GLASS
  *  - Material.BLUE_STAINED_GLASS
@@ -258,12 +258,12 @@ import org.bukkit.Tag;
  *  - Material.RED_STAINED_GLASS
  *  - Material.WHITE_STAINED_GLASS
  *  - Material.YELLOW_STAINED_GLASS
-
+ *
  * Tag.ITEMS_ARROWS:-
  *  - Material.ARROW
  *  - Material.SPECTRAL_ARROW
  *  - Material.TIPPED_ARROW
-
+ *
  * Tag.ITEMS_BANNERS:-
  *  - Material.BLACK_BANNER
  *  - Material.BLUE_BANNER
@@ -281,7 +281,7 @@ import org.bukkit.Tag;
  *  - Material.RED_BANNER
  *  - Material.WHITE_BANNER
  *  - Material.YELLOW_BANNER
-
+ *
  * Tag.ITEMS_BOATS:-
  *  - Material.ACACIA_BOAT
  *  - Material.BIRCH_BOAT
@@ -289,11 +289,11 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_BOAT
  *  - Material.OAK_BOAT
  *  - Material.SPRUCE_BOAT
-
+ *
  * Tag.ITEMS_COALS:-
  *  - Material.CHARCOAL
  *  - Material.COAL
-
+ *
  * Tag.ITEMS_FISHES:-
  *  - Material.COD
  *  - Material.COOKED_COD
@@ -301,7 +301,7 @@ import org.bukkit.Tag;
  *  - Material.PUFFERFISH
  *  - Material.SALMON
  *  - Material.TROPICAL_FISH
-
+ *
  * Tag.ITEMS_MUSIC_DISCS:-
  *  - Material.MUSIC_DISC_11
  *  - Material.MUSIC_DISC_13
@@ -315,13 +315,13 @@ import org.bukkit.Tag;
  *  - Material.MUSIC_DISC_STRAD
  *  - Material.MUSIC_DISC_WAIT
  *  - Material.MUSIC_DISC_WARD
-
+ *
  * Tag.JUNGLE_LOGS:-
  *  - Material.JUNGLE_LOG
  *  - Material.JUNGLE_WOOD
  *  - Material.STRIPPED_JUNGLE_LOG
  *  - Material.STRIPPED_JUNGLE_WOOD
-
+ *
  * Tag.LEAVES:-
  *  - Material.ACACIA_LEAVES
  *  - Material.BIRCH_LEAVES
@@ -329,7 +329,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_LEAVES
  *  - Material.OAK_LEAVES
  *  - Material.SPRUCE_LEAVES
-
+ *
  * Tag.LOGS:-
  *  - Material.ACACIA_LOG
  *  - Material.ACACIA_WOOD
@@ -355,13 +355,13 @@ import org.bukkit.Tag;
  *  - Material.STRIPPED_OAK_WOOD
  *  - Material.STRIPPED_SPRUCE_LOG
  *  - Material.STRIPPED_SPRUCE_WOOD
-
+ *
  * Tag.OAK_LOGS:-
  *  - Material.OAK_LOG
  *  - Material.OAK_WOOD
  *  - Material.STRIPPED_OAK_LOG
  *  - Material.STRIPPED_OAK_WOOD
-
+ *
  * Tag.PLANKS:-
  *  - Material.ACACIA_PLANKS
  *  - Material.BIRCH_PLANKS
@@ -369,17 +369,17 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_PLANKS
  *  - Material.OAK_PLANKS
  *  - Material.SPRUCE_PLANKS
-
+ *
  * Tag.RAILS:-
  *  - Material.ACTIVATOR_RAIL
  *  - Material.DETECTOR_RAIL
  *  - Material.POWERED_RAIL
  *  - Material.RAIL
-
+ *
  * Tag.SAND:-
  *  - Material.RED_SAND
  *  - Material.SAND
-
+ *
  * Tag.SAPLINGS:-
  *  - Material.ACACIA_SAPLING
  *  - Material.BIRCH_SAPLING
@@ -387,7 +387,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_SAPLING
  *  - Material.OAK_SAPLING
  *  - Material.SPRUCE_SAPLING
-
+ *
  * Tag.SIGNS:-
  *  - Material.ACACIA_SIGN
  *  - Material.ACACIA_WALL_SIGN
@@ -401,7 +401,7 @@ import org.bukkit.Tag;
  *  - Material.OAK_WALL_SIGN
  *  - Material.SPRUCE_SIGN
  *  - Material.SPRUCE_WALL_SIGN
-
+ *
  * Tag.SLABS:-
  *  - Material.ACACIA_SLAB
  *  - Material.ANDESITE_SLAB
@@ -438,7 +438,7 @@ import org.bukkit.Tag;
  *  - Material.SPRUCE_SLAB
  *  - Material.STONE_BRICK_SLAB
  *  - Material.STONE_SLAB
-
+ *
  * Tag.SMALL_FLOWERS:-
  *  - Material.ALLIUM
  *  - Material.AZURE_BLUET
@@ -453,13 +453,13 @@ import org.bukkit.Tag;
  *  - Material.RED_TULIP
  *  - Material.WHITE_TULIP
  *  - Material.WITHER_ROSE
-
+ *
  * Tag.SPRUCE_LOGS:-
  *  - Material.SPRUCE_LOG
  *  - Material.SPRUCE_WOOD
  *  - Material.STRIPPED_SPRUCE_LOG
  *  - Material.STRIPPED_SPRUCE_WOOD
-
+ *
  * Tag.STAIRS:-
  *  - Material.ACACIA_STAIRS
  *  - Material.ANDESITE_STAIRS
@@ -492,7 +492,7 @@ import org.bukkit.Tag;
  *  - Material.SPRUCE_STAIRS
  *  - Material.STONE_BRICK_STAIRS
  *  - Material.STONE_STAIRS
-
+ *
  * Tag.STANDING_SIGNS:-
  *  - Material.ACACIA_SIGN
  *  - Material.BIRCH_SIGN
@@ -500,13 +500,13 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_SIGN
  *  - Material.OAK_SIGN
  *  - Material.SPRUCE_SIGN
-
+ *
  * Tag.STONE_BRICKS:-
  *  - Material.CHISELED_STONE_BRICKS
  *  - Material.CRACKED_STONE_BRICKS
  *  - Material.MOSSY_STONE_BRICKS
  *  - Material.STONE_BRICKS
-
+ *
  * Tag.TRAPDOORS:-
  *  - Material.ACACIA_TRAPDOOR
  *  - Material.BIRCH_TRAPDOOR
@@ -515,7 +515,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_TRAPDOOR
  *  - Material.OAK_TRAPDOOR
  *  - Material.SPRUCE_TRAPDOOR
-
+ *
  * Tag.UNDERWATER_BONEMEALS:-
  *  - Material.BRAIN_CORAL
  *  - Material.BRAIN_CORAL_FAN
@@ -533,11 +533,11 @@ import org.bukkit.Tag;
  *  - Material.TUBE_CORAL
  *  - Material.TUBE_CORAL_FAN
  *  - Material.TUBE_CORAL_WALL_FAN
-
+ *
  * Tag.VALID_SPAWN:-
  *  - Material.GRASS_BLOCK
  *  - Material.PODZOL
-
+ *
  * Tag.WALLS:-
  *  - Material.ANDESITE_WALL
  *  - Material.BRICK_WALL
@@ -553,14 +553,14 @@ import org.bukkit.Tag;
  *  - Material.RED_SANDSTONE_WALL
  *  - Material.SANDSTONE_WALL
  *  - Material.STONE_BRICK_WALL
-
+ *
  * Tag.WALL_CORALS:-
  *  - Material.BRAIN_CORAL_WALL_FAN
  *  - Material.BUBBLE_CORAL_WALL_FAN
  *  - Material.FIRE_CORAL_WALL_FAN
  *  - Material.HORN_CORAL_WALL_FAN
  *  - Material.TUBE_CORAL_WALL_FAN
-
+ *
  * Tag.WALL_SIGNS:-
  *  - Material.ACACIA_WALL_SIGN
  *  - Material.BIRCH_WALL_SIGN
@@ -568,7 +568,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_WALL_SIGN
  *  - Material.OAK_WALL_SIGN
  *  - Material.SPRUCE_WALL_SIGN
-
+ *
  * Tag.WOODEN_BUTTONS:-
  *  - Material.ACACIA_BUTTON
  *  - Material.BIRCH_BUTTON
@@ -576,7 +576,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_BUTTON
  *  - Material.OAK_BUTTON
  *  - Material.SPRUCE_BUTTON
-
+ *
  * Tag.WOODEN_DOORS:-
  *  - Material.ACACIA_DOOR
  *  - Material.BIRCH_DOOR
@@ -584,7 +584,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_DOOR
  *  - Material.OAK_DOOR
  *  - Material.SPRUCE_DOOR
-
+ *
  * Tag.WOODEN_FENCES:-
  *  - Material.ACACIA_FENCE
  *  - Material.BIRCH_FENCE
@@ -592,7 +592,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_FENCE
  *  - Material.OAK_FENCE
  *  - Material.SPRUCE_FENCE
-
+ *
  * Tag.WOODEN_PRESSURE_PLATES:-
  *  - Material.ACACIA_PRESSURE_PLATE
  *  - Material.BIRCH_PRESSURE_PLATE
@@ -600,7 +600,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_PRESSURE_PLATE
  *  - Material.OAK_PRESSURE_PLATE
  *  - Material.SPRUCE_PRESSURE_PLATE
-
+ *
  * Tag.WOODEN_SLABS:-
  *  - Material.ACACIA_SLAB
  *  - Material.BIRCH_SLAB
@@ -608,7 +608,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_SLAB
  *  - Material.OAK_SLAB
  *  - Material.SPRUCE_SLAB
-
+ *
  * Tag.WOODEN_STAIRS:-
  *  - Material.ACACIA_STAIRS
  *  - Material.BIRCH_STAIRS
@@ -616,7 +616,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_STAIRS
  *  - Material.OAK_STAIRS
  *  - Material.SPRUCE_STAIRS
-
+ *
  * Tag.WOODEN_TRAPDOORS:-
  *  - Material.ACACIA_TRAPDOOR
  *  - Material.BIRCH_TRAPDOOR
@@ -624,7 +624,7 @@ import org.bukkit.Tag;
  *  - Material.JUNGLE_TRAPDOOR
  *  - Material.OAK_TRAPDOOR
  *  - Material.SPRUCE_TRAPDOOR
-
+ *
  * Tag.WOOL:-
  *  - Material.BLACK_WOOL
  *  - Material.BLUE_WOOL
@@ -1069,6 +1069,25 @@ public final class MaterialAPI {
 			case INFESTED_MOSSY_STONE_BRICKS:
 			case INFESTED_CRACKED_STONE_BRICKS:
 			case INFESTED_CHISELED_STONE_BRICKS:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a dirt like block.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is dirty.
+	 * */
+	public static boolean isDirt(Material material) {
+		if (Tag.DIRT_LIKE.getValues().contains(material)) {
+			return true;
+		}
+		switch (material) {
+			case FARMLAND:
+			case GRASS_PATH:
 				return true;
 			default:
 				return false;
