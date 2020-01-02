@@ -1,11 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.collect.Sets;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.inventory.InventoryInteractEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.BeaconInventory;
@@ -21,31 +16,31 @@ import org.bukkit.inventory.LoomInventory;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.StonecutterInventory;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public final class InventoryAPI {
 
-	private InventoryAPI() { } // Make the class effectively static
+	private InventoryAPI() { }
 
-	public static void updateInventory(final Inventory inventory) {
-		final Set<HumanEntity> viewers = Sets.newHashSet(inventory.getViewers());
-		Bukkit.getScheduler().runTask(CivModCorePlugin.getInstance(), () -> {
-			viewers.addAll(inventory.getViewers());
-			for (HumanEntity viewer : viewers) {
-				if (viewer instanceof Player) {
-					((Player) viewer).updateInventory();
-				}
-			}
-		});
-	}
-
-	public static void closeInventory(final Inventory inventory) {
-		Bukkit.getScheduler().runTask(CivModCorePlugin.getInstance(), () -> {
-			for (HumanEntity viewer : inventory.getViewers()) {
-				viewer.closeInventory();
-			}
-		});
+	/**
+	 * Get the players viewing an inventory.
+	 *
+	 * @param inventory The inventory to get the viewers of.
+	 * @return Returns a list of players. Returns an empty list if the inventory is null.
+	 * */
+	public static List<Player> getViewingPlayers(Inventory inventory) {
+		if (inventory == null) {
+			return new ArrayList<>();
+		}
+		return inventory
+				.getViewers()
+				.stream()
+				.map((entity) -> EntityAPI.isPlayer(entity) ? (Player) entity : null)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
 	private static boolean checkInventory(Inventory inventory, InventoryType... types) {
