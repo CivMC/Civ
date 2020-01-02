@@ -6,7 +6,7 @@
 	<groupId>vg.civcraft.mc.citadel</groupId>
 	<artifactId>Citadel</artifactId>
 	<packaging>jar</packaging>
-	<version>4.0.1</version>
+	<version>4.0.2</version>
 	<name>Citadel</name>
 	<url>https://github.com/Devotedmc/Citadel</url>
 
@@ -50,13 +50,13 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.5</version>
+			<version>1.7.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.13.0</version>
+			<version>2.13.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
