@@ -59,4 +59,8 @@ public class ProgressTracker<T extends ProgressTrackable> {
 		addItem(trackable);
 	}
 
+	public boolean containsItem(T trackable) {
+		return queueItems.contains(trackable);
+	}
+
 }
