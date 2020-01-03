@@ -49,7 +49,7 @@ public class ClickableInventory {
 		if (type == null) {
 			throw new IllegalArgumentException("Inventory type may not be null");
 		}
-		inventory = Bukkit.createInventory(null, type, name);
+		this.inventory = Bukkit.createInventory(null, type, name);
 		this.clickables = new IClickable[inventory.getSize() + 1];
 	}
 
@@ -64,7 +64,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(int size, String name) {
 		this(name);
-		inventory = Bukkit.createInventory(null, size, name);
+		this.inventory = Bukkit.createInventory(null, size, name);
 		this.clickables = new IClickable[size + 1];
 	}
 	

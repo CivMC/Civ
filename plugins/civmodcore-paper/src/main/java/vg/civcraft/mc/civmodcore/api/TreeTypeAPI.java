@@ -5,9 +5,7 @@ import org.bukkit.TreeType;
 
 public final class TreeTypeAPI {
 	
-	private TreeTypeAPI() {
-		
-	}
+	private TreeTypeAPI() { }
 	
 	public static TreeType getMatchingTreeType(Material material) {
 		switch (material) {
@@ -71,36 +69,35 @@ public final class TreeTypeAPI {
 	
 	public static Material getMatchingSapling(TreeType type) {
 		switch(type) {
-		case ACACIA:
-			return Material.ACACIA_SAPLING;
-		case BIG_TREE:
-		case TREE:
-		case SWAMP:
-			return Material.OAK_SAPLING;
-		case BIRCH:
-		case TALL_BIRCH:
-			return Material.BIRCH_SAPLING;
-		case BROWN_MUSHROOM:
-			return Material.BROWN_MUSHROOM;
-		case CHORUS_PLANT:
-			return Material.CHORUS_PLANT;
-		case COCOA_TREE:
-			return Material.COCOA;
-		case DARK_OAK:
-			return Material.DARK_OAK_SAPLING;
-		case JUNGLE:
-		case SMALL_JUNGLE:
-		case JUNGLE_BUSH:
-			return Material.JUNGLE_SAPLING;
-		case MEGA_REDWOOD:
-		case REDWOOD:
-		case TALL_REDWOOD:
-			return Material.SPRUCE_SAPLING;
-		case RED_MUSHROOM:
-			return Material.RED_MUSHROOM;
-		default:
-			return null;
-		
+			case ACACIA:
+				return Material.ACACIA_SAPLING;
+			case BIG_TREE:
+			case TREE:
+			case SWAMP:
+				return Material.OAK_SAPLING;
+			case BIRCH:
+			case TALL_BIRCH:
+				return Material.BIRCH_SAPLING;
+			case BROWN_MUSHROOM:
+				return Material.BROWN_MUSHROOM;
+			case CHORUS_PLANT:
+				return Material.CHORUS_PLANT;
+			case COCOA_TREE:
+				return Material.COCOA;
+			case DARK_OAK:
+				return Material.DARK_OAK_SAPLING;
+			case JUNGLE:
+			case SMALL_JUNGLE:
+			case JUNGLE_BUSH:
+				return Material.JUNGLE_SAPLING;
+			case MEGA_REDWOOD:
+			case REDWOOD:
+			case TALL_REDWOOD:
+				return Material.SPRUCE_SAPLING;
+			case RED_MUSHROOM:
+				return Material.RED_MUSHROOM;
+			default:
+				return null;
 		}
 	}
 

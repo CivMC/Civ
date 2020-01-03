@@ -5,7 +5,7 @@
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.7.5</version>
+	<version>1.7.7</version>
 
 	<name>CivModCore</name>
 	<url>https://github.com/DevotedMC/CivModCore/</url>
@@ -84,6 +84,7 @@
 							<artifactSet>
 								<includes>
 									<include>com.zaxxer:HikariCP</include>
+									<include>org.slf4j:slf4j-api</include>
 									<include>org.apache.logging.*</include>
 								</includes>
 							</artifactSet>
@@ -123,6 +124,11 @@
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
 			<version>3.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.26</version>
 		</dependency>
 	</dependencies>
 

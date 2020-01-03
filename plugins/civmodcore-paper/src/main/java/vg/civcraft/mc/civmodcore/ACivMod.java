@@ -3,41 +3,53 @@ package vg.civcraft.mc.civmodcore;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
-import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public abstract class ACivMod extends JavaPlugin {
 
 	@Deprecated
-	protected CommandHandler handle;
+	protected CommandHandler handle = null;
 
 	protected StandaloneCommandHandler newCommandHandler;
 
-	private static boolean initializedAPIs = false;
-	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (handle == null) {
-			return newCommandHandler.executeCommand(sender, command, args);
+			return this.newCommandHandler.executeCommand(sender, command, args);
 		} else {
-			return handle.execute(sender, command, args);
+			return this.handle.execute(sender, command, args);
 		}
 	}
 
 	@Override
 	public void onEnable() {
 		this.newCommandHandler = new StandaloneCommandHandler(this);
+		// Self disable when a hard dependency is disabled
+		registerListener(new Listener() {
+			@EventHandler
+			public void onPluginDisable(PluginDisableEvent event) {
+				String pluginName = event.getPlugin().getName();
+				if (ACivMod.this.getDescription().getDepend().contains(pluginName)) {
+					warning("Plugin [" + pluginName + "] has been disabled, disabling this plugin.");
+					ACivMod.this.getPluginLoader().disablePlugin(ACivMod.this);
+				}
+			}
+		});
 	}
 	
 	@Override
 	public void onDisable() {
-		
+		HandlerList.unregisterAll(this);
+		Bukkit.getScheduler().cancelTasks(this);
 	}
 
 	protected void registerListener(Listener listener) {
@@ -45,6 +57,13 @@ public abstract class ACivMod extends JavaPlugin {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
 		getServer().getPluginManager().registerEvents(listener, this);
+	}
+
+	protected boolean isPluginEnabled(Plugin plugin) {
+		if (plugin == null) {
+			return false;
+		}
+		return getServer().getPluginManager().isPluginEnabled(plugin);
 	}
 
 	public void saveDefaultResource(String path) {
@@ -55,15 +74,15 @@ public abstract class ACivMod extends JavaPlugin {
 
 	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		if (handle == null) {
-			return newCommandHandler.tabCompleteCommand(sender, cmd, args);
+		if (this.handle == null) {
+			return this.newCommandHandler.tabCompleteCommand(sender, cmd, args);
 		} else {
-			return handle.complete(sender, cmd, args);
+			return this.handle.complete(sender, cmd, args);
 		}
 	}
 
 	public CommandHandler getCommandHandler() {
-		return handle;
+		return this.handle;
 	}
 
 	protected void setCommandHandler(CommandHandler handle) {

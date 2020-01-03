@@ -1,11 +1,10 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.sql.SQLException;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.event.HandlerList;
 import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
@@ -16,12 +15,10 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 
-import java.sql.SQLException;
-
 public final class CivModCorePlugin extends ACivMod {
 
 	private static CivModCorePlugin instance;
-	private GlobalChunkMetaManager chunkMetaManager ;
+	private GlobalChunkMetaManager chunkMetaManager;
 	private ManagedDatasource database;
 
 	@Override
@@ -68,8 +65,6 @@ public final class CivModCorePlugin extends ACivMod {
 	@Override
 	public void onDisable() {
 		super.onDisable();
-		// De-register listeners
-		HandlerList.unregisterAll(this);
 		// Unload APIs
 		ItemNames.resetItemNames();
 		EnchantmentNames.resetEnchantmentNames();

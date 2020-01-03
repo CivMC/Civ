@@ -12,6 +12,7 @@ import java.util.function.Predicate;
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.
  */
 public class BlockAPI {
+
 	public static final List<BlockFace> ALL_SIDES = ImmutableList.of(BlockFace.UP, BlockFace.DOWN,
 			BlockFace.NORTH, BlockFace.SOUTH, BlockFace.WEST, BlockFace.EAST);
 
@@ -21,7 +22,8 @@ public class BlockAPI {
 	private static final Predicate<BlockFace> TRUE = f -> true;
 
 	/**
-	 * Get all blocks on specified faces of the block, where the face also matches the filter
+	 * Get all blocks on specified faces of the block, where the face also matches the filter.
+	 *
 	 * @param block the block to get surrounding blocks of
 	 * @param faces the block faces to get relative to the block
 	 * @param filter the filter the block faces must matches
@@ -39,6 +41,7 @@ public class BlockAPI {
 
 	/**
 	 * Gets all blocks on every cardinal side to the block, where the block face matches the filter
+	 *
 	 * @param block the block
 	 * @param filter the filter to check block faces against
 	 * @return all blocks on every cardinal side of the block where the relative block face matches the filter
@@ -49,6 +52,7 @@ public class BlockAPI {
 
 	/**
 	 * Get all blocks on every cardinal side to the specified block
+	 *
 	 * @param block the block
 	 * @return blocks on every cardinal side
 	 */
@@ -58,6 +62,7 @@ public class BlockAPI {
 
 	/**
 	 * Gets all blocks next to the block, where the block face matches the filter
+	 *
 	 * @param block the block
 	 * @param filter the filter to check block faces against
 	 * @return all blocks next to the specified block where the relative block face matches the filter
@@ -68,6 +73,7 @@ public class BlockAPI {
 
 	/**
 	 * Gets all blocks next to the specified block
+	 *
 	 * @param block the block
 	 * @return all blocks next to the block
 	 */
@@ -77,6 +83,7 @@ public class BlockAPI {
 
 	/**
 	 * Returns a mutable list of all sides of a block
+	 *
 	 * @return all sides of a block: north, east, south, west, up down
 	 */
 	public static List<BlockFace> getAllSides() {
@@ -85,9 +92,11 @@ public class BlockAPI {
 
 	/**
 	 * Returns a mutable list of all planar sides of a block
+	 *
 	 * @return all planar sides of a block: north, east, west, south
 	 */
 	public static List<BlockFace> getPlanarSides() {
 		return new ArrayList<>(PLANAR_SIDES);
 	}
+
 }
