@@ -142,7 +142,7 @@ public class RBUtils {
 	}
 
 	public static boolean isColumnPlant(Material mat) {
-		return mat == Material.CACTUS || mat == Material.SUGAR_CANE;
+		return mat == Material.CACTUS || mat == Material.SUGAR_CANE  || mat == Material.BAMBOO;
 	}
 
 	public static boolean isCrop(Material material) {
