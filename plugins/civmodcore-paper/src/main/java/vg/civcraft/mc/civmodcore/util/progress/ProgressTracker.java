@@ -20,7 +20,7 @@ public class ProgressTracker<T extends ProgressTrackable> {
 	}
 
 	public void addItem(T trackable) {
-		if (trackable.getNextUpdate() == Long.MAX_VALUE) {
+		if (trackable.getNextUpdate() != Long.MAX_VALUE) {
 			queueItems.add(trackable);
 		}
 	}
