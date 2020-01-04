@@ -23,6 +23,10 @@ public class PlantProgressManager {
 		tracker.addItem(cache);
 	}
 
+	public boolean hasChunk(RBChunkCache cache) {
+		return tracker.containsItem(cache);
+	}
+
 	public void processUpdates() {
 		tracker.processItems();
 	}
