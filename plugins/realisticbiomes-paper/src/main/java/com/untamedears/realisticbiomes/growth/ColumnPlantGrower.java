@@ -1,8 +1,10 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.Bamboo;
 
 public class ColumnPlantGrower extends IArtificialGrower {
 
@@ -38,9 +40,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 
 	@Override
 	public int getStage(Block block) {
-		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
-		Block top = getRelativeBlock(block, BlockFace.UP);
-		if (top.getY() - bottom.getY() < maxHeight) {
+		if (getActualHeight(block) < maxHeight) {
 			//can grow more
 			return 0;
 		}
@@ -48,7 +48,29 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		return 1;
 	}
 
+	private int getActualHeight(Block block) {
+		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
+		Block top = getRelativeBlock(block, BlockFace.UP);
+
+		return top.getY() - bottom.getY();
+	}
+
+	private Material getAccordingMaterial(Block block) {
+		Material material = RBUtils.getRemappedMaterial(block.getType());
+		if (material == null) {
+			material = block.getType();
+		}
+
+		return material;
+	}
+
 	private void growOnTop(Block block, int howMany) {
+		// Turns Bamboo saplings into Bamboo and prevents growing 2 saplings on top of each others
+		Material finalType = this.getAccordingMaterial(block);
+		if (block.getType() != finalType) {
+			block.setType(finalType);
+		}
+
 		int counter = 1;
 		Block onTop = block;
 		while (counter < maxHeight && howMany > 0) {
@@ -56,7 +78,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
-				onTop.setType(block.getType());
+				onTop.setType(finalType);
 				howMany--;
 				continue;
 			}
@@ -67,6 +89,31 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			// neither air, nor the right plant, but something else blocking growth, so we
 			// stop
 			break;
+		}
+
+		if (finalType == Material.BAMBOO) {
+			handleBambooLeaves(block, onTop, finalType);
+		}
+	}
+
+	private void handleBambooLeaves(Block block, Block top, Material finalType) {
+		// Leaves work according to https://minecraft.gamepedia.com/Bamboo#Appearance
+		Block underBlock = top.getRelative(BlockFace.DOWN);
+		Bamboo.Leaves leavesType = getActualHeight(block) > 5 ? Bamboo.Leaves.LARGE : Bamboo.Leaves.SMALL;
+		int leavesLeft = 3;
+
+		// Makes Bamboo growth O(2n) but prevents other plants to suffer from Bamboo leaf checks.
+		while (underBlock.getType() != finalType) {
+			if (leavesLeft != 0) {
+				((Bamboo) underBlock.getBlockData()).setLeaves(leavesType);
+				leavesLeft--;
+				if (leavesLeft == 1) {
+					leavesType = Bamboo.Leaves.SMALL;
+				}
+			} else {
+				((Bamboo) underBlock.getBlockData()).setLeaves(Bamboo.Leaves.NONE);
+			}
+			underBlock = underBlock.getRelative(BlockFace.DOWN);
 		}
 	}
 
