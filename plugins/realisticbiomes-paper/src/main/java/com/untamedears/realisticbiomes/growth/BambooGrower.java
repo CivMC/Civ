@@ -5,8 +5,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bamboo;
 
 public class BambooGrower extends ColumnPlantGrower {
-	protected final int LEAVES_AMOUNT = 3;
-	protected final int LARGE_LEAVES_START_HEIGHT = 5;
+	protected static final int LEAVES_AMOUNT = 3;
+	protected static final int LARGE_LEAVES_START_HEIGHT = 5;
 
 	public BambooGrower(int maxHeight) {
 		super(maxHeight);
