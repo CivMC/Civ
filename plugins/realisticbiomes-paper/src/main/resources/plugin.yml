@@ -15,6 +15,6 @@ authors:
 - pruby
 - Maxopoly
 - BlackXnt
-api-version: 1.13
+api-version: 1.14
 description: RealisticBiomes makes farming harder by limiting growth rates of crops and making them only grow well in certain
    biomes.

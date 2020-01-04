@@ -33,6 +33,9 @@ public class RBUtils {
 
 	public static Material getRemappedMaterial(Material mat) {
 		switch (mat) {
+		case BAMBOO:
+		case BAMBOO_SAPLING:
+			return Material.BAMBOO;
 		case CARROT:
 		case CARROTS:
 			return Material.CARROT;
@@ -139,7 +142,7 @@ public class RBUtils {
 	}
 
 	public static boolean isColumnPlant(Material mat) {
-		return mat == Material.CACTUS || mat == Material.SUGAR_CANE;
+		return mat == Material.CACTUS || mat == Material.SUGAR_CANE  || mat == Material.BAMBOO;
 	}
 
 	public static boolean isCrop(Material material) {
