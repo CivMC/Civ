@@ -65,6 +65,7 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
 	@Override
 	public void updateState() {
+		System.out.println("updating " + location.toString());
 		Block block = location.getBlock();
 		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
 				.getPlantGrowthConfig(block);

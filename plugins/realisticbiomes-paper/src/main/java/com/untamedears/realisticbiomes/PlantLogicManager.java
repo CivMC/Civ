@@ -64,7 +64,9 @@ public class PlantLogicManager {
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
-		plant.setNextGrowthTime(growthConfig.updatePlant(plant));
+		long nextUpdateTime = growthConfig.updatePlant(plant);
+		System.out.println("next update: " + nextUpdateTime);
+		plant.setNextGrowthTime(nextUpdateTime);
 	}
 
 }

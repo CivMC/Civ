@@ -42,6 +42,12 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 		tracker.removeItem((Plant) blockData);
 	}
 
+	/**
+	 * Updates the growth time for the given plant in the scheduled tracking
+	 * 
+	 * @param plant Plant to update time for
+	 * @param time  Time when the plant should next be updated
+	 */
 	public void updateGrowthTime(Plant plant, long time) {
 		if (time < nextUpdate) {
 			RealisticBiomes.getInstance().getPlantProgressManager().updateTime(this, time);
