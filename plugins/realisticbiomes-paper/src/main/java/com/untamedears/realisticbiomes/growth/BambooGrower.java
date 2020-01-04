@@ -19,10 +19,10 @@ public class BambooGrower extends ColumnPlantGrower {
 
 		// Leaves growth is here:
 		//     according to https://minecraft.gamepedia.com/Bamboo#Appearance
+		int leavesLeft = LEAVES_AMOUNT;
 		Block underBlock = highestBlock;
 		Bamboo.Leaves leavesType = super.getActualHeight(block) > LARGE_LEAVES_START_HEIGHT ?
 				Bamboo.Leaves.LARGE : Bamboo.Leaves.SMALL;
-		int leavesLeft = LEAVES_AMOUNT;
 
 		// Makes Bamboo growth O(2n) but prevents forking column based growth into similar yet different code.
 		while (underBlock.getType() != highestBlock.getType()) {
