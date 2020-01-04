@@ -4,7 +4,6 @@ import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.Bamboo;
 
 public class ColumnPlantGrower extends IArtificialGrower {
 
@@ -48,14 +47,14 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		return 1;
 	}
 
-	private int getActualHeight(Block block) {
+	protected int getActualHeight(Block block) {
 		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
 		Block top = getRelativeBlock(block, BlockFace.UP);
 
 		return top.getY() - bottom.getY();
 	}
 
-	private Material getAccordingMaterial(Block block) {
+	protected Material getAccordingMaterial(Block block) {
 		Material material = RBUtils.getRemappedMaterial(block.getType());
 		if (material == null) {
 			material = block.getType();
@@ -64,7 +63,13 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		return material;
 	}
 
-	private void growOnTop(Block block, int howMany) {
+	/**
+	 * Handles the growth of a column plant ( i.e sugarcane, cactus )
+	 * @param block Block of the corresponding plant
+	 * @param howMany How tall should the growth be
+	 * @return highest plant block
+	 */
+	protected Block growOnTop(Block block, int howMany) {
 		// Turns Bamboo saplings into Bamboo and prevents growing 2 saplings on top of each others
 		Material finalType = this.getAccordingMaterial(block);
 		if (block.getType() != finalType) {
@@ -91,30 +96,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			break;
 		}
 
-		if (finalType == Material.BAMBOO) {
-			handleBambooLeaves(block, onTop, finalType);
-		}
-	}
-
-	private void handleBambooLeaves(Block block, Block top, Material finalType) {
-		// Leaves work according to https://minecraft.gamepedia.com/Bamboo#Appearance
-		Block underBlock = top.getRelative(BlockFace.DOWN);
-		Bamboo.Leaves leavesType = getActualHeight(block) > 5 ? Bamboo.Leaves.LARGE : Bamboo.Leaves.SMALL;
-		int leavesLeft = 3;
-
-		// Makes Bamboo growth O(2n) but prevents other plants to suffer from Bamboo leaf checks.
-		while (underBlock.getType() != finalType) {
-			if (leavesLeft != 0) {
-				((Bamboo) underBlock.getBlockData()).setLeaves(leavesType);
-				leavesLeft--;
-				if (leavesLeft == 1) {
-					leavesType = Bamboo.Leaves.SMALL;
-				}
-			} else {
-				((Bamboo) underBlock.getBlockData()).setLeaves(Bamboo.Leaves.NONE);
-			}
-			underBlock = underBlock.getRelative(BlockFace.DOWN);
-		}
+		return onTop.getType() != finalType ? onTop.getRelative(BlockFace.DOWN) : onTop;
 	}
 
 	@Override
