@@ -16,9 +16,13 @@ public class BambooGrower extends ColumnPlantGrower {
 	protected Block growOnTop(Block block, int howMany) {
 		// Actual growth is here:
 		Block highestBlock = super.growOnTop(block, howMany);
+		handleProperLeafGrowth(block, highestBlock);
 
-		// Leaves growth is here:
-		//     according to https://minecraft.gamepedia.com/Bamboo#Appearance
+		return highestBlock;
+	}
+
+	private void handleProperLeafGrowth(Block block, Block highestBlock) {
+		// according to https://minecraft.gamepedia.com/Bamboo#Appearance
 		int leavesLeft = LEAVES_AMOUNT;
 		Block underBlock = highestBlock;
 		Bamboo.Leaves leavesType = super.getActualHeight(block) > LARGE_LEAVES_START_HEIGHT ?
@@ -37,7 +41,5 @@ public class BambooGrower extends ColumnPlantGrower {
 			}
 			underBlock = underBlock.getRelative(BlockFace.DOWN);
 		}
-
-		return highestBlock;
 	}
 }

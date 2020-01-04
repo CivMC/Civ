@@ -24,7 +24,8 @@ public class PlantProgressManager {
 	}
 
 	public boolean hasChunk(RBChunkCache cache) {
-		return tracker.containsItem(cache);
+		//return tracker.containsItem(cache);
+		return false;
 	}
 
 	public void processUpdates() {
