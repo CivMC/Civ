@@ -36,7 +36,7 @@ public abstract class IArtificialGrower {
 		case SUGAR_CANE:
 			return new ColumnPlantGrower(3);
 		case BAMBOO:
-			return new BambooGrower(4);
+			return new BambooGrower(12);
 		default:
 			throw new IllegalArgumentException(material.name() + " can not be grown");
 		}

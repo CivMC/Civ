@@ -23,22 +23,25 @@ public class BambooGrower extends ColumnPlantGrower {
 
 	private void handleProperLeafGrowth(Block block, Block highestBlock) {
 		// according to https://minecraft.gamepedia.com/Bamboo#Appearance
-		int leavesLeft = LEAVES_AMOUNT;
+		int actualHeight = super.getActualHeight(block) + 1;
+		int leavesLeft = LEAVES_AMOUNT >= actualHeight ? actualHeight - 1 : LEAVES_AMOUNT;
 		Block underBlock = highestBlock;
-		Bamboo.Leaves leavesType = super.getActualHeight(block) > LARGE_LEAVES_START_HEIGHT ?
+		Bamboo.Leaves leavesType = actualHeight >= LARGE_LEAVES_START_HEIGHT ?
 				Bamboo.Leaves.LARGE : Bamboo.Leaves.SMALL;
 
 		// Makes Bamboo growth O(2n) but prevents forking column based growth into similar yet different code.
-		while (underBlock.getType() != highestBlock.getType()) {
+		while (underBlock.getType() == highestBlock.getType()) {
+			Bamboo data = (Bamboo)underBlock.getBlockData();
 			if (leavesLeft != 0) {
-				((Bamboo) underBlock.getBlockData()).setLeaves(leavesType);
+				data.setLeaves(leavesType);
 				leavesLeft--;
 				if (leavesLeft == 1) {
 					leavesType = Bamboo.Leaves.SMALL;
 				}
 			} else {
-				((Bamboo) underBlock.getBlockData()).setLeaves(Bamboo.Leaves.NONE);
+				data.setLeaves(Bamboo.Leaves.NONE);
 			}
+			underBlock.setBlockData(data);
 			underBlock = underBlock.getRelative(BlockFace.DOWN);
 		}
 	}
