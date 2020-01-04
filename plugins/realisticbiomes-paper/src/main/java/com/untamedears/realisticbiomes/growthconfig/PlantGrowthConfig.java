@@ -281,7 +281,6 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long now = System.currentTimeMillis();
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
-		System.out.println("Progress: " + grower.getMaxStage() * progress);
 		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
 		if (intendedState != grower.getStage(block)) {
 			grower.setStage(block, intendedState);

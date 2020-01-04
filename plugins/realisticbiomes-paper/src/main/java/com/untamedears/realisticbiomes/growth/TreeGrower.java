@@ -86,11 +86,9 @@ public class TreeGrower extends AgeableGrower {
 	@Override
 	public void setStage(Block block, int stage) {
 		if (stage < 1) {
-			System.out.println("not done");
 			return;
 		}
 		if (!(block.getBlockData() instanceof Sapling)) {
-			System.out.println("not sapling, is " + block.getBlockData().getClass());
 			return;
 		}
 		Material mat = block.getType();
@@ -100,10 +98,8 @@ public class TreeGrower extends AgeableGrower {
 		}
 		TreeType type = remapSaplingToTree(mat, canBeBig);
 		if (type == null) {
-			System.out.println("no type");
 			return;
 		}
-		System.out.println("grow");
 		block.setType(Material.AIR);
 		block.getLocation().getWorld().generateTree(block.getLocation(), type);
 	}

@@ -65,7 +65,6 @@ public class PlantLogicManager {
 			return;
 		}
 		long nextUpdateTime = growthConfig.updatePlant(plant);
-		System.out.println("next update: " + nextUpdateTime);
 		plant.setNextGrowthTime(nextUpdateTime);
 	}
 
