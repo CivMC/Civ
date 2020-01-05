@@ -150,6 +150,10 @@ public class RBUtils {
 		return mat == Material.PUMPKIN_STEM || mat == Material.ATTACHED_PUMPKIN_STEM 
 				|| mat == Material.MELON_STEM|| mat == Material.ATTACHED_MELON_STEM ; 
 	}
+	
+	public static boolean isFruit(Material mat) {
+		return mat == Material.PUMPKIN || mat == Material.MELON;
+	}
 
 	public static boolean resetProgressOnGrowth(Material mat) {
 		return isColumnPlant(mat) || isStem(mat);

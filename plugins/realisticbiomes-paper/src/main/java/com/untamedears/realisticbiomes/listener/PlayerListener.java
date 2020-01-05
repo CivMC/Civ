@@ -46,6 +46,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		Block block = RBUtils.getRealPlantBlock(event.getClickedBlock());
+		if (RBUtils.isFruit(block.getType())) {
+			return;
+		}
 		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(block);
 		if (plantConfig == null) {
 			return;

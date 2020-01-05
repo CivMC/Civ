@@ -48,12 +48,13 @@ public class FruitGrower extends IArtificialGrower {
 			Material fruitMat = RBUtils.getFruit(block.getType());
 			if (fruitMat != null) {
 				// TODO attach stem?
-				block.setType(fruitMat, true);
+				fruitBlock.setType(fruitMat, true);
+				return;
 			}
 		}
 	}
 
-	private boolean hasPlant(Block block) {
+	private static boolean hasPlant(Block block) {
 		BlockData data = block.getBlockData();
 		if (data instanceof Directional) {
 			Directional dir = (Directional) data;
@@ -69,7 +70,7 @@ public class FruitGrower extends IArtificialGrower {
 			// desired behavior?
 			return;
 		}
-
+		growFruit(block);
 	}
 
 }
