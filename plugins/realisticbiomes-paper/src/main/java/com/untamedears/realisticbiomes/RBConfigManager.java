@@ -98,7 +98,7 @@ public class RBConfigManager extends CoreConfigManager {
 
 	private Map<Material, Double> parseMaterialDoubleMap(ConfigurationSection parent, String identifier) {
 		Map<Material, Double> result = new EnumMap<>(Material.class);
-		ConfigParsing.parseKeyValueMap(parent, identifier, logger, s -> Material.valueOf(s), s -> Double.parseDouble(s),
+		ConfigParsing.parseKeyValueMap(parent, identifier, logger, Material::valueOf,  Double::parseDouble,
 				result);
 		return result;
 	}

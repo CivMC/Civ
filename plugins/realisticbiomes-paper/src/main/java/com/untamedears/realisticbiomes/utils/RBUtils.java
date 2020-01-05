@@ -16,8 +16,10 @@ public class RBUtils {
 	public static Material getFruit(Material mat) {
 		switch (mat) {
 		case MELON_SEEDS:
+		case MELON_STEM:
 			return Material.MELON;
 		case PUMPKIN_SEEDS:
+		case PUMPKIN_STEM:
 			return Material.PUMPKIN;
 		default:
 			return null;
@@ -65,29 +67,17 @@ public class RBUtils {
 			return Material.CACTUS;
 		case VINE:
 			return Material.VINE;
-		case OAK_LOG:
 		case OAK_SAPLING:
-		case OAK_LEAVES:
 			return Material.OAK_SAPLING;
-		case DARK_OAK_LOG:
 		case DARK_OAK_SAPLING:
-		case DARK_OAK_LEAVES:
 			return Material.DARK_OAK_SAPLING;
-		case BIRCH_LOG:
 		case BIRCH_SAPLING:
-		case BIRCH_LEAVES:
 			return Material.BIRCH_SAPLING;
-		case ACACIA_LOG:
 		case ACACIA_SAPLING:
-		case ACACIA_LEAVES:
 			return Material.ACACIA_SAPLING;
-		case JUNGLE_LOG:
 		case JUNGLE_SAPLING:
-		case JUNGLE_LEAVES:
 			return Material.JUNGLE_SAPLING;
-		case SPRUCE_LOG:
 		case SPRUCE_SAPLING:
-		case SPRUCE_LEAVES:
 			return Material.SPRUCE_SAPLING;
 		case NETHER_WART:
 		case NETHER_WART_BLOCK:

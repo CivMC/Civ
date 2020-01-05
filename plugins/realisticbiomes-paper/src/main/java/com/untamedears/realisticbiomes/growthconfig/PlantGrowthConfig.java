@@ -19,6 +19,7 @@ import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class PlantGrowthConfig extends AbstractGrowthConfig {
@@ -69,7 +70,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double lightMultiplier = getLightMultiplier(b);
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(material.toString());
+		sb.append(ItemNames.getItemName(material));
 		if (biomeGrowthConfig instanceof PersistentGrowthConfig) {
 			long time = getPersistentGrowthTime(b);
 			if (time == -1) {
@@ -169,7 +170,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	public String getPlantInfoString(Block block, Plant plant) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(block.getType());
+		sb.append(ItemNames.getItemName(block.getType()));
 		if (plant == null) {
 			// non-persistent growth
 			double progress = grower.getProgressGrowthStage(block);

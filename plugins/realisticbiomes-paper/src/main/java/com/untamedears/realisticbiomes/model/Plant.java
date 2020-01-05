@@ -68,11 +68,15 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 		Block block = location.getBlock();
 		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
 				.getPlantGrowthConfig(block);
-		if (growthConfig == null) {
-			nextUpdate = Long.MAX_VALUE;
-			getOwningCache().remove(this);
-			return;
+		if (growthConfig != null) {
+			nextUpdate = growthConfig.updatePlant(this);
 		}
-		nextUpdate = growthConfig.updatePlant(this);
+		else {
+			nextUpdate = Long.MAX_VALUE;
+		}
+		if (nextUpdate == Long.MAX_VALUE) {
+			//note that this can also be returned by the updatePlant function
+			getOwningCache().remove(this);
+		}
 	}
 }
