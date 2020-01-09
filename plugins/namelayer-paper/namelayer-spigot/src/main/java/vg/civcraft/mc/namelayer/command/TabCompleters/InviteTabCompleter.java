@@ -10,6 +10,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -18,7 +19,7 @@ import java.util.UUID;
 public class InviteTabCompleter {
     public static List<String> complete(String lastArg, Player sender) {
         UUID uuid = NameAPI.getUUID(sender.getName());
-        List<Group> groups = PlayerListener.getNotifications(uuid);
+        Set<Group> groups = PlayerListener.getNotifications(uuid);
         List<String> result = new LinkedList<>();
         
         if (groups == null)
