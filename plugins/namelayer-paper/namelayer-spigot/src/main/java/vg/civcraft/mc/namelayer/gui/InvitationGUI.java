@@ -93,9 +93,9 @@ public class InvitationGUI extends AbstractGroupGUI{
 											p.getName() + " invited "
 													+ NameAPI.getCurrentName(inviteUUID)
 													+ " to group " + g.getName()
-													+ "via gui");
+													+ " via the gui");
+
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
-									
 									Mercury.addInvite(g.getGroupId(), pType.toString(), inviteUUID, p.getUniqueId().toString());
 
 									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));
