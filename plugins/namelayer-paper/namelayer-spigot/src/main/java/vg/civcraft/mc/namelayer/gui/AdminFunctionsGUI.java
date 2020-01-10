@@ -208,7 +208,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 											+ NameAPI
 													.getCurrentName(transferUUID)
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 						}
 						else {
 							showScreen();
@@ -258,7 +258,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					return;
 				}
 				NameLayerPlugin.log(Level.INFO,
-						p.getName() + " deleted " + g.getName() + "via gui");
+						p.getName() + " deleted " + g.getName() + " via the gui");
 				if (gm.deleteGroup(g.getName())) {
 					p.sendMessage(ChatColor.GREEN + g.getName()
 							+ " was successfully deleted.");

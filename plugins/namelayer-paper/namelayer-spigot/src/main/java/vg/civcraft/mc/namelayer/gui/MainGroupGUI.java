@@ -199,7 +199,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 										arg0.getName() + " removed "
 												+ NameAPI.getCurrentName(uuid)
 												+ " from the blacklist of "
-												+ g.getName() + "via gui");
+												+ g.getName() + " via the gui");
 								black.removeBlacklistMember(g, uuid, true);
 								p.sendMessage(ChatColor.GREEN + "You removed "
 										+ NameAPI.getCurrentName(uuid)
@@ -313,7 +313,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							} else {
 								NameLayerPlugin.log(Level.INFO, arg0.getName()
 										+ " revoked an invite for " + NameAPI.getCurrentName(invitedUUID)
-										+ " for group " + g.getName() + "via gui");
+										+ " for group " + g.getName() + " via the gui");
 								g.removeInvite(invitedUUID, true);
 								PlayerListener.removeNotification(invitedUUID, g);
 
@@ -574,7 +574,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			}
 			NameLayerPlugin.log(Level.INFO,
 					p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
-							+ " from " + g.getName() + "via gui");
+							+ " from " + g.getName() + " via the gui");
 			g.removeMember(toRemove);
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
 					+ " has been removed from the group");
@@ -605,7 +605,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							+ NameAPI.getCurrentName(toChange) + " from "
 							+ g.getCurrentRank(toChange).toString() + " to "
 							+ newRank.toString() + " for group " + g.getName()
-							+ "via gui");
+							+ " via the gui");
 			if (prom.isOnline()) {
 				Player oProm = (Player) prom;
 				PromotePlayerEvent event = new PromotePlayerEvent(oProm, g,
@@ -791,7 +791,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 																	.getCurrentName(blackUUID)
 															+ " for group "
 															+ g.getName()
-															+ "via gui");
+															+ " via the gui");
 									bl.addBlacklistMember(g, blackUUID, true);
 									p.sendMessage(ChatColor.GREEN
 											+ NameAPI.getCurrentName(blackUUID)
@@ -873,12 +873,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
 									NameLayerPlugin.log(Level.INFO, p.getName()
 											+ " removed password "
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 								} else {
 									NameLayerPlugin.log(Level.INFO, p.getName()
 											+ " set password to " + newPassword
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 									g.setPassword(newPassword);
 									p.sendMessage(ChatColor.GREEN
 											+ "Set new password: "
@@ -959,7 +959,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				public void clicked(Player p) {
 					NameLayerPlugin.log(Level.INFO, p.getName()
 							+ " set default group to " + g.getName()
-							+ "via gui");
+							+ " via the gui");
 					if (defGroup == null) {
 						g.setDefaultGroup(p.getUniqueId());
 						p.sendMessage(ChatColor.GREEN
@@ -1041,7 +1041,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								return;
 							}
 							NameLayerPlugin.log(Level.INFO, p.getName()
-									+ " left " + g.getName() + "via gui");
+									+ " left " + g.getName() + " via the gui");
 							g.removeMember(p.getUniqueId());
 							p.sendMessage(ChatColor.GREEN + "You have left "
 									+ g.getName());
