@@ -314,7 +314,6 @@ public class ItemExchange {
 			BlockFace sc_behind = sc_facing.getOppositeFace();
 			// Check that host block isn't a shop compatible block
 			Block sc_buttonhost = shopChest.getRelative(sc_behind);
-			if (ItemExchangePlugin.ACCEPTABLE_BLOCKS.contains(sc_buttonhost.getType())) return;
 			// Loop through each cardinal direciton
 			for (BlockFace hostface : BlockUtility.cardinalFaces) {
 				// Skip if direction is where the shopchest is
