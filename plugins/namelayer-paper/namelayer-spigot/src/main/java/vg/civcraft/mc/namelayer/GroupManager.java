@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -23,7 +22,6 @@ import vg.civcraft.mc.namelayer.events.GroupDeleteEvent;
 import vg.civcraft.mc.namelayer.events.GroupMergeEvent;
 import vg.civcraft.mc.namelayer.events.GroupTransferEvent;
 import vg.civcraft.mc.namelayer.group.Group;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
 import vg.civcraft.mc.namelayer.permission.PermissionHandler;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -145,7 +143,6 @@ public class GroupManager{
 		int id;
 		if (savetodb){
 			id = groupManagerDao.createGroup(name, owner, password);
-			Mercury.createGroup(group, id);
 			if (id > -1) {
 				initiateDefaultPerms(id); // give default perms to a newly create group
 				GroupManager.getGroup(id); // force a recache from DB.
@@ -195,7 +192,6 @@ public class GroupManager{
 		group.setValid(false);
 		if (savetodb){
 			groupManagerDao.deleteGroup(groupName);
-			Mercury.deleteGroup(groupName);
 		}
 		return true;
 	}
@@ -219,7 +215,6 @@ public class GroupManager{
 		if (savetodb){
 			g.addMember(uuid, PlayerType.OWNER);
 			g.setOwner(uuid);
-			Mercury.transferGroup(g, uuid);
 		} else {
 			g.addMember(uuid, PlayerType.OWNER, false);
 			g.setOwner(uuid, false);
@@ -227,13 +222,8 @@ public class GroupManager{
 	}
 
 	/**
-	 * Merging is initiated asynchronously on the shard the player currently inhabits. On initiation and post initial checks,
-	 * a Mercury message "merge|" is sent, indicating the beginning of the merging process. All shards receive this and
-	 * immediately discipline the groups involved to prevent desynchronization.
-	 * 
-	 * When the host shard is _done_, a second mercury message is sent, which signals the end of the process.
-	 * Due to the complexity of keeping the cache consistent, we're whiffing on this one a bit and
-	 * _for now_ simply invalidating the cache on servers.
+	 * Merging is initiated asynchronously on the shard the player currently inhabits. Due to the complexity of keeping
+	 * the cache consistent, we're whiffing on this one a bit and _for now_ simply invalidating the cache on servers.
 	 *
 	 * Eventually, we'll need to go line-by-line through the db code and just replicate in cache. That day is not today.
 	 */
@@ -281,7 +271,6 @@ public class GroupManager{
 		toMerge.setDisciplined(true, false);
 		
 		if (savetodb){
-			Mercury.mergeGroup(group.getName(), toMerge.getName());
 			// This basically just fires starting events and disciplines groups on target server.
 			// They then wait for merge to complete. Botched merges will lock groups, basically. :shrug:
 
@@ -297,9 +286,7 @@ public class GroupManager{
 					// We handle supergroup right here right now; does its own mercury message to update in cache.
 					if (toMerge.getSuperGroup() != null) {
 						Group sup = toMerge.getSuperGroup();
-						Group.unlink(sup, toMerge); 
-						// The above handles the need to unlink any supergroup from merge in DB. This sends its own
-						// Mercury message updating everyone else to do the same in-cache so no further unlinking needs doing.
+						Group.unlink(sup, toMerge);
 					}
 
 					// Subgroup update is handled in doneMerge, as its a cache-only update.
@@ -307,10 +294,6 @@ public class GroupManager{
 					deleteGroupPerms(toMerge); // commit perm updates to DB.
 
 					doneMergeGroup(group, toMerge);
-
-					// Now we are done the merging process probably, so tell everyone to invalidate their caches for these
-					// two groups and perform any other cleanup (subgroup links,etc.)
-					Mercury.doneMergeGroup(group.getName(), toMerge.getName()); 
 				}
 			});
 		}

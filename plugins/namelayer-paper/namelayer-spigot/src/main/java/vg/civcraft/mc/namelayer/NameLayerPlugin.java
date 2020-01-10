@@ -21,7 +21,6 @@ import vg.civcraft.mc.namelayer.group.AutoAcceptHandler;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.DefaultGroupHandler;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
-import vg.civcraft.mc.namelayer.listeners.MercuryMessageListener;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import vg.civcraft.mc.namelayer.misc.ClassHandler;
 import vg.civcraft.mc.namelayer.misc.NameCleanser;
@@ -41,7 +40,6 @@ public class NameLayerPlugin extends ACivMod{
 	private static int groupLimit = 10;
 	private static boolean createGroupOnFirstJoin;
 	private FileConfiguration config;
-	private boolean mercuryEnabled;
 	
 	@Override
 	public void onEnable() {
@@ -53,7 +51,6 @@ public class NameLayerPlugin extends ACivMod{
 		groupLimit = config.getInt("groups.grouplimit", 10);
 		createGroupOnFirstJoin = config.getBoolean("groups.creationOnFirstJoin", true);
 		instance = this;
-		mercuryEnabled = Bukkit.getPluginManager().isPluginEnabled("Mercury");
 		loadDatabases();
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
@@ -79,9 +76,6 @@ public class NameLayerPlugin extends ACivMod{
 	public void registerListeners(){
 		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-		if (isMercuryEnabled()){
-			getServer().getPluginManager().registerEvents(new MercuryMessageListener(), this);
-		}
 	}
 	
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
@@ -253,10 +247,6 @@ public class NameLayerPlugin extends ACivMod{
 	@Override
 	protected String getPluginName() {
 		return "NameLayerPlugin";
-	}
-
-	public static boolean isMercuryEnabled() {
-		return getInstance().mercuryEnabled;
 	}
 	
 	public int getGroupLimit(){

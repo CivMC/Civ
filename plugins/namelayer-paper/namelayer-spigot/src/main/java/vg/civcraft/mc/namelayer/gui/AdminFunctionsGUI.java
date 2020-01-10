@@ -16,7 +16,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
@@ -144,14 +143,9 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 
 			@Override
 			public List<String> onTabComplete(String word, String[] arg1) {
-				List<String> names;
-				if (NameLayerPlugin.isMercuryEnabled()) {
-					names = new LinkedList<String>(MercuryAPI.getAllPlayers());
-				} else {
-					names = new LinkedList<String>();
-					for (Player p : Bukkit.getOnlinePlayers()) {
-						names.add(p.getName());
-					}
+				List<String> names = new LinkedList<String>();
+				for (Player p : Bukkit.getOnlinePlayers()) {
+					names.add(p.getName());
 				}
 				if (word.equals("")) {
 					return names;

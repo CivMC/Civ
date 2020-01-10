@@ -36,12 +36,6 @@
       <version>1.6.2</version>
       <scope>provided</scope>
     </dependency>
-		<dependency>
-			<groupId>vg.civcraft.mc.mercury</groupId>
-			<artifactId>Mercury</artifactId>
-			<version>1.2.20</version>
-			<scope>provided</scope>
-		</dependency>
   </dependencies>
 
   <build>

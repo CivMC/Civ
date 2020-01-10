@@ -9,7 +9,6 @@ import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.command.TabCompleters.InviteTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 import java.util.List;
 import java.util.UUID;
@@ -48,7 +47,6 @@ public class RejectInvite extends PlayerCommandMiddle {
 		}
 		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
-		Mercury.remInvite(group.getGroupId(), uuid);
 		player.sendMessage(ChatColor.GREEN + "You've successfully declined that group invitation.");
 		return true;
 	}
