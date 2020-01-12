@@ -3,8 +3,9 @@ package me.josvth.randomspawn.listeners;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,19 +18,19 @@ import org.bukkit.metadata.FixedMetadataValue;
 import me.josvth.randomspawn.RandomSpawn;
 
 public class SignListener implements Listener {
-	RandomSpawn plugin;
+	private RandomSpawn plugin;
 
-	public SignListener(RandomSpawn instance) {
-		plugin = instance;
+	public SignListener(RandomSpawn plugin) {
+		this.plugin = plugin;
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
 	@EventHandler
 	public void onPlayerSignInteract(PlayerInteractEvent event){
 		if(event.getAction() == Action.RIGHT_CLICK_BLOCK){
-			Block block = event.getClickedBlock();
-			if (block.getTypeId() == 68 || block.getTypeId() == 63){
-				Sign sign = (Sign)block.getState();
+			Material mat = event.getClickedBlock().getType();
+			if (Tag.WALL_SIGNS.isTagged(mat)){
+				Sign sign = (Sign)event.getClickedBlock().getState();
 				final Player player = event.getPlayer();
 				if (sign.getLine(0).equalsIgnoreCase(plugin.yamlHandler.config.getString("rs-sign-text","[RandomSpawn]") ) ){
 										

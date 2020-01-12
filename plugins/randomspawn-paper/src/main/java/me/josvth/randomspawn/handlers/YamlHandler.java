@@ -6,22 +6,23 @@ import java.io.IOException;
 
 import me.josvth.randomspawn.RandomSpawn;
 
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 public class YamlHandler{
 
-	RandomSpawn plugin;
+	private RandomSpawn plugin;
 
 	File configFile;
-    File worldsFile;
+	File worldsFile;
     File spawnLocationsFile;
 
     public FileConfiguration config;
     public FileConfiguration worlds;
 	
-	public YamlHandler(RandomSpawn instance) {
-		plugin = instance;
+	public YamlHandler(RandomSpawn plugin) {
+		this.plugin = plugin;
 		setupYamls();
         loadYamls();
 	}
@@ -48,8 +49,8 @@ public class YamlHandler{
     public void loadConfig(){
         try {
             config.load(configFile);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (IOException | InvalidConfigurationException e) {
+        	plugin.getLogger().severe("Failed to load config" + e.toString());
         }  
     }
     
@@ -57,7 +58,7 @@ public class YamlHandler{
         try {
             worlds.load(worldsFile);
         } catch (Exception e) {
-            e.printStackTrace();
+        	plugin.getLogger().severe("Failed to load config" + e.toString());
         }
     }
     
@@ -70,7 +71,7 @@ public class YamlHandler{
         try {
             config.save(configFile);
         } catch (IOException e) {
-            e.printStackTrace();
+            plugin.getLogger().severe("Failed to save config" + e.toString());
         }
     }
     
@@ -78,7 +79,7 @@ public class YamlHandler{
         try {
             worlds.save(worldsFile);
         } catch (IOException e) {
-            e.printStackTrace();
+        	plugin.getLogger().severe("Failed to save worlds" + e.toString());
         }
     }
     

@@ -1,37 +1,35 @@
 package me.josvth.randomspawn.listeners;
 
 import java.util.List;
-import java.util.Set;
+import java.util.Random;
 
 import me.josvth.randomspawn.RandomSpawn;
 import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_10_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.metadata.FixedMetadataValue;
 
-import net.minecraft.server.v1_10_R1.BlockPosition;
-
 public class RespawnListener implements Listener{
 	
-	RandomSpawn plugin;
+	private RandomSpawn plugin;
+	private Random rng;
 	
-	public RespawnListener (RandomSpawn instance){
-		plugin = instance;
+	public RespawnListener (RandomSpawn plugin){
+		this.plugin = plugin;
+		this.rng = new Random();
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 	
 	@EventHandler
 	public void onPlayerRespawn(PlayerRespawnEvent event){
-		
 		Player player = event.getPlayer();
 		String playerName = player.getName();
 				
@@ -47,10 +45,10 @@ public class RespawnListener implements Listener{
 		List<String> spawnPointFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".spawnpointson");
 				
 		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){  		// checks if player should be spawned at his bed
-			BlockPosition pos = ((CraftPlayer)event.getPlayer()).getHandle().getBed();
-			if (pos != null) {
-				Block bed = new Location(event.getRespawnLocation().getWorld(), pos.getX(), pos.getY(), pos.getZ()).getBlock();
-				if(bed.getType() == Material.BED_BLOCK) {
+			Location loc = event.getPlayer().getBedSpawnLocation();
+			if (loc != null) {
+				Block bed = loc.getBlock();
+				if(Tag.BEDS.isTagged(bed.getType())) {
 					plugin.logDebug(playerName + " is spawned at his bed!");
 					return; 
 				}
@@ -73,7 +71,7 @@ public class RespawnListener implements Listener{
 				
 				int totalTries = spawnLocations.size();
 				for (int i = 0 ; i < totalTries ; i++) {
-					int j = (int) ( Math.random() * spawnLocations.size() );
+					int j = rng.nextInt(spawnLocations.size());
 					Location newSpawn = spawnLocations.get(j);
 					NewPlayerSpawn nps = new NewPlayerSpawn(player, newSpawn );
 					plugin.getServer().getPluginManager().callEvent(nps);

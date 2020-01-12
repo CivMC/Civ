@@ -16,7 +16,7 @@ public class CommandHandler implements CommandExecutor{
 
 	final RandomSpawn plugin;
 
-	HashMap<String,AbstractCommand> commands = new HashMap<String,AbstractCommand>();
+	HashMap<String,AbstractCommand> commands = new HashMap<>();
 
 	public CommandHandler(RandomSpawn instance) {
 		plugin = instance;
@@ -56,6 +56,7 @@ public class CommandHandler implements CommandExecutor{
 		}
 	}
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {	
 					
 		if (args.length == 0 || !commands.containsKey(args[0])) return false;

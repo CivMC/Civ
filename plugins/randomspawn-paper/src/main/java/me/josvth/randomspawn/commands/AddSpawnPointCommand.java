@@ -6,7 +6,6 @@ import me.josvth.randomspawn.RandomSpawn;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 
 /**
@@ -21,6 +20,7 @@ public class AddSpawnPointCommand extends AbstractCommand{
 		super(instance,"addspawn");
 	}
 		
+	@Override
 	public boolean onCommand(CommandSender sender, List<String> args){
 		if (!(sender instanceof Player)) {
 			sender.sendMessage("For console users, please manually add spawn points to the worlds.yml and reload.");
