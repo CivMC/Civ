@@ -151,9 +151,9 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 									PermissionType.getPermission("PERMS"))) {
 								NameLayerPlugin.log(Level.INFO, p.getName()
 										+ (hasPerm ? " removed " : " added ")
-										+ "the permission " + perm.toString()
-										+ "for player type" + pType.toString()
-										+ " for " + g.getName() + "via gui");
+										+ "the permission " + perm.getName()
+										+ "for player type " + pType.toString()
+										+ " for " + g.getName() + " via the gui");
 								if (hasPerm) {
 									gp.removePermission(pType, perm);
 								} else {

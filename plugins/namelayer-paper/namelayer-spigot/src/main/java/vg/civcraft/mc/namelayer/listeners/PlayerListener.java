@@ -2,8 +2,11 @@ package vg.civcraft.mc.namelayer.listeners;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -20,9 +23,10 @@ import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.RunnableOnGroup;
 import vg.civcraft.mc.namelayer.group.Group;
+
 public class PlayerListener implements Listener{
 
-	private static Map<UUID, List<Group>> notifications = new HashMap<UUID, List<Group>>();
+	private static Map<UUID, Set<Group>> notifications = new HashMap<>();
 	
 	@EventHandler(priority=EventPriority.LOWEST)
 	public void playerJoinEvent(PlayerJoinEvent event){
@@ -46,7 +50,7 @@ public class PlayerListener implements Listener{
 			x = "You have been invited to the following groups while you were away. You can accept each invitation by using the command: /nlag [groupname].  ";
 		}			
 		
-		for (Group g:notifications .get(uuid)){
+		for (Group g: getNotifications(uuid)){
 			x += g.getName() + ", ";
 		}
 		x = x.substring(0, x.length()- 2);
@@ -54,27 +58,21 @@ public class PlayerListener implements Listener{
 		p.sendMessage(ChatColor.YELLOW + x);
 	}
 	
-	public static void addNotification(UUID u, Group g){
-		if (!notifications.containsKey(u))
-			notifications.put(u, new ArrayList<Group>());
-		notifications.get(u).add(g);
+	public static void addNotification(UUID u, Group g) {
+		getNotifications(u).add(g);
 	}
 
-	public static List<Group> getNotifications(UUID player) {
-		return notifications.get(player);
+	public static Set<Group> getNotifications(UUID player) {
+		return notifications.computeIfAbsent(player, e -> new HashSet<>());
 	}
 	
 	public static void removeNotification(UUID u, Group g){
-		if (!notifications.containsKey(u))
-			notifications.put(u, new ArrayList<Group>());
-		notifications.get(u).remove(g);
+		getNotifications(u).remove(g);
 	}
 	
 	public static String getNotificationsInStringForm(UUID u){
-		if (!notifications.containsKey(u))
-			notifications.put(u, new ArrayList<Group>());
 		String groups = "";
-		for (Group g: notifications.get(u))
+		for (Group g: getNotifications(u))
 			groups += g.getName() + ", ";
 		if (groups.length() == 0)
 			return ChatColor.GREEN + "You have no notifications.";
@@ -136,7 +134,7 @@ public class PlayerListener implements Listener{
 					inc ++;
 				}
 				if (inc < 20) {
-					String newName = name + String.valueOf(inc);
+					String newName = name + inc;
 					gm.createGroupAsync(new Group(newName, uuid, false, null, -1), this, true);
 				}
 			} else {

@@ -15,7 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -25,7 +24,6 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.command.TabCompleters.MemberTypeCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class InvitePlayer extends PlayerCommandMiddle{
@@ -112,10 +110,8 @@ public class InvitePlayer extends PlayerCommandMiddle{
 				return true;
 			}
 			sendInvitation(group, pType, targetAccount, p.getUniqueId(), true);
-			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, p.getUniqueId().toString());
 		} else {
 			sendInvitation(group, pType, targetAccount, null, true);
-			Mercury.addInvite(group.getGroupId(), pType.toString(), targetAccount, null);
 		}
 
 		s.sendMessage(ChatColor.GREEN + "The invitation has been sent." + "\n Use /revoke to Revoke an invite.");
@@ -186,18 +182,9 @@ public class InvitePlayer extends PlayerCommandMiddle{
 
 		} else if (args.length == 2) {
 			List<String> namesToReturn = new ArrayList<String>();
-			if (NameLayerPlugin.isMercuryEnabled()) {
-				Set<String> players = MercuryAPI.getAllPlayers();
-				for (String x: players) {
-					if (x.toLowerCase().startsWith(args[1].toLowerCase()))
-						namesToReturn.add(x);
-				}
-			}
-			else {
-				for (Player p: Bukkit.getOnlinePlayers()) {
-					if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
-						namesToReturn.add(p.getName());
-				}
+			for (Player p: Bukkit.getOnlinePlayers()) {
+				if (p.getName().toLowerCase().startsWith(args[1].toLowerCase()))
+					namesToReturn.add(p.getName());
 			}
 			return namesToReturn;
 		}

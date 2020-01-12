@@ -394,7 +394,7 @@ public class LinkingGUI extends AbstractGroupGUI {
 						+ linkGroup.getName()
 						+ " and "
 						+ g.getName()
-						+ "via gui, "
+						+ " via the gui, "
 						+ (makingSubGroup ? linkGroup.getName() : g.getName()
 								+ " was the super group"));
 		String message;

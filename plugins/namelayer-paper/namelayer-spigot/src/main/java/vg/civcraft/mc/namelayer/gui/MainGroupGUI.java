@@ -20,12 +20,10 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
-import vg.civcraft.mc.civmodcore.chatDialog.DialogManager;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.itemHandling.ISUtils;
-import vg.civcraft.mc.mercury.MercuryAPI;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -33,7 +31,6 @@ import vg.civcraft.mc.namelayer.events.PromotePlayerEvent;
 import vg.civcraft.mc.namelayer.group.BlackList;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.listeners.PlayerListener;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class MainGroupGUI extends AbstractGroupGUI {
@@ -202,7 +199,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 										arg0.getName() + " removed "
 												+ NameAPI.getCurrentName(uuid)
 												+ " from the blacklist of "
-												+ g.getName() + "via gui");
+												+ g.getName() + " via the gui");
 								black.removeBlacklistMember(g, uuid, true);
 								p.sendMessage(ChatColor.GREEN + "You removed "
 										+ NameAPI.getCurrentName(uuid)
@@ -316,10 +313,9 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							} else {
 								NameLayerPlugin.log(Level.INFO, arg0.getName()
 										+ " revoked an invite for " + NameAPI.getCurrentName(invitedUUID)
-										+ " for group " + g.getName() + "via gui");
+										+ " for group " + g.getName() + " via the gui");
 								g.removeInvite(invitedUUID, true);
 								PlayerListener.removeNotification(invitedUUID, g);
-								Mercury.remInvite(g.getGroupId(), invitedUUID);
 
 								p.sendMessage(ChatColor.GREEN + playerName
 										+ "'s invitation has been revoked.");
@@ -578,7 +574,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 			}
 			NameLayerPlugin.log(Level.INFO,
 					p.getName() + " kicked " + NameAPI.getCurrentName(toRemove)
-							+ " from " + g.getName() + "via gui");
+							+ " from " + g.getName() + " via the gui");
 			g.removeMember(toRemove);
 			p.sendMessage(ChatColor.GREEN + NameAPI.getCurrentName(toRemove)
 					+ " has been removed from the group");
@@ -609,7 +605,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 							+ NameAPI.getCurrentName(toChange) + " from "
 							+ g.getCurrentRank(toChange).toString() + " to "
 							+ newRank.toString() + " for group " + g.getName()
-							+ "via gui");
+							+ " via the gui");
 			if (prom.isOnline()) {
 				Player oProm = (Player) prom;
 				PromotePlayerEvent event = new PromotePlayerEvent(oProm, g,
@@ -734,19 +730,11 @@ public class MainGroupGUI extends AbstractGroupGUI {
 					p.sendMessage(ChatColor.GOLD + "Enter the name of the player to blacklist or \"cancel\" to exit this prompt");
 					ClickableInventory.forceCloseInventory(p);
 					Dialog dia = new Dialog(p, NameLayerPlugin.getInstance()) {
-
 						@Override
-						public List<String> onTabComplete(String word,
-								String[] msg) {
-							List<String> names;
-							if (NameLayerPlugin.isMercuryEnabled()) {
-								names = new LinkedList<String>(
-										MercuryAPI.getAllPlayers());
-							} else {
-								names = new LinkedList<String>();
-								for (Player p : Bukkit.getOnlinePlayers()) {
-									names.add(p.getName());
-								}
+						public List<String> onTabComplete(String word, String[] msg) {
+							List<String> names = new LinkedList<String>();
+							for (Player p : Bukkit.getOnlinePlayers()) {
+								names.add(p.getName());
 							}
 							if (word.equals("")) {
 								return names;
@@ -803,7 +791,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 																	.getCurrentName(blackUUID)
 															+ " for group "
 															+ g.getName()
-															+ "via gui");
+															+ " via the gui");
 									bl.addBlacklistMember(g, blackUUID, true);
 									p.sendMessage(ChatColor.GREEN
 											+ NameAPI.getCurrentName(blackUUID)
@@ -885,12 +873,12 @@ public class MainGroupGUI extends AbstractGroupGUI {
 									NameLayerPlugin.log(Level.INFO, p.getName()
 											+ " removed password "
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 								} else {
 									NameLayerPlugin.log(Level.INFO, p.getName()
 											+ " set password to " + newPassword
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 									g.setPassword(newPassword);
 									p.sendMessage(ChatColor.GREEN
 											+ "Set new password: "
@@ -971,7 +959,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 				public void clicked(Player p) {
 					NameLayerPlugin.log(Level.INFO, p.getName()
 							+ " set default group to " + g.getName()
-							+ "via gui");
+							+ " via the gui");
 					if (defGroup == null) {
 						g.setDefaultGroup(p.getUniqueId());
 						p.sendMessage(ChatColor.GREEN
@@ -1053,7 +1041,7 @@ public class MainGroupGUI extends AbstractGroupGUI {
 								return;
 							}
 							NameLayerPlugin.log(Level.INFO, p.getName()
-									+ " left " + g.getName() + "via gui");
+									+ " left " + g.getName() + " via the gui");
 							g.removeMember(p.getUniqueId());
 							p.sendMessage(ChatColor.GREEN + "You have left "
 									+ g.getName());

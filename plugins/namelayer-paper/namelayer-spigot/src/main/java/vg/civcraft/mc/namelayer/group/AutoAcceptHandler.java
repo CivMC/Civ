@@ -4,7 +4,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class AutoAcceptHandler {
 
@@ -19,14 +18,12 @@ public class AutoAcceptHandler {
 			autoAccepts.add(player);
 			if (persistToDb) {
 				NameLayerPlugin.getGroupManagerDao().autoAcceptGroupsAsync(player);
-				Mercury.addAutoAccept(player);
 			}
 		} else {
 			if (autoAccepts.contains(player)) {
 				autoAccepts.remove(player);
 				if (persistToDb) {
 					NameLayerPlugin.getGroupManagerDao().removeAutoAcceptGroupAsync(player);
-					Mercury.removeAutoAccept(player);
 				}
 			}
 		}

@@ -7,7 +7,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
-import vg.civcraft.mc.namelayer.misc.Mercury;
 
 public class BlackList {
 	private Map<String, Set<UUID>> blackListsByGroupName;
@@ -67,7 +66,6 @@ public class BlackList {
 			ids.add(uuid);
 			if (writeToDb) {
 				NameLayerPlugin.getGroupManagerDao().addBlackListMember(groupName, uuid);
-				Mercury.blacklistAdd(groupName, uuid.toString());
 			}
 		}
 	}
@@ -86,7 +84,6 @@ public class BlackList {
 			ids.remove(uuid);
 			if (writeToDb) {
 				NameLayerPlugin.getGroupManagerDao().removeBlackListMember(groupName, uuid);
-				Mercury.blacklistRem(groupName, uuid.toString());
 			}
 		}
 	}

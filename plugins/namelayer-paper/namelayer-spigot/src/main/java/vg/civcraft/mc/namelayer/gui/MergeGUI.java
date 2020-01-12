@@ -241,7 +241,7 @@ public class MergeGUI extends AbstractGroupGUI {
 						+ g.getName()
 						+ " and "
 						+ mergeGroupName
-						+ "via gui, "
+						+ " via the gui, "
 						+ (mergeIntoThisGroup ? g.getName() : mergeGroupName)
 								+ " was the group merged into");
 		Bukkit.getScheduler().runTaskAsynchronously(

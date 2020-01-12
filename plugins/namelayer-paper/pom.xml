@@ -20,7 +20,7 @@
   </modules>
   
   <properties>
-    <releaseVersion>2.11.1</releaseVersion>
+    <releaseVersion>2.11.2</releaseVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
