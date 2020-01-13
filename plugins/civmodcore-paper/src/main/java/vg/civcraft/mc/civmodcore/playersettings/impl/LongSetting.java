@@ -8,7 +8,7 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 public class LongSetting extends PlayerSetting<Long> {
 
 	public LongSetting(JavaPlugin owningPlugin, Long defaultValue, String name, String identifier, ItemStack gui, String description) {
-		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		super(owningPlugin, defaultValue, name, identifier, gui, description, true);
 	}
 
 	@Override
