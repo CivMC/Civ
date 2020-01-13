@@ -392,4 +392,12 @@ public class CivChat2Manager {
 
 		return TextUtil.parse(text, args);
 	}
+	
+	public void setCustomName(UUID player, String name) {
+		customNames.put(player, name);
+	}
+	
+	public void removeCustomName(UUID player) {
+		customNames.remove(player);
+	}
 }
