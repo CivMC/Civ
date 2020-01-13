@@ -14,6 +14,7 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 
 public final class CivModCorePlugin extends ACivMod {
 
@@ -68,6 +69,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Unload APIs
 		ItemNames.resetItemNames();
 		EnchantmentNames.resetEnchantmentNames();
+		NBTSerialization.clearAllRegistrations();
 		ChunkMetaAPI.saveAll();
 		chunkMetaManager = null;
 		// Disconnect database
