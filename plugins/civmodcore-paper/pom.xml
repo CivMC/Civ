@@ -64,8 +64,6 @@
 				<configuration>
 					<argLine>-Dfile.encoding=${encoding}</argLine>
 					<systemPropertyVariables>
-						<java.awt.headless>true</java.awt.headless>
-						<apple.awt.UIElement>true</apple.awt.UIElement>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
