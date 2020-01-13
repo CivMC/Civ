@@ -9,7 +9,7 @@ public class StringSetting extends PlayerSetting<String> {
 
 	public StringSetting(JavaPlugin plugin, String defaultValue, String name, String identifier, ItemStack gui,
 			String description) {
-		super(plugin, defaultValue, name, identifier, gui, description);
+		super(plugin, defaultValue, name, identifier, gui, description, true);
 	}
 
 	@Override

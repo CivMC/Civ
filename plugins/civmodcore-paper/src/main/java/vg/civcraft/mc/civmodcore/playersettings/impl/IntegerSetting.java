@@ -13,7 +13,7 @@ public class IntegerSetting extends PlayerSetting<Integer> {
 
 	public IntegerSetting(JavaPlugin owningPlugin, Integer defaultValue, String name, String identifier, ItemStack gui,
 			String description, boolean showAmountInGui) {
-		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		super(owningPlugin, defaultValue, name, identifier, gui, description, true);
 		this.showAmountInGui = showAmountInGui;
 	}
 

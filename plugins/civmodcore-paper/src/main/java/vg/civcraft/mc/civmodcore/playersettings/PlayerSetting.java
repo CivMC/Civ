@@ -30,9 +30,10 @@ public abstract class PlayerSetting<T> {
 	private String niceName;
 	private JavaPlugin owningPlugin;
 	private List<SettingChangeListener<T>> listeners;
+	private boolean canBeChangedByPlayer;
 
 	public PlayerSetting(JavaPlugin owningPlugin, T defaultValue, String niceName, String identifier, ItemStack gui,
-			String description) {
+			String description, boolean canBeChangedByPlayer) {
 		Preconditions.checkNotNull(gui, "GUI ItemStack can not be null.");
 
 		values = new TreeMap<>();
@@ -42,6 +43,7 @@ public abstract class PlayerSetting<T> {
 		this.identifier = identifier;
 		this.visualization = gui;
 		this.description = description;
+		this.canBeChangedByPlayer = canBeChangedByPlayer;
 	}
 
 	protected void applyInfoToItemStack(ItemStack item, UUID player) {
@@ -132,6 +134,13 @@ public abstract class PlayerSetting<T> {
 	 */
 	public T getValue(Player player) {
 		return getValue(player.getUniqueId());
+	}
+	
+	/**
+	 * @return Can the owning player freely edit this value
+	 */
+	public boolean canBeChangedByPlayer() {
+		return canBeChangedByPlayer;
 	}
 
 	/**

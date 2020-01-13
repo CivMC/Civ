@@ -16,7 +16,7 @@ public class DecimalFormatSetting extends PlayerSetting<DecimalFormat> {
 
 	public DecimalFormatSetting(JavaPlugin owningPlugin, DecimalFormat defaultValue, String name, String identifier,
 			ItemStack gui, String description, double exampleValue) {
-		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		super(owningPlugin, defaultValue, name, identifier, gui, description, true);
 		this.exampleValue = exampleValue;
 	}
 

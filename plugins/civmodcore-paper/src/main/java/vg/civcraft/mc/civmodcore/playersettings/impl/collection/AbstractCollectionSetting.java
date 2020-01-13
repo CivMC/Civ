@@ -36,7 +36,7 @@ public abstract class AbstractCollectionSetting<C extends Collection<T>, T> exte
 	public AbstractCollectionSetting(JavaPlugin owningPlugin, C defaultValue, String name, String identifier,
 			ItemStack gui, String description, Class<T> elementClass, Function<C, C> newFunction) {
 		super(owningPlugin, defaultValue != null ? defaultValue : newFunction.apply(null), name, identifier, gui,
-				description);
+				description, true);
 		this.newFunction = newFunction;
 		elementSetting = SettingTypeManager.getSetting(elementClass);
 		if (elementSetting == null) {
