@@ -1,9 +1,8 @@
 name: NameColors
 main: com.biggestnerd.namecolors.NameColors
 version: ${project.version}
-author: biggestnerd
-depend: [CivModCore]
-softdepend: [CivChat2]
+authors: [biggestnerd, Maxopoly]
+depend: [CivModCore, CivChat2]
 commands:
   namecolor:
     description: "Give your name a nice color!"
