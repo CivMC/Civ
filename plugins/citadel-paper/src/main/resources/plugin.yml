@@ -4,6 +4,12 @@ version: ${project.version}
 authors:
 - Rourke750
 - Maxopoly
+- ProgrammerDan
+- okx-code
+- Cranite
+- FeatherCrown
+- Lazersmoke
+- TealNerd
 depend:
 - NameLayer
 - CivModCore
