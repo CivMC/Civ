@@ -83,6 +83,9 @@ public class LoggableActionListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
+		if (event.getTo() == null) {
+			return;
+		}
 		handleSnitchEntry(event.getPlayer(), event.getTo());
 	}
 
