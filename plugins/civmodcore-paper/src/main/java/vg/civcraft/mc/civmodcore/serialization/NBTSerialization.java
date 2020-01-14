@@ -104,7 +104,7 @@ public final class NBTSerialization {
 	 * @return Returns an {@link NBTCompound} with the serialized data, or null if the given object was null, or if an
 	 * error occurred during serialization.
 	 */
-	public static <T extends NBTSerializable> NBTCompound serialize(T serializable) {
+	public static NBTCompound serialize(NBTSerializable serializable) {
 		if (serializable == null) {
 			return null;
 		}
@@ -122,14 +122,12 @@ public final class NBTSerialization {
 	/**
 	 * Deserializes an {@link NBTCompound} into a registered {@link NBTSerializable} class, if it exists.
 	 *
-	 * @param <T> The class type that will be returned. It MUST match the class that was registered exactly.
 	 * @param nbt The NBT data that's used to populate the new instance of the class.
 	 * @return Returns a populated instance of a class, or null. It will return null if 1) the given NBTCompound is null
 	 * or empty, 2) the class identifier cannot be found, 3) the class cannot be matched, or 4) there was an error in
 	 * casting the instance into the given generic type.
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T extends NBTSerializable> T deserialize(NBTCompound nbt) {
+	public static NBTSerializable deserialize(NBTCompound nbt) {
 		if (nbt == null || nbt.isEmpty()) {
 			return null;
 		}
@@ -142,9 +140,9 @@ public final class NBTSerialization {
 		if (clazz == null) {
 			return null;
 		}
-		T instance;
+		NBTSerializable instance;
 		try {
-			instance = (T) clazz.newInstance();
+			instance = clazz.newInstance();
 			instance.deserialize(nbt);
 		} catch (Exception exception) {
 			exception.printStackTrace();

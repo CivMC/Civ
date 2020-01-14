@@ -21,7 +21,7 @@ public class Tester {
 		NBTCompound nbt = NBTSerialization.serialize(example);
 
 		// Attempts to create an ExampleSerializable instance based on the NBT data
-		ExampleSerializable returned = NBTSerialization.deserialize(nbt);
+		ExampleSerializable returned = (ExampleSerializable) NBTSerialization.deserialize(nbt);
 
 		// Tests if the message from the new instance matches that of the serialized class
 		assertEquals(returned.getMessage(), example.getMessage());
