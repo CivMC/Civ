@@ -19,7 +19,9 @@ import java.util.Map.Entry;
  * configuration GUI
  *
  */
-public class PlayerSettingAPI {
+public final class PlayerSettingAPI {
+	
+	private PlayerSettingAPI() {}
 
 	private static final String FILE_NAME = "civ-player-settings.yml";
 
@@ -82,7 +84,9 @@ public class PlayerSettingAPI {
 			throw new IllegalArgumentException("You can not register a setting twice");
 		}
 		specificList.add(setting);
-		menu.addItem(new MenuOption(menu, setting));
+		if (setting.canBeChangedByPlayer()) {
+			menu.addItem(new MenuOption(menu, setting));
+		}
 	}
 
 	/**

@@ -18,7 +18,7 @@ public class FloatSetting extends PlayerSetting<Float> {
 
 	public FloatSetting(JavaPlugin owningPlugin, Float defaultValue, String name, String identifier, ItemStack gui,
 			String description, int decimalPointsVisible) {
-		super(owningPlugin, defaultValue, name, identifier, gui, description);
+		super(owningPlugin, defaultValue, name, identifier, gui, description, true);
 		StringBuilder sb = new StringBuilder();
 		sb.append("0.");
 		for (int i = 0; i < decimalPointsVisible; i++) {
