@@ -13,6 +13,7 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Door;
@@ -45,9 +46,9 @@ public class RedstoneListener implements Listener {
 
 		// distance is radius, not diameter
 		double diameter = distance * 2;
-		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, diameter, diameter, diameter,
-				e -> e instanceof Player
-						&& !e.isDead()
+		Collection<Entity> entities = reinLocation.getWorld().getNearbyEntities(reinLocation, diameter, diameter,
+				diameter,
+				e -> e instanceof Player && !e.isDead()
 						&& reinforcement.hasPermission(e.getUniqueId(), CitadelPermissionHandler.getDoors())
 						&& e.getLocation().distanceSquared(reinLocation) <= diameter * diameter);
 		return !entities.isEmpty();
@@ -60,12 +61,10 @@ public class RedstoneListener implements Listener {
 	public RedstoneListener(double maxRedstoneDistance) {
 		this.maxRedstoneDistance = maxRedstoneDistance;
 		this.authorizations = new HashMap<>();
-		Bukkit.getScheduler().scheduleSyncRepeatingTask(Citadel.getInstance(), () -> {
-			authorizations.clear();
-		}, 1, 1);
+		Bukkit.getScheduler().scheduleSyncRepeatingTask(Citadel.getInstance(), () -> authorizations.clear(), 1, 1);
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void pistonExtend(BlockPistonExtendEvent bpee) {
 		for (Block block : bpee.getBlocks()) {
 			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
@@ -76,7 +75,7 @@ public class RedstoneListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void pistonRetract(BlockPistonRetractEvent bpre) {
 		for (Block block : bpre.getBlocks()) {
 			Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(block);
@@ -87,7 +86,7 @@ public class RedstoneListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void pressButton(PlayerInteractEvent e) {
 		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
@@ -99,12 +98,12 @@ public class RedstoneListener implements Listener {
 		Block buttonBlock = e.getClickedBlock();
 		Block attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
 		// prepare all sides of button itself
-		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getFacing());
+		setupAdjacentDoors(e.getPlayer(), buttonBlock, button.getFacing().getOppositeFace());
 		// prepare all sides of the block attached to
-		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getFacing().getOppositeFace());
+		setupAdjacentDoors(e.getPlayer(), attachedBlock, button.getFacing());
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void redstonePower(BlockRedstoneEvent bre) {
 		// prevent doors from being opened by redstone
 		if (bre.getNewCurrent() <= 0 || bre.getOldCurrent() > 0) {
@@ -118,6 +117,13 @@ public class RedstoneListener implements Listener {
 		Openable openable = (Openable) blockData;
 		if (openable.isOpen()) {
 			return;
+		}
+		if (blockData instanceof Door) {
+			//we always store the activation for the lower half of a door
+			Door door = (Door) blockData;
+			if (door.getHalf() == Bisected.Half.TOP) {
+				block = block.getRelative(BlockFace.DOWN);
+			}
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 		if (rein == null) {
@@ -153,10 +159,12 @@ public class RedstoneListener implements Listener {
 			}
 			Location locationToSave;
 			if (blockData instanceof Door) {
-				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
+				Door door = (Door) blockData;
+				if (door.getHalf() == Bisected.Half.TOP) {
 					// block is upper half of a door
 					locationToSave = rel.getRelative(BlockFace.DOWN).getLocation();
-				} else {
+				}
+				else {
 					// already the lower half of the door
 					locationToSave = rel.getLocation();
 				}
@@ -168,16 +176,14 @@ public class RedstoneListener implements Listener {
 		}
 	}
 
-	@EventHandler(ignoreCancelled = true, priority = EventPriority.LOW)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void stepPressurePlate(PlayerInteractEvent e) {
 		if (e.getAction() != Action.PHYSICAL) {
 			return;
 		}
 		Material mat = e.getClickedBlock().getType();
-		if (mat != Material.STONE_PRESSURE_PLATE
-				&& mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
-				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE
-				&& !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
+		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
+				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE && !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
