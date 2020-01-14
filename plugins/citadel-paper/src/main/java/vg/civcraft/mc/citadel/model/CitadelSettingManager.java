@@ -27,6 +27,7 @@ public class CitadelSettingManager {
 	private BooleanSetting informationMode;
 	private BooleanSetting showChatMsgInCti;
 	private BooleanSetting showHologramInCti;
+	private BooleanSetting easyMode;
 
 	private BoundedIntegerSetting hologramDuration;
 
@@ -48,6 +49,10 @@ public class CitadelSettingManager {
 	public BooleanSetting getInformationMode() {
 		return informationMode;
 	}
+	
+	public BooleanSetting getEasyMode() {
+		return easyMode;
+	}
 
 	public boolean shouldShowChatInCti(UUID uuid) {
 		return showChatMsgInCti.getValue(uuid);
@@ -55,6 +60,10 @@ public class CitadelSettingManager {
 
 	public boolean shouldShowHologramInCti(UUID uuid) {
 		return showHologramInCti.getValue(uuid);
+	}
+	
+	public boolean isInEasyMode(UUID uuid) {
+		return easyMode.getValue(uuid);
 	}
 	
 	public int getHologramDuration(UUID uuid) {
@@ -71,6 +80,10 @@ public class CitadelSettingManager {
 		informationMode = new BooleanSetting(Citadel.getInstance(), false, "Information mode", "citadelInformationMode",
 				"Displays information about reinforced blocks when interacting with them");
 		PlayerSettingAPI.registerSetting(informationMode, menu);
+		
+		easyMode = new BooleanSetting(Citadel.getInstance(), false, "Easy reinforcing mode", "citadelEasyMode",
+				"Allows automatically reinforcing to your default group with reinforcement materials from your off hand");
+		PlayerSettingAPI.registerSetting(easyMode, menu);
 
 		showChatMsgInCti = new BooleanSetting(Citadel.getInstance(), true, "Show chat message in information mode",
 				"citadelCtiShowChatMsg", "Should chat messages be shown in reinforcement information mode");
