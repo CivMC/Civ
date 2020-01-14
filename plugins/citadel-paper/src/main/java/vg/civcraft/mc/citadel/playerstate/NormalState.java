@@ -27,4 +27,9 @@ public class NormalState extends AbstractPlayerState {
 
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof NormalState;
+	}
+
 }

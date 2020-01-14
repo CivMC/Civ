@@ -34,13 +34,20 @@ public class PlayerStateManager {
 			throw new IllegalArgumentException("Can not set state for null player");
 		}
 		AbstractPlayerState existingState = getState(player);
+		if (existingState == null) {
+			existingState = new NormalState(player);
+		}
 		// null state is allowed, it just resets the state
 		if (state == null) {
 			state = new NormalState(player);
 		}
+		if (existingState.equals(state)) {
+			CitadelUtility.sendAndLog(player, ChatColor.GOLD, "You are still in " + ChatColor.YELLOW + state.getName());
+			return;
+		}
 		playerStateMap.put(player.getUniqueId(), state);
-		CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW + state.getName()
-				+ ChatColor.GOLD + " from " + ChatColor.YELLOW + existingState.getName());
+		CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Switched Citadel mode to " + ChatColor.YELLOW
+				+ state.getName() + ChatColor.GOLD + " from " + ChatColor.YELLOW + existingState.getName());
 	}
 
 }

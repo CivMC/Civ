@@ -96,5 +96,8 @@ public abstract class AbstractPlayerState {
 			CitadelUtility.dropItemAtLocation(location, type.getItem().clone());
 		}
 	}
+	
+	@Override
+	public abstract boolean equals(Object o);
 
 }

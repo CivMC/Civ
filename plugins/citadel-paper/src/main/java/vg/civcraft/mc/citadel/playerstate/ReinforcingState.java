@@ -143,4 +143,12 @@ public class ReinforcingState extends AbstractPlayerState {
 			}
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof ReinforcingState)) {
+			return false;
+		}
+		return ((ReinforcingState) o).group.getName().equals(this.getGroup().getName());
+	}
 }

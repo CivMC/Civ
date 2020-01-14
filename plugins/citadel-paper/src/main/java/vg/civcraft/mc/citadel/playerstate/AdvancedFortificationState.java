@@ -87,4 +87,10 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		//just always make a new state for this one
+		return false;
+	}
+
 }

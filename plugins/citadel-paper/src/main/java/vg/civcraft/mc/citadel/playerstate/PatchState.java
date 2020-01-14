@@ -9,6 +9,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.command.PatchMode;
 import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
 import vg.civcraft.mc.citadel.listener.InformationModeListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -73,6 +74,11 @@ public class PatchState extends AbstractPlayerState {
 		}
 		rein.setHealth(rein.getType().getHealth());
 		rein.resetCreationTime();
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof PatchMode;
 	}
 
 }

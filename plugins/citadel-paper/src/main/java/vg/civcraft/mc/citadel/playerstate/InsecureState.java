@@ -46,4 +46,9 @@ public class InsecureState extends AbstractPlayerState {
 		}
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		return o instanceof InsecureState;
+	}
+
 }

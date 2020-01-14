@@ -47,4 +47,13 @@ public class FortificationState extends AbstractPlayerState {
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
 	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof FortificationState)) {
+			return false;
+		}
+		FortificationState fort = (FortificationState) o;
+		return fort.type == this.type && fort.group.getName().equals(this.getGroup().getName());
+	}
 }
