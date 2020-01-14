@@ -5,7 +5,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
-import org.bukkit.Bukkit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.NBTCompound;
@@ -130,8 +129,7 @@ public final class NBTSerialization {
 	 *
 	 * @param nbt The NBT data that's used to populate the new instance of the class.
 	 * @return Returns a populated instance of a class, or null. It will return null if 1) the given NBTCompound is null
-	 * or empty, 2) the class identifier cannot be found, 3) the class cannot be matched, or 4) there was an error in
-	 * casting the instance into the given generic type.
+	 * or empty, 2) the class identifier cannot be found, 3) the class cannot be matched.
 	 */
 	public static NBTSerializable deserialize(NBTCompound nbt) {
 		if (nbt == null || nbt.isEmpty()) {
