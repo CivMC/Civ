@@ -5,6 +5,9 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import org.bukkit.Bukkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.NBTCompound;
 
 /**
@@ -13,6 +16,7 @@ import vg.civcraft.mc.civmodcore.api.NBTCompound;
 public final class NBTSerialization {
 
 	private static final String NBT_CLASS_PATH_KEY = "==";
+	private static final Logger logger = LoggerFactory.getLogger(NBTSerialization.class);
 	private static final Map<String, Class<? extends NBTSerializable>> registeredClasses = new HashMap<>();
 
 	/**
@@ -49,24 +53,24 @@ public final class NBTSerialization {
 			throw new IllegalArgumentException("Cannot register NBTSerializable: " +
 					"the given class is already registered.");
 		}
-		System.out.println("NBTSerializable[" + clazz.getName() + "] registered.");
+		logger.info("NBTSerializable[" + clazz.getName() + "] registered.");
 		registeredClasses.put(clazz.getName(), clazz);
 		if (aliases != null) {
 			String errorMessage = "Could not register the alias for NBTSerializable [" + clazz.getName() + "] as: ";
 			for (String alias : aliases) {
 				if (Strings.isNullOrEmpty(alias)) {
-					System.err.println(errorMessage + "the alias is null or empty.");
+					logger.warn(errorMessage + "the alias is null or empty.");
 					continue;
 				}
 				if (alias.equals(clazz.getName())) {
-					System.err.println(errorMessage + "the alias matches the class name.");
+					logger.warn(errorMessage + "the alias matches the class name.");
 					continue;
 				}
 				if (registeredClasses.containsKey(alias)) {
-					System.err.println(errorMessage + "the alias is already registered.");
+					logger.warn(errorMessage + "the alias is already registered.");
 					continue;
 				}
-				System.out.println("NBTSerializable[" + clazz.getName() + "] alias [" + alias + "] registered.");
+				logger.info("NBTSerializable[" + clazz.getName() + "] alias [" + alias + "] registered.");
 				registeredClasses.putIfAbsent(alias, clazz);
 			}
 		}
@@ -83,7 +87,7 @@ public final class NBTSerialization {
 			throw new IllegalArgumentException("Cannot unregister NBTSerializable: " +
 					"the given class is null.");
 		}
-		System.out.println("NBTSerializable[" + clazz.getName() + "] unregistered.");
+		logger.info("NBTSerializable[" + clazz.getName() + "] unregistered.");
 		registeredClasses.values().remove(clazz);
 	}
 
@@ -91,7 +95,7 @@ public final class NBTSerialization {
 	 * Unregisters all {@link NBTSerializable} classes.
 	 */
 	public static void clearAllRegistrations() {
-		System.out.println("All NBTSerialization registered classes have been cleared.");
+		logger.info("All NBTSerialization registered classes have been cleared.");
 		registeredClasses.clear();
 	}
 
@@ -111,8 +115,10 @@ public final class NBTSerialization {
 		NBTCompound nbt = new NBTCompound();
 		try {
 			serializable.serialize(nbt);
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		}
+		catch (Exception exception) {
+			logger.error(
+					"NBTSerializable[" + serializable.getClass().getName() + "] could not be serialized.", exception);
 			return null;
 		}
 		nbt.setString(NBT_CLASS_PATH_KEY, serializable.getClass().getName());
@@ -144,8 +150,10 @@ public final class NBTSerialization {
 		try {
 			instance = clazz.newInstance();
 			instance.deserialize(nbt);
-		} catch (Exception exception) {
-			exception.printStackTrace();
+		}
+		catch (Exception exception) {
+			logger.error(
+					"NBTSerializable[" + clazz.getName() + "] could not be deserialized.", exception);
 			return null;
 		}
 		return instance;
