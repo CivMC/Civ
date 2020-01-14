@@ -16,14 +16,14 @@ public class Tester {
 		ExampleSerializable example = new ExampleSerializable();
 		example.setMessage(testString);
 
-		// Serialise the class into an NBT compound, which *should* hold the relevant data
+		// Serialize the class into an NBT compound, which *should* hold the relevant data
 		// to convert it back into an ExampleSerializable, given that it was also registered
 		NBTCompound nbt = NBTSerialization.serialize(example);
 
 		// Attempts to create an ExampleSerializable instance based on the NBT data
 		ExampleSerializable returned = NBTSerialization.deserialize(nbt);
 
-		// Tests if the message from the new instance matches that of the serialised class
+		// Tests if the message from the new instance matches that of the serialized class
 		assertEquals(returned.getMessage(), example.getMessage());
 
 		NBTSerialization.clearAllRegistrations();

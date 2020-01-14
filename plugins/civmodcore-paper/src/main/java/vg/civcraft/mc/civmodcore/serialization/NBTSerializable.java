@@ -9,9 +9,9 @@ import vg.civcraft.mc.civmodcore.api.NBTCompound;
 public interface NBTSerializable {
 
 	/**
-	 * Serialises a class into an NBTCompound.
+	 * Serializes a class into an NBTCompound.
 	 *
-	 * @param nbt The NBTCompound to serialise into, which <i>should</i> NEVER be null, so feel free to throw an
+	 * @param nbt The NBTCompound to serialize into, which <i>should</i> NEVER be null, so feel free to throw an
 	 * {@link NBTSerializationException} if it is. You can generally assume that the nbt compound is new and therefore
 	 * empty, but you may wish to check or manually {@link NBTCompound#clear() empty it}, though the latter may cause
 	 * other issues.
@@ -21,7 +21,7 @@ public interface NBTSerializable {
 	void serialize(NBTCompound nbt) throws NBTSerializationException;
 
 	/**
-	 * Serialises a class into an NBTCompound.
+	 * Deserializes a class into an NBTCompound.
 	 *
 	 * @param nbt The NBTCompound to deserialize from, which <i>should</i> NEVER be null, so feel free to throw an
 	 * {@link NBTSerializationException} if it is.

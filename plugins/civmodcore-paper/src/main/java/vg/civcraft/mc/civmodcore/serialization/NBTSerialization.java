@@ -100,10 +100,10 @@ public final class NBTSerialization {
 	/**
 	 * Serializes an {@link NBTSerializable} class into an {@link NBTCompound} for the purpose of being able to
 	 * deserialize it later. For this purpose, {@link NBTSerializable#serialize(NBTCompound) NBTSerializable's
-	 * serialise} method should not be called directly.
+	 * serialize} method should not be called directly.
 	 *
 	 * @param serializable The {@link NBTSerializable} class to serialize.
-	 * @return Returns an {@link NBTCompound} with the serialised data, or null if the given object was null, or if an
+	 * @return Returns an {@link NBTCompound} with the serialized data, or null if the given object was null, or if an
 	 * error occurred during serialization.
 	 * */
     public static <T extends NBTSerializable> NBTCompound serialize(T serializable) {
