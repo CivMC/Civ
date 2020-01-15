@@ -40,7 +40,7 @@ commands:
       - i
       usage: /ignore <player>
       description: Toggles ignoring a player
-      min-args: 1
+      min-args: 0
       max-args: 1
       player-only: true
    ignoregroup:
