@@ -128,8 +128,11 @@ public class ReinforcingState extends AbstractPlayerState {
 				ReinforcementChangeTypeEvent rcte = new ReinforcementChangeTypeEvent(player, rein, type);
 				Bukkit.getPluginManager().callEvent(rcte);
 				if (!rcte.isCancelled()) {
-					giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
+					if (rein.rollForItemReturn()) {
+						giveReinforcement(rein.getLocation().clone().add(0.5, 0.5, 0.5), e.getPlayer(), rein.getType());
+					}
 					rein.setType(type);
+					rein.setHealth(type.getHealth());
 					rein.resetCreationTime();
 					CitadelUtility.sendAndLog(player, ChatColor.GREEN,
 							"Updated reinforcement to " + rein.getType().getName() + " on " + group.getName());

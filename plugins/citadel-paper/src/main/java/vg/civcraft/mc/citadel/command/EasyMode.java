@@ -25,7 +25,7 @@ public class EasyMode extends StandaloneCommand {
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN, "Easy reinforcing mode has been disabled.");
 		} else {
 			CitadelUtility.sendAndLog(player, ChatColor.GREEN,
-					"Easy reinforcing mode has been enabled. You will be able to reinforce to your default groups by placing blocks while having a reinforcement material in your off hand.");
+					"Easy reinforcing mode has been enabled. You will be able to reinforce to your default group by placing blocks while having a reinforcement material in your off hand.");
 		}
 		setting.toggleValue(player.getUniqueId());
 		return true;
