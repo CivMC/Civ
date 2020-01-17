@@ -16,8 +16,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import sh.okx.railswitch.RailSwitch;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
-import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
-import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 import java.util.Optional;
 
@@ -92,17 +91,10 @@ public class DetectorRailActivateListener implements Listener {
   }
 
   private boolean isSameReinforcementGroup(Location a, Location b) {
-    ReinforcementManager rein = Citadel.getReinforcementManager();
+    ReinforcementManager rein = Citadel.getInstance().getReinforcementManager();
     Reinforcement reinA = rein.getReinforcement(a);
     Reinforcement reinB = rein.getReinforcement(b);
-    if (!(reinA instanceof PlayerReinforcement) || !(reinB instanceof PlayerReinforcement)) {
-      return false;
-    }
-
-    PlayerReinforcement playerReinA = (PlayerReinforcement) reinA;
-    PlayerReinforcement playerReinB = (PlayerReinforcement) reinB;
-
-    return playerReinA.getGroup().equals(playerReinB.getGroup());
+    return reinA.getGroup().equals(reinB.getGroup());
   }
 
   /**
