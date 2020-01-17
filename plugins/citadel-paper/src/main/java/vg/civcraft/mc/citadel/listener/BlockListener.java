@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -30,10 +31,17 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.api.ToolAPI;
+import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 
 public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
+	
+	private DoubleInteractFixer interactFixer;
+	
+	public BlockListener(Citadel plugin) {
+		this.interactFixer = new DoubleInteractFixer(plugin);
+	}
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void blockBreakEvent(BlockBreakEvent event) {
@@ -116,7 +124,12 @@ public class BlockListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void interact(PlayerInteractEvent pie) {
-		if (!pie.hasBlock()) {
+		if (pie.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (interactFixer.checkInteracted(pie.getPlayer(), pie.getClickedBlock())) {
+				return;
+			}
+		}
+		else if (pie.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
 		Citadel.getInstance().getStateManager().getState(pie.getPlayer()).handleInteractBlock(pie);

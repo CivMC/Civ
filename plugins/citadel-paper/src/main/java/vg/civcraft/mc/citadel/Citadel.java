@@ -131,10 +131,10 @@ public class Citadel extends ACivMod {
 	 * Registers the listeners for Citadel.
 	 */
 	private void registerListeners() {
-		getServer().getPluginManager().registerEvents(new BlockListener(), this);
+		getServer().getPluginManager().registerEvents(new BlockListener(this), this);
 		getServer().getPluginManager().registerEvents(new EntityListener(), this);
 		getServer().getPluginManager().registerEvents(new InventoryListener(), this);
-		getServer().getPluginManager().registerEvents(new InformationModeListener(), this);
+		getServer().getPluginManager().registerEvents(new InformationModeListener(this), this);
 		getServer().getPluginManager().registerEvents(new RedstoneListener(config.getMaxRedstoneDistance()), this);
 	}
 }

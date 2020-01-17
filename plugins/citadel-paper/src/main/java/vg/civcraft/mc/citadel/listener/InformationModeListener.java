@@ -19,12 +19,19 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class InformationModeListener implements Listener {
 
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
+	
+	private DoubleInteractFixer interactFixer;
+	
+	public InformationModeListener(Citadel citadel) {
+		interactFixer = new DoubleInteractFixer(citadel);
+	}
 
 	public static ChatColor getDamageColor(double relativeHealth) {
 		if (relativeHealth >= 1.0) {
@@ -69,7 +76,12 @@ public class InformationModeListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void handleInteractBlock(PlayerInteractEvent e) {
-		if (e.getAction() != Action.RIGHT_CLICK_BLOCK && e.getAction() != Action.LEFT_CLICK_BLOCK) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			if (interactFixer.checkInteracted(e.getPlayer(), e.getClickedBlock())) {
+				return;
+			}
+		}
+		else if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
 		if (!Citadel.getInstance().getSettingManager().getInformationMode().getValue(e.getPlayer())) {
