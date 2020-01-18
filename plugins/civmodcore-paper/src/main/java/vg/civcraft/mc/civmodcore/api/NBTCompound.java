@@ -20,7 +20,7 @@ import org.bukkit.inventory.ItemStack;
  * replace {@link vg.civcraft.mc.civmodcore.itemHandling.TagManager TagManager} though the .mapToNBT and .listToNBT
  * APIs will not be re-implemented here as it's better to have a finer control of how data is written and read.
  * */
-public class NBTCompound {
+public class NBTCompound implements Cloneable {
 
 	private NBTTagCompound tag;
 
