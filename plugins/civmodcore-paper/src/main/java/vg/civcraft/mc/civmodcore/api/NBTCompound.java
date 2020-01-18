@@ -88,6 +88,15 @@ public class NBTCompound {
 	}
 
 	/**
+	 * Clones the NBT compound.
+	 *
+	 * @return Returns a duplicated version of this NBT compound.
+	 * */
+	public NBTCompound duplicate() {
+		return new NBTCompound(this.tag.clone());
+	}
+
+	/**
 	 * Returns the underlying NBTTagCompound.
 	 *
 	 * @return The wrapped NBTTagCompound.

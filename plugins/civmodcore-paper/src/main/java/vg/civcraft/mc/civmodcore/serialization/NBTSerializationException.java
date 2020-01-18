@@ -1,6 +1,6 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
-public class NBTSerializationException extends Exception {
+public class NBTSerializationException extends RuntimeException {
 
 	private static final long serialVersionUID = 606023177729327630L;
 

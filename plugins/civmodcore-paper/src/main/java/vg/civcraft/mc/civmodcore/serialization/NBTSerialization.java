@@ -15,7 +15,7 @@ import vg.civcraft.mc.civmodcore.api.NBTCompound;
 public final class NBTSerialization {
 
 	private static final String NBT_CLASS_PATH_KEY = "==";
-	private static final Logger logger = LoggerFactory.getLogger(NBTSerialization.class);
+	private static final Logger logger = LoggerFactory.getLogger(NBTSerialization.class.getSimpleName());
 	private static final Map<String, Class<? extends NBTSerializable>> registeredClasses = new HashMap<>();
 
 	/**
@@ -136,7 +136,8 @@ public final class NBTSerialization {
 			return null;
 		}
 		String path = nbt.getString(NBT_CLASS_PATH_KEY);
-		nbt.remove(NBT_CLASS_PATH_KEY);
+		NBTCompound clone = nbt.duplicate();
+		clone.remove(NBT_CLASS_PATH_KEY);
 		if (Strings.isNullOrEmpty(path)) {
 			return null;
 		}
@@ -147,12 +148,11 @@ public final class NBTSerialization {
 		NBTSerializable instance;
 		try {
 			instance = clazz.newInstance();
-			instance.deserialize(nbt);
+			instance.deserialize(clone);
 		}
 		catch (Exception exception) {
-			logger.error(
+			throw new NBTSerializationException(
 					"NBTSerializable[" + clazz.getName() + "] could not be deserialized.", exception);
-			return null;
 		}
 		return instance;
 	}
