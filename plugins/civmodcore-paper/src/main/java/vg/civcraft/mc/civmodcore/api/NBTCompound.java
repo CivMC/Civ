@@ -92,8 +92,11 @@ public class NBTCompound {
 	 *
 	 * @return Returns a duplicated version of this NBT compound.
 	 * */
-	public NBTCompound duplicate() {
-		return new NBTCompound(this.tag.clone());
+	@Override
+	public NBTCompound clone() throws CloneNotSupportedException {
+		NBTCompound clone = (NBTCompound) super.clone();
+		clone.tag = this.tag.clone();
+		return clone;
 	}
 
 	/**

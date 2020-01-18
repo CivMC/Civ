@@ -135,8 +135,6 @@ public final class NBTSerialization {
 			return null;
 		}
 		String path = nbt.getString(NBT_CLASS_PATH_KEY);
-		NBTCompound clone = nbt.duplicate();
-		clone.remove(NBT_CLASS_PATH_KEY);
 		if (Strings.isNullOrEmpty(path)) {
 			return null;
 		}
@@ -144,16 +142,17 @@ public final class NBTSerialization {
 		if (clazz == null) {
 			return null;
 		}
-		NBTSerializable instance;
 		try {
-			instance = clazz.newInstance();
+			NBTSerializable instance = clazz.newInstance();
+			NBTCompound clone = nbt.clone();
+			clone.remove(NBT_CLASS_PATH_KEY);
 			instance.deserialize(clone);
+			return instance;
 		}
 		catch (Exception exception) {
 			throw new NBTSerializationException(
 					"NBTSerializable[" + clazz.getName() + "] could not be deserialized.", exception);
 		}
-		return instance;
 	}
 
 }
