@@ -5,7 +5,7 @@
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.7.7</version>
+	<version>1.7.8</version>
 
 	<name>CivModCore</name>
 	<url>https://github.com/DevotedMC/CivModCore/</url>
@@ -64,8 +64,7 @@
 				<configuration>
 					<argLine>-Dfile.encoding=${encoding}</argLine>
 					<systemPropertyVariables>
-						<java.awt.headless>true</java.awt.headless>
-						<apple.awt.UIElement>true</apple.awt.UIElement>
+						<log4j.skipJansi>true</log4j.skipJansi>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
@@ -129,6 +128,19 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
 			<version>1.7.26</version>
+		</dependency>
+		<!-- For Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.30</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 
