@@ -116,9 +116,8 @@ public final class NBTSerialization {
 			serializable.serialize(nbt);
 		}
 		catch (Exception exception) {
-			logger.error(
+			throw new NBTSerializationException(
 					"NBTSerializable[" + serializable.getClass().getName() + "] could not be serialized.", exception);
-			return null;
 		}
 		nbt.setString(NBT_CLASS_PATH_KEY, serializable.getClass().getName());
 		return nbt;
