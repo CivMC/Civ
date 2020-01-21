@@ -48,7 +48,7 @@ public class BridgeManager {
 
 	public void init(StorageManager storage) {
 		this.storage = storage;
-		this.pendingTimerBatches = new WeakHashMap<>();
+		this.pendingTimerBatches = new HashMap<>();
 
 		this.timerWorker = new TimerWorker(this);
 		this.timerWorker.startThread();

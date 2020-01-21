@@ -68,7 +68,7 @@ public class TimerWorker extends Thread implements Runnable {
         this.run.set(true);
 
         try {
-            Map<Gearblock, TimerBatch> localBatchMap = new WeakHashMap<Gearblock, TimerBatch>();
+            Map<Gearblock, TimerBatch> localBatchMap = new HashMap<Gearblock, TimerBatch>();
             List<TimerBatch> localBatches = new ArrayList<TimerBatch>();
 
             while (!this.isInterrupted() && !this.kill.get()) {
