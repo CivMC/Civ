@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -37,8 +37,8 @@ public class DataWorker extends Thread implements Runnable {
 	private ReinforcementSource reinforcementSource;
 	private ChangeLogger changeLogger;
 
-	private Map<Gearblock, GearblockForUpdate> changedGearblocks = new WeakHashMap<Gearblock, GearblockForUpdate>();
-	private Map<GearblockLink, LinkForUpdate> changedLinks = new WeakHashMap<GearblockLink, LinkForUpdate>();
+	private Map<Gearblock, GearblockForUpdate> changedGearblocks = new HashMap<Gearblock, GearblockForUpdate>();
+	private Map<GearblockLink, LinkForUpdate> changedLinks = new HashMap<GearblockLink, LinkForUpdate>();
 
 	private ArrayList<GearblockForUpdate> localChangedGearblocks = new ArrayList<GearblockForUpdate>();
 	private ArrayList<LinkForUpdate> localChangedLinks = new ArrayList<LinkForUpdate>();
@@ -65,9 +65,9 @@ public class DataWorker extends Thread implements Runnable {
 	}
 
 	public Map<BlockCoord, Gearblock> load() throws SQLException {
-		Map<BlockCoord, Gearblock> gearblocks = new WeakHashMap<BlockCoord, Gearblock>();
-		Map<Integer, Gearblock> gearblocksById = new WeakHashMap<Integer, Gearblock>();
-		Map<Integer, GearblockLink> linksById = new WeakHashMap<Integer, GearblockLink>();
+		Map<BlockCoord, Gearblock> gearblocks = new HashMap<BlockCoord, Gearblock>();
+		Map<Integer, Gearblock> gearblocksById = new HashMap<Integer, Gearblock>();
+		Map<Integer, GearblockLink> linksById = new HashMap<Integer, GearblockLink>();
 
 		loadGears(gearblocks, gearblocksById);
 		loadLinks(linksById, gearblocksById);

@@ -6,7 +6,7 @@
 package com.aleksey.castlegates.engine;
 
 import java.util.Map;
-import java.util.WeakHashMap;
+import java.util.HashMap;
 
 import com.aleksey.castlegates.CastleGates;
 import com.aleksey.castlegates.types.TimerMode;
@@ -26,8 +26,8 @@ public class PlayerStateManager {
 		public long lastInteracted;
 	}
 
-	private Map<Player, PlayerState> states = new WeakHashMap<Player, PlayerState>();
-	private Map<Player, Integer> tasks = new WeakHashMap<Player, Integer>();
+	private Map<Player, PlayerState> states = new HashMap<Player, PlayerState>();
+	private Map<Player, Integer> tasks = new HashMap<Player, Integer>();
 
 	public void clearPlayerMode(Player player) {
 		Integer taskId = this.tasks.get(player);
