@@ -7,14 +7,14 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SQLiteConnectionPool implements ConnectionPool {
-  private Path file;
-
-  public SQLiteConnectionPool(File dataFolder, String file) {
-    this.file = dataFolder.toPath().resolve(file);
-  }
-
-  @Override
-  public Connection getConnection() throws SQLException {
-    return DriverManager.getConnection("jdbc:sqlite:" + file);
-  }
+    private Path file;
+    
+    public SQLiteConnectionPool(File dataFolder, String file) {
+        this.file = dataFolder.toPath().resolve(file);
+    }
+    
+    @Override
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + file);
+    }
 }
