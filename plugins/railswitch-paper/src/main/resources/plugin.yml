@@ -1,6 +1,6 @@
-name: RailSwitch
-version: '1.3.1'
-main: sh.okx.railswitch.RailSwitch
+name: ${project.artifactId}
+version: ${project.version}
+main: ${project.groupId}.${project.artifactId}Plugin
 author: Okx
 api-version: '1.14'
 description: Easily make rail switches for automated destination selection
