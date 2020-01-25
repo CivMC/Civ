@@ -10,7 +10,7 @@ import sh.okx.railswitch.database.SQLiteConnectionPool;
 
 public class RailSwitchPlugin extends JavaPlugin {
     
-    private boolean timings;
+    private boolean debug;
     private RailSwitchDatabase database;
     
     @Override
@@ -18,7 +18,7 @@ public class RailSwitchPlugin extends JavaPlugin {
         super.onEnable();
         saveDefaultConfig();
         loadDatabase();
-        this.timings = getConfig().getBoolean("timings", false);
+        this.debug = getConfig().getBoolean("debug", getConfig().getBoolean("timings", false));
         getServer().getPluginManager().registerEvents(new DetectorRailActivateListener(this), this);
         getCommand("setdestination").setExecutor(new SetDestinationCommand(this));
     }
@@ -56,8 +56,8 @@ public class RailSwitchPlugin extends JavaPlugin {
         this.database = new RailSwitchDatabase(pool, getLogger());
     }
     
-    public boolean isTimings() {
-        return timings;
+    public boolean isDebug() {
+        return this.debug;
     }
     
 }
