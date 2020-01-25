@@ -1,5 +1,7 @@
 package sh.okx.railswitch;
 
+import java.util.Arrays;
+import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,24 +14,36 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockRedstoneEvent;
-import sh.okx.railswitch.RailSwitch;
-import sh.okx.railswitch.SwitchType;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 import vg.civcraft.mc.citadel.reinforcement.PlayerReinforcement;
 import vg.civcraft.mc.citadel.reinforcement.Reinforcement;
 
-import java.util.Arrays;
-import java.util.Objects;
-
+/**
+ * Event listener to enact the functionality of rail switches.
+ */
 public class DetectorRailActivateListener implements Listener {
     
-    private final RailSwitch plugin;
+    private static final String WILDCARD = "*";
     
-    public DetectorRailActivateListener(RailSwitch plugin) {
+    private final RailSwitchPlugin plugin;
+    
+    /**
+     * Creates a new event listener, passing through the current RailSwitch plugin instance.
+     *
+     * @param plugin The current RailSwitch plugin instance.
+     */
+    public DetectorRailActivateListener(RailSwitchPlugin plugin) {
         this.plugin = plugin;
     }
     
+    /**
+     * Event handler for rail switches. Will determine if a switch exists at the target location, and if so will process
+     * it accordingly, allowing it to trigger or not trigger depending on the rider's set destination, the listed
+     * destinations on the switch, and the switch type.
+     *
+     * @param event The block redstone event to base the switch's existence on.
+     */
     @EventHandler
     public void onRailSwitch(BlockRedstoneEvent event) {
         Block block = event.getBlock();
@@ -116,13 +130,14 @@ public class DetectorRailActivateListener implements Listener {
                 orElse(null);
         if (playerDestinations != null && playerDestinations.length > 0) {
             String[] switchDestinations = Arrays.copyOfRange(lines, 1, lines.length);
-            matcher: for (String playerDestination : playerDestinations) {
-                if (playerDestination.equals("*")) {
+            matcher:
+            for (String playerDestination : playerDestinations) {
+                if (playerDestination.equals(WILDCARD)) {
                     matched = true;
                     break;
                 }
                 for (String switchDestination : switchDestinations) {
-                    if (switchDestination.equals("*")
+                    if (switchDestination.equals(WILDCARD)
                             || playerDestination.equalsIgnoreCase(switchDestination)) {
                         matched = true;
                         break matcher;
@@ -137,6 +152,9 @@ public class DetectorRailActivateListener implements Listener {
                 break;
             case INVERTED:
                 event.setNewCurrent(matched ? 0 : 15);
+                break;
+            // Gotta have this or the Devoted style checker will screech
+            default:
                 break;
         }
         

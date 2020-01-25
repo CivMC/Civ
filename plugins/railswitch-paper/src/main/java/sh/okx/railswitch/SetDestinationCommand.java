@@ -2,20 +2,27 @@ package sh.okx.railswitch;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
+import java.util.ArrayList;
+import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
-
+/**
+ * The Set Destination command handler.
+ */
 public class SetDestinationCommand implements CommandExecutor {
     
-    private final RailSwitch plugin;
+    private final RailSwitchPlugin plugin;
     
-    public SetDestinationCommand(RailSwitch plugin) {
+    /**
+     * Creates a new set destination command handler, passing through the current RailSwitch plugin instance.
+     *
+     * @param plugin The plugin to pass through to this command handler.
+     */
+    public SetDestinationCommand(RailSwitchPlugin plugin) {
         this.plugin = plugin;
     }
     
@@ -26,10 +33,11 @@ public class SetDestinationCommand implements CommandExecutor {
         }
         
         Player player = (Player) sender;
-    
+        
         // Convert
         List<String> destinations = new ArrayList<>();
-        args: for (String argument : arguments) {
+        checker:
+        for (String argument : arguments) {
             // If the argument is null or empty, it's likely from a double space, just ignore it
             if (Strings.isNullOrEmpty(argument)) {
                 continue;
@@ -45,7 +53,7 @@ public class SetDestinationCommand implements CommandExecutor {
             }
             for (String destination : destinations) {
                 if (argument.equalsIgnoreCase(destination)) {
-                    continue args;
+                    continue checker;
                 }
             }
             destinations.add(argument);

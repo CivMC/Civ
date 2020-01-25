@@ -8,9 +8,13 @@ import sh.okx.railswitch.database.MySQLConnectionPool;
 import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.database.SQLiteConnectionPool;
 
+/**
+ * The Rail Switch plugin class
+ */
 public class RailSwitchPlugin extends JavaPlugin {
     
     private boolean debug;
+    
     private RailSwitchDatabase database;
     
     @Override
@@ -29,10 +33,18 @@ public class RailSwitchPlugin extends JavaPlugin {
         HandlerList.unregisterAll(this);
     }
     
+    /**
+     * Retrieves the database connection setup that was created by {@link RailSwitchPlugin#loadDatabase()}.
+     *
+     * @return Returns the database connection setup.
+     */
     public RailSwitchDatabase getDatabase() {
         return database;
     }
     
+    /**
+     * Create a database connection setup by the configuration.
+     */
     private void loadDatabase() {
         ConfigurationSection config = getConfig();
         ConnectionPool pool;
@@ -56,6 +68,11 @@ public class RailSwitchPlugin extends JavaPlugin {
         this.database = new RailSwitchDatabase(pool, getLogger());
     }
     
+    /**
+     * Determines whether the plugin is in debug mode.
+     *
+     * @return Returns whether the plugin is in debug mode.
+     */
     public boolean isDebug() {
         return this.debug;
     }
