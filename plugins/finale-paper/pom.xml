@@ -62,8 +62,8 @@
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 		<repository>
-			<id>dmulloy2-repo</id>
-			<url>http://repo.dmulloy2.net/content/groups/public/</url>
+			<id>byteflux-repo</id>
+			<url>http://repo.byteflux.net/repository/maven-public/</url>
 		</repository>
 	</repositories>
 </project>

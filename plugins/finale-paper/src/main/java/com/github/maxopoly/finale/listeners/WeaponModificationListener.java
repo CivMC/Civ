@@ -1,6 +1,6 @@
 package com.github.maxopoly.finale.listeners;
 
-import net.minecraft.server.v1_12_R1.NBTBase;
+import com.github.maxopoly.finale.misc.WeaponModifier;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagDouble;
 import net.minecraft.server.v1_12_R1.NBTTagInt;
@@ -15,55 +15,72 @@ import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.Finale;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static com.github.maxopoly.finale.misc.WeaponModifier.ATTACK_SPEED_NON_ADJUSTED;
+import static com.github.maxopoly.finale.misc.WeaponModifier.DAMAGE_NON_ADJUSTED;
+
 public class WeaponModificationListener implements Listener {
+	
+	private final WeaponModifier manager = Finale.getManager().getWeaponModifer();
 
 	@EventHandler
-	public void inventoryClick(InventoryClickEvent e) {
-		ItemStack is = e.getCurrentItem();
-		if (is == null) {
+	public void inventoryClick(InventoryClickEvent event) {
+		ItemStack item = event.getCurrentItem();
+		if (item == null) {
 			return;
 		}
-		int adjustedDamage = Finale.getManager().getWeaponModifer().getDamage(is.getType());
-		double adjustedAttackSpeed = Finale.getManager().getWeaponModifer().getAttackSpeed(is.getType());
-		if (adjustedAttackSpeed == -1.0 && adjustedDamage == -1) {
-			// neither should be adjusted
+		net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+		NBTTagCompound compound = nmsStack.getTag();
+		if (compound == null) {
+			compound = new NBTTagCompound();
+		}
+		Set<NBTTagCompound> attributes = new HashSet<>();
+		// NBTTagList doesn't have a method of getting the internal list, so we need to extract it
+		// this also gives us the opportunity to remove duplicate entries.
+		NBTTagList rawAttributes = compound.getList("AttributeModifiers", compound.getTypeId());
+		for (int i = 0, l = rawAttributes.size(); i < l; i++) {
+			NBTTagCompound nbt = rawAttributes.get(i);
+			if (nbt == null || nbt.isEmpty()) {
+				continue;
+			}
+			attributes.add(nbt);
+		}
+		int damage = manager.getDamage(item.getType());
+		if (damage != DAMAGE_NON_ADJUSTED) {
+			NBTTagCompound attribute = new NBTTagCompound();
+			attribute.set("AttributeName", new NBTTagString("generic.attackDamage"));
+			attribute.set("Name", new NBTTagString("generic.attackDamage"));
+			attribute.set("Operation", new NBTTagInt(0));
+			attribute.set("Amount", new NBTTagInt(damage));
+			attribute.set("Slot", new NBTTagString("mainhand"));
+			attribute.set("UUIDLeast", new NBTTagInt(894654));
+			attribute.set("UUIDMost", new NBTTagInt(2872));
+			attributes.add(attribute);
+		}
+		double speed = manager.getAttackSpeed(item.getType());
+		if (speed != ATTACK_SPEED_NON_ADJUSTED) {
+			NBTTagCompound attribute = new NBTTagCompound();
+			attribute.set("AttributeName", new NBTTagString("generic.attackSpeed"));
+			attribute.set("Name", new NBTTagString("generic.attackSpeed"));
+			attribute.set("Operation", new NBTTagInt(0));
+			attribute.set("Amount", new NBTTagDouble(speed));
+			attribute.set("Slot", new NBTTagString("mainhand"));
+			attribute.set("UUIDLeast", new NBTTagInt(894654));
+			attribute.set("UUIDMost", new NBTTagInt(2872));
+			attributes.add(attribute);
+		}
+		// If nothing was there and nothing will be set, just exit
+		if (attributes.isEmpty() && rawAttributes.isEmpty()) {
 			return;
 		}
-		net.minecraft.server.v1_12_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
-		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
-		NBTBase modifierBase = compound.get("AttributeModifiers");
-		NBTTagList modifiers;
-		if (modifierBase != null) {
-			modifiers = (NBTTagList) modifierBase;
-		} else {
-			modifiers = new NBTTagList();
-		}
-		if (adjustedDamage != -1) {
-			NBTTagCompound damage = new NBTTagCompound();
-			damage.set("AttributeName", new NBTTagString("generic.attackDamage"));
-			damage.set("Name", new NBTTagString("generic.attackDamage"));
-			damage.set("Operation", new NBTTagInt(0));
-			damage.set("Amount", new NBTTagInt(adjustedDamage));
-			damage.set("Slot", new NBTTagString("mainhand"));
-			damage.set("UUIDLeast", new NBTTagInt(894654));
-			damage.set("UUIDMost", new NBTTagInt(2872));
-			modifiers.add(damage);
-		}
-		if (adjustedAttackSpeed != - 1.0) {
-			NBTTagCompound speed = new NBTTagCompound();
-			speed.set("AttributeName", new NBTTagString("generic.attackSpeed"));
-			speed.set("Name", new NBTTagString("generic.attackSpeed"));
-			speed.set("Operation", new NBTTagInt(0));
-			speed.set("Amount", new NBTTagDouble(adjustedAttackSpeed));
-			speed.set("Slot", new NBTTagString("mainhand"));
-			speed.set("UUIDLeast", new NBTTagInt(894654));
-			speed.set("UUIDMost", new NBTTagInt(2872));
-			modifiers.add(speed);
-		}
-		compound.set("AttributeModifiers", modifiers);
+		NBTTagList resulting = new NBTTagList();
+		attributes.forEach(resulting::add);
+		compound.set("AttributeModifiers", resulting);
 		nmsStack.setTag(compound);
 		ItemStack result = CraftItemStack.asBukkitCopy(nmsStack);
-		e.setCurrentItem(result);
+		event.setCurrentItem(result);
 	}
 
 }

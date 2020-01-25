@@ -6,6 +6,9 @@ import java.util.Map;
 import org.bukkit.Material;
 
 public class WeaponModifier {
+	
+	public static final int DAMAGE_NON_ADJUSTED = -1;
+	public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0d;
 
 	private class WeaponConfig {
 		private Material mat;
@@ -31,11 +34,7 @@ public class WeaponModifier {
 		}
 	}
 
-	private Map<Material, WeaponConfig> weapons;
-
-	public WeaponModifier() {
-		weapons = new HashMap<Material, WeaponModifier.WeaponConfig>();
-	}
+	private Map<Material, WeaponConfig> weapons = new HashMap<>();
 
 	public void addWeapon(Material m, int damage, double attackSpeed) {
 		weapons.put(m, new WeaponConfig(m, damage, attackSpeed));
@@ -44,7 +43,7 @@ public class WeaponModifier {
 	public int getDamage(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
-			return -1;
+			return DAMAGE_NON_ADJUSTED;
 		}
 		return config.getDamage();
 	}
@@ -52,7 +51,7 @@ public class WeaponModifier {
 	public double getAttackSpeed(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
-			return -1.0;
+			return ATTACK_SPEED_NON_ADJUSTED;
 		}
 		return config.getAttackSpeed();
 	}
