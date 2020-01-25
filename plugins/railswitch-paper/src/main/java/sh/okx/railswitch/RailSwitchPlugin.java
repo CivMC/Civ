@@ -9,7 +9,7 @@ import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.database.SQLiteConnectionPool;
 import sh.okx.railswitch.listener.DetectorRailActivateListener;
 
-public class RailSwitch extends JavaPlugin {
+public class RailSwitchPlugin extends JavaPlugin {
     
     private boolean timings;
     private RailSwitchDatabase database;
