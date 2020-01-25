@@ -43,6 +43,7 @@
             https://build.devotedmc.com/job/Style-guide-master/lastSuccessfulBuild/artifact/src/main/resources/devoted_checks.xml
           </configLocation>
           <consoleOutput>true</consoleOutput>
+          <linkXRef>false</linkXRef>
         </configuration>
         <executions>
           <execution>
