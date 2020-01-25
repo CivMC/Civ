@@ -2,7 +2,7 @@ package sh.okx.railswitch;
 
 import com.google.common.base.CharMatcher;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.plugin.PluginManager;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.okx.railswitch.database.ConnectionPool;
 import sh.okx.railswitch.database.MySQLConnectionPool;
@@ -11,6 +11,7 @@ import sh.okx.railswitch.database.SQLiteConnectionPool;
 import sh.okx.railswitch.listener.DetectorRailActivateListener;
 
 public class RailSwitch extends JavaPlugin {
+    
     private boolean timings;
     private RailSwitchDatabase database;
     
@@ -19,15 +20,15 @@ public class RailSwitch extends JavaPlugin {
         super.onEnable();
         saveDefaultConfig();
         loadDatabase();
-        
-        if (getConfig().getBoolean("timings")) {
-            timings = true;
-        }
-        
-        PluginManager pm = getServer().getPluginManager();
-        
-        pm.registerEvents(new DetectorRailActivateListener(this), this);
+        this.timings = getConfig().getBoolean("timings", false);
+        getServer().getPluginManager().registerEvents(new DetectorRailActivateListener(this), this);
         getCommand("setdestination").setExecutor(new SetDestinationCommand(this));
+    }
+    
+    @Override
+    public void onDisable() {
+        super.onDisable();
+        HandlerList.unregisterAll(this);
     }
     
     public RailSwitchDatabase getDatabase() {
@@ -36,23 +37,24 @@ public class RailSwitch extends JavaPlugin {
     
     private void loadDatabase() {
         ConfigurationSection config = getConfig();
-        
         ConnectionPool pool;
         String type = config.getString("database-type");
         if (type.equalsIgnoreCase("mysql")) {
-            String username = config.getString("mysql.username");
-            String host = config.getString("mysql.host");
-            String password = config.getString("mysql.password");
-            String database = config.getString("mysql.database");
-            int port = config.getInt("mysql.port");
-            
-            pool = new MySQLConnectionPool(host, port, database, username, password);
-        } else if (type.equalsIgnoreCase("sqlite")) {
-            pool = new SQLiteConnectionPool(getDataFolder(), config.getString("sqlite.file-name"));
-        } else {
+            pool = new MySQLConnectionPool(
+                    config.getString("mysql.username"),
+                    config.getInt("mysql.port"),
+                    config.getString("mysql.database"),
+                    config.getString("mysql.username"),
+                    config.getString("mysql.password"));
+        }
+        else if (type.equalsIgnoreCase("sqlite")) {
+            pool = new SQLiteConnectionPool(
+                    getDataFolder(),
+                    config.getString("sqlite.file-name"));
+        }
+        else {
             throw new RuntimeException("Invalid database-type in config.yml. Disabling plugin.");
         }
-        
         this.database = new RailSwitchDatabase(pool, getLogger());
     }
     
@@ -76,4 +78,5 @@ public class RailSwitch extends JavaPlugin {
     public boolean isTimings() {
         return timings;
     }
+    
 }
