@@ -40,7 +40,7 @@ public class RailSwitch extends JavaPlugin {
         String type = config.getString("database-type");
         if (type.equalsIgnoreCase("mysql")) {
             pool = new MySQLConnectionPool(
-                    config.getString("mysql.username"),
+                    config.getString("mysql.host"),
                     config.getInt("mysql.port"),
                     config.getString("mysql.database"),
                     config.getString("mysql.username"),
