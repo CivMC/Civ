@@ -7,7 +7,6 @@ import sh.okx.railswitch.database.ConnectionPool;
 import sh.okx.railswitch.database.MySQLConnectionPool;
 import sh.okx.railswitch.database.RailSwitchDatabase;
 import sh.okx.railswitch.database.SQLiteConnectionPool;
-import sh.okx.railswitch.listener.DetectorRailActivateListener;
 
 public class RailSwitchPlugin extends JavaPlugin {
     
