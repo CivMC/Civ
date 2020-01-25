@@ -1,6 +1,5 @@
 package sh.okx.railswitch;
 
-import com.google.common.base.CharMatcher;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -56,23 +55,6 @@ public class RailSwitch extends JavaPlugin {
             throw new RuntimeException("Invalid database-type in config.yml. Disabling plugin.");
         }
         this.database = new RailSwitchDatabase(pool, getLogger());
-    }
-    
-    /**
-     * make sure the message doesn't have any weirdness
-     */
-    public boolean isValidDestination(String message) {
-        // Each destination must be fewer than 40 characters.
-        for (String dest : message.split(" ")) {
-            if (dest.length() > 40) {
-                return false;
-            }
-        }
-        
-        return CharMatcher.inRange('0', '9')
-                .or(CharMatcher.inRange('a', 'z'))
-                .or(CharMatcher.inRange('A', 'Z'))
-                .or(CharMatcher.anyOf("!\"#$%&'()*+,-./;:<=>?@[]\\^_`{|}~ ")).matchesAllOf(message);
     }
     
     public boolean isTimings() {
