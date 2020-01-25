@@ -1,4 +1,4 @@
-package sh.okx.railswitch.listener;
+package sh.okx.railswitch;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
