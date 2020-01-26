@@ -58,8 +58,7 @@ public class DetectorRailActivateListener implements Listener {
         // Check that the block above the rail is a sign
         Block above = block.getRelative(BlockFace.UP);
         if (above == null
-                // Do not check for Material.SIGN as that is an item material, not a block material
-                || (above.getType() != Material.SIGN_POST && above.getType() != Material.WALL_SIGN)
+                || above.getType() != Material.WALL_SIGN
                 || !(above.getState() instanceof Sign)) {
             return;
         }
