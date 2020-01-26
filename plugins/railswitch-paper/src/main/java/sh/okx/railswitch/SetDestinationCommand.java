@@ -1,9 +1,10 @@
 package sh.okx.railswitch;
 
-import com.google.common.base.CharMatcher;
 import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -14,6 +15,9 @@ import org.bukkit.entity.Player;
  * The Set Destination command handler.
  */
 public class SetDestinationCommand implements CommandExecutor {
+    
+    private static final Pattern validDestinationPattern = Pattern.compile(
+            "^[\\w!\"#$%&'()*+,-./;:<=>?@\\[\\]^`{|}~]{1,40}$");
     
     private final RailSwitchPlugin plugin;
     
@@ -42,11 +46,7 @@ public class SetDestinationCommand implements CommandExecutor {
             if (Strings.isNullOrEmpty(argument)) {
                 continue;
             }
-            if (argument.length() > 40 || !CharMatcher.inRange('0', '9').
-                    or(CharMatcher.inRange('a', 'z')).
-                    or(CharMatcher.inRange('A', 'Z')).
-                    or(CharMatcher.anyOf("!\"#$%&'()*+,-./;:<=>?@[]\\^_`{|}~")).
-                    matchesAllOf(argument)) {
+            if (!validDestinationPattern.matcher(argument).matches()) {
                 player.sendMessage(ChatColor.RED + "Destinations can not be more than 40 characters and may only " +
                         "use alphanumerical characters, and ASCII symbols.");
                 return true;
