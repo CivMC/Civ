@@ -70,30 +70,7 @@ public class DetectorRailActivateListener implements Listener {
         if (type == null) {
             return;
         }
-        
-        // If Citadel is enabled, check that the sign and the rail are on the same group
-        if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
-            ReinforcementManager rein = Citadel.getReinforcementManager();
-            Reinforcement railReinforcement = rein.getReinforcement(block);
-            Reinforcement signReinforcement = rein.getReinforcement(above);
-            // Allow the switch to work if the rail and the sign are BOTH unreinforced
-            // otherwise servers with established rail networks will suddenly not work
-            // if Citadel is added.
-            if (railReinforcement != null || signReinforcement != null) {
-                if (!(railReinforcement instanceof PlayerReinforcement)) {
-                    return;
-                }
-                if (!(signReinforcement instanceof PlayerReinforcement)) {
-                    return;
-                }
-                if (!Objects.equals(
-                        ((PlayerReinforcement) railReinforcement).getGroup(),
-                        ((PlayerReinforcement) signReinforcement).getGroup())) {
-                    return;
-                }
-            }
-        }
-        
+    
         // Check that a player is triggering the switch
         // NOTE: The event doesn't provide the information and so the next best thing is searching for a
         //       player who is nearby and riding a minecart.
@@ -119,6 +96,29 @@ public class DetectorRailActivateListener implements Listener {
         }
         if (player == null) {
             return;
+        }
+        
+        // If Citadel is enabled, check that the sign and the rail are on the same group
+        if (Bukkit.getPluginManager().isPluginEnabled("Citadel")) {
+            ReinforcementManager rein = Citadel.getReinforcementManager();
+            Reinforcement railReinforcement = rein.getReinforcement(block);
+            Reinforcement signReinforcement = rein.getReinforcement(above);
+            // Allow the switch to work if the rail and the sign are BOTH unreinforced
+            // otherwise servers with established rail networks will suddenly not work
+            // if Citadel is added.
+            if (railReinforcement != null || signReinforcement != null) {
+                if (!(railReinforcement instanceof PlayerReinforcement)) {
+                    return;
+                }
+                if (!(signReinforcement instanceof PlayerReinforcement)) {
+                    return;
+                }
+                if (!Objects.equals(
+                        ((PlayerReinforcement) railReinforcement).getGroup(),
+                        ((PlayerReinforcement) signReinforcement).getGroup())) {
+                    return;
+                }
+            }
         }
         
         // Determine whether a player has a destination that matches one of the destinations
