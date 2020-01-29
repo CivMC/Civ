@@ -1,3 +1,5 @@
+debug: false
+
 # can be mysql or sqlite
 database-type: mysql
 
@@ -9,5 +11,3 @@ mysql:
   port: 3306
 sqlite:
   file-name: data.db
-
-timings: false
