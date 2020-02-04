@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
 import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
@@ -45,6 +49,32 @@ public class BSRegistrars {
 			insertRegistrar.execute();
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Insertion of banned registrar failed", se);
+		}
+	}
+	
+	/**
+	 * After creating an IP data entry this method checks whether the 
+	 * registrar is banned and removes all active players with this registrar if neccessary
+	 * @param data IP data created just now
+	 */
+	public void checkAndCleanup(BSIPData data) {
+		if (!registrars.contains(data.getRegisteredAs())) {
+			return;
+		}
+		for(BSSession session : BSSession.byIP(data.getIP())) {
+			if (!session.isEnded()) {
+				//dont always reban people who logged in on a vpn once in the past
+				Player player = Bukkit.getPlayer(session.getPlayer().getUUID());
+				if (player == null) {
+					BanStick.getPlugin().info("Session " + session.toFullString(true) + " was active, "
+							+ "but did not have an active player");
+					continue;
+				}
+				BanHandler.doUUIDBan(player.getUniqueId(), true);
+				BanStick.getPlugin().info("Banning " + player.getName() + " for "
+						+ "blacklisted provider " + data.getRegisteredAs());
+				BanStick.getPlugin().getEventHandler().doKickWithCheckup(player.getUniqueId(), session.getPlayer().getBan());
+			}
 		}
 	}
 

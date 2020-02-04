@@ -415,7 +415,7 @@ public class BanStickEventHandler implements Listener {
 
 	}
 
-	private void doKickWithCheckup(final UUID puuid, final BSBan picked) {
+	public void doKickWithCheckup(final UUID puuid, final BSBan picked) {
 		// now schedule a task to kick out the trash.
 		Bukkit.getScheduler().runTask(BanStick.getPlugin(), new Runnable() {
 
@@ -443,7 +443,7 @@ public class BanStickEventHandler implements Listener {
 								this.cancel();
 							}
 						}
-					}.runTaskTimer(BanStick.getPlugin(), 10l, 10l);
+					}.runTaskTimer(BanStick.getPlugin(), 10L, 10L);
 				} else {
 					BanStick.getPlugin().info("On return, banning " + puuid + " due to " + picked.toString());
 					Bukkit.broadcast("On return, banning " + puuid + " due to " + picked.toString(), "banstick.ips");

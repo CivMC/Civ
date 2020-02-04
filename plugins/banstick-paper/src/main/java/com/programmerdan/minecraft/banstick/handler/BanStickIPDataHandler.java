@@ -212,6 +212,7 @@ public class BanStickIPDataHandler extends BukkitRunnable {
 				dataMatch = BSIPData.create(ipMatch, continent, reply.getCountry(), reply.getRegionName(), reply.getCity(), 
 						reply.getZip(), reply.getLat(), reply.getLon(), domain, reply.getOrg(), reply.getAs(), reply.getIsp(),
 						proxy, sauce, comment);
+				BanStick.getPlugin().getRegistrarHandler().checkAndCleanup(dataMatch);
 			}
 		} catch (MalformedURLException mue) {
 			enabled = false;

@@ -198,7 +198,7 @@ public class BSSession {
 	}
 	
 	public static List<BSSession> byIP(BSIP iid) {
-		ArrayList<BSSession> sessions = new ArrayList<BSSession>();
+		ArrayList<BSSession> sessions = new ArrayList<>();
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIds = connection.prepareStatement("SELECT * FROM bs_session WHERE iid = ?");) {
 			getIds.setLong(1, iid.getId());
