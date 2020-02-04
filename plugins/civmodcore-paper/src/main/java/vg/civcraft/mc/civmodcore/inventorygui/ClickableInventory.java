@@ -29,7 +29,7 @@ public class ClickableInventory {
 	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<>();
 	
 	// Cooldown in ticks, should be configurable but aint nobody got time for that
-	private static final int pressCooldown = 14;
+	private static final int pressCooldown = 5;
 
 	private long lastPress;
 	
