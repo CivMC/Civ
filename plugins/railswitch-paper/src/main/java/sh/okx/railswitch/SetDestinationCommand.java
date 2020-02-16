@@ -65,7 +65,12 @@ public class SetDestinationCommand implements CommandExecutor {
             return true;
         }
         
-        String destination = String.join(", ", destinations);
+        String destination = String.join(" ", destinations);
+        
+        if (destination.length() > 40) {
+            player.sendMessage(ChatColor.RED + "Destinations as a whole cannot have more than 40 characters.");
+            return true;
+        }
         
         long start = System.currentTimeMillis();
         plugin.getDatabase().setPlayerDestination(player, destination);
