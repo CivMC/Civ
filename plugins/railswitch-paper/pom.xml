@@ -6,7 +6,7 @@
   <groupId>sh.okx.railswitch</groupId>
   <artifactId>RailSwitch</artifactId>
   <packaging>jar</packaging>
-  <version>1.3.4</version>
+  <version>1.3.5</version>
 
   <name>RailSwitch</name>
   <url>https://github.com/civclassic/railswitch</url>
