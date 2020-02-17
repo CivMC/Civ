@@ -119,7 +119,7 @@ public class CTAnnounceTest {
 		doAnswer(new Answer() {
 			@Override
 			public Object answer(InvocationOnMock invocation) throws Throwable {
-				String toSend = invocation.getArgumentAt(0, String.class);
+				String toSend = invocation.getArgument(0, String.class);
 				assertEquals("Victim struck by Attacker", toSend);
 				return null;
 			}
