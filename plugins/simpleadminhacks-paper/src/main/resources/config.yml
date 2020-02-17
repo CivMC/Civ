@@ -230,3 +230,18 @@ hacks:
   ToggleLamp:
     enabled: false
     cooldownTime: 100
+  AutoRespawn:
+    enabled: true
+    # Delay in MS
+    # Default: 300000 (five minutes)
+    respawnDelay: 300000
+    # The respawn delay (in MS) if someone logs in dead
+    # Default 0 (instant)
+    loginRespawnDelay: 0
+    # Jokey joke messages sent to the player if auto-respawned
+    # Deactivate by removing all the quotes below
+    respawnQuotes:
+    - <gold>Wait... how did I get here?
+    - <gold>Must've been a rough night o.o
+    - <gold>Why does my entire body ache?
+    - <gold>That <it>really<reset><gold> hurt!
