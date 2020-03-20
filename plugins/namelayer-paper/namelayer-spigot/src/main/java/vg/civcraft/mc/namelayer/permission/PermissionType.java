@@ -41,6 +41,10 @@ public class PermissionType {
 	}
 	
 	public static void registerPermission(String name, List <PlayerType> defaultPermLevels, String description) {
+		registerPermission(name, defaultPermLevels, description, true);
+	}
+	
+	public static void registerPermission(String name, List <PlayerType> defaultPermLevels, String description, boolean canBeBlacklisted) {
 		if (name == null ) {
 			Bukkit.getLogger().severe("Could not register permission, name was null");
 			return;
@@ -65,13 +69,13 @@ public class PermissionType {
 				id++;
 			}
 			maximumExistingId = id;
-			p = new PermissionType(name, id, defaultPermLevels, description);
+			p = new PermissionType(name, id, defaultPermLevels, description, canBeBlacklisted);
 			NameLayerPlugin.getGroupManagerDao().registerPermission(p);
 			NameLayerPlugin.getGroupManagerDao().addNewDefaultPermission(defaultPermLevels, p);
 		}
 		else {
 			//already in db, so use existing id
-			p = new PermissionType(name, id, defaultPermLevels, description);
+			p = new PermissionType(name, id, defaultPermLevels, description, canBeBlacklisted);
 		}
 		permissionByName.put(name, p);
 		permissionById.put(id, p);
@@ -138,12 +142,14 @@ public class PermissionType {
 	private List <PlayerType> defaultPermLevels;
 	private int id;
 	private String description;
-	
-	private PermissionType(String name, int id, List <PlayerType> defaultPermLevels, String description) {
+	private boolean canBeBlacklisted;
+
+	private PermissionType(String name, int id, List <PlayerType> defaultPermLevels, String description, boolean canBeBlacklisted) {
 		this.name = name;
 		this.id = id;
 		this.defaultPermLevels = defaultPermLevels;
 		this.description = description;
+		this.canBeBlacklisted = canBeBlacklisted;
 	}
 	
 	public String getName() {
@@ -160,5 +166,9 @@ public class PermissionType {
 	
 	public String getDescription() {
 		return description;
+	}
+
+	public boolean getCanBeBlacklisted() {
+		return canBeBlacklisted;
 	}
 }
