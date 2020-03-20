@@ -155,7 +155,7 @@ public final class Bastion extends ACivMod {
 		adminAndAbove.add(PlayerType.OWNER);
 
 		PermissionType.registerPermission(Permissions.BASTION_PEARL, memberAndAbove);
-		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove);
+		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove, null, false);
 		PermissionType.registerPermission(Permissions.BASTION_LIST, modAndAbove);
 		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove);
 	}
