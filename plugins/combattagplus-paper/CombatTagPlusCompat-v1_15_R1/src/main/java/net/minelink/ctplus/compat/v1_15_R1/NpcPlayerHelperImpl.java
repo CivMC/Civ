@@ -1,4 +1,4 @@
-package net.minelink.ctplus.compat.v1_14_R1;
+package net.minelink.ctplus.compat.v1_15_R1;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -7,24 +7,24 @@ import java.lang.reflect.Field;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import net.minecraft.server.v1_14_R1.EntityPlayer;
-import net.minecraft.server.v1_14_R1.EnumItemSlot;
-import net.minecraft.server.v1_14_R1.FoodMetaData;
-import net.minecraft.server.v1_14_R1.ItemStack;
-import net.minecraft.server.v1_14_R1.MinecraftServer;
-import net.minecraft.server.v1_14_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagList;
-import net.minecraft.server.v1_14_R1.Packet;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_14_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_14_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_14_R1.WorldNBTStorage;
-import net.minecraft.server.v1_14_R1.WorldServer;
+import net.minecraft.server.v1_15_R1.EntityPlayer;
+import net.minecraft.server.v1_15_R1.EnumItemSlot;
+import net.minecraft.server.v1_15_R1.FoodMetaData;
+import net.minecraft.server.v1_15_R1.ItemStack;
+import net.minecraft.server.v1_15_R1.MinecraftServer;
+import net.minecraft.server.v1_15_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_15_R1.NBTTagCompound;
+import net.minecraft.server.v1_15_R1.NBTTagList;
+import net.minecraft.server.v1_15_R1.Packet;
+import net.minecraft.server.v1_15_R1.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_15_R1.WorldNBTStorage;
+import net.minecraft.server.v1_15_R1.WorldServer;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 

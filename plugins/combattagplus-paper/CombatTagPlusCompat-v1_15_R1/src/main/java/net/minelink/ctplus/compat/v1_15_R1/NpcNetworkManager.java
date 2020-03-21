@@ -1,4 +1,4 @@
-package net.minelink.ctplus.compat.v1_14_R1;
+package net.minelink.ctplus.compat.v1_15_R1;
 
 import java.net.SocketAddress;
 
@@ -6,11 +6,11 @@ import javax.crypto.SecretKey;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.minecraft.server.v1_14_R1.EnumProtocol;
-import net.minecraft.server.v1_14_R1.EnumProtocolDirection;
-import net.minecraft.server.v1_14_R1.NetworkManager;
-import net.minecraft.server.v1_14_R1.Packet;
-import net.minecraft.server.v1_14_R1.PacketListener;
+import net.minecraft.server.v1_15_R1.EnumProtocol;
+import net.minecraft.server.v1_15_R1.EnumProtocolDirection;
+import net.minecraft.server.v1_15_R1.NetworkManager;
+import net.minecraft.server.v1_15_R1.Packet;
+import net.minecraft.server.v1_15_R1.PacketListener;
 
 public final class NpcNetworkManager extends NetworkManager {
 
