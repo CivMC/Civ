@@ -111,12 +111,13 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<Clickable> clicks = new ArrayList<Clickable>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
-		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("PERMS"));
 		for (final PermissionType perm : PermissionType.getAllPermissions()) {
 			ItemStack is;
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
+			boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
+					PermissionType.getPermission("PERMS"));
+
 			if (hasPerm) {
 				is = new ItemStack(Material.INK_SACK, 1, (short) 10); // green
 																		// dye
@@ -140,6 +141,18 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			if (desc != null) {
 				ISUtils.addLore(is, ChatColor.GREEN + desc);
 			}
+
+			if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
+				canEdit = false;
+
+				ISUtils.addLore(
+						is,
+						ChatColor.AQUA
+								+ "This permission cannot be toggled for "
+								+ PlayerType.getNiceRankName(pType)
+				);
+			}
+
 			if (canEdit) {
 				ISUtils.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {

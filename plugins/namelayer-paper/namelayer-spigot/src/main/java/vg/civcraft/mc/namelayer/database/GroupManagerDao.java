@@ -491,6 +491,12 @@ public class GroupManagerDao {
 					"  select f.group_id from faction_id f where f.group_name = group_name; " +
 					" end if; " +
 					"end;");
+
+		// Bastion-specific: Remove any instances of non-blacklisted players being allowed to place in bastions.
+		db.registerMigration(14, false,
+				"DELETE FROM permissionByGroup "
+						+ "WHERE role='" + PlayerType.NOT_BLACKLISTED +"' "
+						+ "AND perm_id=(SELECT perm_id FROM permissionIdMapping WHERE name='BASTION_PLACE');");
 	}
 	
 	public int createGroup(String group, UUID owner, String password){

@@ -72,6 +72,12 @@ public class ModifyPermissions extends PlayerCommandMiddle{
 			return true;
 		}
 		GroupPermission gPerm = gm.getPermissionforGroup(g);
+
+		if (playerType == PlayerType.NOT_BLACKLISTED && !pType.getCanBeBlacklisted()) {
+			sender.sendMessage(ChatColor.RED + "You can not change this permission for non-blacklisted players.");
+			return true;
+		}
+
 		if (info.equalsIgnoreCase("add")){
 			if (gPerm.hasPermission(playerType, pType))
 				sender.sendMessage(ChatColor.RED + "This PlayerType already has the PermissionType: " + pType.getName());
