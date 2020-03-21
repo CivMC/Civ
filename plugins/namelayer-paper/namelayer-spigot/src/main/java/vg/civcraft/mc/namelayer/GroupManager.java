@@ -32,6 +32,8 @@ public class GroupManager{
 	private static Map<String, Group> groupsByName = new ConcurrentHashMap<>();
 	private static Map<Integer, Group> groupsById = new ConcurrentHashMap<>();
 	
+	private static boolean mergingInProgress = false;
+	
 	public GroupManager(){
 		groupManagerDao = NameLayerPlugin.getGroupManagerDao();
 		permhandle = new PermissionHandler();
@@ -274,6 +276,7 @@ public class GroupManager{
 					group.getName() + " and " + toMerge.getName());
 			return;
 		}
+		group.isValid();
 		group.setDisciplined(true, false);
 		toMerge.setDisciplined(true, false);
 		
@@ -310,7 +313,7 @@ public class GroupManager{
 	public static List<Group> getSubGroups(String name) {
 		if (name == null) {
 			NameLayerPlugin.getInstance().getLogger().log(Level.INFO, "Group getSubGroups event failed, caller passed in null", new Exception());
-			return new ArrayList<Group>();
+			return new ArrayList<>();
 		}
 
 		List<Group> groups = groupManagerDao.getSubGroups(name);
