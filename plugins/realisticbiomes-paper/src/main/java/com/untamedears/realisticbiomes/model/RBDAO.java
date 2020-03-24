@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
@@ -17,13 +15,10 @@ import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.untamedears.realisticbiomes.PlantLogicManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;

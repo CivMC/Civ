@@ -1,9 +1,10 @@
 package com.untamedears.realisticbiomes.growth;
 
-import com.untamedears.realisticbiomes.utils.RBUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+
+import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class ColumnPlantGrower extends IArtificialGrower {
 
