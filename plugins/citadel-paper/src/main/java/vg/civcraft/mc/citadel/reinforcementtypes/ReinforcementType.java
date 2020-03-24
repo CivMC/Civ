@@ -26,12 +26,13 @@ public class ReinforcementType {
 	private String name;
 	private long decayTimer;
 	private double decayMultiplier;
+	private int legacyId;
 
 	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime,
 			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
 			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
 			Collection<Material> disallowedReinforceables, short id, String name, Collection<Material> globalBlackList,
-			long decayTimer, double decayMultiplier) {
+			long decayTimer, double decayMultiplier, int legacyId) {
 		this.health = health;
 		this.name = name;
 		this.returnChance = returnChance;
@@ -58,6 +59,7 @@ public class ReinforcementType {
 		this.id = id;
 		this.decayMultiplier = decayMultiplier;
 		this.decayTimer = decayTimer;
+		this.legacyId = legacyId;
 	}
 
 	public boolean canBeReinforced(Material mat) {
@@ -160,6 +162,15 @@ public class ReinforcementType {
 	 */
 	public double getReturnChance() {
 		return returnChance;
+	}
+	
+	/**
+	 * Material id the material used for the reinforcement had pre-flattening (<= 1.12.2). Needed once for 
+	 * proper migration of reinforcements to higher versions
+	 * @return Old item id of the reinforcement item
+	 */
+	public int getLegacyId() {
+		return legacyId;
 	}
 	
 	public double getDecayDamageMultipler(long since) {

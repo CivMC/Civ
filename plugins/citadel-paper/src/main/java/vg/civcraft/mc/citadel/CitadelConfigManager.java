@@ -164,6 +164,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 		long decayTimer = ConfigParsing
 				.parseTime(config.getString("decay_timer", String.valueOf(globalDecayTimer / 1000L) + "s"));
 		double decayMultiplier = config.getDouble("decay_multiplier", globalDecayMultiplier);
+		int legacyId = config.getInt("legacy_id", -1);
 		if (name == null) {
 			logger.warning("No name specified for reinforcement type at " + config.getCurrentPath());
 			name = item.getType().name();
@@ -183,7 +184,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 				+ gracePeriod + ", id: " + id);
 		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod,
 				creationEffect, damageEffect, destructionEffect, reinforceables, nonReinforceables, id, name,
-				globalBlackList, decayTimer, decayMultiplier);
+				globalBlackList, decayTimer, decayMultiplier, legacyId);
 	}
 
 	private void parseReinforcementTypes(ConfigurationSection config) {
