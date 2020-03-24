@@ -12,12 +12,14 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
 import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
+import com.untamedears.jukealert.model.actions.impl.DestroyVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.DismountEntityAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.EnterVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.ExitVehicleAction;
 import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
+import com.untamedears.jukealert.model.actions.impl.IgniteBlockAction;
 import com.untamedears.jukealert.model.actions.impl.KillLivingEntityAction;
 import com.untamedears.jukealert.model.actions.impl.KillPlayerAction;
 import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
@@ -89,6 +91,11 @@ public class LoggedActionFactory {
 				(snitch, player, loc, time, victim) -> new MountEntityAction(time, snitch, player, loc, victim));
 		registerProvider(DismountEntityAction.ID,
 				(snitch, player, loc, time, victim) -> new DismountEntityAction(time, snitch, player, loc, victim));
+		registerProvider(IgniteBlockAction.ID,
+				(snitch, player, loc, time, victim) -> new IgniteBlockAction(time, snitch, player, loc));
+		registerProvider(DestroyVehicleAction.ID,
+				(snitch, player, loc, time, victim) -> new DestroyVehicleAction(time, snitch, player, loc, victim));
+		
 	}
 
 }

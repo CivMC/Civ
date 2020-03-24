@@ -19,6 +19,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockIgniteEvent;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -44,6 +46,7 @@ import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
 import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
 import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
 import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
+import com.untamedears.jukealert.model.actions.impl.IgniteBlockAction;
 import com.untamedears.jukealert.model.actions.impl.KillLivingEntityAction;
 import com.untamedears.jukealert.model.actions.impl.KillPlayerAction;
 import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
@@ -136,7 +139,7 @@ public class LoggableActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onFillBucket(PlayerBucketFillEvent event) {
 		handlePlayerAction(event.getPlayer(), s -> new FillBucketAction(System.currentTimeMillis(), s,
-				event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBucket()));
+				event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBlockClicked().getType()));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -190,6 +193,16 @@ public class LoggableActionListener implements Listener {
 	public void playerKickEvent(PlayerKickEvent event) {
 		// TODO Old JA had this listener, is it really needed?
 		handleSnitchLogout(event.getPlayer());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void playerIgniteBlock(BlockIgniteEvent event) {
+		if (event.getCause() != IgniteCause.FLINT_AND_STEEL || event.getPlayer() == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		handlePlayerAction(player, s -> new IgniteBlockAction(System.currentTimeMillis(), s, player.getUniqueId(),
+				event.getBlock().getLocation()));
 	}
 
 	private void handleSnitchLogout(Player player) {
