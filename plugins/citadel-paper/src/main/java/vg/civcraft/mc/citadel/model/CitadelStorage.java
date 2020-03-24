@@ -127,6 +127,7 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 						insertRein.setTimestamp(11, new Timestamp(creationTime));
 						insertRein.addBatch();
 						if (batchCounter > 100) {
+							batchCounter = 0;
 							insertRein.executeBatch();
 						}
 						batchCounter++;
