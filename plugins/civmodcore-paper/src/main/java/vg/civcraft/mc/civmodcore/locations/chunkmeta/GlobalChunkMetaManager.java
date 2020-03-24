@@ -156,6 +156,24 @@ public class GlobalChunkMetaManager {
 		}
 		return Bukkit.getWorld(uuid);
 	}
+	
+	/**
+	 * Retrieves the internal id used for a world based on the worlds name. Should only be used to convert 
+	 * legacy data over
+	 * @param name Name of the world
+	 * @return Id of the world or -1 if no such world is known
+	 */
+	public short getInternalWorldIdByName(String name) {
+		World world = Bukkit.getWorld(name);
+		if (world == null) {
+			return -1;
+		}
+		Short result = uuidToInternalID.get(world.getUID());
+		if (result == null) {
+			return -1;
+		}
+		return result;
+	}
 
 	void unloadChunkData(Chunk chunk) {
 		WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
