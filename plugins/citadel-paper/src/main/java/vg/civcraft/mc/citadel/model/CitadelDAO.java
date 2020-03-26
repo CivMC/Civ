@@ -29,15 +29,21 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 
-public class CitadelStorage extends TableStorageEngine<Reinforcement> {
+public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 
-	public CitadelStorage(Logger logger, ManagedDatasource db) {
+	public CitadelDAO(Logger logger, ManagedDatasource db) {
 		super(logger, db);
 	}
 
 	@Override
 	public void registerMigrations() {
-		db.registerMigration(15, false, new Callable<Boolean>() {
+		db.registerMigration(15, false,
+				"CREATE TABLE IF NOT EXISTS reinforcement (rein_id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,"
+						+ "x int(11) NOT NULL, y int(11) NOT NULL, z int(11) NOT NULL, chunk_x int(11) NOT NULL, chunk_z int(11) NOT NULL,"
+						+ "world varchar(255) NOT NULL, material_id int(11) NOT NULL, durability varchar(10) NOT NULL, insecure tinyint(1) NOT NULL,"
+						+ "group_id int(11) NOT NULL, maturation_time int(11) NOT NULL, rein_type_id int(11) NOT NULL, lore varchar(255) DEFAULT NULL,"
+						+ "acid_time int(11) NOT NULL)");
+		db.registerMigration(16, false, new Callable<Boolean>() {
 
 			@Override
 			public Boolean call() throws Exception {
@@ -64,9 +70,9 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 					}
 					int batchCounter = 0;
 					while (rs.next()) {
-						byte x = (byte) ((rs.getInt(1) % 16) + 16);
-						byte y = (byte) rs.getInt(2);
-						byte z = (byte) ((rs.getInt(3) % 16) + 16);
+						byte x = (byte) BlockBasedChunkMeta.modulo(rs.getInt(1), 16);
+						short y = (short) rs.getInt(2);
+						byte z = (byte) BlockBasedChunkMeta.modulo(rs.getInt(3), 16);
 						int chunkX = rs.getInt(4);
 						int chunkZ = rs.getInt(5);
 						String worldName = rs.getString(6);
@@ -85,16 +91,16 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 						float healthFloat = Float.parseFloat(durability);
 						List<ReinforcementType> withType = reinTypes.get(materialId);
 						if (withType == null) {
-							logger.severe("Failed to find material mapping for reinforcement with material id " + materialId);
+							logger.severe(
+									"Failed to find material mapping for reinforcement with material id " + materialId);
 							return false;
 						}
 						ReinforcementType type = null;
 						if (withType.size() == 1) {
 							type = withType.get(0);
-						}
-						else {
+						} else {
 							boolean hasLore = lore != null;
-							for(ReinforcementType compType : withType) {
+							for (ReinforcementType compType : withType) {
 								ItemMeta meta = compType.getItem().getItemMeta();
 								if (hasLore == meta.hasLore()) {
 									if (!hasLore || meta.getLore().get(0).equals(lore)) {
@@ -104,21 +110,24 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 								}
 							}
 							if (type == null) {
-								logger.severe("Failed to find material mapping for reinforcement with material id " + materialId + " and lore " + lore);
+								logger.severe("Failed to find material mapping for reinforcement with material id "
+										+ materialId + " and lore " + lore);
 								return false;
 							}
 						}
-						//previously we stored the timestamp at which the reinforcement will be mature in minutes since unix epoch
-						//No, I do not know why
-						long creationTime = maturationTime - (type.getMaturationTime()/60_000);
+						// previously we stored the timestamp at which the reinforcement will be mature
+						// in minutes since unix epoch
+						// No, I do not know why
+						long creationTime = maturationTime - (type.getMaturationTime() / 60_000);
+						//some rows have a maturation time of 0, no idea why
+						creationTime = Math.max(creationTime, 1);
 						creationTime *= 60_000;
-						
 
 						insertRein.setInt(1, chunkX);
 						insertRein.setInt(2, chunkZ);
 						insertRein.setShort(3, worldID);
 						insertRein.setByte(4, x);
-						insertRein.setByte(5, y);
+						insertRein.setShort(5, y);
 						insertRein.setByte(6, z);
 						insertRein.setShort(7, type.getID());
 						insertRein.setFloat(8, healthFloat);
@@ -136,8 +145,8 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 				}
 				return true;
 			}
-		}, "create table ctdl_reinforcements if not exists (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
-				+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null, "
+		}, "create table if not exists  ctdl_reinforcements (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
+				+ "x_offset tinyint unsigned not null, y smallint not null, z_offset tinyint unsigned not null, "
 				+ "type_id smallint unsigned not null, health float not null, group_id int not null, insecure boolean not null default false,"
 				+ "creation_time timestamp not null default now(), index reinChunkLookUp(chunk_x, chunk_z, world_id), primary key "
 				+ "(chunk_x, chunk_z, world_id, x_offset, y ,z_offset))");
@@ -153,7 +162,7 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 			insertRein.setInt(2, coord.getZ());
 			insertRein.setShort(3, coord.getWorldID());
 			insertRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			insertRein.setByte(5, (byte) data.getLocation().getBlockY());
+			insertRein.setShort(5, (short) data.getLocation().getBlockY());
 			insertRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			insertRein.setShort(7, data.getType().getID());
 			insertRein.setFloat(8, data.getHealth());
@@ -181,7 +190,7 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 			updateRein.setInt(7, coord.getZ());
 			updateRein.setShort(8, coord.getWorldID());
 			updateRein.setByte(9, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			updateRein.setByte(10, (byte) data.getLocation().getBlockY());
+			updateRein.setShort(10, (short) data.getLocation().getBlockY());
 			updateRein.setByte(11, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			updateRein.execute();
 		} catch (SQLException e) {
@@ -199,7 +208,7 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 			deleteRein.setInt(2, coord.getZ());
 			deleteRein.setShort(3, coord.getWorldID());
 			deleteRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			deleteRein.setByte(5, (byte) data.getLocation().getBlockY());
+			deleteRein.setShort(5, (short) data.getLocation().getBlockY());
 			deleteRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			deleteRein.execute();
 		} catch (SQLException e) {
@@ -224,7 +233,7 @@ public class CitadelStorage extends TableStorageEngine<Reinforcement> {
 				while (rs.next()) {
 					int xOffset = rs.getByte(1);
 					int x = xOffset + preMultipliedX;
-					int y = rs.getByte(2) & 0xFF;
+					int y = rs.getShort(2);
 					int zOffset = rs.getByte(3);
 					int z = zOffset + preMultipliedZ;
 					Location location = new Location(world, x, y, z);

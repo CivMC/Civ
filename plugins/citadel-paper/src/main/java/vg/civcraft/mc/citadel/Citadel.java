@@ -13,7 +13,7 @@ import vg.civcraft.mc.citadel.listener.RedstoneListener;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.CitadelChunkData;
 import vg.civcraft.mc.citadel.model.CitadelSettingManager;
-import vg.civcraft.mc.citadel.model.CitadelStorage;
+import vg.civcraft.mc.citadel.model.CitadelDAO;
 import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.playerstate.PlayerStateManager;
@@ -103,14 +103,14 @@ public class Citadel extends ACivMod {
 		}
 		typeManager = new ReinforcementTypeManager();
 		config.getReinforcementTypes().forEach(t -> typeManager.register(t));
-		CitadelStorage storage = new CitadelStorage(this.logger, config.getDatabase());
+		CitadelDAO storage = new CitadelDAO(this.logger, config.getDatabase());
 		if (!storage.updateDatabase()) {
 			logger.severe("Errors setting up database, shutting down");
 			Bukkit.shutdown();
 			return;
 		}
 		BlockBasedChunkMetaView<CitadelChunkData, TableBasedDataObject, TableStorageEngine<Reinforcement>> chunkMetaData = 
-				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> {return new CitadelChunkData(false, storage);});
+				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new CitadelChunkData(false, storage));
 		if (chunkMetaData == null) {
 			logger.severe("Errors setting up chunk metadata API, shutting down");
 			Bukkit.shutdown();
