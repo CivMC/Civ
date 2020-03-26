@@ -28,6 +28,7 @@ public abstract class IArtificialGrower {
 		case NETHER_WART:
 		case BEETROOT_SEEDS:
 		case BEETROOTS:
+		case BEETROOT:
 			return new AgeableGrower(3, 1);
 		case PUMPKIN:
 		case MELON:

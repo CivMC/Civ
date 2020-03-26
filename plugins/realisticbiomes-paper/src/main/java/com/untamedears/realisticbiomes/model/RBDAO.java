@@ -43,7 +43,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			deletePlant.setInt(2, coord.getZ());
 			deletePlant.setShort(3, coord.getWorldID());
 			deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			deletePlant.setByte(5, (byte) data.getLocation().getBlockY());
+			deletePlant.setShort(5, (short) data.getLocation().getBlockY());
 			deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			deletePlant.execute();
 		} catch (SQLException e) {
@@ -69,7 +69,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				while (rs.next()) {
 					int xOffset = rs.getByte(1);
 					int x = xOffset + preMultipliedX;
-					int y = rs.getByte(2) & 0xFF;
+					int y = rs.getShort(2);
 					int zOffset = rs.getByte(3);
 					int z = zOffset + preMultipliedZ;
 					Location location = new Location(world, x, y, z);
@@ -100,7 +100,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			insertPlant.setInt(2, coord.getZ());
 			insertPlant.setShort(3, coord.getWorldID());
 			insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			insertPlant.setByte(5, (byte) data.getLocation().getBlockY());
+			insertPlant.setShort(5, (short) data.getLocation().getBlockY());
 			insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			insertPlant.setTimestamp(7, new Timestamp(data.getCreationTime()));
 			insertPlant.execute();
@@ -111,18 +111,23 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void registerMigrations() {
+		db.registerMigration(1, false,
+				"CREATE TABLE IF NOT EXISTS rb_plant (chunkId bigint(20) DEFAULT NULL, w int(11) DEFAULT NULL,"
+						+ "x int(11) DEFAULT NULL, y int(11) DEFAULT NULL, z int(11) DEFAULT NULL, date int(10) unsigned DEFAULT NULL,"
+						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)");
 		db.registerMigration(2, false, new Callable<Boolean>() {
 
 			@Override
 			public Boolean call() throws Exception {
 				try (Connection insertConn = db.getConnection();
-						PreparedStatement selectPlant = insertConn.prepareStatement("select x,y,z,w,date from rb_plant");
-						ResultSet rs = selectPlant.executeQuery()) {
-					PreparedStatement insertPlant = insertConn.prepareStatement(
-							"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
-									+ "values(?,?,?, ?,?,?, ?);");
-					try (PreparedStatement deleteExisting = insertConn
-							.prepareStatement("delete from rb_plants")) {
+						PreparedStatement selectPlant = insertConn
+								.prepareStatement("select x,y,z,w,date from rb_plant");
+						ResultSet rs = selectPlant.executeQuery();
+						PreparedStatement insertPlant = insertConn.prepareStatement(
+								"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
+										+ "values(?,?,?, ?,?,?, ?);")) {
+
+					try (PreparedStatement deleteExisting = insertConn.prepareStatement("delete from rb_plants")) {
 						// in case this migration failed before some of the data might already have
 						// migrated, which we want to undo
 						deleteExisting.execute();
@@ -136,10 +141,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						int zCoord = rs.getInt(3);
 						int worldId = rs.getInt(4);
 						long timeStamp = rs.getInt(5);
-						
-						byte x = (byte) ((xCoord % 16) + 16);
-						byte y = (byte) yCoord;
-						byte z = (byte) ((yCoord % 16) + 16);
+
+						byte x = (byte) BlockBasedChunkMeta.modulo(xCoord, 16);
+						short y = (short) yCoord;
+						byte z = (byte) BlockBasedChunkMeta.modulo(zCoord, 16);
 						int chunkX = xCoord / 16;
 						int chunkZ = zCoord / 16;
 						World world = Bukkit.getWorlds().get(worldId);
@@ -149,7 +154,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						insertPlant.setInt(2, chunkZ);
 						insertPlant.setShort(3, worldID);
 						insertPlant.setByte(4, x);
-						insertPlant.setByte(5, y);
+						insertPlant.setShort(5, y);
 						insertPlant.setByte(6, z);
 						insertPlant.setTimestamp(7, new Timestamp(timeStamp));
 						insertPlant.addBatch();
@@ -163,11 +168,11 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				}
 				return true;
 			}
-		}, "create table rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
+		}, "create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
 				+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
 				+ "creation_time timestamp not null default now(), index plantChunkLookUp(chunk_x, chunk_z, world_id),"
 				+ "index plantCoordLookUp (x_offset, y, z_offset, world_id), "
-				+ "constraint plantUniqueLocation unique (x_offset,y,z_offset,world_id));");
+				+ "constraint plantUniqueLocation unique (chunk_x,chunk_z,x_offset,y,z_offset,world_id));");
 	}
 
 	@Override
@@ -180,7 +185,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			updatePlant.setInt(3, coord.getZ());
 			updatePlant.setShort(4, coord.getWorldID());
 			updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
-			updatePlant.setByte(6, (byte) data.getLocation().getBlockY());
+			updatePlant.setShort(6, (short) data.getLocation().getBlockY());
 			updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
 			updatePlant.execute();
 		} catch (SQLException e) {
