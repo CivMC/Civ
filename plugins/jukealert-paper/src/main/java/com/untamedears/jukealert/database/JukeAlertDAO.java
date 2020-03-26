@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.function.Consumer;
@@ -23,7 +22,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.SnitchManager;
@@ -35,15 +33,15 @@ import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
-import vg.civcraft.mc.citadel.Citadel;
-import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.group.Group;
 
 public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 
@@ -62,8 +60,8 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						+ "snitch_should_log tinyint(1) DEFAULT NULL, last_semi_owner_visit_date datetime NOT NULL, "
 						+ "allow_triggering_lever bit(1) NOT NULL, soft_delete tinyint(1) NOT NULL DEFAULT '0', "
 						+ "PRIMARY KEY (snitch_id), KEY idx_y (snitch_y), KEY idx_last_visit (last_semi_owner_visit_date,snitch_should_log))",
-				"CREATE TABLE snitch_details IF NOT EXISTS (snitch_details_id int(10) unsigned NOT NULL AUTO_INCREMENT, "
-						+ " snitch_id int(10) unsigned NOT NULL, snitch_log_time` datetime DEFAULT NULL, "
+				"CREATE TABLE IF NOT EXISTS snitch_details (snitch_details_id int(10) unsigned NOT NULL AUTO_INCREMENT, "
+						+ " snitch_id int(10) unsigned NOT NULL, snitch_log_time datetime DEFAULT NULL, "
 						+ "snitch_logged_action tinyint(3) unsigned NOT NULL, snitch_logged_initiated_user varchar(16) NOT NULL, "
 						+ "snitch_logged_victim_user varchar(16) DEFAULT NULL, snitch_logged_x int(10) DEFAULT NULL,"
 						+ "snitch_logged_Y int(10) DEFAULT NULL, snitch_logged_z int(10) DEFAULT NULL,"
@@ -98,13 +96,13 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						int x = rs.getInt(1);
 						int y = rs.getInt(2);
 						int z = rs.getInt(3);
-						int chunkX = x % 16 + 16;
-						int chunkZ = z % 16 + 16;
+						int chunkX = x / 16;
+						int chunkZ = z / 16;
 						String worldName = rs.getString(4);
 						String name = rs.getString(5);
 						boolean logging = rs.getBoolean(6);
 						long lastVisit = rs.getTimestamp(7).getTime();
-						int groupId = rs.getInt(8);
+						String groupName = rs.getString(8);
 						boolean triggerLever = rs.getBoolean(9);
 						int oldId = rs.getInt(10);
 
@@ -114,6 +112,11 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 							return false;
 						}
 						int snitchType = logging ? 1 : 0;
+						Group group = GroupManager.getGroup(groupName);
+						if (group == null) {
+							continue;
+						}
+						int groupId = group.getGroupId();
 
 						insertSnitch.setInt(1, groupId);
 						insertSnitch.setInt(2, snitchType);
@@ -235,9 +238,9 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						+ "last_refresh timestamp not null)",
 				"create table if not exists ja_snitch_lever (id int primary key references ja_snitches(id) on delete cascade,"
 						+ "toggle_lever bool not null)",
-				"insert into ja_snitch_actions(id,name) values(0, KILL_MOB),(1,BLOCK_PLACE),(2,BLOCK_BREAK),(3,FILL_BUCKET),(4,EMPTY_BUCKET),"
-						+ "(5,ENTRY),(7,IGNITE_BLOCK),(9,OPEN_CONTAINER),(10,LOGIN),(11,LOGOUT),(13,DESTROY_VEHICLE),"
-						+ "(14,MOUNT_ENTITY),(15,DISMOUNT_ENTITY)");
+				"insert into ja_snitch_actions(id,name) values(0, 'KILL_MOB'),(1,'BLOCK_PLACE'),(2,'BLOCK_BREAK'),(3,'FILL_BUCKET'),(4,'EMPTY_BUCKET'),"
+						+ "(5,'ENTRY'),(7,'IGNITE_BLOCK'),(9,'OPEN_CONTAINER'),(10,'LOGIN'),(11,'LOGOUT'),(13,'DESTROY_VEHICLE'),"
+						+ "(14,'MOUNT_ENTITY'),(15,'DISMOUNT_ENTITY')");
 	}
 
 	@Override
