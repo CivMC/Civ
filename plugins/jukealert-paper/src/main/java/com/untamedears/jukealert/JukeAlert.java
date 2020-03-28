@@ -94,7 +94,7 @@ public class JukeAlert extends ACivMod {
 			return;
 		}
 		BlockBasedChunkMetaView<SnitchChunkData, TableBasedDataObject, TableStorageEngine<Snitch>> chunkMetaData = 
-				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> {return new SnitchChunkData(false, dao);});
+				ChunkMetaAPI.registerBlockBasedPlugin(this, () -> new SnitchChunkData(false, dao),dao, false);
 		if (chunkMetaData == null) {
 			getLogger().severe("Errors setting up chunk metadata API, shutting down");
 			Bukkit.shutdown();
