@@ -19,6 +19,13 @@ commands:
         min-args: 0
         max-args: 10
         player-only: true
+    fmco:
+        permission: fm.op
+        description: 'Gives you the output of the selected recipe in the factory you are looking at'
+        usage: '/fmco'
+        min-args: 0
+        max-args: 0
+        player-only: true
     fmsrc:
         permission: fm.op
         player-only: true
