@@ -1,6 +1,14 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+
 import org.bukkit.plugin.java.JavaPlugin;
+
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
@@ -9,14 +17,6 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.logging.Level;
 
 public class ChunkMetaAPI {
 
@@ -36,7 +36,7 @@ public class ChunkMetaAPI {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends BlockBasedStorageEngine<D>> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
-			JavaPlugin plugin, Supplier<T> emptyChunkCreator, S storageEngine) {
+			JavaPlugin plugin, Supplier<T> emptyChunkCreator, S storageEngine, boolean allowAccessUnloaded) {
 		if (existingViews.containsKey(plugin.getName())) {
 			ChunkMetaView<T> chunkMetaView = (ChunkMetaView<T>) existingViews.get(plugin.getName());
 			return (BlockBasedChunkMetaView<T, D, S>) chunkMetaView;
@@ -58,7 +58,7 @@ public class ChunkMetaAPI {
 			metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
 		}
 		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
-				emptyChunkCreator, storageEngine.stayLoaded());
+				emptyChunkCreator, storageEngine.stayLoaded(), allowAccessUnloaded);
 		ViewTracker.getInstance().put(view, id);
 		existingViews.put(plugin.getName(), view);
 		return view;

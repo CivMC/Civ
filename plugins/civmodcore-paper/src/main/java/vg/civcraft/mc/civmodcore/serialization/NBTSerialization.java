@@ -1,12 +1,15 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
-import com.google.common.base.Strings;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Strings;
+
 import vg.civcraft.mc.civmodcore.api.NBTCompound;
 
 /**

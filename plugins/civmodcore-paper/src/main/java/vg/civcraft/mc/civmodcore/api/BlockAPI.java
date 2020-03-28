@@ -1,12 +1,13 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.collect.ImmutableList;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.

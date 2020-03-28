@@ -1,10 +1,18 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl.collection;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Function;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
@@ -13,13 +21,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingTypeManager;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Function;
 
 public abstract class AbstractCollectionSetting<C extends Collection<T>, T> extends PlayerSetting<C> {
 

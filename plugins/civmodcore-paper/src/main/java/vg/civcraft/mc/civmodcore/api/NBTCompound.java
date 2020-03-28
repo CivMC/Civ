@@ -1,8 +1,15 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.base.Preconditions;
 import java.util.UUID;
+
 import javax.annotation.Nonnull;
+
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.inventory.ItemStack;
+
+import com.google.common.base.Preconditions;
+
 import net.minecraft.server.v1_14_R1.NBTBase;
 import net.minecraft.server.v1_14_R1.NBTTagCompound;
 import net.minecraft.server.v1_14_R1.NBTTagDouble;
@@ -11,9 +18,6 @@ import net.minecraft.server.v1_14_R1.NBTTagList;
 import net.minecraft.server.v1_14_R1.NBTTagLong;
 import net.minecraft.server.v1_14_R1.NBTTagShort;
 import net.minecraft.server.v1_14_R1.NBTTagString;
-import org.apache.commons.lang.StringUtils;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
-import org.bukkit.inventory.ItemStack;
 
 /**
  * Wrapper class for NBTTagCompounds to make NBT serialisation and deserialisation as robust as possible. Intended to

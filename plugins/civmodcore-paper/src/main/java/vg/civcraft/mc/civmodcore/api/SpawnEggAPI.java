@@ -1,10 +1,12 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.ImmutableBiMap;
 import javax.annotation.Nullable;
+
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.ImmutableBiMap;
 
 /**
  * Class of static APIs for Spawn Eggs.

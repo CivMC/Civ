@@ -1,10 +1,12 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.math.IntMath;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.bukkit.Material;
 import org.bukkit.Tag;
+
+import com.google.common.math.IntMath;
 
 /**
  * Class of static APIs for Materials, filling in the gaps left by {@link org.bukkit.Tag Tag}.

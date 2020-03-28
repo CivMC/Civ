@@ -1,19 +1,5 @@
 package vg.civcraft.mc.civmodcore.command;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.SimpleCommandMap;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.InvalidDescriptionException;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.plugin.SimplePluginManager;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.JavaPluginLoader;
-import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
-import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
-import vg.civcraft.mc.civmodcore.util.ConfigParsing;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +14,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.InvalidDescriptionException;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.SimplePluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
+
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
+import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
 public class StandaloneCommandHandler {
 

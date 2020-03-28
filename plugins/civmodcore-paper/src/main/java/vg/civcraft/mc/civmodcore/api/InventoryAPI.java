@@ -1,5 +1,10 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.AnvilInventory;
@@ -16,10 +21,6 @@ import org.bukkit.inventory.LoomInventory;
 import org.bukkit.inventory.MerchantInventory;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.StonecutterInventory;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public final class InventoryAPI {
 

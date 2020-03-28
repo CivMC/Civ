@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import org.bukkit.World;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +12,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.bukkit.World;
 
 /**
  * Stores Chunk metadata for all plugins for one specific world. Metadata is

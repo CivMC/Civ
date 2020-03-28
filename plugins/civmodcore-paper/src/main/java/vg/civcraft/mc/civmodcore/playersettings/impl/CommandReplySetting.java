@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 public class CommandReplySetting extends StringSetting {

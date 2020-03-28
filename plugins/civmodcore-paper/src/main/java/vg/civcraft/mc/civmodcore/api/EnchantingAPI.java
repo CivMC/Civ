@@ -1,13 +1,16 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.base.Preconditions;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.google.common.base.Preconditions;
 
 /**
  * Class of static APIs for Enchantments.

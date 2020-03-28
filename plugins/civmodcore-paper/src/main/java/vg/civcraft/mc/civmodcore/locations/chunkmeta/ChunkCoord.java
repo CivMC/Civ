@@ -1,15 +1,16 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ViewTracker;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.Supplier;
 import java.util.logging.Level;
+
+import org.bukkit.World;
+
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ViewTracker;
 
 public class ChunkCoord extends XZWCoord {
 

@@ -1,11 +1,5 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
-import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
+
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 
 /**
  * Allows creating settings, which will automatically be available in players

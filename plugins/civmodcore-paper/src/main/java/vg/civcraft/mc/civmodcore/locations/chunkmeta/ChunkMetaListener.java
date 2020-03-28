@@ -1,5 +1,8 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -7,9 +10,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-
-import java.util.Queue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChunkMetaListener implements Listener {
 

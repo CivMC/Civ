@@ -3,9 +3,9 @@ package vg.civcraft.mc.civmodcore.scoreboard.side;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.BiFunction;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.function.BiFunction;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;

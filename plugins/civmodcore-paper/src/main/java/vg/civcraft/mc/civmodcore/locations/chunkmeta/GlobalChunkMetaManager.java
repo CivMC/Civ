@@ -1,14 +1,15 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Chunk;
-import org.bukkit.World;
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Supplier;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public class GlobalChunkMetaManager {
 

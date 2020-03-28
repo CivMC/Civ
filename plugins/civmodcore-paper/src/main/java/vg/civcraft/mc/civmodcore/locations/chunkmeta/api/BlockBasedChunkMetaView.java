@@ -28,11 +28,13 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	private Supplier<T> chunkProducer;
 	private S storageEngine;
 	private SingleBlockTracker<D> singleBlockTracker;
+	private boolean allowAccessUnloaded;
 
 	BlockBasedChunkMetaView(JavaPlugin plugin, short pluginID, GlobalChunkMetaManager globalManager,
-			Supplier<T> chunkProducer, boolean loadAll) {
+			Supplier<T> chunkProducer, boolean loadAll, boolean allowAccessUnloaded) {
 		super(plugin, pluginID, globalManager, loadAll);
 		this.chunkProducer = chunkProducer;
+		this.allowAccessUnloaded = allowAccessUnloaded;
 		if (loadAll) {
 			loadAll();
 		}
@@ -52,12 +54,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	 * @return Data tied to the given block or null if no data exists there
 	 */
 	public D get(Block block) {
-		T chunk = super.getChunkMeta(block.getLocation());
-		if (chunk == null) {
-			return null;
-		}
-		validateY(block.getY());
-		return chunk.get(block);
+		return get(block.getLocation());
 	}
 
 	/**
@@ -70,6 +67,12 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		validateY(location.getBlockY());
 		T chunk = super.getChunkMeta(location);
 		if (chunk == null) {
+			if (alwaysLoaded) {
+				return null;
+			}
+			if (!allowAccessUnloaded) {
+				throw new IllegalStateException("Can not load data for unloaded chunk");
+			}
 			short worldID = globalManager.getInternalWorldId(location.getWorld());
 			D data = singleBlockTracker.getBlock(location, worldID);
 			if (data == null) {
@@ -98,10 +101,19 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		}
 		Location loc = data.getLocation();
 		validateY(loc.getBlockY());
-		T chunk = super.getChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
+		T chunk;
+		if (alwaysLoaded) {
+			chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
+		}
+		else {
+			chunk = super.getChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
+		}
 		if (chunk != null) {
 			chunk.put(loc, data);
 			return;
+		}
+		if (!allowAccessUnloaded) {
+			throw new IllegalStateException("Can not insert data for unloaded chunk");
 		}
 		singleBlockTracker.putBlock(data, globalManager.getInternalWorldId(loc.getWorld()));
 
@@ -138,10 +150,17 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	public D remove(Location location) {
 		validateY(location.getBlockY());
 		T chunk = super.getChunkMeta(location);
-		if (chunk == null) {
-			return singleBlockTracker.removeBlock(location, globalManager.getInternalWorldId(location.getWorld()));
+		if (chunk != null) {
+			return chunk.remove(location);
 		}
-		return chunk.remove(location);
+		if (alwaysLoaded) {
+			return null;
+		}
+		if (!allowAccessUnloaded) {
+			throw new IllegalStateException("Can not delete data for unloaded chunk");
+		}
+		return singleBlockTracker.removeBlock(location, globalManager.getInternalWorldId(location.getWorld()));
+		
 	}
 
 	private static void validateY(int y) {

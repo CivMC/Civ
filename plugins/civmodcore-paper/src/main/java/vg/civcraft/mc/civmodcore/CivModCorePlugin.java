@@ -1,7 +1,9 @@
 package vg.civcraft.mc.civmodcore;
 
 import java.sql.SQLException;
+
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
+
 import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;

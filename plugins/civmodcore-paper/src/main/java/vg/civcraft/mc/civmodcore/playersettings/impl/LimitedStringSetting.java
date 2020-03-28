@@ -1,11 +1,11 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl;
 
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
-
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class LimitedStringSetting extends StringSetting {
 
