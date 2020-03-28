@@ -196,6 +196,9 @@ final class ExilePearlCore implements ExilePearlApi {
 		} else {
 			logIgnoringHooks("CivChat");
 		}
+
+		registerExileBroadcastPermissions();
+
 		if (isBastionEnabled()) {
 			this.getServer().getPluginManager().registerEvents(bastionListener, this);
 			registerBastionPermissions();
@@ -251,6 +254,18 @@ final class ExilePearlCore implements ExilePearlApi {
 		memberAndAbove.add(GroupManager.PlayerType.OWNER);
 
 		PermissionType.registerPermission(NameLayerPermissions.BASTION_ALLOW_EXILED, memberAndAbove);
+	}
+
+	private void registerExileBroadcastPermissions() {
+		if (!this.getServer().getPluginManager().isPluginEnabled("NameLayer")) return;
+
+		LinkedList<GroupManager.PlayerType> memberAndAbove = new LinkedList<>();
+		memberAndAbove.add(GroupManager.PlayerType.MEMBERS);
+		memberAndAbove.add(GroupManager.PlayerType.MODS);
+		memberAndAbove.add(GroupManager.PlayerType.ADMINS);
+		memberAndAbove.add(GroupManager.PlayerType.OWNER);
+
+		PermissionType.registerPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST, memberAndAbove);
 	}
 
 

@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.command;
 
+import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import org.bukkit.entity.Player;
 
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -47,6 +48,8 @@ public class CmdPearlBroadcast extends PearlCommand {
 			if (g != null) {
 				if (!gm.hasAccess(g, player().getUniqueId(), PermissionType.getPermission("WRITE_CHAT"))) {
 					msg(Lang.groupNoChatPermission);
+				}else if (!gm.hasAccess(g, player().getUniqueId(), PermissionType.getPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST))){
+					msg(Lang.groupNoExileBroadcastPermission);
 				}else{
 					//If they are already broadcasting to group then remove the listener for that group
 					if (pearl.isBroadcastingTo(g)) {
