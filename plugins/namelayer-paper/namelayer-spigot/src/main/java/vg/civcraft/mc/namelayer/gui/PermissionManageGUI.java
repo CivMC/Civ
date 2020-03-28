@@ -111,12 +111,13 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<Clickable> clicks = new ArrayList<Clickable>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
-		boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("PERMS"));
 		for (final PermissionType perm : PermissionType.getAllPermissions()) {
 			ItemStack is = null;
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
+			boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
+					PermissionType.getPermission("PERMS"));
+
 			if (hasPerm) {
 				is = yesStack();
 				ItemAPI.addLore(
@@ -139,6 +140,18 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			if (desc != null) {
 				ItemAPI.addLore(is, ChatColor.GREEN + desc);
 			}
+
+			if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
+				canEdit = false;
+
+				ItemAPI.addLore(
+						is,
+						ChatColor.AQUA
+								+ "This permission cannot be toggled for "
+								+ PlayerType.getNiceRankName(pType)
+				);
+			}
+
 			if (canEdit) {
 				ItemAPI.addLore(is, ChatColor.AQUA + "Click to toggle");
 				c = new Clickable(is) {
@@ -150,9 +163,9 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 									PermissionType.getPermission("PERMS"))) {
 								NameLayerPlugin.log(Level.INFO, p.getName()
 										+ (hasPerm ? " removed " : " added ")
-										+ "the permission " + perm.toString()
-										+ "for player type" + pType.toString()
-										+ " for " + g.getName() + "via gui");
+										+ "the permission " + perm.getName()
+										+ "for player type " + pType.toString()
+										+ " for " + g.getName() + " via the gui");
 								if (hasPerm) {
 									gp.removePermission(pType, perm);
 								} else {

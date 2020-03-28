@@ -21,6 +21,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
+
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.InvitePlayer;
@@ -93,7 +94,8 @@ public class InvitationGUI extends AbstractGroupGUI{
 											p.getName() + " invited "
 													+ NameAPI.getCurrentName(inviteUUID)
 													+ " to group " + g.getName()
-													+ "via gui");
+													+ " via the gui");
+
 									InvitePlayer.sendInvitation(g, pType, inviteUUID, p.getUniqueId(), true);
 
 									p.sendMessage(ChatColor.GREEN  + "Invited " + NameAPI.getCurrentName(inviteUUID) + " as " + PlayerType.getNiceRankName(pType));

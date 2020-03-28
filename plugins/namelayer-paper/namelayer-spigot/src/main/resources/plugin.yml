@@ -4,8 +4,11 @@ version: ${releaseVersion}
 author: Rourke750
 authors: [BlackXnt, Maxopoly, ProgrammerDan, Tyrothalos, Scuwr, Mr_Little_Kitty]
 depend: [CivModCore]
+<<<<<<< HEAD
 softdepend: [Mercury]
 api-version: 1.13
+=======
+>>>>>>> civ14t
 description: NameLayer handles groups creation and management, in addition to name changes. Once you have connected to Civcraft with a name, it is permanently yours. If a name is already taken, then NameLayer will add a number to the name.
 commands:
    nlag:

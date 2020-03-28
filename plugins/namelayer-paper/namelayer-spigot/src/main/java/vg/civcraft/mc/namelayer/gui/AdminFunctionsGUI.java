@@ -18,6 +18,7 @@ import vg.civcraft.mc.civmodcore.chatDialog.Dialog;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
+
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.commands.TransferGroup;
@@ -186,7 +187,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 											+ NameAPI
 													.getCurrentName(transferUUID)
 											+ " for group " + g.getName()
-											+ "via gui");
+											+ " via the gui");
 						}
 						else {
 							showScreen();
@@ -235,7 +236,7 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 					return;
 				}
 				NameLayerPlugin.log(Level.INFO,
-						p.getName() + " deleted " + g.getName() + "via gui");
+						p.getName() + " deleted " + g.getName() + " via the gui");
 				if (gm.deleteGroup(g.getName())) {
 					p.sendMessage(ChatColor.GREEN + g.getName()
 							+ " was successfully deleted.");

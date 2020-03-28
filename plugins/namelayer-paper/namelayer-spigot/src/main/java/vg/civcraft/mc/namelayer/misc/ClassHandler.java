@@ -1,4 +1,3 @@
-
 package vg.civcraft.mc.namelayer.misc;
 
 import org.bukkit.Server;

@@ -72,18 +72,21 @@ public class NameLayerPlugin extends ACivMod{
 		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
 	}
 	
+	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!loadGroups)
 			return false;
 		return handle.execute(sender, cmd, args);
 	}
 
+	@Override
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args){
 		if (!loadGroups)
 			return null;
 		return handle.complete(sender, cmd, args);
 	}
 
+	@Override
 	public void onDisable() {
 		if (db != null) {
 			try {

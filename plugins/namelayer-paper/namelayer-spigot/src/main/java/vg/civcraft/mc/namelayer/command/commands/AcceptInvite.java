@@ -53,7 +53,6 @@ public class AcceptInvite extends PlayerCommandMiddle{
 		group.addMember(uuid, type);
 		group.removeInvite(uuid, true);
 		PlayerListener.removeNotification(uuid, group);
-		
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to the group as a " + type.name() +".");
 		return true;
 	}

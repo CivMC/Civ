@@ -163,6 +163,9 @@ public class GroupManagerDao {
 		
 	private static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
 	private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
+	
+	private static final String addDefaultPermission = "insert into permissionByGroup(group_id,role,perm_id) values(select group_id,?,? from faction_id group by group_id)";
+
 	private static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id";
 	private static final String removePermission = "delete from permissionByGroup where group_id IN (SELECT group_id FROM faction_id WHERE group_name = ?) and role=? and perm_id=?;";
@@ -487,6 +490,12 @@ public class GroupManagerDao {
 					"  select f.group_id from faction_id f where f.group_name = group_name; " +
 					" end if; " +
 					"end;");
+
+		// Bastion-specific: Remove any instances of non-blacklisted players being allowed to place in bastions.
+		db.registerMigration(14, false,
+				"DELETE FROM permissionByGroup "
+						+ "WHERE role='" + PlayerType.NOT_BLACKLISTED +"' "
+						+ "AND perm_id=(SELECT perm_id FROM permissionIdMapping WHERE name='BASTION_PLACE');");
 	}
 	
 	public int createGroup(String group, UUID owner, String password){
@@ -1055,63 +1064,13 @@ public class GroupManagerDao {
 	}
 	
 	public void addNewDefaultPermission(List <PlayerType> playerTypes, PermissionType perm) {
-		try (Connection connection = db.getConnection();) {
-			List <Integer> groups = new ArrayList<>();
-			try (Statement getAllGroupIds = connection.createStatement();
-					ResultSet set = getAllGroupIds.executeQuery(GroupManagerDao.getAllGroupIds);) {
-				// unpack ids;
-				while(set.next()) {
-					groups.add(set.getInt(1));
-				}
-				// unpack and close, don't keep this query open!
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Error retrieving all group Ids to initiate default perms for permission " + perm + 
-						" for player types " + playerTypes, e);
-			}
-			
-			int batchsize = 0, maxbatch = 100;
-			try (PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addPermissionById);) {
-				for (int groupId : groups) {
-					for(PlayerType pType: playerTypes) {
-						addPermissionById.setInt(1, groupId);
-						addPermissionById.setString(2, pType.name());
-						addPermissionById.setInt(3, perm.getId());
-						addPermissionById.addBatch();
-						batchsize ++;
-					}
-					// inline batch commit at cutoff level (100 default).
-					if (batchsize >= maxbatch) {
-						int[] res = addPermissionById.executeBatch();
-						if (res == null) {
-							logger.log(Level.WARNING, "Problem inserting new default permission into all groups");
-						} else {
-							int rc = 0;
-							for (int r : res) rc+= r;
-							if (rc != res.length) {
-								logger.log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
-							}
-						}
-						batchsize = 0; // reset.
-					}
-				}
-
-				// final cleanup.
-				if (batchsize > 0) {
-					int[] res = addPermissionById.executeBatch();
-					if (res == null) {
-						logger.log(Level.WARNING, "Problem inserting new default permission into all groups");
-					} else {
-						int rc = 0;
-						for (int r : res) rc+= r;
-						if (rc != res.length) {
-							logger.log(Level.WARNING, "Problem inserting new default permission into all groups, count mismatch");
-						}
-					}
-					batchsize = 0; // reset.
-				}
-			} catch (SQLException e) {
-				logger.log(Level.WARNING, "Error initiating default perms for permission " + perm + " for player types " + playerTypes, e);
-			}
+		try (Connection connection = db.getConnection();
+				PreparedStatement addPermissionById = connection.prepareStatement(GroupManagerDao.addDefaultPermission);) {;
+				for(PlayerType pType: playerTypes) {
+					addPermissionById.setString(1, pType.name());
+					addPermissionById.setInt(2, perm.getId());
+					addPermissionById.execute();
+				}		
 		} catch (SQLException e) {
 			logger.log(Level.WARNING, "Error initiating connection to set default perms for permission " + perm + " for player types " + playerTypes, e);
 		}

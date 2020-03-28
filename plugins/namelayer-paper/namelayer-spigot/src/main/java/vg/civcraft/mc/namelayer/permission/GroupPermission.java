@@ -64,32 +64,29 @@ public class GroupPermission {
 		}
 		return x;
 	}
+
 	/**
 	 * Adds a PermissionType to a PlayerType.
 	 * @param pType The PlayerType.
 	 * @param permType The PermissionType.
 	 * @return Returns false if the PlayerType already has the permission.
 	 */
-	public boolean addPermission(PlayerType pType, PermissionType permType){
-		return addPermission(pType, permType, true);
+	public boolean addPermission(PlayerType ptype, PermissionType permtype) {
+		return addPermission(ptype,permtype,true);
 	}
-	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (perms.get(pType).contains(permType)) {
+
+	public boolean addPermission(PlayerType pType, PermissionType permType, boolean savetodb) {
+		List<PermissionType> playerPerms = perms.get(pType);
+		if (playerPerms == null || playerPerms.contains(permType)) {
 			return false;
 		}
-		List<PermissionType> types = perms.get(pType);
-		types.add(permType);
-		if (savetodb){
-			new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-					db.addPermission(group.getName(), pType.name(), Collections.singletonList(permType));
-				}
-			}.runTaskAsynchronously(NameLayerPlugin.getInstance());
+		playerPerms.add(permType);
+		if (savetodb) {
+			db.addPermission(group.getName(), pType.name(), Collections.singletonList(permType));
 		}
 		return true;
 	}
+
 	/**
 	 * Removes the PermissionType from a PlayerType.
 	 * @param pType The PlayerType to get the PermissionType removed from.
@@ -100,23 +97,18 @@ public class GroupPermission {
 		return removePermission(pType,permType,true);
 	}
 	
-	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb){
-		if (!perms.get(pType).contains(permType)) {
+	public boolean removePermission(PlayerType pType, PermissionType permType, boolean savetodb) {
+		List<PermissionType> playerPerms = perms.get(pType);
+		if (playerPerms == null || !playerPerms.contains(permType)) {
 			return false;
 		}
-		List<PermissionType> types = perms.get(pType);
-		types.remove(permType);
-		if (savetodb){
-			new BukkitRunnable() {
-				
-				@Override
-				public void run() {
-			db.removePermission(group.getName(), pType, permType);
-				}
-			}.runTaskAsynchronously(NameLayerPlugin.getInstance());
+		playerPerms.remove(permType);
+		if (savetodb) {
+			db.removePermissionAsync(group.getName(), pType, permType);
 		}
 		return true;
 	}
+
 	/**
 	 * Returns the first PlayerType with a specific permission.
 	 * @param type The PermissionType you are looking for.

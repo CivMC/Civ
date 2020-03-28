@@ -9,6 +9,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -24,7 +25,7 @@ import vg.civcraft.mc.namelayer.listeners.PlayerListener;
 public class InviteTabCompleter {
 	public static List<String> complete(String lastArg, Player sender) {
 		UUID uuid = NameAPI.getUUID(sender.getName());
-		List<Group> groups = PlayerListener.getNotifications(uuid);
+		Set<Group> groups = PlayerListener.getNotifications(uuid);
 		if (groups == null) {
 			return Collections.emptyList();
 		}

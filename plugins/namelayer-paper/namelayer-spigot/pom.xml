@@ -31,7 +31,7 @@
     <dependency>
       <groupId>vg.civcraft.mc.civmodcore</groupId>
       <artifactId>CivModCore</artifactId>
-      <version>1.7.5</version>
+      <version>1.7.8</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
