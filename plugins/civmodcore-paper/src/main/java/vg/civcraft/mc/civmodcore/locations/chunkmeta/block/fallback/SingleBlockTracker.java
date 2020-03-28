@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.fallback;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,11 @@ public class SingleBlockTracker<D extends BlockDataObject<D>> {
 	}
 
 	public Collection<D> getAllForChunkAndRemove(XZWCoord chunk) {
-		return blocks.remove(chunk).values();
+		Map<Location, D> removed = blocks.remove(chunk);
+		if (removed == null) {
+			return Collections.emptyList();
+		}
+		return removed.values();
 	}
 
 	private static XZWCoord toCoord(Location location, short worldID) {
