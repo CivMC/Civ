@@ -2,6 +2,7 @@ package com.devotedmc.ExilePearl.broadcast;
 
 import java.util.UUID;
 
+import com.devotedmc.ExilePearl.util.NameLayerPermissions;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,7 +12,10 @@ import com.devotedmc.ExilePearl.Lang;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public class NLGroupBroadcastListener implements BroadcastListener {
 
@@ -29,6 +33,10 @@ public class NLGroupBroadcastListener implements BroadcastListener {
 		String name = pearl.getHolder().getName();
 
 		String msg = TextUtil.parse(Lang.groupPearlBroadcast, group.getName(), pearl.getPlayerName(), name, l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
+
+		GroupManager gm = NameAPI.getGroupManager();
+
+		if (!gm.hasAccess(group, pearl.getPlayerId(), PermissionType.getPermission(NameLayerPermissions.ALLOW_EXILE_BROADCAST))) return;
 
 		for (UUID uid : group.getCurrentMembers()) {
 			Player p = Bukkit.getPlayer(uid);
