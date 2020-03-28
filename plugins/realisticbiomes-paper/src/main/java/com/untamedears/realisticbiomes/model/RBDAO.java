@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +19,11 @@ import org.bukkit.World;
 import com.untamedears.realisticbiomes.PlantLogicManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
-import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
 
 public class RBDAO extends TableStorageEngine<Plant> {
@@ -34,7 +33,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	}
 
 	@Override
-	public void delete(Plant data, ChunkCoord coord) {
+	public void delete(Plant data, XZWCoord coord) {
 		try (Connection conn = db.getConnection();
 				PreparedStatement deletePlant = conn.prepareStatement(
 						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
@@ -42,9 +41,9 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			deletePlant.setInt(1, coord.getX());
 			deletePlant.setInt(2, coord.getZ());
 			deletePlant.setShort(3, coord.getWorldID());
-			deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
+			deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
 			deletePlant.setShort(5, (short) data.getLocation().getBlockY());
-			deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
+			deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 			deletePlant.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
@@ -87,11 +86,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				logicMan.initGrowthTime(plant);
 			}
 		});
-
 	}
 
 	@Override
-	public void insert(Plant data, ChunkCoord coord) {
+	public void insert(Plant data, XZWCoord coord) {
 		try (Connection conn = db.getConnection();
 				PreparedStatement insertPlant = conn.prepareStatement(
 						"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
@@ -99,9 +97,9 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			insertPlant.setInt(1, coord.getX());
 			insertPlant.setInt(2, coord.getZ());
 			insertPlant.setShort(3, coord.getWorldID());
-			insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
+			insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
 			insertPlant.setShort(5, (short) data.getLocation().getBlockY());
-			insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
+			insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 			insertPlant.setTimestamp(7, new Timestamp(data.getCreationTime()));
 			insertPlant.execute();
 		} catch (SQLException e) {
@@ -115,68 +113,22 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				"CREATE TABLE IF NOT EXISTS rb_plant (chunkId bigint(20) DEFAULT NULL, w int(11) DEFAULT NULL,"
 						+ "x int(11) DEFAULT NULL, y int(11) DEFAULT NULL, z int(11) DEFAULT NULL, date int(10) unsigned DEFAULT NULL,"
 						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)");
-		db.registerMigration(2, false, new Callable<Boolean>() {
-
-			@Override
-			public Boolean call() throws Exception {
-				try (Connection insertConn = db.getConnection();
-						PreparedStatement selectPlant = insertConn
-								.prepareStatement("select x,y,z,w,date from rb_plant");
-						ResultSet rs = selectPlant.executeQuery();
-						PreparedStatement insertPlant = insertConn.prepareStatement(
-								"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
-										+ "values(?,?,?, ?,?,?, ?);")) {
-
-					try (PreparedStatement deleteExisting = insertConn.prepareStatement("delete from rb_plants")) {
-						// in case this migration failed before some of the data might already have
-						// migrated, which we want to undo
-						deleteExisting.execute();
-					}
-
-					GlobalChunkMetaManager worldMan = CivModCorePlugin.getInstance().getChunkMetaManager();
-					int batchCounter = 0;
-					while (rs.next()) {
-						int xCoord = rs.getInt(1);
-						int yCoord = rs.getInt(2);
-						int zCoord = rs.getInt(3);
-						int worldId = rs.getInt(4);
-						long timeStamp = rs.getInt(5);
-
-						byte x = (byte) BlockBasedChunkMeta.modulo(xCoord, 16);
-						short y = (short) yCoord;
-						byte z = (byte) BlockBasedChunkMeta.modulo(zCoord, 16);
-						int chunkX = xCoord / 16;
-						int chunkZ = zCoord / 16;
-						World world = Bukkit.getWorlds().get(worldId);
-						short worldID = worldMan.getInternalWorldIdByName(world.getName());
-
-						insertPlant.setInt(1, chunkX);
-						insertPlant.setInt(2, chunkZ);
-						insertPlant.setShort(3, worldID);
-						insertPlant.setByte(4, x);
-						insertPlant.setShort(5, y);
-						insertPlant.setByte(6, z);
-						insertPlant.setTimestamp(7, new Timestamp(timeStamp));
-						insertPlant.addBatch();
-						if (batchCounter > 100) {
-							batchCounter = 0;
-							insertPlant.executeBatch();
-						}
-						batchCounter++;
-					}
-					insertPlant.executeBatch();
-				}
-				return true;
-			}
-		}, "create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
+		db.registerMigration(2, false, "create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
 				+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
 				+ "creation_time timestamp not null default now(), index plantChunkLookUp(chunk_x, chunk_z, world_id),"
 				+ "index plantCoordLookUp (x_offset, y, z_offset, world_id), "
-				+ "constraint plantUniqueLocation unique (chunk_x,chunk_z,x_offset,y,z_offset,world_id));");
+				+ "constraint plantUniqueLocation unique (chunk_x,chunk_z,x_offset,y,z_offset,world_id));",
+				"delete from rb_plants",
+				"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
+				+ "select c.x,c.z,c.w + 1, if(mod(p.x,16)<0,mod(p.x,16)+16,mod(p.x,16)), p.y, "
+				+ "if(mod(p.z,16)<0,mod(p.z,16)+16,mod(p.z,16)),FROM_UNIXTIME(p.date) "
+				+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;"
+
+		);
 	}
 
 	@Override
-	public void update(Plant data, ChunkCoord coord) {
+	public void update(Plant data, XZWCoord coord) {
 		try (Connection conn = db.getConnection();
 				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
@@ -184,13 +136,42 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			updatePlant.setInt(2, coord.getX());
 			updatePlant.setInt(3, coord.getZ());
 			updatePlant.setShort(4, coord.getWorldID());
-			updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX(), 16));
+			updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
 			updatePlant.setShort(6, (short) data.getLocation().getBlockY());
-			updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ(), 16));
+			updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 			updatePlant.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
+	}
+
+	@Override
+	public TableBasedDataObject getForLocation(int x, int y, int z, short worldID, short pluginID) {
+		throw new IllegalStateException("Can not load plant when chunk is not loaded");
+	}
+
+	@Override
+	public Collection<XZWCoord> getAllDataChunks() {
+		List<XZWCoord> result = new ArrayList<>();
+		try (Connection insertConn = db.getConnection();
+				PreparedStatement selectChunks = insertConn.prepareStatement(
+						"select chunk_x, chunk_z, world_id from rb_plants group by chunk_x, chunk_z, world_id");
+				ResultSet rs = selectChunks.executeQuery()) {
+			while (rs.next()) {
+				int chunkX = rs.getInt(1);
+				int chunkZ = rs.getInt(2);
+				short worldID = rs.getShort(3);
+				result.add(new XZWCoord(chunkX, chunkZ, worldID));
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to select populated chunks from db: ", e);
+		}
+		return result;
+	}
+
+	@Override
+	public boolean stayLoaded() {
+		return false;
 	}
 
 }

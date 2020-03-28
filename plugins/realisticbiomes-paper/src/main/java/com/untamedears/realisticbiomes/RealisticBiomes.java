@@ -84,7 +84,7 @@ public class RealisticBiomes extends ACivMod {
 			BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData = ChunkMetaAPI
 					.registerBlockBasedPlugin(this, () -> {
 						return new RBChunkCache(false, dao);
-					});
+					}, dao, false);
 			if (chunkMetaData == null) {
 				getLogger().severe("Errors setting up chunk metadata API, shutting down");
 				Bukkit.shutdown();
