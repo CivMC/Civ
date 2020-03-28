@@ -56,9 +56,9 @@ public class WorldChunkMetaManager {
 		startChunkLoadingConsumer();
 	}
 
-	ChunkMeta<?> computeIfAbsent(int pluginID, int x, int z, Supplier<ChunkMeta<?>> computer) {
+	ChunkMeta<?> computeIfAbsent(short pluginID, int x, int z, Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
 		ChunkCoord coord = getChunkCoord(x, z, true, false);
-		ChunkMeta<?> existing = coord.getMeta(pluginID);
+		ChunkMeta<?> existing = coord.getMeta(pluginID, alwaysLoaded);
 		if (existing != null) {
 			return existing;
 		}
@@ -128,12 +128,12 @@ public class WorldChunkMetaManager {
 	 * @param z        Z-coordinate of the chunk
 	 * @return ChunkMeta for the given parameter, possibly null if none existed
 	 */
-	ChunkMeta<?> getChunkMeta(int pluginID, int x, int z) {
+	ChunkMeta<?> getChunkMeta(short pluginID, int x, int z, boolean alwaysLoaded) {
 		ChunkCoord coord = getChunkCoord(x, z, false, false);
 		if (coord == null) {
 			return null;
 		}
-		return coord.getMeta(pluginID);
+		return coord.getMeta(pluginID, alwaysLoaded);
 	}
 
 	/**
@@ -182,10 +182,16 @@ public class WorldChunkMetaManager {
 						synchronized (metas) {
 							synchronized (coord) {
 								coord.fullyPersist();
-								metas.remove(coord);
-								iter.remove();
-								// coord is up for garbage collection at this point and all of its data has been
-								// written to the db
+								if (!coord.hasPermanentlyLoadedData()) {
+									metas.remove(coord);
+									iter.remove();
+									// coord is up for garbage collection at this point and all of its data has been
+									// written to the db
+								}
+								else {
+									coord.deleteNonPersistentData();
+									//keep chunk coord, but garbage collect the data we dont want to keep inside of it
+								}
 							}
 						}
 					}

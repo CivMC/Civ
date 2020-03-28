@@ -7,6 +7,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaFactory;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
 
@@ -34,8 +35,8 @@ public class ChunkMetaAPI {
 	 * @return API access object for block based chunk metadata
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends StorageEngine> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
-			JavaPlugin plugin, Supplier<T> emptyChunkCreator) {
+	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends BlockBasedStorageEngine<D>> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
+			JavaPlugin plugin, Supplier<T> emptyChunkCreator, S storageEngine) {
 		if (existingViews.containsKey(plugin.getName())) {
 			ChunkMetaView<T> chunkMetaView = (ChunkMetaView<T>) existingViews.get(plugin.getName());
 			return (BlockBasedChunkMetaView<T, D, S>) chunkMetaView;
@@ -46,16 +47,20 @@ public class ChunkMetaAPI {
 			return null;
 		}
 		ChunkDAO chunkDAO = globalManager.getChunkDAO();
-		int id = chunkDAO.getOrCreatePluginID(plugin);
+		short id = chunkDAO.getOrCreatePluginID(plugin);
 		if (id == -1) {
 			plugin.getLogger().log(Level.SEVERE, "Could not init chunk meta data, could not retrieve plugin id from db");
 			return null;
 		}
-		ChunkMetaFactory metaFactory = ChunkMetaFactory.getInstance();
-		metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
+		if (!storageEngine.stayLoaded()) {
+			//if a plugin preloads all data, we don't want to do anything on chunk load/unload
+			ChunkMetaFactory metaFactory = ChunkMetaFactory.getInstance();
+			metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
+		}
 		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
-				emptyChunkCreator);
-		existingViews.put(plugin.getName(), (ChunkMetaView<?>) view);
+				emptyChunkCreator, storageEngine.stayLoaded());
+		ViewTracker.getInstance().put(view, id);
+		existingViews.put(plugin.getName(), view);
 		return view;
 	}
 

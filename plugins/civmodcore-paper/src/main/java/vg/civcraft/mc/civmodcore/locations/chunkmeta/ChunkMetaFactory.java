@@ -16,20 +16,20 @@ public class ChunkMetaFactory {
 		}
 		return instance;
 	}
-	private Map<String, Integer> pluginToInternalIdMapping;
+	private Map<String, Short> pluginToInternalIdMapping;
 
-	private Map<Integer, Supplier<ChunkMeta<?>>> metaInstanciators;
+	private Map<Short, Supplier<ChunkMeta<?>>> metaInstanciators;
 
 	private ChunkMetaFactory() {
 		pluginToInternalIdMapping = new HashMap<>();
 		metaInstanciators = new TreeMap<>();
 	}
 
-	Collection<Entry<Integer, Supplier<ChunkMeta<?>>>> getEmptyChunkFunctions() {
+	Collection<Entry<Short, Supplier<ChunkMeta<?>>>> getEmptyChunkFunctions() {
 		return metaInstanciators.entrySet();
 	}
 
-	public void registerPlugin(String name, int id, Supplier<ChunkMeta<?>> generator) {
+	public void registerPlugin(String name, short id, Supplier<ChunkMeta<?>> generator) {
 		metaInstanciators.put(id, generator);
 		pluginToInternalIdMapping.put(name, id);
 	}

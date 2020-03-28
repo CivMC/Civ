@@ -45,6 +45,7 @@ public final class ItemNames {
 		resetItemNames();
 		// Load material names from materials.csv
 		InputStream materialsCSV = CivModCorePlugin.class.getResourceAsStream("/materials.csv");
+		int count = 0;
 		if (materialsCSV != null) {
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(materialsCSV));
@@ -76,7 +77,7 @@ public final class ItemNames {
 					}
 					// Put the material and name into the system
 					itemNames.put(generateItemHash(material, null), name);
-					logger.info(String.format("Material parsed: %s = %s", material, name));
+					count++;
 					line = reader.readLine();
 				}
 				reader.close();
@@ -84,6 +85,7 @@ public final class ItemNames {
 			catch (IOException error) {
 				logger.log(Level.WARNING, "Could not load materials from materials.csv", error);
 			}
+			logger.info("Loaded a total of " + count + " item names from materials.csv");
 		}
 		else {
 			logger.warning("Could not load materials from materials.csv as the file does not exist.");

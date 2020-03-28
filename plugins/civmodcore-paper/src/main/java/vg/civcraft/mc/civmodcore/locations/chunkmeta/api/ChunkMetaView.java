@@ -12,14 +12,16 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 
 public class ChunkMetaView<T extends ChunkMeta<?>> {
 
-	protected int pluginID;
+	protected short pluginID;
 	protected JavaPlugin plugin;
 	protected GlobalChunkMetaManager globalManager;
+	protected boolean alwaysLoaded;
 
-	ChunkMetaView(JavaPlugin plugin, int pluginID, GlobalChunkMetaManager globalManager) {
+	ChunkMetaView(JavaPlugin plugin, short pluginID, GlobalChunkMetaManager globalManager, boolean alwaysLoaded) {
 		this.plugin = plugin;
 		this.pluginID = pluginID;
 		this.globalManager = globalManager;
+		this.alwaysLoaded = alwaysLoaded;
 	}
 
 	/**
@@ -57,7 +59,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		if (!world.getChunkAt(chunkX, chunkZ).isLoaded()) {
 			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
 		}
-		return (T) globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer);
+		return (T) globalManager.computeIfAbsent(pluginID, world, chunkX, chunkZ, computer, alwaysLoaded);
 	}
 
 	/**
@@ -73,6 +75,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		GlobalChunkMetaManager globalTemp = globalManager;
 		globalManager = null;
 		globalTemp.flushAll();
+		ViewTracker.getInstance().remove(pluginID);
 		ChunkMetaAPI.removePlugin(plugin);
 	}
 
@@ -124,7 +127,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		if (globalManager == null) {
 			throw new IllegalStateException("View already shut down, can not read data");
 		}
-		return (T) globalManager.getChunkMeta(pluginID, world, chunkX, chunkZ);
+		return (T) globalManager.getChunkMeta(pluginID, world, chunkX, chunkZ, alwaysLoaded);
 	}
 
 	/**
@@ -164,6 +167,10 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 			throw new IllegalArgumentException("Can not insert meta for unloaded chunks");
 		}
 		globalManager.insertChunkMeta(pluginID, world, chunkX, chunkZ, meta);
+	}
+
+	public void postLoad(ChunkMeta<?> chunk) {
+		//no implementation here, only in subclass
 	}
 
 }

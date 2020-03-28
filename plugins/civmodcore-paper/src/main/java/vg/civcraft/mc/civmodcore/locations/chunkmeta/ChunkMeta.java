@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.StorageEngine;
  */
 public abstract class ChunkMeta<S extends StorageEngine> {
 
-	protected int pluginID;
+	protected short pluginID;
 	protected World world;
 	protected final S storage;
 	protected ChunkCoord chunkCoord;
@@ -58,7 +58,7 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 	/**
 	 * Gets the id of the plugin to which plugin this instance belongs to
 	 */
-	int getPluginID() {
+	public short getPluginID() {
 		return pluginID;
 	}
 
@@ -107,8 +107,15 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 	/**
 	 * Sets the id of the plugin to which plugin this instance belongs to
 	 */
-	void setPluginID(int pluginID) {
+	void setPluginID(short pluginID) {
 		this.pluginID = pluginID;
+	}
+	
+	/**
+	 * @return Whether this data should always be kept loaded
+	 */
+	boolean loadAlways() {
+		return storage.stayLoaded();
 	}
 
 	/**

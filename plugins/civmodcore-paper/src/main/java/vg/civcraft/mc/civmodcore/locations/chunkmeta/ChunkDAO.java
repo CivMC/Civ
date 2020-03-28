@@ -23,7 +23,7 @@ public class ChunkDAO {
 		this.logger = plugin.getLogger();
 	}
 
-	public int getOrCreatePluginID(JavaPlugin plugin) {
+	public short getOrCreatePluginID(JavaPlugin plugin) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertPlugin = insertConn
 						.prepareStatement("select id from cmc_plugins where name = ?;")) {

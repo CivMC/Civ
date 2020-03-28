@@ -16,8 +16,8 @@ public abstract class JsonableDataObject extends BlockDataObject<JsonableDataObj
 		return new Location(meta.getWorld(), x, y, z);
 	}
 
-	public JsonableDataObject(Location location) {
-		super(location);
+	public JsonableDataObject(Location location, boolean isNew) {
+		super(location, isNew);
 	}
 
 	public abstract void concreteSerialize(JsonObject base);

@@ -48,9 +48,9 @@ public class GlobalChunkMetaManager {
 	 * @return ChunkMeta for the given parameter, guaranteed not null as long as the
 	 *         supplier lambda is valid
 	 */
-	public ChunkMeta<?> computeIfAbsent(int pluginID, World world, int chunkX, int chunkZ,
-			Supplier<ChunkMeta<?>> computer) {
-		return getWorldManager(world).computeIfAbsent(pluginID, chunkX, chunkZ, computer);
+	public ChunkMeta<?> computeIfAbsent(short pluginID, World world, int chunkX, int chunkZ,
+			Supplier<ChunkMeta<?>> computer, boolean alwaysLoaded) {
+		return getWorldManager(world).computeIfAbsent(pluginID, chunkX, chunkZ, computer, alwaysLoaded);
 	}
 
 	/**
@@ -76,8 +76,8 @@ public class GlobalChunkMetaManager {
 	 * @param chunkZ   Z-coord of the chunk
 	 * @return Retrieved ChunkMeta for the given parameter, possibly null
 	 */
-	public ChunkMeta<?> getChunkMeta(int pluginID, World world, int chunkX, int chunkZ) {
-		return getWorldManager(world).getChunkMeta(pluginID, chunkX, chunkZ);
+	public ChunkMeta<?> getChunkMeta(short pluginID, World world, int chunkX, int chunkZ, boolean alwaysLoaded) {
+		return getWorldManager(world).getChunkMeta(pluginID, chunkX, chunkZ, alwaysLoaded);
 	}
 
 	private WorldChunkMetaManager getWorldManager(World world) {
@@ -93,7 +93,7 @@ public class GlobalChunkMetaManager {
 	 * @param chunkX   X-coord of the chunk
 	 * @param chunkZ   Z-coord of the chunk
 	 */
-	public void insertChunkMeta(int pluginID, World world, int chunkX, int chunkZ, ChunkMeta<?> meta) {
+	public void insertChunkMeta(short pluginID, World world, int chunkX, int chunkZ, ChunkMeta<?> meta) {
 		meta.setPluginID(pluginID);
 		getWorldManager(world).insertChunkMeta(chunkX, chunkZ, meta);
 	}
@@ -143,11 +143,13 @@ public class GlobalChunkMetaManager {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Gets the world object mapped to an internal id
+	 * 
 	 * @param id ID to get world for
-	 * @return World if a matching one for the given id exists and the world is loaded currently
+	 * @return World if a matching one for the given id exists and the world is
+	 *         loaded currently
 	 */
 	public World getWorldByInternalID(short id) {
 		UUID uuid = internalIDToUuid.get(id);
@@ -156,15 +158,26 @@ public class GlobalChunkMetaManager {
 		}
 		return Bukkit.getWorld(uuid);
 	}
-	
+
 	/**
-	 * Retrieves the internal id used for a world based on the worlds name. Should only be used to convert 
-	 * legacy data over
+	 * Retrieves the internal id used for a world based on the worlds name. Should
+	 * only be used to convert legacy data over
+	 * 
 	 * @param name Name of the world
 	 * @return Id of the world or -1 if no such world is known
 	 */
 	public short getInternalWorldIdByName(String name) {
 		World world = Bukkit.getWorld(name);
+		return getInternalWorldId(world);
+	}
+
+	/**
+	 * Retrieves the internal id used for a world.
+	 * 
+	 * @param name World to get ID for
+	 * @return Id of the world or -1 if no such world is known
+	 */
+	public short getInternalWorldId(World world) {
 		if (world == null) {
 			return -1;
 		}
@@ -182,5 +195,4 @@ public class GlobalChunkMetaManager {
 		}
 		worldManager.unloadChunk(chunk.getX(), chunk.getZ());
 	}
-
 }
