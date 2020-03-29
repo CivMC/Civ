@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.command.PlayerCommandMiddle;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.GroupPermission;
@@ -59,6 +60,11 @@ public class JoinGroup extends PlayerCommandMiddle{
 			p.sendMessage(ChatColor.RED + "You are already a member.");
 			return true;
 		}
+		if(NameLayerPlugin.getBlackList().isBlacklisted(g, uuid)) {
+			p.sendMessage(ChatColor.RED + "You can not join a group you have been blacklisted from");
+			return true;
+		}
+
 		g.addMember(uuid, pType);
 		p.sendMessage(ChatColor.GREEN + "You have successfully been added to this group.");
 		return true;
