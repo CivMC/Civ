@@ -36,7 +36,7 @@ public class DestroyVehicleAction extends LoggablePlayerVictimAction {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Break  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%Broke Vehicle  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()), ChatColor.AQUA, getVehicle().toString(), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}
