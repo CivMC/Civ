@@ -28,7 +28,7 @@ public class DestroyVehicleAction extends LoggablePlayerVictimAction {
 	public IClickable getGUIRepresentation() {
 		ItemStack is = new ItemStack(getVehicle());
 		ItemMeta itemMeta = is.getItemMeta();
-		itemMeta.setDisplayName(ChatColor.GOLD + "Break");
+		itemMeta.setDisplayName(ChatColor.GOLD + "Broke Vehicle");
 		is.setItemMeta(itemMeta);
 		super.enrichGUIItem(is);
 		return new DecorationStack(is);
