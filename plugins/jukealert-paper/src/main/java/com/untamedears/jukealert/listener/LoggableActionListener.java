@@ -32,6 +32,9 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
@@ -116,6 +119,42 @@ public class LoggableActionListener implements Listener {
 		String victimName = getEntityName(victim);
 		handlePlayerAction(killer, s -> new KillLivingEntityAction(System.currentTimeMillis(), s, killer.getUniqueId(),
 				victim.getLocation(), victimName));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onDestroyVehicle(VehicleDestroyEvent event) {
+		if (event.getAttacker().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getAttacker();
+
+		handlePlayerAction(player, s -> new DestroyVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEnterVehicle(VehicleEnterEvent event) {
+		if (event.getEntered().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getEntered();
+
+		handlePlayerAction(player, s -> new EnterVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onExitVehicle(VehicleExitEvent event) {
+		if (event.getExited().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getExited();
+
+		handlePlayerAction(player, s -> new ExitVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
