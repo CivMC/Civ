@@ -10,17 +10,19 @@ import java.util.logging.Level;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMetaFactory;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
+import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
+import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
+import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
 
 public class ChunkMetaAPI {
 
-	private static Map<String, ChunkMetaView<?>> existingViews = new HashMap<>();
+	private static Map<String, APIView> existingViews = new HashMap<>();
 
 	/**
 	 * Allows creating instances of BlockBasedChunkMetaView, which is most likely
@@ -46,7 +48,7 @@ public class ChunkMetaAPI {
 			plugin.getLogger().log(Level.SEVERE, "Could not start chunk meta data, manager was null");
 			return null;
 		}
-		ChunkDAO chunkDAO = globalManager.getChunkDAO();
+		CMCWorldDAO chunkDAO = globalManager.getChunkDAO();
 		short id = chunkDAO.getOrCreatePluginID(plugin);
 		if (id == -1) {
 			plugin.getLogger().log(Level.SEVERE, "Could not init chunk meta data, could not retrieve plugin id from db");
@@ -58,10 +60,14 @@ public class ChunkMetaAPI {
 			metaFactory.registerPlugin(plugin.getName(), id, (Supplier<ChunkMeta<?>>) (Supplier<?>) emptyChunkCreator);
 		}
 		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
-				emptyChunkCreator, storageEngine.stayLoaded(), allowAccessUnloaded);
-		ViewTracker.getInstance().put(view, id);
+				emptyChunkCreator, storageEngine, storageEngine.stayLoaded(), allowAccessUnloaded);
+		ChunkMetaViewTracker.getInstance().put(view, id);
 		existingViews.put(plugin.getName(), view);
 		return view;
+	}
+	
+	public static <T extends LocationTrackable> void registerSingleTrackingPlugin(JavaPlugin plugin, GlobalLocationTracker<T> tracker) {
+		
 	}
 
 	static void removePlugin(JavaPlugin plugin) {
@@ -76,7 +82,7 @@ public class ChunkMetaAPI {
 		// copy keys so we can iterate safely
 		List<String> keys = new ArrayList<>(existingViews.keySet());
 		for (String key : keys) {
-			ChunkMetaView<?> view = existingViews.get(key);
+			APIView view = existingViews.get(key);
 			if (view != null) {
 				view.disable();
 			}

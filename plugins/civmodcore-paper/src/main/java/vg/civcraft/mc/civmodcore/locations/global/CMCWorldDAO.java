@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.locations.chunkmeta;
+package vg.civcraft.mc.civmodcore.locations.global;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,12 +13,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
-public class ChunkDAO {
+public class CMCWorldDAO {
 
 	private ManagedDatasource db;
 	private Logger logger;
 
-	public ChunkDAO(ManagedDatasource db, CivModCorePlugin plugin) {
+	public CMCWorldDAO(ManagedDatasource db, CivModCorePlugin plugin) {
 		this.db = db;
 		this.logger = plugin.getLogger();
 	}

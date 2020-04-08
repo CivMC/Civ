@@ -10,16 +10,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 
-public class ChunkMetaView<T extends ChunkMeta<?>> {
-
-	protected short pluginID;
-	protected JavaPlugin plugin;
+public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 	protected GlobalChunkMetaManager globalManager;
 	protected boolean alwaysLoaded;
 
 	ChunkMetaView(JavaPlugin plugin, short pluginID, GlobalChunkMetaManager globalManager, boolean alwaysLoaded) {
-		this.plugin = plugin;
-		this.pluginID = pluginID;
+		super(plugin, pluginID);
 		this.globalManager = globalManager;
 		this.alwaysLoaded = alwaysLoaded;
 	}
@@ -75,7 +71,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		GlobalChunkMetaManager globalTemp = globalManager;
 		globalManager = null;
 		globalTemp.flushAll();
-		ViewTracker.getInstance().remove(pluginID);
+		ChunkMetaViewTracker.getInstance().remove(pluginID);
 		ChunkMetaAPI.removePlugin(plugin);
 	}
 

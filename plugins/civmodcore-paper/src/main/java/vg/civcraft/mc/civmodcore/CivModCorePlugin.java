@@ -9,9 +9,10 @@ import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
@@ -23,6 +24,7 @@ public final class CivModCorePlugin extends ACivMod {
 	private static CivModCorePlugin instance;
 	private GlobalChunkMetaManager chunkMetaManager;
 	private ManagedDatasource database;
+	private WorldIDManager worldIdManager;
 
 	@Override
 	public void onEnable() {
@@ -51,9 +53,10 @@ public final class CivModCorePlugin extends ACivMod {
 		EnchantmentNames.loadEnchantmentNames();
 		BottomLineAPI.init();
 		if (database != null) {
-			ChunkDAO dao = new ChunkDAO(database, this);
+			CMCWorldDAO dao = new CMCWorldDAO(database, this);
 			if (dao.updateDatabase()) {
-				chunkMetaManager = new GlobalChunkMetaManager(dao);
+				worldIdManager = new WorldIDManager(dao);
+				chunkMetaManager = new GlobalChunkMetaManager(dao, worldIdManager);
 				info("Setup database successfully");
 			}
 			else {
@@ -95,6 +98,10 @@ public final class CivModCorePlugin extends ACivMod {
 	
 	public GlobalChunkMetaManager getChunkMetaManager() {
 		return chunkMetaManager;
+	}
+	
+	public WorldIDManager getWorldIdManager() {
+		return worldIdManager;
 	}
 
 }

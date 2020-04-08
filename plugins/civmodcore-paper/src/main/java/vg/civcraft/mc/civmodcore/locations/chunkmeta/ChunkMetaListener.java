@@ -11,6 +11,9 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
 
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
+
 public class ChunkMetaListener implements Listener {
 
 	private GlobalChunkMetaManager manager;
@@ -68,7 +71,13 @@ public class ChunkMetaListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void worldLoad(WorldLoadEvent e) {
-		manager.registerWorld(e.getWorld());
+		WorldIDManager idManager = CivModCorePlugin.getInstance().getWorldIdManager();
+		if (!idManager.registerWorld(e.getWorld())) {
+			CivModCorePlugin.getInstance().getLogger().severe("Failed to initialize world tracking");
+			return;
+		}
+		CivModCorePlugin.getInstance().getChunkMetaManager().registerWorld(idManager.getInternalWorldId(e.getWorld()),
+				e.getWorld());
 	}
 
 }

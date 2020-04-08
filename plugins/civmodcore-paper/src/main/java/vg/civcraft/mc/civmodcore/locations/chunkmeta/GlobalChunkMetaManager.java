@@ -10,25 +10,22 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class GlobalChunkMetaManager {
-
-	private Map<UUID, Short> uuidToInternalID;
-	private Map<Short, UUID> internalIDToUuid;
+	private CMCWorldDAO chunkDao;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
-	private ChunkDAO chunkDao;
+	private WorldIDManager idManager;
 
-	public GlobalChunkMetaManager(ChunkDAO chunkDao) {
-		this.uuidToInternalID = new TreeMap<>();
-		this.worldToManager = new TreeMap<>();
-		this.internalIDToUuid = new TreeMap<>();
+	public GlobalChunkMetaManager(CMCWorldDAO chunkDao, WorldIDManager idManager) {
 		this.chunkDao = chunkDao;
-		for (World world : Bukkit.getWorlds()) {
-			registerWorld(world);
-		}
+		this.worldToManager = new TreeMap<>();
+		this.idManager = idManager;
 		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CivModCorePlugin.getInstance(), () -> {
 			for (World world : Bukkit.getWorlds()) {
+				registerWorld(idManager.getInternalWorldId(world), world);
 				for (Chunk chunk : world.getLoadedChunks()) {
 					loadChunkData(chunk);
 				}
@@ -63,7 +60,7 @@ public class GlobalChunkMetaManager {
 		}
 	}
 
-	public ChunkDAO getChunkDAO() {
+	public CMCWorldDAO getChunkDAO() {
 		return chunkDao;
 	}
 
@@ -107,93 +104,16 @@ public class GlobalChunkMetaManager {
 		worldManager.loadChunk(chunk.getX(), chunk.getZ());
 	}
 
-	/**
-	 * Registers a world for internal use
-	 * 
-	 * @param world World to prepare data structures for
-	 * @return Whether successfull or not
-	 */
-	boolean registerWorld(World world) {
-		if (uuidToInternalID.containsKey(world.getUID())) {
-			return true;
-		}
-		short id = chunkDao.getOrCreateWorldID(world);
-		if (id == -1) {
-			// very bad
-			return false;
-		}
-		uuidToInternalID.put(world.getUID(), id);
-		internalIDToUuid.put(id, world.getUID());
-		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
-		worldToManager.put(world.getUID(), manager);
-		return true;
-	}
-
-	/**
-	 * Registers all currently loaded worlds internally
-	 * 
-	 * @return Whether all worlds were successfully loaded in or not. Errors here
-	 *         would most likely mean a non-working database setup
-	 */
-	public boolean setup() {
-		for (World world : Bukkit.getWorlds()) {
-			boolean worked = registerWorld(world);
-			if (!worked) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * Gets the world object mapped to an internal id
-	 * 
-	 * @param id ID to get world for
-	 * @return World if a matching one for the given id exists and the world is
-	 *         loaded currently
-	 */
-	public World getWorldByInternalID(short id) {
-		UUID uuid = internalIDToUuid.get(id);
-		if (uuid == null) {
-			return null;
-		}
-		return Bukkit.getWorld(uuid);
-	}
-
-	/**
-	 * Retrieves the internal id used for a world based on the worlds name. Should
-	 * only be used to convert legacy data over
-	 * 
-	 * @param name Name of the world
-	 * @return Id of the world or -1 if no such world is known
-	 */
-	public short getInternalWorldIdByName(String name) {
-		World world = Bukkit.getWorld(name);
-		return getInternalWorldId(world);
-	}
-
-	/**
-	 * Retrieves the internal id used for a world.
-	 * 
-	 * @param name World to get ID for
-	 * @return Id of the world or -1 if no such world is known
-	 */
-	public short getInternalWorldId(World world) {
-		if (world == null) {
-			return -1;
-		}
-		Short result = uuidToInternalID.get(world.getUID());
-		if (result == null) {
-			return -1;
-		}
-		return result;
-	}
-
 	void unloadChunkData(Chunk chunk) {
 		WorldChunkMetaManager worldManager = worldToManager.get(chunk.getWorld().getUID());
 		if (worldManager == null) {
 			throw new IllegalStateException("No world manager for chunk at " + chunk.toString());
 		}
 		worldManager.unloadChunk(chunk.getX(), chunk.getZ());
+	}
+	
+	public void registerWorld(short id, World world) {
+		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
+		worldToManager.put(world.getUID(), manager);
 	}
 }

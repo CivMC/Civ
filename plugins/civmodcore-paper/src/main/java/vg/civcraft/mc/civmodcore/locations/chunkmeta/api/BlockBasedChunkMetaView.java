@@ -7,6 +7,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
@@ -14,6 +15,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.fallback.SingleBlockTracker;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 /**
  * API view for block based chunk metas, which adds convenience methods for
@@ -29,21 +31,24 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	private S storageEngine;
 	private SingleBlockTracker<D> singleBlockTracker;
 	private boolean allowAccessUnloaded;
+	private WorldIDManager worldIdManager;
 
 	BlockBasedChunkMetaView(JavaPlugin plugin, short pluginID, GlobalChunkMetaManager globalManager,
-			Supplier<T> chunkProducer, boolean loadAll, boolean allowAccessUnloaded) {
+			Supplier<T> chunkProducer, S storage, boolean loadAll, boolean allowAccessUnloaded) {
 		super(plugin, pluginID, globalManager, loadAll);
 		this.chunkProducer = chunkProducer;
 		this.allowAccessUnloaded = allowAccessUnloaded;
+		this.storageEngine = storage;
 		if (loadAll) {
 			loadAll();
 		}
+		worldIdManager = CivModCorePlugin.getInstance().getWorldIdManager();
 		singleBlockTracker = new SingleBlockTracker<>();
 	}
 
 	private void loadAll() {
 		for (XZWCoord coord : storageEngine.getAllDataChunks()) {
-			getOrCreateChunkMeta(globalManager.getWorldByInternalID(pluginID), coord.getX(), coord.getZ());
+			getOrCreateChunkMeta(worldIdManager.getWorldByInternalID(pluginID), coord.getX(), coord.getZ());
 		}
 	}
 
@@ -73,7 +78,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 			if (!allowAccessUnloaded) {
 				throw new IllegalStateException("Can not load data for unloaded chunk");
 			}
-			short worldID = globalManager.getInternalWorldId(location.getWorld());
+			short worldID = worldIdManager.getInternalWorldId(location.getWorld());
 			D data = singleBlockTracker.getBlock(location, worldID);
 			if (data == null) {
 				return storageEngine.getForLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
@@ -115,7 +120,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		if (!allowAccessUnloaded) {
 			throw new IllegalStateException("Can not insert data for unloaded chunk");
 		}
-		singleBlockTracker.putBlock(data, globalManager.getInternalWorldId(loc.getWorld()));
+		singleBlockTracker.putBlock(data, worldIdManager.getInternalWorldId(loc.getWorld()));
 
 	}
 
@@ -159,7 +164,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		if (!allowAccessUnloaded) {
 			throw new IllegalStateException("Can not delete data for unloaded chunk");
 		}
-		return singleBlockTracker.removeBlock(location, globalManager.getInternalWorldId(location.getWorld()));
+		return singleBlockTracker.removeBlock(location, worldIdManager.getInternalWorldId(location.getWorld()));
 		
 	}
 
@@ -185,7 +190,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	@Override
 	public void disable() {
 		for(D data : singleBlockTracker.getAll()) {
-			storageEngine.persist(data, globalManager.getInternalWorldId(data.getLocation().getWorld()), pluginID);
+			storageEngine.persist(data, worldIdManager.getInternalWorldId(data.getLocation().getWorld()), pluginID);
 		}
 		super.disable();
 	}
