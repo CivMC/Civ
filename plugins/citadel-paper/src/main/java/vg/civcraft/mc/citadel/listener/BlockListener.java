@@ -8,6 +8,7 @@ import org.bukkit.block.Container;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -172,18 +173,21 @@ public class BlockListener implements Listener {
 	}
 
 	// prevent opening reinforced things
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void openContainer(PlayerInteractEvent e) {
 		if (!e.hasBlock()) {
+			return;
+		}
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		if (rein == null) {
 			return;
 		}
-		if (e.getClickedBlock().getBlockData() instanceof Container) {
+		if (e.getClickedBlock().getState() instanceof Container) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
-				e.setCancelled(true);
+				e.setUseInteractedBlock(Event.Result.DENY);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
 			}
@@ -191,7 +195,7 @@ public class BlockListener implements Listener {
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
-				e.setCancelled(true);
+				e.setUseInteractedBlock(Event.Result.DENY);
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
 						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
 			}
