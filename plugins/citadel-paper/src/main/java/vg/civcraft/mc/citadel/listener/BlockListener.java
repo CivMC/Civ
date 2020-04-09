@@ -188,16 +188,18 @@ public class BlockListener implements Listener {
 		if (e.getClickedBlock().getState() instanceof Container) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
 				e.setUseInteractedBlock(Event.Result.DENY);
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
+				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
+						ChatColor.AQUA, rein.getType().getName());
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
 			}
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
 				e.setUseInteractedBlock(Event.Result.DENY);
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
+				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
+						ChatColor.AQUA, rein.getType().getName());
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
 			}
 		}
 	}
