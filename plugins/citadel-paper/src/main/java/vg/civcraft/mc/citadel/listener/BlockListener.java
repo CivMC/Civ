@@ -234,9 +234,12 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void preventStrippingLogs(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 		Block block = pie.getClickedBlock();
@@ -268,9 +271,12 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
 	public void preventTilingGrass(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 		Block block = pie.getClickedBlock();
