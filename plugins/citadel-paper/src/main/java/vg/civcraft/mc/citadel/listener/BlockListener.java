@@ -173,7 +173,7 @@ public class BlockListener implements Listener {
 	}
 
 	// prevent opening reinforced things
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void openContainer(PlayerInteractEvent e) {
 		if (!e.hasBlock()) {
 			return;
@@ -234,7 +234,7 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventStrippingLogs(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
 			return;
@@ -271,7 +271,7 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventTilingGrass(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
 			return;
