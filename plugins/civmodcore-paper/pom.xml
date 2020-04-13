@@ -5,20 +5,19 @@
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.7.8</version>
-
-	<name>CivModCore</name>
-	<url>https://github.com/DevotedMC/CivModCore/</url>
+	<version>1.7.9</version>
 
 	<properties>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-		<encoding>UTF-8</encoding>
-		<project.build.sourceEncoding>${encoding}</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
-		<javaVersion>1.8</javaVersion>
+		<java.compile.version>1.8</java.compile.version>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<spigot.version>1.14.4-R0.1-SNAPSHOT</spigot.version>
+		<minecraft.version>1.14</minecraft.version>
+		<plugin.main>${project.groupId}.${project.artifactId}Plugin</plugin.main>
 	</properties>
 
 	<build>
+		<finalName>${project.artifactId}-${project.version}-${minecraft.version}</finalName>
 		<resources>
 			<resource>
 				<directory>${basedir}</directory>
@@ -37,8 +36,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.1</version>
 				<configuration>
-					<source>${javaVersion}</source>
-					<target>${javaVersion}</target>
+					<source>${java.compile.version}</source>
+					<target>${java.compile.version}</target>
 					<!-- Needed to compile, because of the annotation processor -->
 					<compilerArgument>-proc:none</compilerArgument>
 				</configuration>
@@ -59,14 +58,18 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.20.1</version>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.2.0</version>
 				<configuration>
-					<argLine>-Dfile.encoding=${encoding}</argLine>
-					<systemPropertyVariables>
-						<log4j.skipJansi>true</log4j.skipJansi>
-					</systemPropertyVariables>
+					<archive>
+						<addMavenDescriptor>false</addMavenDescriptor>
+					</archive>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.2</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -80,13 +83,13 @@
 						</goals>
 						<configuration>
 							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<artifactSet>
-								<includes>
-									<include>com.zaxxer:HikariCP</include>
-									<include>org.slf4j:slf4j-api</include>
-									<include>org.apache.logging.*</include>
-								</includes>
-							</artifactSet>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<manifestEntries>
+										<Built-By>Maven</Built-By>
+									</manifestEntries>
+								</transformer>
+							</transformers>
 						</configuration>
 					</execution>
 				</executions>
@@ -122,7 +125,7 @@
 		<dependency>
 			<groupId>com.zaxxer</groupId>
 			<artifactId>HikariCP</artifactId>
-			<version>3.3.1</version>
+			<version>3.4.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>
