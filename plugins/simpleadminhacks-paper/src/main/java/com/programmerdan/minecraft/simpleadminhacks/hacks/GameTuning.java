@@ -299,10 +299,11 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		if(!config.isEnabled() || !Action.RIGHT_CLICK_BLOCK.equals(event.getAction())) {
 			return;
 		}
-		boolean cancel = !config.isEnderChestInventories() && Material.ENDER_CHEST.equals(event.getClickedBlock().getType());
-		cancel |= !config.canChangeSpawnerType() && Material.SPAWNER.equals(event.getClickedBlock().getType())
+		boolean cancel = !config.canChangeSpawnerType() && Material.SPAWNER.equals(event.getClickedBlock().getType())
 				&& event.getItem() != null && event.getItem().getItemMeta() instanceof SpawnEggMeta;
-		event.setCancelled(cancel);
+		if (cancel) {
+			event.setCancelled(true);
+		}
 	}
 
 	@EventHandler
