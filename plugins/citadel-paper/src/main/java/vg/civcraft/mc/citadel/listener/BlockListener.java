@@ -8,6 +8,7 @@ import org.bukkit.block.Container;
 import org.bukkit.block.data.Openable;
 import org.bukkit.block.data.type.Comparator;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -177,23 +178,28 @@ public class BlockListener implements Listener {
 		if (!e.hasBlock()) {
 			return;
 		}
+		if (e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		if (rein == null) {
 			return;
 		}
-		if (e.getClickedBlock().getBlockData() instanceof Container) {
+		if (e.getClickedBlock().getState() instanceof Container) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getChests())) {
 				e.setCancelled(true);
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
+				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
+						ChatColor.AQUA, rein.getType().getName());
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
 			}
 			return;
 		}
 		if (e.getClickedBlock().getBlockData() instanceof Openable) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getDoors())) {
 				e.setCancelled(true);
-				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED,
-						e.getClickedBlock().getType().name() + " is locked with " + rein.getType().getName());
+				String msg = String.format("%s is locked with %s%s", e.getClickedBlock().getType().name(),
+						ChatColor.AQUA, rein.getType().getName());
+				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, msg);
 			}
 		}
 	}
@@ -228,9 +234,12 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventStrippingLogs(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 		Block block = pie.getClickedBlock();
@@ -262,9 +271,12 @@ public class BlockListener implements Listener {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventTilingGrass(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
 		Block block = pie.getClickedBlock();
