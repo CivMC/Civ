@@ -346,4 +346,26 @@ public class BlockListener implements Listener {
 			pie.setCancelled(true);
 		}
 	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = false)
+	public void openBeacon(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(pie.getClickedBlock());
+		if (rein == null) {
+			return;
+		}
+		if (pie.getClickedBlock().getType() == Material.BEACON) {
+			if (!rein.hasPermission(pie.getPlayer(), CitadelPermissionHandler.getBeacon())) {
+				pie.setCancelled(true);
+				String msg = String.format("%s is locked with %s%s", pie.getClickedBlock().getType().name(),
+						ChatColor.AQUA, rein.getType().getName());
+				CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg);
+			}
+		}
+	}
 }
