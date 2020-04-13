@@ -307,4 +307,43 @@ public class BlockListener implements Listener {
 			pie.setCancelled(true);
 		}
 	}
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventTillingDirtIntoFarmland(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (type != Material.GRASS_BLOCK && type != Material.DIRT && type != Material.COARSE_DIRT
+				&& type != Material.GRASS_PATH) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		}
+		else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (!ToolAPI.isHoe(relevant.getType())) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+			pie.setCancelled(true);
+		}
+	}
 }
