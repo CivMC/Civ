@@ -11,6 +11,7 @@ import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
 
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
@@ -38,6 +39,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
 		ItemMeta itemMeta = is.getItemMeta();
 		itemMeta.setDisplayName(ChatColor.GOLD + "Killed Player");
+		itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
 		is.setItemMeta(itemMeta);
 		super.enrichGUIItem(is);
 		return new DecorationStack(is);
