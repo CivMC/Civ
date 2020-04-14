@@ -41,7 +41,7 @@ public class IgniteBlockAction extends LoggablePlayerAction  {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Ignited  %s%s  %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%sIgnited  %s%s  %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}

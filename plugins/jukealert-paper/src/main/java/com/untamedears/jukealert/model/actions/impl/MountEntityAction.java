@@ -37,7 +37,7 @@ public class MountEntityAction extends LoggablePlayerVictimAction {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Mounted  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%sMounted  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()),ChatColor.AQUA, getVictim(), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}

@@ -37,7 +37,7 @@ public class OpenContainerAction extends LoggableBlockAction {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Opened  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%sOpened  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()), ChatColor.AQUA, material.toString(), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}

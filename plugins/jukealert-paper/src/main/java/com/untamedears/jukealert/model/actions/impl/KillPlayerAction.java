@@ -45,7 +45,7 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Killed Player  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%sKilled Player  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()),ChatColor.AQUA, getVictimName(), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}

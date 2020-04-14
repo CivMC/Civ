@@ -37,7 +37,7 @@ public class FillBucketAction extends LoggableBlockAction {
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%Filled Bucket  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+		return new TextComponent(String.format("%sFilled Bucket  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
 				NameAPI.getCurrentName(getPlayer()), ChatColor.AQUA, material.toString(), ChatColor.YELLOW,
 				JAUtility.formatLocation(location, false)));
 	}
