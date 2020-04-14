@@ -2,6 +2,8 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import java.util.UUID;
 
+import com.untamedears.jukealert.util.JAUtility;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
@@ -9,7 +11,11 @@ import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableBlockAction;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 public class FillBucketAction extends LoggableBlockAction {
 	
@@ -21,14 +27,19 @@ public class FillBucketAction extends LoggableBlockAction {
 
 	@Override
 	public IClickable getGUIRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
+		ItemStack is = new ItemStack(material);
+		ItemMeta itemMeta = is.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.GOLD + "Filled Bucket");
+		is.setItemMeta(itemMeta);
+		super.enrichGUIItem(is);
+		return new DecorationStack(is);
 	}
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TextComponent(String.format("%sFilled Bucket  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+				NameAPI.getCurrentName(getPlayer()), ChatColor.AQUA, material.toString(), ChatColor.YELLOW,
+				JAUtility.formatLocation(location, false)));
 	}
 
 	@Override

@@ -11,6 +11,10 @@ import com.untamedears.jukealert.model.actions.abstr.LoggableBlockAction;
 import com.untamedears.jukealert.util.JAUtility;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
 
@@ -33,8 +37,18 @@ public class BlockPlaceAction extends LoggableBlockAction {
 
 	@Override
 	public IClickable getGUIRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
+		ItemStack is;
+		try {
+			is = new ItemStack(getMaterial());
+			ItemAPI.setDisplayName(is,ChatColor.GOLD + "Place");
+			super.enrichGUIItem(is);
+		} catch (Exception e) {
+			is = new ItemStack(Material.STONE);
+			ItemAPI.setDisplayName(is, ChatColor.GOLD + "Place");
+			ItemAPI.addLore(is, String.format("%sMaterial: %s%s", ChatColor.GOLD, ChatColor.AQUA, getMaterial().toString()));
+			super.enrichGUIItem(is);
+		}
+		return new DecorationStack(is);
 	}
 
 	@Override

@@ -2,32 +2,44 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import java.util.UUID;
 
+import com.untamedears.jukealert.util.JAUtility;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
 
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
+import vg.civcraft.mc.namelayer.NameAPI;
 
 public class KillLivingEntityAction extends LoggablePlayerVictimAction {
 	
 	public static final String ID = "KILL_MOB";
 
 	public KillLivingEntityAction(long time, Snitch snitch, UUID player, Location location,String victimName) {
-		super(time, snitch, player, location,victimName);
+		super(time, snitch, player, location, victimName);
 	}
 
 	@Override
 	public IClickable getGUIRepresentation() {
-		// TODO Auto-generated method stub
-		return null;
+		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
+		ItemMeta itemMeta = is.getItemMeta();
+		itemMeta.setDisplayName(ChatColor.GOLD + "Killed Mob");
+		is.setItemMeta(itemMeta);
+		super.enrichGUIItem(is);
+		return new DecorationStack(is);
 	}
 
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
-		// TODO Auto-generated method stub
-		return null;
+		return new TextComponent(String.format("%sKilled Mob  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
+				NameAPI.getCurrentName(getPlayer()),ChatColor.AQUA, getVictim(), ChatColor.YELLOW,
+				JAUtility.formatLocation(location, false)));
 	}
 
 	@Override
