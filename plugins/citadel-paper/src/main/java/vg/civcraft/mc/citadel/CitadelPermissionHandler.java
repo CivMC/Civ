@@ -22,6 +22,7 @@ public class CitadelPermissionHandler {
 	private static PermissionType infoPerm;
 	private static PermissionType repairPerm;
 	private static PermissionType modifyBlockPerm;
+	private static PermissionType beaconPerm;
 
 	public static void setup() {
 		List<PlayerType> membersAndAbove = Arrays.asList(PlayerType.MEMBERS, PlayerType.MODS, PlayerType.ADMINS,
@@ -47,6 +48,8 @@ public class CitadelPermissionHandler {
 				"Allows toggling the insecure flag on reinforcements");
 		modifyBlockPerm = PermissionType.registerPermission("MODIFY_BLOCK", new ArrayList<>(modAndAbove),
 				"Allows modifying reinforced blocks like flipping levers, strippling logs etc.");
+		beaconPerm = PermissionType.registerPermission("BEACONS", new ArrayList<>(membersAndAbove),
+				"Allow changing beacon effects");
 	}
 	
 	public static PermissionType getModifyBlocks() {
@@ -87,6 +90,10 @@ public class CitadelPermissionHandler {
 
 	public static PermissionType getRepair() {
 		return repairPerm;
+	}
+
+	public static PermissionType getBeacon() {
+		return beaconPerm;
 	}
 
 }
