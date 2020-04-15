@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemStack;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.SingleCuboidRangeManager;
 
-public class SnitchFactory {
+public class SnitchFactoryType {
 
 	private final int id;
 	private final ItemStack item;
@@ -18,7 +18,7 @@ public class SnitchFactory {
 
 	private final List<Function<Snitch, AbstractSnitchAppender>> appenders;
 
-	public SnitchFactory(ItemStack item, int range, String name, int id,
+	public SnitchFactoryType(ItemStack item, int range, String name, int id,
 			List<Function<Snitch, AbstractSnitchAppender>> appenders) {
 		this.item = item;
 		this.name = name;

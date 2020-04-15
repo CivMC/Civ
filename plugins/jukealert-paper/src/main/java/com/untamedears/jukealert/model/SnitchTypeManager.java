@@ -23,8 +23,8 @@ import com.untamedears.jukealert.model.appender.SnitchLogAppender;
 public class SnitchTypeManager {
 
 	private Map<String, Class<? extends AbstractSnitchAppender>> appenderClasses;
-	private Map<ItemStack, SnitchFactory> configFactoriesByItem;
-	private Map<Integer, SnitchFactory> configFactoriesById;
+	private Map<ItemStack, SnitchFactoryType> configFactoriesByItem;
+	private Map<Integer, SnitchFactoryType> configFactoriesById;
 
 	public SnitchTypeManager() {
 		appenderClasses = new HashMap<>();
@@ -103,7 +103,7 @@ public class SnitchTypeManager {
 		if (appenderInstanciations.isEmpty()) {
 			logger.warning("Snitch config at "  + config.getCurrentPath() + " has no appenders, this is likely not what you intended");
 		}
-		SnitchFactory configFactory = new SnitchFactory(item, range, name, id, appenderInstanciations);
+		SnitchFactoryType configFactory = new SnitchFactoryType(item, range, name, id, appenderInstanciations);
 		configFactoriesById.put(configFactory.getID(), configFactory);
 		configFactoriesByItem.put(configFactory.getItem(), configFactory);
 		logger.info(sb.toString());
@@ -161,7 +161,7 @@ public class SnitchTypeManager {
 	 * @return Configuration with the given ItemStack or null if no such config
 	 *         exists
 	 */
-	public SnitchFactory getConfig(ItemStack is) {
+	public SnitchFactoryType getConfig(ItemStack is) {
 		if (is == null) {
 			return null;
 		}
@@ -170,7 +170,7 @@ public class SnitchTypeManager {
 		return configFactoriesByItem.get(copy);
 	}
 
-	public SnitchFactory getConfig(int id) {
+	public SnitchFactoryType getConfig(int id) {
 		return configFactoriesById.get(id);
 	}
 

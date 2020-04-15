@@ -7,36 +7,32 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchChunkData;
 import com.untamedears.jukealert.model.SnitchQTEntry;
 
 import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
 
 public class SnitchManager {
 
-	private BlockBasedChunkMetaView<SnitchChunkData, TableBasedDataObject, TableStorageEngine<Snitch>> chunkData;
+	private SingleBlockAPIView<Snitch> api;
 	private SparseQuadTree<SnitchQTEntry> quadTree;
 
 	public SnitchManager(
-			BlockBasedChunkMetaView<SnitchChunkData, TableBasedDataObject, TableStorageEngine<Snitch>> chunkData,
-			SparseQuadTree<SnitchQTEntry> quadTree) {
-		this.chunkData = chunkData;
+			SingleBlockAPIView<Snitch> api,	SparseQuadTree<SnitchQTEntry> quadTree) {
+		this.api = api;
 		this.quadTree = quadTree;
 	}
 
 	public Snitch getSnitchAt(Location location) {
-		return (Snitch) chunkData.get(location);
+		return api.get(location);
 	}
 
 	public Snitch getSnitchAt(Block block) {
-		return (Snitch) chunkData.get(block);
+		return api.get(block.getLocation());
 	}
 
 	public void addSnitch(Snitch snitch) {
-		chunkData.put(snitch);
+		api.put(snitch);
 		addSnitchToQuadTree(snitch);
 	}
 
@@ -56,7 +52,7 @@ public class SnitchManager {
 	 * @param snitch Snitch to remove
 	 */
 	public void removeSnitch(Snitch snitch) {
-		chunkData.remove(snitch);
+		api.remove(snitch);
 		for (SnitchQTEntry qt : snitch.getFieldManager().getQTEntries()) {
 			quadTree.remove(qt);
 		}

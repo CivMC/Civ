@@ -26,7 +26,7 @@ import org.bukkit.entity.EntityType;
 import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchFactory;
+import com.untamedears.jukealert.model.SnitchFactoryType;
 import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
@@ -35,16 +35,13 @@ import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
-public class JukeAlertDAO extends TableStorageEngine<Snitch> {
+public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 
 	public JukeAlertDAO(Logger logger, ManagedDatasource db) {
 		super(logger, db);
@@ -92,7 +89,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						deleteExisting.execute();
 					}
 
-					GlobalChunkMetaManager worldMan = CivModCorePlugin.getInstance().getChunkMetaManager();
+					WorldIDManager worldIdMan = CivModCorePlugin.getInstance().getWorldIdManager();
 					while (rs.next()) {
 						int x = rs.getInt(1);
 						int y = rs.getInt(2);
@@ -113,7 +110,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 						boolean triggerLever = rs.getBoolean(9);
 						int oldId = rs.getInt(10);
 
-						short worldID = worldMan.getInternalWorldIdByName(worldName);
+						short worldID = worldIdMan.getInternalWorldIdByName(worldName);
 						if (worldID == -1) {
 							logger.severe("Failed to find world id for world with name " + worldName);
 							return false;
@@ -231,9 +228,8 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 				return true;
 			}
 		}, "create table if not exists ja_snitches (id int not null auto_increment primary key, group_id int, "
-				+ "type_id int not null, chunk_x int not null, chunk_z int not null, x int not null, y int not null, z int not null, "
+				+ "type_id int not null, x int not null, y int not null, z int not null, "
 				+ "world_id smallint unsigned not null, name varchar(255),"
-				+ "index snitchChunkLookUp(chunk_x, chunk_z, world_id), "
 				+ "index snitchLocLookUp(x,y,z, world_id), unique uniqueLoc (world_id, x, y ,z));",
 				"create table if not exists ja_snitch_actions(id int not null auto_increment primary key, name varchar(255) not null,"
 						+ "constraint unique_name unique(name));",
@@ -254,11 +250,11 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	}
 
 	@Override
-	public void insert(Snitch snitch, XZWCoord coord) {
+	public void insert(Snitch snitch) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertSnitch = insertConn.prepareStatement(
-						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, chunk_x, chunk_z, name) "
-								+ "values(?,?, ?,?,?, ?,?,?, ?);",
+						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
+								+ "values(?,?, ?,?,?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS)) {
 			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
 			insertSnitch.setInt(1, groupId);
@@ -266,9 +262,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			insertSnitch.setInt(3, snitch.getLocation().getBlockX());
 			insertSnitch.setInt(4, snitch.getLocation().getBlockY());
 			insertSnitch.setInt(5, snitch.getLocation().getBlockZ());
-			insertSnitch.setShort(6, coord.getWorldID());
-			insertSnitch.setInt(7, coord.getX());
-			insertSnitch.setInt(8, coord.getZ());
+			insertSnitch.setShort(6, getWorldID(snitch.getLocation()));
 			insertSnitch.setString(9, snitch.getName());
 			insertSnitch.execute();
 			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
@@ -285,7 +279,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	}
 
 	@Override
-	public void update(Snitch snitch, XZWCoord coord) {
+	public void update(Snitch snitch) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement updateSnitch = insertConn
 						.prepareStatement("update ja_snitches set name = ?, group_id = ? where id = ?;")) {
@@ -304,7 +298,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	}
 
 	@Override
-	public void delete(Snitch snitch, XZWCoord coord) {
+	public void delete(Snitch snitch) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement deleteSnitch = insertConn.prepareStatement("delete from ja_snitches where id = ?;")) {
 			deleteSnitch.setInt(1, snitch.getId());
@@ -315,25 +309,23 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 	}
 
 	@Override
-	public void fill(TableBasedBlockChunkMeta<Snitch> chunkData, Consumer<Snitch> insertFunction) {
-		World world = chunkData.getChunkCoord().getWorld();
+	public void loadAll(Consumer<Snitch> insertFunction) {
 		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
 		SnitchManager snitchMan = JukeAlert.getInstance().getSnitchManager();
+		WorldIDManager idMan = CivModCorePlugin.getInstance().getWorldIdManager();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectSnitch = insertConn
-						.prepareStatement("select x, y, z, type_id, group_id, name, id from ja_snitches "
-								+ "where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
-			selectSnitch.setInt(1, chunkData.getChunkCoord().getX());
-			selectSnitch.setInt(2, chunkData.getChunkCoord().getZ());
-			selectSnitch.setShort(3, chunkData.getChunkCoord().getWorldID());
-			try (ResultSet rs = selectSnitch.executeQuery()) {
+						.prepareStatement("select x, y, z, type_id, group_id, name, id, world_id from ja_snitches");
+			ResultSet rs = selectSnitch.executeQuery()) {
 				while (rs.next()) {
 					int x = rs.getInt(1);
 					int y = rs.getInt(2);
 					int z = rs.getInt(3);
+					short worldId = rs.getShort(8);
+					World world = idMan.getWorldByInternalID(worldId);
 					Location location = new Location(world, x, y, z);
 					int typeID = rs.getInt(4);
-					SnitchFactory type = configMan.getConfig(typeID);
+					SnitchFactoryType type = configMan.getConfig(typeID);
 					if (type == null) {
 						logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
 						continue;
@@ -346,7 +338,6 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 					snitchMan.addSnitchToQuadTree(snitch);
 					snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 				}
-			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load snitch from db: ", e);
 		}
@@ -524,7 +515,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 
 	public List<Snitch> loadSnitchesByGroupID(Collection<Integer> groupIDs) {
 		SnitchTypeManager configMan = JukeAlert.getInstance().getSnitchConfigManager();
-		GlobalChunkMetaManager gcmm = CivModCorePlugin.getInstance().getChunkMetaManager();
+		WorldIDManager gcmm = CivModCorePlugin.getInstance().getWorldIdManager();
 		List<Snitch> result = new ArrayList<>();
 		try (Connection insertConn = db.getConnection()) {
 			for (int groupID : groupIDs) {
@@ -544,7 +535,7 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 							}
 							Location location = new Location(world, x, y, z);
 							int typeID = rs.getInt(5);
-							SnitchFactory type = configMan.getConfig(typeID);
+							SnitchFactoryType type = configMan.getConfig(typeID);
 							if (type == null) {
 								logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
 								continue;
@@ -561,35 +552,6 @@ public class JukeAlertDAO extends TableStorageEngine<Snitch> {
 			logger.log(Level.SEVERE, "Failed to load snitch from db based on group id: ", e);
 		}
 		return result;
-	}
-
-	@Override
-	public TableBasedDataObject getForLocation(int x, int y, int z, short worldID, short pluginID) {
-		throw new IllegalStateException("Should never be called");
-	}
-
-	@Override
-	public Collection<XZWCoord> getAllDataChunks() {
-		List<XZWCoord> result = new ArrayList<>();
-		try (Connection insertConn = db.getConnection();
-				PreparedStatement selectChunks = insertConn.prepareStatement(
-						"select chunk_x, chunk_z, world_id from ja_snitches group by chunk_x, chunk_z, world_id");
-				ResultSet rs = selectChunks.executeQuery()) {
-			while (rs.next()) {
-				int chunkX = rs.getInt(1);
-				int chunkZ = rs.getInt(2);
-				short worldID = rs.getShort(3);
-				result.add(new XZWCoord(chunkX, chunkZ, worldID));
-			}
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to select populated chunks from db: ", e);
-		}
-		return result;
-	}
-
-	@Override
-	public boolean stayLoaded() {
-		return true;
 	}
 
 }

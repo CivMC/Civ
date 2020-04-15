@@ -17,7 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchFactory;
+import com.untamedears.jukealert.model.SnitchFactoryType;
 import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
@@ -32,7 +32,7 @@ public class SnitchLifeCycleListener implements Listener {
 
 	private SnitchTypeManager configManager;
 	private SnitchManager snitchManager;
-	private Map<Location, SnitchFactory> pendingSnitches;
+	private Map<Location, SnitchFactoryType> pendingSnitches;
 	private Logger logger;
 
 	public SnitchLifeCycleListener(SnitchManager snitchManager, SnitchTypeManager configManager, Logger logger) {
@@ -45,7 +45,7 @@ public class SnitchLifeCycleListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
-		SnitchFactory type = configManager.getConfig(inHand);
+		SnitchFactoryType type = configManager.getConfig(inHand);
 		if (type != null) {
 			pendingSnitches.put(event.getBlock().getLocation(), type);
 		}
@@ -54,7 +54,7 @@ public class SnitchLifeCycleListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
-		SnitchFactory snitchConfig = pendingSnitches.remove(block.getLocation());
+		SnitchFactoryType snitchConfig = pendingSnitches.remove(block.getLocation());
 		if (snitchConfig == null) {
 			return;
 		}
@@ -67,7 +67,7 @@ public class SnitchLifeCycleListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void createReinforcement(ReinforcementCreationEvent e) {
 		Location location = e.getReinforcement().getLocation();
-		SnitchFactory snitchConfig = pendingSnitches.get(location);
+		SnitchFactoryType snitchConfig = pendingSnitches.get(location);
 		if (snitchConfig == null) {
 			return;
 		}

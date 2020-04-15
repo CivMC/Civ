@@ -13,20 +13,21 @@ import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.FieldManager;
 
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
+import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class Snitch extends TableBasedDataObject {
+public class Snitch extends LocationTrackable {
 
 	private int snitchId;
 	private String name;
 	private int groupID;
 	private Map<Class<? extends AbstractSnitchAppender>, AbstractSnitchAppender> appenders;
 	private FieldManager fieldManager;
-	private SnitchFactory type;
+	private SnitchFactoryType type;
 	private boolean active;
 
 	/**
@@ -42,8 +43,8 @@ public class Snitch extends TableBasedDataObject {
 	 * @param name         Name of the snitch
 	 */
 	public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
-			Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactory type, String name) {
-		super(loc, isNew);
+			Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
+		super( isNew, loc);
 		this.snitchId = snitchID;
 		this.groupID = groupID;
 		this.name = name;
@@ -85,7 +86,7 @@ public class Snitch extends TableBasedDataObject {
 	/**
 	 * @return Type/Config of this snitch
 	 */
-	public SnitchFactory getType() {
+	public SnitchFactoryType getType() {
 		return type;
 	}
 
@@ -160,7 +161,7 @@ public class Snitch extends TableBasedDataObject {
 	 */
 	public void setName(String name) {
 		this.name = name;
-		setDirty();
+		setCacheState(CacheState.MODIFIED);
 	}
 
 	/**
