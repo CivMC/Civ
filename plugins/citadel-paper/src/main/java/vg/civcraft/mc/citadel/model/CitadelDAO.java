@@ -24,11 +24,11 @@ import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementTypeManager;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 
@@ -62,7 +62,7 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 						deleteExisting.execute();
 					}
 
-					GlobalChunkMetaManager worldMan = CivModCorePlugin.getInstance().getChunkMetaManager();
+					WorldIDManager worldMan = CivModCorePlugin.getInstance().getWorldIdManager();
 					Map<Integer, List<ReinforcementType>> reinTypes = new TreeMap<>();
 					for (ReinforcementType type : Citadel.getInstance().getReinforcementTypeManager().getAllTypes()) {
 						List<ReinforcementType> withType = reinTypes.computeIfAbsent(type.getLegacyId(),
@@ -173,7 +173,7 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 			selectRein.setShort(3, worldID);
 			selectRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(x));
 			selectRein.setShort(5, (short) y);
-			selectRein.setByte(4, (byte) BlockBasedChunkMeta.modulo(z));
+			selectRein.setByte(6, (byte) BlockBasedChunkMeta.modulo(z));
 			try (ResultSet rs = selectRein.executeQuery()) {
 				if (!rs.next()) {
 					return null;
@@ -188,7 +188,7 @@ public class CitadelDAO extends TableStorageEngine<Reinforcement> {
 				long creationTime = rs.getTimestamp(3).getTime();
 				float health = rs.getFloat(4);
 				boolean insecure = rs.getBoolean(5);
-				World world = CivModCorePlugin.getInstance().getChunkMetaManager().getWorldByInternalID(worldID);
+				World world = CivModCorePlugin.getInstance().getWorldIdManager().getWorldByInternalID(worldID);
 				Location loc = new Location(world, x, y, z);
 				return new Reinforcement(loc, type, groupID, creationTime, health, insecure, false);
 			}
