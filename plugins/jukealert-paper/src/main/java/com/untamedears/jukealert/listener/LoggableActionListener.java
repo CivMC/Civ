@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
 
+import com.untamedears.jukealert.model.actions.impl.*;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -31,6 +32,9 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.vehicle.VehicleDestroyEvent;
+import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.InventoryHolder;
@@ -41,19 +45,6 @@ import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.external.VanishNoPacket;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
-import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
-import com.untamedears.jukealert.model.actions.impl.BlockPlaceAction;
-import com.untamedears.jukealert.model.actions.impl.EmptyBucketAction;
-import com.untamedears.jukealert.model.actions.impl.EnterFieldAction;
-import com.untamedears.jukealert.model.actions.impl.FillBucketAction;
-import com.untamedears.jukealert.model.actions.impl.IgniteBlockAction;
-import com.untamedears.jukealert.model.actions.impl.KillLivingEntityAction;
-import com.untamedears.jukealert.model.actions.impl.KillPlayerAction;
-import com.untamedears.jukealert.model.actions.impl.LeaveFieldAction;
-import com.untamedears.jukealert.model.actions.impl.LoginAction;
-import com.untamedears.jukealert.model.actions.impl.LogoutAction;
-import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
-import com.untamedears.jukealert.model.actions.impl.OpenContainerAction;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 
 public class LoggableActionListener implements Listener {
@@ -131,6 +122,42 @@ public class LoggableActionListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onDestroyVehicle(VehicleDestroyEvent event) {
+		if (event.getAttacker().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getAttacker();
+
+		handlePlayerAction(player, s -> new DestroyVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onEnterVehicle(VehicleEnterEvent event) {
+		if (event.getEntered().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getEntered();
+
+		handlePlayerAction(player, s -> new EnterVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onExitVehicle(VehicleExitEvent event) {
+		if (event.getExited().getType() != EntityType.PLAYER) {
+			return;
+		}
+
+		Player player = (Player) event.getExited();
+
+		handlePlayerAction(player, s -> new ExitVehicleAction(System.currentTimeMillis(), s,
+				player.getUniqueId(), event.getVehicle().getLocation(), getEntityName(event.getVehicle())));
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onEmptyBucket(PlayerBucketEmptyEvent event) {
 		handlePlayerAction(event.getPlayer(), s -> new EmptyBucketAction(System.currentTimeMillis(), s,
 				event.getPlayer().getUniqueId(), event.getBlock().getLocation(), event.getBucket()));
@@ -160,7 +187,7 @@ public class LoggableActionListener implements Listener {
 		}
 		Player player = (Player) event.getEntity();
 		String mountName = getEntityName(event.getDismounted());
-		handlePlayerAction(player, s -> new MountEntityAction(System.currentTimeMillis(), s, player.getUniqueId(),
+		handlePlayerAction(player, s -> new DismountEntityAction(System.currentTimeMillis(), s, player.getUniqueId(),
 				event.getDismounted().getLocation(), mountName));
 	}
 
