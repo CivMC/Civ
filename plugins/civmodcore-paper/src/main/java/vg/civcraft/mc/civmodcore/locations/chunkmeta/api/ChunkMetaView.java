@@ -9,6 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 	protected GlobalChunkMetaManager globalManager;
@@ -63,6 +64,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 	 * calls to this instance should be made during or after this call, create a new
 	 * instance instead if neccessary
 	 */
+	@Override
 	public void disable() {
 		if (globalManager == null) {
 			// already shut down
@@ -102,7 +104,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return getChunkMeta(location.getWorld(), location.getChunk().getX(), location.getChunk().getZ());
+		return getChunkMeta(location.getWorld(), BlockBasedChunkMeta.toChunkCoord(location.getBlockX()), BlockBasedChunkMeta.toChunkCoord(location.getBlockZ()));
 	}
 
 	/**

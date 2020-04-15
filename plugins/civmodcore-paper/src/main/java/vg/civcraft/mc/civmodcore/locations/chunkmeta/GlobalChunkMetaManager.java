@@ -16,16 +16,16 @@ import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 public class GlobalChunkMetaManager {
 	private CMCWorldDAO chunkDao;
 	private Map<UUID, WorldChunkMetaManager> worldToManager;
-	private WorldIDManager idManager;
 
 	public GlobalChunkMetaManager(CMCWorldDAO chunkDao, WorldIDManager idManager) {
 		this.chunkDao = chunkDao;
 		this.worldToManager = new TreeMap<>();
-		this.idManager = idManager;
+		for (World world : Bukkit.getWorlds()) {
+			registerWorld(idManager.getInternalWorldId(world), world);
+		}
 		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CivModCorePlugin.getInstance(), () -> {
 			for (World world : Bukkit.getWorlds()) {
-				registerWorld(idManager.getInternalWorldId(world), world);
 				for (Chunk chunk : world.getLoadedChunks()) {
 					loadChunkData(chunk);
 				}

@@ -25,5 +25,9 @@ public abstract class LocationTrackable {
 	public void setCacheState(CacheState state) {
 		this.cacheState = this.cacheState.progress(state);
 	}
+	
+	public void setDirty() {
+		setCacheState(CacheState.MODIFIED);
+	}
 
 }

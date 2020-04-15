@@ -18,7 +18,9 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngi
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
+import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class ChunkMetaAPI {
 
@@ -66,8 +68,22 @@ public class ChunkMetaAPI {
 		return view;
 	}
 	
-	public static <T extends LocationTrackable> void registerSingleTrackingPlugin(JavaPlugin plugin, GlobalLocationTracker<T> tracker) {
-		
+	public static <T extends LocationTrackable> SingleBlockAPIView<T> registerSingleTrackingPlugin(JavaPlugin plugin, GlobalTrackableDAO<T> dao) {
+		GlobalChunkMetaManager globalManager = CivModCorePlugin.getInstance().getChunkMetaManager();
+		if (globalManager == null) {
+			plugin.getLogger().log(Level.SEVERE, "Could not start chunk meta data, manager was null");
+			return null;
+		}
+		CMCWorldDAO chunkDAO = globalManager.getChunkDAO();
+		short id = chunkDAO.getOrCreatePluginID(plugin);
+		if (id == -1) {
+			plugin.getLogger().log(Level.SEVERE, "Could not init single block meta data, could not retrieve plugin id from db");
+			return null;
+		}
+		GlobalLocationTracker<T> tracker = new GlobalLocationTracker<>(dao);
+		SingleBlockAPIView<T> view = new SingleBlockAPIView<>(plugin, id, tracker);
+		existingViews.put(plugin.getName(), view);
+		return view;
 	}
 
 	static void removePlugin(JavaPlugin plugin) {

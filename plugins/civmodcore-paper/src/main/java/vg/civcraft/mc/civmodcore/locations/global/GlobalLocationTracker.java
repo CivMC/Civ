@@ -19,9 +19,7 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 	}
 	
 	public void initFromDB() {
-		for(T t : dao.loadAll()) {
-			put(t);
-		}
+		dao.loadAll(t -> put(t));
 	}
 
 	public void persist() {
