@@ -95,7 +95,11 @@ public class Document implements Map<String, Object> {
      * @throws java.lang.ClassCastException if the value is not an integer
      */
     public Integer getInteger(final String key) {
-        return (Integer) get(key);
+    	Object value = get(key);
+    	if (value instanceof String) {
+    		return Integer.parseInt((String) value);
+    	}
+        return (Integer) value;
     }
 
     /**
