@@ -1,5 +1,6 @@
 package vg.civcraft.mc.citadel;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
@@ -125,13 +126,14 @@ public class Citadel extends ACivMod {
 		stateManager = new PlayerStateManager();
 		acidManager = new AcidManager(config.getAcidMaterials());
 		settingManager = new CitadelSettingManager();
-		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-			holoManager = new HologramManager(settingManager);
-			logger.info("HolographicDisplays is loaded, holograms available");
-		}
-		else {
-			logger.info("HolographicDisplays is not loaded, no holograms available");
-		}
+		Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+			if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
+				holoManager = new HologramManager(settingManager);
+				logger.info("HolographicDisplays is loaded, holograms available");
+			}
+			else {
+				logger.info("HolographicDisplays is not loaded, no holograms available");
+			}});
 		CitadelPermissionHandler.setup();
 		registerListeners();
 	}

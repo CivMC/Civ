@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
@@ -138,7 +139,21 @@ public class InformationModeListener implements Listener {
 		if (showHolo) {
 			showHolo(rein, player);
 		}
-
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
+	public void onBlockBreak(BlockBreakEvent event) {
+		//refresh hologram
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+		if (rein == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		boolean showHolo = Citadel.getInstance().getSettingManager().shouldShowHologramInCti(player.getUniqueId());
+		if (!showHolo) {
+			return;
+		}
+		showHolo(rein, player);
 	}
 
 	private static void showHolo(Reinforcement rein, Player player) {
