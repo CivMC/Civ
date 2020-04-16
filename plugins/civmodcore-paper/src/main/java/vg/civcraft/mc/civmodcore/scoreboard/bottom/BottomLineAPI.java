@@ -41,7 +41,7 @@ public class BottomLineAPI {
 	public static void deleteBottomLine(BottomLine line) {
 		lines.remove(line);
 	}
-	
+
 	public static void refreshIndividually(UUID uuid) {
 		Player player = Bukkit.getPlayer(uuid);
 		if (player == null) {
@@ -49,12 +49,11 @@ public class BottomLineAPI {
 		}
 		StringBuilder sb = new StringBuilder();
 		for (BottomLine line : lines) {
-			for (Entry<UUID, String> entry : line.getAll().entrySet()) {
-				if (sb.length() > 0) {
-					sb.append(SEPARATOR);
-				}
-				sb.append(entry.getValue());
+			String entry = line.getCurrentText(uuid);
+			if (sb.length() > 0) {
+				sb.append(SEPARATOR);
 			}
+			sb.append(entry);
 		}
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(sb.toString()));
 	}
