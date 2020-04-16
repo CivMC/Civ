@@ -62,8 +62,7 @@ public class PotionListener implements Listener {
 			return null;
 		}
 		PotionMeta potMeta = (PotionMeta) im;
-		PotionModification potMod = potHandler.getApplyingModifications(potMeta.getBasePotionData().getType(), is);
-		return potMod;
+		return potHandler.getApplyingModifications(potMeta.getBasePotionData().getType(), is);
 	}
 
 	@EventHandler

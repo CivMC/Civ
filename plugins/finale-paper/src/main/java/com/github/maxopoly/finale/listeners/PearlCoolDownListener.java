@@ -20,6 +20,7 @@ import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
+import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
 import vg.civcraft.mc.civmodcore.util.cooldowns.TickCoolDownHandler;
 
 public class PearlCoolDownListener implements Listener {
@@ -33,7 +34,7 @@ public class PearlCoolDownListener implements Listener {
 		return instance.cds.getRemainingCoolDown(uuid);
 	}
 
-	private TickCoolDownHandler<UUID> cds;
+	private ICoolDownHandler<UUID> cds;
 	private CombatTagPlusManager ctpManager;
 	private boolean combatTag;
 	private boolean setVanillaCooldown;
@@ -43,7 +44,7 @@ public class PearlCoolDownListener implements Listener {
 	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager,
 			boolean setVanillaCooldown, boolean useSideBar, boolean useActionBar) {
 		instance = this;
-		this.cds = new TickCoolDownHandler<UUID>(Finale.getPlugin(), cooldown / 20);
+		this.cds = new TickCoolDownHandler<>(Finale.getPlugin(), cooldown / 20);
 		this.ctpManager = ctpManager;
 		this.combatTag = combatTag;
 		this.setVanillaCooldown = setVanillaCooldown;
@@ -82,12 +83,9 @@ public class PearlCoolDownListener implements Listener {
 	public void putOnCooldown(Player shooter) {
 		cds.putOnCoolDown(shooter.getUniqueId());
 		if (setVanillaCooldown) {
-			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), new Runnable() {
-				@Override
-				public void run() {
+			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), ()->{
 					// -1, because this is delayed by one tick
 					shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown() - 1);
-				}
 			}, 1);
 		}
 		

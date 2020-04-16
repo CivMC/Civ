@@ -61,8 +61,9 @@ public class PlayerListener implements Listener {
 
 	@EventHandler
 	public void healthRegen(EntityRegainHealthEvent e) {
-		if (!manager.isRegenHandlerEnabled())
+		if (!manager.isRegenHandlerEnabled()) {
 			return;
+		}
 		if (e.getEntityType() != EntityType.PLAYER) {
 			return;
 		}
@@ -77,9 +78,9 @@ public class PlayerListener implements Listener {
 					.getWorld()).getHandle()).spigotConfig.regenExhaustion;
 			float newExhaustion = (float) (p.getExhaustion() - e.getAmount() * spigotRegenExhaustion);
 
-			StringBuffer alterHealth = null;
+			StringBuilder alterHealth = null;
 			if (manager.isDebug()) {
-				alterHealth = new StringBuffer("SATIATED: " + p.getName());
+				alterHealth = new StringBuilder("SATIATED: " + p.getName());
 				alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 				alterHealth.append(":").append(p.getFoodLevel());
@@ -103,7 +104,7 @@ public class PlayerListener implements Listener {
 			Player p = (Player) e.getEntity();
 			double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
 			if (manager.isDebug()) {
-				StringBuffer alterHealth = new StringBuffer("EATING:" + p.getName());
+				StringBuilder alterHealth = new StringBuilder("EATING:" + p.getName());
 				alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 				alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 				alterHealth.append(":").append(p.getFoodLevel());
