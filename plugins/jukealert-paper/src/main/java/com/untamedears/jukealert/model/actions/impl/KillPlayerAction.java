@@ -2,18 +2,18 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import java.util.UUID;
 
-import com.untamedears.jukealert.util.JAUtility;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-
-import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
-
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import com.untamedears.jukealert.model.Snitch;
+import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
+import com.untamedears.jukealert.util.JAUtility;
+
+import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;

@@ -80,8 +80,8 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 										+ "snitch_group,allow_triggering_lever,snitch_id from snitchs order by snitch_id asc");
 						ResultSet rs = selectSnitches.executeQuery();
 						PreparedStatement insertSnitch = insertConn.prepareStatement(
-								"insert into ja_snitches (group_id, type_id, x, y , z, world_id, chunk_x, chunk_z, name) "
-										+ "values(?,?, ?,?,?, ?,?,?, ?);",
+								"insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
+										+ "values(?,?, ?,?,?, ?, ?);",
 								Statement.RETURN_GENERATED_KEYS);) {
 					try (PreparedStatement deleteExisting = insertConn.prepareStatement("delete from ja_snitches")) {
 						// in case this migration failed before some of the data might already have
@@ -94,14 +94,6 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						int x = rs.getInt(1);
 						int y = rs.getInt(2);
 						int z = rs.getInt(3);
-						int chunkX = x / 16;
-						int chunkZ = z / 16;
-						if (x < 0) {
-							chunkX--;
-						}
-						if (z < 0) {
-							chunkZ--;
-						}
 						String worldName = rs.getString(4);
 						String name = rs.getString(5);
 						boolean logging = rs.getBoolean(6);
@@ -128,9 +120,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						insertSnitch.setInt(4, y);
 						insertSnitch.setInt(5, z);
 						insertSnitch.setShort(6, worldID);
-						insertSnitch.setInt(7, chunkX);
-						insertSnitch.setInt(8, chunkZ);
-						insertSnitch.setString(9, name);
+						insertSnitch.setString(7, name);
 						insertSnitch.execute();
 						try (ResultSet keySet = insertSnitch.getGeneratedKeys()) {
 							if (!keySet.next()) {
@@ -264,7 +254,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 			insertSnitch.setInt(4, snitch.getLocation().getBlockY());
 			insertSnitch.setInt(5, snitch.getLocation().getBlockZ());
 			insertSnitch.setShort(6, getWorldID(snitch.getLocation()));
-			insertSnitch.setString(9, snitch.getName());
+			insertSnitch.setString(7, snitch.getName());
 			insertSnitch.execute();
 			try (ResultSet rs = insertSnitch.getGeneratedKeys()) {
 				if (!rs.next()) {

@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.model.appender.config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,11 @@ public class LeverToggleConfig implements AppenderConfig {
 	}
 
 	public List<SideEntry> getEntries(String actionType) {
-		return sidesByTrigger.get(actionType);
+		List<SideEntry> retSides = sidesByTrigger.get(actionType);
+		if (retSides == null) {
+			return Collections.emptyList();
+		}
+		return retSides;
 	}
 
 	public static class SideEntry {
