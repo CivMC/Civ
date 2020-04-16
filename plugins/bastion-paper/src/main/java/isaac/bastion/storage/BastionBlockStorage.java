@@ -341,11 +341,6 @@ public class BastionBlockStorage {
 					boolean died = result.getBoolean("dead");
 					Location loc = new Location(world, x, y, z);
 					BastionBlock block = new BastionBlock(loc, placed, id, type);
-					//Check if it's a ghost bastion, if so remove from the db
-					if(loc.getBlock().getType() != type.getMaterial()) { // can't set data why check with it
-						deleteBastion(block);
-						continue;
-					}
 					if (died) {
 						dead.put(loc, block.getType().getName());
 					} else {
