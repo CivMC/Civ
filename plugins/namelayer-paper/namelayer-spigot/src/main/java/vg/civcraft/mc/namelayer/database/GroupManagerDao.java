@@ -164,7 +164,7 @@ public class GroupManagerDao {
 	private static final String addPermission = "insert into permissionByGroup(group_id,role,perm_id) select g.group_id, ?, ? from faction_id g where g.group_name = ?;";
 	private static final String addPermissionById = "insert into permissionByGroup(group_id,role,perm_id) values(?,?,?);";
 	
-	private static final String addDefaultPermission = "insert into permissionByGroup(group_id,role,perm_id) values(select group_id,?,? from faction_id group by group_id)";
+	private static final String addDefaultPermission = "insert into permissionByGroup(group_id,role,perm_id) select group_id,?,? from faction_id group by group_id";
 
 	private static final String getPermission = "select pg.role,pg.perm_id from permissionByGroup pg inner join faction_id fi on fi.group_name=? "
 				+ "where pg.group_id = fi.group_id";

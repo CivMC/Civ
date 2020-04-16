@@ -47,8 +47,8 @@ public class PermissionType {
 		return registerPermission(name, defaultPermLevels, null, true);
 	}
 	
-	public static void registerPermission(String name, List <PlayerType> defaultPermLevels, String description) {
-		registerPermission(name, defaultPermLevels, description, true);
+	public static PermissionType registerPermission(String name, List <PlayerType> defaultPermLevels, String description) {
+		return registerPermission(name, defaultPermLevels, description, true);
 	}
 	
 	public static PermissionType registerPermission(String name, List <PlayerType> defaultPermLevels, String description, boolean canBeBlacklisted) {
