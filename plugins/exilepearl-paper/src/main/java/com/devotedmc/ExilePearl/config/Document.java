@@ -112,6 +112,9 @@ public class Document implements Map<String, Object> {
      */
     public int getInteger(final String key, final int defaultValue) {
         Object value = get(key);
+        if (value instanceof String) {
+    		return Integer.parseInt((String) value);
+    	}
         return value == null ? defaultValue : (Integer) value;
     }
 
