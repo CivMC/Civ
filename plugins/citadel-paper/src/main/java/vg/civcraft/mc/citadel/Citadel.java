@@ -127,6 +127,10 @@ public class Citadel extends ACivMod {
 		settingManager = new CitadelSettingManager();
 		if (Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
 			holoManager = new HologramManager(settingManager);
+			logger.info("HolographicDisplays is loaded, holograms available");
+		}
+		else {
+			logger.info("HolographicDisplays is not loaded, no holograms available");
 		}
 		CitadelPermissionHandler.setup();
 		registerListeners();
