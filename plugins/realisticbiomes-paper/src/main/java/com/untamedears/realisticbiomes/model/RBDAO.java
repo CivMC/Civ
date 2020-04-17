@@ -112,17 +112,20 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		db.registerMigration(1, false,
 				"CREATE TABLE IF NOT EXISTS rb_plant (chunkId bigint(20) DEFAULT NULL, w int(11) DEFAULT NULL,"
 						+ "x int(11) DEFAULT NULL, y int(11) DEFAULT NULL, z int(11) DEFAULT NULL, date int(10) unsigned DEFAULT NULL,"
-						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)");
-		db.registerMigration(2, false, "create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
-				+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
-				+ "creation_time timestamp not null default now(), index plantChunkLookUp(chunk_x, chunk_z, world_id),"
-				+ "index plantCoordLookUp (x_offset, y, z_offset, world_id), "
-				+ "constraint plantUniqueLocation unique (chunk_x,chunk_z,x_offset,y,z_offset,world_id));",
+						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)",
+				"CREATE TABLE IF NOT EXISTS rb_chunk (id bigint(20) NOT NULL AUTO_INCREMENT, w int(11) DEFAULT NULL, x int(11) DEFAULT NULL, "
+				+ "z int(11) DEFAULT NULL, PRIMARY KEY (id), KEY chunk_coords_idx (w,x,z)");
+		db.registerMigration(2, false,
+				"create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
+						+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
+						+ "creation_time timestamp not null default now(), index plantChunkLookUp(chunk_x, chunk_z, world_id),"
+						+ "index plantCoordLookUp (x_offset, y, z_offset, world_id), "
+						+ "constraint plantUniqueLocation unique (chunk_x,chunk_z,x_offset,y,z_offset,world_id));",
 				"delete from rb_plants",
 				"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
-				+ "select c.x,c.z,c.w + 1, if(mod(p.x,16)<0,mod(p.x,16)+16,mod(p.x,16)), p.y, "
-				+ "if(mod(p.z,16)<0,mod(p.z,16)+16,mod(p.z,16)),FROM_UNIXTIME(p.date) "
-				+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;"
+						+ "select c.x,c.z,c.w + 1, if(mod(p.x,16)<0,mod(p.x,16)+16,mod(p.x,16)), p.y, "
+						+ "if(mod(p.z,16)<0,mod(p.z,16)+16,mod(p.z,16)),FROM_UNIXTIME(p.date) "
+						+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;"
 
 		);
 	}
