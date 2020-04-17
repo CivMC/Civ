@@ -114,7 +114,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						+ "x int(11) DEFAULT NULL, y int(11) DEFAULT NULL, z int(11) DEFAULT NULL, date int(10) unsigned DEFAULT NULL,"
 						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)",
 				"CREATE TABLE IF NOT EXISTS rb_chunk (id bigint(20) NOT NULL AUTO_INCREMENT, w int(11) DEFAULT NULL, x int(11) DEFAULT NULL, "
-				+ "z int(11) DEFAULT NULL, PRIMARY KEY (id), KEY chunk_coords_idx (w,x,z)");
+				+ "z int(11) DEFAULT NULL, PRIMARY KEY (id), KEY chunk_coords_idx (w,x,z))");
 		db.registerMigration(2, false,
 				"create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
 						+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
