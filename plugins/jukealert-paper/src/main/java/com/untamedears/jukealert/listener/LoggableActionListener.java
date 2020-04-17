@@ -93,7 +93,7 @@ public class LoggableActionListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
-		if (event.getTo() == null) {
+		if (event.getTo() == null || event.getPlayer() == null) {
 			return;
 		}
 		handleSnitchEntry(event.getPlayer(), event.getTo());
@@ -269,7 +269,7 @@ public class LoggableActionListener implements Listener {
 			return;
 		}
 		Collection<Snitch> insideNow = snitchManager.getSnitchesCovering(location);
-		Set<Snitch> previouslyIn = insideFields.get(player.getUniqueId());
+		Set<Snitch> previouslyIn = insideFields.computeIfAbsent(player.getUniqueId(), s -> new HashSet<>());
 		insideNow.stream().filter(s -> !previouslyIn.contains(s)).forEach(s -> {
 			s.processAction(new EnterFieldAction(System.currentTimeMillis(), s, player.getUniqueId()));
 			previouslyIn.add(s);

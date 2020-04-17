@@ -232,10 +232,10 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						+ "last_refresh timestamp not null)",
 				"create table if not exists ja_snitch_lever (id int primary key references ja_snitches(id) on delete cascade,"
 						+ "toggle_lever bool not null)",
+				"ALTER TABLE ja_snitch_actions AUTO_INCREMENT = 16",
 				"insert into ja_snitch_actions(id,name) values(0, 'KILL_MOB'),(1,'BLOCK_PLACE'),(2,'BLOCK_BREAK'),(3,'FILL_BUCKET'),(4,'EMPTY_BUCKET'),"
 						+ "(5,'ENTRY'),(7,'IGNITE_BLOCK'),(9,'OPEN_CONTAINER'),(10,'LOGIN'),(11,'LOGOUT'),(13,'DESTROY_VEHICLE'),"
 						+ "(14,'MOUNT_ENTITY'),(15,'DISMOUNT_ENTITY')",
-				"ALTER TABLE ja_snitch_actions AUTO_INCREMENT = 16",
 				"delete from snitchs using snitchs, snitchs s2 where snitchs.snitch_id < s2.snitch_id "
 						+ "and snitchs.snitch_x = s2.snitch_x and snitchs.snitch_y = s2.snitch_y and snitchs.snitch_z = s2.snitch_z and snitchs.snitch_world=s2.snitch_world");
 	}

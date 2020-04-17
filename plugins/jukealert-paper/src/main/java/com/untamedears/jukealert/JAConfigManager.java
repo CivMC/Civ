@@ -9,8 +9,6 @@ import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 
 public class JAConfigManager extends CoreConfigManager {
-
-	private ManagedDatasource db;
 	private SnitchTypeManager typeMan;
 
 	public JAConfigManager(ACivMod plugin, SnitchTypeManager typeMan) {
@@ -18,13 +16,12 @@ public class JAConfigManager extends CoreConfigManager {
 		this.typeMan = typeMan;
 	}
 	
-	public ManagedDatasource getDatabase() {
-		return db;
+	public ManagedDatasource getDatabase(ConfigurationSection config) {
+		return (ManagedDatasource) config.get("database");
 	}
 
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
-		db = (ManagedDatasource) config.get("database");
 		parseSnitchConfigs(config.getConfigurationSection("snitchConfigs"));
 		return true;
 	}
