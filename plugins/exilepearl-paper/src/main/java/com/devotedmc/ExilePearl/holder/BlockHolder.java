@@ -3,6 +3,7 @@ package com.devotedmc.ExilePearl.holder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
@@ -11,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
@@ -97,6 +99,26 @@ public class BlockHolder implements PearlHolder {
 		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
 			if (pearl.validateItemStack(item)) {
 				return HolderVerifyResult.IN_CHEST;
+			}
+		}
+		
+		//double chests sometimes don't load their inventories properly if the chunk has just been loaded.
+		//To fix this, we have to manually check for the other chest half adjacent to this one
+		if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+			for(Block relative : BlockAPI.getPlanarSides(block)) {
+				if (relative.getType() != block.getType()) {
+					continue;
+				}
+				BlockState relState = relative.getState();
+				if (!(relState instanceof InventoryHolder)) {
+					continue;
+				}
+				Inventory relInv = ((InventoryHolder)relState).getInventory();
+				for (ItemStack item : relInv.all(Material.ENDER_PEARL).values()) {
+					if (pearl.validateItemStack(item)) {
+						return HolderVerifyResult.IN_CHEST;
+					}
+				}
 			}
 		}
 

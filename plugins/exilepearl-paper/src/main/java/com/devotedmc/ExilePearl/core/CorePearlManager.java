@@ -82,6 +82,7 @@ final class CorePearlManager implements PearlManager {
 	/**
 	 * Loads all the pearls from the database
 	 */
+	@Override
 	public void loadPearls() {
 		pearls.clear();
 		for (ExilePearl p : storage.getStorage().loadAllPearls()) {
@@ -282,7 +283,7 @@ final class CorePearlManager implements PearlManager {
 		final int decayAmount = pearlApi.getPearlConfig().getPearlHealthDecayAmount();
 		final int decayTimeout = pearlApi.getPearlConfig().getPearlHealthDecayTimeout();
 		final Set<String> disallowedWorlds = pearlApi.getPearlConfig().getDisallowedWorlds();
-		final HashSet<ExilePearl> pearlsToFree = new HashSet<ExilePearl>();
+		final HashSet<ExilePearl> pearlsToFree = new HashSet<>();
 
 		// Iterate through all the pearls and reduce the health
 		for (ExilePearl pearl : pearls) {
@@ -425,6 +426,7 @@ final class CorePearlManager implements PearlManager {
 		return false;
 	}
 
+	@Override
 	public boolean requestSummon(ExilePearl pearl) {
 		if(summonRequests.onCoolDown(pearl.getPlayerId())) {
 			return false;
@@ -434,6 +436,7 @@ final class CorePearlManager implements PearlManager {
 		}
 	}
 
+	@Override
 	public boolean awaitingSummon(ExilePearl pearl) {
 		return summonRequests.onCoolDown(pearl.getPlayerId());
 	}
