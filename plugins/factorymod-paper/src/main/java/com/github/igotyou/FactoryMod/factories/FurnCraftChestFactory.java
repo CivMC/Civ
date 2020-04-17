@@ -237,8 +237,8 @@ public class FurnCraftChestFactory extends Factory {
 	 */
 	@Override
 	public void deactivate() {
-		LoggingUtils.log("Deactivating " + getLogData());
 		if (active) {
+			LoggingUtils.log("Deactivating " + getLogData());
 			Bukkit.getScheduler().cancelTask(threadId);
 			turnFurnaceOff(getFurnace());
 			active = false;

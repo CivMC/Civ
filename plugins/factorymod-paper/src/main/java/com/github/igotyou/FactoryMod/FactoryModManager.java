@@ -143,8 +143,8 @@ public class FactoryModManager {
 	 */
 	public void addFactory(Factory f) {
 		factories.add(f);
-		for (Block b : f.getMultiBlockStructure().getRelevantBlocks()) {
-			locations.put(b.getLocation(), f);
+		for (Location loc : f.getMultiBlockStructure().getAllBlocks()) {
+			locations.put(loc, f);
 		}
 	}
 
