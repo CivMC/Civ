@@ -1,7 +1,9 @@
 package me.josvth.randomspawn.listeners;
 
 import java.util.List;
+import java.util.Set;
 
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -35,6 +37,13 @@ public class JoinListener implements Listener{
 		plugin.sendGround(event.getPlayer(), event.getTo());
 	}
 
+	private static boolean isAlt(Player player) {
+		BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
+		if (bsPlayer == null) return false;
+		Set<BSPlayer> directAssoc = player.getTransitiveSharedPlayers(true);
+		return !directAssoc.isEmpty();
+	}
+	
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event){
 
@@ -62,7 +71,9 @@ public class JoinListener implements Listener{
 			return; 
 		}
 		
-		if (spawnPointFlags.contains("firstjoin")) {
+		boolean hasRandomSpawned = false;
+
+		if (spawnPointFlags.contains("firstjoin") && !isAlt(player)) {
 			plugin.logDebug(playerName + "First Join spawn point spawning");
 			List<Location> spawnLocations = plugin.findSpawnPoints(world);
 		
@@ -77,6 +88,7 @@ public class JoinListener implements Listener{
 				} else {
 					plugin.sendGround(player, newSpawn);
 					player.teleport(newSpawn.add(0, 3, 0));
+					hasRandomSpawned = true;
 					player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
 					
 					if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns",false)){
@@ -102,6 +114,7 @@ public class JoinListener implements Listener{
 			plugin.sendGround(player, spawnLocation);
 			
 			player.teleport(spawnLocation.add(0, 3, 0));
+			hasRandomSpawned = true;
 	
 			player.setMetadata("lasttimerandomspawned", new FixedMetadataValue(plugin, System.currentTimeMillis()));
 	
@@ -112,6 +125,11 @@ public class JoinListener implements Listener{
 			if (plugin.yamlHandler.config.getString("messages.randomspawned") != null){
 				player.sendMessage(ChatColor.translateAlternateColorCodes('&', plugin.yamlHandler.config.getString("messages.randomspawned")));
 			}
+		}
+
+		if (!hasRandomSpawned) { // neither spawnpoints nor randomspawn were successful (or both were disabled)
+			player.teleport(getFirstSpawn(world));
+			plugin.logDebug(playerName + " is teleported to the first spawn of " + worldName);
 		}
 	}
 
