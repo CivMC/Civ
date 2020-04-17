@@ -587,10 +587,11 @@ public class PlayerListener implements Listener, Configurable {
 			//Reset bed of exiled player if killer is not null
 			if (!damagers.isEmpty() && pearlApi.getPearlConfig().canPerform(ExileRule.SPAWN_RESET) && pearlApi.getPearl(playerId).getPearlType() == PearlType.EXILE) {
 				pearl.getPlayer().setBedSpawnLocation(null,true);
-			for(Player damager : damagers) {
-				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+				for(Player damager : damagers) {
+					msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+				}
+				return;
 			}
-			return;
 		}
 
 		for(Player damager : damagers) {
