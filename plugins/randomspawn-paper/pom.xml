@@ -39,6 +39,13 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.programmerdan.minecraft</groupId>
+			<artifactId>banstick</artifactId>
+			<version>1.1.0</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>vg.civcraft.mc.civmodcore</groupId>
             <artifactId>CivModCore</artifactId>
