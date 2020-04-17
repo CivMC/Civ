@@ -5,6 +5,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.PluginManager;
 
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
+import com.github.maxopoly.finale.external.FinaleSettingManager;
 import com.github.maxopoly.finale.listeners.DamageListener;
 import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
@@ -24,10 +25,9 @@ public class Finale extends ACivMod {
 	}
 	
 	private FinaleManager manager;
-
 	private CombatTagPlusManager ctpManager;
-
 	private ConfigParser config;
+	private FinaleSettingManager settingsManager;
 
 	public CombatTagPlusManager getCombatTagPlusManager() {
 		return ctpManager;
@@ -35,6 +35,10 @@ public class Finale extends ACivMod {
 
 	public FinaleManager getManager() {
 		return manager;
+	}
+	
+	public FinaleSettingManager getSettingsManager() {
+		return settingsManager;
 	}
 
 	private void initExternalManagers() {
@@ -68,7 +72,7 @@ public class Finale extends ACivMod {
 		if (config.isPearlEnabled()) {
 			Bukkit.getPluginManager()
 					.registerEvents(new PearlCoolDownListener(config.getPearlCoolDown(), config.combatTagOnPearl(),
-							ctpManager, config.setVanillaPearlCooldown(), config.useSideBarForPearlCooldown(), config.useActionBarForPearlCooldown()), this);
+							ctpManager), this);
 		}
 		Bukkit.getPluginManager().registerEvents(new WeaponModificationListener(), this);
 		Bukkit.getPluginManager().registerEvents(new EnchantmentDisableListener(config.getDisabledEnchants()), this);
@@ -81,6 +85,7 @@ public class Finale extends ACivMod {
 		onDisable();
 		config = new ConfigParser(this);
 		manager = config.parse();
+		settingsManager = new FinaleSettingManager();
 		initExternalManagers();
 		registerListener();
 	}

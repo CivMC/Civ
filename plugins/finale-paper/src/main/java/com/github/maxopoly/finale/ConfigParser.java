@@ -37,9 +37,6 @@ public class ConfigParser {
 	private boolean pearlEnabled;
 	private long pearlCooldown;
 	private boolean combatTagOnPearl;
-	private boolean setVanillaPearlCooldown;
-	private boolean sideBarPearlCooldown;
-	private boolean actionBarPearlCooldown;
 	private PotionHandler potionHandler;
 	private Collection<Enchantment> disabledEnchants;
 	private VelocityHandler velocityHandler;
@@ -77,20 +74,9 @@ public class ConfigParser {
 	public boolean isPearlEnabled() {
 		return pearlEnabled;
 	}
-
-	public boolean setVanillaPearlCooldown() {
-		return setVanillaPearlCooldown;
-	}
 	
 	public CombatConfig getCombatConfig() {
 		return combatConfig;
-	}
-	public boolean useSideBarForPearlCooldown() {
-		return sideBarPearlCooldown;
-	}
-	
-	public boolean useActionBarForPearlCooldown() {
-		return actionBarPearlCooldown;
 	}
 
 	public FinaleManager parse() {
@@ -205,18 +191,11 @@ public class ConfigParser {
 			return false;
 		}
 		String cooldown = config.getString("cooldown", "10s");
-		System.out.println("cooldown: " + cooldown);
 		pearlCooldown = parseTime(cooldown);
 		plugin.info("Pearl cooldown set to " + pearlCooldown / 20 + " seconds");
 		combatTagOnPearl = config.getBoolean("combatTag", true)
 				&& Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus");
 		plugin.info("Combat tagging on pearling: " + combatTagOnPearl);
-		setVanillaPearlCooldown = config.getBoolean("setVanillaCooldown", false);
-		plugin.info("Setting vanilla cooldown on pearling: " + setVanillaPearlCooldown);
-		sideBarPearlCooldown = config.getBoolean("useSideBar", false);
-		plugin.info("Using sidebar to display pearl cooldown:" + sideBarPearlCooldown);
-		actionBarPearlCooldown = config.getBoolean("useActionBar", true);
-		plugin.info("Using actionbar to display pearl cooldown:" + actionBarPearlCooldown);
 		return true;
 	}
 

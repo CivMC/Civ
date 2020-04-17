@@ -66,11 +66,10 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			Entity entity = packet.getEntityModifier(event).read(0);
 			Damageable target = entity instanceof Damageable ? (Damageable)entity : null;
 			
-			if (target == null) return;
-			if (target.isDead()) return;
-			if (target.isInvulnerable()) return;
-			if (!world.getUID().equals(target.getWorld().getUID())) return;
-			if (!(target instanceof LivingEntity)) return;
+			if (target == null || target.isDead() || target.isInvulnerable() ||
+					!world.getUID().equals(target.getWorld().getUID()) || !(target instanceof LivingEntity)) {
+				return;
+			}
 			
 			event.setCancelled(true);
 			
@@ -79,12 +78,16 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			StructureModifier<EntityUseAction> actions = packet.getEntityUseActions();
 			EntityUseAction action = actions.read(0);
 			
-			if (action != EntityUseAction.ATTACK) return;
+			if (action != EntityUseAction.ATTACK) {
+				return;
+			}
 			//cpsHandler.updateClicks(attacker);
 			
 			double distanceSquared = attacker.getLocation().distanceSquared(target.getLocation());
 			
-			if (distanceSquared > (maxReach * maxReach)) return;
+			if (distanceSquared > (maxReach * maxReach)) {
+				return;
+			}
 			
 			if (cpsHandler.getCPS(attacker.getUniqueId()) >= cpsLimit) {
 				attacker.sendMessage(ChatColor.RED + "You've hit CPS limit of " + cpsLimit + "!");

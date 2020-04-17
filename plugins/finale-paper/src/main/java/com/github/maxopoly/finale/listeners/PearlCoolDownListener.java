@@ -15,6 +15,7 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.CombatTagPlusManager;
+import com.github.maxopoly.finale.external.FinaleSettingManager;
 
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
@@ -37,19 +38,12 @@ public class PearlCoolDownListener implements Listener {
 	private ICoolDownHandler<UUID> cds;
 	private CombatTagPlusManager ctpManager;
 	private boolean combatTag;
-	private boolean setVanillaCooldown;
-	private boolean useSideBar;
-	private boolean useActionBar;
 
-	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager,
-			boolean setVanillaCooldown, boolean useSideBar, boolean useActionBar) {
+	public PearlCoolDownListener(long cooldown, boolean combatTag, CombatTagPlusManager ctpManager) {
 		instance = this;
-		this.cds = new TickCoolDownHandler<>(Finale.getPlugin(), cooldown / 20);
+		this.cds = new TickCoolDownHandler<>(Finale.getPlugin(), cooldown / 50);
 		this.ctpManager = ctpManager;
 		this.combatTag = combatTag;
-		this.setVanillaCooldown = setVanillaCooldown;
-		this.useSideBar = useSideBar;
-		this.useActionBar = useActionBar;
 	}
 
 	public long getCoolDown() {
@@ -77,23 +71,24 @@ public class PearlCoolDownListener implements Listener {
 	}
 	
 	public String getCooldownText(Player shooter) {
-		return ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(shooter.getUniqueId()) + ChatColor.DARK_PURPLE + "s";
+		return ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "Enderpearl: " + ChatColor.LIGHT_PURPLE + formatCoolDown(shooter.getUniqueId());
 	}
 	
 	public void putOnCooldown(Player shooter) {
 		cds.putOnCoolDown(shooter.getUniqueId());
-		if (setVanillaCooldown) {
+		FinaleSettingManager settings = Finale.getPlugin().getSettingsManager();
+		if (settings.setVanillaPearlCooldown(shooter.getUniqueId())) {
 			Bukkit.getScheduler().runTaskLater(Finale.getPlugin(), ()->{
 					// -1, because this is delayed by one tick
 					shooter.setCooldown(Material.ENDER_PEARL, (int) cds.getTotalCoolDown() - 1);
 			}, 1);
 		}
 		
-		if (useActionBar) {
+		if (settings.actionBarPearlCooldown(shooter.getUniqueId())) {
 			BottomLine bottomLine = getCooldownBottomLine();
 			bottomLine.updatePlayer(shooter, getCooldownText(shooter));
 		}
-		if (useSideBar) {
+		if (settings.sideBarPearlCooldown(shooter.getUniqueId())) {
 			CivScoreBoard board = getCooldownBoard();
 			board.set(shooter, getCooldownText(shooter)); 
 		}
@@ -136,11 +131,15 @@ public class PearlCoolDownListener implements Listener {
 		putOnCooldown(shooter);
 	}
 
-	private DecimalFormat df = new DecimalFormat("#.#");
+	private DecimalFormat df = new DecimalFormat("#.0");
 	
 	private String formatCoolDown(UUID uuid) {
 		long cd = cds.getRemainingCoolDown(uuid);
-		return df.format(((cd * 20.0) / 1000.0));
+		if (cd <= 0) {
+			return ChatColor.GREEN + "READY";
+		}
+		//convert from ticks to ms
+		return df.format(cd / 20.0) + " sec";
 	}
 
 }
