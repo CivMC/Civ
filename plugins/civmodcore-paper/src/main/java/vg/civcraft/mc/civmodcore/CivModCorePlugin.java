@@ -54,30 +54,26 @@ public final class CivModCorePlugin extends ACivMod {
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Load Database
 		try {
-			database = (ManagedDatasource) getConfig().get("database");
+			this.database = (ManagedDatasource) getConfig().get("database");
 		}
 		catch (Exception error) {
 			warning("Cannot get database from config.", error);
-			database = null;
+			this.database = null;
 		}
 		// Load APIs
 		ItemNames.loadItemNames();
-		EnchantmentNames.loadEnchantmentNames();
+		EnchantNames.loadEnchantmentNames();
 		BottomLineAPI.init();
-		if (database != null) {
-			CMCWorldDAO dao = new CMCWorldDAO(database, this);
+		if (this.database != null) {
+			CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
 			if (dao.updateDatabase()) {
-				worldIdManager = new WorldIDManager(dao);
-				chunkMetaManager = new GlobalChunkMetaManager(dao, worldIdManager);
+				this.worldIdManager = new WorldIDManager(dao);
+				this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager);
 				info("Setup database successfully");
 			}
 			else {
 				warning("Could not setup database");
 			}
-		}
-		catch (Exception error) {
-			warning("Cannot get database from config.", error);
-			database = null;
 		}
 		// Load APIs
 		ItemNames.loadItemNames();
@@ -91,16 +87,16 @@ public final class CivModCorePlugin extends ACivMod {
 		ItemNames.resetItemNames();
 		EnchantNames.resetEnchantmentNames();
 		ChunkMetaAPI.saveAll();
-		chunkMetaManager = null;
+		this.chunkMetaManager = null;
 		// Disconnect database
-		if (database != null) {
+		if (this.database != null) {
 			try {
-				database.close();
+				this.database.close();
 			}
 			catch (SQLException error) {
 				warning("Was unable to close the database.", error);
 			}
-			database = null;
+			this.database = null;
 		}
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
@@ -115,11 +111,11 @@ public final class CivModCorePlugin extends ACivMod {
 	}
 	
 	public GlobalChunkMetaManager getChunkMetaManager() {
-		return chunkMetaManager;
+		return this.chunkMetaManager;
 	}
 	
 	public WorldIDManager getWorldIdManager() {
-		return worldIdManager;
+		return this.worldIdManager;
 	}
 
 }
