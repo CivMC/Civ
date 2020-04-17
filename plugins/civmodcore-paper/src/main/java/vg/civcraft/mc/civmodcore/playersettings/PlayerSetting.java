@@ -128,16 +128,6 @@ public abstract class PlayerSetting<T> {
 	}
 
 	/**
-	 * Gets the stored value for the given player.
-	 *
-	 * @param player UUID of the player to get value for
-	 * @return Value for the player
-	 */
-	public T getValueWithoutDefault(UUID player) {
-		return values.get(player);
-	}
-
-	/**
 	 * Gets the stored value for the given player or the default value if the player
 	 * has no own value
 	 * 
@@ -146,16 +136,6 @@ public abstract class PlayerSetting<T> {
 	 */
 	public T getValue(Player player) {
 		return getValue(player.getUniqueId());
-	}
-
-	/**
-	 * Gets the stored value for the given player.
-	 *
-	 * @param player Player to get value for
-	 * @return Value for the player
-	 */
-	public T getValueWithoutDefault(Player player) {
-		return getValueWithoutDefault(player.getUniqueId());
 	}
 	
 	/**
