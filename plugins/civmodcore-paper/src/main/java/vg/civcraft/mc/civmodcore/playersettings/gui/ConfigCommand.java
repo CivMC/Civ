@@ -1,35 +1,31 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
-import java.util.Collections;
-import java.util.List;
-
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
+import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
-public class ConfigCommand extends StandaloneCommand {
+@CommandAlias("config")
+public class ConfigCommand extends AikarCommand {
 
-	@Override
-	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "You are not a player");
-			return true;
-		}
-		PlayerSettingAPI.getMainMenu().showScreen((Player) sender);
-		return true;
+	@Default
+	@Description("Allows configuring player specific settings")
+	public void execute(Player player) {
+		PlayerSettingAPI.getMainMenu().showScreen(player);
 	}
 
-	@Override
-	public List<String> tabComplete(CommandSender sender, String[] args) {
-		return Collections.emptyList();
-	}
-	
-	@Override
-	public String getIdentifier() {
-		return "config";
+	@Subcommand("save")
+	@Description("Save all settings to the file.")
+	@CommandPermission("cmc.config.save")
+	public void save(CommandSender sender) {
+		PlayerSettingAPI.saveAll();
+		sender.sendMessage(ChatColor.GREEN + "/config has been saved.");
 	}
 
 }

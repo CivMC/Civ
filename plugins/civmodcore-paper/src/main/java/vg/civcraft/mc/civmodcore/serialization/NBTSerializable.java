@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
-import vg.civcraft.mc.civmodcore.api.NBTCompound;
-
 /**
  * Interface that grants a class access to {@link NBTSerialization NBTSerialization's} process of converting a class to
  * and from an NBTCompound.

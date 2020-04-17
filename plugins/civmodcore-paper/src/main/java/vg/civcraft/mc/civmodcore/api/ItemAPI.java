@@ -1,26 +1,22 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-
+import java.util.function.Function;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import com.google.common.base.Preconditions;
-
 /**
  * Class of static APIs for Items. Replaces ISUtils.
  * */
 public final class ItemAPI {
-
-	private ItemAPI() { } // Make the class effectively static
 
 	/**
 	 * Checks if an ItemStack is valid. An ItemStack is considered valid if when added to an inventory, it shows as an
@@ -268,6 +264,35 @@ public final class ItemAPI {
 	public static void clearLore(@Nonnull ItemStack item) {
 		Preconditions.checkNotNull(item, "Cannot clear the item's lore; the item is null.");
 		setLore(item, Collections.emptyList());
+	}
+
+	/**
+	 * Handles an item's metadata.
+	 *
+	 * @param <T> The item meta type, which might not extend ItemMeta (Damageable for example)
+	 * @param item The item to handle the metadata of.
+	 * @param handler The item metadata handler, which should return true if modifications were made.
+	 * @return Returns true if the metadata was successfully handled.
+	 *
+	 * @see ItemStack#getItemMeta()
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> boolean handleItemMeta(ItemStack item, Function<T, Boolean> handler) {
+		if (item == null || handler == null) {
+			return false;
+		}
+		T meta;
+		try {
+			meta = (T) item.getItemMeta();
+			if (meta == null) {
+				return false;
+			}
+			if (handler.apply(meta)) {
+				return item.setItemMeta((ItemMeta) meta);
+			}
+		}
+		catch (ClassCastException ignored) { }
+		return false;
 	}
 
 }

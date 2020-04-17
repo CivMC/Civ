@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -706,7 +707,37 @@ public final class MaterialAPI {
 		hashMaterials.add(Material.ORANGE_CONCRETE);
 	}
 
-	private MaterialAPI() { }
+	/**
+	 * Checks whether a material would be considered a valid item.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material would be considered a valid item.
+	 */
+	public static boolean isValidItemMaterial(Material material) {
+		if (material == null) {
+			return false;
+		}
+		if (material == Material.AIR) {
+			return false;
+		}
+		if (!material.isItem()) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Attempts to retrieve a material by its slug.
+	 *
+	 * @param value The value to search for a matching material by.
+	 * @return Returns a matched material or null.
+	 */
+	public static Material getMaterial(String value) {
+		if (Strings.isNullOrEmpty(value)) {
+			return null;
+		}
+		return Material.getMaterial(value.toUpperCase());
+	}
 
 	/**
 	 * Checks whether a material is air.

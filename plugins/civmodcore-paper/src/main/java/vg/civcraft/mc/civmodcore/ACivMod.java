@@ -1,8 +1,13 @@
 package vg.civcraft.mc.civmodcore;
 
+import java.io.File;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -12,29 +17,31 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public abstract class ACivMod extends JavaPlugin {
+
+	private final List<Class<? extends NBTSerializable>> serializableClasses = new ArrayList<>();
 
 	@Deprecated
 	protected CommandHandler handle = null;
 
 	protected StandaloneCommandHandler newCommandHandler;
 
-	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (handle == null) {
-			return this.newCommandHandler.executeCommand(sender, command, args);
-		} else {
-			return this.handle.execute(sender, command, args);
-		}
-	}
+	protected boolean useNewCommandHandler = true;
 
 	@Override
 	public void onEnable() {
-		this.newCommandHandler = new StandaloneCommandHandler(this);
+		// Allow plugins to disable the new command handler without breaking other plugins that
+		// rely on this being set automatically.
+		if (this.useNewCommandHandler) {
+			this.newCommandHandler = new StandaloneCommandHandler(this);
+		}
 		// Self disable when a hard dependency is disabled
 		registerListener(new Listener() {
 			@EventHandler
@@ -50,7 +57,11 @@ public abstract class ACivMod extends JavaPlugin {
 	
 	@Override
 	public void onDisable() {
+		this.useNewCommandHandler = true;
+		Iteration.iterateThenClear(this.serializableClasses, NBTSerialization::unregisterNBTSerializable);
 		HandlerList.unregisterAll(this);
+		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
+		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 
@@ -61,26 +72,47 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
-	protected boolean isPluginEnabled(Plugin plugin) {
-		if (plugin == null) {
-			return false;
-		}
-		return getServer().getPluginManager().isPluginEnabled(plugin);
+	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
+		NBTSerialization.registerNBTSerializable(serializable);
+		this.serializableClasses.add(serializable);
+	}
+
+	public boolean isDebugEnabled() {
+		return getConfig().getBoolean("debug", false);
+	}
+
+	public File getResourceFile(String path) {
+		return new File(getDataFolder(), path);
 	}
 
 	public void saveDefaultResource(String path) {
-		if (getResource(path) == null) {
+		if (!getResourceFile(path).exists()) {
 			saveResource(path, false);
 		}
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
-		if (this.handle == null) {
-			return this.newCommandHandler.tabCompleteCommand(sender, cmd, args);
-		} else {
-			return this.handle.complete(sender, cmd, args);
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+							 @NotNull String[] arguments) {
+		if (this.newCommandHandler != null) {
+			return this.newCommandHandler.executeCommand(sender, command, arguments);
 		}
+		if (this.handle != null) {
+			return this.handle.execute(sender, command, arguments);
+		}
+		return false;
+	}
+
+	@Override
+	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
+									  @NotNull String[] arguments) {
+		if (this.newCommandHandler != null) {
+			return this.newCommandHandler.tabCompleteCommand(sender, command, arguments);
+		}
+		if (this.handle != null) {
+			return this.handle.complete(sender, command, arguments);
+		}
+		return Collections.emptyList();
 	}
 
 	public CommandHandler getCommandHandler() {
@@ -89,6 +121,18 @@ public abstract class ACivMod extends JavaPlugin {
 
 	protected void setCommandHandler(CommandHandler handle) {
 		this.handle = handle;
+	}
+
+	public StandaloneCommandHandler getStandaloneCommandHandler() {
+		return this.newCommandHandler;
+	}
+
+	protected void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
+		this.newCommandHandler = handler;
+	}
+
+	public void disable() {
+		getPluginLoader().disablePlugin(this);
 	}
 
 	/**
@@ -149,7 +193,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (isDebugEnabled()) {
 			getLogger().log(Level.INFO, message);
 		}
 	}
@@ -162,9 +206,57 @@ public abstract class ACivMod extends JavaPlugin {
 	 * Skipped if DebugLog is false.
 	 */
 	public void debug(String message, Object... vars) {
-		if (getConfig() != null && getConfig().getBoolean("debug", false)) {
+		if (isDebugEnabled()) {
 			getLogger().log(Level.INFO, message, vars);
 		}
+	}
+
+	/**
+	 * Attempts to retrieve a plugin's instance through several known means.
+	 *
+	 * 1. If there's an instance of the class currently enabled. (Don't request ACivMod.class, or you'll just get the
+	 * the first result.
+	 *
+	 * 2. If there's a public static .getInstance() method.
+	 *
+	 * 3. If there's a static instance field.
+	 *
+	 * @param <T> The type of the plugin.
+	 * @param clazz The class object of the plugin.
+	 * @return Returns the first found instance of the plugin, or null.
+	 *
+	 * @apiNote Returning null doesn't necessarily mean there isn't an instance of the plugin in existence. It could
+	 *         just be that it's located some unexpected place. Additionally, just because an instance has been
+	 *         returned does not mean that instance is enabled.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T extends JavaPlugin> T getInstance(Class<T> clazz) {
+		if (clazz == null) {
+			return null;
+		}
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+			if (clazz.isAssignableFrom(plugin.getClass())) {
+				return (T) plugin;
+			}
+		}
+		try {
+			Method method = clazz.getDeclaredMethod("getInstance");
+			if (Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers()) && clazz.isAssignableFrom(method.getReturnType())) {
+				return (T) method.invoke(null);
+			}
+		}
+		catch (Exception ignored) {
+		}
+		try {
+			Field field = clazz.getField("instance");
+			if (Modifier.isStatic(field.getModifiers()) && clazz.isAssignableFrom(field.getType())) {
+				return (T) field.get(null);
+			}
+		}
+		catch (Exception ignored) {
+		}
+		// Otherwise there's no instance of the plugin, or it's stored in an usual way
+		return null;
 	}
 
 }

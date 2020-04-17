@@ -1,41 +1,17 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public class TextUtil {
-	private static Map<String, String> tags = new HashMap<>();
 
-	static {
-		tags.put("g", TextUtil.parseColor("<lime>")); // good
-		tags.put("b", TextUtil.parseColor("<rose>")); // bad
-		tags.put("i", TextUtil.parseColor("<yellow>")); // info
-		tags.put("a", TextUtil.parseColor("<gold>")); // art
-		tags.put("l", TextUtil.parseColor("<green>")); // logo
-		tags.put("n", TextUtil.parseColor("<silver>")); // notice
-		tags.put("h", TextUtil.parseColor("<pink>")); // highlight
-		tags.put("c", TextUtil.parseColor("<aqua>")); // parameter
-		tags.put("p", TextUtil.parseColor("<teal>")); // parameter
-		tags.put("w", TextUtil.parseColor("<white>")); // parameter
-		tags.put("lp", TextUtil.parseColor("<lpurple>"));
-	}
-
-	public static Map<String, String> getTags() {
-		return tags;
-	}
-	
 	public static String formatDuration(long time) {
 		return formatDuration(time, TimeUnit.MILLISECONDS);
 	}
-	
+
 	public static String formatDuration(long time, TimeUnit unit) {
 		long totalSeconds = TimeUnit.SECONDS.convert(time, unit);
 		long seconds = totalSeconds % 60;
@@ -67,33 +43,7 @@ public class TextUtil {
 	}
 
 	public static String parse(String str) {
-		return parseTags(parseColor(str));
-	}
-
-	// -------------------------------------------- //
-	// Tag parsing
-	// -------------------------------------------- //
-
-	public static String parseTags(String str) {
-		return replaceTags(str, tags);
-	}
-
-	public static final transient Pattern patternTag = Pattern.compile("<([a-zA-Z0-9_]*)>");
-
-	public static String replaceTags(String str, Map<String, String> tags) {
-		StringBuffer ret = new StringBuffer();
-		Matcher matcher = patternTag.matcher(str);
-		while (matcher.find()) {
-			String tag = matcher.group(1);
-			String repl = tags.get(tag);
-			if (repl == null) {
-				matcher.appendReplacement(ret, "<" + tag + ">");
-			} else {
-				matcher.appendReplacement(ret, repl);
-			}
-		}
-		matcher.appendTail(ret);
-		return ret.toString();
+		return parseColor(str);
 	}
 
 	// -------------------------------------------- //
@@ -159,7 +109,7 @@ public class TextUtil {
 				replace("<dred>", ChatColor.DARK_RED.toString()).
 				replace("<dpurple>", ChatColor.DARK_PURPLE.toString()).
 				replace("<gold>", ChatColor.GOLD.toString()).
-				replace("<lgray>", ChatColor.GRAY.toString()).
+				replace("<lgray>", ChatColor.GRAY.toString()). // This has to be lgray because gray is already claimed.
 				replace("<dgray>", ChatColor.DARK_GRAY.toString()).
 				replace("<blue>", ChatColor.BLUE.toString()).
 				replace("<green>", ChatColor.GREEN.toString()).
@@ -168,10 +118,8 @@ public class TextUtil {
 				replace("<lpurple>", ChatColor.LIGHT_PURPLE.toString()).
 				replace("<yellow>", ChatColor.YELLOW.toString()).
 				replace("<white>", ChatColor.WHITE.toString()).
-				replace("<b>", ChatColor.BOLD.toString()).
 				replace("<s>", ChatColor.STRIKETHROUGH.toString()).
 				replace("<u>", ChatColor.UNDERLINE.toString()).
-				replace("<i>", ChatColor.ITALIC.toString()).
 				replace("<r>", ChatColor.RESET.toString()).
 				// Legacy support
 				replace("<empty>", "").
@@ -180,12 +128,27 @@ public class TextUtil {
 				replace("<silver>", ChatColor.GRAY.toString()).
 				replace("<gray>", ChatColor.DARK_GRAY.toString()). // REEE why name this gray?
 				replace("<lime>", ChatColor.GREEN.toString()).
-				replace("<lime>", ChatColor.GREEN.toString()).
 				replace("<rose>", ChatColor.RED.toString()).
 				replace("<pink>", ChatColor.LIGHT_PURPLE.toString()).
 				replace("<bold>", ChatColor.BOLD.toString()).
 				replace("<it>", ChatColor.ITALIC.toString()).
-				replace("<reset>", ChatColor.RESET.toString());
+				replace("<reset>", ChatColor.RESET.toString()).
+				replace("<g>", ChatColor.GREEN.toString()). // Good
+				replace("<b>", ChatColor.RED.toString()). // Bad
+				replace("<i>", ChatColor.WHITE.toString()). // Info
+				replace("<a>", ChatColor.GOLD.toString()). // Art
+				replace("<l>", ChatColor.GREEN.toString()). // Logo
+				replace("<n>", ChatColor.GRAY.toString()). // Notice
+				replace("<h>", ChatColor.LIGHT_PURPLE.toString()). // Highlight
+				replace("<c>", ChatColor.AQUA.toString()). // Parameter
+				replace("<p>", ChatColor.DARK_AQUA.toString()). // Parameter
+				replace("<w>", ChatColor.WHITE.toString()). // Parameter
+				replace("<lp>", ChatColor.LIGHT_PURPLE.toString());
+	}
+
+	@Deprecated
+	public static String parseTags(String sting) {
+		return parseColorTags(sting);
 	}
 
 	// -------------------------------------------- //
@@ -193,22 +156,23 @@ public class TextUtil {
 	// -------------------------------------------- //
 
 	public static String upperCaseFirst(String string) {
-		Guard.ArgumentNotNull(string, "string");
+		assert string != null;
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 
 	public static String repeat(String string, int times) {
-		Guard.ArgumentNotNull(string, "string");
+		assert string != null;
 		if (times <= 0) {
 			return "";
-		} else {
+		}
+		else {
 			return string + repeat(string, times - 1);
 		}
 	}
 
 	public static String implode(List<String> list, String glue) {
-		Guard.ArgumentNotNull(list, "list");
-		Guard.ArgumentNotNull(glue, "glue");
+		assert list != null;
+		assert glue != null;
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
 			if (i != 0) {
@@ -226,13 +190,11 @@ public class TextUtil {
 		if (list.size() == 1) {
 			return list.get(0);
 		}
-
 		String lastItem = list.get(list.size() - 1);
 		String nextToLastItem = list.get(list.size() - 2);
 		String merge = nextToLastItem + and + lastItem;
 		list.set(list.size() - 2, merge);
 		list.remove(list.size() - 1);
-
 		return implode(list, comma);
 	}
 
@@ -252,17 +214,17 @@ public class TextUtil {
 	}
 
 	public static String titleize(String colorCode, String str) {
-		String center = ".[ " + parseTags("<l>") + str + parseTags(colorCode) + " ].";
+		String center = ".[ " + parseColorTags("<l>") + str + parseColorTags(colorCode) + " ].";
 		int centerlen = ChatColor.stripColor(center).length();
 		int pivot = titleizeLine.length() / 2;
 		int eatLeft = (centerlen / 2) - titleizeBalance;
 		int eatRight = (centerlen - eatLeft) + titleizeBalance;
 
 		if (eatLeft < pivot) {
-			return parseTags(colorCode) + titleizeLine.substring(0, pivot - eatLeft) + center
-					+ titleizeLine.substring(pivot + eatRight);
-		} else {
-			return parseTags(colorCode) + center;
+			return parseColorTags(colorCode) + titleizeLine.substring(0, pivot - eatLeft) + center + titleizeLine.substring(pivot + eatRight);
+		}
+		else {
+			return parseColorTags(colorCode) + center;
 		}
 	}
 
@@ -275,10 +237,11 @@ public class TextUtil {
 		ret.add(titleize(title + " " + pageHumanBased + "/" + pagecount));
 
 		if (pagecount == 0) {
-			ret.add(parseTags("<i>Sorry. No Pages available."));
+			ret.add(parseColorTags("<i>Sorry. No Pages available."));
 			return ret;
-		} else if (pageZeroBased < 0 || pageHumanBased > pagecount) {
-			ret.add(parseTags("<i>Invalid page. Must be between 1 and " + pagecount));
+		}
+		else if (pageZeroBased < 0 || pageHumanBased > pagecount) {
+			ret.add(parseColorTags("<i>Invalid page. Must be between 1 and " + pagecount));
 			return ret;
 		}
 
@@ -294,14 +257,12 @@ public class TextUtil {
 	}
 
 	/**
-	 * Static utility method for easily sending formatting strings to players Import statically for easier use import
-	 * static vg.civcraft.mc.civmodcore.util.TextUtil.*;
-	 * 
-	 * @param player
-	 *            The player
-	 * @param message
-	 *            The message
+	 * Static utility method for easily sending formatting strings to players.
+	 *
+	 * @param player The player
+	 * @param message The message
 	 */
+	@Deprecated
 	public static void msg(Player player, String message) {
 		if (player != null && player.isOnline()) {
 			player.sendMessage(parse(message));
@@ -309,17 +270,80 @@ public class TextUtil {
 	}
 
 	/**
-	 * Static utility method for easily sending formatting strings to players Import statically for easier use import
-	 * static vg.civcraft.mc.civmodcore.util.TextUtil.*;
-	 * 
-	 * @param player
-	 *            The player
-	 * @param message
-	 *            The message
+	 * Static utility method for easily sending formatting strings to players.
+	 *
+	 * @param player The player
+	 * @param message The message
+	 * @param args Additional arguments which are used later in a String.format()
 	 */
+	@Deprecated
 	public static void msg(Player player, String message, Object... args) {
 		if (player != null && player.isOnline()) {
 			player.sendMessage(parse(message, args));
 		}
 	}
+
+	// -------------------------------------------- //
+	// Misc
+	// -------------------------------------------- //
+
+	/**
+	 * Determines if two strings match in value. This has been created to avoid those times when you want to check for
+	 * equality without having to do null checks yourself, such as after pulling a value from a map or list.
+	 *
+	 * @param former The first value.
+	 * @param latter The second value.
+	 * @return Returns true if the first and second values match.
+	 */
+	public static boolean stringEquals(String former, String latter) {
+		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
+		if (former.equals(latter)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Determines if two strings match regardless of case. This has been created to avoid those times when you want to
+	 * check for equality without having to do null checks yourself, such as after pulling a value from a map or list.
+	 *
+	 * @param former The first value.
+	 * @param latter The second value.
+	 * @return Returns true if the first and second values match regardless of case.
+	 */
+	public static boolean stringEqualsIgnoreCase(String former, String latter) {
+		if (former == latter) { // Don't change this to .equals(), this is a null and pointer check
+			return true;
+		}
+		if (former == null || latter == null) {
+			return false;
+		}
+		if (former.equalsIgnoreCase(latter)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Determins if one string starts with another.
+	 *
+	 * @param container The string to check the start of.
+	 * @param contained The string to search for.
+	 * @return Returns true if the contained is contained within the container.
+	 */
+	public static boolean startsWith(String container, String contained) {
+		if (contained == null || contained.isEmpty()) {
+			return true;
+		}
+		if (container == null || container.isEmpty()) {
+			return false;
+		}
+		return container.toLowerCase().startsWith(contained.toLowerCase());
+	}
+
 }
