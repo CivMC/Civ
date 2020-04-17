@@ -316,7 +316,10 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 
 		case MILK_COWS:
 			return doc.getBoolean("rules.milk_cows", true);
-
+		
+		case SPAWN_RESET:
+			return doc.getBoolean("rules.spawn_reset", false);
+				
 		default:
 			return false;
 		}
@@ -424,7 +427,10 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 		case MILK_COWS:
 			doc.append("rules.milk_cows", value);
 			break;
-
+		
+		case SPAWN_RESET:
+			doc.append("rules.spawn_reset", value);
+			
 		default:
 			break;
 		}

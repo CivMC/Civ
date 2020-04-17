@@ -28,7 +28,8 @@ public enum ExileRule {
 	PLACE_TNT("PLACE_TNT", "use TNT"),
 	DRINK_BREWS("DRINK_BREWS", "Drink Brewery Brews"),
 	MILK_COWS("MILK_COWS", "Milk Cows using Bucket"),
-	FILL_CAULDRON("FILL_CAULDRON", "Fill Cauldron using Bucket")
+	FILL_CAULDRON("FILL_CAULDRON", "Fill Cauldron using Bucket"),
+	SPAWN_RESET("SPAWN_RESET", "Reset exiled players bed on death by player")
 	;
 
 	private final String text;
@@ -92,7 +93,9 @@ public enum ExileRule {
 			return USE_ANVIL;
 		case "PLACE_TNT":
 			return PLACE_TNT;
-
+		case "SPAWN_RESET":
+			return SPAWN_RESET;
+		
 		default:
 			return null;
 		}

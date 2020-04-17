@@ -74,6 +74,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import com.devotedmc.ExilePearl.ExilePearlApi;
+import com.devotedmc.ExilePearl.ExileRule;
 import com.devotedmc.ExilePearl.Lang;
 import com.devotedmc.ExilePearl.PearlFreeReason;
 import com.devotedmc.ExilePearl.PearlType;
@@ -556,7 +557,8 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		final UUID playerId;
-
+		Player killer = null;
+		
 		// If the player was an NPC, grab the ID from it
 		NpcIdentity npcId = null;
 		try {
@@ -567,6 +569,8 @@ public class PlayerListener implements Listener, Configurable {
 		} else {
 			playerId = ((Player)e.getEntity()).getUniqueId();
 		}
+		ExilePearl pearl = pearlApi.getPearl(playerId);
+		
 
 		if(pearlApi.isPlayerExiled(playerId)
 		   && pearlApi.getPearl(playerId).getPearlType() == PearlType.PRISON
@@ -577,9 +581,17 @@ public class PlayerListener implements Listener, Configurable {
 
 		// These will be priority sorted according to the configured algorithm
 		List<Player> damagers = pearlApi.getDamageLogger().getSortedDamagers(playerId);
-
-		Player killer = null;
-		ExilePearl pearl = null;
+		
+		// Check is player is already exiled
+		if (pearlApi.isPlayerExiled(playerId)) {
+			//Reset bed of exiled player if killer is not null
+			if (!damagers.isEmpty() && pearlApi.getPearlConfig().canPerform(ExileRule.SPAWN_RESET) && pearlApi.getPearl(playerId).getPearlType() == PearlType.EXILE) {
+				pearl.getPlayer().setBedSpawnLocation(null,true);
+			for(Player damager : damagers) {
+				msg(damager, Lang.pearlAlreadyPearled, pearlApi.getRealPlayerName(playerId));
+			}
+			return;
+		}
 
 		for(Player damager : damagers) {
 			int firstpearl = Integer.MAX_VALUE;
@@ -621,7 +633,6 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		if (killer != null) {
-
 			// Notify other damagers if they were not awarded the pearl
 			for(Player damager : damagers) {
 				if (damager != killer) {

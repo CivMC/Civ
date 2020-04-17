@@ -149,6 +149,9 @@
 # rules.use_bed
 #  - When false, exiled players can't use beds
 # 
+# rules.spawn_reset
+#  - When true, resets the bed of an exiled player if killed by another player
+# 
 # rules.use_bucket
 #  - When false, exiled players can't empty buckets or move them to other inventories
 #
@@ -303,6 +306,7 @@ rules:
   pearl_radius: 1000
   ignite: false
   use_bed: false
+  spawn_reset: false
   use_bucket: false
   fill_bucket: false
   milk_cows: true

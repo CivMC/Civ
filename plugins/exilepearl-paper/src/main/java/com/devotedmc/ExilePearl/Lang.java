@@ -1,6 +1,6 @@
 package com.devotedmc.ExilePearl;
 
-public class Lang 
+public class Lang
 {
 	public static final String pearlCantHold = "<b>Exiled players can't pick up exile pearls.";
 	public static final String pearlMotd2 = "<i>Type \"<c>/pp locate<i>\" to locate your pearl.";
