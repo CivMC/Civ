@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import org.bukkit.World;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ViewTracker;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaViewTracker;
 
 public class ChunkCoord extends XZWCoord {
 
@@ -166,7 +166,7 @@ public class ChunkCoord extends XZWCoord {
 					// once it tries to read this
 					CivModCorePlugin.getInstance().getLogger().log(Level.SEVERE, "Failed to load chunk data", e);
 				}
-				ViewTracker.getInstance().get(pluginID).postLoad(chunk);
+				ChunkMetaViewTracker.getInstance().get(pluginID).postLoad(chunk);
 				addChunkMeta(chunk);
 			}
 			isFullyLoaded = true;

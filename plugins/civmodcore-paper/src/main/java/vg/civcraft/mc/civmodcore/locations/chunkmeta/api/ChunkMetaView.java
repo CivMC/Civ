@@ -9,17 +9,14 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
-public class ChunkMetaView<T extends ChunkMeta<?>> {
-
-	protected short pluginID;
-	protected JavaPlugin plugin;
+public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 	protected GlobalChunkMetaManager globalManager;
 	protected boolean alwaysLoaded;
 
 	ChunkMetaView(JavaPlugin plugin, short pluginID, GlobalChunkMetaManager globalManager, boolean alwaysLoaded) {
-		this.plugin = plugin;
-		this.pluginID = pluginID;
+		super(plugin, pluginID);
 		this.globalManager = globalManager;
 		this.alwaysLoaded = alwaysLoaded;
 	}
@@ -67,6 +64,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 	 * calls to this instance should be made during or after this call, create a new
 	 * instance instead if neccessary
 	 */
+	@Override
 	public void disable() {
 		if (globalManager == null) {
 			// already shut down
@@ -75,7 +73,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		GlobalChunkMetaManager globalTemp = globalManager;
 		globalManager = null;
 		globalTemp.flushAll();
-		ViewTracker.getInstance().remove(pluginID);
+		ChunkMetaViewTracker.getInstance().remove(pluginID);
 		ChunkMetaAPI.removePlugin(plugin);
 	}
 
@@ -106,7 +104,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> {
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return getChunkMeta(location.getWorld(), location.getChunk().getX(), location.getChunk().getZ());
+		return getChunkMeta(location.getWorld(), BlockBasedChunkMeta.toChunkCoord(location.getBlockX()), BlockBasedChunkMeta.toChunkCoord(location.getBlockZ()));
 	}
 
 	/**

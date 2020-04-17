@@ -35,6 +35,7 @@ public class ClickableInventory {
 	private IClickable[] clickables;
 	
 	private List<BukkitTask> runnables;
+	private String name;
 
 	/**
 	 * Creates a new ClickableInventory
@@ -64,7 +65,7 @@ public class ClickableInventory {
 	 */
 	public ClickableInventory(int size, String name) {
 		this(name);
-		this.inventory = Bukkit.createInventory(null, size, name);
+		this.inventory = Bukkit.createInventory(null, size, this.name);
 		this.clickables = new IClickable[size + 1];
 	}
 	
@@ -74,7 +75,10 @@ public class ClickableInventory {
 		}
 		if (name.length() > 32) {
 			log.warning("ClickableInventory title exceeds Bukkit limits: " + name);
-			name = name.substring(0, 32);
+			this.name = name.substring(0, 32);
+		}
+		else {
+			this.name = name;
 		}
 		this.runnables = new ArrayList<>();
 	}

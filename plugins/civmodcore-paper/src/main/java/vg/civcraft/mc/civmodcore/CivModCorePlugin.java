@@ -10,9 +10,10 @@ import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkDAO;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
+import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
+import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
@@ -27,6 +28,7 @@ public final class CivModCorePlugin extends ACivMod {
 	private GlobalChunkMetaManager chunkMetaManager;
 
 	private ManagedDatasource database;
+	private WorldIDManager worldIdManager;
 
 	private AikarCommandManager manager;
 
@@ -52,10 +54,21 @@ public final class CivModCorePlugin extends ACivMod {
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Load Database
 		try {
-			this.database = (ManagedDatasource) getConfig().get("database");
-			ChunkDAO dao = new ChunkDAO(this.database, this);
+			database = (ManagedDatasource) getConfig().get("database");
+		}
+		catch (Exception error) {
+			warning("Cannot get database from config.", error);
+			database = null;
+		}
+		// Load APIs
+		ItemNames.loadItemNames();
+		EnchantmentNames.loadEnchantmentNames();
+		BottomLineAPI.init();
+		if (database != null) {
+			CMCWorldDAO dao = new CMCWorldDAO(database, this);
 			if (dao.updateDatabase()) {
-				this.chunkMetaManager = new GlobalChunkMetaManager(dao);
+				worldIdManager = new WorldIDManager(dao);
+				chunkMetaManager = new GlobalChunkMetaManager(dao, worldIdManager);
 				info("Setup database successfully");
 			}
 			else {
@@ -103,6 +116,10 @@ public final class CivModCorePlugin extends ACivMod {
 	
 	public GlobalChunkMetaManager getChunkMetaManager() {
 		return chunkMetaManager;
+	}
+	
+	public WorldIDManager getWorldIdManager() {
+		return worldIdManager;
 	}
 
 }

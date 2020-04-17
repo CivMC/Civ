@@ -3,19 +3,19 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 import java.util.Map;
 import java.util.TreeMap;;
 
-public final class ViewTracker {
+public final class ChunkMetaViewTracker {
 	
-	private static ViewTracker instance;
-	public static ViewTracker getInstance() {
+	private static ChunkMetaViewTracker instance;
+	public static ChunkMetaViewTracker getInstance() {
 		if (instance == null) {
-			instance = new ViewTracker();
+			instance = new ChunkMetaViewTracker();
 		}
 		return instance;
 	}
 
 	private Map<Short, ChunkMetaView<?>> pluginIdToView;
 
-	private ViewTracker() {
+	private ChunkMetaViewTracker() {
 		pluginIdToView = new TreeMap<>();
 	}
 	
