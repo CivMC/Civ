@@ -1,6 +1,5 @@
 package vg.civcraft.mc.citadel;
 
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;

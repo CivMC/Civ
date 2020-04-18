@@ -1,8 +1,10 @@
 package vg.civcraft.mc.citadel.listener;
 
 import java.text.DecimalFormat;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -12,14 +14,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.AcidManager;
+import vg.civcraft.mc.citadel.model.CitadelSettingManager;
 import vg.civcraft.mc.citadel.model.HologramManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
+import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
+import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -27,11 +38,48 @@ public class InformationModeListener implements Listener {
 
 	private static final DecimalFormat commaFormat = new DecimalFormat("#.##");
 	private static final DecimalFormat roundingFormat = new DecimalFormat("0");
-	
+
 	private DoubleInteractFixer interactFixer;
-	
+	private BottomLine bottomLine;
+	private CivScoreBoard ctiBoard;
+	private CitadelSettingManager settingMan;
+
 	public InformationModeListener(Citadel citadel) {
 		interactFixer = new DoubleInteractFixer(citadel);
+		this.bottomLine = BottomLineAPI.createBottomLine("ctiDisplay", 3);
+		this.ctiBoard = ScoreBoardAPI.createBoard("ctiDisplay");
+		this.settingMan = Citadel.getInstance().getSettingManager();
+		settingMan.getInformationMode().registerListener(new SettingChangeListener<Boolean>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
+				setCtiOverlay(Bukkit.getPlayer(player), newValue);
+			}
+		});
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void playerLogin(PlayerJoinEvent e) {
+		setCtiOverlay(e.getPlayer(), settingMan.getInformationMode().getValue(e.getPlayer()));
+	}
+
+	private void setCtiOverlay(Player player, boolean state) {
+		if (player == null) {
+			return;
+		}
+		DisplayLocationSetting locSetting = settingMan.getInformationLocationSetting();
+		if (!state) {
+			// always clean up, value might have been changed
+			bottomLine.removePlayer(player);
+			ctiBoard.set(player, null);
+		} else {
+			if (locSetting.showOnActionbar(player.getUniqueId())) {
+				bottomLine.updatePlayer(player, ChatColor.GOLD + "CTI");
+			}
+			if (locSetting.showOnSidebar(player.getUniqueId())) {
+				ctiBoard.set(player, ChatColor.GOLD + "CTI");
+			}
+		}
+
 	}
 
 	public static ChatColor getDamageColor(double relativeHealth) {
@@ -81,16 +129,15 @@ public class InformationModeListener implements Listener {
 			if (interactFixer.checkInteracted(e.getPlayer(), e.getClickedBlock())) {
 				return;
 			}
-		}
-		else if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
+		} else if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
-		if (!Citadel.getInstance().getSettingManager().getInformationMode().getValue(e.getPlayer())) {
+		if (!settingMan.getInformationMode().getValue(e.getPlayer())) {
 			return;
 		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
 		Player player = e.getPlayer();
-		boolean showChat = Citadel.getInstance().getSettingManager().shouldShowChatInCti(player.getUniqueId());
+		boolean showChat = settingMan.shouldShowChatInCti(player.getUniqueId());
 		if (rein == null) {
 			if (showChat) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.YELLOW, "Not reinforced");
@@ -100,7 +147,7 @@ public class InformationModeListener implements Listener {
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			e.setCancelled(true);
 		}
-		boolean showHolo = Citadel.getInstance().getSettingManager().shouldShowHologramInCti(player.getUniqueId());
+		boolean showHolo = settingMan.shouldShowHologramInCti(player.getUniqueId());
 		if (!rein.hasPermission(player, CitadelPermissionHandler.getInfo())) {
 			if (showChat) {
 				Citadel.getInstance().getSettingManager().sendCtiEnemyMessage(player, rein);
@@ -140,10 +187,10 @@ public class InformationModeListener implements Listener {
 			showHolo(rein, player);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = false)
 	public void onBlockBreak(BlockBreakEvent event) {
-		//refresh hologram
+		// refresh hologram
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
 		if (rein == null) {
 			return;
