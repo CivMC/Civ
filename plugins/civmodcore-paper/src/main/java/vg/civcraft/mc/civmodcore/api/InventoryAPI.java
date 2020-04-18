@@ -187,16 +187,16 @@ public final class InventoryAPI {
 		Preconditions.checkArgument(isValidInventory(latterInventory));
 		Inventory formerClone = InventoryAPI.cloneInventory(formerInventory);
 		Inventory latterClone = InventoryAPI.cloneInventory(latterInventory);
-		if (!safelyRemoveItemsFromInventory(formerInventory, formerItems)) {
+		if (!safelyRemoveItemsFromInventory(formerClone, formerItems)) {
 			return false;
 		}
-		if (!safelyRemoveItemsFromInventory(latterInventory, latterItems)) {
+		if (!safelyRemoveItemsFromInventory(latterClone, latterItems)) {
 			return false;
 		}
-		if (!safelyAddItemsToInventory(formerInventory, latterItems)) {
+		if (!safelyAddItemsToInventory(formerClone, latterItems)) {
 			return false;
 		}
-		if (!safelyAddItemsToInventory(latterInventory, formerItems)) {
+		if (!safelyAddItemsToInventory(latterClone, formerItems)) {
 			return false;
 		}
 		formerInventory.setContents(formerClone.getContents());
