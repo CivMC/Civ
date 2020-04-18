@@ -205,7 +205,7 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 * Clones the given inventory for the purpose of manipulating the contents.
+	 * Clones the given inventory for the purpose of test manipulating its contents.
 	 *
 	 * @param inventory The inventory to clone.
 	 * @return Returns a clone of the given inventory.
@@ -234,9 +234,9 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 *
+	 * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.
 	 */
-	public static class ClonedInventory implements Inventory {
+	public static final class ClonedInventory implements Inventory {
 
 		private final Inventory inventory;
 
@@ -266,7 +266,7 @@ public final class InventoryAPI {
 
 		@Override
 		public void setItem(int index, ItemStack item) {
-
+			this.inventory.setItem(index, item);
 		}
 
 		@NotNull
@@ -410,8 +410,8 @@ public final class InventoryAPI {
 
 		@NotNull
 		@Override
-		public ListIterator<ItemStack> iterator(int i) { // TODO: Get the proper parameter name
-			return this.inventory.iterator(i);
+		public ListIterator<ItemStack> iterator(int index) {
+			return this.inventory.iterator(index);
 		}
 
 		@Override
@@ -419,6 +419,11 @@ public final class InventoryAPI {
 			return this.inventory.getLocation();
 		}
 
+		/**
+		 * Gets the underlying inventory that was cloned.
+		 *
+		 * @return Returns the underlying inventory.
+		 */
 		public Inventory getInventory() {
 			return this.inventory;
 		}
