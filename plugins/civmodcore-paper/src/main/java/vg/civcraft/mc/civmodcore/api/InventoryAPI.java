@@ -103,7 +103,6 @@ public final class InventoryAPI {
 	 * @param items The items to add to the inventory.
 	 * @return Returns true if the items were safely added.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyAddItemsToInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {
@@ -130,7 +129,6 @@ public final class InventoryAPI {
 	 * @param items The items to remove to the inventory.
 	 * @return Returns true if the items were safely removed.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyRemoveItemsFromInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {

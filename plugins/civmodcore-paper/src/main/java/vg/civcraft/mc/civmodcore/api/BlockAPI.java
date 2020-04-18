@@ -44,12 +44,11 @@ public final class BlockAPI {
 	 * @apiNote This will return true even if the block is air. Use {@link MaterialAPI#isAir(Material)} as an additional
 	 *         check if this is important to you.
 	 */
-	@SuppressWarnings("ConstantConditions")
 	public static boolean isValidBlock(Block block) {
 		if (block == null) {
 			return false;
 		}
-		if (block.getType() == null) {
+		if (block.getType() == null) { // Do not remove this, it's not necessarily certain
 			return false;
 		}
 		if (!LocationAPI.isValidLocation(block.getLocation())) {
