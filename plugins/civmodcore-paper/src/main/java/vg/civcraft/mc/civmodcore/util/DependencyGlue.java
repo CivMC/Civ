@@ -51,16 +51,30 @@ public abstract class DependencyGlue implements Listener {
 		return this.enabled;
 	}
 
+	/**
+	 * This is called when the glue's plugin is enabled. Use this as a setup.
+	 */
+	protected abstract void onGlueEnabled();
+
+	/**
+	 * This is called when the glue's plugin is disabled. Use this as a destructor.
+	 */
+	protected abstract void onGlueDisabled();
+
 	@EventHandler
 	public final void onServerLoad(ServerLoadEvent event) {
 		this.enabled = Iteration.some(Bukkit.getPluginManager().getPlugins(), (plugin) ->
 				TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName));
+		if (this.enabled) {
+			onGlueEnabled();
+		}
 	}
 
 	@EventHandler
 	public final void onPluginEnable(PluginEnableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			this.enabled = true;
+			onGlueEnabled();
 		}
 	}
 
@@ -68,6 +82,7 @@ public abstract class DependencyGlue implements Listener {
 	public final void onPluginDisable(PluginDisableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			this.enabled = false;
+			onGlueDisabled();
 		}
 	}
 
