@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.base.Preconditions;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -52,8 +53,8 @@ public final class Iteration {
      * @param processor The iteration processor which will be called for each item in the collection.
      */
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
-        assert collection != null;
-        assert processor != null;
+		Preconditions.checkArgument(collection != null);
+		Preconditions.checkArgument(processor != null);
         for (T element : collection) {
             processor.accept(element);
         }

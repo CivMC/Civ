@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -29,7 +30,7 @@ public abstract class DependencyGlue implements Listener {
 	 *     readability and ease of find and replace.
 	 */
 	protected DependencyGlue(String pluginName) {
-		assert !Strings.isNullOrEmpty(pluginName) : pluginName;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(pluginName));
 		this.pluginName = pluginName;
 		onServerLoad(null);
 	}

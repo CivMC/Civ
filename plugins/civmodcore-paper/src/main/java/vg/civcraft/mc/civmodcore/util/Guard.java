@@ -5,7 +5,7 @@ import org.apache.commons.lang.NullArgumentException;
 /**
  * Class for checking arguments and throwing null argument exceptions.
  *
- * @deprecated Just use assert or use {@link com.google.common.base.Preconditions Preconditions}.
+ * @deprecated Just use {@link com.google.common.base.Preconditions Preconditions}.
  */
 @Deprecated
 public final class Guard {
