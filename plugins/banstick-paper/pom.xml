@@ -76,6 +76,7 @@
 				<configuration>
 					<outputDirectory>./apidocs</outputDirectory>
 					<notimestamp>true</notimestamp>
+					<source>8</source>
 				</configuration>
 				<executions>
 					<execution>
