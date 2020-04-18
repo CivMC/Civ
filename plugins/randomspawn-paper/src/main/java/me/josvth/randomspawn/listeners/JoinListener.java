@@ -39,8 +39,10 @@ public class JoinListener implements Listener{
 
 	private static boolean isAlt(Player player) {
 		BSPlayer bsPlayer = BSPlayer.byUUID(player.getUniqueId());
-		if (bsPlayer == null) return false;
-		Set<BSPlayer> directAssoc = player.getTransitiveSharedPlayers(true);
+		if (bsPlayer == null) {
+			return false;
+		}
+		Set<BSPlayer> directAssoc = bsPlayer.getTransitiveSharedPlayers(true);
 		return directAssoc.size() > 1; // directAssoc always includes the player herself
 	}
 	
