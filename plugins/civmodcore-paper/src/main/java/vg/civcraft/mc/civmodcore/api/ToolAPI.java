@@ -4,8 +4,6 @@ import org.bukkit.Material;
 
 public final class ToolAPI {
 
-	private ToolAPI() { }
-
 	public static boolean isSword(Material material) {
 		switch (material) {
 			case WOODEN_SWORD:

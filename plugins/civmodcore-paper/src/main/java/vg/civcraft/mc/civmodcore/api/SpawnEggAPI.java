@@ -1,12 +1,10 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import javax.annotation.Nullable;
-
-import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
+import javax.annotation.Nullable;
+import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 
 /**
  * Class of static APIs for Spawn Eggs.
@@ -73,8 +71,6 @@ public final class SpawnEggAPI {
 			put(Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE).
 			put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, EntityType.ZOMBIE_VILLAGER).
 			build();
-
-	private SpawnEggAPI() { } // Make the class effectively static
 
 	/**
 	 * Tests if a material is that of a spawn egg.

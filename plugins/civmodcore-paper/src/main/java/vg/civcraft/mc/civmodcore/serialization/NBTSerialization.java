@@ -10,8 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 
-import vg.civcraft.mc.civmodcore.api.NBTCompound;
-
 /**
  *
  */

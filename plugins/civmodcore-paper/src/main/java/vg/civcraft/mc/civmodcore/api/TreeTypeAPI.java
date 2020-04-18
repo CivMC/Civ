@@ -5,8 +5,6 @@ import org.bukkit.TreeType;
 
 public final class TreeTypeAPI {
 	
-	private TreeTypeAPI() { }
-	
 	public static TreeType getMatchingTreeType(Material material) {
 		switch (material) {
 			case ACACIA_SAPLING:

@@ -31,6 +31,7 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
  * specify -1 as durability it will count as any given durability. When working with multiple ItemMaps this will only
  * work if all methods are executed on the instance containing items with a durability of -1.
  */
+@Deprecated
 public class ItemMap {
 
 	private static final Logger log = Bukkit.getLogger();

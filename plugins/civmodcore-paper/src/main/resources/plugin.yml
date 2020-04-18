@@ -1,10 +1,10 @@
-name: ${project.name}
+name: ${project.artifactId}
 version: ${project.version}
 authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd]
-main: ${project.groupId}.${project.name}Plugin
-api-version: 1.13
-dev-url: null
+main: ${plugin.main}
+api-version: ${minecraft.version}
 commands:
-  config:
-    description: Allows configuring player specific settings
-    usage: /config
+  config: {}
+permissions:
+  cmc.config.save:
+    default: op
