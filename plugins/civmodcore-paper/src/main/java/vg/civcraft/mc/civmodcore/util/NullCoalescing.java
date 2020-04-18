@@ -82,4 +82,18 @@ public final class NullCoalescing {
 		}
     }
 
+    /**
+	 * Determines if two objects objects are equal, except that null values are disallowed.
+	 *
+	 * @param former The former object.
+	 * @param latter The latter object.
+	 * @return Returns true only if both objects are not null and the latter passes an equals test from the former.
+	 */
+    public static boolean equalsNotNull(Object former, Object latter) {
+    	if (former == null || latter == null) {
+    		return false;
+		}
+    	return former.equals(latter);
+	}
+
 }
