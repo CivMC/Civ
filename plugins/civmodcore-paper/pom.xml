@@ -5,7 +5,7 @@
 
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
-	<version>1.7.9</version>
+	<version>1.7.8</version>
 
 	<properties>
 		<java.compile.version>1.8</java.compile.version>
@@ -84,7 +84,8 @@
 						<configuration>
 							<createDependencyReducedPom>false</createDependencyReducedPom>
 							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+								<transformer
+									implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
 									<manifestEntries>
 										<Built-By>Maven</Built-By>
 									</manifestEntries>
@@ -138,6 +139,10 @@
 		<repository>
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+		</repository>
+		<repository>
+			<id>aikar</id>
+			<url>https://repo.aikar.co/content/groups/aikar/</url>
 		</repository>
 	</repositories>
 

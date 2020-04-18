@@ -31,7 +31,11 @@ public class BottomLine implements Comparable<BottomLine>{
 	}
 	
 	public void updatePlayer(Player player, String text) {
-		texts.put(player.getUniqueId(), text);
+		updatePlayer(player.getUniqueId(), text);
+	}
+	
+	public void updatePlayer(UUID player, String text) {
+		texts.put(player, text);
 	}
 	
 	public String getCurrentText(UUID uuid) {
@@ -68,8 +72,12 @@ public class BottomLine implements Comparable<BottomLine>{
 	}
 	
 	public void removePlayer(Player player) {
-		texts.remove(player.getUniqueId());
-		BottomLineAPI.refreshIndividually(player.getUniqueId());
+		removePlayer(player.getUniqueId());
+	}
+	
+	public void removePlayer(UUID uuid) {
+		texts.remove(uuid);
+		BottomLineAPI.refreshIndividually(uuid);
 	}
 	
 	Map<UUID, String> getAll() {

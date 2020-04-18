@@ -16,7 +16,10 @@ import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
-public class BottomLineAPI {
+public final class BottomLineAPI {
+	
+	private BottomLineAPI() {
+	}
 
 	private static Set<BottomLine> lines = new TreeSet<>();
 	private static final String SEPARATOR = ChatColor.BOLD + "  " + ChatColor.BLACK + "||  " + ChatColor.RESET;
