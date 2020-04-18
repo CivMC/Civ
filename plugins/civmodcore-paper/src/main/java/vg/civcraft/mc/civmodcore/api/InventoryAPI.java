@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ public final class InventoryAPI {
 	 * @param inventory The inventory to test.
 	 * @return Returns true if it's more likely than not valid.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isValidInventory(Inventory inventory) {
 		if (inventory == null) {
 			return false;
@@ -105,7 +105,7 @@ public final class InventoryAPI {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyAddItemsToInventory(Inventory inventory, ItemStack[] items) {
-		assert isValidInventory(inventory) : inventory;
+		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -132,7 +132,7 @@ public final class InventoryAPI {
 	 */
 	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyRemoveItemsFromInventory(Inventory inventory, ItemStack[] items) {
-		assert isValidInventory(inventory) : inventory;
+		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -156,8 +156,8 @@ public final class InventoryAPI {
 	 * @return Returns true if the items were successfully transacted.
 	 */
 	public static boolean safelyTransactBetweenInventories(Inventory from, ItemStack[] items, Inventory to) {
-		assert isValidInventory(from) : from;
-		assert isValidInventory(to) : to;
+		Preconditions.checkArgument(isValidInventory(from));
+		Preconditions.checkArgument(isValidInventory(to));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -185,8 +185,8 @@ public final class InventoryAPI {
 	 */
 	public static boolean safelyTradeBetweenInventories(Inventory formerInventory, ItemStack[] formerItems,
 														Inventory latterInventory, ItemStack[] latterItems) {
-		assert isValidInventory(formerInventory) : formerInventory;
-		assert isValidInventory(latterInventory) : latterInventory;
+		Preconditions.checkArgument(isValidInventory(formerInventory));
+		Preconditions.checkArgument(isValidInventory(latterInventory));
 		Inventory formerClone = InventoryAPI.cloneInventory(formerInventory);
 		Inventory latterClone = InventoryAPI.cloneInventory(latterInventory);
 		if (!safelyRemoveItemsFromInventory(formerInventory, formerItems)) {
