@@ -20,6 +20,9 @@ hacks:
     villagerTrading: false
     # Wither spawn is also true = enabled and false = disabled
     witherSpawning: false
+    # Prevent or allow pillager patrols from spawning
+    # Patrols spawning is also true = enabled and false = disabled
+    patrolSpawning: false
     # Enderchests is also true = enabled and false = disabled
     enderChestPlacement: true
     enderChestUse: false
