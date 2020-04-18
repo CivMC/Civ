@@ -40,14 +40,14 @@ public abstract class DependencyGlue implements Listener {
 	 *
 	 * @return Returns the glue's plugin name.
 	 */
-	public final String getPluginName() {
+	public String getPluginName() {
 		return this.pluginName;
 	}
 
 	/**
 	 * @return Returns true if this glue's plugin is currently enabled, which is updated live.
 	 */
-	public final boolean isEnabled() {
+	public boolean isEnabled() {
 		return this.enabled;
 	}
 
