@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -29,7 +30,7 @@ public abstract class DependencyGlue implements Listener {
 	 *     readability and ease of find and replace.
 	 */
 	protected DependencyGlue(String pluginName) {
-		assert !Strings.isNullOrEmpty(pluginName) : pluginName;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(pluginName));
 		this.pluginName = pluginName;
 		onServerLoad(null);
 	}
@@ -39,27 +40,41 @@ public abstract class DependencyGlue implements Listener {
 	 *
 	 * @return Returns the glue's plugin name.
 	 */
-	public final String getPluginName() {
+	public String getPluginName() {
 		return this.pluginName;
 	}
 
 	/**
 	 * @return Returns true if this glue's plugin is currently enabled, which is updated live.
 	 */
-	public final boolean isEnabled() {
+	public boolean isEnabled() {
 		return this.enabled;
 	}
+
+	/**
+	 * This is called when the glue's plugin is enabled. Use this as a setup.
+	 */
+	protected abstract void onGlueEnabled();
+
+	/**
+	 * This is called when the glue's plugin is disabled. Use this as a destructor.
+	 */
+	protected abstract void onGlueDisabled();
 
 	@EventHandler
 	public final void onServerLoad(ServerLoadEvent event) {
 		this.enabled = Iteration.some(Bukkit.getPluginManager().getPlugins(), (plugin) ->
 				TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName));
+		if (this.enabled) {
+			onGlueEnabled();
+		}
 	}
 
 	@EventHandler
 	public final void onPluginEnable(PluginEnableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			this.enabled = true;
+			onGlueEnabled();
 		}
 	}
 
@@ -67,6 +82,7 @@ public abstract class DependencyGlue implements Listener {
 	public final void onPluginDisable(PluginDisableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
 			this.enabled = false;
+			onGlueDisabled();
 		}
 	}
 

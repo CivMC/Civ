@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -156,12 +157,12 @@ public class TextUtil {
 	// -------------------------------------------- //
 
 	public static String upperCaseFirst(String string) {
-		assert string != null;
+		Preconditions.checkArgument(string != null);
 		return string.substring(0, 1).toUpperCase() + string.substring(1);
 	}
 
 	public static String repeat(String string, int times) {
-		assert string != null;
+		Preconditions.checkArgument(string != null);
 		if (times <= 0) {
 			return "";
 		}
@@ -171,8 +172,8 @@ public class TextUtil {
 	}
 
 	public static String implode(List<String> list, String glue) {
-		assert list != null;
-		assert glue != null;
+		Preconditions.checkArgument(list != null);
+		Preconditions.checkArgument(glue != null);
 		StringBuilder ret = new StringBuilder();
 		for (int i = 0; i < list.size(); i++) {
 			if (i != 0) {

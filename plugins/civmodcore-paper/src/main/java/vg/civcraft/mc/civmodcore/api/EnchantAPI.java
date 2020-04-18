@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.util.Map;
 import org.bukkit.enchantments.Enchantment;
@@ -61,7 +62,7 @@ public final class EnchantAPI {
 	 *                                  generated.
 	 * */
 	public static Map<Enchantment, Integer> getEnchantments(ItemStack item) {
-		assert ItemAPI.isValidItem(item) : item;
+		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		return item.getEnchantments();
 	}
 
@@ -92,7 +93,7 @@ public final class EnchantAPI {
 	 * */
 	public static boolean addEnchantment(ItemStack item, Enchantment enchantment, int level,
 		 	boolean onlyAllowSafeEnchantments) {
-		assert ItemAPI.isValidItem(item) : item;
+		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		return ItemAPI.handleItemMeta(item, (ItemMeta meta) ->
 				meta.addEnchant(enchantment, level, !onlyAllowSafeEnchantments));
 	}
@@ -105,7 +106,7 @@ public final class EnchantAPI {
 	 * @return Returns true if the enchantment was successfully removed.
 	 * */
 	public static boolean removeEnchantment(ItemStack item, Enchantment enchant) {
-		assert ItemAPI.isValidItem(item) : item;
+		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		if (enchant == null) {
 			return true;
 		}
@@ -118,7 +119,7 @@ public final class EnchantAPI {
 	 * @param item The item to clear enchantment from.
 	 * */
 	public static void clearEnchantments(ItemStack item) {
-		assert ItemAPI.isValidItem(item) : item;
+		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		ItemAPI.handleItemMeta(item, (ItemMeta meta) -> {
 			meta.getEnchants().forEach((key, value) -> meta.removeEnchant(key));
 			return true;

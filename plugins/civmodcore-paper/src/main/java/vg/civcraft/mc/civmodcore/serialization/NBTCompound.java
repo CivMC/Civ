@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
+import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
@@ -46,7 +47,7 @@ public class NBTCompound implements Cloneable {
 	 * @param tag The NBTTagCompound to wrap.
 	 */
 	public NBTCompound(NBTTagCompound tag) {
-		assert tag != null;
+		Preconditions.checkArgument(tag != null);
 		this.tag = tag;
 	}
 
@@ -58,7 +59,7 @@ public class NBTCompound implements Cloneable {
 	 */
 	public <T extends NBTSerializable> NBTCompound(T object) {
 		this();
-		assert object != null;
+		Preconditions.checkArgument(object != null);
 		object.serialize(this);
 	}
 
@@ -133,7 +134,7 @@ public class NBTCompound implements Cloneable {
 	 * @param nbt The NBT data to copy and adopt.
 	 */
 	public void adopt(NBTCompound nbt) {
-		assert nbt != null;
+		Preconditions.checkArgument(nbt != null);
 		this.tag = nbt.tag.clone();
 	}
 
@@ -144,7 +145,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public boolean getBoolean(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getBoolean(key);
 	}
 
@@ -155,7 +156,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setBoolean(String key, boolean value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setBoolean(key, value);
 	}
 
@@ -166,7 +167,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public boolean[] getBooleanArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		byte[] cache = this.tag.getByteArray(key);
 		boolean[] result = new boolean[cache.length];
 		for (int i = 0; i < cache.length; i++) {
@@ -182,7 +183,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setBooleanArray(String key, boolean[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (Iteration.isNullOrEmpty(values)) {
 			remove(key);
 		}
@@ -202,7 +203,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public byte getByte(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getByte(key);
 	}
 
@@ -213,7 +214,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setByte(String key, byte value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setByte(key, value);
 	}
 
@@ -224,7 +225,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public byte[] getByteArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getByteArray(key);
 	}
 
@@ -235,7 +236,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setByteArray(String key, byte[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -251,7 +252,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public short getShort(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getShort(key);
 	}
 
@@ -262,7 +263,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setShort(String key, short value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setShort(key, value);
 	}
 
@@ -273,7 +274,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public short[] getShortArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 2);
 		short[] result = new short[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -298,7 +299,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setShortArray(String key, short[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -318,7 +319,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public int getInteger(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getInt(key);
 	}
 
@@ -329,7 +330,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setInteger(String key, int value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setInt(key, value);
 	}
 
@@ -340,7 +341,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public int[] getIntegerArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getIntArray(key);
 	}
 
@@ -351,7 +352,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setIntegerArray(String key, int[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -367,7 +368,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public long getLong(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getLong(key);
 	}
 
@@ -378,7 +379,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setLong(String key, long value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setLong(key, value);
 	}
 
@@ -389,7 +390,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public long[] getLongArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 4);
 		long[] result = new long[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -414,7 +415,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setLongArray(String key, long[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -434,7 +435,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public float getFloat(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getFloat(key);
 	}
 
@@ -445,7 +446,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setFloat(String key, float value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setFloat(key, value);
 	}
 
@@ -456,7 +457,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public float[] getFloatArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 5);
 		float[] result = new float[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -472,7 +473,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setFloatArray(String key, float[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -492,7 +493,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public double getDouble(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return this.tag.getDouble(key);
 	}
 
@@ -503,7 +504,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setDouble(String key, double value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		this.tag.setDouble(key, value);
 	}
 
@@ -514,7 +515,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public double[] getDoubleArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 6);
 		double[] result = new double[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -530,7 +531,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setDoubleArray(String key, double[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -550,7 +551,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key, which is never null.
 	 */
 	public UUID getUUID(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		UUID uuid = this.tag.a(key);
 		if (uuid == null) {
 			return new UUID(0, 0);
@@ -565,7 +566,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setUUID(String key, UUID value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (value == null) {
 			remove(key);
 		}
@@ -581,7 +582,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key.
 	 */
 	public String getString(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (!this.tag.hasKeyOfType(key, 8)) {
 			return null;
 		}
@@ -601,7 +602,7 @@ public class NBTCompound implements Cloneable {
 	 * @param value The value to set to the key.
 	 */
 	public void setString(String key, String value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (Strings.isNullOrEmpty(value)) {
 			remove(key);
 		}
@@ -617,7 +618,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public String[] getStringArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 8);
 		String[] result = new String[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -645,7 +646,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setStringArray(String key, String[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -670,7 +671,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The value of the key, which is never null.
 	 */
 	public NBTCompound getCompound(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		return new NBTCompound(this.tag.getCompound(key));
 	}
 
@@ -682,7 +683,7 @@ public class NBTCompound implements Cloneable {
 
 	 */
 	public void setCompound(String key, NBTCompound value) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (value == null || value.isEmpty()) {
 			remove(key);
 		}
@@ -698,7 +699,7 @@ public class NBTCompound implements Cloneable {
 	 * @return The values of the key, which is never null.
 	 */
 	public NBTCompound[] getCompoundArray(String key) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		NBTTagList list = this.tag.getList(key, 10);
 		NBTCompound[] result = new NBTCompound[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -720,7 +721,7 @@ public class NBTCompound implements Cloneable {
 	 * @param values The values to set to the key.
 	 */
 	public void setCompoundArray(String key, NBTCompound[] values) {
-		assert !Strings.isNullOrEmpty(key) : key;
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
 		if (values == null || values.length < 1) {
 			remove(key);
 		}
@@ -776,8 +777,8 @@ public class NBTCompound implements Cloneable {
 	 * @return Returns the given item with the processed NBT, or null if it could not be successfully processed.
 	 */
 	public static ItemStack processItem(ItemStack item, Consumer<NBTCompound> processor) {
-		assert ItemAPI.isValidItem(item) : item;
-		assert processor != null;
+		Preconditions.checkArgument(ItemAPI.isValidItem(item));
+		Preconditions.checkArgument(processor != null);
 		net.minecraft.server.v1_14_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {
 			return null;
