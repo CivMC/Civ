@@ -125,7 +125,63 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			} else {
 				genStatus.append("disabled\n");
 			}
-			// more?
+
+			genStatus.append("  Kill trap horses is ");
+			if (config.killTrapHorses()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Changing spawner type is ");
+			if (config.canChangeSpawnerType()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Villager trading is ");
+			if (config.allowVillagerTrading()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Ender grief is ");
+			if (config.isEnderGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Wither grief is ");
+			if (config.isWitherGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Dragon grief is ");
+			if (config.isDragonGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Prevent falling through bedrock is ");
+			if (config.isPreventFallingThroughBedrock()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Bad Omen is ");
+			if (config.isBadOmenEnabled()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
 		} else {
 			genStatus.append("inactive");
 		}
