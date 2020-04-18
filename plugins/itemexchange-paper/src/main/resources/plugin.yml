@@ -1,14 +1,10 @@
-name: ItemExchange
-main: com.untamedears.ItemExchange.ItemExchangePlugin
-author: gmlaxfanatic
-version: 1.0.0
-depend: [NameLayer, Citadel]
+name: ${project.artifactId}
+version: ${project.version}
+authors: [gmlaxfanatic, Protonull]
+main: ${plugin.main}
+api-version: ${minecraft.version}
+depend: [CivModCore]
+softdepend: [NameLayer, Citadel]
 commands:
-  iecreate:
-    aliases: iec
-    description: Automatically creates an exchange inside the chest the player is looking at
-    usage: /iecreate (or /iec) [input or output]
-  ieset:
-    aliases: ies
-    description: Sets the field of the ExchangeRule held in hand
-    usage: /ieset (or /ies) <field> [value] [modifier]
+  iec: {}
+  ies: {}
