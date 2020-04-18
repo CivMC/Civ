@@ -19,7 +19,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  */
 public final class EnchantNames {
 
-	private static final Logger logger = LoggerFactory.getLogger(EnchantNames.class);
+	private static final Logger logger = LoggerFactory.getLogger(EnchantNames.class.getSimpleName());
 
 	private static final Set<SearchResult> enchantmentDetails = new HashSet<>();
 
