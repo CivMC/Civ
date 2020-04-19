@@ -462,7 +462,7 @@ public class ConfigParsing {
 			return null;
 		}
 		String val = config.getString(key);
-		if (Pattern.matches("[a-z0-9/._-]+", val)) {
+		if (!Pattern.matches("[a-z0-9/._-]+", val)) {
 			return null;
 		}
 		NamespacedKey nsKey = NamespacedKey.minecraft(val);
