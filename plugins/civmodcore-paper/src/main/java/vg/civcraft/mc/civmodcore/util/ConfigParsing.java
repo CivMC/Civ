@@ -150,9 +150,15 @@ public class ConfigParsing {
 								.getConfigurationSection(sEKey);
 						if (currentStoredEnchantSection != null) {
 							Enchantment enchant = Enchantment
-									.getByName(currentStoredEnchantSection.getString("enchant"));
+									.getByKey(NamespacedKey.minecraft(currentStoredEnchantSection.getString("enchant","")));
 							int level = currentStoredEnchantSection.getInt("level", 1);
-							enchantMeta.addStoredEnchant(enchant, level, true);
+							if (enchant != null) {
+								enchantMeta.addStoredEnchant(enchant, level, true);
+							}
+							else {
+								log.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
+								+ ", it was not applied");
+							}
 						}
 					}
 				}
