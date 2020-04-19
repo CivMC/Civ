@@ -17,70 +17,70 @@ import org.bukkit.inventory.meta.Repairable;
  */
 public final class RepairModifier extends ModifierData {
 
-    public static final String SLUG = "REPAIR";
+	public static final String SLUG = "REPAIR";
 
-    public RepairModifier() {
-        super(SLUG, 101);
-    }
+	public RepairModifier() {
+		super(SLUG, 101);
+	}
 
-    @Override
-    public boolean isValid() {
-        return !this.nbt.isEmpty();
-    }
+	public static ModifierData fromItem(ItemStack item) {
+		if (ItemExchangePlugin.IS_REPAIRABLE.contains(item.getType())) {
+			RepairModifier modifier = new RepairModifier();
+			modifier.trace(item);
+			return modifier;
+		}
+		return null;
+	}
 
-    @Override
-    public void trace(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta instanceof Repairable) {
-            setRepairCost(((Repairable) meta).getRepairCost());
-        }
-    }
+	@Override
+	public boolean isValid() {
+		return !this.nbt.isEmpty();
+	}
 
-    @Override
-    public boolean conforms(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (!(meta instanceof Repairable)) {
-            return false;
-        }
-        int ruleRepair = getRepairCost();
-        int itemRepair = ((Repairable) meta).getRepairCost();
-        if (ruleRepair >= 0) {
-            return itemRepair == ruleRepair;
-        }
-        else {
-            return itemRepair <= ruleRepair * -1;
-        }
-    }
+	@Override
+	public void trace(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (meta instanceof Repairable) {
+			setRepairCost(((Repairable) meta).getRepairCost());
+		}
+	}
 
-    @Override
-    public List<String> getDisplayedInfo() {
-        int repairCost = getRepairCost();
-        if (repairCost == 0) {
-            return Collections.singletonList(ChatColor.GOLD + "Never repaired");
-        }
-        else if (repairCost > 0) {
-            return Collections.singletonList(ChatColor.GOLD + "Repair level " + (repairCost + 2));
-        }
-        else {
-            return Collections.singletonList(ChatColor.GOLD + "Repair level " + (repairCost * -1 + 2) + " or less");
-        }
-    }
+	@Override
+	public boolean conforms(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (!(meta instanceof Repairable)) {
+			return false;
+		}
+		int ruleRepair = getRepairCost();
+		int itemRepair = ((Repairable) meta).getRepairCost();
+		if (ruleRepair >= 0) {
+			return itemRepair == ruleRepair;
+		}
+		else {
+			return itemRepair <= ruleRepair * -1;
+		}
+	}
 
-    public int getRepairCost() {
-        return this.nbt.getInteger("repairLevel");
-    }
+	@Override
+	public List<String> getDisplayedInfo() {
+		int repairCost = getRepairCost();
+		if (repairCost == 0) {
+			return Collections.singletonList(ChatColor.GOLD + "Never repaired");
+		}
+		else if (repairCost > 0) {
+			return Collections.singletonList(ChatColor.GOLD + "Repair level " + (repairCost + 2));
+		}
+		else {
+			return Collections.singletonList(ChatColor.GOLD + "Repair level " + (repairCost * -1 + 2) + " or less");
+		}
+	}
 
-    public void setRepairCost(int repairLevel) {
-        this.nbt.setInteger("repairLevel", repairLevel);
-    }
+	public int getRepairCost() {
+		return this.nbt.getInteger("repairLevel");
+	}
 
-    public static ModifierData fromItem(ItemStack item) {
-        if (ItemExchangePlugin.IS_REPAIRABLE.contains(item.getType())) {
-            RepairModifier modifier = new RepairModifier();
-            modifier.trace(item);
-            return modifier;
-        }
-        return null;
-    }
+	public void setRepairCost(int repairLevel) {
+		this.nbt.setInteger("repairLevel", repairLevel);
+	}
 
 }

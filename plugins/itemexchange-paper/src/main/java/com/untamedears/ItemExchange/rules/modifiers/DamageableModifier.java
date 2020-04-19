@@ -12,76 +12,76 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 public final class DamageableModifier extends ModifierData {
 
-    public static final String SLUG = "DAMAGE";
+	public static final String SLUG = "DAMAGE";
 
-    public DamageableModifier() {
-        super(SLUG, 100);
-    }
+	public DamageableModifier() {
+		super(SLUG, 100);
+	}
 
-    @Override
-    public boolean isValid() {
-        return !this.nbt.isEmpty();
-    }
+	public static ModifierData fromItem(ItemStack item) {
+		if (ItemExchangePlugin.IS_DAMAGEABLE.contains(item.getType())) {
+			DamageableModifier modifier = new DamageableModifier();
+			modifier.trace(item);
+			return modifier;
+		}
+		return null;
+	}
 
-    @Override
-    public void trace(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (meta instanceof Damageable) {
-            setDamage(((Damageable) meta).getDamage());
-        }
-    }
+	@Override
+	public boolean isValid() {
+		return !this.nbt.isEmpty();
+	}
 
-    @Override
-    public boolean conforms(ItemStack item) {
-        ItemMeta meta = item.getItemMeta();
-        if (!(meta instanceof Damageable)) {
-            return false;
-        }
-        int ruleDamage = getDamage();
-        int itemDamage = ((Damageable) meta).getDamage();
-        if (ruleDamage == ExchangeRule.ANY) {
-            return itemDamage >= 0;
-        }
-        else if (ruleDamage == ExchangeRule.USED) {
-            return itemDamage > 0;
-        }
-        else if (ruleDamage >= ExchangeRule.NEW) {
-            return itemDamage == ruleDamage;
-        }
-        else {
-            return false;
-        }
-    }
+	@Override
+	public void trace(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (meta instanceof Damageable) {
+			setDamage(((Damageable) meta).getDamage());
+		}
+	}
 
-    @Override
-    public List<String> getDisplayedInfo() {
-        int ruleDamage = getDamage();
-        switch (ruleDamage) {
-            case ExchangeRule.ANY:
-                return Collections.singletonList(ChatColor.GOLD + "Condition: Any");
-            case ExchangeRule.NEW:
-                return Collections.singletonList(ChatColor.GOLD + "Condition: Undamaged");
-            default:
-            case ExchangeRule.USED:
-                return Collections.singletonList(ChatColor.GOLD + "Condition: Damaged");
-        }
-    }
+	@Override
+	public boolean conforms(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
+		if (!(meta instanceof Damageable)) {
+			return false;
+		}
+		int ruleDamage = getDamage();
+		int itemDamage = ((Damageable) meta).getDamage();
+		if (ruleDamage == ExchangeRule.ANY) {
+			return itemDamage >= 0;
+		}
+		else if (ruleDamage == ExchangeRule.USED) {
+			return itemDamage > 0;
+		}
+		else if (ruleDamage >= ExchangeRule.NEW) {
+			return itemDamage == ruleDamage;
+		}
+		else {
+			return false;
+		}
+	}
 
-    public int getDamage() {
-        return this.nbt.getInteger("damage");
-    }
+	@Override
+	public List<String> getDisplayedInfo() {
+		int ruleDamage = getDamage();
+		switch (ruleDamage) {
+			case ExchangeRule.ANY:
+				return Collections.singletonList(ChatColor.GOLD + "Condition: Any");
+			case ExchangeRule.NEW:
+				return Collections.singletonList(ChatColor.GOLD + "Condition: Undamaged");
+			default:
+			case ExchangeRule.USED:
+				return Collections.singletonList(ChatColor.GOLD + "Condition: Damaged");
+		}
+	}
 
-    public void setDamage(int damage) {
-        this.nbt.setInteger("damage", damage);
-    }
+	public int getDamage() {
+		return this.nbt.getInteger("damage");
+	}
 
-    public static ModifierData fromItem(ItemStack item) {
-        if (ItemExchangePlugin.IS_DAMAGEABLE.contains(item.getType())) {
-            DamageableModifier modifier = new DamageableModifier();
-            modifier.trace(item);
-            return modifier;
-        }
-        return null;
-    }
+	public void setDamage(int damage) {
+		this.nbt.setInteger("damage", damage);
+	}
 
 }

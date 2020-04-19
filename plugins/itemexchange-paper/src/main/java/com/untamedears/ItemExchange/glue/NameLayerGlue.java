@@ -15,18 +15,22 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 public final class NameLayerGlue {
 
+	private static Permission PURCHASE_PERMISSION;
+
+	private static Permission ESTABLISH_PERMISSION;
+
+	// ------------------------------------------------------------
+	// Glue Implementation
+	// ------------------------------------------------------------
+
 	public static final DependencyGlue INSTANCE = new DependencyGlue("NameLayer") {
 
 		@Override
 		protected void onGlueEnabled() {
-			PURCHASE_PERMISSION = new Permission(
-					"ITEM_EXCHANGE_GROUP_PURCHASE",
-					Permission.membersAndAbove(),
+			PURCHASE_PERMISSION = new Permission("ITEM_EXCHANGE_GROUP_PURCHASE", Permission.membersAndAbove(),
 					"The ability to purchase exchanges set to this group.");
 			PURCHASE_PERMISSION.register();
-			ESTABLISH_PERMISSION = new Permission(
-					"ITEM_EXCHANGE_GROUP_ESTABLISH",
-					Permission.modsAndAbove(),
+			ESTABLISH_PERMISSION = new Permission("ITEM_EXCHANGE_GROUP_ESTABLISH", Permission.modsAndAbove(),
 					"The ability to set exchanges to be exclusive to this group.");
 			ESTABLISH_PERMISSION.register();
 		}
@@ -43,28 +47,20 @@ public final class NameLayerGlue {
 		return INSTANCE.isEnabled();
 	}
 
-	// ------------------------------------------------------------
-	// Glue Implementation
-	// ------------------------------------------------------------
+	public static Permission getPurchasePermission() {
+		return PURCHASE_PERMISSION;
+	}
 
-    private static Permission PURCHASE_PERMISSION;
+	public static Permission getEstablishPermission() {
+		return ESTABLISH_PERMISSION;
+	}
 
-    private static Permission ESTABLISH_PERMISSION;
-
-    public static Permission getPurchasePermission() {
-        return PURCHASE_PERMISSION;
-    }
-
-    public static Permission getEstablishPermission() {
-        return ESTABLISH_PERMISSION;
-    }
-
-    public static Group getGroupFromName(String name) {
-        if (!isEnabled() || Strings.isNullOrEmpty(name)) {
-            return null;
-        }
-        return NullCoalescing.chain(() -> GroupManager.getGroup(name));
-    }
+	public static Group getGroupFromName(String name) {
+		if (!isEnabled() || Strings.isNullOrEmpty(name)) {
+			return null;
+		}
+		return NullCoalescing.chain(() -> GroupManager.getGroup(name));
+	}
 
 	// ------------------------------------------------------------
 	// Permission Abstraction
@@ -78,8 +74,11 @@ public final class NameLayerGlue {
 	public static class Permission {
 
 		private final String slug;
+
 		private final boolean readonly;
+
 		private Set<GroupManager.PlayerType> roles = Collections.emptySet();
+
 		private String description;
 
 		/**
@@ -121,11 +120,41 @@ public final class NameLayerGlue {
 		 * @param roles The default roles that will have this permission. If none, just pass an empty set.
 		 * @param description The description of the permission.
 		 * @throws IllegalArgumentException Throws if the Permission's slug is null or empty. Or if the default roles set is
-		 *         null.
+		 * 		null.
 		 */
 		public Permission(String slug, Set<GroupManager.PlayerType> roles, String description) {
 			this(slug, roles);
 			this.description = description;
+		}
+
+		/**
+		 * @return Returns a set of MEMBERS, MODS, ADMINS, OWNER
+		 */
+		public static Set<GroupManager.PlayerType> membersAndAbove() {
+			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
+				add(GroupManager.PlayerType.MEMBERS);
+				addAll(modsAndAbove());
+			}});
+		}
+
+		/**
+		 * @return Returns a set of MODS, ADMINS, OWNER
+		 */
+		public static Set<GroupManager.PlayerType> modsAndAbove() {
+			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
+				add(GroupManager.PlayerType.MODS);
+				addAll(adminsAndAbove());
+			}});
+		}
+
+		/**
+		 * @return Returns a set of ADMINS, OWNER
+		 */
+		public static Set<GroupManager.PlayerType> adminsAndAbove() {
+			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
+				add(GroupManager.PlayerType.ADMINS);
+				add(GroupManager.PlayerType.OWNER);
+			}});
 		}
 
 		/**
@@ -176,38 +205,8 @@ public final class NameLayerGlue {
 			if (permission == null) {
 				return false;
 			}
-			return NullCoalescing.chain(() ->
-					NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission), false);
-		}
-
-		/**
-		 * @return Returns a set of MEMBERS, MODS, ADMINS, OWNER
-		 */
-		public static Set<GroupManager.PlayerType> membersAndAbove() {
-			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
-				add(GroupManager.PlayerType.MEMBERS);
-				addAll(modsAndAbove());
-			}});
-		}
-
-		/**
-		 * @return Returns a set of MODS, ADMINS, OWNER
-		 */
-		public static Set<GroupManager.PlayerType> modsAndAbove() {
-			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
-				add(GroupManager.PlayerType.MODS);
-				addAll(adminsAndAbove());
-			}});
-		}
-
-		/**
-		 * @return Returns a set of ADMINS, OWNER
-		 */
-		public static Set<GroupManager.PlayerType> adminsAndAbove() {
-			return Collections.unmodifiableSet(new TreeSet<GroupManager.PlayerType>() {{
-				add(GroupManager.PlayerType.ADMINS);
-				add(GroupManager.PlayerType.OWNER);
-			}});
+			return NullCoalescing
+					.chain(() -> NameAPI.getGroupManager().hasAccess(group, player.getUniqueId(), permission), false);
 		}
 
 	}

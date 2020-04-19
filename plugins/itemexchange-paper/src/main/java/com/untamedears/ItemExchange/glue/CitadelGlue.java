@@ -14,6 +14,8 @@ import vg.civcraft.mc.namelayer.group.Group;
 
 public final class CitadelGlue {
 
+	public static Permission chestPermission;
+
 	public static final DependencyGlue INSTANCE = new DependencyGlue("Citadel") {
 
 		@Override
@@ -33,37 +35,35 @@ public final class CitadelGlue {
 
 	};
 
-	public static boolean isEnabled() {
-		return INSTANCE.isEnabled();
-	}
-
 	// ------------------------------------------------------------
 	// Glue Implementation
 	// ------------------------------------------------------------
 
-	public static Permission chestPermission;
+	public static boolean isEnabled() {
+		return INSTANCE.isEnabled();
+	}
 
-    public static Group getReinforcementGroupFromBlock(Block block) {
-        if (!isEnabled() || !BlockAPI.isValidBlock(block)) {
-            return null;
-        }
-        return NullCoalescing.chain(() ->
-                Citadel.getInstance().getReinforcementManager().getReinforcement(block).getGroup());
-    }
-
-    public static void addGroupDetailsToRuleDetails(ExchangeRule rule, List<String> info) {
-        if (!isEnabled()) {
-            return;
-        }
-        NullCoalescing.exists(rule.getGroup(), (group) -> info.add(ChatColor.RED + "Restricted to " + group.getName()));
-    }
-
-    public static boolean hasAccessToChest(Block chest, Player player) {
-    	if (!isEnabled()) {
-    		return false;
+	public static Group getReinforcementGroupFromBlock(Block block) {
+		if (!isEnabled() || !BlockAPI.isValidBlock(block)) {
+			return null;
 		}
-    	return NullCoalescing.chain(() ->
-				chestPermission.hasAccess(getReinforcementGroupFromBlock(chest), player), false);
+		return NullCoalescing
+				.chain(() -> Citadel.getInstance().getReinforcementManager().getReinforcement(block).getGroup());
+	}
+
+	public static void addGroupDetailsToRuleDetails(ExchangeRule rule, List<String> info) {
+		if (!isEnabled()) {
+			return;
+		}
+		NullCoalescing.exists(rule.getGroup(), (group) -> info.add(ChatColor.RED + "Restricted to " + group.getName()));
+	}
+
+	public static boolean hasAccessToChest(Block chest, Player player) {
+		if (!isEnabled()) {
+			return false;
+		}
+		return NullCoalescing
+				.chain(() -> chestPermission.hasAccess(getReinforcementGroupFromBlock(chest), player), false);
 	}
 
 }

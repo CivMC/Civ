@@ -10,55 +10,59 @@ import org.bukkit.inventory.ItemStack;
 
 public class IETransactionEvent extends Event {
 
-    private static final HandlerList handlers = new HandlerList();
+	private static final HandlerList handlers = new HandlerList();
 
-    private Player player;
-    private Inventory inventory;
-    private TradeRule trade;
-    private ItemStack[] input;
-    private ItemStack[] output;
+	private final Player player;
 
-    public IETransactionEvent(Player player, Inventory inventory, TradeRule trade,
-                              ItemStack[] input, ItemStack[] output) {
-        this.player = player;
-        this.inventory = inventory;
-        this.trade = trade;
-        this.input = input;
-        this.output = output;
-    }
+	private final Inventory inventory;
 
-    public Player getPlayer() {
-        return this.player;
-    }
+	private final TradeRule trade;
 
-    public Inventory getInventory() {
-        return this.inventory;
-    }
+	private final ItemStack[] input;
 
-    @Deprecated
-    public Location getExchangeLocation() {
-        return this.inventory.getLocation();
-    }
+	private final ItemStack[] output;
 
-    public TradeRule getTrade() {
-        return this.trade;
-    }
+	public IETransactionEvent(Player player, Inventory inventory, TradeRule trade, ItemStack[] input,
+							  ItemStack[] output) {
+		this.player = player;
+		this.inventory = inventory;
+		this.trade = trade;
+		this.input = input;
+		this.output = output;
+	}
 
-    public ItemStack[] getInput() {
-        return this.input;
-    }
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
 
-    public ItemStack[] getOutput() {
-        return this.output;
-    }
+	public Player getPlayer() {
+		return this.player;
+	}
 
-    @Override
-    public HandlerList getHandlers() {
-        return handlers;
-    }
+	public Inventory getInventory() {
+		return this.inventory;
+	}
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+	@Deprecated
+	public Location getExchangeLocation() {
+		return this.inventory.getLocation();
+	}
+
+	public TradeRule getTrade() {
+		return this.trade;
+	}
+
+	public ItemStack[] getInput() {
+		return this.input;
+	}
+
+	public ItemStack[] getOutput() {
+		return this.output;
+	}
+
+	@Override
+	public HandlerList getHandlers() {
+		return handlers;
+	}
 
 }

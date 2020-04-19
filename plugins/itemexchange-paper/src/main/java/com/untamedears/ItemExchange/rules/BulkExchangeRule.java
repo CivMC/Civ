@@ -22,78 +22,75 @@ public final class BulkExchangeRule extends ExchangeData {
 		this.nbt.setInteger("version", 3);
 	}
 
-    @Override
-    public boolean isValid() {
-        if (getRules().isEmpty()) {
-            return false;
-        }
-        return true;
-    }
-
-    public List<ExchangeRule> getRules() {
-        return Arrays.stream(this.nbt.getCompoundArray("rules")).
-                map(NBTSerialization::deserialize).
-                filter((serializable) -> serializable instanceof ExchangeRule).
-                map((serializable) -> (ExchangeRule) serializable).
-                collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public void setRules(List<ExchangeRule> rules) {
-        if (rules == null) {
-            this.nbt.remove("rules");
-        }
-        else {
-            this.nbt.setCompoundArray("rules", rules.stream().
-                    filter(Objects::nonNull).
-                    map(NBTSerialization::serialize).
-                    toArray(NBTCompound[]::new));
-        }
-    }
-
-    @Override
-    public void trace(ItemStack item) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean conforms(ItemStack item) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public List<String> getDisplayedInfo() {
-        return new ArrayList<>();
-    }
-
-    public ItemStack toItem() {
-		List<ExchangeRule> rules = getRules();
-        ItemStack item = NBTCompound.processItem(ItemExchangePlugin.RULE_ITEM.clone(), (nbt) ->
-                nbt.setCompound("BulkExchangeRule", NBTSerialization.serialize(this)));
-        ItemAPI.handleItemMeta(item, (ItemMeta meta) -> {
-            meta.setDisplayName(ChatColor.RED + "Bulk Rule Block");
-            meta.setLore(Collections.singletonList(
-                    "This rule block holds " + rules.size() + " exchange rule" + (rules.size() == 1 ? "" : "s") + "."));
-            return true;
-        });
-        return item;
-    }
-
-    public static BulkExchangeRule fromItem(ItemStack item) {
-        if (item == null) {
-            return null;
-        }
-        if (item.getType() != ItemExchangePlugin.RULE_ITEM.getType()) {
-            return null;
-        }
-        NBTCompound nbt = NBTCompound.fromItem(item).getCompound("BulkExchangeRule");
-        if (nbt.isEmpty()) {
-        	return null;
+	public static BulkExchangeRule fromItem(ItemStack item) {
+		if (item == null) {
+			return null;
+		}
+		if (item.getType() != ItemExchangePlugin.RULE_ITEM.getType()) {
+			return null;
+		}
+		NBTCompound nbt = NBTCompound.fromItem(item).getCompound("BulkExchangeRule");
+		if (nbt.isEmpty()) {
+			return null;
 		}
 		NBTSerializable serializable = NBTSerialization.deserialize(nbt);
 		if (serializable instanceof BulkExchangeRule) {
 			return (BulkExchangeRule) serializable;
 		}
-        return null;
-    }
+		return null;
+	}
+
+	@Override
+	public boolean isValid() {
+		return !getRules().isEmpty();
+	}
+
+	public List<ExchangeRule> getRules() {
+		return Arrays.stream(this.nbt.getCompoundArray("rules")).
+				map(NBTSerialization::deserialize).
+				filter((serializable) -> serializable instanceof ExchangeRule).
+				map((serializable) -> (ExchangeRule) serializable).
+				collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	public void setRules(List<ExchangeRule> rules) {
+		if (rules == null) {
+			this.nbt.remove("rules");
+		}
+		else {
+			this.nbt.setCompoundArray("rules", rules.stream().
+					filter(Objects::nonNull).
+					map(NBTSerialization::serialize).
+					toArray(NBTCompound[]::new));
+		}
+	}
+
+	@Override
+	public void trace(ItemStack item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public boolean conforms(ItemStack item) {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<String> getDisplayedInfo() {
+		return new ArrayList<>();
+	}
+
+	public ItemStack toItem() {
+		List<ExchangeRule> rules = getRules();
+		ItemStack item = NBTCompound.processItem(ItemExchangePlugin.RULE_ITEM.clone(),
+				(nbt) -> nbt.setCompound("BulkExchangeRule", NBTSerialization.serialize(this)));
+		ItemAPI.handleItemMeta(item, (ItemMeta meta) -> {
+			meta.setDisplayName(ChatColor.RED + "Bulk Rule Block");
+			meta.setLore(Collections.singletonList(
+					"This rule block holds " + rules.size() + " exchange rule" + (rules.size() == 1 ? "" : "s") + "."));
+			return true;
+		});
+		return item;
+	}
 
 }
