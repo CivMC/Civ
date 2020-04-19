@@ -52,7 +52,7 @@ public final class CitadelGlue {
 	}
 
 	public static void addGroupDetailsToRuleDetails(ExchangeRule rule, List<String> info) {
-		if (!isEnabled()) {
+		if (!isEnabled() || rule.getType() != ExchangeRule.Type.INPUT) {
 			return;
 		}
 		NullCoalescing.exists(rule.getGroup(), (group) -> info.add(ChatColor.RED + "Restricted to " + group.getName()));
