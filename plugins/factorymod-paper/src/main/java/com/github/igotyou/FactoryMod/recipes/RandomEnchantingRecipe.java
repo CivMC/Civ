@@ -10,7 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.api.EnchantmentNames;
+import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -43,6 +43,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		}
 	}
 
+	@Override
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = new ItemStack(tool);
 		for (RandomEnchant re : enchants) {
@@ -52,6 +53,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return is;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			List<ItemStack> bla = input.getItemStackRepresentation();
@@ -66,6 +68,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return returns;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = new ItemStack(tool);
 		for (RandomEnchant re : enchants) {
@@ -84,7 +87,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		for (RandomEnchant re : enchants) {
 			ItemAPI.addLore(is,
 					ChatColor.YELLOW + String.valueOf(re.chance * 100)
-							+ " % chance for " + EnchantmentNames.getEnchantmentName(re.enchant)
+							+ " % chance for " + EnchantNames.findByEnchantment(re.enchant).getDisplayName()
 							+ " " + re.level);
 		}
 		ItemAPI.addLore(is, ChatColor.LIGHT_PURPLE
@@ -94,6 +97,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 		return stacks;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		for (ItemStack is : input.getItemStackRepresentation()) {

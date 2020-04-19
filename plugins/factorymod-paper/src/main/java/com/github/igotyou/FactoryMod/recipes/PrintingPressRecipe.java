@@ -37,11 +37,11 @@ public abstract class PrintingPressRecipe extends InputRecipe {
 	}
 
 	protected static void addEnchTag(TagManager tag) {
-		Map<String, Object> unb = new WeakHashMap<String, Object>();
+		Map<String, Object> unb = new WeakHashMap<>();
 		unb.put("id", (short)34);
 		unb.put("lvl", (short)1);
 
-		List<Object> ench = new ArrayList<Object>();
+		List<Object> ench = new ArrayList<>();
 		ench.add(unb);
 
 		tag.setList("ench", ench);

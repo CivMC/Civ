@@ -43,10 +43,12 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		this.outputAmount = outputAmount;
 	}	
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return this.input.isContainedIn(i) && getPrintingPlateItemStack(i, this.printingPlate) != null;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 
@@ -74,8 +76,9 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		return bookTag.enrichWithNBT(book);
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 
 		if (i == null) {
 			ItemStack is = getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName);
@@ -96,8 +99,9 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		return result;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 		stacks.add(new ItemStack(Material.WRITTEN_BOOK, this.outputAmount));
 		stacks.add(getPrintingPlateRepresentation(this.printingPlate, PrintingPlateRecipe.itemName));
 
@@ -115,6 +119,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		return stacks;
 	}
 
+	@Override
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = new ItemStack(Material.WRITTEN_BOOK);
 

@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -705,8 +706,13 @@ public class ConfigParser {
 			result = new PylonRecipe(identifier, name, productionTime, input, outputMap, weight);
 			break;
 		case "ENCHANT":
-			Enchantment enchant = Enchantment.getByName(config.getString("enchant", 
-					(parentRecipe instanceof DeterministicEnchantingRecipe) ? ((DeterministicEnchantingRecipe)parentRecipe).getEnchant().getName() : null));
+			Enchantment enchant;
+			if (parentRecipe instanceof DeterministicEnchantingRecipe) {
+				enchant = ((DeterministicEnchantingRecipe) parentRecipe).getEnchant();
+			}
+			else {
+				enchant = Enchantment.getByKey(NamespacedKey.minecraft(config.getString("enchant", "")));
+			}
 			if (enchant == null) {
 				plugin.warning("No enchant specified for deterministic enchanting recipe " + name + ". It was skipped.");
 				result = null;
