@@ -8,3 +8,8 @@ softdepend: [NameLayer, Citadel]
 commands:
   iec: {}
   ies: {}
+  iei: {}
+  ier: {}
+permissions:
+  itemexchange.reload:
+    default: op
