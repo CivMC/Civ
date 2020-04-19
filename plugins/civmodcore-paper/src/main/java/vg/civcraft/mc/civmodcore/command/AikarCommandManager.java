@@ -31,12 +31,12 @@ public abstract class AikarCommandManager {
         this.manager = new BukkitCommandManager(plugin);
         registerCommands();
         CommandCompletions<BukkitCommandCompletionContext> completions = this.manager.getCommandCompletions();
-        completions.registerAsyncCompletion("materials", (context) ->
+        completions.registerAsyncCompletion("materials", context ->
                 Arrays.stream(Material.values()).
                         map(Enum::name).
                         filter((name) -> TextUtil.startsWith(name, context.getInput())).
                         collect(Collectors.toCollection(ArrayList::new)));
-        completions.registerAsyncCompletion("itemMaterials", (context) ->
+        completions.registerAsyncCompletion("itemMaterials", context ->
                 Arrays.stream(Material.values()).
                         filter(MaterialAPI::isValidItemMaterial).
                         map(Enum::name).
