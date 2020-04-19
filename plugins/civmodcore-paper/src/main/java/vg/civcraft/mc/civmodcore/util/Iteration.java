@@ -23,6 +23,20 @@ public final class Iteration {
         return array == null || array.length < 1;
     }
 
+	/**
+	 * Determines whether a collection is null or empty.
+	 *
+	 * @param <T> The type of collection.
+	 * @param collection The collection to check.
+	 * @return Returns true if the collection exists and at least one item.
+	 *
+	 * @apiNote This will not check the elements within the collection. It only checks if the collection itself exists
+	 *     and has elements. If for example the collection has 100 null elements, this function would still return true.
+	 */
+    public static <T> boolean isNullOrEmpty(Collection<T> collection) {
+    	return collection == null || collection.isEmpty();
+	}
+
     /**
      * Returns the first matching item in the parameters, which is particularly useful when you need to match Materials
      * without necessarily needing to create a new {@link vg.civcraft.mc.civmodcore.api.MaterialAPI MaterialAPI}.
