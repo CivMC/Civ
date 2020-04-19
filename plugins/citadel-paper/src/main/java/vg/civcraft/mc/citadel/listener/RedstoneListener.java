@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
@@ -152,7 +153,11 @@ public class RedstoneListener implements Listener {
 	}
 
 	private void setupAdjacentDoors(Player player, Block block, BlockFace skip) {
-		for (Block rel : BlockAPI.getAllSides(block, f -> f != skip)) {
+		for (Entry<BlockFace,Block> entry : BlockAPI.getAllSidesMapped(block).entrySet()) {
+			if (entry.getKey() == skip) {
+				continue;
+			}
+			Block rel = entry.getValue();
 			BlockData blockData = rel.getBlockData();
 			if (!(blockData instanceof Openable)) {
 				continue;
