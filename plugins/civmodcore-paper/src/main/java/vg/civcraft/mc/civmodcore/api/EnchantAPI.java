@@ -57,9 +57,6 @@ public final class EnchantAPI {
 	 *
 	 * @param item The item to retrieve the enchantments from.
 	 * @return Returns the item's enchantments, which are never null.
-	 *
-	 * @throws IllegalArgumentException If the given item stack is not null or if the item meta cannot be retrieved or
-	 *                                  generated.
 	 * */
 	public static Map<Enchantment, Integer> getEnchantments(ItemStack item) {
 		Preconditions.checkArgument(ItemAPI.isValidItem(item));

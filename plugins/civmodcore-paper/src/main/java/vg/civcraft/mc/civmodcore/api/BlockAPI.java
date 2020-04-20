@@ -54,7 +54,7 @@ public final class BlockAPI {
 		if (block == null) {
 			return false;
 		}
-		if (block.getType() == null) {
+		if (block.getType() == null) { // Do not remove this, it's not necessarily certain
 			return false;
 		}
 		return LocationAPI.isValidLocation(block.getLocation());

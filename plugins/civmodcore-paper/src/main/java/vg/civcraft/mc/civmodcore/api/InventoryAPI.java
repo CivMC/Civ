@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -31,7 +32,6 @@ public final class InventoryAPI {
 	 * @param inventory The inventory to test.
 	 * @return Returns true if it's more likely than not valid.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean isValidInventory(Inventory inventory) {
 		if (inventory == null) {
 			return false;
@@ -103,9 +103,8 @@ public final class InventoryAPI {
 	 * @param items The items to add to the inventory.
 	 * @return Returns true if the items were safely added.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyAddItemsToInventory(Inventory inventory, ItemStack[] items) {
-		assert isValidInventory(inventory) : inventory;
+		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -130,9 +129,8 @@ public final class InventoryAPI {
 	 * @param items The items to remove to the inventory.
 	 * @return Returns true if the items were safely removed.
 	 */
-	@SuppressWarnings("BooleanMethodIsAlwaysInverted")
 	public static boolean safelyRemoveItemsFromInventory(Inventory inventory, ItemStack[] items) {
-		assert isValidInventory(inventory) : inventory;
+		Preconditions.checkArgument(isValidInventory(inventory));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -156,8 +154,8 @@ public final class InventoryAPI {
 	 * @return Returns true if the items were successfully transacted.
 	 */
 	public static boolean safelyTransactBetweenInventories(Inventory from, ItemStack[] items, Inventory to) {
-		assert isValidInventory(from) : from;
-		assert isValidInventory(to) : to;
+		Preconditions.checkArgument(isValidInventory(from));
+		Preconditions.checkArgument(isValidInventory(to));
 		if (Iteration.isNullOrEmpty(items)) {
 			return true;
 		}
@@ -185,20 +183,20 @@ public final class InventoryAPI {
 	 */
 	public static boolean safelyTradeBetweenInventories(Inventory formerInventory, ItemStack[] formerItems,
 														Inventory latterInventory, ItemStack[] latterItems) {
-		assert isValidInventory(formerInventory) : formerInventory;
-		assert isValidInventory(latterInventory) : latterInventory;
+		Preconditions.checkArgument(isValidInventory(formerInventory));
+		Preconditions.checkArgument(isValidInventory(latterInventory));
 		Inventory formerClone = InventoryAPI.cloneInventory(formerInventory);
 		Inventory latterClone = InventoryAPI.cloneInventory(latterInventory);
-		if (!safelyRemoveItemsFromInventory(formerInventory, formerItems)) {
+		if (!safelyRemoveItemsFromInventory(formerClone, formerItems)) {
 			return false;
 		}
-		if (!safelyRemoveItemsFromInventory(latterInventory, latterItems)) {
+		if (!safelyRemoveItemsFromInventory(latterClone, latterItems)) {
 			return false;
 		}
-		if (!safelyAddItemsToInventory(formerInventory, latterItems)) {
+		if (!safelyAddItemsToInventory(formerClone, latterItems)) {
 			return false;
 		}
-		if (!safelyAddItemsToInventory(latterInventory, formerItems)) {
+		if (!safelyAddItemsToInventory(latterClone, formerItems)) {
 			return false;
 		}
 		formerInventory.setContents(formerClone.getContents());
@@ -207,7 +205,7 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 * Clones the given inventory for the purpose of manipulating the contents.
+	 * Clones the given inventory for the purpose of test manipulating its contents.
 	 *
 	 * @param inventory The inventory to clone.
 	 * @return Returns a clone of the given inventory.
@@ -236,9 +234,9 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 *
+	 * Wrapper for cloned inventories intended to ensure that ClonedInventories aren't themselves cloned.
 	 */
-	public static class ClonedInventory implements Inventory {
+	public static final class ClonedInventory implements Inventory {
 
 		private final Inventory inventory;
 
@@ -268,7 +266,7 @@ public final class InventoryAPI {
 
 		@Override
 		public void setItem(int index, ItemStack item) {
-
+			this.inventory.setItem(index, item);
 		}
 
 		@NotNull
@@ -412,8 +410,8 @@ public final class InventoryAPI {
 
 		@NotNull
 		@Override
-		public ListIterator<ItemStack> iterator(int i) { // TODO: Get the proper parameter name
-			return this.inventory.iterator(i);
+		public ListIterator<ItemStack> iterator(int index) {
+			return this.inventory.iterator(index);
 		}
 
 		@Override
@@ -421,6 +419,11 @@ public final class InventoryAPI {
 			return this.inventory.getLocation();
 		}
 
+		/**
+		 * Gets the underlying inventory that was cloned.
+		 *
+		 * @return Returns the underlying inventory.
+		 */
 		public Inventory getInventory() {
 			return this.inventory;
 		}
