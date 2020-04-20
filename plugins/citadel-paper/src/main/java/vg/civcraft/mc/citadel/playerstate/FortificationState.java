@@ -47,7 +47,7 @@ public class FortificationState extends AbstractPlayerState {
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
 	}
-	
+
 	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof FortificationState)) {
@@ -55,5 +55,11 @@ public class FortificationState extends AbstractPlayerState {
 		}
 		FortificationState fort = (FortificationState) o;
 		return fort.type == this.type && fort.group.getName().equals(this.getGroup().getName());
+	}
+
+	@Override
+	public String getOverlayText() {
+		return String.format("%sCTF %s%s %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, group.getName(), ChatColor.AQUA,
+				type.getName());
 	}
 }

@@ -93,4 +93,9 @@ public class AdvancedFortificationState extends AbstractPlayerState {
 		return false;
 	}
 
+	@Override
+	public String getOverlayText() {
+		return ChatColor.GOLD + "CTAF";
+	}
+
 }

@@ -97,6 +97,8 @@ public abstract class AbstractPlayerState {
 		}
 	}
 	
+	public abstract String getOverlayText();
+	
 	@Override
 	public abstract boolean equals(Object o);
 

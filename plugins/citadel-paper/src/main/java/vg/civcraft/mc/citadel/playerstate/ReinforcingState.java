@@ -154,4 +154,9 @@ public class ReinforcingState extends AbstractPlayerState {
 		}
 		return ((ReinforcingState) o).group.getName().equals(this.getGroup().getName());
 	}
+
+	@Override
+	public String getOverlayText() {
+		return String.format("%sCTR %s%s", ChatColor.GOLD, ChatColor.LIGHT_PURPLE, group.getName());
+	}
 }

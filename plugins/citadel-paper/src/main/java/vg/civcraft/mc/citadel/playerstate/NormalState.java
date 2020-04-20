@@ -53,4 +53,9 @@ public class NormalState extends AbstractPlayerState {
 		return o instanceof NormalState;
 	}
 
+	@Override
+	public String getOverlayText() {
+		return null;
+	}
+
 }

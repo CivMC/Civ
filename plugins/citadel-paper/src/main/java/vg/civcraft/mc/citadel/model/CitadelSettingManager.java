@@ -12,7 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
-import vg.civcraft.mc.citadel.listener.InformationModeListener;
+import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
@@ -126,7 +126,7 @@ public class CitadelSettingManager {
 		
 		modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Citadel mode display location"
 				, "citadelReinModeDisplayLocation", new ItemStack(Material.NETHER_STAR), "Citadel mode");
-		PlayerSettingAPI.registerSetting(ctbLocationSetting, menu);
+		PlayerSettingAPI.registerSetting(modeLocationSetting, menu);
 		
 		MenuSection commandSection = menu.createMenuSection("Command replies",
 				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
@@ -156,7 +156,7 @@ public class CitadelSettingManager {
 		ctiEnemy.registerArgument("max_health", "50", "the maximum health of the reinforcement");
 		ctiEnemy.registerArgument("health", "25", "the current health of the reinforcement");
 		ctiEnemy.registerArgument("type", "Stone", "the type of the reinforcement");
-		ctiEnemy.registerArgument("health_color", InformationModeListener.getDamageColor(0.5).toString(),
+		ctiEnemy.registerArgument("health_color", ModeListener.getDamageColor(0.5).toString(),
 				"a color representing the reinforcement health");
 		PlayerSettingAPI.registerSetting(ctiEnemy, commandSection);
 	}
@@ -172,7 +172,7 @@ public class CitadelSettingManager {
 		args.put("max_health", reinHealthFormatter.format(type.getHealth()));
 		args.put("type", type.getName());
 		args.put("health_color",
-				InformationModeListener.getDamageColor(reinforcement.getHealth() / type.getHealth()).toString());
+				ModeListener.getDamageColor(reinforcement.getHealth() / type.getHealth()).toString());
 		CitadelUtility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args));
 	}
 }

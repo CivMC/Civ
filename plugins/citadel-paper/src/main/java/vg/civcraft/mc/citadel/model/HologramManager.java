@@ -19,7 +19,7 @@ import com.gmail.filoghost.holographicdisplays.api.HologramsAPI;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
-import vg.civcraft.mc.citadel.listener.InformationModeListener;
+import vg.civcraft.mc.citadel.listener.ModeListener;
 public class HologramManager {
 
 	// distance from center to diagonal corner is 0.5 * sqrt(2) and we add 10 % for
@@ -151,7 +151,7 @@ public class HologramManager {
 				if (hologram.size() > 0) {
 					hologram.removeLine(0);
 				}
-				hologram.insertTextLine(0, InformationModeListener.formatHealth(reinforcement));
+				hologram.insertTextLine(0, ModeListener.formatHealth(reinforcement));
 				cachedHealth = reinforcement.getHealth();
 			}
 			if (!hasPermission) {
@@ -166,7 +166,7 @@ public class HologramManager {
 				hologram.removeLine(3);
 			}
 			if (!reinforcement.isMature()) {
-				hologram.insertTextLine(3, InformationModeListener.formatProgress(reinforcement.getCreationTime(),
+				hologram.insertTextLine(3, ModeListener.formatProgress(reinforcement.getCreationTime(),
 						reinforcement.getType().getMaturationTime(), ""));
 			}
 		}

@@ -51,4 +51,9 @@ public class InsecureState extends AbstractPlayerState {
 		return o instanceof InsecureState;
 	}
 
+	@Override
+	public String getOverlayText() {
+		return ChatColor.GREEN + "CTIN";
+	}
+
 }

@@ -4,10 +4,12 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.citadel.CitadelUtility;
+import vg.civcraft.mc.citadel.events.ReinforcementModeSwitchEvent;
 
 public class PlayerStateManager {
 
@@ -43,6 +45,11 @@ public class PlayerStateManager {
 		}
 		if (existingState.equals(state)) {
 			CitadelUtility.sendAndLog(player, ChatColor.GOLD, "You are still in " + ChatColor.YELLOW + state.getName());
+			return;
+		}
+		ReinforcementModeSwitchEvent switchEvent = new ReinforcementModeSwitchEvent(player, existingState, state);
+		Bukkit.getPluginManager().callEvent(switchEvent);
+		if (switchEvent.isCancelled()) {
 			return;
 		}
 		playerStateMap.put(player.getUniqueId(), state);

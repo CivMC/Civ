@@ -11,7 +11,7 @@ import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.command.PatchMode;
 import vg.civcraft.mc.citadel.events.ReinforcementRepairEvent;
-import vg.civcraft.mc.citadel.listener.InformationModeListener;
+import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -47,12 +47,12 @@ public class PatchState extends AbstractPlayerState {
 		if (rein.getHealth() >= rein.getType().getHealth()) {
 			if (rein.hasPermission(player, CitadelPermissionHandler.getRepair())) {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD,
-						"Reinforcement is already at " + InformationModeListener.formatHealth(rein) + ChatColor.GOLD
+						"Reinforcement is already at " + ModeListener.formatHealth(rein) + ChatColor.GOLD
 								+ " health with " + ChatColor.AQUA + rein.getType().getName() + ChatColor.GOLD + " on "
 								+ ChatColor.LIGHT_PURPLE + rein.getGroup().getName());
 			} else {
 				CitadelUtility.sendAndLog(player, ChatColor.GOLD, "Reinforcement is already at "
-						+ InformationModeListener.formatHealth(rein) + ChatColor.GOLD + " health");
+						+ ModeListener.formatHealth(rein) + ChatColor.GOLD + " health");
 			}
 			return;
 		}
@@ -79,6 +79,11 @@ public class PatchState extends AbstractPlayerState {
 	@Override
 	public boolean equals(Object o) {
 		return o instanceof PatchMode;
+	}
+
+	@Override
+	public String getOverlayText() {
+		return ChatColor.GREEN + "CTP";
 	}
 
 }
