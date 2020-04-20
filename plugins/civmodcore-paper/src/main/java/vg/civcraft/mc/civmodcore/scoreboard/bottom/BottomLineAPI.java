@@ -17,7 +17,7 @@ import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
 public final class BottomLineAPI {
-	
+
 	private BottomLineAPI() {
 	}
 
@@ -53,10 +53,12 @@ public final class BottomLineAPI {
 		StringBuilder sb = new StringBuilder();
 		for (BottomLine line : lines) {
 			String entry = line.getCurrentText(uuid);
-			if (sb.length() > 0) {
-				sb.append(SEPARATOR);
+			if (entry != null) {
+				if (sb.length() > 0) {
+					sb.append(SEPARATOR);
+				}
+				sb.append(entry);
 			}
-			sb.append(entry);
 		}
 		player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent(sb.toString()));
 	}
@@ -66,10 +68,12 @@ public final class BottomLineAPI {
 		for (BottomLine line : lines) {
 			for (Entry<UUID, String> entry : line.getAll().entrySet()) {
 				StringBuilder sb = texts.computeIfAbsent(entry.getKey(), u -> new StringBuilder());
-				if (sb.length() > 0) {
-					sb.append(SEPARATOR);
+				if (entry.getValue() != null) {
+					if (sb.length() > 0) {
+						sb.append(SEPARATOR);
+					}
+					sb.append(entry.getValue());
 				}
-				sb.append(entry.getValue());
 			}
 		}
 		for (Entry<UUID, StringBuilder> entry : texts.entrySet()) {

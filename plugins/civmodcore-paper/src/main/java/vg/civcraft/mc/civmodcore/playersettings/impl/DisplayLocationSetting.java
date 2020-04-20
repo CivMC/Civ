@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,22 +45,26 @@ public class DisplayLocationSetting extends LimitedStringSetting {
 
 	@Override
 	public void handleMenuClick(Player player, MenuSection menu) {
+		DisplayLocation currentValue = DisplayLocation.fromString(getValue(player));
 		IClickable sideClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s only on side bar",
-				DisplayLocation.SIDEBAR, menu);
-		IClickable actionClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s only on action bar",
-				DisplayLocation.SIDEBAR, menu);
-		IClickable bothClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s both on action and side bar",
-				DisplayLocation.SIDEBAR, menu);
-		IClickable noneClick = genLocationClick(Material.YELLOW_BANNER, "%sShow %s neither on side bar, nor action bar",
-				DisplayLocation.SIDEBAR, menu);
+				DisplayLocation.SIDEBAR, menu, currentValue);
+		IClickable actionClick = genLocationClick(Material.STONE_PRESSURE_PLATE, "%sShow %s only on action bar",
+				DisplayLocation.ACTIONBAR, menu, currentValue);
+		IClickable bothClick = genLocationClick(Material.PAINTING, "%sShow %s both on action and side bar",
+				DisplayLocation.BOTH, menu, currentValue);
+		IClickable noneClick = genLocationClick(Material.BARRIER, "%sShow %s neither on side bar, nor action bar",
+				DisplayLocation.NONE, menu, currentValue);
 		MultiPageView selector = new MultiPageView(player, Arrays.asList(sideClick, actionClick, bothClick, noneClick),
 				"Select where to show " + displayName, true);
 		selector.showScreen();
 	}
 
-	private IClickable genLocationClick(Material mat, String infoText, DisplayLocation location, MenuSection menu) {
+	private IClickable genLocationClick(Material mat, String infoText, DisplayLocation location, MenuSection menu, DisplayLocation currentlySelect) {
 		ItemStack sideStack = new ItemStack(mat);
 		ItemAPI.setDisplayName(sideStack, String.format(infoText, ChatColor.GOLD, displayName));
+		if (location == currentlySelect) {
+			ItemAPI.addGlow(sideStack);
+		}
 		return new LClickable(sideStack, p -> {
 			setValue(p, location.toString());
 			menu.showScreen(p);
