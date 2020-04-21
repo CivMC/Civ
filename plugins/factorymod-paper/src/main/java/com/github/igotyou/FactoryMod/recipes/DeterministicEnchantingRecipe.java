@@ -27,6 +27,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		this.level = level;
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		if (input.isContainedIn(i)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
@@ -42,6 +43,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return false;
 	}
 
+	@Override
 	public ItemStack getRecipeRepresentation() {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		ItemMeta im = is.getItemMeta();
@@ -52,6 +54,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return is;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = tool.getItemStackRepresentation().get(0);
 		ItemMeta im = is.getItemMeta();
@@ -68,11 +71,12 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 									input.getMultiplesContainedIn(i)))
 							+ " runs");
 		}
-		List<ItemStack> stacks = new LinkedList<ItemStack>();
+		List<ItemStack> stacks = new LinkedList<>();
 		stacks.add(is);
 		return stacks;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			List<ItemStack> bla = input.getItemStackRepresentation();
@@ -87,6 +91,7 @@ public class DeterministicEnchantingRecipe extends InputRecipe {
 		return returns;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.removeSafelyFrom(i)) {

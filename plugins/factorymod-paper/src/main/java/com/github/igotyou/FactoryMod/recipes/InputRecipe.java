@@ -71,6 +71,7 @@ public abstract class InputRecipe implements IRecipe {
 	 */
 	public abstract List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf);
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -83,6 +84,7 @@ public abstract class InputRecipe implements IRecipe {
 		this.fuel_consumption_intervall = intervall;
 	}
 
+	@Override
 	public int getProductionTime() {
 		return productionTime;
 	}
@@ -91,10 +93,12 @@ public abstract class InputRecipe implements IRecipe {
 		return input;
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(i);
 	}
 
+	@Override
 	public String getIdentifier() {
 		return identifier;
 	}
@@ -117,7 +121,7 @@ public abstract class InputRecipe implements IRecipe {
 	 *         GUI
 	 */
 	protected List<ItemStack> createLoredStacksForInfo(Inventory i) {
-		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
+		LinkedList<ItemStack> result = new LinkedList<>();
 		ItemMap inventoryMap = new ItemMap(i);
 		ItemMap possibleRuns = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
