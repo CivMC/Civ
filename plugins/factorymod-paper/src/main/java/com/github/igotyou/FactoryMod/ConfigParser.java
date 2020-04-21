@@ -864,6 +864,7 @@ public class ConfigParser {
 				}
 			}
 			result = new WordBankRecipe(identifier, name, productionTime, key, words, colors);
+			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
 			result = null;
