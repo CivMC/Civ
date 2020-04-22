@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Material;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,6 +30,8 @@ import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
+
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -173,8 +176,7 @@ public class HumbugBatchOne extends BasicHack {
 		if (!canEquipBanners) {
 			return;
 		}
-		if (event.getItem() == null || !event.getItem().getType().equals(Material.STONE) // TODO, waiting for material
-																							// API
+		if (event.getItem() == null || !Tag.BANNERS.isTagged(event.getItem().getType())																					// API
 				|| (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK)) {
 			return;
 		}
