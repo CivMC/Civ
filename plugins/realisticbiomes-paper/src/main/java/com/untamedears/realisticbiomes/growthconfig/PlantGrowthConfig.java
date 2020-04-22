@@ -187,10 +187,14 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			long timeRemaining = Math.max(0, totalTime - passedTime);
 			if (timeRemaining >= INFINITE_TIME) {
 				sb.append("will never grow here");
-			}
-			else {
-				sb.append(" will grow in ");
-				sb.append(TextUtil.formatDuration(timeRemaining, TimeUnit.MILLISECONDS));
+			} else {
+				sb.append(" will grow ");
+				if (timeRemaining <= 0) {
+					sb.append(" now");
+				} else {
+					sb.append(" in ");
+					sb.append(TextUtil.formatDuration(timeRemaining, TimeUnit.MILLISECONDS));
+				}
 			}
 		}
 		return sb.toString();
@@ -289,10 +293,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		if (intendedState == grower.getMaxStage()) {
 			if (RBUtils.resetProgressOnGrowth(block.getType())) {
 				plant.resetCreationTime();
-				//a new different config may now be responsible, for example if we just grew a melon stem
+				// a new different config may now be responsible, for example if we just grew a
+				// melon stem
 				PlantGrowthConfig newConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
 						.getPlantGrowthConfig(block);
-				//this should not lead to recursion horror, assuming the grower behavior is bug free
+				// this should not lead to recursion horror, assuming the grower behavior is bug
+				// free
 				return newConfig.updatePlant(plant);
 			}
 			return Long.MAX_VALUE;
