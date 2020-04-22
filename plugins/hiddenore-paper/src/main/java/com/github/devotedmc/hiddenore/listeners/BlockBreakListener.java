@@ -189,8 +189,10 @@ public class BlockBreakListener implements Listener {
 			if (Config.isListDrops()) {
 				alertUser.deleteCharAt(alertUser.length() - 1);
 			}
-
-			event.getPlayer().sendMessage(ChatColor.GOLD + alertUser.toString());
+			String alert = alertUser.toString();
+			if (alert.length() > 0) {
+				event.getPlayer().sendMessage(ChatColor.GOLD + alert);
+			}
 		}
 		
 		plugin.getTracking().postTrackBreak(event.getBlock().getLocation(), true);
