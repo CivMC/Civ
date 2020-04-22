@@ -23,6 +23,7 @@ import com.wimbli.WorldBorder.WorldBorder;
 import me.josvth.randomspawn.handlers.CommandHandler;
 import me.josvth.randomspawn.handlers.YamlHandler;
 import me.josvth.randomspawn.listeners.*;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class RandomSpawn extends JavaPlugin {
 
@@ -222,7 +223,7 @@ public class RandomSpawn extends JavaPlugin {
 		if (world.getEnvironment() == Environment.NETHER) {
 			Material blockYMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
 			Material blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
-			while (y < 128 && !(blockYMat == Material.AIR && blockY2Mat == Material.AIR)) {
+			while (y < 128 && !(MaterialAPI.isAir(blockYMat) && MaterialAPI.isAir(blockY2Mat))) {
 				y++;
 				blockYMat = blockY2Mat;
 				blockY2Mat = world.getBlockAt((int)x,(int) y+1,(int) z).getType();
@@ -231,7 +232,7 @@ public class RandomSpawn extends JavaPlugin {
 				return -1;
 		} else {
 			y = 257;
-			while (y >= 0 && blockMat == Material.AIR) {
+			while (y >= 0 && MaterialAPI.isAir(blockMat)) {
 				y--;
 				blockMat = world.getBlockAt((int)x,(int) y,(int) z).getType();
 			}
