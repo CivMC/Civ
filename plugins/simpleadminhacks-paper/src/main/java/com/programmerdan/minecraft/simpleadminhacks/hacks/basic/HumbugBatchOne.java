@@ -31,8 +31,6 @@ import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-
 public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
