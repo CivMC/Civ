@@ -5,6 +5,9 @@ import org.bukkit.Material;
 public final class ToolAPI {
 
 	public static boolean isSword(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case WOODEN_SWORD:
 			case STONE_SWORD:
@@ -18,6 +21,9 @@ public final class ToolAPI {
 	}
 
 	public static boolean isShovel(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case WOODEN_SHOVEL:
 			case STONE_SHOVEL:
@@ -31,6 +37,9 @@ public final class ToolAPI {
 	}
 
 	public static boolean isPickaxe(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case WOODEN_PICKAXE:
 			case STONE_PICKAXE:
@@ -44,6 +53,9 @@ public final class ToolAPI {
 	}
 
 	public static boolean isAxe(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case WOODEN_AXE:
 			case STONE_AXE:
@@ -57,6 +69,9 @@ public final class ToolAPI {
 	}
 
 	public static boolean isHoe(Material material) {
+		if (material == null) {
+			return false;
+		}
 		switch (material) {
 			case WOODEN_HOE:
 			case STONE_HOE:

@@ -6,6 +6,9 @@ import org.bukkit.TreeType;
 public final class TreeTypeAPI {
 	
 	public static TreeType getMatchingTreeType(Material material) {
+		if (material == null) {
+			return null;
+		}
 		switch (material) {
 			case ACACIA_SAPLING:
 			case ACACIA_WOOD:
@@ -66,6 +69,9 @@ public final class TreeTypeAPI {
 	}
 	
 	public static Material getMatchingSapling(TreeType type) {
+		if (type == null) {
+			return null;
+		}
 		switch(type) {
 			case ACACIA:
 				return Material.ACACIA_SAPLING;
