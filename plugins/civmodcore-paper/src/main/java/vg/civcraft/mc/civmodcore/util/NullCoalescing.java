@@ -87,13 +87,19 @@ public final class NullCoalescing {
 	 *
 	 * @param former The former object.
 	 * @param latter The latter object.
-	 * @return Returns true only if both objects are not null and the latter passes an equals test from the former.
+	 * @return Returns true only if both objects are not null and pass an equals test.
 	 */
     public static boolean equalsNotNull(Object former, Object latter) {
     	if (former == null || latter == null) {
     		return false;
 		}
-    	return former.equals(latter);
+    	if (former.equals(latter)) {
+    		return true;
+		}
+    	if (latter.equals(former)) {
+    		return true;
+		}
+    	return false;
 	}
 
 }
