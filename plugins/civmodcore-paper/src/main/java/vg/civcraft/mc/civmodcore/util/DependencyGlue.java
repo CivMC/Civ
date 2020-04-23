@@ -52,14 +52,26 @@ public abstract class DependencyGlue implements Listener {
 	}
 
 	/**
+	 * Determines whether this glue is safe to use.
+	 *
+	 * @return Returns true if the glue is deemed safe to use.
+	 *
+	 * @apiNote This <i>should</i> be kept for internal use because if the glue plugin is enabled but not safe to use,
+	 *     the APIs should themselves account for that.
+	 */
+	public boolean isSafeToUse() {
+		return isEnabled();
+	}
+
+	/**
 	 * This is called when the glue's plugin is enabled. Use this as a setup.
 	 */
-	protected abstract void onGlueEnabled();
+	protected void onGlueEnabled() { }
 
 	/**
 	 * This is called when the glue's plugin is disabled. Use this as a destructor.
 	 */
-	protected abstract void onGlueDisabled();
+	protected void onGlueDisabled() { }
 
 	@EventHandler
 	public final void onServerLoad(ServerLoadEvent event) {
