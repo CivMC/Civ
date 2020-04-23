@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
+import java.util.function.Predicate;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
@@ -277,7 +277,7 @@ public final class ItemAPI {
 	 * @see ItemStack#getItemMeta()
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T> boolean handleItemMeta(ItemStack item, Function<T, Boolean> handler) {
+	public static <T> boolean handleItemMeta(ItemStack item, Predicate<T> handler) {
 		if (item == null || handler == null) {
 			return false;
 		}
@@ -287,7 +287,7 @@ public final class ItemAPI {
 			if (meta == null) {
 				return false;
 			}
-			if (handler.apply(meta)) {
+			if (handler.test(meta)) {
 				return item.setItemMeta((ItemMeta) meta);
 			}
 		}
