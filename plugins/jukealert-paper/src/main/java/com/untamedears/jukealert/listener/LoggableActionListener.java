@@ -268,6 +268,10 @@ public class LoggableActionListener implements Listener {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
+		if (!player.getMetadata("NPC").isEmpty()) {
+			//CombatTagPlus
+			return;
+		}
 		Collection<Snitch> insideNow = snitchManager.getSnitchesCovering(location);
 		Set<Snitch> previouslyIn = insideFields.computeIfAbsent(player.getUniqueId(), s -> new HashSet<>());
 		insideNow.stream().filter(s -> !previouslyIn.contains(s)).forEach(s -> {
