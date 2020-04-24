@@ -62,7 +62,7 @@ commands:
       usage: /gchat <group> [message]
       description: Enters a group chat or sends a message to a group chat
       min-args: 0
-      max-args: 2
+      max-args: 500
       player-only: true
    ignorelist:
       usage: /ignorelist
