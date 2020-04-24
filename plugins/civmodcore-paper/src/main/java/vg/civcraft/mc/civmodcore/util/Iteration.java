@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Preconditions;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -67,13 +68,30 @@ public final class Iteration {
      * @param processor The iteration processor which will be called for each item in the collection.
      */
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
-		Preconditions.checkArgument(collection != null);
-		Preconditions.checkArgument(processor != null);
+    	if (isNullOrEmpty(collection) || processor == null) {
+    		return;
+		}
         for (T element : collection) {
             processor.accept(element);
         }
         collection.clear();
     }
+
+    /**
+	 * Fills an array with a particular value.
+	 *
+	 * @param <T> The type of the array.
+	 * @param array The array to fill.
+	 * @param value The value to fill the array with.
+	 * @return Returns the given array with the filled values.
+	 */
+    public static <T> T[] fill(T[] array, T value) {
+    	if (isNullOrEmpty(array)) {
+    		return array;
+		}
+		Arrays.fill(array, value);
+    	return array;
+	}
 
     /**
      * Say you have three objects and you know two are the same but don't know which. This is useful when you're
