@@ -526,7 +526,7 @@ public class ItemMap {
 					if (removeAmount != 0) {
 						ItemStack cloneStack = inventoryStack.clone();
 						cloneStack.setAmount(removeAmount);
-						if (i.removeItem(cloneStack).values().size() != 0) {
+						if (!i.removeItem(cloneStack).isEmpty()) {
 							return false;
 						} else {
 							amountToRemove -= removeAmount;
@@ -548,7 +548,7 @@ public class ItemMap {
 						ItemMap compareMap = new ItemMap(offHand);
 						int removeAmount = Math.min(amountToRemove, compareMap.getAmount(is));
 						int updatedCount = Math.max(0, offHand.getAmount() - removeAmount);
-						amountToRemove -= updatedCount;
+						amountToRemove -= removeAmount;
 						if (updatedCount == 0) {
 							pInv.setItemInOffHand(null);
 						} else {
