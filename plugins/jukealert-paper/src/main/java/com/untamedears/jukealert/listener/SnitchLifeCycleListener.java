@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -76,6 +77,11 @@ public class SnitchLifeCycleListener implements Listener {
 		Player p = e.getPlayer();
 		logger.info(String.format("Created snitch of type %s at %s by %s", snitch.getType().getName(),
 				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
+		if (p != null) {
+			p.sendMessage(String.format("%sCreated %s on group %s at [%d %d %d]", ChatColor.GREEN,
+					snitchConfig.getName(), e.getReinforcement().getGroup(), location.getBlockX(), location.getBlockY(),
+					location.getBlockZ()));
+		}
 		snitchManager.addSnitch(snitch);
 		snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
 	}
@@ -85,8 +91,7 @@ public class SnitchLifeCycleListener implements Listener {
 		Player source;
 		if (e.getSource() instanceof Player) {
 			source = (Player) e.getSource();
-		}
-		else {
+		} else {
 			source = null;
 		}
 		reinforcementGone(e.getReinforcement(), source);
