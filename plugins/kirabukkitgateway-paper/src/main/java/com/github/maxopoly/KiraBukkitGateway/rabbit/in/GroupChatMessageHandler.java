@@ -3,6 +3,8 @@ package com.github.maxopoly.KiraBukkitGateway.rabbit.in;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
+
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.PseudoPlayer;
 import com.github.maxopoly.KiraBukkitGateway.rabbit.RabbitInput;
@@ -29,6 +31,8 @@ public class GroupChatMessageHandler extends RabbitInput {
 			logger.severe("Tried to send message to group " + groupName + ", but it wasnt found");
 			return;
 		}
-		CivChat2.getInstance().getCivChat2Manager().sendGroupMsg(new PseudoPlayer(sender, -1), group, message);
+		Bukkit.getScheduler().scheduleSyncDelayedTask(KiraBukkitGatewayPlugin.getInstance(), () -> {
+			CivChat2.getInstance().getCivChat2Manager().sendGroupMsg(new PseudoPlayer(sender, -1), group, message);
+		});
 	}
 }
