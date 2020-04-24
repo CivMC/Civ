@@ -31,7 +31,7 @@ public class MenuDialog extends Dialog {
 			return;
 		}
 		setting.setValueFromString(player.getUniqueId(), result);
-		player.sendMessage(ChatColor.GREEN + "Set " + setting.getNiceName() + " to " + result);
+		player.sendMessage(ChatColor.GREEN + setting.getNiceName() + " set to: " + result);
 		menu.showScreen(player);
 	}
 
