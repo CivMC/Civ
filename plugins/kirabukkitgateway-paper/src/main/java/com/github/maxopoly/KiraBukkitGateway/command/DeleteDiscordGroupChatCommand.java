@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway.command.commands;
+package com.github.maxopoly.KiraBukkitGateway.command;
 
 import java.util.List;
 
@@ -8,29 +8,19 @@ import org.bukkit.entity.Player;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class DeleteDiscordGroupChatCommand extends PlayerCommand {
-
-	public DeleteDiscordGroupChatCommand() {
-		super("deletediscordchannel");
-		setIdentifier("deletediscordchannel");
-		setDescription("Delete the discord channel linked to a group");
-		setUsage("/deletediscordchannel [group]");
-		setArguments(1, 1);
-	}
+@CivCommand(id = "deletediscordchannel")
+public class DeleteDiscordGroupChatCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "You are not a player");
-			return true;
-		}
 		Player p = (Player) sender;
 		Group group = GroupManager.getGroup(args[0]);
 		if (group == null) {
@@ -49,9 +39,6 @@ public class DeleteDiscordGroupChatCommand extends PlayerCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (! (sender instanceof Player))  {
-			return null;
-		}
 		if (args.length == 0) {
 			return GroupTabCompleter.complete("", null, (Player) sender);
 		}

@@ -5,11 +5,9 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.PluginDescriptionFile;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraUtil;
 import com.github.maxopoly.KiraBukkitGateway.listener.SnitchHitType;
-import com.github.maxopoly.KiraBukkitGateway.listener.SnitchType;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -129,7 +127,7 @@ public class RabbitCommands {
 	}
 
 	public void sendSnitchHit(Player victim, Location location, String snitchName, String groupName,
-			SnitchHitType hitType, SnitchType snitchType) {
+			SnitchHitType hitType, String snitchType) {
 		nonNullArgs(victim, location, groupName);
 		if (snitchName == null) {
 			snitchName = "";
@@ -144,7 +142,7 @@ public class RabbitCommands {
 		json.addProperty("snitchName", snitchName);
 		json.addProperty("groupName", groupName);
 		json.addProperty("type", hitType.toString());
-		json.addProperty("snitchtype", snitchType.toString());
+		json.addProperty("snitchtype", snitchType);
 		sendInternal("sendsnitchhit", json);
 	}
 

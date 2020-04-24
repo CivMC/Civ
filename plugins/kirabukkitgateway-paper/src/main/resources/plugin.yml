@@ -6,18 +6,43 @@ depend: [LuckPerms, CivModCore, NameLayer, CivChat2]
 softdepend: []
 commands:
 permissions:
-api-version: 1.12.2
+api-version: 1.14
 commands:
     discordauth:
         permission: kira.public
+        usage: /discordauth
+        description: Create an auth code for linking your ingame account to your Discord account
+        min-args: 0
+        max-args: 0
+        player-only: true
     linkdiscordchannel:
         permission: kira.public
+        usage: /linkdiscordchannel [group]
+        description: Create a Discord channel to which group chats and snitch alerts will be forwarded
+        min-args: 1
+        max-args: 1
+        player-only: true
     deletediscordchannel:
         permission: kira.public
-    syncdiscordchannel:
-        permission: kira.public
+        usage: /deletediscordchannel [group]
+        description: Delete the Discord channel linked to a group
+        min-args: 1
+        max-args: 1
+        player-only: true
     kirareload:
         permission: kira.op
+        usage: /kirareload
+        description: Reloads KiraBukkitGateway
+        min-args: 0
+        max-args: 0
+        player-only: false
+    syncdiscordchannel:
+        permission: kira.public
+        usage: /syncdiscordchannel [group]
+        description: Syncs access of the linked Discord channel
+        min-args: 1
+        max-args: 1
+        player-only: true
 permissions:
     kira.public:
         default: true

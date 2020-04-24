@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway.command.commands;
+package com.github.maxopoly.KiraBukkitGateway.command;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -11,29 +11,19 @@ import org.bukkit.entity.Player;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class CreateDiscordGroupChatCommand extends PlayerCommand {
-
-	public CreateDiscordGroupChatCommand() {
-		super("linkdiscordchannel");
-		setIdentifier("linkdiscordchannel");
-		setDescription("Create a discord channel to which group chats and snitch alerts will be forwarded");
-		setUsage("/linkdiscordchannel [group]");
-		setArguments(1, 1);
-	}
+@CivCommand(id = "linkdiscordchannel")
+public class CreateDiscordGroupChatCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.RED + "You are not a player");
-			return true;
-		}
 		Player p = (Player) sender;
 		Group group = GroupManager.getGroup(args[0]);
 		if (group == null) {
@@ -57,9 +47,6 @@ public class CreateDiscordGroupChatCommand extends PlayerCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			return null;
-		}
 		if (args.length == 0) {
 			return GroupTabCompleter.complete("", null, (Player) sender);
 		}

@@ -8,7 +8,6 @@ import org.apache.logging.log4j.core.Logger;
 import org.bukkit.Bukkit;
 
 import com.github.maxopoly.KiraBukkitGateway.auth.AuthcodeManager;
-import com.github.maxopoly.KiraBukkitGateway.command.KiraCommandHandler;
 import com.github.maxopoly.KiraBukkitGateway.impersonation.KiraLuckPermsWrapper;
 import com.github.maxopoly.KiraBukkitGateway.listener.CivChatListener;
 import com.github.maxopoly.KiraBukkitGateway.listener.JukeAlertListener;
@@ -33,8 +32,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 	private List <KiraLogAppender> logAppenders;
 
 	public void onEnable() {
-		handle = new KiraCommandHandler();
-		handle.registerCommands();
 		super.onEnable();
 		instance = this;
 		authcodeManager = new AuthcodeManager(12);
@@ -100,11 +97,6 @@ public class KiraBukkitGatewayPlugin extends ACivMod {
 	
 	public KiraLuckPermsWrapper getPermsWrapper()  {
 		return permsWrapper;
-	}
-
-	@Override
-	protected String getPluginName() {
-		return "KiraBukkitGateway";
 	}
 
 }

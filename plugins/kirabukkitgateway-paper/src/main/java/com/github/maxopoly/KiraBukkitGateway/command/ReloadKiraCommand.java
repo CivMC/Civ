@@ -1,4 +1,4 @@
-package com.github.maxopoly.KiraBukkitGateway.command.commands;
+package com.github.maxopoly.KiraBukkitGateway.command;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,17 +8,11 @@ import org.bukkit.command.CommandSender;
 
 import com.github.maxopoly.KiraBukkitGateway.KiraBukkitGatewayPlugin;
 
-import vg.civcraft.mc.civmodcore.command.PlayerCommand;
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-public class ReloadKiraCommand extends PlayerCommand {
-
-	public ReloadKiraCommand() {
-		super("kirareload");
-		setIdentifier("kirareload");
-		setDescription("Reloads KiraBukkitGateway");
-		setUsage("/kirareload");
-		setArguments(0, 0);
-	}
+@CivCommand(id = "kirareload")
+public class ReloadKiraCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {

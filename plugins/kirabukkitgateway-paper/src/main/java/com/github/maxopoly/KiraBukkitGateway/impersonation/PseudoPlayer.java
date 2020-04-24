@@ -34,9 +34,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_12_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_12_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -1308,11 +1308,6 @@ public class PseudoPlayer extends CraftPlayer {
 
 	@Override
 	public void sendBlockChange(Location arg0, Material arg1, byte arg2) {
-		throw new InvalidCommandAttemptException();
-	}
-
-	@Override
-	public void sendBlockChange(Location arg0, int arg1, byte arg2) {
 		throw new InvalidCommandAttemptException();
 	}
 
