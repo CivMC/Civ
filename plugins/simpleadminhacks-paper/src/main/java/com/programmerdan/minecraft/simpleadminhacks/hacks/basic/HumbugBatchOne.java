@@ -5,21 +5,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -30,6 +35,8 @@ import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
+
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -58,7 +65,14 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean canEquipBanners;
+
+	@AutoLoad
+	private boolean disableLavaCobbleMountains;
 	
+	@AutoLoad
+	private boolean disableWanderingTrader;
+
+
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
@@ -67,14 +81,14 @@ public class HumbugBatchOne extends BasicHack {
 		super(plugin, config);
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onDyeWool(SheepDyeWoolEvent event) {
 		if (!allowSheepDying) {
 			event.setCancelled(true);
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onDisallowedBlockUse(PlayerInteractEvent event) {
 		if (event.getClickedBlock() == null) {
 			return;
@@ -104,7 +118,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void golemDeath(EntityDeathEvent e) {
 		if (!disableIronFarms) {
 			return;
@@ -121,7 +135,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderCrystal(EntityDamageByEntityEvent e) {
 		if (disableEnderCrystalDamage && e.getDamager().getType() == EntityType.ENDER_CRYSTAL) {
 			e.setCancelled(true);
@@ -156,7 +170,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void potionEffect(EntityPotionEffectEvent event) {
 		if (!disableMiningFatigue) {
 			return;
@@ -169,12 +183,12 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void equipBanner(PlayerInteractEvent event) {
 		if (!canEquipBanners) {
 			return;
 		}
-		if (event.getItem() == null || !Tag.BANNERS.isTagged(event.getItem().getType())																					// API
+		if (event.getItem() == null || !Tag.BANNERS.isTagged(event.getItem().getType()) // API
 				|| (event.getAction() != Action.LEFT_CLICK_AIR && event.getAction() != Action.LEFT_CLICK_BLOCK)) {
 			return;
 		}
@@ -188,5 +202,58 @@ public class HumbugBatchOne extends BasicHack {
 			}
 		}
 		player.getEquipment().setHelmet(banner);
+	}
+	
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	public void tradeWanderer(PlayerInteractEntityEvent event) {
+		if (!disableWanderingTrader) {
+			return;
+		}
+		if (event.getRightClicked().getType() == EntityType.WANDERING_TRADER) {
+			event.setCancelled(true);
+		}
+	}
+
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void lavaToCobble(BlockPhysicsEvent e) {
+		if (!disableLavaCobbleMountains) {
+			return;
+		}
+		if (e.getBlock().getType() != Material.LAVA) {
+			return;
+		}
+		if (isLavaSourceNear(e.getBlock(), 3)) {
+			return;
+		}
+		boolean foundWater = false;
+		for (Block block : BlockAPI.getAllSides(e.getBlock())) {
+			if (block.getType() == Material.WATER) {
+				foundWater = true;
+				break;
+			}
+		}
+		if (foundWater) {
+			Bukkit.getScheduler().runTask(SimpleAdminHacks.instance(), () -> e.getBlock().setType(Material.AIR));
+		}
+	}
+
+	private static boolean isLavaSourceNear(Block block, int ttl) {
+		if (ttl <= 0) {
+			return false;
+		}
+		if (block.getType() != Material.LAVA) {
+			return false;
+		}
+		if (((Levelled) block.getBlockData()).getLevel() == 0) {
+			// source block
+			return true;
+		}
+		for (Block relative : BlockAPI.getAllSides(block)) {
+			if (isLavaSourceNear(relative, ttl - 1)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
