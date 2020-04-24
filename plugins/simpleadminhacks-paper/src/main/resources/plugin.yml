@@ -79,6 +79,10 @@ commands:
       /<command> periodic <time> - Shows a color differentiated summary of monitored events and counts that have changed, with <time> as ticks inbetween display
       /<command> periodic <event> <time> - Shows a color differentiated summary of monitored evenst that match the passed param <event>, with <time> as ticks inbetween display
       /<command> - Just shows this description  
+  debugevent:
+    description: Allows debugging of an event and its handlers 
+    usage: /<command> full.path.to.event   
+    permission: simpleadmin.debug
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -122,6 +126,9 @@ permissions:
       description: Gives the ability to create NPCs (bots)
       default: op
     simpleadmin.timings:
+      description: Gives the ability to view and manage /...timings commands
+      default: op
+    simpleadmin.debug:
       description: Gives the ability to view and manage /...timings commands
       default: op
 api-version: 1.14

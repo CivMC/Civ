@@ -4,17 +4,28 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Server;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.ClassUtils;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventException;
@@ -22,6 +33,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.RegisteredListener;
@@ -45,23 +57,44 @@ public class EventDebugHack extends BasicHack {
 		return new BasicHackConfig(plugin, config);
 	}
 
-	public void untargetEvent(String eventName) {
+	@Override
+	public void registerCommands() {
+		plugin().registerCommand("debugevent", new CommandExecutor() {
+
+			@Override
+			public boolean onCommand(CommandSender sender, Command arg1, String arg2, String[] args) {
+				if (args.length == 0) {
+					sender.sendMessage(ChatColor.RED + "You must give an event");
+					return false;
+				}
+				if (untargetEvent(args[0])) {
+					sender.sendMessage(ChatColor.GREEN + "Disabled tracking for " + args[0]);
+					return true;
+				}
+				targetEvent(args[0], sender);
+				return true;
+			}
+		});
+	}
+
+	public boolean untargetEvent(String eventName) {
 		Class<? extends Event> eventClass = getEventClass(eventName);
 		if (eventClass == null) {
-			return;
+			return false;
 		}
 		HandlerList handler = classToHandler.get(eventClass);
 		List<RegisteredListener> listeners = classToListeners.get(eventClass);
 		if (handler == null || listeners == null) {
-			return;
+			return false;
 		}
 		listeners.forEach(handler::unregister);
 		classToHandler.remove(eventClass);
 		classToListeners.remove(eventClass);
+		return true;
 	}
 
 	@SuppressWarnings("unchecked")
-	private Class<? extends Event> getEventClass(String eventName) {
+	private static Class<? extends Event> getEventClass(String eventName) {
 		if (eventName.startsWith(".")) {
 			eventName = "org.bukkit.event" + eventName;
 		}
@@ -117,7 +150,7 @@ public class EventDebugHack extends BasicHack {
 					continue;
 				}
 				Class<?> clazz = method.getParameterTypes()[0];
-				if (Event.class.isAssignableFrom(clazz)) {
+				if (clazz != eventClass) {
 					continue;
 				}
 				sender.sendMessage(String.format("[%s] on %s is %s", listener.getPlugin().getName(),
@@ -146,23 +179,31 @@ public class EventDebugHack extends BasicHack {
 
 	private void printEventState(EventPriority prio, Event event) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("At stage " + prio.toString() + " " + event.getEventName() + " is as follows: ");
-		deepInspectObject(event, "event", sb, 0);
+		sb.append("At stage " + prio.toString() + " " + event.getEventName() + " is as follows: \n");
+		deepInspectObject(event, "event", sb, 0, new HashSet<>());
 		SimpleAdminHacks.instance().getLogger().info(sb.toString());
 	}
 
-	private void deepInspectObject(Object o, String fieldName, StringBuilder sb, int depth) {
-		String pre = new String(new char[depth]).replace("\0", "-") + " ";
+	private static void deepInspectObject(Object o, String fieldName, StringBuilder sb, int depth, Set<Object> seen) {
+		String pre = new String(new char[depth * 2]).replace("\0", "-") + " ";
 		if (o == null) {
-			sb.append(pre + fieldName + ": null");
+			sb.append(pre + fieldName + ": null\n");
 			return;
 		}
 		if (ClassUtils.isPrimitiveOrWrapper(o.getClass()) || straightPrint(o)) {
-			sb.append(pre + o.getClass().getSimpleName() + " " + fieldName + " = " + o.toString());
+			sb.append(pre + o.getClass().getSimpleName() + " " + fieldName + " = " + o.toString() + '\n');
 			return;
 		}
 		sb.append(pre + o.getClass().getSimpleName() + " " + fieldName + ":");
-		for (Field field : this.getClass().getFields()) {
+		if (seen.contains(o)) {
+			sb.append(pre + "omitted\n");
+			return;
+		} else {
+			sb.append('\n');
+		}
+		seen.add(o);
+		for (Field field : getAllFields(new LinkedList<>(), o.getClass())) {
+			field.setAccessible(true);
 			Object member;
 			try {
 				member = field.get(o);
@@ -171,13 +212,23 @@ public class EventDebugHack extends BasicHack {
 						.severe("Failed to get member in deep inspection " + e.getMessage());
 				continue;
 			}
-			deepInspectObject(member, field.getName(), sb, depth + 1);
+			deepInspectObject(member, field.getName(), sb, depth + 1, seen);
 		}
 	}
 
+	public static List<Field> getAllFields(List<Field> fields, Class<?> type) {
+		fields.addAll(Arrays.asList(type.getDeclaredFields()));
+		if (type.getSuperclass() != null) {
+			getAllFields(fields, type.getSuperclass());
+		}
+		return fields;
+	}
+
 	private static boolean straightPrint(Object o) {
-		return o instanceof LivingEntity || o instanceof String || o instanceof World || o instanceof Plugin
-				|| o instanceof Collection || o instanceof Map;
+		return o instanceof Entity || o instanceof String || o instanceof World || o instanceof Plugin
+				|| o instanceof Collection || o instanceof Map || o instanceof Server || o instanceof Location
+				|| o instanceof Block || o.getClass().isEnum() || o instanceof HandlerList || o instanceof Random
+				|| o instanceof Logger || o instanceof ItemStack;
 	}
 
 }
