@@ -61,7 +61,7 @@ public final class ReinforcementLogic {
 		if (!reinforcement.isMature()) {
 			double timeExisted = System.currentTimeMillis() - reinforcement.getCreationTime();
 			double progress = timeExisted / reinforcement.getType().getMaturationTime();
-			damageAmount /= (1.0 - progress);
+			damageAmount /= progress;
 			damageAmount *= reinforcement.getType().getMaturationScale();
 		}
 		long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();

@@ -161,6 +161,9 @@ public class CitadelUtility {
 			return true;
 		}
 		ItemMap playerItems = new ItemMap(player.getInventory());
+		if (player.getInventory().getItemInOffHand() != null) {
+			playerItems.addItemStack(player.getInventory().getItemInOffHand());
+		}
 		// check inventory
 		int available = playerItems.getAmount(type.getItem());
 		if (available == 0) {
