@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings;
 
+import com.google.common.base.Preconditions;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -7,13 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-
+import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
  * Allows creating settings, which will automatically be available in players
@@ -21,21 +22,22 @@ import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
  *
  */
 public final class PlayerSettingAPI {
-	
-	private PlayerSettingAPI() {}
 
 	private static final String FILE_NAME = "civ-player-settings.yml";
 
-	private static Map<String, PlayerSetting<?>> settingsByIdentifier = new HashMap<>();
-	private static Map<String, List<PlayerSetting<?>>> settingsByPlugin = new HashMap<>();
+	private static final Map<String, PlayerSetting<?>> SETTINGS_BY_IDENTIFIER = new HashMap<>();
 
-	private static MenuSection mainMenu = new MenuSection("Config", "", null);
+	private static final Map<String, List<PlayerSetting<?>>> SETTINGS_BY_PLUGIN = new HashMap<>();
+
+	private static final MenuSection MAIN_MENU = new MenuSection("Config", "", null);
+	
+	private PlayerSettingAPI() { }
 
 	/**
 	 * @return GUI main menu
 	 */
 	public static MenuSection getMainMenu() {
-		return mainMenu;
+		return MAIN_MENU;
 	}
 
 	/**
@@ -45,7 +47,7 @@ public final class PlayerSettingAPI {
 	 * @return Setting with the given identifier or null if no such setting exists
 	 */
 	public static PlayerSetting<?> getSetting(String identifier) {
-		return settingsByIdentifier.get(identifier);
+		return SETTINGS_BY_IDENTIFIER.get(identifier);
 	}
 
 	private static void loadValues(PlayerSetting<?> setting) {
@@ -78,23 +80,34 @@ public final class PlayerSettingAPI {
 	 * @param menu Menu in which this value will appear
 	 */
 	public static void registerSetting(PlayerSetting<?> setting, MenuSection menu) {
+		Preconditions.checkArgument(setting != null, "Player setting cannot be null.");
 		loadValues(setting);
-		settingsByIdentifier.put(setting.getIdentifier(), setting);
-		List<PlayerSetting<?>> specificList = settingsByPlugin.computeIfAbsent(setting.getOwningPlugin().getName(), k -> new ArrayList<>());
-		if (specificList.contains(setting)) {
-			throw new IllegalArgumentException("You can not register a setting twice");
-		}
-		specificList.add(setting);
+		List<PlayerSetting<?>> pluginSettings = SETTINGS_BY_PLUGIN.computeIfAbsent(
+				setting.getOwningPlugin().getName(),
+				(k) -> new ArrayList<>());
+		Preconditions.checkArgument(!pluginSettings.contains(setting),
+				"Cannot register the same player setting twice.");
+		SETTINGS_BY_IDENTIFIER.put(setting.getIdentifier(), setting);
+		pluginSettings.add(setting);
 		if (setting.canBeChangedByPlayer()) {
 			menu.addItem(new MenuOption(menu, setting));
 		}
 	}
 
+	// TODO: While this deregisteres the settings, those settings then need to be removed from menus
+	//    Maybe menus need a rework?
+//	public static void deregisterPluginSettings(Plugin plugin) {
+//		Preconditions.checkArgument(plugin != null);
+//		Iteration.iterateThenClear(SETTINGS_BY_PLUGIN.get(plugin.getName()), (setting) ->
+//				SETTINGS_BY_IDENTIFIER.remove(setting.getIdentifier()));
+//		SETTINGS_BY_PLUGIN.remove(plugin.getName());
+//	}
+
 	/**
 	 * Saves all values to their save files
 	 */
 	public static void saveAll() {
-		for (Entry<String, List<PlayerSetting<?>>> pluginEntry : settingsByPlugin.entrySet()) {
+		for (Entry<String, List<PlayerSetting<?>>> pluginEntry : SETTINGS_BY_PLUGIN.entrySet()) {
 			if (pluginEntry.getValue().isEmpty()) {
 				continue;
 			}

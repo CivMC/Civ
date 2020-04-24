@@ -2,14 +2,13 @@ package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 
 public class MenuOption extends MenuItem {
 	
-	private PlayerSetting<?> setting;
+	private final PlayerSetting<?> setting;
 
 	public MenuOption(MenuSection menu, PlayerSetting<?> setting) {
 		super(setting.getNiceName(), menu);
@@ -26,6 +25,10 @@ public class MenuOption extends MenuItem {
 				setting.handleMenuClick(p, getParent());				
 			}
 		};
+	}
+
+	public PlayerSetting<?> getSetting() {
+		return this.setting;
 	}
 
 }

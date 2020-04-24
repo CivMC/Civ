@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import vg.civcraft.mc.civmodcore.api.EntityAPI;
 
 /**
  * The listener which makes ClickableInventories work. To use this either register it as a listener in your plugin or
@@ -16,33 +17,29 @@ import org.bukkit.event.player.PlayerQuitEvent;
 public class ClickableInventoryListener implements Listener {
 
 	@EventHandler
-	public void inventoryClick(InventoryClickEvent e) {
-		if (!(e.getWhoClicked() instanceof Player)) {
+	public void inventoryClick(InventoryClickEvent event) {
+		if (!EntityAPI.isPlayer(event.getWhoClicked())) {
 			return;
 		}
-		Player p = (Player) e.getWhoClicked();
-		ClickableInventory ci = ClickableInventory.getOpenInventory(p);
-		if (ci != null) {
-			e.setCancelled(true); // always cancel first to prevent dupes
-			ci.itemClick(p, e.getRawSlot());
+		Player player = (Player) event.getWhoClicked();
+		ClickableInventory inventory = ClickableInventory.getOpenInventory(player);
+		if (inventory != null) {
+			event.setCancelled(true); // always cancel first to prevent dupes
+			inventory.itemClick(player, event.getRawSlot());
 		}
 	}
 
 	@EventHandler
-	public void inventoryClose(InventoryCloseEvent e) {
-		// for some reason getPlayer apparently isnt always a player here, but
-		// just a HumanEntity
-		if (!(e.getPlayer() instanceof Player)) {
+	public void inventoryClose(InventoryCloseEvent event) {
+		if (!EntityAPI.isPlayer(event.getPlayer())) { // Despite the name, it's not necessarily a player
 			return;
 		}
-		Player p = (Player) e.getPlayer();
-		ClickableInventory.inventoryWasClosed(p);
+		ClickableInventory.inventoryWasClosed((Player) event.getPlayer());
 	}
 
 	@EventHandler
-	public void playerLogoff(PlayerQuitEvent e) {
-		// this just does nothing if no inventory was open
-		ClickableInventory.inventoryWasClosed(e.getPlayer());
+	public void playerLogoff(PlayerQuitEvent event) {
+		ClickableInventory.inventoryWasClosed(event.getPlayer());
 	}
 
 }
