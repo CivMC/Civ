@@ -5,10 +5,10 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.type.Bed;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.material.Bed;
 
 import vg.civcraft.mc.citadel.events.ReinforcementCreationEvent;
 import vg.civcraft.mc.citadel.events.ReinforcementDestructionEvent;
@@ -160,8 +160,8 @@ public final class ReinforcementLogic {
 		case RED_BED:
 		case YELLOW_BED:
 			Bed bed = (Bed) block.getBlockData();
-			if (bed.getPart() == Bed.Part.HEAD) {
-				return block.getRelative(((Bed) block.getState().getData()).getFacing().getOppositeFace());
+			if (bed.isHeadOfBed()) {
+				return block.getRelative(bed.getFacing().getOppositeFace());
 			}
 			return block;
 		default:
