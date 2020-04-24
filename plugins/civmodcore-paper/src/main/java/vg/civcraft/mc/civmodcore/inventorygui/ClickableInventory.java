@@ -28,7 +28,7 @@ public class ClickableInventory {
 
 	private static final Logger log = Bukkit.getLogger();
 
-	private static HashMap<UUID, ClickableInventory> openInventories = new HashMap<>();
+	private static final HashMap<UUID, ClickableInventory> openInventories = new HashMap<>();
 
 	private Inventory inventory;
 
