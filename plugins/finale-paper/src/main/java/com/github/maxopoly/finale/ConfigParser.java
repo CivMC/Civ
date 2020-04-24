@@ -176,7 +176,7 @@ public class ConfigParser {
 
 	private SaturationHealthRegenHandler parseHealthRegen(ConfigurationSection config) {
 		// default values are vanilla 1.8 behavior
-		int interval = (int) parseTime(config.getString("interval", "4s")) / 20;
+		int interval = (int) parseTime(config.getString("interval", "4s")) / 50;
 		float exhaustionPerHeal = (float) config.getDouble("exhaustionPerHeal", 3.0);
 		int minimumFood = config.getInt("minimumFood", 18);
 		double healthPerCycle = config.getDouble("healthPerCycle", 1.0);
