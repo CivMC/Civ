@@ -54,15 +54,19 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 	public ChatColor deserialize(String serial) {
 		return ChatColor.valueOf(serial);
 	}
-	
+
 	@Override
 	public ItemStack getGuiRepresentation(UUID player) {
 		ChatColor color = getValue(player);
 		ItemStack item;
-		if (color != null) {
-			item = new ItemStack(colorToGui.get(color));
+		if (color == RAINBOW_COLOR) {
+			item = new ItemStack(Material.YELLOW_STAINED_GLASS);
 		} else {
-			item = new ItemStack(Material.WHITE_WOOL);
+			if (color != null) {
+				item = new ItemStack(colorToGui.get(color));
+			} else {
+				item = new ItemStack(Material.WHITE_WOOL);
+			}
 		}
 		applyInfoToItemStack(item, player);
 		Player play = Bukkit.getPlayer(player);

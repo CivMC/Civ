@@ -11,12 +11,12 @@ import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public class NameColors extends ACivMod implements Listener {
-	
+
 	private static NameColors instance;
-	
+
 	private static final ChatColor[] rainbow = { ChatColor.RED, ChatColor.GOLD, ChatColor.YELLOW, ChatColor.GREEN,
 			ChatColor.DARK_AQUA, ChatColor.AQUA, ChatColor.DARK_PURPLE, ChatColor.LIGHT_PURPLE };
-	
+
 	public static NameColors getInstance() {
 		return instance;
 	}
@@ -41,7 +41,6 @@ public class NameColors extends ACivMod implements Listener {
 		getServer().getPluginManager().registerEvents(this, this);
 	}
 
-
 	@EventHandler
 	public void onPlayerLogin(PlayerLoginEvent event) {
 		updatePlayerName(event.getPlayer(), setting.getValue(event.getPlayer()));
@@ -50,13 +49,14 @@ public class NameColors extends ACivMod implements Listener {
 	public void updatePlayerName(Player player, ChatColor color) {
 		if (color == null || color == ChatColor.RESET) {
 			CivChat2.getInstance().getCivChat2Manager().removeCustomName(player.getUniqueId());
-		}
-		else {
+		} else {
 			if (color == NameColorSetting.RAINBOW_COLOR) {
-				CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(), rainbowify(player.getName()));
+				CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(),
+						rainbowify(player.getName()) + ChatColor.RESET);
 				return;
 			}
-			CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(), color+player.getName());
+			CivChat2.getInstance().getCivChat2Manager().setCustomName(player.getUniqueId(),
+					color + player.getName() + ChatColor.RESET);
 		}
 	}
 }
