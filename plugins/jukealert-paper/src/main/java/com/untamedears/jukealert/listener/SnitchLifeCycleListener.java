@@ -79,7 +79,7 @@ public class SnitchLifeCycleListener implements Listener {
 				snitch.getLocation().toString(), p != null ? p.getName() : "null"));
 		if (p != null) {
 			p.sendMessage(String.format("%sCreated %s on group %s at [%d %d %d]", ChatColor.GREEN,
-					snitchConfig.getName(), e.getReinforcement().getGroup(), location.getBlockX(), location.getBlockY(),
+					snitchConfig.getName(), e.getReinforcement().getGroup().getName(), location.getBlockX(), location.getBlockY(),
 					location.getBlockZ()));
 		}
 		snitchManager.addSnitch(snitch);
