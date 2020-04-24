@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.commands;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
@@ -17,6 +18,7 @@ public class ReloadCommand extends AikarCommand {
 	}
 
 	@Default
+	@Description("Reload's ItemExchange's config.")
 	public void onReloadConfig() {
 		this.plugin.reloadConfig();
 	}

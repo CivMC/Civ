@@ -54,6 +54,7 @@ public class ItemExchangePlugin extends ACivMod {
 	@Override
 	public void onEnable() {
 		instance = this;
+		useNewCommandHandler = false;
 		super.onEnable();
 		saveDefaultConfig();
 		// Register Events
