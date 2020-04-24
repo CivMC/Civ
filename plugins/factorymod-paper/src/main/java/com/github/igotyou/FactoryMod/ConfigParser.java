@@ -789,7 +789,7 @@ public class ConfigParser {
 					overwrittenLore = ((LoreEnchantRecipe) parentRecipe).getOverwrittenLore();
 				} else {
 					// having no lore to be overwritten is completly fine
-					overwrittenLore = new LinkedList<String>();
+					overwrittenLore = new LinkedList<>();
 				}
 			}
 			result = new LoreEnchantRecipe(identifier, name, productionTime, input, toolMap, appliedLore,
@@ -847,6 +847,9 @@ public class ConfigParser {
 				result = null;
 				break;
 			}
+			else {
+				plugin.info("Loaded "+ words.size() + " words for word bank recipe");
+			}
 			List<ChatColor> colors = new ArrayList<>();
 			if (!config.isList("colors")) {
 				colors = Arrays.asList(ChatColor.YELLOW, ChatColor.LIGHT_PURPLE, ChatColor.BLUE, ChatColor.RED,
@@ -863,7 +866,8 @@ public class ConfigParser {
 					}
 				}
 			}
-			result = new WordBankRecipe(identifier, name, productionTime, key, words, colors);
+			int wordCount = config.getInt("word_count", 2);
+			result = new WordBankRecipe(identifier, name, productionTime, key, words, colors, wordCount);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");

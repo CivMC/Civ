@@ -32,7 +32,7 @@ public class WordBankRecipe extends InputRecipe {
 	private SecureRandom preview;
 
 	public WordBankRecipe(String identifier, String name, int productionTime, long key, List<String> words,
-			List<ChatColor> colors) {
+			List<ChatColor> colors, int wordCount) {
 		super(identifier, name, productionTime, new ItemMap());
 		try {
 			this.digest = MessageDigest.getInstance("SHA-512");
@@ -40,6 +40,7 @@ public class WordBankRecipe extends InputRecipe {
 			FactoryMod.getInstance().getLogger().severe("Failed to instanciate SHA-512:" + e.getMessage());
 		}
 		this.key = key;
+		this.words = wordCount;
 		this.validWords = words;
 		this.colors = colors;
 		this.preview = new SecureRandom();
@@ -47,31 +48,20 @@ public class WordBankRecipe extends InputRecipe {
 
 	@Override
 	public void applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
-		ItemMap input = new ItemMap();
-		int slot = -1;
-		for (int i = 0; i < inventory.getSize(); i++) {
-			ItemStack is = inventory.getItem(i);
-			if (is == null || is.getType() == Material.AIR) {
-				continue;
-			}
-			if (slot == -1 && is.getItemMeta() instanceof Damageable) {
-				slot = i;
-			} else {
-				input.addItemStack(is);
-			}
-		}
-		if (slot == -1) {
-			// failed, no item to apply on
+		ItemStack toApply = inventory.getItem(0);
+		if (!ItemAPI.isValidItem(toApply)) {
 			return;
 		}
-		// clear all others and apply name
-		for (int i = 0; i < inventory.getSize(); i++) {
-			if (i != slot) {
-				inventory.setItem(i, null);
-			} else {
-				ItemAPI.setDisplayName(inventory.getItem(i), getHash(input));
+		ItemMap input = new ItemMap();
+		for (int i = 1; i < inventory.getSize(); i++) {
+			ItemStack is = inventory.getItem(i);
+			if (!ItemAPI.isValidItem(is)) {
+				continue;
 			}
+			input.addItemStack(is);
+			inventory.setItem(i, null);
 		}
+		ItemAPI.setDisplayName(toApply, getHash(input));
 	}
 
 	@Override
@@ -93,7 +83,7 @@ public class WordBankRecipe extends InputRecipe {
 		output.append(colors.get(preview.nextInt(colors.size())));
 		for (int i = 0; i < words; i++) {
 			String word = validWords.get(preview.nextInt(validWords.size()));
-			if (i > 1) {
+			if (i > 0) {
 				output.append(" ");
 			}
 			output.append(word);
@@ -112,20 +102,18 @@ public class WordBankRecipe extends InputRecipe {
 
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inventory) {
-		ItemMap input = new ItemMap();
-		int slot = -1;
-		for (int i = 0; i < inventory.getSize(); i++) {
+		ItemStack toApply = inventory.getItem(0);
+		if (!ItemAPI.isValidItem(toApply)) {
+			return false;
+		}
+		for (int i = 1; i < inventory.getSize(); i++) {
 			ItemStack is = inventory.getItem(i);
-			if (is == null || is.getType() == Material.AIR) {
+			if (!ItemAPI.isValidItem(is)) {
 				continue;
 			}
-			if (slot == -1 && is.getItemMeta() instanceof Damageable) {
-				slot = i;
-			} else {
-				input.addItemStack(is);
-			}
+			return true;
 		}
-		return slot != -1 && input.getTotalItemAmount() != 0;
+		return false;
 	}
 
 	private synchronized String getHash(ItemMap items) {
