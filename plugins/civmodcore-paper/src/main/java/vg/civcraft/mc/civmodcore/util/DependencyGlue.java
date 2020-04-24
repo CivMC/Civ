@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.event.server.ServerLoadEvent;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Class designed to make creating glue classes easier, particularly with soft dependencies where your plugins may use
@@ -75,10 +76,16 @@ public abstract class DependencyGlue implements Listener {
 
 	@EventHandler
 	public final void onServerLoad(ServerLoadEvent event) {
-		this.enabled = Iteration.some(Bukkit.getPluginManager().getPlugins(), (plugin) ->
-				TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName));
-		if (this.enabled) {
+		for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+			if (plugin == null || !plugin.isEnabled()) {
+				continue;
+			}
+			if (!TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName)) {
+				continue;
+			}
+			this.enabled = true;
 			onGlueEnabled();
+			break;
 		}
 	}
 
