@@ -88,13 +88,6 @@ public class NameLayerPlugin extends ACivMod{
 
 	@Override
 	public void onDisable() {
-		if (db != null) {
-			try {
-				db.close();
-			} catch (Exception e) {
-				getLogger().log(Level.INFO, "Failed to close database gracefully on shutdown.", e);
-			}
-		}
 	}
 	
 	public static NameLayerPlugin getInstance(){
