@@ -30,6 +30,8 @@ public class CitadelSettingManager {
 	private BooleanSetting showChatMsgInCti;
 	private BooleanSetting showHologramInCti;
 	private BooleanSetting easyMode;
+	private BooleanSetting ctoDisableCti;
+	private BooleanSetting ctoDisableCtb;
 
 	private BoundedIntegerSetting hologramDuration;
 
@@ -73,6 +75,14 @@ public class CitadelSettingManager {
 
 	public boolean shouldShowChatInCti(UUID uuid) {
 		return showChatMsgInCti.getValue(uuid);
+	}
+	
+	public boolean shouldCtoDisableCti(UUID uuid) {
+		return ctoDisableCti.getValue(uuid);
+	}
+	
+	public boolean shouldCtoDisableCtb(UUID uuid) {
+		return ctoDisableCtb.getValue(uuid);
 	}
 
 	public boolean shouldShowHologramInCti(UUID uuid) {
@@ -127,6 +137,14 @@ public class CitadelSettingManager {
 		modeLocationSetting = new DisplayLocationSetting(Citadel.getInstance(), DisplayLocation.SIDEBAR, "Citadel mode display location"
 				, "citadelReinModeDisplayLocation", new ItemStack(Material.NETHER_STAR), "Citadel mode");
 		PlayerSettingAPI.registerSetting(modeLocationSetting, menu);
+		
+		ctoDisableCtb =  new BooleanSetting(Citadel.getInstance(), false, "/cto disable /ctb",
+				"citadelCtoDisableCtb", "Should /cto disable Bypass mode (/ctb)");
+		PlayerSettingAPI.registerSetting(ctoDisableCtb, menu);
+		
+		ctoDisableCti =  new BooleanSetting(Citadel.getInstance(), true, "/cto disable /cti",
+				"citadelCtoDisableCti", "Should /cto disable Information mode (/cti)");
+		PlayerSettingAPI.registerSetting(ctoDisableCti, menu);		
 		
 		MenuSection commandSection = menu.createMenuSection("Command replies",
 				"Allows configuring the replies received when interacting with reinforcements or Citadel commands. For advanced users only");
