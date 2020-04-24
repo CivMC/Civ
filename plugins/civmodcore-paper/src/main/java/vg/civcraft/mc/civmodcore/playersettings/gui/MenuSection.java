@@ -1,15 +1,14 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
@@ -17,8 +16,9 @@ import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
 
 public class MenuSection extends MenuItem {
 
-	private Map<String, MenuItem> content;
-	private ItemStack itemRepresentation;
+	private final Map<String, MenuItem> content;
+
+	private final ItemStack itemRepresentation;
 
 	public MenuSection(String name, String description, MenuSection parent) {
 		this(name, description, parent, new ItemStack(Material.BOOK));
@@ -34,6 +34,10 @@ public class MenuSection extends MenuItem {
 
 	public void addItem(MenuItem item) {
 		content.put(item.getName(), item);
+	}
+
+	public Collection<MenuItem> getItems() {
+		return this.content.values();
 	}
 	
 	public MenuSection createMenuSection(String name, String description) {
