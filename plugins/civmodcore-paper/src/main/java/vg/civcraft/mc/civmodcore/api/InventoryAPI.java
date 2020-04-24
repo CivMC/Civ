@@ -97,6 +97,45 @@ public final class InventoryAPI {
 	}
 
 	/**
+	 * Clears an inventory of items.
+	 *
+	 * @param inventory The inventory to clear of items.
+	 */
+	public static void clearInventory(Inventory inventory) {
+		Preconditions.checkArgument(isValidInventory(inventory));
+		inventory.setContents(Iteration.fill(inventory.getContents(), null));
+	}
+
+	/**
+	 * Checks whether an inventory has more than one viewer.
+	 *
+	 * @param inventory The inventory to check.
+	 * @return Returns true if an inventory has multiple viewers.
+	 */
+	public static boolean hasOtherViewers(Inventory inventory) {
+		if (!isValidInventory(inventory)) {
+			return false;
+		}
+		return inventory.getViewers().size() > 1;
+	}
+
+	/**
+	 * Checks whether a certain amount of slots would be considered a valid chest inventory.
+	 *
+	 * @param slots The slot amount to check.
+	 * @return Returns true if the slot count is or between 1-6 multiples of 9.
+	 */
+	public static boolean isValidChestSize(int slots) {
+		if (slots <= 0 || slots > 54) {
+			return false;
+		}
+		if ((slots % 9) > 0) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * Will safely add a set of items to an inventory. If not all items are added, it's not committed to the inventory.
 	 *
 	 * @param inventory The inventory to add the items to.
