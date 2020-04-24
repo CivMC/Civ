@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -13,6 +14,8 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.civmodcore.inventorygui.MultiPageView;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 
 public class MenuSection extends MenuItem {
 
@@ -75,6 +78,25 @@ public class MenuSection extends MenuItem {
 			}, 2);
 		}
 		pageView.showScreen();
+	}
+
+	/**
+	 * Registers this menu with its parent.
+	 */
+	public void registerToParentMenu() {
+		if (this.parent != null) {
+			this.parent.addItem(this);
+		}
+	}
+
+	/**
+	 * Registers a setting with this menu.
+	 *
+	 * @param setting The setting to register.
+	 */
+	public void registerSetting(PlayerSetting<?> setting) {
+		Preconditions.checkArgument(setting != null);
+		PlayerSettingAPI.registerSetting(setting, this);
 	}
 
 }
