@@ -32,6 +32,7 @@ public class FinaleManager {
 
 	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks, boolean regenHandlerEnabled,
 			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, ArmourModifier armourModifier, PotionHandler potionHandler, CombatConfig combatConfig) {
+		this.debug = debug;
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
 		this.regenHandlerEnabled = regenHandlerEnabled;

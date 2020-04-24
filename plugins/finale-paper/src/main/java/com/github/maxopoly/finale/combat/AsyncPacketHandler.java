@@ -71,8 +71,6 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 				return;
 			}
 			
-			event.setCancelled(true);
-			
 			LivingEntity entityTarget = (LivingEntity) target;
 			
 			StructureModifier<EntityUseAction> actions = packet.getEntityUseActions();
@@ -81,6 +79,8 @@ public class AsyncPacketHandler extends PacketAdapter implements Listener {
 			if (action != EntityUseAction.ATTACK) {
 				return;
 			}
+			event.setCancelled(true);
+			
 			//cpsHandler.updateClicks(attacker);
 			
 			double distanceSquared = attacker.getLocation().distanceSquared(target.getLocation());

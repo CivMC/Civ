@@ -29,11 +29,11 @@ public class SaturationHealthRegenHandler implements Runnable {
 	public SaturationHealthRegenHandler(int interval, double healthPerCycle, int minimumFood, float exhaustionPerHeal,
 			boolean blockPassiveHealthRegen, boolean blockFoodHealthRegen) {
 		this.currentTick = 0;
-		this.ticks = new ArrayList<LinkedList<UUID>>(interval);
+		this.ticks = new ArrayList<>(interval);
 		for (int i = 0; i < interval; i++) {
 			ticks.add(null);
 		}
-		tickMapping = new TreeMap<UUID, Integer>();
+		tickMapping = new TreeMap<>();
 		this.interval = interval;
 		this.healthPerCycle = healthPerCycle;
 		this.minimumFood = minimumFood;
@@ -74,7 +74,7 @@ public class SaturationHealthRegenHandler implements Runnable {
 	public void registerPlayer(UUID uuid) {
 		LinkedList<UUID> players = ticks.get(currentTick);
 		if (players == null) {
-			players = new LinkedList<UUID>();
+			players = new LinkedList<>();
 			ticks.set(currentTick, players);
 		}
 		Integer exisTick = tickMapping.get(uuid);
@@ -102,14 +102,12 @@ public class SaturationHealthRegenHandler implements Runnable {
 				if (p.isDead() || p.getHealth() <= 0.0) {
 					continue;
 				}
-
 				double maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
-
 				if (p.getFoodLevel() >= minimumFood && p.getHealth() < maxHealth) {
-					StringBuffer alterHealth = null;
+					StringBuilder alterHealth = null;
 
 					if (Finale.getPlugin().getManager().isDebug()) {
-						alterHealth = new StringBuffer(p.getName());
+						alterHealth = new StringBuilder(p.getName());
 						alterHealth.append(":").append(p.getHealth()).append("<").append(maxHealth);
 						alterHealth.append(":").append(p.getSaturation()).append(":").append(p.getExhaustion());
 						alterHealth.append(":").append(p.getFoodLevel());
