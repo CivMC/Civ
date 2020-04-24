@@ -18,8 +18,9 @@ import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 
 public final class ReinforcementLogic {
-	
-	private ReinforcementLogic() {}
+
+	private ReinforcementLogic() {
+	}
 
 	public static Reinforcement createReinforcement(Player player, Block block, ReinforcementType type, Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
@@ -159,9 +160,11 @@ public final class ReinforcementLogic {
 		case LIGHT_BLUE_BED:
 		case RED_BED:
 		case YELLOW_BED:
-			Bed bed = (Bed) block.getBlockData();
-			if (bed.isHeadOfBed()) {
-				return block.getRelative(bed.getFacing().getOppositeFace());
+			if (block.getBlockData() instanceof Bed) {
+				Bed bed = (Bed) block.getBlockData();
+				if (bed.isHeadOfBed()) {
+					return block.getRelative(bed.getFacing().getOppositeFace());
+				}
 			}
 			return block;
 		default:
@@ -174,7 +177,7 @@ public final class ReinforcementLogic {
 	 * the player can not access due to missing perms
 	 * 
 	 * @param player the player attempting to access stuff
-	 * @param block Block to check for
+	 * @param block  Block to check for
 	 * @return True if the player can not do something like placing an adjacent
 	 *         chest or comparator, false otherwise
 	 */

@@ -36,9 +36,9 @@ import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 public class BlockListener implements Listener {
 
 	private static final Material matfire = Material.FIRE;
-	
+
 	private DoubleInteractFixer interactFixer;
-	
+
 	public BlockListener(Citadel plugin) {
 		this.interactFixer = new DoubleInteractFixer(plugin);
 	}
@@ -128,8 +128,7 @@ public class BlockListener implements Listener {
 			if (interactFixer.checkInteracted(pie.getPlayer(), pie.getClickedBlock())) {
 				return;
 			}
-		}
-		else if (pie.getAction() != Action.LEFT_CLICK_BLOCK) {
+		} else if (pie.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
 		Citadel.getInstance().getStateManager().getState(pie.getPlayer()).handleInteractBlock(pie);
@@ -232,7 +231,7 @@ public class BlockListener implements Listener {
 			rein.setHealth(-1);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventStrippingLogs(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
@@ -253,8 +252,7 @@ public class BlockListener implements Listener {
 		Player p = pie.getPlayer();
 		if (hand == EquipmentSlot.HAND) {
 			relevant = p.getInventory().getItemInMainHand();
-		}
-		else {
+		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
 		if (!ToolAPI.isAxe(relevant.getType())) {
@@ -269,7 +267,7 @@ public class BlockListener implements Listener {
 			pie.setCancelled(true);
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void preventTilingGrass(PlayerInteractEvent pie) {
 		if (!pie.hasBlock()) {
@@ -290,8 +288,7 @@ public class BlockListener implements Listener {
 		Player p = pie.getPlayer();
 		if (hand == EquipmentSlot.HAND) {
 			relevant = p.getInventory().getItemInMainHand();
-		}
-		else {
+		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
 		if (!ToolAPI.isShovel(relevant.getType())) {
@@ -329,8 +326,7 @@ public class BlockListener implements Listener {
 		Player p = pie.getPlayer();
 		if (hand == EquipmentSlot.HAND) {
 			relevant = p.getInventory().getItemInMainHand();
-		}
-		else {
+		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
 		if (!ToolAPI.isHoe(relevant.getType())) {
@@ -354,17 +350,18 @@ public class BlockListener implements Listener {
 		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
+		if (pie.getClickedBlock().getType() != Material.BEACON) {
+			return;
+		}
 		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(pie.getClickedBlock());
 		if (rein == null) {
 			return;
 		}
-		if (pie.getClickedBlock().getType() == Material.BEACON) {
-			if (!rein.hasPermission(pie.getPlayer(), CitadelPermissionHandler.getBeacon())) {
-				pie.setCancelled(true);
-				String msg = String.format("%s is locked with %s%s", pie.getClickedBlock().getType().name(),
-						ChatColor.AQUA, rein.getType().getName());
-				CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg);
-			}
+		if (!rein.hasPermission(pie.getPlayer(), CitadelPermissionHandler.getBeacon())) {
+			pie.setCancelled(true);
+			String msg = String.format("%s is locked with %s%s", pie.getClickedBlock().getType().name(), ChatColor.AQUA,
+					rein.getType().getName());
+			CitadelUtility.sendAndLog(pie.getPlayer(), ChatColor.RED, msg);
 		}
 	}
 }
