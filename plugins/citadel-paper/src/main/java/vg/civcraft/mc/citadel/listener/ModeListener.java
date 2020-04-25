@@ -209,7 +209,7 @@ public class ModeListener implements Listener {
 			}
 			return;
 		}
-		if (player.getGameMode() == GameMode.CREATIVE) {
+		if (player.getGameMode() == GameMode.CREATIVE && e.getAction() == Action.LEFT_CLICK_BLOCK) {
 			e.setCancelled(true);
 		}
 		boolean showHolo = settingMan.shouldShowHologramInCti(player.getUniqueId());
