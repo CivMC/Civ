@@ -55,7 +55,7 @@ public final class SettingsManager {
         if (Strings.isNullOrEmpty(destination)) {
             if (resetSetting != null) {
                 resetSetting.resetPlayerDestination(player);
-                player.sendMessage(ChatColor.GREEN + "Your destination has been reset.");
+                // Do not put a message here since the message is sent in the method above.
             }
             else {
                 player.sendMessage(ChatColor.RED + "Could not reset your destination.");
