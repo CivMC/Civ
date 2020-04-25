@@ -10,6 +10,7 @@ import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
@@ -42,6 +43,7 @@ public final class CivModCorePlugin extends ACivMod {
 		saveDefaultResource("materials.csv");
 		// Register listeners
 		registerListener(new ClickableInventoryListener());
+		registerListener(new PagedGUIManager());
 		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		// Register commands
