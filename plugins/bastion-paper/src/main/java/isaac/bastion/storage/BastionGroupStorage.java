@@ -45,7 +45,7 @@ public class BastionGroupStorage {
 	private Logger log;
 
 	private List<Operation> changed;
-	private Queue<Operation> localChanged = new ArrayDeque<Operation>();
+	private Queue<Operation> localChanged = new ArrayDeque<>();
 
 	private Map<Integer, BastionGroup> groups;
 	private int taskId;
@@ -62,6 +62,7 @@ public class BastionGroupStorage {
 		this.log = log;
 
 		this.taskId = new BukkitRunnable(){
+			@Override
 			public void run(){
 				updateChanged();
 			}
@@ -129,7 +130,7 @@ public class BastionGroupStorage {
 	}
 
 	public boolean isAllowedGroup(Group group, Group allowedGroup) {
-		return getBastionGroupByAllowed(group, allowedGroup) != null;
+		return group.equals(allowedGroup) || getBastionGroupByAllowed(group, allowedGroup) != null;
 	}
 
 	public List<BastionGroup> getBastionGroups(Group group) {
