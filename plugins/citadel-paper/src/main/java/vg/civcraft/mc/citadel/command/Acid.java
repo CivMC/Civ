@@ -22,6 +22,7 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.events.ReinforcementAcidBlockedEvent;
 import vg.civcraft.mc.citadel.model.AcidManager;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
@@ -36,6 +37,9 @@ public class Acid extends StandaloneCommand {
 		AcidManager acidMan = Citadel.getInstance().getAcidManager();
 		while (itr.hasNext()) {
 			Block block = itr.next();
+			if (MaterialAPI.isAir(block.getType())) {
+				continue;
+			}
 			if (!acidMan.isPossibleAcidBlock(block)) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
 				return true;
@@ -57,7 +61,7 @@ public class Acid extends StandaloneCommand {
 				return true;
 			}
 			Block topFace = block.getRelative(BlockFace.UP);
-			if (Material.AIR.equals(topFace.getType())) {
+			if (MaterialAPI.isAir(topFace.getType())) {
 				CitadelUtility.sendAndLog(p, ChatColor.RED, "There is no block above to acid block.");
 				return true;
 			}
