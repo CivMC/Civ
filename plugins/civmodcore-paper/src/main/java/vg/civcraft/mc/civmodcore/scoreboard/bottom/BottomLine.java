@@ -58,6 +58,7 @@ public class BottomLine implements Comparable<BottomLine>{
 						String newText = updateFunction.apply(player, entry.getValue());
 						if (newText == null) {
 							iter.remove();
+							BottomLineAPI.refreshIndividually(player.getUniqueId());
 							continue;
 						}
 						if (!newText.equals(entry.getValue()) ) {

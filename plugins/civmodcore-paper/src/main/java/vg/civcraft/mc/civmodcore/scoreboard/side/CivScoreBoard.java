@@ -48,6 +48,7 @@ public class CivScoreBoard {
 					if (player != null) {
 						String newText = updateFunction.apply(player, entry.getValue());
 						if (newText == null) {
+							hideForPlayer(player);
 							iter.remove();
 							continue;
 						}
@@ -63,6 +64,10 @@ public class CivScoreBoard {
 	}
 
 	public void set(Player p, String newText) {
+		if (newText == null) {
+			hide(p);
+			return;
+		}
 		String oldText = get(p);
 		internalUpdate(p, oldText, newText);
 		currentScoreText.put(p.getUniqueId(), newText);
@@ -83,12 +88,16 @@ public class CivScoreBoard {
 	}
 
 	public void hide(Player p) {
+		hideForPlayer(p);
+		currentScoreText.remove(p.getUniqueId());
+	}
+	
+	private void hideForPlayer(Player p) {
 		String text = get(p);
 		if (text == null) {
 			return;
 		}
 		p.getScoreboard().resetScores(text);
-		currentScoreText.remove(p.getUniqueId());
 		ScoreBoardAPI.adjustScore(p.getUniqueId(), -1);
 	}
 

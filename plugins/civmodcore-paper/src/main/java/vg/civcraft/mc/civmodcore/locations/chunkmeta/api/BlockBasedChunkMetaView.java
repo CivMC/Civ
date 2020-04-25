@@ -70,24 +70,27 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	 */
 	public D get(Location location) {
 		validateY(location.getBlockY());
-		T chunk = super.getChunkMeta(location);
-		if (chunk == null) {
-			if (alwaysLoaded) {
-				return null;
-			}
-			if (!allowAccessUnloaded) {
-				throw new IllegalStateException("Can not load data for unloaded chunk");
-			}
-			short worldID = worldIdManager.getInternalWorldId(location.getWorld());
-			D data = singleBlockTracker.getBlock(location, worldID);
-			if (data == null) {
-				return storageEngine.getForLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+		short worldID = worldIdManager.getInternalWorldId(location.getWorld());
+		D data = singleBlockTracker.getBlock(location, worldID);
+		if (data == null) {
+			T chunk = super.getChunkMeta(location);
+			if (chunk == null) {
+				if (alwaysLoaded) {
+					return null;
+				}
+				if (!allowAccessUnloaded) {
+					throw new IllegalStateException("Can not load data for unloaded chunk");
+				}
+				data = storageEngine.getForLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
 						worldID, pluginID);
+				if (data != null) {
+					singleBlockTracker.putBlock(data, worldID);
+				}
+			} else {
+				return chunk.get(location);
 			}
-			return data;
 		}
-		return chunk.get(location);
-
+		return data;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -109,8 +112,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		T chunk;
 		if (alwaysLoaded) {
 			chunk = getOrCreateChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
-		}
-		else {
+		} else {
 			chunk = super.getChunkMeta(loc.getWorld(), loc.getChunk().getX(), loc.getChunk().getZ());
 		}
 		if (chunk != null) {
@@ -165,7 +167,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 			throw new IllegalStateException("Can not delete data for unloaded chunk");
 		}
 		return singleBlockTracker.removeBlock(location, worldIdManager.getInternalWorldId(location.getWorld()));
-		
+
 	}
 
 	private static void validateY(int y) {
@@ -186,10 +188,10 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 					data, true);
 		}
 	}
-	
+
 	@Override
 	public void disable() {
-		for(D data : singleBlockTracker.getAll()) {
+		for (D data : singleBlockTracker.getAll()) {
 			storageEngine.persist(data, worldIdManager.getInternalWorldId(data.getLocation().getWorld()), pluginID);
 		}
 		super.disable();

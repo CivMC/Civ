@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.locations.global;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import org.bukkit.Location;
 
@@ -10,7 +9,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 
 public class GlobalLocationTracker<T extends LocationTrackable> {
 
-	private Map<Integer, T> tracked;
+	private Map<Location, T> tracked;
 	private GlobalTrackableDAO<T> dao;
 
 	public GlobalLocationTracker(GlobalTrackableDAO<T> dao) {
@@ -19,7 +18,7 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 	}
 	
 	public void initFromDB() {
-		dao.loadAll(t -> put(t));
+		dao.loadAll(this::put);
 	}
 
 	public void persist() {
@@ -43,23 +42,18 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 	}
 
 	public T get(Location loc) {
-		return tracked.get(quickHash(loc));
+		return tracked.get(loc);
 	}
 
 	public void put(T trackable) {
-		tracked.put(quickHash(trackable.getLocation()), trackable);
+		tracked.put(trackable.getLocation(), trackable);
 	}
 
 	public T remove(Location loc) {
-		return tracked.remove(quickHash(loc));
+		return tracked.remove(loc);
 	}
 
 	public T remove(T trackable) {
 		return remove(trackable.getLocation());
 	}
-
-	private static int quickHash(Location loc) {
-		return Objects.hash(loc.getWorld().getUID(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-	}
-
 }

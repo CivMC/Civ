@@ -6,6 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -149,10 +150,15 @@ public class ConfigParsing {
 						ConfigurationSection currentStoredEnchantSection = storedEnchantSection
 								.getConfigurationSection(sEKey);
 						if (currentStoredEnchantSection != null) {
-							Enchantment enchant = Enchantment
-									.getByName(currentStoredEnchantSection.getString("enchant"));
+							Enchantment enchant = parseEnchantment(currentStoredEnchantSection, "enchant");
 							int level = currentStoredEnchantSection.getInt("level", 1);
-							enchantMeta.addStoredEnchant(enchant, level, true);
+							if (enchant != null) {
+								enchantMeta.addStoredEnchant(enchant, level, true);
+							}
+							else {
+								log.severe("Failed to parse enchantment at " + currentStoredEnchantSection.getCurrentPath()
+								+ ", it was not applied");
+							}
 						}
 					}
 				}
@@ -449,6 +455,21 @@ public class ConfigParsing {
 			V value = valueConverter.apply(section.getString(keyString));
 			mapToUse.put(keyinstance, value);
 		}
+	}
+	
+	public static Enchantment parseEnchantment(ConfigurationSection config, String key) {
+		if (!config.isString(key)) {
+			return null;
+		}
+		String val = config.getString(key);
+		if (!Pattern.matches("[a-z0-9/._-]+", val)) {
+			return null;
+		}
+		NamespacedKey nsKey = NamespacedKey.minecraft(val);
+		if (nsKey == null) {
+			return null;
+		}
+		return Enchantment.getByKey(nsKey);
 	}
 
 }

@@ -38,6 +38,7 @@ public final class CivModCorePlugin extends ACivMod {
 		this.useNewCommandHandler = false;
 		super.onEnable();
 		instance = this;
+		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Save default resources
 		saveDefaultResource("enchantments.csv");
 		saveDefaultResource("materials.csv");
@@ -53,7 +54,6 @@ public final class CivModCorePlugin extends ACivMod {
 				registerCommand(new ConfigCommand());
 			}
 		};
-		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Load Database
 		try {
 			this.database = (ManagedDatasource) getConfig().get("database");
