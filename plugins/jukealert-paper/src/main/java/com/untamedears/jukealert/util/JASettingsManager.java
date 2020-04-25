@@ -11,6 +11,8 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting.DisplayLocation;
 import vg.civcraft.mc.civmodcore.playersettings.impl.collection.SetSetting;
 
 public class JASettingsManager {
@@ -18,6 +20,7 @@ public class JASettingsManager {
 	private BoundedIntegerSetting jaInfoSize;
 	private BoundedIntegerSetting jaListSize;
 	private BooleanSetting ignoreAllAlerts;
+	private DisplayLocationSetting showNearbySnitchCount;
 	private SetSetting<String> ignoredGroupAlerts;
 
 	public JASettingsManager() {
@@ -27,15 +30,23 @@ public class JASettingsManager {
 	private void initSettings() {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("JukeAlert",
 				"JukeAlert and snitch related settings");
+		
 		jaInfoSize = new BoundedIntegerSetting(JukeAlert.getInstance(), 8, "/jainfo items per page", "jaInfoListSize",
 				new ItemStack(Material.JUKEBOX), "How many entries should shown per page of /jainfo", true, 1, 50);
 		PlayerSettingAPI.registerSetting(jaInfoSize, menu);
+		
 		jaListSize = new BoundedIntegerSetting(JukeAlert.getInstance(), 8, "/jalist items per page", "jaListListSize",
 				new ItemStack(Material.NOTE_BLOCK), "How many entries should shown per page of /jalist", true, 1, 50);
 		PlayerSettingAPI.registerSetting(jaListSize, menu);
+		
 		ignoreAllAlerts = new BooleanSetting(JukeAlert.getInstance(), false, "Ignore all snitch alerts",
 				"jaIgnoreAllSnitchAlerts", "Mutes all snitch notifications if enabled");
 		PlayerSettingAPI.registerSetting(ignoreAllAlerts, menu);
+		
+		showNearbySnitchCount = new DisplayLocationSetting(JukeAlert.getInstance(), DisplayLocation.SIDEBAR, "Show nearby snitch count",
+				"jaShowNearbySnitchCount", new ItemStack(Material.JUKEBOX),"Nearby snitch count");
+		PlayerSettingAPI.registerSetting(showNearbySnitchCount, menu);
+		
 		ignoredGroupAlerts = new SetSetting<>(JukeAlert.getInstance(), "Ignored group alerts", "jaIgnoredSnitchGroups",
 				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alers from them",
 				String.class);
@@ -44,6 +55,10 @@ public class JASettingsManager {
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {
 		return ignoredGroupAlerts.contains(uuid, groupName);
+	}
+	
+	public DisplayLocationSetting getNearbySnitchLocation() {
+		return showNearbySnitchCount;
 	}
 
 	public boolean doesIgnoreAllAlerts(UUID uuid) {

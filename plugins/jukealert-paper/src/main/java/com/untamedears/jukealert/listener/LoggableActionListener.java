@@ -63,6 +63,8 @@ import com.untamedears.jukealert.model.actions.impl.MountEntityAction;
 import com.untamedears.jukealert.model.actions.impl.OpenContainerAction;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 
+import vg.civcraft.mc.namelayer.NameAPI;
+
 public class LoggableActionListener implements Listener {
 
 	private final VanishNoPacket vanishNoPacket;
@@ -268,7 +270,7 @@ public class LoggableActionListener implements Listener {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
-		if (!player.getMetadata("NPC").isEmpty()) {
+		if (!player.getMetadata("NPC").isEmpty() || NameAPI.getCurrentName(player.getUniqueId()) == null) {
 			//CombatTagPlus
 			return;
 		}
