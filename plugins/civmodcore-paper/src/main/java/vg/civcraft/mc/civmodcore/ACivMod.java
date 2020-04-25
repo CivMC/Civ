@@ -94,11 +94,11 @@ public abstract class ACivMod extends JavaPlugin {
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
 							 @NotNull String[] arguments) {
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.executeCommand(sender, command, arguments);
-		}
 		if (this.handle != null) {
 			return this.handle.execute(sender, command, arguments);
+		}
+		if (this.newCommandHandler != null) {
+			return this.newCommandHandler.executeCommand(sender, command, arguments);
 		}
 		return false;
 	}
@@ -106,11 +106,11 @@ public abstract class ACivMod extends JavaPlugin {
 	@Override
 	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
 									  @NotNull String[] arguments) {
-		if (this.newCommandHandler != null) {
-			return this.newCommandHandler.tabCompleteCommand(sender, command, arguments);
-		}
 		if (this.handle != null) {
 			return this.handle.complete(sender, command, arguments);
+		}
+		if (this.newCommandHandler != null) {
+			return this.newCommandHandler.tabCompleteCommand(sender, command, arguments);
 		}
 		return Collections.emptyList();
 	}
