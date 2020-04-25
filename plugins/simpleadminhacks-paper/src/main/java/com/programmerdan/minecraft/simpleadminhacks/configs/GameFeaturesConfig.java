@@ -52,8 +52,8 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 		this.patrolSpawning = config.getBoolean("patrolSpawning", false);
 		if (!this.patrolSpawning) plugin().log("Patrol Spawning is disabled");
 
-		this.patrolSpawning = config.getBoolean("phantomSpawning", false);
-		if (!this.patrolSpawning) plugin().log("Phantom Spawning is disabled");
+		this.isPhantomSpawning = config.getBoolean("phantomSpawning", false);
+		if (!this.isPhantomSpawning) plugin().log("Phantom Spawning is disabled");
 
 		this.enderChestPlacement = config.getBoolean("enderChestPlacement", true);
 		if (!this.enderChestPlacement) plugin().log("  Placing EnderChests is disabled");
