@@ -263,7 +263,7 @@ public class TagManager {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> NBTTagList listToNBT(NBTTagList base, List<T> list) {
+	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		log.info("Representing list --> NBTTagList");
 		if (list == null || base == null) {
 			return base;

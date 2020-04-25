@@ -10,6 +10,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -293,6 +295,18 @@ public final class ItemAPI {
 		}
 		catch (ClassCastException ignored) { }
 		return false;
+	}
+	
+	/**
+	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, 
+	 * so it has the enchantment glow without an enchantment being visible
+	 * @param item Item to apply glow to
+	 */
+	public static void addGlow(ItemStack item) {
+		ItemMeta im = item.getItemMeta();
+		im.addEnchant(Enchantment.DURABILITY, 1, true);
+		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(im);
 	}
 
 }
