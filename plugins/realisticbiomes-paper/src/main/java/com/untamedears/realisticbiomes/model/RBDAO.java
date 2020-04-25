@@ -28,12 +28,82 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEng
 
 public class RBDAO extends TableStorageEngine<Plant> {
 
+	private boolean batchMode;
+	private List<List<PlantTuple>> batches;
+
 	public RBDAO(Logger logger, ManagedDatasource db) {
 		super(logger, db);
+		this.batchMode = false;
+	}
+
+	public void setBatchMode(boolean batch) {
+		this.batchMode = batch;
+		batches = new ArrayList<>();
+		for (int i = 0; i < 3; i++) {
+			batches.add(new ArrayList<>());
+		}
+	}
+
+	public void cleanupBatches() {
+		try (Connection conn = db.getConnection();
+				PreparedStatement insertPlant = conn.prepareStatement(
+						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
+								+ "values(?,?,?, ?,?,?, ?);");) {
+			for (PlantTuple tuple : batches.get(0)) {
+				insertPlant.setInt(1, tuple.coord.getX());
+				insertPlant.setInt(2, tuple.coord.getZ());
+				insertPlant.setShort(3, tuple.coord.getWorldID());
+				insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
+				insertPlant.setShort(5, (short) tuple.plant.getLocation().getBlockY());
+				insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
+				insertPlant.setTimestamp(7, new Timestamp(tuple.plant.getCreationTime()));
+				insertPlant.addBatch();
+			}
+			insertPlant.executeBatch();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
+		}
+		try (Connection conn = db.getConnection();
+				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
+						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
+			for (PlantTuple tuple : batches.get(0)) {
+				updatePlant.setTimestamp(1, new Timestamp(tuple.plant.getCreationTime()));
+				updatePlant.setInt(2, tuple.coord.getX());
+				updatePlant.setInt(3, tuple.coord.getZ());
+				updatePlant.setShort(4, tuple.coord.getWorldID());
+				updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
+				updatePlant.setShort(6, (short) tuple.plant.getLocation().getBlockY());
+				updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
+				updatePlant.execute();
+			}
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
+		}
+		try (Connection conn = db.getConnection();
+				PreparedStatement deletePlant = conn.prepareStatement(
+						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
+								+ "x_offset = ? and y = ? and z_offset = ?;");) {
+			for (PlantTuple tuple : batches.get(2)) {
+				deletePlant.setInt(1, tuple.coord.getX());
+				deletePlant.setInt(2, tuple.coord.getZ());
+				deletePlant.setShort(3, tuple.coord.getWorldID());
+				deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
+				deletePlant.setShort(5, (short) tuple.plant.getLocation().getBlockY());
+				deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
+				deletePlant.addBatch();
+			}
+			deletePlant.executeBatch();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
+		}
 	}
 
 	@Override
 	public void delete(Plant data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(2).add(new PlantTuple(data, coord));
+			return;
+		}
 		try (Connection conn = db.getConnection();
 				PreparedStatement deletePlant = conn.prepareStatement(
 						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
@@ -90,6 +160,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void insert(Plant data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(0).add(new PlantTuple(data, coord));
+			return;
+		}
 		try (Connection conn = db.getConnection();
 				PreparedStatement insertPlant = conn.prepareStatement(
 						"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
@@ -114,7 +188,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						+ "x int(11) DEFAULT NULL, y int(11) DEFAULT NULL, z int(11) DEFAULT NULL, date int(10) unsigned DEFAULT NULL,"
 						+ "growth double DEFAULT NULL, fruitGrowth double DEFAULT NULL)",
 				"CREATE TABLE IF NOT EXISTS rb_chunk (id bigint(20) NOT NULL AUTO_INCREMENT, w int(11) DEFAULT NULL, x int(11) DEFAULT NULL, "
-				+ "z int(11) DEFAULT NULL, PRIMARY KEY (id), KEY chunk_coords_idx (w,x,z))");
+						+ "z int(11) DEFAULT NULL, PRIMARY KEY (id), KEY chunk_coords_idx (w,x,z))");
 		db.registerMigration(2, false,
 				"create table if not exists rb_plants (chunk_x int not null, chunk_z int not null, world_id smallint unsigned not null, "
 						+ "x_offset tinyint unsigned not null, y tinyint unsigned not null, z_offset tinyint unsigned not null,"
@@ -132,6 +206,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void update(Plant data, XZWCoord coord) {
+		if (batchMode) {
+			batches.get(1).add(new PlantTuple(data, coord));
+			return;
+		}
 		try (Connection conn = db.getConnection();
 				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
@@ -175,6 +253,16 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	@Override
 	public boolean stayLoaded() {
 		return false;
+	}
+
+	private class PlantTuple {
+		Plant plant;
+		XZWCoord coord;
+
+		PlantTuple(Plant plant, XZWCoord coord) {
+			this.plant = plant;
+			this.coord = coord;
+		}
 	}
 
 }

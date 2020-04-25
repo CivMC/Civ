@@ -59,9 +59,11 @@ public class RealisticBiomes extends ACivMod {
 
 	@Override
 	public void onDisable() {
+		dao.setBatchMode(true);
 		if (plantManager != null) {
 			plantManager.shutDown();
 		}
+		dao.cleanupBatches();
 	}
 
 	@Override
