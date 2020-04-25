@@ -10,6 +10,8 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.untamedears.jukealert.events.PlayerLoginSnitchEvent;
+import com.untamedears.jukealert.events.PlayerLogoutSnitchEvent;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.util.JAUtility;
@@ -53,5 +55,10 @@ public class LogoutAction extends LoggablePlayerAction {
 		comp.addExtra(
 				String.format(" %s%s", ChatColor.YELLOW, JAUtility.formatLocation(snitch.getLocation(), !sameWorld)));
 		return comp;
+	}
+	
+	@Override
+	public void accept(Snitch s) {
+		Bukkit.getPluginManager().callEvent(new PlayerLogoutSnitchEvent(snitch, Bukkit.getPlayer(player)));
 	}
 }

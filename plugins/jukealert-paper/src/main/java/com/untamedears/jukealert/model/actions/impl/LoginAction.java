@@ -10,6 +10,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.untamedears.jukealert.events.PlayerLoginSnitchEvent;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.util.JAUtility;
@@ -47,10 +48,16 @@ public class LoginAction extends LoggablePlayerAction {
 	@Override
 	public TextComponent getChatRepresentation(Location reference) {
 		boolean sameWorld = JAUtility.isSameWorld(snitch.getLocation(), reference);
-		TextComponent comp = new TextComponent(String.format("%s%sLogin%s  %s%s  ", ChatColor.GOLD, ChatColor.BOLD, ChatColor.RESET,
-				ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
+		TextComponent comp = new TextComponent(String.format("%s%sLogin%s  %s%s  ", ChatColor.GOLD, ChatColor.BOLD,
+				ChatColor.RESET, ChatColor.GREEN, NameAPI.getCurrentName(getPlayer())));
 		comp.addExtra(JAUtility.genTextComponent(snitch));
-		comp.addExtra(String.format(" %s%s", ChatColor.YELLOW, JAUtility.formatLocation(snitch.getLocation(), !sameWorld)));
+		comp.addExtra(
+				String.format(" %s%s", ChatColor.YELLOW, JAUtility.formatLocation(snitch.getLocation(), !sameWorld)));
 		return comp;
+	}
+
+	@Override
+	public void accept(Snitch s) {
+		Bukkit.getPluginManager().callEvent(new PlayerLoginSnitchEvent(snitch, Bukkit.getPlayer(player)));
 	}
 }

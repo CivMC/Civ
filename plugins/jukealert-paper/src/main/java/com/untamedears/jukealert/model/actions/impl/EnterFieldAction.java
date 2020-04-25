@@ -9,6 +9,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.untamedears.jukealert.events.PlayerHitSnitchEvent;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.util.JAUtility;
@@ -51,5 +52,10 @@ public class EnterFieldAction extends LoggablePlayerAction {
 		comp.addExtra(
 				String.format(" %s%s", ChatColor.YELLOW, JAUtility.formatLocation(snitch.getLocation(), !sameWorld)));
 		return comp;
+	}
+	
+	@Override
+	public void accept(Snitch s) {
+		Bukkit.getPluginManager().callEvent(new PlayerHitSnitchEvent(snitch, Bukkit.getPlayer(player)));
 	}
 }

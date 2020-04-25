@@ -37,5 +37,11 @@ public abstract class SnitchAction {
 	public abstract boolean hasPlayer();
 
 	public abstract boolean isLifeCycleEvent();
+	
+	/**
+	 * Called when this action is executed and happening right now with the snitch it is happening for
+	 * @param s Snitch the action is being applied to
+	 */
+	public void accept(Snitch s) {}
 
 }

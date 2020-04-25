@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -41,6 +42,9 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.jukealert.SnitchManager;
+import com.untamedears.jukealert.events.PlayerHitSnitchEvent;
+import com.untamedears.jukealert.events.PlayerLoginSnitchEvent;
+import com.untamedears.jukealert.events.PlayerLogoutSnitchEvent;
 import com.untamedears.jukealert.external.VanishNoPacket;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
@@ -224,9 +228,9 @@ public class LoggableActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
+		Set <Snitch> covering = new HashSet<>(snitchManager.getSnitchesCovering(event.getPlayer().getLocation()));
 		handlePlayerAction(player, s -> new LoginAction(System.currentTimeMillis(), s, player.getUniqueId()));
-		insideFields.put(event.getPlayer().getUniqueId(),
-				new HashSet<>(snitchManager.getSnitchesCovering(event.getPlayer().getLocation())));
+		insideFields.put(event.getPlayer().getUniqueId(),covering);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

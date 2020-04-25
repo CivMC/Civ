@@ -170,6 +170,7 @@ public class Snitch extends LocationTrackable {
 	 * @param action Action to pass through
 	 */
 	public void processAction(SnitchAction action) {
+		action.accept(this);
 		for (AbstractSnitchAppender appender : appenders.values()) {
 			if (!active && !appender.runWhenSnitchInactive()) {
 				continue;
