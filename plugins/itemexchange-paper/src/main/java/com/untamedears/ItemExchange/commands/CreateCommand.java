@@ -21,11 +21,15 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
+/**
+ * Commands class involved in creating shop exchange rules
+ */
 @CommandAlias(CreateCommand.ALIAS)
 public class CreateCommand extends AikarCommand {
 
@@ -35,17 +39,11 @@ public class CreateCommand extends AikarCommand {
 
 	public static final String ALIAS_OUTPUT_TYPES = "output|o|out|outputs";
 
-	public static final String HELD_DESCRIPTION = "Creates an exchange rule based on a held item.";
+	public static final String CREATION_SUCCESS = ChatColor.GREEN + "Created exchange successfully.";
 
 	// ------------------------------------------------------------
-	// Creating from held item
+	// Creating from shop block
 	// ------------------------------------------------------------
-
-	public static final String DETAILS_SYNTAX = "<material> [amount]";
-
-	public static final String DETAILS_DESCRIPTION = "Sets the material of an exchange rule.";
-
-	public static final String DETAILS_COMPLETION = "@itemMaterials";
 
 	@Default
 	@Description("Creates an exchange rule based on a shop block.")
@@ -53,21 +51,23 @@ public class CreateCommand extends AikarCommand {
 		BlockIterator ray = new BlockIterator(player, 6);
 		while (ray.hasNext()) {
 			Block block = ray.next();
-			if (!BlockAPI.isValidBlock(block) || !block.getType().isBlock()) {
+			if (!BlockAPI.isValidBlock(block)) {
 				continue;
 			}
 			if (!ItemExchangePlugin.SHOP_BLOCKS.contains(block.getType())) {
-				break;
-			}
-			if (CitadelGlue.isEnabled()) {
-				if (CitadelGlue.hasAccessToChest(block, player)) {
-					player.sendMessage(ChatColor.RED + "You do not have access to that.");
-					return;
+				// If the block is a full block then prevent the ray from going through walls.
+				if (block.getType().isOccluding()) {
+					break;
+				}
+				else {
+					continue;
 				}
 			}
 			Inventory inventory = NullCoalescing.chain(() -> ((InventoryHolder) block.getState()).getInventory());
-			if (inventory == null) {
-				throw new InvalidCommandArgument("You do not have access to that.");
+			if (!InventoryAPI.isValidInventory(inventory) ||
+					(CitadelGlue.INSTANCE.isEnabled() && CitadelGlue.INSTANCE.hasAccessToChest(block, player))) {
+				player.sendMessage(ChatColor.RED + "You do not have access to that.");
+				return;
 			}
 			ItemStack inputItem = null;
 			ItemStack outputItem = null;
@@ -88,14 +88,17 @@ public class CreateCommand extends AikarCommand {
 					outputItem.setAmount(outputItem.getAmount() + item.getAmount());
 				}
 				else {
-					throw new InvalidCommandArgument("Inventory should only contain two types of items!");
+					player.sendMessage(ChatColor.RED + "Inventory should only contain two types of items!");
+					return;
 				}
 			}
 			if (inputItem == null) {
-				throw new InvalidCommandArgument("Inventory should have at least one type of item.");
+				player.sendMessage(ChatColor.RED + "Inventory should have at least one type of item.");
+				return;
 			}
-			if (Utilities.isExchangeRule(inputItem)) {
-				throw new InvalidCommandArgument("You cannot exchange rule blocks!");
+			if (Utilities.isExchangeRule(inputItem) || Utilities.isExchangeRule(outputItem)) {
+				player.sendMessage(ChatColor.RED + "You cannot exchange rule blocks!");
+				return;
 			}
 			ExchangeRule inputRule = new ExchangeRule();
 			inputRule.setType(Type.INPUT);
@@ -104,23 +107,22 @@ public class CreateCommand extends AikarCommand {
 				Utilities.giveItemsOrDrop(inventory, inputRule.toItem());
 			}
 			else {
-				if (Utilities.isExchangeRule(outputItem)) {
-					throw new InvalidCommandArgument("You cannot exchange rule blocks!");
-				}
 				ExchangeRule outputRule = new ExchangeRule();
 				outputRule.setType(Type.OUTPUT);
 				outputRule.trace(outputItem);
 				Utilities.giveItemsOrDrop(inventory, inputRule.toItem(), outputRule.toItem());
 			}
-			player.sendMessage(ChatColor.GREEN + "Created exchange successfully.");
+			player.sendMessage(CREATION_SUCCESS);
 			return;
 		}
-		throw new InvalidCommandArgument("No block in view is a suitable shop block.");
+		player.sendMessage(ChatColor.RED + "No block in view is a suitable shop block.");
 	}
 
 	// ------------------------------------------------------------
-	// Creating from explicit details
+	// Creating from a held item
 	// ------------------------------------------------------------
+
+	public static final String HELD_DESCRIPTION = "Creates an exchange rule based on a held item.";
 
 	private void createFromHeld(Player player, Type type) {
 		ItemStack held = player.getInventory().getItemInMainHand();
@@ -131,7 +133,7 @@ public class CreateCommand extends AikarCommand {
 		rule.setType(type);
 		rule.trace(held);
 		Utilities.givePlayerExchangeRule(player, rule);
-		player.sendMessage(ChatColor.GREEN + "Created exchange successfully.");
+		player.sendMessage(CREATION_SUCCESS);
 	}
 
 	@Subcommand(ALIAS_INPUT_TYPES)
@@ -146,6 +148,16 @@ public class CreateCommand extends AikarCommand {
 		createFromHeld(player, Type.OUTPUT);
 	}
 
+	// ------------------------------------------------------------
+	// Creating from explicit details
+	// ------------------------------------------------------------
+
+	public static final String DETAILS_SYNTAX = "<material> [amount]";
+
+	public static final String DETAILS_DESCRIPTION = "Sets the material of an exchange rule.";
+
+	public static final String DETAILS_COMPLETION = "@itemMaterials";
+
 	private void createFromDetails(Player player, Type type, String slug, int amount) {
 		Material material = MaterialAPI.getMaterial(slug);
 		if (!MaterialAPI.isValidItemMaterial(material)) {
@@ -159,7 +171,7 @@ public class CreateCommand extends AikarCommand {
 		}
 		rule.setAmount(amount);
 		Utilities.givePlayerExchangeRule(player, rule);
-		player.sendMessage(ChatColor.GREEN + "Created exchange successfully.");
+		player.sendMessage(CREATION_SUCCESS);
 	}
 
 	@Subcommand(ALIAS_INPUT_TYPES)

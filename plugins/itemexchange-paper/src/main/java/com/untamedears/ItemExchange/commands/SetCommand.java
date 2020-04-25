@@ -204,24 +204,26 @@ public class SetCommand extends AikarCommand {
 	@Description("Sets or resets the exchange's group exclusivity.")
 	@Syntax("[group]")
 	public void setGroup(Player player, @Optional @Single String value) {
-		if (!NameLayerGlue.isEnabled()) {
+		if (!NameLayerGlue.INSTANCE.isEnabled()) {
 			throw new InvalidCommandArgument("NameLayer is not enabled.");
 		}
 		ExchangeRule rule = Utilities.ensureHoldingExchangeRule(player);
 		if (Strings.isNullOrEmpty(value)) {
 			player.sendMessage(ChatColor.GREEN + "Successfully removed Citadel group.");
-			rule.setGroup(null);
+			rule.setGroupName(null);
 		}
 		else {
 			if (rule.getType() != ExchangeRule.Type.INPUT) {
-				throw new InvalidCommandArgument("You can only set that on input rules.");
+				player.sendMessage(ChatColor.RED + "You can only set that on input rules.");
+				return;
 			}
 			Group group = GroupManager.getGroup(value);
-			if (!NameLayerGlue.getEstablishPermission().hasAccess(group, player)) {
-				throw new InvalidCommandArgument("You must enter a group you have permissions for.");
+			if (!NameLayerGlue.INSTANCE.hasAccess(group, NameLayerGlue.ESTABLISH_PERMISSION, player)) {
+				player.sendMessage(ChatColor.RED + "You must enter a group you have permissions for.");
+				return;
 			}
 			player.sendMessage(ChatColor.GREEN + "Successfully changed Citadel group.");
-			rule.setGroup(group);
+			rule.setGroupName(group.getName());
 		}
 		Utilities.replaceHoldingExchangeRule(player, rule);
 	}

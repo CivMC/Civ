@@ -4,6 +4,10 @@ public class BaseRule {
 
 	private boolean locked;
 
+	public final boolean isLocked() {
+		return this.locked;
+	}
+
 	public final void lock() {
 		this.locked = true;
 		onLock();

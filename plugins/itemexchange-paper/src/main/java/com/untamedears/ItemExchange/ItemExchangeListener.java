@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange;
 
+import com.google.common.base.Strings;
 import com.untamedears.itemexchange.events.IETransactionEvent;
 import com.untamedears.itemexchange.glue.NameLayerGlue;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
@@ -38,7 +39,6 @@ import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.RecipeAPI;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public class ItemExchangeListener implements Listener {
 
@@ -142,10 +142,10 @@ public class ItemExchangeListener implements Listener {
 		ExchangeRule outputRule = trade.getOutput();
 		// Check if the input is limited to a group, and if so whether the viewer
 		// has permission to purchase from that group. If NameLayer is enabled.
-		if (NameLayerGlue.isEnabled()) {
-			Group group = inputRule.getGroup();
-			if (group != null) {
-				if (!NameLayerGlue.getPurchasePermission().hasAccess(group, player)) {
+		if (NameLayerGlue.INSTANCE.isEnabled()) {
+			String groupName = inputRule.getGroupName();
+			if (!Strings.isNullOrEmpty(groupName)) {
+				if (!NameLayerGlue.INSTANCE.hasAccess(groupName, NameLayerGlue.PURCHASE_PERMISSION, player)) {
 					justBrowsing = true;
 					this.plugin.debug("[Shop] Buyer cannot purchase from that Group limited trade. Browsing.");
 				}
