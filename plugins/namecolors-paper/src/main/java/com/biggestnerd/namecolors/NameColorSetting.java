@@ -84,7 +84,7 @@ public class NameColorSetting extends PlayerSetting<ChatColor> {
 			for (Entry<ChatColor, Material> entry : colorToGui.entrySet()) {
 				ItemStack is = new ItemStack(entry.getValue());
 				ItemAPI.setDisplayName(is,
-						"Change to color of your name to " + entry.getValue() + entry.getValue().name());
+						"Change to color of your name to " + entry.getKey() + entry.getKey().name());
 				clicks.add(new Clickable(is) {
 
 					@Override
