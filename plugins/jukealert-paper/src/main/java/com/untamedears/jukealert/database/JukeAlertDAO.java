@@ -35,6 +35,7 @@ import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -238,6 +239,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						+ "(14,'MOUNT_ENTITY'),(15,'DISMOUNT_ENTITY')",
 				"delete from snitchs using snitchs, snitchs s2 where snitchs.snitch_id < s2.snitch_id "
 						+ "and snitchs.snitch_x = s2.snitch_x and snitchs.snitch_y = s2.snitch_y and snitchs.snitch_z = s2.snitch_z and snitchs.snitch_world=s2.snitch_world");
+		db.registerMigration(3, false,"delete from ja_snitches where group_id = -1");
 	}
 
 	@Override
@@ -247,7 +249,10 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
 								+ "values(?,?, ?,?,?, ?, ?);",
 						Statement.RETURN_GENERATED_KEYS)) {
-			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
+			if (snitch.getGroup() == null) {
+				return;
+			}
+			int groupId = snitch.getGroup().getGroupId();
 			insertSnitch.setInt(1, groupId);
 			insertSnitch.setInt(2, snitch.getType().getID());
 			insertSnitch.setInt(3, snitch.getLocation().getBlockX());
@@ -275,6 +280,11 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 				PreparedStatement updateSnitch = insertConn
 						.prepareStatement("update ja_snitches set name = ?, group_id = ? where id = ?;")) {
 			int groupId = snitch.getGroup() == null ? -1 : snitch.getGroup().getGroupId();
+			if (groupId == -1) {
+				delete(snitch);
+				snitch.setCacheState(CacheState.DELETED);
+				return;
+			}
 			updateSnitch.setString(1, snitch.getName());
 			updateSnitch.setInt(2, groupId);
 			if (snitch.getId() == -1) {
@@ -322,6 +332,9 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						continue;
 					}
 					int groupID = rs.getInt(5);
+					if (groupID == -1) {
+						continue;
+					}
 					String name = rs.getString(6);
 					int id = rs.getInt(7);
 					Snitch snitch = type.create(id, location, name, groupID, false);
