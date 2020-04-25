@@ -19,7 +19,7 @@ public class InfoCommand extends AikarCommand {
 			sender.sendMessage(ChatColor.GOLD + "ItemExchange has no configured shop blocks.");
 		}
 		else {
-			sender.sendMessage(ChatColor.GOLD + "ItemExchange has the following shop blocks:");
+			sender.sendMessage(ChatColor.GOLD + "ItemExchange shops can be made from the following blocks:");
 			for (Material material : ItemExchangePlugin.SHOP_BLOCKS) {
 				sender.sendMessage(" - " + material.name());
 			}
