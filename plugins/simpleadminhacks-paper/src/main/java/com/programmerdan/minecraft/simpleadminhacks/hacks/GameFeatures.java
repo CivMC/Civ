@@ -135,6 +135,13 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				genStatus.append("disabled\n");
 			}
 
+			genStatus.append("  Phantom Spawning is ");
+			if (config.isPhantomSpawning()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
 			genStatus.append("  Ender Chest placement is ");
 			if (config.isEnderChestPlacement()) {
 				genStatus.append("enabled\n");
@@ -275,6 +282,16 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		}
 	}
 
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void disablePhantomSpawning(CreatureSpawnEvent event) {
+		if (!config.isEnabled()) return;
+		if (!config.isPhantomSpawning()) {
+			if (EntityType.PHANTOM.equals(event.getEntityType())
+					&& event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
+				event.setCancelled(true);
+			}
+		}
+	}
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void disableEnderChestPlacement(BlockPlaceEvent event) {

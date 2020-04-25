@@ -23,6 +23,8 @@ hacks:
     # Prevent or allow pillager patrols from spawning
     # Patrols spawning is also true = enabled and false = disabled
     patrolSpawning: false
+    # Phantom spawn is also true = enabled and false = disabled
+    phantomSpawning: false
     # Enderchests is also true = enabled and false = disabled
     enderChestPlacement: true
     enderChestUse: false

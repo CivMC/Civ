@@ -16,6 +16,7 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	private boolean villagerTrading;
 	private boolean witherSpawning;
 	private boolean patrolSpawning;
+	private boolean isPhantomSpawning;
 	private boolean enderChestPlacement;
 	private boolean enderChestUse;
 	private boolean shulkerBoxUse;
@@ -50,6 +51,9 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 
 		this.patrolSpawning = config.getBoolean("patrolSpawning", false);
 		if (!this.patrolSpawning) plugin().log("Patrol Spawning is disabled");
+
+		this.patrolSpawning = config.getBoolean("phantomSpawning", false);
+		if (!this.patrolSpawning) plugin().log("Phantom Spawning is disabled");
 
 		this.enderChestPlacement = config.getBoolean("enderChestPlacement", true);
 		if (!this.enderChestPlacement) plugin().log("  Placing EnderChests is disabled");
@@ -110,7 +114,11 @@ public class GameFeaturesConfig extends SimpleHackConfig {
 	}
 
 	public boolean isPatrolSpawning() {
-		return this.isPatrolSpawning();
+		return this.patrolSpawning;
+	}
+
+	public boolean isPhantomSpawning() {
+		return this.isPhantomSpawning;
 	}
 
 	public boolean isEnderChestPlacement() {
