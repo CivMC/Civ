@@ -44,15 +44,9 @@ public class RespawnListener implements Listener{
 		List<String> randomSpawnFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".randomspawnon");
 		List<String> spawnPointFlags = plugin.yamlHandler.worlds.getStringList(worldName + ".spawnpointson");
 				
-		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){  		// checks if player should be spawned at his bed
-			Location loc = event.getPlayer().getBedSpawnLocation();
-			if (loc != null) {
-				Block bed = loc.getBlock();
-				if(Tag.BEDS.isTagged(bed.getType())) {
-					plugin.logDebug(playerName + " is spawned at his bed!");
-					return; 
-				}
-			}
+		if (event.isBedSpawn() && !randomSpawnFlags.contains("bedrespawn")){ 
+			plugin.logDebug(playerName + " is spawned at his bed!");
+			return; 
 		}
 		
 		if (plugin.yamlHandler.worlds.getBoolean(worldName + ".keeprandomspawns", false) && player.getBedSpawnLocation() != null ){
