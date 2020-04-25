@@ -65,8 +65,13 @@ public final class ReinforcementLogic {
 			damageAmount /= progress;
 			damageAmount *= reinforcement.getType().getMaturationScale();
 		}
-		long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
-		damageAmount *= reinforcement.getType().getDecayDamageMultipler(lastRefresh);
+		if (reinforcement.getGroup() != null) {
+			long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
+			damageAmount *= reinforcement.getType().getDecayDamageMultipler(lastRefresh);
+		}
+		else {
+			damageAmount *= reinforcement.getType().getDeletedGroupMultiplier();
+		}
 		return damageAmount;
 	}
 

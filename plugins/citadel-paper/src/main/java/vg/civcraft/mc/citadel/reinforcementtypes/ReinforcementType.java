@@ -26,13 +26,14 @@ public class ReinforcementType {
 	private String name;
 	private long decayTimer;
 	private double decayMultiplier;
+	private double deletedGroupMulitplier;
 	private int legacyId;
 
 	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime,
 			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
 			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
 			Collection<Material> disallowedReinforceables, short id, String name, Collection<Material> globalBlackList,
-			long decayTimer, double decayMultiplier, int legacyId) {
+			long decayTimer, double decayMultiplier, double deletedGroupMulitplier, int legacyId) {
 		this.health = health;
 		this.name = name;
 		this.returnChance = returnChance;
@@ -44,6 +45,7 @@ public class ReinforcementType {
 		this.damageEffect = damageEffect;
 		this.destructionEffect = destructionEffect;
 		this.gracePeriod = gracePeriod;
+		this.deletedGroupMulitplier = deletedGroupMulitplier;
 		if (allowsReinforceables != null) {
 			this.allowedReinforceables = new TreeSet<>(allowsReinforceables);
 		} else {
@@ -100,6 +102,13 @@ public class ReinforcementType {
 	 */
 	public short getID() {
 		return id;
+	}
+	
+	/**
+	 * @return Damage multiplier applied if the owning group was deleted
+	 */
+	public double getDeletedGroupMultiplier() {
+		return deletedGroupMulitplier;
 	}
 
 	/**
