@@ -69,7 +69,7 @@ public class JukeAlert extends ACivMod {
 
 	@Override
 	public void onDisable() {
-
+		snitchManager.shutDown();
 	}
 
 	@Override

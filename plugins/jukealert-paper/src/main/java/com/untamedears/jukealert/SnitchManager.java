@@ -22,6 +22,10 @@ public class SnitchManager {
 		this.api = api;
 		this.quadTree = quadTree;
 	}
+	
+	public void shutDown() {
+		api.disable();
+	}
 
 	public Snitch getSnitchAt(Location location) {
 		return api.get(location);
