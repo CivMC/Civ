@@ -245,3 +245,7 @@ hacks:
     - <gold>Must've been a rough night o.o
     - <gold>Why does my entire body ache?
     - <gold>That <it>really<reset><gold> hurt!
+  AntiFastBreak:
+    enabled: true
+    kickOnViolation: true
+    
