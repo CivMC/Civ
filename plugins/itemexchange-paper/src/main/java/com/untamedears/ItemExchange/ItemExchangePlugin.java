@@ -56,7 +56,9 @@ public class ItemExchangePlugin extends ACivMod {
 		instance = this;
 		useNewCommandHandler = false;
 		super.onEnable();
+		// Load and parse config
 		saveDefaultConfig();
+		parseConfig();
 		// Register Events
 		registerListener(new ItemExchangeListener(this));
 		// Load Commands
@@ -77,6 +79,29 @@ public class ItemExchangePlugin extends ACivMod {
 		registerSerializable(EnchantStorageModifier.class);
 		registerSerializable(PotionModifier.class);
 		registerSerializable(RepairModifier.class);
+		// Register Glues
+		registerListener(NameLayerGlue.INSTANCE);
+		registerListener(CitadelGlue.INSTANCE);
+	}
+
+	@Override
+	public void onDisable() {
+		// Unload Configs
+		SHOP_BLOCKS.clear();
+		SUCCESS_BUTTON_BLOCKS.clear();
+		CAN_ENCHANT.clear();
+		IS_DAMAGEABLE.clear();
+		IS_REPAIRABLE.clear();
+		NullCoalescing.exists(BULK_RULE_RECIPE, RecipeAPI::removeRecipe);
+		// Unload Commands
+		this.commands.reset();
+		this.commands = null;
+		// Finalise Disable
+		super.onDisable();
+		instance = null;
+	}
+
+	public void parseConfig() {
 		// Parse which blocks can be used for shops
 		SHOP_BLOCKS.clear();
 		for (String raw : getConfig().getStringList("supportedBlocks")) {
@@ -184,26 +209,6 @@ public class ItemExchangePlugin extends ACivMod {
 		else {
 			warning("[Config] Could not create bulk rule item recipe.");
 		}
-		// Register Glues
-		registerListener(NameLayerGlue.INSTANCE);
-		registerListener(CitadelGlue.INSTANCE);
-	}
-
-	@Override
-	public void onDisable() {
-		// Unload Configs
-		SHOP_BLOCKS.clear();
-		SUCCESS_BUTTON_BLOCKS.clear();
-		CAN_ENCHANT.clear();
-		IS_DAMAGEABLE.clear();
-		IS_REPAIRABLE.clear();
-		NullCoalescing.exists(BULK_RULE_RECIPE, RecipeAPI::removeRecipe);
-		// Unload Commands
-		this.commands.reset();
-		this.commands = null;
-		// Finalise Disable
-		super.onDisable();
-		instance = null;
 	}
 
 }

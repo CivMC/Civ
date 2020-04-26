@@ -1,69 +1,40 @@
 package com.untamedears.itemexchange.glue;
 
-import com.untamedears.itemexchange.glue.NameLayerGlue.Permission;
-import com.untamedears.itemexchange.rules.ExchangeRule;
-import java.util.List;
-import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.util.DependencyGlue;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
-import vg.civcraft.mc.namelayer.group.Group;
 
-public final class CitadelGlue {
+public final class CitadelGlue extends DependencyGlue {
 
-	public static Permission chestPermission;
+	public static final CitadelGlue INSTANCE = new CitadelGlue();
 
-	public static final DependencyGlue INSTANCE = new DependencyGlue("Citadel") {
-
-		@Override
-		public boolean isEnabled() {
-			return super.isEnabled() && NameLayerGlue.isEnabled();
-		}
-
-		@Override
-		protected void onGlueEnabled() {
-			chestPermission = new Permission("CHESTS");
-		}
-
-		@Override
-		protected void onGlueDisabled() {
-			chestPermission = null;
-		}
-
-	};
-
-	// ------------------------------------------------------------
-	// Glue Implementation
-	// ------------------------------------------------------------
-
-	public static boolean isEnabled() {
-		return INSTANCE.isEnabled();
+	private CitadelGlue() {
+		super("Citadel");
 	}
 
-	public static Group getReinforcementGroupFromBlock(Block block) {
-		if (!isEnabled() || !BlockAPI.isValidBlock(block)) {
-			return null;
-		}
-		return NullCoalescing
-				.chain(() -> Citadel.getInstance().getReinforcementManager().getReinforcement(block).getGroup());
-	}
-
-	public static void addGroupDetailsToRuleDetails(ExchangeRule rule, List<String> info) {
-		if (!isEnabled() || rule.getType() != ExchangeRule.Type.INPUT) {
-			return;
-		}
-		NullCoalescing.exists(rule.getGroup(), (group) -> info.add(ChatColor.RED + "Restricted to " + group.getName()));
-	}
-
-	public static boolean hasAccessToChest(Block chest, Player player) {
-		if (!isEnabled()) {
+	@Override
+	public boolean isSafeToUse() {
+		if (!super.isSafeToUse()) {
 			return false;
 		}
-		return NullCoalescing
-				.chain(() -> chestPermission.hasAccess(getReinforcementGroupFromBlock(chest), player), false);
+		if (!NameLayerGlue.INSTANCE.isEnabled()) {
+			return false;
+		}
+		return true;
+	}
+
+	public boolean hasAccessToChest(Block chest, Player player) {
+		if (!isSafeToUse() || !BlockAPI.isValidBlock(chest)) {
+			return false;
+		}
+		Reinforcement reinforcement = Citadel.getInstance().getReinforcementManager().getReinforcement(chest);
+		if (reinforcement == null) {
+			return true;
+		}
+		return NameLayerGlue.INSTANCE.hasAccess(reinforcement.getGroup(), "CHESTS", player);
 	}
 
 }

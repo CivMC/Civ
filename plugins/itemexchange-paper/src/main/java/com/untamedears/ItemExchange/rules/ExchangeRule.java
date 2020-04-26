@@ -3,8 +3,6 @@ package com.untamedears.itemexchange.rules;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 import com.google.common.base.Strings;
 import com.untamedears.itemexchange.ItemExchangePlugin;
-import com.untamedears.itemexchange.glue.CitadelGlue;
-import com.untamedears.itemexchange.glue.NameLayerGlue;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
@@ -40,7 +38,6 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.namelayer.group.Group;
 
 public final class ExchangeRule extends ExchangeData {
 
@@ -164,6 +161,7 @@ public final class ExchangeRule extends ExchangeData {
 				return false;
 			}
 		}
+		// DO NOT MATCH GROUPS HERE, THIS IS CHECKED IN ItemExchangeListener!
 		return true;
 	}
 
@@ -228,7 +226,10 @@ public final class ExchangeRule extends ExchangeData {
 			}
 			info.addAll(lines);
 		}
-		CitadelGlue.addGroupDetailsToRuleDetails(this, info);
+		String groupName = getGroupName();
+		if (!Strings.isNullOrEmpty(groupName)) {
+			info.add(ChatColor.RED + "Restricted to " + groupName);
+		}
 		return info;
 	}
 
@@ -387,18 +388,13 @@ public final class ExchangeRule extends ExchangeData {
 		this.nbt.setStringArray("lore", lore == null ? null : lore.toArray(new String[0]));
 	}
 
-	public Group getGroup() {
-		return NameLayerGlue.getGroupFromName(this.nbt.getString("group"));
+	public String getGroupName() {
+		return this.nbt.getString("group");
 	}
 
-	public void setGroup(Group group) {
+	public void setGroupName(String group) {
 		checkLocked();
-		if (group == null) {
-			this.nbt.remove("group");
-		}
-		else {
-			this.nbt.setString("group", group.getName());
-		}
+		this.nbt.setString("group", group);
 	}
 
 	public Set<ModifierData> getModifiers() {
