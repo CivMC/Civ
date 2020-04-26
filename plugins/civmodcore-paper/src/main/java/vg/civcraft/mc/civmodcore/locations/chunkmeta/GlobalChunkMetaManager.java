@@ -59,6 +59,16 @@ public class GlobalChunkMetaManager {
 			man.flushAll();
 		}
 	}
+	
+	/**
+	 * Saves all data for one specific plugin out to the database
+	 * @param pluginID Internal id of the plugin to save data for
+	 */
+	public void flushPlugin(short pluginID) {
+		for (WorldChunkMetaManager man : worldToManager.values()) {
+			man.flushPluginData(pluginID);
+		}
+	}
 
 	public CMCWorldDAO getChunkDAO() {
 		return chunkDao;
