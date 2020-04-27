@@ -81,14 +81,6 @@ public abstract class ACivMod extends JavaPlugin {
 		return getConfig().getBoolean("debug", false);
 	}
 
-	@Override
-	public void saveDefaultConfig() {
-		if (!getResourceFile("config.yml").exists()) {
-			saveResource("config.yml", false);
-			reloadConfig();
-		}
-	}
-
 	public File getResourceFile(String path) {
 		return new File(getDataFolder(), path);
 	}
