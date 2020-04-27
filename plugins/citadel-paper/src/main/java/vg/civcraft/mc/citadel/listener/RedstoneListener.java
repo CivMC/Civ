@@ -192,6 +192,8 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
+		//block below
+		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock().getRelative(BlockFace.DOWN), BlockFace.UP);
 	}
 
 }
