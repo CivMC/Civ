@@ -45,6 +45,7 @@ public final class ReinforcementLogic {
 				return;
 			}
 		}
+		futureHealth = Math.min(futureHealth, rein.getType().getHealth());
 		rein.setHealth(futureHealth);
 		if (rein.isBroken()) {
 			if (rein.getType().getDestructionEffect() != null) {
