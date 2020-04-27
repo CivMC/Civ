@@ -30,7 +30,6 @@ public class JukeAlert extends ACivMod {
 	private JAConfigManager configManager;
 	private SnitchTypeManager snitchConfigManager;
 	private SnitchManager snitchManager;
-	private SparseQuadTree<SnitchQTEntry> quadTree;
 	private LoggedActionFactory loggedActionFactory;
 	private JASettingsManager settingsManager;
 	private SnitchCullManager cullManager;
@@ -59,10 +58,6 @@ public class JukeAlert extends ACivMod {
 		return snitchManager;
 	}
 
-	public SparseQuadTree<SnitchQTEntry> getQuadTree() {
-		return quadTree;
-	}
-
 	public SnitchCullManager getSnitchCullManager() {
 		return cullManager;
 	}
@@ -76,7 +71,6 @@ public class JukeAlert extends ACivMod {
 	public void onEnable() {
 		instance = this;
 		super.onEnable();
-		quadTree = new SparseQuadTree<>(1);
 		snitchConfigManager = new SnitchTypeManager();
 		cullManager = new SnitchCullManager();
 		configManager = new JAConfigManager(this, snitchConfigManager);
@@ -98,7 +92,7 @@ public class JukeAlert extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
-		snitchManager = new SnitchManager(api, quadTree);
+		snitchManager = new SnitchManager(api);
 		settingsManager = new JASettingsManager();
 		registerJukeAlertEvents();
 		JukeAlertPermissionHandler.setup();
