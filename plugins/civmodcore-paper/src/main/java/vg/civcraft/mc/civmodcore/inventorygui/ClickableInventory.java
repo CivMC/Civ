@@ -35,6 +35,7 @@ public class ClickableInventory {
 	private IClickable[] clickables;
 	
 	private List<BukkitTask> runnables;
+
 	private String name;
 
 	/**
@@ -207,7 +208,7 @@ public class ClickableInventory {
 	 * @param slot
 	 *            Slot to be set
 	 */
-	void setItem(ItemStack is, int slot) {
+	public void setItem(ItemStack is, int slot) {
 		inventory.setItem(slot, is);
 	}
 	

@@ -10,6 +10,7 @@ import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
+import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
@@ -28,43 +29,24 @@ public final class CivModCorePlugin extends ACivMod {
 	private GlobalChunkMetaManager chunkMetaManager;
 
 	private ManagedDatasource database;
+
 	private WorldIDManager worldIdManager;
 
 	private AikarCommandManager manager;
 
 	@Override
 	public void onEnable() {
-		this.useNewCommandHandler = false;
-		super.onEnable();
 		instance = this;
+		this.useNewCommandHandler = false;
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Save default resources
 		saveDefaultResource("enchantments.csv");
 		saveDefaultResource("materials.csv");
-		// Register listeners
-		registerListener(new ClickableInventoryListener());
-		registerListener(new ChatListener());
-		registerListener(new ScoreBoardListener());
-		// Register commands
-		this.manager = new AikarCommandManager(this) {
-			@Override
-			public void registerCommands() {
-				registerCommand(new ConfigCommand());
-			}
-		};
+		saveDefaultConfig();
+		super.onEnable();
 		// Load Database
 		try {
 			this.database = (ManagedDatasource) getConfig().get("database");
-		}
-		catch (Exception error) {
-			warning("Cannot get database from config.", error);
-			this.database = null;
-		}
-		// Load APIs
-		ItemNames.loadItemNames();
-		EnchantNames.loadEnchantmentNames();
-		BottomLineAPI.init();
-		if (this.database != null) {
 			CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
 			if (dao.updateDatabase()) {
 				this.worldIdManager = new WorldIDManager(dao);
@@ -75,6 +57,22 @@ public final class CivModCorePlugin extends ACivMod {
 				warning("Could not setup database");
 			}
 		}
+		catch (Exception error) {
+			warning("Cannot get database from config.", error);
+			this.database = null;
+		}
+		// Register listeners
+		registerListener(new ClickableInventoryListener());
+		registerListener(new PagedGUIManager());
+		registerListener(new ChatListener());
+		registerListener(new ScoreBoardListener());
+		// Register commands
+		this.manager = new AikarCommandManager(this) {
+			@Override
+			public void registerCommands() {
+				registerCommand(new ConfigCommand());
+			}
+		};
 		// Load APIs
 		ItemNames.loadItemNames();
 		EnchantNames.loadEnchantmentNames();
