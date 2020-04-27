@@ -43,6 +43,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Save default resources
 		saveDefaultResource("enchantments.csv");
 		saveDefaultResource("materials.csv");
+		saveDefaultResource("potions.csv");
 		saveDefaultConfig();
 		super.onEnable();
 		// Load Database
