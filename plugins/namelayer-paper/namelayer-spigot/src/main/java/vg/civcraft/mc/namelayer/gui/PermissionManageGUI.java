@@ -109,7 +109,7 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			return;
 		}
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
-		final List<Clickable> clicks = new ArrayList<Clickable>();
+		final List<Clickable> clicks = new ArrayList<>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
 		for (final PermissionType perm : PermissionType.getAllPermissions()) {
 			ItemStack is = null;
@@ -184,11 +184,6 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			}
 			clicks.add(c);
 		}
-
-		if (clicks.size() < 45 * currentPage) {
-			currentPage--;
-			showScreen();
-		}
 		for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
 				&& i < clicks.size(); i++) {
 			ci.setSlot(clicks.get(i), i - (45 * currentPage));
@@ -204,23 +199,23 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 					if (currentPage > 0) {
 						currentPage--;
 					}
-					showScreen();
+					showPermissionEditing(pType);
 				}
 			};
 			ci.setSlot(baCl, 45);
 		}
 		// next button
-		if ((45 * (currentPage + 1)) <= clicks.size()) {
+		if ((45 * (currentPage + 1)) < clicks.size()) {
 			ItemStack forward = new ItemStack(Material.ARROW);
 			ItemAPI.setDisplayName(forward, ChatColor.GOLD + "Go to next page");
 			Clickable forCl = new Clickable(forward) {
 
 				@Override
 				public void clicked(Player arg0) {
-					if ((45 * (currentPage + 1)) <= clicks.size()) {
+					if ((45 * (currentPage + 1)) < clicks.size()) {
 						currentPage++;
 					}
-					showScreen();
+					showPermissionEditing(pType);
 				}
 			};
 			ci.setSlot(forCl, 53);
