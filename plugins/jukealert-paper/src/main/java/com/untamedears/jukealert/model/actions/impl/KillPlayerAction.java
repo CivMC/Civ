@@ -2,18 +2,14 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
-import com.untamedears.jukealert.util.JAUtility;
 
-import net.md_5.bungee.api.chat.TextComponent;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 import vg.civcraft.mc.namelayer.NameAPI;
@@ -37,19 +33,14 @@ public class KillPlayerAction extends LoggablePlayerVictimAction {
 	@Override
 	public IClickable getGUIRepresentation() {
 		ItemStack is = new ItemStack(Material.DIAMOND_SWORD);
-		ItemMeta itemMeta = is.getItemMeta();
-		itemMeta.setDisplayName(ChatColor.GOLD + "Killed Player");
-		itemMeta.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-		is.setItemMeta(itemMeta);
+		ItemAPI.addGlow(is);
 		super.enrichGUIItem(is);
 		return new DecorationStack(is);
 	}
-
+	
 	@Override
-	public TextComponent getChatRepresentation(Location reference) {
-		return new TextComponent(String.format("%sKilled Player  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
-				NameAPI.getCurrentName(getPlayer()),ChatColor.AQUA, getVictimName(), ChatColor.YELLOW,
-				JAUtility.formatLocation(location, false)));
+	protected String getChatRepresentationIdentifier() {
+		return "Killed " + getVictim();
 	}
 
 	@Override

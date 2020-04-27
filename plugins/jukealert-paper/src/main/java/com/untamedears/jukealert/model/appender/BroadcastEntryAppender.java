@@ -47,7 +47,7 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
 				continue;
 			}
 			if (snitch.hasPermission(uuid, JukeAlertPermissionHandler.getSnitchAlerts())) {
-				player.spigot().sendMessage(log.getChatRepresentation(player.getLocation()));
+				player.spigot().sendMessage(log.getChatRepresentation(player.getLocation(), true));
 			}
 		}
 	}

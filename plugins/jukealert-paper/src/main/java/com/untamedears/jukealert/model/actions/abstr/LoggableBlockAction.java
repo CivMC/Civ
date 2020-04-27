@@ -2,11 +2,19 @@ package com.untamedears.jukealert.model.actions.abstr;
 
 import java.util.UUID;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
+import com.untamedears.jukealert.util.JAUtility;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
+import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public abstract class LoggableBlockAction extends LoggablePlayerAction {
 
@@ -32,10 +40,29 @@ public abstract class LoggableBlockAction extends LoggablePlayerAction {
 	public Material getMaterial() {
 		return material;
 	}
-	
+
 	@Override
 	public LoggedActionPersistence getPersistence() {
 		return new LoggedActionPersistence(getPlayer(), location, time, material.name());
 	}
 
+	@Override
+	public IClickable getGUIRepresentation() {
+		ItemStack is;
+		try {
+			is = new ItemStack(getMaterial());
+		} catch (Exception e) {
+			is = new ItemStack(Material.STONE);
+			ItemAPI.addLore(is,
+					String.format("%sMaterial: %s%s", ChatColor.GOLD, ChatColor.AQUA, ItemNames.getItemName(getMaterial())));
+		}
+		super.enrichGUIItem(is);
+		ItemAPI.addLore(is, ChatColor.GOLD + JAUtility.formatLocation(location, false));
+		return new DecorationStack(is);
+	}
+	
+	@Override
+	protected Location getLocationForStringRepresentation() {
+		return location;
+	}
 }

@@ -2,20 +2,12 @@ package com.untamedears.jukealert.model.actions.impl;
 
 import java.util.UUID;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggableBlockAction;
 import com.untamedears.jukealert.util.JAUtility;
-
-import net.md_5.bungee.api.chat.TextComponent;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
-import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
-import vg.civcraft.mc.namelayer.NameAPI;
 
 public class BlockPlaceAction extends LoggableBlockAction {
 
@@ -35,25 +27,8 @@ public class BlockPlaceAction extends LoggableBlockAction {
 	}
 
 	@Override
-	public IClickable getGUIRepresentation() {
-		ItemStack is;
-		try {
-			is = new ItemStack(getMaterial());
-			ItemAPI.setDisplayName(is,ChatColor.GOLD + "Place");
-			super.enrichGUIItem(is);
-		} catch (Exception e) {
-			is = new ItemStack(Material.STONE);
-			ItemAPI.setDisplayName(is, ChatColor.GOLD + "Place");
-			ItemAPI.addLore(is, String.format("%sMaterial: %s%s", ChatColor.GOLD, ChatColor.AQUA, getMaterial().toString()));
-			super.enrichGUIItem(is);
-		}
-		return new DecorationStack(is);
+	protected String getChatRepresentationIdentifier() {
+		return "Place";
 	}
 
-	@Override
-	public TextComponent getChatRepresentation(Location relative) {
-		return new TextComponent(String.format("%sPlace  %s%s  %s%s %s%s", ChatColor.GOLD, ChatColor.GREEN,
-				NameAPI.getCurrentName(getPlayer()),ChatColor.AQUA, material.toString(), ChatColor.YELLOW,
-				JAUtility.formatLocation(location, false)));
-	}
 }

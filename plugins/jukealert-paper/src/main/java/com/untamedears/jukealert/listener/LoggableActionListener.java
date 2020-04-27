@@ -10,7 +10,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Function;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -42,9 +41,6 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.events.PlayerHitSnitchEvent;
-import com.untamedears.jukealert.events.PlayerLoginSnitchEvent;
-import com.untamedears.jukealert.events.PlayerLogoutSnitchEvent;
 import com.untamedears.jukealert.external.VanishNoPacket;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
@@ -145,7 +141,7 @@ public class LoggableActionListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onDestroyVehicle(VehicleDestroyEvent event) {
-		if (event.getAttacker().getType() != EntityType.PLAYER) {
+		if (event.getAttacker() == null || event.getAttacker().getType() != EntityType.PLAYER) {
 			return;
 		}
 
