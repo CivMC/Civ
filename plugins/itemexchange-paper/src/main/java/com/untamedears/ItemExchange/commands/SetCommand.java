@@ -237,7 +237,7 @@ public class SetCommand extends AikarCommand {
 		Utilities.replaceHoldingExchangeRule(player, rule);
 	}
 
-	@Subcommand("durability|d")
+	@Subcommand("durability|d|damage|dmg")
 	@Description("Sets the durability of an exchange rule.")
 	@Syntax("<durability>")
 	public void setDurability(Player player, @Optional @Single String value) {
@@ -281,6 +281,7 @@ public class SetCommand extends AikarCommand {
 					player.sendMessage(ChatColor.YELLOW + "Successfully set a new damage level!");
 					break;
 			}
+			rule.addModifiers(modifier);
 		}
 		Utilities.replaceHoldingExchangeRule(player, rule);
 	}
