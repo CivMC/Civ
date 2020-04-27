@@ -142,6 +142,7 @@ public class AntiFastBreak extends BasicHack {
 		if (!violationLimiter.pullToken(player)) {
 			Bukkit.getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), () -> {
 				punishCooldown.putOnCoolDown(player.getUniqueId());
+				plugin().getLogger().info(String.format("%s is possibly using civ break, fast break detected", player.getName()));
 				player.sendMessage(ChatColor.RED + "You are breaking blocks too fast");
 			});
 		}

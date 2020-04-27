@@ -6,8 +6,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
+import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
@@ -26,6 +29,8 @@ import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
@@ -37,6 +42,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -68,10 +74,12 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean disableLavaCobbleMountains;
-	
+
 	@AutoLoad
 	private boolean disableWanderingTrader;
 
+	@AutoLoad
+	private boolean preventPearlGlitching;
 
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
@@ -203,7 +211,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 		player.getEquipment().setHelmet(banner);
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void tradeWanderer(PlayerInteractEntityEvent event) {
 		if (!disableWanderingTrader) {
@@ -214,6 +222,86 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onTeleport(PlayerTeleportEvent event) {
+		if (!preventPearlGlitching || event.getCause() != TeleportCause.ENDER_PEARL) {
+			return;
+		}
+		Location to = event.getTo();
+
+		// From and To are feet positions. Check and make sure we can teleport to a
+		// location with air
+		// above the To location.
+		Block toBlock = to.getBlock();
+		Block aboveBlock = toBlock.getRelative(BlockFace.UP);
+		Block belowBlock = toBlock.getRelative(BlockFace.DOWN);
+		boolean lowerBlockBypass = false;
+		double height = 0.0;
+		Material mat = toBlock.getType();
+		if (Tag.SLABS.isTagged(mat)) {
+			lowerBlockBypass = true;
+			height = 0.5;
+		}
+		else if (Tag.BEDS.isTagged(mat)) {
+			height = 0.562;
+		}
+		else if (Tag.FLOWER_POTS.isTagged(mat)) {
+			height = 0.375;
+		}
+		else switch (mat) {
+		case CHEST:
+		case TRAPPED_CHEST:
+		case ENDER_CHEST:
+			height = 0.875;
+			break;
+		case LILY_PAD:
+			height = 0.016;
+			break;
+		case ENCHANTING_TABLE:
+			height = 0.016;
+			break;
+		case PLAYER_WALL_HEAD:
+		case PLAYER_HEAD:
+			height = 0.5;
+			break;
+		}
+
+		// Check if the below block is difficult
+		// This is added because if you face downward directly on a gate, it will
+		// teleport your feet INTO the gate, thus bypassing the gate until you leave
+		// that block.
+		Material belowMat = belowBlock.getType();
+		if (MaterialAPI.isWoodenFenceGate(belowMat) || Tag.FENCES.isTagged(belowMat) || Tag.WALLS.isTagged(belowMat)) {
+			height = 0.5;
+		}
+		
+		boolean upperBlockBypass = false;
+		if (height >= 0.5) {
+			Block aboveHeadBlock = aboveBlock.getRelative(BlockFace.UP);
+			if (!aboveHeadBlock.getType().isSolid()) {
+				height = 0.5;
+			} else {
+				upperBlockBypass = true; // Cancel this event. What's happening is the user is going to get stuck due to
+											// the height.
+			}
+		}
+
+		// Normalize teleport to the center of the block. Feet ON the ground, plz.
+		// Leave Yaw and Pitch alone
+		to.setX(Math.floor(to.getX()) + 0.5);
+		to.setY(Math.floor(to.getY()) + height);
+		to.setZ(Math.floor(to.getZ()) + 0.5);
+
+		if (aboveBlock.getType().isSolid() || (toBlock.getType().isSolid() && !lowerBlockBypass) || upperBlockBypass) {
+			boolean bypass = false;
+			if ((to.getWorld().getEnvironment() == Environment.NETHER) && (to.getBlockY() > 124) && (to.getBlockY() < 129)) {
+				bypass = true;
+			}
+			if (!bypass) {
+				event.setCancelled(true);
+			}
+		}
+	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void lavaToCobble(BlockPhysicsEvent e) {
