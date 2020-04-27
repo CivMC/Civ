@@ -247,5 +247,6 @@ hacks:
     - <gold>That <it>really<reset><gold> hurt!
   AntiFastBreak:
     enabled: true
-    kickOnViolation: true
+    breakDenyDuration: 3000
+    laggLenciency: 1.2
     

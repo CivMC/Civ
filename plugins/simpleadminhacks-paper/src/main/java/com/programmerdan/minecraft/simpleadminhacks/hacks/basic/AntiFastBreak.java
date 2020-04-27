@@ -1,13 +1,12 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Color;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -15,9 +14,11 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -28,7 +29,6 @@ import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.BlockPosition;
-import com.comphenix.protocol.wrappers.ChunkPosition;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
@@ -36,23 +36,35 @@ import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 
 import net.minecraft.server.v1_14_R1.IBlockData;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
+import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
+import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
+import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 
 /**
- * Prevents "CivBreak" by denying continuos block break packages for non-instabreakinf
+ * Prevents "CivBreak" by denying continuos block break packages for
+ * non-instabreaking
  *
  */
 public class AntiFastBreak extends BasicHack {
 
-	private Map<UUID, Set<Location>> startedLocations;
+	private Map<UUID, Map<Location, Long>> miningLocations;
+	private RateLimiter violationLimiter;
 
 	@AutoLoad
-	private boolean kickOnViolation;
+	private double laggLenciency;
+	@AutoLoad
+	private long breakDenyDuration;
+
+	private ICoolDownHandler<UUID> punishCooldown;
 
 	public AntiFastBreak(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
-		startedLocations = new TreeMap<>();
+		miningLocations = new TreeMap<>();
+		violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 5, 5, 1, 2000L);
 		if (config.isEnabled()) {
 			registerPacketListener();
+			Bukkit.getPluginManager().registerEvents(this, plugin);
 		}
 	}
 
@@ -72,9 +84,6 @@ public class AntiFastBreak extends BasicHack {
 				case START_DESTROY_BLOCK:
 					handleStartDigging(event.getPlayer(), loc);
 					return;
-				case ABORT_DESTROY_BLOCK:
-					handleCancelDigging(event.getPlayer(), loc);
-					return;
 				case STOP_DESTROY_BLOCK:
 					handleFinishingDigging(event.getPlayer(), loc);
 					return;
@@ -86,37 +95,55 @@ public class AntiFastBreak extends BasicHack {
 		});
 	}
 
-	private void handleStartDigging(Player player, Location loc) {
-		Set<Location> miningLocs = startedLocations.computeIfAbsent(player.getUniqueId(), p -> new HashSet<>());
-		miningLocs.add(loc);
+	@EventHandler
+	public void logOff(PlayerQuitEvent e) {
+		miningLocations.remove(e.getPlayer().getUniqueId());
 	}
 
-	private void handleCancelDigging(Player player, Location loc) {
-		Set<Location> miningLocs = startedLocations.computeIfAbsent(player.getUniqueId(), p -> new HashSet<>());
-		miningLocs.remove(loc);
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void blockBreak(BlockBreakEvent e) {
+		if (punishCooldown != null && punishCooldown.onCoolDown(e.getPlayer().getUniqueId())) {
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "Denying break due to abnormal break speed");
+		}
+	}
+
+	private void handleStartDigging(Player player, Location loc) {
+		Map<Location, Long> miningLocs = miningLocations.computeIfAbsent(player.getUniqueId(), p -> new HashMap<>());
+		miningLocs.putIfAbsent(loc, System.currentTimeMillis());
 	}
 
 	private void handleFinishingDigging(Player player, Location loc) {
-		Set<Location> miningLocs = startedLocations.computeIfAbsent(player.getUniqueId(), p -> new HashSet<>());
-		if (!miningLocs.contains(loc)) {
-			handleViolation(loc, player);
+		Map<Location, Long> miningLocs = miningLocations.computeIfAbsent(player.getUniqueId(), p -> new HashMap<>());
+		int ticksToBreak = getTicksToBreak(loc.getBlock(), player);
+		Long timeStarted = miningLocs.remove(loc);
+		if (timeStarted == null) {
+			if (ticksToBreak > 1) {
+				punish(player);
+			}
+			return;
 		}
-		miningLocs.remove(loc);
+		if (ticksToBreak == 0) {
+			return;
+		}
+
+		long msToBreak = ticksToBreak * 50L;
+		long timePassed = System.currentTimeMillis() - timeStarted;
+		if (timePassed * laggLenciency < msToBreak) {
+			punish(player);
+		}
 	}
 
-	private void handleViolation(Location loc, Player player) {
-		if (ticksToBreak(loc.getBlock(), player) > 1) {
-			Bukkit.getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), () -> {
-				SimpleAdminHacks.instance().getLogger()
-						.info(String.format("%s is possibly using civ break, bad packets detected", player.getName()));
-				if (kickOnViolation) {
-					player.kickPlayer("Bad breaking packets");
-				}
-			});
+	private void punish(Player player) {
+		if (punishCooldown == null) {
+			// delayed instanciation, because config values are not available in constructor
+			punishCooldown = new MilliSecCoolDownHandler<>(breakDenyDuration);
 		}
-		else {
-			SimpleAdminHacks.instance().getLogger()
-			.info(String.format("%s is possibly using civ break, but block was insta break, might be false positive", player.getName()));
+		if (!violationLimiter.pullToken(player)) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), () -> {
+				punishCooldown.putOnCoolDown(player.getUniqueId());
+				player.sendMessage(ChatColor.RED + "You are breaking blocks too fast");
+			});
 		}
 	}
 
@@ -126,7 +153,8 @@ public class AntiFastBreak extends BasicHack {
 		if (blockData == null) {
 			throw new IllegalArgumentException("Could not determine block break type for " + mat);
 		}
-		// if you ever need to version upgrade this, search for a method in n.m.s.Item calling
+		// if you ever need to version upgrade this, search for a method in n.m.s.Item
+		// calling
 		// "getDestroySpeed(this,blockData)" in n.m.s.ItemStack
 		float damagePerTick = CraftItemStack.asNMSCopy(tool).a(blockData);
 		// above method does not include efficiency or haste, so we add it ourselves
@@ -146,7 +174,7 @@ public class AntiFastBreak extends BasicHack {
 		return damagePerTick;
 	}
 
-	private static int ticksToBreak(Block b, Player p) {
+	private static int getTicksToBreak(Block b, Player p) {
 		Material mat = b.getType();
 		if (!mat.isBlock() || MaterialAPI.isAir(mat)) {
 			// lagg, player is breaking a block already gone
