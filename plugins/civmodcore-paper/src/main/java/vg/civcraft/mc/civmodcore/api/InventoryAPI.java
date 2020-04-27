@@ -21,7 +21,6 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public final class InventoryAPI {
@@ -308,42 +307,39 @@ public final class InventoryAPI {
 			this.inventory.setItem(index, item);
 		}
 
-		@NotNull
 		@Override
-		public HashMap<Integer, ItemStack> addItem(@NotNull ItemStack... items) throws IllegalArgumentException {
+		public HashMap<Integer, ItemStack> addItem(ItemStack... items) throws IllegalArgumentException {
 			return this.inventory.addItem(items);
 		}
 
-		@NotNull
+		@Nonnull
 		@Override
-		public HashMap<Integer, ItemStack> removeItem(@NotNull ItemStack... items) throws IllegalArgumentException {
+		public HashMap<Integer, ItemStack> removeItem(ItemStack... items) throws IllegalArgumentException {
 			return this.inventory.removeItem(items);
 		}
 
-		@NotNull
 		@Override
 		public ItemStack[] getContents() {
 			return this.inventory.getContents();
 		}
 
 		@Override
-		public void setContents(@NotNull ItemStack[] items) throws IllegalArgumentException {
+		public void setContents(ItemStack[] items) throws IllegalArgumentException {
 			this.inventory.setContents(items);
 		}
 
-		@NotNull
 		@Override
 		public ItemStack[] getStorageContents() {
 			return this.inventory.getStorageContents();
 		}
 
 		@Override
-		public void setStorageContents(@NotNull ItemStack[] items) throws IllegalArgumentException {
+		public void setStorageContents(ItemStack[] items) throws IllegalArgumentException {
 			this.inventory.setStorageContents(items);
 		}
 
 		@Override
-		public boolean contains(@NotNull Material material) throws IllegalArgumentException {
+		public boolean contains(Material material) throws IllegalArgumentException {
 			return this.inventory.contains(material);
 		}
 
@@ -353,7 +349,7 @@ public final class InventoryAPI {
 		}
 
 		@Override
-		public boolean contains(@NotNull Material material, int amount) throws IllegalArgumentException {
+		public boolean contains(Material material, int amount) throws IllegalArgumentException {
 			return this.inventory.contains(material, amount);
 		}
 
@@ -367,25 +363,23 @@ public final class InventoryAPI {
 			return this.inventory.containsAtLeast(item, amount);
 		}
 
-		@NotNull
 		@Override
-		public HashMap<Integer, ? extends ItemStack> all(@NotNull Material material) throws IllegalArgumentException {
+		public HashMap<Integer, ? extends ItemStack> all(Material material) throws IllegalArgumentException {
 			return this.inventory.all(material);
 		}
 
-		@NotNull
 		@Override
 		public HashMap<Integer, ? extends ItemStack> all(ItemStack item) {
 			return this.inventory.all(item);
 		}
 
 		@Override
-		public int first(@NotNull Material material) throws IllegalArgumentException {
+		public int first(Material material) throws IllegalArgumentException {
 			return this.inventory.first(material);
 		}
 
 		@Override
-		public int first(@NotNull ItemStack item) {
+		public int first(ItemStack item) {
 			return this.inventory.first(item);
 		}
 
@@ -395,12 +389,12 @@ public final class InventoryAPI {
 		}
 
 		@Override
-		public void remove(@NotNull Material material) throws IllegalArgumentException {
+		public void remove(Material material) throws IllegalArgumentException {
 			this.inventory.remove(material);
 		}
 
 		@Override
-		public void remove(@NotNull ItemStack item) {
+		public void remove(ItemStack item) {
 			this.inventory.remove(item);
 		}
 
@@ -414,13 +408,11 @@ public final class InventoryAPI {
 			this.inventory.clear();
 		}
 
-		@NotNull
 		@Override
 		public List<HumanEntity> getViewers() {
 			return this.inventory.getViewers();
 		}
 
-		@NotNull
 		@Override
 		public InventoryType getType() {
 			return this.inventory.getType();
@@ -447,7 +439,6 @@ public final class InventoryAPI {
 			return this.inventory.spliterator();
 		}
 
-		@NotNull
 		@Override
 		public ListIterator<ItemStack> iterator(int index) {
 			return this.inventory.iterator(index);

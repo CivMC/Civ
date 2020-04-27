@@ -17,7 +17,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
@@ -92,8 +91,7 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	@Override
-	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
-							 @NotNull String[] arguments) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] arguments) {
 		if (this.handle != null) {
 			return this.handle.execute(sender, command, arguments);
 		}
@@ -104,8 +102,8 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	@Override
-	public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label,
-									  @NotNull String[] arguments) {
+	public List<String> onTabComplete(CommandSender sender, Command command, String label,
+									  String[] arguments) {
 		if (this.handle != null) {
 			return this.handle.complete(sender, command, arguments);
 		}
