@@ -8,9 +8,9 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.enchantments.Enchantment;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -19,7 +19,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  */
 public final class EnchantNames {
 
-	private static final Logger logger = LoggerFactory.getLogger(EnchantNames.class.getSimpleName());
+	private static final Logger logger = Bukkit.getLogger();
 
 	private static final Set<SearchResult> enchantmentDetails = new HashSet<>();
 
@@ -47,7 +47,7 @@ public final class EnchantNames {
 					String[] values = line.split(",");
 					// If there's not at least three values (slug, abbreviation, display name) then skip
 					if (values.length != 3) {
-						logger.warn("[Config] This enchantment row is corrupted: " + line);
+						logger.warning("[Config] This enchantment row is corrupted: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -55,7 +55,7 @@ public final class EnchantNames {
 					// If the Enchantment cannot be found by the slug given, then skip
 					Enchantment enchantment = Enchantment.getByName(values[0].toUpperCase());
 					if (enchantment == null) {
-						logger.warn("[Config] Could not find an enchantment on this line: " + line);
+						logger.warning("[Config] Could not find an enchantment on this line: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -64,7 +64,7 @@ public final class EnchantNames {
 					String abbreviation = values[1];
 					String displayName = values[2];
 					if (abbreviation.isEmpty() || displayName.isEmpty()) {
-						logger.warn("[Config] Could not find an abbreviation on this line: " + line);
+						logger.warning("[Config] Could not find an abbreviation on this line: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -72,19 +72,19 @@ public final class EnchantNames {
 					// Check if any of these details have already been registered
 					for (SearchResult details : enchantmentDetails) {
 						if (details.enchantment == enchantment) {
-							logger.warn("[Config] This enchantment already has a name registered: " + line);
+							logger.warning("[Config] This enchantment already has a name registered: " + line);
 							// Go to the next line
 							line = reader.readLine();
 							continue lineReader;
 						}
 						if (TextUtil.stringEqualsIgnoreCase(details.abbreviation, abbreviation)) {
-							logger.warn("[Config] This abbreviation already has a name registered: " + line);
+							logger.warning("[Config] This abbreviation already has a name registered: " + line);
 							// Go to the next line
 							line = reader.readLine();
 							continue lineReader;
 						}
 						if (TextUtil.stringEqualsIgnoreCase(details.displayName, displayName)) {
-							logger.warn("[Config] This display name already has a name registered: " + line);
+							logger.warning("[Config] This display name already has a name registered: " + line);
 							// Go to the next line
 							line = reader.readLine();
 							continue lineReader;
@@ -100,12 +100,12 @@ public final class EnchantNames {
 				reader.close();
 			}
 			catch (IOException error) {
-				logger.warn("[Config] Could not load enchantments from enchantments.csv");
+				logger.warning("[Config] Could not load enchantments from enchantments.csv");
 				error.printStackTrace();
 			}
 		}
 		else {
-			logger.warn("[Config] Could not load enchantments from enchantments.csv as the file does not exist.");
+			logger.warning("[Config] Could not load enchantments from enchantments.csv as the file does not exist.");
 		}
 	}
 

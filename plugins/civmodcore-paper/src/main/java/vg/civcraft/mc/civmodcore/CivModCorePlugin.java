@@ -6,6 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -76,6 +77,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Load APIs
 		ItemNames.loadItemNames();
 		EnchantNames.loadEnchantmentNames();
+		PotionNames.loadPotionNames();
 		BottomLineAPI.init();
 	}
 
@@ -84,6 +86,7 @@ public final class CivModCorePlugin extends ACivMod {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		ItemNames.resetItemNames();
 		EnchantNames.resetEnchantmentNames();
+		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
 		// Disconnect database
