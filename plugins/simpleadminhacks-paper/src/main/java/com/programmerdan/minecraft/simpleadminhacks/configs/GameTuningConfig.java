@@ -53,6 +53,8 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	private boolean preventFallingThroughBedrock;
 
+	private boolean badOmen;
+
 	private Set<Material> noPlace;
 
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
@@ -107,6 +109,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 		if (!dragonGrief) plugin().log("Dragon grief is disabled.");
 
 		this.preventFallingThroughBedrock = config.getBoolean("preventFallingThroughBedrock", true);
+
+		this.badOmen = config.getBoolean("badOmen", false);
+		if (!badOmen) plugin().log("Bad Omen effect is disabled.");
 
 		noPlace = new HashSet<>();
 		if(config.isList("noplace")) {
@@ -299,6 +304,10 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	public boolean isPreventFallingThroughBedrock() {
 		return preventFallingThroughBedrock;
+	}
+
+	public boolean isBadOmenEnabled() {
+		return badOmen;
 	}
 
 	public boolean canPlace(Material mat) {

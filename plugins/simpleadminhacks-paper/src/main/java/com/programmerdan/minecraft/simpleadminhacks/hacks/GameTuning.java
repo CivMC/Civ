@@ -25,10 +25,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityPortalEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
@@ -45,6 +42,8 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameTuningConfig;
 import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 /**
  * This is a grab-bag class to hold any _tuning_ related configurations that impact the
@@ -126,7 +125,63 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 			} else {
 				genStatus.append("disabled\n");
 			}
-			// more?
+
+			genStatus.append("  Kill trap horses is ");
+			if (config.killTrapHorses()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Changing spawner type is ");
+			if (config.canChangeSpawnerType()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Villager trading is ");
+			if (config.allowVillagerTrading()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Ender grief is ");
+			if (config.isEnderGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Wither grief is ");
+			if (config.isWitherGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Dragon grief is ");
+			if (config.isDragonGrief()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Prevent falling through bedrock is ");
+			if (config.isPreventFallingThroughBedrock()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Bad Omen is ");
+			if (config.isBadOmenEnabled()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
 		} else {
 			genStatus.append("inactive");
 		}
@@ -357,6 +412,18 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1
 				&& GameMode.SURVIVAL.equals(event.getPlayer().getGameMode())) {
 			TeleportUtil.tryToTeleportVertically(event.getPlayer(), event.getTo(), "falling into the void");
+		}
+	}
+
+
+	@EventHandler
+	public void onBadOmenEffect(EntityPotionEffectEvent event) {
+		if (!config.isEnabled() || config.isBadOmenEnabled()) {
+			return;
+		}
+		PotionEffect effect = event.getNewEffect();
+		if (effect != null && effect.getType().equals(PotionEffectType.BAD_OMEN)) {
+			event.setCancelled(true);
 		}
 	}
 }
