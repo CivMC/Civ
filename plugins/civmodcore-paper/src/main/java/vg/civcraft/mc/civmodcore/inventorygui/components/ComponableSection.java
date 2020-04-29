@@ -69,6 +69,17 @@ public class ComponableSection extends InventoryComponent {
 			}
 		}
 	}
+	
+	/**
+	 * Removes all content
+	 */
+	public void clear() {
+		containedComponents.clear();
+		componentSumSize = 0;
+		for(int i = 0; i < occupiedSlots.length; i++) {
+			occupiedSlots [i] = null;
+		}
+	}
 
 	@Override
 	void rebuild() {
