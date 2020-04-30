@@ -605,7 +605,7 @@ public class ItemMap {
 	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
 	 */
 	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
-		log.info("Received request to enrich " + is.toString());
+		log.fine("Received request to enrich " + is.toString());
 		ItemStack copy = is.clone();
 		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
 		copy.setAmount(amt);

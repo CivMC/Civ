@@ -47,14 +47,16 @@ public final class CivModCorePlugin extends ACivMod {
 		// Load Database
 		try {
 			this.database = (ManagedDatasource) getConfig().get("database");
-			CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
-			if (dao.updateDatabase()) {
-				this.worldIdManager = new WorldIDManager(dao);
-				this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager);
-				info("Setup database successfully");
-			}
-			else {
-				warning("Could not setup database");
+			if (database != null) {
+				CMCWorldDAO dao = new CMCWorldDAO(this.database, this);
+				if (dao.updateDatabase()) {
+					this.worldIdManager = new WorldIDManager(dao);
+					this.chunkMetaManager = new GlobalChunkMetaManager(dao, this.worldIdManager);
+					info("Setup database successfully");
+				}
+				else {
+					warning("Could not setup database");
+				}
 			}
 		}
 		catch (Exception error) {
