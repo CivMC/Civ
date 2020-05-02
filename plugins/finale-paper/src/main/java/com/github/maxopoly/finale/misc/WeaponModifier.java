@@ -1,13 +1,16 @@
 package com.github.maxopoly.finale.misc;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import org.bukkit.Material;
 
 public class WeaponModifier {
+	
+	public static final int DAMAGE_NON_ADJUSTED = -1;
+	public static final double ATTACK_SPEED_NON_ADJUSTED = -1.0D;
 
-	private class WeaponConfig {
+	private static final class WeaponConfig {
 		private Material mat;
 		private double damage;
 		private double attackSpeed;
@@ -34,7 +37,7 @@ public class WeaponModifier {
 	private Map<Material, WeaponConfig> weapons;
 
 	public WeaponModifier() {
-		this.weapons = new HashMap<Material, WeaponModifier.WeaponConfig>();
+		this.weapons = new EnumMap<>(Material.class);
 	}
 
 	public void addWeapon(Material m, int damage, double attackSpeed) {
@@ -44,7 +47,7 @@ public class WeaponModifier {
 	public double getAttackSpeed(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
-			return -1.0;
+			return DAMAGE_NON_ADJUSTED;
 		}
 		return config.getAttackSpeed();
 	}
@@ -52,7 +55,7 @@ public class WeaponModifier {
 	public double getDamage(Material m) {
 		WeaponConfig config = weapons.get(m);
 		if (config == null) {
-			return -1;
+			return ATTACK_SPEED_NON_ADJUSTED;
 		}
 		return config.getDamage();
 	}
