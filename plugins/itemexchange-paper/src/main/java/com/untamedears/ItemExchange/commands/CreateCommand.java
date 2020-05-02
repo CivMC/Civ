@@ -65,7 +65,7 @@ public class CreateCommand extends AikarCommand {
 			}
 			Inventory inventory = NullCoalescing.chain(() -> ((InventoryHolder) block.getState()).getInventory());
 			if (!InventoryAPI.isValidInventory(inventory) ||
-					(CitadelGlue.INSTANCE.isEnabled() && CitadelGlue.INSTANCE.hasAccessToChest(block, player))) {
+					(CitadelGlue.INSTANCE.isEnabled() && !CitadelGlue.INSTANCE.hasAccessToChest(block, player))) {
 				player.sendMessage(ChatColor.RED + "You do not have access to that.");
 				return;
 			}
