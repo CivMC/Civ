@@ -205,4 +205,9 @@ public class Snitch extends LocationTrackable {
 	public void applyToAppenders(Consumer<AbstractSnitchAppender> con) {
 		appenders.values().forEach(con);
 	}
+	
+	@Override
+	public String toString() {
+		return String.format("{Snitch at %s, group id %d, id %d, active %b}", getLocation(), groupID, snitchId, active);
+	}
 }

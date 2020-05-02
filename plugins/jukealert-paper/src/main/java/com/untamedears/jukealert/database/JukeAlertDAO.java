@@ -509,6 +509,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 				if (rs.next()) {
 					return rs.getTimestamp(1).getTime();
 				}
+				logger.log(Level.SEVERE, "Found no refresh timer for snitch with id " + snitchID);
 				return -1;
 			}
 		} catch (SQLException e) {

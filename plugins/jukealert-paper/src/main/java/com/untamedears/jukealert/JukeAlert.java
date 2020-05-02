@@ -7,14 +7,12 @@ import com.untamedears.jukealert.database.JukeAlertDAO;
 import com.untamedears.jukealert.listener.LoggableActionListener;
 import com.untamedears.jukealert.listener.SnitchLifeCycleListener;
 import com.untamedears.jukealert.model.Snitch;
-import com.untamedears.jukealert.model.SnitchQTEntry;
 import com.untamedears.jukealert.model.SnitchTypeManager;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.util.JASettingsManager;
 import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
-import vg.civcraft.mc.civmodcore.locations.SparseQuadTree;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.SingleBlockAPIView;
 

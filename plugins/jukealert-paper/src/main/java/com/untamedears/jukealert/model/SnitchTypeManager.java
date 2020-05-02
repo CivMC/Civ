@@ -82,7 +82,7 @@ public class SnitchTypeManager {
 			ConfigurationSection appenderSection = config.getConfigurationSection("appender");
 			for (String key : appenderSection.getKeys(false)) {
 				if (!appenderSection.isConfigurationSection(key)) {
-					logger.warning("Ignorinig invalid entry " + key + " at " + appenderSection);
+					logger.warning("Ignoring invalid entry " + key + " at " + appenderSection);
 					continue;
 				}
 				Class<? extends AbstractSnitchAppender> appenderClass = appenderClasses.get(key.toLowerCase());
