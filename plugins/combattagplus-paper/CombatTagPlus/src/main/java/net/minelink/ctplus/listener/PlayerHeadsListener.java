@@ -31,7 +31,7 @@ public final class PlayerHeadsListener implements Listener {
         if (identity == null) return;
 
         ItemStack item = event.getDrop();
-        item.setType(Material.SKULL_ITEM);
+        item.setType(Material.PLAYER_HEAD);
 
         // Set skull owner to actual player's name
         SkullMeta meta = (SkullMeta) item.getItemMeta();
