@@ -8,9 +8,7 @@ import me.josvth.randomspawn.events.NewPlayerSpawn;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Tag;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

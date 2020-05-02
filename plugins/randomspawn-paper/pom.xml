@@ -51,6 +51,12 @@
             <artifactId>CivModCore</artifactId>
             <version>1.7.8</version>
             <scope>provided</scope>
+	    <exclusions>
+                <exclusion>
+                    <groupId>org.mcstats.bukkit</groupId>
+                    <artifactId>metrics</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 	</dependencies>
 
