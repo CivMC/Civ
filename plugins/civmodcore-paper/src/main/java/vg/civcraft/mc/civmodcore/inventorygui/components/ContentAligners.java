@@ -24,6 +24,7 @@ public class ContentAligners {
 		return new Counter(i -> {
 			//integer division, so no you cant simplify this
 			int lastElementLastCompleteRow = (contentAmount / rowLength) * rowLength - 1;
+			System.out.println(lastElementLastCompleteRow);
 			//just increment until we reach the last element in the last full row
 			if (i < lastElementLastCompleteRow) {
 				return i + 1;
@@ -92,11 +93,13 @@ public class ContentAligners {
 		public int getNext() {
 			int temp = this.state;
 			state = step.apply(state);
+			System.out.println("Call " + temp);
 			return temp;
 		}
 
 		@Override
 		public void reset() {
+			System.out.println("reset");
 			this.state = defaultState;
 		}
 	}

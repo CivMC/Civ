@@ -20,7 +20,8 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 
 	public void add(T item) {
-		if (!hasNext()) {
+		if (hasNext()) {
+			iter.next();
 			// cut off anything after the current point and start a new time line
 			while (iter.hasNext()) {
 				iter.next();
@@ -33,7 +34,7 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 
 	public T goBack() {
-		if (hasPrevious()) {
+		if (!hasPrevious()) {
 			throw new IllegalStateException("Can not rewind history when already at start");
 		}
 		index--;
@@ -41,7 +42,7 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 
 	public T peekPrevious() {
-		if (hasPrevious()) {
+		if (!hasPrevious()) {
 			return null;
 		}
 		T prev = iter.previous();
@@ -50,11 +51,11 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 
 	public boolean hasNext() {
-		return index == history.size() - 1;
+		return index < history.size() - 1;
 	}
 
 	public boolean hasPrevious() {
-		return index <= 0;
+		return index > 0;
 	}
 
 	public boolean isEmpty() {
@@ -62,7 +63,7 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 
 	public T goForward() {
-		if (hasNext()) {
+		if (!hasNext()) {
 			throw new IllegalStateException("Can not forward history when already at end");
 		}
 		iter.next();
@@ -73,7 +74,7 @@ public class HistoryTracker<T extends HistoryItem> {
 	}
 	
 	public T peekForward() {
-		if (hasNext()) {
+		if (!hasNext()) {
 			return null;
 		}
 		iter.next();

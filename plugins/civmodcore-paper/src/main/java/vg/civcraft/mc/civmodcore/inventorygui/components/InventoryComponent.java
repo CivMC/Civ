@@ -21,6 +21,10 @@ public abstract class InventoryComponent {
 		}
 		this.size = size;
 		content = new ArrayList<>(size);
+		//ensure size
+		for(int i = 0; i < size; i++) {
+			content.add(null);
+		}
 	}
 	
 	public int getSize() {

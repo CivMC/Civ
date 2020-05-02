@@ -93,14 +93,21 @@ public class Scrollbar extends InventoryComponent {
 		}
 		int size = getSize();
 		contentAligner.reset();
+		System.out.println("Size is " + size);
 		for (int i = 0; i < size; i++) {
 			int targetSlot = contentAligner.getNext();
+			System.out.println(targetSlot);
 			if (page > 0 && targetSlot == backClickSlot) {
 				this.content.set(targetSlot, getBackwardClick());
 			} else if (page < totalPages - 1 && targetSlot == forwardClickSlot) {
 				this.content.set(targetSlot, getForwardClick());
 			} else {
-				this.content.set(targetSlot, unpaginatedContent.get(contentIndex++));
+				if (contentIndex >= unpaginatedContent.size()) {
+					this.content.set(targetSlot, null);
+				}
+				else {
+					this.content.set(targetSlot, unpaginatedContent.get(contentIndex++));
+				}
 			}
 		}
 	}

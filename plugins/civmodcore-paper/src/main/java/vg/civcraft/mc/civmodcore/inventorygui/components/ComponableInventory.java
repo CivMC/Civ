@@ -19,8 +19,13 @@ public class ComponableInventory extends ComponableSection {
 
 	public void show() {
 		rebuild();
+		updatePlayerView();
+	}
+	
+	public void updatePlayerView() {
 		for (int i = 0; i < content.size(); i++) {
-			inv.setSlot(content.get(i), i);
+			IClickable click = content.get(i);
+			inv.setSlot(click, i);
 		}
 		inv.showInventory(player);
 	}

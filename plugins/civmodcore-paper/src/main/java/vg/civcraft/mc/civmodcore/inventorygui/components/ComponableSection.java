@@ -93,6 +93,10 @@ public class ComponableSection extends InventoryComponent {
 			offsets.add(0);
 		}
 		for (int i = 0; i < occupiedSlots.length; i++) {
+			if (occupiedSlots [i] == null) {
+				content.set(i, null);
+				continue;
+			}
 			int index = containedComponents.indexOf(occupiedSlots[i]);
 			int offSet = offsets.get(index);
 			offsets.set(index, offSet + 1);

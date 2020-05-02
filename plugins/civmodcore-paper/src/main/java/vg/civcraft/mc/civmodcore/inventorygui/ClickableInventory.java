@@ -97,9 +97,14 @@ public class ClickableInventory {
 	 *            index of the slot in the inventory
 	 */
 	public void setSlot(IClickable c, int index) {
-		inventory.setItem(index, c.getItemStack());
+		if (c == null) {
+			inventory.setItem(index, null);
+		}
+		else {
+			inventory.setItem(index, c.getItemStack());
+			c.addedToInventory(this, index);
+		}
 		clickables[index] = c;
-		c.addedToInventory(this, index);
 	}
 
 	/**
