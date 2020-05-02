@@ -1,9 +1,11 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -29,7 +31,12 @@ public class ClickableInventory {
 	private static final Logger log = Bukkit.getLogger();
 
 	private static final HashMap<UUID, ClickableInventory> openInventories = new HashMap<>();
+	
+	// Cooldown in ticks, should be configurable but aint nobody got time for that
+	private static final int pressCooldown = 5;
 
+	private long lastPress;
+	
 	private Inventory inventory;
 
 	private IClickable[] clickables;
@@ -149,6 +156,9 @@ public class ClickableInventory {
 		if (index >= clickables.length || index < 0 || clickables[index] == null) {
 			return;
 		}
+		if (!applyCooldown(p)) {
+			return;
+		}
 		clickables[index].clicked(p);
 	}
 
@@ -172,6 +182,7 @@ public class ClickableInventory {
 		if (p != null) {
 			p.openInventory(inventory);
 			openInventories.put(p.getUniqueId(), this);
+			applyCooldown(p);
 		}
 	}
 
@@ -221,6 +232,24 @@ public class ClickableInventory {
 		this.runnables.add(runnable);
 	}
 
+	boolean applyCooldown(Player player) {
+		long now = player.getWorld().getFullTime();
+		if (now - lastPress < pressCooldown) {
+			return false;
+		}
+		lastPress = now;
+		Arrays.stream(this.clickables).
+				filter(Objects::nonNull).
+				map((button) -> button.getItemStack().getType()).
+				distinct().
+				forEach((material -> {
+					if (player.getCooldown(material) < pressCooldown) {
+						player.setCooldown(material, pressCooldown);
+					}
+				}));
+		return true;
+	}
+	
 	/**
 	 * Closes a players clickable inventory if he has one open. This will also close any other inventory the player has
 	 * possibly open, but no problems will occur if this is called while no clickable inventory was actually open

@@ -6,6 +6,8 @@
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
 	<version>1.7.8</version>
+	<name>CivModCore</name>
+	<url>https://github.com/Civclassic/CivModCore/</url>
 
 	<properties>
 		<java.compile.version>1.8</java.compile.version>
