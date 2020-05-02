@@ -226,7 +226,7 @@ public class FileHandler {
 
 
 				}
-				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name);
+				FurnCraftChestEgg egg = (FurnCraftChestEgg) eggs.get(name.toLowerCase());
 				if (egg == null) {
 					String replaceName = factoryRenames.get(name);
 					if (replaceName != null) {

@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
+import com.github.igotyou.FactoryMod.commands.FactoryTabCompleters;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -153,13 +154,6 @@ public class FactoryModManager {
 	 */
 	public boolean isCitadelEnabled() {
 		return citadelEnabled;
-	}
-
-	/**
-	 * @return All eggs contained in this manager
-	 */
-	public HashMap<String, IFactoryEgg> getAllEggs() {
-		return eggs;
 	}
 
 	/**
@@ -386,7 +380,7 @@ public class FactoryModManager {
 				totalSetupCosts.put(entry.getValue(), entry.getKey());
 			}
 		}
-		for (IFactoryEgg egg : getAllEggs().values()) {
+		for (IFactoryEgg egg : this.eggs.values()) {
 			totalSetupCosts.put(egg, calculateTotalSetupCost(egg));
 		}
 	}
@@ -397,7 +391,7 @@ public class FactoryModManager {
 		if (map != null) {
 			return map;
 		}
-		for (IFactoryEgg superEgg : getAllEggs().values()) {
+		for (IFactoryEgg superEgg : this.eggs.values()) {
 			if (superEgg instanceof FurnCraftChestEgg) {
 				for (IRecipe recipe : ((FurnCraftChestEgg) superEgg)
 						.getRecipes()) {
@@ -469,13 +463,15 @@ public class FactoryModManager {
 	public void addFactoryCreationEgg(Class <? extends MultiBlockStructure> blockStructureClass,
 			ItemMap recipe, IFactoryEgg egg) {
 		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-				.computeIfAbsent(blockStructureClass, (a) -> new HashMap<ItemMap, IFactoryEgg>());
+				.computeIfAbsent(blockStructureClass, a -> new HashMap<ItemMap, IFactoryEgg>());
 		eggs.put(recipe, egg);
-		this.eggs.put(egg.getName(), egg);
+		this.eggs.put(egg.getName().toLowerCase(), egg);
+		FactoryTabCompleters.addFactory(egg.getName());
 	}
 
 	public void addFactoryUpgradeEgg(IFactoryEgg egg) {
-		eggs.put(egg.getName(), egg);
+		eggs.put(egg.getName().toLowerCase(), egg);
+		FactoryTabCompleters.addFactory(egg.getName());
 	}
 
 	public void saveFactories() {
@@ -535,7 +531,7 @@ public class FactoryModManager {
 	 * @return The egg with the given name or null if no such egg exists
 	 */
 	public IFactoryEgg getEgg(String name) {
-		return eggs.get(name);
+		return eggs.get(name.toLowerCase());
 	}
 
 	/**

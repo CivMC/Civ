@@ -28,6 +28,7 @@ public class Upgraderecipe extends InputRecipe {
 		this.egg = egg;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logAfterRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
@@ -42,6 +43,7 @@ public class Upgraderecipe extends InputRecipe {
 		logAfterRecipeRun(i, fccf);
 	}
 
+	@Override
 	public ItemStack getRecipeRepresentation() {
 		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
 		res.setAmount(1);
@@ -53,11 +55,12 @@ public class Upgraderecipe extends InputRecipe {
 		return res;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
-		LinkedList<ItemStack> result = new LinkedList<ItemStack>();
+		LinkedList<ItemStack> result = new LinkedList<>();
 		ItemMap inventoryMap = new ItemMap(i);
 		ItemMap possibleRuns = new ItemMap();
 		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
@@ -83,8 +86,9 @@ public class Upgraderecipe extends InputRecipe {
 		return result;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> res = new LinkedList<ItemStack>();
+		List<ItemStack> res = new LinkedList<>();
 		ItemStack cr = new ItemStack(Material.CRAFTING_TABLE);
 		ItemAPI.setDisplayName(cr, egg.getName());
 		ItemAPI.setLore(cr, ChatColor.LIGHT_PURPLE

@@ -4,14 +4,12 @@ import com.github.igotyou.FactoryMod.listeners.CitadelListener;
 import com.github.igotyou.FactoryMod.listeners.CompactItemListener;
 import com.github.igotyou.FactoryMod.listeners.FactoryModListener;
 import com.github.igotyou.FactoryMod.utility.FactoryModPermissionManager;
-import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public class FactoryMod extends ACivMod {
 	private FactoryModManager manager;
 	private static FactoryMod plugin;
-	private MenuBuilder menuBuilder;
 	private FactoryModPermissionManager permissionManager;
 
 	@Override
@@ -20,7 +18,6 @@ public class FactoryMod extends ACivMod {
 		plugin = this;
 		ConfigParser cp = new ConfigParser(this);
 		manager = cp.parse();
-		menuBuilder = new MenuBuilder(cp.getDefaultMenuFactory());
 		manager.loadFactories();
 		if (manager.isCitadelEnabled()) {
 			permissionManager = new FactoryModPermissionManager();
@@ -57,9 +54,5 @@ public class FactoryMod extends ACivMod {
 		if (manager.isCitadelEnabled()) {
 			plugin.getServer().getPluginManager().registerEvents(new CitadelListener(), plugin);
 		}
-	}
-
-	public MenuBuilder getMenuBuilder() {
-		return menuBuilder;
 	}
 }

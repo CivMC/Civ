@@ -16,20 +16,16 @@ import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import com.github.igotyou.FactoryMod.utility.MenuBuilder;
-
 public class SorterInteractionManager implements IInteractionManager {
 	
 	private Sorter sorter;
 	private BlockFurnaceStructure bfs;
-	private MenuBuilder mb;
 	private FactoryModManager manager;
 
 	public SorterInteractionManager(Sorter sorter) {
 		if (sorter != null) {
 		setSorter(sorter);
 		}
-		mb = FactoryMod.getInstance().getMenuBuilder();
 		manager = FactoryMod.getInstance().getManager();
 	}
 
@@ -42,6 +38,7 @@ public class SorterInteractionManager implements IInteractionManager {
 		this.bfs = (BlockFurnaceStructure) sorter.getMultiBlockStructure();
 	}
 
+	@Override
 	public void blockBreak(Player p, Block b) {
 		sorter.getRepairManager().breakIt();
 		if (p != null) {
@@ -49,10 +46,12 @@ public class SorterInteractionManager implements IInteractionManager {
 		}
 	}
 
+	@Override
 	public void rightClick(Player p, Block b, BlockFace bf) {
 		// not needed here
 	}
 
+	@Override
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		if (manager.isCitadelEnabled()) {
 			Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(b);
@@ -69,7 +68,7 @@ public class SorterInteractionManager implements IInteractionManager {
 		} else { // center
 			if (p.isSneaking() && p.getInventory().getItemInMainHand().getType()
 					.equals(manager.getFactoryInteractionMaterial())) {
-				mb.showSorterFace(p, sorter, bf);
+				//TODO
 				return;
 			}
 			ItemStack is = p.getInventory().getItemInMainHand();
@@ -88,6 +87,7 @@ public class SorterInteractionManager implements IInteractionManager {
 		}
 	}
 
+	@Override
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
 		int threshold = manager.getRedstonePowerOn();
 		if (!factoryBlock.getLocation()

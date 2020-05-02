@@ -23,7 +23,6 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
-import com.github.igotyou.FactoryMod.utility.FactoryCommandUtils;
 
 @CivCommand(id = "fmc")
 public class Create extends StandaloneCommand {
@@ -31,23 +30,11 @@ public class Create extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		FactoryModManager manager = FactoryMod.getInstance().getManager();
-		String name = FactoryCommandUtils.getFactoryName(args);
+		String name = String.join(" ", args);
 		IFactoryEgg egg = manager.getEgg(name);
 		if (egg == null) {
-			String comp = name.toLowerCase();
-			// check for lower/uppercase miss spellings
-			for (Entry<String, IFactoryEgg> entry : manager.getAllEggs()
-					.entrySet()) {
-				if (entry.getKey().equalsIgnoreCase(comp)) {
-					egg = entry.getValue();
-					break;
-				}
-			}
-			if (egg == null) {
-				sender.sendMessage(ChatColor.RED
-						+ "This factory does not exist");
-				return true;
-			}
+			sender.sendMessage(ChatColor.RED + "This factory does not exist");
+			return true;
 		}
 		Set<Material> transparent = null;
 		List<Block> view = ((Player) sender).getLineOfSight(transparent, 10);
@@ -58,54 +45,48 @@ public class Create extends StandaloneCommand {
 		if (egg instanceof FurnCraftChestEgg) {
 			FurnCraftChestEgg fcce = (FurnCraftChestEgg) egg;
 			if (view.get(view.size() - 1).getType() == Material.CRAFTING_TABLE) {
-				FurnCraftChestStructure fccs = new FurnCraftChestStructure(
-						view.get(view.size() - 1));
+				FurnCraftChestStructure fccs = new FurnCraftChestStructure(view.get(view.size() - 1));
 				if (!fccs.isComplete()) {
-					sender.sendMessage(ChatColor.RED
-							+ "The required block structure for this factory doesn't exist here");
+					sender.sendMessage(
+							ChatColor.RED + "The required block structure for this factory doesn't exist here");
 					return true;
 				}
 				manager.addFactory(fcce.hatch(fccs, (Player) sender));
 				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
 			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "You are not looking at the right block for this factory");
+				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
 			}
 			return true;
 		}
 		if (egg instanceof PipeEgg) {
 			PipeEgg fcce = (PipeEgg) egg;
 			if (view.get(view.size() - 1).getType() == Material.DISPENSER) {
-				PipeStructure fccs = new PipeStructure(
-						view.get(view.size() - 1));
+				PipeStructure fccs = new PipeStructure(view.get(view.size() - 1));
 				if (!fccs.isComplete()) {
-					sender.sendMessage(ChatColor.RED
-							+ "The required block structure for this factory doesn't exist here");
+					sender.sendMessage(
+							ChatColor.RED + "The required block structure for this factory doesn't exist here");
 					return true;
 				}
 				manager.addFactory(fcce.hatch(fccs, (Player) sender));
 				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
 			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "You are not looking at the right block for this factory");
+				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
 			}
 			return true;
 		}
 		if (egg instanceof SorterEgg) {
 			SorterEgg fcce = (SorterEgg) egg;
 			if (view.get(view.size() - 1).getType() == Material.DROPPER) {
-				BlockFurnaceStructure fccs = new BlockFurnaceStructure(
-						view.get(view.size() - 1));
+				BlockFurnaceStructure fccs = new BlockFurnaceStructure(view.get(view.size() - 1));
 				if (!fccs.isComplete()) {
-					sender.sendMessage(ChatColor.RED
-							+ "The required block structure for this factory doesn't exist here");
+					sender.sendMessage(
+							ChatColor.RED + "The required block structure for this factory doesn't exist here");
 					return true;
 				}
 				manager.addFactory(fcce.hatch(fccs, (Player) sender));
 				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());
 			} else {
-				sender.sendMessage(ChatColor.RED
-						+ "You are not looking at the right block for this factory");
+				sender.sendMessage(ChatColor.RED + "You are not looking at the right block for this factory");
 			}
 		}
 
@@ -113,7 +94,7 @@ public class Create extends StandaloneCommand {
 	}
 
 	@Override
-	public List<String> tabComplete(CommandSender arg0, String[] arg1) {
-		return FactoryCommandUtils.tabCompleteFactory(arg0, arg1);
+	public List<String> tabComplete(CommandSender arg0, String[] args) {
+		return FactoryTabCompleters.completeFactory(String.join(" ", args));
 	}
 }

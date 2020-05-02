@@ -248,7 +248,7 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			Clickable menuC = new Clickable(menuStack) {
 				@Override
 				public void clicked(Player arg0) {
-					FactoryMod.getInstance().getMenuBuilder().openFactoryBrowser(arg0, fccf.getName());
+					//TODO
 				}
 			};
 			ci.setSlot(menuC, (rows * 9) - 1);

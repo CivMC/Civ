@@ -19,26 +19,25 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.repairManager.NoRepairDestroyOnBreakManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
-import com.github.igotyou.FactoryMod.utility.MenuBuilder;
 
 public class PipeInteractionManager implements IInteractionManager {
 	private Pipe pipe;
-	private MenuBuilder mb;
 	private FactoryModManager manager;
 
 	public PipeInteractionManager() {
 		this.manager = FactoryMod.getInstance().getManager();
-		this.mb = FactoryMod.getInstance().getMenuBuilder();
 	}
 
 	public void setPipe(Pipe pipe) {
 		this.pipe = pipe;
 	}
 
+	@Override
 	public void rightClick(Player p, Block b, BlockFace bf) {
 		// no use for this here
 	}
 
+	@Override
 	public void leftClick(Player p, Block b, BlockFace bf) {
 		ItemStack hand = p.getInventory().getItemInMainHand();
 		if (manager.isCitadelEnabled()) {
@@ -50,7 +49,7 @@ public class PipeInteractionManager implements IInteractionManager {
 		}
 		if (b.equals(((PipeStructure) (pipe.getMultiBlockStructure())).getStart())) {
 			if (hand.getType() == manager.getFactoryInteractionMaterial()) {
-				mb.showPipeMaterials(p, pipe);
+				//TODO
 			} else {
 				if (pipe.isActive()) {
 					p.sendMessage(
@@ -76,6 +75,7 @@ public class PipeInteractionManager implements IInteractionManager {
 		}
 	}
 
+	@Override
 	public void redStoneEvent(BlockRedstoneEvent e, Block factoryBlock) {
 		int threshold = manager.getRedstonePowerOn();
 		if (!factoryBlock.getLocation()
@@ -95,6 +95,7 @@ public class PipeInteractionManager implements IInteractionManager {
 		}
 	}
 
+	@Override
 	public void blockBreak(Player p, Block b) {
 		((NoRepairDestroyOnBreakManager) (pipe.getRepairManager())).breakIt();
 		if (p != null) {

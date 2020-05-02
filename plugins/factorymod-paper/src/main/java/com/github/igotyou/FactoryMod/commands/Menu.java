@@ -7,8 +7,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
-import com.github.igotyou.FactoryMod.utility.FactoryCommandUtils;
-import com.github.igotyou.FactoryMod.utility.MenuBuilder;
+import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
+import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
+import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
@@ -18,26 +19,24 @@ public class Menu extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
-		if (!(sender instanceof Player)) {
-			sender.sendMessage(ChatColor.MAGIC + "Fuck off console man");
-			return true;
-		}
-		MenuBuilder mb = FactoryMod.getInstance().getMenuBuilder();
 		Player p = (Player) sender;
 		if (p.isInsideVehicle()) {
 			p.sendMessage(ChatColor.RED + "You can't use this command in vehicles");
 			return true;
 		}
-		if (args.length == 0) {
-			mb.openFactoryBrowser(p, null);
-		} else {
-			mb.openFactoryBrowser(p, FactoryCommandUtils.getFactoryName(args));
+		String concat = String.join(" ", args);
+		IFactoryEgg egg = FactoryMod.getInstance().getManager().getEgg(concat);
+		if (egg == null) {
+			p.sendMessage(ChatColor.RED + "The factory " + concat + " does not exist");
+			return true;
 		}
+		FactoryModGUI gui = new FactoryModGUI((Player) sender);
+		gui.showForFactory((FurnCraftChestEgg) egg);
 		return true;
 	}
 
 	@Override
-	public List <String> tabComplete(CommandSender arg0, String [] arg1) {
-		return FactoryCommandUtils.tabCompleteFactory(arg0, arg1);
+	public List<String> tabComplete(CommandSender arg0, String[] args) {
+		return FactoryTabCompleters.completeFactory(String.join(" ", args));
 	}
 }

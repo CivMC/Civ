@@ -75,6 +75,13 @@ public abstract class InputRecipe implements IRecipe {
 	public String getName() {
 		return name;
 	}
+	
+	public int getTotalFuelConsumed() {
+		if (fuel_consumption_intervall == 0) {
+			return 0;
+		}
+		return productionTime / fuel_consumption_intervall;
+	}
 
 	public int getFuelConsumptionIntervall() {
 		return fuel_consumption_intervall;

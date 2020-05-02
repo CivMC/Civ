@@ -44,6 +44,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		this.citadelBreakReduction = citadelBreakReduction;
 	}
 
+	@Override
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
 		FurnCraftChestStructure fccs = (FurnCraftChestStructure) mbs;
 		FurnacePowerManager fpm = new FurnacePowerManager(fccs.getFurnace(),
@@ -60,6 +61,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		return fccf;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -80,6 +82,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		this.recipes = recipes;
 	}
 
+	@Override
 	public double getReturnRate() {
 		return returnRateOnDestruction;
 	}
@@ -147,6 +150,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		return fccf;
 	}
 
+	@Override
 	public Class <FurnCraftChestStructure> getMultiBlockStructure() {
 		return FurnCraftChestStructure.class;
 	}
