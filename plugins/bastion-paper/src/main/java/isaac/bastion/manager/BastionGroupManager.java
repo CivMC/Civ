@@ -104,7 +104,10 @@ public class BastionGroupManager {
 	public boolean canPlaceBlock(Player player, Set<BastionBlock> bastionBlocks) {
 		for(BastionBlock bastionBlock : bastionBlocks) {
 			Reinforcement rein = bastionBlock.getReinforcement();
-			if(rein != null && !this.storage.isAllowedGroup(rein.getGroup(), rein.getGroup())) {
+			if (rein == null) {
+				return false;
+			}
+			if(!this.storage.isAllowedGroup(rein.getGroup(), rein.getGroup())) {
 				return false;
 			}
 		}

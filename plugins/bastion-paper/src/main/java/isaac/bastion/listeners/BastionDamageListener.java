@@ -54,7 +54,8 @@ public final class BastionDamageListener implements Listener {
 		blocks.add(event.getBlock());
 		Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
 		
-		if ((!blocking.isEmpty()) && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
+		if (!blocking.isEmpty()){
+			//TODO here used to be a linked group check which was removed because it was broken
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);
 			
 			event.setCancelled(true);
