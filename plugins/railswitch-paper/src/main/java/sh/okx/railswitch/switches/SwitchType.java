@@ -1,4 +1,6 @@
-package sh.okx.railswitch;
+package sh.okx.railswitch.switches;
+
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * Switch type matcher, will match a type to a tag.
@@ -8,7 +10,7 @@ public enum SwitchType {
     NORMAL("[destination]"),
     INVERTED("[!destination]");
     
-    private String tag;
+    private final String tag;
     
     /**
      * Defines a new switch type by its tag. Should there be a duplicate tag, the {@link SwitchType#find(String) find()}
@@ -31,7 +33,7 @@ public enum SwitchType {
             return null;
         }
         for (SwitchType type : values()) {
-            if (tag.equalsIgnoreCase(type.tag)) {
+            if (TextUtil.stringEqualsIgnoreCase(tag, type.tag)) {
                 return type;
             }
         }
