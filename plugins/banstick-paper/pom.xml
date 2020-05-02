@@ -100,7 +100,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.5</version>
+			<version>1.7.8</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -130,6 +130,10 @@
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+		<repository>
+			<id>teal-repo</id>
+			<url>http://dydoisbutts.info:8080/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 </project>
