@@ -5,23 +5,23 @@
 
 package com.github.igotyou.FactoryMod.recipes;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
-
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.UUID;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
@@ -46,6 +46,9 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		ItemStack book = getBook(i);
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
+		if (!bookMeta.hasGeneration()){
+			bookMeta.setGeneration(Generation.TATTERED);
+		}
 		String serialNumber = UUID.randomUUID().toString();
 
 		ItemMap toRemove = input.clone();
@@ -62,7 +65,8 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
 						);
-
+				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+				is.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				i.addItem(is);
 			}
 		}
@@ -94,7 +98,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	}
 
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 
 		if (i == null) {
 			result.add(new ItemStack(Material.WRITTEN_BOOK, 1));
