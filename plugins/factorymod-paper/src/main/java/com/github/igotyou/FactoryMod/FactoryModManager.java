@@ -57,11 +57,9 @@ public class FactoryModManager {
 	private Set<String> compactLore;
 	private Set<String> forceInclude;
 
-	public FactoryModManager(FactoryMod plugin,
-			Material factoryInteractionMaterial, boolean citadelEnabled,
-			boolean nameLayerEnabled, int redstonePowerOn,
-			int redstoneRecipeChange, boolean logInventories,
-			Map <String,String> factoryRenames) {
+	public FactoryModManager(FactoryMod plugin, Material factoryInteractionMaterial, boolean citadelEnabled,
+			boolean nameLayerEnabled, int redstonePowerOn, int redstoneRecipeChange, boolean logInventories,
+			Map<String, String> factoryRenames) {
 		this.plugin = plugin;
 		this.factoryInteractionMaterial = factoryInteractionMaterial;
 		this.citadelEnabled = citadelEnabled;
@@ -99,8 +97,7 @@ public class FactoryModManager {
 	 * Sets the lore used for compacting recipes. This is needed for the compact
 	 * item listeners
 	 * 
-	 * @param lore
-	 *            Lore used for compacting items
+	 * @param lore Lore used for compacting items
 	 */
 	public void addCompactLore(String lore) {
 		compactLore.add(lore);
@@ -120,15 +117,12 @@ public class FactoryModManager {
 	/**
 	 * Gets the setupcost for a specific factory
 	 * 
-	 * @param c
-	 *            Class of the structure type the factory is using
-	 * @param name
-	 *            Name of the factory
+	 * @param c    Class of the structure type the factory is using
+	 * @param name Name of the factory
 	 * @return Setupcost if the factory if it was found or null if it wasnt
 	 */
-	public ItemMap getSetupCost(Class <? extends MultiBlockStructure> c, String name) {
-		for (Entry<ItemMap, IFactoryEgg> entry : factoryCreationRecipes.get(c)
-				.entrySet()) {
+	public ItemMap getSetupCost(Class<? extends MultiBlockStructure> c, String name) {
+		for (Entry<ItemMap, IFactoryEgg> entry : factoryCreationRecipes.get(c).entrySet()) {
 			if (entry.getValue().getName().equals(name)) {
 				return entry.getKey();
 			}
@@ -139,8 +133,7 @@ public class FactoryModManager {
 	/**
 	 * Adds a factory and the locations of its blocks to the manager
 	 * 
-	 * @param f
-	 *            Factory to add
+	 * @param f Factory to add
 	 */
 	public void addFactory(Factory f) {
 		factories.add(f);
@@ -157,8 +150,7 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * @return Which material is used to interact with factories, stick by
-	 *         default
+	 * @return Which material is used to interact with factories, stick by default
 	 */
 	public Material getFactoryInteractionMaterial() {
 		return factoryInteractionMaterial;
@@ -167,8 +159,7 @@ public class FactoryModManager {
 	/**
 	 * Removes a factory from the manager
 	 * 
-	 * @param f
-	 *            Factory to remove
+	 * @param f Factory to remove
 	 */
 	public void removeFactory(Factory f) {
 		if (f.isActive()) {
@@ -184,10 +175,9 @@ public class FactoryModManager {
 	/**
 	 * Tries to get the factory which has a part at the given location
 	 * 
-	 * @param loc
-	 *            Location which is supposed to be part of a factory
-	 * @return The factory which had a block at the given location or null if
-	 *         there was no factory
+	 * @param loc Location which is supposed to be part of a factory
+	 * @return The factory which had a block at the given location or null if there
+	 *         was no factory
 	 */
 	public Factory getFactoryAt(Location loc) {
 		return getFactoryAt(loc.getBlock());
@@ -196,10 +186,9 @@ public class FactoryModManager {
 	/**
 	 * Tries to get the factory which has a part at the given block
 	 * 
-	 * @param b
-	 *            Block which is supposed to be part of a factory
-	 * @return The factory which had a block at the given location or null if
-	 *         there was no factory
+	 * @param b Block which is supposed to be part of a factory
+	 * @return The factory which had a block at the given location or null if there
+	 *         was no factory
 	 */
 	public Factory getFactoryAt(Block b) {
 		return locations.get(b.getLocation());
@@ -208,8 +197,7 @@ public class FactoryModManager {
 	/**
 	 * Checks whether a part of a factory is at the given location
 	 * 
-	 * @param loc
-	 *            Location to check
+	 * @param loc Location to check
 	 * @return True if there is a factory block, false if not
 	 */
 	public boolean factoryExistsAt(Location loc) {
@@ -217,19 +205,17 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * Attempts to create a factory with the given block as new center block. If
-	 * all blocks for a specific structure are there and other conditions needed
-	 * for the factory type are fullfilled, the factory is created and added to
-	 * the manager
+	 * Attempts to create a factory with the given block as new center block. If all
+	 * blocks for a specific structure are there and other conditions needed for the
+	 * factory type are fullfilled, the factory is created and added to the manager
 	 * 
-	 * @param b
-	 *            Center block
-	 * @param p
-	 *            Player attempting to create the factory
+	 * @param b Center block
+	 * @param p Player attempting to create the factory
 	 */
 	public void attemptCreation(Block b, Player p) {
-		//this method should probably be taken apart and the individual logic should be exported in
-		//a class that fits each factory type
+		// this method should probably be taken apart and the individual logic should be
+		// exported in
+		// a class that fits each factory type
 		if (!factoryExistsAt(b.getLocation())) {
 			// Cycle through possible structures here
 			if (b.getType() == Material.CRAFTING_TABLE) {
@@ -240,15 +226,12 @@ public class FactoryModManager {
 								+ "At least one of the blocks of this factory is already part of another factory");
 						return;
 					}
-					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-							.get(FurnCraftChestStructure.class);
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes.get(FurnCraftChestStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for (Entry<ItemMap, IFactoryEgg> entry : eggs
-								.entrySet()) {
-							if (entry.getKey().containedExactlyIn(
-									((Chest) (fccs.getChest().getState()))
-											.getInventory())) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs.entrySet()) {
+							if (entry.getKey()
+									.containedExactlyIn(((Chest) (fccs.getChest().getState())).getInventory())) {
 								egg = entry.getValue();
 								break;
 							}
@@ -256,17 +239,13 @@ public class FactoryModManager {
 						if (egg != null) {
 							Factory f = egg.hatch(fccs, p);
 							if (f != null) {
-								((Chest) (fccs.getChest().getState()))
-										.getInventory().clear();
+								((Chest) (fccs.getChest().getState())).getInventory().clear();
 								addFactory(f);
-								p.sendMessage(ChatColor.GREEN
-										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()
-										+ " was created by " + p.getName());
+								p.sendMessage(ChatColor.GREEN + "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData() + " was created by " + p.getName());
 							}
 						} else {
-							p.sendMessage(ChatColor.RED
-									+ "There is no factory with the given creation materials");
+							p.sendMessage(ChatColor.RED + "There is no factory with the given creation materials");
 						}
 					}
 					return;
@@ -280,51 +259,40 @@ public class FactoryModManager {
 								+ "At least one of the blocks of this factory is already part of another factory");
 						return;
 					}
-					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-							.get(PipeStructure.class);
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes.get(PipeStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for (Entry<ItemMap, IFactoryEgg> entry : eggs
-								.entrySet()) {
-							if (entry.getKey().containedExactlyIn(
-									(((Dispenser) (ps.getStart().getState()))
-											.getInventory()))) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs.entrySet()) {
+							if (entry.getKey()
+									.containedExactlyIn((((Dispenser) (ps.getStart().getState())).getInventory()))) {
 								egg = entry.getValue();
 								break;
 							}
 						}
 						if (egg != null) {
-							if (ps.getGlassColor() != ((PipeEgg) egg)
-									.getColor()) {
-								p.sendMessage(ChatColor.RED
-										+ "You dont have the right color of glass for this pipe");
+							if (ps.getGlassColor() != ((PipeEgg) egg).getColor()) {
+								p.sendMessage(ChatColor.RED + "You dont have the right color of glass for this pipe");
 								return;
 							}
 							if (ps.getLength() > ((PipeEgg) egg).getMaximumLength()) {
-								p.sendMessage(ChatColor.RED
-										+ "You cant make pipes of this type, which are that long");
+								p.sendMessage(ChatColor.RED + "You cant make pipes of this type, which are that long");
 								return;
 							}
 							Factory f = egg.hatch(ps, p);
 							if (f != null) {
-								((Dispenser) (ps.getStart().getState()))
-										.getInventory().clear();
+								((Dispenser) (ps.getStart().getState())).getInventory().clear();
 								addFactory(f);
-								p.sendMessage(ChatColor.GREEN
-										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()
-										+ " was created by " + p.getName());
+								p.sendMessage(ChatColor.GREEN + "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData() + " was created by " + p.getName());
 							}
 
 						} else {
-							p.sendMessage(ChatColor.RED
-									+ "There is no pipe with the given creation materials");
+							p.sendMessage(ChatColor.RED + "There is no pipe with the given creation materials");
 						}
 					}
 					return;
 				} else {
-					p.sendMessage(ChatColor.RED
-							+ "This pipe is not set up the right way");
+					p.sendMessage(ChatColor.RED + "This pipe is not set up the right way");
 				}
 			}
 			if (b.getType() == Material.DROPPER) {
@@ -335,15 +303,12 @@ public class FactoryModManager {
 								+ "At least one of the blocks of this factory is already part of another factory");
 						return;
 					}
-					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-							.get(BlockFurnaceStructure.class);
+					HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes.get(BlockFurnaceStructure.class);
 					if (eggs != null) {
 						IFactoryEgg egg = null;
-						for (Entry<ItemMap, IFactoryEgg> entry : eggs
-								.entrySet()) {
+						for (Entry<ItemMap, IFactoryEgg> entry : eggs.entrySet()) {
 							if (entry.getKey().containedExactlyIn(
-									((Dropper) (bfs.getCenter().getBlock()
-											.getState())).getInventory())) {
+									((Dropper) (bfs.getCenter().getBlock().getState())).getInventory())) {
 								egg = entry.getValue();
 								break;
 							}
@@ -351,31 +316,25 @@ public class FactoryModManager {
 						if (egg != null) {
 							Factory f = egg.hatch(bfs, p);
 							if (f != null) {
-								((Dropper) (bfs.getCenter().getBlock()
-										.getState())).getInventory().clear();
+								((Dropper) (bfs.getCenter().getBlock().getState())).getInventory().clear();
 								addFactory(f);
-								p.sendMessage(ChatColor.GREEN
-										+ "Successfully created " + f.getName());
-								LoggingUtils.log(f.getLogData()
-										+ " was created by " + p.getName());
+								p.sendMessage(ChatColor.GREEN + "Successfully created " + f.getName());
+								LoggingUtils.log(f.getLogData() + " was created by " + p.getName());
 							}
 
 						} else {
-							p.sendMessage(ChatColor.RED
-									+ "There is no sorter with the given creation materials");
+							p.sendMessage(ChatColor.RED + "There is no sorter with the given creation materials");
 						}
 					}
 				} else {
-					p.sendMessage(ChatColor.RED
-							+ "This sorter is not set up the right way");
+					p.sendMessage(ChatColor.RED + "This sorter is not set up the right way");
 				}
 			}
 		}
 	}
 
 	public void calculateTotalSetupCosts() {
-		for (HashMap<ItemMap, IFactoryEgg> maps : factoryCreationRecipes
-				.values()) {
+		for (HashMap<ItemMap, IFactoryEgg> maps : factoryCreationRecipes.values()) {
 			for (Entry<ItemMap, IFactoryEgg> entry : maps.entrySet()) {
 				totalSetupCosts.put(entry.getValue(), entry.getKey());
 			}
@@ -393,17 +352,12 @@ public class FactoryModManager {
 		}
 		for (IFactoryEgg superEgg : this.eggs.values()) {
 			if (superEgg instanceof FurnCraftChestEgg) {
-				for (IRecipe recipe : ((FurnCraftChestEgg) superEgg)
-						.getRecipes()) {
-					if (recipe instanceof Upgraderecipe
-							&& ((Upgraderecipe) recipe).getEgg() == egg) {
+				for (IRecipe recipe : ((FurnCraftChestEgg) superEgg).getRecipes()) {
+					if (recipe instanceof Upgraderecipe && ((Upgraderecipe) recipe).getEgg() == egg) {
 						map = calculateTotalSetupCost(superEgg);
 						if (map == null) {
-							plugin.warning("Could not calculate total setupcost for "
-									+ egg.getName()
-									+ ". It's parent factory  "
-									+ superEgg.getName()
-									+ " is impossible to set up");
+							plugin.warning("Could not calculate total setupcost for " + egg.getName()
+									+ ". It's parent factory  " + superEgg.getName() + " is impossible to set up");
 							break;
 						}
 						map = map.clone(); // so we dont mess with the original
@@ -421,10 +375,8 @@ public class FactoryModManager {
 	/**
 	 * Gets all the factories within a certain range of a given location
 	 * 
-	 * @param l
-	 *            Location on which the search is centered
-	 * @param range
-	 *            maximum distance from the center allowed
+	 * @param l     Location on which the search is centered
+	 * @param range maximum distance from the center allowed
 	 * @return All of the factories which are less or equal than the given range
 	 *         away from the given location
 	 */
@@ -449,28 +401,23 @@ public class FactoryModManager {
 	/**
 	 * Adds a factory egg to the manager and associates it with a specific setup
 	 * cost in items and a specific MultiBlockStructure which is the physical
-	 * representation of the factory created by the egg. See the docu for the
-	 * eggs for more info on those
+	 * representation of the factory created by the egg. See the docu for the eggs
+	 * for more info on those
 	 * 
-	 * @param blockStructureClass
-	 *            Class inheriting from MultiBlockStructure, which physically
-	 *            represents the factories created by the egg
-	 * @param recipe
-	 *            Item cost to create the factory
-	 * @param egg
-	 *            Encapsulates the factory itself
+	 * @param blockStructureClass Class inheriting from MultiBlockStructure, which
+	 *                            physically represents the factories created by the
+	 *                            egg
+	 * @param recipe              Item cost to create the factory
+	 * @param egg                 Encapsulates the factory itself
 	 */
-	public void addFactoryCreationEgg(Class <? extends MultiBlockStructure> blockStructureClass,
-			ItemMap recipe, IFactoryEgg egg) {
-		HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes
-				.computeIfAbsent(blockStructureClass, a -> new HashMap<ItemMap, IFactoryEgg>());
-		eggs.put(recipe, egg);
+	public void addFactoryEgg(Class<? extends MultiBlockStructure> blockStructureClass, ItemMap recipe,
+			IFactoryEgg egg) {
+		if (recipe != null) {
+			HashMap<ItemMap, IFactoryEgg> eggs = factoryCreationRecipes.computeIfAbsent(blockStructureClass,
+					a -> new HashMap<ItemMap, IFactoryEgg>());
+			eggs.put(recipe, egg);
+		}
 		this.eggs.put(egg.getName().toLowerCase(), egg);
-		FactoryTabCompleters.addFactory(egg.getName());
-	}
-
-	public void addFactoryUpgradeEgg(IFactoryEgg egg) {
-		eggs.put(egg.getName().toLowerCase(), egg);
 		FactoryTabCompleters.addFactory(egg.getName());
 	}
 
@@ -485,8 +432,8 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * Called when the plugin is deactivated to first save all factories and
-	 * then deactivate them, so the deactivated block state is saved
+	 * Called when the plugin is deactivated to first save all factories and then
+	 * deactivate them, so the deactivated block state is saved
 	 */
 	public void shutDown() {
 		saveFactories();
@@ -496,12 +443,11 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * Checks whether a specific material is a possible center block for a
-	 * factory and whether a factory could potentionally created from a block
-	 * with this material
+	 * Checks whether a specific material is a possible center block for a factory
+	 * and whether a factory could potentionally created from a block with this
+	 * material
 	 * 
-	 * @param m
-	 *            Material to check
+	 * @param m Material to check
 	 * @return true if the material could be the one of a possible center block,
 	 *         false if not
 	 */
@@ -510,14 +456,12 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * Checks whether the given material is an interaction material and whether
-	 * a reaction should be tried to get when one of those blocks is part of a
-	 * factory and interacted with
+	 * Checks whether the given material is an interaction material and whether a
+	 * reaction should be tried to get when one of those blocks is part of a factory
+	 * and interacted with
 	 * 
-	 * @param m
-	 *            Material to check
-	 * @return True if the material is a possible interaction material, false if
-	 *         not
+	 * @param m Material to check
+	 * @return True if the material is a possible interaction material, false if not
 	 */
 	public boolean isPossibleInteractionBlock(Material m) {
 		return possibleInteractionBlock.contains(m);
@@ -526,8 +470,7 @@ public class FactoryModManager {
 	/**
 	 * Gets a specific factory egg based on it's name
 	 * 
-	 * @param name
-	 *            Name of the egg
+	 * @param name Name of the egg
 	 * @return The egg with the given name or null if no such egg exists
 	 */
 	public IFactoryEgg getEgg(String name) {
@@ -535,11 +478,10 @@ public class FactoryModManager {
 	}
 
 	/**
-	 * Gets the Redstone power level necessary to active a factory. Fall below
-	 * this level and the factory will deactivate.
+	 * Gets the Redstone power level necessary to active a factory. Fall below this
+	 * level and the factory will deactivate.
 	 * 
-	 * @return The power level on which factory activation or de-activation
-	 *         hinges
+	 * @return The power level on which factory activation or de-activation hinges
 	 */
 	public int getRedstonePowerOn() {
 		return this.redstonePowerOn;
@@ -547,11 +489,11 @@ public class FactoryModManager {
 
 	/**
 	 * Gets the Redstone power change necessary to alter the recipe setting of a
-	 * factory. Any change >= this level, either positive or negative, will
-	 * attempt to alter the recipe (implementation depending).
+	 * factory. Any change >= this level, either positive or negative, will attempt
+	 * to alter the recipe (implementation depending).
 	 * 
-	 * @return The amount of Redstone power change necessary to alter recipe
-	 *         setting of a factory.
+	 * @return The amount of Redstone power change necessary to alter recipe setting
+	 *         of a factory.
 	 */
 	public int getRedstoneRecipeChange() {
 		return this.redstoneRecipeChange;
@@ -571,8 +513,10 @@ public class FactoryModManager {
 
 	/**
 	 * Gets the recipe with the given identifier, if it exists
+	 * 
 	 * @param name Identifier of the recipe
-	 * @return Recipe with the given identifier or null if either the recipe doesn't exist or the given string was null
+	 * @return Recipe with the given identifier or null if either the recipe doesn't
+	 *         exist or the given string was null
 	 */
 	public IRecipe getRecipe(String identifier) {
 		if (identifier == null) {
@@ -595,4 +539,4 @@ public class FactoryModManager {
 	public boolean isForceInclude(String identifier) {
 		return this.forceInclude.contains(identifier);
 	}
-} 
+}

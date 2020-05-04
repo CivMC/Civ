@@ -40,6 +40,10 @@ public class FactoryModGUI {
 		this.player = player;
 		this.history = new HistoryTracker<>();
 	}
+	
+	public void showFactoryOverview() {
+		
+	}
 
 	public void showForFactory(FurnCraftChestEgg factory) {
 		inventory = new ComponableInventory(ChatColor.GOLD + factory.getName(), 6, player);
@@ -153,7 +157,8 @@ public class FactoryModGUI {
 
 		List<IClickable> inputClicks = recipe.getInputRepresentation(null, null).stream().map(DecorationStack::new)
 				.collect(Collectors.toList());
-		Scrollbar inputSection = new Scrollbar(inputClicks, 20, 4, ContentAligners.getCenteredInOrder(20, 4));
+		Scrollbar inputSection = new Scrollbar(inputClicks, 20, 4,
+				ContentAligners.getCenteredInOrder(inputClicks.size(), 20, 4));
 		// top right corner
 		inputSection.setBackwardsClickSlot(4);
 		section.addComponent(inputSection, SlotPredicates.rectangle(5, 4));
@@ -168,7 +173,8 @@ public class FactoryModGUI {
 
 		List<IClickable> outputClicks = recipe.getOutputRepresentation(null, null).stream().map(DecorationStack::new)
 				.collect(Collectors.toList());
-		Scrollbar outputSection = new Scrollbar(outputClicks, 20);
+		Scrollbar outputSection = new Scrollbar(outputClicks, 20, 4,
+				ContentAligners.getCenteredInOrder(outputClicks.size(), 20, 4));
 		outputSection.setBackwardsClickSlot(4);
 		section.addComponent(outputSection, SlotPredicates.offsetRectangle(5, 4, 0, 5));
 

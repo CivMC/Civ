@@ -286,29 +286,24 @@ public class ConfigParser {
 		}
 		switch (type) {
 		case "FCC": // Furnace, chest, craftingtable
-			egg = parseFCCFactory(config);
-			if (egg == null) {
-				break;
-			}
-			ItemMap setupCost = parseItemMap(config.getConfigurationSection("setupcost"));
-			if (setupCost.getTotalUniqueItemAmount() > 0) {
-				manager.addFactoryCreationEgg(FurnCraftChestStructure.class, setupCost, egg);
-				// This is a placeholder to allow for FCC factories to be shown in /fm as
-				// upgrades from a base factory
-				// Just until /fm can be improved to show all FCCs outright
-				upgradeEggs.put(egg.getName(), egg);
-			} else {
-				plugin.warning(String.format("FCC %s specified with no setup cost, skipping", egg.getName()));
-			}
-			break;
 		case "FCCUPGRADE":
 			egg = parseFCCFactory(config);
 			if (egg == null) {
 				break;
 			}
+			ItemMap setupCost = null;
+			if (config.isConfigurationSection("setupcost")) {
+				setupCost = parseItemMap(config.getConfigurationSection("setupcost"));
+				if (setupCost == null || setupCost.getTotalUniqueItemAmount() == 0) {
+					plugin.warning(
+							String.format("FCC %s specified with empty setup cost, can not be created", egg.getName()));
+					setupCost = null;
+				}
+			}
 			upgradeEggs.put(egg.getName(), egg);
-			manager.addFactoryUpgradeEgg(egg);
+			manager.addFactoryEgg(FurnCraftChestStructure.class, setupCost, egg);
 			break;
+
 		case "PIPE":
 			egg = parsePipe(config);
 			if (egg == null) {
@@ -316,7 +311,7 @@ public class ConfigParser {
 			}
 			ItemMap pipeSetupCost = parseItemMap(config.getConfigurationSection("setupcost"));
 			if (pipeSetupCost.getTotalUniqueItemAmount() > 0) {
-				manager.addFactoryCreationEgg(PipeStructure.class, pipeSetupCost, egg);
+				manager.addFactoryEgg(PipeStructure.class, pipeSetupCost, egg);
 			} else {
 				plugin.warning(String.format("PIPE %s specified with no setup cost, skipping", egg.getName()));
 			}
@@ -328,7 +323,7 @@ public class ConfigParser {
 			}
 			ItemMap sorterSetupCost = parseItemMap(config.getConfigurationSection("setupcost"));
 			if (sorterSetupCost.getTotalUniqueItemAmount() > 0) {
-				manager.addFactoryCreationEgg(BlockFurnaceStructure.class, sorterSetupCost, egg);
+				manager.addFactoryEgg(BlockFurnaceStructure.class, sorterSetupCost, egg);
 			} else {
 				plugin.warning(String.format("SORTER %s specified with no setup cost, skipping", egg.getName()));
 			}
@@ -846,9 +841,8 @@ public class ConfigParser {
 				plugin.severe("Could not load word file " + path);
 				result = null;
 				break;
-			}
-			else {
-				plugin.info("Loaded "+ words.size() + " words for word bank recipe");
+			} else {
+				plugin.info("Loaded " + words.size() + " words for word bank recipe");
 			}
 			List<ChatColor> colors = new ArrayList<>();
 			if (!config.isList("colors")) {
