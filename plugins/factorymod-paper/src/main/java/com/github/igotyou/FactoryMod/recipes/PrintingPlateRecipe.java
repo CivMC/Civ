@@ -82,8 +82,6 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		isTag.setString("SN", serialNumber);
 		isTag.setCompound("Book", bookTag);
 
-		addEnchTag(isTag);
-
 		return isTag.enrichWithNBT(is);
 	}
 
