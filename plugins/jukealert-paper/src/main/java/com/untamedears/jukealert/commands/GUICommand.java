@@ -34,7 +34,7 @@ public class GUICommand extends StandaloneCommand {
 		}
 		// No snitch under cursor, so search around player
 		Collection<Snitch> snitches = JukeAlert.getInstance().getSnitchManager()
-				.getSnitchesCovering(player.getLocation());
+				.getSnitchesCovering(player.getLocation(), true);
 		// Sort out the ones the player has no perms for
 		Iterator<Snitch> iter = snitches.iterator();
 		while (iter.hasNext()) {

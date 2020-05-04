@@ -60,7 +60,7 @@ public class ListCommand extends StandaloneCommand {
 					
 					@Override
 					public void run() {
-						new SnitchOverviewGUI(player, snitches, "Your snitches", false);
+						new SnitchOverviewGUI(player, snitches, "Your snitches", false).showScreen();;
 						
 					}
 				}.runTask(JukeAlert.getInstance());

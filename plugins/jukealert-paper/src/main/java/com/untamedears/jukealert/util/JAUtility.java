@@ -30,7 +30,7 @@ public final class JAUtility {
 	public static Snitch findClosestSnitch(Location loc, PermissionType perm, UUID player) {
 		Snitch closestSnitch = null;
 		double closestDistance = Double.MAX_VALUE;
-		Collection<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().getSnitchesCovering(loc);
+		Collection<Snitch> snitches = JukeAlert.getInstance().getSnitchManager().getSnitchesCovering(loc, false);
 		for (Snitch snitch : snitches) {
 			if (snitch.hasPermission(player, perm)) {
 				double distance = snitch.getLocation().distanceSquared(loc);

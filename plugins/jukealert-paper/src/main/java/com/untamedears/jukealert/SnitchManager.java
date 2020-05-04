@@ -1,5 +1,6 @@
 package com.untamedears.jukealert;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -50,7 +51,13 @@ public class SnitchManager {
 	}
 
 	private SparseQuadTree<SnitchQTEntry> getQuadTreeFor(Location loc) {
-		return quadTreesByWorld.computeIfAbsent(loc.getWorld().getUID(), u -> new SparseQuadTree<>(1));
+		SparseQuadTree<SnitchQTEntry> tree = quadTreesByWorld.get(loc.getWorld().getUID());
+		if (tree == null) {
+			JukeAlert.getInstance().getLogger().info("Quad tree for world  " + loc.getWorld().getUID() + " does not exist, creating");
+			tree = new SparseQuadTree<>(1);
+			quadTreesByWorld.put(loc.getWorld().getUID(), tree);
+		}
+		return tree;
 	}
 
 	/**
@@ -69,9 +76,24 @@ public class SnitchManager {
 		}
 	}
 
-	public Set<Snitch> getSnitchesCovering(Location location) {
-		return getQuadTreeFor(location).find(location.getBlockX(), location.getBlockZ(), true).stream().map(SnitchQTEntry::getSnitch)
-				.filter(s -> s.getFieldManager().isInside(location)).collect(Collectors.toSet());
+	public Set<Snitch> getSnitchesCovering(Location location, boolean debug) {
+		Set <SnitchQTEntry> entries = getQuadTreeFor(location).find(location.getBlockX(), location.getBlockZ(), true);
+		if (debug) {
+			JukeAlert.getInstance().getLogger().info(entries.size() + " initial retrieve for loc " + entries.size());
+
+		}
+		Set<Snitch> result = new HashSet<>();
+		for(SnitchQTEntry qt : entries) {
+			if (qt.getSnitch().getFieldManager().isInside(location)) {
+				result.add(qt.getSnitch());
+			}
+			else {
+				if (debug) {
+					JukeAlert.getInstance().getLogger().info(qt.getSnitch()+ " not inside after check");
+				}
+			}
+		}
+ 		return result;
 	}
 
 }
