@@ -5,21 +5,19 @@
 
 package com.github.igotyou.FactoryMod.recipes;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
 	private static class BookInfo {
@@ -78,8 +76,8 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 			ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 
 			ItemMeta paperMeta = paper.getItemMeta();
-			paperMeta.setLore(info.lines);
 			paperMeta.setDisplayName(ChatColor.RESET + info.title);
+			paperMeta.setLore(info.lines);
 			paper.setItemMeta(paperMeta);
 
 			i.addItem(paper);
@@ -93,7 +91,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
 		String text = bookMeta.getPageCount() > 0 ? bookMeta.getPage(1): "";
 		String[] lines = text.split("\n");
-		List<String> fixedLines = new ArrayList<String>();
+		List<String> fixedLines = new ArrayList<>();
 
 		for(String line : lines) {
 			String fixedLine = line.replaceAll(ChatColor.BLACK.toString(), ChatColor.GRAY.toString());
@@ -102,7 +100,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 				fixedLine = ChatColor.GRAY + fixedLine;
 			}
 
-			fixedLines.add(fixedLine);
+			fixedLines.add(ChatColor.GRAY + fixedLine);
 		}
 
 		String bookTitle = bookMeta.getTitle();
@@ -124,7 +122,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		ItemStack paper = new ItemStack(Material.PAPER, getOutputAmount());
 		ItemAPI.setDisplayName(paper, this.title);
 
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 		stacks.add(paper);
 		stacks.add(getPrintingPlateRepresentation(getPrintingPlate(), PrintingPlateRecipe.itemName));
 
