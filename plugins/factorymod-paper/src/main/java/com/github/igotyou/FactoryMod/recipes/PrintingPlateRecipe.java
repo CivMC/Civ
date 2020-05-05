@@ -11,14 +11,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -49,6 +50,9 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		ItemStack book = getBook(i);
 		BookMeta bookMeta = (BookMeta)book.getItemMeta();
+		if (!bookMeta.hasGeneration()){
+			bookMeta.setGeneration(Generation.TATTERED);
+		}
 		String serialNumber = UUID.randomUUID().toString();
 
 		ItemMap toRemove = input.clone();
@@ -65,7 +69,8 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 						ChatColor.GRAY + "by " + bookMeta.getAuthor(),
 						ChatColor.GRAY + getGenerationName(bookMeta.getGeneration())
 						);
-
+				is.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+				is.getItemMeta().addItemFlags(ItemFlag.HIDE_ENCHANTS);
 				i.addItem(is);
 			}
 		}
@@ -80,8 +85,6 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		isTag.setString("SN", serialNumber);
 		isTag.setCompound("Book", bookTag);
-
-		addEnchTag(isTag);
 
 		return isTag.enrichWithNBT(is);
 	}
