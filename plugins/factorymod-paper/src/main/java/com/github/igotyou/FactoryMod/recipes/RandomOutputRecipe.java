@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -46,6 +47,7 @@ public class RandomOutputRecipe extends InputRecipe {
 		}
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
@@ -90,13 +92,13 @@ public class RandomOutputRecipe extends InputRecipe {
 		}
 		return null;
 	}
-
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = lowestChanceMap.getItemStackRepresentation().get(0);
-		ItemAPI.setDisplayName(is, name);
-		return is;
+	
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return input.getItemStackRepresentation().get(0).getType();
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
@@ -104,6 +106,7 @@ public class RandomOutputRecipe extends InputRecipe {
 		return createLoredStacksForInfo(i);
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		List <ItemStack> items = lowestChanceMap.getItemStackRepresentation();
 		for (ItemStack is : items) {
@@ -119,6 +122,11 @@ public class RandomOutputRecipe extends InputRecipe {
 
 	public ItemMap getDisplayMap() {
 		return lowestChanceMap;
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("A random item");
 	}
 
 }

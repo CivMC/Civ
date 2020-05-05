@@ -17,6 +17,8 @@ import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+
 public class FurnCraftChestEgg implements IFactoryEgg {
 	private String name;
 	private int updateTime;
@@ -28,10 +30,11 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	private int healthPerDamagePeriod;
 	private double returnRateOnDestruction;
 	private double citadelBreakReduction;
+	private ItemMap setupCost;
 
 	public FurnCraftChestEgg(String name, int updateTime,
 			List<IRecipe> recipes, ItemStack fuel,
-			int fuelConsumptionIntervall, double returnRateOnDestruction, int maximumHealth, long breakGracePeriod, int healthPerDamagePeriod, double citadelBreakReduction) {
+			int fuelConsumptionIntervall, double returnRateOnDestruction, int maximumHealth, long breakGracePeriod, int healthPerDamagePeriod, double citadelBreakReduction, ItemMap setupCost) {
 		this.name = name;
 		this.updateTime = updateTime;
 		this.recipes = recipes;
@@ -42,6 +45,7 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 		this.returnRateOnDestruction = returnRateOnDestruction;
 		this.maximumHealth = maximumHealth;
 		this.citadelBreakReduction = citadelBreakReduction;
+		this.setupCost = setupCost;
 	}
 
 	@Override
@@ -153,6 +157,10 @@ public class FurnCraftChestEgg implements IFactoryEgg {
 	@Override
 	public Class <FurnCraftChestStructure> getMultiBlockStructure() {
 		return FurnCraftChestStructure.class;
+	}
+	
+	public ItemMap getSetupCost() {
+		return setupCost;
 	}
 
 	public double getCitadelBreakReduction() {

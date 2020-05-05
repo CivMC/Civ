@@ -2,16 +2,12 @@ package com.github.igotyou.FactoryMod.commands;
 
 import java.util.List;
 import java.util.Set;
-import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import vg.civcraft.mc.civmodcore.command.CivCommand;
-import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
@@ -23,6 +19,9 @@ import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
+
+import vg.civcraft.mc.civmodcore.command.CivCommand;
+import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 @CivCommand(id = "fmc")
 public class Create extends StandaloneCommand {

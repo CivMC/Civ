@@ -24,14 +24,19 @@ public class Menu extends StandaloneCommand {
 			p.sendMessage(ChatColor.RED + "You can't use this command in vehicles");
 			return true;
 		}
-		String concat = String.join(" ", args);
-		IFactoryEgg egg = FactoryMod.getInstance().getManager().getEgg(concat);
-		if (egg == null) {
-			p.sendMessage(ChatColor.RED + "The factory " + concat + " does not exist");
-			return true;
+		if (args.length == 0 || args[0].length() == 0) {
+			FactoryModGUI gui = new FactoryModGUI((Player) sender);
+			gui.showFactoryOverview(true);
+		} else {
+			String concat = String.join(" ", args);
+			IFactoryEgg egg = FactoryMod.getInstance().getManager().getEgg(concat);
+			if (egg == null) {
+				p.sendMessage(ChatColor.RED + "The factory " + concat + " does not exist");
+				return true;
+			}
+			FactoryModGUI gui = new FactoryModGUI((Player) sender);
+			gui.showForFactory((FurnCraftChestEgg) egg);
 		}
-		FactoryModGUI gui = new FactoryModGUI((Player) sender);
-		gui.showForFactory((FurnCraftChestEgg) egg);
 		return true;
 	}
 

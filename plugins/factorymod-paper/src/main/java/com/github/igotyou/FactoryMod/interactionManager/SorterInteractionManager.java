@@ -7,15 +7,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 public class SorterInteractionManager implements IInteractionManager {
 	
 	private Sorter sorter;

@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -8,10 +9,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 /**
  * Used to decompact itemstacks, which means a single item with compacted lore
@@ -28,6 +29,7 @@ public class DecompactingRecipe extends InputRecipe {
 		this.compactedLore = compactedLore;
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		if (!input.isContainedIn(i)) {
 			return false;
@@ -42,6 +44,7 @@ public class DecompactingRecipe extends InputRecipe {
 		return false;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
@@ -71,8 +74,9 @@ public class DecompactingRecipe extends InputRecipe {
 		logAfterRecipeRun(i, fccf);
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
 			ItemAPI.addLore(is, compactedLore);
@@ -93,16 +97,14 @@ public class DecompactingRecipe extends InputRecipe {
 		return result;
 	}
 
-	public ItemStack getRecipeRepresentation() {
-		ItemStack res = new ItemStack(Material.CHEST);
-		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getName());
-		res.setItemMeta(im);
-		return res;
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return Material.TRAPPED_CHEST;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			result.add(new ItemStack(Material.STONE, 64));
 			return result;
@@ -155,5 +157,15 @@ public class DecompactingRecipe extends InputRecipe {
 
 	public String getCompactedLore() {
 		return compactedLore;
+	}
+	
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("An entire stack of the decompacted item if it's stackable", "---OR---", "Eight of the decompacted item if it's not stackable");
+	}
+
+	@Override
+	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("A single compacted item");
 	}
 }

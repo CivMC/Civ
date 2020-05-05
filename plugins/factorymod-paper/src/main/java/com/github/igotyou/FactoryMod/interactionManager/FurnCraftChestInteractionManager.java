@@ -1,5 +1,17 @@
 package com.github.igotyou.FactoryMod.interactionManager;
 
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockRedstoneEvent;
+import org.bukkit.inventory.ItemStack;
+
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -8,21 +20,12 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-import java.text.DecimalFormat;
-import java.util.HashMap;
-import java.util.List;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockRedstoneEvent;
-import org.bukkit.inventory.ItemStack;
+
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.Clickable;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -200,7 +203,11 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 				InputRecipe recipe = (InputRecipe) (rec);
 				ItemStack recStack = recipe.getRecipeRepresentation();
 				int runcount = fccf.getRunCount(recipe);
-				ItemAPI.addLore(recStack, ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+				ItemAPI.addLore(recStack, "",ChatColor.AQUA + "Ran " + String.valueOf(runcount) + " times");
+				if (rec == fccf.getCurrentRecipe()) {
+					ItemAPI.addLore(recStack, ChatColor.GREEN + "Currently selected");
+					ItemAPI.addGlow(recStack);
+				}
 				if (recipe instanceof ProductionRecipe) {
 					ProductionRecipe prod = (ProductionRecipe) recipe;
 					if (prod.getModifier() != null) {

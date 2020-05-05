@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -17,8 +18,6 @@ import org.bukkit.block.Dispenser;
 import org.bukkit.block.Dropper;
 import org.bukkit.entity.Player;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.commands.FactoryTabCompleters;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -33,6 +32,8 @@ import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FileHandler;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Manager class which handles all factories, their locations and their creation
@@ -538,5 +539,9 @@ public class FactoryModManager {
 
 	public boolean isForceInclude(String identifier) {
 		return this.forceInclude.contains(identifier);
+	}
+	
+	public Collection<IFactoryEgg> getAllFactoryEggs() {
+		return eggs.values();
 	}
 }

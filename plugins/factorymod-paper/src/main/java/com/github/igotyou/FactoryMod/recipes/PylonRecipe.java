@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -10,10 +11,11 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PylonRecipe extends InputRecipe {
 
@@ -29,6 +31,7 @@ public class PylonRecipe extends InputRecipe {
 		this.weight = weight;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		if (!input.isContainedIn(i)) {
 			return;
@@ -52,6 +55,7 @@ public class PylonRecipe extends InputRecipe {
 		return globalLimit;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemMap currOut = getCurrentOutput();
 		List<ItemStack> res = new LinkedList<ItemStack>();
@@ -66,25 +70,20 @@ public class PylonRecipe extends InputRecipe {
 		return res;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
 		}
 		return createLoredStacksForInfo(i);
 	}
-
-	public ItemStack getRecipeRepresentation() {
-		List<ItemStack> out = output.getItemStackRepresentation();
-		ItemStack res;
-		if (out.size() == 0) {
-			res = new ItemStack(Material.STONE);
-		} else {
-			res = out.get(0);
-		}
-		ItemAPI.setDisplayName(res, getName());
-		return res;
+	
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return output.getItemStackRepresentation().get(0).getType();
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return input.isContainedIn(i) && skyView();
 	}
@@ -138,5 +137,16 @@ public class PylonRecipe extends InputRecipe {
 
 	public ItemMap getOutput() {
 		return output;
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		List<String> result = new ArrayList<>();
+		for(Entry <ItemStack, Integer> entry : output.getEntrySet()) {
+			if (entry.getValue() > 0) {
+				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+			}
+		}
+		return result;
 	}
 }

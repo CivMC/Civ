@@ -19,11 +19,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
-import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.eggs.PipeEgg;
@@ -34,6 +31,9 @@ import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.factories.Sorter;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class FileHandler {
 	private FactoryMod plugin;

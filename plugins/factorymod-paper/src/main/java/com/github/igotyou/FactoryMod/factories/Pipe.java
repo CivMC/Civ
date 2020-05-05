@@ -12,8 +12,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.ItemTransferEvent;
 import com.github.igotyou.FactoryMod.interactionManager.IInteractionManager;
@@ -22,6 +20,8 @@ import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class Pipe extends Factory {
 	private List<Material> allowedMaterials;

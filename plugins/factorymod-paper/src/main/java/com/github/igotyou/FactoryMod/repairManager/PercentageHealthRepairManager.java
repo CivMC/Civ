@@ -4,11 +4,11 @@ import java.util.Map.Entry;
 
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class PercentageHealthRepairManager implements IRepairManager {
 	private int health;

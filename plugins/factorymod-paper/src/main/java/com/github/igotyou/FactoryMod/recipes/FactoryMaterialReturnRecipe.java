@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -11,12 +12,9 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
@@ -34,6 +32,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 		this.factor = factor;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
@@ -41,6 +40,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 		return createLoredStacksForInfo(i);
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.PAPER);
@@ -65,16 +65,12 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 				.getItemStackRepresentation();
 	}
 
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-		ItemAPI.setDisplayName(is, name);
-		ItemMeta im = is.getItemMeta();
-		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
-		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		is.setItemMeta(im);
-		return is;
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return Material.CRAFTING_TABLE;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, final FurnCraftChestFactory fccf) {
 		FactoryMod.getInstance().getManager().removeFactory(fccf);
 		for (Block b : fccf.getMultiBlockStructure().getRelevantBlocks()) {
@@ -111,5 +107,10 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "COSTRETURN";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList(factor * 100 + " % of the factories setup cost");
 	}
 }

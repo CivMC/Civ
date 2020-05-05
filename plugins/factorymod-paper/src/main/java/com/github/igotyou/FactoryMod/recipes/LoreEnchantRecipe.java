@@ -1,24 +1,29 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class LoreEnchantRecipe extends InputRecipe {
 
 	private List<String> appliedLore;
 	private List<String> overwritenLore;
 	private ItemMap tool;
+	private ItemStack exampleInput;
+	private ItemStack exampleOutput;
 
 	public LoreEnchantRecipe(String identifier, String name, int productionTime, ItemMap input, ItemMap tool, List<String> appliedLore,
 			List<String> overwritenLore) {
@@ -26,8 +31,17 @@ public class LoreEnchantRecipe extends InputRecipe {
 		this.overwritenLore = overwritenLore;
 		this.appliedLore = appliedLore;
 		this.tool = tool;
+		exampleInput = tool.getItemStackRepresentation().get(0);
+		for (String s : overwritenLore) {
+			ItemAPI.addLore(exampleInput, s);
+		}
+		exampleOutput = tool.getItemStackRepresentation().get(0);
+		for (String s : appliedLore) {
+			ItemAPI.addLore(exampleOutput, s);
+		}
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		if (input.isContainedIn(i)) {
 			ItemStack toolio = tool.getItemStackRepresentation().get(0);
@@ -40,20 +54,14 @@ public class LoreEnchantRecipe extends InputRecipe {
 		return false;
 	}
 
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = tool.getItemStackRepresentation().get(0);
-		for (String s : appliedLore) {
-			ItemAPI.addLore(is, s);
-		}
-		ItemAPI.setDisplayName(is, name);
-		return is;
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return exampleOutput.getType();
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		ItemStack is = tool.getItemStackRepresentation().get(0);
-		for (String s : appliedLore) {
-			ItemAPI.addLore(is, s);
-		}
+		ItemStack is = exampleOutput.clone();
 		if (i != null) {
 			ItemAPI.addLore(
 					is,
@@ -62,19 +70,15 @@ public class LoreEnchantRecipe extends InputRecipe {
 							+ String.valueOf(Math.min(tool.getMultiplesContainedIn(i), input.getMultiplesContainedIn(i)))
 							+ " runs");
 		}
-		List<ItemStack> stacks = new LinkedList<ItemStack>();
+		List<ItemStack> stacks = new LinkedList<>();
 		stacks.add(is);
 		return stacks;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
-			List<ItemStack> bla = input.getItemStackRepresentation();
-			ItemStack is = tool.getItemStackRepresentation().get(0);
-			for (String s : overwritenLore) {
-				ItemAPI.addLore(is, s);
-			}
-			return bla;
+			return Arrays.asList(exampleInput.clone());
 		}
 		List<ItemStack> returns = createLoredStacksForInfo(i);
 		ItemStack toSt = tool.getItemStackRepresentation().get(0);
@@ -87,6 +91,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 		return returns;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.removeSafelyFrom(i)) {
@@ -98,11 +103,11 @@ public class LoreEnchantRecipe extends InputRecipe {
 						 im = Bukkit.getItemFactory().getItemMeta(is.getType());
 					}
 					List<String> currentLore = im.getLore();
-					if (overwritenLore.size() != 0) {
+					if (!overwritenLore.isEmpty()) {
 						currentLore.removeAll(overwritenLore);
 					}
 					if (currentLore == null) {
-						currentLore = new LinkedList<String>();
+						currentLore = new LinkedList<>();
 					}
 					currentLore.addAll(appliedLore);
 					im.setLore(currentLore);
@@ -118,11 +123,11 @@ public class LoreEnchantRecipe extends InputRecipe {
 		if (is == null) {
 			return false;
 		}
-		if (!is.hasItemMeta() && overwritenLore.size() != 0) {
+		if (!is.hasItemMeta() && !overwritenLore.isEmpty()) {
 			return false;
 		}
 		ItemMeta im = is.getItemMeta();
-		if (!im.hasLore() && overwritenLore.size() != 0) {
+		if (!im.hasLore() && !overwritenLore.isEmpty()) {
 			return false;
 		}
 		List<String> lore = im.getLore();
@@ -132,7 +137,7 @@ public class LoreEnchantRecipe extends InputRecipe {
 				return false;
 			}
 		}
-		if (overwritenLore.size() == 0) {
+		if (overwritenLore.isEmpty()) {
 			return true;
 		}
 		return lore.containsAll(overwritenLore);
@@ -153,5 +158,15 @@ public class LoreEnchantRecipe extends InputRecipe {
 
 	public ItemMap getTool() {
 		return tool;
+	}
+
+	@Override
+	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("1 " + ItemNames.getItemName(exampleInput));
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("1 " + ItemNames.getItemName(exampleOutput));
 	}
 }

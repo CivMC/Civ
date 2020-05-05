@@ -2,8 +2,8 @@ package com.github.igotyou.FactoryMod;
 
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMap;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseItemMapDirectly;
-import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTimeAsTicks;
 import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTime;
+import static vg.civcraft.mc.civmodcore.util.ConfigParsing.parseTimeAsTicks;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,8 +27,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -59,6 +57,8 @@ import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class ConfigParser {
 	private FactoryMod plugin;
@@ -291,17 +291,8 @@ public class ConfigParser {
 			if (egg == null) {
 				break;
 			}
-			ItemMap setupCost = null;
-			if (config.isConfigurationSection("setupcost")) {
-				setupCost = parseItemMap(config.getConfigurationSection("setupcost"));
-				if (setupCost == null || setupCost.getTotalUniqueItemAmount() == 0) {
-					plugin.warning(
-							String.format("FCC %s specified with empty setup cost, can not be created", egg.getName()));
-					setupCost = null;
-				}
-			}
 			upgradeEggs.put(egg.getName(), egg);
-			manager.addFactoryEgg(FurnCraftChestStructure.class, setupCost, egg);
+			manager.addFactoryEgg(FurnCraftChestStructure.class, ((FurnCraftChestEgg) egg).getSetupCost(), egg);
 			break;
 
 		case "PIPE":
@@ -469,8 +460,12 @@ public class ConfigParser {
 			healthPerDamageIntervall = defaultDamagePerBreakPeriod;
 		}
 		double citadelBreakReduction = config.getDouble("citadelBreakReduction", 1.0);
+		ItemMap setupCost = null;
+		if (config.isConfigurationSection("setupcost")) {
+			setupCost = parseItemMap(config.getConfigurationSection("setupcost"));
+		}
 		FurnCraftChestEgg egg = new FurnCraftChestEgg(name, update, null, fuel, fuelIntervall, returnRate, health,
-				gracePeriod, healthPerDamageIntervall, citadelBreakReduction);
+				gracePeriod, healthPerDamageIntervall, citadelBreakReduction, setupCost);
 		recipeLists.put(egg, config.getStringList("recipes"));
 		return egg;
 	}

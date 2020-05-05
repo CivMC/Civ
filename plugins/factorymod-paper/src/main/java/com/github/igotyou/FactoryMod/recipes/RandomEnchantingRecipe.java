@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
@@ -10,11 +11,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class RandomEnchantingRecipe extends InputRecipe {
 	private List<RandomEnchant> enchants;
@@ -44,13 +45,8 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = new ItemStack(tool);
-		for (RandomEnchant re : enchants) {
-			is.addEnchantment(re.enchant, re.level);
-		}
-		ItemAPI.setDisplayName(is, name);
-		return is;
+	public Material getRecipeRepresentationMaterial() {
+		return tool;
 	}
 
 	@Override
@@ -125,6 +121,11 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "RANDOMENCHANT";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("The tool input with a random enchant applied");
 	}
 
 }

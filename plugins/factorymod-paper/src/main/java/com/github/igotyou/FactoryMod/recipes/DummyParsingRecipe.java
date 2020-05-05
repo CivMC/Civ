@@ -2,6 +2,7 @@ package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.List;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -30,13 +31,18 @@ public class DummyParsingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public ItemStack getRecipeRepresentation() {
+	public String getTypeIdentifier() {
+		return "DUMMY";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		return null;
 	}
 
 	@Override
-	public String getTypeIdentifier() {
-		return "DUMMY";
+	public Material getRecipeRepresentationMaterial() {
+		return null;
 	}
 
 }

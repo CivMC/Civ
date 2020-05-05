@@ -1,18 +1,18 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Used to compact items, which means whole or multiple stacks of an item are reduced to a single lored item, which is stackable to the same stacksize
@@ -32,6 +32,7 @@ public class CompactingRecipe extends InputRecipe {
 		this.compactedLore = compactedLore;
 	}
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		if (!input.isContainedIn(i)) {
 			return false;
@@ -47,14 +48,17 @@ public class CompactingRecipe extends InputRecipe {
 		return false;
 	}
 
+	@Override
 	public int getProductionTime() {
 		return productionTime;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
@@ -77,8 +81,9 @@ public class CompactingRecipe extends InputRecipe {
 
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			result.add(new ItemStack(Material.STONE, 64));
 			result.addAll(input.getItemStackRepresentation());
@@ -98,8 +103,9 @@ public class CompactingRecipe extends InputRecipe {
 		return result;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 		if (i == null) {
 			ItemStack is = new ItemStack(Material.STONE, 64);
 			compactStack(is);
@@ -121,12 +127,9 @@ public class CompactingRecipe extends InputRecipe {
 		return result;
 	}
 
-	public ItemStack getRecipeRepresentation() {
-		ItemStack res = new ItemStack(Material.CHEST);
-		ItemMeta im = res.getItemMeta();
-		im.setDisplayName(getName());
-		res.setItemMeta(im);
-		return res;
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return Material.CHEST;
 	}
 
 	/**
@@ -160,7 +163,7 @@ public class CompactingRecipe extends InputRecipe {
 			default:
 				FactoryMod.getInstance().warning("Unknown max stacksize for type " + m.toString());
 		}
-		return 999999; //prevents compacting in error case, because never enough will fit in a chest
+		return 999_999; //prevents compacting in error case, because never enough will fit in a chest
 	}
 	/**
 	 * Checks whether enough of a certain item stack is available to compact it
@@ -193,5 +196,15 @@ public class CompactingRecipe extends InputRecipe {
 
 	public List <Material> getExcludedMaterials() {
 		return excludedMaterials;
+	}
+	
+	@Override
+	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("An entire stack of a stackable item", "---OR---", "Eight of a non stackable item");
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("Input stack compacted into a single item");
 	}
 }

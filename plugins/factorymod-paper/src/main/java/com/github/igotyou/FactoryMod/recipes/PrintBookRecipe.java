@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,11 +12,11 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class PrintBookRecipe extends PrintingPressRecipe {
 	private ItemMap printingPlate;
@@ -120,12 +121,8 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	}
 
 	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack res = new ItemStack(Material.WRITTEN_BOOK);
-
-		ItemAPI.setDisplayName(res, getName());
-
-		return res;
+	public Material getRecipeRepresentationMaterial() {
+		return Material.WRITTEN_BOOK;
 	}
 
 	protected ItemStack getPrintingPlateItemStack(Inventory i, ItemMap printingPlate) {
@@ -148,5 +145,10 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "PRINTBOOK";
+	}
+	
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("Something");
 	}
 }

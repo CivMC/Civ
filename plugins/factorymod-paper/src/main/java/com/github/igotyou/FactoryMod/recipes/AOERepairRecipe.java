@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,13 +14,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class AOERepairRecipe extends InputRecipe {
 	private ItemStack essence;
@@ -34,10 +35,12 @@ public class AOERepairRecipe extends InputRecipe {
 		this.repairPerEssence = repairPerEssence;
 	}
 
-	public ItemStack getRecipeRepresentation() {
-		return essence;
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return essence.getType();
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
@@ -96,6 +99,7 @@ public class AOERepairRecipe extends InputRecipe {
 		return list;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
@@ -131,6 +135,7 @@ public class AOERepairRecipe extends InputRecipe {
 		return bla;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
@@ -171,8 +176,14 @@ public class AOERepairRecipe extends InputRecipe {
 		}
 	}
 
+	@Override
 	public String getTypeIdentifier() {
 		return "AOEREPAIR";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("TODO");
 	}
 
 }

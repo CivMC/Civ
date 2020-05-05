@@ -4,13 +4,13 @@ import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Damageable;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -93,12 +93,11 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = new ItemStack(Material.PAINTING);
-		ItemAPI.addLore(is, ChatColor.GOLD + "Put in a a tool or piece of armor and",
-				ChatColor.GOLD + " any other random amount of items to generate a random name");
-		return is;
+	public Material getRecipeRepresentationMaterial() {
+		return Material.PAINTING;
 	}
+	
+	
 
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inventory) {
@@ -175,6 +174,11 @@ public class WordBankRecipe extends InputRecipe {
 		buffer.put(bytes);
 		buffer.flip();// need flip
 		return buffer.getLong();
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("The item input with a random colored name applied");
 	}
 
 }

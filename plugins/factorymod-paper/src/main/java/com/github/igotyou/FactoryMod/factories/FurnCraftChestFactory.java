@@ -18,11 +18,6 @@ import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
-import vg.civcraft.mc.namelayer.permission.PermissionType;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.events.FactoryActivateEvent;
 import com.github.igotyou.FactoryMod.events.RecipeExecuteEvent;
@@ -39,6 +34,11 @@ import com.github.igotyou.FactoryMod.repairManager.IRepairManager;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
  * Represents a "classic" factory, which consists of a furnace as powersource, a

@@ -1,5 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -12,12 +13,12 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class Upgraderecipe extends InputRecipe {
 	private IFactoryEgg egg;
@@ -53,6 +54,11 @@ public class Upgraderecipe extends InputRecipe {
 		res.setItemMeta(im);
 		ItemAPI.setDisplayName(res, name);
 		return res;
+	}
+	
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();
 	}
 
 	@Override
@@ -116,6 +122,11 @@ public class Upgraderecipe extends InputRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "UPGRADE";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("Upgrades the factory to " + egg.getName());
 	}
 
 }

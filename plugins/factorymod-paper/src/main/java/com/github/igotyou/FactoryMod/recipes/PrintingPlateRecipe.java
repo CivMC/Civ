@@ -6,6 +6,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -17,11 +18,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
@@ -37,10 +38,12 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		this.output = output;
 	}	
 
+	@Override
 	public boolean enoughMaterialAvailable(Inventory i) {
 		return this.input.isContainedIn(i) && getBook(i) != null;
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 
@@ -93,8 +96,9 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		}
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 
 		if (i == null) {
 			result.add(new ItemStack(Material.WRITTEN_BOOK, 1));
@@ -113,8 +117,9 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return result;
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 		stacks.add(getPrintingPlateRepresentation(this.output, itemName));
 		stacks.add(new ItemStack(Material.WRITTEN_BOOK));
 
@@ -131,9 +136,10 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		return stacks;
 	}
-
-	public ItemStack getRecipeRepresentation() {
-		return getPrintingPlateRepresentation(this.output, getName());
+	
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return getPrintingPlateRepresentation(this.output, getName()).getType();
 	}
 
 	private ItemStack getBook(Inventory i) {
@@ -149,5 +155,10 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "PRINTINGPLATE";
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("Something");
 	}
 }

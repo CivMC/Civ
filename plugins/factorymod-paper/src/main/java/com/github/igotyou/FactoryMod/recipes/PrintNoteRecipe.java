@@ -15,11 +15,11 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
-
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 public class PrintNoteRecipe extends PrintBookRecipe {
 	private static class BookInfo {

@@ -1,19 +1,25 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.utility.LoggingUtils;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * A recipe with any form of item input to run it
@@ -51,6 +57,31 @@ public abstract class InputRecipe implements IRecipe {
 	 *         recipe
 	 */
 	public abstract List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf);
+	
+	/**
+	 * Used to get a representation of a recipes input materials, which is
+	 * displayed in chat or an items lore to illustrate the recipe and to give additional
+	 * information. If null is given instead of an inventory or factory, just
+	 * general information should be returned, which doesnt depend on a specific
+	 * instance
+	 * 
+	 * @param i
+	 *            Inventory for which the recipe would be run, this is used to
+	 *           	add a count how often the recipe could be run
+	 * @param fccf
+	 *            Factory for which the representation is meant. Needed for
+	 *            recipe run scaling
+	 * @return List of Strings each describing one component needed as input for this recipe
+	 */
+	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		List<String> result = new ArrayList<>();
+		for(Entry <ItemStack, Integer> entry : input.getEntrySet()) {
+			if (entry.getValue() > 0) {
+				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+			}
+		}
+		return result;
+	}
 
 	/**
 	 * Used to get a representation of a recipes output materials, which is
@@ -70,6 +101,23 @@ public abstract class InputRecipe implements IRecipe {
 	 *         running this recipe
 	 */
 	public abstract List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf);
+	
+	/**
+	 * Used to get a representation of a recipes output, which is
+	 * displayed in chat or an items lore to illustrate the recipe and to give additional
+	 * information. If null is given instead of an inventory or factory, just
+	 * general information should be returned, which doesnt depend on a specific
+	 * instance
+	 * 
+	 * @param i
+	 *            Inventory for which the recipe would be run, this is used to
+	 *           	add a count how often the recipe could be run
+	 * @param fccf
+	 *            Factory for which the representation is meant. Needed for
+	 *            recipe run scaling
+	 * @return List of Strings each describing one component produced as output of this recipe
+	 */
+	public abstract List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf);
 
 	@Override
 	public String getName() {
@@ -114,7 +162,28 @@ public abstract class InputRecipe implements IRecipe {
 	 * @return A single itemstack which is used to represent this recipe as a
 	 *         whole in an item gui
 	 */
-	public abstract ItemStack getRecipeRepresentation();
+	public ItemStack getRecipeRepresentation() {
+		ItemStack res = new ItemStack(getRecipeRepresentationMaterial());
+		ItemMeta im = res.getItemMeta();
+		im.setDisplayName(ChatColor.DARK_GREEN + getName());
+		List<String> lore = new ArrayList<>();
+		lore.add(ChatColor.GOLD + "Input:");
+		for(String s : getTextualInputRepresentation(null, null)) {
+			lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
+		}
+		lore.add("");
+		lore.add(ChatColor.GOLD + "Output:");
+		for(String s : getTextualOutputRepresentation(null, null)) {
+			lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + s);
+		}
+		lore.add("");
+		lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil.formatDuration(getProductionTime() * 50, TimeUnit.MILLISECONDS));
+		im.setLore(lore);
+		res.setItemMeta(im);
+		return res;
+	}
+	
+	public abstract Material getRecipeRepresentationMaterial();
 
 	/**
 	 * Creates a list of ItemStack for a GUI representation. This list contains

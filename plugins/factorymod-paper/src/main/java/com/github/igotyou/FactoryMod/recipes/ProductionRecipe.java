@@ -1,6 +1,7 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -10,11 +11,12 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
  * Consumes a set of materials from a container and outputs another set of
@@ -75,6 +77,7 @@ public class ProductionRecipe extends InputRecipe {
 		return input.getMultiplesContainedIn(i);
 	}
 
+	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null || fccf == null) {
 			return output.getItemStackRepresentation();
@@ -97,6 +100,7 @@ public class ProductionRecipe extends InputRecipe {
 		return stacks;
 	}
 
+	@Override
 	public List<ItemStack> getInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		if (i == null) {
 			return input.getItemStackRepresentation();
@@ -111,6 +115,7 @@ public class ProductionRecipe extends InputRecipe {
 		return createLoredStacksForInfo(i);
 	}
 
+	@Override
 	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
@@ -137,10 +142,10 @@ public class ProductionRecipe extends InputRecipe {
 		}
 		logAfterRecipeRun(i, fccf);
 	}
-
-	public ItemStack getRecipeRepresentation() {
-		ItemAPI.setDisplayName(this.recipeRepresentation, getName());
-		return this.recipeRepresentation.clone();
+	
+	@Override
+	public Material getRecipeRepresentationMaterial() {
+		return this.recipeRepresentation.getType();
 	}
 
 	public ProductionRecipeModifier getModifier() {
@@ -150,5 +155,16 @@ public class ProductionRecipe extends InputRecipe {
 	@Override
 	public String getTypeIdentifier() {
 		return "PRODUCTION";
+	}
+	
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		List<String> result = new ArrayList<>();
+		for(Entry <ItemStack, Integer> entry : output.getEntrySet()) {
+			if (entry.getValue() > 0) {
+				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+			}
+		}
+		return result;
 	}
 }

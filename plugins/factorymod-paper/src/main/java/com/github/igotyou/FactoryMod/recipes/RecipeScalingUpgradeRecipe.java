@@ -1,16 +1,15 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class RecipeScalingUpgradeRecipe extends InputRecipe {
@@ -77,27 +76,14 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 	@Override
 	public List<ItemStack> getOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		ItemStack is = getRecipeRepresentation();
-		List<ItemStack> result = new LinkedList<ItemStack>();
+		List<ItemStack> result = new LinkedList<>();
 		result.add(is);
 		return result;
 	}
-
+	
 	@Override
-	public ItemStack getRecipeRepresentation() {
-		ItemStack is = new ItemStack(Material.PAPER);
-		if (toUpgrade == null) {
-			ItemAPI.addLore(is, ChatColor.RED + "ERROR ERROR ERROR ERROR");
-			return is;
-		}
-		if (newRank == 1) {
-			ItemAPI.addLore(is, ChatColor.GOLD + "Unlock " + toUpgrade.getName());
-		}
-		else {
-			ItemAPI.addLore(is, ChatColor.GOLD + "Upgrade " + toUpgrade.getName() + " to rank " + newRank);
-		}
-		ItemAPI.addLore(is, ChatColor.GOLD + "Up to " + toUpgrade.getModifier().getMaximumMultiplierForRank(newRank)
-				+ " output multiplier");
-		return is;
+	public Material getRecipeRepresentationMaterial() {
+		return Material.GRINDSTONE;
 	}
 
 	public IRecipe getToUpgrade() {
@@ -110,6 +96,11 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 
 	public IRecipe getFollowUpRecipe() {
 		return followUpRecipe;
+	}
+
+	@Override
+	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("TODO");
 	}
 
 }

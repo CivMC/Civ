@@ -10,15 +10,15 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
-import vg.civcraft.mc.citadel.ReinforcementLogic;
-import vg.civcraft.mc.citadel.model.Reinforcement;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Pipe;
 import com.github.igotyou.FactoryMod.repairManager.NoRepairDestroyOnBreakManager;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
+
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 
 public class PipeInteractionManager implements IInteractionManager {
 	private Pipe pipe;

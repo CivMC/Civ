@@ -6,9 +6,9 @@ import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
-import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-
 import com.github.igotyou.FactoryMod.FactoryMod;
+
+import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class LoggingUtils {
 	
