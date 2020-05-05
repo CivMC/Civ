@@ -12,34 +12,56 @@ public class ContentAligners {
 		return getCentered(9);
 	}
 
-	public static ContentAligner getCenteredInOrder(int contentAmount) {
-		return getCenteredInOrder(contentAmount, 9);
+	public static ContentAligner getCenteredInOrder(int contentAmount, int windowSize) {
+		return getCenteredInOrder(contentAmount, windowSize, 9);
 	}
 
 	public static ContentAligner getRightAligned() {
 		return getRightAligned(9);
 	}
 
-	public static ContentAligner getCenteredInOrder(int contentAmount, int rowLength) {
-		return new Counter(i -> {
-			//integer division, so no you cant simplify this
-			int lastElementLastCompleteRow = (contentAmount / rowLength) * rowLength - 1;
-			System.out.println(lastElementLastCompleteRow);
-			//just increment until we reach the last element in the last full row
-			if (i < lastElementLastCompleteRow) {
-				return i + 1;
+	public static ContentAligner getCenteredInOrder(int contentAmount, int windowSize, int rowLength) {
+		int defaultNum;
+		if (contentAmount >= windowSize) {
+			defaultNum = 0;
+		} else {
+			int rows = contentAmount / rowLength;
+			if (contentAmount % rowLength != 0) {
+				rows++;
 			}
-			//jump to offset start of last row
-			if (i == lastElementLastCompleteRow) {
+			int availableRows = windowSize / rowLength;
+			if (windowSize % rowLength != 0) {
+				availableRows++;
+			}
+			int emptyRows = availableRows - rows;
+			int startingRow = emptyRows / 2;
+			if (contentAmount >= rowLength) {
+				defaultNum = startingRow * rowLength;
+			} else {
+				int lengthLastRow = contentAmount - 1;
+				int emptySlots = rowLength - lengthLastRow;
+				defaultNum = startingRow * rowLength + emptySlots / 2;
+			}
+		}
+		// integer division, so no you can't simplify this
+		int offset = 0;
+		if (contentAmount % rowLength == 0) {
+			offset = 1;
+		}
+		int lastElementLastCompleteRow = ((contentAmount / rowLength) + offset) * rowLength - 1;
+
+		return new Counter(i -> {
+			// just increment until we reach the last element in the last full row
+			if (i != lastElementLastCompleteRow) {
+				return i + 1;
+			} else {
+				// jump to offset start of last row
 				int lengthLastRow = contentAmount - lastElementLastCompleteRow - 1;
 				int emptySlots = rowLength - lengthLastRow;
-				int leftOffset = emptySlots / 2;
+				int leftOffset = Math.max(1, emptySlots / 2);
 				return i + leftOffset;
 			}
-			//if we are already in the last row, just keep incrementing
-			return i + 1;
-
-		}, rowLength - 1);
+		}, defaultNum);
 	}
 
 	public static ContentAligner getCentered(int rowLength) {
@@ -93,13 +115,11 @@ public class ContentAligners {
 		public int getNext() {
 			int temp = this.state;
 			state = step.apply(state);
-			System.out.println("Call " + temp);
 			return temp;
 		}
 
 		@Override
 		public void reset() {
-			System.out.println("reset");
 			this.state = defaultState;
 		}
 	}

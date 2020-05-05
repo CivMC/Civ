@@ -304,9 +304,9 @@ public final class ItemAPI {
 	 */
 	public static void addGlow(ItemStack item) {
 		ItemMeta im = item.getItemMeta();
-		im.addEnchant(Enchantment.DURABILITY, 1, true);
 		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		item.setItemMeta(im);
+		item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 	}
 
 }

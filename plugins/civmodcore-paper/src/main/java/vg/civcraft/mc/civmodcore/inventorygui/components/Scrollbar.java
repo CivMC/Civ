@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.inventorygui.components;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -28,7 +29,12 @@ public class Scrollbar extends InventoryComponent {
 
 	public Scrollbar(List<IClickable> content, int staticSize, int scrollOffset, ContentAligner contentAligner) {
 		super(staticSize);
-		this.unpaginatedContent = content;
+		if (content != null) {
+			this.unpaginatedContent = content;
+		}
+		else {
+			this.unpaginatedContent = new ArrayList<>();
+		}
 		this.page = 0;
 		this.scrollOffset = scrollOffset;
 		this.backClickSlot = 0;
@@ -52,18 +58,21 @@ public class Scrollbar extends InventoryComponent {
 			//works fine, we dont need back/forward buttons in this case
 			return 1;
 		}
-		// first page has no back button, which messes with our modulo, so we remove the amount of items on the first page (which doesn't have a back button)
-		contentAmount -= scrollOffset - 1;
+		// first page has no back button, last page has no next button
+		contentAmount -= 2* (scrollOffset - 1);
+		if(contentAmount <= 0) {
+			return 2;
+		}
 		
-		//modulp scroll offset - 2, because a normal page has forward and backwards buttons
+		//modulo scroll offset - 2, because a normal page has forward and backwards buttons
 		int modOffset = contentAmount % (scrollOffset - 2);
 		int basicRowCalc = contentAmount / (scrollOffset - 2);
-		if (modOffset == 1) {
+		if (modOffset == 0) {
 			// there would be one leftover element in a new page, but we can just put that
 			// in the previous page instead of a next button
-			return basicRowCalc;
+			return basicRowCalc + 2;
 		}
-		return basicRowCalc + 1;
+		return basicRowCalc + 3;
 	}
 
 	public int getPage() {
@@ -93,10 +102,11 @@ public class Scrollbar extends InventoryComponent {
 		}
 		int size = getSize();
 		contentAligner.reset();
-		System.out.println("Size is " + size);
 		for (int i = 0; i < size; i++) {
 			int targetSlot = contentAligner.getNext();
-			System.out.println(targetSlot);
+			if (targetSlot >= this.content.size()) {
+				break;
+			}
 			if (page > 0 && targetSlot == backClickSlot) {
 				this.content.set(targetSlot, getBackwardClick());
 			} else if (page < totalPages - 1 && targetSlot == forwardClickSlot) {
@@ -106,8 +116,9 @@ public class Scrollbar extends InventoryComponent {
 					this.content.set(targetSlot, null);
 				}
 				else {
-					this.content.set(targetSlot, unpaginatedContent.get(contentIndex++));
+					this.content.set(targetSlot, unpaginatedContent.get(contentIndex));
 				}
+				contentIndex++;
 			}
 		}
 	}

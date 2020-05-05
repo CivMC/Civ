@@ -30,7 +30,7 @@ public class HistoryTracker<T extends HistoryItem> {
 		}
 		index++;
 		history.add(item);
-		iter = history.listIterator(index);
+		iter = history.listIterator(history.size() - 1);
 	}
 
 	public T goBack() {
@@ -48,6 +48,14 @@ public class HistoryTracker<T extends HistoryItem> {
 		T prev = iter.previous();
 		iter.next();
 		return prev;
+	}
+	
+	public T peekBack(int steps) {
+		int slot = index - steps + 1;
+		if (slot < 0) {
+			return null;
+		}
+		return history.get(slot);
 	}
 
 	public boolean hasNext() {

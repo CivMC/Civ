@@ -57,7 +57,7 @@ public final class Trie {
 
 	private void matchWord(String wordToMatch, List<String> result) {
 		if (isLeaf()) {
-			if (wordToMatch.length() <= depth) {
+			if (wordToMatch.length() <= this.word.length()) {
 				result.add(word);
 				return;
 			}
