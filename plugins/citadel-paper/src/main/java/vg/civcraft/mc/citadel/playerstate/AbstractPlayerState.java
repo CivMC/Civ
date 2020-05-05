@@ -44,6 +44,14 @@ public abstract class AbstractPlayerState {
 			// no reinforcement, normal break which we dont care about
 			return;
 		}
+		if (CitadelUtility.isPlant(e.getBlock())) {
+			if (rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getCrops())
+					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
+				// allow, because player has crop permission and the only reinforcement
+				// protecting is in the soil
+				return;
+			}
+		}
 		boolean hasAccess = rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass());
 		BooleanSetting setting = (BooleanSetting) PlayerSettingAPI.getSetting("citadelBypass");
 		boolean hasByPass = setting.getValue(e.getPlayer());
@@ -59,14 +67,6 @@ public abstract class AbstractPlayerState {
 			}
 			rein.setHealth(-1);
 			return;
-		}
-		if (CitadelUtility.isPlant(e.getBlock())) {
-			if (rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getCrops())
-					&& !e.getBlock().getLocation().equals(rein.getLocation())) {
-				// allow, because player has crop permission and the only reinforcement
-				// protecting is in the soil
-				return;
-			}
 		}
 		if (hasAccess) {
 			CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.GREEN,
