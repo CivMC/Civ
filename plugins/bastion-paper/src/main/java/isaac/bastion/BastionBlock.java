@@ -509,7 +509,7 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * removes Bastion from database and destroys the block at the location
 	 */
 	public void destroy() {
-		if (type.isDestroyOnRemove()) {
+		if (type.isDestroyOnRemove() || (type.isDestroyOnRemoveWhileImmature() && !isMature())) {
 			if (location.getChunk().isLoaded()) {
 				location.getBlock().setType(Material.AIR);
 			}

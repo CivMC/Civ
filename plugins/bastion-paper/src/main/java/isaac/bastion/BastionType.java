@@ -50,6 +50,7 @@ public class BastionType {
 	private boolean allowPearlingOut;
 	private boolean blockReinforcements;
 	private Material material;
+	private boolean destroyOnRemoveWhileImmature;
 	
 	public BastionType(
 			String name,
@@ -83,7 +84,8 @@ public class BastionType {
 			int regenTime,
 			boolean onlyDirectDestruction,
 			boolean allowPearlingOut,
-			boolean blockReinforcements
+			boolean blockReinforcements,
+			boolean destroyOnRemoveWhileImmature
 	) {
 		this.name = name;
 		this.material = material;
@@ -118,6 +120,7 @@ public class BastionType {
 		this.regenTime = regenTime;
 		this.allowPearlingOut = allowPearlingOut;
 		this.blockReinforcements = blockReinforcements;
+		this.destroyOnRemoveWhileImmature = destroyOnRemoveWhileImmature;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
@@ -488,6 +491,10 @@ public class BastionType {
 		return maxRadius;
 	}
 	
+	public boolean isDestroyOnRemoveWhileImmature() {
+		return destroyOnRemoveWhileImmature;
+	}
+	
 	/**
 	 * 
 	 * @return The default bastion type
@@ -542,10 +549,11 @@ public class BastionType {
 		}
 		boolean explodeOnBlock = config.getBoolean("elytra.explodeOnBlock");
 		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
+		boolean destroyOnRemoveWhileImmature = config.getBoolean("destroyOnRemoveWhileImmature", true);
 		return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
-				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements);
+				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature);
 	}
 
 	@Override

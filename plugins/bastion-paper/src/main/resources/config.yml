@@ -36,6 +36,7 @@ bastions:
     placementCooldown: 2000
     destroyOnRemove: true
     onlyDirectDestroy: false
+    destroyOnRemoveWhileImmature: true
     pearls:
       block: false
       blockMidair: fakse
@@ -70,6 +71,7 @@ bastions:
     placementCooldown: 2000
     destroyOnRemove: false
     onlyDirectDestroy: true
+    destroyOnRemoveWhileImmature: true
     pearls:
       block: false
       blockMidair: false
