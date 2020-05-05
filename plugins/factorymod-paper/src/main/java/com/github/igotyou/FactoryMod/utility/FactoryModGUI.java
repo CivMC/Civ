@@ -1,7 +1,12 @@
 package com.github.igotyou.FactoryMod.utility;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.bukkit.ChatColor;
@@ -10,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
@@ -34,6 +40,25 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class FactoryModGUI {
 
+	// target/result egg is key, parent is value
+	private static Map<FurnCraftChestEgg, FurnCraftChestEgg> upgradeMapping;
+
+	public static void initUpgradeMapping(FactoryModManager manager) {
+		upgradeMapping = new HashMap<>();
+		for (IFactoryEgg egg : manager.getAllFactoryEggs()) {
+			if (!(egg instanceof FurnCraftChestEgg)) {
+				continue;
+			}
+			FurnCraftChestEgg fccEgg = (FurnCraftChestEgg) egg;
+			for (IRecipe rec : fccEgg.getRecipes()) {
+				if (rec instanceof Upgraderecipe) {
+					Upgraderecipe uRec = (Upgraderecipe) rec;
+					upgradeMapping.put(uRec.getEgg(), fccEgg);
+				}
+			}
+		}
+	}
+
 	private Player player;
 	private InventoryComponent topHalfComponent;
 	private ComponableInventory inventory;
@@ -47,9 +72,10 @@ public class FactoryModGUI {
 
 	public void showFactoryOverview(boolean addToHistory) {
 		if (inventory == null) {
-			inventory = new ComponableInventory(ChatColor.DARK_GREEN + "Factories", 6, player);
+			inventory = new ComponableInventory(ChatColor.DARK_GREEN + "" + ChatColor.BOLD + "Factories", 6, player);
 		} else {
 			inventory.clear();
+			topHalfComponent = null;
 		}
 		if (addToHistory) {
 			history.add(new FMCHistoryItem() {
@@ -66,7 +92,9 @@ public class FactoryModGUI {
 			});
 		}
 		List<IClickable> clicks = new ArrayList<>();
-		for (IFactoryEgg egg : FactoryMod.getInstance().getManager().getAllFactoryEggs()) {
+		List <IFactoryEgg> eggList = new ArrayList<>(FactoryMod.getInstance().getManager().getAllFactoryEggs());
+		Collections.sort(eggList, (o1,o2) -> o1.getName().compareTo(o2.getName()));
+		for (IFactoryEgg egg : eggList) {
 			if (!(egg instanceof FurnCraftChestEgg)) {
 				continue;
 			}
@@ -93,6 +121,9 @@ public class FactoryModGUI {
 		Scrollbar middleBar = new Scrollbar(clicks, 45, 5, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
 		inventory.addComponent(middleBar, SlotPredicates.rows(5));
 		StaticDisplaySection bottomLine = new StaticDisplaySection(9);
+		if (history.hasPrevious()) {
+			bottomLine.set(getBackClick(), 4);
+		}
 		inventory.addComponent(bottomLine, SlotPredicates.rows(1));
 		inventory.show();
 	}
@@ -109,11 +140,31 @@ public class FactoryModGUI {
 	private IClickable getSetupClick(FurnCraftChestEgg factory) {
 		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Show creation cost");
-		FurnCraftChestEgg parent = getParent(factory);
-		if (parent == null) {
+		if (factory.getSetupCost() != null) {
 			ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
+			List<String> lore = new ArrayList<>();
+			lore.add(ChatColor.GOLD + "Required materials:");
+			for (Entry<ItemStack, Integer> entry : factory.getSetupCost().getEntrySet()) {
+				lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
+						+ ItemNames.getItemName(entry.getKey()));
+			}
+			ItemAPI.addLore(is, lore);
 		} else {
-			ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
+			FurnCraftChestEgg parent = getParent(factory);
+			if (parent != null) {
+				ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
+				Upgraderecipe upRec = getUpgradeRecipe(factory, parent);
+				if (upRec != null) {
+					List<String> lore = new ArrayList<>();
+					lore.add(ChatColor.GOLD + "Required materials for the upgrade:");
+					for (Entry<ItemStack, Integer> entry : upRec.getInput().getEntrySet()) {
+						lore.add(ChatColor.GRAY + " - " + ChatColor.AQUA + entry.getValue() + " "
+								+ ItemNames.getItemName(entry.getKey()));
+					}
+					ItemAPI.addLore(is, lore);
+				}
+			}
+
 		}
 		return new LClickable(is, p -> showFactoryCreation(factory, true));
 	}
@@ -131,7 +182,15 @@ public class FactoryModGUI {
 		return click;
 	}
 
-	private InputRecipe getUpgradeRecipe(FurnCraftChestEgg child, FurnCraftChestEgg parent) {
+	private Upgraderecipe getUpgradeRecipe(FurnCraftChestEgg child, FurnCraftChestEgg parent) {
+		for (IRecipe rec : parent.getRecipes()) {
+			if (rec instanceof Upgraderecipe) {
+				Upgraderecipe uRec = (Upgraderecipe) rec;
+				if (uRec.getEgg() == child) {
+					return uRec;
+				}
+			}
+		}
 		return null;
 	}
 
@@ -173,31 +232,29 @@ public class FactoryModGUI {
 			}
 		}
 		InventoryComponent updatedTopHalf;
+		int rows;
 		if (recipe == null) {
 			updatedTopHalf = constructFactoryCreationComponent(factory);
+			rows = 6;
 		} else {
 			updatedTopHalf = constructDetailedRecipeComponent(recipe);
+			rows = 5;
 		}
-		if (currentFactory == factory) {
-			if (history.peekBack(2) != null && history.peekBack(2).toText().startsWith("Re")) {
-				// recipe before already, so keep recipe selector at bottom in current state
-				inventory.removeComponent(this.topHalfComponent);
-			} else {
-				inventory.clear();
+		this.currentFactory = factory;
+		if (this.topHalfComponent != null && this.topHalfComponent.getSize() == updatedTopHalf.getSize()) {
+			// recipe before already, so keep recipe selector at bottom in current state
+			inventory.removeComponent(this.topHalfComponent);
+		} else {
+			inventory.clear();
+			if (recipe != null) {
 				Scrollbar recipeScroll = constructRecipeScrollbar(factory);
 				inventory.addComponent(recipeScroll, SlotPredicates.offsetRectangle(1, 9, 5, 0));
 			}
-			this.topHalfComponent = updatedTopHalf;
-			inventory.addComponent(updatedTopHalf, SlotPredicates.rows(5));
-			inventory.update();
-			inventory.updatePlayerView();
-		} else {
-			// reconstruct everything
-			this.currentFactory = factory;
-			inventory.clear();
-			inventory.addComponent(updatedTopHalf, SlotPredicates.rows(6));
-			inventory.show();
 		}
+		this.topHalfComponent = updatedTopHalf;
+		inventory.addComponent(updatedTopHalf, SlotPredicates.rows(rows));
+		inventory.update();
+		inventory.updatePlayerView();
 	}
 
 	private InventoryComponent constructFactoryCreationComponent(FurnCraftChestEgg factory) {
@@ -226,9 +283,11 @@ public class FactoryModGUI {
 		inputSection.setBackwardsClickSlot(4);
 		section.addComponent(inputSection, SlotPredicates.rectangle(6, 4));
 
+		//TODO opens the setup recipe instead if is upgrade TODO TODO TODO
 		IClickable setupClick = getSetupClick(factory);
 		IClickable backClick = getBackClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, null, null, null, backClick);
+		IClickable mainMenuClick = getMainMenuClick();
+		StaticDisplaySection middleLine = new StaticDisplaySection(null, null, setupClick, mainMenuClick, backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(6, 1, 0, 4));
 
 		List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
@@ -239,6 +298,12 @@ public class FactoryModGUI {
 		section.addComponent(outputSection, SlotPredicates.offsetRectangle(6, 4, 0, 5));
 
 		return section;
+	}
+
+	private IClickable getMainMenuClick() {
+		return new LClickable(Material.BOOK, ChatColor.GREEN + "Return to factory overview", p -> {
+			showFactoryOverview(true);
+		});
 	}
 
 	private InventoryComponent constructDetailedRecipeComponent(InputRecipe recipe) {
@@ -255,11 +320,20 @@ public class FactoryModGUI {
 		IClickable setupClick = getSetupClick(this.currentFactory);
 		IClickable backClick = getBackClick();
 		IClickable recSumSup = new DecorationStack(recipe.getRecipeRepresentation());
-		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, null, recSumSup, null, backClick);
+		IClickable mainMenuClick = getMainMenuClick();
+		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, null, recSumSup, mainMenuClick,
+				backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(5, 1, 0, 4));
 
-		List<IClickable> outputClicks = recipe.getOutputRepresentation(null, null).stream().map(DecorationStack::new)
-				.collect(Collectors.toList());
+		List<IClickable> outputClicks;
+		if (recipe instanceof Upgraderecipe) {
+			outputClicks = recipe.getOutputRepresentation(null, null).stream().map(i -> new LClickable(i, (p) -> {
+				showFactoryCreation(((Upgraderecipe) recipe).getEgg(), true);
+			})).collect(Collectors.toList());
+		} else {
+			outputClicks = recipe.getOutputRepresentation(null, null).stream().map(DecorationStack::new)
+					.collect(Collectors.toList());
+		}
 		Scrollbar outputSection = new Scrollbar(outputClicks, 20, 4,
 				ContentAligners.getCenteredInOrder(outputClicks.size(), 20, 4));
 		outputSection.setBackwardsClickSlot(4);
@@ -275,7 +349,7 @@ public class FactoryModGUI {
 	}
 
 	private FurnCraftChestEgg getParent(FurnCraftChestEgg factory) {
-		return null;
+		return upgradeMapping.get(factory);
 	}
 
 	private abstract class FMCHistoryItem implements HistoryItem {

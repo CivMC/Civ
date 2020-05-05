@@ -21,10 +21,10 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class Upgraderecipe extends InputRecipe {
-	private IFactoryEgg egg;
+	private FurnCraftChestEgg egg;
 
 	public Upgraderecipe(String identifier, String name, int productionTime, ItemMap input,
-			IFactoryEgg egg) {
+			FurnCraftChestEgg egg) {
 		super(identifier, name, productionTime, input);
 		this.egg = egg;
 	}
@@ -34,7 +34,7 @@ public class Upgraderecipe extends InputRecipe {
 		logAfterRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
 			if (input.removeSafelyFrom(i)) {
-				FurnCraftChestEgg e = (FurnCraftChestEgg) egg;
+				FurnCraftChestEgg e = egg;
 				fccf.upgrade(e.getName(),
 						e.getRecipes(), e.getFuel(),
 						e.getFuelConsumptionIntervall(), e.getUpdateTime(), e.getMaximumHealth(), 
@@ -46,7 +46,7 @@ public class Upgraderecipe extends InputRecipe {
 
 	@Override
 	public ItemStack getRecipeRepresentation() {
-		ItemStack res = ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
+		ItemStack res = ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0);
 		res.setAmount(1);
 		ItemMeta im = res.getItemMeta();
 		im.addEnchant(Enchantment.DAMAGE_ALL, 1, true);
@@ -58,7 +58,7 @@ public class Upgraderecipe extends InputRecipe {
 	
 	@Override
 	public Material getRecipeRepresentationMaterial() {
-		return ((InputRecipe)((FurnCraftChestEgg)egg).getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();
+		return ((InputRecipe)egg.getRecipes().get(0)).getOutputRepresentation(null, null).get(0).getType();
 	}
 
 	@Override
@@ -103,7 +103,7 @@ public class Upgraderecipe extends InputRecipe {
 		ItemStack fur = new ItemStack(Material.FURNACE);
 		ItemAPI.setDisplayName(fur, egg.getName());
 		ItemAPI.setLore(fur, ChatColor.LIGHT_PURPLE + "Recipes:");
-		for (IRecipe rec : ((FurnCraftChestEgg) egg).getRecipes()) {
+		for (IRecipe rec : egg.getRecipes()) {
 			ItemAPI.addLore(fur, ChatColor.YELLOW + rec.getName());
 		}
 		res.add(fur);
@@ -115,7 +115,7 @@ public class Upgraderecipe extends InputRecipe {
 		return res;
 	}
 
-	public IFactoryEgg getEgg() {
+	public FurnCraftChestEgg getEgg() {
 		return egg;
 	}
 

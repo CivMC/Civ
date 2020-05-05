@@ -57,6 +57,7 @@ import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.PipeStructure;
 import com.github.igotyou.FactoryMod.utility.FactoryGarbageCollector;
+import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -156,6 +157,7 @@ public class ConfigParser {
 		assignRecipesToFactories();
 		enableFactoryDecay(config);
 		manager.calculateTotalSetupCosts();
+		FactoryModGUI.initUpgradeMapping(manager);
 		// Some recipes need references to factories and all factories need
 		// references to recipes, so we parse all factories first, set their
 		// recipes to null, store the names of the recipes in a map here, parse
@@ -627,7 +629,7 @@ public class ConfigParser {
 				plugin.warning("Could not find factory " + upgradeName + " for upgrade recipe " + name);
 				result = null;
 			} else {
-				result = new Upgraderecipe(identifier, name, productionTime, input, egg);
+				result = new Upgraderecipe(identifier, name, productionTime, input, (FurnCraftChestEgg) egg);
 			}
 			break;
 		case "AOEREPAIR":

@@ -13,6 +13,7 @@ import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
+import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
@@ -20,6 +21,7 @@ import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.repairManager.PercentageHealthRepairManager;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
@@ -34,7 +36,7 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class FurnCraftChestInteractionManager implements IInteractionManager {
 
 	private FurnCraftChestFactory fccf;
-	private HashMap<Clickable, InputRecipe> recipes = new HashMap<Clickable, InputRecipe>();
+	private HashMap<Clickable, InputRecipe> recipes = new HashMap<>();
 	private DecimalFormat decimalFormatting;
 
 	public FurnCraftChestInteractionManager(FurnCraftChestFactory fccf) {
@@ -254,8 +256,9 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ItemAPI.addLore(menuStack, ChatColor.LIGHT_PURPLE + "Click to open a detailed menu");
 			Clickable menuC = new Clickable(menuStack) {
 				@Override
-				public void clicked(Player arg0) {
-					//TODO
+				public void clicked(Player p) {
+					FactoryModGUI gui = new FactoryModGUI(p);
+					gui.showForFactory((FurnCraftChestEgg)FactoryMod.getInstance().getManager().getEgg(fccf.getName()));
 				}
 			};
 			ci.setSlot(menuC, (rows * 9) - 1);
