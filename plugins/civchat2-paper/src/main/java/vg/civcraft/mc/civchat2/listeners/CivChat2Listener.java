@@ -45,7 +45,7 @@ public class CivChat2Listener implements Listener {
 		playerQuitEvent.setQuitMessage(null);
 		for (Player p : Bukkit.getOnlinePlayers()){
 			if (settings.getShowLeaves(p.getUniqueId())){
-				p.sendMessage(ChatColor.YELLOW + playerQuitEvent.getPlayer().getDisplayName() + " has left the game");
+				p.sendMessage(playerQuitEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has left the game");
 			}
 		}
 	}
@@ -57,7 +57,7 @@ public class CivChat2Listener implements Listener {
 		}
 		for (Player p : Bukkit.getOnlinePlayers()){
 			if (settings.getShowJoins(p.getUniqueId())){
-				p.sendMessage(ChatColor.YELLOW + playerJoinEvent.getPlayer().getDisplayName() + " has joined the game");
+				p.sendMessage(playerJoinEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has joined the game");
 			}
 		}
 	}
