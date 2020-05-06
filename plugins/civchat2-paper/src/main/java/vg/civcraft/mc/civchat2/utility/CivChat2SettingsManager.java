@@ -19,10 +19,10 @@ public class CivChat2SettingsManager {
 	private void initSettings(){
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("CivChat","All options related to CivChat.");
 
-		showJoins = new BooleanSetting(CivChat2.getInstance(), true, "Show Player Joins", "showJoins", "Hides player join messaged if disabled.");
+		showJoins = new BooleanSetting(CivChat2.getInstance(), true, "Show Player Joins", "showJoins", "Should player join messages be shown?");
 		PlayerSettingAPI.registerSetting(showJoins, menu);
 
-		showLeaves = new BooleanSetting(CivChat2.getInstance(), true, "Show Players Leaving", "showLeaves", "Hides player leaving messages if disabled.");
+		showLeaves = new BooleanSetting(CivChat2.getInstance(), true, "Show Players Leaving", "showLeaves", "Should player leave messages be shown?");
 		PlayerSettingAPI.registerSetting(showLeaves, menu);
 	}
 
