@@ -1,10 +1,7 @@
 package vg.civcraft.mc.civchat2.commands;
 
-import java.util.List;
-
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
 import vg.civcraft.mc.civchat2.ChatStrings;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
@@ -16,7 +13,9 @@ import vg.civcraft.mc.namelayer.command.TabCompleters.GroupTabCompleter;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-@CivCommand(id = "ignore")
+import java.util.List;
+
+@CivCommand(id = "ignoregroup")
 public class IgnoreGroup extends StandaloneCommand {
 
 	@Override
