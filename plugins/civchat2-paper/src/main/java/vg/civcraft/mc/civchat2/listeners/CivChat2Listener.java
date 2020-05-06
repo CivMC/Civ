@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civchat2.listeners;
 
-import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -14,12 +12,14 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civchat2.utility.SettingsManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import java.util.UUID;
 
 /*
  * @author jjj5311
@@ -28,10 +28,11 @@ import vg.civcraft.mc.namelayer.permission.PermissionType;
 public class CivChat2Listener implements Listener {
 
 	private CivChat2Manager chatman;
+	private SettingsManager settings;
 
 	public CivChat2Listener(CivChat2Manager instance) {
-
 		chatman = instance;
+		settings = CivChat2.getInstance().getSettingsManager();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -42,12 +43,22 @@ public class CivChat2Listener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerQuit(PlayerQuitEvent playerQuitEvent) {
 		playerQuitEvent.setQuitMessage(null);
+		for (Player p : Bukkit.getOnlinePlayers()){
+			if (settings.getShowLeaves(p.getUniqueId())){
+				p.sendMessage(ChatColor.YELLOW + playerQuitEvent.getPlayer().getDisplayName() + " has left the game");
+			}
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerJoin(PlayerJoinEvent playerJoinEvent) {
 		if (!CivChat2.getInstance().getPluginConfig().getLoginAnnounce()) {
 			playerJoinEvent.setJoinMessage(null);
+		}
+		for (Player p : Bukkit.getOnlinePlayers()){
+			if (settings.getShowJoins(p.getUniqueId())){
+				p.sendMessage(ChatColor.YELLOW + playerJoinEvent.getPlayer().getDisplayName() + " has joined the game");
+			}
 		}
 	}
 

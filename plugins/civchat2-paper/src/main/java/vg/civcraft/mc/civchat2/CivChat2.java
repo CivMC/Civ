@@ -1,17 +1,18 @@
 package vg.civcraft.mc.civchat2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
+import vg.civcraft.mc.civchat2.utility.SettingsManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author jjj5311
@@ -25,6 +26,7 @@ public class CivChat2 extends ACivMod {
 	private CivChat2Config config;
 	private CivChat2Manager chatMan;
 	private CivChat2Listener chatListener;
+	private SettingsManager settingsManager;
 	private CivChat2FileLogger fileLog;
 	private CivChatDAO databaseManager;
 
@@ -39,6 +41,7 @@ public class CivChat2 extends ACivMod {
 		log.initializeLogger(instance);
 		fileLog = new CivChat2FileLogger();
 		databaseManager = new CivChatDAO();
+		settingsManager = new SettingsManager();
 		chatMan = new CivChat2Manager(instance);
 		log.debug("Debug Enabled");
 		chatListener = new CivChat2Listener(chatMan);
@@ -76,6 +79,10 @@ public class CivChat2 extends ACivMod {
 
 	public static CivChat2 getInstance() {
 		return instance;
+	}
+
+	public SettingsManager getSettingsManager(){
+		return settingsManager;
 	}
 
 	public CivChat2Config getPluginConfig() {
