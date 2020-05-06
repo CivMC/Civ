@@ -50,7 +50,15 @@ public class SnitchLogAppender extends ConfigurableSnitchAppender<LimitedActionT
 			return;
 		}
 		actions.add(log);
-		getSnitch().setDirty();
+		if (snitch.getId() != -1) {
+			int id = JukeAlert.getInstance().getLoggedActionFactory().getInternalID(action.getIdentifier());
+			if (id != -1) {
+				JukeAlert.getInstance().getDAO().insertLogAsync(id, getSnitch(), log);
+			}
+		}
+		else {
+			snitch.setDirty();
+		}
 	}
 
 	@Override

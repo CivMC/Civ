@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,9 +29,11 @@ import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchFactoryType;
 import com.untamedears.jukealert.model.SnitchTypeManager;
+import com.untamedears.jukealert.model.actions.ActionCacheState;
 import com.untamedears.jukealert.model.actions.LoggedActionFactory;
 import com.untamedears.jukealert.model.actions.LoggedActionPersistence;
 import com.untamedears.jukealert.model.actions.abstr.LoggableAction;
+import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerAction;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
@@ -239,16 +242,15 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 						+ "(14,'MOUNT_ENTITY'),(15,'DISMOUNT_ENTITY')",
 				"delete from snitchs using snitchs, snitchs s2 where snitchs.snitch_id < s2.snitch_id "
 						+ "and snitchs.snitch_x = s2.snitch_x and snitchs.snitch_y = s2.snitch_y and snitchs.snitch_z = s2.snitch_z and snitchs.snitch_world=s2.snitch_world");
-		db.registerMigration(3, false,"delete from ja_snitches where group_id = -1");
+		db.registerMigration(3, false, "delete from ja_snitches where group_id = -1");
 	}
 
 	@Override
 	public void insert(Snitch snitch) {
 		try (Connection insertConn = db.getConnection();
-				PreparedStatement insertSnitch = insertConn.prepareStatement(
-						"insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
-								+ "values(?,?, ?,?,?, ?, ?);",
-						Statement.RETURN_GENERATED_KEYS)) {
+				PreparedStatement insertSnitch = insertConn
+						.prepareStatement("insert into ja_snitches (group_id, type_id, x, y , z, world_id, name) "
+								+ "values(?,?, ?,?,?, ?, ?);", Statement.RETURN_GENERATED_KEYS)) {
 			if (snitch.getGroup() == null) {
 				return;
 			}
@@ -317,31 +319,31 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectSnitch = insertConn
 						.prepareStatement("select x, y, z, type_id, group_id, name, id, world_id from ja_snitches");
-			ResultSet rs = selectSnitch.executeQuery()) {
-				while (rs.next()) {
-					int x = rs.getInt(1);
-					int y = rs.getInt(2);
-					int z = rs.getInt(3);
-					short worldId = rs.getShort(8);
-					World world = idMan.getWorldByInternalID(worldId);
-					Location location = new Location(world, x, y, z);
-					int typeID = rs.getInt(4);
-					SnitchFactoryType type = configMan.getConfig(typeID);
-					if (type == null) {
-						logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
-						continue;
-					}
-					int groupID = rs.getInt(5);
-					if (groupID == -1) {
-						continue;
-					}
-					String name = rs.getString(6);
-					int id = rs.getInt(7);
-					Snitch snitch = type.create(id, location, name, groupID, false);
-					insertFunction.accept(snitch);
-					snitchMan.addSnitchToQuadTree(snitch);
-					snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
+				ResultSet rs = selectSnitch.executeQuery()) {
+			while (rs.next()) {
+				int x = rs.getInt(1);
+				int y = rs.getInt(2);
+				int z = rs.getInt(3);
+				short worldId = rs.getShort(8);
+				World world = idMan.getWorldByInternalID(worldId);
+				Location location = new Location(world, x, y, z);
+				int typeID = rs.getInt(4);
+				SnitchFactoryType type = configMan.getConfig(typeID);
+				if (type == null) {
+					logger.log(Level.SEVERE, "Failed to load snitch with type id " + typeID);
+					continue;
 				}
+				int groupID = rs.getInt(5);
+				if (groupID == -1) {
+					continue;
+				}
+				String name = rs.getString(6);
+				int id = rs.getInt(7);
+				Snitch snitch = type.create(id, location, name, groupID, false);
+				insertFunction.accept(snitch);
+				snitchMan.addSnitchToQuadTree(snitch);
+				snitch.applyToAppenders(AbstractSnitchAppender::postSetup);
+			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load snitch from db: ", e);
 		}
@@ -427,6 +429,13 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete snitch log", e);
 		}
+	}
+
+	public void insertLogAsync(int typeID, Snitch snitch, LoggablePlayerAction action) {
+		Bukkit.getScheduler().runTaskAsynchronously(JukeAlert.getInstance(), () -> {
+			insertLog(typeID, snitch, action.getPersistence());
+			action.setCacheState(ActionCacheState.NORMAL);
+		});
 	}
 
 	public int insertLog(int typeID, Snitch snitch, LoggedActionPersistence data) {
