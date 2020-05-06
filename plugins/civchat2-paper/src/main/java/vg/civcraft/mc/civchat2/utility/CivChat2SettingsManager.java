@@ -7,12 +7,12 @@ import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 
 import java.util.UUID;
 
-public class SettingsManager {
+public class CivChat2SettingsManager {
 
 	private BooleanSetting showJoins;
 	private BooleanSetting showLeaves;
 
-	public SettingsManager() {
+	public CivChat2SettingsManager() {
 		initSettings();
 	}
 

@@ -14,7 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
-import vg.civcraft.mc.civchat2.utility.SettingsManager;
+import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -28,11 +28,11 @@ import java.util.UUID;
 public class CivChat2Listener implements Listener {
 
 	private CivChat2Manager chatman;
-	private SettingsManager settings;
+	private CivChat2SettingsManager settings;
 
 	public CivChat2Listener(CivChat2Manager instance) {
 		chatman = instance;
-		settings = CivChat2.getInstance().getSettingsManager();
+		settings = CivChat2.getInstance().getCivChat2SettingsManager();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
