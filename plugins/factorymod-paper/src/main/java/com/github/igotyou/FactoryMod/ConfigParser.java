@@ -72,7 +72,6 @@ public class ConfigParser {
 	private HashMap<String, IFactoryEgg> upgradeEggs;
 	private HashMap<IFactoryEgg, List<String>> recipeLists;
 	private HashMap<RecipeScalingUpgradeRecipe, String[]> recipeScalingUpgradeMapping;
-	private String defaultMenuFactory;
 	private long defaultBreakGracePeriod;
 	private int defaultDamagePerBreakPeriod;
 	private boolean useYamlIdentifers;
@@ -140,7 +139,6 @@ public class ConfigParser {
 				}
 			}.runTaskTimerAsynchronously(plugin, savingIntervall, savingIntervall);
 		}
-		defaultMenuFactory = config.getString("default_menu_factory");
 		int globalPylonLimit = config.getInt("global_pylon_limit");
 		PylonRecipe.setGlobalLimit(globalPylonLimit);
 		Map<String, String> factoryRenames = parseRenames(config.getConfigurationSection("renames"));
@@ -988,10 +986,6 @@ public class ConfigParser {
 				entry.getKey().setFollowUpRecipe((RecipeScalingUpgradeRecipe) followRecipe);
 			}
 		}
-	}
-
-	public String getDefaultMenuFactory() {
-		return defaultMenuFactory;
 	}
 
 	private List<String> loadWordList(String fileName) {
