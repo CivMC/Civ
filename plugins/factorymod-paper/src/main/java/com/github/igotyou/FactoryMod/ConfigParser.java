@@ -77,6 +77,7 @@ public class ConfigParser {
 	private boolean useYamlIdentifers;
 	private int defaultHealth;
 	private HashSet<String> forceRecipes;
+	private boolean forceIncludeAll;
 
 	public ConfigParser(FactoryMod plugin) {
 		this.plugin = plugin;
@@ -128,6 +129,7 @@ public class ConfigParser {
 		defaultBreakGracePeriod = parseTime(config.getString("default_break_grace_period"));
 		defaultDamagePerBreakPeriod = config.getInt("default_decay_amount", 21);
 		long savingIntervall = parseTimeAsTicks(config.getString("saving_intervall", "15m"));
+		forceIncludeAll = config.getBoolean("force_include_default", false);
 		// save factories on a regular base, unless disabled
 		if (savingIntervall > 0) {
 			new BukkitRunnable() {
@@ -519,7 +521,7 @@ public class ConfigParser {
 			return null;
 		}
 		// Force This Recipe to Show Up Even on Existing Factories (idempotently, ish)
-		boolean forceAddExisting = config.getBoolean("forceInclude", false);
+		boolean forceAddExisting = config.getBoolean("forceInclude", forceIncludeAll);
 		if (forceAddExisting) {
 			this.forceRecipes.add(identifier);
 		}
