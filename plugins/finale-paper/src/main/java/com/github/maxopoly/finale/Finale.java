@@ -13,6 +13,7 @@ import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
 import com.github.maxopoly.finale.listeners.VelocityFixListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
+import com.github.maxopoly.finale.overlay.ScoreboardHUD;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 
@@ -79,6 +80,7 @@ public class Finale extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new PotionListener(config.getPotionHandler()), this);
 		Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
+		Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
 	}
 
 	public void reload() {
