@@ -390,7 +390,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 		LoggedActionFactory factory = JukeAlert.getInstance().getLoggedActionFactory();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement loadActions = insertConn.prepareStatement(
-						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim"
+						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id"
 								+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
 								+ "jse.type_id = jsa.id where snitch_id = ?;");) {
 			loadActions.setInt(1, id);
@@ -403,9 +403,11 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 					int z = rs.getInt(5);
 					long time = rs.getTimestamp(6).getTime();
 					String victim = rs.getString(7);
+					int logId = rs.getInt(8);
 					Location loc = new Location(snitch.getLocation().getWorld(), x, y, z);
 					LoggableAction action = factory.produce(snitch, identifier, uuid, loc, time, victim);
 					if (action != null) {
+						action.setID(logId);
 						result.add(action);
 					}
 				}
