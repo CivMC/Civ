@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.utility;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -278,9 +277,9 @@ public class FactoryModGUI {
 					.collect(Collectors.toList());
 		}
 		int size = setupClicks == null ? 0 : setupClicks.size();
-		Scrollbar inputSection = new Scrollbar(setupClicks, 24, 6, ContentAligners.getCenteredInOrder(size, 24, 4));
+		Scrollbar inputSection = new Scrollbar(setupClicks, 24, 8, ContentAligners.getCenteredInOrder(size, 24, 4));
 		// top right corner
-		inputSection.setBackwardsClickSlot(4);
+		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(6, 4));
 
 		//TODO opens the setup recipe instead if is upgrade TODO TODO TODO
@@ -292,9 +291,9 @@ public class FactoryModGUI {
 
 		List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
 				.map(this::produceRecipeClickable).collect(Collectors.toList());
-		Scrollbar outputSection = new Scrollbar(recipeClicks, 24, 4,
+		Scrollbar outputSection = new Scrollbar(recipeClicks, 24, 8,
 				ContentAligners.getCenteredInOrder(recipeClicks.size(), 24, 4));
-		outputSection.setBackwardsClickSlot(4);
+		outputSection.setBackwardsClickSlot(3);
 		section.addComponent(outputSection, SlotPredicates.offsetRectangle(6, 4, 0, 5));
 
 		return section;
@@ -311,10 +310,10 @@ public class FactoryModGUI {
 
 		List<IClickable> inputClicks = recipe.getInputRepresentation(null, null).stream().map(DecorationStack::new)
 				.collect(Collectors.toList());
-		Scrollbar inputSection = new Scrollbar(inputClicks, 20, 4,
+		Scrollbar inputSection = new Scrollbar(inputClicks, 20, 8,
 				ContentAligners.getCenteredInOrder(inputClicks.size(), 20, 4));
 		// top right corner
-		inputSection.setBackwardsClickSlot(4);
+		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(5, 4));
 
 		IClickable setupClick = getSetupClick(this.currentFactory);
@@ -334,9 +333,9 @@ public class FactoryModGUI {
 			outputClicks = recipe.getOutputRepresentation(null, null).stream().map(DecorationStack::new)
 					.collect(Collectors.toList());
 		}
-		Scrollbar outputSection = new Scrollbar(outputClicks, 20, 4,
+		Scrollbar outputSection = new Scrollbar(outputClicks, 20, 8,
 				ContentAligners.getCenteredInOrder(outputClicks.size(), 20, 4));
-		outputSection.setBackwardsClickSlot(4);
+		outputSection.setBackwardsClickSlot(3);
 		section.addComponent(outputSection, SlotPredicates.offsetRectangle(5, 4, 0, 5));
 
 		return section;
