@@ -68,6 +68,9 @@ public class ComponableSection extends InventoryComponent {
 				this.content.set(i, componentContent.get(offSet++));
 			}
 		}
+		if (getParent() != null) {
+			getParent().updateComponent(this);
+		}
 	}
 	
 	/**

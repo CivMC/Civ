@@ -18,7 +18,7 @@ public class Scrollbar extends InventoryComponent {
 	private int forwardClickSlot;
 	private ContentAligner contentAligner;
 	private int scrollOffset;
-	
+
 	public Scrollbar(List<IClickable> content, int staticSize) {
 		this(content, staticSize, staticSize);
 	}
@@ -31,8 +31,7 @@ public class Scrollbar extends InventoryComponent {
 		super(staticSize);
 		if (content != null) {
 			this.unpaginatedContent = content;
-		}
-		else {
+		} else {
 			this.unpaginatedContent = new ArrayList<>();
 		}
 		this.page = 0;
@@ -55,24 +54,22 @@ public class Scrollbar extends InventoryComponent {
 		int contentAmount = unpaginatedContent.size();
 		int displaySize = getSize();
 		if (contentAmount <= displaySize) {
-			//works fine, we dont need back/forward buttons in this case
+			// works fine, we dont need back/forward buttons in this case
 			return 1;
 		}
-		// first page has no back button, last page has no next button
-		contentAmount -= 2* (scrollOffset - 1);
-		if(contentAmount <= 0) {
-			return 2;
-		}
-		
-		//modulo scroll offset - 2, because a normal page has forward and backwards buttons
-		int modOffset = contentAmount % (scrollOffset - 2);
-		int basicRowCalc = contentAmount / (scrollOffset - 2);
-		if (modOffset == 0) {
+		// first page has no back button
+		contentAmount -= displaySize - 1;
+
+		// modulo scroll offset - 2, because a normal page has forward and backwards
+		// buttons
+		int modOffset = contentAmount % (scrollOffset);
+		int basicRowCalc = contentAmount / (scrollOffset);
+		if (modOffset <= 1) {
 			// there would be one leftover element in a new page, but we can just put that
 			// in the previous page instead of a next button
-			return basicRowCalc + 2;
+			return basicRowCalc + 1;
 		}
-		return basicRowCalc + 3;
+		return basicRowCalc + 2;
 	}
 
 	public int getPage() {
@@ -91,16 +88,18 @@ public class Scrollbar extends InventoryComponent {
 
 	@Override
 	void rebuild() {
-		int contentIndex = page * getSize();
+		int size = getSize();
+		int contentIndex = scrollOffset * page;
 		// subtract offset created through the next/previous button
 		// note that the first page does not have a previous button
-		if (page > 0) {
-			contentIndex -= page;
-			if (page > 1) {
-				contentIndex -= page - 1;
+		if (scrollOffset == size) {
+			if (page > 0) {
+				contentIndex -= page;
+				if (page > 1) {
+					contentIndex -= page - 1;
+				}
 			}
 		}
-		int size = getSize();
 		contentAligner.reset();
 		for (int i = 0; i < size; i++) {
 			int targetSlot = contentAligner.getNext();
@@ -114,8 +113,7 @@ public class Scrollbar extends InventoryComponent {
 			} else {
 				if (contentIndex >= unpaginatedContent.size()) {
 					this.content.set(targetSlot, null);
-				}
-				else {
+				} else {
 					this.content.set(targetSlot, unpaginatedContent.get(contentIndex));
 				}
 				contentIndex++;
