@@ -39,7 +39,7 @@ public class EssenceConfigManager extends CoreConfigManager {
 		votingReward = ConfigParsing.parseItemMap(config.getConfigurationSection("voting_reward"));
 		votingCooldowns = new HashMap<>();
 		if (config.isConfigurationSection("voting_sites")) {
-			ConfigurationSection votingKeySection = config.getConfigurationSection("voting_cooldowns");
+			ConfigurationSection votingKeySection = config.getConfigurationSection("voting_sites");
 			for (String key : votingKeySection.getKeys(false)) {
 				if (votingKeySection.isConfigurationSection(key)) {
 					ConfigurationSection current = votingKeySection.getConfigurationSection(key);
