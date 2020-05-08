@@ -10,6 +10,7 @@ public final class EssenceGluePlugin extends ACivMod {
 	private EssenceConfigManager configMan;
 	private StreakManager streakMan;
 	private RewardManager rewardMan;
+	private VotifyManager votifyMan;
 
 	@Override
 	public void onEnable() {
@@ -32,17 +33,28 @@ public final class EssenceGluePlugin extends ACivMod {
 			}
 		}
 		rewardMan = new RewardManager(configMan.getLoginReward(), configMan.getVotingReward());
-		if (Bukkit.getPluginManager().isPluginEnabled("NuVotifier"))  {
-			Bukkit.getPluginManager().registerEvents(new VotifierListener(rewardMan), this);
+		if (Bukkit.getPluginManager().isPluginEnabled("Votifier")) {
+			votifyMan = new VotifyManager(rewardMan, configMan.getVotingCooldowns());
+			Bukkit.getPluginManager().registerEvents(votifyMan,this);
+		} else {
+			getLogger().info("Votifier is not enabled, no voting support is possible");
 		}
 	}
-	
+
 	public StreakManager getStreakManager() {
 		return streakMan;
 	}
-	
+
 	public RewardManager getRewardManager() {
 		return rewardMan;
+	}
+	
+	public EssenceConfigManager getConfigManager() {
+		return configMan;
+	}
+	
+	public VotifyManager getVoteManager() {
+		return votifyMan;
 	}
 
 	@Override
