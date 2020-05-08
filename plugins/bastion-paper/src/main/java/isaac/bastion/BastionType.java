@@ -51,6 +51,8 @@ public class BastionType {
 	private boolean blockReinforcements;
 	private Material material;
 	private boolean destroyOnRemoveWhileImmature;
+	private int proximityDamageRange;
+	private double proximityDamageFactor;
 	
 	public BastionType(
 			String name,
@@ -85,7 +87,9 @@ public class BastionType {
 			boolean onlyDirectDestruction,
 			boolean allowPearlingOut,
 			boolean blockReinforcements,
-			boolean destroyOnRemoveWhileImmature
+			boolean destroyOnRemoveWhileImmature,
+			int proximityDamageRange,
+			double proximityDamageFactor
 	) {
 		this.name = name;
 		this.material = material;
@@ -121,6 +125,8 @@ public class BastionType {
 		this.allowPearlingOut = allowPearlingOut;
 		this.blockReinforcements = blockReinforcements;
 		this.destroyOnRemoveWhileImmature = destroyOnRemoveWhileImmature;
+		this.proximityDamageFactor = proximityDamageFactor;
+		this.proximityDamageRange = proximityDamageRange;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
@@ -503,6 +509,14 @@ public class BastionType {
 		return defaultType;
 	}
 	
+	public int getProximityDamageRange() {
+		return proximityDamageRange;
+	}
+	
+	public double getProximityDamageFactor() {
+		return proximityDamageFactor;
+	}
+	
 	public static BastionType getBastionType(ConfigurationSection config) {
 		String name = config.getName();
 		Material material = Material.getMaterial(config.getString("block.material"));
@@ -542,6 +556,8 @@ public class BastionType {
 		int elytraScale = config.getInt("elytra.scaleFactor");
 		boolean elytraRequireMature = config.getBoolean("elytra.requireMaturity");
 		int regenTime = config.getInt("regenPerDay");
+		int proximityDamageRange = config.getInt("proximityDamageRange", 0); 
+		double proximityDamageFactor = config.getDouble("proximityDamageFactor", 0.5); 
 		if(regenTime > 0) {
 			regenTime = 1728000 / regenTime;
 		} else if(regenTime < 0) {
@@ -553,7 +569,8 @@ public class BastionType {
 		return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
-				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature);
+				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature,
+				proximityDamageRange, proximityDamageFactor);
 	}
 
 	@Override
