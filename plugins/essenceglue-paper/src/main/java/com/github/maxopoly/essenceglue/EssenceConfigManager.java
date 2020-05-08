@@ -43,7 +43,7 @@ public class EssenceConfigManager extends CoreConfigManager {
 			for (String key : votingKeySection.getKeys(false)) {
 				if (votingKeySection.isConfigurationSection(key)) {
 					ConfigurationSection current = votingKeySection.getConfigurationSection(key);
-					long votingCooldown = current.getLong("voting_cooldown");
+					long votingCooldown = ConfigParsing.parseTime(current.getString("voting_cooldown", "20h"));
 					String votingUrl = current.getString("voting_url");
 					String internalKey = current.getString("internal_key");
 					String name = current.getString("name");

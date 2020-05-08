@@ -40,7 +40,8 @@ public class VoteCommand extends StandaloneCommand {
 			if (canVote) {
 				TextComponent text = new TextComponent(ChatColor.GREEN + "Receive rewards for voting on "
 						+ site.getName() + ". Click this message to open the link!");
-				text.setClickEvent(new ClickEvent(Action.OPEN_URL, site.getVotingUrl()));
+				text.setClickEvent(
+						new ClickEvent(Action.OPEN_URL, site.getVotingUrl().replace("%PLAYER%", p.getName())));
 				text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
 						new ComponentBuilder("Click to open the voting link for " + site.getName()).create()));
 				p.spigot().sendMessage(text);
