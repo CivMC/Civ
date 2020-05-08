@@ -61,6 +61,16 @@ public class StreakManager {
 		}
 	}
 	
+	public long getRewardCooldown(UUID uuid) {
+		long sinceLastClaim = System.currentTimeMillis() - lastPlayerUpdate.getValue(uuid);
+		return Math.max(0, streakDelay - sinceLastClaim);
+	}
+	
+	public long untilTodaysReward(UUID uuid) {
+		Integer currentCount = currentOnlineTime.getOrDefault(uuid, 0);
+		return TimeUnit.MINUTES.toMillis(countRequiredForGain - currentCount);
+	}
+	
 	public static UUID getTrueUUID(UUID uuid) {
 		UUID cached = mainAccountCache.get(uuid);
 		if (cached != null) {
