@@ -26,6 +26,7 @@ public class VotifyManager implements Listener {
 
 	public VotifyManager(RewardManager rewardMan, Map<String, VotingSite> perSiteCooldowns) {
 		this.rewardMan = rewardMan;
+		this.perSiteSettings = new HashMap<>();
 		this.perSiteCooldowns = new HashMap<>(perSiteCooldowns);
 		for (String s : perSiteCooldowns.keySet()) {
 			LongSetting setting = new LongSetting(EssenceGluePlugin.instance(), 0L, "Last vote " + s,

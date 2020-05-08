@@ -28,7 +28,7 @@ public class EssenceDAO {
 		// import legacy mana
 		db.registerMigration(1, false,
 				"CREATE TABLE IF NOT EXISTS manaStats (ownerId int(11) NOT NULL, streak int(11) NOT NULL, "
-						+ "lastDay bigint(20) NOT NULL, PRIMARY KEY (ownerId)",
+						+ "lastDay bigint(20) NOT NULL, PRIMARY KEY (ownerId))",
 				" CREATE TABLE IF NOT EXISTS manaOwners (id int(11) NOT NULL AUTO_INCREMENT, foreignId int(11) NOT NULL, "
 						+ "foreignIdType tinyint(4) NOT NULL, PRIMARY KEY (foreignId, foreignIdType), UNIQUE KEY `id` (id))");
 		db.registerMigration(2, false, new Callable<Boolean>() {
