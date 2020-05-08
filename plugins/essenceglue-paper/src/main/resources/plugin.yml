@@ -13,7 +13,7 @@ commands:
     min-args: 0
     max-args: 0
     player-only: true
-  vote:
+  streak:
     permission: eg.public
     description: 'Displays stats about your daily login streak'
     usage: '/streak'
