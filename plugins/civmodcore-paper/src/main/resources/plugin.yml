@@ -5,6 +5,12 @@ main: ${plugin.main}
 api-version: ${minecraft.version}
 commands:
   config: {}
+  configany:
+    permission: cmc.configany
+    description: 'Lets you set any config setting for any player'
+    usage: '/configany <player|uuid> <settingId> <value>'
 permissions:
   cmc.config.save:
+    default: op
+  cmc.configany:
     default: op
