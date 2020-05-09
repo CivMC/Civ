@@ -32,7 +32,6 @@ import com.devotedmc.ExilePearl.PearlManager;
 import com.devotedmc.ExilePearl.PearlType;
 import com.devotedmc.ExilePearl.StorageProvider;
 import com.devotedmc.ExilePearl.event.PearlDecayEvent;
-import com.devotedmc.ExilePearl.event.PearlDecayEvent.DecayAction;
 import com.devotedmc.ExilePearl.event.PearlReturnEvent;
 import com.devotedmc.ExilePearl.event.PearlSummonEvent;
 import com.devotedmc.ExilePearl.event.PlayerFreedEvent;
@@ -41,6 +40,7 @@ import com.devotedmc.ExilePearl.holder.BlockHolder;
 import com.devotedmc.ExilePearl.holder.PearlHolder;
 import com.devotedmc.ExilePearl.holder.PlayerHolder;
 import com.devotedmc.ExilePearl.util.SpawnUtil;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
 
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.cooldowns.ICoolDownHandler;
@@ -269,13 +269,6 @@ final class CorePearlManager implements PearlManager {
 
 	@Override
 	public void decayPearls() {
-		PearlDecayEvent e = new PearlDecayEvent(DecayAction.START);
-		Bukkit.getPluginManager().callEvent(e);
-
-		if (e.isCancelled()) {
-			return;
-		}
-
 		pearlApi.log("Performing pearl decay.");
 		long startTime = System.currentTimeMillis();
 
@@ -306,7 +299,11 @@ final class CorePearlManager implements PearlManager {
 
 			// convert timeout to milliseconds and compare against last time online.
 			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
-				pearl.setHealth(pearl.getHealth() - decayAmount);
+				PearlDecayEvent e = new PearlDecayEvent(pearl, decayAmount);
+				Bukkit.getPluginManager().callEvent(e);
+				if (!e.isCancelled() && e.getDamageAmount() > 0) {
+					pearl.setHealth(pearl.getHealth() - decayAmount);
+				}
 			}
 
 			if (pearl.getHealth() == 0) {
@@ -326,9 +323,6 @@ final class CorePearlManager implements PearlManager {
 		}
 
 		pearlApi.log("Pearl decay completed in %dms. Processed %d and freed %d." , System.currentTimeMillis() - startTime, pearls.size(), pearlsToFree.size());
-
-		e = new PearlDecayEvent(DecayAction.COMPLETE);
-		Bukkit.getPluginManager().callEvent(e);
 	}
 
 
@@ -379,7 +373,7 @@ final class CorePearlManager implements PearlManager {
 	}
 
 	private void clearPearlBroadcasts(ExilePearl pearl) {
-		Set<UUID> toRemove = new HashSet<UUID>();
+		Set<UUID> toRemove = new HashSet<>();
 
 		for(Entry<UUID, ExilePearl> entry : bcastRequests.entrySet()) {
 			if (entry.getValue().equals(pearl)) {
@@ -459,5 +453,33 @@ final class CorePearlManager implements PearlManager {
 
 			});
 		}
+	}
+
+
+	@Override
+	public int getExiledAlts(UUID uuidPlayer, boolean includeSelf) {
+		if (pearlApi.isBanStickEnabled()) {
+			BSPlayer bsPlayer = BSPlayer.byUUID(uuidPlayer);
+	        if (bsPlayer == null) {
+	            if (includeSelf && isPlayerExiled(uuidPlayer)) {
+	            	return 1;
+	            }
+	            return 0;
+	        }
+	        int pearledAlts = 0;
+	        for (BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
+	            ExilePearl altPearl = pearlApi.getPearl(alt.getUUID());
+	            if (altPearl != null) {
+	            	if (includeSelf || !alt.getUUID().equals(bsPlayer.getUUID())) {
+	            		pearledAlts++;
+	            	}
+	            }
+	        }
+	        return pearledAlts;
+		}
+        if (includeSelf && isPlayerExiled(uuidPlayer)) {
+        	return 1;
+        }
+        return 0;
 	}
 }

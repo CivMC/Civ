@@ -29,7 +29,7 @@ public class BanStickListener extends RuleListener {
             // dont lock out pearled account
             return;
         }
-        if (getPearledAlts(e.getUniqueId()) >= config.maxAltsPearled()) {
+        if (pearlApi.getExiledAlts(e.getUniqueId(), false) >= config.maxAltsPearled()) {
             e.setLoginResult(Result.KICK_OTHER);
             e.setKickMessage(config.altBanMessage());
         }
@@ -43,7 +43,7 @@ public class BanStickListener extends RuleListener {
 	@EventHandler
     public void playerPearl(PlayerPearledEvent e) {
         UUID uuid = e.getPearl().getPlayerId();
-        if (getPearledAlts(uuid) < config.maxAltsPearled()) {
+        if (pearlApi.getExiledAlts(uuid, false) < config.maxAltsPearled()) {
             return;
         }
         BSPlayer player = BSPlayer.byUUID(uuid);
@@ -56,28 +56,6 @@ public class BanStickListener extends RuleListener {
                 }
             }
         }
-    }
-
-    /**
-     * Calculates how many of a players alts are pearled
-     *
-     * @param uuid
-     *            UUID of the player
-     * @return Count of pearled alts or -1 if a banstick internal error occured
-     */
-    private int getPearledAlts(UUID uuid) {
-        BSPlayer player = BSPlayer.byUUID(uuid);
-        if (player == null) {
-            return -1;
-        }
-        int pearledAlts = 0;
-        for (BSPlayer alt : player.getTransitiveSharedPlayers(true)) {
-            ExilePearl altPearl = pearlApi.getPearl(alt.getUUID());
-            if (altPearl != null && !alt.getUUID().equals(player.getUUID())) {
-                pearledAlts++;
-            }
-        }
-        return pearledAlts;
     }
 
 }

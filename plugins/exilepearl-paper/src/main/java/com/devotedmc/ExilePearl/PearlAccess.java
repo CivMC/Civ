@@ -160,4 +160,12 @@ public interface PearlAccess {
 	 * @return true if a request has been made
 	 */
 	boolean awaitingSummon(ExilePearl pearl);
+	
+	/**
+	 * Gets the amount of exiled Banstick alts a player has. If Banstick is not enabled, only the player given will be counted
+	 * @param player UUID of the player to check for
+	 * @param includeSelf Should the player directly given be included in this count?
+	 * @return Count of exiled alts
+	 */
+	int getExiledAlts(UUID player, boolean includeSelf);
 }

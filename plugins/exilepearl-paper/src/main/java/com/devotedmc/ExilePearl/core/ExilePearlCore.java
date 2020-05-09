@@ -719,4 +719,9 @@ final class ExilePearlCore implements ExilePearlApi {
 	public boolean awaitingSummon(ExilePearl pearl) {
 		return pearlManager.awaitingSummon(pearl);
 	}
+
+	@Override
+	public int getExiledAlts(UUID player, boolean includeSelf) {
+		return pearlManager.getExiledAlts(player, includeSelf);
+	}
 }
