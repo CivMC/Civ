@@ -59,7 +59,7 @@ public class StreakManager {
 			if (sinceLastClaim >= streakDelay) {
 				Integer currentCount = currentOnlineTime.computeIfAbsent(uuid, e -> 0);
 				if (currentCount >= countRequiredForGain) {
-					incrementPlayerStreak(uuid);
+					updatePlayerStreak(uuid, true);
 					currentOnlineTime.remove(uuid);
 					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
 							+ getCurrentStreak(uuid, true));
@@ -104,13 +104,23 @@ public class StreakManager {
 		return ogAcc.getUUID();
 	}
 
-	private void incrementPlayerStreak(UUID player) {
+	public void updatePlayerStreak(UUID player, boolean increment) {
 		long now = System.currentTimeMillis();
 		long lastIncrement = lastPlayerUpdate.getValue(player);
 		long timePassed = now - lastIncrement;
 		timePassed -= streakDelay;
+		int daysPassed;
+		if (timePassed > 0) {
+			daysPassed = 1;
+		}
+		else {
+			daysPassed = 0;
+			if (!increment) {
+				return;
+			}
+		}
 		timePassed -= streakGracePeriod;
-		int daysPassed = 1;
+		
 		if (timePassed > 0) {
 			daysPassed += (int) (timePassed / MILLIS_IN_DAY + 1);
 		}
@@ -118,14 +128,18 @@ public class StreakManager {
 		// shift to left by amount of days missed
 		streak <<= daysPassed;
 		// add new day
-		streak |= 1;
+		if (increment) {
+			streak |= 1;
+		}
 		// cap maximum with a bit string containing maxiumStreak many 1 at the end and only 0 otherwise
 		streak &= ~((~0) << maximumStreak);
 		EssenceGluePlugin.instance().getLogger()
-				.info(String.format("Streak for %s was incremented, now %d (raw: %d), passed: %d", player.toString(),
+				.info(String.format("Streak for %s was updated, now %d (raw: %d), passed: %d", player.toString(),
 						Integer.bitCount(streak), streak, daysPassed));
 		playerStreaks.setValue(player, streak);
-		lastPlayerUpdate.setValue(player, now);
+		if (increment) {
+			lastPlayerUpdate.setValue(player, now);
+		}
 	}
 
 	public int getCurrentStreak(UUID uuid, boolean isMain) {
