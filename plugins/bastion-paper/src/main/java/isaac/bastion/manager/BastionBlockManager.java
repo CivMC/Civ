@@ -92,7 +92,7 @@ public class BastionBlockManager {
 							.getProximityDamageRange()) {
 						continue;
 					}
-					if (Math.abs(comparesBas.getLocation().getBlockX() - bastion.getLocation().getBlockX()) > type
+					if (Math.abs(comparesBas.getLocation().getBlockZ() - bastion.getLocation().getBlockZ()) > type
 							.getProximityDamageRange()) {
 						continue;
 					}
