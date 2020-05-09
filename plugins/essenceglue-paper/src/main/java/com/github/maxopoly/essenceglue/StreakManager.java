@@ -6,8 +6,10 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
@@ -28,9 +30,10 @@ public class StreakManager {
 	private int maximumStreak;
 	private long countRequiredForGain;
 	private static Map<UUID, UUID> mainAccountCache = new TreeMap<>();
-	
+	private boolean giveRewardToPearled;
 
-	public StreakManager(EssenceGluePlugin plugin, long streakDelay, long streakGracePeriod, int maximumStreak, long onlineTimePerDay) {
+	public StreakManager(EssenceGluePlugin plugin, long streakDelay, long streakGracePeriod, int maximumStreak,
+			long onlineTimePerDay, boolean giveRewardToPearled) {
 		playerStreaks = new IntegerSetting(plugin, 0, "Player essence streak", "essenceGluePlayerStreak");
 		PlayerSettingAPI.registerSetting(playerStreaks, null);
 		lastPlayerUpdate = new LongSetting(plugin, 0L, "Player streak refresh", "essenceGlueLastUpdate");
@@ -40,6 +43,7 @@ public class StreakManager {
 		this.streakGracePeriod = streakGracePeriod;
 		this.currentOnlineTime = new TreeMap<>();
 		this.maximumStreak = maximumStreak;
+		this.giveRewardToPearled = giveRewardToPearled;
 		this.countRequiredForGain = TimeUnit.MILLISECONDS.toMinutes(onlineTimePerDay);
 	}
 
@@ -47,30 +51,38 @@ public class StreakManager {
 		long currentMillis = System.currentTimeMillis();
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			UUID uuid = getTrueUUID(p.getUniqueId());
+			if (uuid == null) {
+				EssenceGluePlugin.instance().getLogger().severe(p.getName() + " had main account in BanStick?");
+				continue;
+			}
 			long sinceLastClaim = currentMillis - lastPlayerUpdate.getValue(uuid);
 			if (sinceLastClaim >= streakDelay) {
 				Integer currentCount = currentOnlineTime.computeIfAbsent(uuid, e -> 0);
 				if (currentCount >= countRequiredForGain) {
 					incrementPlayerStreak(uuid);
 					currentOnlineTime.remove(uuid);
-					EssenceGluePlugin.instance().getRewardManager().giveLoginReward(p, getCurrentStreak(uuid));
+					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
+							+ getCurrentStreak(uuid, true));
+					if (giveRewardToPearled || ExilePearlPlugin.getApi().getExiledAlts(uuid, true) < 1) {
+						EssenceGluePlugin.instance().getRewardManager().giveLoginReward(p, getCurrentStreak(uuid, true));
+					}
 				} else {
 					currentOnlineTime.put(uuid, currentCount + 1);
 				}
 			}
 		}
 	}
-	
+
 	public long getRewardCooldown(UUID uuid) {
 		long sinceLastClaim = System.currentTimeMillis() - lastPlayerUpdate.getValue(uuid);
 		return Math.max(0, streakDelay - sinceLastClaim);
 	}
-	
+
 	public long untilTodaysReward(UUID uuid) {
 		Integer currentCount = currentOnlineTime.getOrDefault(uuid, 0);
 		return TimeUnit.MINUTES.toMillis(countRequiredForGain - currentCount);
 	}
-	
+
 	public static UUID getTrueUUID(UUID uuid) {
 		UUID cached = mainAccountCache.get(uuid);
 		if (cached != null) {
@@ -82,7 +94,7 @@ public class StreakManager {
 		}
 		long minID = bsPlayer.getId();
 		BSPlayer ogAcc = bsPlayer;
-		for(BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
+		for (BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
 			if (alt.getId() < minID) {
 				minID = alt.getId();
 				ogAcc = alt;
@@ -107,16 +119,22 @@ public class StreakManager {
 		streak <<= daysPassed;
 		// add new day
 		streak |= 1;
-		// cap maximum
+		// cap maximum with a bit string containing maxiumStreak many 1 at the end and only 0 otherwise
 		streak &= ~((~0) << maximumStreak);
+		EssenceGluePlugin.instance().getLogger()
+				.info(String.format("Streak for %s was incremented, now %d (raw: %d), passed: %d", player.toString(),
+						Integer.bitCount(streak), streak, daysPassed));
 		playerStreaks.setValue(player, streak);
 		lastPlayerUpdate.setValue(player, now);
 	}
 
-	public int getCurrentStreak(UUID uuid) {
+	public int getCurrentStreak(UUID uuid, boolean isMain) {
+		if (!isMain) {
+			uuid = getTrueUUID(uuid);
+		}
 		return Integer.bitCount(playerStreaks.getValue(uuid));
 	}
-	
+
 	public void setStreakRaw(int streak, long timeStamp, UUID player) {
 		playerStreaks.setValue(player, streak);
 		lastPlayerUpdate.setValue(player, timeStamp);

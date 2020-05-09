@@ -21,6 +21,8 @@ public class EssenceConfigManager extends CoreConfigManager {
 	private ItemMap loginReward;
 	private ItemMap votingReward;
 	private Map<String, VotingSite> votingCooldowns;
+	private boolean giveRewardToPearled;
+	private boolean multiplyPearlCost;
 
 	public EssenceConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -53,6 +55,8 @@ public class EssenceConfigManager extends CoreConfigManager {
 				}
 			}
 		}
+		giveRewardToPearled = config.getBoolean("give_reward_to_pearled", false);
+		multiplyPearlCost = config.getBoolean("multiply_pearl_cost", true);
 		return true;
 	}
 
@@ -62,6 +66,14 @@ public class EssenceConfigManager extends CoreConfigManager {
 	
 	public Map<String,VotingSite> getVotingCooldowns() {
 		return votingCooldowns;
+	}
+	
+	public boolean giveRewardToPearled() {
+		return giveRewardToPearled;
+	}
+	
+	public boolean multiplyPearlCost() {
+		return multiplyPearlCost;
 	}
 
 	public ItemMap getVotingReward() {

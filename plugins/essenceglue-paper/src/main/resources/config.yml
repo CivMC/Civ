@@ -21,6 +21,9 @@ voting_reward:
      amount: 1
      lore:
       - Activity reward used to fuel pearls
+      
+give_reward_to_pearled: false
+multiply_pearl_cost: true
 
 
 # Database connection details, should you want to have a database connection.

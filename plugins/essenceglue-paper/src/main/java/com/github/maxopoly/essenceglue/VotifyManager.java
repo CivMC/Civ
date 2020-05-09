@@ -55,7 +55,7 @@ public class VotifyManager implements Listener {
 		long lastVoted = perSiteSettings.get(vote.getServiceName()).getValue(uuid);
 		long timePassed = System.currentTimeMillis() - lastVoted;
 		long coolDown = site.getVotingCooldown();
-		if (lastVoted < coolDown) {
+		if (timePassed < coolDown) {
 			long remaining = coolDown - timePassed;
 			player.sendMessage(
 					ChatColor.RED + "You already voted on this site today, you can receive rewards for it again in "
