@@ -14,9 +14,7 @@ public class SingleBlockAPIView <T extends LocationTrackable> extends APIView {
 	SingleBlockAPIView(JavaPlugin plugin, short pluginID, GlobalLocationTracker<T> tracker) {
 		super(plugin, pluginID);
 		this.tracker = tracker;
-		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-			tracker.initFromDB();
-		});
+		Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, tracker::initFromDB);
 	}
 	
 	public T get(Location loc) {

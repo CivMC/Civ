@@ -11,17 +11,20 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 
 	private Map<Location, T> tracked;
 	private GlobalTrackableDAO<T> dao;
+	private Map<Location, T> deleted;
 
 	public GlobalLocationTracker(GlobalTrackableDAO<T> dao) {
 		this.tracked = new HashMap<>();
 		this.dao = dao;
+		this.deleted = new HashMap<>();
 	}
 	
-	public void initFromDB() {
+	public synchronized void initFromDB() {
 		dao.loadAll(this::put);
 	}
 
-	public void persist() {
+	public synchronized void persist() {
+		deleted.values().forEach(dao::delete);
 		for (T t : tracked.values()) {
 			switch (t.getCacheState()) {
 			case DELETED:
@@ -41,19 +44,23 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 		}
 	}
 
-	public T get(Location loc) {
+	public synchronized T get(Location loc) {
 		return tracked.get(loc);
 	}
 
-	public void put(T trackable) {
+	public synchronized void put(T trackable) {
 		tracked.put(trackable.getLocation(), trackable);
 	}
 
-	public T remove(Location loc) {
-		return tracked.remove(loc);
+	public synchronized T remove(Location loc) {
+		T removed = tracked.remove(loc);
+		if (removed != null && removed.getCacheState() != CacheState.NEW) {
+			deleted.put(loc, removed);
+		}
+		return removed;
 	}
 
-	public T remove(T trackable) {
+	public synchronized T remove(T trackable) {
 		return remove(trackable.getLocation());
 	}
 }

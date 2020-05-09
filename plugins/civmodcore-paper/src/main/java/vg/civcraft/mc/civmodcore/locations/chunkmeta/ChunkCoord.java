@@ -63,27 +63,40 @@ public class ChunkCoord extends XZWCoord {
 	}
 
 	/**
-	 * Writes all data held by this instance to the datavase
+	 * Writes all data held by this instance to the database
 	 *
-	 * @pa boolean isFullyLoaded() { return isFullyLoaded; }ram worldID ID of the
-	 *     world this instance is in
 	 */
 	void fullyPersist() {
 		for (ChunkMeta<?> chunkMeta : chunkMetas.values()) {
-			switch (chunkMeta.getCacheState()) {
-			case NORMAL:
-				break;
-			case MODIFIED:
-				chunkMeta.update();
-				break;
-			case NEW:
-				chunkMeta.insert();
-				break;
-			case DELETED:
-				chunkMeta.delete();
-			}
-			chunkMeta.setCacheState(CacheState.NORMAL);
+			persistChunkMeta(chunkMeta);
 		}
+	}
+	
+	/**
+	 * Writes all data held by this instance for one specific plugin to the database
+	 * @param id Internal id of the plugin to save data for
+	 */
+	void persistPlugin(short id) {
+		ChunkMeta<?> chunkMeta = chunkMetas.get(id);
+		if (chunkMeta != null) {
+			persistChunkMeta(chunkMeta);
+		}
+	}
+	
+	private static void persistChunkMeta(ChunkMeta<?> chunkMeta) {
+		switch (chunkMeta.getCacheState()) {
+		case NORMAL:
+			break;
+		case MODIFIED:
+			chunkMeta.update();
+			break;
+		case NEW:
+			chunkMeta.insert();
+			break;
+		case DELETED:
+			chunkMeta.delete();
+		}
+		chunkMeta.setCacheState(CacheState.NORMAL);
 	}
 
 	/**

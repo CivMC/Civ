@@ -1,14 +1,7 @@
 package vg.civcraft.mc.civmodcore.itemHandling;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
-import java.util.logging.Logger;
-
+import net.minecraft.server.v1_14_R1.NBTTagCompound;
+import net.minecraft.server.v1_14_R1.NBTTagList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -17,10 +10,11 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagList;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.logging.Logger;
 
 /**
  * Allows the storage and comparison of itemstacks while ignoring their maximum
@@ -516,7 +510,7 @@ public class ItemMap {
 		for (Entry<ItemStack, Integer> entry : getEntrySet()) {
 			int amountToRemove = entry.getValue();
 			ItemStack is = entry.getKey();
-			for (ItemStack inventoryStack : i.getContents()) {
+			for (ItemStack inventoryStack : i.getStorageContents()) {
 				if (inventoryStack == null) {
 					continue;
 				}
@@ -605,7 +599,7 @@ public class ItemMap {
 	 * @return Cloned ItemStack with amount set to amt and NBT set to map.
 	 */
 	public static ItemStack enrichWithNBT(ItemStack is, int amt, Map<String, Object> map) {
-		log.info("Received request to enrich " + is.toString());
+		log.fine("Received request to enrich " + is.toString());
 		ItemStack copy = is.clone();
 		amt = (amt < 1 ? 1 : amt > is.getMaxStackSize() ? is.getMaxStackSize() : amt);
 		copy.setAmount(amt);

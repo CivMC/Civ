@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.playersettings.impl;
 
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -9,6 +10,10 @@ public class LongSetting extends PlayerSetting<Long> {
 
 	public LongSetting(JavaPlugin owningPlugin, Long defaultValue, String name, String identifier, ItemStack gui, String description) {
 		super(owningPlugin, defaultValue, name, identifier, gui, description, true);
+	}
+	
+	public LongSetting(JavaPlugin owningPlugin, Long defaultValue, String name, String identifier) {
+		super(owningPlugin, defaultValue, name, identifier, new ItemStack(Material.STONE), null, false);
 	}
 
 	@Override

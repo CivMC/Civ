@@ -73,7 +73,7 @@ public class CivScoreBoard {
 		currentScoreText.put(p.getUniqueId(), newText);
 	}
 
-	private void internalUpdate(Player p, String oldText, String newText) {
+	private static void internalUpdate(Player p, String oldText, String newText) {
 		if (oldText != null) {
 			p.getScoreboard().resetScores(oldText);
 		} else {
@@ -116,7 +116,7 @@ public class CivScoreBoard {
 		currentScoreText.remove(p.getUniqueId());
 	}
 
-	private Objective getObjective(Player p) {
+	private static Objective getObjective(Player p) {
 		Scoreboard scb = p.getScoreboard();
 		Objective objective = scb.getObjective(TITLE);
 		if (objective == null) {

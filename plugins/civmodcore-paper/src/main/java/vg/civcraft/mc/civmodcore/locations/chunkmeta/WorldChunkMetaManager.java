@@ -81,6 +81,16 @@ public class WorldChunkMetaManager {
 			}
 		}
 	}
+	
+	void flushPluginData(short pluginID) {
+		synchronized (metas) {
+			for (ChunkCoord coord : metas.keySet()) {
+				synchronized (coord) {
+					coord.persistPlugin(pluginID);
+				}
+			}
+		}
+	}
 
 	/**
 	 * Retrieves or generates a new ChunkCoord instance. ChunkCoord are each

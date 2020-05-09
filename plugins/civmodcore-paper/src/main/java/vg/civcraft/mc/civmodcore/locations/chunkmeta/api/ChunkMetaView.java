@@ -70,11 +70,7 @@ public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
 			// already shut down
 			return;
 		}
-		GlobalChunkMetaManager globalTemp = globalManager;
-		globalManager = null;
-		globalTemp.flushAll();
-		ChunkMetaViewTracker.getInstance().remove(pluginID);
-		ChunkMetaAPI.removePlugin(plugin);
+		globalManager.flushPlugin(this.pluginID);
 	}
 
 	/**

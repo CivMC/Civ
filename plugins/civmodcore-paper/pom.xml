@@ -6,6 +6,8 @@
 	<groupId>vg.civcraft.mc.civmodcore</groupId>
 	<artifactId>CivModCore</artifactId>
 	<version>1.7.8</version>
+	<name>CivModCore</name>
+	<url>https://github.com/Civclassic/CivModCore/</url>
 
 	<properties>
 		<java.compile.version>1.8</java.compile.version>
@@ -121,9 +123,9 @@
 			<version>0.5.0-SNAPSHOT</version>
 		</dependency>
 		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations</artifactId>
-			<version>19.0.0</version>
+			<groupId>com.google.code.findbugs</groupId>
+			<artifactId>jsr305</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 		<!-- For Testing -->
 		<dependency>

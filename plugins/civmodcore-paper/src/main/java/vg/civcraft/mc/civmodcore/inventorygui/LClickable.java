@@ -2,8 +2,11 @@ package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.function.Consumer;
 
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 /**
  * Convience class for lambda support in clickables. Unfortunately java doesn't
@@ -14,6 +17,15 @@ import org.bukkit.inventory.ItemStack;
 public class LClickable extends Clickable {
 
 	private Consumer<Player> clickFunction;
+	
+	public LClickable(Material mat, String name, Consumer<Player> clickFunction) {
+		this(mat, clickFunction);
+		ItemAPI.setDisplayName(this.item, name);
+	}
+	
+	public LClickable(Material mat, Consumer<Player> clickFunction) {
+		this(new ItemStack(mat), clickFunction);
+	}
 	
 	public LClickable(ItemStack item, Consumer<Player> clickFunction) {
 		super(item);
