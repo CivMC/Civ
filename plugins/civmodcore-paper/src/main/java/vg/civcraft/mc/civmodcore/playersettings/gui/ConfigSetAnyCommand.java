@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.playersettings.gui;
 
 import java.util.Arrays;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -11,10 +12,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 
+import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
-public class ConfigAnyCommand extends StandaloneCommand {
+
+@CivCommand(id = "configsetany")
+public class ConfigSetAnyCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
@@ -42,7 +46,7 @@ public class ConfigAnyCommand extends StandaloneCommand {
 		return true;
 	}
 	
-	private UUID resolveName(String name) {
+	public static UUID resolveName(String name) {
 		try {
 			return UUID.fromString(name);
 		}
