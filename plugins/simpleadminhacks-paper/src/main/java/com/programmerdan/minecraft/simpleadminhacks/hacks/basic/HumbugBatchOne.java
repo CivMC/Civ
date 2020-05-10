@@ -15,6 +15,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EnderSignal;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -26,6 +27,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -80,6 +82,9 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean preventPearlGlitching;
+	
+	@AutoLoad
+	private boolean preventUsingEyeOfEnder;
 
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
@@ -300,6 +305,16 @@ public class HumbugBatchOne extends BasicHack {
 			if (!bypass) {
 				event.setCancelled(true);
 			}
+		}
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void throwEyeOfEnder(ProjectileLaunchEvent e) {
+		if (!preventUsingEyeOfEnder) {
+			return;
+		}
+		if (e.getEntity() instanceof EnderSignal) {
+			e.setCancelled(true);
 		}
 	}
 
