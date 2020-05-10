@@ -59,7 +59,7 @@ public class CompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
 			ItemMap im = new ItemMap(i);
@@ -78,7 +78,7 @@ public class CompactingRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
-
+		return true;
 	}
 
 	@Override

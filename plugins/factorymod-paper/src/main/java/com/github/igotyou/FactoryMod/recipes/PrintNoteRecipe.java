@@ -64,7 +64,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 	}	
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 
 		ItemStack printingPlateStack = getPrintingPlateItemStack(i, getPrintingPlate());
@@ -87,6 +87,7 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		}
 
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	private BookInfo getBookInfo(ItemStack printingPlateStack) {

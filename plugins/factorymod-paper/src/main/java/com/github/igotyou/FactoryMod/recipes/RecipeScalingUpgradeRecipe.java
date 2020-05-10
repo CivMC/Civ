@@ -27,10 +27,10 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (toUpgrade == null || !fccf.getRecipes().contains(toUpgrade)) {
-			return;
+			return false;
 		}
 		ItemMap toRemove = input.clone();
 		if (toRemove.isContainedIn(i)) {
@@ -50,6 +50,7 @@ public class RecipeScalingUpgradeRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	public void setUpgradedRecipe(ProductionRecipe rec) {

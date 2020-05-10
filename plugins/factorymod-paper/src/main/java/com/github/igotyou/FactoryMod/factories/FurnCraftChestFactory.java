@@ -363,8 +363,13 @@ public class FurnCraftChestFactory extends Factory {
 						deactivate();
 						return;
 					} else {
-						currentRecipe.applyEffect(getInventory(), this);
-						runCount.put(currentRecipe, runCount.get(currentRecipe) + 1);
+						if (currentRecipe.applyEffect(getInventory(), this)) {
+							runCount.put(currentRecipe, runCount.get(currentRecipe) + 1);
+						} else {
+							sendActivatorMessage(ChatColor.RED + currentRecipe.getName() + " in " + name + " deactivated because it ran out of storage space");
+							deactivate();
+							return;
+						}
 					}
 					currentProductionTimer = 0;
 					if (currentRecipe instanceof RepairRecipe && rm.atFullHealth()) {

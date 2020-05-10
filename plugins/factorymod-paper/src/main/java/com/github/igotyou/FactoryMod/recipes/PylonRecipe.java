@@ -32,19 +32,20 @@ public class PylonRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		if (!input.isContainedIn(i)) {
-			return;
+			return false;
 		}
 		ItemMap actualOutput = getCurrentOutput();
 		if (!actualOutput.fitsIn(i)) {
-			return;
+			return false;
 		}
 		if (input.removeSafelyFrom(i)) {
 			for (ItemStack is : actualOutput.getItemStackRepresentation()) {
 				i.addItem(is);
 			}
 		}
+		return true;
 	}
 
 	public static void setGlobalLimit(int limit) {

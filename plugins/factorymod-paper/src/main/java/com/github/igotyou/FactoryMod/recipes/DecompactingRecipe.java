@@ -45,7 +45,7 @@ public class DecompactingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
 			for (ItemStack is : i.getContents()) {
@@ -65,6 +65,8 @@ public class DecompactingRecipe extends InputRecipe {
 									}
 								}
 							}
+						} else { // does not fit in chest
+							return false;
 						}
 						break;
 					}
@@ -72,6 +74,7 @@ public class DecompactingRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	@Override

@@ -48,7 +48,7 @@ public class RandomOutputRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd = null;
@@ -65,7 +65,7 @@ public class RandomOutputRecipe extends InputRecipe {
 		}
 		if (toAdd == null) {
 			FactoryMod.getInstance().warning("Unable to find a random item to output. Recipe execution was cancelled," + fccf.getLogData());
-			return;
+			return false;
 		}
 		if (toRemove.isContainedIn(i)) {
 			if (toRemove.removeSafelyFrom(i)) {
@@ -75,6 +75,7 @@ public class RandomOutputRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	public Map<ItemMap, Double> getOutputs() {

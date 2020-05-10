@@ -116,7 +116,7 @@ public class ProductionRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		ItemMap toRemove = input.clone();
 		ItemMap toAdd;
@@ -141,6 +141,7 @@ public class ProductionRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 	
 	@Override
