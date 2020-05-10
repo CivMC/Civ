@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
@@ -536,5 +537,17 @@ final class CoreExilePearl implements ExilePearl {
 		if(storageEnabled) {
 			storage.updateReturnLocation(this);
 		}
+	}
+
+
+	@Override
+	public double getLongTimeMultiplier() {
+		int timer = pearlApi.getPearlConfig().pearlCostMultiplicationTimerDays();
+		if (timer <= 0) {
+			return 1.0;
+		}
+		long sinceLastOnline = System.currentTimeMillis() - getLastOnline().getTime();
+		double days = TimeUnit.MILLISECONDS.toDays(sinceLastOnline);
+		return Math.max(1.0, days / timer);
 	}
 }

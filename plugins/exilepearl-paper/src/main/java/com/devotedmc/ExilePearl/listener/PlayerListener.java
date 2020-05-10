@@ -958,6 +958,7 @@ public class PlayerListener implements Listener, Configurable {
 		// Get the total possible repair amount. This doesn't need to be limited
 		// because the lore generator will cap at 100%
 		int repairAmount = invItems.getAmount(repairItem.getStack()) * repairItem.getRepairAmount();
+		repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
 
 		// Generate a new item with the updated health value as the crafting result
 		ItemStack resultStack = pearl.createItemStack();
@@ -997,6 +998,7 @@ public class PlayerListener implements Listener, Configurable {
 			int repairMatsAvailable = invItems.getAmount(repairItem.getStack());
 			int repairMatsToUse = Math.min((int)Math.ceil((maxHealth - pearl.getHealth()) / (double)repairPerItem), repairMatsAvailable);
 			int repairAmount = repairMatsToUse * repairPerItem;
+			repairAmount = (int) Math.ceil(repairAmount / pearl.getLongTimeMultiplier());
 
 			// Changing the value of the crafting items results in a dupe glitch so any remaining
 			// materials need to be placed back into the player's inventory.

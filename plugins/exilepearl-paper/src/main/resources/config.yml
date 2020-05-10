@@ -85,7 +85,9 @@
 #
 # pearls.allow_summoning
 # - Whether or not summoning is allowed
-# 
+#
+# pearls.cost_multiplier_days
+# - Time frame after which the cost for repairing pearls is increased, set to 0 to disable
 # 
 # * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * #
 #                              HELP ITEM SETTINGS                             #
@@ -286,6 +288,7 @@ pearls:
   allow_summoning: true
   prison_world: world_the_end
   main_world: world
+  cost_multiplier_days: 365
 help_item:
   enabled: true
   item_name: "You've been pearled!"

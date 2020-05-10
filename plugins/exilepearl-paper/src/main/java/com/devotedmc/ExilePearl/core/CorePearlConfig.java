@@ -526,4 +526,9 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
     public String altBanMessage() {
         return doc.getString("general.max_pearled_message", "You have too many imprisoned alts");
     }
+
+	@Override
+	public int pearlCostMultiplicationTimerDays() {
+		return doc.getInteger("pearls.cost_multiplier_days", 0);
+	}
 }

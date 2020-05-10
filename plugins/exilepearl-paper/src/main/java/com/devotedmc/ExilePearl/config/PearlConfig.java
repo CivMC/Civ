@@ -187,4 +187,6 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	 * @return Message displayed when attempting to login when having to many pearled alts
 	 */
 	String altBanMessage();
+	
+	int pearlCostMultiplicationTimerDays();
 }

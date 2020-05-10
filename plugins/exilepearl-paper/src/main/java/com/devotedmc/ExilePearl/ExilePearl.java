@@ -245,4 +245,11 @@ public interface ExilePearl {
 	 * @param loc The location
 	 */
 	void setReturnLocation(Location loc);
+	
+	/**
+	 * Gets the multiplier to apply to the amount of repair materials needed to repair the pearl 
+	 * based on how long the player has been imprisoned
+	 * @return Repair cost multiplier
+	 */
+	double getLongTimeMultiplier();
 }
