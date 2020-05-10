@@ -52,8 +52,10 @@ public class VotifyManager implements Listener {
 			return;
 		}
 		UUID uuid = StreakManager.getTrueUUID(player.getUniqueId());
-		long lastVoted = perSiteSettings.get(vote.getServiceName()).getValue(uuid);
-		long timePassed = System.currentTimeMillis() - lastVoted;
+		LongSetting serverCooldown = perSiteSettings.get(vote.getServiceName());
+		long lastVoted = serverCooldown.getValue(uuid);
+		long now = System.currentTimeMillis();
+		long timePassed = now - lastVoted;
 		long coolDown = site.getVotingCooldown();
 		if (timePassed < coolDown) {
 			long remaining = coolDown - timePassed;
@@ -62,6 +64,7 @@ public class VotifyManager implements Listener {
 							+ ChatColor.AQUA + TextUtil.formatDuration(remaining));
 			return;
 		}
+		serverCooldown.setValue(uuid, now);
 		rewardMan.giveVoteReward(player, site.getName());
 	}
 	
