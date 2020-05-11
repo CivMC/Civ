@@ -50,7 +50,7 @@ public class PlantListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
 		Material newType = event.getNewState().getType();
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getGrowthConfigStraight(newType);
+		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(newType);
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getBlock());
 		}
@@ -69,7 +69,7 @@ public class PlantListener implements Listener {
 		}
 		// handle trees etc.
 		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getLocation().getBlock());
+				.getPlantGrowthConfigFallback(event.getLocation().getBlock());
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getLocation().getBlock());
 		}
@@ -83,7 +83,7 @@ public class PlantListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
 		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getSource());
+				.getPlantGrowthConfigFallback(event.getSource());
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getSource());
 		}

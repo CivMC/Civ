@@ -49,7 +49,7 @@ public class PlayerListener implements Listener {
 		if (RBUtils.isFruit(block.getType())) {
 			return;
 		}
-		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(block);
+		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfigFallback(block);
 		if (plantConfig == null) {
 			return;
 		}
@@ -92,7 +92,7 @@ public class PlayerListener implements Listener {
 		if (material == null) {
 			return;
 		}
-		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigStraight(material);
+		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigFallback(material);
 		if (plantConfig == null) {
 			event.getPlayer().sendMessage(
 					ChatColor.GOLD + "Growth behavior for " + material.toString() + " is entirely vanilla");

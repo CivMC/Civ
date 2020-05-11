@@ -46,6 +46,12 @@
 			<version>1.7.8</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sk89q.worldedit</groupId>
+			<artifactId>worldedit-bukkit</artifactId>
+			<version>7.1.0</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
 	<repositories>
@@ -56,6 +62,10 @@
 		<repository>
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+		</repository>
+				<repository>
+			<id>worldedit-repo</id>
+			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
 	</repositories>
 </project>

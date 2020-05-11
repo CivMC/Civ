@@ -1,6 +1,7 @@
 package com.untamedears.realisticbiomes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -12,7 +13,14 @@ import java.util.concurrent.TimeUnit;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
+import com.untamedears.realisticbiomes.growth.AgeableGrower;
+import com.untamedears.realisticbiomes.growth.BambooGrower;
+import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
+import com.untamedears.realisticbiomes.growth.FruitGrower;
+import com.untamedears.realisticbiomes.growth.IArtificialGrower;
+import com.untamedears.realisticbiomes.growth.TreeGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.ChanceBasedGrowthConfig;
@@ -116,12 +124,14 @@ public class RBConfigManager extends CoreConfigManager {
 				continue;
 			}
 			ConfigurationSection current = config.getConfigurationSection(key);
-			Material material;
-			try {
-				material = Material.valueOf(key.toUpperCase());
-			} catch (IllegalArgumentException e) {
-				logger.warning("Could not parse material at " + current.getCurrentPath() + ". Section was ignored");
+			if (!current.isItemStack("item")) {
+				logger.warning("Growth config " + key + " does not have an item specified, it was ignored");
 				continue;
+			}
+			ItemStack item = current.getItemStack("item");
+			List<Material> vanillaMats = parseMaterialList(current, "vanilla_materials");
+			if (vanillaMats == null) {
+				vanillaMats = Collections.emptyList();
 			}
 			Map<Material, Double> greenHouseRates = parseMaterialDoubleMap(current, "greenhouse_rates");
 			Map<Material, Double> soilBoniPerLevel = parseMaterialDoubleMap(current, "soil_boni");
@@ -165,21 +175,54 @@ public class RBConfigManager extends CoreConfigManager {
 			} else {
 				biomeGrowth = new ChanceBasedGrowthConfig(baseChance, biomeMultiplier);
 			}
+			short id = (short) current.getInt("id", 0);
+			if (id == 0) {
+				logger.warning("Need to specify a non 0 id for each plant type, missing at " + current.getCurrentPath());
+				continue;
+			}
 			int maximumSoilLayers = current.getInt("soil_max_layers", 0);
 			double maximumSoilBonus = current.getDouble("max_soil_bonus", 0);
 			boolean allowBoneMeal = current.getBoolean("allow_bonemeal", false);
 			boolean needsLight = current.getBoolean("needs_sun_light", true);
-			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, material, greenHouseRates, soilBoniPerLevel,
-					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight);
+			IArtificialGrower grower = parseGrower(current.getConfigurationSection("grower"));
+			if (grower == null) {
+				logger.warning("Failed to parse a grower at " + current.getCurrentPath() + ", skipped it");
+				continue;
+			}
+			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, id,item, greenHouseRates, soilBoniPerLevel,
+					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight, grower, vanillaMats);
 			result.add(growthConfig);
-			logger.info("Successfully parsed growth config for " + material.toString() + " as " + biomeGrowth.toString()
-					+ " with green house rates " + greenHouseRates.toString() + ", with soil boni "
-					+ soilBoniPerLevel.toString() + ", maximum soil layers: " + maximumSoilLayers
-					+ ", maximum soil bonus: " + maximumSoilBonus + ", bonemeal: " + allowBoneMeal + ", needs light: "
-					+ needsLight);
-
 		}
 		return result;
+	}
+	
+	private IArtificialGrower parseGrower(ConfigurationSection section) {
+		if (section == null) {
+			return null;
+		}
+		if (!section.isString("type")) {
+			logger.warning("No grower type specified at " + section.getCurrentPath());
+			return null;
+		}
+		switch (section.getString("type").toLowerCase()) {
+		case "bamboo":
+			int maxHeight = section.getInt("max_height", 12);
+			return new BambooGrower(maxHeight);
+		case "column":
+			int maxHeight2 = section.getInt("max_height", 3);
+			return new ColumnPlantGrower(maxHeight2);
+		case "fruit":
+			return new FruitGrower();
+		case "ageable":
+			int maxStage = section.getInt("max_stage", 7);
+			int increment = section.getInt("increment", 1);
+			return new AgeableGrower(maxStage, increment);
+		case "tree":
+			return new TreeGrower();
+		default:
+			logger.warning(section.getString("type") + " is not a valid grower type");
+			return null;
+		}
 	}
 
 }

@@ -14,14 +14,20 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
 	private long creationTime;
 	private long nextUpdate;
+	private PlantGrowthConfig growthConfig;
 
-	public Plant(Location location) {
-		this(System.currentTimeMillis(), location, true);
+	public Plant(Location location, PlantGrowthConfig plantType) {
+		this(System.currentTimeMillis(), location, true, plantType);
 	}
 
-	public Plant(long creationTime, Location location, boolean isNew) {
+	public Plant(long creationTime, Location location, boolean isNew, PlantGrowthConfig growthConfig) {
 		super(location, isNew);
 		this.creationTime = creationTime;
+		this.growthConfig = growthConfig;
+	}
+	
+	public PlantGrowthConfig getGrowthConfig() {
+		return growthConfig;
 	}
 
 	@Override
@@ -67,7 +73,7 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	public void updateState() {
 		Block block = location.getBlock();
 		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
-				.getPlantGrowthConfig(block);
+				.getPlantGrowthConfigFallback(block);
 		if (growthConfig != null) {
 			nextUpdate = growthConfig.updatePlant(this);
 		}

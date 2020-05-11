@@ -22,7 +22,7 @@ public class PlantLogicManager {
 		if (plantManager == null) {
 			return;
 		}
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
+		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfigFallback(block);
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
@@ -49,18 +49,17 @@ public class PlantLogicManager {
 		if (plantManager == null) {
 			return;
 		}
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
+		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfigFallback(block);
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
-		Plant plant = new Plant(block.getLocation());
+		Plant plant = new Plant(block.getLocation(), growthConfig);
 		plantManager.putPlant(plant);
 		initGrowthTime(plant);
 	}
 
 	public void initGrowthTime(Plant plant) {
-		Block block = plant.getLocation().getBlock();
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
+		PlantGrowthConfig growthConfig = plant.getGrowthConfig();
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
