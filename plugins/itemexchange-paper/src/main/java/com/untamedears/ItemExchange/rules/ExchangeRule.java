@@ -730,6 +730,9 @@ public final class ExchangeRule extends ExchangeData {
 				requiredAmount = 0;
 			}
 		}
+		if (requiredAmount > 0) {
+			return new ItemStack[0];
+		}
 		return stock.toArray(new ItemStack[0]);
 	}
 
