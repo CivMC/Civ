@@ -224,7 +224,7 @@ public class LoggableActionListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		Set <Snitch> covering = new HashSet<>(snitchManager.getSnitchesCovering(event.getPlayer().getLocation(), false));
+		Set <Snitch> covering = new HashSet<>(snitchManager.getSnitchesCovering(event.getPlayer().getLocation()));
 		handlePlayerAction(player, s -> new LoginAction(System.currentTimeMillis(), s, player.getUniqueId()));
 		insideFields.put(event.getPlayer().getUniqueId(),covering);
 	}
@@ -258,7 +258,7 @@ public class LoggableActionListener implements Listener {
 		if (isPlayerSnitchImmune(player)) {
 			return;
 		}
-		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(player.getLocation(), false);
+		Collection<Snitch> snitches = snitchManager.getSnitchesCovering(player.getLocation());
 		for (Snitch snitch : snitches) {
 			if (!snitch.hasPermission(player, JukeAlertPermissionHandler.getSnitchImmune())) {
 				snitch.processAction(actionCreator.apply(snitch));
@@ -274,7 +274,7 @@ public class LoggableActionListener implements Listener {
 			//CombatTagPlus
 			return;
 		}
-		Collection<Snitch> insideNow = snitchManager.getSnitchesCovering(location, false);
+		Collection<Snitch> insideNow = snitchManager.getSnitchesCovering(location);
 		Set<Snitch> previouslyIn = insideFields.computeIfAbsent(player.getUniqueId(), s -> new HashSet<>());
 		insideNow.stream().filter(s -> !previouslyIn.contains(s)).forEach(s -> {
 			s.processAction(new EnterFieldAction(System.currentTimeMillis(), s, player.getUniqueId()));

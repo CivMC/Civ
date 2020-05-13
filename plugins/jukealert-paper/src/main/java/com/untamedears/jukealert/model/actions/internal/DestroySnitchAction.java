@@ -8,7 +8,7 @@ import com.untamedears.jukealert.model.actions.abstr.PlayerAction;
 public class DestroySnitchAction extends PlayerAction {
 	
 	public enum Cause {
-		PLAYER, CULL;
+		PLAYER, CULL, CLEANUP;
 	}
 	
 	public static final String ID = "DESTROY_SNITCH";

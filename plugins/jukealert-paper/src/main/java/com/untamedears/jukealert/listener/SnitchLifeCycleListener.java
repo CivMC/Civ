@@ -20,7 +20,6 @@ import com.untamedears.jukealert.SnitchManager;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.SnitchFactoryType;
 import com.untamedears.jukealert.model.SnitchTypeManager;
-import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
 import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 
@@ -43,7 +42,7 @@ public class SnitchLifeCycleListener implements Listener {
 		this.pendingSnitches = new HashMap<>();
 	}
 
-	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
 		SnitchFactoryType type = configManager.getConfig(inHand);
@@ -105,10 +104,10 @@ public class SnitchLifeCycleListener implements Listener {
 	private void reinforcementGone(Reinforcement rein, Player source) {
 		Snitch snitch = snitchManager.getSnitchAt(rein.getLocation());
 		if (snitch != null) {
-			snitchManager.removeSnitch(snitch);
 			UUID uuid = source != null ? source.getUniqueId() : null;
-			snitch.processAction(new DestroySnitchAction(System.currentTimeMillis(), snitch, uuid, Cause.PLAYER));
-			logger.info(String.format("Destroyed snitch of type %s at %s", snitch.getType().getName(),
+			String name =  source != null ? source.getName() : "ENVIRONMENT";
+			snitch.destroy(uuid, Cause.PLAYER);
+			logger.info(String.format("%s destroyed snitch of type %s at %s", name, snitch.getType().getName(),
 					snitch.getLocation().toString()));
 		}
 	}

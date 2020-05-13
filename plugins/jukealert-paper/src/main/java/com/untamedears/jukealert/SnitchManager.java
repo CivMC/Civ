@@ -1,11 +1,11 @@
 package com.untamedears.jukealert;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
@@ -76,21 +76,19 @@ public class SnitchManager {
 		}
 	}
 
-	public Set<Snitch> getSnitchesCovering(Location location, boolean debug) {
+	public Set<Snitch> getSnitchesCovering(Location location) {
 		Set <SnitchQTEntry> entries = getQuadTreeFor(location).find(location.getBlockX(), location.getBlockZ(), true);
-		if (debug) {
-			JukeAlert.getInstance().getLogger().info(entries.size() + " initial retrieve for loc " + entries.size());
-
-		}
 		Set<Snitch> result = new HashSet<>();
 		for(SnitchQTEntry qt : entries) {
 			if (qt.getSnitch().getFieldManager().isInside(location)) {
 				result.add(qt.getSnitch());
 			}
-			else {
-				if (debug) {
-					JukeAlert.getInstance().getLogger().info(qt.getSnitch()+ " not inside after check");
-				}
+		}
+		Iterator<Snitch> iter = result.iterator();
+		while (iter.hasNext()) {
+			Snitch s = iter.next();
+			if (!s.checkPhysicalIntegrity()) {
+				iter.remove();
 			}
 		}
  		return result;

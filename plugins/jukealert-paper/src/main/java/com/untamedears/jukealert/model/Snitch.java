@@ -7,12 +7,18 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
+import com.untamedears.jukealert.JukeAlert;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
+import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction;
+import com.untamedears.jukealert.model.actions.internal.DestroySnitchAction.Cause;
 import com.untamedears.jukealert.model.appender.AbstractSnitchAppender;
 import com.untamedears.jukealert.model.field.FieldManager;
 
+import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -195,6 +201,38 @@ public class Snitch extends LocationTrackable {
 	 */
 	public void persistAppenders() {
 		applyToAppenders(AbstractSnitchAppender::persist);
+	}
+	
+	/**
+	 * Checks whether both the block and the reinforcement of the snitch still exist and deletes it if not
+	 */
+	public boolean checkPhysicalIntegrity() {
+		Reinforcement rein = ReinforcementLogic.getReinforcementAt(getLocation());
+		if (rein == null) {
+			//no reinforcement at all
+			destroy(null, Cause.CLEANUP);
+			return false;
+		}
+		if (!rein.getGroup().getGroupIds().contains(this.groupID)) {
+			//different group
+			destroy(null, Cause.CLEANUP);
+			return false;
+		}
+		Block block = getLocation().getBlock();
+		if (block.getType() != this.type.getItem().getType()) {
+			//block is no longer a snitch
+			destroy(null, Cause.CLEANUP);
+			return false;
+		}
+		return true;
+	}
+	
+	/**
+	 * Deletes the snitch
+	 */
+	public void destroy(UUID player, DestroySnitchAction.Cause cause) {
+		JukeAlert.getInstance().getSnitchManager().removeSnitch(this);
+		processAction(new DestroySnitchAction(System.currentTimeMillis(), this, player, Cause.CULL));
 	}
 
 	/**
