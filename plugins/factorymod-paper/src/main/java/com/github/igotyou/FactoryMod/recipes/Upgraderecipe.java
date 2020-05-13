@@ -30,7 +30,7 @@ public class Upgraderecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logAfterRecipeRun(i, fccf);
 		if (input.isContainedIn(i)) {
 			if (input.removeSafelyFrom(i)) {
@@ -42,6 +42,7 @@ public class Upgraderecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	@Override

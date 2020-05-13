@@ -71,7 +71,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, final FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, final FurnCraftChestFactory fccf) {
 		FactoryMod.getInstance().getManager().removeFactory(fccf);
 		for (Block b : fccf.getMultiBlockStructure().getRelevantBlocks()) {
 			b.setType(Material.AIR);
@@ -98,6 +98,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.CHEST));
 					}
 				}, 1L);
+		return true;
 	}
 
 	public double getFactor() {

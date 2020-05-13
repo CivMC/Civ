@@ -94,7 +94,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			i.removeItem(is);
@@ -116,6 +116,7 @@ public class RandomEnchantingRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	@Override

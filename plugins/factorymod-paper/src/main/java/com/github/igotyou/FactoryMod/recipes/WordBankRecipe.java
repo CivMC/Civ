@@ -47,10 +47,10 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
+	public boolean applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
 		ItemStack toApply = inventory.getItem(0);
 		if (!ItemAPI.isValidItem(toApply)) {
-			return;
+			return false;
 		}
 		ItemMap input = new ItemMap();
 		for (int i = 1; i < inventory.getSize(); i++) {
@@ -62,6 +62,7 @@ public class WordBankRecipe extends InputRecipe {
 			inventory.setItem(i, null);
 		}
 		ItemAPI.setDisplayName(toApply, getHash(input));
+		return true;
 	}
 
 	@Override

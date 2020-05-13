@@ -50,7 +50,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 
 		ItemStack printingPlateStack = getPrintingPlateItemStack(i, this.printingPlate);
@@ -66,6 +66,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 		}
 
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	protected ItemStack createBook(ItemStack printingPlateStack, int amount) {

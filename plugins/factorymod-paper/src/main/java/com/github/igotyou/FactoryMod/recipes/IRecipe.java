@@ -44,8 +44,9 @@ public interface IRecipe {
 	 *            Inventory which contains the materials to work with
 	 * @param f
 	 *            Factory which is run
+	 * @return true if the recipe could be run; false otherwise (e.g: not enough storage space)
 	 */
-	public void applyEffect(Inventory i, FurnCraftChestFactory f);
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory f);
 
 	/**
 	 * Each implementation of this class has to specify a unique identifier,

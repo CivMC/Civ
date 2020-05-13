@@ -17,7 +17,8 @@ public class DummyParsingRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+		return true;
 	}
 
 	@Override

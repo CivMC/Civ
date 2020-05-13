@@ -45,7 +45,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 
 		ItemStack book = getBook(i);
@@ -76,6 +76,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		}
 
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 
 	private ItemStack addTags(Inventory i, String serialNumber, ItemStack is) {

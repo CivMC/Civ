@@ -47,7 +47,7 @@ public class RepairRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		logBeforeRecipeRun(i, fccf);
 		if (enoughMaterialAvailable(i)) {
 			if (input.removeSafelyFrom(i)) {
@@ -60,6 +60,7 @@ public class RepairRecipe extends InputRecipe {
 			}
 		}
 		logAfterRecipeRun(i, fccf);
+		return true;
 	}
 	
 	@Override

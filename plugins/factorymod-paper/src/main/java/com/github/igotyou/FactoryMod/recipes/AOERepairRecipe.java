@@ -136,7 +136,7 @@ public class AOERepairRecipe extends InputRecipe {
 	}
 
 	@Override
-	public void applyEffect(Inventory i, FurnCraftChestFactory fccf) {
+	public boolean applyEffect(Inventory i, FurnCraftChestFactory fccf) {
 		Chest c = (Chest) i.getHolder();
 		Location loc = c.getLocation();
 		List<FurnCraftChestFactory> facs = getNearbyFactoriesSortedByDistance(loc);
@@ -174,6 +174,7 @@ public class AOERepairRecipe extends InputRecipe {
 				break;
 			}
 		}
+		return true;
 	}
 
 	@Override
