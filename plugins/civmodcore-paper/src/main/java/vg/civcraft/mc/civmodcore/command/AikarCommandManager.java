@@ -27,23 +27,33 @@ public abstract class AikarCommandManager {
     private final BukkitCommandManager manager;
 
     public AikarCommandManager(ACivMod plugin) {
-        this.plugin = plugin;
-        this.manager = new BukkitCommandManager(plugin);
-        registerCommands();
-        CommandCompletions<BukkitCommandCompletionContext> completions = this.manager.getCommandCompletions();
-        completions.registerAsyncCompletion("materials", context ->
-                Arrays.stream(Material.values()).
-                        map(Enum::name).
-                        filter((name) -> TextUtil.startsWith(name, context.getInput())).
-                        collect(Collectors.toCollection(ArrayList::new)));
-        completions.registerAsyncCompletion("itemMaterials", context ->
-                Arrays.stream(Material.values()).
-                        filter(MaterialAPI::isValidItemMaterial).
-                        map(Enum::name).
-                        filter((name) -> TextUtil.startsWith(name, context.getInput())).
-                        collect(Collectors.toCollection(ArrayList::new)));
-        registerCompletions(completions);
+    	this(plugin, true);
     }
+
+	public AikarCommandManager(ACivMod plugin, boolean autoRegister) {
+		this.plugin = plugin;
+		this.manager = new BukkitCommandManager(plugin);
+		if (autoRegister) {
+			register();
+		}
+	}
+
+    public final void register() {
+		registerCommands();
+		CommandCompletions<BukkitCommandCompletionContext> completions = this.manager.getCommandCompletions();
+		completions.registerAsyncCompletion("materials", context ->
+				Arrays.stream(Material.values()).
+						map(Enum::name).
+						filter((name) -> TextUtil.startsWith(name, context.getInput())).
+						collect(Collectors.toCollection(ArrayList::new)));
+		completions.registerAsyncCompletion("itemMaterials", context ->
+				Arrays.stream(Material.values()).
+						filter(MaterialAPI::isValidItemMaterial).
+						map(Enum::name).
+						filter((name) -> TextUtil.startsWith(name, context.getInput())).
+						collect(Collectors.toCollection(ArrayList::new)));
+		registerCompletions(completions);
+	}
 
     public abstract void registerCommands();
 
