@@ -243,17 +243,15 @@ public abstract class ACivMod extends JavaPlugin {
 				return (T) method.invoke(null);
 			}
 		}
-		catch (Exception ignored) {
-		}
+		catch (Exception ignored) { }
 		try {
 			Field field = clazz.getField("instance");
 			if (Modifier.isStatic(field.getModifiers()) && clazz.isAssignableFrom(field.getType())) {
 				return (T) field.get(null);
 			}
 		}
-		catch (Exception ignored) {
-		}
-		// Otherwise there's no instance of the plugin, or it's stored in an usual way
+		catch (Exception ignored) { }
+		// Otherwise there's no instance of the plugin, or it's stored in an unusual way
 		return null;
 	}
 
