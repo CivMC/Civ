@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
@@ -86,7 +87,12 @@ public final class PagedGUI {
 	 */
 	public boolean showGUI(Player player) {
 		Preconditions.checkArgument(player != null);
-		return player.openInventory(this.inventory.getInventory()) != null;
+		InventoryView view = player.openInventory(getInventory());
+		if (view == null) {
+			return false;
+		}
+		PagedGUIManager.GUIs.put(getInventory(), this);
+		return true;
 	}
 
 	/**
