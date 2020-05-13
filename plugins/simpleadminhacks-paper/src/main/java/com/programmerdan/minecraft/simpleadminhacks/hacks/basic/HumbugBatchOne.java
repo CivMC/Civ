@@ -1,21 +1,19 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
+import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
-import org.bukkit.World;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.EnderSignal;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -27,7 +25,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -37,14 +34,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
-
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -313,14 +309,13 @@ public class HumbugBatchOne extends BasicHack {
 		if (!preventUsingEyeOfEnder) {
 			return;
 		}
-		Player player = pie.getPlayer();
-		if ((pie.getAction().equals(Action.RIGHT_CLICK_AIR)) || (pie.getAction().equals(Action.RIGHT_CLICK_BLOCK))){
-			if (player.getInventory().getItemInMainHand().getType().equals(Material.ENDER_EYE) || player.getInventory().getItemInOffHand().getType().equals(Material.ENDER_EYE)){
-				pie.setCancelled(true);
-				player.sendMessage(ChatColor.RED + "Throwing Eyes of Ender is disabled.");
-			}
+		if (pie.getAction() != Action.RIGHT_CLICK_AIR && pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
 		}
-
+		if (pie.getItem() != null && pie.getItem().getType() == Material.ENDER_EYE) {
+			pie.setCancelled(true);
+			pie.getPlayer().sendMessage(ChatColor.RED + "Throwing Eyes of Ender is disabled.");
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
