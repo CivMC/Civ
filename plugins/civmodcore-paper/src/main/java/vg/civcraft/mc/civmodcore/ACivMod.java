@@ -64,6 +64,11 @@ public abstract class ACivMod extends JavaPlugin {
 		Bukkit.getScheduler().cancelTasks(this);
 	}
 
+	/**
+	 * Registers a listener class with this plugin.
+	 *
+	 * @param listener The listener class to register.
+	 */
 	protected void registerListener(Listener listener) {
 		if (listener == null) {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
@@ -71,19 +76,46 @@ public abstract class ACivMod extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(listener, this);
 	}
 
+	/**
+	 * Registers a serializable.
+	 *
+	 * @param <T> The type of the serializable.
+	 * @param serializable The serializable class.
+	 *
+	 * @apiNote This is a tracked single use registration. The given serializable will be de-registered when
+	 *     this plugin is disabled, thus you should call this within the plugin's onEnable() method.
+	 */
 	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
 		NBTSerialization.registerNBTSerializable(serializable);
 		this.serializableClasses.add(serializable);
 	}
 
+	/**
+	 * Determines whether this plugin is in debug mode.
+	 *
+	 * @return Returns true if this plguin is in debug mode.
+	 *
+	 * @apiNote This is determined by a config value.
+	 */
 	public boolean isDebugEnabled() {
 		return getConfig().getBoolean("debug", false);
 	}
 
+	/**
+	 * Generates a file instance based on a file within this plugin's data folder.
+	 *
+	 * @param path The path of the file relative to the data folder.
+	 * @return Returns a file instance of the generated path.
+	 */
 	public File getResourceFile(String path) {
 		return new File(getDataFolder(), path);
 	}
 
+	/**
+	 * Saves a default resource to the plugin's data folder if the file does not already exist.
+	 *
+	 * @param path The path to the default resource <i>AND</i> the data file.
+	 */
 	public void saveDefaultResource(String path) {
 		if (!getResourceFile(path).exists()) {
 			saveResource(path, false);
@@ -102,8 +134,7 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String label,
-									  String[] arguments) {
+	public List<String> onTabComplete(CommandSender sender, Command command, String label, String[] arguments) {
 		if (this.handle != null) {
 			return this.handle.complete(sender, command, arguments);
 		}
@@ -113,22 +144,50 @@ public abstract class ACivMod extends JavaPlugin {
 		return Collections.emptyList();
 	}
 
+	/**
+	 * Retrieves this plugin's legacy command handler, if it has one.
+	 *
+	 * @return Returns this plugin's legacy command handler, or null.
+	 */
+	@SuppressWarnings("deprecation")
 	public CommandHandler getCommandHandler() {
 		return this.handle;
 	}
 
-	protected void setCommandHandler(CommandHandler handle) {
-		this.handle = handle;
+	/**
+	 * Registers (or de-registers) a legacy command handler with this plugin.
+	 *
+	 * @param handler The legacy command handler to set. Null will cause de-registration.
+	 */
+	@SuppressWarnings("deprecation")
+	protected void setCommandHandler(CommandHandler handler) {
+		this.handle = handler;
 	}
 
+	/**
+	 * Retrieves this plugin's standalone command handler, if it has one.
+	 *
+	 * @return Returns this plugin's standalone command handler, or null.
+	 *
+	 * @apiNote You can use {@code this.useNewCommandHandler = false;} within your plugin's onEnable() method
+	 *     prior to the super call to disable the automatic generation of a standalone command handler.
+	 */
 	public StandaloneCommandHandler getStandaloneCommandHandler() {
 		return this.newCommandHandler;
 	}
 
+	/**
+	 * Registers (or de-registers) a standalone command handler with this plugin.
+	 *
+	 * @param handler The standalone command handler to set. Null will cause de-registration.
+	 */
 	protected void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
 		this.newCommandHandler = handler;
 	}
 
+	/**
+	 * Disables this plugin.
+	 */
 	public void disable() {
 		getPluginLoader().disablePlugin(this);
 	}
