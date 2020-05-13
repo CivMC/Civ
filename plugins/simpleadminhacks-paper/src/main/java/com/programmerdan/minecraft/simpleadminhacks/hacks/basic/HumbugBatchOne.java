@@ -308,14 +308,19 @@ public class HumbugBatchOne extends BasicHack {
 		}
 	}
 	
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void throwEyeOfEnder(ProjectileLaunchEvent e) {
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
+	public void throwEyeOfEnder(PlayerInteractEvent pie) {
 		if (!preventUsingEyeOfEnder) {
 			return;
 		}
-		if (e.getEntity() instanceof EnderSignal) {
-			e.setCancelled(true);
+		Player player = pie.getPlayer();
+		if ((pie.getAction().equals(Action.RIGHT_CLICK_AIR)) || (pie.getAction().equals(Action.RIGHT_CLICK_BLOCK))){
+			if (player.getInventory().getItemInMainHand().getType().equals(Material.ENDER_EYE) || player.getInventory().getItemInOffHand().getType().equals(Material.ENDER_EYE)){
+				pie.setCancelled(true);
+				player.sendMessage(ChatColor.RED + "Throwing Eyes of Ender is disabled.");
+			}
 		}
+
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
