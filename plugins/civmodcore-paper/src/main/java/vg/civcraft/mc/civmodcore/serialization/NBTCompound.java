@@ -22,13 +22,14 @@ import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  * Wrapper class for NBTTagCompounds to make NBT serialisation and deserialisation as robust as possible. Intended to
  * replace {@link vg.civcraft.mc.civmodcore.itemHandling.TagManager TagManager} though the .mapToNBT and .listToNBT
  * APIs will not be re-implemented here as it's better to have a finer control of how data is written and read.
  */
-public class NBTCompound implements Cloneable {
+public class NBTCompound implements Cloneable, Validation {
 
 	public static final String NULL_STRING = "\u0000";
 
@@ -61,6 +62,14 @@ public class NBTCompound implements Cloneable {
 		this();
 		Preconditions.checkArgument(object != null);
 		object.serialize(this);
+	}
+
+	@Override
+	public boolean isValid() {
+		if (this.tag == null) {
+			return false;
+		}
+		return true;
 	}
 
 	/**

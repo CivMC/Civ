@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  *
@@ -135,7 +136,7 @@ public final class NBTSerialization {
 	 *     or empty, 2) the class identifier cannot be found, 3) the class cannot be matched.
 	 */
 	public static NBTSerializable deserialize(NBTCompound nbt) {
-		if (nbt == null || nbt.isEmpty()) {
+		if (!Validation.checkValidity(nbt)) {
 			return null;
 		}
 		String path = nbt.getString(NBT_CLASS_PATH_KEY);
