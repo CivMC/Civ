@@ -7,11 +7,11 @@ import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Logger;
 import joptsimple.internal.Strings;
-import org.bukkit.Bukkit;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -20,7 +20,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * */
 public final class PotionNames {
 
-	private static final Logger logger = Bukkit.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(PotionNames.class.getSimpleName());
 
 	private static final Set<SearchResult> POTION_DETAILS = new HashSet<>();
 
@@ -46,7 +46,7 @@ public final class PotionNames {
 					String[] values = line.split(",");
 					// If there's not at least three values (slug, abbreviation, display name) then skip
 					if (values.length != 3) {
-						logger.warning("[Config] This potion row is corrupted: " + line);
+						LOGGER.warn("[Config] This potion row is corrupted: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -57,7 +57,7 @@ public final class PotionNames {
 						type = PotionType.valueOf(values[0]);
 					}
 					catch (Exception ignored) {
-						logger.warning("[Config] Could not find a potion type on this line: " + line);
+						LOGGER.warn("[Config] Could not find a potion type on this line: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -67,7 +67,7 @@ public final class PotionNames {
 					if (!Strings.isNullOrEmpty(values[1])) {
 						effectType = PotionEffectType.getByName(values[1]);
 						if (effectType == null) {
-							logger.warning("[Config] Could not find potion effect type type on this line: " + line);
+							LOGGER.warn("[Config] Could not find potion effect type type on this line: " + line);
 							// Go to the next line
 							line = reader.readLine();
 							continue;
@@ -76,14 +76,14 @@ public final class PotionNames {
 					// Get the potion's name
 					String name = values[2];
 					if (Strings.isNullOrEmpty(name)) {
-						logger.warning("[Config] Could not find potion name on this line: " + line);
+						LOGGER.warn("[Config] Could not find potion name on this line: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
 					}
 					// Put the enchantment and name into the system
 					POTION_DETAILS.add(new SearchResult(type, effectType, name));
-					logger.info(String.format("[Config] Potion parsed: %s = %s = %s", type.name(),
+					LOGGER.info(String.format("[Config] Potion parsed: %s = %s = %s", type.name(),
 							effectType == null ? "NULL" : effectType.getName(),
 							name));
 					line = reader.readLine();
@@ -91,12 +91,12 @@ public final class PotionNames {
 				reader.close();
 			}
 			catch (IOException error) {
-				logger.warning("[Config] Could not load potions from potions.csv");
+				LOGGER.warn("[Config] Could not load potions from potions.csv");
 				error.printStackTrace();
 			}
 		}
 		else {
-			logger.warning("[Config] Could not load potions from potions.csv as the file does not exist.");
+			LOGGER.warn("[Config] Could not load potions from potions.csv as the file does not exist.");
 		}
 	}
 

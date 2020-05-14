@@ -24,6 +24,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
 public abstract class AikarCommandManager {
 
     private final ACivMod plugin;
+
     private final BukkitCommandManager manager;
 
     public AikarCommandManager(ACivMod plugin) {

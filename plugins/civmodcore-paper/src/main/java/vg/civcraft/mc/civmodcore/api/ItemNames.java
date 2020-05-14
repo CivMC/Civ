@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -25,7 +25,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * */
 public final class ItemNames {
 
-	private static final Logger logger = Bukkit.getLogger();
+	private static final Logger LOGGER = LoggerFactory.getLogger(ItemNames.class.getSimpleName());
 
 	private static final Map<Integer, String> itemNames = new HashMap<>();
 
@@ -52,7 +52,7 @@ public final class ItemNames {
 					String [] values = line.split(",");
 					// If there's not at least three values (slug, data, name) then skip
 					if (values.length < 2) {
-						logger.warning("This material row does not have enough data: " + line);
+						LOGGER.warn("This material row does not have enough data: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -60,7 +60,7 @@ public final class ItemNames {
 					// If a material cannot be found by the slug given, skip
 					Material material = Material.getMaterial(values[0]);
 					if (material == null) {
-						logger.warning("Could not find a material on this line: " + line);
+						LOGGER.warn("Could not find a material on this line: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -68,7 +68,7 @@ public final class ItemNames {
 					// If the name is empty, skip
 					String name = TextUtil.parseColor(values[1]);
 					if (name.isEmpty()) {
-						logger.warning("This material has not been given a name: " + line);
+						LOGGER.warn("This material has not been given a name: " + line);
 						// Go to the next line
 						line = reader.readLine();
 						continue;
@@ -81,12 +81,12 @@ public final class ItemNames {
 				reader.close();
 			}
 			catch (IOException error) {
-				logger.log(Level.WARNING, "Could not load materials from materials.csv", error);
+				LOGGER.warn("Could not load materials from materials.csv", error);
 			}
-			logger.info("Loaded a total of " + count + " item names from materials.csv");
+			LOGGER.info("Loaded a total of " + count + " item names from materials.csv");
 		}
 		else {
-			logger.warning("Could not load materials from materials.csv as the file does not exist.");
+			LOGGER.warn("Could not load materials from materials.csv as the file does not exist.");
 		}
 		// Load custom material names from config.yml
 		// TODO: Add a config parser for material names so that developers may set
@@ -168,7 +168,7 @@ public final class ItemNames {
 			else {
 				logMessage.append(String.format("[%s] was replaced with: %s", previousName, name));
 			}
-			logger.info(logMessage.toString());
+			LOGGER.info(logMessage.toString());
 		}
 
 		/**
