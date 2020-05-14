@@ -110,6 +110,17 @@ public class NBTCompound implements Cloneable, Validation {
 	}
 
 	/**
+	 * Checks if the tag compound contains a particular key of a particular type.
+	 *
+	 * @param key The key to check.
+	 * @param type The type to check for.
+	 * @return Returns true if the contains the given key of the given type.
+	 */
+	public boolean hasKeyOfType(String key, int type) {
+		return this.tag.hasKeyOfType(key, type);
+	}
+
+	/**
 	 * Removes a key and its respective value from the tag compound, if it exists.
 	 *
 	 * @param key The key to remove.
@@ -430,9 +441,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public boolean[] getBooleanArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		byte[] cache = this.tag.getByteArray(key);
 		boolean[] result = new boolean[cache.length];
 		for (int i = 0; i < cache.length; i++) {
@@ -469,9 +477,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public byte[] getByteArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		return this.tag.getByteArray(key);
 	}
 
@@ -499,9 +504,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public short[] getShortArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 2);
 		short[] result = new short[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -547,9 +549,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public int[] getIntegerArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		return this.tag.getIntArray(key);
 	}
 
@@ -577,9 +576,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public long[] getLongArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 4);
 		long[] result = new long[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -625,9 +621,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public float[] getFloatArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 5);
 		float[] result = new float[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -664,9 +657,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public double[] getDoubleArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 6);
 		double[] result = new double[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -703,9 +693,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public String[] getStringArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 8);
 		String[] result = new String[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -759,9 +746,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public NBTCompound[] getCompoundArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 9)) {
-			return null;
-		}
 		NBTTagList list = this.tag.getList(key, 10);
 		NBTCompound[] result = new NBTCompound[list.size()];
 		for (int i = 0; i < result.length; i++) {
