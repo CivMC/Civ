@@ -95,4 +95,26 @@ public class Tester {
 		Assert.assertNull(actual.getStringArray(STRING_ARRAY_KEY));
 	}
 
+	@Test
+	public void testNBTClearing() {
+		// Setup
+		String STRING_KEY = "test_clear";
+		String expectedString = "In hac habitasse platea dictumst quisque sagittis purus. Consectetur purus ut " +
+				"faucibus pulvinar elementum integer enim neque. Scelerisque eleifend donec pretium vulputate " +
+				"sapien nec. In cursus turpis massa tincidunt dui ut ornare lectus. Imperdiet massa tincidunt " +
+				"nunc pulvinar sapien et ligula ullamcorper. Lorem sed risus ultricies tristique nulla aliquet enim " +
+				"tortor at. Arcu odio ut sem nulla. Etiam non quam lacus suspendisse. Tincidunt tortor aliquam " +
+				"nulla facilisi cras. Magna ac placerat vestibulum lectus mauris. Tortor at auctor urna nunc id. " +
+				"Turpis egestas pretium aenean pharetra magna ac placerat vestibulum lectus. Faucibus in ornare " +
+				"quam viverra orci sagittis. Lectus proin nibh nisl condimentum id venenatis a. Diam in arcu cursus " +
+				"euismod. Cras semper auctor neque vitae tempus. Leo a diam sollicitudin tempor id eu. Non sodales " +
+				"neque sodales ut etiam. Elementum integer enim neque volutpat ac tincidunt vitae semper quis.";
+		// Process
+		NBTCompound nbt = new NBTCompound();
+		nbt.setString(STRING_KEY, expectedString);
+		nbt.clear();
+		// Check
+		Assert.assertNull(nbt.getString(STRING_KEY));
+	}
+
 }
