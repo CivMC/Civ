@@ -71,8 +71,8 @@ public class Tester {
 		// Process
 		NBTCompound nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, expectedString);
-		byte[] nbtData = NBTCompound.toBytes(nbt);
-		NBTCompound actual = NBTCompound.fromBytes(nbtData);
+		byte[] data = NBTCompound.toBytes(nbt);
+		NBTCompound actual = NBTCompound.fromBytes(data);
 		// Check
 		Assert.assertTrue(Validation.checkValidity(actual));
 		Assert.assertEquals(expectedString, actual.getString(STRING_KEY));
@@ -82,17 +82,14 @@ public class Tester {
 	public void testNullSerialization() {
 		// Setup
 		String STRING_KEY = "test_null_string";
-		String STRING_ARRAY_KEY = "test_null_string_array";
 		// Process
 		NBTCompound nbt = new NBTCompound();
 		nbt.setString(STRING_KEY, null);
-		nbt.setStringArray(STRING_ARRAY_KEY, null);
-		byte[] nbtData = NBTCompound.toBytes(nbt);
-		NBTCompound actual = NBTCompound.fromBytes(nbtData);
+		byte[] data = NBTCompound.toBytes(nbt);
+		NBTCompound actual = NBTCompound.fromBytes(data);
 		// Check
 		Assert.assertTrue(Validation.checkValidity(actual));
 		Assert.assertNull(actual.getString(STRING_KEY));
-		Assert.assertNull(actual.getStringArray(STRING_ARRAY_KEY));
 	}
 
 	@Test
