@@ -3,6 +3,7 @@ package com.untamedears.jukealert.commands;
 import static com.untamedears.jukealert.util.JAUtility.findLookingAtOrClosestSnitch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -64,7 +65,7 @@ public class InfoCommand extends StandaloneCommand {
 	public void sendSnitchLog(Player player, Snitch snitch, int offset, int pageLength, String actionType,
 			String filterPlayerName) {
 		SnitchLogAppender logAppender = (SnitchLogAppender) snitch.getAppender(SnitchLogAppender.class);
-		List<LoggableAction> logs = logAppender.getFullLogs();
+		List<LoggableAction> logs = new ArrayList<>(logAppender.getFullLogs());
 		if (filterPlayerName != null) {
 			UUID filterUUID = NameAPI.getUUID(filterPlayerName);
 			if (filterUUID == null) {
@@ -92,6 +93,7 @@ public class InfoCommand extends StandaloneCommand {
 			}
 			logs = logCopy;
 		}
+		Collections.reverse(logs);
 		int initialOffset = pageLength * offset;
 		if (initialOffset >= logs.size()) {
 			TextComponent reply = JAUtility.genTextComponent(snitch);

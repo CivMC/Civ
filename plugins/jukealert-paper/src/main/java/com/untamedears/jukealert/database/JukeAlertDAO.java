@@ -392,7 +392,7 @@ public class JukeAlertDAO extends GlobalTrackableDAO<Snitch> {
 				PreparedStatement loadActions = insertConn.prepareStatement(
 						"select jsa.name, jse.uuid, jse.x, jse.y, jse.z, jse.creation_time, jse.victim, jse.id"
 								+ " from ja_snitch_entries jse inner join ja_snitch_actions jsa on "
-								+ "jse.type_id = jsa.id where snitch_id = ?;");) {
+								+ "jse.type_id = jsa.id where snitch_id = ? order by jse.creation_time asc;");) {
 			loadActions.setInt(1, id);
 			try (ResultSet rs = loadActions.executeQuery()) {
 				while (rs.next()) {

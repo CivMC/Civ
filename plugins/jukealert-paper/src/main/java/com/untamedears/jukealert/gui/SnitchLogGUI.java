@@ -1,6 +1,7 @@
 package com.untamedears.jukealert.gui;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -87,6 +88,7 @@ public class SnitchLogGUI {
 			ItemAPI.setDisplayName(is, ChatColor.RED + "This snitch can not create logs");
 			clicks.add(new DecorationStack(is));
 		}
+		Collections.reverse(clicks);
 		return clicks;
 	}
 
