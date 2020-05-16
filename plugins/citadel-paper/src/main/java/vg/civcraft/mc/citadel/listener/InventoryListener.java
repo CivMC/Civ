@@ -35,6 +35,7 @@ public class InventoryListener implements Listener {
 			}
 			return;
 		}
+		//destRein is for sure not null at this point
 		if (sourceRein == null) {
 			if (!destRein.isInsecure()) {
 				event.setCancelled(true);

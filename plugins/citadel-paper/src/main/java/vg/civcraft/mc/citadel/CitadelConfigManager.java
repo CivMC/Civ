@@ -129,17 +129,6 @@ public class CitadelConfigManager extends CoreConfigManager {
 		return true;
 	}
 
-	private List<Material> parseMaterialList(ConfigurationSection config, String key) {
-		return parseList(config, key, s -> {
-			try {
-				return Material.valueOf(s.toUpperCase());
-			} catch (IllegalArgumentException e) {
-				logger.warning("Failed to parse " + s + " as material at " + config.getCurrentPath());
-				return null;
-			}
-		});
-	}
-
 	private ReinforcementType parseReinforcementType(ConfigurationSection config) {
 		if (!config.isItemStack("item")) {
 			logger.warning(
