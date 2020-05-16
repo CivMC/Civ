@@ -2,6 +2,8 @@ package com.untamedears.jukealert.model.appender;
 
 import java.util.UUID;
 
+import com.untamedears.jukealert.util.JAUtility;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -47,7 +49,13 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
 				continue;
 			}
 			if (snitch.hasPermission(uuid, JukeAlertPermissionHandler.getSnitchAlerts())) {
-				player.spigot().sendMessage(log.getChatRepresentation(player.getLocation(), true));
+				TextComponent comp = log.getChatRepresentation(player.getLocation(), true);
+
+				if (settings.shouldShowDirections(uuid)) {
+					comp.addExtra(String.format("  %s", JAUtility.genDirections(snitch, player)));
+				}
+
+				player.spigot().sendMessage(comp);
 			}
 		}
 	}
