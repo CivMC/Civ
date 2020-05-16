@@ -66,9 +66,9 @@ public abstract class CoreConfigManager {
 	protected List<Material> parseMaterialList(ConfigurationSection config, String key) {
 		return parseList(config, key, s -> {
 			try {
-				return Material.valueOf(key.toUpperCase());
+				return Material.valueOf(s.toUpperCase());
 			} catch (IllegalArgumentException e) {
-				logger.warning("Could not parse material " + s + " at " + config.getCurrentPath());
+				logger.warning("Could not parse material " + s + " at " + config.getCurrentPath() + ": " + e.toString());
 				return null;
 			}
 		});
