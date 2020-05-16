@@ -22,6 +22,7 @@ public class JASettingsManager {
 	private BooleanSetting ignoreAllAlerts;
 	private DisplayLocationSetting showNearbySnitchCount;
 	private SetSetting<String> ignoredGroupAlerts;
+	private BooleanSetting showDirections;
 
 	public JASettingsManager() {
 		initSettings();
@@ -51,6 +52,10 @@ public class JASettingsManager {
 				new ItemStack(Material.BELL), "Groups you have muted, meaning you won't receive snitch alers from them",
 				String.class);
 		PlayerSettingAPI.registerSetting(ignoredGroupAlerts, menu);
+
+		showDirections = new BooleanSetting(JukeAlert.getInstance(), true, "Show directions to snitch on hit", "jaShowDirections",
+				"Shows the direction and distance to the snitch when triggered.");
+		PlayerSettingAPI.registerSetting(showDirections, menu);
 	}
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {
@@ -71,6 +76,10 @@ public class JASettingsManager {
 
 	public int getJaInfoLength(UUID uuid) {
 		return jaInfoSize.getValue(uuid);
+	}
+
+	public boolean shouldShowDirections(UUID uuid) {
+		return showDirections.getValue(uuid);
 	}
 
 }
