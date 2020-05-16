@@ -33,6 +33,7 @@ public class Lang
 	public static final String pearlYouWereSummoned = "<g>You were summoned by <c>%s<g>!";
 	public static final String pearlCantReturn = "<i>That pearl can't be returned.";
 	public static final String pearlReturned = "<g>You have returned <c>%s<g>!";
+	public static final String pearlPlayerIsCombatTagged = "<i>That pearl can't be summoned because the player is combat tagged!";
 
 	public static final String groupUnknown = "<i>That group doesn't exist.";
 	public static final String groupNoChatPermission = "<i>You don't have permission to chat in that group.";
