@@ -26,6 +26,10 @@ public class CmdSummon extends PearlCommand {
 			msg(Lang.pearlMustBeHoldingPearl);
 			return;
 		}
+		if(plugin.isPlayerTagged(pearl.getPlayerId())) {
+			msg(Lang.pearlPlayerIsCombatTagged);
+			return;
+		}
 
 		if(pearl.getPearlType() != PearlType.PRISON) {
 			msg("<b>You can only do that with prison pearls");
