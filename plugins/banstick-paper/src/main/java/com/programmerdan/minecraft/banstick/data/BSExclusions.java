@@ -59,6 +59,9 @@ public class BSExclusions {
     }
 
     public BSExclusion getExclusionWith(BSPlayer player) {
+    	if (forPlayer.getId() == player.getId()) {
+    		return null;
+    	}
         for (BSExclusion excl : getAll()) {
             if (excl.getFirstPlayerID() == player.getId() || excl.getSecondPlayerID() == player.getId()) {
                 return excl;
