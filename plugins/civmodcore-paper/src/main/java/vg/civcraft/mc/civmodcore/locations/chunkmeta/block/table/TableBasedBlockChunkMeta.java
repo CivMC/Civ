@@ -2,13 +2,11 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 import org.bukkit.Location;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
-import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
 
 public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		extends BlockBasedChunkMeta<TableBasedDataObject, TableStorageEngine<D>> {
@@ -20,34 +18,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		this.modifiedEntries = new ArrayList<>();
 	}
 
-	@SuppressWarnings("rawtypes")
-	private void iterateAll(Consumer<D> functionToApply) {
-		for (int i = 0; i < data.length; i++) {
-			BlockDataObject[][][] l2Cache = data[i];
-			if (l2Cache == null) {
-				continue;
-			}
-			for (int j = 0; j < l2Cache.length; j++) {
-				BlockDataObject[][] l3Cache = l2Cache[j];
-				if (l3Cache == null) {
-					continue;
-				}
-				for (int k = 0; k < l3Cache.length; k++) {
-					BlockDataObject[] l4Cache = l3Cache[k];
-					if (l4Cache == null) {
-						continue;
-					}
-					for (int l = 0; l < l4Cache.length; l++) {
-						if (l4Cache[l] != null) {
-							@SuppressWarnings("unchecked")
-							D value = (D) l4Cache[l];
-							functionToApply.accept(value);
-						}
-					}
-				}
-			}
-		}
-	}
+
 
 	public void reportChange(D data) {
 		modifiedEntries.add(data);
@@ -106,10 +77,11 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void delete() {
 		iterateAll(d -> {
-			storage.delete(d, chunkCoord);
+			storage.delete((D)d, chunkCoord);
 		});
 	}
 

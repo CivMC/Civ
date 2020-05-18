@@ -20,7 +20,6 @@ import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
 import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
-import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class ChunkMetaAPI {
 
@@ -38,9 +37,14 @@ public class ChunkMetaAPI {
 	 *                          BlockBasedChunkMeta class
 	 * @return API access object for block based chunk metadata
 	 */
-	@SuppressWarnings("unchecked")
 	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends BlockBasedStorageEngine<D>> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
 			JavaPlugin plugin, Supplier<T> emptyChunkCreator, S storageEngine, boolean allowAccessUnloaded) {
+		return registerBlockBasedPlugin(plugin, plugin.getName(), emptyChunkCreator, storageEngine, allowAccessUnloaded);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends BlockBasedChunkMeta<D, S>, D extends BlockDataObject<D>, S extends BlockBasedStorageEngine<D>> BlockBasedChunkMetaView<T, D, S> registerBlockBasedPlugin(
+			JavaPlugin plugin, String identifier, Supplier<T> emptyChunkCreator, S storageEngine, boolean allowAccessUnloaded) {
 		if (existingViews.containsKey(plugin.getName())) {
 			ChunkMetaView<T> chunkMetaView = (ChunkMetaView<T>) existingViews.get(plugin.getName());
 			return (BlockBasedChunkMetaView<T, D, S>) chunkMetaView;
@@ -51,7 +55,7 @@ public class ChunkMetaAPI {
 			return null;
 		}
 		CMCWorldDAO chunkDAO = globalManager.getChunkDAO();
-		short id = chunkDAO.getOrCreatePluginID(plugin);
+		short id = chunkDAO.getOrCreatePluginID(identifier);
 		if (id == -1) {
 			plugin.getLogger().log(Level.SEVERE, "Could not init chunk meta data, could not retrieve plugin id from db");
 			return null;
@@ -64,7 +68,7 @@ public class ChunkMetaAPI {
 		BlockBasedChunkMetaView<T, D, S> view = new BlockBasedChunkMetaView<>(plugin, id, globalManager,
 				emptyChunkCreator, storageEngine, storageEngine.stayLoaded(), allowAccessUnloaded);
 		ChunkMetaViewTracker.getInstance().put(view, id);
-		existingViews.put(plugin.getName(), view);
+		existingViews.put(identifier, view);
 		return view;
 	}
 	

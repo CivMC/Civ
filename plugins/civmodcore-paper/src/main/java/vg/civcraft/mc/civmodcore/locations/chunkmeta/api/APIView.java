@@ -4,8 +4,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class APIView {
 	
-	protected short pluginID;
-	protected JavaPlugin plugin;
+	protected final short pluginID;
+	protected final JavaPlugin plugin;
 	
 	APIView(JavaPlugin plugin, short pluginID) {
 		this.plugin = plugin;

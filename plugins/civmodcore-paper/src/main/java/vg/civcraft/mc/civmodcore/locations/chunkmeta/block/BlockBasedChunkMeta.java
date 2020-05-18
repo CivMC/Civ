@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.block;
 
+import java.util.function.Consumer;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -299,6 +301,35 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		}
 		return remove(modulo(location.getBlockX()), location.getBlockY(),
 				modulo(location.getBlockZ()));
+	}
+	
+	@SuppressWarnings("rawtypes")
+	protected void iterateAll(Consumer<D> functionToApply) {
+		for (int i = 0; i < data.length; i++) {
+			BlockDataObject[][][] l2Cache = data[i];
+			if (l2Cache == null) {
+				continue;
+			}
+			for (int j = 0; j < l2Cache.length; j++) {
+				BlockDataObject[][] l3Cache = l2Cache[j];
+				if (l3Cache == null) {
+					continue;
+				}
+				for (int k = 0; k < l3Cache.length; k++) {
+					BlockDataObject[] l4Cache = l3Cache[k];
+					if (l4Cache == null) {
+						continue;
+					}
+					for (int l = 0; l < l4Cache.length; l++) {
+						if (l4Cache[l] != null) {
+							@SuppressWarnings("unchecked")
+							D value = (D) l4Cache[l];
+							functionToApply.accept(value);
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	public static int modulo(int a) {
