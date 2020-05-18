@@ -9,6 +9,7 @@ import java.util.Stack;
 import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -97,7 +98,7 @@ public final class PagedGUI {
 	 *
 	 * @apiNote Only {@link PagedGUIManager#onInventoryClick(InventoryClickEvent)} should call this method.
 	 */
-	public void clicked(int slot, Player clicker) {
+	public void clicked(int slot, Player clicker, ClickType clickType) {
 		if (this.currentPage == null) {
 			return;
 		}
@@ -105,7 +106,7 @@ public final class PagedGUI {
 		if (button == null) {
 			return;
 		}
-		button.clicked(clicker);
+		button.handleClick(clicker, clickType);
 	}
 
 	/**

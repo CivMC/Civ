@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -151,14 +152,14 @@ public class ClickableInventory {
 	 * @param p     Player who clicked
 	 * @param index index of the item in the inventory
 	 */
-	public void itemClick(Player p, int index) {
+	public void itemClick(Player p, int index, ClickType clickType) {
 		if (index >= clickables.length || index < 0 || clickables[index] == null) {
 			return;
 		}
 		if (!applyCooldown(p)) {
 			return;
 		}
-		clickables[index].clicked(p);
+		clickables[index].handleClick(p, clickType);
 	}
 
 	/**
