@@ -121,9 +121,14 @@ public class TextUtil {
 				replace("<white>", ChatColor.WHITE.toString()).
 				replace("<s>", ChatColor.STRIKETHROUGH.toString()).
 				replace("<u>", ChatColor.UNDERLINE.toString()).
+				replace("<ul>", ChatColor.UNDERLINE.toString()).
 				replace("<r>", ChatColor.RESET.toString()).
+				replace("<strike>", ChatColor.STRIKETHROUGH.toString()).
+				replace("<italic>", ChatColor.ITALIC.toString()).
+				replace("<bold>", ChatColor.BOLD.toString()).
+				replace("<reset>", ChatColor.RESET.toString()).
 				// Legacy support
-				replace("<empty>", "").
+				replace("<empty>", ""). // Just... why?
 				replace("<navy>", ChatColor.DARK_BLUE.toString()).
 				replace("<teal>", ChatColor.DARK_AQUA.toString()).
 				replace("<silver>", ChatColor.GRAY.toString()).
@@ -131,9 +136,7 @@ public class TextUtil {
 				replace("<lime>", ChatColor.GREEN.toString()).
 				replace("<rose>", ChatColor.RED.toString()).
 				replace("<pink>", ChatColor.LIGHT_PURPLE.toString()).
-				replace("<bold>", ChatColor.BOLD.toString()).
 				replace("<it>", ChatColor.ITALIC.toString()).
-				replace("<reset>", ChatColor.RESET.toString()).
 				replace("<g>", ChatColor.GREEN.toString()). // Good
 				replace("<b>", ChatColor.RED.toString()). // Bad
 				replace("<i>", ChatColor.WHITE.toString()). // Info
