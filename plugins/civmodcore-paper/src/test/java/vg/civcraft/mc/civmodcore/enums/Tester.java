@@ -17,7 +17,7 @@ public class Tester {
 		// Setup
 		String ENUM_KEY = EnumUtils.getSlug(Example.THREE);
 		// Process
-		Enum<Example> result = EnumUtils.fromSlug(Example.class, ENUM_KEY);
+		Enum<Example> result = EnumUtils.fromSlug(Example.class, ENUM_KEY, false);
 		// Check
 		Assert.assertEquals(Example.THREE, result);
 	}

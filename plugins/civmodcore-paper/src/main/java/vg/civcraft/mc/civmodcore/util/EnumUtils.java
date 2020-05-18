@@ -14,10 +14,11 @@ public class EnumUtils {
 	 * @param <T> The enum type.
 	 * @param clazz The enum class.
 	 * @param slug The slug of the intended enum element.
+	 * @param caseInsensitive Set to true if you want to check to not care about case sensitivity.
 	 * @return Returns the matched enum element, or null.
 	 */
 	@SuppressWarnings("unchecked")
-	public static <T extends Enum<T>> T fromSlug(Class<T> clazz, String slug) {
+	public static <T extends Enum<T>> T fromSlug(Class<T> clazz, String slug, boolean caseInsensitive) {
 		if (clazz == null || Strings.isNullOrEmpty(slug)) {
 			return null;
 		}
@@ -30,8 +31,15 @@ public class EnumUtils {
 			return null;
 		}
 		for (T value : values) {
-			if (TextUtil.stringEquals(value.name(), slug)) {
-				return value;
+			if (caseInsensitive) {
+				if (TextUtil.stringEquals(value.name(), slug)) {
+					return value;
+				}
+			}
+			else {
+				if (TextUtil.stringEqualsIgnoreCase(value.name(), slug)) {
+					return value;
+				}
 			}
 		}
 		return null;
