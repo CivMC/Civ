@@ -125,6 +125,7 @@ public class StreakManager {
 			daysPassed += (int) (timePassed / MILLIS_IN_DAY + 1);
 		}
 		int streak = playerStreaks.getValue(player);
+		daysPassed = Math.min(daysPassed, maximumStreak);
 		// shift to left by amount of days missed
 		streak <<= daysPassed;
 		// add new day
