@@ -46,9 +46,9 @@ public abstract class ACivMod extends JavaPlugin {
 			@EventHandler
 			public void onPluginDisable(PluginDisableEvent event) {
 				String pluginName = event.getPlugin().getName();
-				if (ACivMod.this.getDescription().getDepend().contains(pluginName)) {
+				if (getDescription().getDepend().contains(pluginName)) {
 					warning("Plugin [" + pluginName + "] has been disabled, disabling this plugin.");
-					ACivMod.this.getPluginLoader().disablePlugin(ACivMod.this);
+					getPluginLoader().disablePlugin(ACivMod.this);
 				}
 			}
 		});
