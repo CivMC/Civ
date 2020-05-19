@@ -16,7 +16,7 @@ public interface NBTSerializable {
 	 *
 	 * @throws NBTSerializationException This is thrown if the implementation has a fatal error serializing.
 	 */
-	void serialize(NBTCompound nbt) throws NBTSerializationException;
+	void serialize(NBTCompound nbt);
 
 	/**
 	 * Deserializes a class into an NBTCompound.
@@ -26,6 +26,6 @@ public interface NBTSerializable {
 	 *
 	 * @throws NBTSerializationException This is thrown if the implementation has a fatal error deserializing.
 	 */
-	void deserialize(NBTCompound nbt) throws NBTSerializationException;
+	void deserialize(NBTCompound nbt);
 
 }
