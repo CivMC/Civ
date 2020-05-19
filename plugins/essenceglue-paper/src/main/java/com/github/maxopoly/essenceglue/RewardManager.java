@@ -1,5 +1,7 @@
 package com.github.maxopoly.essenceglue;
 
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,29 +22,27 @@ public class RewardManager {
 		p.sendMessage(ChatColor.GREEN + "You've received your daily login reward");
 		ItemMap reward = dailyReward.clone();
 		reward.multiplyContent(streak);
-		if (reward.fitsIn(p.getInventory())) {
-			for(ItemStack is : reward.getItemStackRepresentation()) {
-				p.getInventory().addItem(is);
-			}
-		}
-		else {
-			p.sendMessage(ChatColor.GREEN + "Your inventory was full, so it was dropped on the ground");
-			for(ItemStack is : reward.getItemStackRepresentation()) {
-				p.getWorld().dropItemNaturally(p.getLocation(), is);
-			}
-		}
+		giveItems(p, reward);
 	}
 	
 	public void giveVoteReward(Player p, String page) {
 		p.sendMessage(ChatColor.GREEN + "You received a reward for voting on " + page);
-		if (voteReward.fitsIn(p.getInventory())) {
+		giveItems(p, voteReward);
+	}
+	
+	private void giveItems(Player p, ItemMap items) {
+		if (items.fitsIn(p.getInventory())) {
 			for(ItemStack is : voteReward.getItemStackRepresentation()) {
-				p.getInventory().addItem(is);
+				HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(is);
+				for(ItemStack toDrop : notAdded.values()) {
+					p.sendMessage(ChatColor.GREEN + "Your inventory was full, so it was dropped on the ground");
+					p.getWorld().dropItemNaturally(p.getLocation(), toDrop);
+				}
 			}
 		}
 		else {
 			p.sendMessage(ChatColor.GREEN + "Your inventory was full, so it was dropped on the ground");
-			for(ItemStack is : voteReward.getItemStackRepresentation()) {
+			for(ItemStack is : items.getItemStackRepresentation()) {
 				p.getWorld().dropItemNaturally(p.getLocation(), is);
 			}
 		}
