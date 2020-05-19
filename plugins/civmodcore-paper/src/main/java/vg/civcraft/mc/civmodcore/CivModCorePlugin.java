@@ -104,7 +104,6 @@ public final class CivModCorePlugin extends ACivMod {
 		}
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
-		NBTSerialization.clearAllRegistrations();
 		NullCoalescing.exists(this.manager, AikarCommandManager::reset);
 		super.onDisable();
 		instance = null;

@@ -1,107 +1,20 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
 import com.google.common.base.Strings;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
- *
+ * NBT Serialization allows for readable encoding to and from NBT compounds.
  */
 public final class NBTSerialization {
 
 	private static final String NBT_CLASS_PATH_KEY = "==";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(NBTSerialization.class.getSimpleName());
-
-	private static final Map<String, Class<? extends NBTSerializable>> REGISTERED_CLASSES = new HashMap<>();
-
-	/**
-	 * Registers an {@link NBTSerializable} class and any aliases it may have.
-	 *
-	 * @param <T> The type of the serializable.
-	 * @param clazz The class of the NBTSerializable class.
-	 * @param aliases The alias class name of the class used for when the class has migrated and legacy support is
-	 *     required.
-	 * @throws IllegalArgumentException Throws if 1) the NBTSerializable class is null, 2) the class does not have a
-	 *     public zero argument constructor, 3) are not final, or 4) is already registered. (Aliases that are already
-	 *     registered will print a warning in lieu of throwing.)
-	 */
-	public static <T extends NBTSerializable> void registerNBTSerializable(Class<T> clazz, String... aliases) {
-		String cannotRegisterError = "Cannot register NBTSerializable: ";
-		if (clazz == null) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class is null.");
-		}
-		if (!Modifier.isFinal(clazz.getModifiers())) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class is not final.");
-		}
-		boolean hasValidConstructor = false;
-		for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-			if (!Modifier.isPublic(constructor.getModifiers())) {
-				continue;
-			}
-			if (constructor.getParameterCount() > 0) {
-				continue;
-			}
-			hasValidConstructor = true;
-			break;
-		}
-		if (!hasValidConstructor) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class has no default constructor.");
-		}
-		if (REGISTERED_CLASSES.containsKey(clazz.getName())) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class is already registered.");
-		}
-		LOGGER.info("NBTSerializable[" + clazz.getName() + "] registered.");
-		REGISTERED_CLASSES.put(clazz.getName(), clazz);
-		if (aliases != null) {
-			String errorMessage = "Could not register the alias for NBTSerializable[" + clazz.getName() + "] as: ";
-			for (String alias : aliases) {
-				if (Strings.isNullOrEmpty(alias)) {
-					LOGGER.warn(errorMessage + "the alias is null or empty.");
-					continue;
-				}
-				if (alias.equals(clazz.getName())) {
-					LOGGER.warn(errorMessage + "the alias matches the class name.");
-					continue;
-				}
-				if (REGISTERED_CLASSES.containsKey(alias)) {
-					LOGGER.warn(errorMessage + "the alias is already registered.");
-					continue;
-				}
-				LOGGER.info("NBTSerializable[" + clazz.getName() + "] alias [" + alias + "] registered.");
-				REGISTERED_CLASSES.putIfAbsent(alias, clazz);
-			}
-		}
-	}
-
-	/**
-	 * Unregisters an {@link NBTSerializable} class and all its paths.
-	 *
-	 * @param <T> The type of the serializable.
-	 * @param clazz The NBTSerializable class to unregister.
-	 * @throws IllegalArgumentException Throws if the given class to unregister is null.
-	 */
-	public static <T extends NBTSerializable> void unregisterNBTSerializable(Class<T> clazz) {
-		if (clazz == null) {
-			throw new IllegalArgumentException("Cannot unregister NBTSerializable: " +
-					"the given class is null.");
-		}
-		LOGGER.info("NBTSerializable[" + clazz.getName() + "] unregistered.");
-		REGISTERED_CLASSES.values().remove(clazz);
-	}
-
-	/**
-	 * Unregisters all {@link NBTSerializable} classes.
-	 */
-	public static void clearAllRegistrations() {
-		LOGGER.info("All NBTSerialization registered classes have been cleared.");
-		REGISTERED_CLASSES.clear();
-	}
 
 	/**
 	 * Serializes an {@link NBTSerializable} class into an {@link NBTCompound} for the purpose of being able to
@@ -113,7 +26,13 @@ public final class NBTSerialization {
 	 *     error occurred during serialization.
 	 */
 	public static NBTCompound serialize(NBTSerializable serializable) {
+		String SERIALIZE_ERROR = "NBTSerializable[%s] could not be serialised: %s";
 		if (serializable == null) {
+			LOGGER.debug(SERIALIZE_ERROR, "NULL", "given class was null.");
+			return null;
+		}
+		if (!Modifier.isFinal(serializable.getClass().getModifiers())) {
+			LOGGER.debug(SERIALIZE_ERROR, serializable.getClass().getSimpleName(), "given class not final.");
 			return null;
 		}
 		NBTCompound nbt = new NBTCompound();
@@ -121,20 +40,22 @@ public final class NBTSerialization {
 			serializable.serialize(nbt);
 		}
 		catch (Exception exception) {
-			throw new NBTSerializationException(
-					"NBTSerializable[" + serializable.getClass().getName() + "] could not be serialized.", exception);
+			LOGGER.warn(SERIALIZE_ERROR, serializable.getClass().getSimpleName(), "error in serialization.");
+			return null;
 		}
 		nbt.setString(NBT_CLASS_PATH_KEY, serializable.getClass().getName());
 		return nbt;
 	}
 
 	/**
-	 * Deserializes an {@link NBTCompound} into a registered {@link NBTSerializable} class, if it exists.
+	 * Deserializes an {@link NBTCompound} into a registered {@link NBTSerializable} class, if it exists and is valid.
 	 *
 	 * @param nbt The NBT data that's used to populate the new instance of the class.
 	 * @return Returns a populated instance of a class, or null. It will return null if 1) the given NBTCompound is null
-	 *     or empty, 2) the class identifier cannot be found, 3) the class cannot be matched.
+	 *     or empty, 2) the class identifier cannot be found, 3) the class cannot be found, isn't an NBTSerializable,
+	 *     isn't final or cannot be constructed, or 4) there was an error during deserialization.
 	 */
+	@SuppressWarnings("unchecked")
 	public static NBTSerializable deserialize(NBTCompound nbt) {
 		if (!Validation.checkValidity(nbt)) {
 			return null;
@@ -143,21 +64,62 @@ public final class NBTSerialization {
 		if (Strings.isNullOrEmpty(path)) {
 			return null;
 		}
-		Class<? extends NBTSerializable> clazz = REGISTERED_CLASSES.get(path);
-		if (clazz == null) {
-			return null;
-		}
+		Class<?> clazz;
 		try {
-			NBTSerializable instance = clazz.newInstance();
-			NBTCompound clone = nbt.clone();
-			clone.remove(NBT_CLASS_PATH_KEY);
-			instance.deserialize(clone);
-			return instance;
+			clazz = Class.forName(path, true, CivModCorePlugin.class.getClassLoader());
 		}
 		catch (Exception exception) {
-			throw new NBTSerializationException(
-					"NBTSerializable[" + clazz.getName() + "] could not be deserialized.", exception);
+			LOGGER.warn("Could not NBT deserialize into class: could not get class.", exception);
+			return null;
 		}
+		if (!NBTSerializable.class.isAssignableFrom(clazz)) {
+			LOGGER.debug("Could not NBT deserialize into class: the class is not an NBT Serializable.");
+			return null;
+		}
+		if (!Modifier.isFinal(clazz.getModifiers())) {
+			LOGGER.debug("Could not NBT deserialize into class: the class is not final.");
+			return null;
+		}
+		NBTSerializable instance;
+		try {
+			instance = ((Class<? extends NBTSerializable>) clazz).newInstance();
+		}
+		catch (Exception exception) {
+			LOGGER.warn("Could not NBT deserialize into class: could not create new instance.", exception);
+			return null;
+		}
+		NBTCompound clone = nbt.clone();
+		clone.remove(NBT_CLASS_PATH_KEY);
+		try {
+			instance.deserialize(clone);
+		}
+		catch (Exception exception) {
+			LOGGER.warn("Could not NBT deserialize into class: an error occurred during deserialization.", exception);
+			return null;
+		}
+		return instance;
 	}
+
+	// ------------------------------------------------------------
+	// Deprecated Stuff
+	// ------------------------------------------------------------
+
+	/**
+	 * @deprecated Registering NBTSerializable classes is no longer necessary.
+	 */
+	@Deprecated
+	public static <T extends NBTSerializable> void registerNBTSerializable(Class<T> clazz, String... aliases) { }
+
+	/**
+	 * @deprecated Registering NBTSerializable classes is no longer necessary.
+	 */
+	@Deprecated
+	public static <T extends NBTSerializable> void unregisterNBTSerializable(Class<T> clazz) { }
+
+	/**
+	 * @deprecated Registering NBTSerializable classes is no longer necessary.
+	 */
+	@Deprecated
+	public static void clearAllRegistrations() { }
 
 }
