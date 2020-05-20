@@ -116,6 +116,14 @@
     </plugins>
   </build>
 
+  <distributionManagement>
+    <repository>
+      <id>releases</id>
+      <name>devoted-jenkins</name>
+      <url>https://build.devotedmc.com/plugin/repository/everything</url>
+    </repository>
+  </distributionManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.spigotmc</groupId>
