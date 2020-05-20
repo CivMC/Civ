@@ -16,7 +16,7 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh 'mvn -DadditionalJOption=-Xdoclint:none clean install -U javadoc:jar' 
+                sh 'mvn clean install -U javadoc:jar' 
             }
         }
         stage ('Javadoc') {
@@ -24,7 +24,7 @@ pipeline {
                 branch "master"
             }
             steps {
-                sh 'mvn javadoc:javadoc -DskipTests'
+                sh 'mvn javadoc:javadoc -DskipTests -DadditionalJOption=-Xdoclint:none '
                 step([$class: 'JavadocArchiver',
                         javadocDir: 'api/target/site/apidocs',
                         keepAll: false])
@@ -35,7 +35,7 @@ pipeline {
                 branch "master"
             }
             steps {
-                sh 'mvn javadoc:jar source:jar deploy -DskipTests'
+                sh 'mvn javadoc:jar source:jar deploy -DskipTests -DadditionalJOption=-Xdoclint:none '
             }
         }
     }
