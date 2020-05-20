@@ -1,7 +1,6 @@
 package com.github.maxopoly.essenceglue;
 
 import org.bukkit.Bukkit;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 
 public final class EssenceGluePlugin extends ACivMod {
@@ -11,6 +10,10 @@ public final class EssenceGluePlugin extends ACivMod {
 	private StreakManager streakMan;
 	private RewardManager rewardMan;
 	private VotifyManager votifyMan;
+
+	public static EssenceGluePlugin instance() {
+		return instance;
+	}
 
 	@Override
 	public void onEnable() {
@@ -61,10 +64,6 @@ public final class EssenceGluePlugin extends ACivMod {
 	@Override
 	public void onDisable() {
 		super.onDisable();
-	}
-
-	public static EssenceGluePlugin instance() {
-		return instance;
 	}
 
 }

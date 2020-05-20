@@ -1,23 +1,23 @@
 package com.github.maxopoly.essenceglue;
 
 public class VotingSite {
-	
-	private String votingUrl;
-	private String name;
-	private String internalKey;
-	private long votingCooldown;
-	
+
+	private final String votingUrl;
+	private final String name;
+	private final String internalKey;
+	private final long votingCooldown;
+
 	public VotingSite(String name, String votingUrl, String internalKey, long votingCooldown) {
 		this.name = name;
 		this.votingCooldown = votingCooldown;
 		this.votingUrl = votingUrl;
 		this.internalKey = internalKey;
 	}
-	
+
 	public String getVotingUrl() {
 		return votingUrl;
 	}
-	
+
 	public String getName() {
 		return name;
 	}

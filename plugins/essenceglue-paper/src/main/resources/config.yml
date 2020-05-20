@@ -8,20 +8,20 @@ online_for_reward: 30 minutes
 
 login_reward:
   essence:
-     material: EYE_OF_ENDER
-     name: Player Essence
-     amount: 1
-     lore:
+    material: EYE_OF_ENDER
+    name: Player Essence
+    amount: 1
+    lore:
       - Activity reward used to fuel pearls
 
 voting_reward:
   essence:
-     material: EYE_OF_ENDER
-     name: Player Essence
-     amount: 1
-     lore:
+    material: EYE_OF_ENDER
+    name: Player Essence
+    amount: 1
+    lore:
       - Activity reward used to fuel pearls
-      
+
 give_reward_to_pearled: false
 multiply_pearl_cost: true
 

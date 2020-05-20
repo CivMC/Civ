@@ -2,9 +2,7 @@ package com.github.maxopoly.essenceglue;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.configuration.ConfigurationSection;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -63,15 +61,15 @@ public class EssenceConfigManager extends CoreConfigManager {
 	public ManagedDatasource getDatabase() {
 		return db;
 	}
-	
-	public Map<String,VotingSite> getVotingCooldowns() {
+
+	public Map<String, VotingSite> getVotingCooldowns() {
 		return votingCooldowns;
 	}
-	
+
 	public boolean giveRewardToPearled() {
 		return giveRewardToPearled;
 	}
-	
+
 	public boolean multiplyPearlCost() {
 		return multiplyPearlCost;
 	}
