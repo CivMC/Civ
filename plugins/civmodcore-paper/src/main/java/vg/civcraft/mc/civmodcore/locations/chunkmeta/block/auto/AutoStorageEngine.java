@@ -1,4 +1,4 @@
-package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.json;
+package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,9 +14,6 @@ import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.ChunkCoord;
@@ -24,18 +21,16 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 
-public class JsonStorageEngine<D extends JsonableDataObject<D>> implements BlockBasedStorageEngine<D> {
+public class AutoStorageEngine<D extends SerializableDataObject<D>> implements BlockBasedStorageEngine<D> {
 
 	private ManagedDatasource db;
 	private Logger logger;
-	private JsonParser jsonParser;
-	private BiFunction<Location, JsonObject, D> dataDeserializer;
+	private BiFunction<Location, String, D> dataDeserializer;
 
-	public JsonStorageEngine(ManagedDatasource db, Logger logger,
-			BiFunction<Location, JsonObject, D> dataDeserializer) {
+	public AutoStorageEngine(ManagedDatasource db, Logger logger,
+			BiFunction<Location, String, D> dataDeserializer) {
 		this.db = db;
 		this.logger = logger;
-		this.jsonParser = new JsonParser();
 		this.dataDeserializer = dataDeserializer;
 	}
 
@@ -94,7 +89,7 @@ public class JsonStorageEngine<D extends JsonableDataObject<D>> implements Block
 					int zOffset = rs.getByte(3);
 					int z = zOffset + preMultipliedZ;
 					Location loc = new Location(coord.getWorld(), x, y, z);
-					JsonObject rawData = (JsonObject) jsonParser.parse(rs.getString(4));
+					String rawData = rs.getString(4);
 					D data = dataDeserializer.apply(loc,rawData);
 					if (data != null) {
 						applyFunction.accept(data);
@@ -170,8 +165,8 @@ public class JsonStorageEngine<D extends JsonableDataObject<D>> implements Block
 				}
 				World world = CivModCorePlugin.getInstance().getWorldIdManager().getWorldByInternalID(worldID);
 				Location loc = new Location(world, x, y, z);
-				JsonObject data = (JsonObject) jsonParser.parse(rs.getString(1));
-				return dataDeserializer.apply(loc, data);
+				String rawData = rs.getString(1);
+				return dataDeserializer.apply(loc, rawData);
 			}
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to load jsoned data from db: ", e);

@@ -1,14 +1,14 @@
-package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.json;
+package vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto;
 
 import org.bukkit.Location;
 
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
-public class JsonBasedBlockChunkMeta<D extends JsonableDataObject<D>>
-		extends BlockBasedChunkMeta<D, JsonStorageEngine<D>> {
+public class AutoBlockChunkMeta<D extends SerializableDataObject<D>>
+		extends BlockBasedChunkMeta<D, AutoStorageEngine<D>> {
 
-	public JsonBasedBlockChunkMeta(JsonStorageEngine<D> storage) {
+	public AutoBlockChunkMeta(AutoStorageEngine<D> storage) {
 		super(false, storage);
 	}
 

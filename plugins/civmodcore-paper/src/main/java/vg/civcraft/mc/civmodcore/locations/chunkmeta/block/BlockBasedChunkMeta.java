@@ -218,6 +218,9 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 			setCacheState(CacheState.MODIFIED);
 		}
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
+		if (l4ZSection [z] != null) {
+			remove(x, y, z);
+		}
 		blockData.setOwningCache(this);
 		l4ZSection[z] = blockData;
 	}

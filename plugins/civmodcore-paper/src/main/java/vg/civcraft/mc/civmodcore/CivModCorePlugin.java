@@ -121,5 +121,9 @@ public final class CivModCorePlugin extends ACivMod {
 	public WorldIDManager getWorldIdManager() {
 		return this.worldIdManager;
 	}
+	
+	public ManagedDatasource getDatabase() {
+		return database;
+	}
 
 }

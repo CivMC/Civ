@@ -16,6 +16,9 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedStorageEngine;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockDataObject;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto.AutoBlockChunkMeta;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto.AutoStorageEngine;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.auto.SerializableDataObject;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.locations.global.GlobalTrackableDAO;
@@ -70,6 +73,12 @@ public class ChunkMetaAPI {
 		ChunkMetaViewTracker.getInstance().put(view, id);
 		existingViews.put(identifier, view);
 		return view;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T extends BlockBasedChunkMeta<D, S>, D extends SerializableDataObject<D>, S extends AutoStorageEngine<D>> BlockBasedChunkMetaView<T, D, S> registerAutoBlockBasedPlugin(
+			JavaPlugin plugin, String identifier, S storageEngine, boolean allowAccessUnloaded) {
+		return (BlockBasedChunkMetaView<T, D, S>) registerBlockBasedPlugin(plugin, identifier, () -> new AutoBlockChunkMeta<D>(storageEngine),storageEngine, allowAccessUnloaded);
 	}
 	
 	public static <T extends LocationTrackable> SingleBlockAPIView<T> registerSingleTrackingPlugin(JavaPlugin plugin, GlobalTrackableDAO<T> dao) {

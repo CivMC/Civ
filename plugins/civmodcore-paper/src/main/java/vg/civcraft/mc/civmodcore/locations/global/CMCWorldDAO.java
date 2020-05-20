@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -101,11 +104,14 @@ public class CMCWorldDAO {
 				"create table if not exists cmc_chunk_data (x int not null, z int not null, world_id smallint unsigned not null references cmc_worlds(id), "
 						+ "plugin_id smallint unsigned not null references cmc_plugins(id), data text not null,"
 						+ "primary key cmc_chunk_lookup(world_id, x, z, plugin_id));");
-		db.registerMigration(2, false, "alter table cmc_chunk_data rename column x to chunk_x",
-				"alter table cmc_chunk_data rename column z to chunk_z", 
+		db.registerMigration(2, false, 
+				"alter table cmc_chunk_data drop primary key",
+				"alter table cmc_chunk_data change column x chunk_x int not null",
+				"alter table cmc_chunk_data change column z chunk_z int not null",
 				"alter table cmc_chunk_data add column x_offset tinyint unsigned not null",
 				"alter table cmc_chunk_data add column y smallint not null",
-				"alter table cmc_chunk_data add column z_offset tinyint unsigned not null");
+				"alter table cmc_chunk_data add column z_offset tinyint unsigned not null",
+				"alter table cmc_chunk_data add primary key(world_id, chunk_x, chunk_z, plugin_id, x_offset, y, z_offset)");
 	}
 
 	public boolean updateDatabase() {
