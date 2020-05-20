@@ -16,7 +16,7 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh 'mvn clean install -U javadoc:jar javadoc:javadoc' 
+                sh 'mvn -DadditionalJOption=-Xdoclint:none clean install -U javadoc:jar javadoc:javadoc' 
             }
         }
     }
