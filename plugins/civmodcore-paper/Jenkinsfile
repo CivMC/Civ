@@ -26,7 +26,7 @@ pipeline {
             steps {
                 sh 'mvn javadoc:javadoc -DskipTests -DadditionalJOption=-Xdoclint:none '
                 step([$class: 'JavadocArchiver',
-                        javadocDir: 'api/target/site/apidocs',
+                        javadocDir: 'target/site/apidocs',
                         keepAll: false])
             }
         }
