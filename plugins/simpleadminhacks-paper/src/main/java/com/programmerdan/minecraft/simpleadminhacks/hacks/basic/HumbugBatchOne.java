@@ -14,6 +14,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -82,6 +83,9 @@ public class HumbugBatchOne extends BasicHack {
 	@AutoLoad
 	private boolean preventUsingEyeOfEnder;
 
+	@AutoLoad
+	private boolean disableEndGatewayTP;
+
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
@@ -123,7 +127,19 @@ public class HumbugBatchOne extends BasicHack {
 	@EventHandler
 	public void dragonSpawn(EntitySpawnEvent e) {
 		if (disableEnderDragon && e.getEntityType() == EntityType.ENDER_DRAGON) {
+			EnderDragon dragon = (EnderDragon) e.getEntity();
+			dragon.setPhase(EnderDragon.Phase.DYING);
+		}
+	}
+
+	@EventHandler
+	public void gatewayTP(PlayerTeleportEvent e) {
+		if (!disableEndGatewayTP) {
+			return;
+		}
+		if (e.getCause().equals(TeleportCause.END_GATEWAY)) {
 			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, these are disabled");
 		}
 	}
 
