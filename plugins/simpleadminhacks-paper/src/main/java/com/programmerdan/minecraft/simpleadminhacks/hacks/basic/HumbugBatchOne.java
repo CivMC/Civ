@@ -24,7 +24,6 @@ import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -82,6 +81,9 @@ public class HumbugBatchOne extends BasicHack {
 	@AutoLoad
 	private boolean preventUsingEyeOfEnder;
 
+	@AutoLoad
+	private boolean disableEndGatewayTP;
+
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
@@ -121,9 +123,31 @@ public class HumbugBatchOne extends BasicHack {
 	}
 
 	@EventHandler
-	public void dragonSpawn(EntitySpawnEvent e) {
-		if (disableEnderDragon && e.getEntityType() == EntityType.ENDER_DRAGON) {
+	public void preventEndCrystalUsage(PlayerInteractEvent e) {
+		if (!disableEnderDragon) {
+			return;
+		}
+		Player p = e.getPlayer();
+		Environment env = p.getWorld().getEnvironment();
+
+		if (!(env == Environment.THE_END)) {
+			return;
+		}
+
+		if (e.getAction() == Action.RIGHT_CLICK_AIR && e.getItem().getType() == Material.END_CRYSTAL) {
 			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, placing end crystals is disabled in this world!");
+		}
+	}
+
+	@EventHandler
+	public void gatewayTP(PlayerTeleportEvent e) {
+		if (!disableEndGatewayTP) {
+			return;
+		}
+		if (e.getCause() == TeleportCause.END_GATEWAY) {
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, these are disabled");
 		}
 	}
 
