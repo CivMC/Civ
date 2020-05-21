@@ -125,10 +125,20 @@ public class HumbugBatchOne extends BasicHack {
 	}
 
 	@EventHandler
-	public void dragonSpawn(EntitySpawnEvent e) {
-		if (disableEnderDragon && e.getEntityType() == EntityType.ENDER_DRAGON) {
-			EnderDragon dragon = (EnderDragon) e.getEntity();
-			dragon.setPhase(EnderDragon.Phase.DYING);
+	public void preventEndCrystalUsage(PlayerInteractEvent e) {
+		if (!disableEnderDragon) {
+			return;
+		}
+		Player p = e.getPlayer();
+		Environment env = p.getWorld().getEnvironment();
+
+		if (!env.equals(Environment.THE_END)) {
+			return;
+		}
+
+		if ((e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (e.getItem().getType().equals(Material.END_CRYSTAL))) {
+			e.setCancelled(true);
+			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, placing end crystals is disabled in this world!");
 		}
 	}
 
