@@ -10,12 +10,13 @@ import org.bukkit.Chunk;
 import org.bukkit.World;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaViewTracker;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class GlobalChunkMetaManager {
-	private CMCWorldDAO chunkDao;
-	private Map<UUID, WorldChunkMetaManager> worldToManager;
+	private final CMCWorldDAO chunkDao;
+	private final Map<UUID, WorldChunkMetaManager> worldToManager;
 
 	public GlobalChunkMetaManager(CMCWorldDAO chunkDao, WorldIDManager idManager) {
 		this.chunkDao = chunkDao;
@@ -23,7 +24,7 @@ public class GlobalChunkMetaManager {
 		for (World world : Bukkit.getWorlds()) {
 			registerWorld(idManager.getInternalWorldId(world), world);
 		}
-		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this), CivModCorePlugin.getInstance());
+		Bukkit.getPluginManager().registerEvents(new ChunkMetaListener(this, ChunkMetaViewTracker.getInstance()), CivModCorePlugin.getInstance());
 		Bukkit.getScheduler().scheduleSyncDelayedTask(CivModCorePlugin.getInstance(), () -> {
 			for (World world : Bukkit.getWorlds()) {
 				for (Chunk chunk : world.getLoadedChunks()) {

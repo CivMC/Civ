@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.locations.chunkmeta;
 
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import org.bukkit.Chunk;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,13 +9,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.event.world.WorldLoadEvent;
-
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaViewTracker;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 
 public class ChunkMetaListener implements Listener {
 
-	private GlobalChunkMetaManager manager;
+	private final GlobalChunkMetaManager manager;
+	private final ChunkMetaViewTracker viewTracker;
 	// unloading is offloaded to another thread at this level, because it requires
 	// inserting the ChunkCoord into the unloading queue, which requires the
 	// executing thread to acquire the lock on the unloading queue. During unloading
@@ -25,10 +25,11 @@ public class ChunkMetaListener implements Listener {
 	// unloaded chunks may have to wait for the unloading queue cleanup to finish.
 	// We don't want to block the main thread, so we use a different one for this
 	private Thread unloadConsumer;
-	private Queue<Chunk> unloadQueue;
+	private final Queue<Chunk> unloadQueue;
 
-	public ChunkMetaListener(GlobalChunkMetaManager manager) {
+	public ChunkMetaListener(GlobalChunkMetaManager manager, ChunkMetaViewTracker viewTracker) {
 		this.manager = manager;
+		this.viewTracker = viewTracker;
 		this.unloadQueue = new LinkedBlockingQueue<>();
 		unloadConsumer = new Thread(() -> {
 			while (true) {
@@ -59,6 +60,7 @@ public class ChunkMetaListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void chunkLoad(ChunkLoadEvent e) {
 		manager.loadChunkData(e.getChunk());
+		viewTracker.applyToAllSingleBlockViews(s -> s.handleChunkLoad(e.getChunk()));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)
@@ -67,6 +69,7 @@ public class ChunkMetaListener implements Listener {
 			unloadQueue.add(e.getChunk());
 			unloadQueue.notifyAll();
 		}
+		viewTracker.applyToAllSingleBlockViews(s -> s.handleChunkUnload(e.getChunk()));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST)

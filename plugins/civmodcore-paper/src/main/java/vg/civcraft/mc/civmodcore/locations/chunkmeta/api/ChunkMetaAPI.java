@@ -96,6 +96,7 @@ public class ChunkMetaAPI {
 		GlobalLocationTracker<T> tracker = new GlobalLocationTracker<>(dao);
 		SingleBlockAPIView<T> view = new SingleBlockAPIView<>(plugin, id, tracker);
 		existingViews.put(plugin.getName(), view);
+		ChunkMetaViewTracker.getInstance().put(view);
 		return view;
 	}
 
