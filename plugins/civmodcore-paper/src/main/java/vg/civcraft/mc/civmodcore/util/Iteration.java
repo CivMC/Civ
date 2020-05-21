@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -165,6 +166,25 @@ public final class Iteration {
 			if (!predicate.test(element)) {
 				return false;
 			}
+		}
+		return true;
+	}
+
+	/**
+	 * Determines whether a Map Entry is valid in that it exists and so does the key and value.
+	 *
+	 * @param entry The map entry itself.
+	 * @return Returns true if the entry is considered valid.
+	 */
+	public static boolean validEntry(Map.Entry<?, ?> entry) {
+		if (entry == null) {
+			return false;
+		}
+		if (entry.getKey() == null) {
+			return false;
+		}
+		if (entry.getValue() == null) {
+			return false;
 		}
 		return true;
 	}
