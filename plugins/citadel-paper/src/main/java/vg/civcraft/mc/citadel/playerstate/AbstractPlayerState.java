@@ -22,6 +22,7 @@ import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.util.DelayedItemDrop;
 
 public abstract class AbstractPlayerState {
 
@@ -93,7 +94,7 @@ public abstract class AbstractPlayerState {
 	protected static void giveReinforcement(Location location, Player p, ReinforcementType type) {
 		HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(type.getItem().clone());
 		if (!notAdded.isEmpty()) {
-			CitadelUtility.dropItemAtLocation(location, type.getItem().clone());
+			DelayedItemDrop.dropAt(location, type.getItem().clone());
 		}
 	}
 	

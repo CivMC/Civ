@@ -2,14 +2,10 @@ package vg.civcraft.mc.citadel;
 
 import java.util.logging.Level;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
@@ -25,48 +21,6 @@ import vg.civcraft.mc.namelayer.group.Group;
 public class CitadelUtility {
 	
 	private CitadelUtility() {
-	}
-
-	/**
-	 * Overload for dropItemAtLocation(Location l, ItemStack is) that accepts a
-	 * block parameter.
-	 * 
-	 * @param b  The block to drop it at
-	 * @param is The item to drop
-	 *
-	 * @author GordonFreemanQ
-	 */
-	public static void dropItemAtLocation(Block b, ItemStack is) {
-		if (b == null) {
-			Citadel.getInstance().getLogger().log(Level.WARNING, "Utility dropItemAtLocation block called with null");
-			return;
-		}
-		dropItemAtLocation(b.getLocation(), is);
-	}
-
-	/**
-	 * A better version of dropNaturally that mimics normal drop behavior.
-	 *
-	 * The built-in version of Bukkit's dropItem() method places the item at the
-	 * block vertex which can make the item jump around. This method places the item
-	 * in the middle of the block location with a slight vertical velocity to mimic
-	 * how normal broken blocks appear.
-	 * 
-	 * @param l  The location to drop the item
-	 * @param is The item to drop
-	 *
-	 * @author GordonFreemanQ
-	 */
-	public static void dropItemAtLocation(final Location l, final ItemStack is) {
-		// Schedule the item to drop 1 tick later
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Citadel.getInstance(), () -> {
-			try {
-				l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), is).setVelocity(new Vector(0, 0.05, 0));
-			} catch (Exception e) {
-				Citadel.getInstance().getLogger().log(Level.WARNING, "Utility dropItemAtLocation called but errored: ",
-						e);
-			}
-		}, 1);
 	}
 
 	public static boolean isPlant(Block plant) {
@@ -149,6 +103,7 @@ public class CitadelUtility {
 			Citadel.getInstance().getStateManager().setState(player, null);
 			return true;
 		}
+		block = ReinforcementLogic.getResponsibleBlock(block);
 		// check if reinforcement already exists
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
 		if (rein != null) {

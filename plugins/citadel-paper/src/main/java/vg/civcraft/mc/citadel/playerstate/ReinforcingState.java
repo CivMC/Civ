@@ -2,6 +2,7 @@ package vg.civcraft.mc.citadel.playerstate;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -63,10 +64,11 @@ public class ReinforcingState extends AbstractPlayerState {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You can not reinforce with this item");
 			return;
 		}
+		Block block = ReinforcementLogic.getResponsibleBlock(e.getClickedBlock());
 		// can the item reinforce the clicked block
-		if (!type.canBeReinforced(e.getClickedBlock().getType())) {
+		if (!type.canBeReinforced(block.getType())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
-					type.getName() + " can not reinforce " + e.getClickedBlock().getType());
+					type.getName() + " can not reinforce " + block.getType());
 			return;
 		}
 		// does the player have permission to reinforce on that group
@@ -77,7 +79,7 @@ public class ReinforcingState extends AbstractPlayerState {
 			Citadel.getInstance().getStateManager().setState(e.getPlayer(), null);
 			return;
 		}
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(e.getClickedBlock());
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
 		// if reinforcement exists, check if player has permission to edit it
 		if (rein != null) {
 			if (!rein.hasPermission(e.getPlayer(), CitadelPermissionHandler.getBypass())) {
@@ -105,11 +107,11 @@ public class ReinforcingState extends AbstractPlayerState {
 			if (Citadel.getInstance().getConfigManager().logCreation()) {
 				Citadel.getInstance().getLogger()
 						.info(player.getName() + " created reinforcement with " + type.getName() + " for "
-								+ e.getClickedBlock().getType().toString() + " at "
-								+ e.getClickedBlock().getLocation().toString());
+								+ block.getType().toString() + " at "
+								+ block.getLocation().toString());
 			}
 			// just create new reinforcement
-			ReinforcementLogic.createReinforcement(player, e.getClickedBlock(), type, group);
+			ReinforcementLogic.createReinforcement(player, block, type, group);
 		} else {
 			// replace existing one
 			boolean changedGroup = false;
