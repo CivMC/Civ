@@ -14,7 +14,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Levelled;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +24,6 @@ import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -132,11 +130,11 @@ public class HumbugBatchOne extends BasicHack {
 		Player p = e.getPlayer();
 		Environment env = p.getWorld().getEnvironment();
 
-		if (!env.equals(Environment.THE_END)) {
+		if (!(env == Environment.THE_END)) {
 			return;
 		}
 
-		if ((e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && (e.getItem().getType().equals(Material.END_CRYSTAL))) {
+		if (e.getAction() == Action.RIGHT_CLICK_AIR && e.getItem().getType() == Material.END_CRYSTAL) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, placing end crystals is disabled in this world!");
 		}
