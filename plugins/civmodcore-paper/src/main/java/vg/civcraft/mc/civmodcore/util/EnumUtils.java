@@ -32,12 +32,12 @@ public class EnumUtils {
 		}
 		for (T value : values) {
 			if (caseInsensitive) {
-				if (TextUtil.stringEquals(value.name(), slug)) {
+				if (TextUtil.stringEqualsIgnoreCase(value.name(), slug)) {
 					return value;
 				}
 			}
 			else {
-				if (TextUtil.stringEqualsIgnoreCase(value.name(), slug)) {
+				if (TextUtil.stringEquals(value.name(), slug)) {
 					return value;
 				}
 			}
