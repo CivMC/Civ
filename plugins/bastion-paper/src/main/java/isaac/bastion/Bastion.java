@@ -160,10 +160,10 @@ public final class Bastion extends ACivMod {
 		adminAndAbove.add(PlayerType.ADMINS);
 		adminAndAbove.add(PlayerType.OWNER);
 
-		PermissionType.registerPermission(Permissions.BASTION_PEARL, memberAndAbove);
-		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove, null, false);
-		PermissionType.registerPermission(Permissions.BASTION_LIST, modAndAbove);
-		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove);
+		PermissionType.registerPermission(Permissions.BASTION_PEARL, memberAndAbove, "Allows a pearl within a bastion.");
+		PermissionType.registerPermission(Permissions.BASTION_PLACE, modAndAbove, "Allows a player to place a bastion under this group.", false);
+		PermissionType.registerPermission(Permissions.BASTION_LIST, modAndAbove, "Allows a player to see all bastions under this group.");
+		PermissionType.registerPermission(Permissions.BASTION_MANAGE_GROUPS, adminAndAbove, "Permits a player to change a bastions group.");
 	}
 
 }
