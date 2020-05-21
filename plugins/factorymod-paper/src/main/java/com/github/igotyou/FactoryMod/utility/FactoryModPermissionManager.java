@@ -16,8 +16,8 @@ public class FactoryModPermissionManager {
 				PlayerType.OWNER);
 		List<PlayerType> modAndAbove = Arrays.asList(PlayerType.MODS, PlayerType.ADMINS,
 				PlayerType.OWNER);
-		useFactory = PermissionType.registerPermission("USE_FACTORY", memberAndAbove);
-		upgradeFactory = PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove);
+		useFactory = PermissionType.registerPermission("USE_FACTORY", memberAndAbove, "Allows a player to use factories reinforced under this group.");
+		upgradeFactory = PermissionType.registerPermission("UPGRADE_FACTORY", modAndAbove, "Allows a player to upgrade/make changes to a factory.");
 	}
 	
 	public PermissionType getUseFactory() {
