@@ -145,7 +145,7 @@ public class HumbugBatchOne extends BasicHack {
 		if (!disableEndGatewayTP) {
 			return;
 		}
-		if (e.getCause().equals(TeleportCause.END_GATEWAY)) {
+		if (e.getCause() == TeleportCause.END_GATEWAY) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, these are disabled");
 		}
