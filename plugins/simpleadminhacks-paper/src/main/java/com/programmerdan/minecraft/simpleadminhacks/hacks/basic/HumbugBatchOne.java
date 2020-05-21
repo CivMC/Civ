@@ -127,6 +127,11 @@ public class HumbugBatchOne extends BasicHack {
 		if (!disableEnderDragon) {
 			return;
 		}
+
+		if (e.getItem() == null) {
+			return;
+		}
+
 		Player p = e.getPlayer();
 		Environment env = p.getWorld().getEnvironment();
 
@@ -134,7 +139,7 @@ public class HumbugBatchOne extends BasicHack {
 			return;
 		}
 
-		if (e.getAction() == Action.RIGHT_CLICK_AIR && e.getItem().getType() == Material.END_CRYSTAL) {
+		if (e.getAction() == Action.RIGHT_CLICK_BLOCK && e.getItem().getType() == Material.END_CRYSTAL) {
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "Sorry, placing end crystals is disabled in this world!");
 		}
