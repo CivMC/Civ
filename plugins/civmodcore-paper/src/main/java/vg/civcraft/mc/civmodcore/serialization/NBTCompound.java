@@ -167,7 +167,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive boolean value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: FALSE
 	 */
 	public boolean getBoolean(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -189,7 +189,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive byte value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0x0
 	 */
 	public byte getByte(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -211,7 +211,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive short value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0
 	 */
 	public short getShort(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -233,7 +233,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive integer value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0
 	 */
 	public int getInteger(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -255,7 +255,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive long value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0L
 	 */
 	public long getLong(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -277,7 +277,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive float value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0.0f
 	 */
 	public float getFloat(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -299,7 +299,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a primitive double value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0.0d
 	 */
 	public double getDouble(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -321,7 +321,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a UUID value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: NULL
 	 */
 	public UUID getUUID(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -351,12 +351,10 @@ public class NBTCompound implements Cloneable, Validation {
 	}
 
 	/**
-	 * Removes a UUID value.
+	 * Removes a UUID value, which is necessary because Bukkit stores UUIDs by splitting up the two significant parts
+	 * into their own values.
 	 *
 	 * @param key The key of the UUID to remove.
-	 *
-	 * @apiNote This is necessary because Bukkit stores UUIDs by splitting up the two significant parts
-	 *     into their own values.
 	 */
 	public void removeUUID(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -368,7 +366,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a UUID value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: NULL
 	 */
 	public String getString(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -402,7 +400,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets a tag compound value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: NULL
 	 */
 	public NBTCompound getCompound(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -437,7 +435,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive booleans from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public boolean[] getBooleanArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -473,7 +471,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive bytes from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public byte[] getByteArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -500,7 +498,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive shorts from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public short[] getShortArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -545,7 +543,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive integers from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public int[] getIntegerArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -572,7 +570,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive longs from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public long[] getLongArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -617,7 +615,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive floats from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public float[] getFloatArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -653,7 +651,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of primitive doubles from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public double[] getDoubleArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -689,7 +687,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of Strings from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public String[] getStringArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -742,7 +740,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * Gets an array of tag compounds from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key.
+	 * @return The values of the key, default: empty array
 	 */
 	public NBTCompound[] getCompoundArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
