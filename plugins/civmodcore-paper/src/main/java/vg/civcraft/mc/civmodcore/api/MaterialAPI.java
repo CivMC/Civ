@@ -1200,6 +1200,26 @@ public final class MaterialAPI {
 	}
 
 	/**
+	 * Checks whether a material is a potion of some sort.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a potion.
+	 */
+	public static boolean isPotion(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case POTION:
+			case SPLASH_POTION:
+			case LINGERING_POTION:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
 	 * Gets a random material based on the given objects hashcode.
 	 *
 	 * @param object Object to base returned material on
