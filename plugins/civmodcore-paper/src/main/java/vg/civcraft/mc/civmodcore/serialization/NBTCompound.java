@@ -7,6 +7,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.server.v1_14_R1.NBTBase;
@@ -57,8 +58,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @param tag The NBTTagCompound to wrap.
 	 */
 	public NBTCompound(NBTTagCompound tag) {
-		Preconditions.checkArgument(tag != null);
-		this.tag = tag;
+		this.tag = tag == null ? new NBTTagCompound() : tag;
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class NBTCompound implements Cloneable, Validation {
 	/**
 	 * Returns the size of the tag compound.
 	 *
-	 * @return The size of tha tag compound.
+	 * @return The size of the tag compound.
 	 */
 	public int size() {
 		return this.tag.d();
@@ -118,6 +118,15 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public boolean hasKeyOfType(String key, int type) {
 		return this.tag.hasKeyOfType(key, type);
+	}
+
+	/**
+	 * Gets the keys within this compound.
+	 *
+	 * @return Returns the set of keys.
+	 */
+	public Set<String> getKeys() {
+		return this.tag.getKeys();
 	}
 
 	/**
@@ -415,7 +424,6 @@ public class NBTCompound implements Cloneable, Validation {
 	 *
 	 * @param key The key to set to value to.
 	 * @param value The value to set to the key.
-
 	 */
 	public void setCompound(String key, NBTCompound value) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -574,6 +582,9 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public long[] getLongArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (this.tag.hasKeyOfType(key, 12)) {
+			return this.tag.getLongArray(key);
+		}
 		NBTTagList list = this.tag.getList(key, 4);
 		long[] result = new long[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -603,11 +614,7 @@ public class NBTCompound implements Cloneable, Validation {
 			this.tag.remove(key);
 		}
 		else {
-			NBTTagList list = new NBTTagList();
-			for (long value : values) {
-				list.add(new NBTTagLong(value));
-			}
-			this.tag.set(key, list);
+			this.tag.a(key, values);
 		}
 	}
 
@@ -778,6 +785,36 @@ public class NBTCompound implements Cloneable, Validation {
 		}
 	}
 
+	/**
+	 * Gets a list value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: empty list
+	 */
+	public <T extends NBTSerializable> NBTCompoundList<T> getSerializableList(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (!this.tag.hasKeyOfType(key, 9)) {
+			return new NBTCompoundList<>();
+		}
+		return NBTCompoundList.deserialize(this.tag.getList(key, 10));
+	}
+
+	/**
+	 * Sets a list value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setSerializableList(String key, NBTCompoundList<?> value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (value == null) {
+			this.tag.remove(key);
+		}
+		else {
+			this.tag.set(key, value.serialize());
+		}
+	}
+
 	// ------------------------------------------------------------
 	// NBT Base Functions
 	// ------------------------------------------------------------
@@ -809,6 +846,11 @@ public class NBTCompound implements Cloneable, Validation {
 			return false;
 		}
 		return NullCoalescing.equalsNotNull(this.tag, ((NBTCompound) other).tag);
+	}
+
+	@Override
+	public String toString() {
+		return "NBTCompound" + this.tag.toString();
 	}
 
 	// ------------------------------------------------------------

@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
+import java.util.Objects;
 import org.junit.Assert;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.util.Validation;
@@ -110,6 +111,34 @@ public class Tester {
 		nbt.clear();
 		// Check
 		Assert.assertNull(nbt.getString(STRING_KEY));
+	}
+
+	@Test
+	public void testListValues() {
+		// Setup
+		String LIST_KEY = "tester";
+		ExampleSerializable expected = new ExampleSerializable();
+		String expectedString = "Porttitor massa id neque aliquam. Libero enim sed faucibus turpis in eu mi. " +
+				"Dignissim sodales ut eu sem integer vitae justo. Adipiscing elit duis tristique sollicitudin " +
+				"nibh. Elit ullamcorper dignissim cras tincidunt lobortis feugiat. Viverra adipiscing at in " +
+				"tellus integer feugiat scelerisque varius morbi. Auctor augue mauris augue neque gravida. Sed " +
+				"viverra tellus in hac habitasse platea dictumst. Fermentum posuere urna nec tincidunt praesent " +
+				"semper. Tristique magna sit amet purus gravida. Orci eu lobortis elementum nibh tellus molestie " +
+				"nunc non. Tincidunt eget nullam non nisi est sit amet facilisis magna. Sit amet nisl suscipit " +
+				"adipiscing bibendum. Justo donec enim diam vulputate ut. Magna ac placerat vestibulum lectus " +
+				"mauris ultrices eros.";
+		expected.setMessage(expectedString);
+		NBTCompoundList<ExampleSerializable> list = new NBTCompoundList<>();
+		list.add(expected);
+		// Process
+		NBTCompound beforeNBT = new NBTCompound();
+		beforeNBT.setSerializableList(LIST_KEY, list);
+		byte[] data = NBTCompound.toBytes(beforeNBT);
+		NBTCompound afterNBT = NBTCompound.fromBytes(data);
+		// Check
+		Assert.assertNotNull(afterNBT);
+		Assert.assertEquals(expectedString, Objects.requireNonNull(
+				afterNBT.<ExampleSerializable>getSerializableList(LIST_KEY).get(0)).getMessage());
 	}
 
 }
