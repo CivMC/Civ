@@ -20,6 +20,7 @@ public class FinaleManager {
 	private boolean attackSpeedEnabled;
 	private double attackSpeed;
 	private boolean regenHandlerEnabled;
+	private boolean ctpOnLogin;
 	private SaturationHealthRegenHandler regenHandler;
 	private WeaponModifier weaponModifier;
 	private ArmourModifier armourModifier;
@@ -31,7 +32,7 @@ public class FinaleManager {
 	private AsyncPacketHandler combatHandler;
 
 	public FinaleManager(boolean debug, boolean attackSpeedEnabled, double attackSpeed, Map<EntityDamageEvent.DamageCause, Integer> invulnerableTicks, boolean regenHandlerEnabled,
-			SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, ArmourModifier armourModifier, PotionHandler potionHandler, CombatConfig combatConfig) {
+			boolean ctpOnLogin, SaturationHealthRegenHandler regenHandler, WeaponModifier weaponModifier, ArmourModifier armourModifier, PotionHandler potionHandler, CombatConfig combatConfig) {
 		this.debug = debug;
 		this.attackSpeedEnabled = attackSpeedEnabled;
 		this.attackSpeed = attackSpeed;
@@ -42,6 +43,7 @@ public class FinaleManager {
 		this.potionHandler = potionHandler;
 		this.combatConfig = combatConfig;
 		this.invulnerableTicks = invulnerableTicks;
+		this.ctpOnLogin = ctpOnLogin;
 		
 		this.cpsHandler = new CPSHandler();
 		
@@ -65,6 +67,10 @@ public class FinaleManager {
 
 	public double getAttackSpeed() {
 		return attackSpeed;
+	}
+
+	public boolean getCTPOnLogin() {
+		return ctpOnLogin;
 	}
 
 	public SaturationHealthRegenHandler getPassiveRegenHandler() {
