@@ -210,15 +210,11 @@ public final class ReinforcementLogic {
 		if (rein != null || (mat != Material.CHEST && mat != Material.TRAPPED_CHEST)) {
 			return rein;
 		}
-		for (Block relative : BlockAPI.getPlanarSides(block)) {
-			if (relative.getType() != mat) {
-				continue;
-			}
-			rein = getReinforcementAt(relative.getLocation());
-			if (rein != null) {
-				return rein;
-			}
+
+		Block otherHalf = BlockAPI.getOtherDoubleChestBlock(block);
+		if (otherHalf == null) {
+			return null;
 		}
-		return null;
+		return getReinforcementAt(otherHalf.getLocation());
 	}
 }
