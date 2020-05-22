@@ -215,6 +215,6 @@ public final class ReinforcementLogic {
 		if (otherHalf == null) {
 			return null;
 		}
-		return rein = getReinforcementAt(otherHalf.getLocation());
+		return getReinforcementAt(otherHalf.getLocation());
 	}
 }
