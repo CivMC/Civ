@@ -1,15 +1,15 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import vg.civcraft.mc.civmodcore.locations.global.GlobalLocationTracker;
 import vg.civcraft.mc.civmodcore.locations.global.LocationTrackable;
 
 public class SingleBlockAPIView <T extends LocationTrackable> extends APIView {
 
-	private GlobalLocationTracker<T> tracker;
+	private final GlobalLocationTracker<T> tracker;
 	
 	SingleBlockAPIView(JavaPlugin plugin, short pluginID, GlobalLocationTracker<T> tracker) {
 		super(plugin, pluginID);
@@ -31,6 +31,14 @@ public class SingleBlockAPIView <T extends LocationTrackable> extends APIView {
 
 	public T remove(T trackable) {
 		return remove(trackable.getLocation());
+	}
+
+	public void handleChunkLoad(Chunk chunk) {
+
+	}
+
+	public void handleChunkUnload(Chunk chunk) {
+
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import org.bukkit.inventory.ItemStack;
  *
  * @author Maxopoly
  */
-public abstract class Clickable implements IClickable {
+public abstract class Clickable extends IClickable {
 
 	protected ItemStack item;
 

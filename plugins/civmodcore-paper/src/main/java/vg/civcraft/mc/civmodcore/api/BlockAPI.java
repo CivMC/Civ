@@ -2,12 +2,20 @@ package vg.civcraft.mc.civmodcore.api;
 
 import com.google.common.collect.ImmutableList;
 
+import net.minecraft.server.v1_14_R1.BlockProperties;
+import net.minecraft.server.v1_14_R1.BlockState;
+import net.minecraft.server.v1_14_R1.IBlockData;
+import net.minecraft.server.v1_14_R1.IBlockState;
+
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.bukkit.Location;
@@ -15,6 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
 import org.bukkit.inventory.DoubleChestInventory;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
@@ -40,6 +50,27 @@ public final class BlockAPI {
 			BlockFace.SOUTH,
 			BlockFace.WEST,
 			BlockFace.EAST);
+	
+	private static final Map<String, BlockState<?>> blockStateByIdentifier = new HashMap<>();
+	
+	static  {
+		for(Field field : BlockProperties.class.getFields()) {
+			if (!BlockState.class.isAssignableFrom(field.getType())) {
+				continue;
+			}
+			field.setAccessible(true);
+			BlockState<?> bs;
+			try {
+				bs = (BlockState<?>)field.get(null);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+				continue;
+			}
+			//when updating, search for the method returning the string given in the constructor
+			String key = bs.a();
+			blockStateByIdentifier.put(key, bs);
+		}
+	}
 
 	/**
 	 * Checks whether this block is valid and so can be handled reasonably without error.
@@ -170,6 +201,29 @@ public final class BlockAPI {
 			return null;
 		}
 		return other.getBlock();
+	}
+	
+	public static boolean setBlockProperty(Block block, String key, String value) {
+		//we need this wrapper method to trick the java generics
+		return innerSetBlockProperty(block, key, value);
+	}
+	
+	public static <V extends Comparable<V>> boolean innerSetBlockProperty(Block block, String key, String value) {
+		@SuppressWarnings("unchecked")
+		IBlockState<V> state = (IBlockState<V>) blockStateByIdentifier.get(key);
+		if (state == null) {
+			return false;
+		}
+		Optional<V> opt = state.b(value);
+		if (!opt.isPresent()) {
+			return false;
+		}
+		V valueToSet = state.b(value).get();
+		CraftBlock cb = (CraftBlock) block;
+		CraftWorld world = (CraftWorld) block.getWorld();
+		//no idea what the last integer parameter does, I found 2 and 3 being used in NMS code and stuck to that
+		world.getHandle().setTypeAndData(cb.getPosition(), cb.getNMS().set( state, valueToSet), 2);
+		return true;
 	}
 
 }

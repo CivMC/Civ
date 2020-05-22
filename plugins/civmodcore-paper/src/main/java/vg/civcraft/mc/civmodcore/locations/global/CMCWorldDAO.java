@@ -5,8 +5,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.logging.Logger;
 
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -23,11 +26,11 @@ public class CMCWorldDAO {
 		this.logger = plugin.getLogger();
 	}
 
-	public short getOrCreatePluginID(JavaPlugin plugin) {
+	public short getOrCreatePluginID(String identifier) {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertPlugin = insertConn
 						.prepareStatement("select id from cmc_plugins where name = ?;")) {
-			insertPlugin.setString(1, plugin.getName());
+			insertPlugin.setString(1, identifier);
 			try (ResultSet rs = insertPlugin.executeQuery()) {
 				if (rs.next()) {
 					return rs.getShort(1);
@@ -40,7 +43,7 @@ public class CMCWorldDAO {
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement insertPlugin = insertConn.prepareStatement(
 						"insert into cmc_plugins (name) values(?);", Statement.RETURN_GENERATED_KEYS);) {
-			insertPlugin.setString(1, plugin.getName());
+			insertPlugin.setString(1, identifier);
 			insertPlugin.execute();
 			try (ResultSet rs = insertPlugin.getGeneratedKeys()) {
 				if (!rs.next()) {
@@ -53,6 +56,10 @@ public class CMCWorldDAO {
 			logger.severe("Failed to insert plugin into db: " + e.toString());
 			return -1;
 		}
+	}
+
+	public short getOrCreatePluginID(JavaPlugin plugin) {
+		return getOrCreatePluginID(plugin.getName());
 	}
 
 	short getOrCreateWorldID(World world) {
@@ -97,6 +104,14 @@ public class CMCWorldDAO {
 				"create table if not exists cmc_chunk_data (x int not null, z int not null, world_id smallint unsigned not null references cmc_worlds(id), "
 						+ "plugin_id smallint unsigned not null references cmc_plugins(id), data text not null,"
 						+ "primary key cmc_chunk_lookup(world_id, x, z, plugin_id));");
+		db.registerMigration(2, false, 
+				"alter table cmc_chunk_data drop primary key",
+				"alter table cmc_chunk_data change column x chunk_x int not null",
+				"alter table cmc_chunk_data change column z chunk_z int not null",
+				"alter table cmc_chunk_data add column x_offset tinyint unsigned not null",
+				"alter table cmc_chunk_data add column y smallint not null",
+				"alter table cmc_chunk_data add column z_offset tinyint unsigned not null",
+				"alter table cmc_chunk_data add primary key(world_id, chunk_x, chunk_z, plugin_id, x_offset, y, z_offset)");
 	}
 
 	public boolean updateDatabase() {

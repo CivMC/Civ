@@ -17,7 +17,9 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.global.CMCWorldDAO;
 import vg.civcraft.mc.civmodcore.locations.global.WorldIDManager;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigSetAnyCommand;
 import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigCommand;
+import vg.civcraft.mc.civmodcore.playersettings.gui.ConfigGetAnyCommand;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
@@ -38,7 +40,7 @@ public final class CivModCorePlugin extends ACivMod {
 	@Override
 	public void onEnable() {
 		instance = this;
-		this.useNewCommandHandler = false;
+		this.useNewCommandHandler = true;
 		ConfigurationSerialization.registerClass(ManagedDatasource.class);
 		// Save default resources
 		saveDefaultResource("enchantments.csv");
@@ -82,6 +84,8 @@ public final class CivModCorePlugin extends ACivMod {
 		EnchantNames.loadEnchantmentNames();
 		PotionNames.loadPotionNames();
 		BottomLineAPI.init();
+		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
+		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
 	}
 
 	@Override
@@ -119,6 +123,10 @@ public final class CivModCorePlugin extends ACivMod {
 	
 	public WorldIDManager getWorldIdManager() {
 		return this.worldIdManager;
+	}
+	
+	public ManagedDatasource getDatabase() {
+		return database;
 	}
 
 }

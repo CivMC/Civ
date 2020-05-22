@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.logging.Logger;
 
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 
@@ -60,6 +61,17 @@ public abstract class CoreConfigManager {
 			}
 		}
 		return result;
+	}
+
+	protected List<Material> parseMaterialList(ConfigurationSection config, String key) {
+		return parseList(config, key, s -> {
+			try {
+				return Material.valueOf(s.toUpperCase());
+			} catch (IllegalArgumentException e) {
+				logger.warning("Could not parse material " + s + " at " + config.getCurrentPath() + ": " + e.toString());
+				return null;
+			}
+		});
 	}
 
 	protected abstract boolean parseInternal(ConfigurationSection config);

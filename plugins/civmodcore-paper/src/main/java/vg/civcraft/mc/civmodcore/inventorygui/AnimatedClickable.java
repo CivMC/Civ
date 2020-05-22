@@ -9,7 +9,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 
-public class AnimatedClickable implements IClickable {
+public class AnimatedClickable extends IClickable {
 
 	private List<ItemStack> items;
 	private long timing;

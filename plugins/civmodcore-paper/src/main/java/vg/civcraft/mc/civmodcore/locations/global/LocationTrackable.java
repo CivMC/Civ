@@ -1,7 +1,7 @@
 package vg.civcraft.mc.civmodcore.locations.global;
 
 import org.bukkit.Location;
-
+import org.bukkit.block.Block;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 
 public abstract class LocationTrackable {
@@ -20,6 +20,12 @@ public abstract class LocationTrackable {
 	
 	public Location getLocation() {
 		return location;
+	}
+
+	public void onChunkLoad(Block block) {
+	}
+
+	public void onChunkUnload(Block block) {
 	}
 	
 	public void setCacheState(CacheState state) {

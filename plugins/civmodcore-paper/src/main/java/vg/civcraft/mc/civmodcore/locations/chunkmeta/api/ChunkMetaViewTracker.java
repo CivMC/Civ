@@ -1,7 +1,12 @@
 package vg.civcraft.mc.civmodcore.locations.chunkmeta.api;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;;
+import java.util.TreeMap;
+import java.util.function.Consumer;
+
+;
 
 public final class ChunkMetaViewTracker {
 	
@@ -13,10 +18,20 @@ public final class ChunkMetaViewTracker {
 		return instance;
 	}
 
-	private Map<Short, ChunkMetaView<?>> pluginIdToView;
+	private final Map<Short, ChunkMetaView<?>> pluginIdToView;
+	private final List<SingleBlockAPIView<?>> singleBlockViews;
 
 	private ChunkMetaViewTracker() {
-		pluginIdToView = new TreeMap<>();
+		this.pluginIdToView = new TreeMap<>();
+		this.singleBlockViews = new ArrayList<>();
+	}
+
+	public void put(SingleBlockAPIView<?> view) {
+		this.singleBlockViews.add(view);
+	}
+
+	public void applyToAllSingleBlockViews(Consumer<SingleBlockAPIView<?>> function) {
+		singleBlockViews.forEach(function);
 	}
 	
 	public void put(ChunkMetaView<?> view, short pluginID) {

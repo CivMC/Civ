@@ -158,6 +158,10 @@ public abstract class PlayerSetting<T> {
 		setValue(player, value);
 	}
 	
+	public String getSerializedValueFor(UUID player) {
+		return serialize(getValue(player));
+	}
+	
 	/**
 	 * Input validation to confirm player entered values are not malformed
 	 * 

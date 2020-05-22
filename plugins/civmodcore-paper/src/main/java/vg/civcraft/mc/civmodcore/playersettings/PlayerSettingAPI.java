@@ -10,11 +10,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
  * Allows creating settings, which will automatically be available in players
