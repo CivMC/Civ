@@ -91,7 +91,8 @@
           </execution>
         </executions>
         <configuration>
-          <source>8</source>
+          <failOnError>false</failOnError>
+          <failOnWarnings>false</failOnWarnings>
         </configuration>
       </plugin>
       <plugin>
