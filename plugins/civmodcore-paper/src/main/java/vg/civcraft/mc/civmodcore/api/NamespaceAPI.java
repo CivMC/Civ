@@ -27,6 +27,9 @@ public final class NamespaceAPI {
 		if (parts.length != 2) {
 			return null;
 		}
+		if (Strings.isNullOrEmpty(parts[0]) || Strings.isNullOrEmpty(parts[1])) {
+			return null;
+		}
 		return new NamespacedKey(parts[0], parts[1]);
 	}
 
