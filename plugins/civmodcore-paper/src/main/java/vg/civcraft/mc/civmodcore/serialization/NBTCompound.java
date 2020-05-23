@@ -6,6 +6,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import java.io.IOException;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import net.minecraft.server.v1_14_R1.NBTBase;
@@ -18,19 +20,28 @@ import net.minecraft.server.v1_14_R1.NBTTagList;
 import net.minecraft.server.v1_14_R1.NBTTagLong;
 import net.minecraft.server.v1_14_R1.NBTTagShort;
 import net.minecraft.server.v1_14_R1.NBTTagString;
+import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
- * Wrapper class for NBTTagCompounds to make NBT serialisation and deserialisation as robust as possible. Intended to
+ * Wrapper class for NBTTagCompounds to make NBT serialization and deserialization as robust as possible. Intended to
  * replace {@link vg.civcraft.mc.civmodcore.itemHandling.TagManager TagManager} though the .mapToNBT and .listToNBT
  * APIs will not be re-implemented here as it's better to have a finer control of how data is written and read.
  */
-public class NBTCompound implements Cloneable {
+public class NBTCompound implements Cloneable, Validation {
 
 	public static final String NULL_STRING = "\u0000";
+
+	private static final String INTERNAL_MAP_KEY = "map";
+
+	private static final String UUID_MOST_SUFFIX = "Most";
+
+	private static final String UUID_LEAST_SUFFIX = "Least";
 
 	private NBTTagCompound tag;
 
@@ -38,7 +49,7 @@ public class NBTCompound implements Cloneable {
 	 * Creates a new NBTCompound, generating a new NBTTagCompound.
 	 */
 	public NBTCompound() {
-		this.tag = new NBTTagCompound();
+		this(new NBTTagCompound());
 	}
 
 	/**
@@ -47,8 +58,7 @@ public class NBTCompound implements Cloneable {
 	 * @param tag The NBTTagCompound to wrap.
 	 */
 	public NBTCompound(NBTTagCompound tag) {
-		Preconditions.checkArgument(tag != null);
-		this.tag = tag;
+		this.tag = tag == null ? new NBTTagCompound() : tag;
 	}
 
 	/**
@@ -63,10 +73,18 @@ public class NBTCompound implements Cloneable {
 		object.serialize(this);
 	}
 
+	@Override
+	public boolean isValid() {
+		if (this.tag == null) {
+			return false;
+		}
+		return true;
+	}
+
 	/**
 	 * Returns the size of the tag compound.
 	 *
-	 * @return The size of tha tag compound.
+	 * @return The size of the tag compound.
 	 */
 	public int size() {
 		return this.tag.d();
@@ -92,7 +110,29 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Removes a key and its respective value from the tag compound, if it exists.
+	 * Checks if the tag compound contains a particular key of a particular type.
+	 *
+	 * @param key The key to check.
+	 * @param type The type to check for.
+	 * @return Returns true if the contains the given key of the given type.
+	 */
+	public boolean hasKeyOfType(String key, int type) {
+		return this.tag.hasKeyOfType(key, type);
+	}
+
+	/**
+	 * Gets the keys within this compound.
+	 *
+	 * @return Returns the set of keys.
+	 */
+	public Set<String> getKeys() {
+		return this.tag.getKeys();
+	}
+
+	/**
+	 * <p>Removes a key and its respective value from the tag compound, if it exists.</p>
+	 *
+	 * <p>Note: If you're removing a UUID, use {@link NBTCompound#removeUUID(String)} instead.</p>
 	 *
 	 * @param key The key to remove.
 	 */
@@ -103,20 +143,14 @@ public class NBTCompound implements Cloneable {
 	/**
 	 * Clears all values from the tag compound.
 	 */
+	@SuppressWarnings("unchecked")
 	public void clear() {
-		this.tag.getKeys().forEach(this.tag::remove);
-	}
-
-	/**
-	 * Clones the NBT compound.
-	 *
-	 * @return Returns a duplicated version of this NBT compound.
-	 */
-	@Override
-	public NBTCompound clone() throws CloneNotSupportedException {
-		NBTCompound clone = (NBTCompound) super.clone();
-		clone.tag = this.tag.clone();
-		return clone;
+		try {
+			((Map<String, NBTBase>) FieldUtils.readField(this.tag, INTERNAL_MAP_KEY, true)).clear();
+		}
+		catch (IllegalAccessException ignored) {
+			this.tag.getKeys().forEach(this.tag::remove);
+		}
 	}
 
 	/**
@@ -129,12 +163,12 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Adopts the NBT data from another compound.
+	 * Adopts a copy of the NBT data from another compound.
 	 *
 	 * @param nbt The NBT data to copy and adopt.
 	 */
 	public void adopt(NBTCompound nbt) {
-		Preconditions.checkArgument(nbt != null);
+		Preconditions.checkArgument(Validation.checkValidity(nbt));
 		this.tag = nbt.tag.clone();
 	}
 
@@ -142,7 +176,7 @@ public class NBTCompound implements Cloneable {
 	 * Gets a primitive boolean value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: FALSE
 	 */
 	public boolean getBoolean(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -161,46 +195,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets an array of primitive booleans from a key.
-	 *
-	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
-	 */
-	public boolean[] getBooleanArray(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		byte[] cache = this.tag.getByteArray(key);
-		boolean[] result = new boolean[cache.length];
-		for (int i = 0; i < cache.length; i++) {
-			result[i] = cache[i] == 0x1;
-		}
-		return result;
-	}
-
-	/**
-	 * Sets an array of primitive booleans to a key.
-	 *
-	 * @param key The key to set to values to.
-	 * @param values The values to set to the key.
-	 */
-	public void setBooleanArray(String key, boolean[] values) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (Iteration.isNullOrEmpty(values)) {
-			remove(key);
-		}
-		else {
-			byte[] cache = new byte[values.length];
-			for (int i = 0; i < values.length; i++) {
-				cache[i] = (byte) (values[i] ? 0x1 : 0x0);
-			}
-			this.tag.setByteArray(key, cache);
-		}
-	}
-
-	/**
 	 * Gets a primitive byte value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0x0
 	 */
 	public byte getByte(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -219,37 +217,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets an array of primitive bytes from a key.
-	 *
-	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
-	 */
-	public byte[] getByteArray(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return this.tag.getByteArray(key);
-	}
-
-	/**
-	 * Sets an array of primitive bytes to a key.
-	 *
-	 * @param key The key to set to values to.
-	 * @param values The values to set to the key.
-	 */
-	public void setByteArray(String key, byte[] values) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
-		}
-		else {
-			this.tag.setByteArray(key, values);
-		}
-	}
-
-	/**
 	 * Gets a primitive short value from a key.
 	 *
 	 * @param key The key to get the value of.
-	 * @return The value of the key.
+	 * @return The value of the key, default: 0
 	 */
 	public short getShort(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -268,10 +239,274 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
+	 * Gets a primitive integer value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: 0
+	 */
+	public int getInteger(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		return this.tag.getInt(key);
+	}
+
+	/**
+	 * Sets a primitive integer value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setInteger(String key, int value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.setInt(key, value);
+	}
+
+	/**
+	 * Gets a primitive long value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: 0L
+	 */
+	public long getLong(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		return this.tag.getLong(key);
+	}
+
+	/**
+	 * Sets a primitive long value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setLong(String key, long value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.setLong(key, value);
+	}
+
+	/**
+	 * Gets a primitive float value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: 0.0f
+	 */
+	public float getFloat(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		return this.tag.getFloat(key);
+	}
+
+	/**
+	 * Sets a primitive float value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setFloat(String key, float value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.setFloat(key, value);
+	}
+
+	/**
+	 * Gets a primitive double value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: 0.0d
+	 */
+	public double getDouble(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		return this.tag.getDouble(key);
+	}
+
+	/**
+	 * Sets a primitive double value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setDouble(String key, double value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.setDouble(key, value);
+	}
+
+	/**
+	 * Gets a UUID value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: NULL
+	 */
+	public UUID getUUID(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (!this.tag.hasKeyOfType(key + UUID_MOST_SUFFIX, 4)) {
+			return null;
+		}
+		if (!this.tag.hasKeyOfType(key + UUID_LEAST_SUFFIX, 4)) {
+			return null;
+		}
+		return this.tag.a(key);
+	}
+
+	/**
+	 * Sets a UUID value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setUUID(String key, UUID value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (value == null) {
+			removeUUID(key);
+		}
+		else {
+			this.tag.a(key, value);
+		}
+	}
+
+	/**
+	 * Removes a UUID value, which is necessary because Bukkit stores UUIDs by splitting up the two significant parts
+	 * into their own values.
+	 *
+	 * @param key The key of the UUID to remove.
+	 */
+	public void removeUUID(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.remove(key + UUID_MOST_SUFFIX);
+		this.tag.remove(key + UUID_LEAST_SUFFIX);
+	}
+
+	/**
+	 * Gets a UUID value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: NULL
+	 */
+	public String getString(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (!this.tag.hasKeyOfType(key, 8)) {
+			return null;
+		}
+		String value = this.tag.getString(key);
+		if (NULL_STRING.equals(value)) {
+			return null;
+		}
+		return value;
+	}
+
+	/**
+	 * Sets a String value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setString(String key, String value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (value == null) {
+			this.tag.remove(key);
+		}
+		else {
+			this.tag.setString(key, value);
+		}
+	}
+
+	/**
+	 * Gets a tag compound value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: NULL
+	 */
+	public NBTCompound getCompound(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (!this.tag.hasKeyOfType(key, 10)) {
+			return null;
+		}
+		return new NBTCompound(this.tag.getCompound(key));
+	}
+
+	/**
+	 * Sets a tag compound value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setCompound(String key, NBTCompound value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (value == null) {
+			this.tag.remove(key);
+		}
+		else {
+			this.tag.set(key, value.tag);
+		}
+	}
+
+	// ------------------------------------------------------------
+	// Array Functions
+	// ------------------------------------------------------------
+
+	/**
+	 * Gets an array of primitive booleans from a key.
+	 *
+	 * @param key The key to get the values of.
+	 * @return The values of the key, default: empty array
+	 */
+	public boolean[] getBooleanArray(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		byte[] cache = this.tag.getByteArray(key);
+		boolean[] result = new boolean[cache.length];
+		for (int i = 0; i < cache.length; i++) {
+			result[i] = cache[i] != 0;
+		}
+		return result;
+	}
+
+	/**
+	 * Sets an array of primitive booleans to a key.
+	 *
+	 * @param key The key to set to values to.
+	 * @param values The values to set to the key.
+	 */
+	public void setBooleanArray(String key, boolean[] values) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (values == null) {
+			this.tag.remove(key);
+		}
+		else {
+			byte[] cache = new byte[values.length];
+			for (int i = 0; i < values.length; i++) {
+				cache[i] = (byte) (values[i] ? 0x1 : 0x0);
+			}
+			this.tag.setByteArray(key, cache);
+		}
+	}
+
+	/**
+	 * Gets an array of primitive bytes from a key.
+	 *
+	 * @param key The key to get the values of.
+	 * @return The values of the key, default: empty array
+	 */
+	public byte[] getByteArray(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		return this.tag.getByteArray(key);
+	}
+
+	/**
+	 * Sets an array of primitive bytes to a key.
+	 *
+	 * @param key The key to set to values to.
+	 * @param values The values to set to the key.
+	 */
+	public void setByteArray(String key, byte[] values) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (values == null) {
+			this.tag.remove(key);
+		}
+		else {
+			this.tag.setByteArray(key, values);
+		}
+	}
+
+	/**
 	 * Gets an array of primitive shorts from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public short[] getShortArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -300,8 +535,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setShortArray(String key, short[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			NBTTagList list = new NBTTagList();
@@ -313,32 +548,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets a primitive integer value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key.
-	 */
-	public int getInteger(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return this.tag.getInt(key);
-	}
-
-	/**
-	 * Sets a primitive integer value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setInteger(String key, int value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		this.tag.setInt(key, value);
-	}
-
-	/**
 	 * Gets an array of primitive integers from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public int[] getIntegerArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -353,8 +566,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setIntegerArray(String key, int[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			this.tag.setIntArray(key, values);
@@ -362,35 +575,16 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets a primitive long value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key.
-	 */
-	public long getLong(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return this.tag.getLong(key);
-	}
-
-	/**
-	 * Sets a primitive long value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setLong(String key, long value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		this.tag.setLong(key, value);
-	}
-
-	/**
 	 * Gets an array of primitive longs from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public long[] getLongArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (this.tag.hasKeyOfType(key, 12)) {
+			return this.tag.getLongArray(key);
+		}
 		NBTTagList list = this.tag.getList(key, 4);
 		long[] result = new long[list.size()];
 		for (int i = 0; i < result.length; i++) {
@@ -416,45 +610,19 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setLongArray(String key, long[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
-			NBTTagList list = new NBTTagList();
-			for (long value : values) {
-				list.add(new NBTTagLong(value));
-			}
-			this.tag.set(key, list);
+			this.tag.a(key, values);
 		}
-	}
-
-	/**
-	 * Gets a primitive float value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key.
-	 */
-	public float getFloat(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return this.tag.getFloat(key);
-	}
-
-	/**
-	 * Sets a primitive float value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setFloat(String key, float value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		this.tag.setFloat(key, value);
 	}
 
 	/**
 	 * Gets an array of primitive floats from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public float[] getFloatArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -474,8 +642,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setFloatArray(String key, float[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			NBTTagList list = new NBTTagList();
@@ -487,32 +655,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets a primitive double value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key.
-	 */
-	public double getDouble(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return this.tag.getDouble(key);
-	}
-
-	/**
-	 * Sets a primitive double value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setDouble(String key, double value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		this.tag.setDouble(key, value);
-	}
-
-	/**
 	 * Gets an array of primitive doubles from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public double[] getDoubleArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -532,8 +678,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setDoubleArray(String key, double[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			NBTTagList list = new NBTTagList();
@@ -545,77 +691,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets a UUID value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key, which is never null.
-	 */
-	public UUID getUUID(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		UUID uuid = this.tag.a(key);
-		if (uuid == null) {
-			return new UUID(0, 0);
-		}
-		return uuid;
-	}
-
-	/**
-	 * Sets a UUID value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setUUID(String key, UUID value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (value == null) {
-			remove(key);
-		}
-		else {
-			this.tag.a(key, value);
-		}
-	}
-
-	/**
-	 * Gets a UUID value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key.
-	 */
-	public String getString(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key, 8)) {
-			return null;
-		}
-		else {
-			String value = this.tag.getString(key);
-			if (value.equals(NULL_STRING)) {
-				return null;
-			}
-			return value;
-		}
-	}
-
-	/**
-	 * Sets a String value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-	 */
-	public void setString(String key, String value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (Strings.isNullOrEmpty(value)) {
-			remove(key);
-		}
-		else {
-			this.tag.setString(key, value);
-		}
-	}
-
-	/**
 	 * Gets an array of Strings from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public String[] getStringArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -647,8 +726,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setStringArray(String key, String[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			NBTTagList list = new NBTTagList();
@@ -665,38 +744,10 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
-	 * Gets a tag compound value from a key.
-	 *
-	 * @param key The key to get the value of.
-	 * @return The value of the key, which is never null.
-	 */
-	public NBTCompound getCompound(String key) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		return new NBTCompound(this.tag.getCompound(key));
-	}
-
-	/**
-	 * Sets a tag compound value to a key.
-	 *
-	 * @param key The key to set to value to.
-	 * @param value The value to set to the key.
-
-	 */
-	public void setCompound(String key, NBTCompound value) {
-		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (value == null || value.isEmpty()) {
-			remove(key);
-		}
-		else {
-			this.tag.set(key, value.tag);
-		}
-	}
-
-	/**
 	 * Gets an array of tag compounds from a key.
 	 *
 	 * @param key The key to get the values of.
-	 * @return The values of the key, which is never null.
+	 * @return The values of the key, default: empty array
 	 */
 	public NBTCompound[] getCompoundArray(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
@@ -722,8 +773,8 @@ public class NBTCompound implements Cloneable {
 	 */
 	public void setCompoundArray(String key, NBTCompound[] values) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (values == null || values.length < 1) {
-			remove(key);
+		if (values == null) {
+			this.tag.remove(key);
 		}
 		else {
 			NBTTagList list = new NBTTagList();
@@ -735,10 +786,82 @@ public class NBTCompound implements Cloneable {
 	}
 
 	/**
+	 * Gets a list value from a key.
+	 *
+	 * @param key The key to get the value of.
+	 * @return The value of the key, default: empty list
+	 */
+	public <T extends NBTSerializable> NBTCompoundList<T> getSerializableList(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (!this.tag.hasKeyOfType(key, 9)) {
+			return new NBTCompoundList<>();
+		}
+		return NBTCompoundList.deserialize(this.tag.getList(key, 10));
+	}
+
+	/**
+	 * Sets a list value to a key.
+	 *
+	 * @param key The key to set to value to.
+	 * @param value The value to set to the key.
+	 */
+	public void setSerializableList(String key, NBTCompoundList<?> value) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (value == null) {
+			this.tag.remove(key);
+		}
+		else {
+			this.tag.set(key, value.serialize());
+		}
+	}
+
+	// ------------------------------------------------------------
+	// NBT Base Functions
+	// ------------------------------------------------------------
+
+	@Override
+	public NBTCompound clone() {
+		NBTCompound clone;
+		try {
+			clone = (NBTCompound) super.clone();
+		}
+		catch (CloneNotSupportedException ignored) {
+			clone = new NBTCompound();
+		}
+		clone.tag = this.tag.clone();
+		return clone;
+	}
+
+	@Override
+	public int hashCode() {
+		return this.tag.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (this == other) {
+			return true;
+		}
+		if (!(other instanceof NBTCompound)) {
+			return false;
+		}
+		return NullCoalescing.equalsNotNull(this.tag, ((NBTCompound) other).tag);
+	}
+
+	@Override
+	public String toString() {
+		return "NBTCompound" + this.tag.toString();
+	}
+
+	// ------------------------------------------------------------
+	// NBT Utilities (Maybe should go into their own class?)
+	// ------------------------------------------------------------
+
+	/**
 	 * Retrieves the NBT data from an item.
 	 *
 	 * @param item The item to retrieve the NBT form.
-	 * @return Returns the item's NBT, which is never null.
+	 * @return Returns the item's NBT.
 	 */
 	public static NBTCompound fromItem(ItemStack item) {
 		if (item == null) {

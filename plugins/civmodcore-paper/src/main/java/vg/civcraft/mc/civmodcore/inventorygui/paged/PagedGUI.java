@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
@@ -69,11 +70,11 @@ public final class PagedGUI {
 	}
 
 	/**
-	 * Creates a new page to be used for this paged GUI.
+	 * <p>Creates a new page to be used for this paged GUI.</p>
+	 *
+	 * <p>Note: The returned page will be forever bound to this paged GUI, do not try to use it for another.</p>
 	 *
 	 * @return Returns a new page for this GUI.
-	 *
-	 * @apiNote The returned page will be forever bound to this paged GUI, do not try to use it for another.
 	 */
 	public Page createPage() {
 		return new Page();
@@ -87,18 +88,23 @@ public final class PagedGUI {
 	 */
 	public boolean showGUI(Player player) {
 		Preconditions.checkArgument(player != null);
-		return player.openInventory(this.inventory.getInventory()) != null;
+		InventoryView view = player.openInventory(getInventory());
+		if (view == null) {
+			return false;
+		}
+		PagedGUIManager.GUIs.put(getInventory(), this);
+		return true;
 	}
 
 	/**
-	 * Handler for when this paged GUI has been clicked.
+	 * <p>Handler for when this paged GUI has been clicked.</p>
+	 *
+	 * <p>Note: Only {@link PagedGUIManager#onInventoryClick(InventoryClickEvent)} should call this method.</p>
 	 *
 	 * @param slot The slot of the button that has been clicked.
 	 * @param clicker The player who clicked the button.
-	 *
-	 * @apiNote Only {@link PagedGUIManager#onInventoryClick(InventoryClickEvent)} should call this method.
 	 */
-	public void clicked(int slot, Player clicker, ClickType clickType) {
+	void clicked(int slot, Player clicker, ClickType clickType) {
 		if (this.currentPage == null) {
 			return;
 		}
@@ -254,11 +260,9 @@ public final class PagedGUI {
 		}
 
 		/**
-		 * Gets the particular GUI this page is bound to.
+		 * Gets the particular GUI this page is bound to. Do not attempt to use this page for another GUI, it will fail.
 		 *
 		 * @return Returns the GUI this page is bound to.
-		 *
-		 * @apiNote Do not attempt to use this page for another GUI, it will fail.
 		 */
 		public PagedGUI getGUI() {
 			return PagedGUI.this;

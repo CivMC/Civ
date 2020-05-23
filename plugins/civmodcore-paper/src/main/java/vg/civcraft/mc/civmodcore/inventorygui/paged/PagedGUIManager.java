@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.api.InventoryAPI;
  */
 public final class PagedGUIManager implements Listener {
 
-	private static final Map<Inventory, PagedGUI> GUIs = new HashMap<>();
+	static final Map<Inventory, PagedGUI> GUIs = new HashMap<>();
 
 	/**
 	 *

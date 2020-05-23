@@ -6,6 +6,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.HumanEntity;
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
@@ -44,6 +45,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Save default resources
 		saveDefaultResource("enchantments.csv");
 		saveDefaultResource("materials.csv");
+		saveDefaultResource("potions.csv");
 		saveDefaultConfig();
 		super.onEnable();
 		// Load Database
@@ -80,6 +82,7 @@ public final class CivModCorePlugin extends ACivMod {
 		// Load APIs
 		ItemNames.loadItemNames();
 		EnchantNames.loadEnchantmentNames();
+		PotionNames.loadPotionNames();
 		BottomLineAPI.init();
 		newCommandHandler.registerCommand(new ConfigSetAnyCommand());
 		newCommandHandler.registerCommand(new ConfigGetAnyCommand());
@@ -90,6 +93,7 @@ public final class CivModCorePlugin extends ACivMod {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		ItemNames.resetItemNames();
 		EnchantNames.resetEnchantmentNames();
+		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
 		this.chunkMetaManager = null;
 		// Disconnect database
@@ -104,7 +108,6 @@ public final class CivModCorePlugin extends ACivMod {
 		}
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
-		NBTSerialization.clearAllRegistrations();
 		NullCoalescing.exists(this.manager, AikarCommandManager::reset);
 		super.onDisable();
 		instance = null;

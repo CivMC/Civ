@@ -37,7 +37,11 @@ public final class EnchantAPI {
 		if (Strings.isNullOrEmpty(value)) {
 			return null;
 		}
-		Enchantment enchantment = Enchantment.getByName(value.toUpperCase());
+		Enchantment enchantment = Enchantment.getByKey(NamespaceAPI.fromString(value));
+		if (enchantment != null) {
+			return enchantment;
+		}
+		enchantment = Enchantment.getByName(value.toUpperCase());
 		if (enchantment != null) {
 			return enchantment;
 		}

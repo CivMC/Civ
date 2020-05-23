@@ -1,12 +1,12 @@
 package vg.civcraft.mc.civmodcore.api;
 
-import com.google.common.collect.ImmutableList;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.server.v1_14_R1.BlockProperties;
 import net.minecraft.server.v1_14_R1.BlockState;
-import net.minecraft.server.v1_14_R1.IBlockData;
 import net.minecraft.server.v1_14_R1.IBlockState;
-
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,25 +17,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.Chest;
+import org.bukkit.block.data.type.Chest;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
-import org.bukkit.inventory.DoubleChestInventory;
-import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.
  */
 public final class BlockAPI {
 	
-	private BlockAPI() {
-	}
+	private BlockAPI() { }
 
 	public static final List<BlockFace> ALL_SIDES = ImmutableList.of(
 			BlockFace.UP,
@@ -73,13 +67,13 @@ public final class BlockAPI {
 	}
 
 	/**
-	 * Checks whether this block is valid and so can be handled reasonably without error.
+	 * <p>Checks whether this block is valid and so can be handled reasonably without error.</p>
+	 *
+	 * <p>Note: This will return true even if the block is air. Use {@link MaterialAPI#isAir(Material)} as an
+	 * additional check if this is important to you.</p>
 	 *
 	 * @param block The block to check.
 	 * @return Returns true if the block is valid.
-	 *
-	 * @apiNote This will return true even if the block is air. Use {@link MaterialAPI#isAir(Material)} as an additional
-	 *         check if this is important to you.
 	 */
 	public static boolean isValidBlock(Block block) {
 		if (block == null) {
@@ -180,34 +174,84 @@ public final class BlockAPI {
 	}
 
 	/**
+	 * Turns once in a clockwise direction.
+	 *
+	 * @param face The starting face, which must exist and be planar.
+	 * @return Returns the next planar face in a clockwise direction.
+	 *
+	 * @exception IllegalArgumentException Throws if the given face is null or non-planar.
+	 */
+	public static BlockFace turnClockwise(BlockFace face) {
+		Preconditions.checkArgument(face != null);
+		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
+		switch (face) {
+			case NORTH:
+				return BlockFace.EAST;
+			case EAST:
+				return BlockFace.SOUTH;
+			case SOUTH:
+				return BlockFace.WEST;
+			default:
+			case WEST:
+				return BlockFace.NORTH;
+		}
+	}
+
+	/**
+	 * Turns once in a anti-clockwise direction.
+	 *
+	 * @param face The starting face, which must exist and be planar.
+	 * @return Returns the next planar face in a anti-clockwise direction.
+	 *
+	 * @exception IllegalArgumentException Throws if the given face is null or non-planar.
+	 */
+	public static BlockFace turnAntiClockwise(BlockFace face) {
+		Preconditions.checkArgument(face != null);
+		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
+		switch (face) {
+			case NORTH:
+				return BlockFace.WEST;
+			case EAST:
+				return BlockFace.NORTH;
+			case SOUTH:
+				return BlockFace.EAST;
+			default:
+			case WEST:
+				return BlockFace.SOUTH;
+		}
+	}
+
+	/**
 	 * Attempts to get the other block of a double chest.
 	 *
-	 * @param chest The block that represents the double chest block you already have.
+	 * @param block The block that represents the double chest block you already have.
 	 * @return Returns the other block or null if none can be found, or if the given block isn't that of a double chest.
 	 */
-	public static Block getOtherDoubleChestBlock(Block chest) {
-		if (!isValidBlock(chest)) {
+	public static Block getOtherDoubleChestBlock(Block block) {
+		if (!isValidBlock(block)) {
 			return null;
 		}
-		DoubleChestInventory inventory = NullCoalescing.chain(() ->
-				(DoubleChestInventory) ((Chest) chest.getState()).getInventory());
-		if (inventory == null) {
+		Chest chest = chain(() -> (Chest) block.getBlockData());
+		if (chest == null) {
 			return null;
 		}
-		Location other = Iteration.other(chest.getLocation(),
-				inventory.getLeftSide().getLocation(),
-				inventory.getRightSide().getLocation());
-		if (other == null) {
-			return null;
+		switch (chest.getType()) {
+			case LEFT: // This block is left side
+				return block.getRelative(turnClockwise(chest.getFacing()));
+			case RIGHT:
+				return block.getRelative(turnAntiClockwise(chest.getFacing()));
+			default:
+			case SINGLE:
+				return null;
 		}
-		return other.getBlock();
 	}
-	
+
 	public static boolean setBlockProperty(Block block, String key, String value) {
 		//we need this wrapper method to trick the java generics
 		return innerSetBlockProperty(block, key, value);
 	}
-	
+
+	// WHY IS THIS PUBLIC IF IT'S INNER?
 	public static <V extends Comparable<V>> boolean innerSetBlockProperty(Block block, String key, String value) {
 		@SuppressWarnings("unchecked")
 		IBlockState<V> state = (IBlockState<V>) blockStateByIdentifier.get(key);
