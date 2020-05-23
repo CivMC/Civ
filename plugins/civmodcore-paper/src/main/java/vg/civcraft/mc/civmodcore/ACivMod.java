@@ -138,7 +138,6 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @return Returns this plugin's legacy command handler, or null.
 	 */
-	@SuppressWarnings("deprecation")
 	public CommandHandler getCommandHandler() {
 		return this.handle;
 	}
@@ -148,7 +147,6 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param handler The legacy command handler to set. Null will cause de-registration.
 	 */
-	@SuppressWarnings("deprecation")
 	protected void setCommandHandler(CommandHandler handler) {
 		this.handle = handler;
 	}
