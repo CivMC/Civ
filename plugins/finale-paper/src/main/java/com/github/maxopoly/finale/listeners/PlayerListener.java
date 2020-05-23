@@ -123,6 +123,13 @@ public class PlayerListener implements Listener {
 			// Register login for custom health regen
 			manager.getPassiveRegenHandler().registerPlayer(e.getPlayer().getUniqueId());
 		}
+		if (Finale.getPlugin().getCombatTagPlusManager() == null) {
+			return;
+		}
+		if (manager.getCTPOnLogin()) {
+			Finale.getPlugin().getCombatTagPlusManager().tag(e.getPlayer(), null);
+			e.getPlayer().sendMessage(ChatColor.RED + "You have been combat tagged on login");
+		}
 	}
 
 	private void fixAttackSpeed(Player p) {

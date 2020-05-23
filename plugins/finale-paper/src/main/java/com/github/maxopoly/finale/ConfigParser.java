@@ -91,6 +91,9 @@ public class ConfigParser {
 		plugin.info("Attack speed modification enabled: " + attackEnabled);
 		double attackSpeed = config.getDouble("alterAttack.speed", 9.4);
 		plugin.info("Modified attack speed: " + attackSpeed);
+		//CombatTag players on login
+		boolean ctpOnLogin = config.getBoolean("ctpOnLogin");
+		plugin.info("CombatTag on login is set to: " + ctpOnLogin);
 		// Food Health Regen modifications for all players
 		boolean regenEnabled = config.getBoolean("foodHealthRegen.enabled", false);
 		SaturationHealthRegenHandler regenhandler = regenEnabled
@@ -113,7 +116,7 @@ public class ConfigParser {
 		combatConfig = parseCombatConfig(config.getConfigurationSection("cleanerCombat"));
 
 		// Initialize the manager
-		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, regenhandler, weapMod, armourMod,
+		manager = new FinaleManager(debug, attackEnabled, attackSpeed, invulnerableTicks, regenEnabled, ctpOnLogin, regenhandler, weapMod, armourMod,
 				potionHandler, combatConfig);
 		plugin.info("Successfully parsed config");
 		return manager;

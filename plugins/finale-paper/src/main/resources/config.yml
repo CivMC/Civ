@@ -2,6 +2,8 @@
 alterAttack:
   enabled: true
   speed: 1024
+#CombatTag player on login?
+ctpOnLogin: true
   
 cleanerCombat:
   maxReach: 6.0
