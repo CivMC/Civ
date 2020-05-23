@@ -90,10 +90,6 @@
             </goals>
           </execution>
         </executions>
-        <configuration>
-          <failOnError>false</failOnError>
-          <failOnWarnings>false</failOnWarnings>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
