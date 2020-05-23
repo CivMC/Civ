@@ -4,7 +4,6 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,8 +19,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
-import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public abstract class ACivMod extends JavaPlugin {
 
@@ -80,11 +77,9 @@ public abstract class ACivMod extends JavaPlugin {
 	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) { }
 
 	/**
-	 * Determines whether this plugin is in debug mode.
+	 * Determines whether this plugin is in debug mode, which is determined by a config value.
 	 *
 	 * @return Returns true if this plguin is in debug mode.
-	 *
-	 * @apiNote This is determined by a config value.
 	 */
 	public boolean isDebugEnabled() {
 		return getConfig().getBoolean("debug", false);
@@ -152,12 +147,12 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Retrieves this plugin's standalone command handler, if it has one.
+	 * <p>Retrieves this plugin's standalone command handler, if it has one.</p>
+	 *
+	 * <p>Note: You can use {@code this.useNewCommandHandler = false;} within your plugin's onEnable() method prior to
+	 * the super call to disable the automatic generation of a standalone command handler.</p>
 	 *
 	 * @return Returns this plugin's standalone command handler, or null.
-	 *
-	 * @apiNote You can use {@code this.useNewCommandHandler = false;} within your plugin's onEnable() method
-	 *     prior to the super call to disable the automatic generation of a standalone command handler.
 	 */
 	public StandaloneCommandHandler getStandaloneCommandHandler() {
 		return this.newCommandHandler;
@@ -256,22 +251,22 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Attempts to retrieve a plugin's instance through several known means.
+	 * <p>Attempts to retrieve a plugin's instance through several known means.</p>
 	 *
-	 * 1. If there's an instance of the class currently enabled. (Don't request ACivMod.class, or you'll just get the
-	 * the first result.
-	 *
-	 * 2. If there's a public static .getInstance() method.
-	 *
-	 * 3. If there's a static instance field.
+	 * <ol>
+	 *     <li>
+	 *         If there's an instance of the class currently enabled. (Don't request ACivMod.class, or you'll just get
+	 *         the the first result.
+	 *     </li>
+	 *     <li>If there's a public static .getInstance() method.</li>
+	 *     <li>If there's a static instance field.</li>
+	 * </ol>
 	 *
 	 * @param <T> The type of the plugin.
 	 * @param clazz The class object of the plugin.
-	 * @return Returns the first found instance of the plugin, or null.
-	 *
-	 * @apiNote Returning null doesn't necessarily mean there isn't an instance of the plugin in existence. It could
-	 *         just be that it's located some unexpected place. Additionally, just because an instance has been
-	 *         returned does not mean that instance is enabled.
+	 * @return Returns the first found instance of the plugin, or null. Nulls don't necessarily mean there isn't an
+	 *     instance of the plugin in existence. It could just be that it's located some unexpected place. Additionally,
+	 *     just because an instance has been returned does not mean that instance is enabled.
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends JavaPlugin> T getInstance(Class<T> clazz) {
