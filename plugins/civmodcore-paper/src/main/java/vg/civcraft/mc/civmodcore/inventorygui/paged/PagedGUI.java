@@ -104,7 +104,7 @@ public final class PagedGUI {
 	 * @param slot The slot of the button that has been clicked.
 	 * @param clicker The player who clicked the button.
 	 */
-	public void clicked(int slot, Player clicker, ClickType clickType) {
+	void clicked(int slot, Player clicker, ClickType clickType) {
 		if (this.currentPage == null) {
 			return;
 		}
