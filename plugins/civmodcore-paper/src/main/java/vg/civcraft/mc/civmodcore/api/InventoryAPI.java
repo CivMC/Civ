@@ -58,15 +58,14 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 * Attempts to find the first safe place to put an item.
+	 * <p>Attempts to find the first safe place to put an item.</p>
 	 *
 	 * @param inventory The inventory to attempt to find a slot in.
 	 * @param item The item to find a place for.
-	 * @return Returns an index of a slot that it's safe to add to. A return value of -1 means no safe place.
-	 *
-	 * @apiNote Even if the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory,
-	 *     as this function attempts to find the first slot that the given item stack can fit into wholly; that if it
-	 *     can technically fit but has to be distributed then there's no "first empty".
+	 * @return Returns an index of a slot that it's safe to add to. A return value of -1 means no safe place. Even if
+	 *     the return value is -1 it may still be <i>possible</i> to add the item stack to the inventory, as this
+	 *     function attempts to find the first slot that the given item stack can fit into wholly; that if it can
+	 * 	   technically fit but has to be distributed then there's no "first empty".
 	 */
 	public static int firstEmpty(Inventory inventory, ItemStack item) {
 		if (inventory == null) {
@@ -243,13 +242,13 @@ public final class InventoryAPI {
 	}
 
 	/**
-	 * Clones the given inventory for the purpose of test manipulating its contents.
+	 * <p>Clones the given inventory for the purpose of test manipulating its contents.</p>
+	 *
+	 * <p>Note: Do not type check the inventory, it's JUST a contents copy within an inventory wrapper to provide the
+	 * relevant and useful methods.</p>
 	 *
 	 * @param inventory The inventory to clone.
 	 * @return Returns a clone of the given inventory.
-	 *
-	 * @apiNote Do not type check the inventory, it's JUST a contents copy within an inventory wrapper to provide the
-	 *         relevant and useful methods.
 	 */
 	public static Inventory cloneInventory(Inventory inventory) {
 		if (inventory == null) {

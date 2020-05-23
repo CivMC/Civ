@@ -10,14 +10,14 @@ import java.util.function.Predicate;
 public final class Iteration {
 
     /**
-     * Determines whether an array is null or empty.
+     * <p>Determines whether an array is null or empty.</p>
+	 *
+	 * <p>Note: This will not check the elements within the array. It only checks if the array itself exists and has
+	 * elements. If for example the array has 100 null elements, this function would still return true.</p>
      *
      * @param <T> The type of the array.
      * @param array The array to check.
      * @return Returns true if the array exists and at least one item.
-     *
-     * @apiNote This will not check the elements within the array. It only checks if the array itself exists and has
-     *     elements. If for example the array has 100 null elements, this function would still return true.
      */
     @SafeVarargs
     public static <T> boolean isNullOrEmpty(T... array) {
@@ -25,14 +25,14 @@ public final class Iteration {
     }
 
 	/**
-	 * Determines whether a collection is null or empty.
+	 * <p>Determines whether a collection is null or empty.</p>
+	 *
+	 * <p>Note: This will not check the elements within the collection. It only checks if the collection itself exists
+	 * and has elements. If for example the collection has 100 null elements, this function would still return true.</p>
 	 *
 	 * @param <T> The type of collection.
 	 * @param collection The collection to check.
 	 * @return Returns true if the collection exists and at least one item.
-	 *
-	 * @apiNote This will not check the elements within the collection. It only checks if the collection itself exists
-	 *     and has elements. If for example the collection has 100 null elements, this function would still return true.
 	 */
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
     	return collection == null || collection.isEmpty();
@@ -98,13 +98,10 @@ public final class Iteration {
      * attempting to find the other block of a double chest or a bed or a door, etc.
      *
      * @param <T> The type of the object to find the other of.
-     * @param base The baseline object to check against.
+     * @param base The baseline object to check against, the known location.
      * @param former The first of the two unknowns.
      * @param latter The second of the two unknowns.
      * @return Returns either the former or the latter parameter if either match, or null if neither do.
-     *
-     * @apiNote The base parameter, if being used to find the other block of a double chest, will be the location of the
-     *     block that you got the Chest data from, and the two unknowns will be the left and right side.
      */
     public static <T> T other(T base, T former, T latter) {
         if (Objects.equals(base, former)) {
@@ -117,16 +114,16 @@ public final class Iteration {
     }
 
     /**
-	 * Tests whether there is at least one element in the given array that passes the criteria of the given predicate.
+	 * <p>Tests whether there is at least one element in the given array that passes the criteria of the given
+	 * predicate.</p>
+	 *
+	 * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some</p>
 	 *
 	 * @param <T> The type of the array elements.
 	 * @param array The array to iterate.
 	 * @param predicate The element tester.
 	 * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
 	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
-	 *
-	 * @apiNote Made to function the similarly to:
-	 *     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/some
 	 */
     public static <T> boolean some(T[] array, Predicate<T> predicate) {
     	if (isNullOrEmpty(array)) {
@@ -144,16 +141,15 @@ public final class Iteration {
 	}
 
 	/**
-	 * Tests whether every element in an array passes the criteria of the given predicate.
+	 * <p>Tests whether every element in an array passes the criteria of the given predicate.</p>
+	 *
+	 * <p>Emulates: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every</p>
 	 *
 	 * @param <T> The type of the array elements.
 	 * @param array The array to iterate.
 	 * @param predicate The element tester.
 	 * @return Returns true if no element fails the predicate test, or if the array fails the
 	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
-	 *
-	 * @apiNote Made to function the similarly to:
-	 *     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/every
 	 */
 	public static <T> boolean every(T[] array, Predicate<T> predicate) {
 		if (isNullOrEmpty(array)) {

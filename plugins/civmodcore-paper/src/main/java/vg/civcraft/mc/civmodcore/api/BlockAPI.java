@@ -73,13 +73,13 @@ public final class BlockAPI {
 	}
 
 	/**
-	 * Checks whether this block is valid and so can be handled reasonably without error.
+	 * <p>Checks whether this block is valid and so can be handled reasonably without error.</p>
+	 *
+	 * <p>Note: This will return true even if the block is air. Use {@link MaterialAPI#isAir(Material)} as an
+	 * additional check if this is important to you.</p>
 	 *
 	 * @param block The block to check.
 	 * @return Returns true if the block is valid.
-	 *
-	 * @apiNote This will return true even if the block is air. Use {@link MaterialAPI#isAir(Material)} as an additional
-	 *         check if this is important to you.
 	 */
 	public static boolean isValidBlock(Block block) {
 		if (block == null) {

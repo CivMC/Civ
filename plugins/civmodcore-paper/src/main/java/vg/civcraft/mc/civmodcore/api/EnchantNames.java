@@ -110,13 +110,13 @@ public final class EnchantNames {
 	}
 
 	/**
-	 * Attempts to match an enchantment with a set of details.
+	 * <p>Attempts to match an enchantment with a set of details.</p>
+	 *
+	 * <p>Note: If a valid enchantment was entered but null was returned, the server needs to update its enchantment
+	 * list, which is located in [server]/plugins/CivModCore/enchantments.csv</p>
 	 *
 	 * @param enchantment The enchantment to search with.
 	 * @return The enchantment details, or null.
-	 *
-	 * @apiNote If a valid enchantment was entered but null was returned, the server needs to update its enchantment
-	 *         list, which is located in [server]/plugins/CivModCore/enchantments.csv
 	 */
 	public static SearchResult findByEnchantment(Enchantment enchantment) {
 		if (enchantment == null) {
@@ -131,13 +131,13 @@ public final class EnchantNames {
 	}
 
 	/**
-	 * Attempts to match an abbreviation with a set of enchantment details.
-	 * For example, by default "E" will match with {@link Enchantment#DIG_SPEED} because "Efficiency"
+	 * <p>Attempts to match an abbreviation with a set of enchantment details, for example by default "E" will match
+	 * with {@link Enchantment#DIG_SPEED} because "Efficiency"</p>
+	 *
+	 * <p>Note: The abbreviation search is not case sensitive.</p>
 	 *
 	 * @param abbreviation The abbreviation to search with.
 	 * @return The enchantment details, or null.
-	 *
-	 * @apiNote The abbreviation search is not case sensitive.
 	 */
 	public static SearchResult findByAbbreviation(String abbreviation) {
 		if (Strings.isNullOrEmpty(abbreviation)) {
@@ -152,13 +152,13 @@ public final class EnchantNames {
 	}
 
 	/**
-	 * Attempts to match a display name with a set of enchantment details.
-	 * For example, by default "Efficiency" will match with {@link Enchantment#DIG_SPEED}
+	 * <p>Attempts to match a display name with a set of enchantment details, for example by default "Efficiency" will
+	 * match with {@link Enchantment#DIG_SPEED}</p>
+	 *
+	 * <p>Note: The display name search is not case sensitive.</p>
 	 *
 	 * @param displayName The display name to search with.
 	 * @return The enchantment details, or null.
-	 *
-	 * @apiNote The display name search is not case sensitive.
 	 */
 	public static SearchResult findByDisplayName(String displayName) {
 		if (Strings.isNullOrEmpty(displayName)) {

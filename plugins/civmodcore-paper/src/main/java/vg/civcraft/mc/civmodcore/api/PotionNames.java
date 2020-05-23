@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
- * Class that loads and store item names. Replaces NiceNames.
+ * Class that loads and store potion names.
  * */
 public final class PotionNames {
 
@@ -105,9 +105,6 @@ public final class PotionNames {
 	 *
 	 * @param type The potion type to search with.
 	 * @return The potion details, or null.
-	 *
-	 * @apiNote If a valid potion type was entered but null was returned, the server needs to update its potion list,
-	 *     which is located in [server]/plugins/CivModCore/potions.csv
 	 */
 	public static SearchResult findByType(PotionType type) {
 		if (type == null) {
@@ -127,9 +124,6 @@ public final class PotionNames {
 	 *
 	 * @param type The potion effect type to search with.
 	 * @return The potion details, or null.
-	 *
-	 * @apiNote If a valid potion effect type was entered but null was returned, the server needs to update its potion
-	 *     list, which is located in [server]/plugins/CivModCore/potions.csv
 	 */
 	public static SearchResult findByEffect(PotionEffectType type) {
 		if (type == null) {
@@ -148,9 +142,6 @@ public final class PotionNames {
 	 *
 	 * @param name The potion name to search with.
 	 * @return The potion details, or null.
-	 *
-	 * @apiNote If a valid potion name was entered but null was returned, the server needs to update its potion list,
-	 *     which is located in [server]/plugins/CivModCore/potions.csv
 	 */
 	public static SearchResult findByName(String name) {
 		if (Strings.isNullOrEmpty(name)) {

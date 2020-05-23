@@ -130,11 +130,11 @@ public class NBTCompound implements Cloneable, Validation {
 	}
 
 	/**
-	 * Removes a key and its respective value from the tag compound, if it exists.
+	 * <p>Removes a key and its respective value from the tag compound, if it exists.</p>
+	 *
+	 * <p>Note: If you're removing a UUID, use {@link NBTCompound#removeUUID(String)} instead.</p>
 	 *
 	 * @param key The key to remove.
-	 *
-	 * @apiNote If you're removing a UUID, use {@link NBTCompound#removeUUID(String)} instead.
 	 */
 	public void remove(String key) {
 		this.tag.remove(key);

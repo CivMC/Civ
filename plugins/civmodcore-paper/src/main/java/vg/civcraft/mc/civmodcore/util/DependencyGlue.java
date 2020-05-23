@@ -23,12 +23,12 @@ public abstract class DependencyGlue implements Listener {
 	private boolean enabled;
 
 	/**
-	 * You must provide the name of the plugin you wish to glue.
+	 * <p>You must provide the name of the plugin you wish to glue.</p>
+	 *
+	 * <p>Note: The name check is case-insensitive, but it's recommended for the name to be an exact match, if only for
+	 * readability and ease of find and replace.</p>
 	 *
 	 * @param pluginName The name of the plugin you wish to glue.
-	 *
-	 * @apiNote The name check is case-insensitive, but it's recommended for the name to be an exact match, if only for
-	 *     readability and ease of find and replace.
 	 */
 	protected DependencyGlue(String pluginName) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(pluginName));
@@ -53,12 +53,12 @@ public abstract class DependencyGlue implements Listener {
 	}
 
 	/**
-	 * Determines whether this glue is safe to use.
+	 * <p>Determines whether this glue is safe to use.</p>
+	 *
+	 * <p>This <i>should</i> be kept for internal use because if the glue plugin is enabled but not safe to use, the
+	 * APIs should themselves account for that.</p>
 	 *
 	 * @return Returns true if the glue is deemed safe to use.
-	 *
-	 * @apiNote This <i>should</i> be kept for internal use because if the glue plugin is enabled but not safe to use,
-	 *     the APIs should themselves account for that.
 	 */
 	public boolean isSafeToUse() {
 		return isEnabled();
