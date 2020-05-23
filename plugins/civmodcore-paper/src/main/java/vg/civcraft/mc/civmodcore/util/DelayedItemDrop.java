@@ -23,7 +23,6 @@ public final class DelayedItemDrop {
 	 * @param b  The block to drop it at
 	 * @param is The item to drop
 	 *
-	 * @author GordonFreemanQ
 	 */
 	public static void dropAt(Block b, ItemStack is) {
 		dropAt(b.getLocation(), is);
@@ -40,7 +39,6 @@ public final class DelayedItemDrop {
 	 * @param l  The location to drop the item
 	 * @param is The item to drop
 	 *
-	 * @author GordonFreemanQ
 	 */
 	public static void dropAt(final Location l, final ItemStack is) {
 		dropAt(l, Collections.singletonList(is));
