@@ -174,31 +174,6 @@ public final class BlockAPI {
 	}
 
 	/**
-	 * Attempts to get the other block of a double chest.
-	 *
-	 * @param block The block that represents the double chest block you already have.
-	 * @return Returns the other block or null if none can be found, or if the given block isn't that of a double chest.
-	 */
-	public static Block getOtherDoubleChestBlock(Block block) {
-		if (!isValidBlock(block)) {
-			return null;
-		}
-		Chest chest = chain(() -> (Chest) block.getBlockData());
-		if (chest == null) {
-			return null;
-		}
-		switch (chest.getType()) {
-			case LEFT: // This block is left side
-				return block.getRelative(turnClockwise(chest.getFacing()));
-			case RIGHT:
-				return block.getRelative(turnAntiClockwise(chest.getFacing()));
-			default:
-			case SINGLE:
-				return null;
-		}
-	}
-
-	/**
 	 * Turns once in a clockwise direction.
 	 *
 	 * @param face The starting face, which must exist and be planar.
@@ -243,6 +218,31 @@ public final class BlockAPI {
 			default:
 			case WEST:
 				return BlockFace.SOUTH;
+		}
+	}
+
+	/**
+	 * Attempts to get the other block of a double chest.
+	 *
+	 * @param block The block that represents the double chest block you already have.
+	 * @return Returns the other block or null if none can be found, or if the given block isn't that of a double chest.
+	 */
+	public static Block getOtherDoubleChestBlock(Block block) {
+		if (!isValidBlock(block)) {
+			return null;
+		}
+		Chest chest = chain(() -> (Chest) block.getBlockData());
+		if (chest == null) {
+			return null;
+		}
+		switch (chest.getType()) {
+			case LEFT: // This block is left side
+				return block.getRelative(turnClockwise(chest.getFacing()));
+			case RIGHT:
+				return block.getRelative(turnAntiClockwise(chest.getFacing()));
+			default:
+			case SINGLE:
+				return null;
 		}
 	}
 
