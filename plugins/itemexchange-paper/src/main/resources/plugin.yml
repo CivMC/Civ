@@ -4,7 +4,6 @@ authors: [gmlaxfanatic, Protonull]
 main: ${project.groupId}.${project.artifactId}Plugin
 api-version: 1.14
 depend: [CivModCore]
-softdepend: [NameLayer, Citadel]
 commands:
   iec: {}
   ies: {}
