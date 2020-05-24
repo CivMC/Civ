@@ -40,6 +40,7 @@ import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.RecipeAPI;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  * Listener class that handles shop and rule interactions.
@@ -234,12 +235,12 @@ public class ItemExchangeListener implements Listener {
 					continue;
 				}
 				ExchangeRule exchangeRule = ExchangeRule.fromItem(item);
-				if (exchangeRule != null && exchangeRule.isValid()) {
+				if (Validation.checkValidity(exchangeRule)) {
 					rules.add(exchangeRule);
 					continue;
 				}
 				BulkExchangeRule bulkRule = BulkExchangeRule.fromItem(item);
-				if (bulkRule != null && bulkRule.isValid()) {
+				if (Validation.checkValidity(bulkRule)) {
 					rules.addAll(bulkRule.getRules());
 					continue;
 				}

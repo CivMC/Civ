@@ -17,14 +17,14 @@ public final class TradeRule implements Validation {
 		if (this.input == null) {
 			return false;
 		}
-		if (!this.input.isValid()) {
+		if (this.input.isBroken()) {
 			return false;
 		}
 		if (this.input.getType() != Type.INPUT) {
 			return false;
 		}
 		if (this.output != null) {
-			if (!this.output.isValid()) {
+			if (this.output.isBroken()) {
 				return false;
 			}
 			if (this.output.getType() != Type.OUTPUT) {
