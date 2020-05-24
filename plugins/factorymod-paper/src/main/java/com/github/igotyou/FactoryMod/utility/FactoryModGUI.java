@@ -102,7 +102,7 @@ public class FactoryModGUI {
 			ItemStack is = new ItemStack(firstRec.getRecipeRepresentationMaterial());
 			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
 			List<String> lore = new ArrayList<>();
-			lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemNames.getItemName(fccEgg.getFuel()));
+			lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemNames.getItemName(fccEgg.getFuel().getType()));
 			lore.add("");
 			lore.add(ChatColor.GOLD + String.valueOf(fccEgg.getRecipes().size() + " recipes:"));
 			for (IRecipe rec : fccEgg.getRecipes()) {
@@ -166,6 +166,21 @@ public class FactoryModGUI {
 
 		}
 		return new LClickable(is, p -> showFactoryCreation(factory, true));
+	}
+
+	private IClickable getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
+		if (recipe == null) {
+			return null;
+		}
+		if (factory == null) {
+			return null;
+		}
+		ItemStack is = factory.getFuel();
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
+		List<String> lore = new ArrayList<>();
+		lore.add(ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
+		ItemAPI.setLore(is, lore);
+		return new LClickable(is, p -> showRecipeFor(factory, recipe, false));
 	}
 
 	private IClickable getBackClick() {
@@ -283,10 +298,11 @@ public class FactoryModGUI {
 		section.addComponent(inputSection, SlotPredicates.rectangle(6, 4));
 
 		//TODO opens the setup recipe instead if is upgrade TODO TODO TODO
+		IClickable fuelClick = getFuelClick(factory, getUpgradeRecipe(factory, getParent(factory)));
 		IClickable setupClick = getSetupClick(factory);
 		IClickable backClick = getBackClick();
 		IClickable mainMenuClick = getMainMenuClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(null, null, setupClick, mainMenuClick, backClick);
+		StaticDisplaySection middleLine = new StaticDisplaySection(null, fuelClick, setupClick, mainMenuClick, backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(6, 1, 0, 4));
 
 		List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
@@ -315,12 +331,12 @@ public class FactoryModGUI {
 		// top right corner
 		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(5, 4));
-
+		IClickable fuelClick = getFuelClick(this.currentFactory, recipe);
 		IClickable setupClick = getSetupClick(this.currentFactory);
 		IClickable backClick = getBackClick();
 		IClickable recSumSup = new DecorationStack(recipe.getRecipeRepresentation());
 		IClickable mainMenuClick = getMainMenuClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, null, recSumSup, mainMenuClick,
+		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, fuelClick, recSumSup, mainMenuClick,
 				backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(5, 1, 0, 4));
 
