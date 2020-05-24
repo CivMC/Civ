@@ -3,8 +3,10 @@ package com.untamedears.itemexchange.rules.modifiers;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
+import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
@@ -25,6 +27,7 @@ import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "POTION", order = 40)
 public final class PotionModifier extends ModifierData<PotionModifier> {
 

@@ -2,7 +2,9 @@ package com.untamedears.itemexchange.rules.modifiers;
 
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
+import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
 import vg.civcraft.mc.civmodcore.util.EnumUtils;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOK", order = 100)
 public final class BookModifier extends ModifierData<BookModifier> {
 

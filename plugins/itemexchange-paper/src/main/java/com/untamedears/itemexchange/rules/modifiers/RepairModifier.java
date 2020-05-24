@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.rules.modifiers;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
@@ -10,6 +11,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -31,6 +33,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  *     <li>Negative integers mean that that repair level or lower, eg: RepairCost &lt;= 15</li>
  * </ul>
  */
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "REPAIR", order = 60)
 public final class RepairModifier extends ModifierData<RepairModifier> {
 

@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.rules.interfaces;
 
-import co.aikar.commands.annotation.CommandAlias;
-import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.util.List;
 import java.util.Objects;
@@ -19,7 +17,6 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
  * @param <T> The type of the child class, for example:
  * {@code public final class BookModifier extends ModifierData<BookModifier> {}}
  */
-@CommandAlias(SetCommand.ALIAS)
 public abstract class ModifierData<T extends ModifierData<T>> extends AikarCommand
 		implements ExchangeData, NBTSerializable, Comparable<ModifierData<?>> {
 

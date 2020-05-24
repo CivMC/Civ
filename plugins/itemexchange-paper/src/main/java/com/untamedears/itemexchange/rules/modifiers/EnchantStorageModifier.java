@@ -2,8 +2,10 @@ package com.untamedears.itemexchange.rules.modifiers;
 
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
+import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -21,6 +23,7 @@ import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "BOOKCHANTS", order = 20)
 public final class EnchantStorageModifier extends ModifierData<EnchantStorageModifier> {
 

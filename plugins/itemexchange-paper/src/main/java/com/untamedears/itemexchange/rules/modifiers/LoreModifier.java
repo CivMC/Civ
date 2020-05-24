@@ -1,11 +1,13 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
+import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
@@ -22,6 +24,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "LORE", order = 30)
 public class LoreModifier extends ModifierData<LoreModifier> {
 

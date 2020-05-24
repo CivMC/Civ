@@ -1,5 +1,7 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
+import co.aikar.commands.annotation.CommandAlias;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -12,6 +14,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
+@CommandAlias(SetCommand.ALIAS) // This is needed to make commands work
 @Modifier(slug = "EXAMPLE", order = 12345)
 public class _ExampleModifier extends ModifierData<_ExampleModifier> {
 

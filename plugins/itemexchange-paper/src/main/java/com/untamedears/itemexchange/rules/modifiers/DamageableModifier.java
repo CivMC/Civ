@@ -3,12 +3,14 @@ package com.untamedears.itemexchange.rules.modifiers;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -22,6 +24,7 @@ import org.bukkit.inventory.meta.Damageable;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DAMAGE", order = 50)
 public final class DamageableModifier extends ModifierData<DamageableModifier> {
 

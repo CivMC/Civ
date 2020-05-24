@@ -1,6 +1,7 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
 import co.aikar.commands.InvalidCommandArgument;
+import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
@@ -9,6 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
@@ -37,6 +39,7 @@ import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
+@CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "ENCHANTS", order = 10)
 public class EnchantModifier extends ModifierData<EnchantModifier> {
 
