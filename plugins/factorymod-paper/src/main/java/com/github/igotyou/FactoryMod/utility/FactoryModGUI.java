@@ -177,9 +177,7 @@ public class FactoryModGUI {
 		}
 		ItemStack is = factory.getFuel().clone();
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
-		List<String> lore = new ArrayList<>();
-		lore.add(ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
-		ItemAPI.addLore(is, lore);
+		ItemAPI.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
 		return new DecorationStack(is);
 	}
 
