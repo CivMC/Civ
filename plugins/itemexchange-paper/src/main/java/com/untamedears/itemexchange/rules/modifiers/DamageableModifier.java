@@ -10,6 +10,7 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
+import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -39,6 +40,9 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 
 	@Override
 	public DamageableModifier construct(@NotNull ItemStack item) {
+		if (!ItemExchangeConfig.canDamageItem(item.getType())) {
+			return null;
+		}
 		Damageable meta = chain(() -> (Damageable) item.getItemMeta());
 		if (meta == null) {
 			return null;

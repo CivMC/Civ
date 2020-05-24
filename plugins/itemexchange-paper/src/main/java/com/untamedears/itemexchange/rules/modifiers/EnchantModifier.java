@@ -10,6 +10,7 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -62,6 +63,9 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 
 	@Override
 	public EnchantModifier construct(@NotNull ItemStack item) {
+		if (!ItemExchangeConfig.canEnchantItem(item.getType())) {
+			return null;
+		}
 		EnchantModifier modifier = new EnchantModifier();
 		modifier.requiredEnchants = item.getEnchantments();
 		return modifier;

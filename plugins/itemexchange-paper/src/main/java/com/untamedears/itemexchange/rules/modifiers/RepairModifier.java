@@ -11,6 +11,7 @@ import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -48,6 +49,9 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 
 	@Override
 	public RepairModifier construct(@NotNull ItemStack item) {
+		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
+			return null;
+		}
 		Repairable meta = chain(() -> (Repairable) item.getItemMeta());
 		if (meta == null) {
 			return null;
