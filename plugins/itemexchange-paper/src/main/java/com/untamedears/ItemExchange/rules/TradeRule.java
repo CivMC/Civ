@@ -1,32 +1,18 @@
 package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
-import com.untamedears.itemexchange.rules.interfaces.BaseRule;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  * This class represents a specific trade within a shop, an input and output pair, or a donation.
  */
-public final class TradeRule extends BaseRule {
+public final class TradeRule implements Validation {
 
 	private ExchangeRule input;
 
 	private ExchangeRule output;
 
 	@Override
-	protected void onLock() {
-		if (this.input != null) {
-			this.input.lock();
-		}
-		if (this.output != null) {
-			this.output.lock();
-		}
-	}
-
-	/**
-	 * Determines whether the trade is valid.
-	 *
-	 * @return Returns true if the trade is valid.
-	 */
 	public boolean isValid() {
 		if (this.input == null) {
 			return false;
@@ -63,7 +49,6 @@ public final class TradeRule extends BaseRule {
 	 * @param input The input rule to set.
 	 */
 	public void setInput(ExchangeRule input) {
-		checkLocked();
 		this.input = input;
 	}
 
@@ -91,7 +76,6 @@ public final class TradeRule extends BaseRule {
 	 * @param output The output rule to set.
 	 */
 	public void setOutput(ExchangeRule output) {
-		checkLocked();
 		this.output = output;
 	}
 

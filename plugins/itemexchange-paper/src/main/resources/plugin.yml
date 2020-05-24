@@ -1,8 +1,8 @@
 name: ${project.artifactId}
 version: ${project.version}
 authors: [gmlaxfanatic, Protonull]
-main: ${plugin.main}
-api-version: ${minecraft.version}
+main: ${project.groupId}.${project.artifactId}Plugin
+api-version: 1.14
 depend: [CivModCore]
 softdepend: [NameLayer, Citadel]
 commands:

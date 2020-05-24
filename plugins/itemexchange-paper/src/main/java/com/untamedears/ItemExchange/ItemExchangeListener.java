@@ -1,8 +1,7 @@
 package com.untamedears.itemexchange;
 
-import com.google.common.base.Strings;
+import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
 import com.untamedears.itemexchange.events.IETransactionEvent;
-import com.untamedears.itemexchange.glue.NameLayerGlue;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
@@ -34,13 +33,20 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.RecipeAPI;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
+/**
+ * Listener class that handles shop and rule interactions.
+ */
 public class ItemExchangeListener implements Listener {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ExchangeRule.class.getSimpleName());
 
 	private static final long TIME_BETWEEN_CLICKS = 200L;
 
@@ -52,14 +58,10 @@ public class ItemExchangeListener implements Listener {
 
 	private final Map<Player, Integer> ruleIndex = new HashMap<>();
 
-	private final ItemExchangePlugin plugin;
-
-	public ItemExchangeListener(ItemExchangePlugin plugin) {
-		this.plugin = plugin;
-	}
-
 	/**
-	 * Responds when a player interacts with a shop
+	 * Responds when a player interacts with a shop.
+	 *
+	 * @param event The player interaction event itself.
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void playerInteractionEvent(PlayerInteractEvent event) {
@@ -78,15 +80,15 @@ public class ItemExchangeListener implements Listener {
 			return;
 		}
 		// Block must be a supported block type
-		if (!ItemExchangePlugin.SHOP_BLOCKS.contains(clicked.getType())) {
+		if (!ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType())) {
 			return;
 		}
-		this.plugin.debug("[Shop] Shop Parsing Starting---------");
+		LOGGER.debug("[Shop] Shop Parsing Starting---------");
 		// Limit player interactions to once per 200ms
 		long now = System.currentTimeMillis();
 		long pre = this.playerInteractionCooldowns.getOrDefault(player, 0L);
 		if (now - pre < TIME_BETWEEN_CLICKS) {
-			this.plugin.debug("[Shop] Cancelling, interacting too quickly.");
+			LOGGER.debug("[Shop] Cancelling, interacting too quickly.");
 			return;
 		}
 		this.playerInteractionCooldowns.put(player, now);
@@ -95,7 +97,7 @@ public class ItemExchangeListener implements Listener {
 				NullCoalescing.chain(() -> ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
 		ShopRule shop = ShopRule.getShopFromInventory(inventory);
 		if (shop == null || shop.getTrades().isEmpty()) {
-			this.plugin.debug("[Shop] Cancelling, that is not a shop.");
+			LOGGER.debug("[Shop] Cancelling, that is not a shop.");
 			return;
 		}
 		// Cancel the event if the player is in creative, because the mere action
@@ -103,53 +105,49 @@ public class ItemExchangeListener implements Listener {
 		if (player.getGameMode() == GameMode.CREATIVE) {
 			event.setCancelled(true);
 		}
-		this.plugin.debug("[Shop] Shop successfully parsed.");
+		LOGGER.debug("[Shop] Shop successfully parsed.");
 		// Check if the player has interacted with this specific shop before
 		// If not then switch over to this shop and display its catalogue
 		boolean justBrowsing = false;
 		boolean shouldCycle = true;
 		assert inventory.getLocation() != null;
-		if (!this.shopRecord.containsKey(player) ||
-				!Objects.equals(inventory.getLocation(), this.shopRecord.get(player)) ||
-				!this.ruleIndex.containsKey(player)) {
+		if (!this.shopRecord.containsKey(player)
+				|| !Objects.equals(inventory.getLocation(), this.shopRecord.get(player))
+				|| !this.ruleIndex.containsKey(player)) {
 			this.shopRecord.put(player, inventory.getLocation());
 			this.ruleIndex.put(player, 0);
 			justBrowsing = true;
 			shouldCycle = false;
-			this.plugin.debug("[Shop] Buyer hasn't interacted with this shop before. Browsing.");
+			LOGGER.debug("[Shop] Buyer hasn't interacted with this shop before. Browsing.");
 		}
 		// If the player hasn't interacted with the shop for a while, then don't
 		// insta-purchase on the next interaction.
 		if (now - pre > TIME_BEFORE_TIMEOUT) {
 			justBrowsing = true;
-			this.plugin.debug("[Shop] Interaction timed out. Browsing.");
+			LOGGER.debug("[Shop] Interaction timed out. Browsing.");
 		}
 		// If the player is holding nothing, just browse
 		if (!ItemAPI.isValidItem(event.getItem())) {
 			justBrowsing = true;
-			this.plugin.debug("[Shop] Buyer is not holding an input item. Browsing.");
+			LOGGER.debug("[Shop] Buyer is not holding an input item. Browsing.");
 		}
 		// Attempt to get the trade from the shop
 		shop.setCurrentTradeIndex(this.ruleIndex.getOrDefault(player, 0));
 		TradeRule trade = shop.getCurrentTrade();
 		if (trade == null || !trade.isValid()) {
 			this.ruleIndex.remove(player);
-			this.plugin.debug("[Shop] Cancelling, could not find a valid trade.");
+			LOGGER.debug("[Shop] Cancelling, could not find a valid trade.");
 			return;
 		}
-		this.plugin.debug("[Shop] Valid trade found.");
+		LOGGER.debug("[Shop] Valid trade found.");
 		ExchangeRule inputRule = trade.getInput();
 		ExchangeRule outputRule = trade.getOutput();
 		// Check if the input is limited to a group, and if so whether the viewer
 		// has permission to purchase from that group. If NameLayer is enabled.
-		if (NameLayerGlue.INSTANCE.isEnabled()) {
-			String groupName = inputRule.getGroupName();
-			if (!Strings.isNullOrEmpty(groupName)) {
-				if (!NameLayerGlue.INSTANCE.hasAccess(groupName, NameLayerGlue.PURCHASE_PERMISSION, player)) {
-					justBrowsing = true;
-					this.plugin.debug("[Shop] Buyer cannot purchase from that Group limited trade. Browsing.");
-				}
-			}
+		BrowseOrPurchaseEvent limitTester = BrowseOrPurchaseEvent.emit(trade);
+		if (limitTester.isLimited()) {
+			justBrowsing = true;
+			LOGGER.debug("[Shop] Buyer cannot purchase from that Group limited trade. Browsing.");
 		}
 		// If the player's hand is empty or holding the wrong item, just scroll
 		// through the catalogue.
@@ -157,22 +155,22 @@ public class ItemExchangeListener implements Listener {
 			if (shouldCycle) {
 				trade = shop.cycleTrades(!player.isSneaking());
 				if (trade == null) {
-					this.plugin.debug("[Shop] Cancelling, could not find a valid trade when cycling.");
+					LOGGER.debug("[Shop] Cancelling, could not find a valid trade when cycling.");
 					this.ruleIndex.remove(player);
 					return;
 				}
-				this.plugin.debug("[Shop] Catalogue cycled.");
+				LOGGER.debug("[Shop] Catalogue cycled.");
 				this.ruleIndex.put(player, shop.getCurrentTradeIndex());
 			}
-			this.plugin.debug("[Shop] Presenting catalogue to buyer.");
+			LOGGER.debug("[Shop] Presenting catalogue to buyer.");
 			shop.presentShopToPlayer(player);
 			return;
 		}
-		this.plugin.debug("[Shop] Attempting transaction.");
+		LOGGER.debug("[Shop] Attempting transaction.");
 		// Check that the buyer has enough of the inputs
 		ItemStack[] inputItems = inputRule.getStock(player.getInventory());
 		if (inputItems.length < 1) {
-			this.plugin.debug("[Shop] Cancelling, buyer doesn't have enough of the input.");
+			LOGGER.debug("[Shop] Cancelling, buyer doesn't have enough of the input.");
 			player.sendMessage(ChatColor.RED + "You don't have enough of the input.");
 			return;
 		}
@@ -181,7 +179,7 @@ public class ItemExchangeListener implements Listener {
 		if (trade.hasOutput()) {
 			outputItems = outputRule.getStock(inventory);
 			if (outputItems.length < 1) {
-				this.plugin.debug("[Shop] Cancelling, shop doesn't have enough of the output.");
+				LOGGER.debug("[Shop] Cancelling, shop doesn't have enough of the output.");
 				player.sendMessage(ChatColor.RED + "Shop does not have enough in stock.");
 				return;
 			}
@@ -189,22 +187,26 @@ public class ItemExchangeListener implements Listener {
 		// Attempt to transfer the items between the shop and the buyer
 		boolean successfulTransfer;
 		if (trade.hasOutput()) {
-			successfulTransfer = InventoryAPI
-					.safelyTradeBetweenInventories(player.getInventory(), inputItems, inventory, outputItems);
+			successfulTransfer = InventoryAPI.safelyTradeBetweenInventories(
+					player.getInventory(),
+					inputItems,
+					inventory,
+					outputItems);
 		}
 		else {
-			successfulTransfer =
-					InventoryAPI.safelyTransactBetweenInventories(player.getInventory(), inputItems, inventory);
+			successfulTransfer = InventoryAPI.safelyTransactBetweenInventories(
+					player.getInventory(),
+					inputItems,
+					inventory);
 		}
 		if (!successfulTransfer) {
-			this.plugin.debug("[Shop] Could not complete that transaction.");
+			LOGGER.debug("[Shop] Could not complete that transaction.");
 			player.sendMessage(ChatColor.RED + "Could not complete that transaction!");
 			return;
 		}
 		Utilities.successfulTransactionButton(event.getClickedBlock());
-		trade.lock();
-		Bukkit.getServer().getPluginManager()
-				.callEvent(new IETransactionEvent(player, inventory, trade, inputItems, outputItems));
+		Bukkit.getServer().getPluginManager().callEvent(
+				new IETransactionEvent(player, inventory, trade, inputItems, outputItems));
 		if (trade.hasOutput()) {
 			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 		}
@@ -214,11 +216,13 @@ public class ItemExchangeListener implements Listener {
 	}
 
 	/**
-	 * Allow players to craft bulk rule items
+	 * Allow players to craft bulk rule items.
+	 *
+	 * @param event The prepare item craft event itself.
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onBulkRuleCraftPrepare(PrepareItemCraftEvent event) {
-		if (!RecipeAPI.matchRecipe(ItemExchangePlugin.BULK_RULE_RECIPE, event.getRecipe())) {
+		if (!RecipeAPI.matchRecipe(ItemExchangeConfig.getBulkItemRecipe(), event.getRecipe())) {
 			return;
 		}
 		CraftingInventory inventory = event.getInventory();
@@ -250,6 +254,8 @@ public class ItemExchangeListener implements Listener {
 
 	/**
 	 * If the player drops a bulk rule item, split it into its constituent rules.
+	 *
+	 * @param event The player drop item event itself.
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerDropItem(PlayerDropItemEvent event) {
@@ -265,7 +271,9 @@ public class ItemExchangeListener implements Listener {
 	}
 
 	/**
-	 * Prevent rule items from being moved
+	 * Prevent rule items from being moved.
+	 *
+	 * @param event The inventory move event itself.
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onInventoryMove(InventoryMoveItemEvent event) {
@@ -275,7 +283,9 @@ public class ItemExchangeListener implements Listener {
 	}
 
 	/**
-	 * Prevent rule items from being picked up by hoppers
+	 * Prevent rule items from being picked up by hoppers.
+	 *
+	 * @param event The inventory pickup event itself.
 	 */
 	@EventHandler(ignoreCancelled = true)
 	public void onInventoryPickupItem(InventoryPickupItemEvent event) {

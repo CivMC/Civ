@@ -19,6 +19,9 @@ import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
+/**
+ * A series of Utilities of ItemExchange
+ */
 public final class Utilities {
 
 	/**

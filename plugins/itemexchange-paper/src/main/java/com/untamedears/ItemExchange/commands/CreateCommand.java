@@ -7,8 +7,8 @@ import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.untamedears.itemexchange.ItemExchangePlugin;
-import com.untamedears.itemexchange.glue.CitadelGlue;
+import com.untamedears.itemexchange.ItemExchangeConfig;
+import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
 import com.untamedears.itemexchange.utility.Utilities;
@@ -17,15 +17,12 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Commands class involved in creating shop exchange rules
@@ -54,7 +51,7 @@ public class CreateCommand extends AikarCommand {
 			if (!BlockAPI.isValidBlock(block)) {
 				continue;
 			}
-			if (!ItemExchangePlugin.SHOP_BLOCKS.contains(block.getType())) {
+			if (!ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
 				// If the block is a full block then prevent the ray from going through walls.
 				if (block.getType().isOccluding()) {
 					break;
@@ -63,9 +60,8 @@ public class CreateCommand extends AikarCommand {
 					continue;
 				}
 			}
-			Inventory inventory = NullCoalescing.chain(() -> ((InventoryHolder) block.getState()).getInventory());
-			if (!InventoryAPI.isValidInventory(inventory) ||
-					(CitadelGlue.INSTANCE.isEnabled() && !CitadelGlue.INSTANCE.hasAccessToChest(block, player))) {
+			Inventory inventory = BlockInventoryRequestEvent.emit(block, player).getInventory();
+			if (inventory == null) {
 				player.sendMessage(ChatColor.RED + "You do not have access to that.");
 				return;
 			}
@@ -100,16 +96,12 @@ public class CreateCommand extends AikarCommand {
 				player.sendMessage(ChatColor.RED + "You cannot exchange rule blocks!");
 				return;
 			}
-			ExchangeRule inputRule = new ExchangeRule();
-			inputRule.setType(Type.INPUT);
-			inputRule.trace(inputItem);
+			ExchangeRule inputRule = new ExchangeRule(Type.INPUT, inputItem);
 			if (outputItem == null) {
 				Utilities.giveItemsOrDrop(inventory, inputRule.toItem());
 			}
 			else {
-				ExchangeRule outputRule = new ExchangeRule();
-				outputRule.setType(Type.OUTPUT);
-				outputRule.trace(outputItem);
+				ExchangeRule outputRule = new ExchangeRule(Type.OUTPUT, outputItem);
 				Utilities.giveItemsOrDrop(inventory, inputRule.toItem(), outputRule.toItem());
 			}
 			player.sendMessage(CREATION_SUCCESS);
@@ -129,10 +121,7 @@ public class CreateCommand extends AikarCommand {
 		if (!ItemAPI.isValidItem(held)) {
 			throw new InvalidCommandArgument("You must be holding an item to do that.");
 		}
-		ExchangeRule rule = new ExchangeRule();
-		rule.setType(type);
-		rule.trace(held);
-		Utilities.givePlayerExchangeRule(player, rule);
+		Utilities.givePlayerExchangeRule(player, new ExchangeRule(type, held));
 		player.sendMessage(CREATION_SUCCESS);
 	}
 

@@ -1,143 +1,109 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.*;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
+import com.untamedears.itemexchange.utility.NBTEncodings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import vg.civcraft.mc.civmodcore.api.PotionNames;
+import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
-public final class PotionModifier extends ModifierData {
+@Modifier(slug = "POTION", order = 40)
+public final class PotionModifier extends ModifierData<PotionModifier> {
 
-	public static final String SLUG = "POTION";
+	public static final String BASE_KEY = "base";
 
-	public PotionModifier() {
-		super(SLUG, 200);
+	public static final String EFFECTS_KEY = "effects";
+
+	private PotionData base;
+	private List<PotionEffect> effects;
+
+	@Override
+	public PotionModifier construct() {
+		return new PotionModifier();
 	}
 
-	public static ModifierData fromItem(ItemStack item) {
-		switch (item.getType()) {
-			case POTION:
-			case SPLASH_POTION:
-			case LINGERING_POTION:
-				PotionModifier modifier = new PotionModifier();
-				modifier.trace(item);
-				return modifier;
-			default:
-				return null;
+	@Override
+	public PotionModifier construct(@NotNull ItemStack item) {
+		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		if (meta == null) {
+			return null;
 		}
+		PotionModifier modifier = new PotionModifier();
+		modifier.base = meta.getBasePotionData();
+		modifier.effects = meta.getCustomEffects();
+		return modifier;
 	}
 
 	@Override
-	public boolean isValid() {
-		return !this.nbt.isEmpty();
+	public boolean isBroken() {
+		if (this.base == null) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
-	public void trace(ItemStack item) {
-		ItemAPI.handleItemMeta(item, (PotionMeta meta) -> {
-			setPotionData(meta.getBasePotionData());
-			setEffects(meta.getCustomEffects());
-			if (meta.hasDisplayName()) {
-				setName(meta.getDisplayName());
-			}
-			else {
-				switch (meta.getBasePotionData().getType()) {
-					default:
-					case UNCRAFTABLE:
-						setName("Uncraftable Potion");
-						break;
-					case WATER:
-						setName("Water Bottle");
-						break;
-					case MUNDANE:
-						setName("Mundane Potion");
-						break;
-					case THICK:
-						setName("Thick Potion");
-						break;
-					case AWKWARD:
-						setName("Awkward Potion");
-						break;
-					case NIGHT_VISION:
-						setName("Potion of Night Vision");
-						break;
-					case INVISIBILITY:
-						setName("Potion of Invisibility");
-						break;
-					case JUMP:
-						setName("Potion of Leaping");
-						break;
-					case FIRE_RESISTANCE:
-						setName("Potion of Fire Resistance");
-						break;
-					case SPEED:
-						setName("Potion of Swiftness");
-						break;
-					case SLOWNESS:
-						setName("Potion of Slowness");
-						break;
-					case WATER_BREATHING:
-						setName("Potion of Water Breathing");
-						break;
-					case INSTANT_HEAL:
-						setName("Potion of Healing");
-						break;
-					case INSTANT_DAMAGE:
-						setName("Potion of Harming");
-						break;
-					case POISON:
-						setName("Potion of Poison");
-						break;
-					case REGEN:
-						setName("Potion of Regeneration");
-						break;
-					case STRENGTH:
-						setName("Potion of Strength");
-						break;
-					case WEAKNESS:
-						setName("Potion of Weakness");
-						break;
-					case LUCK:
-						setName("Potion of Luck");
-						break;
-				}
-			}
+	public boolean conforms(@NotNull ItemStack item) {
+		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		if (meta == null) {
 			return false;
-		});
+		}
+		if (!equalsNotNull(this.base, meta.getBasePotionData())) {
+			return false;
+		}
+		List<PotionEffect> heldEffects = getEffects();
+		List<PotionEffect> metaEffects = meta.getCustomEffects();
+		if (metaEffects.size() != heldEffects.size()) {
+			return false;
+		}
+		if (!metaEffects.containsAll(heldEffects)) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
-	public boolean conforms(ItemStack item) {
-		boolean[] conforms = { false };
-		ItemAPI.handleItemMeta(item, (PotionMeta meta) -> {
-			if (!Objects.equals(getPotionData(), meta.getBasePotionData())) {
-				return false;
-			}
-			List<PotionEffect> heldEffects = getEffects();
-			List<PotionEffect> metaEffects = meta.getCustomEffects();
-			if (metaEffects.size() != heldEffects.size()) {
-				return false;
-			}
-			if (!metaEffects.containsAll(heldEffects)) {
-				return false;
-			}
-			conforms[0] = true;
-			return false;
-		});
-		return conforms[0];
+	public void serialize(NBTCompound nbt) {
+		nbt.setCompound(BASE_KEY, NBTEncodings.encodePotionData(this.base));
+		nbt.setCompoundArray(EFFECTS_KEY, getEffects().stream()
+				.map(NBTEncodings::encodePotionEffect)
+				.toArray(NBTCompound[]::new));
+	}
+
+	@Override
+	public void deserialize(NBTCompound nbt) {
+		setPotionData(NBTEncodings.decodePotionData(nbt.getCompound(BASE_KEY)));
+		setEffects(Arrays.stream(nbt.getCompoundArray(EFFECTS_KEY))
+				.map(NBTEncodings::decodePotionEffect)
+				.collect(Collectors.toCollection(ArrayList::new)));
+	}
+
+	@Nullable
+	@Override
+	public String getDisplayedListing() {
+		String listing = getName();
+		if (Strings.isNullOrEmpty(listing)) {
+			return null;
+		}
+		return ChatColor.WHITE + listing;
 	}
 
 	@Override
@@ -145,54 +111,41 @@ public final class PotionModifier extends ModifierData {
 		return Collections.singletonList(ChatColor.AQUA + "Potion Name: " + ChatColor.WHITE + getName());
 	}
 
-	public String getName() {
-		String name = this.nbt.getString("name");
-		if (Strings.isNullOrEmpty(name)) {
-			return "Uncraftable Potion";
-		}
-		return name;
-	}
+	// ------------------------------------------------------------
+	// Getters + Setters
+	// ------------------------------------------------------------
 
-	public void setName(String name) {
-		this.nbt.setString("name", name);
+	public String getName() {
+		if (this.base == null) {
+			return null;
+		}
+		SearchResult found = PotionNames.findByType(this.base.getType());
+		if (found == null) {
+			return null;
+		}
+		return found.getName();
 	}
 
 	public PotionData getPotionData() {
-		NBTCompound nbt = this.nbt.getCompound("base");
-		return new PotionData(
-				NullCoalescing.chain(() -> PotionType.valueOf(nbt.getString("type")), PotionType.UNCRAFTABLE),
-				nbt.getBoolean("extended"), nbt.getBoolean("upgraded"));
+		if (this.base == null) {
+			return new PotionData(PotionType.UNCRAFTABLE, false, false);
+		}
+		return this.base;
 	}
 
 	public void setPotionData(PotionData data) {
-		this.nbt.setCompound("base", new NBTCompound() {{
-			setString("type", NullCoalescing.chain(() -> data.getType().name(), PotionType.UNCRAFTABLE.name()));
-			setBoolean("extended", NullCoalescing.chain(data::isExtended, false));
-			setBoolean("extended", NullCoalescing.chain(data::isUpgraded, false));
-		}});
+		this.base = data;
 	}
 
 	public List<PotionEffect> getEffects() {
-		return Arrays.stream(this.nbt.getCompoundArray("effects")).
-				map((nbt) -> new PotionEffect(
-						NullCoalescing.chain(() -> PotionEffectType.getByName(nbt.getString("type"))),
-						nbt.getInteger("duration"), nbt.getInteger("amplifier"), nbt.getBoolean("ambient"),
-						nbt.getBoolean("particles"))).
-				collect(Collectors.toCollection(ArrayList::new));
+		if (this.effects == null) {
+			return Lists.newArrayList();
+		}
+		return this.effects;
 	}
 
 	public void setEffects(List<PotionEffect> effects) {
-		if (effects == null || effects.isEmpty()) {
-			this.nbt.remove("effects");
-			return;
-		}
-		this.nbt.setCompoundArray("effects", effects.stream().map((effect) -> new NBTCompound() {{
-			setString("type", NullCoalescing.chain(() -> effect.getType().getName()));
-			setInteger("duration", effect.getDuration());
-			setInteger("amplifier", effect.getAmplifier());
-			setBoolean("ambient", effect.isAmbient());
-			setBoolean("particles", effect.hasParticles());
-		}}).toArray(NBTCompound[]::new));
+		this.effects = effects;
 	}
 
 }

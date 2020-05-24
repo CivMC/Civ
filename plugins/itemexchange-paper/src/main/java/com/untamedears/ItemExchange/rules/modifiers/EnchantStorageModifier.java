@@ -1,108 +1,124 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.untamedears.itemexchange.rules.ExchangeRule;
+import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
+import com.untamedears.itemexchange.utility.NBTEncodings;
 import com.untamedears.itemexchange.utility.Utilities;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
+import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.api.EnchantAPI;
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
-public final class EnchantStorageModifier extends ModifierData {
+@Modifier(slug = "BOOKCHANTS", order = 20)
+public final class EnchantStorageModifier extends ModifierData<EnchantStorageModifier> {
 
-	public static final String SLUG = "ENCHANT";
+	public static final String ENCHANTS_KEY = "enchants";
 
-	public EnchantStorageModifier() {
-		super(SLUG, 0);
+	private Map<Enchantment, Integer> enchants;
+
+	@Override
+	public EnchantStorageModifier construct() {
+		return new EnchantStorageModifier();
 	}
 
-	public static ModifierData fromItem(ItemStack item) {
-		if (item.getType() == Material.ENCHANTED_BOOK) {
-			EnchantStorageModifier modifier = new EnchantStorageModifier();
-			modifier.trace(item);
-			return modifier;
+	@Override
+	public EnchantStorageModifier construct(@NotNull ItemStack item) {
+		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
+		if (meta == null) {
+			return null;
 		}
-		return null;
+		EnchantStorageModifier modifier = new EnchantStorageModifier();
+		this.enchants = meta.getStoredEnchants();
+		return modifier;
 	}
 
 	@Override
-	public boolean isValid() {
-		return !this.nbt.isEmpty();
+	public boolean isBroken() {
+		for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
+			if (!Iteration.validEntry(entry)) {
+				return true;
+			}
+			if (entry.getValue() == ExchangeRule.ANY) {
+				continue;
+			}
+			if (!EnchantAPI.isSafeEnchantment(entry.getKey(), entry.getValue())) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override
-	public void trace(ItemStack item) {
-		ItemAPI.handleItemMeta(item, (EnchantmentStorageMeta meta) -> {
-			setEnchants(meta.getStoredEnchants());
+	public boolean conforms(@NotNull ItemStack item) {
+		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
+		if (meta == null) {
 			return false;
-		});
-	}
-
-	@Override
-	public boolean conforms(ItemStack item) {
-		boolean[] conforms = { false };
-		ItemAPI.handleItemMeta(item, (EnchantmentStorageMeta meta) -> {
-			if (meta.hasStoredEnchants() != hasEnchants()) {
+		}
+		if (hasEnchants() != meta.hasStoredEnchants()) {
+			return false;
+		}
+		if (hasEnchants()) {
+			if (!Utilities.conformsRequiresEnchants(this.enchants, meta.getStoredEnchants(), false)) {
 				return false;
 			}
-			Map<Enchantment, Integer> ruleEnchants = getEnchants();
-			Map<Enchantment, Integer> metaEnchants = meta.getStoredEnchants();
-			if (!Utilities.conformsRequiresEnchants(ruleEnchants, metaEnchants, false)) {
-				return false;
-			}
-			conforms[0] = true;
-			return false;
-		});
-		return conforms[0];
+		}
+		return true;
+	}
+
+	@Override
+	public void serialize(NBTCompound nbt) {
+		nbt.setCompound(ENCHANTS_KEY, NBTEncodings.encodeLeveledEnchants(getEnchants()));
+	}
+
+	@Override
+	public void deserialize(NBTCompound nbt) {
+		setEnchants(NBTEncodings.decodeLeveledEnchants(nbt.getCompound(ENCHANTS_KEY)));
 	}
 
 	@Override
 	public List<String> getDisplayedInfo() {
-		if (!hasEnchants()) {
-			return Collections.singletonList(ChatColor.DARK_AQUA + "No stored enchants.");
+		List<String> info = Lists.newArrayList();
+		for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
+			EnchantNames.SearchResult result = EnchantNames.findByEnchantment(entry.getKey());
+			if (entry.getValue() == ExchangeRule.ANY) {
+				info.add(ChatColor.AQUA + result.getDisplayName() + " %");
+			}
+			else {
+				info.add(ChatColor.AQUA + result.getDisplayName() + " " + entry.getValue());
+			}
 		}
-		else {
-			return Collections.singletonList(
-					ChatColor.DARK_AQUA + "Stored enchants: " + ChatColor.YELLOW + getEnchants().entrySet().stream().
-							filter((entry) -> EnchantAPI.isSafeEnchantment(entry.getKey(), entry.getValue())).
-							map((entry) -> NullCoalescing
-									.chain(() -> EnchantNames.findByEnchantment(entry.getKey()).getAbbreviation(),
-											"UNKNOWN") + entry.getValue()).
-							collect(Collectors.joining(" ")));
-		}
+		return info;
 	}
+
+	// ------------------------------------------------------------
+	// Getters + Setters
+	// ------------------------------------------------------------
 
 	public boolean hasEnchants() {
-		return this.nbt.hasKey("bookEnchants");
+		return !Iteration.isNullOrEmpty(this.enchants);
 	}
 
-	@SuppressWarnings("deprecation")
 	public Map<Enchantment, Integer> getEnchants() {
-		return Arrays.
-				stream(this.nbt.getCompoundArray("bookEnchants")).
-				collect(Collectors.toMap((nbt) -> Enchantment.getByName(nbt.getString("enchant")),
-						(nbt) -> nbt.getInteger("level")));
+		if (this.enchants == null) {
+			return Maps.newHashMap();
+		}
+		return this.enchants;
 	}
 
-	@SuppressWarnings("deprecation")
 	public void setEnchants(Map<Enchantment, Integer> enchants) {
-		this.nbt.setCompoundArray("bookEnchants", chain(() -> enchants.entrySet().stream().
-				map(entry -> new NBTCompound() {{
-					setString("enchant", chain(() -> entry.getKey().getName()));
-					setInteger("level", entry.getValue());
-				}}).
-				toArray(NBTCompound[]::new)));
+		this.enchants = enchants;
 	}
 
 }
