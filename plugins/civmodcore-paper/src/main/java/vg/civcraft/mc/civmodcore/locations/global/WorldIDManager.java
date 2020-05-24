@@ -88,7 +88,7 @@ public class WorldIDManager {
 	/**
 	 * Retrieves the internal id used for a world.
 	 * 
-	 * @param name World to get ID for
+	 * @param world World to get ID for
 	 * @return Id of the world or -1 if no such world is known
 	 */
 	public short getInternalWorldId(World world) {
