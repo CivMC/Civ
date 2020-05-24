@@ -5,28 +5,17 @@ import co.aikar.commands.annotation.CatchUnknown;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.google.common.base.Strings;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.ExchangeRule;
-import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
-import com.untamedears.itemexchange.rules.modifiers.RepairModifier;
 import com.untamedears.itemexchange.utility.RuleHandler;
-import com.untamedears.itemexchange.utility.Utilities;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.namelayer.GroupManager;
-import vg.civcraft.mc.namelayer.group.Group;
 
 @CommandAlias(SetCommand.ALIAS)
 public class SetCommand extends AikarCommand {
