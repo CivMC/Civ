@@ -1,5 +1,7 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
+
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
@@ -17,7 +19,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "DISPLAY", order = 0)
@@ -51,7 +52,7 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 		if (hasDisplayName() != meta.hasDisplayName()) {
 			return false;
 		}
-		if (!NullCoalescing.equalsNotNull(getDisplayName(), meta.getDisplayName())) {
+		if (hasDisplayName() && !equalsNotNull(getDisplayName(), meta.getDisplayName())) {
 			return false;
 		}
 		return true;

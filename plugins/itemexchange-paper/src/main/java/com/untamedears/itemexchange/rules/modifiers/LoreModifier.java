@@ -66,7 +66,7 @@ public final class LoreModifier extends ModifierData<LoreModifier> {
 
 	@Override
 	public void serialize(NBTCompound nbt) {
-		nbt.setStringArray(LORE_KEY, getLore().toArray(new String[0]));
+		nbt.setStringArray(LORE_KEY, this.lore == null ? null : this.lore.toArray(new String[0]));
 	}
 
 	@Override

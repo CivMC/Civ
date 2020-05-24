@@ -90,13 +90,11 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	@Override
 	public boolean conforms(@NotNull ItemStack item) {
 		Map<Enchantment, Integer> enchants = item.getEnchantments();
-		if (!Utilities.conformsRequiresEnchants(this.requiredEnchants, enchants, this.allowUnlistedEnchants)) {
+		if (!Utilities.conformsRequiresEnchants(getRequiredEnchants(), enchants, isAllowingUnlistedEnchants())) {
 			return false;
 		}
-		if (!Iteration.isNullOrEmpty(this.excludedEnchants)) {
-			if (!Collections.disjoint(this.excludedEnchants, enchants.keySet())) {
-				return false;
-			}
+		if (!Collections.disjoint(getExcludedEnchants(), enchants.keySet())) {
+			return false;
 		}
 		return true;
 	}
