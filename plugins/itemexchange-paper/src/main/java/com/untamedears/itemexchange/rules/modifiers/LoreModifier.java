@@ -26,7 +26,7 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "LORE", order = 30)
-public class LoreModifier extends ModifierData<LoreModifier> {
+public final class LoreModifier extends ModifierData<LoreModifier> {
 
 	public static final String LORE_KEY = "lore";
 

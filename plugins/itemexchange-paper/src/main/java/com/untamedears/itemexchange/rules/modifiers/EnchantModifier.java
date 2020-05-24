@@ -41,7 +41,7 @@ import vg.civcraft.mc.civmodcore.util.Iteration;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "ENCHANTS", order = 10)
-public class EnchantModifier extends ModifierData<EnchantModifier> {
+public final class EnchantModifier extends ModifierData<EnchantModifier> {
 
 	public static final String REQUIRED_KEY = "required";
 
