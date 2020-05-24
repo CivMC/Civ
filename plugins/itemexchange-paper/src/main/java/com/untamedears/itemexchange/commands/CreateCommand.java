@@ -121,6 +121,9 @@ public class CreateCommand extends AikarCommand {
 		if (!ItemAPI.isValidItem(held)) {
 			throw new InvalidCommandArgument("You must be holding an item to do that.");
 		}
+		if (Utilities.isExchangeRule(held)) {
+			throw new InvalidCommandArgument("You cannot create a rule from a rule.", false);
+		}
 		Utilities.givePlayerExchangeRule(player, new ExchangeRule(type, held));
 		player.sendMessage(CREATION_SUCCESS);
 	}
