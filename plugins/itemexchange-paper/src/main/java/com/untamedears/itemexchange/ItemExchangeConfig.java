@@ -25,6 +25,12 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static final ItemStack RULE_ITEM = new ItemStack(Material.STONE_BUTTON);
 
+	private static final Set<Material> ITEMS_CAN_ENCHANT = new HashSet<>();
+
+	private static final Set<Material> ITEMS_CAN_DAMAGE = new HashSet<>();
+
+	private static final Set<Material> ITEMS_CAN_REPAIR = new HashSet<>();
+
 	private static ShapelessRecipe BULK_RULE_RECIPE;
 
 	public ItemExchangeConfig(ItemExchangePlugin plugin) {
@@ -36,6 +42,9 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		parseShopCompatibleBlocks(config.getStringList("supportedBlocks"));
 		parseSuccessButtonBlocks(config.getStringList("disallowedSuccessButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
+		parseEnchantableItems(config.getStringList("enchantables"));
+		parseDamageableItems(config.getStringList("damageables"));
+		parseRepairableItems(config.getStringList("repairables"));
 		return true;
 	}
 
@@ -43,6 +52,9 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		SHOP_COMPATIBLE_BLOCKS.clear();
 		SUCCESS_BUTTON_BLOCKS.clear();
 		RULE_ITEM.setType(Material.STONE_BUTTON);
+		ITEMS_CAN_ENCHANT.clear();
+		ITEMS_CAN_DAMAGE.clear();
+		ITEMS_CAN_REPAIR.clear();
 		if (BULK_RULE_RECIPE != null) {
 			RecipeAPI.removeRecipe(BULK_RULE_RECIPE);
 			BULK_RULE_RECIPE = null;
@@ -119,6 +131,66 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		RecipeAPI.registerRecipe(BULK_RULE_RECIPE);
 	}
 
+	private void parseEnchantableItems(List<String> config) {
+		for (String raw : config) {
+			Material material = MaterialAPI.getMaterial(raw);
+			if (material == null) {
+				LOGGER.warn("Could not parse enchantable material: " + raw);
+				continue;
+			}
+			if (!material.isItem()) {
+				LOGGER.warn("Enchantable material is not an item: " + raw);
+				continue;
+			}
+			if (ITEMS_CAN_ENCHANT.contains(material)) {
+				LOGGER.warn("Enchantable material duplicate: " + raw);
+				continue;
+			}
+			LOGGER.info("Enchantable material parsed: " + material.name());
+			ITEMS_CAN_ENCHANT.add(material);
+		}
+	}
+
+	private void parseDamageableItems(List<String> config) {
+		for (String raw : config) {
+			Material material = MaterialAPI.getMaterial(raw);
+			if (material == null) {
+				LOGGER.warn("Could not parse damageable material: " + raw);
+				continue;
+			}
+			if (!material.isItem()) {
+				LOGGER.warn("Damageable material is not an item: " + raw);
+				continue;
+			}
+			if (ITEMS_CAN_DAMAGE.contains(material)) {
+				LOGGER.warn("Damageable material duplicate: " + raw);
+				continue;
+			}
+			LOGGER.info("Damageable material parsed: " + material.name());
+			ITEMS_CAN_DAMAGE.add(material);
+		}
+	}
+
+	private void parseRepairableItems(List<String> config) {
+		for (String raw : config) {
+			Material material = MaterialAPI.getMaterial(raw);
+			if (material == null) {
+				LOGGER.warn("Could not parse repairable material: " + raw);
+				continue;
+			}
+			if (!material.isItem()) {
+				LOGGER.warn("Repairable material is not an item: " + raw);
+				continue;
+			}
+			if (ITEMS_CAN_REPAIR.contains(material)) {
+				LOGGER.warn("Repairable material duplicate: " + raw);
+				continue;
+			}
+			LOGGER.info("Repairable material parsed: " + material.name());
+			ITEMS_CAN_REPAIR.add(material);
+		}
+	}
+
 	public static Set<Material> getShopCompatibleBlocks() {
 		return Collections.unmodifiableSet(SHOP_COMPATIBLE_BLOCKS);
 	}
@@ -141,6 +213,22 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static ShapelessRecipe getBulkItemRecipe() {
 		return BULK_RULE_RECIPE;
+	}
+
+	public static Set<Material> getEnchantableItems() {
+		return Collections.unmodifiableSet(ITEMS_CAN_ENCHANT);
+	}
+
+	public static boolean canEnchantItem(Material material) {
+		return ITEMS_CAN_ENCHANT.contains(material);
+	}
+
+	public static Set<Material> getDamageableItems() {
+		return Collections.unmodifiableSet(ITEMS_CAN_DAMAGE);
+	}
+
+	public static Set<Material> getRepairableItems() {
+		return Collections.unmodifiableSet(ITEMS_CAN_REPAIR);
 	}
 
 }
