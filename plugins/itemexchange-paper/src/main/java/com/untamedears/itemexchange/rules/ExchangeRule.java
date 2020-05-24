@@ -93,7 +93,7 @@ public final class ExchangeRule implements ExchangeData {
 		this.type = type;
 		this.material = item.getType();
 		this.amount = item.getAmount();
-		ItemExchangePlugin.getModifierRegistrar().getModifiers()
+		ItemExchangePlugin.modifierRegistrar().getModifiers()
 				.map((template) -> template.construct(item))
 				.forEachOrdered(this.modifiers::put);
 	}

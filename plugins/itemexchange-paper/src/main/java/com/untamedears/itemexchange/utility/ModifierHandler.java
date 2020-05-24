@@ -13,7 +13,7 @@ public class ModifierHandler<T extends ModifierData<T>> extends RuleHandler {
 	@SuppressWarnings("unchecked")
 	public ModifierHandler(Player player, T template) {
 		super(player);
-		if (ItemExchangePlugin.getModifierRegistrar().getModifier(template.getClass()) != template) {
+		if (ItemExchangePlugin.modifierRegistrar().getModifier(template.getClass()) != template) {
 			throw new InvalidCommandArgument("Could not match that modifier.", false);
 		}
 		this.template = template;

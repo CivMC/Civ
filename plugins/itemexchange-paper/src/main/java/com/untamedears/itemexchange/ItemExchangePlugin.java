@@ -1,8 +1,8 @@
 package com.untamedears.itemexchange;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
-
 import com.untamedears.itemexchange.commands.CommandRegistrar;
+import com.untamedears.itemexchange.rules.BulkExchangeRule;
+import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
@@ -22,66 +22,69 @@ public class ItemExchangePlugin extends ACivMod {
 
 	private static ItemExchangePlugin instance;
 
-	private final ItemExchangeConfig config = new ItemExchangeConfig(this);
+	private static ItemExchangeConfig config;
 
-	private final AikarCommandManager commands = new CommandRegistrar(this);
+	private static AikarCommandManager commands;
 
-	private final ModifierRegistrar modifiers = new ModifierRegistrar(this);
+	private static ModifierRegistrar modifiers;
 
 	@Override
 	public void onEnable() {
 		instance = this;
 		useNewCommandHandler = false;
 		super.onEnable();
+		registerSerializable(ExchangeRule.class);
+		registerSerializable(BulkExchangeRule.class);
 		saveDefaultConfig();
-		this.config.parse();
-		this.commands.register();
-		this.modifiers.registerModifier(new DisplayNameModifier()); // 0
-		this.modifiers.registerModifier(new EnchantModifier()); // 10
-		this.modifiers.registerModifier(new EnchantStorageModifier()); // 20
-		this.modifiers.registerModifier(new LoreModifier()); // 30
-		this.modifiers.registerModifier(new PotionModifier()); // 40
-		this.modifiers.registerModifier(new DamageableModifier()); // 50
-		this.modifiers.registerModifier(new RepairModifier()); // 60
-		this.modifiers.registerModifier(new BookModifier()); // 100
+		config = new ItemExchangeConfig(this);
+		config.parse();
+		commands = new CommandRegistrar(this);
+		commands.register();
+		modifiers = new ModifierRegistrar();
+		modifiers.registerModifier(new DisplayNameModifier()); // 0
+		modifiers.registerModifier(new EnchantModifier()); // 10
+		modifiers.registerModifier(new EnchantStorageModifier()); // 20
+		modifiers.registerModifier(new LoreModifier()); // 30
+		modifiers.registerModifier(new PotionModifier()); // 40
+		modifiers.registerModifier(new DamageableModifier()); // 50
+		modifiers.registerModifier(new RepairModifier()); // 60
+		modifiers.registerModifier(new BookModifier()); // 100
 		registerListener(new ItemExchangeListener());
+		// Allow debug logging
 	}
 
 	@Override
 	public void onDisable() {
-		this.commands.reset();
-		this.config.reset();
-		this.modifiers.reset();
+		if (commands != null) {
+			commands.reset();
+			commands = null;
+		}
+		if (config != null) {
+			config.reset();
+			config = null;
+		}
+		if (modifiers != null) {
+			modifiers.reset();
+			modifiers = null;
+		}
 		super.onDisable();
 		instance = null;
 	}
 
-	public ItemExchangeConfig config() {
-		return this.config;
+	public static ItemExchangeConfig config() {
+		return config;
 	}
 
-	public AikarCommandManager commandManager() {
-		return this.commands;
+	public static AikarCommandManager commandManager() {
+		return commands;
 	}
 
-	public ModifierRegistrar modifierRegistrar() {
-		return this.modifiers;
+	public static ModifierRegistrar modifierRegistrar() {
+		return modifiers;
 	}
 
 	public static ItemExchangePlugin getInstance() {
 		return instance;
-	}
-
-	public static ItemExchangeConfig getConfiguration() {
-		return chain(() -> instance.config);
-	}
-
-	public static AikarCommandManager getCommandManager() {
-		return chain(() -> instance.commands);
-	}
-
-	public static ModifierRegistrar getModifierRegistrar() {
-		return chain(() -> instance.modifiers);
 	}
 
 }

@@ -7,19 +7,15 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Stream;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
  *
  */
 public final class ModifierRegistrar {
 
-	private final ItemExchangePlugin plugin;
-
 	private final Set<ModifierData<?>> modifiers = new HashSet<>();
-
-	public ModifierRegistrar(ItemExchangePlugin plugin) {
-		this.plugin = plugin;
-	}
 
 	/**
 	 * Registers a modifier.
@@ -37,8 +33,9 @@ public final class ModifierRegistrar {
 		if (!Modifier.isFinal(modifier.getClass().getModifiers())) {
 			throw new IllegalArgumentException("That modifier is not final.");
 		}
+		NBTSerialization.registerNBTSerializable(modifier.getClass());
 		this.modifiers.add(modifier);
-		this.plugin.commandManager().registerCommand(modifier);
+		ItemExchangePlugin.commandManager().registerCommand(modifier);
 	}
 
 	/**
@@ -50,8 +47,9 @@ public final class ModifierRegistrar {
 		if (modifier == null) {
 			return;
 		}
+		NBTSerialization.unregisterNBTSerializable(modifier.getClass());
 		this.modifiers.remove(modifier);
-		this.plugin.commandManager().deregisterCommand(modifier);
+		ItemExchangePlugin.commandManager().deregisterCommand(modifier);
 	}
 
 	/**
@@ -83,7 +81,10 @@ public final class ModifierRegistrar {
 	 * De-registers all registered modifiers.
 	 */
 	public void reset() {
-		this.modifiers.clear();
+		Iteration.iterateThenClear(this.modifiers, modifier -> {
+			NBTSerialization.unregisterNBTSerializable(modifier.getClass());
+			ItemExchangePlugin.commandManager().deregisterCommand(modifier);
+		});
 	}
 
 }
