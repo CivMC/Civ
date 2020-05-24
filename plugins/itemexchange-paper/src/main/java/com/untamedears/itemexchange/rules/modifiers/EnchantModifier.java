@@ -49,7 +49,7 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 
 	public static final String UNLISTED_KEY = "unlisted";
 
-	public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([\\w_]+)(\\d*)$");
+	public static final Pattern SET_ENCHANT_PATTERN = Pattern.compile("^([+?\\-])([A-Za-z_]+)([\\d]*)$");
 
 	private Map<Enchantment, Integer> requiredEnchants;
 	private Set<Enchantment> excludedEnchants;
