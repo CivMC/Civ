@@ -1,4 +1,3 @@
-enabled: true
 debug: false
 
 # The blocks that are valid shop blocks for ItemExchange.

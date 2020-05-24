@@ -215,20 +215,16 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		return BULK_RULE_RECIPE;
 	}
 
-	public static Set<Material> getEnchantableItems() {
-		return Collections.unmodifiableSet(ITEMS_CAN_ENCHANT);
-	}
-
 	public static boolean canEnchantItem(Material material) {
 		return ITEMS_CAN_ENCHANT.contains(material);
 	}
 
-	public static Set<Material> getDamageableItems() {
-		return Collections.unmodifiableSet(ITEMS_CAN_DAMAGE);
+	public static boolean canDamageItem(Material material) {
+		return ITEMS_CAN_DAMAGE.contains(material);
 	}
 
-	public static Set<Material> getRepairableItems() {
-		return Collections.unmodifiableSet(ITEMS_CAN_REPAIR);
+	public static boolean canRepairItem(Material material) {
+		return ITEMS_CAN_REPAIR.contains(material);
 	}
 
 }
