@@ -33,7 +33,7 @@ public final class JukeAlertPermissionHandler {
 		snitchImmune = PermissionType.registerPermission("SNITCH_IMMUNE", new ArrayList<>(memberAndAbove), "Stops a snitch from recording a players actions.");
 		lookupSnitch = PermissionType.registerPermission("DETECT_SNITCH", new ArrayList<>(memberAndAbove));
 		clearLogs = PermissionType.registerPermission("CLEAR_SNITCHLOG", new ArrayList<>(modAndAbove), "Permits a player to clear a snitch log.");
-		toggleLever = PermissionType.registerPermission("SNITCH_TOGGLE_LEVER", new ArrayList<>(modAndAbove), "Determines whether a player can toggle whether a level is \n pulled when a player enters the snitch radius.");
+		toggleLever = PermissionType.registerPermission("SNITCH_TOGGLE_LEVER", new ArrayList<>(modAndAbove), "Determines whether a player can toggle whether a lever is \n pulled when a player enters the snitch radius.");
 	}
 
 	public static PermissionType getRenameSnitch() {
