@@ -63,7 +63,7 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	@Override
 	public EnchantModifier construct(@NotNull ItemStack item) {
 		EnchantModifier modifier = new EnchantModifier();
-		this.requiredEnchants = item.getEnchantments();
+		modifier.requiredEnchants = item.getEnchantments();
 		return modifier;
 	}
 

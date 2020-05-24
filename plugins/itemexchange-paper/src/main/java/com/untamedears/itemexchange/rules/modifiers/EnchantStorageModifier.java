@@ -43,7 +43,7 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 			return null;
 		}
 		EnchantStorageModifier modifier = new EnchantStorageModifier();
-		this.enchants = meta.getStoredEnchants();
+		modifier.enchants = meta.getStoredEnchants();
 		return modifier;
 	}
 
