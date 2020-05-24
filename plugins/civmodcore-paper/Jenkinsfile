@@ -18,24 +18,8 @@ pipeline {
             steps {
                 sh 'mvn clean install -U javadoc:jar -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true' 
             }
-        }
-        stage ('Javadoc') {
-            when {
-                branch "master"
-            }
-            steps {
-                sh 'mvn javadoc:javadoc -DskipTests -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true'
-                step([$class: 'JavadocArchiver',
-                        javadocDir: 'target/site/apidocs',
-                        keepAll: false])
-            }
-        }
-        stage ('Deploy') {
-            when {
-                branch "master"
-            }
-            steps {
-                sh 'mvn javadoc:jar source:jar deploy -DskipTests -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true'
+            withMaven() {
+             sh "mvn clean install -U javadoc:jar javadoc:javadoc deploy -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true"
             }
         }
     }
