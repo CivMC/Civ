@@ -22,6 +22,8 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 
 public abstract class ACivMod extends JavaPlugin {
 
+	private final List<Class<? extends NBTSerializable>> serializableClasses = new ArrayList<>();
+
 	@Deprecated
 	protected CommandHandler handle = null;
 
@@ -52,6 +54,7 @@ public abstract class ACivMod extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		this.useNewCommandHandler = true;
+		Iteration.iterateThenClear(this.serializableClasses, NBTSerialization::unregisterNBTSerializable);
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
@@ -71,10 +74,18 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * @deprecated
+	 * Registers a serializable.
+	 *
+	 * @param <T> The type of the serializable.
+	 * @param serializable The serializable class.
+	 *
+	 * @apiNote This is a tracked single use registration. The given serializable will be de-registered when
+	 *     this plugin is disabled, thus you should call this within the plugin's onEnable() method.
 	 */
-	@Deprecated
-	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) { }
+	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
+		NBTSerialization.registerNBTSerializable(serializable);
+		this.serializableClasses.add(serializable);
+	}
 
 	/**
 	 * Determines whether this plugin is in debug mode, which is determined by a config value.

@@ -38,6 +38,7 @@ public class Tester {
 	@Test
 	public void testClassSerialization() {
 		// Setup
+		NBTSerialization.registerNBTSerializable(ExampleSerializable.class);
 		String expectedString = "Turpis tincidunt id aliquet risus feugiat. Donec et odio pellentesque diam " +
 				"volutpat commodo sed egestas. Mattis nunc sed blandit libero volutpat sed. Pellentesque diam " +
 				"volutpat commodo sed egestas egestas fringilla phasellus. Nec feugiat in fermentum posuere urna " +
@@ -51,6 +52,7 @@ public class Tester {
 		expected.setMessage(expectedString);
 		NBTCompound nbt = NBTSerialization.serialize(expected);
 		ExampleSerializable actual = (ExampleSerializable) NBTSerialization.deserialize(nbt);
+		NBTSerialization.clearAllRegistrations();
 		// Check
 		Assert.assertNotNull(actual);
 		Assert.assertEquals(expectedString, actual.getMessage());
