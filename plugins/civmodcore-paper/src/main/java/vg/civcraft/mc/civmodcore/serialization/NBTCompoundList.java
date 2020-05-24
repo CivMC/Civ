@@ -13,14 +13,12 @@ import vg.civcraft.mc.civmodcore.util.Validation;
 /**
  * <p>Represents a list of nbt class serializable elements of the same type.</p>
  *
- * <p>
- *     Read More:
- *     <ul>
- *         <li>{@link NBTSerialization}</li>
- *         <li>{@link NBTSerialization#serialize(NBTSerializable)}</li>
- *         <li>{@link NBTSerialization#deserialize(NBTCompound)}</li>
- *     </ul>
- * </p>
+ * <p>Read More:</p>
+ * <ul>
+ *     <li>{@link NBTSerialization}</li>
+ *     <li>{@link NBTSerialization#serialize(NBTSerializable)}</li>
+ *     <li>{@link NBTSerialization#deserialize(NBTCompound)}</li>
+ * </ul>
  */
 public class NBTCompoundList<T extends NBTSerializable> extends ArrayList<T> {
 
