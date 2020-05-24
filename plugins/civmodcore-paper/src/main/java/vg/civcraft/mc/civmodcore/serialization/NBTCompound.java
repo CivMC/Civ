@@ -871,11 +871,7 @@ public class NBTCompound implements Cloneable, Validation {
 		if (craftItem == null) {
 			return null;
 		}
-		NBTTagCompound tag = craftItem.getTag();
-		if (tag == null) {
-			return new NBTCompound();
-		}
-		return new NBTCompound(tag);
+		return new NBTCompound(craftItem.getTag());
 	}
 
 	/**
@@ -906,11 +902,7 @@ public class NBTCompound implements Cloneable, Validation {
 		if (craftItem == null) {
 			return null;
 		}
-		NBTTagCompound raw = craftItem.getTag();
-		if (raw == null) {
-			raw = new NBTTagCompound();
-		}
-		NBTCompound nbt = new NBTCompound(raw);
+		NBTCompound nbt = new NBTCompound(craftItem.getTag());
 		try {
 			processor.accept(nbt);
 		}
