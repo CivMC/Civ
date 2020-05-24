@@ -17,6 +17,7 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 public final class BulkExchangeRule implements ExchangeData {
 
@@ -76,17 +77,13 @@ public final class BulkExchangeRule implements ExchangeData {
 	}
 
 	public static BulkExchangeRule fromItem(ItemStack item) {
-		if (item == null) {
+		if (!ItemAPI.isValidItem(item)) {
 			return null;
 		}
 		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
 			return null;
 		}
-		NBTCompound nbt = NBTCompound.fromItem(item).getCompound(BULK_KEY);
-		if (nbt.isEmpty()) {
-			return null;
-		}
-		NBTSerializable serializable = NBTSerialization.deserialize(nbt);
+		NBTSerializable serializable = NBTSerialization.deserialize(NBTCompound.fromItem(item).getCompound(BULK_KEY));
 		if (serializable instanceof BulkExchangeRule) {
 			return (BulkExchangeRule) serializable;
 		}

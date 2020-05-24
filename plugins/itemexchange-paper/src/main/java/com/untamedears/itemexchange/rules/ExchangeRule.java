@@ -393,12 +393,9 @@ public final class ExchangeRule implements ExchangeData {
 		if (item.getType() != ItemExchangeConfig.getRuleItemMaterial()) {
 			return null;
 		}
-		NBTCompound nbt = NBTCompound.fromItem(item).getCompound(RULE_KEY);
-		if (!nbt.isEmpty()) {
-			NBTSerializable serializable = NBTSerialization.deserialize(nbt);
-			if (serializable instanceof ExchangeRule) {
-				return (ExchangeRule) serializable;
-			}
+		NBTSerializable serializable = NBTSerialization.deserialize(NBTCompound.fromItem(item).getCompound(RULE_KEY));
+		if (serializable instanceof ExchangeRule) {
+			return (ExchangeRule) serializable;
 		}
 		return null;
 	}
