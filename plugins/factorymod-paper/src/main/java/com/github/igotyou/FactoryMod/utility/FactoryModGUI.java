@@ -180,6 +180,15 @@ public class FactoryModGUI {
 		ItemAPI.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
 		return new DecorationStack(is);
 	}
+	private IClickable getUpgradeClick() {
+		if (!history.hasPrevious()) {
+			return null;
+		}
+		ItemStack is = new ItemStack(Material.NETHER_STAR);
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Get upgrade recipe for this factory");
+		return new LClickable(is, p -> showFactoryCreation(getParent(this.currentFactory), true));
+
+	}
 
 	private IClickable getBackClick() {
 		if (!history.hasPrevious()) {
@@ -295,12 +304,17 @@ public class FactoryModGUI {
 		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(6, 4));
 
-		//TODO opens the setup recipe instead if is upgrade TODO TODO TODO
+		IClickable upgradeClick = getUpgradeClick();
+		if (upgradeClick == null) {
+			ItemStack is = new ItemStack(Material.BARRIER);
+			ItemAPI.setDisplayName(is, ChatColor.RED + "This factory can be made directly");
+			upgradeClick = new DecorationStack(is);
+		}
 		IClickable fuelClick = getFuelClick(factory, getUpgradeRecipe(factory, getParent(factory)));
 		IClickable setupClick = getSetupClick(factory);
 		IClickable backClick = getBackClick();
 		IClickable mainMenuClick = getMainMenuClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(null, fuelClick, setupClick, mainMenuClick, backClick);
+		StaticDisplaySection middleLine = new StaticDisplaySection(upgradeClick, fuelClick, setupClick, mainMenuClick, backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(6, 1, 0, 4));
 
 		List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
