@@ -16,10 +16,9 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh 'mvn clean install -U javadoc:jar -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true' 
-            }
-            withMaven() {
-             sh "mvn clean install -U javadoc:jar javadoc:javadoc deploy -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true"
+                withMaven() {
+                    sh "mvn clean install -U javadoc:jar javadoc:javadoc deploy -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true"
+                }
             }
         }
     }
