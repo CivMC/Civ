@@ -14,7 +14,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
@@ -58,46 +57,6 @@ public final class Utilities {
 		if (!InventoryAPI.safelyAddItemsToInventory(inventory, new ItemStack[] { rule.toItem() })) {
 			throw error;
 		}
-	}
-
-	/**
-	 * Ensure a player is holding an exchange rule.
-	 *
-	 * @param player The player to ensure is holding an exchange rule.
-	 * @return Returns the exchange rule the player is holding.
-	 */
-	public static ExchangeRule ensureHoldingExchangeRule(Player player) {
-		RuntimeException error = new InvalidCommandArgument("You must be holding an exchange rule.");
-		ItemStack held = NullCoalescing.chain(() -> player.getInventory().getItemInMainHand());
-		if (!ItemAPI.isValidItem(held)) {
-			throw error;
-		}
-		ExchangeRule rule = ExchangeRule.fromItem(held);
-		if (rule == null) {
-			rule = ExchangeRule.fromItem(held);
-		}
-		if (rule == null) {
-			throw error;
-		}
-		return rule;
-	}
-
-	/**
-	 * Replaces an exchange rule that the player is holding.
-	 *
-	 * @param player The player give the exchange rule to.
-	 * @param rule The rule to give the player.
-	 */
-	public static void replaceHoldingExchangeRule(Player player, ExchangeRule rule) {
-		RuntimeException error = new InvalidCommandArgument("Could not replace that rule.");
-		if (player == null || rule == null) {
-			throw error;
-		}
-		ItemStack item = rule.toItem();
-		if (item == null) {
-			throw error;
-		}
-		player.getInventory().setItemInMainHand(item);
 	}
 
 	/**

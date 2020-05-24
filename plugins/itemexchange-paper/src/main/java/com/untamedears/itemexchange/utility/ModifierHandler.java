@@ -4,7 +4,6 @@ import co.aikar.commands.InvalidCommandArgument;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public class ModifierHandler<T extends ModifierData<T>> extends RuleHandler {
 

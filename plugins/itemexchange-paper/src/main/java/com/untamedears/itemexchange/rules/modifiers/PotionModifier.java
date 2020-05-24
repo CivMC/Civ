@@ -1,7 +1,7 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.*;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;

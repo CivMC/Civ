@@ -1,6 +1,5 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.*;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import co.aikar.commands.InvalidCommandArgument;

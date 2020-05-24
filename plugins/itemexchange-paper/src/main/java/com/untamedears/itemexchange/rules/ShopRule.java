@@ -1,6 +1,7 @@
 package com.untamedears.itemexchange.rules;
 
 import static com.untamedears.itemexchange.rules.ExchangeRule.Type;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

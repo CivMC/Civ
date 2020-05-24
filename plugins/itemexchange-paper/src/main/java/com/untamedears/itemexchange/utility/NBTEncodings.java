@@ -1,7 +1,6 @@
 package com.untamedears.itemexchange.utility;
 
 import com.google.common.collect.Maps;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import org.bukkit.enchantments.Enchantment;
