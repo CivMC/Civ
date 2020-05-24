@@ -8,7 +8,6 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
-import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.utility.RuleHandler;
 import org.bukkit.ChatColor;
@@ -21,12 +20,6 @@ import vg.civcraft.mc.civmodcore.command.AikarCommand;
 public class SetCommand extends AikarCommand {
 
 	public static final String ALIAS = "ies|ieset|set";
-
-	private final ItemExchangePlugin plugin;
-
-	public SetCommand(ItemExchangePlugin plugin) {
-		this.plugin = plugin;
-	}
 
 	@CatchUnknown
 	@Description("Sets a pertinent field to an exchange rule.")
