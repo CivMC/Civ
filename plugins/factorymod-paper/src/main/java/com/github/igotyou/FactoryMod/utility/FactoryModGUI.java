@@ -175,12 +175,12 @@ public class FactoryModGUI {
 		if (factory == null) {
 			return null;
 		}
-		ItemStack is = factory.getFuel();
+		ItemStack is = factory.getFuel().clone();
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
 		List<String> lore = new ArrayList<>();
 		lore.add(ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
-		ItemAPI.setLore(is, lore);
-		return new LClickable(is, p -> showRecipeFor(factory, recipe, false));
+		ItemAPI.addLore(is, lore);
+		return new DecorationStack(is);
 	}
 
 	private IClickable getBackClick() {
