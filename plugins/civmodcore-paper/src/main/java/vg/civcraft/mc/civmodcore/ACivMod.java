@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -19,10 +20,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public abstract class ACivMod extends JavaPlugin {
 
-	private final List<Class<? extends NBTSerializable>> serializableClasses = new ArrayList<>();
+	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
 
 	@Deprecated
 	protected CommandHandler handle = null;
