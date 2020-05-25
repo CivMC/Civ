@@ -50,22 +50,21 @@ public class ItemExchangePlugin extends ACivMod {
 		modifiers.registerModifier(new RepairModifier()); // 60
 		modifiers.registerModifier(new BookModifier()); // 100
 		registerListener(new ItemExchangeListener());
-		// Allow debug logging
 	}
 
 	@Override
 	public void onDisable() {
-		if (commands != null) {
-			commands.reset();
-			commands = null;
+		if (modifiers != null) {
+			modifiers.reset();
+			modifiers = null;
 		}
 		if (config != null) {
 			config.reset();
 			config = null;
 		}
-		if (modifiers != null) {
-			modifiers.reset();
-			modifiers = null;
+		if (commands != null) {
+			commands.reset();
+			commands = null;
 		}
 		super.onDisable();
 		instance = null;
