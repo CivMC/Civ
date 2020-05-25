@@ -1,6 +1,7 @@
 package com.untamedears.itemexchange.rules;
 
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import com.google.common.base.Strings;
 import com.untamedears.itemexchange.ItemExchangeConfig;
@@ -8,6 +9,7 @@ import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ClassInstanceMap;
+import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,8 +20,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
@@ -30,15 +30,12 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
 import vg.civcraft.mc.civmodcore.util.EnumUtils;
 import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  * This class represents an exchange rule.
  */
 public final class ExchangeRule implements ExchangeData {
-
-	private static final Logger LOGGER = LoggerFactory.getLogger(ExchangeRule.class.getSimpleName());
 
 	/**
 	 * The type of rule.
@@ -72,6 +69,8 @@ public final class ExchangeRule implements ExchangeData {
 	// ------------------------------------------------------------
 	// Instance fields
 	// ------------------------------------------------------------
+
+	private static final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
 
 	private Type type;
 	private Material material;
@@ -122,22 +121,24 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns true if the given item conforms.
 	 */
 	public boolean conforms(ItemStack item) {
-		if (NullCoalescing.equalsNotNull(this.material, item.getType())) {
-			LOGGER.debug("Material does not match.");
+		PLUGIN.debug("Testing: " + item);
+		PLUGIN.debug("Against: " + this);
+		if (!equalsNotNull(this.material, item.getType())) {
+			PLUGIN.debug("Material does not match.");
 			return false;
 		}
 		if (item.getAmount() <= 0) {
-			LOGGER.debug("Item doesn't have an amount.");
+			PLUGIN.debug("Item doesn't have an amount.");
 			return false;
 		}
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) {
-			LOGGER.debug("No ItemMeta.");
+			PLUGIN.debug("No ItemMeta.");
 			return false;
 		}
 		for (ModifierData<?> modifier : this.modifiers) {
 			if (!modifier.conforms(item)) {
-				LOGGER.debug("[" + modifier.getClass().getSimpleName() + "] Modifier rejected that.");
+				PLUGIN.debug("[" + modifier.getClass().getSimpleName() + "] Modifier rejected that.");
 				return false;
 			}
 		}
@@ -221,7 +222,7 @@ public final class ExchangeRule implements ExchangeData {
 	@Override
 	public void deserialize(NBTCompound nbt) throws NBTSerializationException {
 		this.type = EnumUtils.fromSlug(Type.class, nbt.getString(TYPE_KEY), false);
-		this.material = MaterialAPI.getMaterial(nbt.getString(MATERIAL_KEY));
+		this.material = EnumUtils.fromSlug(Material.class, nbt.getString(MATERIAL_KEY), false);
 		this.amount = nbt.getInteger(AMOUNT_KEY);
 		this.modifiers.clear();
 		Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
@@ -298,6 +299,12 @@ public final class ExchangeRule implements ExchangeData {
 		return info;
 	}
 
+	@Override
+	public String toString() {
+		return "ExchangeRule{type=" + this.type + ",material=" + this.material + ",amount=" + this.amount + "," +
+				"modifiers=[" + this.modifiers + "]}";
+	}
+
 	// ------------------------------------------------------------
 	//
 	// ------------------------------------------------------------
@@ -314,7 +321,7 @@ public final class ExchangeRule implements ExchangeData {
 		}
 		int stock = 0;
 		for (ItemStack item : inventory.getContents()) {
-			if (!ItemAPI.isValidItem(item) || !conforms(item)) {
+			if (!ItemAPI.isValidItem(item) || Utilities.isExchangeRule(item) || !conforms(item)) {
 				continue;
 			}
 			stock += item.getAmount();
@@ -341,7 +348,7 @@ public final class ExchangeRule implements ExchangeData {
 			if (requiredAmount <= 0) {
 				break;
 			}
-			if (!ItemAPI.isValidItem(item)) {
+			if (!ItemAPI.isValidItem(item) || Utilities.isExchangeRule(item)) {
 				continue;
 			}
 			if (!conforms(item)) {
