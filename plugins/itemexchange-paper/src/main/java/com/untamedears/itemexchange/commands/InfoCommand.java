@@ -11,7 +11,7 @@ import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias("iei|ieinfo")
-public class InfoCommand extends AikarCommand {
+public final class InfoCommand extends AikarCommand {
 
 	@Subcommand("shop|shopblocks")
 	@Description("Shows what blocks can be made into shops.")

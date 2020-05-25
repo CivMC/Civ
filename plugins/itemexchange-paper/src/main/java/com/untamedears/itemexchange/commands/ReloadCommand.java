@@ -11,7 +11,7 @@ import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias("ier|iereload")
 @CommandPermission("itemexchange.reload")
-public class ReloadCommand extends AikarCommand {
+public final class ReloadCommand extends AikarCommand {
 
 	private final ItemExchangePlugin plugin;
 

@@ -17,7 +17,7 @@ import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias(SetCommand.ALIAS)
-public class SetCommand extends AikarCommand {
+public final class SetCommand extends AikarCommand {
 
 	public static final String ALIAS = "ies|ieset|set";
 

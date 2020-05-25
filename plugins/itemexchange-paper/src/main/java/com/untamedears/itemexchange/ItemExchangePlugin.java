@@ -18,7 +18,7 @@ import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 /**
  * The main Item Exchange plugin class.
  */
-public class ItemExchangePlugin extends ACivMod {
+public final class ItemExchangePlugin extends ACivMod {
 
 	private static ItemExchangePlugin instance;
 

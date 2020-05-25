@@ -45,7 +45,7 @@ import vg.civcraft.mc.civmodcore.util.Validation;
 /**
  * Listener class that handles shop and rule interactions.
  */
-public class ItemExchangeListener implements Listener {
+public final class ItemExchangeListener implements Listener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ExchangeRule.class.getSimpleName());
 

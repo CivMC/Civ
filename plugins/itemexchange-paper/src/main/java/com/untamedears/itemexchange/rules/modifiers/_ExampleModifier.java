@@ -16,7 +16,7 @@ import vg.civcraft.mc.civmodcore.util.Validation;
 
 @CommandAlias(SetCommand.ALIAS) // This is needed to make commands work
 @Modifier(slug = "EXAMPLE", order = 12345)
-public class _ExampleModifier extends ModifierData<_ExampleModifier> {
+public final class _ExampleModifier extends ModifierData<_ExampleModifier> {
 
 	/**
 	 * Constructs a new instance of the modifier.

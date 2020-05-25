@@ -30,15 +30,4 @@ public class CommandRegistrar extends AikarCommandManager {
 		return (ItemExchangePlugin) getInternalManager().getPlugin();
 	}
 
-	// ------------------------------------------------------------
-	// Contexts
-	// ------------------------------------------------------------
-
-//	public static RuleHandler ruleHandlerContext(BukkitCommandExecutionContext context) {
-//		if (context.getPlayer() == null) {
-//			throw new InvalidCommandArgument("You must be a player to execute that.", false);
-//		}
-//		return new RuleHandler(context.getPlayer());
-//	}
-
 }

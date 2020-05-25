@@ -28,7 +28,7 @@ import vg.civcraft.mc.civmodcore.command.AikarCommand;
  * Commands class involved in creating shop exchange rules
  */
 @CommandAlias(CreateCommand.ALIAS)
-public class CreateCommand extends AikarCommand {
+public final class CreateCommand extends AikarCommand {
 
 	public static final String ALIAS = "iec|iecreate";
 
