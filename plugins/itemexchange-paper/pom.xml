@@ -5,8 +5,8 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.devotedmc.maven</groupId>
-		<artifactId>devoted-checkstyle</artifactId>
+		<groupId>com.civclassic.maven</groupId>
+		<artifactId>civclassic-checkstyle</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
@@ -28,17 +28,12 @@
 			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.jetbrains</groupId>
-			<artifactId>annotations-java5</artifactId>
-			<version>17.0.0</version>
-		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
-			<id>devoted-repo</id>
-			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civclassic-repo</id>
+			<url>https://build.civclassic.com/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 
