@@ -77,13 +77,13 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * Registers a serializable.
+	 * <p>Registers a serializable.</p>
+	 *
+	 * <p>Note: This is a tracked single use registration. The given serializable will be de-registered when this
+	 * plugin is disabled, thus you should call this within the plugin's onEnable() method.</p>
 	 *
 	 * @param <T> The type of the serializable.
 	 * @param serializable The serializable class.
-	 *
-	 * @apiNote This is a tracked single use registration. The given serializable will be de-registered when
-	 *     this plugin is disabled, thus you should call this within the plugin's onEnable() method.
 	 */
 	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
 		NBTSerialization.registerNBTSerializable(serializable);
