@@ -1,5 +1,8 @@
 package com.untamedears.itemexchange;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
+
 import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
 import com.untamedears.itemexchange.events.IETransactionEvent;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
@@ -12,7 +15,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -39,7 +41,6 @@ import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.RecipeAPI;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
@@ -94,8 +95,7 @@ public final class ItemExchangeListener implements Listener {
 		}
 		this.playerInteractionCooldowns.put(player, now);
 		// Attempt to create parse a shop from the inventory
-		Inventory inventory =
-				NullCoalescing.chain(() -> ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
+		Inventory inventory = chain(() -> ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
 		ShopRule shop = ShopRule.getShopFromInventory(inventory);
 		if (!Validation.checkValidity(shop)) {
 			LOGGER.debug("[Shop] Cancelling, that is not a shop.");
@@ -113,7 +113,7 @@ public final class ItemExchangeListener implements Listener {
 		boolean shouldCycle = true;
 		assert inventory.getLocation() != null;
 		if (!this.shopRecord.containsKey(player)
-				|| !Objects.equals(inventory.getLocation(), this.shopRecord.get(player))
+				|| !equalsNotNull(inventory.getLocation(), this.shopRecord.get(player))
 				|| !this.ruleIndex.containsKey(player)) {
 			this.shopRecord.put(player, inventory.getLocation());
 			this.ruleIndex.put(player, 0);
