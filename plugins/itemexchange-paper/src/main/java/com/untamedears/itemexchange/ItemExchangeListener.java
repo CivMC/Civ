@@ -97,7 +97,7 @@ public final class ItemExchangeListener implements Listener {
 		Inventory inventory =
 				NullCoalescing.chain(() -> ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
 		ShopRule shop = ShopRule.getShopFromInventory(inventory);
-		if (shop == null || shop.getTrades().isEmpty()) {
+		if (!Validation.checkValidity(shop)) {
 			LOGGER.debug("[Shop] Cancelling, that is not a shop.");
 			return;
 		}
@@ -145,7 +145,7 @@ public final class ItemExchangeListener implements Listener {
 		ExchangeRule outputRule = trade.getOutput();
 		// Check if the input is limited to a group, and if so whether the viewer
 		// has permission to purchase from that group. If NameLayer is enabled.
-		BrowseOrPurchaseEvent limitTester = BrowseOrPurchaseEvent.emit(trade);
+		BrowseOrPurchaseEvent limitTester = BrowseOrPurchaseEvent.emit(shop, trade, player);
 		if (limitTester.isLimited()) {
 			justBrowsing = true;
 			LOGGER.debug("[Shop] Buyer cannot purchase from that Group limited trade. Browsing.");

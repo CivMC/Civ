@@ -13,11 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
  * Class that represents an entire shop.
  */
-public final class ShopRule {
+public final class ShopRule implements Validation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShopRule.class.getSimpleName());
 
@@ -29,6 +32,20 @@ public final class ShopRule {
 
 	private ShopRule(Inventory inventory) {
 		this.inventory = inventory;
+	}
+
+	@Override
+	public boolean isValid() {
+		if (!InventoryAPI.isValidInventory(this.inventory)) {
+			return false;
+		}
+		if (!LocationAPI.isValidLocation(this.inventory.getLocation())) {
+			return false;
+		}
+		if (Iteration.isNullOrEmpty(this.trades)) {
+			return false;
+		}
+		return true;
 	}
 
 	public List<TradeRule> getTrades() {
