@@ -42,10 +42,13 @@ public class ScoreboardHUD implements Listener {
 		Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				if (settingsMan.showArmorDurability(p.getUniqueId())) {
-					updateAllArmor(p);;
+					updateAllArmor(p);
 				}
 				if (settingsMan.showPotionEffects(p.getUniqueId())) {
-					updateAllPotionEffects(p);;
+					updateAllPotionEffects(p);
+				}
+				if (settingsMan.getGammaBrightSetting().getValue(p)) {
+					updateGammaBright(p);
 				}
 			}
 		}, 5L, 5L);
@@ -63,6 +66,21 @@ public class ScoreboardHUD implements Listener {
 					for (int i = 0; i < 4; i++) {
 						scoreBoards.get(i).set(p, null);
 					}
+				}
+			}
+		});
+		settingsMan.getGammaBrightSetting().registerListener(new SettingChangeListener<Boolean>() {
+
+			@Override
+			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
+				Player p = Bukkit.getPlayer(player);
+				if (p == null) {
+					return;
+				}
+				if (newValue) {
+					updateGammaBright(p);
+				} else {
+					p.removePotionEffect(PotionEffectType.NIGHT_VISION);
 				}
 			}
 		});
@@ -85,6 +103,11 @@ public class ScoreboardHUD implements Listener {
 		});
 	}
 
+	private void updateGammaBright(Player player) {
+		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60, 1, false, false, false));
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void playerJoin(PlayerJoinEvent e) {
 		if (settingsMan.showArmorDurability(e.getPlayer().getUniqueId())) {
@@ -92,6 +115,9 @@ public class ScoreboardHUD implements Listener {
 		}
 		if (settingsMan.showPotionEffects(e.getPlayer().getUniqueId())) {
 			updateAllPotionEffects(e.getPlayer());
+		}
+		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
+			updateGammaBright(e.getPlayer());
 		}
 	}
 
@@ -101,14 +127,17 @@ public class ScoreboardHUD implements Listener {
 			if (boardIndex >= 10) {
 				break;
 			}
-			String sortingPrefix = ChatColor.BLACK + "|" + (char)('a' + boardIndex);
+			if (pot.getType().equals(PotionEffectType.NIGHT_VISION) && settingsMan.getGammaBrightSetting().getValue(p)) {
+				continue;
+			}
+			String sortingPrefix = ChatColor.BLACK + "|" + (char) ('a' + boardIndex);
 			String effectColor = getMatchingColor(pot.getType()).toString();
 			int level = pot.getAmplifier() + 1;
 			int durationInSeconds = pot.getDuration() / 20;
 			int minutes = durationInSeconds / 60;
 			String seconds = String.valueOf(durationInSeconds % 60);
 			if (seconds.length() == 1) {
-				seconds = "0"+seconds;
+				seconds = "0" + seconds;
 			}
 			String name = PotionAPI.getNiceName(pot.getType());
 			String formatted = String.format("%s %s%s %d | %d:%s", sortingPrefix, effectColor, name, level, minutes,
