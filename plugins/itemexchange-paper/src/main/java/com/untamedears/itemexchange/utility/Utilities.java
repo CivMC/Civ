@@ -7,7 +7,6 @@ import co.aikar.commands.InvalidCommandArgument;
 import com.google.common.base.Preconditions;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
-import java.util.Collections;
 import java.util.Map;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -90,10 +89,7 @@ public final class Utilities {
 												   @Nullable Map<Enchantment, Integer> metaEnchants,
 												   boolean allowUnlistedEnchants) {
 		if (Iteration.isNullOrEmpty(ruleEnchants)) {
-			if (allowUnlistedEnchants) {
-				return true;
-			}
-			if (Iteration.isNullOrEmpty(metaEnchants)) {
+			if (allowUnlistedEnchants || Iteration.isNullOrEmpty(metaEnchants)) {
 				return true;
 			}
 			return false;
@@ -102,15 +98,11 @@ public final class Utilities {
 			return false;
 		}
 		assert ruleEnchants != null && metaEnchants != null;
-		if (allowUnlistedEnchants) {
-			if (metaEnchants.size() < ruleEnchants.size()) {
-				return false;
-			}
+		if (allowUnlistedEnchants && metaEnchants.size() < ruleEnchants.size()) {
+			return false;
 		}
-		else {
-			if (metaEnchants.size() != ruleEnchants.size()) {
-				return false;
-			}
+		else if (metaEnchants.size() != ruleEnchants.size()) {
+			return false;
 		}
 		for (Map.Entry<Enchantment, Integer> entry : ruleEnchants.entrySet()) {
 			if (!metaEnchants.containsKey(entry.getKey())) {
