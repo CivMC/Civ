@@ -105,10 +105,10 @@ public final class Iteration {
      */
     public static <T> T other(T base, T former, T latter) {
         if (Objects.equals(base, former)) {
-            return former;
+            return latter;
         }
         if (Objects.equals(base, latter)) {
-            return latter;
+            return former;
         }
         return null;
     }
