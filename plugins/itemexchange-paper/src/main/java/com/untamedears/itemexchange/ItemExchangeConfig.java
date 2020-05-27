@@ -25,6 +25,8 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static final ItemStack RULE_ITEM = new ItemStack(Material.STONE_BUTTON);
 
+	private static boolean CREATE_FROM_SHOP = true;
+
 	private static final Set<Material> ITEMS_CAN_ENCHANT = new HashSet<>();
 
 	private static final Set<Material> ITEMS_CAN_DAMAGE = new HashSet<>();
@@ -42,6 +44,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		parseShopCompatibleBlocks(config.getStringList("supportedBlocks"));
 		parseSuccessButtonBlocks(config.getStringList("disallowedSuccessButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
+		parseCreateFromShop(config.getBoolean("createShopFromChest", true));
 		parseEnchantableItems(config.getStringList("enchantables"));
 		parseDamageableItems(config.getStringList("damageables"));
 		parseRepairableItems(config.getStringList("repairables"));
@@ -52,6 +55,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		SHOP_COMPATIBLE_BLOCKS.clear();
 		SUCCESS_BUTTON_BLOCKS.clear();
 		RULE_ITEM.setType(Material.STONE_BUTTON);
+		CREATE_FROM_SHOP = true;
 		ITEMS_CAN_ENCHANT.clear();
 		ITEMS_CAN_DAMAGE.clear();
 		ITEMS_CAN_REPAIR.clear();
@@ -131,6 +135,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		RecipeAPI.registerRecipe(BULK_RULE_RECIPE);
 	}
 
+	private void parseCreateFromShop(boolean config) {
+		LOGGER.info("Create Shop From Shop Block: " + (config ? "ENABLED" : "DISABLED"));
+	}
+
 	private void parseEnchantableItems(List<String> config) {
 		for (String raw : config) {
 			Material material = MaterialAPI.getMaterial(raw);
@@ -205,6 +213,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static ItemStack getRuleItem() {
 		return RULE_ITEM.clone();
+	}
+
+	public static boolean canCreateFromShop() {
+		return CREATE_FROM_SHOP;
 	}
 
 	public static Material getRuleItemMaterial() {

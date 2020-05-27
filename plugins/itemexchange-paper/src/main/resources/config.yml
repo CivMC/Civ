@@ -18,6 +18,9 @@ disallowedSuccessButtonBlocks:
 # The item of which the exchange data will be encoded onto, eg: STONE_BUTTON
 ruleItem: "STONE_BUTTON"
 
+# Allows players to create a shop by looking at a valid shop block with an acceptable format of items
+createShopFromChest: true
+
 enchantables:
   - "DIAMOND_HELMET"
   - "DIAMOND_CHESTPLATE"

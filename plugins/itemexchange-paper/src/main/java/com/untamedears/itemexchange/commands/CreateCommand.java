@@ -45,6 +45,10 @@ public final class CreateCommand extends AikarCommand {
 	@Default
 	@Description("Creates an exchange rule based on a shop block.")
 	public void createFromShop(Player player) {
+		if (!ItemExchangeConfig.canCreateFromShop()) {
+			player.sendMessage(ChatColor.RED + "That command is disabled.");
+			return;
+		}
 		BlockIterator ray = new BlockIterator(player, 6);
 		while (ray.hasNext()) {
 			Block block = ray.next();
