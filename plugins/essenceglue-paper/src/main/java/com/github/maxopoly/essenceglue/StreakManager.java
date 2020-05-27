@@ -10,6 +10,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.IntegerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.LongSetting;
 
@@ -21,6 +23,7 @@ public class StreakManager {
 	// day, in LSB order from current to past
 	private final IntegerSetting playerStreaks;
 	private final LongSetting lastPlayerUpdate;
+	private final BooleanSetting receiveRewards;
 	private final long streakDelay;
 	private final long streakGracePeriod;
 	private final Map<UUID, Integer> currentOnlineTime;
@@ -29,11 +32,16 @@ public class StreakManager {
 	private final boolean giveRewardToPearled;
 
 	public StreakManager(EssenceGluePlugin plugin, long streakDelay, long streakGracePeriod, int maximumStreak,
-						 long onlineTimePerDay, boolean giveRewardToPearled) {
+			long onlineTimePerDay, boolean giveRewardToPearled) {
 		playerStreaks = new IntegerSetting(plugin, 0, "Player essence streak", "essenceGluePlayerStreak");
 		PlayerSettingAPI.registerSetting(playerStreaks, null);
 		lastPlayerUpdate = new LongSetting(plugin, 0L, "Player streak refresh", "essenceGlueLastUpdate");
 		PlayerSettingAPI.registerSetting(lastPlayerUpdate, null);
+		receiveRewards = new BooleanSetting(plugin, true, "Receive essence", "essenceGlueReceiveEssence",
+				"Whether you will receive essence on this account");
+		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Essence",
+				"Essence and voting related settings");
+		PlayerSettingAPI.registerSetting(receiveRewards, menu);
 		Bukkit.getScheduler().runTaskTimer(plugin, this::updateAll, 20 * 60L, 20 * 60L);
 		this.streakDelay = streakDelay;
 		this.streakGracePeriod = streakGracePeriod;
@@ -75,15 +83,14 @@ public class StreakManager {
 			long sinceLastClaim = currentMillis - lastPlayerUpdate.getValue(uuid);
 			if (sinceLastClaim >= streakDelay) {
 				int currentCount = currentOnlineTime.computeIfAbsent(uuid, e -> 0);
-				if (currentCount >= countRequiredForGain) {
+				if (currentCount >= countRequiredForGain && receiveRewards.getValue(p)) {
 					updatePlayerStreak(uuid, true);
 					currentOnlineTime.remove(uuid);
-					p.sendMessage(
-							ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE + getCurrentStreak(
-									uuid, true));
+					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
+							+ getCurrentStreak(uuid, true));
 					if (giveRewardToPearled || ExilePearlPlugin.getApi().getExiledAlts(uuid, true) < 1) {
-						EssenceGluePlugin.instance().getRewardManager()
-								.giveLoginReward(p, getCurrentStreak(uuid, true));
+						EssenceGluePlugin.instance().getRewardManager().giveLoginReward(p,
+								getCurrentStreak(uuid, true));
 					}
 				} else {
 					currentOnlineTime.put(uuid, currentCount + 1);
@@ -129,10 +136,11 @@ public class StreakManager {
 		if (increment) {
 			streak |= 1;
 		}
-		// cap maximum with a bit string containing maximumStreak many 1 at the end and only 0 otherwise
+		// cap maximum with a bit string containing maximumStreak many 1 at the end and
+		// only 0 otherwise
 		streak &= ~((~0) << maximumStreak);
-		EssenceGluePlugin.instance().getLogger().info(String
-				.format("Streak for %s was updated, now %d (raw: %d), passed: %d", player.toString(),
+		EssenceGluePlugin.instance().getLogger()
+				.info(String.format("Streak for %s was updated, now %d (raw: %d), passed: %d", player.toString(),
 						Integer.bitCount(streak), streak, daysPassed));
 		playerStreaks.setValue(player, streak);
 		if (increment) {
