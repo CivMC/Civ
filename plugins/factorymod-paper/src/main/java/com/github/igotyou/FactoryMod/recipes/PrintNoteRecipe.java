@@ -98,13 +98,9 @@ public class PrintNoteRecipe extends PrintBookRecipe {
 		List<String> fixedLines = new ArrayList<>();
 
 		for(String line : lines) {
-			String fixedLine = line.replaceAll(ChatColor.BLACK.toString(), ChatColor.GRAY.toString());
-
-			if(fixedLines.isEmpty()) {
-				fixedLine = ChatColor.GRAY + fixedLine;
-			}
-
-			fixedLines.add(ChatColor.GRAY + fixedLine);
+			fixedLines.add(ChatColor.GRAY + line
+					.replaceAll(ChatColor.BLACK.toString(), ChatColor.GRAY.toString())
+					.replaceAll(ChatColor.RESET.toString(), ChatColor.GRAY.toString()));
 		}
 
 		String bookTitle = bookMeta.getTitle();
