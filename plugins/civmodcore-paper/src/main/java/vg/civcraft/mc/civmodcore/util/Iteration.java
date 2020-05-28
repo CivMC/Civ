@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import org.jetbrains.annotations.Contract;
 
 public final class Iteration {
 
@@ -85,6 +86,7 @@ public final class Iteration {
 	 * @param value The value to fill the array with.
 	 * @return Returns the given array with the filled values.
 	 */
+    @Contract("_, _ -> param1")
     public static <T> T[] fill(T[] array, T value) {
     	if (isNullOrEmpty(array)) {
     		return array;
@@ -105,10 +107,10 @@ public final class Iteration {
      */
     public static <T> T other(T base, T former, T latter) {
         if (Objects.equals(base, former)) {
-            return former;
+            return latter;
         }
         if (Objects.equals(base, latter)) {
-            return latter;
+            return former;
         }
         return null;
     }

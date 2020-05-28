@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -19,8 +20,12 @@ import org.bukkit.plugin.java.JavaPlugin;
 import vg.civcraft.mc.civmodcore.command.CommandHandler;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommandHandler;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
+import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public abstract class ACivMod extends JavaPlugin {
+
+	private final List<Class<? extends NBTSerializable>> serializableClasses = Lists.newArrayList();
 
 	@Deprecated
 	protected CommandHandler handle = null;
@@ -52,6 +57,7 @@ public abstract class ACivMod extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		this.useNewCommandHandler = true;
+		Iteration.iterateThenClear(this.serializableClasses, NBTSerialization::unregisterNBTSerializable);
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
 		Bukkit.getMessenger().unregisterOutgoingPluginChannel(this);
@@ -71,10 +77,18 @@ public abstract class ACivMod extends JavaPlugin {
 	}
 
 	/**
-	 * @deprecated
+	 * <p>Registers a serializable.</p>
+	 *
+	 * <p>Note: This is a tracked single use registration. The given serializable will be de-registered when this
+	 * plugin is disabled, thus you should call this within the plugin's onEnable() method.</p>
+	 *
+	 * @param <T> The type of the serializable.
+	 * @param serializable The serializable class.
 	 */
-	@Deprecated
-	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) { }
+	public <T extends NBTSerializable> void registerSerializable(Class<T> serializable) {
+		NBTSerialization.registerNBTSerializable(serializable);
+		this.serializableClasses.add(serializable);
+	}
 
 	/**
 	 * Determines whether this plugin is in debug mode, which is determined by a config value.

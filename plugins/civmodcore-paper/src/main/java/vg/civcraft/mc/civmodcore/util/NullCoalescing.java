@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class NullCoalescing {
 
@@ -77,6 +78,21 @@ public final class NullCoalescing {
     		handler.accept(value);
 		}
     }
+
+    /**
+	 * Executes a function to supply a value should that value not already exist.
+	 *
+	 * @param <T> The type of the value.
+	 * @param value The given value.
+	 * @param handler The supplier that will be run should the given value be null.
+	 * @return Returns the given value or the result of the handler.
+	 */
+    public static <T> T notExists(T value, Supplier<T> handler) {
+    	if (value == null && handler != null) {
+    		value = handler.get();
+		}
+    	return value;
+	}
 
 	/**
 	 * Determines if two objects objects are equal.

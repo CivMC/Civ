@@ -1,8 +1,8 @@
 name: ${project.artifactId}
 version: ${project.version}
 authors: [valadian, rourke750, ProgrammerDan, Maxopoly, DeadBeef, Protonull, Okx, mindless728, Tealnerd]
-main: ${plugin.main}
-api-version: ${minecraft.version}
+main: ${project.groupId}.${project.artifactId}Plugin
+api-version: 1.14
 commands:
   config: {}
   configsetany:

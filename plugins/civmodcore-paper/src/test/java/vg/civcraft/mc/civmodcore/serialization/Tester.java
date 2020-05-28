@@ -1,11 +1,23 @@
 package vg.civcraft.mc.civmodcore.serialization;
 
 import java.util.Objects;
+import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 public class Tester {
+
+	@BeforeClass
+	public static void beforeAll() {
+		NBTSerialization.registerNBTSerializable(ExampleSerializable.class);
+	}
+
+	@AfterClass
+	public static void afterAll() {
+		NBTSerialization.clearAllRegistrations();
+	}
 
 	@Test
 	public void testStringSerialization() {

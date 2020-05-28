@@ -74,10 +74,8 @@ public final class PagedGUIManager implements Listener {
 			case DROP_ALL_CURSOR:
 			case HOTBAR_MOVE_AND_READD:
 			case HOTBAR_SWAP: {
-				if (event.getClickedInventory() == event.getInventory()) {
-					event.setCancelled(true);
-					gui.clicked(event.getSlot(), viewer, event.getClick());
-				}
+				event.setCancelled(true);
+				gui.clicked(event.getSlot(), viewer, event.getClick());
 			}
 		}
 	}
