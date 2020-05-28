@@ -136,6 +136,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	}
 
 	private void parseCreateFromShop(boolean config) {
+		CREATE_FROM_SHOP = config;
 		LOGGER.info("Create Shop From Shop Block: " + (config ? "ENABLED" : "DISABLED"));
 	}
 
