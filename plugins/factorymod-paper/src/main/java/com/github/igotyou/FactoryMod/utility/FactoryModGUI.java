@@ -138,7 +138,7 @@ public class FactoryModGUI {
 
 	private IClickable getSetupClick(FurnCraftChestEgg factory) {
 		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Show creation cost of " + factory.getName());
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Show creation cost");
 		if (factory.getSetupCost() != null) {
 			ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
 			List<String> lore = new ArrayList<>();
@@ -148,13 +148,10 @@ public class FactoryModGUI {
 						+ ItemNames.getItemName(entry.getKey()));
 			}
 			ItemAPI.addLore(is, lore);
-			return new DecorationStack(is);
 		} else {
 			FurnCraftChestEgg parent = getParent(factory);
 			if (parent != null) {
 				ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
-				ItemAPI.addLore(is,"");
-				ItemAPI.addLore(is, ChatColor.GREEN + "Click me to get the upgrade recipe of the previous factory");
 				Upgraderecipe upRec = getUpgradeRecipe(factory, parent);
 				if (upRec != null) {
 					List<String> lore = new ArrayList<>();
@@ -164,20 +161,14 @@ public class FactoryModGUI {
 								+ ItemNames.getItemName(entry.getKey()));
 					}
 					ItemAPI.addLore(is, lore);
-					return new LClickable(is, p -> showFactoryCreation(getParent(this.currentFactory), true));
+					return new LClickable(is, p -> showRecipeFor(factory, upRec, true));
 				}
 			}
 		}
 		return new LClickable(is, p -> showFactoryCreation(factory, true));
 	}
 
-	private IClickable getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
-		if (recipe == null) {
-			return null;
-		}
-		if (factory == null) {
-			return null;
-		}
+	private DecorationStack getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
 		ItemStack is = factory.getFuel().clone();
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
 		ItemAPI.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
