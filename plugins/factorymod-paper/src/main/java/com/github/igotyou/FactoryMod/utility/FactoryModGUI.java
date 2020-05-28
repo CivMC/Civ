@@ -102,7 +102,7 @@ public class FactoryModGUI {
 			ItemStack is = new ItemStack(firstRec.getRecipeRepresentationMaterial());
 			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
 			List<String> lore = new ArrayList<>();
-			lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemNames.getItemName(fccEgg.getFuel()));
+			lore.add(ChatColor.DARK_AQUA + "Fuel: " + ChatColor.GRAY + ItemNames.getItemName(fccEgg.getFuel().getType()));
 			lore.add("");
 			lore.add(ChatColor.GOLD + String.valueOf(fccEgg.getRecipes().size() + " recipes:"));
 			for (IRecipe rec : fccEgg.getRecipes()) {
@@ -138,7 +138,7 @@ public class FactoryModGUI {
 
 	private IClickable getSetupClick(FurnCraftChestEgg factory) {
 		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
-		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Show creation cost");
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Show creation cost of " + factory.getName());
 		if (factory.getSetupCost() != null) {
 			ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " can be created directly");
 			List<String> lore = new ArrayList<>();
@@ -148,10 +148,13 @@ public class FactoryModGUI {
 						+ ItemNames.getItemName(entry.getKey()));
 			}
 			ItemAPI.addLore(is, lore);
+			return new DecorationStack(is);
 		} else {
 			FurnCraftChestEgg parent = getParent(factory);
 			if (parent != null) {
 				ItemAPI.addLore(is, ChatColor.GREEN + factory.getName() + " is an upgrade of " + parent.getName());
+				ItemAPI.addLore(is,"");
+				ItemAPI.addLore(is, ChatColor.GREEN + "Click me to get the upgrade recipe of the previous factory");
 				Upgraderecipe upRec = getUpgradeRecipe(factory, parent);
 				if (upRec != null) {
 					List<String> lore = new ArrayList<>();
@@ -161,11 +164,24 @@ public class FactoryModGUI {
 								+ ItemNames.getItemName(entry.getKey()));
 					}
 					ItemAPI.addLore(is, lore);
+					return new LClickable(is, p -> showFactoryCreation(getParent(this.currentFactory), true));
 				}
 			}
-
 		}
 		return new LClickable(is, p -> showFactoryCreation(factory, true));
+	}
+
+	private IClickable getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
+		if (recipe == null) {
+			return null;
+		}
+		if (factory == null) {
+			return null;
+		}
+		ItemStack is = factory.getFuel().clone();
+		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
+		ItemAPI.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
+		return new DecorationStack(is);
 	}
 
 	private IClickable getBackClick() {
@@ -282,11 +298,11 @@ public class FactoryModGUI {
 		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(6, 4));
 
-		//TODO opens the setup recipe instead if is upgrade TODO TODO TODO
+		IClickable fuelClick = getFuelClick(factory, getUpgradeRecipe(factory, getParent(factory)));
 		IClickable setupClick = getSetupClick(factory);
 		IClickable backClick = getBackClick();
 		IClickable mainMenuClick = getMainMenuClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(null, null, setupClick, mainMenuClick, backClick);
+		StaticDisplaySection middleLine = new StaticDisplaySection(null, fuelClick, setupClick, mainMenuClick, backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(6, 1, 0, 4));
 
 		List<IClickable> recipeClicks = factory.getRecipes().stream().map(i -> (InputRecipe) i)
@@ -315,12 +331,12 @@ public class FactoryModGUI {
 		// top right corner
 		inputSection.setBackwardsClickSlot(3);
 		section.addComponent(inputSection, SlotPredicates.rectangle(5, 4));
-
+		IClickable fuelClick = getFuelClick(this.currentFactory, recipe);
 		IClickable setupClick = getSetupClick(this.currentFactory);
 		IClickable backClick = getBackClick();
 		IClickable recSumSup = new DecorationStack(recipe.getRecipeRepresentation());
 		IClickable mainMenuClick = getMainMenuClick();
-		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, null, recSumSup, mainMenuClick,
+		StaticDisplaySection middleLine = new StaticDisplaySection(setupClick, fuelClick, recSumSup, mainMenuClick,
 				backClick);
 		section.addComponent(middleLine, SlotPredicates.offsetRectangle(5, 1, 0, 4));
 
