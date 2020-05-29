@@ -6,6 +6,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -50,7 +51,7 @@ public class Snitch extends LocationTrackable {
 	 */
 	public Snitch(int snitchID, Location loc, boolean isNew, int groupID,
 			Function<Snitch, FieldManager> fieldManagerFunc, SnitchFactoryType type, String name) {
-		super( isNew, loc);
+		super(isNew, loc);
 		this.snitchId = snitchID;
 		this.groupID = groupID;
 		this.name = name;
@@ -58,6 +59,10 @@ public class Snitch extends LocationTrackable {
 		this.type = type;
 		this.appenders = new HashMap<>();
 		this.active = true;
+	}
+
+	public void onChunkLoad(Block block) {
+		Bukkit.getScheduler().scheduleSyncDelayedTask(JukeAlert.getInstance(), this::checkPhysicalIntegrity);
 	}
 
 	/**

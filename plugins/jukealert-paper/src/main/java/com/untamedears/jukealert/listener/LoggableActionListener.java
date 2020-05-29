@@ -41,7 +41,6 @@ import org.spigotmc.event.entity.EntityDismountEvent;
 import org.spigotmc.event.entity.EntityMountEvent;
 
 import com.untamedears.jukealert.SnitchManager;
-import com.untamedears.jukealert.external.VanishNoPacket;
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.SnitchAction;
 import com.untamedears.jukealert.model.actions.impl.BlockBreakAction;
@@ -66,14 +65,12 @@ import com.untamedears.jukealert.util.JukeAlertPermissionHandler;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoggableActionListener implements Listener {
-
-	private final VanishNoPacket vanishNoPacket;
+	
 	private final SnitchManager snitchManager;
 	private final Map<UUID, Set<Snitch>> insideFields;
 
 	public LoggableActionListener(SnitchManager snitchManager) {
 		this.snitchManager = snitchManager;
-		this.vanishNoPacket = new VanishNoPacket();
 		this.insideFields = new TreeMap<>();
 	}
 
@@ -290,7 +287,7 @@ public class LoggableActionListener implements Listener {
 	}
 
 	private boolean isPlayerSnitchImmune(Player player) {
-		return vanishNoPacket.isPlayerInvisible(player) || player.hasPermission("jukealert.vanish");
+		return player.hasPermission("jukealert.vanish");
 	}
 
 	private String getEntityName(Entity entity) {
