@@ -20,6 +20,22 @@ pipeline {
                 build job: '../NameLayer/master', wait: false
             }
         }
+        stage ('Publish artifacts') {
+            steps {
+                def java = scanForIssues tool: java()
+                def javadoc = scanForIssues tool: javaDoc()
+                publishIssues issues: [java, javadoc], filters: [includePackage('io.jenkins.plugins.analysis.*')]
+                def checkstyle = scanForIssues tool: checkStyle(pattern: '**/target/checkstyle-result.xml')
+                publishIssues issues: [checkstyle]
+                def spotbugs = scanForIssues tool: spotBugs(pattern: '**/target/findbugsXml.xml')
+                publishIssues issues: [spotbugs]
+                def maven = scanForIssues tool: mavenConsole()
+                publishIssues issues: [maven]
+                publishIssues id: 'analysis', name: 'All Issues', 
+                    issues: [checkstyle, spotbugs], 
+                    filters: [includePackage('io.jenkins.plugins.analysis.*')]
+            }
+        }
     }
     post {
         always {
