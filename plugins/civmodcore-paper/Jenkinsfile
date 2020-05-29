@@ -1,24 +1,13 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven latest'
-        jdk 'OpenJDK 11'
+        maven 'Maven 3.6.3'
+        jdk 'Java 8'
     }
-    stages {
-        stage ('Initialize') {
-            steps {
-                sh '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                '''
-            }
-        }
-
+     stages {
         stage ('Build') {
             steps {
-                withMaven() {
-                    sh "mvn clean install -U javadoc:jar javadoc:javadoc -DadditionalJOption=-Xdoclint:none -Dmaven.metadata.legacy=true"
-                }
+                sh 'mvn clean install deploy -P civ-jenkins'
             }
         }
     }
