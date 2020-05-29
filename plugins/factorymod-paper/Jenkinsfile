@@ -10,20 +10,6 @@ pipeline {
                 sh 'mvn -U clean install deploy -P civ-jenkins'
             }
         }
-        stage ('Trigger cascading builds') {
-            when {
-                expression {
-                    env.BRANCH_NAME == 'master'
-                }
-            }
-            steps {
-                build '../FactoryMod/master'
-                build '../JukeAlert/master'
-                build '../RailSwitch/master'
-                build '../SimpleAdminHacks/master'
-                build '../Bastion/master'
-            }
-        }
     }
     post {
         always {
