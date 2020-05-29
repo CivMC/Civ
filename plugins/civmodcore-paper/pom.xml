@@ -3,11 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.civclassic.maven</groupId>
-		<artifactId>civclassic-checkstyle</artifactId>
-		<version>1.0.0</version>
-	</parent>
+  <parent>
+    <groupId>com.github.civclassic</groupId>
+    <artifactId>civclassic-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
 
   <groupId>vg.civcraft.mc.civmodcore</groupId>
   <artifactId>CivModCore</artifactId>
