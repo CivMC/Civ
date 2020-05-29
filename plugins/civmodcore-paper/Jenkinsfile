@@ -21,7 +21,6 @@ pipeline {
             }
         }
         stage ('Publish artifacts') {
-            steps {
                 def java = scanForIssues tool: java()
                 def javadoc = scanForIssues tool: javaDoc()
                 publishIssues issues: [java, javadoc], filters: [includePackage('io.jenkins.plugins.analysis.*')]
@@ -34,7 +33,6 @@ pipeline {
                 publishIssues id: 'analysis', name: 'All Issues', 
                     issues: [checkstyle, spotbugs], 
                     filters: [includePackage('io.jenkins.plugins.analysis.*')]
-            }
         }
     }
     post {
