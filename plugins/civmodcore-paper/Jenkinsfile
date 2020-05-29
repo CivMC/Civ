@@ -22,7 +22,11 @@ pipeline {
         }
         stage ('Archive binaries') {
             steps {
-                archiveArtifacts artifacts: "target/${env.JOB_BASE_NAME}-*.jar", fingerprint: true
+                script {
+                    def allJob = env.JOB_BASE_NAME.tokenize('/') as String[];
+                    def projectName = allJob[0];
+                    archiveArtifacts artifacts: "target/${projectName}-*.jar", fingerprint: true
+                }
             }
         }
         stage ('Aggregate reports') {
