@@ -17,7 +17,7 @@ pipeline {
                 }
             }
             steps {
-                build '../Citadel/master'
+                build job: '../Citadel/master', wait: false
             }
         }
     }
