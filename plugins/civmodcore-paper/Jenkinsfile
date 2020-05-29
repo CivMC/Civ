@@ -31,7 +31,7 @@ pipeline {
         }
         stage ('Archive javadoc') {
             steps {
-               step([$class: 'JavadocArchiver', javadocDir: 'target/resources/javadoc', keepAll: false])
+               step([$class: 'JavadocArchiver', javadocDir: 'target/apidocs', keepAll: false])
             }
         }
         stage ('Aggregate reports') {
