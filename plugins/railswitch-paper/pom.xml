@@ -2,100 +2,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	
+  <parent>
+    <groupId>com.github.civclassic</groupId>
+    <artifactId>civclassic-parent</artifactId>
+    <version>1.0.0</version>
+  </parent>
+	
 	<groupId>sh.okx.railswitch</groupId>
 	<artifactId>RailSwitch</artifactId>
 	<packaging>jar</packaging>
 	<version>1.4.0</version>
 	<name>RailSwitch</name>
 	<url>https://github.com/civclassic/railswitch</url>
-
-	<properties>
-		<java.compile.version>1.8</java.compile.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<plugin.main>${project.groupId}.${project.artifactId}Plugin</plugin.main>
-		<minecraft.version>1.14</minecraft.version>
-	</properties>
-
-	<build>
-		<finalName>${project.artifactId}-${project.version}-${minecraft.version}</finalName>
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>LICENSE.txt</include>
-					<include>README.md</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources/</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.1</version>
-				<configuration>
-					<source>${java.compile.version}</source>
-					<target>${java.compile.version}</target>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.1.0</version>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<phase>verify</phase>
-						<goals>
-							<goal>jar-no-fork</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.2.0</version>
-				<configuration>
-					<archive>
-						<addMavenDescriptor>false</addMavenDescriptor>
-					</archive>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.2</version>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>shade</goal>
-						</goals>
-						<configuration>
-							<createDependencyReducedPom>false</createDependencyReducedPom>
-							<transformers>
-								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-									<manifestEntries>
-										<Built-By>Maven</Built-By>
-									</manifestEntries>
-								</transformer>
-							</transformers>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 
 	<dependencies>
 		<dependency>
@@ -107,7 +26,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.8</version>
+			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -119,7 +38,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>4.0.1</version>
+			<version>4.0.2</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -130,8 +49,8 @@
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
 		</repository>
 		<repository>
-			<id>devoted-repo</id>
-			<url>http://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civ-jenkins</id>
+			<url>https://repo.civclassic.com/repository/internal/</url>
 		</repository>
 	</repositories>
 </project>
