@@ -30,7 +30,7 @@ public abstract class ACivMod extends JavaPlugin {
 	@Deprecated
 	protected CommandHandler handle = null;
 
-	protected StandaloneCommandHandler newCommandHandler;
+	protected StandaloneCommandHandler newCommandHandler;k
 
 	protected boolean useNewCommandHandler = true;
 
