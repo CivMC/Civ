@@ -174,7 +174,7 @@ public class ReinforcementType {
 	}
 	
 	/**
-	 * Material id the material used for the reinforcement had pre-flattening (<= 1.12.2). Needed once for 
+	 * Material id the material used for the reinforcement had pre-flattening (1.12.2 or earlier). Needed once for 
 	 * proper migration of reinforcements to higher versions
 	 * @return Old item id of the reinforcement item
 	 */
