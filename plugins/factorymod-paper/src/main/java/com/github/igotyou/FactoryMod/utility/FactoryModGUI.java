@@ -169,6 +169,12 @@ public class FactoryModGUI {
 	}
 
 	private DecorationStack getFuelClick(FurnCraftChestEgg factory, InputRecipe recipe) {
+		if (factory == null || recipe == null) {
+			ItemStack is = new ItemStack(factory.getFuel().clone());
+			ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel setup cost for this factory");
+			ItemAPI.addLore(is, ChatColor.AQUA + "No fuel setup cost");
+			return new DecorationStack(is);
+		}
 		ItemStack is = factory.getFuel().clone();
 		ItemAPI.setDisplayName(is, ChatColor.GOLD + "Fuel cost for recipe");
 		ItemAPI.addLore(is, ChatColor.AQUA + "- " + recipe.getTotalFuelConsumed() + " " + ItemNames.getItemName(is.getType()));
@@ -189,6 +195,9 @@ public class FactoryModGUI {
 	}
 
 	private Upgraderecipe getUpgradeRecipe(FurnCraftChestEgg child, FurnCraftChestEgg parent) {
+		if (child == null || parent == null) {
+			return null;
+		}
 		for (IRecipe rec : parent.getRecipes()) {
 			if (rec instanceof Upgraderecipe) {
 				Upgraderecipe uRec = (Upgraderecipe) rec;
