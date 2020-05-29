@@ -490,7 +490,7 @@ public class FactoryModManager {
 
 	/**
 	 * Gets the Redstone power change necessary to alter the recipe setting of a
-	 * factory. Any change >= this level, either positive or negative, will attempt
+	 * factory. Any change {@code >=} this level, either positive or negative, will attempt
 	 * to alter the recipe (implementation depending).
 	 * 
 	 * @return The amount of Redstone power change necessary to alter recipe setting
@@ -515,7 +515,7 @@ public class FactoryModManager {
 	/**
 	 * Gets the recipe with the given identifier, if it exists
 	 * 
-	 * @param name Identifier of the recipe
+	 * @param identifier Identifier of the recipe
 	 * @return Recipe with the given identifier or null if either the recipe doesn't
 	 *         exist or the given string was null
 	 */
