@@ -37,10 +37,16 @@ pipeline {
                     publishIssues issues: [spotbugs]
                     def maven = scanForIssues tool: mavenConsole()
                     publishIssues issues: [maven]
-                    withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
-                         discordSend description: '**Build:** [${currentBuild.id}](${env.BUILD_URL}) **||**  **Status:** [${currentBuild.currentResult}](${env.BUILD_URL}) **||**  [**LOG**](${env.BUILD_URL}/console)\n**Checkstyle: ${ANALYSIS_ISSUES_COUNT, tool="checkstyle"}\n', footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
-                    }
+                    env.mavenViolations = ${ANALYSIS_ISSUES_COUNT, tool="checkstyle"}
                 }
+            }
+        }
+    }
+
+    post {
+        always {
+            withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
+                discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL}) **||**  **Status:** [${currentBuild.currentResult}](${env.BUILD_URL}) **||**  [**LOG**](${env.BUILD_URL}/console)\n**Checkstyle violations: ${env.mavenViolations}\n", footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
             }
         }
     }
