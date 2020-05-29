@@ -32,7 +32,7 @@ public class ReinforcementManager {
 	/**
 	 * Gets the reinforcement for the given block if one exists
 	 * 
-	 * @param location Block to get reinforcement for
+	 * @param block Block to get reinforcement for
 	 * @return Reinforcement for the block or null if no reinforcement exists there
 	 */
 	public Reinforcement getReinforcement(Block block) {
