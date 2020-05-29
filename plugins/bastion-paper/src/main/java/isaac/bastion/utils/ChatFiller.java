@@ -182,7 +182,7 @@ public class ChatFiller {
 	 * If the string is trimmed, no suffix is added
 	 * @param str string to trim/fill
 	 * @param reqLength required length
-	 * @return the trimmed/filled string <= required length
+	 * @return the trimmed/filled string equal to or bigger the required length
 	 */
 	public static String fillString(String str, Double reqLength) {
 

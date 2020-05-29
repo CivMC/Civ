@@ -32,8 +32,8 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	 * constructor for blocks loaded from database
 	 * @param location
 	 * @param placed
-	 * @param balance
 	 * @param id
+	 * @param type
 	 */
 	public BastionBlock(Location location, long placed, int id, BastionType type) {
 		this.id = id;
