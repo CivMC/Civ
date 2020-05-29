@@ -22,7 +22,7 @@ pipeline {
         }
         stage ('Archive binaries') {
             steps {
-                archiveArtifacts artifacts: 'target/${env.JOB_BASE_NAME}-*.jar', fingerprint: true
+                archiveArtifacts artifacts: "target/${env.JOB_BASE_NAME}-*.jar", fingerprint: true
             }
         }
         stage ('Aggregate reports') {
