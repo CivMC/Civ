@@ -37,7 +37,8 @@ pipeline {
                     publishIssues issues: [spotbugs]
                     def maven = scanForIssues tool: mavenConsole()
                     publishIssues issues: [maven]
-                    env.mavenViolations = ${ANALYSIS_ISSUES_COUNT, tool="checkstyle"}
+                    def checkStyleCount = ${ANALYSIS_ISSUES_COUNT, tool="checkstyle"}
+                    env.mavenViolations = checkStyleCount
                 }
             }
         }
