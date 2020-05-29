@@ -17,7 +17,7 @@ pipeline {
                 }
             }
             steps {
-                build '../NameLayer/master'
+                build job: '../NameLayer/master', wait: false
             }
         }
     }
