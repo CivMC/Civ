@@ -3,6 +3,14 @@ package isaac.bastion;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
+import isaac.bastion.listeners.BastionBreakListener;
+import isaac.bastion.listeners.BastionDamageListener;
+import isaac.bastion.listeners.BastionInteractListener;
+import isaac.bastion.listeners.CitadelListener;
+import isaac.bastion.listeners.ElytraListener;
+import isaac.bastion.listeners.ModeListener;
+import isaac.bastion.listeners.NameLayerListener;
+import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.configuration.ConfigurationSection;
 
 import isaac.bastion.commands.BastionCommandManager;
@@ -10,12 +18,6 @@ import isaac.bastion.commands.BastionListCommand;
 import isaac.bastion.commands.GroupCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
-import isaac.bastion.listeners.BastionBreakListener;
-import isaac.bastion.listeners.BastionDamageListener;
-import isaac.bastion.listeners.BastionInteractListener;
-import isaac.bastion.listeners.CitadelListener;
-import isaac.bastion.listeners.ElytraListener;
-import isaac.bastion.listeners.NameLayerListener;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.storage.BastionBlockStorage;
@@ -32,6 +34,7 @@ public final class Bastion extends ACivMod {
 	private static BastionBlockManager blockManager;
 	private static BastionGroupStorage groupStorage;
 	private static BastionGroupManager groupManager;
+	private static BastionSettingManager settingManager;
 	private static CommonSettings commonSettings;
 
 	@Override
@@ -46,6 +49,7 @@ public final class Bastion extends ACivMod {
 		registerNameLayerPermissions();
 		blockManager = new BastionBlockManager();
 		groupManager = new BastionGroupManager(Bastion.groupStorage);
+		settingManager = new BastionSettingManager();
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
 			return;
@@ -73,6 +77,7 @@ public final class Bastion extends ACivMod {
 		getServer().getPluginManager().registerEvents(new BastionBreakListener(blockStorage, blockManager), this);
 		getServer().getPluginManager().registerEvents(new NameLayerListener(blockStorage), this);
 		getServer().getPluginManager().registerEvents(new CitadelListener(), this);
+		getServer().getPluginManager().registerEvents(new ModeListener(this), this);
 	}
 
 	private void setupDatabase() {
@@ -140,6 +145,10 @@ public final class Bastion extends ACivMod {
 
 	public static BastionGroupManager getGroupManager() {
 		return groupManager;
+	}
+
+	public static BastionSettingManager getSettingManager() {
+		return settingManager;
 	}
 
 	public static CommonSettings getCommonSettings() { return commonSettings; }
