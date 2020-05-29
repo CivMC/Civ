@@ -79,4 +79,11 @@
       </modules>
     </profile>
   </profiles>
+
+    <distributionManagement>
+    <repository>
+      <id>civ-jenkins</id>
+      <url>https://repo.civclassic.com/repository/internal/</url>
+    </repository>
+  </distributionManagement>
 </project>
