@@ -10,6 +10,16 @@ pipeline {
                 sh 'mvn -U clean install deploy -P civ-jenkins'
             }
         }
+        stage ('Trigger cascading builds') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'master'
+                }
+            }
+            steps {
+                build '../NameLayer/master'
+            }
+        }
     }
     post {
         always {
