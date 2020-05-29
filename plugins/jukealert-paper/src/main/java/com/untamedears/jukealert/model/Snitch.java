@@ -45,7 +45,7 @@ public class Snitch extends LocationTrackable {
 	 * @param isNew        Whether the snitch is new, should always be false when
 	 *                     calling from outside this class
 	 * @param groupID      ID of the group the snitch is reinforced on
-	 * @param fieldManager FieldManager to control the range of the snitch
+	 * @param fieldManagerFunc Function to generate a field manager instance
 	 * @param type         FieldManager to control the range of the snitch
 	 * @param name         Name of the snitch
 	 */
@@ -118,7 +118,7 @@ public class Snitch extends LocationTrackable {
 	 * Checks if the player with the given UUID has the given permission for this
 	 * snitch
 	 * 
-	 * @param uuid       Player to check for
+	 * @param player       Player to check for
 	 * @param permission Permission to check for
 	 * @return True if the player has the permission and the snitch/group is valid,
 	 *         false otherwise
