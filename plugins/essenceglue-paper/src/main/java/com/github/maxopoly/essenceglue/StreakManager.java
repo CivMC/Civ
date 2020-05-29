@@ -84,7 +84,7 @@ public class StreakManager {
 			if (sinceLastClaim >= streakDelay) {
 				int currentCount = currentOnlineTime.computeIfAbsent(uuid, e -> 0);
 				if (currentCount >= countRequiredForGain && receiveRewards.getValue(p)) {
-					updatePlayerStreak(uuid, true);
+					updatePlayerStreak(uuid);
 					currentOnlineTime.remove(uuid);
 					p.sendMessage(ChatColor.GREEN + "Your login streak is now " + ChatColor.LIGHT_PURPLE
 							+ getCurrentStreak(uuid, true));
@@ -109,7 +109,7 @@ public class StreakManager {
 		return TimeUnit.MINUTES.toMillis(countRequiredForGain - currentCount);
 	}
 
-	public void updatePlayerStreak(UUID player, boolean increment) {
+	public void updatePlayerStreak(UUID player) {
 		long now = System.currentTimeMillis();
 		long lastIncrement = lastPlayerUpdate.getValue(player);
 		long timePassed = now - lastIncrement;
@@ -119,9 +119,6 @@ public class StreakManager {
 			daysPassed = 1;
 		} else {
 			daysPassed = 0;
-			if (!increment) {
-				return;
-			}
 		}
 		timePassed -= streakGracePeriod;
 
@@ -133,19 +130,15 @@ public class StreakManager {
 		// shift to left by amount of days missed
 		streak <<= daysPassed;
 		// add new day
-		if (increment) {
-			streak |= 1;
-		}
+		streak |= 1;
 		// cap maximum with a bit string containing maximumStreak many 1 at the end and
 		// only 0 otherwise
-		streak &= ~((~0) << maximumStreak);
+		streak = capStreak(streak);
 		EssenceGluePlugin.instance().getLogger()
 				.info(String.format("Streak for %s was updated, now %d (raw: %d), passed: %d", player.toString(),
 						Integer.bitCount(streak), streak, daysPassed));
 		playerStreaks.setValue(player, streak);
-		if (increment) {
-			lastPlayerUpdate.setValue(player, now);
-		}
+		lastPlayerUpdate.setValue(player, now);
 	}
 
 	public int getCurrentStreak(UUID uuid, boolean isMain) {
@@ -153,6 +146,24 @@ public class StreakManager {
 			uuid = getTrueUUID(uuid);
 		}
 		return Integer.bitCount(playerStreaks.getValue(uuid));
+	}
+	
+	public int getRecalculatedCurrentStreak(UUID uuid) {
+		uuid = getTrueUUID(uuid);
+		int unshiftedValue = playerStreaks.getValue(uuid);
+		long timePassed = System.currentTimeMillis() - lastPlayerUpdate.getValue(uuid) - streakGracePeriod;
+		int daysPassed = 0;
+		if (timePassed > 0) {
+			daysPassed = (int) (timePassed / MILLIS_IN_DAY + 1);
+			daysPassed = Math.min(daysPassed, maximumStreak);
+		}
+		int adjustedStreak = unshiftedValue << daysPassed;
+		adjustedStreak = capStreak(adjustedStreak);
+		return Integer.bitCount(adjustedStreak);		
+	}
+	
+	private int capStreak(int uncapped) {
+		return uncapped & ~((~0) << maximumStreak);
 	}
 
 	public void setStreakRaw(int streak, long timeStamp, UUID player) {

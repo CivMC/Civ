@@ -28,8 +28,7 @@ public class RewardManager {
 		giveItems(p, voteReward);
 	}
 
-	@SuppressWarnings("checkstyle:MultipleStringLiterals")
-	private void giveItems(Player p, ItemMap items) {
+	private static void giveItems(Player p, ItemMap items) {
 		if (items.fitsIn(p.getInventory())) {
 			for (ItemStack is : items.getItemStackRepresentation()) {
 				HashMap<Integer, ItemStack> notAdded = p.getInventory().addItem(is);

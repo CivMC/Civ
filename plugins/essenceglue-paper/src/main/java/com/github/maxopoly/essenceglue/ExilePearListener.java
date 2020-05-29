@@ -20,8 +20,7 @@ public class ExilePearListener implements Listener {
 		if (!multiplyCost) {
 			return;
 		}
-		streakMan.updatePlayerStreak(event.getPearl().getPlayerId(), false);
-		int streak = streakMan.getCurrentStreak(event.getPearl().getPlayerId(), false);
+		int streak = streakMan.getRecalculatedCurrentStreak(event.getPearl().getPlayerId());
 		event.setDamageAmount(event.getDamageAmount() * streak);
 	}
 
