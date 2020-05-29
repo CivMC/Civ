@@ -45,7 +45,7 @@ pipeline {
     post {
         always {
             withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
-                discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL}) **||**  **Status:** [${currentBuild.currentResult}](${env.BUILD_URL}) **||**  [**LOG**](${env.BUILD_URL}/console)\n**Checkstyle violations: ${ANALYSIS_ISSUES_COUNT, tool='checkstyle'}\n", footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
+                discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL}) **||**  **Status:** [${currentBuild.currentResult}](${env.BUILD_URL}) **||**  [**LOG**](${env.BUILD_URL}/console)\n**Checkstyle violations: ${ANALYSIS_ISSUES_COUNT, tool='checkstyle'}\n", footer: 'Civclassic Jenkins', link: ${env.BUILD_URL}, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
             }
         }
     }
