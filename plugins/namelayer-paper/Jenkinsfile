@@ -7,7 +7,7 @@ pipeline {
      stages {
         stage ('Build') {
             steps {
-                sh 'mvn -U clean install deploy -P civ-jenkins'
+                sh 'mvn -U clean install deploy'
             }
         }
         stage ('Trigger cascading builds') {
