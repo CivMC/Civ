@@ -20,29 +20,27 @@ pipeline {
                 build job: '../NameLayer/master', wait: false
             }
         }
-        stage ('Publish artifacts') {
+        stage ('Archive binaries') {
+            steps {
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+        stage ('Aggregate reports') {
             steps {
                 script {
                     def java = scanForIssues tool: java()
                     def javadoc = scanForIssues tool: javaDoc()
-                    publishIssues issues: [java, javadoc], filters: [includePackage('io.jenkins.plugins.analysis.*')]
+                    publishIssues issues: [java, javadoc]
                     def checkstyle = scanForIssues tool: checkStyle(pattern: '**/target/checkstyle-result.xml')
                     publishIssues issues: [checkstyle]
                     def spotbugs = scanForIssues tool: spotBugs(pattern: '**/target/findbugsXml.xml')
                     publishIssues issues: [spotbugs]
                     def maven = scanForIssues tool: mavenConsole()
                     publishIssues issues: [maven]
-                    publishIssues id: 'analysis', name: 'All Issues', 
-                        issues: [checkstyle, spotbugs], 
-                        filters: [includePackage('io.jenkins.plugins.analysis.*')]
+                    withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
+                         discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL}) **||**  **Status:** [${currentBuild.currentResult}](${env.BUILD_URL}) **||**  [**LOG**](${env.BUILD_URL}/console)\n**Maven: ${maven.ANALYSIS_ISSUES_COUNT}", footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
+                    }
                 }
-            }
-        }
-    }
-    post {
-        always {
-            withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
-                discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL})\n**Status:** [${currentBuild.currentResult}](${env.BUILD_URL})\n", footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
             }
         }
     }
