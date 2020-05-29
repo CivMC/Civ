@@ -17,11 +17,11 @@ pipeline {
                 }
             }
             steps {
-                build '../FactoryMod/master'
-                build '../JukeAlert/master'
-                build '../RailSwitch/master'
-                build '../SimpleAdminHacks/master'
-                build '../Bastion/master'
+                build job: '../FactoryMod/master', wait: false
+                build job: '../JukeAlert/master', wait: false
+                build job: '../RailSwitch/master', wait: false
+                build job: '../SimpleAdminHacks/master', wait: false
+                build job: '../Bastion/master', wait: false
             }
         }
     }
