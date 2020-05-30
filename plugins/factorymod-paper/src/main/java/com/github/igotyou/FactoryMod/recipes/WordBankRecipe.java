@@ -1,9 +1,11 @@
 package com.github.igotyou.FactoryMod.recipes;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -23,7 +25,7 @@ import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class WordBankRecipe extends InputRecipe {
 
-	private long key;
+	private String key;
 	private MessageDigest digest;
 	private List<String> validWords;
 
@@ -31,7 +33,7 @@ public class WordBankRecipe extends InputRecipe {
 	private int words;
 	private SecureRandom preview;
 
-	public WordBankRecipe(String identifier, String name, int productionTime, long key, List<String> words,
+	public WordBankRecipe(String identifier, String name, int productionTime, String key, List<String> words,
 			List<ChatColor> colors, int wordCount) {
 		super(identifier, name, productionTime, new ItemMap());
 		try {
@@ -50,6 +52,9 @@ public class WordBankRecipe extends InputRecipe {
 	public boolean applyEffect(Inventory inventory, FurnCraftChestFactory factory) {
 		ItemStack toApply = inventory.getItem(0);
 		if (!ItemAPI.isValidItem(toApply)) {
+			return false;
+		}
+		if (ItemAPI.getDisplayName(toApply) != null) {
 			return false;
 		}
 		ItemMap input = new ItemMap();
@@ -97,13 +102,14 @@ public class WordBankRecipe extends InputRecipe {
 	public Material getRecipeRepresentationMaterial() {
 		return Material.PAINTING;
 	}
-	
-	
 
 	@Override
 	public boolean enoughMaterialAvailable(Inventory inventory) {
 		ItemStack toApply = inventory.getItem(0);
 		if (!ItemAPI.isValidItem(toApply)) {
+			return false;
+		}
+		if (ItemAPI.getDisplayName(toApply) != null) {
 			return false;
 		}
 		for (int i = 1; i < inventory.getSize(); i++) {
@@ -117,17 +123,19 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	private synchronized String getHash(ItemMap items) {
-		ByteBuffer keyBuffer = ByteBuffer.allocate(Long.BYTES);
-		keyBuffer.putLong(key);
-		digest.digest(keyBuffer.array());
-		for (Entry<ItemStack, Integer> entry : items.getEntrySet()) {
-			digestItem(entry.getKey(), digest);
-			digest.digest(toBuffer(entry.getValue()));
+		digest.update(key.getBytes());
+		List<Entry<ItemStack, Integer>> entries = new ArrayList<>(items.getEntrySet());
+		//sort because hashmaps dont guarantee iteration order
+		Collections.sort(entries,
+				(a, b) -> a.getKey().getType().getKey().getKey().compareTo(b.getKey().getType().getKey().getKey()));
+		for (Entry<ItemStack, Integer> entry : entries) {
+			System.out.println("digesting " + entry.getKey());
+			digest.update(entry.getKey().getType().getKey().getKey().getBytes());
+			digest.update(toBuffer(entry.getValue()));
 		}
 		byte[] result = digest.digest();
 		ByteBuffer buffer = ByteBuffer.allocate(result.length);
 		buffer.put(result, 0, result.length);
-		buffer.flip();
 		StringBuilder output = new StringBuilder();
 		output.append(colors.get(pickIndex(buffer.getInt(0), colors.size())));
 		for (int i = 1; i <= words; i++) {
@@ -149,32 +157,10 @@ public class WordBankRecipe extends InputRecipe {
 		return index;
 	}
 
-	private static void digestItem(ItemStack is, MessageDigest digest) {
-		digest.digest(is.getType().getKey().getKey().getBytes());
-		if (is.hasItemMeta()) {
-			ItemMeta im = is.getItemMeta();
-			if (im.hasLore()) {
-				for (String lore : im.getLore()) {
-					digest.digest(lore.getBytes());
-				}
-			}
-			if (im.hasDisplayName()) {
-				digest.digest(im.getDisplayName().getBytes());
-			}
-		}
-	}
-
 	private static byte[] toBuffer(int hash) {
 		ByteBuffer b = ByteBuffer.allocate(4);
 		b.putInt(hash);
 		return b.array();
-	}
-
-	public static long bytesToLong(byte[] bytes) {
-		ByteBuffer buffer = ByteBuffer.allocate(Long.BYTES);
-		buffer.put(bytes);
-		buffer.flip();// need flip
-		return buffer.getLong();
 	}
 
 	@Override

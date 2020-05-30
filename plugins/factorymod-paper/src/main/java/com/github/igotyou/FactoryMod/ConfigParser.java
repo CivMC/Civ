@@ -831,7 +831,10 @@ public class ConfigParser {
 					secureNote, noteTitle);
 			break;
 		case "WORDBANK":
-			long key = config.getLong("seed");
+			String key = config.getString("seed", "defaultSeed");
+			if ("defaultSeed".equals(key)) {
+				plugin.getLogger().warning("Word bank recipe is using default seed, this is not secure and allows predicting output");
+			}
 			String path = config.getString("wordListFile", "words.txt");
 			List<String> words = loadWordList(path);
 			if (words == null) {
