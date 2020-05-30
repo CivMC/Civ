@@ -38,6 +38,10 @@ public class CivChat2Config {
 	public String getDefaultColor() {
 		return config.getString("chat.defaultChatColor");
 	}
+	
+	public int getKillBroadcastRange() {
+		return config.getInt("chat.killRange", 1000);
+	}
 
 	public String getOpChatColor() {
 		return config.getString("chat.opChatColor");

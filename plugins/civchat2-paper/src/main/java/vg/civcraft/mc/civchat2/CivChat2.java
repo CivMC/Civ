@@ -2,6 +2,7 @@ package vg.civcraft.mc.civchat2;
 
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.listeners.CivChat2Listener;
+import vg.civcraft.mc.civchat2.listeners.KillListener;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
 import vg.civcraft.mc.civchat2.utility.CivChat2Log;
@@ -25,8 +26,7 @@ public class CivChat2 extends ACivMod {
 	private CivChat2Log log;
 	private CivChat2Config config;
 	private CivChat2Manager chatMan;
-	private CivChat2Listener chatListener;
-	private CivChat2SettingsManager civChat2SettingsManager;
+	private CivChat2SettingsManager settingsManager;
 	private CivChat2FileLogger fileLog;
 	private CivChatDAO databaseManager;
 
@@ -41,10 +41,9 @@ public class CivChat2 extends ACivMod {
 		log.initializeLogger(instance);
 		fileLog = new CivChat2FileLogger();
 		databaseManager = new CivChatDAO();
-		civChat2SettingsManager = new CivChat2SettingsManager();
+		settingsManager = new CivChat2SettingsManager();
 		chatMan = new CivChat2Manager(instance);
 		log.debug("Debug Enabled");
-		chatListener = new CivChat2Listener(chatMan);
 		registerNameLayerPermissions();
 		registerCivChatEvents();
 	}
@@ -66,7 +65,8 @@ public class CivChat2 extends ACivMod {
 	}
 
 	private void registerCivChatEvents() {
-		getServer().getPluginManager().registerEvents(chatListener, this);
+		getServer().getPluginManager().registerEvents(new CivChat2Listener(chatMan), this);
+		getServer().getPluginManager().registerEvents(new KillListener(config, databaseManager, settingsManager), this);
 	}
 
 	public void registerNameLayerPermissions() {
@@ -82,7 +82,7 @@ public class CivChat2 extends ACivMod {
 	}
 
 	public CivChat2SettingsManager getCivChat2SettingsManager(){
-		return civChat2SettingsManager;
+		return settingsManager;
 	}
 
 	public CivChat2Config getPluginConfig() {
