@@ -129,7 +129,6 @@ public class WordBankRecipe extends InputRecipe {
 		Collections.sort(entries,
 				(a, b) -> a.getKey().getType().getKey().getKey().compareTo(b.getKey().getType().getKey().getKey()));
 		for (Entry<ItemStack, Integer> entry : entries) {
-			System.out.println("digesting " + entry.getKey());
 			digest.update(entry.getKey().getType().getKey().getKey().getBytes());
 			digest.update(toBuffer(entry.getValue()));
 		}
