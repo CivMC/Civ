@@ -17,7 +17,7 @@ public class BastionSettingManager {
 		initSettings();
 	}
 
-	public void initSettings() {
+	private void initSettings() {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Bastion", "All settings related to Bastion");
 
 		bsiOverlay = new BooleanSetting(Bastion.getPlugin(), false, "Display Bastion Information", "bsiOverlay", "Shows if the block your standing on is bastioned territory.");

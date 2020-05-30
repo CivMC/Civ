@@ -5,40 +5,42 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
 import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
-import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 
 import java.util.Set;
+import java.util.UUID;
 
 
 public class ModeListener implements Listener {
 
-	private DoubleInteractFixer interactFixer;
 	private BottomLine bsiBottomLine;
 	private CivScoreBoard bsiBoard;
 	private BastionSettingManager settingMan;
 
-	public ModeListener(Bastion bastion) {
-		interactFixer = new DoubleInteractFixer(bastion);
+	public ModeListener() {
 		this.bsiBoard = ScoreBoardAPI.createBoard("bsiDisplay");
 		this.bsiBottomLine = BottomLineAPI.createBottomLine("bsiDisplay", 3);
 		this.settingMan = Bastion.getSettingManager();
-		settingMan.getBsiOverlay().registerListener((player, setting, oldValue, newValue) ->
-				updateDisplaySetting(Bukkit.getPlayer(player), settingMan.getBsiLocation(), false, "", bsiBottomLine, bsiBoard));
+		settingMan.getBsiOverlay().registerListener(new SettingChangeListener<Boolean>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
+				updateDisplaySetting(Bukkit.getPlayer(player), settingMan.getBsiLocation(), newValue, "", bsiBottomLine, bsiBoard);
+			}
+		});
 	}
-
-
 	private static void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
 											 BottomLine bottomLine, CivScoreBoard scoreBoard) {
 		if (player == null) {
@@ -62,69 +64,58 @@ public class ModeListener implements Listener {
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void handleInteractBlock(PlayerInteractEvent e) {
-		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
-			if (interactFixer.checkInteracted(e.getPlayer(), e.getClickedBlock())) {
-				return;
-			}
-		} else if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
+	public void onPlayerMove(PlayerJoinEvent pje) {
+		if (!settingMan.getBsiOverlay().getValue(pje.getPlayer())) {
 			return;
 		}
-		//Checking setting is true
-		if (!settingMan.getBsiOverlay().getValue(e.getPlayer())) {
-			return;
-		}
-		/**
-		 * Grabbing the set of bastions overlapping the location here since when bastions overlap, the scoreboard
-		 * fights between friendly/enemy bastion every time either event is fired. This way we can simply display
-		 * when the click or player location is in an overlapping area.
-		 */
-		Set<BastionBlock> bastionBlocks = Bastion.getBastionManager().getBlockingBastions(e.getClickedBlock().getLocation());
-		//Checking here if there are no bastions at click location
-		if (bastionBlocks.size() == 0) {
-			e.getPlayer().sendMessage(ChatColor.YELLOW + "No bastion block");
-			updateDisplaySetting(e.getPlayer(), settingMan.getBsiLocation(), true, "No Bastion Block", bsiBottomLine, bsiBoard);
-			return;
-		}
-		//Only 1 bastion at click location
-		if (bastionBlocks.size() == 1) {
-			if (bastionBlocks.iterator().next().canPlace(e.getPlayer())) {
-				e.getPlayer().sendMessage(ChatColor.GREEN + "Friendly Bastion");
-				updateDisplaySetting(e.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.GREEN + "Inside friendly bastion field", bsiBottomLine, bsiBoard);
-				return;
-			}
-			e.getPlayer().sendMessage(ChatColor.RED + "Enemy Bastion");
-			updateDisplaySetting(e.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.RED + "Inside enemy bastion field", bsiBottomLine, bsiBoard);
-			return;
-		}
-		//This should be fired when clicking in a zone where 2 bastions overlap
-		e.getPlayer().sendMessage(ChatColor.YELLOW + "Bastions Overlapping");
-		updateDisplaySetting(e.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.YELLOW + "Inside overlapped bastion fields", bsiBottomLine, bsiBoard);
+		checkLocationForBastions(pje.getPlayer(), pje.getPlayer().getLocation());
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerMove(PlayerMoveEvent pme) {
+		Location from = pme.getFrom();
+		Location to = pme.getTo();
+		if (to == null) {
+			return;
+		}
+
+		if (from.getBlockX() == to.getBlockX() && from.getBlockY() == to.getBlockY()
+				&& from.getBlockZ() == to.getBlockZ() && from.getWorld().equals(to.getWorld())) {
+			// Player didn't move by at least one block
+			return;
+		}
 
 		if (!settingMan.getBsiOverlay().getValue(pme.getPlayer())) {
 			return;
 		}
 
-		Set<BastionBlock> bastionBlocks = Bastion.getBastionManager().getBlockingBastions(pme.getPlayer().getLocation());
-		//Checking here if there are no bastions at player location
-		if (bastionBlocks.size() == 0) {
-			updateDisplaySetting(pme.getPlayer(), settingMan.getBsiLocation(), true, "No Bastion Block", bsiBottomLine, bsiBoard);
+		checkLocationForBastions(pme.getPlayer(), pme.getPlayer().getLocation());
+	}
+
+	public void checkLocationForBastions(Player player, Location loc) {
+		/**
+		 * This code should iterate over all the bastions covering a location and handle overlaps
+		 */
+		Set<BastionBlock> bastionBlocks = Bastion.getBastionManager().getBlockingBastions(loc);
+		if (bastionBlocks.isEmpty()) {
+			updateDisplaySetting(player, settingMan.getBsiLocation(), true,ChatColor.WHITE + "No Bastion", bsiBottomLine, bsiBoard);
 			return;
 		}
-		//Only 1 bastion at player location
-		if (bastionBlocks.size() == 1) {
-			if (bastionBlocks.iterator().next().canPlace(pme.getPlayer())) {
-				updateDisplaySetting(pme.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.GREEN + "Inside friendly bastion field", bsiBottomLine, bsiBoard);
+		//We want to check if im in the field of a bastion I dont have perms on
+		//And if so, display enemy bastion
+		//Otherwise we're in a friendly bastion/no bastion
+		for (BastionBlock bastions : bastionBlocks) {
+			if (!bastions.canPlace(player)) {
+				updateDisplaySetting(player, settingMan.getBsiLocation(), true,"" + ChatColor.RED + ChatColor.BOLD + "Enemy Bastion", bsiBottomLine, bsiBoard);
 				return;
 			}
-			updateDisplaySetting(pme.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.RED + "Inside enemy bastion field", bsiBottomLine, bsiBoard);
-			return;
 		}
-		//This should be fired when player is in a zone where 2 bastions overlap
-		updateDisplaySetting(pme.getPlayer(), settingMan.getBsiLocation(), true, ChatColor.YELLOW + "Inside overlapped bastion fields", bsiBottomLine, bsiBoard);
+		updateDisplaySetting(player, settingMan.getBsiLocation(), true, ChatColor.GREEN + "Friendly Bastion", bsiBottomLine, bsiBoard);
+		return;
 	}
 }
+
+
+//change listener to location setting
+//fix normal settingchange listener
+//fix empty string in registerSetting
