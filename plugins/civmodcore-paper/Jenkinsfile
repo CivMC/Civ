@@ -7,11 +7,18 @@ pipeline {
      stages {
         stage ('Build') {
             steps {
-                sh 'mvn -U clean install deploy -P civ-jenkins'
+                script {
+                    if (env.BRANCH_NAME.startsWith('PR')) {
+                        sh 'mvn -U clean package -P civ-jenkins'
+                    } 
+                    else {
+                         sh 'mvn -U clean install deploy -P civ-jenkins'
+                     } 
+                }
             }
         }
         stage ('Trigger cascading builds') {
-            when {
+             when {
                 expression {
                     env.BRANCH_NAME == 'master'
                 }
@@ -30,6 +37,11 @@ pipeline {
             }
         }
         stage ('Archive javadoc') {
+            when {
+                expression {
+                    env.BRANCH_NAME == 'master'
+                }
+            }
             steps {
                step([$class: 'JavadocArchiver', javadocDir: 'target/apidocs', keepAll: false])
             }
