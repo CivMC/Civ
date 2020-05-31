@@ -37,34 +37,19 @@ public class ModeListener implements Listener {
 		settingMan.getBsiOverlay().registerListener(new SettingChangeListener<Boolean>() {
 			@Override
 			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
-				updateDisplaySetting(Bukkit.getPlayer(player), settingMan.getBsiLocation(), newValue, "", bsiBottomLine, bsiBoard);
+				setBsiOverlay(Bukkit.getPlayer(player), newValue);
+			}
+		});
+		settingMan.getBsiLocation().registerListener(new SettingChangeListener<String>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<String> setting, String oldValue, String newValue) {
+				setBsiOverlay(Bukkit.getPlayer(player), settingMan.getBsiOverlay().getValue(player));
 			}
 		});
 	}
-	private static void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
-											 BottomLine bottomLine, CivScoreBoard scoreBoard) {
-		if (player == null) {
-			return;
-		}
-		if (text == null) {
-			state = false;
-		}
-		if (!state) {
-			// always clean up, value might have been changed
-			bottomLine.removePlayer(player);
-			scoreBoard.hide(player);
-		} else {
-			if (locSetting.showOnActionbar(player.getUniqueId())) {
-				bottomLine.updatePlayer(player, text);
-			}
-			if (locSetting.showOnSidebar(player.getUniqueId())) {
-				scoreBoard.set(player, text);
-			}
-		}
-	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-	public void onPlayerMove(PlayerJoinEvent pje) {
+	public void onPlayerJoin(PlayerJoinEvent pje) {
 		if (!settingMan.getBsiOverlay().getValue(pje.getPlayer())) {
 			return;
 		}
@@ -89,16 +74,34 @@ public class ModeListener implements Listener {
 			return;
 		}
 
-		checkLocationForBastions(pme.getPlayer(), pme.getPlayer().getLocation());
+		checkLocationForBastions(pme.getPlayer(), to);
 	}
 
-	public void checkLocationForBastions(Player player, Location loc) {
-		/**
-		 * This code should iterate over all the bastions covering a location and handle overlaps
-		 */
-		Set<BastionBlock> bastionBlocks = Bastion.getBastionManager().getBlockingBastions(loc);
+	private void setBsiOverlay(Player player, boolean state) {
+		updateDisplaySetting(player, settingMan.getBsiLocation(), state,"",
+				bsiBottomLine, bsiBoard);
+	}
+
+	/**
+	 * This method handles the updating of the scoreboard/action bar
+	 * as to whether the player is in a bastion field or not.
+	 *
+	 * @param player to update bastion status to
+	 * @param location to check for bastion status
+	 */
+	public void checkLocationForBastions(Player player, Location location) {
+		if (player == null || location == null) {
+			return;
+		}
+		Set<BastionBlock> bastionBlocks = Bastion.getBastionManager().getBlockingBastions(location);
 		if (bastionBlocks.isEmpty()) {
-			updateDisplaySetting(player, settingMan.getBsiLocation(), true,ChatColor.WHITE + "No Bastion", bsiBottomLine, bsiBoard);
+			if (settingMan.getShowNoBastion(player.getUniqueId())) {
+				updateDisplaySetting(player, settingMan.getBsiLocation(), settingMan.getBsiOverlay().getValue(player.getUniqueId()),
+						ChatColor.WHITE + "No Bastion", bsiBottomLine, bsiBoard);
+				return;
+			}
+			bsiBoard.hide(player);
+			bsiBottomLine.removePlayer(player);
 			return;
 		}
 		//We want to check if im in the field of a bastion I dont have perms on
@@ -106,16 +109,47 @@ public class ModeListener implements Listener {
 		//Otherwise we're in a friendly bastion/no bastion
 		for (BastionBlock bastions : bastionBlocks) {
 			if (!bastions.canPlace(player)) {
-				updateDisplaySetting(player, settingMan.getBsiLocation(), true,"" + ChatColor.RED + ChatColor.BOLD + "Enemy Bastion", bsiBottomLine, bsiBoard);
+				updateDisplaySetting(player, settingMan.getBsiLocation(), settingMan.getBsiOverlay().getValue(player.getUniqueId()),
+						"" + ChatColor.RED + ChatColor.BOLD + "Enemy Bastion", bsiBottomLine, bsiBoard);
 				return;
 			}
 		}
-		updateDisplaySetting(player, settingMan.getBsiLocation(), true, ChatColor.GREEN + "Friendly Bastion", bsiBottomLine, bsiBoard);
-		return;
+		updateDisplaySetting(player, settingMan.getBsiLocation(), settingMan.getBsiOverlay().getValue(player.getUniqueId()),
+				ChatColor.GREEN + "Friendly Bastion", bsiBottomLine, bsiBoard);
+	}
+
+	/**
+	 * This method simply updates the players information
+	 *
+	 * @param player to update scoreboard/action bar on
+	 * @param locSetting PlayerSetting of where to display information
+	 * @param state Value of the PlayerSetting
+	 * @param text Text to display
+	 * @param bottomLine Action Bar to update
+	 * @param scoreBoard Scoreboard to update
+	 */
+	private void updateDisplaySetting(Player player, DisplayLocationSetting locSetting, boolean state, String text,
+									  BottomLine bottomLine, CivScoreBoard scoreBoard) {
+		if (player == null) {
+			return;
+		}
+		if (text == null) {
+			state = false;
+		}
+		if (!state) {
+			// always clean up, value might have been changed
+			bottomLine.removePlayer(player);
+			scoreBoard.hide(player);
+		} else {
+			if (locSetting.showOnActionbar(player.getUniqueId())) {
+				bottomLine.updatePlayer(player, text);
+			}
+			if (locSetting.showOnSidebar(player.getUniqueId())) {
+				scoreBoard.set(player, text);
+			}
+		}
 	}
 }
 
 
-//change listener to location setting
-//fix normal settingchange listener
-//fix empty string in registerSetting
+//fix empty string in setBSIOverlay
