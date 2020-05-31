@@ -23,6 +23,7 @@ public class JASettingsManager {
 	private DisplayLocationSetting showNearbySnitchCount;
 	private SetSetting<String> ignoredGroupAlerts;
 	private BooleanSetting showDirections;
+	private BooleanSetting monoColorAlerts;
 
 	public JASettingsManager() {
 		initSettings();
@@ -56,6 +57,10 @@ public class JASettingsManager {
 		showDirections = new BooleanSetting(JukeAlert.getInstance(), true, "Show directions to snitch on hit", "jaShowDirections",
 				"Shows the direction and distance to the snitch when triggered.");
 		PlayerSettingAPI.registerSetting(showDirections, menu);
+		
+		monoColorAlerts = new BooleanSetting(JukeAlert.getInstance(), false, "Show snitch alerts in a single color", "jaMonoColorNotifications",
+				"Shows snitch notifications in only a single color");
+		PlayerSettingAPI.registerSetting(monoColorAlerts, menu);
 	}
 
 	public boolean doesIgnoreAlert(String groupName, UUID uuid) {
@@ -68,6 +73,10 @@ public class JASettingsManager {
 
 	public boolean doesIgnoreAllAlerts(UUID uuid) {
 		return ignoreAllAlerts.getValue(uuid);
+	}
+	
+	public boolean monocolorAlerts(UUID uuid) {
+		return monoColorAlerts.getValue(uuid);
 	}
 
 	public int getJaListLength(UUID uuid) {

@@ -5,6 +5,7 @@ import java.util.UUID;
 import com.untamedears.jukealert.util.JAUtility;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -54,8 +55,14 @@ public class BroadcastEntryAppender extends ConfigurableSnitchAppender<LimitedAc
 				if (settings.shouldShowDirections(uuid)) {
 					comp.addExtra(String.format("  %s", JAUtility.genDirections(snitch, player)));
 				}
-
-				player.spigot().sendMessage(comp);
+				if (settings.monocolorAlerts(uuid)) {
+					String raw = comp.toPlainText();
+					raw = ChatColor.stripColor(raw);
+					player.sendMessage(ChatColor.AQUA + raw);
+				}
+				else {
+					player.spigot().sendMessage(comp);
+				}
 			}
 		}
 	}
