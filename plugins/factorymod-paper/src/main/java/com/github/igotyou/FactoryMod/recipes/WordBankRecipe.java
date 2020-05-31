@@ -1,6 +1,5 @@
 package com.github.igotyou.FactoryMod.recipes;
 
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -11,16 +10,18 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 public class WordBankRecipe extends InputRecipe {
@@ -66,8 +67,27 @@ public class WordBankRecipe extends InputRecipe {
 			input.addItemStack(is);
 			inventory.setItem(i, null);
 		}
-		ItemAPI.setDisplayName(toApply, getHash(input));
-		return true;
+		//tell player what the recipe consumed
+		StringBuilder sb = new StringBuilder();
+		sb.append(ChatColor.GOLD);
+		sb.append("Wordbank recipe complete and turned ");
+		for (Entry<ItemStack, Integer> entry : input.getEntrySet()) {
+			sb.append(entry.getValue());
+			sb.append(" ");
+			sb.append(ItemNames.getItemName(entry.getKey()));
+			sb.append(", ");
+		}
+		String result = sb.substring(0, sb.length() - 2);
+		String name = getHash(input);
+		ItemAPI.setDisplayName(toApply, name);
+		if (factory.getActivator() != null) {
+			Player player = Bukkit.getPlayer(factory.getActivator());
+			if (player != null) {
+				player.sendMessage(result + " into " + name);
+			}
+		}
+		//always return false to turn the factory off
+		return false;
 	}
 
 	@Override
