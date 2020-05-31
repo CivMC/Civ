@@ -159,11 +159,11 @@ public class WordBankRecipe extends InputRecipe {
 		StringBuilder output = new StringBuilder();
 		output.append(colors.get(pickIndex(buffer.getInt(0), colors.size())));
 		int currentLength = new Random(buffer.getLong(1)).nextInt(words) + 1;
-		//start at 4 to avoid overlap with first two longs
-		for (int i = 4; i <= currentLength; i++) {
-			int intKey = buffer.getInt(i);
+		for (int i = 1; i <= currentLength; i++) {
+			//offset by 4 to avoid overlap with first two longs
+			int intKey = buffer.getInt(i + 4);
 			String word = validWords.get(pickIndex(intKey, validWords.size()));
-			if (i > 4) {
+			if (i > 1) {
 				output.append(" ");
 			}
 			output.append(word);
