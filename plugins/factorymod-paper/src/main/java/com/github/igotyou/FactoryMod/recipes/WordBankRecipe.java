@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -157,10 +158,12 @@ public class WordBankRecipe extends InputRecipe {
 		buffer.put(result, 0, result.length);
 		StringBuilder output = new StringBuilder();
 		output.append(colors.get(pickIndex(buffer.getInt(0), colors.size())));
-		for (int i = 1; i <= words; i++) {
+		int currentLength = new Random(buffer.getLong(1)).nextInt(words) + 1;
+		//start at 4 to avoid overlap with first two longs
+		for (int i = 4; i <= currentLength; i++) {
 			int intKey = buffer.getInt(i);
 			String word = validWords.get(pickIndex(intKey, validWords.size()));
-			if (i > 1) {
+			if (i > 4) {
 				output.append(" ");
 			}
 			output.append(word);
