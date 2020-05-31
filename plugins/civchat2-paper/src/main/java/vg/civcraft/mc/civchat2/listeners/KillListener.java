@@ -32,7 +32,7 @@ public class KillListener implements Listener {
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerKill(PlayerDeathEvent event) {
 		Player victim = event.getEntity();
-		if (victim.getKiller() != null) {
+		if (victim.getKiller() == null) {
 			return;
 		}
 		Player killer = victim.getKiller();
