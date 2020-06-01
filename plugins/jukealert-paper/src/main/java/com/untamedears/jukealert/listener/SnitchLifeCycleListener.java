@@ -42,7 +42,7 @@ public class SnitchLifeCycleListener implements Listener {
 		this.pendingSnitches = new HashMap<>();
 	}
 
-	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
 		SnitchFactoryType type = configManager.getConfig(inHand);
