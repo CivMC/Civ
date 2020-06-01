@@ -54,6 +54,10 @@
       <id>bungeecord-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
+		<repository>
+			<id>civ-jenkins</id>
+			<url>https://repo.civclassic.com/repository/internal/</url>
+		</repository>
   </repositories>
 
   <profiles>
