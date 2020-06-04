@@ -16,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.AnimalConfigManager;
 import com.untamedears.realisticbiomes.GrowthConfigManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -26,11 +26,13 @@ public class PlayerListener implements Listener {
 
 	private GrowthConfigManager growthConfigs;
 	private AnimalConfigManager animalManager;
+	private PlantManager plantManager;
 	private DecimalFormat decimalFormat = new DecimalFormat("0.####");
 
-	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager) {
+	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager, PlantManager plantManager) {
 		this.growthConfigs = growthConfigs;
 		this.animalManager = animalManager;
+		this.plantManager = plantManager;
 	}
 
 	// show plant progress when right clicking it with stick
@@ -49,13 +51,16 @@ public class PlayerListener implements Listener {
 		if (RBUtils.isFruit(block.getType())) {
 			return;
 		}
-		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfigFallback(block);
-		if (plantConfig == null) {
+		Plant plant = plantManager.getPlant(block);
+		if (plant == null) {
 			return;
 		}
-		Plant plant = null;
-		if (RealisticBiomes.getInstance().getPlantManager() != null) {
-			plant = RealisticBiomes.getInstance().getPlantManager().getPlant(block);
+		PlantGrowthConfig plantConfig = plant.getGrowthConfig();
+		if (plantConfig == null) {
+			growthConfigs.getPlantGrowthConfigFallback(plant);
+		}
+		if (plantConfig == null) {
+			return;
 		}
 		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));
 	}
@@ -88,14 +93,9 @@ public class PlayerListener implements Listener {
 		if (event.getItem() == null) {
 			return;
 		}
-		Material material = RBUtils.getRemappedMaterial(event.getItem().getType());
-		if (material == null) {
-			return;
-		}
-		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigFallback(material);
+		ItemStack item = event.getItem();
+		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigByItem(item);
 		if (plantConfig == null) {
-			event.getPlayer().sendMessage(
-					ChatColor.GOLD + "Growth behavior for " + material.toString() + " is entirely vanilla");
 			return;
 		}
 		event.getPlayer()

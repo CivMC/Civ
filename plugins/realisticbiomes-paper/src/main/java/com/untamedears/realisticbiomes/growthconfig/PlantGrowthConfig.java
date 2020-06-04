@@ -13,7 +13,6 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
 
-import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
@@ -33,7 +32,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	private ItemStack item;
 	private short id;
-	
+
 	private List<Material> applicableVanillaPlants;
 
 	private Map<Material, Double> greenHouseRates;
@@ -50,7 +49,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	public PlantGrowthConfig(String name, short id, ItemStack item, Map<Material, Double> greenHouseRates,
 			Map<Material, Double> soilBoniPerLevel, int maximumSoilLayers, double maximumSoilBonus,
-			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight, IArtificialGrower grower, List<Material> applicableVanillaPlants) {
+			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight, IArtificialGrower grower,
+			List<Material> applicableVanillaPlants) {
 		super(name);
 		this.id = id;
 		this.item = item;
@@ -108,11 +108,11 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		}
 		return sb.toString();
 	}
-	
+
 	public short getID() {
 		return id;
 	}
-	
+
 	public List<Material> getApplicableVanillaPlants() {
 		return applicableVanillaPlants;
 	}
@@ -188,12 +188,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		sb.append(ItemNames.getItemName(block.getType()));
 		if (plant == null) {
 			// non-persistent growth
-			double progress = grower.getProgressGrowthStage(block);
+			double progress = grower.getProgressGrowthStage(new Plant(block.getLocation(), this));
 			sb.append(" is ");
 			sb.append(decimalFormat.format(progress * 100));
 			sb.append(" % grown");
 		} else {
-			if (isFullyGrown(block)) {
+			if (isFullyGrown(plant)) {
 				sb.append(" is fully grown ");
 				return sb.toString();
 			}
@@ -269,8 +269,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * @return True if the plant has reached its maximum growth stage, false
 	 *         otherwise
 	 */
-	public boolean isFullyGrown(Block block) {
-		return grower.getMaxStage() == grower.getStage(block);
+	public boolean isFullyGrown(Plant plant) {
+		return grower.getMaxStage() == grower.getStage(plant);
 	}
 
 	public boolean isPersistent() {
@@ -289,6 +289,13 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 *         full grown
 	 */
 	public long updatePlant(Plant plant) {
+		if (plant.getGrowthConfig() == null) {
+			plant.setGrowthConfig(this);
+		}
+		if (plant.getGrowthConfig() != this) {
+			throw new IllegalStateException("Can not grow plant with different growth config, at " + plant.getLocation()
+					+ " with " + plant.getGrowthConfig().getName() + ", but this is " + getName());
+		}
 		Block block = plant.getLocation().getBlock();
 		if (!biomeGrowthConfig.canGrowIn(block.getBiome())) {
 			return Long.MAX_VALUE;
@@ -302,20 +309,13 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
 		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
-		if (intendedState != grower.getStage(block)) {
-			grower.setStage(block, intendedState);
+		if (intendedState != grower.getStage(plant)) {
+			grower.setStage(plant, intendedState);
+		}
+		if (plant.getGrowthConfig() != this) {
+			return plant.getGrowthConfig().updatePlant(plant);
 		}
 		if (intendedState == grower.getMaxStage()) {
-			if (RBUtils.resetProgressOnGrowth(block.getType())) {
-				plant.resetCreationTime();
-				// a new different config may now be responsible, for example if we just grew a
-				// melon stem
-				PlantGrowthConfig newConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
-						.getPlantGrowthConfigFallback(block);
-				// this should not lead to recursion horror, assuming the grower behavior is bug
-				// free
-				return newConfig.updatePlant(plant);
-			}
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();

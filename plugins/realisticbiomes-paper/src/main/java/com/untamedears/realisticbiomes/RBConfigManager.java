@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -9,22 +10,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 
 import com.untamedears.realisticbiomes.growth.AgeableGrower;
 import com.untamedears.realisticbiomes.growth.BambooGrower;
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
+import com.untamedears.realisticbiomes.growth.SchematicGrower;
 import com.untamedears.realisticbiomes.growth.TreeGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.ChanceBasedGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
+import com.untamedears.realisticbiomes.model.RBSchematic;
+import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
+import com.untamedears.realisticbiomes.model.ltree.LStepConfig;
+import com.untamedears.realisticbiomes.model.ltree.LTree;
+import com.untamedears.realisticbiomes.model.ltree.SpreadRule;
+import com.untamedears.realisticbiomes.utils.SchematicUtils;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
@@ -36,17 +47,14 @@ public class RBConfigManager extends CoreConfigManager {
 	private ManagedDatasource database;
 
 	private String legacyPrefix;
-	private boolean cacheEverything;
 	private boolean hasPersistentGrowth;
 
 	private Set<PlantGrowthConfig> plantConfigs;
+	private Map<String, RBSchematic> schematics;
+	private List<LTree> lTrees;
 
 	public RBConfigManager(ACivMod plugin) {
 		super(plugin);
-	}
-
-	public boolean cacheEverything() {
-		return cacheEverything;
 	}
 
 	public ManagedDatasource getDatabase() {
@@ -92,22 +100,30 @@ public class RBConfigManager extends CoreConfigManager {
 		return result;
 	}
 
+	private void loadSchematics() {
+		this.schematics = new HashMap<>();
+		File folder = new File(plugin.getDataFolder(), "schematics");
+		for (RBSchematic schem : SchematicUtils.loadAll(folder, logger)) {
+			this.schematics.put(schem.getName().toLowerCase(), schem);
+		}
+	}
+
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		hasPersistentGrowth = false;
 		database = (ManagedDatasource) config.get("database", null);
 		legacyPrefix = config.getString("database_prefix", null);
 		Map<String, List<Biome>> biomeAliases = loadBiomeAliases(config.getConfigurationSection("biome_aliases"));
-		cacheEverything = config.getBoolean("cache_entire_database", false);
+		loadSchematics();
 		plantConfigs = parsePlantGrowthConfig(config.getConfigurationSection("plants"), biomeAliases);
-
+		List<LStepConfig> rawConfigs = parseRawLStepConfigs(config.getConfigurationSection("l_steps"));
+		lTrees = parseLTrees(config.getConfigurationSection("l_trees"), rawConfigs);
 		return true;
 	}
 
 	private Map<Material, Double> parseMaterialDoubleMap(ConfigurationSection parent, String identifier) {
 		Map<Material, Double> result = new EnumMap<>(Material.class);
-		ConfigParsing.parseKeyValueMap(parent, identifier, logger, Material::valueOf,  Double::parseDouble,
-				result);
+		ConfigParsing.parseKeyValueMap(parent, identifier, logger, Material::valueOf, Double::parseDouble, result);
 		return result;
 	}
 
@@ -125,10 +141,10 @@ public class RBConfigManager extends CoreConfigManager {
 			}
 			ConfigurationSection current = config.getConfigurationSection(key);
 			if (!current.isItemStack("item")) {
-				logger.warning("Growth config " + key + " does not have an item specified, it was ignored");
-				continue;
+				logger.warning(
+						"Growth config " + key + " does not have an item specified, it will not be directly plantable");
 			}
-			ItemStack item = current.getItemStack("item");
+			ItemStack item = current.getItemStack("item", null);
 			List<Material> vanillaMats = parseMaterialList(current, "vanilla_materials");
 			if (vanillaMats == null) {
 				vanillaMats = Collections.emptyList();
@@ -177,7 +193,8 @@ public class RBConfigManager extends CoreConfigManager {
 			}
 			short id = (short) current.getInt("id", 0);
 			if (id == 0) {
-				logger.warning("Need to specify a non 0 id for each plant type, missing at " + current.getCurrentPath());
+				logger.warning(
+						"Need to specify a non 0 id for each plant type, missing at " + current.getCurrentPath());
 				continue;
 			}
 			int maximumSoilLayers = current.getInt("soil_max_layers", 0);
@@ -189,13 +206,13 @@ public class RBConfigManager extends CoreConfigManager {
 				logger.warning("Failed to parse a grower at " + current.getCurrentPath() + ", skipped it");
 				continue;
 			}
-			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, id,item, greenHouseRates, soilBoniPerLevel,
+			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, id, item, greenHouseRates, soilBoniPerLevel,
 					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight, grower, vanillaMats);
 			result.add(growthConfig);
 		}
 		return result;
 	}
-	
+
 	private IArtificialGrower parseGrower(ConfigurationSection section) {
 		if (section == null) {
 			return null;
@@ -219,10 +236,153 @@ public class RBConfigManager extends CoreConfigManager {
 			return new AgeableGrower(maxStage, increment);
 		case "tree":
 			return new TreeGrower();
+		case "schematic":
+			String name = section.getString("schematic", "default");
+			RBSchematic schem = schematics.get(name.toLowerCase());
+			if (schem == null) {
+				logger.warning("Schematic " + name + " specified at " + section.getCurrentPath() + " was not found");
+				return null;
+			}
+			Location offSet = section.getLocation("offset", new Location(null, 0, 0, 0));
+			return new SchematicGrower(schem, offSet);
 		default:
 			logger.warning(section.getString("type") + " is not a valid grower type");
 			return null;
 		}
+	}
+
+	public List<LTree> parseLTrees(ConfigurationSection config, List<LStepConfig> stepConfig) {
+		List<LTree> result = new ArrayList<>();
+		if (config == null) {
+			return result;
+		}
+		Map<String, LStepConfig> configMap = stepConfig.stream().collect(Collectors.toMap(LStepConfig::getID, l -> l));
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				logger.warning("Found invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			String start = current.getString("start_symbol");
+			Vector defaultVector = current.getVector("start_direction");
+			Map<String, List<SpreadRule>> spreadRules = new HashMap<>();
+			ConfigurationSection spreadSection = current.getConfigurationSection("rules");
+			if (spreadSection != null) {
+				for (String spreadKey : spreadSection.getKeys(false)) {
+					List<SpreadRule> localSpreadRules = new ArrayList<>();
+					ConfigurationSection currentKeySection = spreadSection.getConfigurationSection(spreadKey);
+					for (String subKey : currentKeySection.getKeys(false)) {
+						ConfigurationSection subSection = currentKeySection.getConfigurationSection(subKey);
+						double chance = subSection.getDouble("chance", 1.0);
+						List<String> targets = new ArrayList<>();
+						List<Vector> targetDirections = new ArrayList<>();
+						ConfigurationSection resultSection = subSection.getConfigurationSection("results");
+						if (resultSection != null) {
+							for (String resultKey : resultSection.getKeys(false)) {
+								ConfigurationSection currentResultSection = resultSection
+										.getConfigurationSection(resultKey);
+								String name = currentResultSection.getString("name");
+								Vector direction = currentResultSection.getVector("direction");
+								if (name == null || direction == null) {
+									logger.warning("Incomplete entry at " + currentResultSection.getCurrentPath()
+											+ " was ignored");
+									continue;
+								}
+								targets.add(name);
+								targetDirections.add(direction);
+							}
+						}
+						localSpreadRules.add(new SpreadRule(chance, targets, targetDirections));
+					}
+					spreadRules.put(spreadKey, localSpreadRules);
+				}
+			}
+			result.add(new LTree(key, start, defaultVector, spreadRules, i -> {
+				LStepConfig lConfig = configMap.get(i);
+				if (lConfig != null) {
+					lConfig = lConfig.clone();
+				} else {
+					logger.warning("No lstep config with name " + i + " was specified, but it was set as target");
+				}
+				return lConfig;
+			}));
+		}
+		return result;
+	}
+
+	public List<LTree> getLTrees() {
+		return lTrees;
+	}
+
+	public List<LStepConfig> parseRawLStepConfigs(ConfigurationSection config) {
+		List<LStepConfig> result = new ArrayList<>();
+		if (config == null) {
+			return result;
+		}
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				logger.warning("Found invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			double directionWeight = current.getDouble("direction_weight", 1.0);
+			List<BlockTransformation> transforms = parseBlockTransformations(
+					current.getConfigurationSection("transformations"));
+			boolean normalizeBeforeDirectionTransformation = current
+					.getBoolean("normalize_direction_before_transformation", true);
+			boolean transformInWorldCoordinates = current.getBoolean("transform_in_world_coords", false);
+			result.add(new LStepConfig(key, directionWeight, transforms, normalizeBeforeDirectionTransformation,
+					transformInWorldCoordinates));
+		}
+		return result;
+	}
+
+	private Vector parseVector(ConfigurationSection config, String key) {
+		String value = config.getString(key);
+		String[] split = value.split(",");
+		if (split.length != 3) {
+			return null;
+		}
+		try {
+			double x = Double.parseDouble(split[0].trim());
+			double y = Double.parseDouble(split[1].trim());
+			double z = Double.parseDouble(split[2].trim());
+			return new Vector(x, y, z);
+		} catch (NumberFormatException e) {
+			return null;
+		}
+	}
+
+	private List<BlockTransformation> parseBlockTransformations(ConfigurationSection config) {
+		List<BlockTransformation> result = new ArrayList<>();
+		if (config == null) {
+			return result;
+		}
+		for (String key : config.getKeys(false)) {
+			if (!config.isConfigurationSection(key)) {
+				logger.warning("Found invalid entry " + key + " at " + config.getCurrentPath());
+				continue;
+			}
+			ConfigurationSection current = config.getConfigurationSection(key);
+			Material mat;
+			try {
+				mat = Material.valueOf(current.getString("material", ""));
+			} catch (IllegalArgumentException e) {
+				logger.warning("No material specified at " + current.getCurrentPath());
+				continue;
+			}
+			Map<String, String> blockData = new HashMap<>();
+			ConfigurationSection dataSection = current.getConfigurationSection("data");
+			if (dataSection != null) {
+				for (String dataKey : dataSection.getKeys(false)) {
+					String value = dataSection.getString(dataKey);
+					blockData.put(dataKey, value);
+				}
+			}
+
+			result.add(new BlockTransformation(mat, blockData));
+		}
+		return result;
 	}
 
 }

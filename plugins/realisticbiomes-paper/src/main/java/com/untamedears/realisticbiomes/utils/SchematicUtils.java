@@ -15,7 +15,7 @@ import com.untamedears.realisticbiomes.model.RBSchematic;
 
 public class SchematicUtils {
 
-	public List<RBSchematic> loadAll(File folder, Logger logger) {
+	public static List<RBSchematic> loadAll(File folder, Logger logger) {
 		List<RBSchematic> result = new ArrayList<>();
 		if (!folder.isDirectory()) {
 			logger.warning("No schematic directory provided");
@@ -37,12 +37,13 @@ public class SchematicUtils {
 				logger.severe("Failed to load schematic "+ e.toString() );
 				continue;
 			}
-			result.add(new RBSchematic(board));
+			String name = subFile.getName().replace(".schematic", "");
+			result.add(new RBSchematic(name, board));
 		}
 		return result;
 	}
 
-	public Clipboard loadSchematic(File file) throws IOException {
+	public static Clipboard loadSchematic(File file) throws IOException {
 		ClipboardFormat format = ClipboardFormats.findByFile(file);
 		try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
 			return reader.read();

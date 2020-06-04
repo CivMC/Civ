@@ -25,9 +25,17 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 		this.creationTime = creationTime;
 		this.growthConfig = growthConfig;
 	}
-	
+
 	public PlantGrowthConfig getGrowthConfig() {
 		return growthConfig;
+	}
+
+	public void setGrowthConfig(PlantGrowthConfig growthConfig) {
+		if (growthConfig != this.growthConfig) {
+			this.growthConfig = growthConfig;
+			setDirty();
+		}
+
 	}
 
 	@Override
@@ -41,7 +49,7 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	public long getCreationTime() {
 		return creationTime;
 	}
-	
+
 	@Override
 	public long getNextUpdate() {
 		return nextUpdate;
@@ -71,17 +79,22 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
 	@Override
 	public void updateState() {
-		Block block = location.getBlock();
-		PlantGrowthConfig growthConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
-				.getPlantGrowthConfigFallback(block);
 		if (growthConfig != null) {
 			nextUpdate = growthConfig.updatePlant(this);
-		}
-		else {
-			nextUpdate = Long.MAX_VALUE;
+		} else {
+			Block block = location.getBlock();
+			PlantGrowthConfig newConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
+					.getGrowthConfigFallback(block.getType());
+			if (newConfig != null) {
+				setGrowthConfig(newConfig);
+				nextUpdate = newConfig.updatePlant(this);
+			}
+			else {
+				nextUpdate = Long.MAX_VALUE;
+			}
 		}
 		if (nextUpdate == Long.MAX_VALUE) {
-			//note that this can also be returned by the updatePlant function
+			// note that this can also be returned by the updatePlant function
 			getOwningCache().remove(this);
 		}
 	}

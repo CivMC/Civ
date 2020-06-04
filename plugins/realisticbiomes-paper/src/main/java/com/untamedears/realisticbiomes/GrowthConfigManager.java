@@ -7,21 +7,28 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class GrowthConfigManager {
 
 	private Map<Material, PlantGrowthConfig> fallbackPlantMap;
 	private Map<Short, PlantGrowthConfig> plantsById;
+	private Map<ItemStack, PlantGrowthConfig> plantsByItem;
 
 	public GrowthConfigManager(Set<PlantGrowthConfig> plantConfigs) {
 		fallbackPlantMap = new EnumMap<>(Material.class);
 		plantsById = new HashMap<>();
+		plantsByItem = new HashMap<>();
 		for (PlantGrowthConfig plant : plantConfigs) {
 			for(Material mat : plant.getApplicableVanillaPlants()) {
 				fallbackPlantMap.put(mat, plant);
+			}
+			if (plant.getItem() != null) {
+				plantsByItem.put(plant.getItem(), plant);
 			}
 			plantsById.put(plant.getID(), plant);
 		}
@@ -41,6 +48,21 @@ public class GrowthConfigManager {
 	public PlantGrowthConfig getGrowthConfigFallback(Material material) {
 		return fallbackPlantMap.get(material);
 	}
+	
+	/**
+	 * Retrieves a growth config by the Item used to plant it
+	 * @param item ItemStack used to plant the item
+	 * @return Growth config for the given item if one exists
+	 */
+	public PlantGrowthConfig getGrowthConfigByItem(ItemStack item) {
+		ItemStack copy = item.clone();
+		copy.setAmount(1);
+		return plantsByItem.get(copy);
+	}
+	
+	public PlantGrowthConfig getCustomSaplingConfig(ItemStack item) {
+		return null;
+	}
 
 	/**
 	 * Gets the plant growth config responsible for further growth related to this
@@ -50,18 +72,21 @@ public class GrowthConfigManager {
 	 * @param block Block to get growth config for
 	 * @return Growth config, possibly null if no config for the given block exists
 	 */
-	public PlantGrowthConfig getPlantGrowthConfigFallback(Block block) {
+	public PlantGrowthConfig getPlantGrowthConfigFallback(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		PlantGrowthConfig config = getGrowthConfigFallback(block.getType());
 		if (config == null) {
 			return null;
 		}
 		Material fruit = RBUtils.getFruit(block.getType());
-		if (fruit != null && config.isFullyGrown(block)) {
+		if (fruit != null && config.isFullyGrown(new Plant(block.getLocation(), config))) {
 			PlantGrowthConfig fruitConfig = getGrowthConfigFallback(fruit);
 			if (fruitConfig != null) {
+				plant.setGrowthConfig(fruitConfig);
 				return fruitConfig;
 			}
 		}
+		plant.setGrowthConfig(config);
 		return config;
 	}
 }

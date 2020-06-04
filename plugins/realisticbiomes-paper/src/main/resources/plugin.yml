@@ -18,3 +18,14 @@ authors:
 api-version: 1.14
 description: RealisticBiomes makes farming harder by limiting growth rates of crops and making them only grow well in certain
    biomes.
+commands:
+  rbgrow:
+    usage: /rbgrow 
+    description: Removes the block above it if used on an acid block
+    min-args: 1
+    max-args: 100
+    player-only: true
+   
+   
+   
+   

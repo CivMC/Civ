@@ -4,7 +4,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
-import com.untamedears.realisticbiomes.utils.RBUtils;
+import com.untamedears.realisticbiomes.model.Plant;
 
 public class ColumnPlantGrower extends IArtificialGrower {
 
@@ -23,9 +23,16 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	}
 
 	private int maxHeight;
+	private Material finalMaterial;
 
 	public ColumnPlantGrower(int maxHeight) {
+		this(maxHeight, null);
+	}
+
+	
+	public ColumnPlantGrower(int maxHeight, Material finalMaterial) {
 		this.maxHeight = maxHeight;
+		this.finalMaterial = finalMaterial;
 	}
 
 	@Override
@@ -39,12 +46,13 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		if (getActualHeight(block) < maxHeight) {
-			//can grow more
+			// can grow more
 			return 0;
 		}
-		//fully grown
+		// fully grown
 		return 1;
 	}
 
@@ -55,26 +63,16 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		return top.getY() - bottom.getY();
 	}
 
-	protected Material getAccordingMaterial(Block block) {
-		Material material = RBUtils.getRemappedMaterial(block.getType());
-		if (material == null) {
-			material = block.getType();
-		}
-
-		return material;
-	}
-
 	/**
 	 * Handles the growth of a column plant ( i.e sugarcane, cactus )
-	 * @param block Block of the corresponding plant
+	 * 
+	 * @param block   Block of the corresponding plant
 	 * @param howMany How tall should the growth be
 	 * @return highest plant block
 	 */
 	protected Block growOnTop(Block block, int howMany) {
-		// Turns Bamboo saplings into Bamboo and prevents growing 2 saplings on top of each others
-		Material finalType = this.getAccordingMaterial(block);
-		if (block.getType() != finalType) {
-			block.setType(finalType);
+		if (finalMaterial != null && block.getType() != finalMaterial) {
+			block.setType(finalMaterial);
 		}
 
 		int counter = 1;
@@ -84,7 +82,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
-				onTop.setType(finalType);
+				onTop.setType(finalMaterial);
 				howMany--;
 				continue;
 			}
@@ -97,14 +95,15 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			break;
 		}
 
-		return onTop.getType() != finalType ? onTop.getRelative(BlockFace.DOWN) : onTop;
+		return onTop.getType() != finalMaterial ? onTop.getRelative(BlockFace.DOWN) : onTop;
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
 		if (stage == 0) {
 			return;
 		}
+		Block block = plant.getLocation().getBlock();
 		growOnTop(block, stage);
 	}
 

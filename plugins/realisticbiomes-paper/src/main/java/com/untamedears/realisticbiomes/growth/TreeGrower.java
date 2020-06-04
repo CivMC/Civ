@@ -5,6 +5,8 @@ import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Sapling;
 
+import com.untamedears.realisticbiomes.model.Plant;
+
 public class TreeGrower extends AgeableGrower {
 
 	private static boolean adjacentSaplingCheck(Material mat, Block northwest) {
@@ -76,7 +78,8 @@ public class TreeGrower extends AgeableGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		if (!(block.getBlockData() instanceof Sapling)) {
 			return -1;
 		}
@@ -84,7 +87,8 @@ public class TreeGrower extends AgeableGrower {
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
+		Block block = plant.getLocation().getBlock();
 		if (stage < 1) {
 			return;
 		}
@@ -101,7 +105,10 @@ public class TreeGrower extends AgeableGrower {
 			return;
 		}
 		block.setType(Material.AIR);
-		block.getLocation().getWorld().generateTree(block.getLocation(), type);
+		if (!block.getLocation().getWorld().generateTree(block.getLocation(), type)) {
+			//didn't grow, so put sapling back there
+			block.setType(mat);
+		}
 	}
 
 }

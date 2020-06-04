@@ -43,7 +43,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.8</version>
+			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -51,6 +51,11 @@
 			<artifactId>worldedit-bukkit</artifactId>
 			<version>7.1.0</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
 		</dependency>
 	</dependencies>
 
@@ -63,7 +68,7 @@
 			<id>devoted-repo</id>
 			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
-				<repository>
+		<repository>
 			<id>worldedit-repo</id>
 			<url>https://maven.enginehub.org/repo/</url>
 		</repository>

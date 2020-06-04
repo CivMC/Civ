@@ -1,6 +1,5 @@
 package com.untamedears.realisticbiomes.model;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 
@@ -13,11 +12,17 @@ public class RBSchematic {
 	private BlockData[][][] blockData;
 	private int xOffset;
 	private int zOffset;
+	private String name;
 
-	public RBSchematic(Clipboard weClipBoard) {
+	public RBSchematic(String name, Clipboard weClipBoard) {
 		this.blockData = convertWEClipBoard(weClipBoard);
+		this.name = name;
 		this.xOffset = blockData.length / 2;
 		this.zOffset = blockData[0][0].length / 2;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public void spawnAt(Location loc) {
