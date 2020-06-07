@@ -74,6 +74,20 @@ public final class ItemAPI {
 	}
 
 	/**
+	 * Decrements an item's amount, or returns null if the amount reaches zero.
+	 *
+	 * @param item The item to decrement in amount.
+	 * @return Returns the given item with a decremented amount, or null.
+	 */
+	public static ItemStack decrementItem(ItemStack item) {
+		if (item == null || item.getAmount() <= 1) {
+			return null;
+		}
+		item.setAmount(item.getAmount() - 1);
+		return item;
+	}
+
+	/**
 	 * Retrieves the ItemMeta from an item.
 	 *
 	 * @param item The item to retrieve meta from.
