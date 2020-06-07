@@ -48,7 +48,7 @@ public final class ItemAPI {
 	}
 
 	/**
-	 * Determines whether two item stacks are functionally identical.
+	 * Determines whether two item stacks are functionally identical. (Will check both items against the other)
 	 *
 	 * @param former The first item.
 	 * @param latter The second item.
@@ -57,11 +57,17 @@ public final class ItemAPI {
 	 * @see ItemStack#equals(Object)
 	 * */
 	public static boolean areItemsEqual(@Nullable ItemStack former, @Nullable ItemStack latter) {
-		return former != null && former.equals(latter);
+		if (former != null && former.equals(latter)) {
+			return true;
+		}
+		if (latter != null && latter.equals(former)) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
-	 * Determines whether two item stacks are similar.
+	 * Determines whether two item stacks are similar. (Will check both items against the other)
 	 *
 	 * @param former The first item.
 	 * @param latter The second item.
@@ -70,7 +76,27 @@ public final class ItemAPI {
 	 * @see ItemStack#isSimilar(ItemStack)
 	 * */
 	public static boolean areItemsSimilar(@Nullable ItemStack former, @Nullable ItemStack latter) {
-		return former != null && former.isSimilar(latter);
+		if (former != null && former.isSimilar(latter)) {
+			return true;
+		}
+		if (latter != null && latter.isSimilar(former)) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Decrements an item's amount, or returns null if the amount reaches zero.
+	 *
+	 * @param item The item to decrement in amount.
+	 * @return Returns the given item with a decremented amount, or null.
+	 */
+	public static ItemStack decrementItem(ItemStack item) {
+		if (item == null || item.getAmount() <= 1) {
+			return null;
+		}
+		item.setAmount(item.getAmount() - 1);
+		return item;
 	}
 
 	/**
@@ -296,7 +322,7 @@ public final class ItemAPI {
 		catch (ClassCastException ignored) { }
 		return false;
 	}
-	
+
 	/**
 	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, 
 	 * so it has the enchantment glow without an enchantment being visible
