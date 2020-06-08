@@ -121,7 +121,12 @@ public class CitadelUtility {
 		}
 		// check inventory
 		int available = playerItems.getAmount(type.getItem());
-		if (available == 0) {
+		int required = type.getItem().getAmount();
+		if (block.getType() == type.getItem().getType()) {
+			//make sure they're not trying to reinforce with the single block thats also being placed
+			required++;
+		}
+		if (available < required) {
 			Citadel.getInstance().getStateManager().setState(player, null);
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
 			return true;
