@@ -83,9 +83,14 @@ public abstract class AbstractPlayerState {
 		damage = dre.getDamageDone();
 		ReinforcementLogic.damageReinforcement(rein, damage, e.getPlayer());
 		if (rein.getHealth() <= 0) {
-			e.setCancelled(false);
-			ReinforcedBlockBreak rbbe = new ReinforcedBlockBreak(e.getPlayer(), rein, e);
-			Bukkit.getPluginManager().callEvent(rbbe);
+			// in the case of double chests or similar there might now be another rein
+			// protecting this block
+			Reinforcement backupRein = ReinforcementLogic.getReinforcementProtecting(e.getBlock());
+			if (backupRein == null) {
+				e.setCancelled(false);
+				ReinforcedBlockBreak rbbe = new ReinforcedBlockBreak(e.getPlayer(), rein, e);
+				Bukkit.getPluginManager().callEvent(rbbe);
+			}
 		}
 	}
 
@@ -97,9 +102,9 @@ public abstract class AbstractPlayerState {
 			DelayedItemDrop.dropAt(location, type.getItem().clone());
 		}
 	}
-	
+
 	public abstract String getOverlayText();
-	
+
 	@Override
 	public abstract boolean equals(Object o);
 
