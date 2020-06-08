@@ -21,6 +21,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import vg.civcraft.mc.citadel.Citadel;
+import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -103,7 +104,7 @@ public class EntityListener implements Listener {
 				GroupManagerDao db = NameLayerPlugin.getGroupManagerDao();
 				for (String groupName : db.getGroupNames(uuid)) {
 					if (NameAPI.getGroupManager().hasAccess(groupName, uuid,
-							PermissionType.getPermission("REINFORCE"))) {
+							CitadelPermissionHandler.getBypass())) {
 						GroupManager.getGroup(groupName).updateActivityTimeStamp();
 					}
 				}
