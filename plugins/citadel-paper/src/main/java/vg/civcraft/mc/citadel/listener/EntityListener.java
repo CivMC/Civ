@@ -8,6 +8,7 @@ import java.util.UUID;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,6 +18,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -45,15 +47,37 @@ public class EntityListener implements Listener {
 		}
 	}
 
+	// For some ungodly reason, when you break a block below a block with gravity, it spawns a FallingBlock entity
+	// that then attempts to change the block. To prevent this change from ticking damage and creating a ghost block
+	// the entity needs to have its gravity disabled so it immediately lands.
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void onFallingBlockSpawn(EntitySpawnEvent event) {
+		if (event.getEntityType() != EntityType.FALLING_BLOCK) {
+			return;
+		}
+		Block block = event.getLocation().getBlock();
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+		if (rein == null) {
+			return;
+		}
+		Entity entity = event.getEntity();
+		entity.setGravity(false);
+		event.setCancelled(true);
+	}
+
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void changeBlock(EntityChangeBlockEvent ecbe) {
-		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(ecbe.getBlock());
-		if (rein != null) {
-			ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
-			if (!rein.isBroken()) {
-				ecbe.setCancelled(true);
-			}
+		Block block = ecbe.getBlock();
+		Reinforcement rein = ReinforcementLogic.getReinforcementProtecting(block);
+		// Do not allow a falling block entity to damage reinforcements.
+		if (rein == null || ecbe.getEntityType() == EntityType.FALLING_BLOCK) {
+			return;
 		}
+		ReinforcementLogic.damageReinforcement(rein, ReinforcementLogic.getDamageApplied(rein), ecbe.getEntity());
+		if (rein.isBroken()) {
+			return;
+		}
+		ecbe.setCancelled(true);
 	}
 
 	// apply explosion damage to reinforcements
