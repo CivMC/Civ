@@ -1,6 +1,4 @@
-libraries {
-  lib('civ_pipeline_lib')
-}
+@Library('civ_pipeline_lib')_
 
 pipeline {
     agent any
