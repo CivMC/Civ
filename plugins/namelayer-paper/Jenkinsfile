@@ -20,11 +20,11 @@ pipeline {
                 civ_archive_artifacts()
             }
         }
-        stage ('Archive javadoc') {
-            steps {
-                civ_archive_javadoc()
-            }
-        }
+//        stage ('Archive javadoc') {
+//            steps {
+//                civ_archive_javadoc()
+//            }
+//        }
         stage ('Aggregate reports') {
             steps {
                 civ_aggregate_reports()
