@@ -19,7 +19,7 @@ pipeline {
                 }
             }
             steps {
-                //build job: '../NameLayer/master', wait: false
+                build job: '../NameLayer/master', wait: false
             }
         }
         stage ('Archive binaries') {
