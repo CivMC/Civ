@@ -1,31 +1,46 @@
+@Library('civ_pipeline_lib')_
+
 pipeline {
     agent any
     tools {
         maven 'Maven 3.6.3'
         jdk 'Java 8'
     }
+    environment {
+    	civ_dependent_plugins = "Citadel"
+    }
      stages {
         stage ('Build') {
             steps {
-                sh 'mvn -U clean install deploy'
+                civ_build_plugin()
             }
         }
-        stage ('Trigger cascading builds') {
-            when {
-                expression {
-                    env.BRANCH_NAME == 'master'
-                }
-            }
+        stage ('Archive binaries') {
             steps {
-                build job: '../Citadel/master', wait: false
+                civ_archive_artifacts()
+            }
+        }
+        stage ('Archive javadoc') {
+            steps {
+                civ_archive_javadoc()
+            }
+        }
+        stage ('Aggregate reports') {
+            steps {
+                civ_aggregate_reports()
             }
         }
     }
+
     post {
         always {
-            withCredentials([string(credentialsId: 'civclassic-discord-webhook', variable: 'DISCORD_WEBHOOK')]) {
-                discordSend description: "**Build:** [${currentBuild.id}](${env.BUILD_URL})\n**Status:** [${currentBuild.currentResult}](${env.BUILD_URL})\n", footer: 'Civclassic Jenkins', link: env.BUILD_URL, successful: currentBuild.resultIsBetterOrEqualTo('SUCCESS'), title: "${env.JOB_NAME} #${currentBuild.id}", webhookURL: DISCORD_WEBHOOK
-            }
+           civ_post_always()
+        }
+        success {
+           civ_post_success()
+        }
+        failure {
+           civ_post_failure()
         }
     }
 }
