@@ -66,8 +66,8 @@ pipeline {
     }
 
     post {
-        always {
+        
            civ_discord_send()
-        }
+        
     }
 }
