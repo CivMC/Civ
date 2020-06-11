@@ -9,14 +9,7 @@ pipeline {
      stages {
         stage ('Build') {
             steps {
-                script {
-                    if (env.BRANCH_NAME.startsWith('PR')) {
-                        sh 'mvn -U clean package -P civ-jenkins'
-                    } 
-                    else {
-                         sh 'mvn -U clean install deploy -P civ-jenkins'
-                     } 
-                }
+                civ_build_plugin()
             }
         }
         stage ('Trigger cascading builds') {
@@ -26,7 +19,7 @@ pipeline {
                 }
             }
             steps {
-                build job: '../NameLayer/master', wait: false
+                //build job: '../NameLayer/master', wait: false
             }
         }
         stage ('Archive binaries') {
@@ -66,8 +59,14 @@ pipeline {
     }
 
     post {
-        
-           civ_discord_send()
-        
+        always {
+           civ_post_always()
+        }
+        success {
+           civ_post_success()
+        }
+        failure {
+           civ_post_failure()
+        }
     }
 }
