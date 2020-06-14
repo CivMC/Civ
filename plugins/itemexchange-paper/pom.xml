@@ -5,14 +5,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.civclassic.maven</groupId>
-		<artifactId>civclassic-checkstyle</artifactId>
+		<groupId>com.github.civclassic</groupId>
+		<artifactId>civclassic-parent</artifactId>
 		<version>1.0.0</version>
 	</parent>
 
 	<groupId>com.untamedears.itemexchange</groupId>
 	<artifactId>ItemExchange</artifactId>
-	<version>1.4.0</version>
+	<version>1.4.1</version>
 	<packaging>jar</packaging>
 
 	<dependencies>

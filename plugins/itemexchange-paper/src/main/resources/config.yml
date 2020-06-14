@@ -11,6 +11,7 @@ supportedBlocks:
 
 # Supported blocks not allowed to trigger the successful transaction button.
 # Make sure to disallow blocks that themselves would be activated by the transaction button, like dispensers.
+# Additionally, make sure to disallow blocks that aren't directional.
 disallowedSuccessButtonBlocks:
   - "DISPENSER"
   - "DROPPER"
