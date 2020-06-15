@@ -14,7 +14,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
 import vg.civcraft.mc.civmodcore.util.EnumUtils;
@@ -50,7 +49,7 @@ public final class BookModifier extends ModifierData<BookModifier> {
 	}
 
 	@Override
-	public BookModifier construct(@NotNull ItemStack item) {
+	public BookModifier construct(ItemStack item) {
 		BookMeta meta = chain(() -> (BookMeta) item.getItemMeta());
 		if (meta == null) {
 			return null;
@@ -78,7 +77,7 @@ public final class BookModifier extends ModifierData<BookModifier> {
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		BookMeta meta = chain(() -> (BookMeta) item.getItemMeta());
 		if (meta == null) {
 			return false;

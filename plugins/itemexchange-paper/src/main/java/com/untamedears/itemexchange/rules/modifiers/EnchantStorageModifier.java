@@ -17,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.api.EnchantAPI;
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
@@ -37,7 +36,7 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 	}
 
 	@Override
-	public EnchantStorageModifier construct(@NotNull ItemStack item) {
+	public EnchantStorageModifier construct(ItemStack item) {
 		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
 		if (meta == null) {
 			return null;
@@ -64,7 +63,7 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
 		if (meta == null) {
 			return false;

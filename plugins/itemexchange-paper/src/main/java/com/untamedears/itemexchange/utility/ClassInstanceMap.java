@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public class ClassInstanceMap<T> implements Iterable<T> {
@@ -144,7 +143,6 @@ public class ClassInstanceMap<T> implements Iterable<T> {
 		return 239487509 + this.map.hashCode();
 	}
 
-	@NotNull
 	@Override
 	public Iterator<T> iterator() {
 		return this.map.values().iterator();

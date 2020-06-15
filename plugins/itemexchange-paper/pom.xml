@@ -33,7 +33,7 @@
 	<repositories>
 		<repository>
 			<id>civclassic-repo</id>
-			<url>https://build.civclassic.com/plugin/repository/everything/</url>
+			<url>https://repo.civclassic.com/repository/internal/</url>
 		</repository>
 	</repositories>
 

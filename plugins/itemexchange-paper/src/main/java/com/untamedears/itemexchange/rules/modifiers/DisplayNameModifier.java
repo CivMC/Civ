@@ -17,7 +17,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -34,8 +33,7 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 	}
 
 	@Override
-	@NotNull
-	public DisplayNameModifier construct(@NotNull ItemStack item) {
+	public DisplayNameModifier construct(ItemStack item) {
 		DisplayNameModifier modifier = new DisplayNameModifier();
 		modifier.setDisplayName(Objects.requireNonNull(item.getItemMeta()).getDisplayName());
 		return modifier;
@@ -47,7 +45,7 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
 		if (hasDisplayName() != meta.hasDisplayName()) {
 			return false;

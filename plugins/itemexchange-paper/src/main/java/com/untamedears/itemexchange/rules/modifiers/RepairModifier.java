@@ -22,7 +22,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Repairable;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
@@ -48,7 +47,7 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 	}
 
 	@Override
-	public RepairModifier construct(@NotNull ItemStack item) {
+	public RepairModifier construct(ItemStack item) {
 		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
 			return null;
 		}
@@ -67,7 +66,7 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		Repairable meta = chain(() -> (Repairable) item.getItemMeta());
 		if (meta == null) {
 			return false;

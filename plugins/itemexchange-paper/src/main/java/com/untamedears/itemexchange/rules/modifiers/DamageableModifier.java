@@ -22,7 +22,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -39,7 +38,7 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 	}
 
 	@Override
-	public DamageableModifier construct(@NotNull ItemStack item) {
+	public DamageableModifier construct(ItemStack item) {
 		if (!ItemExchangeConfig.canDamageItem(item.getType())) {
 			return null;
 		}
@@ -67,7 +66,7 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		Damageable meta = chain(() -> (Damageable) item.getItemMeta());
 		if (meta == null) {
 			return false;

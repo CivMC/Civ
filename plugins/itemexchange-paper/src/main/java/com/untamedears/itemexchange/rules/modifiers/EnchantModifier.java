@@ -32,7 +32,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.api.EnchantAPI;
 import vg.civcraft.mc.civmodcore.api.EnchantNames;
 import vg.civcraft.mc.civmodcore.api.EnchantNames.SearchResult;
@@ -62,7 +61,7 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	}
 
 	@Override
-	public EnchantModifier construct(@NotNull ItemStack item) {
+	public EnchantModifier construct(ItemStack item) {
 		if (!ItemExchangeConfig.canEnchantItem(item.getType())) {
 			return null;
 		}
@@ -88,7 +87,7 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		Map<Enchantment, Integer> enchants = item.getEnchantments();
 		if (!Utilities.conformsRequiresEnchants(getRequiredEnchants(), enchants, isAllowingUnlistedEnchants())) {
 			return false;

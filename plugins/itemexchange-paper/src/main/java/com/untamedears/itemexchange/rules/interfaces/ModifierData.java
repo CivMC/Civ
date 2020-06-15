@@ -4,9 +4,6 @@ import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.util.List;
 import java.util.Objects;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
@@ -38,7 +35,6 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	/**
 	 * @return Returns the identifier for this modifier.
 	 */
-	@Contract("-> !null")
 	public final String getSlug() {
 		return this.modifier.slug().toUpperCase();
 	}
@@ -48,7 +44,6 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *
 	 * @return Returns a new instance of the extended class.
 	 */
-	@Contract("-> new")
 	public abstract T construct();
 
 	/**
@@ -58,13 +53,11 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *     {@link vg.civcraft.mc.civmodcore.api.ItemAPI#isValidItem(ItemStack)} check.
 	 * @return Returns a new instance of the extended class.
 	 */
-	@Nullable
-	public abstract T construct(@NotNull ItemStack item);
+	public abstract T construct(ItemStack item);
 
 	/**
 	 * Duplicates this modifier.
 	 */
-	@Contract("-> new")
 	public final T duplicate() {
 		NBTCompound nbt = new NBTCompound();
 		serialize(nbt);
@@ -80,12 +73,11 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *     {@link vg.civcraft.mc.civmodcore.api.ItemAPI#isValidItem(ItemStack)} check.
 	 * @return Returns true if the given item conforms.
 	 */
-	public abstract boolean conforms(@NotNull ItemStack item);
+	public abstract boolean conforms(ItemStack item);
 
 	/**
 	 * @return Returns a new listing, or null.
 	 */
-	@Nullable
 	public String getDisplayedListing() {
 		return null;
 	}
@@ -95,7 +87,6 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *     are supported and convey to not list anything.
 	 */
 	@Override
-	@Nullable
 	public List<String> getDisplayedInfo() {
 		return null;
 	}

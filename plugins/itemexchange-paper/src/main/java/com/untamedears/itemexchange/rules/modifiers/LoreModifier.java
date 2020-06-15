@@ -18,7 +18,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
@@ -38,14 +37,14 @@ public final class LoreModifier extends ModifierData<LoreModifier> {
 	}
 
 	@Override
-	public LoreModifier construct(@NotNull ItemStack item) {
+	public LoreModifier construct(ItemStack item) {
 		LoreModifier modifier = new LoreModifier();
 		modifier.lore = ItemAPI.getLore(item);
 		return modifier;
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		ItemMeta meta = item.getItemMeta();
 		if (meta == null) {
 			return false;

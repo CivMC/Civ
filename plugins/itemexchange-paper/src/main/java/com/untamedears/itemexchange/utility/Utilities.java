@@ -14,7 +14,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
@@ -85,8 +84,8 @@ public final class Utilities {
 	 * @param allowUnlistedEnchants Is metaEnchants allowed to include enchantments not included in ruleEnchants?
 	 * @return Returns true if the meta enchantments satisfy the rule enchantments.
 	 */
-	public static boolean conformsRequiresEnchants(@Nullable Map<Enchantment, Integer> ruleEnchants,
-												   @Nullable Map<Enchantment, Integer> metaEnchants,
+	public static boolean conformsRequiresEnchants(Map<Enchantment, Integer> ruleEnchants,
+												   Map<Enchantment, Integer> metaEnchants,
 												   boolean allowUnlistedEnchants) {
 		if (Iteration.isNullOrEmpty(ruleEnchants)) {
 			if (allowUnlistedEnchants || Iteration.isNullOrEmpty(metaEnchants)) {

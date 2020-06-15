@@ -8,7 +8,6 @@ import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import java.util.List;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializationException;
@@ -36,7 +35,7 @@ public final class _ExampleModifier extends ModifierData<_ExampleModifier> {
 	 * @return Returns a new instance of the extended class.
 	 */
 	@Override
-	public _ExampleModifier construct(@NotNull ItemStack item) {
+	public _ExampleModifier construct(ItemStack item) {
 		return null;
 	}
 
@@ -60,7 +59,7 @@ public final class _ExampleModifier extends ModifierData<_ExampleModifier> {
 	 * @return Returns true if the given item conforms.
 	 */
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		return false;
 	}
 

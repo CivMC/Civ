@@ -8,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
@@ -38,7 +37,6 @@ public class BrowseOrPurchaseEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the shop being browsed.
 	 */
-	@NotNull
 	public ShopRule getShop() {
 		return this.shop;
 	}
@@ -48,7 +46,6 @@ public class BrowseOrPurchaseEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the trade being viewed.
 	 */
-	@NotNull
 	public TradeRule getTrade() {
 		return this.trade;
 	}
@@ -58,7 +55,6 @@ public class BrowseOrPurchaseEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the browsing player.
 	 */
-	@NotNull
 	public Player getBrowser() {
 		return this.browser;
 	}
@@ -95,7 +91,6 @@ public class BrowseOrPurchaseEvent extends Event implements Cancellable {
 		this.cancelled = cancelled;
 	}
 
-	@NotNull
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
@@ -113,7 +108,6 @@ public class BrowseOrPurchaseEvent extends Event implements Cancellable {
 	 * @param browser The player who's browsing.
 	 * @return Returns the request event that was emitted and has finished processing.
 	 */
-	@NotNull
 	public static BrowseOrPurchaseEvent emit(ShopRule shop, TradeRule trade, Player browser) {
 		BrowseOrPurchaseEvent event = new BrowseOrPurchaseEvent(shop, trade, browser);
 		Bukkit.getPluginManager().callEvent(event);

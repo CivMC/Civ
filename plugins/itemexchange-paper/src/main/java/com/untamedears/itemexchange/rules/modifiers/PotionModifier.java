@@ -21,8 +21,6 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionType;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
@@ -44,7 +42,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	}
 
 	@Override
-	public PotionModifier construct(@NotNull ItemStack item) {
+	public PotionModifier construct(ItemStack item) {
 		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
 		if (meta == null) {
 			return null;
@@ -64,7 +62,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	}
 
 	@Override
-	public boolean conforms(@NotNull ItemStack item) {
+	public boolean conforms(ItemStack item) {
 		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
 		if (meta == null) {
 			return false;
@@ -99,7 +97,6 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 				.collect(Collectors.toCollection(ArrayList::new)));
 	}
 
-	@Nullable
 	@Override
 	public String getDisplayedListing() {
 		String listing = getName();

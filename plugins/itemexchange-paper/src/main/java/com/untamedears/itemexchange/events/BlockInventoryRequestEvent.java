@@ -12,8 +12,6 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.Inventory;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 /**
@@ -55,7 +53,6 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the block the inventory should be bound to.
 	 */
-	@NotNull
 	public Block getBlock() {
 		return this.block;
 	}
@@ -65,7 +62,6 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the player requesting the inventory, which may be null.
 	 */
-	@Nullable
 	public Player getRequester() {
 		return this.requester;
 	}
@@ -75,7 +71,6 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	 *
 	 * @return Returns the inventory bound to the block.
 	 */
-	@Nullable
 	public Inventory getInventory() {
 		return this.inventory;
 	}
@@ -103,7 +98,6 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 		this.cancelled = cancelled;
 	}
 
-	@NotNull
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
@@ -122,7 +116,6 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	 * @param requester The inventory requester.
 	 * @return Returns the request event that was emitted and has finished processing.
 	 */
-	@NotNull
 	public static BlockInventoryRequestEvent emit(Block block, Player requester) {
 		BlockInventoryRequestEvent event = new BlockInventoryRequestEvent(block, requester);
 		Bukkit.getPluginManager().callEvent(event);
