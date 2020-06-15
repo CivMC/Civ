@@ -3,39 +3,19 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.github.civclassic</groupId>
+		<artifactId>civclassic-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
 	<groupId>vg.civcraft.mc.civchat2</groupId>
 	<artifactId>CivChat2</artifactId>
 	<packaging>jar</packaging>
 	<version>1.7.2</version>
 	<name>CivChat2</name>
-	<url>https://github.com/DevotedMC/CivChat2</url>
-
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-	</properties>
-
-	<build>
-
-		<resources>
-			<resource>
-				<directory>${basedir}</directory>
-				<includes>
-					<include>License.txt</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-			<resource>
-				<directory>${basedir}/src/main/resources</directory>
-				<includes>
-					<include>*.yml</include>
-				</includes>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-	</build>
+	<url>https://github.com/Civclassic/CivChat2</url>
 
 	<dependencies>
 		<dependency>
@@ -64,12 +44,8 @@
 	</dependencies>
 	<repositories>
 		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
-		</repository>
-		<repository>
 			<id>civ-jenkins</id>
-			<url>http://build.devotedmc.com/plugin/repository/everything/</url>
+			<url>https://repo.civclassic.com/repository/internal/</url>
 		</repository>
 	</repositories>
 </project>
