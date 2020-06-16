@@ -183,7 +183,7 @@ repairables:
   - "ENCHANTED_BOOK"
 
 shopRelay:
-  # The blocks that can be used as shop relay blocks (must be valid block materials)
+  # The blocks that can be used as shop relay blocks (must be valid block materials and distinct from shop blocks)
   relayBlocks:
     - "ENDER_CHEST"
   # Determines how many times a relay can be relayed
