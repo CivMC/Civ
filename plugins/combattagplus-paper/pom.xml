@@ -4,6 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>com.github.civclassic</groupId>
+        <artifactId>civclassic-parent</artifactId>
+        <version>1.0.0</version>
+    </parent>
+
     <groupId>net.minelink</groupId>
     <artifactId>CombatTagPlusParent</artifactId>
     <packaging>pom</packaging>
@@ -28,14 +34,10 @@
         <module>CombatTagPlus</module>
     </modules>
 
-    <distributionManagement>
+    <repositories>
         <repository>
-            <id>byteflux-releases</id>
-            <url>http://repo.byteflux.net/repository/maven-releases/</url>
+            <id>civ-jenkins</id>
+            <url>https://repo.civclassic.com/repository/internal/</url>
         </repository>
-        <snapshotRepository>
-            <id>byteflux-snapshots</id>
-            <url>http://repo.byteflux.net/repository/maven-snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    </repositories>
 </project>
