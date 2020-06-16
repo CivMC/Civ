@@ -23,6 +23,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
+import org.bukkit.util.BlockIterator;
 
 /**
  * Class of utility functions for Blocks, and BlockFaces referencing Blocks around a Block.
@@ -244,6 +245,28 @@ public final class BlockAPI {
 			case SINGLE:
 				return null;
 		}
+	}
+
+	/**
+	 * Creates a {@link BlockIterator} from a block's perspective, which is lacking from its constructors, which are
+	 * more focused on entities.
+	 *
+	 * @param block The block to start the iterator from.
+	 * @param face The direction at which the iterator should iterate.
+	 * @param range The distance the iterator should iterate.
+	 * @return Returns a new instance of an BlockIterator.
+	 */
+	public static BlockIterator getBlockIterator(Block block, BlockFace face, int range) {
+		if (!BlockAPI.isValidBlock(block)) {
+			throw new IllegalArgumentException("Cannot create a block iterator from a null block.");
+		}
+		if (face == null || face == BlockFace.SELF) {
+			throw new IllegalArgumentException("Block iterator requires a valid direction.");
+		}
+		if (range <= 0) {
+			throw new IllegalArgumentException("Block iterator requires a range of 1 or higher.");
+		}
+		return new BlockIterator(block.getWorld(), block.getLocation().toVector(), face.getDirection(), 0, range);
 	}
 
 	public static boolean setBlockProperty(Block block, String key, String value) {
