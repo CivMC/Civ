@@ -69,7 +69,7 @@ public class CivChat2Manager {
 	/**
 	 * Gets the channel for player to player chat
 	 * 
-	 * @param name Player name of the channel
+	 * @param player Player name of the channel
 	 * @return Returns a String of channel name, null if doesn't exist
 	 */
 	public UUID getChannel(Player player) {
@@ -82,7 +82,7 @@ public class CivChat2Manager {
 	/**
 	 * Removes the channel from the channel storage
 	 * 
-	 * @param name Player Name of the channel
+	 * @param player Player Name of the channel
 	 *
 	 */
 	public void removeChannel(Player player) {
@@ -294,7 +294,7 @@ public class CivChat2Manager {
 	/**
 	 * Method to add a group chat channel
 	 * 
-	 * @param name  Player sending the message
+	 * @param player  Player sending the message
 	 * @param group Group sending the message to
 	 */
 	public void addGroupChat(Player player, Group group) {
@@ -308,9 +308,9 @@ public class CivChat2Manager {
 	/**
 	 * Method to send a message to a group
 	 * 
-	 * @param name     sender sending the message
+	 * @param sender     sender sending the message
 	 * @param group    Group to send the message too
-	 * @param groupMsg Message to send to the group
+	 * @param message Message to send to the group
 	 */
 	public void sendGroupMsg(Player sender, Group group, String message) {
 
@@ -373,7 +373,7 @@ public class CivChat2Manager {
 	/**
 	 * Method to get the group player is currently chatting in
 	 * 
-	 * @param name Players name
+	 * @param player Players name
 	 * @return Group they are currently chatting in
 	 */
 	public Group getGroupChatting(Player player) {
