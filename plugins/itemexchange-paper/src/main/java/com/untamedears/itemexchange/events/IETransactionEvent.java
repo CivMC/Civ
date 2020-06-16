@@ -1,6 +1,7 @@
 package com.untamedears.itemexchange.events;
 
 import com.untamedears.itemexchange.rules.TradeRule;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -22,6 +23,7 @@ public class IETransactionEvent extends Event {
 
 	private final ItemStack[] output;
 
+	@Deprecated
 	public IETransactionEvent(Player player, Inventory inventory, TradeRule trade, ItemStack[] input,
 							  ItemStack[] output) {
 		this.player = player;
@@ -29,10 +31,6 @@ public class IETransactionEvent extends Event {
 		this.trade = trade;
 		this.input = input;
 		this.output = output;
-	}
-
-	public static HandlerList getHandlerList() {
-		return handlers;
 	}
 
 	public Player getPlayer() {
@@ -63,6 +61,17 @@ public class IETransactionEvent extends Event {
 	@Override
 	public HandlerList getHandlers() {
 		return handlers;
+	}
+
+	public static HandlerList getHandlerList() {
+		return handlers;
+	}
+
+	public static IETransactionEvent emit(Player player, Inventory inventory, TradeRule trade, ItemStack[] input,
+										  ItemStack[] output) {
+		IETransactionEvent event = new IETransactionEvent(player, inventory, trade, input, output);
+		Bukkit.getPluginManager().callEvent(event);
+		return event;
 	}
 
 }
