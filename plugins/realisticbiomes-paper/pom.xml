@@ -17,11 +17,6 @@
 	<name>RealisticBiomes</name>
 	<url>https://github.com/Civclassic/RealisticBiomes</url>
 
-	<properties>
-		<maven.compiler.source>1.8</maven.compiler.source>
-		<maven.compiler.target>1.8</maven.compiler.target>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
@@ -32,7 +27,7 @@
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.8</version>
+			<version>1.7.9</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
