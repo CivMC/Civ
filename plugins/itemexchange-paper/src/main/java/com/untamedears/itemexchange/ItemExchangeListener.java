@@ -9,12 +9,11 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
 import com.untamedears.itemexchange.rules.TradeRule;
+import com.untamedears.itemexchange.utility.EnderChestConnectionResolver;
 import com.untamedears.itemexchange.utility.Utilities;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -82,7 +81,8 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		// Block must be a supported block type
-		if (!ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType())) {
+		if (!ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType()) &&
+				!ItemExchangeConfig.hasShopBounceBlock(clicked.getType())) {
 			return;
 		}
 		LOGGER.debug("[Shop] Shop Parsing Starting---------");
@@ -94,9 +94,31 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		this.playerInteractionCooldowns.put(player, now);
-		// Attempt to create parse a shop from the inventory
-		Inventory inventory = chain(() -> ((InventoryHolder) event.getClickedBlock().getState()).getInventory());
-		ShopRule shop = ShopRule.getShopFromInventory(inventory);
+		// Attempt to parse a shop from the shop/bounce block.
+		List<Inventory> inventories;
+		if (ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType())) {
+			inventories = Collections.singletonList(chain(() ->
+					((InventoryHolder) event.getClickedBlock().getState()).getInventory()));
+		} else if (ItemExchangeConfig.hasShopBounceBlock(clicked.getType())) {
+			inventories = EnderChestConnectionResolver.getConnectedInventories(clicked.getLocation());
+			System.out.println(inventories);
+		} else {
+			throw new AssertionError("not reachable");
+		}
+		ShopRule shop = null;
+		for (Inventory inventory : inventories) {
+			if (shop == null) {
+				shop = ShopRule.getShopFromInventory(inventory);
+			} else {
+				ShopRule tempShop = ShopRule.getShopFromInventory(inventory);
+				if (!Validation.checkValidity(tempShop)) {
+					LOGGER.debug("[Shop] Skipping, that is not a shop.");
+					continue;
+				}
+				shop.mergeWithShopRule(tempShop);
+			}
+		}
+
 		if (!Validation.checkValidity(shop)) {
 			LOGGER.debug("[Shop] Cancelling, that is not a shop.");
 			return;
@@ -111,11 +133,11 @@ public final class ItemExchangeListener implements Listener {
 		// If not then switch over to this shop and display its catalogue
 		boolean justBrowsing = false;
 		boolean shouldCycle = true;
-		assert inventory.getLocation() != null;
+		assert clicked.getLocation() != null;
 		if (!this.shopRecord.containsKey(player)
-				|| !equalsNotNull(inventory.getLocation(), this.shopRecord.get(player))
+				|| !equalsNotNull(clicked.getLocation(), this.shopRecord.get(player))
 				|| !this.ruleIndex.containsKey(player)) {
-			this.shopRecord.put(player, inventory.getLocation());
+			this.shopRecord.put(player, clicked.getLocation());
 			this.ruleIndex.put(player, 0);
 			justBrowsing = true;
 			shouldCycle = false;
@@ -178,7 +200,7 @@ public final class ItemExchangeListener implements Listener {
 		// Check that the shop has enough of the outputs if needed
 		ItemStack[] outputItems = new ItemStack[0];
 		if (trade.hasOutput()) {
-			outputItems = outputRule.getStock(inventory);
+			outputItems = outputRule.getStock(trade.getInventory());
 			if (outputItems.length < 1) {
 				LOGGER.debug("[Shop] Cancelling, shop doesn't have enough of the output.");
 				player.sendMessage(ChatColor.RED + "Shop does not have enough in stock.");
@@ -191,14 +213,14 @@ public final class ItemExchangeListener implements Listener {
 			successfulTransfer = InventoryAPI.safelyTradeBetweenInventories(
 					player.getInventory(),
 					inputItems,
-					inventory,
+					trade.getInventory(),
 					outputItems);
 		}
 		else {
 			successfulTransfer = InventoryAPI.safelyTransactBetweenInventories(
 					player.getInventory(),
 					inputItems,
-					inventory);
+					trade.getInventory());
 		}
 		if (!successfulTransfer) {
 			LOGGER.debug("[Shop] Could not complete that transaction.");
@@ -207,7 +229,7 @@ public final class ItemExchangeListener implements Listener {
 		}
 		Utilities.successfulTransactionButton(event.getClickedBlock());
 		Bukkit.getServer().getPluginManager().callEvent(
-				new IETransactionEvent(player, inventory, trade, inputItems, outputItems));
+				new IETransactionEvent(player, trade.getInventory(), trade, inputItems, outputItems));
 		if (trade.hasOutput()) {
 			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 		}

@@ -2,10 +2,11 @@ package com.untamedears.itemexchange.rules;
 
 import static com.untamedears.itemexchange.rules.ExchangeRule.Type;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -13,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
@@ -24,24 +24,12 @@ public final class ShopRule implements Validation {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(ShopRule.class.getSimpleName());
 
-	private final Inventory inventory;
-
 	private final List<TradeRule> trades = new ArrayList<>();
 
 	private int currentTradeIndex;
 
-	private ShopRule(Inventory inventory) {
-		this.inventory = inventory;
-	}
-
 	@Override
 	public boolean isValid() {
-		if (!InventoryAPI.isValidInventory(this.inventory)) {
-			return false;
-		}
-		if (!LocationAPI.isValidLocation(this.inventory.getLocation())) {
-			return false;
-		}
 		if (Iteration.isNullOrEmpty(this.trades)) {
 			return false;
 		}
@@ -102,7 +90,7 @@ public final class ShopRule implements Validation {
 				player.sendMessage(line);
 			}
 			LOGGER.debug("[ShopRule] Calculating stock.");
-			int stock = trade.getOutput().calculateStock(inventory);
+			int stock = trade.calculateStock();
 			player.sendMessage(ChatColor.YELLOW + "" + stock + " exchange" + (stock == 1 ? "" : "s") + " available.");
 		}
 	}
@@ -133,9 +121,9 @@ public final class ShopRule implements Validation {
 					return item;
 				}).
 				toArray(ItemStack[]::new));
-		ShopRule shop = new ShopRule(inventory);
+		ShopRule shop = new ShopRule();
 		Type previousType = null;
-		TradeRule currentTrade = new TradeRule();
+		TradeRule currentTrade = new TradeRule(inventory);
 		for (ExchangeRule rule : found) {
 			if (rule == null || rule.isBroken()) {
 				previousType = null;
@@ -146,11 +134,11 @@ public final class ShopRule implements Validation {
 				if (previousType != null) {
 					if (currentTrade.isValid()) {
 						shop.trades.add(currentTrade);
-						currentTrade = new TradeRule();
+						currentTrade = new TradeRule(inventory);
 					}
 				}
 				else {
-					currentTrade = new TradeRule();
+					currentTrade = new TradeRule(inventory);
 				}
 				currentTrade.setInput(rule);
 				previousType = Type.INPUT;
@@ -170,4 +158,31 @@ public final class ShopRule implements Validation {
 		return shop;
 	}
 
+	/**
+	 * Gets all the inventories that contain the trades this ShopRule describes.
+	 * @return All the inventories backing this shop.
+	 */
+	public List<Inventory> getInventories() {
+		HashMap<Location, Inventory> inventories = new HashMap<>();
+
+		for (TradeRule rule : getTrades()) {
+			inventories.put(rule.getInventory().getLocation(), rule.getInventory());
+		}
+
+		return new ArrayList<>(inventories.values());
+	}
+
+	/**
+	 * Merge another ShopRule into this.
+	 *
+	 * This wil create a ShopRule that draws upon two (or more) chests.
+	 *
+	 * This ShopRule will be mutated, but the other will be left intact.
+	 *
+	 * The rules of the other ShopRule will be added to the end of this one.
+	 * @param shopRule The rule to be merged into this one.
+	 */
+	public void mergeWithShopRule(ShopRule shopRule) {
+		trades.addAll(shopRule.getTrades());
+	}
 }

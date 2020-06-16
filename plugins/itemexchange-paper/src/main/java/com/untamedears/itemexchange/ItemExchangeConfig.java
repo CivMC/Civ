@@ -21,6 +21,11 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static final Set<Material> SHOP_COMPATIBLE_BLOCKS = new HashSet<>();
 
+	private static final Set<Material> SHOP_BOUNCE_BLOCKS = new HashSet<>();
+	private static int SHOP_BOUNCE_LIMIT;
+	private static int SHOP_BOUNCE_MAX_DISTANCE;
+	private static int SHOP_BOUNCE_MAX_CONTAINERS;
+
 	private static final Set<Material> SUCCESS_BUTTON_BLOCKS = new HashSet<>();
 
 	private static final ItemStack RULE_ITEM = new ItemStack(Material.STONE_BUTTON);
@@ -42,6 +47,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		parseShopCompatibleBlocks(config.getStringList("supportedBlocks"));
+		parseShopBounceBlocks(config.getStringList("shopBounceBlocks"),
+				config.getInt("shopBounceLimit", -1),
+				config.getInt("shopBounceMaxDistance"),
+				config.getInt("shopBounceMaxContainers"));
 		parseSuccessButtonBlocks(config.getStringList("disallowedSuccessButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
 		parseCreateFromShop(config.getBoolean("createShopFromChest", true));
@@ -53,6 +62,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public void reset() {
 		SHOP_COMPATIBLE_BLOCKS.clear();
+		SHOP_BOUNCE_BLOCKS.clear();
 		SUCCESS_BUTTON_BLOCKS.clear();
 		RULE_ITEM.setType(Material.STONE_BUTTON);
 		CREATE_FROM_SHOP = true;
@@ -87,6 +97,34 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 			LOGGER.warn("There are no supported blocks, try:");
 			LOGGER.warn("\tsupportedBlocks: [CHEST, TRAPPED_CHEST]");
 		}
+	}
+
+	private void parseShopBounceBlocks(List<String> config, int bounceLimit, int maxDistance, int maxContainers) {
+			for (String raw : config) {
+				Material material = MaterialAPI.getMaterial(raw);
+				if (material == null) {
+					LOGGER.warn("Could not parse material for shop bounce block: " + raw);
+					continue;
+				}
+				if (!material.isBlock()) {
+					LOGGER.warn("Shop bounce block material not a block: " + raw);
+					continue;
+				}
+				if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
+					LOGGER.warn("Shop bounce block material duplicate: " + raw);
+					continue;
+				}
+				LOGGER.info("Shop bounce block material parsed: " + material.name());
+				SHOP_BOUNCE_BLOCKS.add(material);
+			}
+			if (SHOP_BOUNCE_BLOCKS.isEmpty()) {
+				LOGGER.warn("There are no Shop bounce blocks, try:");
+				LOGGER.warn("\tshopBounceBlocks: [ENDER_CHEST]");
+			}
+
+			SHOP_BOUNCE_LIMIT = bounceLimit;
+			SHOP_BOUNCE_MAX_DISTANCE = maxDistance;
+			SHOP_BOUNCE_MAX_CONTAINERS = maxContainers;
 	}
 
 	private void parseSuccessButtonBlocks(List<String> config) {
@@ -206,6 +244,26 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static boolean hasCompatibleShopBlock(Material material) {
 		return SHOP_COMPATIBLE_BLOCKS.contains(material);
+	}
+
+	public static Set<Material> getShopBounceBlocks() {
+		return Collections.unmodifiableSet(SHOP_BOUNCE_BLOCKS);
+	}
+
+	public static boolean hasShopBounceBlock(Material material) {
+		return SHOP_BOUNCE_BLOCKS.contains(material);
+	}
+
+	public static int getShopBounceLimit() {
+		return SHOP_BOUNCE_LIMIT;
+	}
+
+	public static int getShopBounceMaxDistance() {
+		return SHOP_BOUNCE_MAX_DISTANCE;
+	}
+
+	public static int getShopBounceMaxContainers() {
+		return SHOP_BOUNCE_MAX_CONTAINERS;
 	}
 
 	public static Set<Material> getSuccessButtonBlocks() {
