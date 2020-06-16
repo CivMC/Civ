@@ -187,8 +187,8 @@ shopRelay:
   relayBlocks:
     - "ENDER_CHEST"
   # Determines how many times a relay can be relayed
-  relayLimit: 6
+  relayLimit: 0
   # Determines how far (in blocks) a relay can search
-  maxReach: 6
+  maxReach: 4
   # Determines whether a relay can seek through non-solid blocks
   permeable: false
