@@ -228,8 +228,12 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 				LOGGER.warn("Relay block material is not a block: " + raw);
 				continue;
 			}
-			if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
+			if (SHOP_RELAY_BLOCKS.contains(material)) {
 				LOGGER.warn("Relay block material duplicate: " + raw);
+				continue;
+			}
+			if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
+				LOGGER.warn("Relay/shop block material collision: " + raw);
 				continue;
 			}
 			LOGGER.info("Relay block material parsed: " + material.name());
@@ -295,7 +299,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		return Collections.unmodifiableSet(SHOP_RELAY_BLOCKS);
 	}
 
-	public static boolean hasShopBounceBlock(Material material) {
+	public static boolean hasShopRelayBlock(Material material) {
 		return SHOP_RELAY_BLOCKS.contains(material);
 	}
 
