@@ -244,15 +244,15 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		}
 		SHOP_RELAY_LIMIT = Math.max(config.getInt("relayLimit"), 0);
 		if (SHOP_RELAY_LIMIT > 0) {
-			LOGGER.info("Relay limit: " + SHOP_RELAY_LIMIT);
+			LOGGER.info("Relay limit parsed: " + SHOP_RELAY_LIMIT);
 		}
 		else {
 			LOGGER.info("Relaying relays disabled.");
 		}
 		SHOP_RELAY_REACH = Math.max(config.getInt("maxReach"), 0);
-		LOGGER.info("Relay reach: " + SHOP_RELAY_REACH);
+		LOGGER.info("Relay range parsed: " + SHOP_RELAY_REACH);
 		SHOP_RELAY_PERMEABLE = config.getBoolean("permeable");
-		LOGGER.info("Relay is permeable: " + SHOP_RELAY_PERMEABLE);
+		LOGGER.info("Relay is penetrating: " + SHOP_RELAY_PERMEABLE);
 	}
 
 	public static Set<Material> getShopCompatibleBlocks() {
