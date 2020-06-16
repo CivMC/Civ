@@ -9,19 +9,6 @@ supportedBlocks:
   - "DISPENSER"
   - "DROPPER"
 
-# The blocks that cause click bounce mechanics
-shopBounceBlocks:
-  - "ENDER_CHEST"
-
-# The maximum number of times a click can bounce between ender chests.
-shopBounceLimit: 6
-
-# The maximum number of passable blocks bounce blocks check through.
-shopBounceMaxDistance: 6
-
-# The maximum number of containers bounce blocks can find.
-shopBounceMaxContainers: 6
-
 # Supported blocks not allowed to trigger the successful transaction button.
 # Make sure to disallow blocks that themselves would be activated by the transaction button, like dispensers.
 # Additionally, make sure to disallow blocks that aren't directional.
@@ -194,3 +181,14 @@ repairables:
   - "CARROT_ON_A_STICK"
   - "SHIELD"
   - "ENCHANTED_BOOK"
+
+shopRelay:
+  # The blocks that can be used as shop relay blocks (must be valid block materials)
+  relayBlocks:
+    - "ENDER_CHEST"
+  # Determines how many times a relay can be relayed
+  relayLimit: 6
+  # Determines how far (in blocks) a relay can search
+  maxReach: 6
+  # Determines whether a relay can seek through non-solid blocks
+  permeable: false
