@@ -41,10 +41,7 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 			}
 		}
 		else {
-			BlockInventoryHolder holder = chain(() -> (BlockInventoryHolder) block.getBlockData());
-			if (holder != null) {
-				this.inventory = holder.getInventory();
-			}
+			this.inventory = chain(() -> ((BlockInventoryHolder) block.getState()).getInventory());
 		}
 	}
 

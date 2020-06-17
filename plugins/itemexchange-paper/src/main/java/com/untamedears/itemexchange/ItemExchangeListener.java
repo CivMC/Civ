@@ -1,6 +1,5 @@
 package com.untamedears.itemexchange;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
@@ -9,7 +8,6 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
 import com.untamedears.itemexchange.rules.TradeRule;
-import com.untamedears.itemexchange.utility.EnderChestConnectionResolver;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,8 +31,6 @@ import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.CraftingInventory;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
@@ -82,7 +78,7 @@ public final class ItemExchangeListener implements Listener {
 		}
 		// Block must be a supported block type
 		if (!ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType()) &&
-				!ItemExchangeConfig.hasShopBounceBlock(clicked.getType())) {
+				!ItemExchangeConfig.hasShopRelayBlock(clicked.getType())) {
 			return;
 		}
 		PLUGIN.debug("[Shop] Shop Parsing Starting---------");
@@ -94,31 +90,8 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		this.playerInteractionCooldowns.put(player, now);
-		// Attempt to parse a shop from the shop/bounce block.
-		List<Inventory> inventories;
-		if (ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType())) {
-			inventories = Collections.singletonList(chain(() ->
-					((InventoryHolder) event.getClickedBlock().getState()).getInventory()));
-		} else if (ItemExchangeConfig.hasShopBounceBlock(clicked.getType())) {
-			inventories = EnderChestConnectionResolver.getConnectedInventories(clicked.getLocation());
-			System.out.println(inventories);
-		} else {
-			throw new AssertionError("not reachable");
-		}
-		ShopRule shop = null;
-		for (Inventory inventory : inventories) {
-			if (shop == null) {
-				shop = ShopRule.getShopFromInventory(inventory);
-			} else {
-				ShopRule tempShop = ShopRule.getShopFromInventory(inventory);
-				if (!Validation.checkValidity(tempShop)) {
-					PLUGIN.debug("[Shop] Skipping, that is not a shop.");
-					continue;
-				}
-				shop.mergeWithShopRule(tempShop);
-			}
-		}
-
+		// Attempt to parse a shop from the shop block or relays.
+		ShopRule shop = ShopRule.resolveShop(clicked);
 		if (!Validation.checkValidity(shop)) {
 			PLUGIN.debug("[Shop] Cancelling, that is not a shop.");
 			return;
