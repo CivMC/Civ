@@ -302,7 +302,7 @@ public final class ExchangeRule implements ExchangeData {
 	@Override
 	public String toString() {
 		return "ExchangeRule{type=" + this.type + ",material=" + this.material + ",amount=" + this.amount + "," +
-				"modifiers=[" + this.modifiers + "]}";
+				"modifiers={" + this.modifiers + "}}";
 	}
 
 	// ------------------------------------------------------------
