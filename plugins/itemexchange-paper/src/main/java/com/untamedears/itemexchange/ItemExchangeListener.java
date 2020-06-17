@@ -77,8 +77,7 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		// Block must be a supported block type
-		if (!ItemExchangeConfig.hasCompatibleShopBlock(clicked.getType()) &&
-				!ItemExchangeConfig.hasShopRelayBlock(clicked.getType())) {
+		if (!ItemExchangeConfig.canBeInteractedWith(clicked.getType())) {
 			return;
 		}
 		PLUGIN.debug("[Shop] Shop Parsing Starting---------");

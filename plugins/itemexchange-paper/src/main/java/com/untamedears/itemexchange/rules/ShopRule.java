@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -21,8 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
@@ -108,78 +105,53 @@ public final class ShopRule implements Validation {
 	// Shop Resolution
 	// ------------------------------------------------------------
 
-	private boolean resolveInventories(final Block block,
-											  final Set<Inventory> found,
-											  final Set<Material> shopBlocks,
-											  final Set<Material> relayBlocks,
-											  final int maxDistance,
-											  final int relayLimit,
-											  final boolean isPermeable,
-											  final BlockFace cameFrom) {
-		Material material = block.getType();
-		if (shopBlocks.contains(material)) {
+	private void resolveInventories(final Block block,
+									   final Set<Inventory> found,
+									   final int remainingReach,
+									   final BlockFace cameFrom) {
+		if (ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
 			PLUGIN.debug("[RELAY] Found shop block. (Total: " + found.size() + ")");
 			BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, null);
 			exists(event.getInventory(), found::add);
-			return false;
+			return;
 		}
-		// If it's not a shop chest, the search continues
-		if (relayLimit < 1) {
-			PLUGIN.debug("[RELAY] Relay limit reached.");
-			return false;
-		}
-		if (maxDistance < 1) {
-			PLUGIN.debug("[RELAY] Relay max distance reached.");
-			return false;
-		}
-		if (relayBlocks.contains(material)) {
+		if (ItemExchangeConfig.hasRelayCompatibleBlock(block.getType())) {
 			PLUGIN.debug("[RELAY] Found relay block.");
+			if (remainingReach < 0) {
+				PLUGIN.debug("[RELAY] Relay limit reached.");
+				return;
+			}
+			int reach = ItemExchangeConfig.getRelayReachDistance();
+			if (reach <= 0) {
+				PLUGIN.debug("[RELAY] Relay has no reach.");
+				return;
+			}
 			for (BlockFace face : BlockAPI.ALL_SIDES) {
 				if (face.equals(cameFrom)) {
 					continue;
 				}
 				PLUGIN.debug("[RELAY] Emitting relay ray trace: " + face.name());
-				BlockIterator iterator = BlockAPI.getBlockIterator(block.getRelative(face), face, maxDistance);
+				BlockIterator iterator = BlockAPI.getBlockIterator(block.getRelative(face), face, reach);
 				while (iterator.hasNext()) {
-					if (!resolveInventories(
-							iterator.next(),
-							found,
-							shopBlocks,
-							relayBlocks,
-							maxDistance,
-							relayLimit - 1,
-							isPermeable,
-							face.getOppositeFace())) {
+					Block current = iterator.next();
+					if (ItemExchangeConfig.hasRelayPermeableBlock(current.getType())) {
+						PLUGIN.debug("[RELAY] Found permeable block.");
+						continue;
+					}
+					if (!ItemExchangeConfig.canBeInteractedWith(current.getType())) {
+						PLUGIN.debug("[RELAY] Ending search.");
 						break;
 					}
+					resolveInventories(current, found, remainingReach - 1, face.getOppositeFace());
 				}
 			}
-			return false;
 		}
-		if (MaterialAPI.isAir(material)) {
-			PLUGIN.debug("[RELAY] Found air, continuing search.");
-			return true;
-		}
-		if (material.isOccluding()) {
-			PLUGIN.debug("[RELAY] Hit occluding block, cannot continue.");
-			return false;
-		}
-		if (isPermeable) {
-			PLUGIN.debug("[RELAY] Found permeable block, continuing search.");
-			return true;
-		}
-		PLUGIN.debug("[RELAY] Hit solid block, cannot continue.");
-		return false;
 	}
 
 	private List<ExchangeRule> extractRulesFromInventory(Inventory inventory) {
 		List<ExchangeRule> found = Lists.newArrayList();
 		PLUGIN.debug("[Resolve] Searching inventory [" + inventory.getType().name() + "] for exchange rules");
 		for (ItemStack item : inventory.getContents()) {
-			if (!ItemAPI.isValidItem(item)) {
-				PLUGIN.debug("[Resolve] \tInvalid item skipped.");
-				continue;
-			}
 			ExchangeRule rule = ExchangeRule.fromItem(item);
 			if (rule != null) {
 				PLUGIN.debug("[Resolve] \tExchange Rule found.");
@@ -245,11 +217,7 @@ public final class ShopRule implements Validation {
 		shop.resolveInventories(
 				block,
 				inventories,
-				ItemExchangeConfig.getShopCompatibleBlocks(),
-				ItemExchangeConfig.getShopRelayBlocks(),
-				ItemExchangeConfig.getShopRelayReach(),
-				ItemExchangeConfig.getShopRelayLimit(),
-				ItemExchangeConfig.isShopRelayPermeable(),
+				ItemExchangeConfig.getRelayRecursionLimit(),
 				BlockFace.SELF);
 		inventories.stream()
 				.filter(InventoryAPI::isValidInventory)
