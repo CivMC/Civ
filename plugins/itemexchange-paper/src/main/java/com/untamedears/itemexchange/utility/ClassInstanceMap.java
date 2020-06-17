@@ -144,6 +144,11 @@ public class ClassInstanceMap<T> implements Iterable<T> {
 	}
 
 	@Override
+	public String toString() {
+		return "ClassInstanceMap" + this.map.values().toString();
+	}
+
+	@Override
 	public Iterator<T> iterator() {
 		return this.map.values().iterator();
 	}

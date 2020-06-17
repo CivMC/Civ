@@ -115,4 +115,9 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return getSlug();
+	}
+
 }
