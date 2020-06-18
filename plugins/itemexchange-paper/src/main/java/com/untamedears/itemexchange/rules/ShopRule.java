@@ -107,7 +107,7 @@ public final class ShopRule implements Validation {
 
 	private void resolveInventories(final Block block,
 									   final Set<Inventory> found,
-									   final int remainingReach,
+									   final int remainingRecursion,
 									   final BlockFace cameFrom) {
 		if (ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
 			PLUGIN.debug("[RELAY] Found shop block. (Total: " + found.size() + ")");
@@ -117,13 +117,13 @@ public final class ShopRule implements Validation {
 		}
 		if (ItemExchangeConfig.hasRelayCompatibleBlock(block.getType())) {
 			PLUGIN.debug("[RELAY] Found relay block.");
-			if (remainingReach < 0) {
-				PLUGIN.debug("[RELAY] Relay limit reached.");
-				return;
-			}
 			int reach = ItemExchangeConfig.getRelayReachDistance();
 			if (reach <= 0) {
-				PLUGIN.debug("[RELAY] Relay has no reach.");
+				PLUGIN.debug("[RELAY] Relay has no reach distance.");
+				return;
+			}
+			if (remainingRecursion < 0) {
+				PLUGIN.debug("[RELAY] Relay recursion limit reached.");
 				return;
 			}
 			for (BlockFace face : BlockAPI.ALL_SIDES) {
@@ -142,7 +142,7 @@ public final class ShopRule implements Validation {
 						PLUGIN.debug("[RELAY] Ending search.");
 						break;
 					}
-					resolveInventories(current, found, remainingReach - 1, face.getOppositeFace());
+					resolveInventories(current, found, remainingRecursion - 1, face.getOppositeFace());
 				}
 			}
 		}
