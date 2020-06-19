@@ -90,7 +90,7 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 			}
 			else {
 				handler.ensureModifier().setDisplayName(value);
-				handler.relay(ChatColor.GREEN + "Unlisted enchantments are now allowed.");
+				handler.relay(ChatColor.GREEN + "Display name set to: " + value);
 			}
 		}
 	}
