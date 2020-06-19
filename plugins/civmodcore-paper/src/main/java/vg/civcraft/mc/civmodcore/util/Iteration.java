@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class Iteration {
 
@@ -183,6 +184,35 @@ public final class Iteration {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Creates a new collection with a given set of predefined elements, if any are given.
+	 *
+	 * @param <T> The type of the elements to store in the collection.
+	 * @param constructor The constructor for the collection.
+	 * @param elements The elements to add to the collection.
+	 * @return Returns a new collection, or null if no constructor was given, or the constructor didn't produce a new
+	 *     collection.
+	 */
+	@SafeVarargs
+	public static <T, K extends Collection<T>> K collect(Supplier<K> constructor, T... elements) {
+		if (constructor == null) {
+			return null;
+		}
+		K collection = constructor.get();
+		if (collection == null) {
+			return null;
+		}
+		if (isNullOrEmpty(elements)) {
+			return collection;
+		}
+		for (T element : elements) {
+			// Do not let this be simplified. There's no reason to create a new ArrayList
+			// as it would be immediately discarded and that's... bad
+			collection.add(element);
+		}
+		return collection;
 	}
 
 }
