@@ -9,6 +9,7 @@ import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.api.PotionNames;
 import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
+import vg.civcraft.mc.civmodcore.custom.items.CustomItems;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
@@ -92,6 +93,7 @@ public final class CivModCorePlugin extends ACivMod {
 	public void onDisable() {
 		Bukkit.getOnlinePlayers().forEach(HumanEntity::closeInventory);
 		ItemNames.resetItemNames();
+		CustomItems.clearRegistrations();
 		EnchantNames.resetEnchantmentNames();
 		PotionNames.resetPotionNames();
 		ChunkMetaAPI.saveAll();
