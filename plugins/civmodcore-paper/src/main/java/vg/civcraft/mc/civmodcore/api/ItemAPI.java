@@ -98,6 +98,21 @@ public final class ItemAPI {
 	}
 
 	/**
+	 * Normalizes an item.
+	 *
+	 * @param item The item to normalize.
+	 * @return The normalized item.
+	 */
+	public static ItemStack normalizeItem(ItemStack item) {
+		if (item == null) {
+			return null;
+		}
+		item = item.clone();
+		item.setAmount(1);
+		return item;
+	}
+
+	/**
 	 * Retrieves the ItemMeta from an item.
 	 *
 	 * @param item The item to retrieve meta from.
