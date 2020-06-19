@@ -90,7 +90,7 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<Enchantment, Integer> entry : getEnchants().entrySet()) {
 			EnchantNames.SearchResult result = EnchantNames.findByEnchantment(entry.getKey());

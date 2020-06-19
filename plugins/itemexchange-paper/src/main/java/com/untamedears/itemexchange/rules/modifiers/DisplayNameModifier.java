@@ -67,7 +67,7 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 	}
 
 	@Override
-	public String getDisplayedListing() {
+	public String getDisplayListing() {
 		String display = getDisplayName();
 		if (Strings.isNullOrEmpty(display)) {
 			return null;

@@ -95,7 +95,7 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		int ruleDamage = getDamage();
 		switch (ruleDamage) {
 			case ExchangeRule.ANY:

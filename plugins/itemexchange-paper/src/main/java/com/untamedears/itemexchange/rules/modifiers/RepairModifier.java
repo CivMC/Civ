@@ -91,7 +91,7 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		List<String> info = Lists.newArrayList();
 		int repairCost = getRepairCost();
 		if (repairCost == 0) {

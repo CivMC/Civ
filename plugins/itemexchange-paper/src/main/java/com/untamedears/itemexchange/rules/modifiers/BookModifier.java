@@ -123,7 +123,7 @@ public final class BookModifier extends ModifierData<BookModifier> {
 	}
 
 	@Override
-	public String getDisplayedListing() {
+	public String getDisplayListing() {
 		if (Strings.isNullOrEmpty(this.title)) {
 			return null;
 		}
@@ -131,7 +131,7 @@ public final class BookModifier extends ModifierData<BookModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		List<String> lines = new ArrayList<>();
 		lines.add(ChatColor.DARK_AQUA + "Author: " + ChatColor.GRAY + (hasAuthor() ? getAuthor() : ""));
 		if (hasGeneration()) {

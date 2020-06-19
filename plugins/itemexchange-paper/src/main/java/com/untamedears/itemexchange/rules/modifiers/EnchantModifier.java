@@ -119,7 +119,7 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		List<String> info = Lists.newArrayList();
 		for (Map.Entry<Enchantment, Integer> requiredEnchant : getRequiredEnchants().entrySet()) {
 			SearchResult result = EnchantNames.findByEnchantment(requiredEnchant.getKey());

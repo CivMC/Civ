@@ -88,11 +88,11 @@ public final class ShopRule implements Validation {
 		}
 		player.sendMessage(String.format("%s(%d/%d) exchanges present.",
 				ChatColor.YELLOW, this.currentTradeIndex + 1, this.trades.size()));
-		for (String line : trade.getInput().getDisplayedInfo()) {
+		for (String line : trade.getInput().getDisplayInfo()) {
 			player.sendMessage(line);
 		}
 		if (trade.getOutput() != null) {
-			for (String line : trade.getOutput().getDisplayedInfo()) {
+			for (String line : trade.getOutput().getDisplayInfo()) {
 				player.sendMessage(line);
 			}
 			PLUGIN.debug("[ShopRule] Calculating stock.");

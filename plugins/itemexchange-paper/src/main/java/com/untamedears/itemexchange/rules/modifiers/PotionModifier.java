@@ -98,7 +98,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	}
 
 	@Override
-	public String getDisplayedListing() {
+	public String getDisplayListing() {
 		String listing = getName();
 		if (Strings.isNullOrEmpty(listing)) {
 			return null;
@@ -107,7 +107,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		return Collections.singletonList(ChatColor.AQUA + "Potion Name: " + ChatColor.WHITE + getName());
 	}
 

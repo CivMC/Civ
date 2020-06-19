@@ -93,7 +93,7 @@ public final class _ExampleModifier extends ModifierData<_ExampleModifier> {
 	 * @return Returns a new listing, or null.
 	 */
 	@Override
-	public String getDisplayedListing() {
+	public String getDisplayListing() {
 		return null;
 	}
 
@@ -102,7 +102,7 @@ public final class _ExampleModifier extends ModifierData<_ExampleModifier> {
 	 *     empty lists are supported and convey to not list anything.
 	 */
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		return null;
 	}
 

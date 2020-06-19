@@ -78,7 +78,7 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	/**
 	 * @return Returns a new listing, or null.
 	 */
-	public String getDisplayedListing() {
+	public String getDisplayListing() {
 		return null;
 	}
 
@@ -87,7 +87,7 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *     are supported and convey to not list anything.
 	 */
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		return null;
 	}
 

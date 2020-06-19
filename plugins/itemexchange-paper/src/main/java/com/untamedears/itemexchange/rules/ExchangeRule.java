@@ -240,8 +240,10 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns the rule's listing.
 	 */
 	private String getListing() {
-		return this.modifiers.stream().sorted(Collections.reverseOrder())
-				.map(ModifierData::getDisplayedListing).filter(Objects::nonNull)
+		return this.modifiers.stream()
+				.sorted(Collections.reverseOrder())
+				.map(ModifierData::getDisplayListing)
+				.filter(Objects::nonNull)
 				.findFirst().orElse(null);
 	}
 
@@ -285,14 +287,14 @@ public final class ExchangeRule implements ExchangeData {
 	private List<String> getRuleDetails() {
 		List<String> info = new ArrayList<>();
 		this.modifiers.stream()
-				.map(ModifierData::getDisplayedInfo)
+				.map(ModifierData::getDisplayInfo)
 				.filter((list) -> !Iteration.isNullOrEmpty(list))
 				.forEachOrdered(info::addAll);
 		return info;
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		List<String> info = new ArrayList<>();
 		info.add(getRuleTitle());
 		info.addAll(getRuleDetails());

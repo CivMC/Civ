@@ -15,7 +15,7 @@ public interface ExchangeData extends Validation, NBTSerializable {
 	 *
 	 * @return Returns any display information.
 	 */
-	List<String> getDisplayedInfo();
+	List<String> getDisplayInfo();
 
 	/**
 	 * Use {@link ExchangeData#isBroken()} instead.

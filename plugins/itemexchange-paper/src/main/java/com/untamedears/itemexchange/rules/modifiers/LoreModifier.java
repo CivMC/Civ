@@ -74,7 +74,7 @@ public final class LoreModifier extends ModifierData<LoreModifier> {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		return this.lore;
 	}
 

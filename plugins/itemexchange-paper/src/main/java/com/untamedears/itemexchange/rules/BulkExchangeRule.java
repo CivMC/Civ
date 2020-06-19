@@ -48,7 +48,7 @@ public final class BulkExchangeRule implements ExchangeData {
 	}
 
 	@Override
-	public List<String> getDisplayedInfo() {
+	public List<String> getDisplayInfo() {
 		return new ArrayList<>();
 	}
 
