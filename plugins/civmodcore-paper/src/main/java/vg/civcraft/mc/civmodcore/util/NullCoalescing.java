@@ -95,6 +95,25 @@ public final class NullCoalescing {
 	}
 
 	/**
+	 * Checks whether a value can be cast to a particular type.
+	 *
+	 * @param <T> The type to cast to.
+	 * @param clazz The class of the type.
+	 * @param value The value to attempt to cast.
+	 * @return Returns the value cast to the given type, nor null.
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> T castOrNull(Class<T> clazz, Object value) {
+		if (clazz == null || value == null) {
+			return null;
+		}
+		if (clazz.isAssignableFrom(value.getClass())) {
+			return (T) value;
+		}
+		return null;
+	}
+
+	/**
 	 * Determines if two objects objects are equal.
 	 *
 	 * @param former The former object.
