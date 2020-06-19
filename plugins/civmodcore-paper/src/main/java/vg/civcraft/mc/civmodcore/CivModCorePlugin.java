@@ -80,7 +80,7 @@ public final class CivModCorePlugin extends ACivMod {
 			}
 		};
 		// Load APIs
-		ItemNames.loadItemNames();
+		ItemNames.loadItemNames(this);
 		EnchantNames.loadEnchantmentNames();
 		PotionNames.loadPotionNames();
 		BottomLineAPI.init();
