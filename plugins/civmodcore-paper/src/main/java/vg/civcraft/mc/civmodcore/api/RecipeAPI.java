@@ -63,6 +63,9 @@ public final class RecipeAPI {
 	 * @return Returns true if the recipe was de-registered, or wasn't ever registered.
 	 */
 	public static boolean removeRecipe(Recipe recipe) {
+		if (recipe == null) {
+			return false;
+		}
 		Iterator<Recipe> iterator = Bukkit.getServer().recipeIterator();
 		while (iterator.hasNext()) {
 			if (!matchRecipe(recipe, iterator.next())) {
