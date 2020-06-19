@@ -1,6 +1,9 @@
 package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
+import org.bukkit.inventory.Inventory;
+import vg.civcraft.mc.civmodcore.api.InventoryAPI;
+import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
 /**
@@ -11,6 +14,12 @@ public final class TradeRule implements Validation {
 	private ExchangeRule input;
 
 	private ExchangeRule output;
+
+	private Inventory inventory;
+
+	public TradeRule(Inventory inventory) {
+		setInventory(inventory);
+	}
 
 	@Override
 	public boolean isValid() {
@@ -31,7 +40,22 @@ public final class TradeRule implements Validation {
 				return false;
 			}
 		}
+		if (!InventoryAPI.isValidInventory(this.inventory)) {
+			return false;
+		}
+		if (!LocationAPI.isValidLocation(this.inventory.getLocation())) {
+			return false;
+		}
 		return true;
+	}
+
+	/**
+	 * Determines how many times this rule matches with the given inventory.
+	 *
+	 * @return The number of trades that can be performed.
+	 */
+	public int calculateStock() {
+		return output.calculateStock(this.inventory);
 	}
 
 	/**
@@ -79,4 +103,11 @@ public final class TradeRule implements Validation {
 		this.output = output;
 	}
 
+	public Inventory getInventory() {
+		return this.inventory;
+	}
+
+	public void setInventory(Inventory inventory) {
+		this.inventory = inventory;
+	}
 }

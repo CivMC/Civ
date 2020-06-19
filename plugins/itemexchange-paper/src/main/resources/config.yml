@@ -181,3 +181,19 @@ repairables:
   - "CARROT_ON_A_STICK"
   - "SHIELD"
   - "ENCHANTED_BOOK"
+
+shopRelay:
+  # The blocks that can be used as shop relay blocks (must be valid block materials and distinct from shop blocks)
+  relayBlocks:
+    - "ENDER_CHEST"
+  # Determines how many times a relay can be relayed
+  recursionLimit: 0
+  # Determines how far (in blocks) a relay can search
+  reachDistance: 4
+  # Determines which blocks will be ignored by relays (wont end the search for shops)
+  permeable:
+    - "AIR"
+    - "CAVE_AIR"
+    - "VOID_AIR"
+    - "WATER"
+    - "LAVA"

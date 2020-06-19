@@ -33,6 +33,14 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static final Set<Material> ITEMS_CAN_REPAIR = new HashSet<>();
 
+	private static final Set<Material> RELAY_COMPATIBLE_BLOCKS = new HashSet<>();
+
+	private static int RELAY_RECURSION_LIMIT;
+
+	private static int RELAY_REACH_DISTANCE;
+
+	private static final Set<Material> RELAY_PERMEABLE_BLOCKS = new HashSet<>();
+
 	private static ShapelessRecipe BULK_RULE_RECIPE;
 
 	public ItemExchangeConfig(ItemExchangePlugin plugin) {
@@ -48,6 +56,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		parseEnchantableItems(config.getStringList("enchantables"));
 		parseDamageableItems(config.getStringList("damageables"));
 		parseRepairableItems(config.getStringList("repairables"));
+		parseShopRelay(config.getConfigurationSection("shopRelay"));
 		return true;
 	}
 
@@ -59,6 +68,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		ITEMS_CAN_ENCHANT.clear();
 		ITEMS_CAN_DAMAGE.clear();
 		ITEMS_CAN_REPAIR.clear();
+		RELAY_COMPATIBLE_BLOCKS.clear();
+		RELAY_RECURSION_LIMIT = 0;
+		RELAY_REACH_DISTANCE = 0;
+		RELAY_PERMEABLE_BLOCKS.clear();
 		if (BULK_RULE_RECIPE != null) {
 			RecipeAPI.removeRecipe(BULK_RULE_RECIPE);
 			BULK_RULE_RECIPE = null;
@@ -200,6 +213,77 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		}
 	}
 
+	private void parseShopRelay(ConfigurationSection config) {
+		if (config == null) {
+			LOGGER.info("Skipping relay parsing: section is missing.");
+			return;
+		}
+		for (String raw : config.getStringList("relayBlocks")) {
+			Material material = MaterialAPI.getMaterial(raw);
+			if (material == null) {
+				LOGGER.warn("Could not parse relay block material: " + raw);
+				continue;
+			}
+			if (!material.isBlock()) {
+				LOGGER.warn("Relay block material is not a block: " + raw);
+				continue;
+			}
+			if (RELAY_COMPATIBLE_BLOCKS.contains(material)) {
+				LOGGER.warn("Relay block material duplicate: " + raw);
+				continue;
+			}
+			if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
+				LOGGER.warn("Relay/shop block material collision: " + raw);
+				continue;
+			}
+			LOGGER.info("Relay block material parsed: " + material.name());
+			RELAY_COMPATIBLE_BLOCKS.add(material);
+		}
+		if (RELAY_COMPATIBLE_BLOCKS.isEmpty()) {
+			LOGGER.info("No relay blocks have been parsed; relays will be effectively disabled.");
+		}
+		RELAY_RECURSION_LIMIT = Math.max(config.getInt("recursionLimit"), 0);
+		if (RELAY_RECURSION_LIMIT > 0) {
+			LOGGER.info("Relay recursion limit parsed: " + RELAY_RECURSION_LIMIT);
+		}
+		else {
+			LOGGER.info("Relay recursion disabled.");
+		}
+		RELAY_REACH_DISTANCE = Math.max(config.getInt("reachDistance"), 0);
+		LOGGER.info("Relay reach distance parsed: " + RELAY_REACH_DISTANCE);
+		for (String raw : config.getStringList("permeable")) {
+			Material material = MaterialAPI.getMaterial(raw);
+			if (material == null) {
+				LOGGER.warn("Could not parse relay permeable material: " + raw);
+				continue;
+			}
+			if (!material.isBlock()) {
+				LOGGER.warn("Relay permeable material is not a block: " + raw);
+				continue;
+			}
+			if (RELAY_PERMEABLE_BLOCKS.contains(material)) {
+				LOGGER.warn("Relay permeable material duplicate: " + raw);
+				continue;
+			}
+			if (canBeInteractedWith(material)) {
+				LOGGER.warn("Permeable material collision: " + raw);
+				continue;
+			}
+			LOGGER.info("Relay permeable material parsed: " + material.name());
+			RELAY_PERMEABLE_BLOCKS.add(material);
+		}
+	}
+
+	public static boolean canBeInteractedWith(Material material) {
+		if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
+			return true;
+		}
+		if (RELAY_COMPATIBLE_BLOCKS.contains(material)) {
+			return true;
+		}
+		return false;
+	}
+
 	public static Set<Material> getShopCompatibleBlocks() {
 		return Collections.unmodifiableSet(SHOP_COMPATIBLE_BLOCKS);
 	}
@@ -238,6 +322,30 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static boolean canRepairItem(Material material) {
 		return ITEMS_CAN_REPAIR.contains(material);
+	}
+
+	public static Set<Material> getRelayCompatibleBlocks() {
+		return Collections.unmodifiableSet(RELAY_COMPATIBLE_BLOCKS);
+	}
+
+	public static boolean hasRelayCompatibleBlock(Material material) {
+		return RELAY_COMPATIBLE_BLOCKS.contains(material);
+	}
+
+	public static int getRelayRecursionLimit() {
+		return RELAY_RECURSION_LIMIT;
+	}
+
+	public static int getRelayReachDistance() {
+		return RELAY_REACH_DISTANCE;
+	}
+
+	public static Set<Material> getRelayPermeableBlocks() {
+		return Collections.unmodifiableSet(RELAY_PERMEABLE_BLOCKS);
+	}
+
+	public static boolean hasRelayPermeableBlock(Material material) {
+		return RELAY_PERMEABLE_BLOCKS.contains(material);
 	}
 
 }

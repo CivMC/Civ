@@ -1,19 +1,25 @@
 package com.untamedears.itemexchange.rules;
 
 import static com.untamedears.itemexchange.rules.ExchangeRule.Type;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.exists;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.untamedears.itemexchange.ItemExchangeConfig;
+import com.untamedears.itemexchange.ItemExchangePlugin;
+import com.untamedears.itemexchange.events.BlockInventoryRequestEvent;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.bukkit.ChatColor;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.bukkit.util.BlockIterator;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
@@ -22,26 +28,14 @@ import vg.civcraft.mc.civmodcore.util.Validation;
  */
 public final class ShopRule implements Validation {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(ShopRule.class.getSimpleName());
-
-	private final Inventory inventory;
+	private final ItemExchangePlugin PLUGIN = ItemExchangePlugin.getInstance();
 
 	private final List<TradeRule> trades = new ArrayList<>();
 
 	private int currentTradeIndex;
 
-	private ShopRule(Inventory inventory) {
-		this.inventory = inventory;
-	}
-
 	@Override
 	public boolean isValid() {
-		if (!InventoryAPI.isValidInventory(this.inventory)) {
-			return false;
-		}
-		if (!LocationAPI.isValidLocation(this.inventory.getLocation())) {
-			return false;
-		}
 		if (Iteration.isNullOrEmpty(this.trades)) {
 			return false;
 		}
@@ -101,42 +95,86 @@ public final class ShopRule implements Validation {
 			for (String line : trade.getOutput().getDisplayedInfo()) {
 				player.sendMessage(line);
 			}
-			LOGGER.debug("[ShopRule] Calculating stock.");
-			int stock = trade.getOutput().calculateStock(inventory);
+			PLUGIN.debug("[ShopRule] Calculating stock.");
+			int stock = trade.calculateStock();
 			player.sendMessage(ChatColor.YELLOW + "" + stock + " exchange" + (stock == 1 ? "" : "s") + " available.");
 		}
 	}
 
-	/**
-	 * Attempts to
-	 */
-	public static ShopRule getShopFromInventory(Inventory inventory) {
-		if (!InventoryAPI.isValidInventory(inventory)) {
-			return null;
+	// ------------------------------------------------------------
+	// Shop Resolution
+	// ------------------------------------------------------------
+
+	private void resolveInventories(final Block block,
+									   final Set<Inventory> found,
+									   final int remainingRecursion,
+									   final BlockFace cameFrom) {
+		if (ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
+			PLUGIN.debug("[RELAY] Found shop block. (Total: " + found.size() + ")");
+			BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, null);
+			exists(event.getInventory(), found::add);
+			return;
 		}
-		List<ExchangeRule> found = new ArrayList<>();
-		inventory.setContents(Arrays.stream(inventory.getContents()).
-				map((item) -> {
-					if (!ItemAPI.isValidItem(item)) {
-						return item;
+		if (ItemExchangeConfig.hasRelayCompatibleBlock(block.getType())) {
+			PLUGIN.debug("[RELAY] Found relay block.");
+			int reach = ItemExchangeConfig.getRelayReachDistance();
+			if (reach <= 0) {
+				PLUGIN.debug("[RELAY] Relay has no reach distance.");
+				return;
+			}
+			if (remainingRecursion < 0) {
+				PLUGIN.debug("[RELAY] Relay recursion limit reached.");
+				return;
+			}
+			for (BlockFace face : BlockAPI.ALL_SIDES) {
+				if (face.equals(cameFrom)) {
+					continue;
+				}
+				PLUGIN.debug("[RELAY] Emitting relay ray trace: " + face.name());
+				BlockIterator iterator = BlockAPI.getBlockIterator(block.getRelative(face), face, reach);
+				while (iterator.hasNext()) {
+					Block current = iterator.next();
+					if (ItemExchangeConfig.hasRelayPermeableBlock(current.getType())) {
+						PLUGIN.debug("[RELAY] Found permeable block.");
+						continue;
 					}
-					ExchangeRule rule = ExchangeRule.fromItem(item);
-					if (rule != null) {
-						found.add(rule);
-						return rule.toItem();
+					if (!ItemExchangeConfig.canBeInteractedWith(current.getType())) {
+						PLUGIN.debug("[RELAY] Ending search.");
+						break;
 					}
-					BulkExchangeRule bulk = BulkExchangeRule.fromItem(item);
-					if (bulk != null) {
-						found.addAll(bulk.getRules());
-						return bulk.toItem();
-					}
-					return item;
-				}).
-				toArray(ItemStack[]::new));
-		ShopRule shop = new ShopRule(inventory);
+					resolveInventories(current, found, remainingRecursion - 1, face.getOppositeFace());
+				}
+			}
+		}
+	}
+
+	private List<ExchangeRule> extractRulesFromInventory(Inventory inventory) {
+		List<ExchangeRule> found = Lists.newArrayList();
+		PLUGIN.debug("[Resolve] Searching inventory [" + inventory.getType().name() + "] for exchange rules");
+		for (ItemStack item : inventory.getContents()) {
+			ExchangeRule rule = ExchangeRule.fromItem(item);
+			if (rule != null) {
+				PLUGIN.debug("[Resolve] \tExchange Rule found.");
+				found.add(rule);
+				continue;
+			}
+			BulkExchangeRule bulk = BulkExchangeRule.fromItem(item);
+			if (bulk != null) {
+				PLUGIN.debug("[Resolve] \tBulk Exchange Rule found.");
+				found.addAll(bulk.getRules());
+				//continue;
+			}
+		}
+		return found;
+	}
+
+	private List<TradeRule> extractTradesFromInventory(Inventory inventory) {
+		List<TradeRule> trades = Lists.newArrayList();
+		List<ExchangeRule> rules = extractRulesFromInventory(inventory);
 		Type previousType = null;
-		TradeRule currentTrade = new TradeRule();
-		for (ExchangeRule rule : found) {
+		TradeRule currentTrade = new TradeRule(inventory);
+		// TODO: Future me should git gud and make this better and more readable... like seriously!
+		for (ExchangeRule rule : rules) {
 			if (rule == null || rule.isBroken()) {
 				previousType = null;
 				continue;
@@ -145,12 +183,12 @@ public final class ShopRule implements Validation {
 			if (type == Type.INPUT) {
 				if (previousType != null) {
 					if (currentTrade.isValid()) {
-						shop.trades.add(currentTrade);
-						currentTrade = new TradeRule();
+						trades.add(currentTrade);
+						currentTrade = new TradeRule(inventory);
 					}
 				}
 				else {
-					currentTrade = new TradeRule();
+					currentTrade = new TradeRule(inventory);
 				}
 				currentTrade.setInput(rule);
 				previousType = Type.INPUT;
@@ -165,8 +203,26 @@ public final class ShopRule implements Validation {
 			}
 		}
 		if (currentTrade.isValid()) {
-			shop.trades.add(currentTrade);
+			trades.add(currentTrade);
 		}
+		return trades;
+	}
+
+	public static ShopRule resolveShop(Block block) {
+		if (!BlockAPI.isValidBlock(block)) {
+			return null;
+		}
+		ShopRule shop = new ShopRule();
+		Set<Inventory> inventories = Sets.newHashSet();
+		shop.resolveInventories(
+				block,
+				inventories,
+				ItemExchangeConfig.getRelayRecursionLimit(),
+				BlockFace.SELF);
+		inventories.stream()
+				.filter(InventoryAPI::isValidInventory)
+				.map(shop::extractTradesFromInventory)
+				.forEachOrdered(shop.trades::addAll);
 		return shop;
 	}
 
