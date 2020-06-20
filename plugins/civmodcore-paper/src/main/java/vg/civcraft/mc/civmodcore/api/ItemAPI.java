@@ -1,5 +1,7 @@
 package vg.civcraft.mc.civmodcore.api;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,6 +12,7 @@ import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
@@ -296,6 +299,25 @@ public final class ItemAPI {
 			return false;
 		}
 		return setLore(item, (List<String>) null);
+	}
+
+	/**
+	 * Retrieves the Damageable ItemMeta only if it's relevant to the item. This is necessary because [almost?] every
+	 * ItemMeta implements Damageable.. for some reason. And so this will only return a Damageable instance if the item
+	 * material actually has a maximum durability above zero.
+	 *
+	 * @param item The item to get the Damageable meta from.
+	 * @return Returns an instance of Damageable, or null.
+	 */
+	public static Damageable getDamageable(ItemStack item) {
+		if (item == null) {
+			return null;
+		}
+		short maxDurability = item.getType().getMaxDurability();
+		if (maxDurability <= 0) {
+			return null;
+		}
+		return castOrNull(Damageable.class, item.getItemMeta());
 	}
 
 	/**
