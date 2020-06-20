@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
-import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -22,6 +21,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
@@ -36,10 +36,7 @@ public final class DamageableModifier extends ModifierData {
 
 	@Override
 	public DamageableModifier construct(ItemStack item) {
-		if (!ItemExchangeConfig.canDamageItem(item.getType())) {
-			return null;
-		}
-		Damageable meta = castOrNull(Damageable.class, item.getItemMeta());
+		Damageable meta = ItemAPI.getDamageable(item);
 		if (meta == null) {
 			return null;
 		}
