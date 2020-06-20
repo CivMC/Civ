@@ -50,7 +50,7 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		parseShopCompatibleBlocks(config.getStringList("supportedBlocks"));
-		parseSuccessButtonBlocks(config.getStringList("disallowedSuccessButtonBlocks"));
+		parseSuccessButtonBlocks(config.getStringList("successButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
 		parseCreateFromShop(config.getBoolean("createShopFromChest", true));
 		parseEnchantableItems(config.getStringList("enchantables"));
@@ -103,26 +103,23 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	}
 
 	private void parseSuccessButtonBlocks(List<String> config) {
-		Set<Material> disallowedButtonBlocks = new HashSet<>();
 		for (String raw : config) {
 			Material material = MaterialAPI.getMaterial(raw);
 			if (material == null) {
-				LOGGER.warn("Could not parse material for disallowed success button block: " + raw);
+				LOGGER.warn("Could not parse material for success button block: " + raw);
 				continue;
 			}
 			if (!material.isBlock()) {
-				LOGGER.warn("Supported disallowed success button material not a block: " + raw);
+				LOGGER.warn("Supported success button material not a block: " + raw);
 				continue;
 			}
-			if (disallowedButtonBlocks.contains(material)) {
-				LOGGER.warn("Supported disallowed success button material duplicate: " + raw);
+			if (SUCCESS_BUTTON_BLOCKS.contains(material)) {
+				LOGGER.warn("Supported success button material duplicate: " + raw);
 				continue;
 			}
-			LOGGER.info("Supported disallowed success button material parsed: " + material.name());
-			disallowedButtonBlocks.add(material);
+			LOGGER.info("Supported success button material parsed: " + material.name());
+			SUCCESS_BUTTON_BLOCKS.add(material);
 		}
-		SUCCESS_BUTTON_BLOCKS.addAll(SHOP_COMPATIBLE_BLOCKS);
-		SUCCESS_BUTTON_BLOCKS.removeAll(disallowedButtonBlocks);
 		if (SUCCESS_BUTTON_BLOCKS.isEmpty()) {
 			LOGGER.info("There are no supported button triggering shop blocks.");
 		}
@@ -274,6 +271,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		}
 	}
 
+	// ------------------------------------------------------------
+	// Getters
+	// ------------------------------------------------------------
+
 	public static boolean canBeInteractedWith(Material material) {
 		if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
 			return true;
@@ -294,6 +295,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static Set<Material> getSuccessButtonBlocks() {
 		return Collections.unmodifiableSet(SUCCESS_BUTTON_BLOCKS);
+	}
+
+	public static boolean hasSuccessButtonBlock(Material material) {
+		return SUCCESS_BUTTON_BLOCKS.contains(material);
 	}
 
 	public static ItemStack getRuleItem() {

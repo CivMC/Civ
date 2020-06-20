@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -198,7 +199,7 @@ public final class ItemExchangeListener implements Listener {
 			player.sendMessage(ChatColor.RED + "Could not complete that transaction!");
 			return;
 		}
-		Utilities.successfulTransactionButton(event.getClickedBlock());
+		Stream.of(clicked, trade.getBlock()).distinct().forEach(Utilities::successfulTransactionButton);
 		IETransactionEvent.emit(player, trade.getInventory(), trade, inputItems, outputItems);
 		if (trade.hasOutput()) {
 			player.sendMessage(ChatColor.GREEN + "Successful exchange!");

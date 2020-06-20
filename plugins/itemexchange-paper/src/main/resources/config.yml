@@ -9,12 +9,14 @@ supportedBlocks:
   - "DISPENSER"
   - "DROPPER"
 
-# Supported blocks not allowed to trigger the successful transaction button.
-# Make sure to disallow blocks that themselves would be activated by the transaction button, like dispensers.
-# Additionally, make sure to disallow blocks that aren't directional.
-disallowedSuccessButtonBlocks:
-  - "DISPENSER"
-  - "DROPPER"
+# Supported blocks allowed to trigger the successful transaction button.
+# Make sure not to add blocks that themselves would be activated by the transaction button, like dispensers.
+# Additionally, make sure to only specify blocks that are directional.
+successButtonBlocks:
+  - "CHEST"
+  - "TRAPPED_CHEST"
+  - "BARREL"
+  - "ENDER_CHEST"
 
 # The item of which the exchange data will be encoded onto, eg: STONE_BUTTON
 ruleItem: "STONE_BUTTON"
