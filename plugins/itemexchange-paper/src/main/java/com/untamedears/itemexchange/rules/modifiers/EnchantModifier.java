@@ -59,9 +59,6 @@ public final class EnchantModifier extends ModifierData {
 
 	@Override
 	public EnchantModifier construct(ItemStack item) {
-		if (!ItemExchangeConfig.canEnchantItem(item.getType())) {
-			return null;
-		}
 		EnchantModifier modifier = new EnchantModifier();
 		modifier.requiredEnchants = item.getEnchantments();
 		return modifier;

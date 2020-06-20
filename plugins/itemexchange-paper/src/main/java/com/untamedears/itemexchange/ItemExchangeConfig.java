@@ -27,8 +27,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static boolean CREATE_FROM_SHOP = true;
 
-	private static final Set<Material> ITEMS_CAN_ENCHANT = new HashSet<>();
-
 	private static final Set<Material> ITEMS_CAN_REPAIR = new HashSet<>();
 
 	private static final Set<Material> RELAY_COMPATIBLE_BLOCKS = new HashSet<>();
@@ -51,7 +49,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		parseSuccessButtonBlocks(config.getStringList("successButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
 		parseCreateFromShop(config.getBoolean("createShopFromChest", true));
-		parseEnchantableItems(config.getStringList("enchantables"));
 		parseRepairableItems(config.getStringList("repairables"));
 		parseShopRelay(config.getConfigurationSection("shopRelay"));
 		return true;
@@ -62,7 +59,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		SUCCESS_BUTTON_BLOCKS.clear();
 		RULE_ITEM.setType(Material.STONE_BUTTON);
 		CREATE_FROM_SHOP = true;
-		ITEMS_CAN_ENCHANT.clear();
 		ITEMS_CAN_REPAIR.clear();
 		RELAY_COMPATIBLE_BLOCKS.clear();
 		RELAY_RECURSION_LIMIT = 0;
@@ -144,26 +140,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	private void parseCreateFromShop(boolean config) {
 		CREATE_FROM_SHOP = config;
 		LOGGER.info("Create Shop From Shop Block: " + (config ? "ENABLED" : "DISABLED"));
-	}
-
-	private void parseEnchantableItems(List<String> config) {
-		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
-			if (material == null) {
-				LOGGER.warn("Could not parse enchantable material: " + raw);
-				continue;
-			}
-			if (!material.isItem()) {
-				LOGGER.warn("Enchantable material is not an item: " + raw);
-				continue;
-			}
-			if (ITEMS_CAN_ENCHANT.contains(material)) {
-				LOGGER.warn("Enchantable material duplicate: " + raw);
-				continue;
-			}
-			LOGGER.info("Enchantable material parsed: " + material.name());
-			ITEMS_CAN_ENCHANT.add(material);
-		}
 	}
 
 	private void parseRepairableItems(List<String> config) {
@@ -291,10 +267,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static ShapelessRecipe getBulkItemRecipe() {
 		return BULK_RULE_RECIPE;
-	}
-
-	public static boolean canEnchantItem(Material material) {
-		return ITEMS_CAN_ENCHANT.contains(material);
 	}
 
 	public static boolean canRepairItem(Material material) {
