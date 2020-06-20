@@ -3,7 +3,7 @@ package com.untamedears.itemexchange;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import com.untamedears.itemexchange.events.BrowseOrPurchaseEvent;
-import com.untamedears.itemexchange.events.IETransactionEvent;
+import com.untamedears.itemexchange.events.SuccessfulPurchaseEvent;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ShopRule;
@@ -200,7 +200,7 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		Stream.of(clicked, trade.getBlock()).distinct().forEach(Utilities::successfulTransactionButton);
-		IETransactionEvent.emit(player, trade.getInventory(), trade, inputItems, outputItems);
+		SuccessfulPurchaseEvent.emit(player, trade.getInventory(), trade, inputItems, outputItems);
 		if (trade.hasOutput()) {
 			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 		}

@@ -11,7 +11,6 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
  * A storage method for modifiers that puts significance on the modifier's class.

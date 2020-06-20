@@ -2,20 +2,16 @@ package com.untamedears.itemexchange.events;
 
 import com.untamedears.itemexchange.rules.TradeRule;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public class IETransactionEvent extends Event {
+public class SuccessfulPurchaseEvent extends Event {
 
 	private static final HandlerList handlers = new HandlerList();
 
 	private final Player player;
-
-	private final Inventory inventory;
 
 	private final TradeRule trade;
 
@@ -23,38 +19,26 @@ public class IETransactionEvent extends Event {
 
 	private final ItemStack[] output;
 
-	@Deprecated
-	public IETransactionEvent(Player player, Inventory inventory, TradeRule trade, ItemStack[] input,
-							  ItemStack[] output) {
+	private SuccessfulPurchaseEvent(Player player, TradeRule trade, ItemStack[] input, ItemStack[] output) {
 		this.player = player;
-		this.inventory = inventory;
 		this.trade = trade;
 		this.input = input;
 		this.output = output;
 	}
 
-	public Player getPlayer() {
+	public Player getPurchaser() {
 		return this.player;
-	}
-
-	public Inventory getInventory() {
-		return this.inventory;
-	}
-
-	@Deprecated
-	public Location getExchangeLocation() {
-		return this.inventory.getLocation();
 	}
 
 	public TradeRule getTrade() {
 		return this.trade;
 	}
 
-	public ItemStack[] getInput() {
+	public ItemStack[] getPaymentItems() {
 		return this.input;
 	}
 
-	public ItemStack[] getOutput() {
+	public ItemStack[] getPurchasedItems() {
 		return this.output;
 	}
 
@@ -67,9 +51,8 @@ public class IETransactionEvent extends Event {
 		return handlers;
 	}
 
-	public static IETransactionEvent emit(Player player, Inventory inventory, TradeRule trade, ItemStack[] input,
-										  ItemStack[] output) {
-		IETransactionEvent event = new IETransactionEvent(player, inventory, trade, input, output);
+	public static SuccessfulPurchaseEvent emit(Player player, TradeRule trade, ItemStack[] input, ItemStack[] output) {
+		SuccessfulPurchaseEvent event = new SuccessfulPurchaseEvent(player, trade, input, output);
 		Bukkit.getPluginManager().callEvent(event);
 		return event;
 	}
