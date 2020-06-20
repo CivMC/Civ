@@ -189,13 +189,13 @@ public final class BlockAPI {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
 		switch (face) {
+			default:
 			case NORTH:
 				return BlockFace.EAST;
 			case EAST:
 				return BlockFace.SOUTH;
 			case SOUTH:
 				return BlockFace.WEST;
-			default:
 			case WEST:
 				return BlockFace.NORTH;
 		}
@@ -213,13 +213,13 @@ public final class BlockAPI {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
 		switch (face) {
+			default:
 			case NORTH:
 				return BlockFace.WEST;
 			case EAST:
 				return BlockFace.NORTH;
 			case SOUTH:
 				return BlockFace.EAST;
-			default:
 			case WEST:
 				return BlockFace.SOUTH;
 		}
