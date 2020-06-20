@@ -21,7 +21,7 @@ import vg.civcraft.mc.civmodcore.util.Validation;
 
 @CommandAlias(SetCommand.ALIAS)
 @Modifier(slug = "CUSTOM", order = 0)
-public class CustomItemModifier extends ModifierData {
+public final class CustomItemModifier extends ModifierData {
 
 	public static final CustomItemModifier TEMPLATE = new CustomItemModifier();
 
