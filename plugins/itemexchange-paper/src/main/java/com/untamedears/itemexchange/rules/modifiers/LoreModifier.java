@@ -24,17 +24,14 @@ import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "LORE", order = 30)
-public final class LoreModifier extends ModifierData<LoreModifier> {
+@Modifier(slug = "LORE", order = 300)
+public final class LoreModifier extends ModifierData {
+
+	public static final LoreModifier TEMPLATE = new LoreModifier();
 
 	public static final String LORE_KEY = "lore";
 
 	private List<String> lore;
-
-	@Override
-	public LoreModifier construct() {
-		return new LoreModifier();
-	}
 
 	@Override
 	public LoreModifier construct(ItemStack item) {

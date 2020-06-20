@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import co.aikar.commands.annotation.CommandAlias;
@@ -26,8 +26,10 @@ import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "POTION", order = 40)
-public final class PotionModifier extends ModifierData<PotionModifier> {
+@Modifier(slug = "POTION", order = 400)
+public final class PotionModifier extends ModifierData {
+
+	public static final PotionModifier TEMPLATE = new PotionModifier();
 
 	public static final String BASE_KEY = "base";
 
@@ -37,13 +39,8 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	private List<PotionEffect> effects;
 
 	@Override
-	public PotionModifier construct() {
-		return new PotionModifier();
-	}
-
-	@Override
 	public PotionModifier construct(ItemStack item) {
-		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -63,7 +60,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}

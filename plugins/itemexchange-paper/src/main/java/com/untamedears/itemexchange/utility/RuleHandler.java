@@ -10,12 +10,20 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
+/**
+ * This is a utility to be used within the default commands.
+ */
 public class RuleHandler implements Closeable {
 
 	private final Player player;
 	private final ExchangeRule rule;
 	private final List<String> messages;
 
+	/**
+	 * Creates a new modifier handler.
+	 *
+	 * @param player The player who's invoked a default command handler.
+	 */
 	public RuleHandler(Player player) {
 		if (player == null || !player.isOnline()) {
 			throw new InvalidCommandArgument("You must be a player to do that.", false);
@@ -28,14 +36,27 @@ public class RuleHandler implements Closeable {
 		this.messages = Lists.newArrayList();
 	}
 
+	/**
+	 * @return Returns the player who invoked the command, which is never null.
+	 */
 	public final Player getPlayer() {
 		return this.player;
 	}
 
+	/**
+	 * @return Returns the rule the player is holding, which is never null.
+	 */
 	public final ExchangeRule getRule() {
 		return this.rule;
 	}
 
+	/**
+	 * Use this to send responses to the player. The messages will be stored and sent <i>after</i> the command has been
+	 * handled successfully and without error. This allows you to relay messages without worrying about a later thrown
+	 * exception, since that exception will prevent the messages from being sent.
+	 *
+	 * @param message The message to send to the player.
+	 */
 	public final void relay(String message) {
 		this.messages.add(message);
 	}

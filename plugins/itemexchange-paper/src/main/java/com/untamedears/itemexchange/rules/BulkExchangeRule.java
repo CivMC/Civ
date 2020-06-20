@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 
 import com.google.common.collect.Lists;
 import com.untamedears.itemexchange.ItemExchangeConfig;
@@ -17,7 +17,6 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.Validation;
 
 public final class BulkExchangeRule implements ExchangeData {
 
@@ -43,7 +42,8 @@ public final class BulkExchangeRule implements ExchangeData {
 	@Override
 	public void deserialize(NBTCompound nbt) {
 		setRules(Arrays.stream(nbt.getCompoundArray(RULES_KEY))
-				.map(raw -> chain(() -> (ExchangeRule) NBTSerialization.deserialize(raw)))
+				.map(raw -> castOrNull(ExchangeRule.class, NBTSerialization.deserialize(raw)))
+				.filter(Objects::nonNull)
 				.collect(Collectors.toCollection(ArrayList::new)));
 	}
 

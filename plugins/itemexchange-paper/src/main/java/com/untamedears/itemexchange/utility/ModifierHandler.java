@@ -5,32 +5,56 @@ import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import org.bukkit.entity.Player;
 
-public class ModifierHandler<T extends ModifierData<T>> extends RuleHandler {
+/**
+ * This is a utility to be used within modifier command handlers.
+ */
+public class ModifierHandler<T extends ModifierData> extends RuleHandler {
 
 	private final T template;
 	private T modifier;
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * Creates a new modifier handler.
+	 *
+	 * @param player The player who's invoked a modifier command handler.
+	 * @param template The template modifier to base this handler around.
+	 */
 	public ModifierHandler(Player player, T template) {
 		super(player);
 		if (ItemExchangePlugin.modifierRegistrar().getModifier(template.getClass()) != template) {
 			throw new InvalidCommandArgument("Could not match that modifier.", false);
 		}
 		this.template = template;
-		this.modifier = (T) getRule().getModifiers().get(template);
+		this.modifier = getRule().getModifiers().get(template);
 	}
 
+	/**
+	 * Gets the current instance of this modifier.
+	 *
+	 * @return Returns the current instance of this modifier.
+	 */
 	public final T getModifier() {
 		return this.modifier;
 	}
 
+	/**
+	 * Ensures that there's a modifier instance of the template.
+	 *
+	 * @return Returns the current instance of this modifier, or creates a new one if it didn't already exist.
+	 */
+	@SuppressWarnings("unchecked")
 	public final T ensureModifier() {
 		if (this.modifier == null) {
-			this.modifier = template.construct();
+			this.modifier = (T) template.construct();
 		}
 		return this.modifier;
 	}
 
+	/**
+	 * Sets the current instance of this modifier.
+	 *
+	 * @param modifier The modifier to set. If set to null will remove this modifier.
+	 */
 	public final void setModifier(T modifier) {
 		this.modifier = modifier;
 	}

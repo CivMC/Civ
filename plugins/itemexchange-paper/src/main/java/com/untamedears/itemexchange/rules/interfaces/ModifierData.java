@@ -3,6 +3,7 @@ package com.untamedears.itemexchange.rules.interfaces;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang.IllegalClassException;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
@@ -11,11 +12,10 @@ import vg.civcraft.mc.civmodcore.serialization.NBTSerializable;
 /**
  * Abstract class that represents a modifier.
  *
- * @param <T> The type of the child class, for example:
  * {@code public final class BookModifier extends ModifierData<BookModifier> {}}
  */
-public abstract class ModifierData<T extends ModifierData<T>> extends AikarCommand
-		implements ExchangeData, NBTSerializable, Comparable<ModifierData<?>> {
+public abstract class ModifierData extends AikarCommand
+		implements ExchangeData, NBTSerializable, Comparable<ModifierData> {
 
 	private static final int hashOffset = 37513459;
 
@@ -44,7 +44,15 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *
 	 * @return Returns a new instance of the extended class.
 	 */
-	public abstract T construct();
+	public final ModifierData construct() {
+		try {
+			return getClass().newInstance();
+		}
+		catch (IllegalAccessException | InstantiationException error) {
+			throw new IllegalClassException("That Modifier cannot be constructed... please make sure it has a " +
+					"public, zero argument constructor.");
+		}
+	}
 
 	/**
 	 * Constructs a new instance of a modifier.
@@ -53,15 +61,15 @@ public abstract class ModifierData<T extends ModifierData<T>> extends AikarComma
 	 *     {@link vg.civcraft.mc.civmodcore.api.ItemAPI#isValidItem(ItemStack)} check.
 	 * @return Returns a new instance of the extended class.
 	 */
-	public abstract T construct(ItemStack item);
+	public abstract ModifierData construct(ItemStack item);
 
 	/**
 	 * Duplicates this modifier.
 	 */
-	public final T duplicate() {
+	public final ModifierData duplicate() {
 		NBTCompound nbt = new NBTCompound();
 		serialize(nbt);
-		T instance = construct();
+		ModifierData instance = construct();
 		instance.deserialize(nbt);
 		return instance;
 	}

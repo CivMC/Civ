@@ -1,6 +1,8 @@
 package com.untamedears.itemexchange.rules;
 
 import com.untamedears.itemexchange.rules.ExchangeRule.Type;
+import java.util.Objects;
+import org.bukkit.block.Block;
 import org.bukkit.inventory.Inventory;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
@@ -110,4 +112,9 @@ public final class TradeRule implements Validation {
 	public void setInventory(Inventory inventory) {
 		this.inventory = inventory;
 	}
+
+	public Block getBlock() {
+		return Objects.requireNonNull(this.inventory.getLocation()).getBlock();
+	}
+
 }

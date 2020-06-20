@@ -23,9 +23,9 @@ public final class ReloadCommand extends AikarCommand {
 	@Description("Reload's ItemExchange's config.")
 	public void onReloadConfig(CommandSender sender) {
 		this.plugin.saveDefaultConfig();
-		this.plugin.config().reset();
+		ItemExchangePlugin.config().reset();
 		this.plugin.reloadConfig();
-		this.plugin.config().parse();
+		ItemExchangePlugin.config().parse();
 		sender.sendMessage(ChatColor.GREEN + "ItemExchange's config has been reloaded.");
 	}
 

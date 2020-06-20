@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import com.google.common.base.Strings;
@@ -8,7 +8,8 @@ import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
-import com.untamedears.itemexchange.utility.ClassInstanceMap;
+import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
+import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -75,7 +76,7 @@ public final class ExchangeRule implements ExchangeData {
 	private Type type;
 	private Material material;
 	private int amount;
-	private final ClassInstanceMap<ModifierData<?>> modifiers = new ClassInstanceMap<>();
+	private final ModifierStorage modifiers = new ModifierStorage();
 
 	/**
 	 * Creates a third generation Exchange rule.
@@ -93,7 +94,8 @@ public final class ExchangeRule implements ExchangeData {
 		this.material = item.getType();
 		this.amount = item.getAmount();
 		ItemExchangePlugin.modifierRegistrar().getModifiers()
-				.map((template) -> template.construct(item))
+				.map(template -> template.construct(item))
+				.filter(Objects::nonNull)
 				.forEachOrdered(this.modifiers::put);
 	}
 
@@ -136,7 +138,7 @@ public final class ExchangeRule implements ExchangeData {
 			PLUGIN.debug("No ItemMeta.");
 			return false;
 		}
-		for (ModifierData<?> modifier : this.modifiers) {
+		for (ModifierData modifier : this.modifiers) {
 			if (!modifier.conforms(item)) {
 				PLUGIN.debug("[" + modifier.getClass().getSimpleName() + "] Modifier rejected that.");
 				return false;
@@ -204,7 +206,7 @@ public final class ExchangeRule implements ExchangeData {
 		this.amount = amount;
 	}
 
-	public ClassInstanceMap<ModifierData<?>> getModifiers() {
+	public ModifierStorage getModifiers() {
 		return this.modifiers;
 	}
 
@@ -226,7 +228,7 @@ public final class ExchangeRule implements ExchangeData {
 		this.amount = nbt.getInteger(AMOUNT_KEY);
 		this.modifiers.clear();
 		Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
-				.map((raw) -> chain(() -> (ModifierData<?>) NBTSerialization.deserialize(raw)))
+				.map(raw -> castOrNull(ModifierData.class, NBTSerialization.deserialize(raw)))
 				.forEachOrdered(this.modifiers::put);
 	}
 
@@ -240,11 +242,31 @@ public final class ExchangeRule implements ExchangeData {
 	 * @return Returns the rule's listing.
 	 */
 	private String getListing() {
-		return this.modifiers.stream()
+		String listing = this.modifiers.stream()
 				.sorted(Collections.reverseOrder())
 				.map(ModifierData::getDisplayListing)
 				.filter(Objects::nonNull)
 				.findFirst().orElse(null);
+		if (!Strings.isNullOrEmpty(listing)) {
+			return listing;
+		}
+		listing = ItemNames.getItemName(this.material);
+		if (!Strings.isNullOrEmpty(listing)) {
+			return listing;
+		}
+		listing = EnumUtils.getSlug(this.material);
+		if (!Strings.isNullOrEmpty(listing)) {
+			return listing;
+		}
+		return "UNKNOWN";
+	}
+
+	private String getDisplayName() {
+		DisplayNameModifier modifier = this.modifiers.get(DisplayNameModifier.class);
+		if (modifier == null) {
+			return null;
+		}
+		return modifier.getDisplayName();
 	}
 
 	/**
@@ -268,18 +290,22 @@ public final class ExchangeRule implements ExchangeData {
 		else if (this.type == Type.OUTPUT) {
 			builder.append("Output");
 		}
-		builder.append(": ").append(ChatColor.WHITE);
-		builder.append(this.amount).append(" ");
-		String listing = getListing();
-		if (!Strings.isNullOrEmpty(listing)) {
-			builder.append(listing);
-		}
-		else {
-			String name = ItemNames.getItemName(this.material);
-			if (Strings.isNullOrEmpty(name)) {
-				name = this.material.name();
-			}
-			builder.append(name);
+		builder
+				.append(": ")
+				.append(ChatColor.WHITE)
+				.append(this.amount)
+				.append(" ")
+				.append(getListing());
+		String displayName = getDisplayName();
+		if (!Strings.isNullOrEmpty(displayName)) {
+			builder
+					.append(ChatColor.WHITE)
+					.append(ChatColor.ITALIC)
+					.append(" \"")
+					.append(displayName)
+					.append(ChatColor.WHITE)
+					.append(ChatColor.ITALIC)
+					.append("\"");
 		}
 		return builder.toString();
 	}
@@ -308,7 +334,7 @@ public final class ExchangeRule implements ExchangeData {
 	}
 
 	// ------------------------------------------------------------
-	//
+	// Utilities
 	// ------------------------------------------------------------
 
 	/**

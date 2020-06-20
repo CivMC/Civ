@@ -40,8 +40,10 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "ENCHANTS", order = 10)
-public final class EnchantModifier extends ModifierData<EnchantModifier> {
+@Modifier(slug = "ENCHANTS", order = 200)
+public final class EnchantModifier extends ModifierData {
+
+	public static final EnchantModifier TEMPLATE = new EnchantModifier();
 
 	public static final String REQUIRED_KEY = "required";
 
@@ -54,11 +56,6 @@ public final class EnchantModifier extends ModifierData<EnchantModifier> {
 	private Map<Enchantment, Integer> requiredEnchants;
 	private Set<Enchantment> excludedEnchants;
 	private boolean allowUnlistedEnchants;
-
-	@Override
-	public EnchantModifier construct() {
-		return new EnchantModifier();
-	}
 
 	@Override
 	public EnchantModifier construct(ItemStack item) {
