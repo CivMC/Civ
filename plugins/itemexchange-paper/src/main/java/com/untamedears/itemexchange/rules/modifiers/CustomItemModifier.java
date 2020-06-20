@@ -2,11 +2,9 @@ package com.untamedears.itemexchange.rules.modifiers;
 
 import co.aikar.commands.annotation.CommandAlias;
 import com.untamedears.itemexchange.commands.SetCommand;
-import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
-import java.util.List;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -120,15 +118,6 @@ public final class CustomItemModifier extends ModifierData {
 			return ChatColor.RED + this.key.toString();
 		}
 		return criteria.getName();
-	}
-
-	/**
-	 * @return Returns a set of strings to be displayed as part of {@link ExchangeRule}'s details. Note: Null or
-	 *     empty lists are supported and convey to not list anything.
-	 */
-	@Override
-	public List<String> getDisplayInfo() {
-		return null;
 	}
 
 }
