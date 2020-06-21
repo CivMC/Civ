@@ -1220,6 +1220,205 @@ public final class MaterialAPI {
 	}
 
 	/**
+	 * Checks whether a material is a type of sword.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a sword.
+	 */
+	public static boolean isSword(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case WOODEN_SWORD:
+			case STONE_SWORD:
+			case IRON_SWORD:
+			case GOLDEN_SWORD:
+			case DIAMOND_SWORD:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of pick axe.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a pick axe.
+	 */
+	public static boolean isPickaxe(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case WOODEN_PICKAXE:
+			case STONE_PICKAXE:
+			case IRON_PICKAXE:
+			case GOLDEN_PICKAXE:
+			case DIAMOND_PICKAXE:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of axe.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a axe.
+	 */
+	public static boolean isAxe(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case WOODEN_AXE:
+			case STONE_AXE:
+			case IRON_AXE:
+			case GOLDEN_AXE:
+			case DIAMOND_AXE:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of spade.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a spade.
+	 */
+	public static boolean isShovel(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case WOODEN_SHOVEL:
+			case STONE_SHOVEL:
+			case IRON_SHOVEL:
+			case GOLDEN_SHOVEL:
+			case DIAMOND_SHOVEL:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of hoe.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a hoe.
+	 */
+	public static boolean isHoe(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case WOODEN_HOE:
+			case STONE_HOE:
+			case IRON_HOE:
+			case GOLDEN_HOE:
+			case DIAMOND_HOE:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of helmet.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a helmet.
+	 */
+	public static boolean isHelmet(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case LEATHER_HELMET:
+			case CHAINMAIL_HELMET:
+			case IRON_HELMET:
+			case GOLDEN_HELMET:
+			case DIAMOND_HELMET:
+			case TURTLE_HELMET:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of chest plate.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a chest plate.
+	 */
+	public static boolean isChestplate(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case LEATHER_CHESTPLATE:
+			case CHAINMAIL_CHESTPLATE:
+			case IRON_CHESTPLATE:
+			case GOLDEN_CHESTPLATE:
+			case DIAMOND_CHESTPLATE:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of leggings.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a pair of leggings.
+	 */
+	public static boolean areLeggings(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case LEATHER_LEGGINGS:
+			case CHAINMAIL_LEGGINGS:
+			case IRON_LEGGINGS:
+			case GOLDEN_LEGGINGS:
+			case DIAMOND_LEGGINGS:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
+	 * Checks whether a material is a type of boots.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is a pair of boots.
+	 */
+	public static boolean areBoots(Material material) {
+		if (material == null) {
+			return false;
+		}
+		switch (material) {
+			case LEATHER_BOOTS:
+			case CHAINMAIL_BOOTS:
+			case IRON_BOOTS:
+			case GOLDEN_BOOTS:
+			case DIAMOND_BOOTS:
+				return true;
+			default:
+				return false;
+		}
+	}
+
+	/**
 	 * Gets a random material based on the given objects hashcode.
 	 *
 	 * @param object Object to base returned material on
