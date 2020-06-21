@@ -748,14 +748,7 @@ public final class MaterialAPI {
 		if (material == null) {
 			return true;
 		}
-		switch (material) {
-			case AIR:
-			case CAVE_AIR:
-			case VOID_AIR:
-				return true;
-			default:
-				return false;
-		}
+		return material.isAir();
 	}
 
 	/**
