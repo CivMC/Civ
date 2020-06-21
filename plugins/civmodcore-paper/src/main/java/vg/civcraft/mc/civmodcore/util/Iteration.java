@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -9,6 +10,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class Iteration {
+
+	@FunctionalInterface
+	public interface ElementAndBoolConsumer<T> {
+		void accept(T former, boolean latter);
+	}
 
     /**
      * <p>Determines whether an array is null or empty.</p>
@@ -77,6 +83,23 @@ public final class Iteration {
         }
         collection.clear();
     }
+
+    /**
+	 * Iterates through a collection, whereby each element has knowledge of whether it's the last element.
+	 *
+	 * @param <T> The generic type of the collection.
+	 * @param collection The collection to iterate.
+	 * @param processor The iteration processor which will be called for each item in the collection.
+	 */
+    public static <T> void iterateHasNext(Collection<T> collection, ElementAndBoolConsumer<T> processor) {
+		if (isNullOrEmpty(collection) || processor == null) {
+			return;
+		}
+		Iterator<T> iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			processor.accept(iterator.next(), iterator.hasNext());
+		}
+	}
 
     /**
 	 * Fills an array with a particular value.
