@@ -151,6 +151,14 @@ public final class DamageableModifier extends ModifierData {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"damage=" + getDamage() +
+				"}";
+	}
+
 	// ------------------------------------------------------------
 	// Getters + Setters
 	// ------------------------------------------------------------

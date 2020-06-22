@@ -18,6 +18,7 @@ public class RuleHandler implements Closeable {
 	private final Player player;
 	private final ExchangeRule rule;
 	private final List<String> messages;
+	private boolean saveChanges;
 
 	/**
 	 * Creates a new modifier handler.
@@ -34,6 +35,7 @@ public class RuleHandler implements Closeable {
 			throw new InvalidCommandArgument("You must be holding an exchange rule.", false);
 		}
 		this.messages = Lists.newArrayList();
+		this.saveChanges = true;
 	}
 
 	/**
@@ -61,13 +63,24 @@ public class RuleHandler implements Closeable {
 		this.messages.add(message);
 	}
 
+	/**
+	 * Use this to enable/disable saving changes to the rule onto the player's held rule.
+	 *
+	 * @param shouldSave Set to false to disable the saving of changes.
+	 */
+	public final void saveChanges(boolean shouldSave) {
+		this.saveChanges = shouldSave;
+	}
+
 	@Override
 	public void close() {
 		ItemStack item = this.rule.toItem();
 		if (!ItemAPI.isValidItem(item)) {
 			throw new InvalidCommandArgument("Could not replace that rule.", false);
 		}
-		this.player.getInventory().setItemInMainHand(item);
+		if (this.saveChanges) {
+			this.player.getInventory().setItemInMainHand(item);
+		}
 		for (String message : messages) {
 			if (!Strings.isNullOrEmpty(message)) {
 				this.player.sendMessage(message);

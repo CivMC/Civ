@@ -76,4 +76,12 @@ public final class CustomItemModifier extends ModifierData {
 		return criteria.getName();
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"key=" + this.key +
+				"}";
+	}
+
 }

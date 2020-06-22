@@ -10,7 +10,6 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -132,6 +131,16 @@ public final class EnchantModifier extends ModifierData {
 			info.add(ChatColor.GREEN + "Other enchantments allowed");
 		}
 		return info;
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"required={" + getRequiredEnchants() + "}," +
+				"excluded={" + getExcludedEnchants() + "}," +
+				"allowing=" + isAllowingUnlistedEnchants() +
+				"}";
 	}
 
 	// ------------------------------------------------------------

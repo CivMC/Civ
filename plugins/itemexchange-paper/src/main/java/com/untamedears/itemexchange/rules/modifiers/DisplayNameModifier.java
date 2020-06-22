@@ -69,8 +69,11 @@ public final class DisplayNameModifier extends ModifierData {
 	}
 
 	@Override
-	public String getDisplayListing() {
-		return null;
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"name=" + getDisplayName() +
+				"}";
 	}
 
 	// ------------------------------------------------------------

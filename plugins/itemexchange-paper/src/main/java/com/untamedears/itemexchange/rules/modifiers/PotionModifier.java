@@ -108,6 +108,15 @@ public final class PotionModifier extends ModifierData {
 		return Collections.singletonList(ChatColor.AQUA + "Potion Name: " + ChatColor.WHITE + getName());
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"base={" + getPotionData() + "}," +
+				"effects=" + getEffects() + "," +
+				"}";
+	}
+
 	// ------------------------------------------------------------
 	// Getters + Setters
 	// ------------------------------------------------------------

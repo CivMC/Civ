@@ -104,6 +104,14 @@ public final class RepairModifier extends ModifierData {
 		return info;
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"level=" + getRepairCost() +
+				"}";
+	}
+
 	// ------------------------------------------------------------
 	// Commands
 	// ------------------------------------------------------------

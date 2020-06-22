@@ -319,7 +319,7 @@ public final class ExchangeRule implements ExchangeData {
 		List<String> info = new ArrayList<>();
 		this.modifiers.stream()
 				.map(ModifierData::getDisplayInfo)
-				.filter((list) -> !Iteration.isNullOrEmpty(list))
+				.filter(list -> !Iteration.isNullOrEmpty(list))
 				.forEachOrdered(info::addAll);
 		return info;
 	}

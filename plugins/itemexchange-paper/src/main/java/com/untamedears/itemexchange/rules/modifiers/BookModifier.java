@@ -137,6 +137,17 @@ public final class BookModifier extends ModifierData {
 		return lines;
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"title=" + getTitle() + "," +
+				"author=" + getAuthor() + "," +
+				"generation=" + getGeneration() + "," +
+				"hash=" + getBookHash() +
+				"}";
+	}
+
 	// ------------------------------------------------------------
 	// Getters + Setters
 	// ------------------------------------------------------------

@@ -99,6 +99,14 @@ public final class EnchantStorageModifier extends ModifierData {
 		return info;
 	}
 
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"enchants={" + getEnchants() + "}" +
+				"}";
+	}
+
 	// ------------------------------------------------------------
 	// Getters + Setters
 	// ------------------------------------------------------------
