@@ -200,7 +200,7 @@ public final class ItemExchangeListener implements Listener {
 			return;
 		}
 		Stream.of(clicked, trade.getBlock()).distinct().forEach(Utilities::successfulTransactionButton);
-		SuccessfulPurchaseEvent.emit(player, trade.getInventory(), trade, inputItems, outputItems);
+		SuccessfulPurchaseEvent.emit(player, trade, inputItems, outputItems);
 		if (trade.hasOutput()) {
 			player.sendMessage(ChatColor.GREEN + "Successful exchange!");
 		}
