@@ -74,7 +74,7 @@ public final class LoreModifier extends ModifierData {
 	@Override
 	public List<String> getDisplayInfo() {
 		return this.lore.stream()
-				.map(line -> "" + ChatColor.LIGHT_PURPLE + ChatColor.ITALIC + line)
+				.map(line -> "" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + line)
 				.collect(Collectors.toCollection(ArrayList::new));
 	}
 
@@ -82,7 +82,7 @@ public final class LoreModifier extends ModifierData {
 	public String toString() {
 		return getSlug() +
 				"{" +
-				"lore={" + getLore() + "}" +
+				"lore=" + getLore() +
 				"}";
 	}
 

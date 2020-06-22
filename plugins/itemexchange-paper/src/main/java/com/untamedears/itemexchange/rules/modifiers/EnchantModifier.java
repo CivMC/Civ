@@ -137,9 +137,9 @@ public final class EnchantModifier extends ModifierData {
 	public String toString() {
 		return getSlug() +
 				"{" +
-				"required={" + getRequiredEnchants() + "}," +
-				"excluded={" + getExcludedEnchants() + "}," +
-				"allowing=" + isAllowingUnlistedEnchants() +
+				"required=" + Utilities.leveledEnchantsToString(getRequiredEnchants()) + "," +
+				"excluded=" + Utilities.enchantsToString(getExcludedEnchants()) + "," +
+				"allowingUnlisted=" + isAllowingUnlistedEnchants() +
 				"}";
 	}
 

@@ -10,6 +10,7 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
+import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -112,8 +113,8 @@ public final class PotionModifier extends ModifierData {
 	public String toString() {
 		return getSlug() +
 				"{" +
-				"base={" + getPotionData() + "}," +
-				"effects=" + getEffects() + "," +
+				"base=" + Utilities.potionDataToString(getPotionData()) + "," +
+				"effects=" + Utilities.potionEffectsToString(getEffects()) + "," +
 				"}";
 	}
 

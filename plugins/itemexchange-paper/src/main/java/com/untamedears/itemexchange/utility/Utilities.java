@@ -10,7 +10,9 @@ import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.bukkit.Bukkit;
 import org.bukkit.Tag;
@@ -23,9 +25,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
@@ -175,6 +180,54 @@ public final class Utilities {
 						}, 30L);
 					}
 				});
+	}
+
+	// ------------------------------------------------------------
+	// Stringifiers
+	// ------------------------------------------------------------
+
+	public static String leveledEnchantsToString(Map<Enchantment, Integer> leveledEnchants) {
+		if (Iteration.isNullOrEmpty(leveledEnchants)) {
+			return "[]";
+		}
+		return "[" +
+				leveledEnchants.entrySet().stream()
+						.map(entry -> NamespaceAPI.getString(entry.getKey()) + ":" + entry.getValue())
+						.collect(Collectors.joining(",")) +
+				"]";
+	}
+
+	public static String enchantsToString(Collection<Enchantment> enchants) {
+		if (Iteration.isNullOrEmpty(enchants)) {
+			return "[]";
+		}
+		return "[" +
+				enchants.stream()
+						.map(entry -> NamespaceAPI.getString(entry.getKey()))
+						.collect(Collectors.joining(",")) +
+				"]";
+	}
+
+	public static String potionDataToString(PotionData data) {
+		if (data == null) {
+			return null;
+		}
+		return "PotionData{" +
+				"type=" + data.getType().name() + "," +
+				"extended=" + data.isExtended() + "," +
+				"upgraded=" + data.isUpgraded() +
+				"}";
+	}
+
+	public static String potionEffectsToString(Collection<PotionEffect> effects) {
+		if (Iteration.isNullOrEmpty(effects)) {
+			return "[]";
+		}
+		return "[" +
+				effects.stream()
+						.map(entry -> "PotionEffect{" + entry.serialize().toString() + "}")
+						.collect(Collectors.joining(",")) +
+				"]";
 	}
 
 }

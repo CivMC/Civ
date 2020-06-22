@@ -103,7 +103,7 @@ public final class EnchantStorageModifier extends ModifierData {
 	public String toString() {
 		return getSlug() +
 				"{" +
-				"enchants={" + getEnchants() + "}" +
+				"enchants=" + Utilities.leveledEnchantsToString(getEnchants()) +
 				"}";
 	}
 
