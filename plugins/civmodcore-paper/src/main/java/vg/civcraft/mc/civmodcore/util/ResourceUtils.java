@@ -20,13 +20,13 @@ public final class ResourceUtils {
 	 */
 	public static boolean iterateResourceLines(ACivMod plugin, String resource, Consumer<String> parser) {
 		if (plugin == null) {
-			throw new IllegalArgumentException("Cannot iterate CSV with a null plugin.");
+			throw new IllegalArgumentException("Cannot iterate resource with a null plugin.");
 		}
 		if (Strings.isNullOrEmpty(resource)) {
 			throw new IllegalArgumentException("Resource path must be valid.");
 		}
 		if (parser == null) {
-			throw new IllegalArgumentException("IterateCSV was not given a parser, iteration would be useless.");
+			throw new IllegalArgumentException("Not parser was given.");
 		}
 		InputStream input = plugin.getClass().getResourceAsStream(resource);
 		if (input == null) {

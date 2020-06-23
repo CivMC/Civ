@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import javax.annotation.Nullable;
 import org.apache.commons.lang.StringUtils;
-import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -151,7 +149,6 @@ public final class ItemAPI {
 	 * @param item The item to retrieve the display name from.
 	 * @return Returns the display name of an item. Will return null if there's no display name, or if it's empty.
 	 */
-	@Nullable
 	public static String getDisplayName(ItemStack item) {
 		ItemMeta meta = getItemMeta(item);
 		String name = meta.getDisplayName();
@@ -198,7 +195,6 @@ public final class ItemAPI {
 	 *
 	 * @param item The item to set the lore to.
 	 * @param lines The lore to set to the item.
-	 * @return Returns true if the lore was set.
 	 *
 	 * @see ItemAPI#clearLore(ItemStack)
 	 */
