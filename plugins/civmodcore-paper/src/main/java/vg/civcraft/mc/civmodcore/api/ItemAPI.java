@@ -33,10 +33,23 @@ public final class ItemAPI {
 		if (item == null) {
 			return false;
 		}
-		if (item.getType() == Material.AIR) {
+		if (!MaterialAPI.isValidItemMaterial(item.getType())) {
 			return false;
 		}
-		if (!item.getType().isItem()) {
+		if (!isValidItemAmount(item)) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Checks if an ItemStack has a valid amount.
+	 *
+	 * @param item The item to validate.
+	 * @return Returns true if the item has a valid amount.
+	 */
+	public static boolean isValidItemAmount(ItemStack item) {
+		if (item == null) {
 			return false;
 		}
 		if (item.getAmount() <= 0) {
