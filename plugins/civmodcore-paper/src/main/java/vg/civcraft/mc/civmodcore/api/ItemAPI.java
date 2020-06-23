@@ -309,6 +309,20 @@ public final class ItemAPI {
 	}
 
 	/**
+	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments,
+	 * so it has the enchantment glow without an enchantment being visible. Note that this
+	 * does actually apply an enchantment to an item.
+	 *
+	 * @param item Item to apply glow to.
+	 */
+	public static void addGlow(ItemStack item) {
+		ItemMeta meta = getItemMeta(item);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+		item.setItemMeta(meta);
+		item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+	}
+
+	/**
 	 * Handles an item's metadata.
 	 *
 	 * @param <T> The item meta type, which might not extend ItemMeta (Damageable for example)
@@ -335,18 +349,6 @@ public final class ItemAPI {
 		}
 		catch (ClassCastException ignored) { }
 		return false;
-	}
-
-	/**
-	 * Makes an item glow by adding an enchantment and the flag for hiding enchantments, 
-	 * so it has the enchantment glow without an enchantment being visible
-	 * @param item Item to apply glow to
-	 */
-	public static void addGlow(ItemStack item) {
-		ItemMeta im = item.getItemMeta();
-		im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-		item.setItemMeta(im);
-		item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
 	}
 
 }
