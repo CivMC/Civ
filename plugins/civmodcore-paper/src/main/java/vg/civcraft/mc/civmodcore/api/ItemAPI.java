@@ -132,13 +132,17 @@ public final class ItemAPI {
 	 * Retrieves the ItemMeta from an item.
 	 *
 	 * @param item The item to retrieve meta from.
-	 * @return Returns the item meta.
+	 * @return Returns the item meta, which is never null.
 	 */
 	public static ItemMeta getItemMeta(ItemStack item) {
 		if (item == null) {
-			return null;
+			throw new IllegalArgumentException("Cannot retrieve the item's meta; the item is null.");
 		}
-		return item.getItemMeta();
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) {
+			throw new IllegalArgumentException("Cannot retrieve item meta; it has no meta nor was any generated.");
+		}
+		return meta;
 	}
 
 	/**
@@ -150,9 +154,6 @@ public final class ItemAPI {
 	@Nullable
 	public static String getDisplayName(ItemStack item) {
 		ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			return null;
-		}
 		String name = meta.getDisplayName();
 		if (StringUtils.isEmpty(name)) {
 			return null;
@@ -165,13 +166,9 @@ public final class ItemAPI {
 	 *
 	 * @param item The item to set the display name to.
 	 * @param name The display name to set on the item.
-	 * @return Returns true if the display name was set.
 	 */
-	public static boolean setDisplayName(ItemStack item, String name) {
+	public static void setDisplayName(ItemStack item, String name) {
 		ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			return false;
-		}
 		if (StringUtils.isEmpty(name)) {
 			meta.setDisplayName(null);
 		}
@@ -179,7 +176,6 @@ public final class ItemAPI {
 			meta.setDisplayName(name);
 		}
 		item.setItemMeta(meta);
-		return true;
 	}
 
 	/**
@@ -190,9 +186,6 @@ public final class ItemAPI {
 	 */
 	public static List<String> getLore(ItemStack item) {
 		ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			return new ArrayList<>();
-		}
 		List<String> lore = meta.getLore();
 		if (lore == null) {
 			return new ArrayList<>();
@@ -209,12 +202,12 @@ public final class ItemAPI {
 	 *
 	 * @see ItemAPI#clearLore(ItemStack)
 	 */
-	public static boolean setLore(ItemStack item, String... lines) {
+	public static void setLore(ItemStack item, String... lines) {
 		if (Iteration.isNullOrEmpty(lines)) {
-			return setLore(item, (List<String>) null);
+			clearLore(item);
 		}
 		else {
-			return setLore(item, Iteration.collect(ArrayList::new, lines));
+			setLore(item, Iteration.collect(ArrayList::new, lines));
 		}
 	}
 
@@ -223,18 +216,13 @@ public final class ItemAPI {
 	 *
 	 * @param item The item to set the lore to.
 	 * @param lines The lore to set to the item.
-	 * @return Returns true if the lore was set.
 	 *
 	 * @see ItemAPI#clearLore(ItemStack)
 	 */
-	public static boolean setLore(ItemStack item, List<String> lines) {
+	public static void setLore(ItemStack item, List<String> lines) {
 		ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			return false;
-		}
 		meta.setLore(lines);
 		item.setItemMeta(meta);
-		return true;
 	}
 
 	/**
@@ -242,10 +230,9 @@ public final class ItemAPI {
 	 *
 	 * @param item The item to append the lore to.
 	 * @param lines The lore to append to the item.
-	 * @return Returns true if the lore was added.
 	 */
-	public static boolean addLore(ItemStack item, String... lines) {
-		return addLore(item, Iteration.collect(ArrayList::new, lines));
+	public static void addLore(ItemStack item, String... lines) {
+		addLore(item, Iteration.collect(ArrayList::new, lines));
 	}
 
 	/**
@@ -253,10 +240,9 @@ public final class ItemAPI {
 	 *
 	 * @param item The item to append the lore to.
 	 * @param lines The lore to append to the item.
-	 * @return Returns true if the lore was added.
 	 */
-	public static boolean addLore(ItemStack item, List<String> lines) {
-		return addLore(item, false, lines);
+	public static void addLore(ItemStack item, List<String> lines) {
+		addLore(item, false, lines);
 	}
 
 	/**
@@ -265,10 +251,9 @@ public final class ItemAPI {
 	 * @param item The item to append the lore to.
 	 * @param prepend If set to true, the lore will be prepended instead of appended.
 	 * @param lines The lore to append to the item.
-	 * @return Returns true if the lore was added.
 	 */
-	public static boolean addLore(ItemStack item, boolean prepend, String... lines) {
-		return addLore(item, prepend, Iteration.collect(ArrayList::new, lines));
+	public static void addLore(ItemStack item, boolean prepend, String... lines) {
+		addLore(item, prepend, Iteration.collect(ArrayList::new, lines));
 	}
 
 	/**
@@ -277,13 +262,12 @@ public final class ItemAPI {
 	 * @param item The item to append the lore to.
 	 * @param prepend If set to true, the lore will be prepended instead of appended.
 	 * @param lines The lore to append to the item.
-	 * @return Returns true if the lore was added.
 	 */
-	public static boolean addLore(ItemStack item, boolean prepend, List<String> lines) {
-		ItemMeta meta = getItemMeta(item);
-		if (meta == null || Iteration.isNullOrEmpty(lines)) {
-			return false;
+	public static void addLore(ItemStack item, boolean prepend, List<String> lines) {
+		if (Iteration.isNullOrEmpty(lines)) {
+			throw new IllegalArgumentException("Cannot add to the item's lore; the lore is null.");
 		}
+		ItemMeta meta = getItemMeta(item);
 		List<String> lore = meta.getLore();
 		if (lore == null) {
 			lore = new ArrayList<>();
@@ -297,21 +281,16 @@ public final class ItemAPI {
 		else {
 			lore.addAll(lines);
 		}
-		return setLore(item, lore);
+		setLore(item, lore);
 	}
 
 	/**
 	 * Clears the lore from an item.
 	 *
 	 * @param item The item to clear lore of.
-	 * @return Returns true if the lore was cleared.
 	 */
-	public static boolean clearLore(ItemStack item) {
-		ItemMeta meta = getItemMeta(item);
-		if (meta == null) {
-			return false;
-		}
-		return setLore(item, (List<String>) null);
+	public static void clearLore(ItemStack item) {
+		setLore(item, (List<String>) null);
 	}
 
 	/**
