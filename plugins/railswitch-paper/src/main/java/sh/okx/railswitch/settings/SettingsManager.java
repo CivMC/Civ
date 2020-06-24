@@ -5,7 +5,6 @@ import com.google.common.base.Strings;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import sh.okx.railswitch.RailSwitchPlugin;
-import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Manages the initialisation and registration of menu settings.
@@ -79,7 +78,11 @@ public final class SettingsManager {
      * @return Returns the player's destination, which will never be null.
      */
     public static String getDestination(Player player) {
-        return NullCoalescing.chain(() -> destSetting.getValue(player), "");
+        String value = destSetting.getValue(player);
+        if (value == null) {
+            return "";
+        }
+        return value;
     }
 
 }
