@@ -143,6 +143,7 @@ public final class ShopRule implements Validation {
 						break;
 					}
 					resolveInventories(current, found, remainingRecursion - 1, face.getOppositeFace());
+					break;
 				}
 			}
 		}
