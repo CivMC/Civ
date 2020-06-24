@@ -62,6 +62,8 @@ public final class ExchangeRule implements ExchangeData {
 
 	private static final String RULE_KEY = "ExchangeRule";
 
+	private static final String VERSION_KEY = "version";
+
 	private static final String TYPE_KEY = "type";
 
 	private static final String MATERIAL_KEY = "material";
@@ -221,6 +223,7 @@ public final class ExchangeRule implements ExchangeData {
 
 	@Override
 	public void serialize(NBTCompound nbt) throws NBTSerializationException {
+		nbt.setInteger(VERSION_KEY, 4);
 		nbt.setString(TYPE_KEY, EnumUtils.getSlug(this.type));
 		nbt.setString(MATERIAL_KEY, EnumUtils.getSlug(this.material));
 		nbt.setInteger(AMOUNT_KEY, this.amount);
