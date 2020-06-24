@@ -5,6 +5,7 @@ main: ${project.groupId}.${project.artifactId}Plugin
 api-version: 1.14
 depend: [CivModCore]
 commands:
+  ied: {}
   iec: {}
   ies: {}
   iei: {}

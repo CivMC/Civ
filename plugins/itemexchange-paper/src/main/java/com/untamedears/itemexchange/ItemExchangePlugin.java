@@ -5,6 +5,7 @@ import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.ModifierRegistrar;
 import com.untamedears.itemexchange.rules.modifiers.BookModifier;
+import com.untamedears.itemexchange.rules.modifiers.CustomItemModifier;
 import com.untamedears.itemexchange.rules.modifiers.DamageableModifier;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.EnchantModifier;
@@ -41,14 +42,15 @@ public final class ItemExchangePlugin extends ACivMod {
 		commands = new CommandRegistrar(this);
 		commands.register();
 		modifiers = new ModifierRegistrar();
-		modifiers.registerModifier(new DisplayNameModifier()); // 0
-		modifiers.registerModifier(new EnchantModifier()); // 10
-		modifiers.registerModifier(new EnchantStorageModifier()); // 20
-		modifiers.registerModifier(new LoreModifier()); // 30
-		modifiers.registerModifier(new PotionModifier()); // 40
-		modifiers.registerModifier(new DamageableModifier()); // 50
-		modifiers.registerModifier(new RepairModifier()); // 60
-		modifiers.registerModifier(new BookModifier()); // 100
+		modifiers.registerModifier(CustomItemModifier.TEMPLATE); // 0
+		modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
+		modifiers.registerModifier(EnchantModifier.TEMPLATE); // 200
+		modifiers.registerModifier(EnchantStorageModifier.TEMPLATE); // 201
+		modifiers.registerModifier(LoreModifier.TEMPLATE); // 300
+		modifiers.registerModifier(PotionModifier.TEMPLATE); // 400
+		modifiers.registerModifier(DamageableModifier.TEMPLATE); // 500
+		modifiers.registerModifier(RepairModifier.TEMPLATE); // 600
+		modifiers.registerModifier(BookModifier.TEMPLATE); // 1000
 		registerListener(new ItemExchangeListener());
 	}
 

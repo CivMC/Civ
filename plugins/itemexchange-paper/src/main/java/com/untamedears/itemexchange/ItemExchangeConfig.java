@@ -27,10 +27,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	private static boolean CREATE_FROM_SHOP = true;
 
-	private static final Set<Material> ITEMS_CAN_ENCHANT = new HashSet<>();
-
-	private static final Set<Material> ITEMS_CAN_DAMAGE = new HashSet<>();
-
 	private static final Set<Material> ITEMS_CAN_REPAIR = new HashSet<>();
 
 	private static final Set<Material> RELAY_COMPATIBLE_BLOCKS = new HashSet<>();
@@ -50,11 +46,9 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	@Override
 	protected boolean parseInternal(ConfigurationSection config) {
 		parseShopCompatibleBlocks(config.getStringList("supportedBlocks"));
-		parseSuccessButtonBlocks(config.getStringList("disallowedSuccessButtonBlocks"));
+		parseSuccessButtonBlocks(config.getStringList("successButtonBlocks"));
 		parseRuleItem(config.getString("ruleItem"));
 		parseCreateFromShop(config.getBoolean("createShopFromChest", true));
-		parseEnchantableItems(config.getStringList("enchantables"));
-		parseDamageableItems(config.getStringList("damageables"));
 		parseRepairableItems(config.getStringList("repairables"));
 		parseShopRelay(config.getConfigurationSection("shopRelay"));
 		return true;
@@ -65,8 +59,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		SUCCESS_BUTTON_BLOCKS.clear();
 		RULE_ITEM.setType(Material.STONE_BUTTON);
 		CREATE_FROM_SHOP = true;
-		ITEMS_CAN_ENCHANT.clear();
-		ITEMS_CAN_DAMAGE.clear();
 		ITEMS_CAN_REPAIR.clear();
 		RELAY_COMPATIBLE_BLOCKS.clear();
 		RELAY_RECURSION_LIMIT = 0;
@@ -103,26 +95,23 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	}
 
 	private void parseSuccessButtonBlocks(List<String> config) {
-		Set<Material> disallowedButtonBlocks = new HashSet<>();
 		for (String raw : config) {
 			Material material = MaterialAPI.getMaterial(raw);
 			if (material == null) {
-				LOGGER.warn("Could not parse material for disallowed success button block: " + raw);
+				LOGGER.warn("Could not parse material for success button block: " + raw);
 				continue;
 			}
 			if (!material.isBlock()) {
-				LOGGER.warn("Supported disallowed success button material not a block: " + raw);
+				LOGGER.warn("Supported success button material not a block: " + raw);
 				continue;
 			}
-			if (disallowedButtonBlocks.contains(material)) {
-				LOGGER.warn("Supported disallowed success button material duplicate: " + raw);
+			if (SUCCESS_BUTTON_BLOCKS.contains(material)) {
+				LOGGER.warn("Supported success button material duplicate: " + raw);
 				continue;
 			}
-			LOGGER.info("Supported disallowed success button material parsed: " + material.name());
-			disallowedButtonBlocks.add(material);
+			LOGGER.info("Supported success button material parsed: " + material.name());
+			SUCCESS_BUTTON_BLOCKS.add(material);
 		}
-		SUCCESS_BUTTON_BLOCKS.addAll(SHOP_COMPATIBLE_BLOCKS);
-		SUCCESS_BUTTON_BLOCKS.removeAll(disallowedButtonBlocks);
 		if (SUCCESS_BUTTON_BLOCKS.isEmpty()) {
 			LOGGER.info("There are no supported button triggering shop blocks.");
 		}
@@ -151,46 +140,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 	private void parseCreateFromShop(boolean config) {
 		CREATE_FROM_SHOP = config;
 		LOGGER.info("Create Shop From Shop Block: " + (config ? "ENABLED" : "DISABLED"));
-	}
-
-	private void parseEnchantableItems(List<String> config) {
-		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
-			if (material == null) {
-				LOGGER.warn("Could not parse enchantable material: " + raw);
-				continue;
-			}
-			if (!material.isItem()) {
-				LOGGER.warn("Enchantable material is not an item: " + raw);
-				continue;
-			}
-			if (ITEMS_CAN_ENCHANT.contains(material)) {
-				LOGGER.warn("Enchantable material duplicate: " + raw);
-				continue;
-			}
-			LOGGER.info("Enchantable material parsed: " + material.name());
-			ITEMS_CAN_ENCHANT.add(material);
-		}
-	}
-
-	private void parseDamageableItems(List<String> config) {
-		for (String raw : config) {
-			Material material = MaterialAPI.getMaterial(raw);
-			if (material == null) {
-				LOGGER.warn("Could not parse damageable material: " + raw);
-				continue;
-			}
-			if (!material.isItem()) {
-				LOGGER.warn("Damageable material is not an item: " + raw);
-				continue;
-			}
-			if (ITEMS_CAN_DAMAGE.contains(material)) {
-				LOGGER.warn("Damageable material duplicate: " + raw);
-				continue;
-			}
-			LOGGER.info("Damageable material parsed: " + material.name());
-			ITEMS_CAN_DAMAGE.add(material);
-		}
 	}
 
 	private void parseRepairableItems(List<String> config) {
@@ -274,6 +223,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		}
 	}
 
+	// ------------------------------------------------------------
+	// Getters
+	// ------------------------------------------------------------
+
 	public static boolean canBeInteractedWith(Material material) {
 		if (SHOP_COMPATIBLE_BLOCKS.contains(material)) {
 			return true;
@@ -296,6 +249,10 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 		return Collections.unmodifiableSet(SUCCESS_BUTTON_BLOCKS);
 	}
 
+	public static boolean hasSuccessButtonBlock(Material material) {
+		return SUCCESS_BUTTON_BLOCKS.contains(material);
+	}
+
 	public static ItemStack getRuleItem() {
 		return RULE_ITEM.clone();
 	}
@@ -310,14 +267,6 @@ public final class ItemExchangeConfig extends CoreConfigManager {
 
 	public static ShapelessRecipe getBulkItemRecipe() {
 		return BULK_RULE_RECIPE;
-	}
-
-	public static boolean canEnchantItem(Material material) {
-		return ITEMS_CAN_ENCHANT.contains(material);
-	}
-
-	public static boolean canDamageItem(Material material) {
-		return ITEMS_CAN_DAMAGE.contains(material);
 	}
 
 	public static boolean canRepairItem(Material material) {

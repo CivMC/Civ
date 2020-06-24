@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import co.aikar.commands.InvalidCommandArgument;
@@ -34,24 +35,21 @@ import vg.civcraft.mc.civmodcore.util.TextUtil;
  * </ul>
  */
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "REPAIR", order = 60)
-public final class RepairModifier extends ModifierData<RepairModifier> {
+@Modifier(slug = "REPAIR", order = 600)
+public final class RepairModifier extends ModifierData {
+
+	public static final RepairModifier TEMPLATE = new RepairModifier();
 
 	public static final String LEVEL_KEY = "repairLevel";
 
 	private int level;
 
 	@Override
-	public RepairModifier construct() {
-		return new RepairModifier();
-	}
-
-	@Override
 	public RepairModifier construct(ItemStack item) {
 		if (!ItemExchangeConfig.canRepairItem(item.getType())) {
 			return null;
 		}
-		Repairable meta = chain(() -> (Repairable) item.getItemMeta());
+		Repairable meta = castOrNull(Repairable.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -67,7 +65,7 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Repairable meta = chain(() -> (Repairable) item.getItemMeta());
+		Repairable meta = castOrNull(Repairable.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -104,6 +102,14 @@ public final class RepairModifier extends ModifierData<RepairModifier> {
 			info.add(ChatColor.GOLD + "Repair level " + (repairCost + 2));
 		}
 		return info;
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"level=" + getRepairCost() +
+				"}";
 	}
 
 	// ------------------------------------------------------------

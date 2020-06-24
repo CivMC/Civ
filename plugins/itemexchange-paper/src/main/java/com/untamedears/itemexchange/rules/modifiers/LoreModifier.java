@@ -11,6 +11,7 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,17 +25,14 @@ import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "LORE", order = 30)
-public final class LoreModifier extends ModifierData<LoreModifier> {
+@Modifier(slug = "LORE", order = 300)
+public final class LoreModifier extends ModifierData {
+
+	public static final LoreModifier TEMPLATE = new LoreModifier();
 
 	public static final String LORE_KEY = "lore";
 
 	private List<String> lore;
-
-	@Override
-	public LoreModifier construct() {
-		return new LoreModifier();
-	}
 
 	@Override
 	public LoreModifier construct(ItemStack item) {
@@ -70,12 +68,22 @@ public final class LoreModifier extends ModifierData<LoreModifier> {
 
 	@Override
 	public void deserialize(NBTCompound nbt) {
-		setLore(Arrays.asList(nbt.getStringArray(LORE_KEY)));
+		setLore(Iteration.collect(ArrayList::new, nbt.getStringArray(LORE_KEY)));
 	}
 
 	@Override
 	public List<String> getDisplayInfo() {
-		return this.lore;
+		return this.lore.stream()
+				.map(line -> "" + ChatColor.DARK_PURPLE + ChatColor.ITALIC + line)
+				.collect(Collectors.toCollection(ArrayList::new));
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"lore=" + getLore() +
+				"}";
 	}
 
 	// ------------------------------------------------------------
@@ -104,7 +112,7 @@ public final class LoreModifier extends ModifierData<LoreModifier> {
 			else {
 				modifier.setLore(Arrays.stream(value.split(";"))
 						.map(TextUtil::parse)
-						.collect(Collectors.toList()));
+						.collect(Collectors.toCollection(ArrayList::new)));
 				handler.relay(ChatColor.GREEN + "Successfully changed lore.");
 			}
 		}

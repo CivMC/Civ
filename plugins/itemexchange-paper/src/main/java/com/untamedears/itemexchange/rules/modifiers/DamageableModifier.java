@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 
 import co.aikar.commands.InvalidCommandArgument;
 import co.aikar.commands.annotation.CommandAlias;
@@ -10,7 +10,6 @@ import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Subcommand;
 import co.aikar.commands.annotation.Syntax;
 import com.google.common.base.Strings;
-import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.ExchangeRule;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
@@ -22,27 +21,22 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "DAMAGE", order = 50)
-public final class DamageableModifier extends ModifierData<DamageableModifier> {
+@Modifier(slug = "DAMAGE", order = 500)
+public final class DamageableModifier extends ModifierData {
+
+	public static final DamageableModifier TEMPLATE = new DamageableModifier();
 
 	public static final String DAMAGE_KEY = "damage";
 
 	private int damage;
 
 	@Override
-	public DamageableModifier construct() {
-		return new DamageableModifier();
-	}
-
-	@Override
 	public DamageableModifier construct(ItemStack item) {
-		if (!ItemExchangeConfig.canDamageItem(item.getType())) {
-			return null;
-		}
-		Damageable meta = chain(() -> (Damageable) item.getItemMeta());
+		Damageable meta = ItemAPI.getDamageable(item);
 		if (meta == null) {
 			return null;
 		}
@@ -67,7 +61,7 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		Damageable meta = chain(() -> (Damageable) item.getItemMeta());
+		Damageable meta = castOrNull(Damageable.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -155,6 +149,14 @@ public final class DamageableModifier extends ModifierData<DamageableModifier> {
 					break;
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"damage=" + getDamage() +
+				"}";
 	}
 
 	// ------------------------------------------------------------

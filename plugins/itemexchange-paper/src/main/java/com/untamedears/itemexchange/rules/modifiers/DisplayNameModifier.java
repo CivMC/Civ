@@ -12,7 +12,6 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.ModifierHandler;
-import java.util.Objects;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,22 +19,22 @@ import org.bukkit.inventory.meta.ItemMeta;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "DISPLAY", order = 0)
-public final class DisplayNameModifier extends ModifierData<DisplayNameModifier> {
+@Modifier(slug = "DISPLAY", order = 100)
+public final class DisplayNameModifier extends ModifierData {
+
+	public static final DisplayNameModifier TEMPLATE = new DisplayNameModifier();
 
 	private static final String DISPLAY_NAME_KEY = "displayName";
 
 	private String displayName;
 
 	@Override
-	public DisplayNameModifier construct() {
-		return new DisplayNameModifier();
-	}
-
-	@Override
 	public DisplayNameModifier construct(ItemStack item) {
 		DisplayNameModifier modifier = new DisplayNameModifier();
-		modifier.setDisplayName(Objects.requireNonNull(item.getItemMeta()).getDisplayName());
+		ItemMeta meta = item.getItemMeta();
+		if (meta != null) {
+			modifier.setDisplayName(meta.getDisplayName());
+		}
 		return modifier;
 	}
 
@@ -46,7 +45,10 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		ItemMeta meta = Objects.requireNonNull(item.getItemMeta());
+		ItemMeta meta = item.getItemMeta();
+		if (meta == null) {
+			return false;
+		}
 		if (hasDisplayName() != meta.hasDisplayName()) {
 			return false;
 		}
@@ -67,12 +69,11 @@ public final class DisplayNameModifier extends ModifierData<DisplayNameModifier>
 	}
 
 	@Override
-	public String getDisplayListing() {
-		String display = getDisplayName();
-		if (Strings.isNullOrEmpty(display)) {
-			return null;
-		}
-		return display;
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"name=" + getDisplayName() +
+				"}";
 	}
 
 	// ------------------------------------------------------------

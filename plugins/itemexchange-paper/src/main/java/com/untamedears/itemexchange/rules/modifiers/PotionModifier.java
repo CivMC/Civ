@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import co.aikar.commands.annotation.CommandAlias;
@@ -10,6 +10,7 @@ import com.untamedears.itemexchange.commands.SetCommand;
 import com.untamedears.itemexchange.rules.interfaces.Modifier;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.utility.NBTEncodings;
+import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,8 +27,10 @@ import vg.civcraft.mc.civmodcore.api.PotionNames.SearchResult;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "POTION", order = 40)
-public final class PotionModifier extends ModifierData<PotionModifier> {
+@Modifier(slug = "POTION", order = 400)
+public final class PotionModifier extends ModifierData {
+
+	public static final PotionModifier TEMPLATE = new PotionModifier();
 
 	public static final String BASE_KEY = "base";
 
@@ -37,13 +40,8 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	private List<PotionEffect> effects;
 
 	@Override
-	public PotionModifier construct() {
-		return new PotionModifier();
-	}
-
-	@Override
 	public PotionModifier construct(ItemStack item) {
-		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -63,7 +61,7 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		PotionMeta meta = chain(() -> (PotionMeta) item.getItemMeta());
+		PotionMeta meta = castOrNull(PotionMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -109,6 +107,15 @@ public final class PotionModifier extends ModifierData<PotionModifier> {
 	@Override
 	public List<String> getDisplayInfo() {
 		return Collections.singletonList(ChatColor.AQUA + "Potion Name: " + ChatColor.WHITE + getName());
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"base=" + Utilities.potionDataToString(getPotionData()) + "," +
+				"effects=" + Utilities.potionEffectsToString(getEffects()) + "," +
+				"}";
 	}
 
 	// ------------------------------------------------------------

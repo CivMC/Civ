@@ -1,21 +1,36 @@
 package com.untamedears.itemexchange.utility;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
 import co.aikar.commands.InvalidCommandArgument;
 import com.google.common.base.Preconditions;
+import com.untamedears.itemexchange.ItemExchangeConfig;
+import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.BulkExchangeRule;
 import com.untamedears.itemexchange.rules.ExchangeRule;
+import java.util.Collection;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import org.bukkit.Bukkit;
+import org.bukkit.Tag;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Directional;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionData;
+import org.bukkit.potion.PotionEffect;
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.InventoryAPI;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.api.NamespaceAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 /**
@@ -121,44 +136,98 @@ public final class Utilities {
 	 *
 	 * @param shop The block representing the shop.
 	 */
-	// TODO: You can't use block data anymore, at least not in the same way, so we need to simulate a button press in a
-	//     different way. This might even be worthy of its own CivModCore API... need to discuss.
 	public static void successfulTransactionButton(Block shop) {
-		//		BlockFace backFace = NullCoalescing.chain(() ->
-		//				((Directional) shop.getBlockData()).getFacing().getOppositeFace());
-		//		if (backFace == null) {
-		//			return;
-		//		}
-		//		Block behindShop = shop.getRelative(backFace);
-		//		if (!BlockAPI.isValidBlock(behindShop) || !behindShop.getType().isOccluding()) {
-		//			return;
-		//		}
-		//        for (BlockFace face : BlockAPI.ALL_SIDES) {
-		//            if (face == backFace.getOppositeFace()) {
-		//                continue;
-		//            }
-		//            Block buttonBlock = behindShop.getRelative(face);
-		//            if (!BlockAPI.isValidBlock(buttonBlock)) {
-		//                continue;
-		//            }
-		//			Directional directional = NullCoalescing.chain(() -> (Directional) buttonBlock.getBlockData());
-		//            if (directional == null) {
-		//            	continue;
-		//			}
-		//            if (directional.getFacing() != face.getOppositeFace()) {
-		//            	continue;
-		//			}
-		//			Powerable powerable = NullCoalescing.chain(() -> (Powerable) buttonBlock.getBlockData());
-		//            if (powerable == null) {
-		//            	continue;
-		//			}
-		//            powerable.setPowered(true);
-		//            buttonBlock.setBlockData(powerable);
-		//            Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
-		//            	powerable.setPowered(false);
-		//				buttonBlock.setBlockData(powerable);
-		//            }, 30L);
-		//        }
+		Stream.of(shop, BlockAPI.getOtherDoubleChestBlock(shop))
+				.filter(BlockAPI::isValidBlock)
+				.filter(block -> ItemExchangeConfig.hasSuccessButtonBlock(block.getType()))
+				.distinct()
+				.forEach(block -> {
+					Directional directional = castOrNull(Directional.class, block.getBlockData());
+					if (directional == null) {
+						return;
+					}
+					BlockFace backFace = directional.getFacing().getOppositeFace();
+					Block behindBlock = block.getRelative(backFace);
+					if (!BlockAPI.isValidBlock(behindBlock) || !behindBlock.getType().isOccluding()) {
+						return;
+					}
+					for (BlockFace face : BlockAPI.ALL_SIDES) {
+						if (face.getOppositeFace() == backFace) {
+							continue;
+						}
+						Block buttonBlock = behindBlock.getRelative(face);
+						if (!BlockAPI.isValidBlock(buttonBlock) || !Tag.BUTTONS.isTagged(buttonBlock.getType())) {
+							continue;
+						}
+						Switch button = castOrNull(Switch.class, buttonBlock.getBlockData());
+						if (button == null) {
+							continue;
+						}
+						if (BlockAPI.getAttachedFace(button) != face.getOppositeFace()) {
+							continue;
+						}
+						button.setPowered(true);
+						buttonBlock.setBlockData(button);
+						// Wait to depower the block
+						Bukkit.getScheduler().scheduleSyncDelayedTask(ItemExchangePlugin.getInstance(), () -> {
+							Block newBlock = buttonBlock.getLocation().getBlock(); // Refresh block
+							Switch newButton = castOrNull(Switch.class, newBlock.getBlockData());
+							if (!button.matches(newButton)) {
+								return;
+							}
+							newButton.setPowered(false);
+							newBlock.setBlockData(newButton);
+						}, 30L);
+					}
+				});
+	}
+
+	// ------------------------------------------------------------
+	// Stringifiers
+	// ------------------------------------------------------------
+
+	public static String leveledEnchantsToString(Map<Enchantment, Integer> leveledEnchants) {
+		if (Iteration.isNullOrEmpty(leveledEnchants)) {
+			return "[]";
+		}
+		return "[" +
+				leveledEnchants.entrySet().stream()
+						.map(entry -> NamespaceAPI.getString(entry.getKey()) + ":" + entry.getValue())
+						.collect(Collectors.joining(",")) +
+				"]";
+	}
+
+	public static String enchantsToString(Collection<Enchantment> enchants) {
+		if (Iteration.isNullOrEmpty(enchants)) {
+			return "[]";
+		}
+		return "[" +
+				enchants.stream()
+						.map(entry -> NamespaceAPI.getString(entry.getKey()))
+						.collect(Collectors.joining(",")) +
+				"]";
+	}
+
+	public static String potionDataToString(PotionData data) {
+		if (data == null) {
+			return null;
+		}
+		return "PotionData{" +
+				"type=" + data.getType().name() + "," +
+				"extended=" + data.isExtended() + "," +
+				"upgraded=" + data.isUpgraded() +
+				"}";
+	}
+
+	public static String potionEffectsToString(Collection<PotionEffect> effects) {
+		if (Iteration.isNullOrEmpty(effects)) {
+			return "[]";
+		}
+		return "[" +
+				effects.stream()
+						.map(entry -> "PotionEffect{" + entry.serialize().toString() + "}")
+						.collect(Collectors.joining(",")) +
+				"]";
 	}
 
 }

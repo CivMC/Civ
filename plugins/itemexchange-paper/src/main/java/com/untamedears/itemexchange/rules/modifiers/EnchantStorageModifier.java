@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.collect.Lists;
@@ -23,21 +23,18 @@ import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "BOOKCHANTS", order = 20)
-public final class EnchantStorageModifier extends ModifierData<EnchantStorageModifier> {
+@Modifier(slug = "BOOKCHANTS", order = 201)
+public final class EnchantStorageModifier extends ModifierData {
+
+	public static final EnchantStorageModifier TEMPLATE = new EnchantStorageModifier();
 
 	public static final String ENCHANTS_KEY = "enchants";
 
 	private Map<Enchantment, Integer> enchants;
 
 	@Override
-	public EnchantStorageModifier construct() {
-		return new EnchantStorageModifier();
-	}
-
-	@Override
 	public EnchantStorageModifier construct(ItemStack item) {
-		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
+		EnchantmentStorageMeta meta = castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -64,17 +61,15 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		EnchantmentStorageMeta meta = chain(() -> (EnchantmentStorageMeta) item.getItemMeta());
+		EnchantmentStorageMeta meta = castOrNull(EnchantmentStorageMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
 		if (hasEnchants() != meta.hasStoredEnchants()) {
 			return false;
 		}
-		if (hasEnchants()) {
-			if (!Utilities.conformsRequiresEnchants(this.enchants, meta.getStoredEnchants(), false)) {
-				return false;
-			}
+		if (hasEnchants() && !Utilities.conformsRequiresEnchants(this.enchants, meta.getStoredEnchants(), false)) {
+			return false;
 		}
 		return true;
 	}
@@ -102,6 +97,14 @@ public final class EnchantStorageModifier extends ModifierData<EnchantStorageMod
 			}
 		}
 		return info;
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"enchants=" + Utilities.leveledEnchantsToString(getEnchants()) +
+				"}";
 	}
 
 	// ------------------------------------------------------------

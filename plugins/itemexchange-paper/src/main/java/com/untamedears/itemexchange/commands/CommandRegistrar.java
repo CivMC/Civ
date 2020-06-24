@@ -15,6 +15,7 @@ public class CommandRegistrar extends AikarCommandManager {
 	@Override
 	public void registerCommands() {
 		registerCommand(new CreateCommand());
+		registerCommand(new DebugCommand());
 		registerCommand(new InfoCommand());
 		registerCommand(new ReloadCommand(getPlugin()));
 		registerCommand(new SetCommand());

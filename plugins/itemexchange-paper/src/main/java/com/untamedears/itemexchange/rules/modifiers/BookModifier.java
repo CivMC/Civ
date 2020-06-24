@@ -1,6 +1,6 @@
 package com.untamedears.itemexchange.rules.modifiers;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 
 import co.aikar.commands.annotation.CommandAlias;
 import com.google.common.base.Strings;
@@ -20,8 +20,10 @@ import vg.civcraft.mc.civmodcore.util.EnumUtils;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 @CommandAlias(SetCommand.ALIAS)
-@Modifier(slug = "BOOK", order = 100)
-public final class BookModifier extends ModifierData<BookModifier> {
+@Modifier(slug = "BOOK", order = 1000)
+public final class BookModifier extends ModifierData {
+
+	public static final BookModifier TEMPLATE = new BookModifier();
 
 	private static final String TITLE_KEY = "title";
 
@@ -44,13 +46,8 @@ public final class BookModifier extends ModifierData<BookModifier> {
 	private int bookHash;
 
 	@Override
-	public BookModifier construct() {
-		return new BookModifier();
-	}
-
-	@Override
 	public BookModifier construct(ItemStack item) {
-		BookMeta meta = chain(() -> (BookMeta) item.getItemMeta());
+		BookMeta meta = castOrNull(BookMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return null;
 		}
@@ -78,7 +75,7 @@ public final class BookModifier extends ModifierData<BookModifier> {
 
 	@Override
 	public boolean conforms(ItemStack item) {
-		BookMeta meta = chain(() -> (BookMeta) item.getItemMeta());
+		BookMeta meta = castOrNull(BookMeta.class, item.getItemMeta());
 		if (meta == null) {
 			return false;
 		}
@@ -138,6 +135,17 @@ public final class BookModifier extends ModifierData<BookModifier> {
 			lines.add(ChatColor.DARK_AQUA + "Generation: " + ChatColor.GRAY + getGeneration().name());
 		}
 		return lines;
+	}
+
+	@Override
+	public String toString() {
+		return getSlug() +
+				"{" +
+				"title=" + getTitle() + "," +
+				"author=" + getAuthor() + "," +
+				"generation=" + getGeneration() + "," +
+				"hash=" + getBookHash() +
+				"}";
 	}
 
 	// ------------------------------------------------------------
