@@ -1,5 +1,6 @@
 package com.untamedears.itemexchange.rules;
 
+import static vg.civcraft.mc.civmodcore.util.Iteration.collect;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
 import static vg.civcraft.mc.civmodcore.util.NullCoalescing.equalsNotNull;
 
@@ -10,6 +11,7 @@ import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
 import com.untamedears.itemexchange.rules.modifiers.CustomItemModifier;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
+import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
 import com.untamedears.itemexchange.utility.Utilities;
 import java.util.ArrayList;
@@ -67,6 +69,12 @@ public final class ExchangeRule implements ExchangeData {
 	private static final String AMOUNT_KEY = "amount";
 
 	private static final String MODIFIERS_KEY = "modifiers";
+
+	private static final String LEGACY_DISPLAY_NAME_KEY = "displayName";
+
+	private static final String LEGACY_IGNORE_DISPLAY_NAME_KEY = "ignoringDisplayName";
+
+	private static final String LEGACY_LORE_KEY = "lore";
 
 	// ------------------------------------------------------------
 	// Instance fields
@@ -231,6 +239,21 @@ public final class ExchangeRule implements ExchangeData {
 		Arrays.stream(nbt.getCompoundArray(MODIFIERS_KEY))
 				.map(raw -> castOrNull(ModifierData.class, NBTSerialization.deserialize(raw)))
 				.forEachOrdered(this.modifiers::put);
+		// Legacy Support
+		if (nbt.hasKeyOfType(LEGACY_DISPLAY_NAME_KEY, 8) && !nbt.getBoolean(LEGACY_IGNORE_DISPLAY_NAME_KEY)) {
+			DisplayNameModifier displayName = this.modifiers.get(DisplayNameModifier.class);
+			if (displayName == null) {
+				displayName = (DisplayNameModifier) DisplayNameModifier.TEMPLATE.construct();
+				displayName.setDisplayName(nbt.getString(LEGACY_DISPLAY_NAME_KEY));
+			}
+		}
+		if (nbt.hasKeyOfType(LEGACY_LORE_KEY, 9)) {
+			LoreModifier lore = this.modifiers.get(LoreModifier.class);
+			if (lore == null) {
+				lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
+				lore.setLore(collect(ArrayList::new, nbt.getStringArray(LEGACY_LORE_KEY)));
+			}
+		}
 	}
 
 	// ------------------------------------------------------------
