@@ -20,9 +20,12 @@ import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
+import org.bukkit.block.data.type.Switch;
 import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
+import org.bukkit.material.Button;
 import org.bukkit.util.BlockIterator;
 
 /**
@@ -186,13 +189,13 @@ public final class BlockAPI {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
 		switch (face) {
+			default:
 			case NORTH:
 				return BlockFace.EAST;
 			case EAST:
 				return BlockFace.SOUTH;
 			case SOUTH:
 				return BlockFace.WEST;
-			default:
 			case WEST:
 				return BlockFace.NORTH;
 		}
@@ -210,15 +213,40 @@ public final class BlockAPI {
 		Preconditions.checkArgument(face != null);
 		Preconditions.checkArgument(PLANAR_SIDES.contains(face));
 		switch (face) {
+			default:
 			case NORTH:
 				return BlockFace.WEST;
 			case EAST:
 				return BlockFace.NORTH;
 			case SOUTH:
 				return BlockFace.EAST;
-			default:
 			case WEST:
 				return BlockFace.SOUTH;
+		}
+	}
+
+	/**
+	 * Gets the {@link BlockFace} this attachable is attached to. This exists as
+	 * {@link org.bukkit.block.data.Directional} has odd behaviour whereby if attached to the top or bottom of a block,
+	 * the direction is the rotation of the block, rather than the attached face. Since {@link Button#getAttachedFace()}
+	 * is deprecated and may be removed at any point, this is the only other way to get that information.
+	 *
+	 * @param attachable The Switch, which is an instance of {@link BlockData}. So do your own checks beforehand.
+	 * @return Returns the block face the given attachable is attached to, or null.
+	 */
+	public static BlockFace getAttachedFace(Switch attachable) {
+		if (attachable == null) {
+			return null;
+		}
+		switch (attachable.getFace()) {
+			case CEILING:
+				return BlockFace.UP;
+			case FLOOR:
+				return BlockFace.DOWN;
+			case WALL:
+				return attachable.getFacing().getOppositeFace();
+			default:
+				return null;
 		}
 	}
 

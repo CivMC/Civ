@@ -2,12 +2,19 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public final class Iteration {
+
+	@FunctionalInterface
+	public interface ElementAndBoolConsumer<T> {
+		void accept(T former, boolean latter);
+	}
 
     /**
      * <p>Determines whether an array is null or empty.</p>
@@ -76,6 +83,23 @@ public final class Iteration {
         }
         collection.clear();
     }
+
+    /**
+	 * Iterates through a collection, whereby each element has knowledge of whether it's the last element.
+	 *
+	 * @param <T> The generic type of the collection.
+	 * @param collection The collection to iterate.
+	 * @param processor The iteration processor which will be called for each item in the collection.
+	 */
+    public static <T> void iterateHasNext(Collection<T> collection, ElementAndBoolConsumer<T> processor) {
+		if (isNullOrEmpty(collection) || processor == null) {
+			return;
+		}
+		Iterator<T> iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			processor.accept(iterator.next(), iterator.hasNext());
+		}
+	}
 
     /**
 	 * Fills an array with a particular value.
@@ -183,6 +207,35 @@ public final class Iteration {
 			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * Creates a new collection with a given set of predefined elements, if any are given.
+	 *
+	 * @param <T> The type of the elements to store in the collection.
+	 * @param constructor The constructor for the collection.
+	 * @param elements The elements to add to the collection.
+	 * @return Returns a new collection, or null if no constructor was given, or the constructor didn't produce a new
+	 *     collection.
+	 */
+	@SafeVarargs
+	public static <T, K extends Collection<T>> K collect(Supplier<K> constructor, T... elements) {
+		if (constructor == null) {
+			return null;
+		}
+		K collection = constructor.get();
+		if (collection == null) {
+			return null;
+		}
+		if (isNullOrEmpty(elements)) {
+			return collection;
+		}
+		for (T element : elements) {
+			// Do not let this be simplified. There's no reason to create a new ArrayList
+			// as it would be immediately discarded and that's... bad
+			collection.add(element);
+		}
+		return collection;
 	}
 
 }

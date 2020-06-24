@@ -4,83 +4,44 @@ import org.bukkit.Material;
 
 public final class ToolAPI {
 
+	/**
+	 * @deprecated Use {@link MaterialAPI#isSword(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isSword(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case WOODEN_SWORD:
-			case STONE_SWORD:
-			case IRON_SWORD:
-			case GOLDEN_SWORD:
-			case DIAMOND_SWORD:
-				return true;
-			default:
-				return false;
-		}
+		return MaterialAPI.isSword(material);
 	}
 
+	/**
+	 * @deprecated Use {@link MaterialAPI#isShovel(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isShovel(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case WOODEN_SHOVEL:
-			case STONE_SHOVEL:
-			case IRON_SHOVEL:
-			case GOLDEN_SHOVEL:
-			case DIAMOND_SHOVEL:
-				return true;
-			default:
-				return false;
-		}
+		return MaterialAPI.isShovel(material);
 	}
 
+	/**
+	 * @deprecated Use {@link MaterialAPI#isPickaxe(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isPickaxe(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case WOODEN_PICKAXE:
-			case STONE_PICKAXE:
-			case IRON_PICKAXE:
-			case GOLDEN_PICKAXE:
-			case DIAMOND_PICKAXE:
-				return true;
-			default:
-				return false;
-		}
+		return MaterialAPI.isPickaxe(material);
 	}
 
+	/**
+	 * @deprecated Use {@link MaterialAPI#isAxe(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isAxe(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case WOODEN_AXE:
-			case STONE_AXE:
-			case IRON_AXE:
-			case GOLDEN_AXE:
-			case DIAMOND_AXE:
-				return true;
-			default:
-				return false;
-		}
+		return MaterialAPI.isAxe(material);
 	}
 
+	/**
+	 * @deprecated Use {@link MaterialAPI#isHoe(Material)} instead.
+	 */
+	@Deprecated
 	public static boolean isHoe(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case WOODEN_HOE:
-			case STONE_HOE:
-			case IRON_HOE:
-			case GOLDEN_HOE:
-			case DIAMOND_HOE:
-				return true;
-			default:
-				return false;
-		}
+		return MaterialAPI.isHoe(material);
 	}
+
 }
