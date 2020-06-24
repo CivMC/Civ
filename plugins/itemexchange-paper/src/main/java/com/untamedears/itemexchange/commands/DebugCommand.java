@@ -13,7 +13,7 @@ public class DebugCommand extends AikarCommand {
 	public static final String ALIAS = "ied|iedebug";
 
 	@Default
-	@Description("Sets the material of an exchange rule.")
+	@Description("Outputs a string of debug information.")
 	public void setMaterial(Player player) {
 		try (RuleHandler handler = new RuleHandler(player)) {
 			handler.saveChanges(false); // This is read-only
