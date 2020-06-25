@@ -2,7 +2,6 @@ package vg.civcraft.mc.civmodcore.api;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
@@ -264,9 +263,12 @@ public final class InventoryAPI {
 		else {
 			clone = Bukkit.createInventory(inventory.getHolder(), inventory.getType());
 		}
-		clone.setContents(Arrays.stream(inventory.getContents()).
-				map(item -> item == null ? null : item.clone()).
-				toArray(ItemStack[]::new));
+		ItemStack[] origin = inventory.getContents();
+		ItemStack[] copied = new ItemStack[origin.length];
+		for (int i = 0; i < origin.length; i++) {
+			copied[i] = origin[i] == null ? null : origin[i].clone();
+		}
+		clone.setContents(copied);
 		return new ClonedInventory(clone);
 	}
 
