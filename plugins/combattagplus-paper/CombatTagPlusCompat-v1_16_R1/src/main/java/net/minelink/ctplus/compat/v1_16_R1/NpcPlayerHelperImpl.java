@@ -1,30 +1,34 @@
-package net.minelink.ctplus.compat.v1_15_R1;
+package net.minelink.ctplus.compat.v1_16_R1;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import net.minecraft.server.v1_15_R1.EntityPlayer;
-import net.minecraft.server.v1_15_R1.EnumItemSlot;
-import net.minecraft.server.v1_15_R1.FoodMetaData;
-import net.minecraft.server.v1_15_R1.ItemStack;
-import net.minecraft.server.v1_15_R1.MinecraftServer;
-import net.minecraft.server.v1_15_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_15_R1.NBTTagCompound;
-import net.minecraft.server.v1_15_R1.NBTTagList;
-import net.minecraft.server.v1_15_R1.Packet;
-import net.minecraft.server.v1_15_R1.PacketPlayOutEntityEquipment;
-import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo;
-import net.minecraft.server.v1_15_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
-import net.minecraft.server.v1_15_R1.WorldNBTStorage;
-import net.minecraft.server.v1_15_R1.WorldServer;
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+
+import net.minecraft.server.v1_16_R1.EntityPlayer;
+import net.minecraft.server.v1_16_R1.EnumItemSlot;
+import net.minecraft.server.v1_16_R1.FoodMetaData;
+import net.minecraft.server.v1_16_R1.ItemStack;
+import net.minecraft.server.v1_16_R1.MinecraftServer;
+import net.minecraft.server.v1_16_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R1.NBTTagList;
+import net.minecraft.server.v1_16_R1.Packet;
+import net.minecraft.server.v1_16_R1.PacketPlayOutEntityEquipment;
+import net.minecraft.server.v1_16_R1.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_16_R1.PacketPlayOutPlayerInfo.EnumPlayerInfoAction;
+import net.minecraft.server.v1_16_R1.WorldNBTStorage;
+import net.minecraft.server.v1_16_R1.WorldServer;
 import net.minelink.ctplus.compat.api.NpcIdentity;
 import net.minelink.ctplus.compat.api.NpcPlayerHelper;
 
@@ -68,7 +72,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             ((EntityPlayer) o).playerConnection.sendPacket(packet);
         }
 
-        WorldServer worldServer = MinecraftServer.getServer().getWorldServer(entity.dimension);
+        WorldServer worldServer = MinecraftServer.getServer().getWorldServer(entity.world.getDimensionKey());
         worldServer.removeEntity(entity);
     }
 
@@ -104,7 +108,9 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
             entity.getAttributeMap().b(item.a(slot));
 
             // This is also called by super.tick(), but the flag this.bx is not public
-            Packet packet = new PacketPlayOutEntityEquipment(entity.getId(), slot, item);
+            List<Pair<EnumItemSlot, ItemStack>> list = Lists.newArrayList();
+            list.add(Pair.of(slot, item));
+            Packet packet = new PacketPlayOutEntityEquipment(entity.getId(), list);
             entity.getWorldServer().getChunkProvider().broadcast(entity, packet);
         }
     }
@@ -122,7 +128,7 @@ public final class NpcPlayerHelperImpl implements NpcPlayerHelper {
         Player p = Bukkit.getPlayer(identity.getId());
         if (p != null && p.isOnline()) return;
 
-        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getDataManager();
+        WorldNBTStorage worldStorage = (WorldNBTStorage) ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle().getMinecraftServer().worldNBTStorage;
         NBTTagCompound playerNbt = worldStorage.getPlayerData(identity.getId().toString());
         if (playerNbt == null) return;
 
