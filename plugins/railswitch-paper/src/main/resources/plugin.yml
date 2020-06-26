@@ -1,9 +1,9 @@
 name: ${project.artifactId}
 version: ${project.version}
-main: ${plugin.main}
+main: sh.okx.railswitch.RailSwitchPlugin
 depend: [CivModCore]
 softdepend: [Citadel, NameLayer]
-api-version: ${minecraft.version}
+api-version: 1.14
 authors: [Okx, Protonull]
 description: Easily make rail switches for automated destination selection
 commands:
