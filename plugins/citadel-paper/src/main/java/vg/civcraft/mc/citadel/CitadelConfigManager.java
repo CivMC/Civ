@@ -36,6 +36,8 @@ public class CitadelConfigManager extends CoreConfigManager {
 
 	private double redstoneRange;
 
+	private boolean hangersInheritReinforcements;
+
 	public CitadelConfigManager(ACivMod plugin) {
 		super(plugin);
 	}
@@ -54,6 +56,10 @@ public class CitadelConfigManager extends CoreConfigManager {
 
 	public double getMaxRedstoneDistance() {
 		return redstoneRange;
+	}
+
+	public boolean doHangersInheritReinforcements() {
+		return hangersInheritReinforcements;
 	}
 
 	private ReinforcementEffect getReinforcementEffect(ConfigurationSection config) {
@@ -126,6 +132,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 		globalDecayMultiplier = config.getDouble("global_decay_multiplier", 2.0);
 		globalDecayTimer = ConfigParsing.parseTime(config.getString("global_decay_timer", "0"));
 		parseReinforcementTypes(config.getConfigurationSection("reinforcements"));
+		hangersInheritReinforcements = config.getBoolean("hangers_inherit_reinforcement", false);
 		return true;
 	}
 

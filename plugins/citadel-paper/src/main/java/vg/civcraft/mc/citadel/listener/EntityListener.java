@@ -1,15 +1,21 @@
 package vg.civcraft.mc.citadel.listener;
 
+import static vg.civcraft.mc.civmodcore.util.NullCoalescing.castOrNull;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Hanging;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -17,8 +23,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityBreakDoorEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingPlaceEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -26,6 +36,7 @@ import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
@@ -151,4 +162,138 @@ public class EntityListener implements Listener {
 			}
 		}
 	}
+
+	// ------------------------------------------------------------
+	// Hanging Entities
+	// ------------------------------------------------------------
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingPlaceEvent(HangingPlaceEvent event) {
+		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
+			return;
+		}
+		Player player = event.getPlayer();
+		if (player == null) {
+			return;
+		}
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(event.getBlock());
+		if (reinforcement == null) {
+			return;
+		}
+		if (reinforcement.isInsecure()) {
+			return;
+		}
+		if (reinforcement.hasPermission(player, CitadelPermissionHandler.getHangingPlaceBreak())) {
+			return;
+		}
+		player.sendMessage(ChatColor.RED + "You cannot place those on blocks you don't have permissions for.");
+		event.setCancelled(true);
+		Bukkit.getScheduler().runTaskLater(Citadel.getInstance(), player::updateInventory, 1L);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void hangingEntityBreakEvent(HangingBreakByEntityEvent event) {
+		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
+			return;
+		}
+		switch (event.getCause()) {
+			// Allow it to break if:
+			// 1) The host block broke
+			// 2) A block was placed over it
+			// 3) A plugin broke it
+			case OBSTRUCTION:
+			case PHYSICS:
+			case DEFAULT:
+				return;
+			case ENTITY: {
+				Player player = castOrNull(Player.class, event.getRemover());
+				if (player == null) {
+					break;
+				}
+				Hanging entity = event.getEntity();
+				Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+				Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(host);
+				if (reinforcement == null) {
+					return;
+				}
+				if (reinforcement.isInsecure()) {
+					return;
+				}
+				if (reinforcement.hasPermission(player, CitadelPermissionHandler.getHangingPlaceBreak())) {
+					return;
+				}
+				player.sendMessage(ChatColor.RED + "The host block is protecting this.");
+				//break;
+			}
+		}
+		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void entityDamageEvent(EntityDamageByEntityEvent event) {
+		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
+			return;
+		}
+		Hanging entity = castOrNull(Hanging.class, event.getEntity());
+		if (entity == null) {
+			return;
+		}
+		Player player = castOrNull(Player.class, event.getDamager());
+		if (player == null) {
+			event.setCancelled(true);
+			return;
+		}
+		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(host);
+		if (reinforcement == null) {
+			return;
+		}
+		if (entity instanceof ItemFrame) {
+			if (ItemAPI.isValidItem(((ItemFrame) entity).getItem())) {
+				if (reinforcement.isInsecure()) {
+					return;
+				}
+				if (reinforcement.hasPermission(player, CitadelPermissionHandler.getItemFramePutTake())) {
+					return;
+				}
+			}
+		}
+		player.sendMessage(ChatColor.RED + "The host block is protecting this.");
+		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void playerEntityInteractEvent(PlayerInteractEntityEvent event) {
+		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
+			return;
+		}
+		Hanging entity = castOrNull(Hanging.class, event.getRightClicked());
+		if (entity == null) {
+			return;
+		}
+		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(host);
+		if (reinforcement == null) {
+			return;
+		}
+		Player player = event.getPlayer();
+		if (entity instanceof ItemFrame) {
+			if (reinforcement.isInsecure()) {
+				return;
+			}
+			// If the Item Frame already has an item, then the only possible action is rotation
+			if (ItemAPI.isValidItem(((ItemFrame) entity).getItem())) {
+				if (reinforcement.hasPermission(player, CitadelPermissionHandler.getItemFrameRotate())) {
+					return;
+				}
+			}
+			// If the Item Frame is empty, then the only possible action is placement
+			if (reinforcement.hasPermission(player, CitadelPermissionHandler.getItemFramePutTake())) {
+				return;
+			}
+		}
+		player.sendMessage(ChatColor.RED + "You do not have permission to alter that.");
+		event.setCancelled(true);
+	}
+
 }
