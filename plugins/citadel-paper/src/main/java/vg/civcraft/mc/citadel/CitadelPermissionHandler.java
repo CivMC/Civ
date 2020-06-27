@@ -50,7 +50,7 @@ public class CitadelPermissionHandler {
 		insecurePerm = PermissionType.registerPermission("INSECURE_REINFORCEMENT", new ArrayList<>(membersAndAbove),
 				"Allows toggling the insecure flag on reinforcements");
 		modifyBlockPerm = PermissionType.registerPermission("MODIFY_BLOCK", new ArrayList<>(modAndAbove),
-				"Allows modifying reinforced blocks like flipping levers, strippling logs etc.");
+				"Allows modifying reinforced blocks like flipping levers, stripping logs etc.");
 		beaconPerm = PermissionType.registerPermission("BEACONS", new ArrayList<>(membersAndAbove),
 				"Allow changing beacon effects");
 		hangingPlaceBreak = PermissionType.registerPermission("HANGING_PLACE_BREAK", new ArrayList<>(membersAndAbove),
