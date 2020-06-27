@@ -100,6 +100,7 @@ public class Citadel extends ACivMod {
 			Bukkit.shutdown();
 			return;
 		}
+		saveDefaultConfig();
 		config = new CitadelConfigManager(this);
 		if (!config.parse()) {
 			logger.severe("Errors in config file, shutting down");
