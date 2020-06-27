@@ -1,5 +1,6 @@
 package sh.okx.railswitch.switches;
 
+import com.google.common.base.Strings;
 import java.util.Arrays;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -90,16 +91,23 @@ public class SwitchListener implements Listener {
         // Determine whether a player has a destination that matches one of the destinations
         // listed on the switch signs, or match if there's a wildcard.
         boolean matched = false;
-        String[] playerDestinations = SettingsManager.getDestination(player).split(" ");
-        if (playerDestinations.length > 0) {
+        String setDest = SettingsManager.getDestination(player);
+        if (!Strings.isNullOrEmpty(setDest)) {
+            String[] playerDestinations = setDest.split(" ");
             String[] switchDestinations = Arrays.copyOfRange(lines, 1, lines.length);
             matcher:
             for (String playerDestination : playerDestinations) {
+                if (Strings.isNullOrEmpty(playerDestination)) {
+                    continue;
+                }
                 if (playerDestination.equals(WILDCARD)) {
                     matched = true;
                     break;
                 }
                 for (String switchDestination : switchDestinations) {
+                    if (Strings.isNullOrEmpty(switchDestination)) {
+                        continue;
+                    }
                     if (switchDestination.equals(WILDCARD)
                             || playerDestination.equalsIgnoreCase(switchDestination)) {
                         matched = true;
