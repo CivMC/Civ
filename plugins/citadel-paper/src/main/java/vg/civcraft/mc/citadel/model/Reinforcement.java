@@ -166,7 +166,9 @@ public class Reinforcement extends TableBasedDataObject {
 	public void setHealth(float health) {
 		this.health = health;
 		if (health <= 0) {
-			getOwningCache().remove(this);
+			if (getOwningCache() != null) {
+				getOwningCache().remove(this);
+			}
 		}
 		else {
 			setDirty();
