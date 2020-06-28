@@ -64,7 +64,7 @@ public class PlayerStatistics extends BasicHack {
 		@CommandAlias(StatsCommand.ALIAS)
 		@Default
 		public void fallback(CommandSender sender, @Optional String playerName) {
-			sender.sendMessage("Available statistics commands:");
+			sender.sendMessage(ChatColor.RED + "Available statistics commands:");
 			sender.sendMessage(ChatColor.YELLOW + "get: " + ChatColor.WHITE + "/stats <player> <statistic>");
 			sender.sendMessage(ChatColor.YELLOW + "set: " + ChatColor.WHITE + "/stats <player> <statistic> <value>");
 		}

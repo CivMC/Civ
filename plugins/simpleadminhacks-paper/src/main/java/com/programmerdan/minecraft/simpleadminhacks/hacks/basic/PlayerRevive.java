@@ -54,7 +54,6 @@ public class PlayerRevive extends BasicHack {
 	public static class ReviveCommand extends AikarCommand {
 
 		@CommandAlias("revive|respawn|resurrect|ress")
-		@Default
 		@Syntax("<player name>")
 		@Description("Revives a player")
 		@CommandCompletion("@players")
