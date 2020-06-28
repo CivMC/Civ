@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
 import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Syntax;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
@@ -43,16 +45,20 @@ public class PlayerRevive extends BasicHack {
 		}
 	}
 
+	@Override
+	public String status() {
+		return PlayerRevive.class.getSimpleName() + " is " + (isEnabled() ? "enabled" : "disabled") + ".";
+	}
+
 	@CommandPermission("simpleadmin.revive")
 	public static class ReviveCommand extends AikarCommand {
 
-		public static final String ALIAS = "revive|respawn|resurrect|ress";
-
-		@CommandAlias(ReviveCommand.ALIAS)
+		@CommandAlias("revive|respawn|resurrect|ress")
 		@Default
 		@Syntax("<player name>")
 		@Description("Revives a player")
-		public void revivePlayer(CommandSender sender, String name) {
+		@CommandCompletion("@players")
+		public void revivePlayer(CommandSender sender, @Single String name) {
 			Player player = Bukkit.getPlayer(name);
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "That player doesn't exist or isn't online.");
