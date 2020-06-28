@@ -84,7 +84,7 @@ public class EventHandlerList extends BasicHack {
 				for (Map.Entry<Plugin, Set<Class<? extends Listener>>> details : entry.getValue().entrySet()) {
 					sender.sendMessage(ChatColor.LIGHT_PURPLE + details.getKey().getName() + ":");
 					for (Class<? extends Listener> clazz : details.getValue()) {
-						sender.sendMessage(" - " + clazz.getSimpleName());
+						sender.sendMessage(" - " + clazz.getName());
 					}
 				}
 			}

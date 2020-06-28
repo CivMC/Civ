@@ -271,3 +271,7 @@ hacks:
     enabled: true
   PlayerRevive:
     enabled: true
+  EventDebugHack:
+    enabled: true
+  EventHandlerList:
+    enabled: true
