@@ -83,6 +83,7 @@ commands:
     description: Allows debugging of an event and its handlers 
     usage: /<command> full.path.to.event   
     permission: simpleadmin.debug
+  stats: {} # Defined in (basic) PlayerStats
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -99,6 +100,7 @@ permissions:
       simpleadmin.bots: true
       simpleadmin.timings: true
       simpleadmin.debug: true
+      simpleadmin.stats: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -131,5 +133,8 @@ permissions:
       default: op
     simpleadmin.debug:
       description: Gives the ability to view and manage /...timings commands
+      default: op
+    simpleadmin.stats:
+      description: Gives the ability to view and manage player statistics
       default: op
 api-version: 1.14

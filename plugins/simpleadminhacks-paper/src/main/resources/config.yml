@@ -267,3 +267,5 @@ hacks:
     nightSpawn: true
     # Determines whether phantoms are allowed to spawn during thunder storms.
     stormSpawn: true
+  PlayerStatistics:
+    enabled: true
