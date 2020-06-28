@@ -98,6 +98,7 @@ permissions:
       simpleadmin.broadcast: true
       simpleadmin.bots: true
       simpleadmin.timings: true
+      simpleadmin.debug: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
