@@ -101,6 +101,7 @@ permissions:
       simpleadmin.timings: true
       simpleadmin.debug: true
       simpleadmin.stats: true
+      simpleadmin.revive: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -137,4 +138,8 @@ permissions:
     simpleadmin.stats:
       description: Gives the ability to view and manage player statistics
       default: op
+    simpleadmin.revive:
+      description: Gives the ability to revive players
+      default: op
+
 api-version: 1.14

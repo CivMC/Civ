@@ -269,3 +269,5 @@ hacks:
     stormSpawn: true
   PlayerStatistics:
     enabled: true
+  PlayerRevive:
+    enabled: true
