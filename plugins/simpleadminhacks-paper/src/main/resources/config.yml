@@ -251,7 +251,7 @@ hacks:
     - <gold>Wait... how did I get here?
     - <gold>Must've been a rough night o.o
     - <gold>Why does my entire body ache?
-    - <gold>That <it>really<reset><gold> hurt!
+    - <gold>That <it>really<gold> hurt!
   AntiFastBreak:
     enabled: true
     breakDenyDuration: 3000

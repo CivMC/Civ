@@ -3,6 +3,10 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.AutoRespawnConfig;
+import java.security.SecureRandom;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -18,13 +22,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-
-import java.security.SecureRandom;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
 
 public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listener {
 	
@@ -38,7 +37,7 @@ public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listen
 	private void autoRespawnPlayer(Player player) {
 		player.spigot().respawn();
 		String[] quotes = config.getRespawnQuotes();
-		if (quotes.length > 0) {
+		if (!Iteration.isNullOrEmpty(quotes)) {
 			player.sendMessage(TextUtil.parse(quotes[quotes.length == 1 ? 0 : random.nextInt(quotes.length)]));
 		}
 	}
@@ -46,7 +45,7 @@ public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listen
 	@EventHandler
 	public void onPlayerLogin(PlayerJoinEvent event) {
 		if (event.getPlayer().isDead()) {
-			plugin().log(Level.INFO, "Player [" + event.getPlayer().getName() + "] logged in while dead, respawning.");
+			plugin().info("Player [" + event.getPlayer().getName() + "] logged in while dead, respawning.");
 			if (config.getLoginRespawnDelay() == 0) {
 				autoRespawnPlayer(event.getPlayer());
 			}
@@ -63,7 +62,7 @@ public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listen
 	
 	@EventHandler
 	public void onPlayerDeath(PlayerDeathEvent event) {
-		plugin().log(Level.INFO, "Player [" + event.getEntity().getName() + "] died, setting respawn timer.");
+		plugin().info("Player [" + event.getEntity().getName() + "] died, setting respawn timer.");
 		this.respawnTimers.compute(event.getEntity(), (player, timer) -> {
 			if (timer != null) {
 				timer.stop();
@@ -75,7 +74,7 @@ public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listen
 	@EventHandler
 	public void onPlayerLogout(PlayerQuitEvent event) {
 		if (event.getPlayer().isDead()) {
-			plugin().log(Level.INFO, "Player [" + event.getPlayer().getName() + "] logged out while dead.");
+			plugin().info("Player [" + event.getPlayer().getName() + "] logged out while dead.");
 			this.respawnTimers.computeIfPresent(event.getPlayer(), (player, timer) -> timer.stop());
 		}
 	}
