@@ -248,6 +248,7 @@ public final class ExchangeRule implements ExchangeData {
 			if (displayName == null) {
 				displayName = (DisplayNameModifier) DisplayNameModifier.TEMPLATE.construct();
 				displayName.setDisplayName(nbt.getString(LEGACY_DISPLAY_NAME_KEY));
+				this.modifiers.put(displayName);
 			}
 		}
 		if (nbt.hasKeyOfType(LEGACY_LORE_KEY, 9)) {
@@ -255,6 +256,7 @@ public final class ExchangeRule implements ExchangeData {
 			if (lore == null) {
 				lore = (LoreModifier) LoreModifier.TEMPLATE.construct();
 				lore.setLore(collect(ArrayList::new, nbt.getStringArray(LEGACY_LORE_KEY)));
+				this.modifiers.put(lore);
 			}
 		}
 	}

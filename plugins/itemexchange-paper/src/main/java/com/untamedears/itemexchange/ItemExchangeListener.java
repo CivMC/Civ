@@ -19,7 +19,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -76,6 +79,12 @@ public final class ItemExchangeListener implements Listener {
 		Block clicked = event.getClickedBlock();
 		if (!BlockAPI.isValidBlock(clicked)) {
 			return;
+		}
+		// Allow an interaction to pass through a sign attached to a shop
+		if (Tag.WALL_SIGNS.isTagged(clicked.getType())) {
+			WallSign sign = (WallSign) clicked.getBlockData();
+			BlockFace attached = sign.getFacing().getOppositeFace();
+			clicked = clicked.getRelative(attached);
 		}
 		// Block must be a supported block type
 		if (!ItemExchangeConfig.canBeInteractedWith(clicked.getType())) {
