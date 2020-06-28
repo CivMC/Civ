@@ -13,14 +13,14 @@ import org.bukkit.command.PluginCommand;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.ACivMod;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.
  * 
  * @author ProgrammerDan
  */
-public class SimpleAdminHacks extends JavaPlugin {
+public class SimpleAdminHacks extends ACivMod {
 	
 	private static SimpleAdminHacks plugin;
 	private SimpleAdminHacksConfig config;
@@ -37,8 +37,9 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 *  creation and registration of all hacks.
 	 */
 	public void onEnable() {
+		useNewCommandHandler = false;
+		super.onEnable();
 		SimpleAdminHacks.plugin = this;
-
 		// Config bootstrap
 		this.saveDefaultConfig();
 		this.reloadConfig();
@@ -63,6 +64,7 @@ public class SimpleAdminHacks extends JavaPlugin {
 		hackManager = null;
 		config = null;
 		SimpleAdminHacks.plugin = null;
+		super.onDisable();
 	}
 
 	/**
