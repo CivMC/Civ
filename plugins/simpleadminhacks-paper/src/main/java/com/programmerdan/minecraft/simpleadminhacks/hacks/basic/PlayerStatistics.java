@@ -53,7 +53,7 @@ public class PlayerStatistics extends BasicHack {
 
 	@Override
 	public String status() {
-		return "PlayerStatistics is " + (isEnabled() ? "enabled" : "disabled") + ".";
+		return PlayerStatistics.class.getSimpleName() + " is " + (isEnabled() ? "enabled" : "disabled") + ".";
 	}
 
 	@CommandPermission("simpleadmin.stats")
