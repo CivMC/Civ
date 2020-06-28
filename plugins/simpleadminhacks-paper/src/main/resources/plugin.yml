@@ -82,7 +82,7 @@ commands:
   debugevent:
     description: Allows debugging of an event and its handlers 
     usage: /<command> full.path.to.event   
-    permission: simpleadmin.debug
+    permission: simpleadmin.eventdebug
   stats: {} # Defined in (basic) PlayerStats
 permissions:
   simpleadmin.*:
@@ -99,7 +99,7 @@ permissions:
       simpleadmin.broadcast: true
       simpleadmin.bots: true
       simpleadmin.timings: true
-      simpleadmin.debug: true
+      simpleadmin.eventdebug: true
       simpleadmin.stats: true
       simpleadmin.revive: true
     simpleadmin.hacks:
@@ -132,7 +132,7 @@ permissions:
     simpleadmin.timings:
       description: Gives the ability to view and manage /...timings commands
       default: op
-    simpleadmin.debug:
+    simpleadmin.eventdebug:
       description: Gives the ability to view and manage /...timings commands
       default: op
     simpleadmin.stats:
