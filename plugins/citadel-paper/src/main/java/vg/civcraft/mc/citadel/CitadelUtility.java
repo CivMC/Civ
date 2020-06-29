@@ -75,8 +75,11 @@ public class CitadelUtility {
 		}
 	}
 
-	public static boolean consumeReinforcementItems(Player player, ReinforcementType type) {
+	public static boolean consumeReinforcementItems(Player player, ReinforcementType type, boolean consumeExtra) {
 		ItemMap toRemove = new ItemMap(type.getItem());
+		if (consumeExtra) {
+			toRemove.addItemAmount(type.getItem(), 1);
+		}
 		if (!toRemove.removeSafelyFrom(player.getInventory())) {
 			CitadelUtility.sendAndLog(player, ChatColor.RED,
 					"Failed to remove items needed for " + type.getName() + " reinforcement from your inventory");
@@ -122,7 +125,8 @@ public class CitadelUtility {
 		// check inventory
 		int available = playerItems.getAmount(type.getItem());
 		int required = type.getItem().getAmount();
-		if (block.getType() == type.getItem().getType()) {
+		boolean consumeExtra = block.getType() == type.getItem().getType();
+		if (consumeExtra) {
 			//make sure they're not trying to reinforce with the single block thats also being placed
 			required++;
 		}
@@ -132,7 +136,7 @@ public class CitadelUtility {
 			return true;
 		}
 		// remove from inventory
-		if (!CitadelUtility.consumeReinforcementItems(player, type)) {
+		if (!CitadelUtility.consumeReinforcementItems(player, type, consumeExtra)) {
 			return true;
 		}
 		// create reinforcement

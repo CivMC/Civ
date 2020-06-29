@@ -68,7 +68,7 @@ public class PatchState extends AbstractPlayerState {
 			return;
 		}
 		if (!rein.rollForItemReturn()) {
-			if (!CitadelUtility.consumeReinforcementItems(player, rein.getType())) {
+			if (!CitadelUtility.consumeReinforcementItems(player, rein.getType(), false)) {
 				return;
 			}
 		}
