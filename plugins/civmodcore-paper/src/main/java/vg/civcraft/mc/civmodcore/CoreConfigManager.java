@@ -54,7 +54,7 @@ public class CoreConfigManager {
 			plugin.info(ChatColor.BLUE + "Config parsed.");
 		}
 		else {
-			plugin.warning("Failed to pass config!");
+			plugin.warning("Failed to parse config!");
 		}
 		return worked;
 	}
