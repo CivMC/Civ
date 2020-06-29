@@ -10,9 +10,11 @@
 		<version>1.0.0</version>
 	</parent>
 
-	<groupId>com.untamedears.itemexchange</groupId>
-	<artifactId>ItemExchange</artifactId>
-	<version>1.4.1</version>
+	<groupId>com.untamedears</groupId>
+	<artifactId>itemexchange</artifactId>
+	<version>1.4.2</version>
+	<name>ItemExchange</name>
+
 	<packaging>jar</packaging>
 
 	<dependencies>
