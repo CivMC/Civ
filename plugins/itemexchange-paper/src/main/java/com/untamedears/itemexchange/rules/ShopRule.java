@@ -111,7 +111,8 @@ public final class ShopRule implements Validation {
 									   final BlockFace cameFrom) {
 		if (ItemExchangeConfig.hasCompatibleShopBlock(block.getType())) {
 			PLUGIN.debug("[RELAY] Found shop block. (Total: " + found.size() + ")");
-			BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, null);
+			BlockInventoryRequestEvent event = BlockInventoryRequestEvent.emit(block, null,
+					BlockInventoryRequestEvent.Purpose.INSPECTION);
 			exists(event.getInventory(), found::add);
 			return;
 		}

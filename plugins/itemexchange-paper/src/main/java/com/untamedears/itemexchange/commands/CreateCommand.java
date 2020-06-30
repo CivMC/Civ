@@ -64,7 +64,8 @@ public final class CreateCommand extends AikarCommand {
 					continue;
 				}
 			}
-			Inventory inventory = BlockInventoryRequestEvent.emit(block, player).getInventory();
+			Inventory inventory = BlockInventoryRequestEvent.emit(block, player,
+					BlockInventoryRequestEvent.Purpose.ACCESS).getInventory();
 			if (inventory == null) {
 				player.sendMessage(ChatColor.RED + "You do not have access to that.");
 				return;

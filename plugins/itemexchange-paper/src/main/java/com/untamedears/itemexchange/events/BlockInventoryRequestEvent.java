@@ -6,6 +6,7 @@ import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
@@ -24,24 +25,37 @@ import vg.civcraft.mc.civmodcore.api.BlockAPI;
  */
 public class BlockInventoryRequestEvent extends Event implements Cancellable {
 
+	public enum Purpose {
+		INSPECTION,
+		ACCESS
+	}
+
 	private static final HandlerList handlers = new HandlerList();
 
 	private final Block block;
 	private final Player requester;
+	private final Purpose purpose;
 	private Inventory inventory;
 	private boolean cancelled;
 
-	private BlockInventoryRequestEvent(Block block, Player requester) {
-		Preconditions.checkArgument(BlockAPI.isValidBlock(block));
+	private BlockInventoryRequestEvent(Block block, Player requester, Purpose purpose) {
+		Preconditions.checkArgument(BlockAPI.isValidBlock(block), "Block must be valid!");
+		Preconditions.checkArgument(purpose != null, "Access request must have a purpose!");
+		Preconditions.checkArgument(!(purpose == Purpose.ACCESS && requester == null),
+				"Access requests must have a requester!");
 		this.block = block;
 		this.requester = requester;
+		this.purpose = purpose;
 		if (this.block.getType() == Material.ENDER_CHEST) {
 			if (requester != null) {
 				this.inventory = requester.getEnderChest();
 			}
 		}
 		else {
-			this.inventory = chain(() -> ((BlockInventoryHolder) block.getState()).getInventory());
+			BlockState state = block.getState();
+			if (state instanceof BlockInventoryHolder) {
+				this.inventory = ((BlockInventoryHolder) state).getInventory();
+			}
 		}
 	}
 
@@ -55,12 +69,22 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	}
 
 	/**
-	 * Retrieves the player requesting the inventory, if relevant.
+	 * Retrieves the player requesting the inventory, if relevant. If the purpose is access, then a requester must be
+	 * set.
 	 *
 	 * @return Returns the player requesting the inventory, which may be null.
 	 */
 	public Player getRequester() {
 		return this.requester;
+	}
+
+	/**
+	 * Retrieves the purpose of this inventory request.
+	 *
+	 * @return Returns the purpose of this inventory request.
+	 */
+	public Purpose getPurpose() {
+		return this.purpose;
 	}
 
 	/**
@@ -111,10 +135,11 @@ public class BlockInventoryRequestEvent extends Event implements Cancellable {
 	 *
 	 * @param block The block to retrieve the inventory from.
 	 * @param requester The inventory requester.
+	 * @param purpose The purpose of this inventory request.
 	 * @return Returns the request event that was emitted and has finished processing.
 	 */
-	public static BlockInventoryRequestEvent emit(Block block, Player requester) {
-		BlockInventoryRequestEvent event = new BlockInventoryRequestEvent(block, requester);
+	public static BlockInventoryRequestEvent emit(Block block, Player requester, Purpose purpose) {
+		BlockInventoryRequestEvent event = new BlockInventoryRequestEvent(block, requester, purpose);
 		Bukkit.getPluginManager().callEvent(event);
 		return event;
 	}
