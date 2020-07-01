@@ -10,9 +10,6 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
-import vg.civcraft.mc.civmodcore.util.Iteration;
-import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
  * This is a config parsing class intended to make handling configs a little easier, and automatically parse commonly
@@ -93,84 +90,6 @@ public class CoreConfigManager {
 	// ------------------------------------------------------------ //
 	// Predefined parsing utilities
 	// ------------------------------------------------------------ //
-
-	/**
-	 * Attempts to parse an integer from a config section, allowing for multiple keys to be attempted.
-	 *
-	 * @param config The config section to retrieve the integer from.
-	 * @param fallback The value that should be falled back upon if a value cannot be found.
-	 * @param keys The keys to attempt.
-	 * @return Returns a retrieved value, or the fallback, which is allowed to be null.
-	 */
-	protected final Integer parseInteger(ConfigurationSection config, Integer fallback, String... keys) {
-		if (config == null || Iteration.isNullOrEmpty(keys)) {
-			return fallback;
-		}
-		for (String key : keys) {
-			if (Strings.isNullOrEmpty(key)) {
-				continue;
-			}
-			if (!config.isInt(key)) {
-				continue;
-			}
-			return config.getInt(key);
-		}
-		return fallback;
-	}
-
-	/**
-	 * Attempts to create a managed database connection with a config section. This is more robust than the default
-	 * method of simply casting a get from the config.
-	 *
-	 * @param config The config section itself. {@code ManagedDatasource db = parseDatabase(config.get("database"));}
-	 * @return Returns an instance of ManagedDatasource, or null if an error occurred while parsing.
-	 */
-	protected final ManagedDatasource parseDatabase(ConfigurationSection config) {
-		if (config == null) {
-			this.logger.warning("Cannot parse database.");
-			return null;
-		}
-		// Parse username - required
-		String username = config.getString("username", config.getString("user"));
-		if (Strings.isNullOrEmpty(username)) {
-			this.plugin.severe("Cannot parse database: username is missing or empty.");
-			return null;
-		}
-		this.plugin.info("Database username: " + username);
-		// Parse password - optional
-		String password = config.getString("password", config.getString("pass", ""));
-		this.plugin.info("Database password: " +
-				(Strings.isNullOrEmpty(password) ? "<empty>" : TextUtil.repeat("*", password.length())));
-		// Parse hostname - optional
-		String hostname = config.getString("hostname", config.getString("host", "localhost"));
-		this.plugin.info("Database hostname: " + hostname);
-		// Parse port - optional
-		Integer port = parseInteger(config, 3306, "port", "hostport");
-		this.plugin.info("Database port: " + port);
-		// Parse database - required
-		String database = config.getString("database", config.getString("db"));
-		if (Strings.isNullOrEmpty(database)) {
-			this.plugin.severe("Cannot parse database: database is missing or empty.");
-			return null;
-		}
-		this.plugin.info("Selected database: " + database);
-		// Parse pool size - optional
-		int poolSize = parseInteger(config, 5, "poolsize");
-		this.plugin.info("Database maximum pool size: " + poolSize);
-		// Parse timeout - optional
-		int timeout = parseInteger(config, 10000, "connectionTimeout", "connection_timeout", "timeout");
-		this.plugin.info("Database timeout: " + timeout);
-		// Parse idle timeout - optional
-		int idle = parseInteger(config, 600000, "idleTimeout", "idle_timeout", "idle");
-		this.plugin.info("Database idle timeout: " + idle);
-		// Parse max lifetime - optional
-		int lifetime = parseInteger(config, 7200000, "maxLifetime", "max_lifetime", "lifetime");
-		this.plugin.info("Database max lifetime: " + lifetime);
-		// Attempt new database connection
-		this.plugin.info("Database parsed.");
-		return new ManagedDatasource(this.plugin, username, password, hostname, port, database,
-				poolSize, timeout,idle, lifetime);
-	}
 
 	/**
 	 * Attempts to retrieve a list of materials from a config section.
