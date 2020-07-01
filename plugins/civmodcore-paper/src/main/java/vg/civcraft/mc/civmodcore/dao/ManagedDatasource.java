@@ -71,7 +71,6 @@ import vg.civcraft.mc.civmodcore.util.MapUtils;
  * recommended.
  * 
  * @author ProgrammerDan (refactored by Protonull)
- * @
  */
 public class ManagedDatasource implements ConfigurationSerializable {
 
