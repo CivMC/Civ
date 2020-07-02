@@ -30,7 +30,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
  * Simple Hack that handles gifting introbooks if enabled. Handles respawns as well
  * through first restart, effectively.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com
+ * @author ProgrammerDan programmerdan@gmail.com
  *
  */
 public class Introbook extends SimpleHack<IntrobookConfig> implements Listener, CommandExecutor {

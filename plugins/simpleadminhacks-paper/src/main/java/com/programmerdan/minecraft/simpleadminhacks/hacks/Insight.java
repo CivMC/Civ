@@ -44,6 +44,7 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.InsightConfig;
  *     - org.bukkit.event.player
  *     - org.bukkit.event.block
  *     - org.bukkit.event.inventory
+ * </code>	
  * 
  * This "into" list defines event classpaths. Events found in that classpath are 
  * instrumented; listeners are reordered to put _this_ hack's listeners as first and last to run.

@@ -8,7 +8,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 /**
  * Captures the configuration for the NPCs that HackBot hack can produce.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author ProgrammerDan programmerdan@gmail.com
  *
  */
 public class HackBotConfig extends SimpleHackConfig {

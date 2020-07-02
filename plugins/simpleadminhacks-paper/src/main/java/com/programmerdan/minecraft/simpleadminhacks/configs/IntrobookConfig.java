@@ -18,7 +18,7 @@ import net.md_5.bungee.api.ChatColor;
 /**
  * Simple Config wrapper for Introbook specification.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author ProgrammerDan programmerdan@gmail.com
  */
 public class IntrobookConfig extends SimpleHackConfig {
 

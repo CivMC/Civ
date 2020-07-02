@@ -61,9 +61,9 @@ import net.md_5.bungee.api.ChatColor;
  * Future tooling will include the ability to view the method time allocations; it's tracked, but
  * atm is not accessible to prevent overwhelming data explosion / overload. I might just add a thing
  * to allow expansion for select named sourceclasses.
- * <br/>
+ * <br></br>
  * Commands:
- * <br/>
+ * <br></br>
  * <b>showtimings</b> Can only be run as a player, gives the running player a map object that persistently
  *   displays the TPS with a per-tick heatmap organized into second, per-tick heightmap organized into
  *   vertical slices of "relatively sized and colored" time, and a line graph showing longer term tick
@@ -83,12 +83,12 @@ import net.md_5.bungee.api.ChatColor;
  *   all new Classes encountered each tick that hasn't been announced. After nothing new is encountered for a
  *   while, this shuts itself off.<br/>
  *  <b>stoptimings</b> This just shuts of all HQ data collection.<br/>
- * <br/>
+ * <br></br>
  * In all cases if errors begin to be encountered, various portions will shut itself off. HQ can be restarted
  * after automatic shutdown, normal tick tracking cannot.
- * <br/>
+ * <br></br>
  * From live server: http://imgur.com/a/zWNWo
- * <br/> 
+ * <br></br>
  * 
  * @author ProgrammerDan
  */
