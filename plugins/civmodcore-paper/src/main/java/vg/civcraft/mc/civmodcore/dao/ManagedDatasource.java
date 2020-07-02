@@ -116,7 +116,8 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	private int lastMigration;
 
 	/**
-	 * Legacy support constructor to create a new ManagedDatasource.
+	 * See {@link #ManagedDatasource(ACivMod, String, String, String, int, String, String, int, long, long, long)} for
+	 * more details.
 	 *
 	 * @param plugin The civ plugin whose database is being managed.
 	 * @param user The SQL user to connect as.
@@ -128,12 +129,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @param connectionTimeout The longest a query can run until it times out (1-5 seconds recommended)
 	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
 	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
-	 *
-	 *
-	 * @deprecated This is deprecated as it insists that the plugin be ACivMod, nor does it allow you to specify
-	 *     a jdbc driver, nor disable auto connection.
 	 */
-	@Deprecated
 	public ManagedDatasource(ACivMod plugin, String user, String pass, String host, int port, String database,
 							 int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
 		this(plugin, user, pass, host, port, "mysql", database, poolSize, connectionTimeout, idleTimeout, maxLifetime);
@@ -190,7 +186,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
 	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
 	 */
-	public ManagedDatasource(Plugin plugin, String user, String pass, String host, int port, String driver,
+	public ManagedDatasource(ACivMod plugin, String user, String pass, String host, int port, String driver,
 							 String database, int poolSize, long connectionTimeout, long idleTimeout,
 							 long maxLifetime) {
 		this(plugin, new DatabaseCredentials(user, pass, host, port, driver, database,
@@ -203,7 +199,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	 * @param plugin The plugin whose database is being managed.
 	 * @param credentials The credentials to connect to the database with.
 	 */
-	public ManagedDatasource(Plugin plugin, DatabaseCredentials credentials) {
+	public ManagedDatasource(ACivMod plugin, DatabaseCredentials credentials) {
 		Preconditions.checkArgument(plugin != null && plugin.isEnabled());
 		Preconditions.checkArgument(credentials != null);
 		this.plugin = plugin;
