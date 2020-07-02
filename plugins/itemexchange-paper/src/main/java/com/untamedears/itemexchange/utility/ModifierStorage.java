@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * A storage method for modifiers that puts significance on the modifier's class.
  */
-public class ModifierStorage implements Iterable<ModifierData> {
+public final class ModifierStorage implements Iterable<ModifierData> {
 
 	private final Map<Class<ModifierData>, ModifierData> map = new HashMap<>();
 

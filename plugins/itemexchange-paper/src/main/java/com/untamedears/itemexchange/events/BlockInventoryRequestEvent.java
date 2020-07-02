@@ -1,7 +1,5 @@
 package com.untamedears.itemexchange.events;
 
-import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
-
 import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

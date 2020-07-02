@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 
 @CommandAlias(DebugCommand.ALIAS)
-public class DebugCommand extends AikarCommand {
+public final class DebugCommand extends AikarCommand {
 
 	public static final String ALIAS = "ied|iedebug";
 
