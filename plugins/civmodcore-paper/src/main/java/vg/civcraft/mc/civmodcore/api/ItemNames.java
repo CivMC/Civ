@@ -106,11 +106,8 @@ public final class ItemNames {
 			return cached;
 		}
 		ItemCriteria criteria = CustomItems.findMatch(item);
-		if (criteria != null) {
-			cached = criteria.getName();
-		}
-		else {
-			cached = getItemName(item.getType());
+		if (criteria == null) {
+			return getItemName(item.getType());
 		}
 		NAME_CACHE.put(item, cached);
 		return cached;

@@ -1,15 +1,13 @@
 package vg.civcraft.mc.civmodcore.inventorygui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.logging.Logger;
-
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryType;
@@ -237,12 +235,15 @@ public class ClickableInventory {
 				return false;
 			}
 			lastPress = now;
-			Arrays.stream(this.clickables).filter(Objects::nonNull).map((button) -> button.getItemStack().getType())
-					.distinct().forEach((material -> {
-						if (player.getCooldown(material) < pressCooldown) {
-							player.setCooldown(material, pressCooldown);
-						}
-					}));
+			for (IClickable clickable : this.clickables) {
+				if (clickable == null) {
+					continue;
+				}
+				Material material = clickable.getItemStack().getType();
+				if (player.getCooldown(material) < pressCooldown) {
+					player.setCooldown(material, pressCooldown);
+				}
+			}
 			return true;
 		}
 		return true;

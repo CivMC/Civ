@@ -2,6 +2,7 @@ package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -20,7 +21,9 @@ public abstract class DependencyGlue implements Listener {
 
 	private final String pluginName;
 
-	private boolean enabled;
+	private Plugin plugin;
+
+	private Logger logger;
 
 	/**
 	 * <p>You must provide the name of the plugin you wish to glue.</p>
@@ -46,10 +49,30 @@ public abstract class DependencyGlue implements Listener {
 	}
 
 	/**
+	 * @return Returns the current plugin instance for this glue.
+	 */
+	public Plugin plugin() {
+		return this.plugin;
+	}
+
+	/**
+	 * @return Returns the current logger instance for this glue.
+	 */
+	public Logger logger() {
+		return this.logger;
+	}
+
+	/**
 	 * @return Returns true if this glue's plugin is currently enabled, which is updated live.
 	 */
 	public boolean isEnabled() {
-		return this.enabled;
+		if (this.plugin == null) {
+			return false;
+		}
+		if (!this.plugin.isEnabled()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
@@ -61,18 +84,25 @@ public abstract class DependencyGlue implements Listener {
 	 * @return Returns true if the glue is deemed safe to use.
 	 */
 	public boolean isSafeToUse() {
-		return isEnabled();
+		if (!isEnabled()) {
+			return false;
+		}
+		return true;
 	}
 
 	/**
 	 * This is called when the glue's plugin is enabled. Use this as a setup.
 	 */
-	protected void onGlueEnabled() { }
+	protected void onGlueEnabled() {
+		this.logger.info("Gluing " + this.pluginName);
+	}
 
 	/**
 	 * This is called when the glue's plugin is disabled. Use this as a destructor.
 	 */
-	protected void onGlueDisabled() { }
+	protected void onGlueDisabled() {
+		this.logger.info("Releasing " + this.pluginName);
+	}
 
 	@EventHandler
 	public final void onServerLoad(ServerLoadEvent event) {
@@ -83,7 +113,8 @@ public abstract class DependencyGlue implements Listener {
 			if (!TextUtil.stringEqualsIgnoreCase(plugin.getName(), this.pluginName)) {
 				continue;
 			}
-			this.enabled = true;
+			this.plugin = plugin;
+			this.logger = plugin.getLogger();
 			onGlueEnabled();
 			break;
 		}
@@ -92,7 +123,8 @@ public abstract class DependencyGlue implements Listener {
 	@EventHandler
 	public final void onPluginEnable(PluginEnableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
-			this.enabled = true;
+			this.plugin = event.getPlugin();
+			this.logger = this.plugin.getLogger();
 			onGlueEnabled();
 		}
 	}
@@ -100,8 +132,9 @@ public abstract class DependencyGlue implements Listener {
 	@EventHandler
 	public final void onPluginDisable(PluginDisableEvent event) {
 		if (TextUtil.stringEqualsIgnoreCase(event.getPlugin().getName(), this.pluginName)) {
-			this.enabled = false;
 			onGlueDisabled();
+			this.plugin = null;
+			this.logger = null;
 		}
 	}
 
