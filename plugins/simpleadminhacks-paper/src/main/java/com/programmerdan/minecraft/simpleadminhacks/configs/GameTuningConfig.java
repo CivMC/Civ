@@ -216,7 +216,7 @@ public class GameTuningConfig extends SimpleHackConfig {
 	 * Returns false if the supplied UUID is exempt from limits.
 	 *
 	 * @param player the UUID to check
-	 * @returns false it the player is exempt, true otherwise.
+	 * @return false it the player is exempt, true otherwise.
 	 */
 	public boolean applyChunkLimits(UUID player) {
 		return this.chunkLimitsEnabled ? !this.exemptFromLimits.contains(player) : false;

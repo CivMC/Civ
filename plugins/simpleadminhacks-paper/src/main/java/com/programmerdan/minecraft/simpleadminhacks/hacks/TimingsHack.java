@@ -67,22 +67,22 @@ import net.md_5.bungee.api.ChatColor;
  * <b>showtimings</b> Can only be run as a player, gives the running player a map object that persistently
  *   displays the TPS with a per-tick heatmap organized into second, per-tick heightmap organized into
  *   vertical slices of "relatively sized and colored" time, and a line graph showing longer term tick
- *   problems where sets of ticks begin to drift far above the average.<br/>
+ *   problems where sets of ticks begin to drift far above the average.<P>
  * <b>bindtimings</b> Can only be run as a player. Starts the HQ data collector, and gives the running player
  *   a map that displays the fractional tick impact of any Class that contains the argument passed into
  *   bindtimings. Also shows a per-tick heatmap of time utilization organized into seconds, per-tick
  *   heightmap organized into vertical slices of "relatively sized and colored" time, and a line graph showing
  *   relative fraction of Tick time vs. Avg Tick Time (basically, time spent in matching Class methods vs.
- *   per-second average tick). VERY useful.<br/>
+ *   per-second average tick). VERY useful.<P>
  *  <b>thresholdtimings</b> This is the premier function for HQ. Starts the HQ data collector, and uses
  *   the passed in "threshold factor" to dump Class-level inspection of time-spent on problem ticks.
  *   Basically, if the threshold is passed by any specific tick, dumps a sorted list of "where time was spent"
  *   during that problem tick. This is extremely helpful and can be used to identify things that need monitoring 
- *   via bindtimings.<br/>
+ *   via bindtimings.<P>
  *  <b>listtimings</b> This gets _very_ spammy. It starts the HQ data collector, and sends to the requester
  *   all new Classes encountered each tick that hasn't been announced. After nothing new is encountered for a
- *   while, this shuts itself off.<br/>
- *  <b>stoptimings</b> This just shuts of all HQ data collection.<br/>
+ *   while, this shuts itself off.<P>
+ *  <b>stoptimings</b> This just shuts of all HQ data collection.<P>
  * <P>
  * In all cases if errors begin to be encountered, various portions will shut itself off. HQ can be restarted
  * after automatic shutdown, normal tick tracking cannot.
