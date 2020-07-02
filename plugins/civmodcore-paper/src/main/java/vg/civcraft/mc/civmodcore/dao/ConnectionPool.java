@@ -1,75 +1,113 @@
 package vg.civcraft.mc.civmodcore.dao;
 
+import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import org.bukkit.Bukkit;
 
 /**
  * Handy Connection Pool / Database wrapper for use by all plugins.
  *
  * @author ProgrammerDan
- *
  */
 public class ConnectionPool {
 
+	private static final Logger LOGGER = Bukkit.getLogger();
+
+	private final DatabaseCredentials credentials;
+
 	private HikariDataSource datasource;
 
-	private final Logger logger;
+	/**
+	 * Creates a new ConnectionPool based on a given set of credentials. Note that the credentials are not scrutinised,
+	 * so you should make sure they're valid, or at least valid enough, otherwise expect exceptions or logger spam.
+	 *
+	 * @param credentials The credentials to connect with.
+	 */
+	public ConnectionPool(DatabaseCredentials credentials) {
+		Preconditions.checkArgument(credentials != null,
+				"Cannot create a ConnectionPool with a null set of credentials.");
+		this.credentials = credentials;
+		HikariConfig config = new HikariConfig();
+		config.setJdbcUrl("jdbc:" + credentials.getDriver() + "://" + credentials.getHostname() + ":" +
+				credentials.getPort() + "/" + credentials.getDatabase());
+		config.setConnectionTimeout(credentials.getConnectionTimeout());
+		config.setIdleTimeout(credentials.getIdleTimeout());
+		config.setMaxLifetime(credentials.getMaxLifetime());
+		config.setMaximumPoolSize(credentials.getPoolSize());
+		config.setUsername(credentials.getUsername());
+		if (!Strings.isNullOrEmpty(credentials.getPassword())) {
+			config.setPassword(credentials.getPassword());
+		}
+		this.datasource = new HikariDataSource(config);
+		try (Connection connection = getConnection(); Statement statement = connection.createStatement();) {
+			statement.executeQuery("SELECT 1;");
+			LOGGER.info("Successfully connected to the database.");
+		}
+		catch (SQLException exception) {
+			LOGGER.severe("Unable to connect to the database.");
+			exception.printStackTrace();
+			this.datasource = null;
+		}
+	}
 
 	/**
-	 * Creates the Database connection pool backed by HikariCP.
+	 * Creates a new ConnectionPool based on explicitly defined parameters. Note that these parameters are not
+	 * scrutinised, so you should make sure they're valid, or at least valid enough, otherwise expect exceptions or
+	 * logger spam.
 	 *
-	 * @param log
-	 *            The logger to use
-	 * @param user
-	 *            The user to connection as
-	 * @param pass
-	 *            The password to use
-	 * @param host
-	 *            The host to connect to
-	 * @param port
-	 *            The port on the host to connect to
-	 * @param database
-	 *            The database to use
-	 * @param poolSize
-	 *            The maximum size of the connection pool (under 10 recommended)
-	 * @param connectionTimeout
-	 *            The longest a query can run until timeout occurs (1-5s recommended)
-	 * @param idleTimeout
-	 *            The longest a connection can sit idle before recycling (10min recom. check dbms config)
-	 * @param maxLifetime
-	 *            The absolute longest length of time a connection can exist (2hr recom. check dbms config)
+	 * @param user The SQL user to connect as.
+	 * @param pass The SQL user's password.
+	 * @param host The hostname of the database.
+	 * @param port The port to connect via.
+	 * @param driver The jdbc driver to use to connect to the database.
+	 * @param database The specific database to create and modify tables in.
+	 * @param poolSize The maximum size of the connection pool (under 10 recommended)
+	 * @param connectionTimeout The longest a query can run until it times out (1-5 seconds recommended)
+	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
+	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
 	 */
-	public ConnectionPool(Logger log, String user, String pass, String host, int port, String database, int poolSize,
-			long connectionTimeout, long idleTimeout, long maxLifetime) {
-		this.logger = log;
-		if (user != null && host != null && port > 0 && database != null) {
-			HikariConfig config = new HikariConfig();
-			config.setJdbcUrl("jdbc:mysql://" + host + ":" + port + "/" + database);
-			config.setConnectionTimeout(connectionTimeout); // 1000l);
-			config.setIdleTimeout(idleTimeout); // 600000l);
-			config.setMaxLifetime(maxLifetime); // 7200000l);
-			config.setMaximumPoolSize(poolSize); // 10);
-			config.setUsername(user);
-			if (pass != null) {
-				config.setPassword(pass);
-			}
-			this.datasource = new HikariDataSource(config);
+	public ConnectionPool(String user, String pass, String host, int port, String driver, String database,
+						  int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
+		this(new DatabaseCredentials(user, pass, host, port, driver, database,
+				poolSize, connectionTimeout, idleTimeout, maxLifetime));
+	}
 
-			try (Connection connection = getConnection(); Statement statement = connection.createStatement();) {
-				statement.executeQuery("SELECT 1");
-			} catch (SQLException se) {
-				logger.log(Level.SEVERE, "Unable to initialize Database", se);
-				this.datasource = null;
-			}
-		} else {
-			logger.log(Level.SEVERE, "Database not configured and is unavaiable");
-		}
+	/**
+	 * Legacy support constructor to create a connection pool.
+	 *
+	 * @param logger The logger that would be logged to. This can now be null since ConnectionPool now
+	 *     uses its own logger.
+	 * @param user The SQL user to connect as.
+	 * @param pass The SQL user's password.
+	 * @param host The hostname of the database.
+	 * @param port The port to connect via.
+	 * @param database The specific database to create and modify tables in.
+	 * @param poolSize The maximum size of the connection pool (under 10 recommended)
+	 * @param connectionTimeout The longest a query can run until it times out (1-5 seconds recommended)
+	 * @param idleTimeout The longest a connection can sit idle before recycling (10 minutes recommended, check dbms)
+	 * @param maxLifetime The longest a connection can exist in total. (2 hours recommended, check dbms)
+	 *
+	 * @deprecated This is deprecated as it insists on a logger and does not allow you to specify a jdbc driver.
+	 */
+	@Deprecated
+	public ConnectionPool(Logger logger, String user, String pass, String host, int port, String database,
+						  int poolSize, long connectionTimeout, long idleTimeout, long maxLifetime) {
+		this(user, pass, host, port, "mysql", database, poolSize, connectionTimeout, idleTimeout, maxLifetime);
+	}
+
+	/**
+	 * Gets the credentials used for this ConnectionPool.
+	 *
+	 * @return Returns the credentials being used.
+	 */
+	public DatabaseCredentials getCredentials() {
+		return this.credentials;
 	}
 
 	/**
@@ -113,4 +151,5 @@ public class ConnectionPool {
 	HikariDataSource getHikariDataSource() {
 		return datasource;
 	}
+
 }
