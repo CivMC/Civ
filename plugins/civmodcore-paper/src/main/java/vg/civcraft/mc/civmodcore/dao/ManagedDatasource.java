@@ -1,7 +1,5 @@
 package vg.civcraft.mc.civmodcore.dao;
 
-import static vg.civcraft.mc.civmodcore.util.Iteration.collect;
-
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import java.sql.Connection;
@@ -551,7 +549,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		public boolean ignoreErrors;
 		public Callable<Boolean> postMigration;
 		public Migration(boolean ignoreErrors, Callable<Boolean> postMigration, String... migrations) {
-			this.migrations = collect(ArrayList::new, migrations);
+			this.migrations = Iteration.collect(ArrayList::new, migrations);
 			this.ignoreErrors = ignoreErrors;
 			this.postMigration = postMigration;
 		}
@@ -580,7 +578,11 @@ public class ManagedDatasource implements ConfigurationSerializable {
 			LOGGER.warning("Config defined ManagedDatasource did not specify a loaded plugin, is it correct?");
 			return null;
 		}
-		return new ManagedDatasource(plugin, Objects.requireNonNull(DatabaseCredentials.deserialize(data)));
+		if (!ACivMod.class.isAssignableFrom(plugin.getClass())) {
+			LOGGER.warning("ManagedDatasource only supports ACivMod plugins.");
+			return null;
+		}
+		return new ManagedDatasource((ACivMod) plugin, Objects.requireNonNull(DatabaseCredentials.deserialize(data)));
 	}
 
 }
