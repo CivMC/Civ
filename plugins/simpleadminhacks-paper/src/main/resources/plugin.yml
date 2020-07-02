@@ -3,6 +3,7 @@ main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]
 version: ${project.version}
+depend: [CivModCore]
 softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer]
 commands:
   hacks:
@@ -82,7 +83,8 @@ commands:
   debugevent:
     description: Allows debugging of an event and its handlers 
     usage: /<command> full.path.to.event   
-    permission: simpleadmin.debug
+    permission: simpleadmin.eventdebug
+  stats: {} # Defined in (basic) PlayerStats
 permissions:
   simpleadmin.*:
     description: Gives access to all SimpleAdminHacks commands
@@ -98,6 +100,9 @@ permissions:
       simpleadmin.broadcast: true
       simpleadmin.bots: true
       simpleadmin.timings: true
+      simpleadmin.eventdebug: true
+      simpleadmin.stats: true
+      simpleadmin.revive: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -128,7 +133,14 @@ permissions:
     simpleadmin.timings:
       description: Gives the ability to view and manage /...timings commands
       default: op
-    simpleadmin.debug:
+    simpleadmin.eventdebug:
       description: Gives the ability to view and manage /...timings commands
       default: op
+    simpleadmin.stats:
+      description: Gives the ability to view and manage player statistics
+      default: op
+    simpleadmin.revive:
+      description: Gives the ability to revive players
+      default: op
+
 api-version: 1.14

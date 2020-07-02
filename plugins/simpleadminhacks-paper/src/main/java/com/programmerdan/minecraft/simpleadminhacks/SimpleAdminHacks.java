@@ -4,23 +4,21 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.PluginCommand;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
+import vg.civcraft.mc.civmodcore.ACivMod;
 
 /**
  * Wrapper for simple admin hacks, each doing a thing and each configurable.
  * 
  * @author ProgrammerDan
  */
-public class SimpleAdminHacks extends JavaPlugin {
+public class SimpleAdminHacks extends ACivMod {
 	
 	private static SimpleAdminHacks plugin;
 	private SimpleAdminHacksConfig config;
@@ -37,17 +35,12 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 *  creation and registration of all hacks.
 	 */
 	public void onEnable() {
+		useNewCommandHandler = false;
+		super.onEnable();
 		SimpleAdminHacks.plugin = this;
-
-		// Config bootstrap
-		this.saveDefaultConfig();
-		this.reloadConfig();
-		FileConfiguration conf = this.getConfig();
-		try {
-			this.config = new SimpleAdminHacksConfig(this, conf);
-		} catch(InvalidConfigException e) {
-			log(Level.SEVERE, "Failed to load config. Disabling plugin.", e);
-			this.setEnabled(false);
+		this.config = new SimpleAdminHacksConfig(this);
+		if (!this.config.parse()) {
+			setEnabled(false);
 			return;
 		}
 		this.hackManager = new HackManager(this);
@@ -59,10 +52,16 @@ public class SimpleAdminHacks extends JavaPlugin {
 	 */
 	@Override
 	public void onDisable() {
-		hackManager.disableAllHacks();
-		hackManager = null;
-		config = null;
+		if (this.hackManager != null) {
+			this.hackManager.disableAllHacks();
+			this.hackManager = null;
+		}
+		if (this.config != null) {
+			this.config.reset();
+			this.config = null;
+		}
 		SimpleAdminHacks.plugin = null;
+		super.onDisable();
 	}
 
 	/**
@@ -80,28 +79,6 @@ public class SimpleAdminHacks extends JavaPlugin {
 	}
 
 	// ===== debug / logging methods =====
-
-	private static final String debugPrefix = "[DEBUG] ";
-
-	public void debug(String message) {
-		if (!config.isDebug()) return;
-		log(Level.INFO, SimpleAdminHacks.debugPrefix + message);
-	}
-
-	public void debug(String message, Object object) {
-		if (!config.isDebug()) return;
-		log(Level.INFO, SimpleAdminHacks.debugPrefix + message, object);
-	}
-
-	public void debug(String message, Throwable thrown) {
-		if (!config.isDebug()) return;
-		log(Level.INFO, SimpleAdminHacks.debugPrefix + message, thrown);
-	}
-
-	public void debug(String message, Object...objects) {
-		if (!config.isDebug()) return;
-		log(Level.INFO, SimpleAdminHacks.debugPrefix + message, objects);
-	}
 
 	public void log(String message) {
 		getLogger().log(Level.INFO, message);
@@ -194,8 +171,9 @@ public class SimpleAdminHacks extends JavaPlugin {
 		return this.getServer().getOperators();
 	}
 
+	@Override // Make public
 	public void registerListener(Listener listener) {
-		this.getServer().getPluginManager().registerEvents(listener, this);
+		super.registerListener(listener);
 	}
 
 	public World serverGetWorld(String world) {
