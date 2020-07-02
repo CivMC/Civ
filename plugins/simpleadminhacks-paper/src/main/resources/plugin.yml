@@ -3,6 +3,7 @@ main: com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks
 author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]
 version: ${project.version}
+depend: [CivModCore]
 softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer]
 commands:
   hacks:
