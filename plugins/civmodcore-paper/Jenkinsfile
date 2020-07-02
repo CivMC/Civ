@@ -7,7 +7,7 @@ pipeline {
         jdk 'Java 8'
     }
     environment {
-    	civ_dependent_plugins = "NameLayer"
+    	civ_dependent_plugins = "NameLayer ItemExchange"
     }
      stages {
         stage ('Build') {
