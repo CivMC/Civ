@@ -74,12 +74,12 @@ public class JukeAlert extends ACivMod {
 		configManager = new JAConfigManager(this, snitchConfigManager);
 		saveDefaultConfig();
 		dao = new JukeAlertDAO(getLogger(), configManager.getDatabase(getConfig()));
-		loggedActionFactory = new LoggedActionFactory();
 		if (!dao.updateDatabase()) {
 			getLogger().severe("Errors setting up database, shutting down");
 			Bukkit.shutdown();
 			return;
 		}
+		loggedActionFactory = new LoggedActionFactory();
 		SingleBlockAPIView<Snitch> api = ChunkMetaAPI.registerSingleTrackingPlugin(this, dao);
 		if (api == null) {
 			getLogger().severe("Errors setting up chunk metadata API, shutting down");
