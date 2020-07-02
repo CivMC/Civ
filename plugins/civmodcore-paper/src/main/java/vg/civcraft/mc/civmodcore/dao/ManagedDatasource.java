@@ -90,7 +90,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	private static final String CHECK_LAST_MIGRATION = "SELECT current_migration_number FROM managed_plugin_data "
 			+ "WHERE plugin_name = ?;";
 
-	private static final String RECORD_MIGRATION = "INSERT INTO managed_plugin_data"
+	private static final String RECORD_MIGRATION = "INSERT INTO managed_plugin_data "
 			+ "(plugin_name, current_migration_number, last_migration) "
 			+ "VALUES (?, ?, NOW()) ON DUPLICATE KEY UPDATE plugin_name = VALUES(plugin_name), "
 			+ "current_migration_number = VALUES(current_migration_number), "
