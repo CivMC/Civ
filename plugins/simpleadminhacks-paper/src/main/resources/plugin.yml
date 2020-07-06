@@ -103,6 +103,7 @@ permissions:
       simpleadmin.eventdebug: true
       simpleadmin.stats: true
       simpleadmin.revive: true
+      simpleadmin.debugwand: true
     simpleadmin.hacks:
       description: Allows control of the hacks and settings which simpleadminhacks supports
       default: op
@@ -141,6 +142,9 @@ permissions:
       default: op
     simpleadmin.revive:
       description: Gives the ability to revive players
+      default: op
+    simpleadmin.debugwand:
+      description: Gives the ability to create and use debug wands
       default: op
 
 api-version: 1.14
