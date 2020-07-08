@@ -40,8 +40,8 @@ public class FortificationState extends AbstractPlayerState {
 	public void handleBlockPlace(BlockPlaceEvent event) {
 		Player player = event.getPlayer();
 		Block block = event.getBlock();
-		// Prevent double reinforcement (double chests / slabs)
-		if (ReinforcementLogic.getReinforcementProtecting(block) != null) {
+		// Prevent double reinforcement (slabs)
+		if (ReinforcementLogic.getReinforcementAt(block.getLocation()) != null) {
 			return;
 		}
 		if (CitadelUtility.attemptReinforcementCreation(block, type, group, player)) { // true == fail
