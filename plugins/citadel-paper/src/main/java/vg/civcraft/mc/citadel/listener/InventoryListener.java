@@ -37,7 +37,7 @@ public class InventoryListener implements Listener {
 		else if (fromHolder instanceof DoubleChest) {
 			DoubleChest doubleChest = (DoubleChest) fromHolder;
 			Block doubleChestBlock = doubleChest.getLocation().getBlock();
-			Location chestLocation = doubleChestBlock.getLocation(); // Yes this is necessary
+			Location chestLocation = doubleChestBlock.getLocation(); // Yes this is necessary otherwise .5 values
 			Location otherLocation = BlockAPI.getOtherDoubleChestBlock(doubleChestBlock).getLocation();
 			if (destHolder instanceof Hopper) {
 				Location drainedLocation = ((Hopper) destHolder).getLocation().add(0, 1, 0);
