@@ -36,14 +36,12 @@ public class ScoreboardHUD implements Listener {
 	public ScoreboardHUD(FinaleSettingManager settingsMan) {
 		scoreBoards = new ArrayList<>();
 		this.settingsMan = settingsMan;
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 11; i++) {
 			scoreBoards.add(ScoreBoardAPI.createBoard("finaleArmor" + i));
 		}
 		Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
 			for (Player p : Bukkit.getOnlinePlayers()) {
-				if (settingsMan.showArmorDurability(p.getUniqueId())) {
-					updateAllArmor(p);
-				}
+				updateDurabilities(p);
 				if (settingsMan.showPotionEffects(p.getUniqueId())) {
 					updateAllPotionEffects(p);
 				}
@@ -61,11 +59,26 @@ public class ScoreboardHUD implements Listener {
 					return;
 				}
 				if (newValue) {
-					updateAllArmor(p);
+					updateDurabilities(p);
 				} else {
-					for (int i = 0; i < 4; i++) {
+					for (int i = 1; i < 5; i++) {
 						scoreBoards.get(i).set(p, null);
 					}
+				}
+			}
+		});
+		settingsMan.getToolSetting().registerListener(new SettingChangeListener<Boolean>() {
+
+			@Override
+			public void handle(UUID player, PlayerSetting<Boolean> setting, Boolean oldValue, Boolean newValue) {
+				Player p = Bukkit.getPlayer(player);
+				if (p == null) {
+					return;
+				}
+				if (newValue) {
+					updateDurabilities(p);
+				} else {
+					scoreBoards.get(0).set(p, null);
 				}
 			}
 		});
@@ -95,7 +108,7 @@ public class ScoreboardHUD implements Listener {
 				if (newValue) {
 					updateAllPotionEffects(p);
 				} else {
-					for (int i = 4; i < 10; i++) {
+					for (int i = 5; i < 11; i++) {
 						scoreBoards.get(i).set(p, null);
 					}
 				}
@@ -110,9 +123,7 @@ public class ScoreboardHUD implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void playerJoin(PlayerJoinEvent e) {
-		if (settingsMan.showArmorDurability(e.getPlayer().getUniqueId())) {
-			updateAllArmor(e.getPlayer());
-		}
+		updateDurabilities(e.getPlayer());
 		if (settingsMan.showPotionEffects(e.getPlayer().getUniqueId())) {
 			updateAllPotionEffects(e.getPlayer());
 		}
@@ -124,10 +135,11 @@ public class ScoreboardHUD implements Listener {
 	private void updateAllPotionEffects(Player p) {
 		int boardIndex = 4;
 		for (PotionEffect pot : p.getActivePotionEffects()) {
-			if (boardIndex >= 10) {
+			if (boardIndex >= 11) {
 				break;
 			}
-			if (pot.getType().equals(PotionEffectType.NIGHT_VISION) && settingsMan.getGammaBrightSetting().getValue(p)) {
+			if (pot.getType().equals(PotionEffectType.NIGHT_VISION)
+					&& settingsMan.getGammaBrightSetting().getValue(p)) {
 				continue;
 			}
 			String sortingPrefix = ChatColor.BLACK + "|" + (char) ('a' + boardIndex);
@@ -145,7 +157,7 @@ public class ScoreboardHUD implements Listener {
 			scoreBoards.get(boardIndex).set(p, formatted);
 			boardIndex++;
 		}
-		while (boardIndex < 10) {
+		while (boardIndex < 11) {
 			scoreBoards.get(boardIndex).set(p, null);
 			boardIndex++;
 		}
@@ -170,24 +182,27 @@ public class ScoreboardHUD implements Listener {
 		return ChatColor.YELLOW;
 	}
 
-	private void updateAllArmor(Player p) {
-		scoreBoards.get(0).set(p, updateArmorPiece(p, "Tool", 0, -1));
-		scoreBoards.get(1).set(p, updateArmorPiece(p, "Helmet", 1, 3));
-		scoreBoards.get(2).set(p, updateArmorPiece(p, "Chestplate", 2, 2));
-		scoreBoards.get(3).set(p, updateArmorPiece(p, "Leggings", 3, 1));
-		scoreBoards.get(4).set(p, updateArmorPiece(p, "Boots", 4, 0));
+	private void updateDurabilities(Player p) {
+		if (settingsMan.showToolDurability(p.getUniqueId())) {
+			scoreBoards.get(0).set(p, updateArmorPiece(p, "Tool", 0, -1));
+		}
+		if (settingsMan.showArmorDurability(p.getUniqueId())) {
+			scoreBoards.get(1).set(p, updateArmorPiece(p, "Helmet", 1, 3));
+			scoreBoards.get(2).set(p, updateArmorPiece(p, "Chestplate", 2, 2));
+			scoreBoards.get(3).set(p, updateArmorPiece(p, "Leggings", 3, 1));
+			scoreBoards.get(4).set(p, updateArmorPiece(p, "Boots", 4, 0));
+		}
 	}
 
 	private String updateArmorPiece(Player p, String prefix, int order, int slot) {
 		if (!settingsMan.showArmorDurability(p.getUniqueId())) {
 			return null;
 		}
-		
+
 		ItemStack is;
 		if (slot > 0) {
 			is = p.getInventory().getItemInMainHand();
-		}
-		else {
+		} else {
 			is = p.getInventory().getArmorContents()[slot];
 		}
 		if (is == null) {

@@ -14,6 +14,7 @@ public class FinaleSettingManager {
 	private BooleanSetting actionBarPearlCooldown;
 	private BooleanSetting sideBarPearlCooldown;
 	private BooleanSetting showArmor;
+	private BooleanSetting showTool;
 	private BooleanSetting showPotionEffects;
 	private BooleanSetting permanentNightVision;
 
@@ -46,8 +47,11 @@ public class FinaleSettingManager {
 				"Should pearl cooldown be shown on the sidebar");
 		PlayerSettingAPI.registerSetting(sideBarPearlCooldown, menu);
 		
-		showArmor = new BooleanSetting(Finale.getPlugin(), true, "Show armor durabiltiy", "finaleArmorDurabilitySidebar","Should the durability of your word armor be shown in the scorebard");
+		showArmor = new BooleanSetting(Finale.getPlugin(), true, "Show armor durabiltiy", "finaleArmorDurabilitySidebar","Should the durability of your worn armor be shown in the scorebard");
 		PlayerSettingAPI.registerSetting(showArmor, menu);
+		
+		showTool = new BooleanSetting(Finale.getPlugin(), true, "Show tool durabiltiy", "finaleToolDurabilitySidebar","Should the durability of your held tool be shown in the scorebard");
+		PlayerSettingAPI.registerSetting(showTool, menu);
 		
 		showPotionEffects = new BooleanSetting(Finale.getPlugin(), true, "Show active potion effects", "finaleShowPotionsSidebar","Should active potion effects be shown in the scorebard");
 		PlayerSettingAPI.registerSetting(showPotionEffects, menu);
@@ -65,6 +69,10 @@ public class FinaleSettingManager {
 		return showArmor;
 	}
 	
+	public BooleanSetting getToolSetting() {
+		return showTool;
+	}
+	
 	public BooleanSetting getPotionSetting() {
 		return showPotionEffects;
 	}
@@ -79,6 +87,10 @@ public class FinaleSettingManager {
 	
 	public boolean showArmorDurability(UUID uuid) {
 		return showArmor.getValue(uuid);
+	}
+	
+	public boolean showToolDurability(UUID uuid) {
+		return showTool.getValue(uuid);
 	}
 	
 	public boolean showPotionEffects(UUID uuid) {
