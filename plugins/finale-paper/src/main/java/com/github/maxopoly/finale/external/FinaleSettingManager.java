@@ -2,11 +2,16 @@ package com.github.maxopoly.finale.external;
 
 import java.util.UUID;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
+
 import com.github.maxopoly.finale.Finale;
 
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.IntegerSetting;
 
 public class FinaleSettingManager {
 
@@ -17,6 +22,8 @@ public class FinaleSettingManager {
 	private BooleanSetting showTool;
 	private BooleanSetting showPotionEffects;
 	private BooleanSetting permanentNightVision;
+	private BooleanSetting toolProtection;
+	private IntegerSetting toolProtectionThreshhold;
 
 	public FinaleSettingManager() {
 		initSettings();
@@ -55,10 +62,24 @@ public class FinaleSettingManager {
 		
 		showPotionEffects = new BooleanSetting(Finale.getPlugin(), true, "Show active potion effects", "finaleShowPotionsSidebar","Should active potion effects be shown in the scorebard");
 		PlayerSettingAPI.registerSetting(showPotionEffects, menu);
+		
+		toolProtection = new BooleanSetting(Finale.getPlugin(), true, "Protect from breaking enchanted tools", "finaleToolProtection","Do you want to be given mining fatigue if mining with a low durability tool");
+		PlayerSettingAPI.registerSetting(toolProtection, menu);
+		
+		toolProtectionThreshhold = new BoundedIntegerSetting(Finale.getPlugin(), 10, "Threshhold for tool protection", "finaleToolProtectionThreshhold",new ItemStack(Material.DIAMOND_PICKAXE), "Durability at which break protection should trigger", false, 1, 2000);
+		PlayerSettingAPI.registerSetting(toolProtectionThreshhold, menu);
 	}
 	
 	public boolean setVanillaPearlCooldown(UUID uuid) {
 		return vanillaPearlCooldown.getValue(uuid);
+	}
+	
+	public int getToolProtectionThreshhold(UUID uuid) {
+		return toolProtectionThreshhold.getValue(uuid);
+	}
+	
+	public boolean useToolProtection(UUID uuid) {
+		return toolProtection.getValue(uuid);
 	}
 	
 	public BooleanSetting getGammaBrightSetting() {

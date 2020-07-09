@@ -11,6 +11,7 @@ import com.github.maxopoly.finale.listeners.EnchantmentDisableListener;
 import com.github.maxopoly.finale.listeners.PearlCoolDownListener;
 import com.github.maxopoly.finale.listeners.PlayerListener;
 import com.github.maxopoly.finale.listeners.PotionListener;
+import com.github.maxopoly.finale.listeners.ToolProtectionListener;
 import com.github.maxopoly.finale.listeners.VelocityFixListener;
 import com.github.maxopoly.finale.listeners.WeaponModificationListener;
 import com.github.maxopoly.finale.overlay.ScoreboardHUD;
@@ -81,6 +82,7 @@ public class Finale extends ACivMod {
 		Bukkit.getPluginManager().registerEvents(new VelocityFixListener(config.getVelocityHandler()), this);
 		Bukkit.getPluginManager().registerEvents(new DamageListener(config.getDamageModifiers()), this);
 		Bukkit.getPluginManager().registerEvents(new ScoreboardHUD(settingsManager), this);
+		Bukkit.getPluginManager().registerEvents(new ToolProtectionListener(settingsManager), this);
 	}
 
 	public void reload() {
