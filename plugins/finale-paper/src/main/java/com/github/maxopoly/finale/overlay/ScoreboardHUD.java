@@ -171,17 +171,25 @@ public class ScoreboardHUD implements Listener {
 	}
 
 	private void updateAllArmor(Player p) {
-		scoreBoards.get(0).set(p, updateArmorPiece(p, "Helmet", 0, 3));
-		scoreBoards.get(1).set(p, updateArmorPiece(p, "Chestplate", 1, 2));
-		scoreBoards.get(2).set(p, updateArmorPiece(p, "Leggings", 2, 1));
-		scoreBoards.get(3).set(p, updateArmorPiece(p, "Boots", 3, 0));
+		scoreBoards.get(0).set(p, updateArmorPiece(p, "Tool", 0, -1));
+		scoreBoards.get(1).set(p, updateArmorPiece(p, "Helmet", 1, 3));
+		scoreBoards.get(2).set(p, updateArmorPiece(p, "Chestplate", 2, 2));
+		scoreBoards.get(3).set(p, updateArmorPiece(p, "Leggings", 3, 1));
+		scoreBoards.get(4).set(p, updateArmorPiece(p, "Boots", 4, 0));
 	}
 
 	private String updateArmorPiece(Player p, String prefix, int order, int slot) {
 		if (!settingsMan.showArmorDurability(p.getUniqueId())) {
 			return null;
 		}
-		ItemStack is = p.getInventory().getArmorContents()[slot];
+		
+		ItemStack is;
+		if (slot > 0) {
+			is = p.getInventory().getItemInMainHand();
+		}
+		else {
+			is = p.getInventory().getArmorContents()[slot];
+		}
 		if (is == null) {
 			return null;
 		}
