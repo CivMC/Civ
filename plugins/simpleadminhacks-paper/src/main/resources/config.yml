@@ -275,3 +275,5 @@ hacks:
     enabled: true
   EventHandlerList:
     enabled: true
+  DebugWand:
+    enabled: true
