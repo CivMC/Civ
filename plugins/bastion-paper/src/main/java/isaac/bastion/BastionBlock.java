@@ -435,6 +435,10 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		return group != null ? group.getName() : "";
 	}
+	
+	public Group getGroup () {
+		return GroupManager.getGroup(this.listGroupId);
+	}
 
 	public String getStrengthText() {
 		double fractionOfMaturityTime = 0;

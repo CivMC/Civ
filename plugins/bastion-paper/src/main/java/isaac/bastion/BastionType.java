@@ -54,6 +54,8 @@ public class BastionType {
 	private int proximityDamageRange;
 	private double proximityDamageFactor;
 	
+	private String overLayName;
+	
 	public BastionType(
 			String name,
 			String itemName,
@@ -89,7 +91,8 @@ public class BastionType {
 			boolean blockReinforcements,
 			boolean destroyOnRemoveWhileImmature,
 			int proximityDamageRange,
-			double proximityDamageFactor
+			double proximityDamageFactor,
+			String overLayName
 	) {
 		this.name = name;
 		this.material = material;
@@ -127,6 +130,7 @@ public class BastionType {
 		this.destroyOnRemoveWhileImmature = destroyOnRemoveWhileImmature;
 		this.proximityDamageFactor = proximityDamageFactor;
 		this.proximityDamageRange = proximityDamageRange;
+		this.overLayName = overLayName;
 		
 		maxRadius = effectRadius > maxRadius ? effectRadius : maxRadius;
 	}
@@ -189,6 +193,13 @@ public class BastionType {
 	 */
 	public boolean canPearlOut() {
 		return allowPearlingOut;
+	}
+	
+	/**
+	 * @return Name to use in HUD to describe type
+	 */
+	public String getOverlayName() {
+		return overLayName;
 	}
 
 	/**
@@ -566,11 +577,12 @@ public class BastionType {
 		boolean explodeOnBlock = config.getBoolean("elytra.explodeOnBlock");
 		double explodeOnBlockStrength = config.getDouble("elytra.explodeOnBlockStrength");
 		boolean destroyOnRemoveWhileImmature = config.getBoolean("destroyOnRemoveWhileImmature", true);
+		String overlayName = config.getString("overlay_name");
 		return new BastionType(name, itemName, material, lore, shortName, square, effectRadius, includeY, startScaleFactor, finalScaleFactor, warmupTime,
 				erosionTime, placementCooldown, destroyOnRemove, blockPearls, blockMidair, scaleFactor, requireMaturity, consumeOnBlock, 
 				blocksToErode, blockElytra, destroyElytra, damageElytra, elytraScale, elytraRequireMature, explodeOnBlock, 
 				explodeOnBlockStrength, damageFirstBastion, regenTime, onlyDirectDestroy, allowPearlingOut, blockReinforcements, destroyOnRemoveWhileImmature,
-				proximityDamageRange, proximityDamageFactor);
+				proximityDamageRange, proximityDamageFactor, overlayName);
 	}
 
 	@Override
