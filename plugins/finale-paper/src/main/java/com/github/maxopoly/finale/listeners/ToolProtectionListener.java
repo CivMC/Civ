@@ -28,6 +28,9 @@ public class ToolProtectionListener implements Listener {
 			return;
 		}
 		ItemStack is = e.getPlayer().getInventory().getItemInMainHand();
+		if (is.getEnchantments().isEmpty()) {
+			return;
+		}
 		Damageable meta = ItemAPI.getDamageable(is);
 		if (meta == null) {
 			return;
