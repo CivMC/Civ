@@ -25,6 +25,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
+import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -213,7 +214,7 @@ public class HumbugBatchOne extends BasicHack {
 		if (!disableMiningFatigue) {
 			return;
 		}
-		if (event.getAction() == org.bukkit.event.entity.EntityPotionEffectEvent.Action.REMOVED) {
+		if (event.getAction() == org.bukkit.event.entity.EntityPotionEffectEvent.Action.REMOVED || event.getCause() == Cause.PLUGIN) {
 			return;
 		}
 		if (event.getModifiedType() == PotionEffectType.SLOW_DIGGING) {
