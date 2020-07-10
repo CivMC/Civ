@@ -119,14 +119,14 @@ public class ModeListener implements Listener {
 		}
 		if (!alliedBastions.isEmpty() && !enemyBastions.isEmpty()) {
 			updateDisplaySetting(player,
-					String.format("%s%sOverlapping Bastions %s[%s] %s[%s]", ChatColor.YELLOW, ChatColor.BOLD,
+					String.format("%s%sConflict Bastion %s[%s] %s[%s]", ChatColor.YELLOW, ChatColor.BOLD,
 							ChatColor.GREEN, buildBastionTypeList(alliedBastions), ChatColor.RED,
 							buildBastionTypeList(enemyBastions)));
 			return;
 		}
 		if (!alliedBastions.isEmpty()) {
 			updateDisplaySetting(player,
-					String.format("%sFriendly Bastion [%s]", ChatColor.GREEN, buildBastionTypeList(alliedBastions)));
+					String.format("%sAlly Bastion [%s]", ChatColor.GREEN, buildBastionTypeList(alliedBastions)));
 			return;
 		}
 		updateDisplaySetting(player, String.format("%s%sEnemy Bastion [%s]", ChatColor.RED, ChatColor.BOLD,
