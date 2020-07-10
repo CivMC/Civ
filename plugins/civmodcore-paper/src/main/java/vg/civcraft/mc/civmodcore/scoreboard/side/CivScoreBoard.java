@@ -79,6 +79,9 @@ public class CivScoreBoard {
 		} else {
 			ScoreBoardAPI.adjustScore(p.getUniqueId(), 1);
 		}
+		if (newText.length() > 40) {
+			newText = newText.substring(0, 40);
+		}
 		Score score = getObjective(p).getScore(newText);
 		score.setScore(0);
 	}
