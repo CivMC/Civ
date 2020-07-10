@@ -200,7 +200,7 @@ public class ScoreboardHUD implements Listener {
 		}
 
 		ItemStack is;
-		if (slot > 0) {
+		if (slot < 0) {
 			is = p.getInventory().getItemInMainHand();
 		} else {
 			is = p.getInventory().getArmorContents()[slot];
