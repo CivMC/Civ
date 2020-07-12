@@ -15,13 +15,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.external.FinaleSettingManager;
 
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.PotionAPI;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
@@ -133,7 +133,7 @@ public class ScoreboardHUD implements Listener {
 	}
 
 	private void updateAllPotionEffects(Player p) {
-		int boardIndex = 4;
+		int boardIndex = 5;
 		for (PotionEffect pot : p.getActivePotionEffects()) {
 			if (boardIndex >= 11) {
 				break;
@@ -195,10 +195,16 @@ public class ScoreboardHUD implements Listener {
 	}
 
 	private String updateArmorPiece(Player p, String prefix, int order, int slot) {
-		if (!settingsMan.showArmorDurability(p.getUniqueId())) {
-			return null;
+		if (slot >= 0) {
+			if (!settingsMan.showArmorDurability(p.getUniqueId())) {
+				return null;
+			}
 		}
-
+		else {
+			if (!settingsMan.showToolDurability(p.getUniqueId())) {
+				return null;
+			}
+		}
 		ItemStack is;
 		if (slot < 0) {
 			is = p.getInventory().getItemInMainHand();
@@ -208,12 +214,12 @@ public class ScoreboardHUD implements Listener {
 		if (is == null) {
 			return null;
 		}
-		ItemMeta im = is.getItemMeta();
-		if (!(im instanceof Damageable)) {
+		Damageable damageable = ItemAPI.getDamageable(is);
+		if (damageable == null) {
 			return null;
 		}
 		int maxDura = is.getType().getMaxDurability();
-		int damage = ((Damageable) im).getDamage();
+		int damage = damageable.getDamage();
 		int remainingHealth = maxDura - damage;
 		float damagedRatio = ((float) remainingHealth) / maxDura;
 		String sortingPrefix = ChatColor.BLACK + "|" + order;
