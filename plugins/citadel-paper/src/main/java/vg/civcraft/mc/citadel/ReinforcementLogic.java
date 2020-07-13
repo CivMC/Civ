@@ -96,10 +96,15 @@ public final class ReinforcementLogic {
 			case CHEST:
 			case TRAPPED_CHEST: {
 				Chest chest = (Chest) block.getBlockData();
+				BlockFace facing = chest.getFacing();
 				switch (chest.getType()) {
-					case LEFT:
+					case LEFT: {
+						BlockFace face = BlockAPI.turnClockwise(facing);
+						return getReinforcementAt(block.getLocation().add(face.getDirection()));
+					}
 					case RIGHT: {
-						return getReinforcementAt(BlockAPI.getOtherDoubleChestBlock(block).getLocation());
+						BlockFace face = BlockAPI.turnAntiClockwise(facing);
+						return getReinforcementAt(block.getLocation().add(face.getDirection()));
 					}
 					default: {
 						return null;
