@@ -17,6 +17,8 @@ commands:
         permission: finale.cmv
     gamma:
         description: Toggles night vision
+    cardinal:
+        description: Changes your direction into a cardinal direction
 permissions:
     finale.op:
         default: op
