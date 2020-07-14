@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-import java.util.LinkedList;
+import java.util.Arrays;
 import java.util.List;
 
 @CivCommand(id = "cardinal")
@@ -15,51 +15,48 @@ public class CardinalCommand extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender commandSender, String[] args) {
-		Player p = (Player) commandSender;
-		Location currLocation = p.getLocation();
+		Player player = (Player) commandSender;
+		Location currLocation = player.getLocation();
 
 		if(args.length == 0){
-
 			double newYaw = Math.rint(currLocation.getYaw() / 45) * 45;
-
-			p.teleport(new Location(p.getWorld(), currLocation.getX(), currLocation.getY(),
+			player.teleport(new Location(player.getWorld(), currLocation.getX(), currLocation.getY(),
 					currLocation.getZ(), (float) newYaw, currLocation.getPitch()));
 			return true;
 		}
 
 		String direction = args[0].toUpperCase();
-		Location l = new Location(p.getWorld(), currLocation.getX(), currLocation.getY(), currLocation.getZ());
+		Location location = new Location(player.getWorld(), currLocation.getX(), currLocation.getY(), currLocation.getZ());
 
 		switch(direction){
 			case "UP":
-				l.setPitch(-90f);
+				location.setPitch(-90f);
 				break;
 			case "DOWN":
-				l.setPitch(90f);
+				location.setPitch(90f);
 				break;
 			case "SOUTH": case "180":
-				l.setYaw(0f);
+				location.setYaw(0f);
 				break;
 			case "EAST": case "90":
-				l.setYaw(-90f);
+				location.setYaw(90f);
 				break;
 			case "NORTH": case "0":
-				l.setYaw(180f);
+				location.setYaw(180f);
 				break;
 			case "WEST": case "-90": case "270":
-				l.setYaw(90f);
+				location.setYaw(-90f);
 				break;
 			default:
-				p.sendMessage(ChatColor.WHITE + "Cardinal direction required. You can also use degrees, or 'up' or 'down'. B");
+				player.sendMessage(ChatColor.RED + "Cardinal direction required. You can also use degrees, or 'up' or 'down'.");
 				return true;
 		}
-
-		p.teleport(l);
+		player.teleport(location);
 		return true;
 	}
 
 	@Override
-	public List<String> tabComplete(CommandSender commandSender, String[] strings) {
-		return new LinkedList<>();
+	public List<String> tabComplete(CommandSender commandSender, String[] args) {
+		return doTabComplete(args[0], Arrays.asList("NORTH","WEST","EAST","SOUTH", "UP","DOWN"), false);
 	}
 }
