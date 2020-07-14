@@ -7,27 +7,27 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 @CivCommand(id = "cardinal")
 public class CardinalCommand extends StandaloneCommand {
 
-	private static final String[] DIRECTIONS = {"NORTH", "EAST", "SOUTH", "WEST", "UP", "DOWN"};
-
 	@Override
 	public boolean execute(CommandSender commandSender, String[] args) {
 		Player p = (Player) commandSender;
+		Location currLocation = p.getLocation();
 
 		if(args.length == 0){
-			commandSender.sendMessage(ChatColor.WHITE + "Cardinal direction required. " +
-					"You can also use degrees, or 'up' or 'down'. A");
+
+			double newYaw = Math.rint(currLocation.getYaw() / 45) * 45;
+
+			p.teleport(new Location(p.getWorld(), currLocation.getX(), currLocation.getY(),
+					currLocation.getZ(), (float) newYaw, currLocation.getPitch()));
 			return true;
 		}
 
 		String direction = args[0].toUpperCase();
-		Location currLocation = p.getLocation();
 		Location l = new Location(p.getWorld(), currLocation.getX(), currLocation.getY(), currLocation.getZ());
 
 		switch(direction){
@@ -60,6 +60,6 @@ public class CardinalCommand extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender commandSender, String[] strings) {
-		return new ArrayList<>(Arrays.asList(DIRECTIONS));
+		return new LinkedList<>();
 	}
 }
