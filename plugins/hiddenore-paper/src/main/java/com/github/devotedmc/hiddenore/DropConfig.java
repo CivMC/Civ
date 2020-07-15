@@ -31,6 +31,7 @@ public class DropConfig {
 		this.transformIfAble = transformIfAble;
 		this.dropIfTransformFails = dropIfTransformFails;
 		this.maxDropsIfTransformFails = maxDropsIfTransformFails;
+		this.prefix = prefix;
 		this.limits = limits;
 		this.biomeLimits = new HashMap<String, DropLimitsConfig>();
 		this.veinNature = veinNature;
