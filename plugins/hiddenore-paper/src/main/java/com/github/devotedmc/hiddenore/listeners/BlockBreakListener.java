@@ -386,9 +386,11 @@ public class BlockBreakListener implements Listener {
 	
 	private boolean alertUser(Player player, BlockConfig blockConfig, String dropName, int amount, String itemName){
 		if (blockConfig.hasCustomPrefix(dropName)) {
-			StringBuffer customAlert = new StringBuffer(blockConfig.getPrefix(dropName));
+			StringBuilder customAlert = new StringBuilder(blockConfig.getPrefix(dropName));
 		
-			if(Config.isListDrops()) customAlert.append(" ").append(amount).append(" ").append(itemName);
+			if(Config.isListDrops()){
+				customAlert.append(" ").append(amount).append(" ").append(itemName);
+			}
 			player.sendMessage(ChatColor.GOLD + customAlert.toString());
 			return true;
 		}
