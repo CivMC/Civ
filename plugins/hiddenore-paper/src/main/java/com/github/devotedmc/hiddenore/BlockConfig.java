@@ -114,6 +114,7 @@ public class BlockConfig {
 									Double.toString(tc == null ? 1.0 : tc.getDropChanceModifier()),
 									localChance, (tc == null ? null : tc.toString())});*/
 				}
+				if(localChance < 0)continue;
 				
 				if (dice >= cumChance && dice < cumChance + localChance) {
 					return dce.getKey();
