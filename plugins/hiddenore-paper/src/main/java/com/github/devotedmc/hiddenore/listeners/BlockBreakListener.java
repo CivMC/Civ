@@ -297,23 +297,10 @@ public class BlockBreakListener implements Listener {
 			}
 			
 			if (Config.isAlertUser()) {
-				if (blockConfig.hasCustomPrefix(dropName)) {
-					StringBuilder customAlerts = new StringBuilder(blockConfig.getPrefix(dropName));
-
-					for (ItemStack item : hoe.getDrops()) {
-						String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
-								item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
-						customAlerts.append(" ").append(item.getAmount()).append(" ").append(name);
-					}
-					player.sendMessage(ChatColor.GOLD + customAlerts.toString());
-				} else {
-					if (Config.isListDrops()) {
-						for (ItemStack item : hoe.getDrops()) {
-							String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
-									item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
-							alertBuffer.append(" ").append(item.getAmount()).append(" ").append(name).append(",");
-						}
-					}
+				for (ItemStack item : hoe.getDrops()) {
+					String name = item.hasItemMeta() && item.getItemMeta().hasDisplayName() ? 
+							item.getItemMeta().getDisplayName() : Config.getPrettyName(item.getType().name());
+					alertUser(player, blockConfig, dropName, item.getAmount(), name);
 				}
 			}
 		} else {
@@ -374,7 +361,8 @@ public class BlockBreakListener implements Listener {
 				maxWalk --;
 			}
 
-			if (xform.getAmount() - cPlace < 1 && dropConfig.dropIfTransformFails) { // total failure.
+			int placed = xform.getAmount() - cPlace;
+			if (placed < 1 && dropConfig.dropIfTransformFails) { // total failure.
 				ItemStack toDrop = xform.clone();
 				toDrop.setAmount(Math.min(xform.getAmount(), dropConfig.maxDropsIfTransformFails));
 				final List<ItemStack> newDrops = new ArrayList<ItemStack>();
@@ -386,25 +374,27 @@ public class BlockBreakListener implements Listener {
 						
 				log("STAT: Player {0} at {1} broke {2} - replacing with {3} {4} as {6}", 
 						player.getDisplayName(), player.getLocation(), blockName, 
-						xform.getAmount()- cPlace, name, expressed);
+						placed, name, expressed);
 				
 				// Anything to tell anyone about?
-				if (cPlace < xform.getAmount() && Config.isAlertUser()) {
-					if (blockConfig.hasCustomPrefix(dropName)) {
-						StringBuffer customAlerts = new StringBuffer(blockConfig.getPrefix(dropName));
-						
-						customAlerts.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
-								name).append(" nearby"); // TODO: Replace with configured suffix
-						player.sendMessage(ChatColor.GOLD + customAlerts.toString());
-					} else {
-						if (Config.isListDrops()) {
-							alertBuffer.append(" ").append(xform.getAmount() - cPlace).append(" ").append(
-									name).append(" nearby,"); // TODO: Replace with configured suffix
-						}
-					}
+				if (placed > 0 && Config.isAlertUser()) {
+					alertUser(player, blockConfig, dropName, placed, name);
 				}
 			}
 		}
+	}
+	
+	private boolean alertUser(Player player, BlockConfig blockConfig, String dropName, int amount, String itemName){
+		if (blockConfig.hasCustomPrefix(dropName)) {
+			StringBuilder customAlert = new StringBuilder(blockConfig.getPrefix(dropName));
+		
+			if(Config.isListDrops()){
+				customAlert.append(" ").append(amount).append(" ").append(itemName);
+			}
+			player.sendMessage(ChatColor.GOLD + customAlert.toString());
+			return true;
+		}
+		return false;
 	}
 	
 	private static BlockFace[] visibleFaces = new BlockFace[] {
