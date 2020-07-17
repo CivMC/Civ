@@ -95,7 +95,7 @@ public class FactoryMaterialReturnRecipe extends InputRecipe {
 						}
 						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.CRAFTING_TABLE));
 						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.FURNACE));
-						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack(Material.CHEST));
+						dropLoc.getWorld().dropItemNaturally(dropLoc, new ItemStack((fccf.getChest()).getType()));
 					}
 				}, 1L);
 		return true;

@@ -213,7 +213,8 @@ public class FileHandler {
 					blocks.remove(center);
 					sortedList.add(center);
 					//we cant guarantee that this will work, it might very well fail for partially broken factories, but it's the best thing I got
-						if (blocks.get(0).getBlock().getType() == Material.CHEST) {
+						if (blocks.get(0).getBlock().getType() == Material.CHEST
+								|| blocks.get(0).getBlock().getType() == Material.TRAPPED_CHEST) {
 							sortedList.add(blocks.get(1));
 							sortedList.add(blocks.get(0));
 						}

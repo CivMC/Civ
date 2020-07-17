@@ -84,6 +84,7 @@ public class FactoryModManager {
 		possibleInteractionBlock.add(Material.CRAFTING_TABLE);
 		possibleInteractionBlock.add(Material.FURNACE);
 		possibleInteractionBlock.add(Material.CHEST);
+		possibleInteractionBlock.add(Material.TRAPPED_CHEST);
 
 		// sorter
 		possibleCenterBlocks.add(Material.DROPPER);

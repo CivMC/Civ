@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
@@ -108,7 +109,8 @@ public class Upgraderecipe extends InputRecipe {
 			ItemAPI.addLore(fur, ChatColor.YELLOW + rec.getName());
 		}
 		res.add(fur);
-		ItemStack che = new ItemStack(Material.CHEST);
+
+		ItemStack che = new ItemStack((fccf.getChest()).getType());
 		ItemAPI.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
 				ChatColor.LIGHT_PURPLE + "revert upgrades!");
 		ItemAPI.setDisplayName(che, egg.getName());
