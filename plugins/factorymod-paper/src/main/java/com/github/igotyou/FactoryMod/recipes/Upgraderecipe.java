@@ -108,7 +108,6 @@ public class Upgraderecipe extends InputRecipe {
 			ItemAPI.addLore(fur, ChatColor.YELLOW + rec.getName());
 		}
 		res.add(fur);
-
 		ItemStack che = new ItemStack(Material.CHEST);
 		ItemAPI.setLore(che, ChatColor.LIGHT_PURPLE + "Careful, you can not",
 				ChatColor.LIGHT_PURPLE + "revert upgrades!");
