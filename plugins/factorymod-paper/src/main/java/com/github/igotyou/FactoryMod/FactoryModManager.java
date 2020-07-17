@@ -249,8 +249,8 @@ public class FactoryModManager {
 							}
 						} else {
 							p.sendMessage(ChatColor.RED + "There is no factory with the given creation materials");
-//							FactoryModGUI gui = new FactoryModGUI(p);
-//							gui.showFactoryOverview(true);
+							FactoryModGUI gui = new FactoryModGUI(p);
+							gui.showFactoryOverview(true);
 						}
 					}
 					return;
