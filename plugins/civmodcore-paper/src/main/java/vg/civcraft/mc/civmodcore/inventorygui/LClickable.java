@@ -23,6 +23,13 @@ public class LClickable extends Clickable {
 		ItemAPI.setDisplayName(this.item, name);
 	}
 	
+	public LClickable(Material mat, String name, Consumer<Player> clickFunction, String ... lore) {
+		this(mat, name, clickFunction);
+		if (lore.length > 0) {
+			ItemAPI.addLore(this.item, lore);
+		}
+	}
+	
 	public LClickable(Material mat, Consumer<Player> clickFunction) {
 		this(new ItemStack(mat), clickFunction);
 	}

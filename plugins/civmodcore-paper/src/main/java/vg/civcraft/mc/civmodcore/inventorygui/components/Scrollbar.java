@@ -49,6 +49,12 @@ public class Scrollbar extends InventoryComponent {
 	public void setForwardClickSlot(int forwardClickSlot) {
 		this.forwardClickSlot = forwardClickSlot;
 	}
+	
+	public void addItem(IClickable toAdd) {
+		this.unpaginatedContent.add(toAdd);
+		this.totalPages = calculatePageAmount();
+		rebuild();
+	}
 
 	private int calculatePageAmount() {
 		int contentAmount = unpaginatedContent.size();
