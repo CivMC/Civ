@@ -110,8 +110,8 @@ public class FactoryModListener implements Listener {
 					c.getInteractionManager().rightClick(player, block, bf);
 				} else {
 					// check if chest is other half of double chest
-					if (block.getType() == Material.CHEST) {
-						for (Block b : MultiBlockStructure.searchForBlockOnSides(block, Material.CHEST)) {
+					if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+						for (Block b : MultiBlockStructure.searchForBlockOnSides(block, block.getType())) {
 							Factory f = manager.getFactoryAt(b);
 							if (f != null) {
 								f.getInteractionManager().rightClick(player, b, bf);
@@ -129,8 +129,8 @@ public class FactoryModListener implements Listener {
 						}
 					} else {
 						// check if chest is other half of double chest
-						if (block.getType() == Material.CHEST) {
-							for (Block b : MultiBlockStructure.searchForBlockOnAllSides(block, Material.CHEST)) {
+						if (block.getType() == Material.CHEST || block.getType() == Material.TRAPPED_CHEST) {
+							for (Block b : MultiBlockStructure.searchForBlockOnAllSides(block, block.getType())) {
 								Factory f = manager.getFactoryAt(b);
 								if (f != null) {
 									f.getInteractionManager().leftClick(player, b, bf);

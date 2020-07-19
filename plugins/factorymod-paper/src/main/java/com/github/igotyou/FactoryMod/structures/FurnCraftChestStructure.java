@@ -24,7 +24,10 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 	public FurnCraftChestStructure(Block center) {
 		if (center.getType() == Material.CRAFTING_TABLE) {
 			craftingTable = center.getLocation();
-			for (Block b : searchForBlockOnAllSides(center, Material.CHEST)) {
+			LinkedList<Block> chestBlocks = new LinkedList<>();
+			chestBlocks.addAll(searchForBlockOnAllSides(center, Material.CHEST));
+			chestBlocks.addAll(searchForBlockOnAllSides(center, Material.TRAPPED_CHEST));
+			for (Block b : chestBlocks) {
 				switch (center.getFace(b)) {
 				case SOUTH:
 					if (center.getRelative(BlockFace.NORTH).getType() == Material.FURNACE) {
@@ -93,7 +96,8 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 				&& furnace != null
 				&& furnace.getBlock().getType() == Material.FURNACE
 				&& chest != null
-				&& chest.getBlock().getType() == Material.CHEST;
+				&& (chest.getBlock().getType() == Material.CHEST
+				|| chest.getBlock().getType() == Material.TRAPPED_CHEST);
 	}
 
 	public boolean isComplete() {
@@ -114,13 +118,16 @@ public class FurnCraftChestStructure extends MultiBlockStructure {
 		// full inventory this is needed to load the chunk
 		MultiBlockStructure.searchForBlockOnAllSides(chest.getBlock(),
 				Material.CHEST);
+		MultiBlockStructure.searchForBlockOnAllSides(chest.getBlock(),
+				Material.TRAPPED_CHEST);
 		return chest.getBlock();
 	}
 
 	public boolean relevantBlocksDestroyed() {
 		return craftingTable.getBlock().getType() != Material.CRAFTING_TABLE
 				&& furnace.getBlock().getType() != Material.FURNACE
-				&& chest.getBlock().getType() != Material.CHEST;
+				&& chest.getBlock().getType() != Material.CHEST
+				&& chest.getBlock().getType() != Material.TRAPPED_CHEST;
 	}
 
 	public List<Block> getRelevantBlocks() {

@@ -87,7 +87,7 @@ public class FurnCraftChestFactory extends Factory {
 	 *         should be
 	 */
 	public Inventory getInventory() {
-		if (getChest().getType() != Material.CHEST) {
+		if (getChest().getType() != Material.CHEST && getChest().getType() != Material.TRAPPED_CHEST) {
 			return null;
 		}
 		Chest chestBlock = (Chest) (getChest().getState());
