@@ -287,11 +287,6 @@ final class CorePearlManager implements PearlManager {
 			}
 
 			PearlHolder holder = pearl.getHolder();
-			if(holder != null && holder.isBlock() && disallowedWorlds.contains(holder.getLocation().getWorld().getName())) {
-				pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
-				pearlsToFree.add(pearl);
-			}
-
 			if (decayTimeout > 0 && pearl.getPlayer() != null) {
 				// player is online now!
 				pearl.setLastOnline(new Date());
@@ -299,10 +294,13 @@ final class CorePearlManager implements PearlManager {
 
 			// convert timeout to milliseconds and compare against last time online.
 			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
+				pearlApi.log("Applying decay to pearl health");
 				PearlDecayEvent e = new PearlDecayEvent(pearl, decayAmount);
 				Bukkit.getPluginManager().callEvent(e);
 				if (!e.isCancelled() && e.getDamageAmount() > 0) {
-					pearl.setHealth(pearl.getHealth() - decayAmount);
+					int newHealth = pearl.getHealth() - decayAmount;
+					pearl.setHealth(newHealth);
+					pearlApi.log("Set pearl health to %s", newHealth);
 				}
 			}
 
@@ -311,9 +309,22 @@ final class CorePearlManager implements PearlManager {
 				pearlsToFree.add(pearl);
 			}
 
-			if (!pearl.verifyLocation()) {
-				pearlApi.log("Freeing pearl for player %s because the verification failed.", pearl.getPlayerName());
-				pearlsToFree.add(pearl);
+			boolean permitLocationVerification = true;
+			if (holder != null && holder.isBlock()) {
+				if (disallowedWorlds.contains(holder.getLocation().getWorld().getName())) {
+					pearlApi.log("Freeing pearl for player %s because the pearl is stored in disallowed world %s.", pearl.getPlayerName(),holder.getLocation().getWorld().getName());
+					pearlsToFree.add(pearl);
+				}
+				permitLocationVerification = holder.inLoadedChunk();
+			}
+
+			if (permitLocationVerification) {
+				if (!pearl.verifyLocation()) {
+					pearlApi.log("Freeing pearl for player %s because the verification failed.", pearl.getPlayerName());
+					pearlsToFree.add(pearl);
+				}
+			} else {
+				pearlApi.log("Skipping verification of block holder in unloaded chunk at %s.", holder.getLocation());
 			}
 		}
 
