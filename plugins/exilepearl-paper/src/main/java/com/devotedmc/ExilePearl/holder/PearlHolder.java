@@ -4,6 +4,7 @@ import org.bukkit.Location;
 
 import com.devotedmc.ExilePearl.ExilePearl;
 import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 import java.util.Objects;
 
@@ -51,6 +52,6 @@ public interface PearlHolder {
 			return false;
 		}
 
-		return world.isChunkLoaded(loc.getBlockX()/16, loc.getBlockZ()/16);
+		return world.isChunkLoaded(BlockBasedChunkMeta.toChunkCoord(loc.getBlockX()), BlockBasedChunkMeta.toChunkCoord(loc.getBlockZ()));
 	}
 }

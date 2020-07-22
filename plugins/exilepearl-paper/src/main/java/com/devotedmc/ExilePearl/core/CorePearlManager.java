@@ -294,13 +294,13 @@ final class CorePearlManager implements PearlManager {
 
 			// convert timeout to milliseconds and compare against last time online.
 			if (decayTimeout == 0 || (new Date()).getTime() - pearl.getLastOnline().getTime() < (decayTimeout * 60 * 1000)) {
-				pearlApi.log("Applying decay to pearl health");
 				PearlDecayEvent e = new PearlDecayEvent(pearl, decayAmount);
 				Bukkit.getPluginManager().callEvent(e);
 				if (!e.isCancelled() && e.getDamageAmount() > 0) {
-					int newHealth = pearl.getHealth() - decayAmount;
+					int oldHealth = pearl.getHealth();
+					int newHealth = oldHealth - decayAmount;
 					pearl.setHealth(newHealth);
-					pearlApi.log("Set pearl health to %s", newHealth);
+					pearlApi.log("Set pearl health from %s to %s", oldHealth, newHealth);
 				}
 			}
 
@@ -324,7 +324,7 @@ final class CorePearlManager implements PearlManager {
 					pearlsToFree.add(pearl);
 				}
 			} else {
-				pearlApi.log("Skipping verification of block holder in unloaded chunk at %s.", holder.getLocation());
+				pearlApi.log("Skipping verification of block holder for player %s in unloaded chunk at %s.", pearl.getPlayerName(), holder.getLocation());
 			}
 		}
 
