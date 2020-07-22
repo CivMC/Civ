@@ -300,7 +300,7 @@ final class CorePearlManager implements PearlManager {
 					int oldHealth = pearl.getHealth();
 					int newHealth = oldHealth - decayAmount;
 					pearl.setHealth(newHealth);
-					pearlApi.log("Set pearl health from %s to %s", oldHealth, newHealth);
+					pearlApi.log("Set pearl for player %s health from %s to %s", pearl.getPlayerName(), oldHealth, newHealth);
 				}
 			}
 
