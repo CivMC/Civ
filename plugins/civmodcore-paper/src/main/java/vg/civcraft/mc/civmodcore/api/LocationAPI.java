@@ -23,4 +23,20 @@ public final class LocationAPI {
 		return true;
 	}
 
+	/**
+	 * Converts a location into a block location.
+	 *
+	 * @param location The location to convert.
+	 * @return Returns a block location, or null if the given location was null.
+	 */
+	public static Location getBlockLocation(Location location) {
+		if (location == null) {
+			return null;
+		}
+		return new Location(location.getWorld(),
+				location.getBlockX(),
+				location.getBlockY(),
+				location.getBlockZ());
+	}
+
 }
