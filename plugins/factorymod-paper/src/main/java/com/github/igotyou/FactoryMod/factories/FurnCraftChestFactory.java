@@ -38,6 +38,7 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.namelayer.NameAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
@@ -166,7 +167,12 @@ public class FurnCraftChestFactory extends Factory {
 		//ensure we have fuel
 		if (!pm.powerAvailable(1)) {
 			if (p != null) {
-				p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
+				ItemStack fuel = ((FurnacePowerManager) pm).getFuel().clone();
+				if (fuel != null) {
+					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ItemNames.getItemName(fuel) + ") in the furnace");
+				}else{
+					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
+				}
 			}
 			return;
 		}

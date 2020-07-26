@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import com.github.igotyou.FactoryMod.utility.FactoryModGUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -248,6 +249,8 @@ public class FactoryModManager {
 							}
 						} else {
 							p.sendMessage(ChatColor.RED + "There is no factory with the given creation materials");
+							FactoryModGUI gui = new FactoryModGUI(p);
+							gui.showFactoryOverview(true);
 						}
 					}
 					return;

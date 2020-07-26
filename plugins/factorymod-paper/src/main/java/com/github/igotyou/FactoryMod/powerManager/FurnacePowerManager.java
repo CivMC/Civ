@@ -73,4 +73,8 @@ public class FurnacePowerManager implements IPowerManager {
 		return new ItemMap(((Furnace) furnace.getState()).getInventory()).getAmount(fuel);
 	}
 
+	public ItemStack getFuel() {
+		return fuel;
+	}
+
 }
