@@ -1,8 +1,9 @@
 package vg.civcraft.mc.citadel.listener;
 
+import java.util.Objects;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 import org.bukkit.block.Container;
 import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
@@ -17,7 +18,6 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public class InventoryListener implements Listener {
@@ -36,9 +36,8 @@ public class InventoryListener implements Listener {
 		}
 		else if (fromHolder instanceof DoubleChest) {
 			DoubleChest doubleChest = (DoubleChest) fromHolder;
-			Block doubleChestBlock = doubleChest.getLocation().getBlock();
-			Location chestLocation = doubleChestBlock.getLocation(); // Yes this is necessary otherwise .5 values
-			Location otherLocation = BlockAPI.getOtherDoubleChestBlock(doubleChestBlock).getLocation();
+			Location chestLocation = Objects.requireNonNull((Chest) doubleChest.getLeftSide()).getLocation();
+			Location otherLocation = Objects.requireNonNull((Chest) doubleChest.getRightSide()).getLocation();
 			if (destHolder instanceof Hopper) {
 				Location drainedLocation = ((Hopper) destHolder).getLocation().add(0, 1, 0);
 				if (Iteration.contains(drainedLocation, chestLocation, otherLocation)) {
