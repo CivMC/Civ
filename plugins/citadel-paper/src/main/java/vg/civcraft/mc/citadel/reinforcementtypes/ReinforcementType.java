@@ -13,6 +13,7 @@ public class ReinforcementType {
 	private double returnChance;
 	private ItemStack item;
 	private long maturationTime;
+	private int acidPriority;
 	private long acidTime;
 	private double scale;
 	private long gracePeriod;
@@ -29,7 +30,7 @@ public class ReinforcementType {
 	private double deletedGroupMulitplier;
 	private int legacyId;
 
-	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime,
+	public ReinforcementType(float health, double returnChance, ItemStack item, long maturationTime, long acidTime, int acidPriority,
 			double scale, long gracePeriod, ReinforcementEffect creationEffect, ReinforcementEffect damageEffect,
 			ReinforcementEffect destructionEffect, Collection<Material> allowsReinforceables,
 			Collection<Material> disallowedReinforceables, short id, String name, Collection<Material> globalBlackList,
@@ -40,6 +41,7 @@ public class ReinforcementType {
 		this.item = item;
 		this.maturationTime = maturationTime;
 		this.acidTime = acidTime;
+		this.acidPriority = acidPriority;
 		this.scale = scale;
 		this.creationEffect = creationEffect;
 		this.damageEffect = damageEffect;
@@ -116,6 +118,13 @@ public class ReinforcementType {
 	 */
 	public ItemStack getItem() {
 		return item;
+	}
+	
+	/**
+	 * @return Acid priority of this type. Acid blocks can only remove blocks of lower or equal priority
+	 */
+	public int getAcidPriority() {
+		return acidPriority;
 	}
 
 	/**

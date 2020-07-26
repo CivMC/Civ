@@ -33,13 +33,16 @@ public class Acid extends StandaloneCommand {
 		Player p = (Player) sender;
 		Iterator<Block> itr = new BlockIterator(p, 40); // Within 2.5 chunks
 		AcidManager acidMan = Citadel.getInstance().getAcidManager();
+		boolean foundAny = false;
 		while (itr.hasNext()) {
 			Block block = itr.next();
 			if (MaterialAPI.isAir(block.getType()) || !(block.getType().isSolid())) {
 				continue;
 			}
 			if (!acidMan.isPossibleAcidBlock(block)) {
-				CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
+				if (!foundAny) {
+					CitadelUtility.sendAndLog(p, ChatColor.RED, "That block is not a valid acid block");
+				}
 				return true;
 			}
 			Reinforcement reinforcement = ReinforcementLogic.getReinforcementAt(block.getLocation());
@@ -87,6 +90,7 @@ public class Acid extends StandaloneCommand {
 				Citadel.getInstance().getLogger().log(Level.INFO, "Acid at {0} broke {1} at {2}, activated by {3}",
 						new Object[] { block.getLocation(), topFace.getType(), topFace.getLocation(), p.getName() });
 			}
+			foundAny = true;
 			reinforcement.setHealth(-1);
 			// play particles for top block
 			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);

@@ -150,6 +150,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 		long gracePeriod = ConfigParsing.parseTime(config.getString("grace_period", "0"), TimeUnit.MILLISECONDS);
 		long maturationTime = ConfigParsing.parseTime(config.getString("mature_time", "0"), TimeUnit.MILLISECONDS);
 		long acidTime = ConfigParsing.parseTime(config.getString("acid_time", "-1"), TimeUnit.MILLISECONDS);
+		int acidPriority = config.getInt("acid_priority", 0);
 		String name = config.getString("name");
 		double maturationScale = config.getInt("scale_amount", 1);
 		float health = (float) config.getDouble("hit_points", 100);
@@ -179,7 +180,7 @@ public class CitadelConfigManager extends CoreConfigManager {
 				+ returnChance + ", maturationTime: " + TextUtil.formatDuration(maturationTime, TimeUnit.MILLISECONDS)
 				+ ", acidTime: " + TextUtil.formatDuration(acidTime, TimeUnit.MILLISECONDS) + ", gracePeriod: "
 				+ gracePeriod + ", id: " + id);
-		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, maturationScale, gracePeriod,
+		return new ReinforcementType(health, returnChance, item, maturationTime, acidTime, acidPriority, maturationScale, gracePeriod,
 				creationEffect, damageEffect, destructionEffect, reinforceables, nonReinforceables, id, name,
 				globalBlackList, decayTimer, decayMultiplier, multiplerOnDeletedGroup, legacyId);
 	}

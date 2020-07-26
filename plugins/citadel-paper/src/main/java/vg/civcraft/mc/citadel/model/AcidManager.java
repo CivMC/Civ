@@ -26,9 +26,7 @@ public class AcidManager {
 	 *         and has an acid timer configured
 	 */
 	public boolean canAcidBlock(ReinforcementType acidBlock, ReinforcementType victim) {
-		// TODO
-
-		return true;
+		return acidBlock.getAcidPriority() >= victim.getAcidPriority();
 	}
 
 	/**
