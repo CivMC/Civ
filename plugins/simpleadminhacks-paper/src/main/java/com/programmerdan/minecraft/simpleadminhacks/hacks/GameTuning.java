@@ -221,7 +221,10 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 				if (state != null && mat.equals(state.getType())) {
 					if (++current > limit) {
 						event.setCancelled(true);
-						player.sendMessage(config.getChunkLimitsExceededMessage());
+						player.sendMessage(config.getChunkLimitsExceededMessage()
+								.replaceAll("%Limit%",Integer.toString(limit))
+								.replaceAll("%Material%", mat.toString())
+						);
 						return;
 					}
 				}
