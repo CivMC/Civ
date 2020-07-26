@@ -134,6 +134,9 @@ public class ProductionRecipe extends InputRecipe {
 			}
 		}
 		if (toRemove.isContainedIn(i)) {
+			if (!toAdd.fitsIn(i)) { // does not fit in chest
+				return false;
+			}
 			if (toRemove.removeSafelyFrom(i)) {
 				for (ItemStack is : toAdd.getItemStackRepresentation()) {
 					i.addItem(is);
