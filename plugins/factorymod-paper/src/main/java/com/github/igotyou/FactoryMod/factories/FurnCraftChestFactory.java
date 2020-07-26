@@ -169,8 +169,7 @@ public class FurnCraftChestFactory extends Factory {
 			if (p != null) {
 				ItemStack fuel = ((FurnacePowerManager) pm).getFuel().clone();
 				if (fuel != null) {
-					String fuelName = ItemNames.getItemName(fuel);
-					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + fuelName.toLowerCase() + ") in the furnace");
+					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel (" + ItemNames.getItemName(fuel) + ") in the furnace");
 				}else{
 					p.sendMessage(ChatColor.RED + "Failed to activate factory, there is no fuel in the furnace");
 				}
