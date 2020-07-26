@@ -22,10 +22,7 @@ public class WorldAPI {
 			return false;
 		}
 		// Same method in Location.isWorldLoaded()
-		if (Bukkit.getWorld(world.getUID()) == null) {
-			return false;
-		}
-		return true;
+		return Bukkit.getWorld(world.getUID()) != null;
 	}
 
 	/**
