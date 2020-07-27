@@ -7,6 +7,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -59,7 +60,11 @@ public final class BastionDamageListener implements Listener {
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);
 			
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+
+			BastionSettingManager settings = Bastion.getSettingManager();
+			if (!settings.getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+				event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+			}
 		}
 	}
 

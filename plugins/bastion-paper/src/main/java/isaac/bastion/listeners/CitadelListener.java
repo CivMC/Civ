@@ -3,6 +3,7 @@ package isaac.bastion.listeners;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -38,7 +39,11 @@ public class CitadelListener implements Listener {
 		}
 		if ((!blocking.isEmpty()) && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 			event.setCancelled(true);
-			event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
+
+			BastionSettingManager settings = Bastion.getSettingManager();
+			if (!settings.getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+				event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
+			}
 			blockManager.erodeFromPlace(event.getPlayer(), blocking);
 		}
 	}

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.logging.Level;
 
+import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -156,7 +157,11 @@ public class BastionInteractListener implements Listener {
 
 			if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "A Bastion prevents you from reinforcing");
+
+				BastionSettingManager settings = Bastion.getSettingManager();
+				if (!settings.getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+					event.getPlayer().sendMessage(ChatColor.RED + "A Bastion prevents you from reinforcing");
+				}
 				return;
 			}
 		}
