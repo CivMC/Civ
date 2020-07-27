@@ -1,20 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.josvth.randomspawn.randomspawn</groupId>
 	<artifactId>RandomSpawn</artifactId>
 	<version>2.8.0</version>
 	<name>RandomSpawn</name>
-	<url>https://github.com/DevotedMC/random-spawn</url>
+	<url>https://github.com/Civclassic/random-spawn</url>
+
+	<parent>
+		<groupId>com.github.civclassic</groupId>
+		<artifactId>civclassic-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
 
 	<repositories>
 		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
-		<repository>
-			<id>Jenkins-repo</id>
-			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+			<id>civ-jenkins</id>
+			<url>https://repo.civclassic.com/repository/internal/</url>
 		</repository>
 	</repositories>
 
@@ -46,37 +49,12 @@
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>vg.civcraft.mc.civmodcore</groupId>
-            <artifactId>CivModCore</artifactId>
-            <version>1.7.8</version>
-            <scope>provided</scope>
-	    <exclusions>
-                <exclusion>
-                    <groupId>org.mcstats.bukkit</groupId>
-                    <artifactId>metrics</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<artifactId>CivModCore</artifactId>
+			<version>1.7.9</version>
+			<scope>provided</scope>
+		</dependency>
 	</dependencies>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
 </project>
