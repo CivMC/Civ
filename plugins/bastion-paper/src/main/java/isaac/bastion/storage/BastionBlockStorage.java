@@ -37,7 +37,7 @@ public class BastionBlockStorage {
 	private ManagedDatasource db;
 	private Logger log;
 	
-	private Map<World, SparseQuadTree> blocks;
+	private Map<World, SparseQuadTree<BastionBlock>> blocks;
 	private Set<BastionBlock> changed;
 	private Set<BastionBlock> bastions;
 	private Map<Integer, List<BastionBlock>> groups;
@@ -217,7 +217,7 @@ public class BastionBlockStorage {
 	 * @param loc The location to check
 	 * @return A set of QTBoxes (bastions) that overlap with the location
 	 */
-	public Set<QTBox> forLocation(Location loc) {
+	public Set<BastionBlock> forLocation(Location loc) {
 		return blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockZ());
 	}
 	
@@ -228,7 +228,7 @@ public class BastionBlockStorage {
 	 * @return A set of bastions a pearl could collide with
 	 */
 	public Set<BastionBlock> getPossibleTeleportBlocking(Location loc, double maxDistance) {
-		Set<QTBox> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockY(), true);
+		Set<BastionBlock> boxes = blocks.get(loc.getWorld()).find(loc.getBlockX(), loc.getBlockY(), true);
 		
 		double maxDistanceSquared = maxDistance * maxDistance;
 		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
@@ -259,7 +259,7 @@ public class BastionBlockStorage {
 	 * @return A set of bastions a flying player could collide with
 	 */
 	public Set<BastionBlock> getPossibleFlightBlocking(double maxDistance, Location...locs) {
-		Set<QTBox> boxes = null;
+		Set<BastionBlock> boxes = null;
 		Set<BastionBlock> result = new TreeSet<>();		
 		double maxDistanceSquared = maxDistance * maxDistance;
 		double maxBoxDistanceSquared = maxDistanceSquared * 2.0;
@@ -325,7 +325,7 @@ public class BastionBlockStorage {
 	public void loadBastions() {
 		int enderSearchRadius = EnderPearlManager.MAX_TELEPORT + 100;
 		for(World world : Bukkit.getWorlds()) {
-			SparseQuadTree bastionsForWorld = new SparseQuadTree(enderSearchRadius);
+			SparseQuadTree<BastionBlock> bastionsForWorld = new SparseQuadTree<>(enderSearchRadius);
 			blocks.put(world, bastionsForWorld);
 			try (Connection conn = db.getConnection();
 					PreparedStatement ps = conn.prepareStatement("select * from bastion_blocks where loc_world=?;")) {
@@ -443,7 +443,7 @@ public class BastionBlockStorage {
 		addBastion(bastion, blocks.get(bastion.getLocation().getWorld()));
 	}
 
-	private void addBastion(BastionBlock bastion, SparseQuadTree bastionsForWorld) {
+	private void addBastion(BastionBlock bastion, SparseQuadTree<BastionBlock> bastionsForWorld) {
 		bastions.add(bastion);
 		bastionsForWorld.add(bastion);
 

@@ -29,7 +29,6 @@ import isaac.bastion.Permissions;
 import isaac.bastion.commands.PlayersStates;
 import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.citadel.Citadel;
@@ -42,12 +41,10 @@ public class BastionInteractListener implements Listener {
 
 	private BastionBlockManager blockManager;
 	private BastionBlockStorage blockStorage;
-	private BastionGroupManager groupManager;
 
 	public BastionInteractListener() {
 		blockManager = Bastion.getBastionManager();
 		blockStorage = Bastion.getBastionStorage();
-		groupManager = Bastion.getGroupManager();
 	}
 
 	@EventHandler(ignoreCancelled=true)
@@ -60,11 +57,11 @@ public class BastionInteractListener implements Listener {
 
 		//Stop boat places in bastions
 		Material isBoat = player.getInventory().getItemInMainHand().getType();
-		if(Tag.ITEMS_BOATS.isTagged(isBoat)) {
+		if(Tag.ITEMS_BOATS.isTagged(isBoat) && event.getClickedBlock() != null) {
 			Set<Block> blocks = new CopyOnWriteArraySet<>();
 			blocks.add(event.getClickedBlock());
-			Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks, player.getUniqueId());
-
+			Set<BastionBlock> blocking = blockManager.getBlockingBastionsWithoutPermission(event.getClickedBlock().getLocation(),
+					event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
 			if (!blocking.isEmpty()) {
 				event.setCancelled(true);
 				player.sendMessage(ChatColor.RED+"Boat blocked by bastion");
@@ -149,17 +146,6 @@ public class BastionInteractListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onReinforcement(ReinforcementCreationEvent event) {
-		if(Bastion.getCommonSettings().isCancelReinforcementModeInBastionField()) {
-			Set<Block> blocks = new CopyOnWriteArraySet<>();
-			blocks.add(event.getReinforcement().getLocation().getBlock());
-			Set<BastionBlock> blocking = blockManager.shouldStopBlockByBlockingBastion(null, blocks,event.getPlayer().getUniqueId());
-
-			if (blocking.size() != 0 && !groupManager.canPlaceBlock(event.getPlayer(), blocking)){
-				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "A Bastion prevents you from reinforcing");
-				return;
-			}
-		}
 		Block block = event.getReinforcement().getLocation().getBlock();
 
 			final BastionType type = blockStorage.getAndRemovePendingBastion(block.getLocation());
@@ -194,12 +180,10 @@ public class BastionInteractListener implements Listener {
 				if (blockManager.changeBastionGroup(event.getPlayer(), event.getReinforcement(), block.getLocation()) == Boolean.FALSE) {
 					event.setCancelled(true);
 					event.getPlayer().sendMessage(ChatColor.RED + "You lack permission to alter a Bastion with this group");
-					return;
 				}
 			}
 	}
 
-	//@SuppressWarnings("deprecation")
 	public BastionType blockToType(Block block, ItemStack inHand) {
 		Material mat = block.getType(); //, block.getData()); -- again, we can't differentiate based on this?
 		String displayName = null;

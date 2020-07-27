@@ -14,12 +14,9 @@ import isaac.bastion.utils.BastionSettingManager;
 import org.bukkit.configuration.ConfigurationSection;
 
 import isaac.bastion.commands.BastionCommandManager;
-import isaac.bastion.commands.BastionListCommand;
-import isaac.bastion.commands.GroupCommandManager;
 import isaac.bastion.commands.ModeChangeCommand;
 import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
-import isaac.bastion.manager.BastionGroupManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.storage.BastionGroupStorage;
 import isaac.bastion.storage.Database;
@@ -33,7 +30,6 @@ public final class Bastion extends ACivMod {
 	private static BastionBlockStorage blockStorage;
 	private static BastionBlockManager blockManager;
 	private static BastionGroupStorage groupStorage;
-	private static BastionGroupManager groupManager;
 	private static BastionSettingManager settingManager;
 	private static CommonSettings commonSettings;
 
@@ -48,7 +44,6 @@ public final class Bastion extends ACivMod {
 		setupDatabase();
 		registerNameLayerPermissions();
 		blockManager = new BastionBlockManager();
-		groupManager = new BastionGroupManager(Bastion.groupStorage);
 		settingManager = new BastionSettingManager();
 		
 		if(!this.isEnabled()) //check that the plugin was not disabled in setting up any of the static variables
@@ -125,10 +120,6 @@ public final class Bastion extends ACivMod {
 		getCommand("bsb").setExecutor(new ModeChangeCommand(Mode.BASTION));
 		getCommand("bsf").setExecutor(new ModeChangeCommand(Mode.OFF));
 		getCommand("bsm").setExecutor(new ModeChangeCommand(Mode.MATURE));
-		getCommand("bsl").setExecutor(new BastionListCommand());
-		getCommand("bsga").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Add));
-		getCommand("bsgd").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.Delete));
-		getCommand("bsgl").setExecutor(new GroupCommandManager(GroupCommandManager.CommandType.List));
 	}
 
 	public static Bastion getPlugin() {
@@ -141,10 +132,6 @@ public final class Bastion extends ACivMod {
 	
 	public static BastionBlockStorage getBastionStorage() {
 		return blockStorage;
-	}
-
-	public static BastionGroupManager getGroupManager() {
-		return groupManager;
 	}
 
 	public static BastionSettingManager getSettingManager() {

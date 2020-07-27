@@ -68,7 +68,7 @@ public class BastionBreakListener implements Listener {
 			TextComponent chatMessage = null;
 			BastionBlock bastion = storage.getBastionBlock(block.getLocation());
 			if (bastion != null) {
-				if(this.manager.canList(event.getPlayer(), bastion.getListGroupId())) {
+				if(this.manager.canListBastionsForGroup(event.getPlayer(), bastion.getListGroupId())) {
 					chatMessage = this.manager.bastionDeletedMessageComponent(bastion);
 				}
 
