@@ -108,8 +108,8 @@ public class CitadelUtility {
 		}
 		block = ReinforcementLogic.getResponsibleBlock(block);
 		// check if reinforcement already exists
-		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
-		if (rein != null) {
+		Reinforcement existingRein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (existingRein != null) {
 			// something like a slab, we just ignore this
 			return false;
 		}
@@ -135,6 +135,10 @@ public class CitadelUtility {
 			CitadelUtility.sendAndLog(player, ChatColor.RED, "You have no items left to reinforce with " + type.getName());
 			return true;
 		}
+		Reinforcement newRein = ReinforcementLogic.callReinforcementCreationEvent(player, block, type, group);
+		if (newRein == null) {
+			return true;
+		}
 		// remove from inventory
 		if (!CitadelUtility.consumeReinforcementItems(player, type, consumeExtra)) {
 			return true;
@@ -144,6 +148,7 @@ public class CitadelUtility {
 			Citadel.getInstance().getLogger().info(player.getName() + " created reinforcement with " + type.getName()
 					+ " for " + block.getType().toString() + " at " + block.getLocation().toString());
 		}
-		return ReinforcementLogic.createReinforcement(player, block, type, group) == null;
+		ReinforcementLogic.createReinforcement(newRein);
+		return true;
 	}
 }

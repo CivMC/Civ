@@ -22,16 +22,26 @@ public final class ReinforcementLogic {
 	private ReinforcementLogic() {
 	}
 
-	public static Reinforcement createReinforcement(Player player, Block block, ReinforcementType type, Group group) {
+	/**
+	 * Inserts a new reinforcements into the cache, queues it for persistence and
+	 * plays particle effects for creation
+	 * 
+	 * @param rein Reinforcement just created
+	 */
+	public static void createReinforcement(Reinforcement rein) {
+		Citadel.getInstance().getReinforcementManager().putReinforcement(rein);
+		if (rein.getType().getCreationEffect() != null) {
+			rein.getType().getCreationEffect().playEffect(rein);
+		}
+	}
+
+	public static Reinforcement callReinforcementCreationEvent(Player player, Block block, ReinforcementType type,
+			Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
 		ReinforcementCreationEvent event = new ReinforcementCreationEvent(player, rein);
 		Bukkit.getPluginManager().callEvent(event);
 		if (event.isCancelled()) {
 			return null;
-		}
-		Citadel.getInstance().getReinforcementManager().putReinforcement(rein);
-		if (type.getCreationEffect() != null) {
-			type.getCreationEffect().playEffect(rein);
 		}
 		return rein;
 	}
@@ -69,8 +79,7 @@ public final class ReinforcementLogic {
 		if (reinforcement.getGroup() != null) {
 			long lastRefresh = reinforcement.getGroup().getActivityTimeStamp();
 			damageAmount *= reinforcement.getType().getDecayDamageMultipler(lastRefresh);
-		}
-		else {
+		} else {
 			damageAmount *= reinforcement.getType().getDeletedGroupMultiplier();
 		}
 		return damageAmount;
@@ -89,35 +98,38 @@ public final class ReinforcementLogic {
 			return reinforcement;
 		}
 		switch (block.getType()) {
-			// Chests are awkward since you can place both sides of a double chest independently, which isn't true for
-			// beds, plants, or doors, so this needs to be accounted for and "getResponsibleBlock()" isn't appropriate
-			// for the following logic: that both sides protect each other; that if either block is reinforced, then
-			// the chest as a whole remains protected.
-			case CHEST:
-			case TRAPPED_CHEST: {
-				Chest chest = (Chest) block.getBlockData();
-				BlockFace facing = chest.getFacing();
-				switch (chest.getType()) {
-					case LEFT: {
-						BlockFace face = BlockAPI.turnClockwise(facing);
-						return getReinforcementAt(block.getLocation().add(face.getDirection()));
-					}
-					case RIGHT: {
-						BlockFace face = BlockAPI.turnAntiClockwise(facing);
-						return getReinforcementAt(block.getLocation().add(face.getDirection()));
-					}
-					default: {
-						return null;
-					}
-				}
+		// Chests are awkward since you can place both sides of a double chest
+		// independently, which isn't true for
+		// beds, plants, or doors, so this needs to be accounted for and
+		// "getResponsibleBlock()" isn't appropriate
+		// for the following logic: that both sides protect each other; that if either
+		// block is reinforced, then
+		// the chest as a whole remains protected.
+		case CHEST:
+		case TRAPPED_CHEST: {
+			Chest chest = (Chest) block.getBlockData();
+			BlockFace facing = chest.getFacing();
+			switch (chest.getType()) {
+			case LEFT: {
+				BlockFace face = BlockAPI.turnClockwise(facing);
+				return getReinforcementAt(block.getLocation().add(face.getDirection()));
+			}
+			case RIGHT: {
+				BlockFace face = BlockAPI.turnAntiClockwise(facing);
+				return getReinforcementAt(block.getLocation().add(face.getDirection()));
 			}
 			default: {
-				Block responsible = getResponsibleBlock(block);
-				if (Objects.equals(block, responsible)) {
-					return null;
-				}
-				return getReinforcementAt(responsible.getLocation());
+				return null;
 			}
+			}
+		}
+		default: {
+			Block responsible = getResponsibleBlock(block);
+			if (Objects.equals(block, responsible)) {
+				return null;
+			}
+			return getReinforcementAt(responsible.getLocation());
+		}
 		}
 	}
 
@@ -134,83 +146,83 @@ public final class ReinforcementLogic {
 	public static Block getResponsibleBlock(Block block) {
 		// Do not put [double] chests in here.
 		switch (block.getType()) {
-			case DANDELION:
-			case POPPY:
-			case BLUE_ORCHID:
-			case ALLIUM:
-			case AZURE_BLUET:
-			case ORANGE_TULIP:
-			case RED_TULIP:
-			case PINK_TULIP:
-			case WHITE_TULIP:
-			case OXEYE_DAISY:
-			case ACACIA_SAPLING:
-			case BIRCH_SAPLING:
-			case DARK_OAK_SAPLING:
-			case JUNGLE_SAPLING:
-			case OAK_SAPLING:
-			case SPRUCE_SAPLING:
-			case WHEAT:
-			case CARROTS:
-			case POTATOES:
-			case BEETROOTS:
-			case MELON_STEM:
-			case PUMPKIN_STEM:
-			case ATTACHED_MELON_STEM:
-			case ATTACHED_PUMPKIN_STEM:
-			case NETHER_WART_BLOCK: {
+		case DANDELION:
+		case POPPY:
+		case BLUE_ORCHID:
+		case ALLIUM:
+		case AZURE_BLUET:
+		case ORANGE_TULIP:
+		case RED_TULIP:
+		case PINK_TULIP:
+		case WHITE_TULIP:
+		case OXEYE_DAISY:
+		case ACACIA_SAPLING:
+		case BIRCH_SAPLING:
+		case DARK_OAK_SAPLING:
+		case JUNGLE_SAPLING:
+		case OAK_SAPLING:
+		case SPRUCE_SAPLING:
+		case WHEAT:
+		case CARROTS:
+		case POTATOES:
+		case BEETROOTS:
+		case MELON_STEM:
+		case PUMPKIN_STEM:
+		case ATTACHED_MELON_STEM:
+		case ATTACHED_PUMPKIN_STEM:
+		case NETHER_WART_BLOCK: {
+			return block.getRelative(BlockFace.DOWN);
+		}
+		case SUGAR_CANE:
+		case CACTUS:
+		case SUNFLOWER:
+		case LILAC:
+		case PEONY: {
+			// scan downwards for first different block
+			Block below = block.getRelative(BlockFace.DOWN);
+			while (below.getType() == block.getType()) {
+				below = below.getRelative(BlockFace.DOWN);
+			}
+			return below;
+		}
+		case ACACIA_DOOR:
+		case BIRCH_DOOR:
+		case DARK_OAK_DOOR:
+		case IRON_DOOR:
+		case SPRUCE_DOOR:
+		case JUNGLE_DOOR:
+		case OAK_DOOR: {
+			if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
+				// block is upper half of a door
 				return block.getRelative(BlockFace.DOWN);
 			}
-			case SUGAR_CANE:
-			case CACTUS:
-			case SUNFLOWER:
-			case LILAC:
-			case PEONY: {
-				// scan downwards for first different block
-				Block below = block.getRelative(BlockFace.DOWN);
-				while (below.getType() == block.getType()) {
-					below = below.getRelative(BlockFace.DOWN);
-				}
-				return below;
+			return block;
+		}
+		case BLACK_BED:
+		case BLUE_BED:
+		case BROWN_BED:
+		case CYAN_BED:
+		case GRAY_BED:
+		case GREEN_BED:
+		case MAGENTA_BED:
+		case LIME_BED:
+		case ORANGE_BED:
+		case PURPLE_BED:
+		case PINK_BED:
+		case WHITE_BED:
+		case LIGHT_GRAY_BED:
+		case LIGHT_BLUE_BED:
+		case RED_BED:
+		case YELLOW_BED: {
+			Bed bed = (Bed) block.getBlockData();
+			if (bed.getPart() == Bed.Part.HEAD) {
+				return block.getRelative(bed.getFacing().getOppositeFace());
 			}
-			case ACACIA_DOOR:
-			case BIRCH_DOOR:
-			case DARK_OAK_DOOR:
-			case IRON_DOOR:
-			case SPRUCE_DOOR:
-			case JUNGLE_DOOR:
-			case OAK_DOOR: {
-				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
-					// block is upper half of a door
-					return block.getRelative(BlockFace.DOWN);
-				}
-				return block;
-			}
-			case BLACK_BED:
-			case BLUE_BED:
-			case BROWN_BED:
-			case CYAN_BED:
-			case GRAY_BED:
-			case GREEN_BED:
-			case MAGENTA_BED:
-			case LIME_BED:
-			case ORANGE_BED:
-			case PURPLE_BED:
-			case PINK_BED:
-			case WHITE_BED:
-			case LIGHT_GRAY_BED:
-			case LIGHT_BLUE_BED:
-			case RED_BED:
-			case YELLOW_BED: {
-				Bed bed = (Bed) block.getBlockData();
-				if (bed.getPart() == Bed.Part.HEAD) {
-					return block.getRelative(bed.getFacing().getOppositeFace());
-				}
-				return block;
-			}
-			default: {
-				return block;
-			}
+			return block;
+		}
+		default: {
+			return block;
+		}
 		}
 	}
 

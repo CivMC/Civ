@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
+import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
@@ -85,7 +86,10 @@ public class AreaReinforce extends StandaloneCommand {
 						continue;
 					}
 					count++;
-					ReinforcementLogic.createReinforcement(p, current, reinType, group);
+					Reinforcement rein = ReinforcementLogic.callReinforcementCreationEvent(p, current, reinType, group);
+					if (rein != null) {
+						ReinforcementLogic.createReinforcement(rein);
+					}
 				}
 			}
 		}

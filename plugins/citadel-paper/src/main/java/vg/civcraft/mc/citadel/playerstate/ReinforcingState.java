@@ -88,12 +88,20 @@ public class ReinforcingState extends AbstractPlayerState {
 				return;
 			}
 		}
+		Reinforcement newRein = null;
 		if (rein == null || rein.getType() != type) {
 			// check inventory for reinforcement item
 			ItemMap toConsume = new ItemMap(type.getItem());
 			if (!toConsume.isContainedIn(player.getInventory())) {
 				CitadelUtility.sendAndLog(e.getPlayer(), ChatColor.RED, "No reinforcing item found in your inventory?");
 				return;
+			}
+			if (rein == null) {
+				newRein = ReinforcementLogic.callReinforcementCreationEvent(player, block, type, group);
+				if (newRein == null) {
+					//event was cancelled, error message is up to whoever cancelled it
+					return;
+				}
 			}
 			// consume item from inventory
 			if (!toConsume.removeSafelyFrom(player.getInventory())) {
@@ -111,7 +119,7 @@ public class ReinforcingState extends AbstractPlayerState {
 								+ block.getLocation().toString());
 			}
 			// just create new reinforcement
-			ReinforcementLogic.createReinforcement(player, block, type, group);
+			ReinforcementLogic.createReinforcement(newRein);
 		} else {
 			// replace existing one
 			boolean changedGroup = false;
