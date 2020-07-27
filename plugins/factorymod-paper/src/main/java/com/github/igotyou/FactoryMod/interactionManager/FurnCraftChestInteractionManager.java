@@ -238,14 +238,14 @@ public class FurnCraftChestInteractionManager implements IInteractionManager {
 			ItemStack autoSelectStack = new ItemStack(Material.REDSTONE_BLOCK);
 			ItemAPI.setDisplayName(autoSelectStack, "Toggle auto select");
 			ItemAPI.addLore(autoSelectStack,
-					ChatColor.GOLD + "Auto select will make the factory automatically select any "
-							+ "recipe it can run whenever you activate it.",
+					ChatColor.GOLD + "Make the factory automatically select any",
+					ChatColor.GOLD + "recipe it can run whenever you activate it",
 					ChatColor.AQUA + "Click to turn it " + (fccf.isAutoSelect() ? "off" : "on"));
 			Clickable autoClick = new Clickable(autoSelectStack) {
 
 				@Override
-				public void clicked(Player arg0) {
-					arg0.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on")
+				public void clicked(Player p) {
+					p.sendMessage(ChatColor.GREEN + "Turned auto select " + (fccf.isAutoSelect() ? "off" : "on")
 							+ " for " + fccf.getName());
 					fccf.setAutoSelect(!fccf.isAutoSelect());
 				}
