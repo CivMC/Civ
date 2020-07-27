@@ -5,6 +5,7 @@ import java.text.DecimalFormat;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Animals;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -68,6 +69,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		Entity entity = event.getRightClicked();
+		if (!(entity instanceof Animals)) {
+			return;
+		}
 		AnimalMateConfig animalConfig = animalManager.getAnimalMateConfig(entity.getType());
 		double rate;
 		if (animalConfig == null) {
