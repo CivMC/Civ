@@ -23,7 +23,7 @@ public class Menu extends StandaloneCommand {
 			return true;
 		}
 		RealisticBiomesGUI gui = new RealisticBiomesGUI((Player) sender);
-		gui.showRBOverview(true);
+		gui.showRBOverview();
 		return true;
 	}
 
