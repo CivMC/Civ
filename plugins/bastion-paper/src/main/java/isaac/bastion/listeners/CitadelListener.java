@@ -31,7 +31,9 @@ public class CitadelListener implements Listener {
 			BastionType type = bastion.getType();
 			if(type.isBlockReinforcements()) {
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
+				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+					event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
+				}
 				blockManager.erodeFromPlace(event.getPlayer(), blocking);
 				return;
 			}

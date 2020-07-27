@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.bukkit.ChatColor;
@@ -16,7 +15,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.entity.EnderPearl;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -60,7 +58,9 @@ public final class BastionDamageListener implements Listener {
 			if (!bastion.getType().isOnlyDirectDestruction()) {
 				blockManager.erodeFromPlace(event.getPlayer(), blocking);
 				event.setCancelled(true);
-				event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+					event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+				}
 				return;
 			}
 		}

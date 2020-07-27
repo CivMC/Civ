@@ -3,6 +3,11 @@ package isaac.bastion;
 import java.util.LinkedList;
 import java.util.logging.Level;
 
+import org.bukkit.configuration.ConfigurationSection;
+
+import isaac.bastion.commands.BastionCommandManager;
+import isaac.bastion.commands.ModeChangeCommand;
+import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.listeners.BastionBreakListener;
 import isaac.bastion.listeners.BastionDamageListener;
 import isaac.bastion.listeners.BastionInteractListener;
@@ -10,16 +15,11 @@ import isaac.bastion.listeners.CitadelListener;
 import isaac.bastion.listeners.ElytraListener;
 import isaac.bastion.listeners.ModeListener;
 import isaac.bastion.listeners.NameLayerListener;
-import isaac.bastion.utils.BastionSettingManager;
-import org.bukkit.configuration.ConfigurationSection;
-
-import isaac.bastion.commands.BastionCommandManager;
-import isaac.bastion.commands.ModeChangeCommand;
-import isaac.bastion.commands.PlayersStates.Mode;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.storage.BastionBlockStorage;
 import isaac.bastion.storage.BastionGroupStorage;
 import isaac.bastion.storage.Database;
+import isaac.bastion.utils.BastionSettingManager;
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
