@@ -140,7 +140,7 @@ public class RandomSpawn extends JavaPlugin {
 		if (isBastionsEnabled) {
 			BastionBlockManager bm = Bastion.getBastionManager();
 			if (bm != null) {
-				if (bm.getBlockingBastion(ret) != null) {
+				if (!bm.getBlockingBastions(ret).isEmpty()) {
 					return chooseSpawn(world);
 				}
 			}
