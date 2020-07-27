@@ -47,7 +47,7 @@ public class NormalState extends AbstractPlayerState {
 
 	@Override
 	public void handleInteractBlock(PlayerInteractEvent e) {
-		if (e.getAction() != Action.LEFT_CLICK_BLOCK && e.getAction() != Action.RIGHT_CLICK_BLOCK) {
+		if (e.getAction() != Action.LEFT_CLICK_BLOCK) {
 			return;
 		}
 		Player player = e.getPlayer();
