@@ -39,6 +39,9 @@ public class RealisticBiomesGUI {
 		this.player = player;
 	}
 
+	/**
+	 * Show GUI containing all RB effected crops, sorted by their biome multiplier in current biome.
+	 */
 	public void showRBOverview() {
 		Biome currentBiome = player.getLocation().getBlock().getBiome();
 		if (inventory == null) {
@@ -50,7 +53,8 @@ public class RealisticBiomesGUI {
 			inventory.clear();
 		}
 		List<IClickable> clicks = new LinkedList<>();
-		List<PlantGrowthConfig> plantConfigs = new ArrayList<>(RealisticBiomes.getInstance().getConfigManager().getPlantGrowthConfigs());
+		List<PlantGrowthConfig> plantConfigs = new ArrayList<>(
+				RealisticBiomes.getInstance().getConfigManager().getPlantGrowthConfigs());
 		plantConfigs.sort((p1, p2) -> {
 			int comparision = Double.compare(p2.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)
 					, p1.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)); //reverse order
@@ -77,7 +81,8 @@ public class RealisticBiomesGUI {
 				if (biomeMultiplier == 0) {
 					lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.RED + "∞");
 				} else {
-					lore.add(ChatColor.DARK_AQUA + "Time: " + ChatColor.GRAY + TextUtil.formatDuration(timeNeeded, TimeUnit.MILLISECONDS));
+					lore.add(ChatColor.DARK_AQUA + "Time: "
+							+ ChatColor.GRAY + TextUtil.formatDuration(timeNeeded, TimeUnit.MILLISECONDS));
 					ItemAPI.addGlow(is);
 				}
 			} else {
@@ -85,7 +90,8 @@ public class RealisticBiomesGUI {
 				if (baseMultiplier == 0) {
 					lore.add(ChatColor.DARK_AQUA + "% chance: " + ChatColor.RED + "0.0");
 				} else {
-					lore.add(ChatColor.DARK_AQUA + "% chance: " + ChatColor.GRAY + decimalFormat.format(baseMultiplier * 100));
+					lore.add(ChatColor.DARK_AQUA + "% chance: "
+							+ ChatColor.GRAY + decimalFormat.format(baseMultiplier * 100));
 					ItemAPI.addGlow(is);
 				}
 			}
@@ -94,7 +100,8 @@ public class RealisticBiomesGUI {
 			IClickable click = new DecorationStack(is);
 			clicks.add(click);
 		}
-		Scrollbar middleBar = new Scrollbar(clicks, 45, 5, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
+		Scrollbar middleBar = new Scrollbar(
+				clicks, 45, 5, ContentAligners.getCenteredInOrder(clicks.size(), 45, 9));
 		inventory.addComponent(middleBar, SlotPredicates.rows(5));
 		StaticDisplaySection bottomLine = new StaticDisplaySection(9);
 		inventory.addComponent(bottomLine, SlotPredicates.rows(1));
