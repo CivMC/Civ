@@ -138,6 +138,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		return material;
 	}
 
+	public BiomeGrowthConfig getBiomeGrowthConfig() {
+		return biomeGrowthConfig;
+	}
+
 	/**
 	 * Looks at all surrounding factors to calculate how long a plant would take to
 	 * grow at the given block with persistent growth

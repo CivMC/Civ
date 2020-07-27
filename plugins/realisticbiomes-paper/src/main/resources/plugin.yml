@@ -18,3 +18,12 @@ authors:
 api-version: 1.14
 description: RealisticBiomes makes farming harder by limiting growth rates of crops and making them only grow well in certain
    biomes.
+commands:
+    rb:
+        permission: rb.public
+        description: 'Opens a GUI allowing you to browse RealisticBiome growth rates for current biome'
+        usage: '/rb'
+        player-only: true
+permissions:
+    rb.public:
+        default: true
