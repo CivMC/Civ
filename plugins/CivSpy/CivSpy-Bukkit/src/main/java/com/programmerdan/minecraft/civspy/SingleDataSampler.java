@@ -14,9 +14,6 @@ import java.util.logging.Logger;
  */
 public abstract class SingleDataSampler extends DataSampler {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public SingleDataSampler(DataManager target, Logger logger) {
 		super(target, logger);
 	}

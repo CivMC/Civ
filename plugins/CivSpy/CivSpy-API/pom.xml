@@ -58,6 +58,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 				<configuration>
 					<outputDirectory>./apidocs</outputDirectory>
 					<notimestamp>true</notimestamp>
+					<source>8</source>
 				</configuration>
 				<executions>
 					<execution>

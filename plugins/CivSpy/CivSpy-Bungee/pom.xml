@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>civspy-bungee</artifactId>
 	<packaging>jar</packaging>
-	<version>1.3.0</version>
+	<version>1.5.0</version>
 	<name>CivSpy-Bungee</name>
 
 	<parent>
@@ -75,6 +75,7 @@
 				<configuration>
 					<outputDirectory>./apidocs</outputDirectory>
 					<notimestamp>true</notimestamp>
+					<source>8</source>
 				</configuration>
 				<executions>
 					<execution>
