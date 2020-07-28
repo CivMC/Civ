@@ -13,7 +13,7 @@
 	<groupId>vg.civcraft.mc.civchat2</groupId>
 	<artifactId>CivChat2</artifactId>
 	<packaging>jar</packaging>
-	<version>1.7.2</version>
+	<version>1.8.0</version>
 	<name>CivChat2</name>
 	<url>https://github.com/Civclassic/CivChat2</url>
 
@@ -21,19 +21,19 @@
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.14.4-R0.1-SNAPSHOT</version>
+			<version>1.16.1-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.13.1</version>
+			<version>2.14.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.7.9</version>
+			<version>1.8.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
