@@ -35,20 +35,20 @@ public class ItemStackToString {
 	 * For 1.13 ItemStacks.
 	 */
 	public static String toString(ItemStack itemStack) {
-		if (itemStack == null) return "Nothing";
+		if (itemStack == null) {
+			return "Nothing";
+		}
 		StringBuilder toString = new StringBuilder();
 
 		Material material = itemStack.getType();
 		ItemMeta meta = itemStack.getItemMeta();
 		int amount = itemStack.getAmount();
-		short durability = itemStack.getDurability();
 				
 		if (amount != 1) {
 			toString.append(amount).append("x");
 		}
 		
 		toString.append(material.toString());
-		toString.append(":").append(durability);
 		
 		if (meta != null) {
 			Map<Enchantment, Integer> enchants = meta.getEnchants();

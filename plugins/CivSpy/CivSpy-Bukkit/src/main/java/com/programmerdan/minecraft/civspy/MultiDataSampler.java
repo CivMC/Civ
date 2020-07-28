@@ -15,9 +15,6 @@ import java.util.logging.Logger;
  */
 public abstract class MultiDataSampler extends DataSampler {
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public MultiDataSampler(DataManager target, Logger logger) {
 		super(target, logger);
 	}

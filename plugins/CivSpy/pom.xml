@@ -8,7 +8,7 @@
 	<packaging>pom</packaging>
 
 	<name>CivSpy Parent</name>
-	<url>http://www.github.com/DevotedMC/CivSpy</url>
+	<url>http://www.github.com/Civclassic/CivSpy</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
