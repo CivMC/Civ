@@ -1180,12 +1180,13 @@ public final class MaterialAPI {
 		if (material == null) {
 			return false;
 		}
-		if (Tag.DIRT_LIKE.getValues().contains(material)) {
-			return true;
-		}
 		switch (material) {
 			case FARMLAND:
 			case GRASS_PATH:
+			case GRASS_BLOCK:
+			case DIRT:
+			case COARSE_DIRT:
+			case PODZOL:
 				return true;
 			default:
 				return false;

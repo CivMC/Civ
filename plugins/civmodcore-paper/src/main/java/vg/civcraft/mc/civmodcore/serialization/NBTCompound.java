@@ -10,18 +10,18 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import net.minecraft.server.v1_14_R1.NBTBase;
-import net.minecraft.server.v1_14_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_14_R1.NBTReadLimiter;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagDouble;
-import net.minecraft.server.v1_14_R1.NBTTagFloat;
-import net.minecraft.server.v1_14_R1.NBTTagList;
-import net.minecraft.server.v1_14_R1.NBTTagLong;
-import net.minecraft.server.v1_14_R1.NBTTagShort;
-import net.minecraft.server.v1_14_R1.NBTTagString;
+import net.minecraft.server.v1_16_R1.NBTBase;
+import net.minecraft.server.v1_16_R1.NBTCompressedStreamTools;
+import net.minecraft.server.v1_16_R1.NBTReadLimiter;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R1.NBTTagDouble;
+import net.minecraft.server.v1_16_R1.NBTTagFloat;
+import net.minecraft.server.v1_16_R1.NBTTagList;
+import net.minecraft.server.v1_16_R1.NBTTagLong;
+import net.minecraft.server.v1_16_R1.NBTTagShort;
+import net.minecraft.server.v1_16_R1.NBTTagString;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
@@ -87,7 +87,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return The size of the tag compound.
 	 */
 	public int size() {
-		return this.tag.d();
+		return this.tag.e();
 	}
 
 	/**
@@ -541,7 +541,7 @@ public class NBTCompound implements Cloneable, Validation {
 		else {
 			NBTTagList list = new NBTTagList();
 			for (short value : values) {
-				list.add(new NBTTagShort(value));
+				list.add(NBTTagShort.a(value));
 			}
 			this.tag.set(key, list);
 		}
@@ -648,7 +648,7 @@ public class NBTCompound implements Cloneable, Validation {
 		else {
 			NBTTagList list = new NBTTagList();
 			for (float value : values) {
-				list.add(new NBTTagFloat(value));
+				list.add(NBTTagFloat.a(value));
 			}
 			this.tag.set(key, list);
 		}
@@ -684,7 +684,7 @@ public class NBTCompound implements Cloneable, Validation {
 		else {
 			NBTTagList list = new NBTTagList();
 			for (double value : values) {
-				list.add(new NBTTagDouble(value));
+				list.add(NBTTagDouble.a(value));
 			}
 			this.tag.set(key, list);
 		}
@@ -733,10 +733,10 @@ public class NBTCompound implements Cloneable, Validation {
 			NBTTagList list = new NBTTagList();
 			for (String value : values) {
 				if (value == null) {
-					list.add(new NBTTagString(NULL_STRING));
+					list.add(NBTTagString.a(NULL_STRING));
 				}
 				else {
-					list.add(new NBTTagString(value));
+					list.add(NBTTagString.a(value));
 				}
 			}
 			this.tag.set(key, list);
@@ -867,7 +867,7 @@ public class NBTCompound implements Cloneable, Validation {
 		if (item == null) {
 			return null;
 		}
-		net.minecraft.server.v1_14_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_16_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {
 			return null;
 		}
@@ -898,7 +898,7 @@ public class NBTCompound implements Cloneable, Validation {
 	public static ItemStack processItem(ItemStack item, Consumer<NBTCompound> processor) {
 		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		Preconditions.checkArgument(processor != null);
-		net.minecraft.server.v1_14_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_16_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {
 			return null;
 		}
@@ -923,7 +923,6 @@ public class NBTCompound implements Cloneable, Validation {
 		if (Iteration.isNullOrEmpty(bytes)) {
 			return null;
 		}
-		@SuppressWarnings("UnstableApiUsage")
 		ByteArrayDataInput input = ByteStreams.newDataInput(bytes);
 		NBTCompound nbt = new NBTCompound();
 		try {
@@ -945,7 +944,6 @@ public class NBTCompound implements Cloneable, Validation {
 		if (nbt == null) {
 			return null;
 		}
-		@SuppressWarnings("UnstableApiUsage")
 		ByteArrayDataOutput output = ByteStreams.newDataOutput();
 		try {
 			NBTCompressedStreamTools.a(nbt.tag, output);
