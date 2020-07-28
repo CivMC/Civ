@@ -149,6 +149,6 @@ public class CitadelUtility {
 					+ " for " + block.getType().toString() + " at " + block.getLocation().toString());
 		}
 		ReinforcementLogic.createReinforcement(newRein);
-		return true;
+		return false;
 	}
 }
