@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Achievement;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -50,6 +49,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EntityEquipment;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
@@ -329,6 +329,18 @@ public class FakePlayer implements Player {
 
 			@Override
 			public HumanEntity getHolder() {
+				return null;
+			}
+
+			@Override
+			public void setItem(EquipmentSlot slot, ItemStack item) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public ItemStack getItem(EquipmentSlot slot) {
+				// TODO Auto-generated method stub
 				return null;
 			}
 		};
@@ -1295,22 +1307,6 @@ public class FakePlayer implements Player {
 	}
 
 	@Override
-	public void awardAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
-
-	}
-
-	@Override
-	public void removeAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
-
-	}
-
-	@Override
-	public boolean hasAchievement(@SuppressWarnings("deprecation") Achievement achievement) {
-
-		return false;
-	}
-
-	@Override
 	public void incrementStatistic(Statistic statistic) throws IllegalArgumentException {
 
 	}
@@ -2113,6 +2109,60 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void openBook(ItemStack book) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public float getAttackCooldown() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public boolean hasDiscoveredRecipe(NamespacedKey recipe) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Set<NamespacedKey> getDiscoveredRecipes() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void attack(Entity target) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void swingMainHand() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void swingOffHand() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public Set<UUID> getCollidableExemptions() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void sendExperienceChange(float progress) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendExperienceChange(float progress, int level) {
 		// TODO Auto-generated method stub
 		
 	}
