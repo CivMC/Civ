@@ -19,7 +19,7 @@ import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 /**
  * The main Item Exchange plugin class.
  */
-public final class ItemExchangePlugin extends ACivMod {
+public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 
 	private static ItemExchangePlugin instance;
 
@@ -69,6 +69,10 @@ public final class ItemExchangePlugin extends ACivMod {
 			commands = null;
 		}
 		super.onDisable();
+	}
+
+	@Override
+	public void close() throws Exception {
 		instance = null;
 	}
 
