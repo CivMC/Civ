@@ -11,7 +11,7 @@ import net.minecraft.server.v1_16_R1.PlayerConnection;
  * @deprecated Use Player.sendTitle instead
  *
  */
-@Deprecated(forRemoval = true)
+@Deprecated
 public class Title {
 	private String title;
 	private String subtitle;
