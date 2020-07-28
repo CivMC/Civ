@@ -50,7 +50,7 @@ public class PortalSpawnModifier extends BasicHack {
 			event.setCancelled(roll(witherSkeletonChance));
 			return;
 		}
-		if (event.getEntityType() == EntityType.PIG_ZOMBIE) {
+		if (event.getEntityType() == EntityType.ZOMBIFIED_PIGLIN) {
 			if (!roll(pigManChance)) {
 				event.setCancelled(true);
 				return;

@@ -300,7 +300,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 		Environment env = b.getLocation().getWorld().getEnvironment();
 		Biome biome = b.getLocation().getBlock().getBiome();
-		if (Environment.NETHER.equals(env) || Environment.THE_END.equals(env) || Biome.NETHER.equals(biome) 
+		if (Environment.NETHER.equals(env) || Environment.THE_END.equals(env) || Biome.NETHER_WASTES.equals(biome) 
 				|| Biome.END_BARRENS.equals(biome) || Biome.END_HIGHLANDS.equals(biome)
 				|| Biome.END_MIDLANDS.equals(biome) || Biome.SMALL_END_ISLANDS.equals(biome)
 				|| Biome.THE_END.equals(biome)) {

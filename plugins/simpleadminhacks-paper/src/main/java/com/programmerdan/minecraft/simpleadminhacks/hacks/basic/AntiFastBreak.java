@@ -11,7 +11,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -34,7 +34,7 @@ import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 
-import net.minecraft.server.v1_14_R1.IBlockData;
+import net.minecraft.server.v1_16_R1.IBlockData;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
@@ -191,19 +191,19 @@ public class AntiFastBreak extends BasicHack {
 	}
 
 	private static boolean isProperTool(ItemStack tool, Material block) {
-		net.minecraft.server.v1_14_R1.Block nmsBlock = org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers
+		net.minecraft.server.v1_16_R1.Block nmsBlock = org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers
 				.getBlock(block);
 		if (nmsBlock == null) {
 			return false;
 		}
-		net.minecraft.server.v1_14_R1.IBlockData data = nmsBlock.getBlockData();
-		return data.getMaterial().isAlwaysDestroyable() || tool != null && tool.getType() != Material.AIR
-				&& org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers.getItem(tool.getType())
+		net.minecraft.server.v1_16_R1.IBlockData data = nmsBlock.getBlockData();
+		return tool != null && tool.getType() != Material.AIR
+				&& org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers.getItem(tool.getType())
 						.canDestroySpecialBlock(data);
 	}
 
 	private static IBlockData getNMSBlockData(Material mat) {
-		net.minecraft.server.v1_14_R1.Block nmsBlock = org.bukkit.craftbukkit.v1_14_R1.util.CraftMagicNumbers
+		net.minecraft.server.v1_16_R1.Block nmsBlock = org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers
 				.getBlock(mat);
 		if (nmsBlock == null) {
 			return null;

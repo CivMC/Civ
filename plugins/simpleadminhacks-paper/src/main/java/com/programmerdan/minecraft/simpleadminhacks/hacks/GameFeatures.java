@@ -413,7 +413,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onPlayerBucketEmptyEvent(PlayerBucketEmptyEvent e) {
 		if (config.isEnabled() && config.isBlockWaterInHell()) {
-			if (Biome.NETHER.equals(e.getBlockClicked().getBiome()) && Material.WATER_BUCKET.equals(e.getBucket())) {
+			if (Biome.NETHER_WASTES.equals(e.getBlockClicked().getBiome()) && Material.WATER_BUCKET.equals(e.getBucket())) {
 				e.setCancelled(true);
 				e.getItemStack().setType(Material.BUCKET);
 			}
@@ -428,7 +428,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (Material.DISPENSER.equals(event.getBlock().getType())) {
 			Dispenser disp = (Dispenser) event.getBlock().getBlockData();
 			Biome biome = event.getBlock().getRelative(disp.getFacing()).getBiome();
-			if (Biome.NETHER.equals(biome) && Material.WATER_BUCKET.equals(event.getItem().getType())) {
+			if (Biome.NETHER_WASTES.equals(biome) && Material.WATER_BUCKET.equals(event.getItem().getType())) {
 				event.setItem(new ItemStack(Material.BUCKET, event.getItem().getAmount()));
 				event.setCancelled(true);
 			}
