@@ -6,8 +6,6 @@ import com.devotedmc.ExilePearl.ExilePearl;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
-import java.util.Objects;
-
 /**
  * Interface for an object that can hold or contain an exile pearl
  * @author Gordon
