@@ -95,17 +95,17 @@ public class PermissionType {
 		//allows adding/removing members
 		registerPermission("MEMBERS", new ArrayList<>(modAndAbove), "Allows inviting new members and removing existing members");
 		//allows blacklisting/unblacklisting players and viewing the blacklist
-		registerPermission("BLACKLIST", new ArrayList<>(modAndAbove), "Allows viewing this group's blacklist, adding players to the blacklist "
+		registerPermission("BLACKLIST", new ArrayList<>(modAndAbove), "Allows viewing this groups blacklist, adding players to the blacklist "
 				+ "and removing players from the blacklist");
 		//allows adding/removing mods
 		registerPermission("MODS", new ArrayList<>(adminAndAbove), "Allows inviting new mods and removing existing mods");
 		//allows adding/modifying a password for the group
 		registerPermission("PASSWORD", new ArrayList<>(adminAndAbove), "Allows viewing this groups password and changing or removing it");
 		//allows to list the permissions for each permission group
-		registerPermission("LIST_PERMS", new ArrayList<>(adminAndAbove), "Allows viewing how permission for this group are set up");
+		registerPermission("LIST_PERMS", new ArrayList<>(adminAndAbove), "Allows viewing how permissions for this group are set up");
 		//allows to see general group stats
 		registerPermission("GROUPSTATS", new ArrayList<>(adminAndAbove), "Gives access to various group statistics such as member "
-				+ "counts by permission type, who owns the group etc.");
+				+ "counts by permission type, who owns the group etc");
 		//allows to add/remove admins
 		registerPermission("ADMINS", new ArrayList<>(owner), "Allows inviting new admins and removing existing admins");
 		//allows to add/remove owners

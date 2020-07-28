@@ -138,9 +138,17 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			ItemAPI.setDisplayName(is, perm.getName());
 			String desc = perm.getDescription();
 			if (desc != null) {
-				ItemAPI.addLore(is, ChatColor.GREEN + desc);
+				final int MAX_CHARS = 35;
+				String[] words = desc.split(" ");
+				StringBuilder line = new StringBuilder();
+				for  (int i = 0; i < words.length; i++) {
+					line.append(words[i]).append(" ");
+					if (line.length() >= MAX_CHARS || i == words.length - 1){
+						ItemAPI.addLore(is, ChatColor.GREEN + line.toString().trim());
+						line = new StringBuilder();
+					}
+				}
 			}
-
 			if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
 				canEdit = false;
 
