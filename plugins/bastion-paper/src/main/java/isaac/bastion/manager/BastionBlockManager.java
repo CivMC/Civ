@@ -25,9 +25,9 @@ import isaac.bastion.Permissions;
 import isaac.bastion.event.BastionDamageEvent;
 import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -236,7 +236,7 @@ public class BastionBlockManager {
 		TextComponent component = new TextComponent(ChatColor.GREEN + "Bastion deleted");
 
 		String hoverText = bastion.getHoverText();
-		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverText)));
 
 		return component;
 	}
@@ -247,7 +247,7 @@ public class BastionBlockManager {
 		TextComponent component = new TextComponent(ChatColor.GREEN + "Bastion block created");
 
 		String hoverText = bastion.getHoverText();
-		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+		component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverText)));
 
 		return component;
 	}
@@ -264,7 +264,7 @@ public class BastionBlockManager {
 		if (canListBastionsForGroup(player, bastion.getListGroupId())) {
 			String hoverText = bastion.getHoverText();
 			component.setHoverEvent(
-					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(hoverText).create()));
+					new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(hoverText)));
 		}
 
 		return component;

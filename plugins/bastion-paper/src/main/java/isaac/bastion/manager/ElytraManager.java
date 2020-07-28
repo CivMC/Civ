@@ -18,6 +18,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.Damageable;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
 import isaac.bastion.Bastion;
@@ -26,6 +28,7 @@ import isaac.bastion.BastionType;
 import isaac.bastion.event.BastionDamageEvent;
 import isaac.bastion.event.BastionDamageEvent.Cause;
 import isaac.bastion.storage.BastionBlockStorage;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
 
 public class ElytraManager {
 
@@ -282,7 +285,9 @@ public class ElytraManager {
 			inv.setChestplate(new ItemStack(Material.AIR));
 		} else if (damageElytra){
 			ItemStack elytra = inv.getChestplate();
-			elytra.setDurability((short)432);
+			Damageable dmgable = ItemAPI.getDamageable(elytra);
+			dmgable.setDamage(432);
+			elytra.setItemMeta((ItemMeta) dmgable);
 			inv.setChestplate(elytra);
 		}
 		if(explosionStrength >= 0) {
