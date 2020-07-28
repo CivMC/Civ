@@ -10,9 +10,12 @@ import org.bukkit.entity.EntityType;
  * Class of static APIs for Spawn Eggs.
  * */
 public final class SpawnEggAPI {
+	
+	private SpawnEggAPI() {}
 
 	private static final BiMap<Material, EntityType> spawnEggs = ImmutableBiMap.<Material, EntityType>builder().
 			put(Material.BAT_SPAWN_EGG, EntityType.BAT).
+			put(Material.BEE_SPAWN_EGG, EntityType.BEE).
 			put(Material.BLAZE_SPAWN_EGG, EntityType.BLAZE).
 			put(Material.CAT_SPAWN_EGG, EntityType.CAT).
 			put(Material.CAVE_SPIDER_SPAWN_EGG, EntityType.CAVE_SPIDER).
@@ -30,6 +33,7 @@ public final class SpawnEggAPI {
 			put(Material.FOX_SPAWN_EGG, EntityType.FOX).
 			put(Material.GHAST_SPAWN_EGG, EntityType.GHAST).
 			put(Material.GUARDIAN_SPAWN_EGG, EntityType.GUARDIAN).
+			put(Material.HOGLIN_SPAWN_EGG, EntityType.HOGLIN).
 			put(Material.HORSE_SPAWN_EGG, EntityType.HORSE).
 			put(Material.HUSK_SPAWN_EGG, EntityType.HUSK).
 			put(Material.LLAMA_SPAWN_EGG, EntityType.LLAMA).
@@ -41,6 +45,7 @@ public final class SpawnEggAPI {
 			put(Material.PARROT_SPAWN_EGG, EntityType.PARROT).
 			put(Material.PHANTOM_SPAWN_EGG, EntityType.PHANTOM).
 			put(Material.PIG_SPAWN_EGG, EntityType.PIG).
+			put(Material.PIGLIN_SPAWN_EGG, EntityType.PIGLIN).
 			put(Material.PILLAGER_SPAWN_EGG, EntityType.PILLAGER).
 			put(Material.POLAR_BEAR_SPAWN_EGG, EntityType.POLAR_BEAR).
 			put(Material.PUFFERFISH_SPAWN_EGG, EntityType.PUFFERFISH).
@@ -56,6 +61,7 @@ public final class SpawnEggAPI {
 			put(Material.SPIDER_SPAWN_EGG, EntityType.SPIDER).
 			put(Material.SQUID_SPAWN_EGG, EntityType.SQUID).
 			put(Material.STRAY_SPAWN_EGG, EntityType.STRAY).
+			put(Material.STRIDER_SPAWN_EGG, EntityType.STRIDER).
 			put(Material.TRADER_LLAMA_SPAWN_EGG, EntityType.TRADER_LLAMA).
 			put(Material.TROPICAL_FISH_SPAWN_EGG, EntityType.TROPICAL_FISH).
 			put(Material.TURTLE_SPAWN_EGG, EntityType.TURTLE).
@@ -66,10 +72,11 @@ public final class SpawnEggAPI {
 			put(Material.WITCH_SPAWN_EGG, EntityType.WITCH).
 			put(Material.WITHER_SKELETON_SPAWN_EGG, EntityType.WITHER_SKELETON).
 			put(Material.WOLF_SPAWN_EGG, EntityType.WOLF).
+			put(Material.ZOGLIN_SPAWN_EGG, EntityType.ZOGLIN).
 			put(Material.ZOMBIE_HORSE_SPAWN_EGG, EntityType.ZOMBIE_HORSE).
-			put(Material.ZOMBIE_PIGMAN_SPAWN_EGG, EntityType.PIG_ZOMBIE).
 			put(Material.ZOMBIE_SPAWN_EGG, EntityType.ZOMBIE).
 			put(Material.ZOMBIE_VILLAGER_SPAWN_EGG, EntityType.ZOMBIE_VILLAGER).
+			put(Material.ZOMBIFIED_PIGLIN_SPAWN_EGG, EntityType.ZOMBIFIED_PIGLIN).
 			build();
 
 	/**

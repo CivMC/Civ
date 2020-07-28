@@ -8,21 +8,21 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_14_R1.NBTBase;
-import net.minecraft.server.v1_14_R1.NBTTagByte;
-import net.minecraft.server.v1_14_R1.NBTTagByteArray;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagDouble;
-import net.minecraft.server.v1_14_R1.NBTTagFloat;
-import net.minecraft.server.v1_14_R1.NBTTagInt;
-import net.minecraft.server.v1_14_R1.NBTTagIntArray;
-import net.minecraft.server.v1_14_R1.NBTTagList;
-import net.minecraft.server.v1_14_R1.NBTTagLong;
-import net.minecraft.server.v1_14_R1.NBTTagShort;
-import net.minecraft.server.v1_14_R1.NBTTagString;
+import net.minecraft.server.v1_16_R1.NBTBase;
+import net.minecraft.server.v1_16_R1.NBTTagByte;
+import net.minecraft.server.v1_16_R1.NBTTagByteArray;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R1.NBTTagDouble;
+import net.minecraft.server.v1_16_R1.NBTTagFloat;
+import net.minecraft.server.v1_16_R1.NBTTagInt;
+import net.minecraft.server.v1_16_R1.NBTTagIntArray;
+import net.minecraft.server.v1_16_R1.NBTTagList;
+import net.minecraft.server.v1_16_R1.NBTTagLong;
+import net.minecraft.server.v1_16_R1.NBTTagShort;
+import net.minecraft.server.v1_16_R1.NBTTagString;
 
 @Deprecated
 public class TagManager {
@@ -39,7 +39,7 @@ public class TagManager {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
 
-		net.minecraft.server.v1_14_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_16_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 		this.tag = s.getTag();
 
 		if (this.tag == null) {
@@ -98,7 +98,7 @@ public class TagManager {
 		NBTTagList tagList = new NBTTagList();
 
 		for (String s : list) {
-			tagList.add(new NBTTagString(s));
+			tagList.add(NBTTagString.a(s));
 		}
 
 		this.tag.set(key, tagList);
@@ -119,7 +119,7 @@ public class TagManager {
 		NBTTagList tagList = new NBTTagList();
 
 		for (Integer i : list) {
-			tagList.add(new NBTTagInt(i));
+			tagList.add(NBTTagInt.a(i));
 		}
 
 		this.tag.set(key, tagList);
@@ -166,7 +166,7 @@ public class TagManager {
 		NBTTagList tagList = new NBTTagList();
 
 		for (Short s : list) {
-			tagList.add(new NBTTagShort(s));
+			tagList.add(NBTTagShort.a(s));
 		}
 
 		this.tag.set(key, tagList);
@@ -182,7 +182,7 @@ public class TagManager {
 
 	public ItemStack enrichWithNBT(ItemStack is) {
 
-		net.minecraft.server.v1_14_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_16_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
 
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());
@@ -280,25 +280,25 @@ public class TagManager {
 				base.add(listToNBT(new NBTTagList(), (List<Object>) object));
 			} else if (object instanceof String) {
 				log.fine("Adding string " + object + " to list");
-				base.add(new NBTTagString((String) object));
+				base.add(NBTTagString.a((String) object));
 			} else if (object instanceof Double) {
 				log.fine("Adding double " + object + " to list");
-				base.add(new NBTTagDouble((Double) object));
+				base.add(NBTTagDouble.a((Double) object));
 			} else if (object instanceof Float) {
 				log.fine("Adding float " + object + " to list");
-				base.add(new NBTTagFloat((Float) object));
+				base.add(NBTTagFloat.a((Float) object));
 			} else if (object instanceof Byte) {
 				log.fine("Adding byte " + object + " to list");
-				base.add(new NBTTagByte((Byte) object));
+				base.add(NBTTagByte.a((Byte) object));
 			} else if (object instanceof Short) {
 				log.fine("Adding short " + object + " to list");
-				base.add(new NBTTagShort((Short) object));
+				base.add(NBTTagShort.a((Short) object));
 			} else if (object instanceof Integer) {
 				log.fine("Adding integer " + object + " to list");
-				base.add(new NBTTagInt((Integer) object));
+				base.add(NBTTagInt.a((Integer) object));
 			} else if (object instanceof Long) {
 				log.fine("Adding long " + object + " to list");
-				base.add(new NBTTagLong((Long) object));
+				base.add(NBTTagLong.a((Long) object));
 			} else if (object instanceof byte[]) {
 				log.fine("Adding byte array to list");
 				base.add(new NBTTagByteArray((byte[]) object));

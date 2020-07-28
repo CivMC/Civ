@@ -4,9 +4,8 @@ import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.server.v1_14_R1.BlockProperties;
-import net.minecraft.server.v1_14_R1.BlockState;
-import net.minecraft.server.v1_14_R1.IBlockState;
+import net.minecraft.server.v1_16_R1.BlockProperties;
+import net.minecraft.server.v1_16_R1.IBlockState;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -23,9 +22,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.block.CraftBlock;
-import org.bukkit.material.Button;
+import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R1.block.CraftBlock;
 import org.bukkit.util.BlockIterator;
 
 /**
@@ -49,23 +47,23 @@ public final class BlockAPI {
 			BlockFace.WEST,
 			BlockFace.EAST);
 	
-	private static final Map<String, BlockState<?>> blockStateByIdentifier = new HashMap<>();
+	private static final Map<String, IBlockState<?>> blockStateByIdentifier = new HashMap<>();
 	
 	static  {
 		for(Field field : BlockProperties.class.getFields()) {
-			if (!BlockState.class.isAssignableFrom(field.getType())) {
+			if (!IBlockState.class.isAssignableFrom(field.getType())) {
 				continue;
 			}
 			field.setAccessible(true);
-			BlockState<?> bs;
+			IBlockState<?> bs;
 			try {
-				bs = (BlockState<?>)field.get(null);
+				bs = (IBlockState<?>)field.get(null);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
 				continue;
 			}
 			//when updating, search for the method returning the string given in the constructor
-			String key = bs.a();
+			String key = bs.getName();
 			blockStateByIdentifier.put(key, bs);
 		}
 	}
@@ -228,8 +226,7 @@ public final class BlockAPI {
 	/**
 	 * Gets the {@link BlockFace} this attachable is attached to. This exists as
 	 * {@link org.bukkit.block.data.Directional} has odd behaviour whereby if attached to the top or bottom of a block,
-	 * the direction is the rotation of the block, rather than the attached face. Since {@link Button#getAttachedFace()}
-	 * is deprecated and may be removed at any point, this is the only other way to get that information.
+	 * the direction is the rotation of the block, rather than the attached face. 
 	 *
 	 * @param attachable The Switch, which is an instance of {@link BlockData}. So do your own checks beforehand.
 	 * @return Returns the block face the given attachable is attached to, or null.
@@ -238,11 +235,11 @@ public final class BlockAPI {
 		if (attachable == null) {
 			return null;
 		}
-		switch (attachable.getFace()) {
+		switch (attachable.getAttachedFace()) {
 			case CEILING:
-				return BlockFace.UP;
-			case FLOOR:
 				return BlockFace.DOWN;
+			case FLOOR:
+				return BlockFace.UP;
 			case WALL:
 				return attachable.getFacing().getOppositeFace();
 			default:
