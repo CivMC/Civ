@@ -202,6 +202,7 @@ public class EntityListener implements Listener {
 			case OBSTRUCTION:
 			case PHYSICS:
 			case DEFAULT:
+			case EXPLOSION:
 				return;
 			case ENTITY: {
 				Player player = castOrNull(Player.class, event.getRemover());
