@@ -28,6 +28,7 @@ import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoveTapCommand  implements CommandExecutor {
@@ -91,7 +92,7 @@ public class LoveTapCommand  implements CommandExecutor {
 									ipBase.setColor(net.md_5.bungee.api.ChatColor.BLUE);
 								TextComponent ipStr = new TextComponent(bsip.toString());
 									ipStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-									ipStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("Click to lovetap this IP").create()));
+									ipStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text("Click to lovetap this IP")));
 									ipStr.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lovetap " + bsip.toString()));
 								ipBase.addExtra(ipStr);
 										// TODO: Add a hover and clickable that issues a lovetap for this IP specifically. 
@@ -119,7 +120,7 @@ public class LoveTapCommand  implements CommandExecutor {
 								TextComponent playerStr = new TextComponent(Integer.toString(players == null ? 0 : players.size()));
 									playerStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 									if (!players.isEmpty()) {
-										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerList.substring(0, playerList.length() - 2).toString()).create()));
+										playerStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text((playerList.substring(0, playerList.length() - 2)))));
 									}
 								playerBase.addExtra(playerStr);
 								ipBase.addExtra(playerBase);
@@ -130,7 +131,7 @@ public class LoveTapCommand  implements CommandExecutor {
 								TextComponent pBanStr = new TextComponent(Integer.toString(playerBans == null ? 0 : playerBans.size()));
 									pBanStr.setColor(net.md_5.bungee.api.ChatColor.WHITE);
 									if (!playerBans.isEmpty()) {
-										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(playerBanList.substring(0,  playerBanList.length() - 2).toString()).create()));
+										pBanStr.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text((playerBanList.substring(0,  playerBanList.length() - 2)))));
 									}
 								pBanBase.addExtra(pBanStr);
 								ipBase.addExtra(pBanBase);
@@ -140,7 +141,7 @@ public class LoveTapCommand  implements CommandExecutor {
 								if (proxy != null) {
 									TextComponent proxyBase = new TextComponent("\n   " + proxy.toString());
 										proxyBase.setColor(net.md_5.bungee.api.ChatColor.WHITE);
-										proxyBase.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder("View other players in same city").create()));
+										proxyBase.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(("View other players in same city"))));
 										proxyBase.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/drilldown PLAYER country \"" + proxy.getCountry() + "\" region \"" + proxy.getRegion() + "\" city \"" + proxy.getCity() + "\""));
 									ipBase.addExtra(proxyBase);
 								}
