@@ -9,9 +9,10 @@ import java.util.List;
 import java.util.UUID;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ClickEvent.Action;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -41,7 +42,7 @@ public class VoteCommand extends StandaloneCommand {
 				text.setClickEvent(
 						new ClickEvent(Action.OPEN_URL, site.getVotingUrl().replace("%PLAYER%", p.getName())));
 				text.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-						new ComponentBuilder("Click to open the voting link for " + site.getName()).create()));
+						new Text("Click to open the voting link for " + site.getName())));
 				p.spigot().sendMessage(text);
 			} else {
 				long remaining = site.getVotingCooldown() - (System.currentTimeMillis() - lastVote);
