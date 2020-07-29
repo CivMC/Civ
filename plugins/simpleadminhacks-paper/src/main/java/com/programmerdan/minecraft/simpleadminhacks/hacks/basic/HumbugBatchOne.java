@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
+import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -84,6 +85,9 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean disableEndGatewayTP;
+	
+	@AutoLoad
+	private boolean disableHoglins;
 
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
@@ -388,5 +392,12 @@ public class HumbugBatchOne extends BasicHack {
 			}
 		}
 		return false;
+	}
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onBartering(EntitySpawnEvent event) {
+		if (disableHoglins && event.getEntityType() == EntityType.HOGLIN) {
+			event.setCancelled(true);
+		}
 	}
 }
