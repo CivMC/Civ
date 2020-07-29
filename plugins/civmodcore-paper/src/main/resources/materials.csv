@@ -17,6 +17,7 @@ ACACIA_WOOD,Acacia Wood
 ACTIVATOR_RAIL,Activator Rail
 AIR,Air
 ALLIUM,Allium
+ANCIENT_DEBRIS,Ancient Debris
 ANDESITE,Andesite
 ANDESITE_SLAB,Andesite Slab
 ANDESITE_STAIRS,Andesite Stairs
@@ -33,14 +34,18 @@ BAMBOO,Bamboo
 BAMBOO_SAPLING,Bamboo Sapling
 BARREL,Barrel
 BARRIER,Barrier
+BASALT,Basalt
 BAT_SPAWN_EGG,Bat Spawn Egg
 BEACON,§bBeacon
 BEDROCK,Bedrock
 BEEF,Beef
+BEEHIVE,Beehive
 BEETROOT,Beetroot
 BEETROOTS,Beetroots
 BEETROOT_SEEDS,Beetroot Seeds
 BEETROOT_SOUP,Beetroot Soup
+BEE_NEST,Bee Nest
+BEE_SPAWN_EGG,Bee Spawn Egg
 BELL,Bell
 BIRCH_BOAT,Birch Boat
 BIRCH_BUTTON,Birch Button
@@ -58,6 +63,10 @@ BIRCH_STAIRS,Birch Stairs
 BIRCH_TRAPDOOR,Birch Trapdoor
 BIRCH_WALL_SIGN,Birch Wall Sign
 BIRCH_WOOD,Birch Wood
+BLACKSTONE,Blackstone
+BLACKSTONE_SLAB,Blackstone Slab
+BLACKSTONE_STAIRS,Blackstone Stairs
+BLACKSTONE_WALL,Blackstone Wall
 BLACK_BANNER,Black Banner
 BLACK_BED,Black Bed
 BLACK_CARPET,Black Carpet
@@ -141,6 +150,7 @@ CAT_SPAWN_EGG,Cat Spawn Egg
 CAULDRON,Cauldron
 CAVE_AIR,Cave Air
 CAVE_SPIDER_SPAWN_EGG,Cave Spider Spawn Egg
+CHAIN,Chain
 CHAINMAIL_BOOTS,Chainmail Boots
 CHAINMAIL_CHESTPLATE,Chainmail Chestplate
 CHAINMAIL_HELMET,Chainmail Helmet
@@ -152,6 +162,8 @@ CHEST_MINECART,Chest Minecart
 CHICKEN,Chicken
 CHICKEN_SPAWN_EGG,Chicken Spawn Egg
 CHIPPED_ANVIL,Chipped Anvil
+CHISELED_NETHER_BRICKS,Chiseled Nether Bricks
+CHISELED_POLISHED_BLACKSTONE,Chiseled Polished Blackstone
 CHISELED_QUARTZ_BLOCK,Chiseled Quartz Block
 CHISELED_RED_SANDSTONE,Chiseled Red Sandstone
 CHISELED_SANDSTONE,Chiseled Sandstone
@@ -192,13 +204,32 @@ COOKED_SALMON,Cooked Salmon
 COOKIE,Cookie
 CORNFLOWER,Cornflower
 COW_SPAWN_EGG,Cow Spawn Egg
+CRACKED_NETHER_BRICKS,Cracked Nether Bricks
+CRACKED_POLISHED_BLACKSTONE_BRICKS,Cracked Polished Blackstone Bricks
 CRACKED_STONE_BRICKS,Cracked Stone Bricks
 CRAFTING_TABLE,Crafting Table
 CREEPER_BANNER_PATTERN,§eBanner Pattern
 CREEPER_HEAD,§eCreeper Head
 CREEPER_SPAWN_EGG,Creeper Spawn Egg
 CREEPER_WALL_HEAD,Creeper Wall Head
+CRIMSON_BUTTON,Crimson Button
+CRIMSON_DOOR,Crimson Door
+CRIMSON_FENCE,Crimson Fence
+CRIMSON_FENCE_GATE,Crimson Fence Gate
+CRIMSON_FUNGUS,Crimson Fungus
+CRIMSON_HYPHAE,Crimson Hyphae
+CRIMSON_NYLIUM,Crimson Nylium
+CRIMSON_PLANKS,Crimson Planks
+CRIMSON_PRESSURE_PLATE,Crimson Pressure Plate
+CRIMSON_ROOTS,Crimson Roots
+CRIMSON_SIGN,Crimson Sign
+CRIMSON_SLAB,Crimson Slab
+CRIMSON_STAIRS,Crimson Stairs
+CRIMSON_STEM,Crimson Stem
+CRIMSON_TRAPDOOR,Crimson Trapdoor
+CRIMSON_WALL_SIGN,Crimson Sign
 CROSSBOW,Crossbow
+CRYING_OBSIDIAN,Crying Obsidian
 CUT_RED_SANDSTONE,Cut Red Sandstone
 CUT_RED_SANDSTONE_SLAB,Cut Red Sandstone Slab
 CUT_SANDSTONE,Cut Sandstone
@@ -341,6 +372,7 @@ FURNACE,Furnace
 FURNACE_MINECART,Furnace Minecart
 GHAST_SPAWN_EGG,Ghast Spawn Egg
 GHAST_TEAR,Ghast Tear
+GILDED_BLACKSTONE,Gilded Blackstone
 GLASS,Glass
 GLASS_BOTTLE,Glass Bottle
 GLASS_PANE,Glass Pane
@@ -404,6 +436,11 @@ GUNPOWDER,Gunpowder
 HAY_BLOCK,Hay Block
 HEART_OF_THE_SEA,§eHeart Of The Sea
 HEAVY_WEIGHTED_PRESSURE_PLATE,Heavy Weighted Pressure Plate
+HOGLIN_SPAWN_EGG,Hoglin Spawn Egg
+HONEYCOMB,Honeycomb
+HONEYCOMB_BLOCK,Honeycomb Block
+HONEY_BLOCK,Honey Block
+HONEY_BOTTLE,Honey Bottle
 HOPPER,Hopper
 HOPPER_MINECART,Hopper Minecart
 HORN_CORAL,Horn Coral
@@ -522,6 +559,7 @@ LIME_WALL_BANNER,Lime Wall Banner
 LIME_WOOL,Lime Wool
 LINGERING_POTION,Lingering Potion
 LLAMA_SPAWN_EGG,Llama Spawn Egg
+LODESTONE,Lodestone
 LOOM,Loom
 MAGENTA_BANNER,Magenta Banner
 MAGENTA_BED,Magenta Bed
@@ -568,6 +606,7 @@ MUSIC_DISC_CHIRP,§bMusic Disc Chirp
 MUSIC_DISC_FAR,§bMusic Disc Far
 MUSIC_DISC_MALL,§bMusic Disc Mall
 MUSIC_DISC_MELLOHI,§bMusic Disc Mellohi
+MUSIC_DISC_PIGSTEP,§bMusic Disc Pigstep
 MUSIC_DISC_STAL,§bMusic Disc Stal
 MUSIC_DISC_STRAD,§bMusic Disc Strad
 MUSIC_DISC_WAIT,§bMusic Disc Wait
@@ -576,6 +615,18 @@ MUTTON,Mutton
 MYCELIUM,Mycelium
 NAME_TAG,Name Tag
 NAUTILUS_SHELL,Nautilus Shell
+NETHERITE_AXE,Netherite Axe
+NETHERITE_BLOCK,Netherite Block
+NETHERITE_BOOTS,Netherite Boots
+NETHERITE_CHESTPLATE,Netherite Chestplate
+NETHERITE_HELMET,Netherite Helmet
+NETHERITE_HOE,Netherite Hoe
+NETHERITE_INGOT,Netherite Ingot
+NETHERITE_LEGGINGS,Netherite Leggings
+NETHERITE_PICKAXE,Netherite Pickaxe
+NETHERITE_SCRAP,Netherite Scrap
+NETHERITE_SHOVEL,Netherite Shovel
+NETHERITE_SWORD,Netherite Sword
 NETHERRACK,Netherrack
 NETHER_BRICK,Nether Brick
 NETHER_BRICKS,Nether Bricks
@@ -583,8 +634,10 @@ NETHER_BRICK_FENCE,Nether Brick Fence
 NETHER_BRICK_SLAB,Nether Brick Slab
 NETHER_BRICK_STAIRS,Nether Brick Stairs
 NETHER_BRICK_WALL,Nether Brick Wall
+NETHER_GOLD_ORE,Nether Gold Ore
 NETHER_PORTAL,Nether Portal
 NETHER_QUARTZ_ORE,Nether Quartz Ore
+NETHER_SPROUTS,Nether Sprouts
 NETHER_STAR,§eNether Star
 NETHER_WART,Nether Wart
 NETHER_WART_BLOCK,Nether Wart Block
@@ -632,6 +685,8 @@ PEONY,Peony
 PETRIFIED_OAK_SLAB,Petrified Oak Slab
 PHANTOM_MEMBRANE,Phantom Membrane
 PHANTOM_SPAWN_EGG,Phantom Spawn Egg
+PIGLIN_BANNER_PATTERN,Snout Banner Pattern
+PIGLIN_SPAWN_EGG,Piglin Spawn Egg
 PIG_SPAWN_EGG,Pig Spawn Egg
 PILLAGER_SPAWN_EGG,Pillager Spawn Egg
 PINK_BANNER,Pink Banner
@@ -658,6 +713,17 @@ POLAR_BEAR_SPAWN_EGG,Polar Bear Spawn Egg
 POLISHED_ANDESITE,Polished Andesite
 POLISHED_ANDESITE_SLAB,Polished Andesite Slab
 POLISHED_ANDESITE_STAIRS,Polished Andesite Stairs
+POLISHED_BASALT,Polished Basalt
+POLISHED_BLACKSTONE,Polished Blackstone
+POLISHED_BLACKSTONE_BRICKS,Polished Blackstone Bricks
+POLISHED_BLACKSTONE_BRICK_SLAB,Polished Blackstone Brick Slab
+POLISHED_BLACKSTONE_BRICK_STAIRS,Polished Blackstone Brick Stairs
+POLISHED_BLACKSTONE_BRICK_WALL,Polished Blackstone Brick Wall
+POLISHED_BLACKSTONE_BUTTON,Polished Blackstone Button
+POLISHED_BLACKSTONE_PRESSURE_PLATE,Polished Blackstone Pressure Plate
+POLISHED_BLACKSTONE_SLAB,Polished Blackstone Slab
+POLISHED_BLACKSTONE_STAIRS,Polished Blackstone Stairs
+POLISHED_BLACKSTONE_WALL,Polished Blackstone Wall
 POLISHED_DIORITE,Polished Diorite
 POLISHED_DIORITE_SLAB,Polished Diorite Slab
 POLISHED_DIORITE_STAIRS,Polished Diorite Stairs
@@ -679,6 +745,8 @@ POTTED_BLUE_ORCHID,Potted Blue Orchid
 POTTED_BROWN_MUSHROOM,Potted Brown Mushroom
 POTTED_CACTUS,Potted Cactus
 POTTED_CORNFLOWER,Potted Cornflower
+POTTED_CRIMSON_FUNGUS,Potted Crimson Fungus
+POTTED_CRIMSON_ROOTS,Potted Crimson Roots
 POTTED_DANDELION,Potted Dandelion
 POTTED_DARK_OAK_SAPLING,Potted Dark Oak Sapling
 POTTED_DEAD_BUSH,Potted Dead Bush
@@ -693,6 +761,8 @@ POTTED_POPPY,Potted Poppy
 POTTED_RED_MUSHROOM,Potted Red Mushroom
 POTTED_RED_TULIP,Potted Red Tulip
 POTTED_SPRUCE_SAPLING,Potted Spruce Sapling
+POTTED_WARPED_FUNGUS,Potted Warped Fungus
+POTTED_WARPED_ROOTS,Potted Warped Roots
 POTTED_WHITE_TULIP,Potted White Tulip
 POTTED_WITHER_ROSE,Potted Wither Rose
 POWERED_RAIL,Powered Rail
@@ -731,6 +801,7 @@ PURPUR_SLAB,Purpur Slab
 PURPUR_STAIRS,Purpur Stairs
 QUARTZ,Quartz
 QUARTZ_BLOCK,Quartz Block
+QUARTZ_BRICKS,Quartz Bricks
 QUARTZ_PILLAR,Quartz Pillar
 QUARTZ_SLAB,Quartz Slab
 QUARTZ_STAIRS,Quartz Stairs
@@ -775,6 +846,7 @@ RED_WALL_BANNER,Red Wall Banner
 RED_WOOL,Red Wool
 REPEATER,Repeater
 REPEATING_COMMAND_BLOCK,Repeating Command Block
+RESPAWN_ANCHOR,Respawn Anchor
 ROSE_BUSH,Rose Bush
 ROTTEN_FLESH,Rotten Flesh
 SADDLE,Saddle
@@ -794,6 +866,7 @@ SEA_PICKLE,Sea Pickle
 SHEARS,Shears
 SHEEP_SPAWN_EGG,Sheep Spawn Egg
 SHIELD,Shield
+SHROOMLIGHT,Shroomlight
 SHULKER_BOX,Shulker Box
 SHULKER_SHELL,Shulker Shell
 SHULKER_SPAWN_EGG,Shulker Spawn Egg
@@ -822,7 +895,13 @@ SMOOTH_STONE_SLAB,Smooth Stone Slab
 SNOW,Snow
 SNOWBALL,Snowball
 SNOW_BLOCK,Snow Block
+SOUL_CAMPFIRE,Soul Campfire
+SOUL_FIRE,Soul Fire
+SOUL_LANTERN,Soul Lantern
 SOUL_SAND,Soul Sand
+SOUL_SOIL,Soul Soil
+SOUL_TORCH,Soul Torch
+SOUL_WALL_TORCH,Soul Torch
 SPAWNER,Spawner
 SPECTRAL_ARROW,Spectral Arrow
 SPIDER_EYE,Spider Eye
@@ -864,11 +943,14 @@ STONE_SLAB,Stone Slab
 STONE_STAIRS,Stone Stairs
 STONE_SWORD,Stone Sword
 STRAY_SPAWN_EGG,Stray Spawn Egg
+STRIDER_SPAWN_EGG,Strider Spawn Egg
 STRING,String
 STRIPPED_ACACIA_LOG,Stripped Acacia Log
 STRIPPED_ACACIA_WOOD,Stripped Acacia Wood
 STRIPPED_BIRCH_LOG,Stripped Birch Log
 STRIPPED_BIRCH_WOOD,Stripped Birch Wood
+STRIPPED_CRIMSON_HYPHAE,Stripped Crimson Hyphae
+STRIPPED_CRIMSON_STEM,Stripped Crimson Stem
 STRIPPED_DARK_OAK_LOG,Stripped Dark Oak Log
 STRIPPED_DARK_OAK_WOOD,Stripped Dark Oak Wood
 STRIPPED_JUNGLE_LOG,Stripped Jungle Log
@@ -877,6 +959,8 @@ STRIPPED_OAK_LOG,Stripped Oak Log
 STRIPPED_OAK_WOOD,Stripped Oak Wood
 STRIPPED_SPRUCE_LOG,Stripped Spruce Log
 STRIPPED_SPRUCE_WOOD,Stripped Spruce Wood
+STRIPPED_WARPED_HYPHAE,Stripped Warped Hyphae
+STRIPPED_WARPED_STEM,Stripped Warped Stem
 STRUCTURE_BLOCK,Structure Block
 STRUCTURE_VOID,Structure Void
 SUGAR,Sugar
@@ -887,6 +971,7 @@ SWEET_BERRIES,Sweet Berries
 SWEET_BERRY_BUSH,Sweet Berry Bush
 TALL_GRASS,Tall Grass
 TALL_SEAGRASS,Tall Seagrass
+TARGET,Target
 TERRACOTTA,Terracotta
 TIPPED_ARROW,Tipped Arrow
 TNT,Tnt
@@ -908,6 +993,8 @@ TUBE_CORAL_WALL_FAN,Tube Coral Wall Fan
 TURTLE_EGG,Turtle Egg
 TURTLE_HELMET,Turtle Helmet
 TURTLE_SPAWN_EGG,Turtle Spawn Egg
+TWISTING_VINES,Twisting Vines
+TWISTING_VINES_PLANT,Twisting Vines
 VEX_SPAWN_EGG,Vex Spawn Egg
 VILLAGER_SPAWN_EGG,Villager Spawn Egg
 VINDICATOR_SPAWN_EGG,Vindicator Spawn Egg
@@ -915,8 +1002,28 @@ VINE,Vine
 VOID_AIR,Void Air
 WALL_TORCH,Wall Torch
 WANDERING_TRADER_SPAWN_EGG,Wandering Trader Spawn Egg
+WARPED_BUTTON,Warped Button
+WARPED_DOOR,Warped Door
+WARPED_FENCE,Warped Fence
+WARPED_FENCE_GATE,Warped Fence Gate
+WARPED_FUNGUS,Warped Fungus
+WARPED_FUNGUS_ON_A_STICK,Warped Fungus on a Stick
+WARPED_HYPHAE,Warped Hyphae
+WARPED_NYLIUM,Warped NYlium
+WARPED_PLANKS,Warped Planks
+WARPED_PRESSURE_PLATE,Warped Pressure Plate
+WARPED_ROOTS,Warped Roots
+WARPED_SIGN,Warped Sign
+WARPED_SLAB,Warped Slab
+WARPED_STAIRS,Warped Stairs
+WARPED_STEM,Warped Stem
+WARPED_TRAPDOOR,Warped Trapdoor
+WARPED_WALL_SIGN,Warped Sign
+WARPED_WART_BLOCK,Warped Wart Block
 WATER,Water
 WATER_BUCKET,Water Bucket
+WEEPING_VINES,Weeping Vines
+WEEPING_VINES_PLANT,Weeping Vines
 WET_SPONGE,Wet Sponge
 WHEAT,Wheat
 WHEAT_SEEDS,Wheat Seeds
@@ -960,9 +1067,11 @@ YELLOW_STAINED_GLASS_PANE,Yellow Stained Glass Pane
 YELLOW_TERRACOTTA,Yellow Terracotta
 YELLOW_WALL_BANNER,Yellow Wall Banner
 YELLOW_WOOL,Yellow Wool
+ZOGLIN_SPAWN_EGG,Zoglin Spawn Egg
 ZOMBIE_HEAD,§eZombie Head
 ZOMBIE_HORSE_SPAWN_EGG,Zombie Horse Spawn Egg
 ZOMBIE_PIGMAN_SPAWN_EGG,Zombie Pigman Spawn Egg
 ZOMBIE_SPAWN_EGG,Zombie Spawn Egg
 ZOMBIE_VILLAGER_SPAWN_EGG,Zombie Villager Spawn Egg
 ZOMBIE_WALL_HEAD,Zombie Wall Head
+ZOMBIFIED_PIGLIN_SPAWN_EGG,Zombified Piglin Spawn Egg
