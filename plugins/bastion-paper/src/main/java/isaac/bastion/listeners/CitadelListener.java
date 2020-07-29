@@ -1,7 +1,6 @@
 package isaac.bastion.listeners;
 
 import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -25,8 +24,8 @@ public class CitadelListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onReinforcementCreation(ReinforcementCreationEvent event) {
-		Set<BastionBlock> preblocking = blockManager.getBlockingBastionsWithoutPermission(event.getReinforcement().getLocation(), event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
-		Set<BastionBlock> blocking = new CopyOnWriteArraySet<>();
+		Set<BastionBlock> preblocking = blockManager.getBlockingBastionsWithoutPermission(event.getReinforcement().getLocation(), 
+				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
 		for(BastionBlock bastion : preblocking) {
 			BastionType type = bastion.getType();
 			if(type.isBlockReinforcements()) {
@@ -34,7 +33,7 @@ public class CitadelListener implements Listener {
 				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
 					event.getPlayer().sendMessage(ChatColor.RED + "Bastion prevented reinforcement");
 				}
-				blockManager.erodeFromPlace(event.getPlayer(), blocking);
+				blockManager.erodeFromPlace(event.getPlayer(), preblocking);
 				return;
 			}
 		}
