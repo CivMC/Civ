@@ -439,7 +439,7 @@ public class ConfigParsing {
 		}
 		ConfigurationSection section = parent.getConfigurationSection(identifier);
 		for (String keyString : section.getKeys(false)) {
-			if (!section.isString(keyString)) {
+			if (section.isConfigurationSection(keyString)) {
 				logger.warning(
 						"Ignoring invalid " + identifier + " entry " + keyString + " at " + section.getCurrentPath());
 				continue;
