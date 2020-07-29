@@ -3,8 +3,8 @@ package com.github.maxopoly.finale.combat;
 import java.util.Iterator;
 import java.util.List;
 
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityCombustByEntityEvent;
@@ -15,31 +15,31 @@ import org.bukkit.util.Vector;
 import com.github.maxopoly.finale.Finale;
 import com.github.maxopoly.finale.combat.event.CritHitEvent;
 
-import net.minecraft.server.v1_14_R1.DamageSource;
-import net.minecraft.server.v1_14_R1.EnchantmentManager;
-import net.minecraft.server.v1_14_R1.Entity;
-import net.minecraft.server.v1_14_R1.EntityArmorStand;
-import net.minecraft.server.v1_14_R1.EntityComplexPart;
-import net.minecraft.server.v1_14_R1.EntityHuman;
-import net.minecraft.server.v1_14_R1.EntityLiving;
-import net.minecraft.server.v1_14_R1.EntityPlayer;
-import net.minecraft.server.v1_14_R1.EnumHand;
-import net.minecraft.server.v1_14_R1.EnumMonsterType;
-import net.minecraft.server.v1_14_R1.GenericAttributes;
-import net.minecraft.server.v1_14_R1.ItemStack;
-import net.minecraft.server.v1_14_R1.ItemSword;
-import net.minecraft.server.v1_14_R1.MathHelper;
-import net.minecraft.server.v1_14_R1.MobEffects;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityVelocity;
-import net.minecraft.server.v1_14_R1.PacketPlayOutNamedSoundEffect;
-import net.minecraft.server.v1_14_R1.Particles;
-import net.minecraft.server.v1_14_R1.SoundCategory;
-import net.minecraft.server.v1_14_R1.SoundEffect;
-import net.minecraft.server.v1_14_R1.SoundEffects;
-import net.minecraft.server.v1_14_R1.StatisticList;
-import net.minecraft.server.v1_14_R1.Vec3D;
-import net.minecraft.server.v1_14_R1.World;
-import net.minecraft.server.v1_14_R1.WorldServer;
+import net.minecraft.server.v1_16_R1.DamageSource;
+import net.minecraft.server.v1_16_R1.EnchantmentManager;
+import net.minecraft.server.v1_16_R1.Entity;
+import net.minecraft.server.v1_16_R1.EntityArmorStand;
+import net.minecraft.server.v1_16_R1.EntityComplexPart;
+import net.minecraft.server.v1_16_R1.EntityHuman;
+import net.minecraft.server.v1_16_R1.EntityLiving;
+import net.minecraft.server.v1_16_R1.EntityPlayer;
+import net.minecraft.server.v1_16_R1.EnumHand;
+import net.minecraft.server.v1_16_R1.EnumMonsterType;
+import net.minecraft.server.v1_16_R1.GenericAttributes;
+import net.minecraft.server.v1_16_R1.ItemStack;
+import net.minecraft.server.v1_16_R1.ItemSword;
+import net.minecraft.server.v1_16_R1.MathHelper;
+import net.minecraft.server.v1_16_R1.MobEffects;
+import net.minecraft.server.v1_16_R1.PacketPlayOutEntityVelocity;
+import net.minecraft.server.v1_16_R1.PacketPlayOutNamedSoundEffect;
+import net.minecraft.server.v1_16_R1.Particles;
+import net.minecraft.server.v1_16_R1.SoundCategory;
+import net.minecraft.server.v1_16_R1.SoundEffect;
+import net.minecraft.server.v1_16_R1.SoundEffects;
+import net.minecraft.server.v1_16_R1.StatisticList;
+import net.minecraft.server.v1_16_R1.Vec3D;
+import net.minecraft.server.v1_16_R1.World;
+import net.minecraft.server.v1_16_R1.WorldServer;
 
 public class CombatUtil {
 	
@@ -61,9 +61,10 @@ public class CombatUtil {
 		}.runTask(Finale.getPlugin());
 	}
 	
+	//see EntityHuman#attack(Entity) to update this
 	public static void attack(EntityHuman attacker, Entity entity) {
 		CombatConfig config = Finale.getPlugin().getManager().getCombatConfig();
-        if (entity.bs()) {
+        if (entity.bH()) {
             if (!entity.t(attacker)) {
                 float f = (float) attacker.getAttributeInstance(GenericAttributes.ATTACK_DAMAGE).getValue();
                 float f1;
@@ -76,12 +77,11 @@ public class CombatUtil {
                 
                 float f2 = 1;
                 if (!config.isNoCooldown()) {
-                	f2 = attacker.s(0.5F);
+                	f2 = attacker.getAttackCooldown(0.5F);
 	                f *= 0.2F + f2 * f2 * 0.8F;
 	                f1 *= f2;
                 }
                 World world = attacker.getWorld();
-                attacker.dZ();
                 if (f > 0.0F || f1 > 0.0F) {
                 	boolean flag = f2 > 0.9F;
                     byte b0 = 0;
@@ -91,13 +91,13 @@ public class CombatUtil {
 
                     if (sprinting && flag) {
                     	if (config.getCombatSounds().isKnockbackEnabled()) {
-                    		sendSoundEffect(attacker, attacker.locX, attacker.locY, attacker.locZ, SoundEffects.ENTITY_PLAYER_ATTACK_KNOCKBACK, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                    		sendSoundEffect(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_KNOCKBACK, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
                     	}
                         ++i;
                         flag1 = true;
                     }
 
-                    boolean flag2 = attacker.fallDistance > 0.0F && !attacker.onGround && !attacker.isClimbing() && !attacker.isInWater() && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && entity instanceof EntityLiving;
+                    boolean flag2 = attacker.fallDistance > 0.0F && !attacker.isOnGround() && !attacker.isClimbing() && !attacker.isInWater() && !attacker.hasEffect(MobEffects.BLINDNESS) && !attacker.isPassenger() && entity instanceof EntityLiving;
                     flag2 = flag2 && !attacker.isSprinting();
                     if (flag2) {
                     	double critMultiplier = 1.5d;
@@ -112,9 +112,9 @@ public class CombatUtil {
                     }
                     f += f1;
                     boolean flag3 = false;
-                    double d0 = (double) (attacker.K - attacker.J);
+                    double d0 = (double) (attacker.A - attacker.z);
 
-                    if (!flag2 && !attacker.isSprinting() && attacker.onGround && d0 < (double) attacker.db()) {
+                    if (!flag2 && !attacker.isSprinting() && attacker.isOnGround() && d0 < (double) attacker.dM()) {
                         ItemStack itemstack = attacker.b(EnumHand.MAIN_HAND);
 
                         if (itemstack.getItem() instanceof ItemSword) {
@@ -135,7 +135,7 @@ public class CombatUtil {
 
                             if (!combustEvent.isCancelled()) {
                                 flag4 = true;
-                                entity.setOnFire(combustEvent.getDuration());
+                                entity.setOnFire(combustEvent.getDuration(), false);
                             }
                             // CraftBukkit end
                         }
@@ -156,7 +156,7 @@ public class CombatUtil {
                     		y *= config.getSprintVertical();
                     		z *= config.getSprintHorizontal();
                     	}
-                    	if (!entity.onGround) {
+                    	if (!entity.isOnGround()) {
                     		x *= config.getAirHorizontal();
                     		y *= config.getAirVertical();
                     		z *= config.getAirHorizontal();
@@ -184,13 +184,13 @@ public class CombatUtil {
                                 if (entityliving != attacker && entityliving != entity && !attacker.r(entityliving) && (!(entityliving instanceof EntityArmorStand) || !((EntityArmorStand) entityliving).isMarker()) && attacker.h(entityliving) < 9.0D) {
                                     // CraftBukkit start - Only apply knockback if the damage hits
                                     if (entityliving.damageEntity(DamageSource.playerAttack(attacker).sweep(), f4)) {
-                                    entityliving.a(attacker, 0.4F, (double) MathHelper.sin(attacker.yaw * 0.017453292F), (double) (-MathHelper.cos(attacker.yaw * 0.017453292F)));
+                                    	entityliving.a(0.4F, (double) MathHelper.sin(attacker.yaw * 0.017453292F), (double) (-MathHelper.cos(attacker.yaw * 0.017453292F)));
                                     }
                                     // CraftBukkit end
                                 }
                             }
 
-                            attacker.world.playSound(attacker, attacker.locX, attacker.locY, attacker.locZ, SoundEffects.ENTITY_PLAYER_ATTACK_SWEEP, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                            attacker.world.playSound(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_SWEEP, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
                             attacker.dE();
                         }
 
@@ -218,7 +218,7 @@ public class CombatUtil {
 
                         if (flag2) {
                         	if (config.getCombatSounds().isCritEnabled()) {
-	                        	sendSoundEffect(attacker, attacker.locX, attacker.locY, attacker.locZ,
+	                        	sendSoundEffect(attacker, attacker.locX(), attacker.locY(), attacker.locZ(),
 	    								SoundEffects.ENTITY_PLAYER_ATTACK_CRIT, attacker.getSoundCategory(), 1.0F, 1.0F);
                         	}
                             attacker.a(entity);
@@ -226,9 +226,9 @@ public class CombatUtil {
                         
                         if (!flag2 && !flag3) {
                             if (flag && config.getCombatSounds().isStrongEnabled()) {
-                            	attacker.world.playSound(attacker, attacker.locX, attacker.locY, attacker.locZ, SoundEffects.ENTITY_PLAYER_ATTACK_STRONG, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                            	attacker.world.playSound(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_STRONG, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
                             } else if (config.getCombatSounds().isWeakEnabled()) {
-                            	attacker.world.playSound(attacker, attacker.locX, attacker.locY, attacker.locZ, SoundEffects.ENTITY_PLAYER_ATTACK_WEAK, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
+                            	attacker.world.playSound(attacker, attacker.locX(), attacker.locY(), attacker.locZ(), SoundEffects.ENTITY_PLAYER_ATTACK_WEAK, attacker.getSoundCategory(), 1.0F, 1.0F); // Paper - send while respecting visibility
                             }
                         }
                         
@@ -252,7 +252,7 @@ public class CombatUtil {
                         if (!itemstack1.isEmpty() && object instanceof EntityLiving) {
                             itemstack1.a((EntityLiving) object, attacker);
                             if (itemstack1.isEmpty()) {
-                            	attacker.a(EnumHand.MAIN_HAND, ItemStack.a);
+                            	attacker.a(EnumHand.MAIN_HAND, ItemStack.b);
                             }
                         }
 
@@ -274,8 +274,8 @@ public class CombatUtil {
                             if (world instanceof WorldServer && f5 > 2.0F) {
                                 int k = (int) ((double) f5 * 0.5D);
 
-                                ((WorldServer) world).a(Particles.DAMAGE_INDICATOR, entity.locX,
-    									entity.locY + (double) (entity.getHeight() * 0.5F), entity.locZ, k, 0.1D, 0.0D, 0.1D,
+                                ((WorldServer) world).a(Particles.DAMAGE_INDICATOR, entity.locX(),
+    									entity.locY() + (double) (entity.getHeight() * 0.5F), entity.locZ(), k, 0.1D, 0.0D, 0.1D,
     									0.2D);
                             }
                         }

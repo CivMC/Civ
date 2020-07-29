@@ -5,18 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
 import com.github.maxopoly.finale.misc.ArmourModifier.ArmourConfig;
 import com.google.common.collect.ImmutableMap;
 
-import net.minecraft.server.v1_14_R1.NBTBase;
-import net.minecraft.server.v1_14_R1.NBTTagCompound;
-import net.minecraft.server.v1_14_R1.NBTTagDouble;
-import net.minecraft.server.v1_14_R1.NBTTagInt;
-import net.minecraft.server.v1_14_R1.NBTTagList;
-import net.minecraft.server.v1_14_R1.NBTTagString;
+import net.minecraft.server.v1_16_R1.NBTBase;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R1.NBTTagDouble;
+import net.minecraft.server.v1_16_R1.NBTTagInt;
+import net.minecraft.server.v1_16_R1.NBTTagList;
+import net.minecraft.server.v1_16_R1.NBTTagString;
 
 public class ItemUtil {
 	
@@ -84,8 +84,8 @@ public class ItemUtil {
 		return isHelmet(is) || isChestplate(is) || isLeggings(is) || isBoots(is);
 	}
 	
-	public static net.minecraft.server.v1_14_R1.ItemStack getNMSStack(ItemStack is) {
-		net.minecraft.server.v1_14_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
+	public static net.minecraft.server.v1_16_R1.ItemStack getNMSStack(ItemStack is) {
+		net.minecraft.server.v1_16_R1.ItemStack nmsStack = CraftItemStack.asNMSCopy(is);
 		NBTTagCompound compound = (nmsStack.hasTag()) ? nmsStack.getTag() : new NBTTagCompound();
 		if (!compound.hasKey("AttributeModifiers")) {
 			compound.set("AttributeModifiers", new NBTTagList());
@@ -111,29 +111,28 @@ public class ItemUtil {
 	}
 	
 	public static ItemStack modifyAttribute(ItemStack is, AttributeModifier attribute) {
-		net.minecraft.server.v1_14_R1.ItemStack nmsStack = getNMSStack(is);
+		net.minecraft.server.v1_16_R1.ItemStack nmsStack = getNMSStack(is);
 		NBTTagCompound compound = nmsStack.getTag();
 		NBTTagList modifiers = compound.getList("AttributeModifiers", 10); // 10 for compound
 		
 		Number value = attribute.getValue();
-		NBTBase valueTag = (value instanceof Double) ? new NBTTagDouble((Double) value) : new NBTTagInt((Integer) value);
+		NBTBase valueTag = (value instanceof Double) ? NBTTagDouble.a((Double) value) : NBTTagInt.a((Integer) value);
 		
 		Slot slot = attribute.getSlot();
 		
 		NBTTagCompound damage = new NBTTagCompound();
-		damage.set("AttributeName", new NBTTagString(attribute.getName()));
-		damage.set("Name", new NBTTagString(attribute.getName()));
-		damage.set("Operation", new NBTTagInt(0));
+		damage.set("AttributeName", NBTTagString.a(attribute.getName()));
+		damage.set("Name", NBTTagString.a(attribute.getName()));
+		damage.set("Operation", NBTTagInt.a(0));
 		damage.set("Amount", valueTag);
-		damage.set("Slot", new NBTTagString(slot.getName()));
-		damage.set("UUIDLeast", new NBTTagInt(slot.getUuidLeast()));
-		damage.set("UUIDMost", new NBTTagInt(slot.getUuidMost()));
+		damage.set("Slot", NBTTagString.a(slot.getName()));
+		damage.set("UUIDLeast", NBTTagInt.a(slot.getUuidLeast()));
+		damage.set("UUIDMost", NBTTagInt.a(slot.getUuidMost()));
 		modifiers.add(damage);
 		
 		compound.set("AttributeModifiers", modifiers);
 		nmsStack.setTag(compound);
-		ItemStack result = CraftItemStack.asBukkitCopy(nmsStack);
-		return result;
+		return CraftItemStack.asBukkitCopy(nmsStack);
 	}
 	
 }
