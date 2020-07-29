@@ -1,4 +1,4 @@
-package vg.civcraft.mc.namelayer.misc.v1_14_R1;
+package vg.civcraft.mc.namelayer.misc.v1_16_R1;
 
 import vg.civcraft.mc.namelayer.misc.MaterialInterface;
 import org.bukkit.Material;
