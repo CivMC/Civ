@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>namelayer-nms-v1_14_R1</artifactId>
+      <artifactId>namelayer-nms-v1_16_R1</artifactId>
       <version>1.0.1</version>
     </dependency>
 
@@ -129,6 +129,11 @@
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_14_R1</artifactId>
+          <version>1.0.1</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_16_R1</artifactId>
           <version>1.0.1</version>
         </dependency>
       </dependencies>
