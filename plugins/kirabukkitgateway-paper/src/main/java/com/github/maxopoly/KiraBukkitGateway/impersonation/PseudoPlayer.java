@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -34,9 +33,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.PistonMoveReaction;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
-import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.craftbukkit.v1_14_R1.scoreboard.CraftScoreboard;
+import org.bukkit.craftbukkit.v1_16_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_16_R1.scoreboard.CraftScoreboard;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -972,11 +971,6 @@ public class PseudoPlayer extends CraftPlayer {
 	}
 
 	@Override
-	public void awardAchievement(Achievement arg0) {
-		throw new InvalidCommandAttemptException();
-	}
-
-	@Override
 	public boolean canSee(Player arg0) {
 		throw new InvalidCommandAttemptException();
 	}
@@ -1152,11 +1146,6 @@ public class PseudoPlayer extends CraftPlayer {
 	}
 
 	@Override
-	public boolean hasAchievement(Achievement arg0) {
-		throw new InvalidCommandAttemptException();
-	}
-
-	@Override
 	public void hidePlayer(Player arg0) {
 		throw new InvalidCommandAttemptException();
 	}
@@ -1278,11 +1267,6 @@ public class PseudoPlayer extends CraftPlayer {
 
 	@Override
 	public void playSound(Location arg0, String arg1, SoundCategory arg2, float arg3, float arg4) {
-		throw new InvalidCommandAttemptException();
-	}
-
-	@Override
-	public void removeAchievement(Achievement arg0) {
 		throw new InvalidCommandAttemptException();
 	}
 
