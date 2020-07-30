@@ -32,14 +32,7 @@ public class InventoryListener implements Listener {
 		InventoryHolder destHolder = destInventory.getHolder();
 		// Determine the reinforcement of the source
 		Reinforcement fromReinforcement = null;
-		if (fromHolder instanceof Container) {
-			Container container = (Container) fromHolder;
-			// [LagFix] This shouldn't be contributing to lag since there's isn't an implementation of 'Container' that
-			// [LagFix] spans more than one block, so the 'container.getBlock()' is permissible since we can reasonably
-			// [LagFix] assume that since this event was called, this block is loaded.
-			fromReinforcement = ReinforcementLogic.getReinforcementProtecting(container.getBlock());
-		}
-		else if (fromHolder instanceof DoubleChest) {
+		if (fromHolder instanceof DoubleChest) {
 			DoubleChest doubleChest = (DoubleChest) fromHolder;
 			Location chestLocation = Objects.requireNonNull((Chest) doubleChest.getLeftSide()).getLocation();
 			Location otherLocation = Objects.requireNonNull((Chest) doubleChest.getRightSide()).getLocation();
@@ -56,6 +49,13 @@ public class InventoryListener implements Listener {
 					fromReinforcement = ReinforcementLogic.getReinforcementProtecting(drainedLocation.getBlock());
 				}
 			}
+		}
+		else if (fromHolder instanceof Container) {
+			Container container = (Container) fromHolder;
+			// [LagFix] This shouldn't be contributing to lag since there's isn't an implementation of 'Container' that
+			// [LagFix] spans more than one block, so the 'container.getBlock()' is permissible since we can reasonably
+			// [LagFix] assume that since this event was called, this block is loaded.
+			fromReinforcement = ReinforcementLogic.getReinforcementProtecting(container.getBlock());
 		}
 		// Determine the reinforcement of the destination
 		Reinforcement destReinforcement = null;
