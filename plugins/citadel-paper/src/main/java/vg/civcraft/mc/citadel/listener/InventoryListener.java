@@ -19,6 +19,7 @@ import org.bukkit.inventory.InventoryHolder;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.api.WorldAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 
@@ -29,8 +30,10 @@ public class InventoryListener implements Listener {
 		Inventory fromInventory = event.getSource();
 		Inventory destInventory = event.getDestination();
 		// [LagFix] If either inventory's base location is unloaded, just cancel
-		if (!WorldAPI.isBlockLoaded(fromInventory.getLocation())
-				|| !WorldAPI.isBlockLoaded(destInventory.getLocation())) {
+		Location fromLocation = LocationAPI.getBlockLocation(fromInventory.getLocation());
+		Location destLocation = LocationAPI.getBlockLocation(destInventory.getLocation());
+		if (!WorldAPI.isBlockLoaded(fromLocation)
+				|| !WorldAPI.isBlockLoaded(destLocation)) {
 			event.setCancelled(true);
 			return;
 		}
@@ -40,38 +43,38 @@ public class InventoryListener implements Listener {
 		Reinforcement fromReinforcement = null;
 		if (fromHolder instanceof DoubleChest) {
 			DoubleChest doubleChest = (DoubleChest) fromHolder;
-			Location chestLocation = Objects.requireNonNull((Chest) doubleChest.getLeftSide()).getLocation();
-			Location otherLocation = Objects.requireNonNull((Chest) doubleChest.getRightSide()).getLocation();
+			Location chestLocation = LocationAPI.getBlockLocation(
+					Objects.requireNonNull((Chest) doubleChest.getLeftSide()).getLocation());
+			Location otherLocation = LocationAPI.getBlockLocation(
+					Objects.requireNonNull((Chest) doubleChest.getRightSide()).getLocation());
 			// [LagFix] If either side of the double chest is not loaded then the reinforcement cannot be retrieved
 			// [LagFix] without necessarily loading the chunk to check against reinforcement logic, therefore this
-			// [LagFix] should air on the side of caution and prevent the transfer.
+			// [LagFix] should err on the side of caution and prevent the transfer.
 			if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
 				event.setCancelled(true);
 				return;
 			}
 			if (destHolder instanceof Hopper) {
-				Location drainedLocation = ((Hopper) destHolder).getLocation().add(0, 1, 0);
+				Location drainedLocation = destLocation.clone().add(0, 1, 0);
 				if (Iteration.contains(drainedLocation, chestLocation, otherLocation)) {
 					fromReinforcement = ReinforcementLogic.getReinforcementProtecting(drainedLocation.getBlock());
 				}
 			}
 		}
 		else if (fromHolder instanceof Container) {
-			Container container = (Container) fromHolder;
 			// [LagFix] This shouldn't be contributing to lag since there's isn't an implementation of 'Container' that
 			// [LagFix] spans more than one block, so the 'container.getBlock()' is permissible since we can reasonably
 			// [LagFix] assume that since this event was called, this block is loaded.
-			fromReinforcement = ReinforcementLogic.getReinforcementProtecting(container.getBlock());
+			fromReinforcement = ReinforcementLogic.getReinforcementProtecting(fromLocation.getBlock());
 		}
 		// Determine the reinforcement of the destination
 		Reinforcement destReinforcement = null;
 		if (fromHolder instanceof Hopper || fromHolder instanceof Dropper || fromHolder instanceof Dispenser) {
-			Container container = (Container) fromHolder;
-			BlockFace direction = ((Directional) container.getBlockData()).getFacing();
-			// [LagFix] If the transfer is happening laterally and the target location is not loaded, then air on the
+			BlockFace direction = ((Directional) fromLocation.getBlock().getBlockData()).getFacing();
+			// [LagFix] If the transfer is happening laterally and the target location is not loaded, then err on the
 			// [LagFix] side of caution and prevent the transfer.. though this may cause some issues with dispensers
 			// [LagFix] and droppers.
-			Location target = container.getLocation().add(direction.getDirection());
+			Location target = fromLocation.clone().add(direction.getDirection());
 			if (BlockAPI.PLANAR_SIDES.contains(direction) && !WorldAPI.isBlockLoaded(target)) {
 				event.setCancelled(true);
 				return;
@@ -79,9 +82,8 @@ public class InventoryListener implements Listener {
 			destReinforcement = ReinforcementLogic.getReinforcementProtecting(target.getBlock());
 		}
 		else if (destHolder instanceof Container) {
-			Container container = (Container) destHolder;
 			// [LagFix] Just like the other 'Container' this shouldn't be an issue.
-			destReinforcement = ReinforcementLogic.getReinforcementProtecting(container.getBlock());
+			destReinforcement = ReinforcementLogic.getReinforcementProtecting(destLocation.getBlock());
 		}
 		// Allow the transfer if neither are reinforced
 		if (fromReinforcement == null && destReinforcement == null) {
