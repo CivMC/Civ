@@ -28,6 +28,12 @@ public class InventoryListener implements Listener {
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory fromInventory = event.getSource();
 		Inventory destInventory = event.getDestination();
+		// [LagFix] If either inventory's base location is unloaded, just cancel
+		if (!WorldAPI.isBlockLoaded(fromInventory.getLocation())
+				|| !WorldAPI.isBlockLoaded(destInventory.getLocation())) {
+			event.setCancelled(true);
+			return;
+		}
 		InventoryHolder fromHolder = fromInventory.getHolder();
 		InventoryHolder destHolder = destInventory.getHolder();
 		// Determine the reinforcement of the source
