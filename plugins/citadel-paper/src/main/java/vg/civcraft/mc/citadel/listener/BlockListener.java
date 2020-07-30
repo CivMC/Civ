@@ -220,7 +220,6 @@ public class BlockListener implements Listener {
 		}
 	}
 
-	// remove reinforced air
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void removeReinforcedAir(BlockPlaceEvent e) {
 		if (!MaterialAPI.isAir(e.getBlockReplacedState().getType())) {
@@ -338,6 +337,44 @@ public class BlockListener implements Listener {
 		}
 		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
 			p.sendMessage(ChatColor.RED + "You do not have permission to modify this block");
+			pie.setCancelled(true);
+		}
+	}
+
+
+	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
+	public void preventHarvestingHoney(PlayerInteractEvent pie) {
+		if (!pie.hasBlock()) {
+			return;
+		}
+		if (pie.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = pie.getClickedBlock();
+		Material type = block.getType();
+		if (type != Material.BEE_NEST && type != Material.BEEHIVE) {
+			return;
+		}
+		EquipmentSlot hand = pie.getHand();
+		if (hand != EquipmentSlot.HAND && hand != EquipmentSlot.OFF_HAND) {
+			return;
+		}
+		ItemStack relevant;
+		Player p = pie.getPlayer();
+		if (hand == EquipmentSlot.HAND) {
+			relevant = p.getInventory().getItemInMainHand();
+		} else {
+			relevant = p.getInventory().getItemInOffHand();
+		}
+		if (relevant.getType() != Material.SHEARS && relevant.getType() != Material.GLASS_BOTTLE) {
+			return;
+		}
+		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
+		if (rein == null) {
+			return;
+		}
+		if (!rein.hasPermission(p, CitadelPermissionHandler.getModifyBlocks())) {
+			p.sendMessage(ChatColor.RED + "You do not have permission to harvest this block");
 			pie.setCancelled(true);
 		}
 	}
