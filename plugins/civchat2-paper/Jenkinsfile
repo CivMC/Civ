@@ -7,7 +7,7 @@ pipeline {
         jdk 'Java 8'
     }
     environment {
-    	civ_dependent_plugins = ""
+	civ_dependent_plugins = "KiraBukkitGateway"
     }
      stages {
         stage ('Build') {
