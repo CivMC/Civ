@@ -10,7 +10,7 @@ import org.bukkit.configuration.ConfigurationSection;
 /**
  * This command removes a named spawnpoint from the config. It matches using the "name" field in the map of the spawn point.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author ProgrammerDan programmerdan@gmail.com
  *
  */
 public class RemoveSpawnPointCommand extends AbstractCommand {

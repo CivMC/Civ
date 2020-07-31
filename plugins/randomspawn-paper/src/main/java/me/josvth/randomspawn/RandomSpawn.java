@@ -267,7 +267,7 @@ public class RandomSpawn extends JavaPlugin {
 	 * The final result of these checks is returned as the set of eligible spawn
 	 * points; from which one will ultimately be chosen and used.
 	 * 
-	 * @author ProgrammerDan <programmerdan@gmail.com>
+	 * @author ProgrammerDan programmerdan@gmail.com
 	 * @param world The world to restrict the check to. Only players from that world
 	 *              are considered.
 	 * @return The set of locations near valid spawn points; or an empty list.

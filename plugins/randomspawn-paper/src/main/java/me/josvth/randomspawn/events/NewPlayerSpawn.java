@@ -13,7 +13,7 @@ import org.bukkit.event.HandlerList;
  * rejected, RandomSpawn will fall back on other configured methods, ultimately falling back on Minecraft default spawning
  * if nothing else works.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author ProgrammerDan programmerdan@gmail.com
  *
  */
 public class NewPlayerSpawn extends Event implements Cancellable {

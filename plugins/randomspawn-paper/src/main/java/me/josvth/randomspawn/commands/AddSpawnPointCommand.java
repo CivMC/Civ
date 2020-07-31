@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 /**
  * Add a spawn point using current location and given radius / exclusion and requirements.
  * 
- * @author ProgrammerDan <programmerdan@gmail.com>
+ * @author ProgrammerDan programmerdan@gmail.com
  *
  */
 public class AddSpawnPointCommand extends AbstractCommand{
