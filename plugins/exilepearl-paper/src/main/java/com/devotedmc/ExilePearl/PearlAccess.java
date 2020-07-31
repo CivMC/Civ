@@ -128,7 +128,7 @@ public interface PearlAccess {
 	 * Summons a prison pearl
 	 * <p>
 	 * It's possible for the summon operation to fail if the
-	 * {@link com.devotedmc.ExilePearl.event.PlayerSummonEvent PlayerSummonEvent} is cancelled.
+	 * {@link com.devotedmc.ExilePearl.event.PearlSummonEvent PearlSummonEvent} is cancelled.
 	 * Or if the target player is dead or already summoned (or offline)
 	 * @param pearl The pearl to summon
 	 * @param summoner The player summoning the prisoner
@@ -140,7 +140,7 @@ public interface PearlAccess {
 	 * Returns a summoned pearl
 	 * <p>
 	 * It's possible for the return operation to fail if the
-	 * {@link com.devotedmc.ExilePearl.event.PlayerReturnEvent PlayerReturnEvent} is cancelled.
+	 * {@link com.devotedmc.ExilePearl.event.PearlReturnEvent PearlReturnEvent} is cancelled.
 	 * Or if the pearled player is dead or not actually summoned (or offline)
 	 * @param pearl The pearl to return
 	 * @return true if the player is returned, otherwise false

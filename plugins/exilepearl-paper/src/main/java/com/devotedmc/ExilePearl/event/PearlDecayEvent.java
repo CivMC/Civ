@@ -28,7 +28,8 @@ public class PearlDecayEvent extends Event implements Cancellable {
 	/**
 	 * Creates a new PearlDecayEvent instance.
 	 * 
-	 * @param action The decay action
+	 * @param pearl Pearl to decay
+	 * @param amount Health amount the pearl health is reduced by
 	 */
 	public PearlDecayEvent(ExilePearl pearl, int amount) {
 		Guard.ArgumentNotNull(pearl, "pearl");
