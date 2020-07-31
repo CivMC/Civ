@@ -51,6 +51,19 @@ public class SnitchLifeCycleListener implements Listener {
 		}
 	}
 
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+	public void onBlockPlaceCancelled(BlockPlaceEvent event) {
+		if (!event.isCancelled()) {
+			return;
+		}
+		ItemStack inHand = event.getItemInHand();
+		SnitchFactoryType type = configManager.getConfig(inHand);
+		if (type != null) {
+			Block block = event.getBlock();
+			pendingSnitches.remove(block.getLocation());
+		}
+	}
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockBreak(BlockBreakEvent event) {
 		Block block = event.getBlock();
