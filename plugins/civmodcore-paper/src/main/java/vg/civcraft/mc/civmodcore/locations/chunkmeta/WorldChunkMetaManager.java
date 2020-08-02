@@ -29,7 +29,7 @@ public class WorldChunkMetaManager {
 	 * minutes
 	 */
 	private static final long UNLOAD_DELAY = 5L * 60L * 1000L;
-	private static final long UNLOAD_CHECK_INTERVAL = 5L * 60L * 1000L;
+	private static final long UNLOAD_CHECK_INTERVAL = 1000L;
 
 	private final short worldID;
 	private final Map<ChunkCoord, ChunkCoord> metas;
@@ -81,7 +81,7 @@ public class WorldChunkMetaManager {
 			}
 		}
 	}
-	
+
 	void flushPluginData(short pluginID) {
 		synchronized (metas) {
 			for (ChunkCoord coord : metas.keySet()) {
@@ -186,24 +186,34 @@ public class WorldChunkMetaManager {
 				while (iter.hasNext()) {
 					ChunkCoord coord = iter.next();
 					// Is time up?
-					if (currentTime - coord.getLastMCUnloadingTime() > UNLOAD_DELAY
-							// make sure chunk hasnt loaded again since
-							&& coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
-						synchronized (metas) {
-							synchronized (coord) {
-								coord.fullyPersist();
-								if (!coord.hasPermanentlyLoadedData()) {
-									metas.remove(coord);
+					if (currentTime - coord.getLastMCUnloadingTime() > UNLOAD_DELAY) {
+						// make sure chunk hasnt loaded again since
+						if (coord.getLastMCUnloadingTime() > coord.getLastMCLoadingTime()) {
+							synchronized (metas) {
+								synchronized (coord) {
+									coord.fullyPersist();
 									iter.remove();
-									// coord is up for garbage collection at this point and all of its data has been
-									// written to the db
-								}
-								else {
-									coord.deleteNonPersistentData();
-									//keep chunk coord, but garbage collect the data we dont want to keep inside of it
+									if (!coord.hasPermanentlyLoadedData()) {
+										metas.remove(coord);
+										// coord is up for garbage collection at this point and all of its data has been
+										// written to the db
+									} else {
+										coord.deleteNonPersistentData();
+										// keep chunk coord, but garbage collect the data we dont want to keep inside of
+										// it
+									}
 								}
 							}
 						}
+						else {
+							//chunk was loaded again, remove it from unloading queue
+							iter.remove();
+						}
+					} else {
+						// tree set iterator is guaranteed to be in ascending order and we use the
+						// timestamp of unloading as key,
+						// so any subsequent chunks will also have been unloaded for less time
+						break;
 					}
 				}
 			}
