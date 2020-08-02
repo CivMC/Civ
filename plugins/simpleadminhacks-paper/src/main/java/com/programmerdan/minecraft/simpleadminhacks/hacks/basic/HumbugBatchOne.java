@@ -87,7 +87,7 @@ public class HumbugBatchOne extends BasicHack {
 	private boolean disableEndGatewayTP;
 	
 	@AutoLoad
-	private boolean disableHoglins;
+	private boolean disablePiglins;
 
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
@@ -396,7 +396,7 @@ public class HumbugBatchOne extends BasicHack {
 	
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBartering(EntitySpawnEvent event) {
-		if (disableHoglins && event.getEntityType() == EntityType.HOGLIN) {
+		if (disablePiglins && event.getEntityType() == EntityType.PIGLIN) {
 			event.setCancelled(true);
 		}
 	}

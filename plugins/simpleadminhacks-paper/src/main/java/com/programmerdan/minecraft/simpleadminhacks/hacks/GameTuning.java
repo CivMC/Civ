@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.WorldType;
 import org.bukkit.World.Environment;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
@@ -277,7 +278,14 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPortalTravel(EntityPortalEvent event) {
-		if (config.isEnabled() && config.isOneToOneNether()) {
+		if (!config.isEnabled()) {
+			return;
+		}
+		if (!config.allowNetherTravel() && event.getTo() != null && event.getTo().getWorld().getEnvironment() == Environment.NETHER) {
+			event.setCancelled(true);
+			return;
+		}
+		if (config.isOneToOneNether()) {
 			Location newLoc = event.getFrom();
 			newLoc.setWorld(event.getTo().getWorld());
 			event.setTo(newLoc);
@@ -286,7 +294,7 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onPlayerPortalTravel(PlayerPortalEvent event) {
-		if(config.isEnabled() && PlayerTeleportEvent.TeleportCause.NETHER_PORTAL.equals(event.getCause())) {
+		if(config.isEnabled() && PlayerTeleportEvent.TeleportCause.NETHER_PORTAL == event.getCause()) {
 			if(!config.allowNetherTravel()) {
 				event.setCancelled(true);
 			} else if (config.isOneToOneNether()) {
