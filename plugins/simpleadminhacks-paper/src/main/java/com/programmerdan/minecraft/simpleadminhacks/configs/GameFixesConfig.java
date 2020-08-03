@@ -9,7 +9,6 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
-import org.bukkit.event.EventHandler;
 
 public class GameFixesConfig extends SimpleHackConfig {
 

@@ -314,10 +314,8 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		}
 		RespawnAnchor anchor = (RespawnAnchor)event.getClickedBlock().getBlockData();
 		if (!event.getMaterial().equals(Material.GLOWSTONE)) {
-			plugin().getLogger().info("Material is glowstone");
 			event.setCancelled(true);
 		} else if (anchor.getCharges() == anchor.getMaximumCharges()) {
-			plugin().getLogger().info("Fully charged");
 			event.setCancelled(true);
 		}
 	}
