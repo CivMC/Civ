@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes.listener;
 
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -12,6 +14,7 @@ import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -87,5 +90,14 @@ public class PlantListener implements Listener {
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getSource());
 		}
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onChunkLoad(ChunkLoadEvent event) {
+		Chunk c = event.getChunk();
+		Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0 , c.getZ() << 4);
+		plugin.getPlantManager().applyForAllInChunk(loc, p ->  {
+			plugin.getPlantLogicManager().initGrowthTime(p);
+		});
 	}
 }

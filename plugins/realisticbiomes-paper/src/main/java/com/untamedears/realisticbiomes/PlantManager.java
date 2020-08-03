@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes;
 
+import java.util.function.Consumer;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 
@@ -16,6 +18,11 @@ public class PlantManager {
 
 	PlantManager(BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData) {
 		this.chunkMetaData = chunkMetaData;
+	}
+	
+	public void applyForAllInChunk(Location location, Consumer<Plant> toApply) {
+		//need to wrap lambda due to generic inheritance complications
+		chunkMetaData.getChunkMeta(location).iterateAll(s -> toApply.accept((Plant) s));
 	}
 
 	public void deletePlant(Plant plant) {

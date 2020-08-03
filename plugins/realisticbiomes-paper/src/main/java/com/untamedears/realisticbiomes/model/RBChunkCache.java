@@ -2,6 +2,8 @@ package com.untamedears.realisticbiomes.model;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.WorldAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableStorageEngine;
@@ -62,6 +64,10 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 
 	@Override
 	public void updateState() {
+		if (!WorldAPI.isChunkLoaded(getWorld(), chunkCoord.getX(), chunkCoord.getZ())) {
+			this.nextUpdate = Long.MAX_VALUE;
+			return;
+		}
 		this.nextUpdate = tracker.processItems();
 	}
 }
