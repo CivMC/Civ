@@ -238,6 +238,9 @@ hacks:
   ToggleLamp:
     enabled: false
     cooldownTime: 100
+  HorseStats:
+    enabled: false
+    wand: COMPASS
   AutoRespawn:
     enabled: true
     # Delay in MS
