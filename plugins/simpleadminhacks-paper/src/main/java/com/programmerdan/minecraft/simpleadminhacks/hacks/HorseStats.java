@@ -23,18 +23,15 @@ public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener
 
 	public HorseStats(SimpleAdminHacks plugin, HorseStatsConfig config) {
 		super(plugin, config);
-		plugin().log("Instanciating HS");
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onHorseStatCheck(PlayerInteractEntityEvent event) {
-		plugin().log("Active");
 		if (!config.isEnabled()) {
 			return;
 		}
-		plugin().log("Enabled");
 		ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-		if (item.getType() != Material.COMPASS) {
+		if (!item.getType().equals(config.getHorseCheckerItem())) {
 			return;
 		}
 		Entity entity = event.getRightClicked();
