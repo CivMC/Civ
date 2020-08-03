@@ -18,7 +18,7 @@ commands:
       - pm
       usage: /tell <recipient> [message]
       description: Sends a private message to someone or enters a private chat with them
-      min-args: 1
+      min-args: 0
       max-args: 500
       player-only: true
    afk:
