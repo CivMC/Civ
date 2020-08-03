@@ -42,12 +42,25 @@ public class SnitchLifeCycleListener implements Listener {
 		this.pendingSnitches = new HashMap<>();
 	}
 
-	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		ItemStack inHand = event.getItemInHand();
 		SnitchFactoryType type = configManager.getConfig(inHand);
 		if (type != null) {
 			pendingSnitches.put(event.getBlock().getLocation(), type);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = false)
+	public void onBlockPlaceCancelled(BlockPlaceEvent event) {
+		if (!event.isCancelled()) {
+			return;
+		}
+		ItemStack inHand = event.getItemInHand();
+		SnitchFactoryType type = configManager.getConfig(inHand);
+		if (type != null) {
+			Block block = event.getBlock();
+			pendingSnitches.remove(block.getLocation());
 		}
 	}
 
