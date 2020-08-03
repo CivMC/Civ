@@ -14,17 +14,13 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Hopper;
+import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDispenseEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.EntityPortalEvent;
 import org.bukkit.event.entity.EntityTeleportEvent;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
@@ -304,6 +300,24 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				|| Biome.END_BARRENS.equals(biome) || Biome.END_HIGHLANDS.equals(biome)
 				|| Biome.END_MIDLANDS.equals(biome) || Biome.SMALL_END_ISLANDS.equals(biome)
 				|| Biome.THE_END.equals(biome)) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onAnchorInteraction(PlayerInteractEvent event) {
+		if (!config.isEnabled() || !config.stopAnchorBombing()) {
+			return;
+		}
+		if (!event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR)) {
+			return;
+		}
+		RespawnAnchor anchor = (RespawnAnchor)event.getClickedBlock().getBlockData();
+		if (!event.getMaterial().equals(Material.GLOWSTONE)) {
+			plugin().getLogger().info("Material is glowstone");
+			event.setCancelled(true);
+		} else if (anchor.getCharges() == anchor.getMaximumCharges()) {
+			plugin().getLogger().info("Fully charged");
 			event.setCancelled(true);
 		}
 	}

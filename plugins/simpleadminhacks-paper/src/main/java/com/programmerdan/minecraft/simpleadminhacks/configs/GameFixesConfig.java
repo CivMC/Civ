@@ -9,6 +9,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import org.bukkit.event.EventHandler;
 
 public class GameFixesConfig extends SimpleHackConfig {
 
@@ -19,6 +20,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private boolean stopRailDupe;
 	private boolean stopEndPortalDeletion;
 	private boolean stopBedBombing;
+	private boolean stopAnchorBombing;
 
 	private ArrayList<BlockFace> bfArray;
 	private ArrayList<Material> railArray;
@@ -56,6 +58,9 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 		stopBedBombing = config.getBoolean("stopBedBombingInHellBiomes", true);
 		if (stopBedBombing) plugin().log("  Stop Bed Bombing In Hell Biomes is enabled.");
+
+		stopAnchorBombing = config.getBoolean("stopAnchorBombing", true);
+		if (stopAnchorBombing) plugin().log("Stop Anchor bombing outside the Nether is enabled");
 
 		preventTreeWrap = config.getBoolean("preventTreeWraparound", true);
 		if (preventTreeWrap) plugin().log("  Stop tree wrapping into bedrock is enabled.");
@@ -149,6 +154,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	public boolean stopBedBombing() {
 		return this.stopBedBombing;
+	}
+
+	public boolean stopAnchorBombing() {
+		return this.stopAnchorBombing;
 	}
 
 	public boolean stopTreeWraparound() {
