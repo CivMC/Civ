@@ -51,6 +51,7 @@ hacks:
     stopRailDupe: true
     stopEndPortalDeletion: true
     stopBedBombingInHellBiomes: true
+    stopAnchorBombing: true
     preventTreeWraparound: true
     fixPearlGlitch: true
   GameTuning:
