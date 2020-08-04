@@ -55,16 +55,15 @@ public class PlantLogicManager {
 		}
 		Plant plant = new Plant(block.getLocation());
 		plantManager.putPlant(plant);
-		initGrowthTime(plant);
+		initGrowthTime(plant, block);
 	}
 
-	public void initGrowthTime(Plant plant) {
-		Block block = plant.getLocation().getBlock();
+	public void initGrowthTime(Plant plant, Block block) {
 		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
-		long nextUpdateTime = growthConfig.updatePlant(plant);
+		long nextUpdateTime = growthConfig.updatePlant(plant, block);
 		plant.setNextGrowthTime(nextUpdateTime);
 	}
 

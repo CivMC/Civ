@@ -265,6 +265,11 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	public boolean isPersistent() {
 		return biomeGrowthConfig instanceof PersistentGrowthConfig;
 	}
+	
+	public long updatePlant(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		return updatePlant(plant, block);
+	}
 
 	/**
 	 * Updates the world state of the plant to match its intended state based on its
@@ -272,12 +277,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * updated
 	 * 
 	 * @param plant Plant to update
+	 * @param block Block the plant is at
 	 * @return UNIX time stamp at which the plant needs to be updated next if it is
 	 *         still growing or Long.MAX_VALUE if it will never grow or is already
 	 *         full grown
 	 */
-	public long updatePlant(Plant plant) {
-		Block block = plant.getLocation().getBlock();
+	public long updatePlant(Plant plant, Block block) {
 		if (!biomeGrowthConfig.canGrowIn(block.getBiome())) {
 			return Long.MAX_VALUE;
 		}
@@ -291,7 +296,14 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double progress = (double) timeElapsed / (double) totalTime;
 		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
 		if (intendedState != grower.getStage(block)) {
-			grower.setStage(block, intendedState);
+			try {
+				grower.setStage(block, intendedState);
+			} catch (IllegalArgumentException e) {
+				RealisticBiomes.getInstance().getLogger().warning("Failed to update stage for " + block.toString());
+				//delete
+				plant.getOwningCache().remove(plant);
+				return Long.MAX_VALUE;
+			}
 		}
 		if (intendedState == grower.getMaxStage()) {
 			if (RBUtils.resetProgressOnGrowth(block.getType())) {
@@ -302,7 +314,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 						.getPlantGrowthConfig(block);
 				// this should not lead to recursion horror, assuming the grower behavior is bug
 				// free
-				return newConfig.updatePlant(plant);
+				return newConfig.updatePlant(plant, block);
 			}
 			return Long.MAX_VALUE;
 		}

@@ -97,7 +97,8 @@ public class PlantListener implements Listener {
 		Chunk c = event.getChunk();
 		Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0 , c.getZ() << 4);
 		plugin.getPlantManager().applyForAllInChunk(loc, p ->  {
-			plugin.getPlantLogicManager().initGrowthTime(p);
+			plugin.getPlantLogicManager().initGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15, 
+					p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
 		});
 	}
 }
