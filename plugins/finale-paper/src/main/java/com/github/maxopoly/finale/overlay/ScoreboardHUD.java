@@ -1,5 +1,7 @@
 package com.github.maxopoly.finale.overlay;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,11 +10,13 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
@@ -36,7 +40,7 @@ public class ScoreboardHUD implements Listener {
 	public ScoreboardHUD(FinaleSettingManager settingsMan) {
 		scoreBoards = new ArrayList<>();
 		this.settingsMan = settingsMan;
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 12; i++) {
 			scoreBoards.add(ScoreBoardAPI.createBoard("finaleArmor" + i));
 		}
 		Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
@@ -114,6 +118,21 @@ public class ScoreboardHUD implements Listener {
 				}
 			}
 		});
+
+		settingsMan.getShowCoordsSetting().registerListener(new SettingChangeListener<Boolean>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<Boolean> playerSetting, Boolean oldValue, Boolean newValue) {
+				Player p = Bukkit.getPlayer(player);
+				if (p == null){
+					return;
+				} if (newValue){
+					int decimals = settingsMan.getDecimalsToShow(player);
+					updateCoordinates(p, decimals);
+				} else {
+					scoreBoards.get(11).set(p, null);
+				}
+			}
+		});
 	}
 
 	private void updateGammaBright(Player player) {
@@ -129,6 +148,14 @@ public class ScoreboardHUD implements Listener {
 		}
 		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
 			updateGammaBright(e.getPlayer());
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onMove(PlayerMoveEvent e){
+		if (settingsMan.showCoordinates(e.getPlayer().getUniqueId())){
+			int decimals = settingsMan.getDecimalsToShow(e.getPlayer().getUniqueId());
+			updateCoordinates(e.getPlayer(), decimals);
 		}
 	}
 
@@ -237,6 +264,14 @@ public class ScoreboardHUD implements Listener {
 		}
 		return String.format("%s %s%s: %s%d%s/%d", sortingPrefix, ChatColor.AQUA, prefix, colorPrefix, remainingHealth,
 				ChatColor.AQUA, maxDura);
+	}
+
+	private void updateCoordinates(Player p, int decimals){
+		Location location = p.getLocation();
+		double x = BigDecimal.valueOf(location.getX()).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+		double y = BigDecimal.valueOf(location.getY()).setScale(1, RoundingMode.HALF_UP).doubleValue();
+		double z = BigDecimal.valueOf(location.getZ()).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
+		scoreBoards.get(11).set(p, "x" + x + " y" + y + " z" + z);
 	}
 
 }
