@@ -49,7 +49,7 @@ public class CivChat2SettingsManager {
 				"Do you want to receive kill broadcasts from killers you have ignored");
 		PlayerSettingAPI.registerSetting(receiveKillsFromIgnoredPlayers, menu);
 
-		showChatGroup = new BooleanSetting(CivChat2.getInstance(), false, "Show current chat group", "showChatGroup",
+		showChatGroup = new BooleanSetting(CivChat2.getInstance(), true, "Show current chat group", "showChatGroup",
 				"Should player chat group be shown?");
 		PlayerSettingAPI.registerSetting(showChatGroup, menu);
 
