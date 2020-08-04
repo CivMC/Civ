@@ -1,7 +1,6 @@
 package com.github.maxopoly.finale.overlay;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -126,8 +125,7 @@ public class ScoreboardHUD implements Listener {
 				if (p == null){
 					return;
 				} if (newValue){
-					int decimals = settingsMan.getDecimalsToShow(player);
-					updateCoordinates(p, decimals);
+					updateCoordinates(p);
 				} else {
 					scoreBoards.get(11).set(p, null);
 				}
@@ -154,8 +152,7 @@ public class ScoreboardHUD implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onMove(PlayerMoveEvent e){
 		if (settingsMan.showCoordinates(e.getPlayer().getUniqueId())){
-			int decimals = settingsMan.getDecimalsToShow(e.getPlayer().getUniqueId());
-			updateCoordinates(e.getPlayer(), decimals);
+			updateCoordinates(e.getPlayer());
 		}
 	}
 
@@ -266,12 +263,11 @@ public class ScoreboardHUD implements Listener {
 				ChatColor.AQUA, maxDura);
 	}
 
-	private void updateCoordinates(Player p, int decimals){
+	private void updateCoordinates(Player p){
 		Location location = p.getLocation();
-		double x = BigDecimal.valueOf(location.getX()).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
-		double y = BigDecimal.valueOf(location.getY()).setScale(1, RoundingMode.HALF_UP).doubleValue();
-		double z = BigDecimal.valueOf(location.getZ()).setScale(decimals, RoundingMode.HALF_UP).doubleValue();
-		scoreBoards.get(11).set(p, "x" + x + " y" + y + " z" + z);
+		DecimalFormat df = new DecimalFormat("#");
+		String coords = String.format("Location: [%s, %s, %s]", df.format(location.getX()), df.format(location.getY()), df.format(location.getZ()));
+		scoreBoards.get(11).set(p, coords);
 	}
 
 }

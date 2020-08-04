@@ -73,9 +73,6 @@ public class FinaleSettingManager {
 
 		toolProtectionThreshhold = new BoundedIntegerSetting(Finale.getPlugin(), 10, "Threshhold for tool protection", "finaleToolProtectionThreshhold",new ItemStack(Material.DIAMOND_PICKAXE), "Durability at which break protection should trigger", false, 1, 2000);
 		PlayerSettingAPI.registerSetting(toolProtectionThreshhold, menu);
-
-		decimalsToShow = new BoundedIntegerSetting(Finale.getPlugin(), 2, "Number of decimals", "finaleShowDecimal", new ItemStack(Material.PAPER), "Number of decimals to show on scoreboard", true, 0, 5);
-		PlayerSettingAPI.registerSetting(decimalsToShow, menu);
 	}
 
 	public boolean setVanillaPearlCooldown(UUID uuid) {
@@ -84,10 +81,6 @@ public class FinaleSettingManager {
 
 	public int getToolProtectionThreshhold(UUID uuid) {
 		return toolProtectionThreshhold.getValue(uuid);
-	}
-
-	public int getDecimalsToShow(UUID uuid){
-		return decimalsToShow.getValue(uuid);
 	}
 
 	public boolean useToolProtection(UUID uuid) {
