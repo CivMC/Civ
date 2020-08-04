@@ -28,7 +28,7 @@ public class BastionSettingManager {
 		bsiOverlay = new BooleanSetting(Bastion.getPlugin(), true, "Display Bastion Information", "bsiOverlay", "Shows if the block you're standing on is bastioned territory.");
 		showNoBastion = new BooleanSetting(Bastion.getPlugin(), false, "Display if you are not in a bastion field", "showNoBastion", "If enabled, will display Bastion status, even if you are not currently in a bastion field");
 
-		bsiLocation = new DisplayLocationSetting(Bastion.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "BSI Location", "bsiLocation", new ItemStack(Material.ARROW), "Where to display BSI");
+		bsiLocation = new DisplayLocationSetting(Bastion.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "BSI Location", "bsiLocation", new ItemStack(Material.ARROW), "BSI");
 		ignorePlacementWarnings = new BooleanSetting(Bastion.getPlugin(), false, "Ignore placement warnings", "ignorePlacementWarnings", "Show placements warning in chat when placing in a bastion field");
 
 		PlayerSettingAPI.registerSetting(bsiOverlay, menu);
