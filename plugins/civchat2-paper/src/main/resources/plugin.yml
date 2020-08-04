@@ -32,7 +32,7 @@ commands:
       - r
       usage: /reply <message>
       description: Replies to the last person you sent a message to or received one from
-      min-args: 1
+      min-args: 0
       max-args: 500
       player-only: true
    ignore:

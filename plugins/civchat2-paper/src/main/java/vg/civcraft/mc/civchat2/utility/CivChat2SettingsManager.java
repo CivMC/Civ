@@ -1,9 +1,12 @@
 package vg.civcraft.mc.civchat2.utility;
 
+import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
 
 import java.util.UUID;
 
@@ -14,6 +17,8 @@ public class CivChat2SettingsManager {
 	private BooleanSetting sendOwnKills;
 	private BooleanSetting receiveKills;
 	private BooleanSetting receiveKillsFromIgnoredPlayers;
+	private BooleanSetting showChatGroup;
+	private DisplayLocationSetting chatGroupLocation;
 
 	public CivChat2SettingsManager() {
 		initSettings();
@@ -43,6 +48,14 @@ public class CivChat2SettingsManager {
 				"Receive kill broadcasts from ignored players", "civChatReceiveKillsIgnored",
 				"Do you want to receive kill broadcasts from killers you have ignored");
 		PlayerSettingAPI.registerSetting(receiveKillsFromIgnoredPlayers, menu);
+
+		showChatGroup = new BooleanSetting(CivChat2.getInstance(), true, "Show current chat group", "showChatGroup",
+				"Should player chat group be shown?");
+		PlayerSettingAPI.registerSetting(showChatGroup, menu);
+
+		chatGroupLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
+				"Chat Group Location", "chatGroupLocation", new ItemStack(Material.ARROW), "the current chat group");
+		PlayerSettingAPI.registerSetting(chatGroupLocation, menu);
 	}
 
 	public boolean getShowJoins(UUID uuid) {
@@ -64,5 +77,12 @@ public class CivChat2SettingsManager {
 	public boolean getReceiveKillsFromIgnored(UUID uuid) {
 		return receiveKillsFromIgnoredPlayers.getValue(uuid);
 	}
-	
+
+	public boolean getShowChatGroup(UUID uuid) {
+		return showChatGroup.getValue(uuid);
+	}
+
+	public DisplayLocationSetting getChatGroupLocation() {
+		return chatGroupLocation;
+	}
 }

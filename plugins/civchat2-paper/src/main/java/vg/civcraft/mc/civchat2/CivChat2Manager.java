@@ -19,6 +19,7 @@ import vg.civcraft.mc.civchat2.event.GroupChatEvent;
 import vg.civcraft.mc.civchat2.event.PrivateMessageEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2Config;
 import vg.civcraft.mc.civchat2.utility.CivChat2FileLogger;
+import vg.civcraft.mc.civchat2.utility.ScoreboardHUD;
 import vg.civcraft.mc.civmodcore.util.Guard;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
@@ -47,6 +48,8 @@ public class CivChat2Manager {
 
 	private final Set<UUID> afkPlayers;
 
+	private ScoreboardHUD scoreboardHUD;
+
 	protected static final GroupManager GM = NameAPI.getGroupManager();
 
 	private String defaultColor;
@@ -64,6 +67,7 @@ public class CivChat2Manager {
 		groupChatChannels = new HashMap<>();
 		replyList = new HashMap<>();
 		afkPlayers = new HashSet<>();
+		scoreboardHUD = new ScoreboardHUD();
 	}
 
 	/**
@@ -90,6 +94,7 @@ public class CivChat2Manager {
 		Guard.ArgumentNotNull(player, "player");
 
 		chatChannels.remove(player.getUniqueId());
+		scoreboardHUD.updateScoreboardHUD(player);
 	}
 
 	/**
@@ -109,6 +114,7 @@ public class CivChat2Manager {
 		} else {
 			chatChannels.put(player1.getUniqueId(), player2.getUniqueId());
 		}
+		scoreboardHUD.updateScoreboardHUD(player1);
 	}
 
 	/**
@@ -303,6 +309,7 @@ public class CivChat2Manager {
 		Guard.ArgumentNotNull(group, "group");
 
 		groupChatChannels.put(player.getUniqueId(), group);
+		scoreboardHUD.updateScoreboardHUD(player);
 	}
 
 	/**
@@ -368,6 +375,7 @@ public class CivChat2Manager {
 		Guard.ArgumentNotNull(player, "player");
 
 		groupChatChannels.remove(player.getUniqueId());
+		scoreboardHUD.updateScoreboardHUD(player);
 	}
 
 	/**
