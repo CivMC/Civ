@@ -28,7 +28,10 @@ public class ScoreboardHUD {
 	 * @param p player to update scoreboard for
 	 */
 	public void updateScoreboardHUD(Player p) {
-		if (settingMan.getShowChatGroup(p.getUniqueId())) {
+		if (!settingMan.getShowChatGroup(p.getUniqueId())) {
+			chatBoard.hide(p);
+			chatBottomLine.removePlayer(p);
+		} else {
 			DisplayLocationSetting locSetting = settingMan.getChatGroupLocation();
 			CivChat2Manager chatman = CivChat2.getInstance().getCivChat2Manager();
 			String text;
