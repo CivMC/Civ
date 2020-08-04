@@ -97,8 +97,9 @@ public class RealisticBiomesGUI {
 				}
 			}
 			lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);
-			if (plant.getAllowBoneMeal() || !plant.getNeedsLight() ||  plant.getSoilBoniPerLevel().size() != 0
-					|| plant.getMaximumSoilLayers() != 0 || plant.getMaximumSoilBonus() != 0 || plant.getGreenHouseRates().size() != 0) {
+			if (plant.getAllowBoneMeal() || !plant.getNeedsLight()
+					|| plant.getSoilBoniPerLevel().size() != 0 || plant.getMaximumSoilLayers() != 0
+					|| plant.getMaximumSoilBonus() != 0 || plant.getGreenHouseRates().size() != 0) {
 				lore.add(ChatColor.DARK_GREEN + "---");
 			}
 			if (plant.getAllowBoneMeal()) {
@@ -108,7 +109,7 @@ public class RealisticBiomesGUI {
 				lore.add(ChatColor.DARK_AQUA + "Needs Light: " + ChatColor.GRAY + "false");
 			}
 			for (Map.Entry<Material, Double> entry : plant.getSoilBoniPerLevel().entrySet()) {
-				lore.add(ChatColor.DARK_AQUA + "Soil Bonus: " +  ChatColor.GRAY
+				lore.add(ChatColor.DARK_AQUA + "Soil Bonus: " + ChatColor.GRAY
 						+ ItemNames.getItemName(entry.getKey()) + " (" + Double.toString(entry.getValue()) + ")");
 			}
 			if (plant.getMaximumSoilLayers() != 0) {
