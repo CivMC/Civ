@@ -309,6 +309,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (!config.isEnabled() || !config.stopAnchorBombing()) {
 			return;
 		}
+		if (event.getClickedBlock() == null) {
+			return;
+		}
 		if (!event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR)) {
 			return;
 		}
