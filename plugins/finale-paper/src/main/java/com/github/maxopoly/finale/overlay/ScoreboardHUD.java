@@ -15,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -28,6 +29,9 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.PotionAPI;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 
@@ -35,9 +39,11 @@ public class ScoreboardHUD implements Listener {
 
 	private List<CivScoreBoard> scoreBoards;
 	private FinaleSettingManager settingsMan;
+	private BottomLine coordsBottomLine;
 
 	public ScoreboardHUD(FinaleSettingManager settingsMan) {
 		scoreBoards = new ArrayList<>();
+		this.coordsBottomLine = BottomLineAPI.createBottomLine("Location", 4);
 		this.settingsMan = settingsMan;
 		for (int i = 0; i < 12; i++) {
 			scoreBoards.add(ScoreBoardAPI.createBoard("finaleArmor" + i));
@@ -125,10 +131,24 @@ public class ScoreboardHUD implements Listener {
 				if (p == null){
 					return;
 				} if (newValue){
-					updateCoordinates(p);
+					updateCoordinates(p, settingsMan.getCoordsLocation());
 				} else {
 					scoreBoards.get(11).set(p, null);
+					coordsBottomLine.removePlayer(p);
 				}
+			}
+		});
+
+		settingsMan.getCoordsLocation().registerListener(new SettingChangeListener<String>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
+					Player p = Bukkit.getPlayer(player);
+					if(p == null) {
+						return;
+					}
+					scoreBoards.get(11).set(p, null);
+					coordsBottomLine.removePlayer(p);
+				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
 			}
 		});
 	}
@@ -147,12 +167,16 @@ public class ScoreboardHUD implements Listener {
 		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
 			updateGammaBright(e.getPlayer());
 		}
+		if (settingsMan.getShowCoordsSetting().getValue(e.getPlayer())){
+			updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onMove(PlayerMoveEvent e){
-		if (settingsMan.showCoordinates(e.getPlayer().getUniqueId())){
-			updateCoordinates(e.getPlayer());
+		DisplayLocationSetting setting = settingsMan.getCoordsLocation();
+		if (!setting.getDisplayLocation(e.getPlayer().getUniqueId()).equals(DisplayLocationSetting.DisplayLocation.NONE)){
+			updateCoordinates(e.getPlayer(), setting);
 		}
 	}
 
@@ -263,11 +287,24 @@ public class ScoreboardHUD implements Listener {
 				ChatColor.AQUA, maxDura);
 	}
 
-	private void updateCoordinates(Player p){
+	private void updateCoordinates(Player p, DisplayLocationSetting setting){
+		if(p == null){
+			return;
+		}
 		Location location = p.getLocation();
 		DecimalFormat df = new DecimalFormat("#");
-		String coords = String.format("Location: [%s, %s, %s]", df.format(location.getX()), df.format(location.getY()), df.format(location.getZ()));
-		scoreBoards.get(11).set(p, coords);
+		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, df.format(location.getX()),
+				df.format(location.getY()), df.format(location.getZ()));
+		if(settingsMan.getShowCoordsSetting().getValue(p)) {
+			if(setting.showOnActionbar(p.getUniqueId())){
+				scoreBoards.get(11).set(p, null);
+				coordsBottomLine.updatePlayer(p, coords);
+			}
+			if(setting.showOnSidebar(p.getUniqueId())){
+				scoreBoards.get(11).set(p, coords);
+				coordsBottomLine.removePlayer(p);
+			}
+		}
 	}
 
 }

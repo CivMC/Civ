@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BoundedIntegerSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.IntegerSetting;
 
 public class FinaleSettingManager {
@@ -24,7 +25,7 @@ public class FinaleSettingManager {
 	private BooleanSetting permanentNightVision;
 	private BooleanSetting toolProtection;
 	private BooleanSetting showCoords;
-	private IntegerSetting decimalsToShow;
+	private DisplayLocationSetting coordsLocation;
 	private IntegerSetting toolProtectionThreshhold;
 
 	public FinaleSettingManager() {
@@ -68,8 +69,11 @@ public class FinaleSettingManager {
 		toolProtection = new BooleanSetting(Finale.getPlugin(), true, "Protect from breaking enchanted tools", "finaleToolProtection","Do you want to be given mining fatigue if mining with a low durability tool");
 		PlayerSettingAPI.registerSetting(toolProtection, menu);
 
-		showCoords = new BooleanSetting(Finale.getPlugin(), true, "Show your coordinates", "finaleShowCoords", "Should your coordinates be shown on the scoreboard");
+		showCoords = new BooleanSetting(Finale.getPlugin(), true, "Show location", "finaleShowCoords", "Shows your location.");
 		PlayerSettingAPI.registerSetting(showCoords, menu);
+
+		coordsLocation = new DisplayLocationSetting(Finale.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Coords location", "finaleCoordsLocation", new ItemStack(Material.ARROW), "Where to display your location");
+		PlayerSettingAPI.registerSetting(coordsLocation, menu);
 
 		toolProtectionThreshhold = new BoundedIntegerSetting(Finale.getPlugin(), 10, "Threshhold for tool protection", "finaleToolProtectionThreshhold",new ItemStack(Material.DIAMOND_PICKAXE), "Durability at which break protection should trigger", false, 1, 2000);
 		PlayerSettingAPI.registerSetting(toolProtectionThreshhold, menu);
@@ -105,6 +109,10 @@ public class FinaleSettingManager {
 
 	public BooleanSetting getShowCoordsSetting(){
 		return showCoords;
+	}
+
+	public DisplayLocationSetting getCoordsLocation(){
+		return coordsLocation;
 	}
 
 	public boolean sideBarPearlCooldown(UUID uuid) {
