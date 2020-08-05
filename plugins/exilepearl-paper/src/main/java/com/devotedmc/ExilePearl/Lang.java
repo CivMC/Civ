@@ -27,7 +27,7 @@ public class Lang
 	public static final String pearlAlreadyBcasting = "<i>You're already broadcasting to that player.";
 	public static final String pearlSilencedBcast = "<g>You silenced broadcasts from <c>%s.";
 	public static final String pearlBroadcast = "<i>The pearl of <c>%s <i>is held by <a>%s <n>[%d %d %d %s]";
-	public static final String pearlCantThrow = "<i>You can't throw exile pearls.";
+	public static final String pearlCantPlace = "<i>You can't place exile pearls.";
 	public static final String pearlCantSummon = "<i>That pearl can't be summoned.";
 	public static final String pearlSummoned = "<g>You have summoned <c>%s<g>!";
 	public static final String pearlYouWereSummoned = "<g>You were summoned by <c>%s<g>!";

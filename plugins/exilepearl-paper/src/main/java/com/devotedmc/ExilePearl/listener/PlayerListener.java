@@ -748,19 +748,10 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		Player player = e.getPlayer();
-
-		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
-			msg(player, Lang.pearlCantThrow);
-			e.setCancelled(true);
-			player.getInventory().setItemInMainHand(pearl.createItemStack());
-			return;
-		}
-
+		msg(player, Lang.pearlCantPlace);
 		e.setCancelled(true);
-		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
-			player.getInventory().setItemInMainHand(null);
-			msg(player, Lang.pearlYouFreed, pearl.getPlayerName());
-		}
+		player.getInventory().setItemInMainHand(pearl.createItemStack());
+
 	}
 
 	/**
@@ -783,7 +774,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		msg(p, Lang.pearlCantThrow);
+		msg(p, Lang.pearlCantPlace);
 		e.setCancelled(true);
 
 		// Need to schedule this or else the re-created pearl doesn't show up
