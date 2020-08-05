@@ -8,11 +8,13 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
@@ -25,6 +27,9 @@ import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.PotionAPI;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
+import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLine;
+import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.CivScoreBoard;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardAPI;
 
@@ -32,11 +37,13 @@ public class ScoreboardHUD implements Listener {
 
 	private List<CivScoreBoard> scoreBoards;
 	private FinaleSettingManager settingsMan;
+	private BottomLine coordsBottomLine;
 
 	public ScoreboardHUD(FinaleSettingManager settingsMan) {
 		scoreBoards = new ArrayList<>();
+		this.coordsBottomLine = BottomLineAPI.createBottomLine("Location", 4);
 		this.settingsMan = settingsMan;
-		for (int i = 0; i < 11; i++) {
+		for (int i = 0; i < 12; i++) {
 			scoreBoards.add(ScoreBoardAPI.createBoard("finaleArmor" + i));
 		}
 		Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
@@ -114,6 +121,17 @@ public class ScoreboardHUD implements Listener {
 				}
 			}
 		});
+
+		settingsMan.getCoordsLocation().registerListener(new SettingChangeListener<String>() {
+			@Override
+			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
+					Player p = Bukkit.getPlayer(player);
+					if(p == null) {
+						return;
+					}
+				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
+			}
+		});
 	}
 
 	private void updateGammaBright(Player player) {
@@ -129,6 +147,26 @@ public class ScoreboardHUD implements Listener {
 		}
 		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
 			updateGammaBright(e.getPlayer());
+		}
+		if (settingsMan.getCoordsLocation().getDisplayLocation(e.getPlayer().getUniqueId()) !=
+			DisplayLocationSetting.DisplayLocation.NONE){
+			updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
+		}
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void onMove(PlayerMoveEvent e){
+		Location from = e.getFrom();
+		Location to = e.getTo();
+
+		// Replace with new function in CivModCore once made
+		if(to.getBlockX() == from.getBlockX() && to.getBlockY() == from.getBlockY() && to.getBlockZ() == from.getBlockZ()){
+			return;
+		}
+
+		DisplayLocationSetting setting = settingsMan.getCoordsLocation();
+		if (!setting.getDisplayLocation(e.getPlayer().getUniqueId()).equals(DisplayLocationSetting.DisplayLocation.NONE)){
+			updateCoordinates(e.getPlayer(), setting);
 		}
 	}
 
@@ -239,4 +277,22 @@ public class ScoreboardHUD implements Listener {
 				ChatColor.AQUA, maxDura);
 	}
 
+	private void updateCoordinates(Player p, DisplayLocationSetting setting){
+		if(p == null){
+			return;
+		}
+		Location location = p.getLocation();
+		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
+				location.getBlockY(), location.getBlockZ());
+		scoreBoards.get(11).set(p, null);
+		coordsBottomLine.removePlayer(p);
+		if(settingsMan.getCoordsLocation().getDisplayLocation(p.getUniqueId()) != DisplayLocationSetting.DisplayLocation.NONE) {
+			if (setting.showOnActionbar(p.getUniqueId())) {
+				coordsBottomLine.updatePlayer(p, coords);
+			}
+			if (setting.showOnSidebar(p.getUniqueId())) {
+				scoreBoards.get(11).set(p, coords);
+			}
+		}
+	}
 }
