@@ -104,7 +104,7 @@ public class DatabaseCredentials implements ConfigurationSerializable {
 		String host = MapUtils.attemptGet(data, "localhost", "hostname", "host");
 		int port = MapUtils.attemptGet(data, NumberConversions::toInt, 3306, "port");
 		String driver = MapUtils.attemptGet(data, "mysql", "driver");
-		String database = MapUtils.attemptGet(data, "minecraft", "database");
+		String database = MapUtils.attemptGet(data, "minecraft", "database", "dbname", "db");
 		int poolSize = MapUtils.attemptGet(data, NumberConversions::toInt, 10, "poolSize", "poolsize");
 		long connectionTimeout = MapUtils.attemptGet(data, NumberConversions::toLong, 10_000L,
 				"connectionTimeout", "connection_timeout");
