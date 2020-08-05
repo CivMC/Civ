@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civchat2;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,6 +14,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import vg.civcraft.mc.civchat2.database.CivChatDAO;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.event.GroupChatEvent;
@@ -201,8 +204,6 @@ public class CivChat2Manager {
 			sb.delete(0, sb.length());
 		}
 
-		ChatColor color = ChatColor.valueOf(defaultColor);
-
 		Set<String> receivers = new HashSet<>();
 		// Loop through players and send to those that are close enough
 		for (Player receiver : recipients) {
@@ -210,15 +211,23 @@ public class CivChat2Manager {
 				if (receiver.getWorld().equals(sender.getWorld())) {
 					double receiverDistance = location.distance(receiver.getLocation());
 					if (receiverDistance <= range) {
-						ChatColor newColor = ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
-						newColor = newColor != null ? newColor : color;
+						net.md_5.bungee.api.ChatColor newColor;
+						if (config.useDynamicRangeColoring()) {
+							int comp = (int) Math.min(255, 255 - ((255.0 * receiverDistance) / range));
+							newColor = net.md_5.bungee.api.ChatColor.of(new Color(comp, comp, comp));
+						}
+						else {
+							newColor = net.md_5.bungee.api.ChatColor.valueOf(config.getColorAtDistance(receiverDistance));
+						}
+						newColor = newColor != null ? newColor : net.md_5.bungee.api.ChatColor.of(defaultColor);
 
 						String senderName = customNames.containsKey(sender.getUniqueId())
 								? customNames.get(sender.getUniqueId())
 								: sender.getDisplayName();
-
-						receiver.sendMessage(
-								String.format(messageFormat, newColor + senderName, newColor + chatMessage));
+						TextComponent text = new TextComponent(String.format(messageFormat, senderName + ChatColor.RESET, ""));
+						TextComponent msgPart = new TextComponent(chatMessage);
+						msgPart.setColor(newColor);
+						receiver.spigot().sendMessage(text, msgPart);
 						receivers.add(receiver.getName());
 					}
 				}

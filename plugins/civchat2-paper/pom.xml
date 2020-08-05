@@ -19,6 +19,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
 			<version>1.16.1-R0.1-SNAPSHOT</version>
@@ -42,6 +48,7 @@
 			<version>2.7</version>
 		</dependency>
 	</dependencies>
+	
 	<repositories>
 		<repository>
 			<id>civ-jenkins</id>
