@@ -307,7 +307,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	}
 	
 	@SuppressWarnings("rawtypes")
-	protected void iterateAll(Consumer<D> functionToApply) {
+	public void iterateAll(Consumer<D> functionToApply) {
 		for (int i = 0; i < data.length; i++) {
 			BlockDataObject[][][] l2Cache = data[i];
 			if (l2Cache == null) {

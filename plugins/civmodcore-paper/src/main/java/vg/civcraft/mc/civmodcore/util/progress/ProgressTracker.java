@@ -38,7 +38,7 @@ public class ProgressTracker<T extends ProgressTrackable> {
 			}
 			iter.remove();
 			item.updateState();
-			if (item.getNextUpdate() > 0) {
+			if (item.getNextUpdate() > 0 && item.getNextUpdate() != Long.MAX_VALUE) {
 				toReAdd.add(item);
 			}
 		}
