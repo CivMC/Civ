@@ -453,7 +453,7 @@ final class CorePearlManager implements PearlManager {
 		for(int i = 0; i < inv.getSize(); i++) {
 			final ItemStack item = inv.getItem(i);
 			if(item == null) continue;
-			if(item.getType() == Material.ENDER_PEARL) continue;
+			if(item.getType() == Material.PLAYER_HEAD) continue;
 			inv.clear(i);
 			Bukkit.getScheduler().runTask(pearlApi, new Runnable() {
 

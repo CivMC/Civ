@@ -19,7 +19,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.util.Vector;
 
 import com.devotedmc.ExilePearl.ExilePearl;
@@ -340,8 +340,9 @@ final class CoreExilePearl implements ExilePearl {
 	@Override
 	public ItemStack createItemStack() {
 		List<String> lore = pearlApi.getLoreProvider().generateLore(this);
-		ItemStack is = new ItemStack(Material.ENDER_PEARL, 1);
-		ItemMeta im = is.getItemMeta();
+		ItemStack is = new ItemStack(Material.PLAYER_HEAD, 1);
+		SkullMeta im = (SkullMeta) is.getItemMeta();
+		im.setOwningPlayer(Bukkit.getOfflinePlayer(this.getPlayerId()));
 		im.setDisplayName(this.getPlayerName());
 		im.setLore(lore);
 		im.addEnchant(Enchantment.DURABILITY, 1, true);
@@ -364,7 +365,7 @@ final class CoreExilePearl implements ExilePearl {
 		if (pearlId == this.pearlId) {
 
 			// re-create the item stack to update the values
-			ItemMeta im = is.getItemMeta();
+			SkullMeta im = (SkullMeta) is.getItemMeta();
 			im.setLore(pearlApi.getLoreProvider().generateLore(this));
 			is.setItemMeta(im);
 			return true;

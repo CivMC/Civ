@@ -1,5 +1,8 @@
 package com.devotedmc.ExilePearl.holder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -95,7 +98,10 @@ public class BlockHolder implements PearlHolder {
 		}
 
 		// In the container inventory?
-		for (ItemStack item : inv.all(Material.ENDER_PEARL).values()) {
+		List<ItemStack> potentialPearls = new ArrayList<>();
+		potentialPearls.addAll(inv.all(Material.PLAYER_HEAD).values());
+		potentialPearls.addAll(inv.all(Material.ENDER_PEARL).values());
+		for (ItemStack item : potentialPearls) {
 			if (pearl.validateItemStack(item)) {
 				return HolderVerifyResult.IN_CHEST;
 			}
@@ -113,7 +119,11 @@ public class BlockHolder implements PearlHolder {
 					continue;
 				}
 				Inventory relInv = ((InventoryHolder)relState).getInventory();
-				for (ItemStack item : relInv.all(Material.ENDER_PEARL).values()) {
+
+				potentialPearls = new ArrayList<>();
+				potentialPearls.addAll(relInv.all(Material.PLAYER_HEAD).values());
+				potentialPearls.addAll(relInv.all(Material.ENDER_PEARL).values());
+				for (ItemStack item : potentialPearls) {
 					if (pearl.validateItemStack(item)) {
 						return HolderVerifyResult.IN_CHEST;
 					}

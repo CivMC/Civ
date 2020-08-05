@@ -180,7 +180,7 @@ final class CoreLoreGenerator implements LoreProvider {
 			return null;
 		}
 
-		if (!is.getType().equals(Material.ENDER_PEARL)) {
+		if (!(is.getType().equals(Material.PLAYER_HEAD) || is.getType().equals(Material.ENDER_PEARL))) {
 			return null;
 		}
 
