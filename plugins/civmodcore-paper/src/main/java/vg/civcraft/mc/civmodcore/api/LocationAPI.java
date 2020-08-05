@@ -1,6 +1,8 @@
 package vg.civcraft.mc.civmodcore.api;
 
 import org.bukkit.Location;
+import org.bukkit.World;
+import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
  * Class of utility functions for Locations.
@@ -37,6 +39,20 @@ public final class LocationAPI {
 				location.getBlockX(),
 				location.getBlockY(),
 				location.getBlockZ());
+	}
+
+	/**
+	 * Determines whether two locations share the same world.
+	 *
+	 * @param former The first location.
+	 * @param latter The second location.
+	 * @return Returns true if the two locations share the same world.
+	 */
+	public static boolean areLocationsSameWorld(Location former, Location latter) {
+		if (former == null || latter == null) {
+			return false;
+		}
+		return NullCoalescing.equalsNotNull(former.getWorld(), latter.getWorld());
 	}
 
 }
