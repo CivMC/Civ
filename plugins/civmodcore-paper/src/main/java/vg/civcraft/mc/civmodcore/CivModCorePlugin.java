@@ -11,6 +11,7 @@ import vg.civcraft.mc.civmodcore.chatDialog.ChatListener;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.custom.items.CustomItems;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.events.CustomEventMapper;
 import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventoryListener;
 import vg.civcraft.mc.civmodcore.inventorygui.paged.PagedGUIManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
@@ -73,6 +74,7 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new PagedGUIManager());
 		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
+		registerListener(new CustomEventMapper());
 		// Register commands
 		this.manager = new AikarCommandManager(this) {
 			@Override

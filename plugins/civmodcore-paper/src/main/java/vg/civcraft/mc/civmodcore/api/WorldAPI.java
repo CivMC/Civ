@@ -9,7 +9,7 @@ import java.util.Objects;
 /**
  * Class of utility functions for Worlds.
  */
-public class WorldAPI {
+public final class WorldAPI {
 
 	/**
 	 * Determines if a world is currently loaded.
