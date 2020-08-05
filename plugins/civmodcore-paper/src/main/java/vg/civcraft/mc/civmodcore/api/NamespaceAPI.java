@@ -18,7 +18,6 @@ public final class NamespaceAPI {
 	 * @exception IllegalArgumentException Will throw if the stringified key fails a "[a-z0-9._-]+" check, or if the
 	 *     total length is longer than 256.
 	 */
-	@SuppressWarnings("deprecation")
 	public static NamespacedKey fromString(String key) {
 		if (Strings.isNullOrEmpty(key)) {
 			return null;
@@ -27,10 +26,25 @@ public final class NamespaceAPI {
 		if (parts.length != 2) {
 			return null;
 		}
-		if (Strings.isNullOrEmpty(parts[0]) || Strings.isNullOrEmpty(parts[1])) {
+		return fromParts(parts[0], parts[1]);
+	}
+
+	/**
+	 * Converts a namespace and a key into a {@link NamespacedKey}.
+	 *
+	 * @param namespace The namespace name.
+	 * @param key The namespaced key.
+	 * @return Returns a valid {@link NamespacedKey}, or null.
+	 *
+	 * @exception IllegalArgumentException Will throw if either part fails a "[a-z0-9._-]+" check, or if the total
+	 *     combined length is longer than 256.
+	 */
+	@SuppressWarnings("deprecation")
+	public static NamespacedKey fromParts(String namespace, String key) {
+		if (Strings.isNullOrEmpty(namespace) || Strings.isNullOrEmpty(key)) {
 			return null;
 		}
-		return new NamespacedKey(parts[0], parts[1]);
+		return new NamespacedKey(namespace, key);
 	}
 
 	/**
