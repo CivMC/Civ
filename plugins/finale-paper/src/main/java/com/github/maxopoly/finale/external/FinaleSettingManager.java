@@ -24,7 +24,6 @@ public class FinaleSettingManager {
 	private BooleanSetting showPotionEffects;
 	private BooleanSetting permanentNightVision;
 	private BooleanSetting toolProtection;
-	private BooleanSetting showCoords;
 	private DisplayLocationSetting coordsLocation;
 	private IntegerSetting toolProtectionThreshhold;
 
@@ -69,10 +68,7 @@ public class FinaleSettingManager {
 		toolProtection = new BooleanSetting(Finale.getPlugin(), true, "Protect from breaking enchanted tools", "finaleToolProtection","Do you want to be given mining fatigue if mining with a low durability tool");
 		PlayerSettingAPI.registerSetting(toolProtection, menu);
 
-		showCoords = new BooleanSetting(Finale.getPlugin(), true, "Show location", "finaleShowCoords", "Shows your location.");
-		PlayerSettingAPI.registerSetting(showCoords, menu);
-
-		coordsLocation = new DisplayLocationSetting(Finale.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Coords location", "finaleCoordsLocation", new ItemStack(Material.ARROW), "Where to display your location");
+		coordsLocation = new DisplayLocationSetting(Finale.getPlugin(), DisplayLocationSetting.DisplayLocation.SIDEBAR, "Coords location on HUD", "finaleCoordsLocation", new ItemStack(Material.ARROW), "Where to display your location");
 		PlayerSettingAPI.registerSetting(coordsLocation, menu);
 
 		toolProtectionThreshhold = new BoundedIntegerSetting(Finale.getPlugin(), 10, "Threshhold for tool protection", "finaleToolProtectionThreshhold",new ItemStack(Material.DIAMOND_PICKAXE), "Durability at which break protection should trigger", false, 1, 2000);
@@ -107,10 +103,6 @@ public class FinaleSettingManager {
 		return showPotionEffects;
 	}
 
-	public BooleanSetting getShowCoordsSetting(){
-		return showCoords;
-	}
-
 	public DisplayLocationSetting getCoordsLocation(){
 		return coordsLocation;
 	}
@@ -133,10 +125,6 @@ public class FinaleSettingManager {
 
 	public boolean showPotionEffects(UUID uuid) {
 		return showPotionEffects.getValue(uuid);
-	}
-
-	public boolean showCoordinates(UUID uuid){
-		return showCoords.getValue(uuid);
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.github.maxopoly.finale.overlay;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
@@ -124,21 +122,6 @@ public class ScoreboardHUD implements Listener {
 			}
 		});
 
-		settingsMan.getShowCoordsSetting().registerListener(new SettingChangeListener<Boolean>() {
-			@Override
-			public void handle(UUID player, PlayerSetting<Boolean> playerSetting, Boolean oldValue, Boolean newValue) {
-				Player p = Bukkit.getPlayer(player);
-				if (p == null){
-					return;
-				} if (newValue){
-					updateCoordinates(p, settingsMan.getCoordsLocation());
-				} else {
-					scoreBoards.get(11).set(p, null);
-					coordsBottomLine.removePlayer(p);
-				}
-			}
-		});
-
 		settingsMan.getCoordsLocation().registerListener(new SettingChangeListener<String>() {
 			@Override
 			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
@@ -146,8 +129,6 @@ public class ScoreboardHUD implements Listener {
 					if(p == null) {
 						return;
 					}
-					scoreBoards.get(11).set(p, null);
-					coordsBottomLine.removePlayer(p);
 				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
 			}
 		});
@@ -167,13 +148,22 @@ public class ScoreboardHUD implements Listener {
 		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
 			updateGammaBright(e.getPlayer());
 		}
-		if (settingsMan.getShowCoordsSetting().getValue(e.getPlayer())){
+		if (settingsMan.getCoordsLocation().getDisplayLocation(e.getPlayer().getUniqueId()) !=
+			DisplayLocationSetting.DisplayLocation.NONE){
 			updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void onMove(PlayerMoveEvent e){
+		Location from = e.getFrom();
+		Location to = e.getTo();
+
+		// Replace with new function in CivModCore once made
+		if(to.getBlockX() == from.getBlockX() && to.getBlockY() == from.getBlockY() && to.getBlockZ() == from.getBlockZ()){
+			return;
+		}
+
 		DisplayLocationSetting setting = settingsMan.getCoordsLocation();
 		if (!setting.getDisplayLocation(e.getPlayer().getUniqueId()).equals(DisplayLocationSetting.DisplayLocation.NONE)){
 			updateCoordinates(e.getPlayer(), setting);
@@ -292,19 +282,17 @@ public class ScoreboardHUD implements Listener {
 			return;
 		}
 		Location location = p.getLocation();
-		DecimalFormat df = new DecimalFormat("#");
-		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, df.format(location.getX()),
-				df.format(location.getY()), df.format(location.getZ()));
-		if(settingsMan.getShowCoordsSetting().getValue(p)) {
-			if(setting.showOnActionbar(p.getUniqueId())){
-				scoreBoards.get(11).set(p, null);
+		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
+				location.getBlockY(), location.getBlockZ());
+		scoreBoards.get(11).set(p, null);
+		coordsBottomLine.removePlayer(p);
+		if(settingsMan.getCoordsLocation().getDisplayLocation(p.getUniqueId()) != DisplayLocationSetting.DisplayLocation.NONE) {
+			if (setting.showOnActionbar(p.getUniqueId())) {
 				coordsBottomLine.updatePlayer(p, coords);
 			}
-			if(setting.showOnSidebar(p.getUniqueId())){
+			if (setting.showOnSidebar(p.getUniqueId())) {
 				scoreBoards.get(11).set(p, coords);
-				coordsBottomLine.removePlayer(p);
 			}
 		}
 	}
-
 }
