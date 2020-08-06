@@ -163,7 +163,8 @@ public class PlayerListener implements Listener, Configurable {
 			return null;
 		}
 
-		if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL) && item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
+		if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
+				&& item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);

@@ -363,8 +363,10 @@ final class CoreExilePearl implements ExilePearl {
 		int pearlId = pearlApi.getLoreProvider().getPearlIdFromItemStack(is);
 
 		if (pearlId == this.pearlId) {
-
 			// re-create the item stack to update the values
+			if (!(is.getItemMeta() instanceof SkullMeta)) {
+				is = new ItemStack(Material.PLAYER_HEAD, 1);
+			}
 			SkullMeta im = (SkullMeta) is.getItemMeta();
 			im.setLore(pearlApi.getLoreProvider().generateLore(this));
 			is.setItemMeta(im);
