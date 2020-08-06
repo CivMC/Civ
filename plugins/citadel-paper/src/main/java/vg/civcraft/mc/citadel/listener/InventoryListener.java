@@ -1,102 +1,109 @@
 package vg.civcraft.mc.citadel.listener;
 
-import java.util.Objects;
 import org.bukkit.Location;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Container;
-import org.bukkit.block.Dispenser;
 import org.bukkit.block.DoubleChest;
-import org.bukkit.block.Dropper;
-import org.bukkit.block.Hopper;
-import org.bukkit.block.data.Directional;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
+
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
-import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.api.WorldAPI;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 
 public class InventoryListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
 	public void onInventoryMoveItemEvent(InventoryMoveItemEvent event) {
 		Inventory fromInventory = event.getSource();
-		Inventory destInventory = event.getDestination();
-		// [LagFix] If either inventory's base location is unloaded, just cancel
-		Location fromLocation = LocationAPI.getBlockLocation(fromInventory.getLocation());
-		Location destLocation = LocationAPI.getBlockLocation(destInventory.getLocation());
-		if (!WorldAPI.isBlockLoaded(fromLocation)
-				|| !WorldAPI.isBlockLoaded(destLocation)) {
-			event.setCancelled(true);
-			return;
-		}
 		InventoryHolder fromHolder = fromInventory.getHolder();
-		InventoryHolder destHolder = destInventory.getHolder();
-		// Determine the reinforcement of the source
-		Reinforcement fromReinforcement = null;
-		if (fromHolder instanceof DoubleChest) {
-			DoubleChest doubleChest = (DoubleChest) fromHolder;
-			Location chestLocation = LocationAPI.getBlockLocation(
-					Objects.requireNonNull((Chest) doubleChest.getLeftSide()).getLocation());
-			Location otherLocation = LocationAPI.getBlockLocation(
-					Objects.requireNonNull((Chest) doubleChest.getRightSide()).getLocation());
-			// [LagFix] If either side of the double chest is not loaded then the reinforcement cannot be retrieved
-			// [LagFix] without necessarily loading the chunk to check against reinforcement logic, therefore this
-			// [LagFix] should err on the side of caution and prevent the transfer.
-			if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
+		boolean isFromBlock = fromHolder instanceof Container;
+		boolean fromAtChunkBorder = false;
+		Location fromLocation = null;
+		if (isFromBlock) {
+			fromLocation = fromInventory.getLocation();
+			fromAtChunkBorder = isAtChunkBorder(fromLocation);
+			if (fromAtChunkBorder && !WorldAPI.isBlockLoaded(fromLocation)) {
 				event.setCancelled(true);
 				return;
 			}
-			if (destHolder instanceof Hopper) {
-				Location drainedLocation = destLocation.clone().add(0, 1, 0);
-				if (Iteration.contains(drainedLocation, chestLocation, otherLocation)) {
-					fromReinforcement = ReinforcementLogic.getReinforcementProtecting(drainedLocation.getBlock());
-				}
+		}
+
+		Inventory destInventory = event.getDestination();
+		InventoryHolder destHolder = destInventory.getHolder();
+		boolean isDestBlock = destHolder instanceof Container;
+		boolean destAtChunkBorder = false;
+		Location destLocation = null;
+		if (isDestBlock) {
+			destLocation = destInventory.getLocation();
+			destAtChunkBorder = isAtChunkBorder(destLocation);
+			if (destAtChunkBorder && !WorldAPI.isBlockLoaded(destLocation)) {
+				event.setCancelled(true);
+				return;
+			}
+		} else {
+			if (!isFromBlock) {
+				// neither is a block, just ignore entirely
+				return;
 			}
 		}
-		else if (fromHolder instanceof Container) {
-			// [LagFix] This shouldn't be contributing to lag since there's isn't an implementation of 'Container' that
-			// [LagFix] spans more than one block, so the 'container.getBlock()' is permissible since we can reasonably
-			// [LagFix] assume that since this event was called, this block is loaded.
+
+		// Determine the reinforcement of the source
+		Reinforcement fromReinforcement = null;
+		if (isFromBlock) {
+			if (fromAtChunkBorder && fromHolder instanceof DoubleChest) {
+				DoubleChest doubleChest = (DoubleChest) fromHolder;
+				Location chestLocation = ((Chest) doubleChest.getLeftSide()).getLocation();
+				Location otherLocation = ((Chest) doubleChest.getRightSide()).getLocation();
+				// [LagFix] If either side of the double chest is not loaded then the
+				// reinforcement cannot be retrieved
+				// [LagFix] without necessarily loading the chunk to check against reinforcement
+				// logic, therefore this
+				// [LagFix] should err on the side of caution and prevent the transfer.
+				if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
+					event.setCancelled(true);
+					return;
+				}
+			}
 			fromReinforcement = ReinforcementLogic.getReinforcementProtecting(fromLocation.getBlock());
 		}
 		// Determine the reinforcement of the destination
 		Reinforcement destReinforcement = null;
-		if (fromHolder instanceof Hopper || fromHolder instanceof Dropper || fromHolder instanceof Dispenser) {
-			BlockFace direction = ((Directional) fromLocation.getBlock().getBlockData()).getFacing();
-			// [LagFix] If the transfer is happening laterally and the target location is not loaded, then err on the
-			// [LagFix] side of caution and prevent the transfer.. though this may cause some issues with dispensers
-			// [LagFix] and droppers.
-			Location target = fromLocation.clone().add(direction.getDirection());
-			if (BlockAPI.PLANAR_SIDES.contains(direction) && !WorldAPI.isBlockLoaded(target)) {
-				event.setCancelled(true);
-				return;
+		if (isDestBlock) {
+			if (destAtChunkBorder && destHolder instanceof DoubleChest) {
+				DoubleChest doubleChest = (DoubleChest) destHolder;
+				Location chestLocation = ((Chest) doubleChest.getLeftSide()).getLocation();
+				Location otherLocation = ((Chest) doubleChest.getRightSide()).getLocation();
+				// [LagFix] If either side of the double chest is not loaded then the
+				// reinforcement cannot be retrieved
+				// [LagFix] without necessarily loading the chunk to check against reinforcement
+				// logic, therefore this
+				// [LagFix] should err on the side of caution and prevent the transfer.
+				if (!WorldAPI.isBlockLoaded(chestLocation) || !WorldAPI.isBlockLoaded(otherLocation)) {
+					event.setCancelled(true);
+					return;
+				}
 			}
-			destReinforcement = ReinforcementLogic.getReinforcementProtecting(target.getBlock());
-		}
-		else if (destHolder instanceof Container) {
-			// [LagFix] Just like the other 'Container' this shouldn't be an issue.
 			destReinforcement = ReinforcementLogic.getReinforcementProtecting(destLocation.getBlock());
 		}
 		// Allow the transfer if neither are reinforced
 		if (fromReinforcement == null && destReinforcement == null) {
 			return;
 		}
-		// Allow the transfer if the destination is un-reinforced and the source is insecure
+		// Allow the transfer if the destination is un-reinforced and the source is
+		// insecure
 		if (destReinforcement == null) {
 			if (!fromReinforcement.isInsecure()) {
 				event.setCancelled(true);
 			}
 			return;
 		}
-		// Allow the transfer if the source is un-reinforced and the destination is insecure
+		// Allow the transfer if the source is un-reinforced and the destination is
+		// insecure
 		if (fromReinforcement == null) {
 			if (!destReinforcement.isInsecure()) {
 				event.setCancelled(true);
@@ -112,6 +119,12 @@ public class InventoryListener implements Listener {
 			return;
 		}
 		event.setCancelled(true);
+	}
+	
+	private static boolean isAtChunkBorder(Location location) {
+		int xShif = location.getBlockX() & 15;
+		int zShif = location.getBlockZ() & 15;
+		return xShif == 0 || xShif == 15 || zShif == 0 || zShif == 15;
 	}
 
 }
