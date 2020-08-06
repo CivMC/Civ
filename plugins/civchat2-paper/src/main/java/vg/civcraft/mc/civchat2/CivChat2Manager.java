@@ -213,7 +213,7 @@ public class CivChat2Manager {
 					if (receiverDistance <= range) {
 						net.md_5.bungee.api.ChatColor newColor;
 						if (config.useDynamicRangeColoring()) {
-							int comp = (int) Math.min(255, 255 - ((255.0 * receiverDistance) / range));
+							int comp = (int) (255 - (128.0 * receiverDistance) / range);
 							newColor = net.md_5.bungee.api.ChatColor.of(new Color(comp, comp, comp));
 						}
 						else {
