@@ -98,8 +98,8 @@ public class RealisticBiomesGUI {
 			}
 			lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);
 			if (plant.getAllowBoneMeal() || !plant.getNeedsLight()
-					|| plant.getSoilBoniPerLevel().size() != 0 || plant.getMaximumSoilLayers() != 0
-					|| plant.getMaximumSoilBonus() != 0 || plant.getGreenHouseRates().size() != 0) {
+					|| !plant.getSoilBoniPerLevel().isEmpty() || plant.getMaximumSoilLayers() != 0
+					|| plant.getMaximumSoilBonus() != 0 || !plant.getGreenHouseRates().isEmpty()) {
 				lore.add(ChatColor.DARK_GREEN + "---");
 			}
 			if (plant.getAllowBoneMeal()) {
@@ -109,18 +109,20 @@ public class RealisticBiomesGUI {
 				lore.add(ChatColor.DARK_AQUA + "Needs Light: " + ChatColor.GRAY + "false");
 			}
 			for (Map.Entry<Material, Double> entry : plant.getSoilBoniPerLevel().entrySet()) {
-				lore.add(ChatColor.DARK_AQUA + "Soil Bonus: " + ChatColor.GRAY
-						+ ItemNames.getItemName(entry.getKey()) + " (" + Double.toString(entry.getValue()) + ")");
+				lore.add(String.format("%sSoil Bonus: %s%s (%.2f)", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
 			}
 			if (plant.getMaximumSoilLayers() != 0) {
-				lore.add(ChatColor.DARK_AQUA + "Max Soil Layers: " + ChatColor.GRAY + Integer.toString(plant.getMaximumSoilLayers()));
+				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, plant.getMaximumSoilLayers()));
 			}
 			if (plant.getMaximumSoilBonus() != 0) {
-				lore.add(ChatColor.DARK_AQUA + "Max Soil Bonus: " + ChatColor.GRAY + Double.toString(plant.getMaximumSoilBonus()));
+				lore.add(String.format("%sMax Soil Bonus: %s%.2f", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, plant.getMaximumSoilBonus()));
 			}
 			for (Map.Entry<Material, Double> entry : plant.getGreenHouseRates().entrySet()) {
-				lore.add(ChatColor.DARK_AQUA + "Green House Rate: " +  ChatColor.GRAY  + ItemNames.getItemName(entry.getKey())
-						+ " (" + Double.toString(entry.getValue()) + ")");
+				lore.add(String.format("%sGreen House Rate: %s%s (%.2f)", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
 			}
 			ItemAPI.addLore(is, lore);
 			IClickable click = new DecorationStack(is);
