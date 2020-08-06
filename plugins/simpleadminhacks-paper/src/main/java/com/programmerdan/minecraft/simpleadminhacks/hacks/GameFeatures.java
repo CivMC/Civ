@@ -503,7 +503,8 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 							|| Material.WATER.equals(to.getRelative(BlockFace.SOUTH).getType())
 							|| Material.WATER.equals(to.getRelative(BlockFace.WEST).getType())
 							|| Material.WATER.equals(to.getRelative(BlockFace.EAST).getType())) {
-							to.setType(Material.OBSIDIAN);
+						event.setCancelled(true);
+						to.setType(Material.OBSIDIAN);
 					}
 				}
 			}
