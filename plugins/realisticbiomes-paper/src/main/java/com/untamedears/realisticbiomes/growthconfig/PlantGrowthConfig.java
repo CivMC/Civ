@@ -138,6 +138,30 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		return material;
 	}
 
+	public  Map<Material, Double> getGreenHouseRates() {
+		return greenHouseRates;
+	}
+
+	public int getMaximumSoilLayers() {
+		return maximumSoilLayers;
+	}
+
+	public double getMaximumSoilBonus() {
+		return maximumSoilBonus;
+	}
+
+	public Map<Material, Double> getSoilBoniPerLevel() {
+		return soilBoniPerLevel;
+	}
+
+	public boolean getNeedsLight() {
+		return needsLight;
+	}
+
+	public boolean getAllowBoneMeal() {
+		return allowBoneMeal;
+	}
+
 	public BiomeGrowthConfig getBiomeGrowthConfig() {
 		return biomeGrowthConfig;
 	}

@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -96,6 +97,33 @@ public class RealisticBiomesGUI {
 				}
 			}
 			lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);
+			if (plant.getAllowBoneMeal() || !plant.getNeedsLight()
+					|| !plant.getSoilBoniPerLevel().isEmpty() || plant.getMaximumSoilLayers() != 0
+					|| plant.getMaximumSoilBonus() != 0 || !plant.getGreenHouseRates().isEmpty()) {
+				lore.add(ChatColor.DARK_GREEN + "---");
+			}
+			if (plant.getAllowBoneMeal()) {
+				lore.add(ChatColor.DARK_AQUA + "Allow Bone Meal: " + ChatColor.GRAY + "true");
+			}
+			if (!plant.getNeedsLight()) {
+				lore.add(ChatColor.DARK_AQUA + "Needs Light: " + ChatColor.GRAY + "false");
+			}
+			for (Map.Entry<Material, Double> entry : plant.getSoilBoniPerLevel().entrySet()) {
+				lore.add(String.format("%sSoil Bonus: %s%s (%.2f)", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
+			}
+			if (plant.getMaximumSoilLayers() != 0) {
+				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, plant.getMaximumSoilLayers()));
+			}
+			if (plant.getMaximumSoilBonus() != 0) {
+				lore.add(String.format("%sMax Soil Bonus: %s%.2f", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, plant.getMaximumSoilBonus()));
+			}
+			for (Map.Entry<Material, Double> entry : plant.getGreenHouseRates().entrySet()) {
+				lore.add(String.format("%sGreen House Rate: %s%s (%.2f)", ChatColor.DARK_AQUA,
+						ChatColor.GRAY, ItemNames.getItemName(entry.getKey()), entry.getValue()));
+			}
 			ItemAPI.addLore(is, lore);
 			IClickable click = new DecorationStack(is);
 			clicks.add(click);
