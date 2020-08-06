@@ -125,10 +125,10 @@ public class ScoreboardHUD implements Listener {
 		settingsMan.getCoordsLocation().registerListener(new SettingChangeListener<String>() {
 			@Override
 			public void handle(UUID player, PlayerSetting<String> playerSetting, String s, String t1) {
-					Player p = Bukkit.getPlayer(player);
-					if(p == null) {
-						return;
-					}
+				Player p = Bukkit.getPlayer(player);
+				if(p == null) {
+					return;
+				}
 				updateCoordinates(Bukkit.getPlayer(player), settingsMan.getCoordsLocation());
 			}
 		});
@@ -148,10 +148,7 @@ public class ScoreboardHUD implements Listener {
 		if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
 			updateGammaBright(e.getPlayer());
 		}
-		if (settingsMan.getCoordsLocation().getDisplayLocation(e.getPlayer().getUniqueId()) !=
-			DisplayLocationSetting.DisplayLocation.NONE){
-			updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
-		}
+		updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
@@ -165,9 +162,7 @@ public class ScoreboardHUD implements Listener {
 		}
 
 		DisplayLocationSetting setting = settingsMan.getCoordsLocation();
-		if (!setting.getDisplayLocation(e.getPlayer().getUniqueId()).equals(DisplayLocationSetting.DisplayLocation.NONE)){
-			updateCoordinates(e.getPlayer(), setting);
-		}
+		updateCoordinates(e.getPlayer(), setting);
 	}
 
 	private void updateAllPotionEffects(Player p) {
@@ -284,15 +279,18 @@ public class ScoreboardHUD implements Listener {
 		Location location = p.getLocation();
 		String coords = String.format("%sLocation: [%s, %s, %s]", ChatColor.GREEN, location.getBlockX(),
 				location.getBlockY(), location.getBlockZ());
-		scoreBoards.get(11).set(p, null);
-		coordsBottomLine.removePlayer(p);
-		if(settingsMan.getCoordsLocation().getDisplayLocation(p.getUniqueId()) != DisplayLocationSetting.DisplayLocation.NONE) {
-			if (setting.showOnActionbar(p.getUniqueId())) {
-				coordsBottomLine.updatePlayer(p, coords);
-			}
-			if (setting.showOnSidebar(p.getUniqueId())) {
-				scoreBoards.get(11).set(p, coords);
-			}
+		if (setting.getDisplayLocation(p.getUniqueId()) == DisplayLocationSetting.DisplayLocation.BOTH){
+			coordsBottomLine.updatePlayer(p, coords);
+			scoreBoards.get(11).set(p, coords);
+		} else if (setting.showOnActionbar(p.getUniqueId())) {
+			coordsBottomLine.updatePlayer(p, coords);
+			scoreBoards.get(11).set(p, null);
+		} else if (setting.showOnSidebar(p.getUniqueId())) {
+			scoreBoards.get(11).set(p, coords);
+			coordsBottomLine.removePlayer(p);
+		} else {
+			scoreBoards.get(11).set(p, null);
+			coordsBottomLine.removePlayer(p);
 		}
 	}
 }
