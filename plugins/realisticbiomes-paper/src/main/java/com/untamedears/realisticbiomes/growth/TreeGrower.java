@@ -3,6 +3,8 @@ package com.untamedears.realisticbiomes.growth;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Sapling;
 
 public class TreeGrower extends AgeableGrower {
@@ -50,6 +52,52 @@ public class TreeGrower extends AgeableGrower {
 				|| adjacentSaplingCheck(mat, block.getRelative(-1, 0, 0)) || adjacentSaplingCheck(mat, block);
 	}
 
+	/**
+	 * Checks whether the block is part of a 2x2 grid and returns the north west block
+	 *
+	 * @param block to check for
+	 * @param mat Sapling material
+	 * @return North west block; null if the block is not part of a 2x2 sapling grid
+	 */
+	private static Block findNWSapling(Block block, Material mat) {
+		Block northwest = null;
+		for (Block nwCandidate : new Block[] { block, block.getRelative(-1, 0, -1), block.getRelative(0, 0, -1),
+				block.getRelative(-1, 0, 0) }) {
+			if (adjacentSaplingCheck(mat, nwCandidate)) {
+				northwest = nwCandidate;
+				break;
+			}
+		}
+		if (northwest == null) {
+			return null;
+		}
+		return northwest;
+	}
+
+	/**
+	 * Remove a 2x2 saplings grid if the block is part of one
+	 *
+	 * @param block to check for
+	 * @param mat Sapling material
+	 */
+	private static void clearBigTreeSaplings(Block block, Material mat) {
+		Block northwest = null;
+		Block northeast, southwest, southeast;
+		northwest = findNWSapling(block, mat);
+		if (northwest == null) {
+			return;
+		}
+
+		northeast = northwest.getRelative(BlockFace.EAST);
+		southwest = northwest.getRelative(BlockFace.SOUTH);
+		southeast = northeast.getRelative(BlockFace.SOUTH);
+
+		northwest.setType(Material.AIR);
+		northeast.setType(Material.AIR);
+		southwest.setType(Material.AIR);
+		southeast.setType(Material.AIR);
+	}
+
 	private static TreeType remapSaplingToTree(Material mat, boolean big) {
 		switch (mat) {
 		case OAK_SAPLING:
@@ -88,7 +136,9 @@ public class TreeGrower extends AgeableGrower {
 		if (stage < 1) {
 			return;
 		}
-		if (!(block.getBlockData() instanceof Sapling)) {
+		// Re-Read the block data to make sure it is up to date
+		BlockData currentBlockData = block.getLocation().getBlock().getBlockData();
+		if (!(currentBlockData instanceof Sapling)) {
 			return;
 		}
 		Material mat = block.getType();
@@ -100,7 +150,11 @@ public class TreeGrower extends AgeableGrower {
 		if (type == null) {
 			return;
 		}
-		block.setType(Material.AIR);
+		if (canBeBig) {
+			clearBigTreeSaplings(block, mat);
+		} else {
+			block.setType(Material.AIR);
+		}
 		block.getLocation().getWorld().generateTree(block.getLocation(), type);
 	}
 
