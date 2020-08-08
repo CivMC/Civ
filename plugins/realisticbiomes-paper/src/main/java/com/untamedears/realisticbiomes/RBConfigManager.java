@@ -166,7 +166,7 @@ public class RBConfigManager extends CoreConfigManager {
 				biomeGrowth = new ChanceBasedGrowthConfig(baseChance, biomeMultiplier);
 			}
 			int maximumSoilLayers = current.getInt("soil_max_layers", 0);
-			double maximumSoilBonus = current.getDouble("max_soil_bonus", 0);
+			double maximumSoilBonus = current.getDouble("max_soil_bonus", Integer.MAX_VALUE);
 			boolean allowBoneMeal = current.getBoolean("allow_bonemeal", false);
 			boolean needsLight = current.getBoolean("needs_sun_light", true);
 			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, material, greenHouseRates, soilBoniPerLevel,
