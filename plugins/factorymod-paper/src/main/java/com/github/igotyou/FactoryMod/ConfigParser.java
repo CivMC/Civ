@@ -52,6 +52,7 @@ import com.github.igotyou.FactoryMod.recipes.RecipeScalingUpgradeRecipe;
 import com.github.igotyou.FactoryMod.recipes.RepairRecipe;
 import com.github.igotyou.FactoryMod.recipes.Upgraderecipe;
 import com.github.igotyou.FactoryMod.recipes.WordBankRecipe;
+import com.github.igotyou.FactoryMod.recipes.PlayerHeadRecipe;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 import com.github.igotyou.FactoryMod.structures.BlockFurnaceStructure;
 import com.github.igotyou.FactoryMod.structures.FurnCraftChestStructure;
@@ -862,6 +863,9 @@ public class ConfigParser {
 			}
 			int wordCount = config.getInt("word_count", 2);
 			result = new WordBankRecipe(identifier, name, productionTime, key, words, colors, wordCount);
+			break;
+		case "PLAYERHEAD":
+			result = new PlayerHeadRecipe(identifier, name, productionTime, input);
 			break;
 		default:
 			plugin.severe("Could not identify type " + config.getString("type") + " as a valid recipe identifier");
