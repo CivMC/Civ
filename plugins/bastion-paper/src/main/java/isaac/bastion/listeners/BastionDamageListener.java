@@ -36,6 +36,7 @@ import isaac.bastion.BastionBlock;
 import isaac.bastion.Permissions;
 import isaac.bastion.manager.BastionBlockManager;
 import isaac.bastion.manager.EnderPearlManager;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
@@ -56,10 +57,16 @@ public final class BastionDamageListener implements Listener {
 				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
 		for(BastionBlock bastion : blocking) {
 			if (!bastion.getType().isOnlyDirectDestruction()) {
-				blockManager.erodeFromPlace(event.getPlayer(), blocking);
 				event.setCancelled(true);
 				if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
 					event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
+				}
+				Material mat = event.getBlock().getType();
+				if (!Bastion.getCommonSettings().getCancelPlacementAndDamageMaterials().contains(mat)) {
+					blockManager.erodeFromPlace(event.getPlayer(), blocking);
+				} else {
+					event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
+							ItemNames.getItemName(mat)));
 				}
 				return;
 			}
