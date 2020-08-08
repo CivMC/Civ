@@ -1,10 +1,12 @@
 package com.untamedears.realisticbiomes.growth;
 
+import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Sapling;
 
 public class TreeGrower extends AgeableGrower {
@@ -74,6 +76,16 @@ public class TreeGrower extends AgeableGrower {
 		return northwest;
 	}
 
+	private static void removeSapling(Block block) {
+		PlantManager manager = RealisticBiomes.getInstance().getPlantManager();
+		Plant plant = manager.getPlant(block);
+		if (plant == null) {
+			return;
+		}
+		manager.deletePlant(plant);
+		block.setType(Material.AIR);
+	}
+
 	/**
 	 * Remove a 2x2 saplings grid if the block is part of one
 	 *
@@ -92,10 +104,10 @@ public class TreeGrower extends AgeableGrower {
 		southwest = northwest.getRelative(BlockFace.SOUTH);
 		southeast = northeast.getRelative(BlockFace.SOUTH);
 
-		northwest.setType(Material.AIR);
-		northeast.setType(Material.AIR);
-		southwest.setType(Material.AIR);
-		southeast.setType(Material.AIR);
+		removeSapling(northwest);
+		removeSapling(northeast);
+		removeSapling(southeast);
+		removeSapling(southwest);
 	}
 
 	private static TreeType remapSaplingToTree(Material mat, boolean big) {
@@ -137,8 +149,7 @@ public class TreeGrower extends AgeableGrower {
 			return;
 		}
 		// Re-Read the block data to make sure it is up to date
-		BlockData currentBlockData = block.getLocation().getBlock().getBlockData();
-		if (!(currentBlockData instanceof Sapling)) {
+		if (!(block.getBlockData() instanceof Sapling)) {
 			return;
 		}
 		Material mat = block.getType();
