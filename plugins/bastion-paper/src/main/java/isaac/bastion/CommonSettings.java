@@ -24,7 +24,7 @@ public class CommonSettings {
 		return this.listBastionTimeout;
 	}
 
-	public Set<Material> getCancelPlacementAndDamageMaterials() {
+	public Set<Material> getCancelPlacementAndDamage() {
 		return this.cancelPlacementAndDamage;
 	}
 

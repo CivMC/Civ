@@ -62,7 +62,7 @@ public final class BastionDamageListener implements Listener {
 					event.getPlayer().sendMessage(ChatColor.RED + "Bastion removed block");
 				}
 				Material mat = event.getBlock().getType();
-				if (!Bastion.getCommonSettings().getCancelPlacementAndDamageMaterials().contains(mat)) {
+				if (!Bastion.getCommonSettings().getCancelPlacementAndDamage().contains(mat)) {
 					blockManager.erodeFromPlace(event.getPlayer(), blocking);
 				} else {
 					event.getPlayer().sendMessage(String.format("%s%s cannot be used to damage bastions", ChatColor.RED,
