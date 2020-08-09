@@ -35,7 +35,7 @@ commands:
         max-args: 1
     item:
       permission: fm.public
-      description: 'Opens a GUI allowing you to browse all recipes which use or output a given item'
+      description: 'Opens a GUI allowing you to browse all recipes which use or output the item in your main hand'
       usage: '/item [material name]'
       min-args: 0
       max-args: 1

@@ -24,7 +24,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class ItemUseGUI {
 
 	private Player player;
@@ -35,14 +34,15 @@ public class ItemUseGUI {
 	}
 
 	/**
-	 * Shows an interactive menu containing all factory recipes which take or produce specified item
+	 * Shows an interactive menu containing all factory recipes which take or produce a specified item
 	 * @param item
 	 */
 	public void showItemOverview(ItemStack item) {
 		if (inventory == null) {
-			inventory = new ComponableInventory(org.bukkit.ChatColor.DARK_GREEN
+			inventory = new ComponableInventory(ChatColor.DARK_GRAY
 					+ "As Input            As Output", 6, player);
 		}
+		FactoryModGUI gui = new FactoryModGUI(player);
 		List<IClickable> itemAsInput = new ArrayList<>();
 		List<IClickable> itemAsOutput = new ArrayList<>();
 		List<IFactoryEgg> eggList = new ArrayList<>(FactoryMod.getInstance().getManager().getAllFactoryEggs());
@@ -56,17 +56,16 @@ public class ItemUseGUI {
 					continue;
 				}
 				InputRecipe inputRecipe = (InputRecipe) recipe;
+
 				ItemStack getItemAsInput = getItemAsInput(fccEgg, inputRecipe, item);
 				if (getItemAsInput != null) {
 					itemAsInput.add(new LClickable(getItemAsInput, p -> {
-						FactoryModGUI gui = new FactoryModGUI(player);
 						gui.showForFactory(fccEgg, inputRecipe);
 					}));
 				}
 				ItemStack getItemAsOutput = getItemAsOutput(fccEgg, inputRecipe, item);
 				if (getItemAsOutput != null) {
 					itemAsOutput.add(new LClickable(getItemAsOutput, p -> {
-						FactoryModGUI gui = new FactoryModGUI(player);
 						gui.showForFactory(fccEgg, inputRecipe);
 					}));
 				}
@@ -74,12 +73,12 @@ public class ItemUseGUI {
 		}
 		if (itemAsInput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, "No recipes taking " + ItemNames.getItemName(item) + " as input");
+			ItemAPI.setDisplayName(noItems, ChatColor.RED + "No recipes take input " + ItemNames.getItemName(item));
 			itemAsInput.add(new LClickable(noItems, p -> { }));
 		}
 		if (itemAsOutput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, "No recipes giving " + ItemNames.getItemName(item) + " as output");
+			ItemAPI.setDisplayName(noItems, ChatColor.RED + "No recipes output " + ItemNames.getItemName(item));
 			itemAsOutput.add(new LClickable(noItems, p -> { }));
 		}
 		Scrollbar itemAsInputBar = new Scrollbar(itemAsInput, 24, 8, ContentAligners.getCenteredInOrder(itemAsInput.size(), 24, 4));
