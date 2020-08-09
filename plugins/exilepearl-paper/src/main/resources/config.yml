@@ -39,6 +39,9 @@
 # pearls.autofree_worldborder
 #  - When true, pearls that are outside world-border will be freed during a 
 #    decay operation
+#
+# pearls.free_by_throwing
+#  - When true, pearls can be freed by throwing them
 # 
 # pearls.free_teleport
 #  - When true, freeing a prison pearled player teleports them to the freer
@@ -255,6 +258,7 @@ general:
   max_pearled_message: 'You have too many imprisoned alts'
 pearls:
   autofree_worldborder: true
+  free_by_throwing: false
   free_teleport: true
   hotbar_needed: true
   decay_interval_human: week

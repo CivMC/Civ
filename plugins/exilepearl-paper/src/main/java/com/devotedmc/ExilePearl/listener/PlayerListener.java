@@ -222,7 +222,7 @@ public class PlayerListener implements Listener, Configurable {
 		World world = imprisoner.getWorld();
 		Inventory inv = imprisoner.getInventory();
 		for (Entry<Integer, ? extends ItemStack> entry :
-			inv.all(Material.PLAYER_HEAD).entrySet()) {
+			inv.all(Material.ENDER_PEARL).entrySet()) {
 			ItemStack item = entry.getValue();
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
@@ -749,10 +749,18 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		Player player = e.getPlayer();
-		msg(player, Lang.pearlCantPlace);
-		e.setCancelled(true);
-		player.getInventory().setItemInMainHand(pearl.createItemStack());
 
+		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
+			msg(player, Lang.pearlCantThrow);
+			e.setCancelled(true);
+			player.getInventory().setItemInMainHand(pearl.createItemStack());
+			return;
+		}
+		e.setCancelled(true);
+		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
+			player.getInventory().setItemInMainHand(null);
+			msg(player, Lang.pearlYouFreed, pearl.getPlayerName());
+		}
 	}
 
 	/**
@@ -775,7 +783,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		msg(p, Lang.pearlCantPlace);
+		msg(p, Lang.pearlCantThrow);
 		e.setCancelled(true);
 
 		// Need to schedule this or else the re-created pearl doesn't show up
@@ -895,7 +903,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		// Get the pearl item being crafted
-		ItemStack pearlItem = inv.getItem(inv.first(Material.PLAYER_HEAD));
+		ItemStack pearlItem = inv.getItem(inv.first(Material.ENDER_PEARL));
 
 		if (pearlItem == null) {
 			inv.setResult(new ItemStack(Material.AIR));
@@ -997,7 +1005,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Changing the value of the crafting items results in a dupe glitch so any remaining
 			// materials need to be placed back into the player's inventory.
-			inv.remove(Material.PLAYER_HEAD);
+			inv.remove(Material.ENDER_PEARL);
 			if (repairMatsAvailable > repairMatsToUse) {
 				for (int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
@@ -1045,7 +1053,7 @@ public class PlayerListener implements Listener, Configurable {
 			int upgradeMatsRequired = upgradeItem.getRepairAmount();
 			int upgradeMatsAvailable = invItems.getAmount(upgradeItem.getStack());
 			if(upgradeMatsAvailable < upgradeMatsRequired) return;
-			inv.remove(Material.PLAYER_HEAD);
+			inv.remove(Material.ENDER_PEARL);
 			if(upgradeMatsAvailable > upgradeMatsRequired) {
 				for(int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
@@ -1105,7 +1113,7 @@ public class PlayerListener implements Listener, Configurable {
 			for(Set<RepairMaterial> set : repairMaterials.values()) {
 				for(RepairMaterial mat : set) {
 					ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "repairPearl"), resultItem);
-					r1.addIngredient(1, Material.PLAYER_HEAD);
+					r1.addIngredient(1, Material.ENDER_PEARL);
 					r1.addIngredient(1, mat.getStack().getData());
 
 					Bukkit.getServer().addRecipe(r1);
@@ -1127,7 +1135,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			for(RepairMaterial mat : upgradeMaterials) {
 				ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "upgradePearl"),resultItem);
-				r1.addIngredient(1, Material.PLAYER_HEAD);
+				r1.addIngredient(1, Material.ENDER_PEARL);
 				r1.addIngredient(1, mat.getStack().getData());
 
 				Bukkit.getServer().addRecipe(r1);

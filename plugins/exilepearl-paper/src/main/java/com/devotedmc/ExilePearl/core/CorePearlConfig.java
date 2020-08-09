@@ -173,6 +173,11 @@ final class CorePearlConfig implements DocumentConfig, PearlConfig {
 	}
 
 	@Override
+	public boolean getFreeByThrowing() {
+		return doc.getBoolean("pearls.free_by_throwing", false);
+	}
+
+	@Override
 	public boolean getShouldFreeTeleport() {
 		return doc.getBoolean("pearls.free_teleport", true);
 	}
