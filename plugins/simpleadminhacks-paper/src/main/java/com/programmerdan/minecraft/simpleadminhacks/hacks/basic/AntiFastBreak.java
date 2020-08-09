@@ -54,7 +54,7 @@ public class AntiFastBreak extends BasicHack {
 	@AutoLoad
 	private double laggLenciency;
 	@AutoLoad
-	private long breakDenyDuration;
+	private long breakDenyDuration = 5000;
 
 	private ICoolDownHandler<UUID> punishCooldown;
 
