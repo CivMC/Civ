@@ -76,6 +76,12 @@ public interface PearlConfig extends MySqlConfig, DocumentConfig {
 	boolean getMustPrisonPearlHotBar();
 
 	/**
+	 * Gets whether pearls can be freed by throwing them
+	 * @return true if they can be freed by throwing
+	 */
+	boolean getFreeByThrowing();
+
+	/**
 	 * Gets whether freeing a prison pearl should teleport the player
 	 * @return true if they should be teleported
 	 */

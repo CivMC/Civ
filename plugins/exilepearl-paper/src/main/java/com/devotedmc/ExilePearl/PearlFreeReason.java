@@ -8,6 +8,7 @@ package com.devotedmc.ExilePearl;
 public enum PearlFreeReason
 {
 	FREED_BY_PLAYER,
+	PEARL_THROWN,
 	FREED_BY_ADMIN,
 	FORCE_FREED_BY_ADMIN,
 	HEALTH_DECAY,
