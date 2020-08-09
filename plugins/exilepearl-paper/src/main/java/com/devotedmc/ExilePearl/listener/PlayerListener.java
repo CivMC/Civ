@@ -141,7 +141,10 @@ public class PlayerListener implements Listener, Configurable {
 	@EventHandler(priority=EventPriority.MONITOR, ignoreCancelled = true)
 	public void onInventoryOpen(InventoryOpenEvent e) {
 		Inventory inv = e.getInventory();
-		for (Entry<Integer, ? extends ItemStack> entry : inv.all(Material.ENDER_PEARL).entrySet()) {
+		HashMap<Integer, ItemStack> potentialPearls = new HashMap<>();
+		potentialPearls.putAll(inv.all(Material.ENDER_PEARL));
+		potentialPearls.putAll(inv.all(Material.PLAYER_HEAD));
+		for (Entry<Integer, ? extends ItemStack> entry : potentialPearls.entrySet()) {
 			ItemStack newitem = validatePearl(entry.getValue());
 			if (newitem != null) {
 				inv.setItem(entry.getKey(), newitem);
@@ -160,7 +163,8 @@ public class PlayerListener implements Listener, Configurable {
 			return null;
 		}
 
-		if (item.getType() == Material.ENDER_PEARL && item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
+		if ((item.getType() == Material.PLAYER_HEAD || item.getType() == Material.ENDER_PEARL)
+				&& item.getEnchantmentLevel(Enchantment.DURABILITY) != 0) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null || pearl.getFreedOffline()) {
 				return new ItemStack(Material.ENDER_PEARL, 1);
@@ -218,7 +222,7 @@ public class PlayerListener implements Listener, Configurable {
 		World world = imprisoner.getWorld();
 		Inventory inv = imprisoner.getInventory();
 		for (Entry<Integer, ? extends ItemStack> entry :
-			inv.all(Material.ENDER_PEARL).entrySet()) {
+			inv.all(Material.PLAYER_HEAD).entrySet()) {
 			ItemStack item = entry.getValue();
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(item);
 			if (pearl == null) {
@@ -745,19 +749,10 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		Player player = e.getPlayer();
-
-		if (!pearlApi.getPearlConfig().getFreeByThrowing()) {
-			msg(player, Lang.pearlCantThrow);
-			e.setCancelled(true);
-			player.getInventory().setItemInMainHand(pearl.createItemStack());
-			return;
-		}
-
+		msg(player, Lang.pearlCantPlace);
 		e.setCancelled(true);
-		if (pearlApi.freePearl(pearl, PearlFreeReason.PEARL_THROWN)) {
-			player.getInventory().setItemInMainHand(null);
-			msg(player, Lang.pearlYouFreed, pearl.getPlayerName());
-		}
+		player.getInventory().setItemInMainHand(pearl.createItemStack());
+
 	}
 
 	/**
@@ -780,7 +775,7 @@ public class PlayerListener implements Listener, Configurable {
 			return;
 		}
 
-		msg(p, Lang.pearlCantThrow);
+		msg(p, Lang.pearlCantPlace);
 		e.setCancelled(true);
 
 		// Need to schedule this or else the re-created pearl doesn't show up
@@ -900,7 +895,7 @@ public class PlayerListener implements Listener, Configurable {
 		}
 
 		// Get the pearl item being crafted
-		ItemStack pearlItem = inv.getItem(inv.first(Material.ENDER_PEARL));
+		ItemStack pearlItem = inv.getItem(inv.first(Material.PLAYER_HEAD));
 
 		if (pearlItem == null) {
 			inv.setResult(new ItemStack(Material.AIR));
@@ -1002,7 +997,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			// Changing the value of the crafting items results in a dupe glitch so any remaining
 			// materials need to be placed back into the player's inventory.
-			inv.remove(Material.ENDER_PEARL);
+			inv.remove(Material.PLAYER_HEAD);
 			if (repairMatsAvailable > repairMatsToUse) {
 				for (int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
@@ -1050,7 +1045,7 @@ public class PlayerListener implements Listener, Configurable {
 			int upgradeMatsRequired = upgradeItem.getRepairAmount();
 			int upgradeMatsAvailable = invItems.getAmount(upgradeItem.getStack());
 			if(upgradeMatsAvailable < upgradeMatsRequired) return;
-			inv.remove(Material.ENDER_PEARL);
+			inv.remove(Material.PLAYER_HEAD);
 			if(upgradeMatsAvailable > upgradeMatsRequired) {
 				for(int i = 0; i < inv.getContents().length; i++) {
 					ItemStack is = inv.getItem(i);
@@ -1110,7 +1105,7 @@ public class PlayerListener implements Listener, Configurable {
 			for(Set<RepairMaterial> set : repairMaterials.values()) {
 				for(RepairMaterial mat : set) {
 					ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "repairPearl"), resultItem);
-					r1.addIngredient(1, Material.ENDER_PEARL);
+					r1.addIngredient(1, Material.PLAYER_HEAD);
 					r1.addIngredient(1, mat.getStack().getData());
 
 					Bukkit.getServer().addRecipe(r1);
@@ -1132,7 +1127,7 @@ public class PlayerListener implements Listener, Configurable {
 
 			for(RepairMaterial mat : upgradeMaterials) {
 				ShapelessRecipe r1 = new ShapelessRecipe(new NamespacedKey(pearlApi, "upgradePearl"),resultItem);
-				r1.addIngredient(1, Material.ENDER_PEARL);
+				r1.addIngredient(1, Material.PLAYER_HEAD);
 				r1.addIngredient(1, mat.getStack().getData());
 
 				Bukkit.getServer().addRecipe(r1);

@@ -188,7 +188,7 @@ final class CorePearlManager implements PearlManager {
 			storage.getStorage().pearlRemove(pearl);
 			if(pearl.getPearlType() == PearlType.PRISON) {
 				dropInventory(player);
-				if(pearlApi.getPearlConfig().getShouldFreeTeleport() && (reason == PearlFreeReason.FREED_BY_PLAYER || reason == PearlFreeReason.PEARL_THROWN)) {
+				if(pearlApi.getPearlConfig().getShouldFreeTeleport() && (reason == PearlFreeReason.FREED_BY_PLAYER)) {
 					player.teleport(pearl.getLocation().add(0, 0.5, 0));
 				} else {
 					SpawnUtil.spawnPlayer(player, pearlApi.getPearlConfig().getMainWorld());
@@ -453,7 +453,7 @@ final class CorePearlManager implements PearlManager {
 		for(int i = 0; i < inv.getSize(); i++) {
 			final ItemStack item = inv.getItem(i);
 			if(item == null) continue;
-			if(item.getType() == Material.ENDER_PEARL) continue;
+			if(item.getType() == Material.PLAYER_HEAD) continue;
 			inv.clear(i);
 			Bukkit.getScheduler().runTask(pearlApi, new Runnable() {
 
