@@ -73,12 +73,14 @@ public class ItemUseGUI {
 		}
 		if (itemAsInput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, ChatColor.RED + "No recipes take input " + ItemNames.getItemName(item));
+			ItemAPI.setDisplayName(noItems, String.format("%sNo recipes take input %s%s", ChatColor.RED, ChatColor.BOLD,
+					ItemNames.getItemName(item)));
 			itemAsInput.add(new LClickable(noItems, p -> { }));
 		}
 		if (itemAsOutput.isEmpty()) {
 			ItemStack noItems = new ItemStack(Material.BARRIER);
-			ItemAPI.setDisplayName(noItems, ChatColor.RED + "No recipes output " + ItemNames.getItemName(item));
+			ItemAPI.setDisplayName(noItems, String.format("%sNo recipes output %s%s", ChatColor.RED, ChatColor.BOLD,
+					ItemNames.getItemName(item)));
 			itemAsOutput.add(new LClickable(noItems, p -> { }));
 		}
 		Scrollbar itemAsInputBar = new Scrollbar(itemAsInput, 24, 8, ContentAligners.getCenteredInOrder(itemAsInput.size(), 24, 4));
