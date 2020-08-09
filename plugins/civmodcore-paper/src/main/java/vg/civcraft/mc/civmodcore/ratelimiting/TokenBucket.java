@@ -20,7 +20,7 @@ public class TokenBucket {
 		if (refillMultiplier >= 1) {
 			lastRefill += refillMultiplier * minDelay;
 		}
-		tokens = Math.max(maxTokens, tokens + toAdd * refillMultiplier);
+		tokens = Math.min(maxTokens, tokens + toAdd * refillMultiplier);
 	}
 
 	public synchronized int getTokensLeft() {
