@@ -131,6 +131,13 @@ public class FactoryModGUI {
 		showRecipeFor(factory, null, true);
 	}
 
+	public void showForFactory(FurnCraftChestEgg factory, InputRecipe recipe) {
+		if (this.currentFactory == null) {
+			this.currentFactory = factory;
+		}
+		showRecipeFor(factory, recipe, true);
+	}
+
 	private IClickable produceRecipeClickable(InputRecipe rec) {
 		ItemStack is = rec.getRecipeRepresentation();
 		return new LClickable(is, p -> showRecipeFor(currentFactory, rec, true));
