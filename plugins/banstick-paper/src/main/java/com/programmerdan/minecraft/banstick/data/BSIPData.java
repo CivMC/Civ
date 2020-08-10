@@ -285,6 +285,23 @@ public class BSIPData {
 		return null;
 	}
 	
+	public double getAverageForRegistrar() {
+		if (this.registeredAs == null) {
+			return 0;
+		}
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement getSame = connection.prepareStatement("SELECT avg(proxy) FROM bs_ip_data WHERE registered_as = ?");) {
+			getSame.setString(1, this.registeredAs);
+			try (ResultSet rs = getSame.executeQuery();) {
+				rs.next();
+				return rs.getDouble(1); //returns 0 for no matches
+			}
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Failed to load average proxy score for registrar " + this.registeredAs, se);
+			return 0;
+		}
+	}
+	
 	/**
 	 * Finds the first subnet that fully contains the given BSIP's IP/CIDR, if any.
 	 * 

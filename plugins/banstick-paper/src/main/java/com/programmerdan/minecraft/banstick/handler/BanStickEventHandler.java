@@ -48,7 +48,10 @@ public class BanStickEventHandler implements Listener {
 	private int shareThreshold = 0;
 	private String shareBanMessage = null;
 	private boolean transitiveBans = false;
+	private boolean loveTapNewJoins = true;
 
+	private boolean proxyCheckRegistrar = true;
+	
 	public BanStickEventHandler(FileConfiguration config) {
 		// setup.
 		configureEvents(config.getConfigurationSection("events"));
@@ -67,6 +70,7 @@ public class BanStickEventHandler implements Listener {
 		this.shareThreshold = config.getInt("share.threshold", shareThreshold);
 		this.shareBanMessage = config.getString("share.banMessage", null);
 		this.transitiveBans = config.getBoolean("enable.transitiveBans");
+		this.loveTapNewJoins = config.getBoolean("enable.lovetapOnJoin", loveTapNewJoins);
 	}
 
 	private void registerEvents() {
@@ -351,6 +355,8 @@ public class BanStickEventHandler implements Listener {
 										BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
 
 										if (enableProxyBans) {
+											BanStick.getPlugin().info("Banning " + player.getName() + " for "
+													+ "proxy score " + proxyCheck.getProxy() + " for registrar " + proxyCheck.getRegisteredAs());
 											bsPlayer.setBan(newBan);
 										}
 
@@ -360,7 +366,19 @@ public class BanStickEventHandler implements Listener {
 
 										return;
 									}
-								}
+									if (proxyCheckRegistrar) {
+										double registrarScore =  proxyCheck.getAverageForRegistrar();
+										if (registrarScore > proxyThreshold) {
+											BSBan newBan = BSBan.create(proxyCheck, proxyBanMessage, null, false);
+											bsPlayer.setBan(newBan);
+											if (enableProxyKicks) {
+												doKickWithCheckup(player.getUniqueId(), newBan);
+											}
+											BanStick.getPlugin().info("Banning " + player.getName() + " for "
+													+ "proxy registrar score " + registrarScore + " for registrar " + proxyCheck.getRegisteredAs());
+										}
+										}
+									}
 							}
 						}
 					} catch (Exception e) {
@@ -368,6 +386,9 @@ public class BanStickEventHandler implements Listener {
 					}
 				}
 				// etc.
+				if (loveTapNewJoins && !joinEvent.getPlayer().hasPlayedBefore()) {
+					Bukkit.dispatchCommand(Bukkit.getServer().getConsoleSender(), "lovetap " + joinEvent.getPlayer().getName());
+				}
 			}
 
 		});

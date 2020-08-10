@@ -124,7 +124,7 @@ tor:
 									if (dataMatch == null) {
 										dataMatch = BSIPData.create(found, null, null, null, null, 
 												null, null, null, null, null, null, null,
-												1.9f, torSave.address, "Tor exit node");
+												2.5f, torSave.address, "Tor exit node");
 									}
 								}
 								

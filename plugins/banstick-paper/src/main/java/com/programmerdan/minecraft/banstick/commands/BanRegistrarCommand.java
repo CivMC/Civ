@@ -46,12 +46,21 @@ public class BanRegistrarCommand implements CommandExecutor {
 				sender.sendMessage(ChatColor.RED + "Can not ban registrar, because none was known");
 				continue;
 			}
-			handler.banRegistrar(data);
-			sender.sendMessage(
-					ChatColor.GREEN + "Banning registrar " + data.getRegisteredAs() + " of " + data.toString());
+			if (args.length >= 2) {
+				handler.unbanRegistrar(data);
+				sender.sendMessage(
+						ChatColor.GREEN + "Forgave registrar " + data.getRegisteredAs() + " of " + data.toString());
+			}
+			else {
+				handler.banRegistrar(data);
+				sender.sendMessage(
+						ChatColor.GREEN + "Banning registrar " + data.getRegisteredAs() + " of " + data.toString());
+			}
 		}
-		//also give them an ip ban on the way if they dont have one already
-		BanHandler.doIPBan(ip, null, null, true, false);
+		if (args.length == 1) {
+			//also give them an ip ban on the way if they dont have one already
+			BanHandler.doIPBan(ip, null, null, true, false);
+		}
 		return true;
 	}
 

@@ -88,9 +88,9 @@ commands:
    /<command> [name/uuid] [name/uuid]
      Immediately unpardons all shares between these two players.
  banprovider:
-  description: Bans the entire provider of the last connection used by a player based on what its registered as
+  description: (Un-)Bans the entire provider of the last connection used by a player based on what its registered as
   permission: banstick.banprovider
-  usage: banprovider <playerName>
+  usage: banprovider <playerName> [undo]
  bansave:
   description: Flush cached changes straight to DB.
   alias: bsbs

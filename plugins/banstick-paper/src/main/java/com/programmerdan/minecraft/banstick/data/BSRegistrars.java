@@ -52,6 +52,21 @@ public class BSRegistrars {
 		}
 	}
 	
+	public void unbanRegistrar(BSIPData data) {
+		if (data.getRegisteredAs() == null) {
+			return;
+		}
+		registrars.remove(data.getRegisteredAs());
+		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
+				PreparedStatement insertRegistrar = connection
+						.prepareStatement("delete from bs_banned_registrars where registered_as = ?");) {
+			insertRegistrar.setString(1, data.getRegisteredAs());
+			insertRegistrar.execute();
+		} catch (SQLException se) {
+			BanStick.getPlugin().severe("Deletion of banned registrar failed", se);
+		}
+	}
+	
 	/**
 	 * After creating an IP data entry this method checks whether the 
 	 * registrar is banned and removes all active players with this registrar if neccessary
