@@ -85,7 +85,7 @@ public class PhantomOfTheOpera extends SimpleHack<PhantomOfTheOperaConfig> imple
 		if (event.getStatistic() != Statistic.TIME_SINCE_REST) {
 			return;
 		}
-		if (event.getNewValue() == 72_000) {
+		if (event.getPreviousValue() < 72_000 && event.getNewValue() >= 72_000) {
 			event.getPlayer().sendMessage(ChatColor.DARK_RED + "You haven't slept in a while...");
 		}
 		int cap = config.getTimeSinceRestCap();

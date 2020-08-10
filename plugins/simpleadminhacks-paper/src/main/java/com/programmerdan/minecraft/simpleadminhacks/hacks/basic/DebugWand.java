@@ -13,9 +13,12 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_16_R1.entity.CraftEntity;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
@@ -23,6 +26,7 @@ import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.custom.items.CustomItems;
 import vg.civcraft.mc.civmodcore.custom.items.NBTCriteria;
+import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public class DebugWand extends BasicHack {
 
@@ -105,14 +109,56 @@ public class DebugWand extends BasicHack {
 			return;
 		}
 		Block block = Objects.requireNonNull(event.getClickedBlock());
+		player.sendMessage(ChatColor.GREEN + "Debug start.");
 		player.sendMessage(ChatColor.AQUA + "Material: " + ChatColor.WHITE + block.getType().name());
 		player.sendMessage(ChatColor.AQUA + "Location: "
-				+ ChatColor.RED + block.getLocation().getBlockX() + ChatColor.WHITE + ","
-				+ ChatColor.GREEN + block.getLocation().getBlockY() + ChatColor.WHITE + ","
-				+ ChatColor.BLUE + block.getLocation().getBlockZ());
+				+ ChatColor.RED + "x:" + block.getLocation().getBlockX() + ChatColor.WHITE + ", "
+				+ ChatColor.GREEN + "y:" + block.getLocation().getBlockY() + ChatColor.WHITE + ", "
+				+ ChatColor.BLUE + "z:" + block.getLocation().getBlockZ());
 		BlockData data = block.getBlockData();
 		player.sendMessage(ChatColor.AQUA + "Block Data: " + ChatColor.YELLOW + data.getClass().getName());
 		player.sendMessage(data.toString());
+		player.sendMessage(ChatColor.RED + "Data end.");
+		event.setCancelled(true);
+	}
+
+	@EventHandler
+	public void onWandUsageOnEntity(PlayerInteractEntityEvent event) {
+		Player player = event.getPlayer();
+		if (!player.hasPermission(PERMISSION)) {
+			return;
+		}
+		ItemStack held = null;
+		switch (event.getHand()) {
+			case HAND: {
+				held = player.getInventory().getItemInMainHand();
+				break;
+			}
+			case OFF_HAND: {
+				held = player.getInventory().getItemInOffHand();
+				break;
+			}
+		}
+		if (!ItemAPI.isValidItem(held)
+				|| !ItemAPI.areItemsSimilar(held, CUSTOM_ITEM_TEMPLATE)
+				|| !CUSTOM_ITEM_CRITERIA.matches(held)) {
+			return;
+		}
+		Entity entity = event.getRightClicked();
+		player.sendMessage(ChatColor.GREEN + "Debug start.");
+		player.sendMessage(ChatColor.AQUA + "Entity: " + ChatColor.WHITE + entity.getType().name());
+		player.sendMessage(ChatColor.AQUA + "Location: "
+				+ ChatColor.RED + "x:" + entity.getLocation().getX() + ChatColor.WHITE + ", "
+				+ ChatColor.GREEN + "y:" + entity.getLocation().getY() + ChatColor.WHITE + ", "
+				+ ChatColor.BLUE + "z:" + entity.getLocation().getZ());
+		player.sendMessage(ChatColor.AQUA + "Rotation: "
+				+ ChatColor.YELLOW + "p:" + entity.getLocation().getPitch() + ", "
+				+ ChatColor.GOLD + "y:" + entity.getLocation().getYaw());
+		NBTCompound nbt = new NBTCompound();
+		((CraftEntity) entity).getHandle().save(nbt.getRAW());
+		nbt.remove("Pos"); // Remove redundant position
+		nbt.remove("Rotation"); // Remove redundant rotation
+		player.sendMessage(nbt.getRAW().toString());
 		player.sendMessage(ChatColor.RED + "Data end.");
 		event.setCancelled(true);
 	}
