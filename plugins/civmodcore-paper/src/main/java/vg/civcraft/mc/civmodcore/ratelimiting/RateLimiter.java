@@ -38,13 +38,43 @@ public class RateLimiter {
 	 *         otherwise
 	 */
 	public boolean pullToken(UUID uuid) {
-		TokenBucket bucket = buckets.get(uuid);
-		if (bucket == null) {
-			bucket = new TokenBucket(initialCapacity);
-			buckets.put(uuid, bucket);
+		TokenBucket bucket = getBucket(uuid);
+		synchronized (bucket) {
+			bucket.refill(maximumTokens, refillAmount, refillIntervall);
+			return bucket.pullToken();
 		}
-		bucket.refill(maximumTokens, refillAmount, refillIntervall);
-		return bucket.pullToken();
+	}
+
+	private TokenBucket getBucket(UUID uuid) {
+		synchronized (buckets) {
+			TokenBucket bucket = buckets.get(uuid);
+			if (bucket == null) {
+				bucket = new TokenBucket(initialCapacity);
+				buckets.put(uuid, bucket);
+			}
+			return bucket;
+		}
+	}
+
+	/**
+	 * Gives a player additional tokens up to the maximum amount allowed
+	 * 
+	 * @param uuid        Player to give tokens
+	 * @param tokensToAdd Amount of tokens to add at maximum, must be positive
+	 * @return Updated amount of tokens available to the player
+	 */
+	public int addTokens(UUID uuid, int tokensToAdd) {
+		if (tokensToAdd < 0) {
+			throw new IllegalArgumentException("Can not add a negative amount of tokens");
+		}
+		TokenBucket bucket = buckets.get(uuid);
+		synchronized (bucket) {
+			bucket.refill(maximumTokens, refillAmount, refillIntervall);
+			int currentAmount = bucket.getTokensLeft();
+			int newAmount = Math.min(maximumTokens, currentAmount + tokensToAdd);
+			bucket.setTokens(newAmount);
+			return newAmount;
+		}
 	}
 
 	/**

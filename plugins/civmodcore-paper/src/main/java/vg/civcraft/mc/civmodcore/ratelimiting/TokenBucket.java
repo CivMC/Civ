@@ -22,6 +22,10 @@ public class TokenBucket {
 		}
 		tokens = Math.min(maxTokens, tokens + toAdd * refillMultiplier);
 	}
+	
+	public synchronized void setTokens(int tokens) {
+		this.tokens = tokens;
+	}
 
 	public synchronized int getTokensLeft() {
 		return tokens;
