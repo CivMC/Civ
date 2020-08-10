@@ -47,12 +47,7 @@ public class RateLimiter {
 
 	private TokenBucket getBucket(UUID uuid) {
 		synchronized (buckets) {
-			TokenBucket bucket = buckets.get(uuid);
-			if (bucket == null) {
-				bucket = new TokenBucket(initialCapacity);
-				buckets.put(uuid, bucket);
-			}
-			return bucket;
+			return buckets.computeIfAbsent(uuid, u -> new TokenBucket(initialCapacity));
 		}
 	}
 
@@ -67,7 +62,7 @@ public class RateLimiter {
 		if (tokensToAdd < 0) {
 			throw new IllegalArgumentException("Can not add a negative amount of tokens");
 		}
-		TokenBucket bucket = buckets.get(uuid);
+		TokenBucket bucket = getBucket(uuid);
 		synchronized (bucket) {
 			bucket.refill(maximumTokens, refillAmount, refillIntervall);
 			int currentAmount = bucket.getTokensLeft();
