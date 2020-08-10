@@ -2,8 +2,8 @@ package isaac.bastion.utils;
 
 import java.util.UUID;
 
+import isaac.bastion.BastionType;
 import org.bukkit.Material;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
 import isaac.bastion.Bastion;
@@ -24,11 +24,8 @@ public class BastionSettingManager {
 	}
 
 	private void initSettings() {
-		ConfigurationSection config = Bastion.getPlugin().getConfig().getConfigurationSection("bastions");
-		String bastionType = config.getKeys(false).toArray(new String[0])[0];
-		Material bastionMaterial = Material.getMaterial(config.getConfigurationSection(bastionType).getString("block.material"));
 		MenuSection menu = new MenuSection("Bastion", "All settings related to Bastion", PlayerSettingAPI.getMainMenu(),
-				new ItemStack(bastionMaterial));
+				new ItemStack(BastionType.getBastionType(BastionType.getDefaultType()).getMaterial()));
 
 		bsiOverlay = new BooleanSetting(Bastion.getPlugin(), true, "Display Bastion Information", "bsiOverlay", "Shows if the block you're standing on is bastioned territory.");
 		showNoBastion = new BooleanSetting(Bastion.getPlugin(), false, "Display if you are not in a bastion field", "showNoBastion", "If enabled, will display Bastion status, even if you are not currently in a bastion field");
