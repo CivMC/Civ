@@ -15,7 +15,7 @@ import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
 @CivCommand(id = "fm")
-public class Menu extends StandaloneCommand {
+public class FactoryMenu extends StandaloneCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
