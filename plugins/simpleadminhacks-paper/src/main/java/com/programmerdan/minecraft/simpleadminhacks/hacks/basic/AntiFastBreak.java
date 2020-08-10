@@ -48,6 +48,9 @@ import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
  */
 public class AntiFastBreak extends BasicHack {
 
+	@AutoLoad
+	private boolean debug = false;
+
 	private Map<UUID, Map<Location, Long>> miningLocations;
 	private RateLimiter violationLimiter;
 
@@ -61,7 +64,7 @@ public class AntiFastBreak extends BasicHack {
 	public AntiFastBreak(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
 		miningLocations = new TreeMap<>();
-		violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 5, 5, 1, 2000L);
+		violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 10, 10, 1, 2000L);
 		if (config.isEnabled()) {
 			registerPacketListener();
 			Bukkit.getPluginManager().registerEvents(this, plugin);
@@ -103,6 +106,11 @@ public class AntiFastBreak extends BasicHack {
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void blockBreak(BlockBreakEvent e) {
 		if (punishCooldown != null && punishCooldown.onCoolDown(e.getPlayer().getUniqueId())) {
+			if (debug) {
+				plugin().getLogger()
+						.info("Denying block break for " + e.getPlayer().getName() + " due cooldown for another "
+								+ punishCooldown.getRemainingCoolDown(e.getPlayer().getUniqueId()));
+			}
 			e.setCancelled(true);
 			e.getPlayer().sendMessage(ChatColor.RED + "Denying break due to abnormal break speed");
 		}
@@ -112,6 +120,10 @@ public class AntiFastBreak extends BasicHack {
 		Map<Location, Long> miningLocs = miningLocations.computeIfAbsent(player.getUniqueId(), p -> new HashMap<>());
 		miningLocs.putIfAbsent(loc, System.currentTimeMillis());
 	}
+	
+	private void reward(Player player) {
+		violationLimiter.addTokens(player.getUniqueId(), 1);
+	}
 
 	private void handleFinishingDigging(Player player, Location loc) {
 		Map<Location, Long> miningLocs = miningLocations.computeIfAbsent(player.getUniqueId(), p -> new HashMap<>());
@@ -119,18 +131,34 @@ public class AntiFastBreak extends BasicHack {
 		Long timeStarted = miningLocs.remove(loc);
 		if (timeStarted == null) {
 			if (ticksToBreak > 1) {
+				if (debug) {
+					plugin().getLogger().info(player.getName() + " tried to instabreak non-instabreakable block");
+				}
 				punish(player);
+			}
+			else {
+				reward(player);
 			}
 			return;
 		}
 		if (ticksToBreak == 0) {
+			if (debug) {
+				plugin().getLogger().info(player.getName() + " instabroke allowed block " + loc.getBlock().toString());
+			}
+			reward(player);
 			return;
 		}
 
 		long msToBreak = ticksToBreak * 50L;
 		long timePassed = System.currentTimeMillis() - timeStarted;
+		if (debug) {
+			plugin().getLogger().info("Measured " + timePassed + " for allowed time of " + msToBreak);
+		}
 		if (timePassed * laggLenciency < msToBreak) {
 			punish(player);
+		}
+		else {
+			reward(player);
 		}
 	}
 
@@ -139,10 +167,17 @@ public class AntiFastBreak extends BasicHack {
 			// delayed instanciation, because config values are not available in constructor
 			punishCooldown = new MilliSecCoolDownHandler<>(breakDenyDuration);
 		}
+		if (debug) {
+			plugin().getLogger().info("Attempting to decrement token count for " + player.getName());
+		}
 		if (!violationLimiter.pullToken(player)) {
+			if (debug) {
+				plugin().getLogger().info("Could not decrement token count for " + player.getName() + ", punishing...");
+			}
 			Bukkit.getScheduler().scheduleSyncDelayedTask(SimpleAdminHacks.instance(), () -> {
 				punishCooldown.putOnCoolDown(player.getUniqueId());
-				plugin().getLogger().info(String.format("%s is possibly using civ break, fast break detected", player.getName()));
+				plugin().getLogger()
+						.info(String.format("%s is possibly using civ break, fast break detected", player.getName()));
 				player.sendMessage(ChatColor.RED + "You are breaking blocks too fast");
 			});
 		}
@@ -158,10 +193,13 @@ public class AntiFastBreak extends BasicHack {
 		// calling
 		// "getDestroySpeed(this,blockData)" in n.m.s.ItemStack
 		float damagePerTick = CraftItemStack.asNMSCopy(tool).a(blockData);
+		System.out.println("Base destroy speed of " + tool  + " for " + blockData + " is " + damagePerTick);
 		// above method does not include efficiency or haste, so we add it ourselves
 		int effLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
 		int efficiencyBonus = 0;
-		if (effLevel > 0 && isProperTool(tool, mat)) {
+		if (effLevel > 0 && isProperTool(tool, mat)) 
+		{
+			System.out.println("applying eff");
 			efficiencyBonus = effLevel * effLevel + 1;
 		}
 		damagePerTick += efficiencyBonus;
@@ -197,9 +235,8 @@ public class AntiFastBreak extends BasicHack {
 			return false;
 		}
 		net.minecraft.server.v1_16_R1.IBlockData data = nmsBlock.getBlockData();
-		return tool != null && tool.getType() != Material.AIR
-				&& org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers.getItem(tool.getType())
-						.canDestroySpecialBlock(data);
+		return tool != null && tool.getType() != Material.AIR && org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers
+				.getItem(tool.getType()).canDestroySpecialBlock(data);
 	}
 
 	private static IBlockData getNMSBlockData(Material mat) {
