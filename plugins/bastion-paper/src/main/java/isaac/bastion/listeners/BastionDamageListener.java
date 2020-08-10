@@ -121,6 +121,9 @@ public final class BastionDamageListener implements Listener {
 				event.getPlayer().getUniqueId(), PermissionType.getPermission(Permissions.BASTION_PLACE));
 		if (!blocking.isEmpty()) {
 			event.setCancelled(true);
+			if (!Bastion.getSettingManager().getIgnorePlacementMessages(event.getPlayer().getUniqueId())) {
+				event.getPlayer().sendMessage(ChatColor.RED + "Emptying bucket prevented by Bastion");
+			}
 		}
 	}
 
