@@ -71,6 +71,7 @@ public class BanStickEventHandler implements Listener {
 		this.shareBanMessage = config.getString("share.banMessage", null);
 		this.transitiveBans = config.getBoolean("enable.transitiveBans");
 		this.loveTapNewJoins = config.getBoolean("enable.lovetapOnJoin", loveTapNewJoins);
+		this.proxyCheckRegistrar = config.getBoolean("enable.proxyCheckRegistrar", proxyCheckRegistrar);
 	}
 
 	private void registerEvents() {
