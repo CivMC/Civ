@@ -14,11 +14,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
+import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /*
@@ -29,10 +32,12 @@ public class CivChat2Listener implements Listener {
 
 	private CivChat2Manager chatman;
 	private CivChat2SettingsManager settings;
+	private Set<UUID> localWarn;
 
 	public CivChat2Listener(CivChat2Manager instance) {
 		chatman = instance;
 		settings = CivChat2.getInstance().getCivChat2SettingsManager();
+		localWarn = new HashSet<>();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -55,16 +60,32 @@ public class CivChat2Listener implements Listener {
 		if (!CivChat2.getInstance().getPluginConfig().getLoginAnnounce()) {
 			playerJoinEvent.setJoinMessage(null);
 		}
-		for (Player p : Bukkit.getOnlinePlayers()){
-			if (settings.getShowJoins(p.getUniqueId())){
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			if (settings.getShowJoins(p.getUniqueId())) {
 				p.sendMessage(playerJoinEvent.getPlayer().getDisplayName() + ChatColor.YELLOW + " has joined the game");
 			}
+		}
+
+		if (CivChat2.getInstance().getPluginConfig().getChatRangeWarn() && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
+			localWarn.add(playerJoinEvent.getPlayer().getUniqueId());
 		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerKick(PlayerKickEvent playerKickEvent) {
 		playerKickEvent.setLeaveMessage(null);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onGlobalChatEvent(GlobalChatEvent localchat) {
+
+		if (localWarn.contains(localchat.getPlayer().getUniqueId())) {
+			localchat.getPlayer().sendMessage(ChatColor.GOLD
+					+ "Only players within "
+					+ CivChat2.getInstance().getPluginConfig().getChatRange()
+					+ " blocks of you can see your messages. Join a group to chat with players farther away!");
+			localWarn.remove(localchat.getPlayer().getUniqueId());
+		}
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -82,6 +103,7 @@ public class CivChat2Listener implements Listener {
 				Player sender = asyncPlayerChatEvent.getPlayer();
 				UUID chatChannel = chatman.getChannel(sender);
 				Group groupChat = chatman.getGroupChatting(sender);
+
 
 				if (chatChannel != null) {
 					StringBuilder sb = new StringBuilder();
