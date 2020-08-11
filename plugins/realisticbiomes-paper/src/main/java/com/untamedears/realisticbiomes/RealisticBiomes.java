@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.realisticbiomes.listener.AnimalListener;
+import com.untamedears.realisticbiomes.listener.DropListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -11,6 +12,7 @@ import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
@@ -30,6 +32,7 @@ public class RealisticBiomes extends ACivMod {
 	private AnimalConfigManager animalManager;
 	private PlantLogicManager plantLogicManager;
 	private PlantProgressManager plantProgressManager;
+	private BlockDropManager blockDropManager;
 
 	private RBDAO dao;
 
@@ -56,6 +59,10 @@ public class RealisticBiomes extends ACivMod {
 	public PlantProgressManager getPlantProgressManager() {
 		return plantProgressManager;
 	}
+	
+	public BlockDropManager getBlockDropManager() {
+		return blockDropManager;
+	}
 
 	@Override
 	public void onDisable() {
@@ -64,10 +71,12 @@ public class RealisticBiomes extends ACivMod {
 			plantManager.shutDown();
 		}
 		dao.cleanupBatches();
+		blockDropManager.shutdown();
 	}
 
 	@Override
 	public void onEnable() {
+		this.useNewCommandHandler = true;
 		super.onEnable();
 		RealisticBiomes.plugin = this;
 		configManager = new RBConfigManager(this);
@@ -79,6 +88,11 @@ public class RealisticBiomes extends ACivMod {
 		if (configManager.hasPersistentGrowthConfigs()) {
 			this.dao = new RBDAO(getLogger(), configManager.getDatabase());
 			if (!dao.updateDatabase()) {
+				Bukkit.shutdown();
+				return;
+			}
+			blockDropManager = new BlockDropManager(CivModCorePlugin.getInstance().getDatabase());
+			if (!blockDropManager.setup()) {
 				Bukkit.shutdown();
 				return;
 			}
@@ -102,7 +116,8 @@ public class RealisticBiomes extends ACivMod {
 		PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new PlantListener(this), this);
 		pm.registerEvents(new AnimalListener(animalManager), this);
-		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager), this);
+		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
+		pm.registerEvents(new DropListener(blockDropManager), this);
 	}
 
 }

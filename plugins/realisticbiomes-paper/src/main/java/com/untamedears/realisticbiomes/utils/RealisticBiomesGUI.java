@@ -60,20 +60,20 @@ public class RealisticBiomesGUI {
 			int comparision = Double.compare(p2.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)
 					, p1.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)); //reverse order
 			if (comparision == 0) {
-				return p1.getMaterial().compareTo(p2.getMaterial());
+				return p1.getItem().getType().compareTo(p2.getItem().getType());
 			} else {
 				return comparision;
 			}
 		});
 		for (PlantGrowthConfig plant : plantConfigs) {
-			Material representation = plant.getMaterial();
+			Material representation = plant.getItem().getType();
 			if (representation == Material.COCOA) {
 				representation = Material.COCOA_BEANS;
 			} else if (!representation.isItem()) {
 				representation = Material.BARRIER;
 			}
 			ItemStack is = new ItemStack(representation);
-			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + ItemNames.getItemName(plant.getMaterial()));
+			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + ItemNames.getItemName(plant.getItem()));
 			List<String> lore = new ArrayList<>();
 			BiomeGrowthConfig config = plant.getBiomeGrowthConfig();
 			double biomeMultiplier = config.getBiomeMultiplier(currentBiome);

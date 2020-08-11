@@ -101,10 +101,25 @@ biome_aliases:
 
 plants:
   CARROT:
-   persistent_growth_period: 1m
-   biomes:
-    hot_rainy: 1.0
-    SWAMPLAND: 0.5
-    temperate: 0.25
-    hot_dry: 0.1
-    SKY: 0.1
+    persistent_growth_period: 1m
+    vanilla_materials:
+     - CARROT
+     - CARROTS
+    item:
+      ==: org.bukkit.inventory.ItemStack
+      type: COOKIE
+      amount: 32  
+      meta:
+        ==: ItemMeta
+        meta-type: UNSPECIFIC
+        lore:
+         - "Gift from the Admins as you"
+         - "begin your journey on CivClassic"
+    growth:
+       type: default
+    biomes:
+      hot_rainy: 1.0
+      SWAMPLAND: 0.5
+      temperate: 0.25
+      hot_dry: 0.1
+      SKY: 0.1

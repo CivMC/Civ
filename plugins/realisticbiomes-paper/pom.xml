@@ -30,12 +30,27 @@
 			<version>1.8.0</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.sk89q.worldedit</groupId>
+			<artifactId>worldedit-bukkit</artifactId>
+			<version>7.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-math3</artifactId>
+			<version>3.6.1</version>
+		</dependency>
 	</dependencies>
 
 	<repositories>
 		<repository>
 			<id>civ-jenkins</id>
 			<url>https://repo.civclassic.com/repository/internal/</url>
+		</repository>
+		<repository>
+			<id>worldedit-repo</id>
+			<url>https://maven.enginehub.org/repo/</url>
 		</repository>
 	</repositories>
 </project>

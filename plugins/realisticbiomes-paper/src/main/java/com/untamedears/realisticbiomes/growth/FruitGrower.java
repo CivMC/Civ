@@ -9,6 +9,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 
+import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
@@ -28,7 +29,8 @@ public class FruitGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		if (hasPlant(block)) {
 			return 1;
 		}
@@ -64,12 +66,13 @@ public class FruitGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
 		if (stage == 0) {
 			// TODO We could remove the attached fruit if one exists, would that ever be
 			// desired behavior?
 			return;
 		}
+		Block block = plant.getLocation().getBlock();
 		growFruit(block);
 	}
 

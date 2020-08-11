@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes;
 
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
@@ -20,10 +21,6 @@ public class PlantLogicManager {
 
 	public void handleBlockDestruction(Block block) {
 		if (plantManager == null) {
-			return;
-		}
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
-		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
 		Plant plant = plantManager.getPlant(block);
@@ -45,22 +42,30 @@ public class PlantLogicManager {
 		plantManager.deletePlant(plant);
 	}
 
-	public void handlePlantCreation(Block block) {
+	public void handlePlantCreation(Block block, ItemStack itemUsed) {
 		if (plantManager == null) {
 			return;
 		}
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
+		PlantGrowthConfig growthConfig = growthConfigManager.getGrowthConfigByItem(itemUsed);
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
-		Plant plant = new Plant(block.getLocation());
+		Plant plant = new Plant(block.getLocation(), growthConfig);
 		plantManager.putPlant(plant);
 		initGrowthTime(plant, block);
 	}
 
 	public void initGrowthTime(Plant plant, Block block) {
-		PlantGrowthConfig growthConfig = growthConfigManager.getPlantGrowthConfig(block);
-		if (growthConfig == null || !growthConfig.isPersistent()) {
+		PlantGrowthConfig growthConfig = plant.getGrowthConfig();
+		if (growthConfig == null) {
+			growthConfig = growthConfigManager.getGrowthConfigFallback(block.getType());
+			if (growthConfig == null) {
+				plantManager.deletePlant(plant);
+				return;
+			}
+			plant.setGrowthConfig(growthConfig);
+		}
+		if (!growthConfig.isPersistent()) {
 			return;
 		}
 		long nextUpdateTime = growthConfig.updatePlant(plant, block);

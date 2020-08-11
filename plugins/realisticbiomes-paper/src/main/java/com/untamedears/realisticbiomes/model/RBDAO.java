@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -16,8 +17,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import com.untamedears.realisticbiomes.GrowthConfigManager;
 import com.untamedears.realisticbiomes.PlantLogicManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
@@ -50,13 +53,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
 								+ "values(?,?,?, ?,?,?, ?);");) {
 			for (PlantTuple tuple : batches.get(0)) {
-				insertPlant.setInt(1, tuple.coord.getX());
-				insertPlant.setInt(2, tuple.coord.getZ());
-				insertPlant.setShort(3, tuple.coord.getWorldID());
-				insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
-				insertPlant.setShort(5, (short) tuple.plant.getLocation().getBlockY());
-				insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
-				insertPlant.setTimestamp(7, new Timestamp(tuple.plant.getCreationTime()));
+				setInsertDataStatement(insertPlant, tuple.plant, tuple.coord);
 				insertPlant.addBatch();
 			}
 			insertPlant.executeBatch();
@@ -67,15 +64,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
 			for (PlantTuple tuple : batches.get(0)) {
-				updatePlant.setTimestamp(1, new Timestamp(tuple.plant.getCreationTime()));
-				updatePlant.setInt(2, tuple.coord.getX());
-				updatePlant.setInt(3, tuple.coord.getZ());
-				updatePlant.setShort(4, tuple.coord.getWorldID());
-				updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
-				updatePlant.setShort(6, (short) tuple.plant.getLocation().getBlockY());
-				updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
-				updatePlant.execute();
+				setUpdateDataStatement(updatePlant, tuple.plant, tuple.coord);
+				updatePlant.addBatch();
 			}
+			updatePlant.executeBatch();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
@@ -84,12 +76,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
 								+ "x_offset = ? and y = ? and z_offset = ?;");) {
 			for (PlantTuple tuple : batches.get(2)) {
-				deletePlant.setInt(1, tuple.coord.getX());
-				deletePlant.setInt(2, tuple.coord.getZ());
-				deletePlant.setShort(3, tuple.coord.getWorldID());
-				deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockX()));
-				deletePlant.setShort(5, (short) tuple.plant.getLocation().getBlockY());
-				deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(tuple.plant.getLocation().getBlockZ()));
+				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
 				deletePlant.addBatch();
 			}
 			deletePlant.executeBatch();
@@ -108,16 +95,20 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				PreparedStatement deletePlant = conn.prepareStatement(
 						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
 								+ "x_offset = ? and y = ? and z_offset = ?;");) {
-			deletePlant.setInt(1, coord.getX());
-			deletePlant.setInt(2, coord.getZ());
-			deletePlant.setShort(3, coord.getWorldID());
-			deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			deletePlant.setShort(5, (short) data.getLocation().getBlockY());
-			deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+			setDeleteDataStatement(deletePlant, data, coord);
 			deletePlant.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
 		}
+	}
+	
+	private static void setDeleteDataStatement(PreparedStatement deletePlant, Plant data, XZWCoord coord) throws SQLException {
+		deletePlant.setInt(1, coord.getX());
+		deletePlant.setInt(2, coord.getZ());
+		deletePlant.setShort(3, coord.getWorldID());
+		deletePlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		deletePlant.setShort(5, (short) data.getLocation().getBlockY());
+		deletePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 	}
 
 	@Override
@@ -126,10 +117,11 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		int preMultipliedZ = chunkData.getChunkCoord().getZ() * 16;
 		List<Plant> toUpdate = new ArrayList<>();
 		PlantLogicManager logicMan = RealisticBiomes.getInstance().getPlantLogicManager();
+		GrowthConfigManager growthConfigMan = RealisticBiomes.getInstance().getGrowthConfigManager();
 		World world = chunkData.getChunkCoord().getWorld();
 		try (Connection insertConn = db.getConnection();
 				PreparedStatement selectPlant = insertConn
-						.prepareStatement("select x_offset, y, z_offset, creation_time "
+						.prepareStatement("select x_offset, y, z_offset, creation_time, type "
 								+ "from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ?;");) {
 			selectPlant.setInt(1, chunkData.getChunkCoord().getX());
 			selectPlant.setInt(2, chunkData.getChunkCoord().getZ());
@@ -143,7 +135,12 @@ public class RBDAO extends TableStorageEngine<Plant> {
 					int z = zOffset + preMultipliedZ;
 					Location location = new Location(world, x, y, z);
 					long creationTime = rs.getTimestamp(4).getTime();
-					Plant plant = new Plant(creationTime, location, false);
+					short configId = rs.getShort(5);
+					PlantGrowthConfig growthConfig = null;
+					if (configId != 0) {
+						growthConfig = growthConfigMan.getConfigById(configId);
+					}
+					Plant plant = new Plant(creationTime, location, false, growthConfig);
 					toUpdate.add(plant);
 					insertFunction.accept(plant);
 				}
@@ -166,18 +163,28 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		}
 		try (Connection conn = db.getConnection();
 				PreparedStatement insertPlant = conn.prepareStatement(
-						"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
-								+ "values(?,?,?, ?,?,?, ?);");) {
-			insertPlant.setInt(1, coord.getX());
-			insertPlant.setInt(2, coord.getZ());
-			insertPlant.setShort(3, coord.getWorldID());
-			insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			insertPlant.setShort(5, (short) data.getLocation().getBlockY());
-			insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
-			insertPlant.setTimestamp(7, new Timestamp(data.getCreationTime()));
+						"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time, type) "
+								+ "values(?,?,?, ?,?,?, ?,?);");) {
+			setInsertDataStatement(insertPlant,data, coord);
 			insertPlant.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
+		}
+	}
+	
+	private static void setInsertDataStatement(PreparedStatement insertPlant, Plant data, XZWCoord coord) throws SQLException {
+		insertPlant.setInt(1, coord.getX());
+		insertPlant.setInt(2, coord.getZ());
+		insertPlant.setShort(3, coord.getWorldID());
+		insertPlant.setByte(4, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		insertPlant.setShort(5, (short) data.getLocation().getBlockY());
+		insertPlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+		insertPlant.setTimestamp(7, new Timestamp(data.getCreationTime()));
+		if (data.getGrowthConfig() == null) {
+			insertPlant.setNull(8, Types.SMALLINT);
+		}
+		else {
+			insertPlant.setShort(8, data.getGrowthConfig().getID());
 		}
 	}
 
@@ -199,9 +206,9 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				"insert into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
 						+ "select c.x,c.z,c.w + 1, if(mod(p.x,16)<0,mod(p.x,16)+16,mod(p.x,16)), p.y, "
 						+ "if(mod(p.z,16)<0,mod(p.z,16)+16,mod(p.z,16)),FROM_UNIXTIME(p.date) "
-						+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;"
-
-		);
+						+ "from rb_plant p inner join rb_chunk c on p.chunkId=c.id;");
+		db.registerMigration(3, false,
+				"alter table rb_plants add type smallint");
 	}
 
 	@Override
@@ -211,19 +218,29 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			return;
 		}
 		try (Connection conn = db.getConnection();
-				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
+				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? and type = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
-			updatePlant.setTimestamp(1, new Timestamp(data.getCreationTime()));
-			updatePlant.setInt(2, coord.getX());
-			updatePlant.setInt(3, coord.getZ());
-			updatePlant.setShort(4, coord.getWorldID());
-			updatePlant.setByte(5, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
-			updatePlant.setShort(6, (short) data.getLocation().getBlockY());
-			updatePlant.setByte(7, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
+			setUpdateDataStatement(updatePlant, data, coord);
 			updatePlant.execute();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
+	}
+	
+	private static void setUpdateDataStatement(PreparedStatement updatePlant, Plant data, XZWCoord coord) throws SQLException {
+		updatePlant.setTimestamp(1, new Timestamp(data.getCreationTime()));
+		if (data.getGrowthConfig() == null) {
+			updatePlant.setNull(2, Types.SMALLINT);
+		}
+		else {
+			updatePlant.setShort(2, data.getGrowthConfig().getID());
+		}
+		updatePlant.setInt(3, coord.getX());
+		updatePlant.setInt(4, coord.getZ());
+		updatePlant.setShort(5, coord.getWorldID());
+		updatePlant.setByte(6, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()));
+		updatePlant.setShort(7, (short) data.getLocation().getBlockY());
+		updatePlant.setByte(8, (byte) BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()));
 	}
 
 	@Override
@@ -256,8 +273,8 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	}
 
 	private class PlantTuple {
-		Plant plant;
-		XZWCoord coord;
+		private Plant plant;
+		private XZWCoord coord;
 
 		PlantTuple(Plant plant, XZWCoord coord) {
 			this.plant = plant;

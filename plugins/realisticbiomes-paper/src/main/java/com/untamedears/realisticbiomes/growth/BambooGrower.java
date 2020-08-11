@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.growth;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bamboo;
@@ -9,7 +10,7 @@ public class BambooGrower extends ColumnPlantGrower {
 	protected static final int LARGE_LEAVES_START_HEIGHT = 5;
 
 	public BambooGrower(int maxHeight) {
-		super(maxHeight);
+		super(maxHeight, Material.BAMBOO);
 	}
 
 	@Override

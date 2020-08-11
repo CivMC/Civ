@@ -136,7 +136,8 @@ public class TreeGrower extends AgeableGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
 		if (!(block.getBlockData() instanceof Sapling)) {
 			return -1;
 		}
@@ -144,7 +145,8 @@ public class TreeGrower extends AgeableGrower {
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
+		Block block = plant.getLocation().getBlock();
 		if (stage < 1) {
 			return;
 		}
@@ -166,7 +168,10 @@ public class TreeGrower extends AgeableGrower {
 		} else {
 			block.setType(Material.AIR);
 		}
-		block.getLocation().getWorld().generateTree(block.getLocation(), type);
+		if (!block.getLocation().getWorld().generateTree(block.getLocation(), type)) {
+			//failed, so restore sapling, TODO restore 2x2
+			block.setType(mat);
+		}
 	}
 
 }

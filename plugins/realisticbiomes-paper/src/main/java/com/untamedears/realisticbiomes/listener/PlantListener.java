@@ -19,6 +19,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
 
 public class PlantListener implements Listener {
 
@@ -44,7 +45,7 @@ public class PlantListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onExplosion(BlockExplodeEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
@@ -52,16 +53,27 @@ public class PlantListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material newType = event.getNewState().getType();
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getGrowthConfigStraight(newType);
+		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
 		if (growthConfig != null) {
 			growthConfig.handleAttemptedGrowth(event, event.getBlock());
 		}
 	}
+	
+	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
+		Plant plant = plugin.getPlantManager().getPlant(block);
+		PlantGrowthConfig growthConfig = null;
+		if (plant != null) {
+			growthConfig = plant.getGrowthConfig();
+		}
+		if (growthConfig == null) {
+			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(block.getType());
+		}
+		return growthConfig;
+	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock());
+		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock(), event.getItemInHand());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -71,24 +83,23 @@ public class PlantListener implements Listener {
 			event.setCancelled(true);
 		}
 		// handle trees etc.
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getLocation().getBlock());
-		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getLocation().getBlock());
+		Plant plant = plugin.getPlantManager().getPlant(event.getLocation());
+		if (plant != null) {
+			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getLocation().getBlock());
 		}
 	}
 
 	/*
-	 * If Bamboo and Kelp stop answering to these events, this spigot bug might have been solved and should contain more
-	 * info on how to update accordingly:
-	 *   https://hub.spigotmc.org/jira/browse/SPIGOT-5312
+	 * If Bamboo and Kelp stop answering to these events, this spigot bug might have
+	 * been solved and should contain more info on how to update accordingly:
+	 * https://hub.spigotmc.org/jira/browse/SPIGOT-5312
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getSource());
+		Plant plant = plugin.getPlantManager().getPlant(event.getSource());
+		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
 		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getSource());
+			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
 		}
 	}
 	
