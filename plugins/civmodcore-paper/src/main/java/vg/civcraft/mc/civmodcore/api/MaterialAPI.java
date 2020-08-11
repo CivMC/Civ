@@ -1028,33 +1028,11 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is immune to withers.
-	 *
-	 * (This is a Tag set that's present within the client but not the server, weird)
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is immune to withers.
+	 * @deprecated Please use {@code Tag.WITHER_IMMUNE.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isWitherImmune(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case BARRIER:
-			case BEDROCK:
-			case END_PORTAL:
-			case END_PORTAL_FRAME:
-			case END_GATEWAY:
-			case COMMAND_BLOCK:
-			case REPEATING_COMMAND_BLOCK:
-			case CHAIN_COMMAND_BLOCK:
-			case STRUCTURE_BLOCK:
-			case JIGSAW:
-			case MOVING_PISTON:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.WITHER_IMMUNE.isTagged(material);
 	}
 
 	/**
