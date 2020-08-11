@@ -1036,26 +1036,11 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is a type of wooden fence gate.
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a wooden fence gate.
+	 * @deprecated Please use {@code Tag.FENCE_GATES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isWoodenFenceGate(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case ACACIA_FENCE_GATE:
-			case BIRCH_FENCE_GATE:
-			case DARK_OAK_FENCE_GATE:
-			case JUNGLE_FENCE_GATE:
-			case OAK_FENCE_GATE:
-			case SPRUCE_FENCE:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.FENCE_GATES.isTagged(material);
 	}
 
 	/**
