@@ -274,7 +274,7 @@ public final class BlockAPI {
 
 	/**
 	 * Creates a {@link BlockIterator} from a block's perspective, which is lacking from its constructors, which are
-	 * more focused on entities.
+	 * more focused on entities. Keep in mind that the first returned block will likely be the given block parameter.
 	 *
 	 * @param block The block to start the iterator from.
 	 * @param face The direction at which the iterator should iterate.

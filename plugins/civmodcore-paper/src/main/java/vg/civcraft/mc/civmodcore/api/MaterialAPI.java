@@ -646,7 +646,6 @@ import org.bukkit.Tag;
  *
  * See also:
  * {@link SpawnEggAPI SpawnEggAPI}
- * {@link ToolAPI ToolAPI}
  * {@link TreeTypeAPI TreeTypeAPI}
  */
 public final class MaterialAPI {
@@ -752,7 +751,7 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is a log.
+	 * Checks whether a material is a non-stripped log.
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a log.
@@ -778,29 +777,11 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is a wood plank.
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a wood plank.
+	 * @deprecated Please use {@code Tag.PLANKS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isPlank(Material material) {
-		if (material == null) {
-			return false;
-		}
-		if (isStrippedPlank(material)) {
-			return true;
-		}
-		switch (material) {
-			case ACACIA_WOOD:
-			case BIRCH_WOOD:
-			case DARK_OAK_WOOD:
-			case JUNGLE_WOOD:
-			case OAK_WOOD:
-			case SPRUCE_WOOD:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.PLANKS.isTagged(material);
 	}
 
 	/**
@@ -888,6 +869,8 @@ public final class MaterialAPI {
 			case BROWN_MUSHROOM:
 			case CACTUS:
 			case CORNFLOWER:
+			case CRIMSON_FUNGUS:
+			case CRIMSON_ROOTS:
 			case DANDELION:
 			case DARK_OAK_SAPLING:
 			case DEAD_BUSH:
@@ -902,6 +885,8 @@ public final class MaterialAPI {
 			case RED_MUSHROOM:
 			case RED_TULIP:
 			case SPRUCE_SAPLING:
+			case WARPED_FUNGUS:
+			case WARPED_ROOTS:
 			case WHITE_TULIP:
 			case WITHER_ROSE:
 				return true;
@@ -975,6 +960,9 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a glass block.
+	 *
+	 * @see Tag#IMPERMEABLE This functionally fulfils glass checking, however the name doesn't incidate that the tag
+	 *     is specific to glass, thus the switch remains.
 	 */
 	public static boolean isGlassBlock(Material material) {
 		if (material == null) {
@@ -1039,89 +1027,27 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is immune to dragons.
-	 *
-	 * (This is a Tag set that's present within the client but not the server, weird)
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is immune to dragons.
+	 * @deprecated Please use {@code Tag.DRAGON_IMMUNE.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isDragonImmune(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case BARRIER:
-			case BEDROCK:
-			case END_PORTAL:
-			case END_PORTAL_FRAME:
-			case END_GATEWAY:
-			case COMMAND_BLOCK:
-			case REPEATING_COMMAND_BLOCK:
-			case CHAIN_COMMAND_BLOCK:
-			case STRUCTURE_BLOCK:
-			case JIGSAW:
-			case MOVING_PISTON:
-			case OBSIDIAN:
-			case END_STONE:
-			case IRON_BARS:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.DRAGON_IMMUNE.isTagged(material);
 	}
 
 	/**
-	 * Checks whether a material is immune to withers.
-	 *
-	 * (This is a Tag set that's present within the client but not the server, weird)
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is immune to withers.
+	 * @deprecated Please use {@code Tag.WITHER_IMMUNE.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isWitherImmune(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case BARRIER:
-			case BEDROCK:
-			case END_PORTAL:
-			case END_PORTAL_FRAME:
-			case END_GATEWAY:
-			case COMMAND_BLOCK:
-			case REPEATING_COMMAND_BLOCK:
-			case CHAIN_COMMAND_BLOCK:
-			case STRUCTURE_BLOCK:
-			case JIGSAW:
-			case MOVING_PISTON:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.WITHER_IMMUNE.isTagged(material);
 	}
 
 	/**
-	 * Checks whether a material is a type of wooden fence gate.
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a wooden fence gate.
+	 * @deprecated Please use {@code Tag.FENCE_GATES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isWoodenFenceGate(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-			case ACACIA_FENCE_GATE:
-			case BIRCH_FENCE_GATE:
-			case DARK_OAK_FENCE_GATE:
-			case JUNGLE_FENCE_GATE:
-			case OAK_FENCE_GATE:
-			case SPRUCE_FENCE:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.FENCE_GATES.isTagged(material);
 	}
 
 	/**
@@ -1146,28 +1072,15 @@ public final class MaterialAPI {
 				return false;
 		}
 	}
-	
+
 	/**
-	 * Checks whether a material is a wooden fence gate
+	 * Duplicate of {@link #isWoodenFenceGate(Material)}
 	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a wooden fence gate
+	 * @deprecated Please use {@code Tag.FENCE_GATES.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isFenceGate(Material material) {
-		if (material == null) {
-			return false;
-		}
-		switch (material) {
-		case ACACIA_FENCE_GATE:
-		case BIRCH_FENCE_GATE:
-		case DARK_OAK_FENCE_GATE:
-		case JUNGLE_FENCE_GATE:
-		case OAK_FENCE_GATE:
-		case SPRUCE_FENCE_GATE:
-				return true;
-			default:
-				return false;
-		}
+		return isWoodenFenceGate(material);
 	}
 
 	/**
