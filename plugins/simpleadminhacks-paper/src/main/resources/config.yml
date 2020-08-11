@@ -291,7 +291,8 @@ hacks:
       - SLOW_FALLING
   ShipOutOfLuck:
     enabled: true
-    scuttles:
+    # The list of Material's that boats cannot be placed on and will eject passengers
+    boatBreakers:
       - ICE
       - PACKED_ICE
       - FROSTED_ICE

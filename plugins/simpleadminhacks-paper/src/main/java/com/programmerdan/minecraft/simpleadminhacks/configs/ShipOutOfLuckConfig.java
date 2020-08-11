@@ -12,7 +12,7 @@ import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 public class ShipOutOfLuckConfig extends SimpleHackConfig {
 
-	private static final Set<Material> SCUTTLE_LIST = new HashSet<>();
+	private static final Set<Material> BOAT_BREAKERS = new HashSet<>();
 
 	public ShipOutOfLuckConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -20,9 +20,9 @@ public class ShipOutOfLuckConfig extends SimpleHackConfig {
 
 	@Override
 	protected void wireup(ConfigurationSection config) {
-		SCUTTLE_LIST.clear();
+		BOAT_BREAKERS.clear();
 		plugin().info("Parsing scuttle materials:");
-		for (String scuttle : config.getStringList("scuttles")) {
+		for (String scuttle : config.getStringList("boatBreakers")) {
 			if (Strings.isNullOrEmpty(scuttle)) {
 				plugin().warning("\tScuttle entry was null or empty D:");
 				continue;
@@ -32,22 +32,22 @@ public class ShipOutOfLuckConfig extends SimpleHackConfig {
 				plugin().warning("\tScuttle entry could not be matched D: [" + scuttle + "]");
 				continue;
 			}
-			if (SCUTTLE_LIST.contains(found)) {
+			if (BOAT_BREAKERS.contains(found)) {
 				plugin().warning("\tScuttle entry is duplicated: [" + scuttle + "]");
 				continue;
 			}
-			SCUTTLE_LIST.add(found);
+			BOAT_BREAKERS.add(found);
 			plugin().info("\tScuttle recognised: " + found.name());
 		}
-		plugin().info("Parsed " + SCUTTLE_LIST.size() + " scuttles.");
+		plugin().info("Parsed " + BOAT_BREAKERS.size() + " scuttles.");
 	}
 
-	public Set<Material> getScuttleList() {
-		return Collections.unmodifiableSet(SCUTTLE_LIST);
+	public Set<Material> getBoatBreakers() {
+		return Collections.unmodifiableSet(BOAT_BREAKERS);
 	}
 
-	public boolean isScuttleBlock(Material type) {
-		return type != null && SCUTTLE_LIST.contains(type);
+	public boolean isBoatBreaker(Material type) {
+		return type != null && BOAT_BREAKERS.contains(type);
 	}
 
 }

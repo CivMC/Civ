@@ -36,7 +36,7 @@ public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Li
 	public String status() {
 		StringBuilder builder = new StringBuilder(getClass().getSimpleName());
 		builder.append(" is ").append(isEnabled() ? "enabled" : "disabled").append(".").append("\n");
-		Set<Material> scuttleList = this.config.getScuttleList();
+		Set<Material> scuttleList = this.config.getBoatBreakers();
 		if (scuttleList.isEmpty()) {
 			builder.append("No scuttle blocks.");
 		}
@@ -74,7 +74,7 @@ public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Li
 		}
 		Block placedOn = event.getClickedBlock();
 		ItemStack placed = event.getItem();
-		if (!BlockAPI.isValidBlock(placedOn) || !this.config.isScuttleBlock(placedOn.getType())
+		if (!BlockAPI.isValidBlock(placedOn) || !this.config.isBoatBreaker(placedOn.getType())
 				|| !ItemAPI.isValidItem(placed) || !Tag.ITEMS_BOATS.isTagged(placed.getType())) {
 			return;
 		}
@@ -118,7 +118,7 @@ public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Li
 				continue;
 			}
 			Block currentBlock = currentLocation.getBlock();
-			if (!this.config.isScuttleBlock(currentBlock.getType())) {
+			if (!this.config.isBoatBreaker(currentBlock.getType())) {
 				continue;
 			}
 			event.getVehicle().eject();
