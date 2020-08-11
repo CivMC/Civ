@@ -43,8 +43,13 @@ public class RealisticBiomesGUI {
 	/**
 	 * Show GUI containing all RB effected crops, sorted by their biome multiplier in current biome.
 	 */
-	public void showRBOverview() {
-		Biome currentBiome = player.getLocation().getBlock().getBiome();
+	public void showRBOverview(Biome biome) {
+		Biome currentBiome;
+		if (biome == null) {
+			currentBiome = player.getLocation().getBlock().getBiome();
+		} else {
+			currentBiome = biome;
+		}
 		if (inventory == null) {
 			String biomeText = (currentBiome.toString().toLowerCase()).replace("_", " ");
 			biomeText = StringUtils.capitalize(biomeText);
@@ -99,7 +104,7 @@ public class RealisticBiomesGUI {
 			lore.add(ChatColor.DARK_AQUA + "Biome Multiplier: " + ChatColor.GRAY + biomeMultiplier);
 			if (plant.getAllowBoneMeal() || !plant.getNeedsLight()
 					|| !plant.getSoilBoniPerLevel().isEmpty() || plant.getMaximumSoilLayers() != 0
-					|| plant.getMaximumSoilBonus() != 0 || !plant.getGreenHouseRates().isEmpty()) {
+					|| plant.getMaximumSoilBonus() != Integer.MAX_VALUE || !plant.getGreenHouseRates().isEmpty()) {
 				lore.add(ChatColor.DARK_GREEN + "---");
 			}
 			if (plant.getAllowBoneMeal()) {
@@ -116,7 +121,7 @@ public class RealisticBiomesGUI {
 				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilLayers()));
 			}
-			if (plant.getMaximumSoilBonus() != 0) {
+			if (plant.getMaximumSoilBonus() != Integer.MAX_VALUE) {
 				lore.add(String.format("%sMax Soil Bonus: %s%.2f", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilBonus()));
 			}
