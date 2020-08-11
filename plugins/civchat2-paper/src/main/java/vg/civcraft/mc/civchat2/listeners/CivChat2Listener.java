@@ -81,7 +81,7 @@ public class CivChat2Listener implements Listener {
 
 		if (localWarn.contains(localchat.getPlayer().getUniqueId())) {
 			localchat.getPlayer().sendMessage(ChatColor.GOLD
-					+ "You are in local chat! Only players within "
+					+ "Only players within "
 					+ CivChat2.getInstance().getPluginConfig().getChatRange()
 					+ " blocks of you can see your messages. Join a group to chat with players farther away!");
 			localWarn.remove(localchat.getPlayer().getUniqueId());
