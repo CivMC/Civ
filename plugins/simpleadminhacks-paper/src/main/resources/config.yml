@@ -260,7 +260,7 @@ hacks:
     enabled: true
     breakDenyDuration: 3000
     laggLenciency: 1.2
-  PhantomOfTheOpera:
+  PhantomMenace:
     enabled: true
     # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
     # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
