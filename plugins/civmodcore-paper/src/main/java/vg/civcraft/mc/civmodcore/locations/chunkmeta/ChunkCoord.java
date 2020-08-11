@@ -50,6 +50,7 @@ public class ChunkCoord extends XZWCoord {
 	}
 
 	void addChunkMeta(ChunkMeta<?> chunkMeta) {
+		chunkMeta.setWorld(this.world);
 		chunkMetas.put(chunkMeta.getPluginID(), chunkMeta);
 	}
 
