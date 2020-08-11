@@ -4,6 +4,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.ShipOutOfLuckConfig;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.bukkit.Location;
@@ -19,12 +20,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.WorldAPI;
 
 public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Listener {
 
@@ -65,17 +65,14 @@ public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Li
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void preventBoatPlacements(PlayerInteractEvent event) {
-		switch (event.getAction()) {
-			case RIGHT_CLICK_AIR:
-			case RIGHT_CLICK_BLOCK:
-				break;
-			default:
-				return;
+		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
 		}
-		Block placedOn = event.getClickedBlock();
+		Block placedOn = Objects.requireNonNull(event.getClickedBlock());
 		ItemStack placed = event.getItem();
-		if (!BlockAPI.isValidBlock(placedOn) || !this.config.isBoatBreaker(placedOn.getType())
-				|| !ItemAPI.isValidItem(placed) || !Tag.ITEMS_BOATS.isTagged(placed.getType())) {
+		if (!this.config.isBoatBreaker(placedOn.getType())
+				|| !ItemAPI.isValidItem(placed)
+				|| !Tag.ITEMS_BOATS.isTagged(placed.getType())) {
 			return;
 		}
 		event.setCancelled(true);
@@ -102,31 +99,15 @@ public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Li
 		if (destination.getY() < 0 || destination.getY() >= destination.getWorld().getMaxHeight()) {
 			return;
 		}
-		Location[] locations = new Location[] {
-				destination,
-				destination.clone().add(-1, 0, 1),
-				destination.clone().add(0, 0, 1),
-				destination.clone().add(1, 0, 1),
-				destination.clone().add(-1, 0, 0),
-				destination.clone().add(1, 0, 0),
-				destination.clone().add(-1, 0, -1),
-				destination.clone().add(0, 0, -1),
-				destination.clone().add(1, 0, -1)
-		};
-		for (Location currentLocation : locations) {
-			if (!WorldAPI.isBlockLoaded(currentLocation)) {
-				continue;
-			}
-			Block currentBlock = currentLocation.getBlock();
-			if (!this.config.isBoatBreaker(currentBlock.getType())) {
-				continue;
-			}
-			event.getVehicle().eject();
-			plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
-					.collect(Collectors.joining(", ")) + "] from boat at [" + destination + "] because they " +
-					"sailed over [" + currentBlock.getType().name() + "]");
+		Block currentBlock = destination.getBlock();
+		if (!this.config.isBoatBreaker(currentBlock.getType())) {
 			return;
 		}
+		event.getVehicle().eject();
+		plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
+				.collect(Collectors.joining(", ")) + "] from boat at [" + destination + "] because they " +
+				"sailed over [" + currentBlock.getType().name() + "]");
+		//return;
 	}
 
 	// ------------------------------------------------------------
