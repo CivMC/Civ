@@ -869,6 +869,8 @@ public final class MaterialAPI {
 			case BROWN_MUSHROOM:
 			case CACTUS:
 			case CORNFLOWER:
+			case CRIMSON_FUNGUS:
+			case CRIMSON_ROOTS:
 			case DANDELION:
 			case DARK_OAK_SAPLING:
 			case DEAD_BUSH:
@@ -883,6 +885,8 @@ public final class MaterialAPI {
 			case RED_MUSHROOM:
 			case RED_TULIP:
 			case SPRUCE_SAPLING:
+			case WARPED_FUNGUS:
+			case WARPED_ROOTS:
 			case WHITE_TULIP:
 			case WITHER_ROSE:
 				return true;
