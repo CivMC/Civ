@@ -960,6 +960,9 @@ public final class MaterialAPI {
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a glass block.
+	 *
+	 * @see Tag#IMPERMEABLE This functionally fulfils glass checking, however the name doesn't incidate that the tag
+	 *     is specific to glass, thus the switch remains.
 	 */
 	public static boolean isGlassBlock(Material material) {
 		if (material == null) {
