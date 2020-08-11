@@ -646,7 +646,6 @@ import org.bukkit.Tag;
  *
  * See also:
  * {@link SpawnEggAPI SpawnEggAPI}
- * {@link ToolAPI ToolAPI}
  * {@link TreeTypeAPI TreeTypeAPI}
  */
 public final class MaterialAPI {
