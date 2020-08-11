@@ -289,3 +289,10 @@ hacks:
       - BAD_OMEN
       - SLOW_DIGGING
       - SLOW_FALLING
+  ShipOutOfLuck:
+    enabled: true
+    scuttles:
+      - ICE
+      - PACKED_ICE
+      - FROSTED_ICE
+      - BLUE_ICE
