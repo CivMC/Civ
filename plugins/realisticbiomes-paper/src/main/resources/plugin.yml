@@ -23,6 +23,8 @@ commands:
         permission: rb.public
         description: 'Opens a GUI allowing you to browse RealisticBiome growth rates for current biome'
         usage: '/rb'
+        min-args: 0
+        max-args: 1
         player-only: true
 permissions:
     rb.public:

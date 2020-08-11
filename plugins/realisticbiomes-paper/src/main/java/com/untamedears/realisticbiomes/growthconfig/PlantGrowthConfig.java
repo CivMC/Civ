@@ -207,20 +207,20 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			sb.append(" % grown");
 		} else {
 			if (isFullyGrown(block)) {
-				sb.append(" is fully grown ");
+				sb.append(" is fully grown");
 				return sb.toString();
 			}
 			long totalTime = getPersistentGrowthTime(block);
 			long passedTime = System.currentTimeMillis() - plant.getCreationTime();
 			long timeRemaining = Math.max(0, totalTime - passedTime);
 			if (timeRemaining >= INFINITE_TIME) {
-				sb.append("will never grow here");
+				sb.append(" will never grow here");
 			} else {
 				sb.append(" will grow ");
 				if (timeRemaining <= 0) {
-					sb.append(" now");
+					sb.append("now");
 				} else {
-					sb.append(" in ");
+					sb.append("in ");
 					sb.append(TextUtil.formatDuration(timeRemaining, TimeUnit.MILLISECONDS));
 				}
 			}
