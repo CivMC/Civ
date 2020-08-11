@@ -181,6 +181,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	public BiomeGrowthConfig getBiomeGrowthConfig() {
 		return biomeGrowthConfig;
 	}
+	
+	public IArtificialGrower getGrower() {
+		return grower;
+	}
 
 	/**
 	 * Looks at all surrounding factors to calculate how long a plant would take to

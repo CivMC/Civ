@@ -23,6 +23,10 @@ public class StemGrower extends AgeableGrower {
 		this.fruitConfig = fruitConfig;
 	}
 	
+	public PlantGrowthConfig getFruitConfig() {
+		return fruitConfig;
+	}
+	
 	@Override
 	public void setStage(Plant plant, int stage) {
 		super.setStage(plant, stage);

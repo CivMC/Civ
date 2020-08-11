@@ -117,9 +117,30 @@ public class RBConfigManager extends CoreConfigManager {
 		Map<String, List<Biome>> biomeAliases = loadBiomeAliases(config.getConfigurationSection("biome_aliases"));
 		loadSchematics();
 		plantConfigs = parsePlantGrowthConfig(config.getConfigurationSection("plants"), biomeAliases);
+		remapStemFruitConfigs();
 		List<LStepConfig> rawConfigs = parseRawLStepConfigs(config.getConfigurationSection("l_steps"));
 		lTrees = parseLTrees(config.getConfigurationSection("l_trees"), rawConfigs);
 		return true;
+	}
+	
+	private void remapStemFruitConfigs() {
+		for (PlantGrowthConfig plantConfig : plantConfigs) {
+			if (!(plantConfig.getGrower() instanceof StemGrower)) {
+				continue;
+			}
+			StemGrower stemGrower = (StemGrower) plantConfig.getGrower();
+			for (PlantGrowthConfig otherConfig : plantConfigs) { // dont care about O(n) here
+				if (otherConfig.getName().equalsIgnoreCase(stemGrower.getFruitConfigName())) {
+					stemGrower.setFruitConfig(otherConfig);
+					break;
+				}
+			}
+			if (stemGrower.getFruitConfig() == null) {
+				logger.severe("Stem config " + plantConfig.getName() + " specified fruit type "
+						+ stemGrower.getFruitConfigName() + ", but no such config was found");
+			}
+
+		}
 	}
 
 	private Map<Material, Double> parseMaterialDoubleMap(ConfigurationSection parent, String identifier) {
