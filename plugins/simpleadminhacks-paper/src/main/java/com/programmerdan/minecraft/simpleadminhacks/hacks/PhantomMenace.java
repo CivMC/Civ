@@ -2,7 +2,7 @@ package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.PhantomOfTheOperaConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.PhantomMenaceConfig;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.World;
@@ -14,9 +14,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 
-public class PhantomOfTheOpera extends SimpleHack<PhantomOfTheOperaConfig> implements Listener {
+public class PhantomMenace extends SimpleHack<PhantomMenaceConfig> implements Listener {
 
-	public PhantomOfTheOpera(SimpleAdminHacks plugin, PhantomOfTheOperaConfig config) {
+	public PhantomMenace(SimpleAdminHacks plugin, PhantomMenaceConfig config) {
 		super(plugin, config);
 	}
 
@@ -117,8 +117,8 @@ public class PhantomOfTheOpera extends SimpleHack<PhantomOfTheOperaConfig> imple
 	@Override
 	public void dataCleanup() { }
 
-	public static PhantomOfTheOperaConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new PhantomOfTheOperaConfig(plugin, config);
+	public static PhantomMenaceConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new PhantomMenaceConfig(plugin, config);
 	}
 
 }
