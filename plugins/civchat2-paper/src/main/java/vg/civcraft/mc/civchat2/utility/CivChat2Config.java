@@ -32,6 +32,10 @@ public class CivChat2Config {
 		return config.getBoolean("info.loginAnnounce", false);
 	}
 
+	public boolean getChatRangeWarn() {
+		return config.getBoolean("info.chatRangeWarn", true);
+	}
+
 	public int getChatRange() {
 		return config.getInt("chat.globalChatRange");
 	}
