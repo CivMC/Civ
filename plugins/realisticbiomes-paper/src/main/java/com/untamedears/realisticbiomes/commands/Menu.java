@@ -1,8 +1,8 @@
 package com.untamedears.realisticbiomes.commands;
 
+import java.util.Arrays;
 import java.util.List;
 
-import com.google.common.collect.Lists;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
@@ -12,7 +12,6 @@ import com.untamedears.realisticbiomes.utils.RealisticBiomesGUI;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
-
 
 @CivCommand(id = "rb")
 public class Menu extends StandaloneCommand {
@@ -28,7 +27,7 @@ public class Menu extends StandaloneCommand {
 			RealisticBiomesGUI gui = new RealisticBiomesGUI((Player) sender);
 			gui.showRBOverview(null);
 		} else {
-			if (!p.isOp()) {
+			if (!p.hasPermission("rb.pickBiome")) {
 				p.sendMessage(ChatColor.RED + "You lack permission to use this command with arguments");
 				return true;
 			}
@@ -47,18 +46,6 @@ public class Menu extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		if (sender.isOp()) {
-			Biome[] biomes = Biome.values();
-			List<String> completions = Lists.newArrayList();
-			if (args.length == 1) {
-				for (Biome s : biomes) {
-					if (s.name().toLowerCase().startsWith(args[0].toLowerCase())) {
-						completions.add(s.name());
-					}
-				}
-				return completions;
-			}
-		}
-		return null;
+		return doTabComplete(args [0], Arrays.asList(Biome.values()), Biome::name, false);
 	}
 }
