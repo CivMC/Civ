@@ -29,5 +29,5 @@ commands:
 permissions:
     rb.public:
         default: true
-    rb.op:
-      default: op
+    rb.pickBiome:
+        default: op
