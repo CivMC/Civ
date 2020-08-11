@@ -1,7 +1,6 @@
 package vg.civcraft.mc.civmodcore.api;
 
 import org.bukkit.Location;
-import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 
 /**
