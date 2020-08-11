@@ -25,6 +25,7 @@ import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
+import com.untamedears.realisticbiomes.growth.StemGrower;
 import com.untamedears.realisticbiomes.growth.TreeGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
@@ -235,8 +236,8 @@ public class RBConfigManager extends CoreConfigManager {
 			int increment = section.getInt("increment", 1);
 			return new AgeableGrower(maxStage, increment);
 		case "stem":
-			String fruitConfig = section.getString("fruit_config");
-			return new 
+			String fruitConfig = section.getString("fruit_config", null);
+			return new StemGrower(fruitConfig);
 		case "tree":
 			return new TreeGrower();
 		case "schematic":
