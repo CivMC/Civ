@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -79,6 +80,6 @@ public class RepairRecipe extends InputRecipe {
 
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("Repairs the factory by " + healthPerRun + " health");
+		return Arrays.asList(ChatColor.YELLOW + "Repairs the factory by " + healthPerRun + " health");
 	}
 }

@@ -163,6 +163,6 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("Something");
+		return formatLore(output);
 	}
 }
