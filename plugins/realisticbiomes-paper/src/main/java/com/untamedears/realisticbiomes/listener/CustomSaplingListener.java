@@ -35,7 +35,7 @@ public class CustomSaplingListener {
 			return;
 		}
 		dropManager.setDrops(new BlockDrop(e.getBlock().getLocation(), true, item));
-		PlantGrowthConfig growthConfig = configManager.getCustomSaplingConfig(item);
+		PlantGrowthConfig growthConfig = configManager.getGrowthConfigByItem(item);
 		if (growthConfig == null) {
 			return;
 		}

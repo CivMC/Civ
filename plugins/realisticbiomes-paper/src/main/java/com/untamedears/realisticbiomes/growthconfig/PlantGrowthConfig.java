@@ -323,8 +323,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * @param plant Plant to update
 	 * @param block Block the plant is at
 	 * @return UNIX time stamp at which the plant needs to be updated next if it is
-	 *         still growing or Long.MAX_VALUE if it will never grow or is already
-	 *         full grown
+	 *         still growing or Long.MAX_VALUE if it will never grow or if it is already
+	 *         fully grown
 	 */
 	public long updatePlant(Plant plant, Block block) {
 		if (plant.getGrowthConfig() == null) {
@@ -361,7 +361,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			return plant.getGrowthConfig().updatePlant(plant, block);
 		}
 
-		if (intendedState == grower.getMaxStage()) {
+		if (intendedState == grower.getMaxStage() && grower.deleteOnFullGrowth()) {
+			plant.getOwningCache().remove(plant);
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();
@@ -369,6 +370,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		nextProgressStage = Math.min(nextProgressStage, 1.0);
 		long timeFromCreationTillNextStage = (long) (totalTime * nextProgressStage);
 		return creationTime + timeFromCreationTillNextStage;
+	}
+	
+	public String toString() {
+		return getName();
 	}
 
 }

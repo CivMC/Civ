@@ -2,6 +2,7 @@ package com.untamedears.realisticbiomes;
 
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -34,6 +35,10 @@ public class GrowthConfigManager {
 		}
 	}
 	
+	public Set<PlantGrowthConfig> getAllGrowthConfigs() {
+		return new HashSet<>(plantsById.values());
+	}
+	
 	public PlantGrowthConfig getConfigById(short id) {
 		return plantsById.get(id);
 	}
@@ -58,10 +63,6 @@ public class GrowthConfigManager {
 		ItemStack copy = item.clone();
 		copy.setAmount(1);
 		return plantsByItem.get(copy);
-	}
-	
-	public PlantGrowthConfig getCustomSaplingConfig(ItemStack item) {
-		return null;
 	}
 
 	/**

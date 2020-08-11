@@ -30,7 +30,7 @@ public class SchematicGrower extends IArtificialGrower {
 	public int getStage(Plant plant) {
 		Block block = plant.getLocation().getBlock();
 		if (block.getType() != plant.getGrowthConfig().getItem().getType()) {
-			return 1;
+			return -1;
 		}
 		return 0;
 	}
@@ -41,6 +41,11 @@ public class SchematicGrower extends IArtificialGrower {
 			return;
 		}
 		schematic.spawnAt(plant.getLocation().add(offset));
+	}
+
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return true;
 	}
 
 }

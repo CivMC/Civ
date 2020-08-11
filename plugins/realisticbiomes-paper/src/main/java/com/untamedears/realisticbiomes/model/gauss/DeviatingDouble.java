@@ -2,8 +2,6 @@ package com.untamedears.realisticbiomes.model.gauss;
 
 import java.util.Random;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 public class DeviatingDouble {
 	
 	private static Random rng = new Random();

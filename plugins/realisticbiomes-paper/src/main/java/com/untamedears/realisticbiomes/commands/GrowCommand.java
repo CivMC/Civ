@@ -1,17 +1,8 @@
 package com.untamedears.realisticbiomes.commands;
 
-import java.util.HashMap;
 import java.util.List;
 
-import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import com.untamedears.realisticbiomes.RBConfigManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.model.gauss.GaussTree;
-import com.untamedears.realisticbiomes.model.ltree.BlockTransformation;
-import com.untamedears.realisticbiomes.model.ltree.LTree;
 
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;

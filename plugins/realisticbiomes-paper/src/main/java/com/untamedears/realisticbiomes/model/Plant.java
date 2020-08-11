@@ -93,9 +93,9 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 				nextUpdate = Long.MAX_VALUE;
 			}
 		}
-		if (nextUpdate == Long.MAX_VALUE) {
-			// note that this can also be returned by the updatePlant function
-			getOwningCache().remove(this);
-		}
+	}
+	
+	public String toString() {
+		return String.format("Created: %d, Next update in: %d, config: %s", creationTime, nextUpdate- System.currentTimeMillis(), growthConfig);
 	}
 }

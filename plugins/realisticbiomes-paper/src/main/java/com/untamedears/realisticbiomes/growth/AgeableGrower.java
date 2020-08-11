@@ -1,5 +1,6 @@
 package com.untamedears.realisticbiomes.growth;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
 
@@ -12,10 +13,12 @@ public class AgeableGrower extends IArtificialGrower {
 
 	private int maxStage;
 	private int increment;
+	private Material material;
 
-	public AgeableGrower(int maxStage, int increment) {
+	public AgeableGrower(Material material, int maxStage, int increment) {
 		this.maxStage = maxStage;
 		this.increment = increment;
+		this.material = material;
 	}
 
 	@Override
@@ -31,6 +34,9 @@ public class AgeableGrower extends IArtificialGrower {
 	@Override
 	public int getStage(Plant plant) {
 		Block block = plant.getLocation().getBlock();
+		if (block.getType() != material) {
+			return -1;
+		}
 		if (!(block.getBlockData() instanceof Ageable)) {
 			return -1;
 		}
@@ -46,6 +52,11 @@ public class AgeableGrower extends IArtificialGrower {
 		Ageable ageable = ((Ageable) block.getBlockData());
 		ageable.setAge(stage);
 		block.setBlockData(ageable, true);
+	}
+
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return true;
 	}
 
 }

@@ -40,6 +40,7 @@ import com.untamedears.realisticbiomes.utils.SchematicUtils;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.CoreConfigManager;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.civmodcore.util.ConfigParsing;
 
@@ -223,7 +224,7 @@ public class RBConfigManager extends CoreConfigManager {
 			double maximumSoilBonus = current.getDouble("max_soil_bonus", Integer.MAX_VALUE);
 			boolean allowBoneMeal = current.getBoolean("allow_bonemeal", false);
 			boolean needsLight = current.getBoolean("needs_sun_light", true);
-			IArtificialGrower grower = parseGrower(current.getConfigurationSection("grower"));
+			IArtificialGrower grower = parseGrower(current.getConfigurationSection("grower"), item);
 			if (grower == null) {
 				logger.warning("Failed to parse a grower at " + current.getCurrentPath() + ", skipped it");
 				continue;
@@ -235,7 +236,7 @@ public class RBConfigManager extends CoreConfigManager {
 		return result;
 	}
 
-	private IArtificialGrower parseGrower(ConfigurationSection section) {
+	private IArtificialGrower parseGrower(ConfigurationSection section, ItemStack item) {
 		if (section == null) {
 			return null;
 		}
@@ -243,24 +244,42 @@ public class RBConfigManager extends CoreConfigManager {
 			logger.warning("No grower type specified at " + section.getCurrentPath());
 			return null;
 		}
+		Material material = MaterialAPI.getMaterial(section.getString("material"));
+		if (material == null) {
+			if (item == null) {
+				logger.warning("Neither an item nor a material specified for grower at " + section.getCurrentPath());
+				return null;
+			}
+			material = item.getType();
+		}
 		switch (section.getString("type").toLowerCase()) {
 		case "bamboo":
 			int maxHeight = section.getInt("max_height", 12);
 			return new BambooGrower(maxHeight);
 		case "column":
 			int maxHeight2 = section.getInt("max_height", 3);
-			return new ColumnPlantGrower(maxHeight2);
+			return new ColumnPlantGrower(maxHeight2, material);
 		case "fruit":
-			return new FruitGrower();
+			Material stemMat = MaterialAPI.getMaterial(section.getString("stem_type"));
+			if (stemMat == null) {
+				logger.warning("No stem material specified at " + section.getCurrentPath());
+				return null;
+			}
+			Material attachedStemMat = MaterialAPI.getMaterial(section.getString("attached_stem_type"));
+			if (attachedStemMat == null) {
+				logger.warning("No attached stem material specified at " + section.getCurrentPath());
+				return null;
+			}
+			return new FruitGrower(material, stemMat, attachedStemMat);
 		case "ageable":
 			int maxStage = section.getInt("max_stage", 7);
 			int increment = section.getInt("increment", 1);
-			return new AgeableGrower(maxStage, increment);
+			return new AgeableGrower(material, maxStage, increment);
 		case "stem":
 			String fruitConfig = section.getString("fruit_config", null);
-			return new StemGrower(fruitConfig);
+			return new StemGrower(material, fruitConfig);
 		case "tree":
-			return new TreeGrower();
+			return new TreeGrower(material);
 		case "schematic":
 			String name = section.getString("schematic", "default");
 			RBSchematic schem = schematics.get(name.toLowerCase());

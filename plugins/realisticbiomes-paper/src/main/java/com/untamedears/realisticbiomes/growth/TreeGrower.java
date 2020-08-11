@@ -1,13 +1,14 @@
 package com.untamedears.realisticbiomes.growth;
 
-import com.untamedears.realisticbiomes.PlantManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Sapling;
+
+import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.model.Plant;
 
 public class TreeGrower extends AgeableGrower {
 
@@ -130,15 +131,17 @@ public class TreeGrower extends AgeableGrower {
 			return null;
 		}
 	}
+	
+	private Material saplingType;
 
-	public TreeGrower() {
-		super(1, 1);
+	public TreeGrower(Material saplingType) {
+		super(saplingType, 1, 1);
 	}
 
 	@Override
 	public int getStage(Plant plant) {
 		Block block = plant.getLocation().getBlock();
-		if (!(block.getBlockData() instanceof Sapling)) {
+		if (block.getType() != saplingType) {
 			return -1;
 		}
 		return 0;

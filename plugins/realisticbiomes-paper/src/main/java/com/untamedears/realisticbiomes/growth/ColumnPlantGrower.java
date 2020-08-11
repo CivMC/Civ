@@ -23,16 +23,15 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	}
 
 	private int maxHeight;
-	private Material finalMaterial;
-
-	public ColumnPlantGrower(int maxHeight) {
-		this(maxHeight, null);
-	}
-
+	private Material material;
 	
-	public ColumnPlantGrower(int maxHeight, Material finalMaterial) {
+	public ColumnPlantGrower(int maxHeight, Material material) {
 		this.maxHeight = maxHeight;
-		this.finalMaterial = finalMaterial;
+		this.material = material;
+	}
+	
+	public Material getMaterial() {
+		return material;
 	}
 
 	@Override
@@ -48,6 +47,9 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	@Override
 	public int getStage(Plant plant) {
 		Block block = plant.getLocation().getBlock();
+		if (material != block.getType()) {
+			return -1;
+		}
 		if (getActualHeight(block) < maxHeight) {
 			// can grow more
 			return 0;
@@ -71,8 +73,8 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	 * @return highest plant block
 	 */
 	protected Block growOnTop(Block block, int howMany) {
-		if (finalMaterial != null && block.getType() != finalMaterial) {
-			block.setType(finalMaterial);
+		if (material != null && block.getType() != material) {
+			block.setType(material);
 		}
 
 		int counter = 1;
@@ -82,7 +84,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
-				onTop.setType(finalMaterial);
+				onTop.setType(material, true);
 				howMany--;
 				continue;
 			}
@@ -95,7 +97,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			break;
 		}
 
-		return onTop.getType() != finalMaterial ? onTop.getRelative(BlockFace.DOWN) : onTop;
+		return onTop.getType() != material ? onTop.getRelative(BlockFace.DOWN) : onTop;
 	}
 
 	@Override
@@ -105,6 +107,12 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		}
 		Block block = plant.getLocation().getBlock();
 		growOnTop(block, stage);
+	}
+
+
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return false;
 	}
 
 }

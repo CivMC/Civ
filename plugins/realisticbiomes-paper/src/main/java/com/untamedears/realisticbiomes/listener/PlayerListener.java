@@ -64,6 +64,9 @@ public class PlayerListener implements Listener {
 			return;
 		}
 		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));
+		if (event.getPlayer().hasPermission("rb.op")) {
+			event.getPlayer().sendMessage(plant.toString());
+		}
 	}
 
 	// show animal rates when right clicking them with stick

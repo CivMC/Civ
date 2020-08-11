@@ -32,4 +32,9 @@ public class CustomTreeGrower extends IArtificialGrower {
 		}
 	}
 
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return true;
+	}
+
 }

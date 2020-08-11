@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
-
 import org.apache.commons.lang.StringUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;

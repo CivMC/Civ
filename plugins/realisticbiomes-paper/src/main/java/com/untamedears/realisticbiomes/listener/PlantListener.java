@@ -1,7 +1,12 @@
 package com.untamedears.realisticbiomes.listener;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,17 +21,25 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
+import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
+import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 
 public class PlantListener implements Listener {
 
 	private final RealisticBiomes plugin;
+	private PlantManager plantManager;
 
-	public PlantListener(RealisticBiomes plugin) {
+
+	public PlantListener(RealisticBiomes plugin, PlantManager plantManager) {
 		this.plugin = plugin;
+		this.plantManager = plantManager;
 	}
+
+
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPistonExtendEvent event) {
@@ -57,9 +70,9 @@ public class PlantListener implements Listener {
 			growthConfig.handleAttemptedGrowth(event, event.getBlock());
 		}
 	}
-	
+
 	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
-		Plant plant = plugin.getPlantManager().getPlant(block);
+		Plant plant = plantManager.getPlant(block);
 		PlantGrowthConfig growthConfig = null;
 		if (plant != null) {
 			growthConfig = plant.getGrowthConfig();
@@ -101,14 +114,19 @@ public class PlantListener implements Listener {
 			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onChunkLoad(ChunkLoadEvent event) {
 		Chunk c = event.getChunk();
-		Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0 , c.getZ() << 4);
-		plugin.getPlantManager().applyForAllInChunk(loc, p ->  {
-			plugin.getPlantLogicManager().initGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15, 
-					p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
-		});
+		Bukkit.getScheduler().runTaskLater(RealisticBiomes.getInstance(), () -> {
+			if (!c.isLoaded()) {
+				return;
+			}
+			Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0, c.getZ() << 4);
+			plugin.getPlantManager().applyForAllInChunk(loc, p -> {
+				plugin.getPlantLogicManager().initGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15,
+						p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
+			});
+		}, 1);
 	}
 }

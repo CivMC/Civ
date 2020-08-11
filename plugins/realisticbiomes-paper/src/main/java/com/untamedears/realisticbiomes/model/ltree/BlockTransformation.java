@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.type.Leaves;
-import org.bukkit.util.Vector;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
