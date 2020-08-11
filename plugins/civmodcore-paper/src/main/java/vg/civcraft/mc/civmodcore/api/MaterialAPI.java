@@ -751,7 +751,7 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is a log.
+	 * Checks whether a material is a non-stripped log.
 	 *
 	 * @param material The material to check.
 	 * @return Returns true if the material is a log.
