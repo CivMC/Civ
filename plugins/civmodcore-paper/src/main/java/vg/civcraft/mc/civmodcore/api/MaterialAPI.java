@@ -777,29 +777,11 @@ public final class MaterialAPI {
 	}
 
 	/**
-	 * Checks whether a material is a wood plank.
-	 *
-	 * @param material The material to check.
-	 * @return Returns true if the material is a wood plank.
+	 * @deprecated Please use {@code Tag.PLANKS.isTagged(material);}
 	 */
+	@Deprecated
 	public static boolean isPlank(Material material) {
-		if (material == null) {
-			return false;
-		}
-		if (isStrippedPlank(material)) {
-			return true;
-		}
-		switch (material) {
-			case ACACIA_WOOD:
-			case BIRCH_WOOD:
-			case DARK_OAK_WOOD:
-			case JUNGLE_WOOD:
-			case OAK_WOOD:
-			case SPRUCE_WOOD:
-				return true;
-			default:
-				return false;
-		}
+		return Tag.PLANKS.isTagged(material);
 	}
 
 	/**
