@@ -28,6 +28,8 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import vg.civcraft.mc.civmodcore.playersettings.AltRequestEvent;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 /**
@@ -492,6 +494,23 @@ public class BanStickEventHandler implements Listener {
 	@EventHandler(priority=EventPriority.MONITOR)
 	public void kickMonitor(PlayerKickEvent kickEvent) {
 		disconnectEvent(kickEvent.getPlayer());
+	}
+	
+	@EventHandler
+	public void altRequest(AltRequestEvent event) {
+		BSPlayer bsPlayer = BSPlayer.byUUID(event.getAccountToGetMainFor());
+		if (bsPlayer == null) {
+			return;
+		}
+		long minID = bsPlayer.getId();
+		BSPlayer ogAcc = bsPlayer;
+		for (BSPlayer alt : bsPlayer.getTransitiveSharedPlayers(true)) {
+			if (alt.getId() < minID) {
+				minID = alt.getId();
+				ogAcc = alt;
+			}
+		}
+		event.setMain(ogAcc.getUUID());
 	}
 
 	/**
