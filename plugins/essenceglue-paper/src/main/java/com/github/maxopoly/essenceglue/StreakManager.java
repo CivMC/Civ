@@ -2,18 +2,29 @@ package com.github.maxopoly.essenceglue;
 
 import com.devotedmc.ExilePearl.ExilePearlPlugin;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import vg.civcraft.mc.civmodcore.playersettings.PlayerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
+import vg.civcraft.mc.civmodcore.playersettings.SettingChangeListener;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.IntegerSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.LongSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.StringSetting;
 
 public class StreakManager {
 
@@ -50,7 +61,7 @@ public class StreakManager {
 		this.giveRewardToPearled = giveRewardToPearled;
 		this.countRequiredForGain = TimeUnit.MILLISECONDS.toMinutes(onlineTimePerDay);
 	}
-
+	
 	public static UUID getTrueUUID(UUID uuid) {
 		UUID cached = mainAccountCache.get(uuid);
 		if (cached != null) {

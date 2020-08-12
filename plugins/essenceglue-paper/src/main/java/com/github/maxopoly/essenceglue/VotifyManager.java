@@ -26,8 +26,8 @@ public class VotifyManager implements Listener {
 		this.perSiteSettings = new HashMap<>();
 		this.perSiteCooldowns = new HashMap<>(perSiteCooldowns);
 		for (String s : perSiteCooldowns.keySet()) {
-			LongSetting setting =
-					new LongSetting(EssenceGluePlugin.instance(), 0L, "Last vote " + s, "essenceGlueVoteTime" + s);
+			LongSetting setting = new LongSetting(EssenceGluePlugin.instance(), 0L, "Last vote " + s,
+					"essenceGlueVoteTime" + s);
 			PlayerSettingAPI.registerSetting(setting, null);
 			perSiteSettings.put(s, setting);
 		}
@@ -37,16 +37,36 @@ public class VotifyManager implements Listener {
 	public void onVotifierEvent(VotifierEvent event) {
 		Vote vote = event.getVote();
 		Player player = Bukkit.getPlayer(vote.getUsername());
-		if (player == null) {
+		if (player != null) {
+			handOutVotingReward(player, vote);
 			return;
 		}
+		Bukkit.getScheduler().runTaskAsynchronously(EssenceGluePlugin.instance(), () -> {
+			//Mojang API rate limit is 600 requests per 10 minutes, which is not a problem for now
+			UUID uuid = NewNameResolver.getUUIDForMojangName(vote.getUsername());
+			if (uuid == null) {
+				EssenceGluePlugin.instance().getLogger().info("Could not resolve vote from " + vote.getUsername());
+				return;
+			}
+			Player altPlayer = Bukkit.getPlayer(uuid);
+			if (altPlayer == null) {
+				EssenceGluePlugin.instance().getLogger()
+						.info("Found uuid " + uuid + " but could not find player for vote from " + vote.getUsername());
+				return;
+			}
+			Bukkit.getScheduler().runTask(EssenceGluePlugin.instance(), () -> {
+				handOutVotingReward(altPlayer, vote);
+			});
+		});
+	}
+
+	public void handOutVotingReward(Player player, Vote vote) {
 		VotingSite site = perSiteCooldowns.get(vote.getServiceName());
 		if (site == null) {
 			EssenceGluePlugin.instance().getLogger()
 					.warning("Received vote from unknown service " + vote.getServiceName());
-			player.sendMessage(
-					ChatColor.RED + "You voted on a website not properly supported or setup right now, " + vote
-							.getServiceName());
+			player.sendMessage(ChatColor.RED + "You voted on a website not properly supported or setup right now, "
+					+ vote.getServiceName());
 			return;
 		}
 		UUID uuid = StreakManager.getTrueUUID(player.getUniqueId());
