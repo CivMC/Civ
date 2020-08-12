@@ -13,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuOption;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
+import vg.civcraft.mc.civmodcore.playersettings.impl.AltConsistentSetting;
 
 /**
  * Allows creating settings, which will automatically be available in players
@@ -79,15 +80,22 @@ public final class PlayerSettingAPI {
 	 */
 	public static void registerSetting(PlayerSetting<?> setting, MenuSection menu) {
 		Preconditions.checkArgument(setting != null, "Player setting cannot be null.");
+		if (setting instanceof AltConsistentSetting) {
+			if (setting.canBeChangedByPlayer()) {
+				menu.addItem(new MenuOption(menu, setting));
+			}
+			menu = null;
+			setting = ((AltConsistentSetting<?,?>) setting).getWrappedSetting();
+		}
 		loadValues(setting);
 		List<PlayerSetting<?>> pluginSettings = SETTINGS_BY_PLUGIN.computeIfAbsent(
 				setting.getOwningPlugin().getName(),
-				(k) -> new ArrayList<>());
+				k -> new ArrayList<>());
 		Preconditions.checkArgument(!pluginSettings.contains(setting),
 				"Cannot register the same player setting twice.");
 		SETTINGS_BY_IDENTIFIER.put(setting.getIdentifier(), setting);
 		pluginSettings.add(setting);
-		if (setting.canBeChangedByPlayer()) {
+		if (menu != null && setting.canBeChangedByPlayer()) {
 			menu.addItem(new MenuOption(menu, setting));
 		}
 	}
