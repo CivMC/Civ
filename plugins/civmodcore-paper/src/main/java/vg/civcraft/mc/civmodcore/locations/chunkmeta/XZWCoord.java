@@ -67,7 +67,7 @@ public class XZWCoord implements Comparable<XZWCoord> {
 		if (this == o) {
 			return true;
 		}
-		if (o == null || getClass() != o.getClass()) {
+		if (!(o instanceof XZWCoord)) {
 			return false;
 		}
 		XZWCoord xzwCoord = (XZWCoord) o;
