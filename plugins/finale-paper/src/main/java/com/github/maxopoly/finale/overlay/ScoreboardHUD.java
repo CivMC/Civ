@@ -52,9 +52,6 @@ public class ScoreboardHUD implements Listener {
 				if (settingsMan.showPotionEffects(p.getUniqueId())) {
 					updateAllPotionEffects(p);
 				}
-				if (settingsMan.getGammaBrightSetting().getValue(p)) {
-					updateGammaBright(p);
-				}
 			}
 		}, 5L, 5L);
 		settingsMan.getArmorSetting().registerListener(new SettingChangeListener<Boolean>() {
@@ -136,7 +133,8 @@ public class ScoreboardHUD implements Listener {
 
 	private void updateGammaBright(Player player) {
 		player.removePotionEffect(PotionEffectType.NIGHT_VISION);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60, 1, false, false, false));
+		//after being logged in for 14 days straight, players may have to relog to refresh the effect
+		player.addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 20 * 60 * 60 * 24 * 14, 1, false, false, false));
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
