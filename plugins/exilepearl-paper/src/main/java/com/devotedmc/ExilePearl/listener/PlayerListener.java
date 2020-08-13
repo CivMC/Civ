@@ -117,6 +117,19 @@ public class PlayerListener implements Listener, Configurable {
 		this.pearlApi = pearlApi;
 	}
 
+	/**
+	 * Informs a player about pearling after they've been pearled.
+	 * @param event
+	 */
+	@EventHandler
+	public void PlayerPearledListener(PlayerPearledEvent event) {
+		event.getPearl().getPlayer().sendMessage(ChatColor.GOLD + "You've been pearled. Pearling is how " +
+				"players imprison others in order to exact justice, or revenge against each other. " +
+				"Your captors can be raiders, or even militia members of a nearby town. " +
+				"The only way to be freed, is to be freed by your captor, or have a friend break you out. " +
+				"Try using " + ChatColor.AQUA + "/ep locate " + ChatColor.GOLD + "to see who you are held by, or where you are held.");
+	}
+
 
 	/**
 	 * Announce the person in a pearl when a player holds it
