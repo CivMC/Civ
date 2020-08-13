@@ -26,6 +26,7 @@ public class BlockTransformation {
 	 * 
 	 * 
 	 * @param loc       Location the current LStep is at
+	 * @return Whether the transformation could be applied
 	 */
 	public boolean applyAt(Location loc) {
 		return applyAt(loc.getBlock());

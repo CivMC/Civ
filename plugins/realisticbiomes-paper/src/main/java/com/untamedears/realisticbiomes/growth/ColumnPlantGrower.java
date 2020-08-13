@@ -6,6 +6,10 @@ import org.bukkit.block.BlockFace;
 
 import com.untamedears.realisticbiomes.model.Plant;
 
+import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.util.DelayedItemDrop;
+
 public class ColumnPlantGrower extends IArtificialGrower {
 
 	public static Block getRelativeBlock(Block block, BlockFace face) {
@@ -24,10 +28,12 @@ public class ColumnPlantGrower extends IArtificialGrower {
 
 	private int maxHeight;
 	private Material material;
+	private boolean instaBreakTouching;
 	
-	public ColumnPlantGrower(int maxHeight, Material material) {
+	public ColumnPlantGrower(int maxHeight, Material material, boolean instaBreakTouching) {
 		this.maxHeight = maxHeight;
 		this.material = material;
+		this.instaBreakTouching = instaBreakTouching;
 	}
 	
 	public Material getMaterial() {
@@ -41,7 +47,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 
 	@Override
 	public int getMaxStage() {
-		return 1;
+		return maxHeight - 1;
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		Block bottom = getRelativeBlock(block, BlockFace.DOWN);
 		Block top = getRelativeBlock(block, BlockFace.UP);
 
-		return top.getY() - bottom.getY();
+		return top.getY() - bottom.getY() + 1;
 	}
 
 	/**
@@ -72,7 +78,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	 * @param howMany How tall should the growth be
 	 * @return highest plant block
 	 */
-	protected Block growOnTop(Block block, int howMany) {
+	protected Block growOnTop(Plant plant, Block block, int howMany) {
 		if (material != null && block.getType() != material) {
 			block.setType(material);
 		}
@@ -84,7 +90,20 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
-				onTop.setType(material, true);
+				boolean dropped = false;
+				if (instaBreakTouching) {
+					for(BlockFace face : BlockAPI.PLANAR_SIDES) {
+						Block side = onTop.getRelative(face);
+						if (!MaterialAPI.isAir(side.getType())) {
+							DelayedItemDrop.dropAt(onTop, plant.getGrowthConfig().getItem().clone());
+							dropped = true;
+							break;
+						}
+					}
+				}
+				if (!dropped) {
+					onTop.setType(material, true);
+				}
 				howMany--;
 				continue;
 			}
@@ -102,11 +121,12 @@ public class ColumnPlantGrower extends IArtificialGrower {
 
 	@Override
 	public void setStage(Plant plant, int stage) {
-		if (stage == 0) {
+		int currentStage = getStage(plant);
+		if (currentStage <= stage) {
 			return;
 		}
 		Block block = plant.getLocation().getBlock();
-		growOnTop(block, stage);
+		growOnTop(plant, block, stage - currentStage);
 	}
 
 

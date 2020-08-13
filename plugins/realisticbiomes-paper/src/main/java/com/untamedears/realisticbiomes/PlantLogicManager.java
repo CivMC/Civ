@@ -46,7 +46,7 @@ public class PlantLogicManager {
 			Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
 			if (bottomColumnPlant != null) {
 				bottomColumnPlant.resetCreationTime();
-				initGrowthTime(bottomColumnPlant, sourceColumn);
+				updateGrowthTime(bottomColumnPlant, sourceColumn);
 			}
 		}
 		if (fruitBlocks != null && fruitBlocks.contains(block.getType())) {
@@ -68,8 +68,8 @@ public class PlantLogicManager {
 				}
 				if (grower.getTurnedDirection(possibleStem) == face.getOppositeFace()) {
 					stem.resetCreationTime();
-					initGrowthTime(stem, possibleStem);
 					grower.setStage(stem, 0);
+					updateGrowthTime(stem, possibleStem);
 				}
 			}
 		}
@@ -105,10 +105,10 @@ public class PlantLogicManager {
 		}
 		Plant plant = new Plant(block.getLocation(), growthConfig);
 		plantManager.putPlant(plant);
-		initGrowthTime(plant, block);
+		updateGrowthTime(plant, block);
 	}
 
-	public void initGrowthTime(Plant plant, Block block) {
+	public void updateGrowthTime(Plant plant, Block block) {
 		PlantGrowthConfig growthConfig = plant.getGrowthConfig();
 		if (growthConfig == null) {
 			growthConfig = growthConfigManager.getGrowthConfigFallback(block.getType());

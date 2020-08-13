@@ -6,6 +6,7 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 
@@ -102,7 +103,12 @@ public class FruitGrower extends IArtificialGrower {
 	@Override
 	public void setStage(Plant plant, int stage) {
 		if (stage == 0) {
-			plant.getLocation().getBlock().setType(nonAttachedStem, true);
+			Block block = plant.getLocation().getBlock();
+			block.setType(nonAttachedStem, true);
+			if (block.getBlockData() instanceof Ageable) {
+				Ageable ageable = (Ageable) block.getBlockData();
+				ageable.setAge(ageable.getMaximumAge());
+			}
 			return;
 		}
 		growFruit(plant.getLocation().getBlock());

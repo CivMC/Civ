@@ -56,7 +56,7 @@ public class AgeableGrower extends IArtificialGrower {
 
 	@Override
 	public boolean deleteOnFullGrowth() {
-		return true;
+		return false;
 	}
 
 }

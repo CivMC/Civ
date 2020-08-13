@@ -47,11 +47,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	private BiomeGrowthConfig biomeGrowthConfig;
 	private IArtificialGrower grower;
+	private boolean canBePlantedDirectly;
 
 	public PlantGrowthConfig(String name, short id, ItemStack item, Map<Material, Double> greenHouseRates,
 			Map<Material, Double> soilBoniPerLevel, int maximumSoilLayers, double maximumSoilBonus,
 			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight, IArtificialGrower grower,
-			List<Material> applicableVanillaPlants) {
+			List<Material> applicableVanillaPlants, boolean canBePlantedDirectly) {
 		super(name);
 		this.id = id;
 		this.item = item;
@@ -63,6 +64,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		this.biomeGrowthConfig = biomeGrowthConfig;
 		this.grower = grower;
 		this.needsLight = needsLight;
+		this.canBePlantedDirectly = canBePlantedDirectly;
 		this.applicableVanillaPlants = applicableVanillaPlants;
 	}
 
@@ -184,6 +186,13 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	
 	public IArtificialGrower getGrower() {
 		return grower;
+	}
+	
+	/**
+	 * @return Whether a plant of this config can be created by placing its matching item down. Will be false for melons or pumpkins for example
+	 */
+	public boolean canBePlantedDirectly() {
+		return canBePlantedDirectly;
 	}
 
 	/**

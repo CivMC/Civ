@@ -77,7 +77,7 @@ public class RealisticBiomesGUI {
 				representation = Material.BARRIER;
 			}
 			ItemStack is = new ItemStack(representation);
-			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + ItemNames.getItemName(plant.getItem()));
+			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
 			List<String> lore = new ArrayList<>();
 			BiomeGrowthConfig config = plant.getBiomeGrowthConfig();
 			double biomeMultiplier = config.getBiomeMultiplier(currentBiome);
@@ -120,7 +120,7 @@ public class RealisticBiomesGUI {
 				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilLayers()));
 			}
-			if (plant.getMaximumSoilBonus() != Integer.MAX_VALUE) {
+			if (plant.getMaximumSoilBonus() < Integer.MAX_VALUE) {
 				lore.add(String.format("%sMax Soil Bonus: %s%.2f", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilBonus()));
 			}

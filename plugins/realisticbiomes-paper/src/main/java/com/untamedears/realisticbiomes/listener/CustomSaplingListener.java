@@ -41,7 +41,7 @@ public class CustomSaplingListener {
 		}
 		Plant plant = new Plant(e.getBlock().getLocation(), growthConfig);
 		plantManager.putPlant(plant);
-		logicManager.initGrowthTime(plant, e.getBlock());
+		logicManager.updateGrowthTime(plant, e.getBlock());
 	}
 
 }

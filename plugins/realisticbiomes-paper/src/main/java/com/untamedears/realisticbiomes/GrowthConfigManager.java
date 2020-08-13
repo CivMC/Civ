@@ -67,11 +67,11 @@ public class GrowthConfigManager {
 
 	/**
 	 * Gets the plant growth config responsible for further growth related to this
-	 * block. For fully grown stems this will return the fruits config, for
+	 * plant based on its block state. For fully grown stems this will return the fruits config, for
 	 * everything else the normal growth config
 	 * 
-	 * @param block Block to get growth config for
-	 * @return Growth config, possibly null if no config for the given block exists
+	 * @param plant Plant to get growth config for
+	 * @return Growth config, possibly null if no config for the block of the given plant exists
 	 */
 	public PlantGrowthConfig getPlantGrowthConfigFallback(Plant plant) {
 		Block block = plant.getLocation().getBlock();

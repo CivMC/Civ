@@ -123,7 +123,7 @@ public class RBConfigManager extends CoreConfigManager {
 		lTrees = parseLTrees(config.getConfigurationSection("l_trees"), rawConfigs);
 		return true;
 	}
-	
+
 	private void remapStemFruitConfigs() {
 		for (PlantGrowthConfig plantConfig : plantConfigs) {
 			if (!(plantConfig.getGrower() instanceof StemGrower)) {
@@ -164,8 +164,8 @@ public class RBConfigManager extends CoreConfigManager {
 			}
 			ConfigurationSection current = config.getConfigurationSection(key);
 			if (!current.isItemStack("item")) {
-				logger.warning(
-						"Growth config " + key + " does not have an item specified, it will not be directly plantable");
+				logger.warning("Growth config " + key + " does not have an item specified, it was ignored");
+				continue;
 			}
 			ItemStack item = current.getItemStack("item", null);
 			List<Material> vanillaMats = parseMaterialList(current, "vanilla_materials");
@@ -206,6 +206,7 @@ public class RBConfigManager extends CoreConfigManager {
 				persistTime = ConfigParsing.parseTime(current.getString("persistent_growth_period"),
 						TimeUnit.MILLISECONDS);
 			}
+			String name = current.getString("name", key);
 			double baseChance = current.getDouble("base_rate", 1.0);
 			BiomeGrowthConfig biomeGrowth;
 			if (persistTime != null) {
@@ -224,13 +225,15 @@ public class RBConfigManager extends CoreConfigManager {
 			double maximumSoilBonus = current.getDouble("max_soil_bonus", Integer.MAX_VALUE);
 			boolean allowBoneMeal = current.getBoolean("allow_bonemeal", false);
 			boolean needsLight = current.getBoolean("needs_sun_light", true);
+			boolean canBePlantedDirectly = current.getBoolean("can_be_planted", true);
 			IArtificialGrower grower = parseGrower(current.getConfigurationSection("grower"), item);
 			if (grower == null) {
 				logger.warning("Failed to parse a grower at " + current.getCurrentPath() + ", skipped it");
 				continue;
 			}
-			PlantGrowthConfig growthConfig = new PlantGrowthConfig(key, id, item, greenHouseRates, soilBoniPerLevel,
-					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight, grower, vanillaMats);
+			PlantGrowthConfig growthConfig = new PlantGrowthConfig(name, id, item, greenHouseRates, soilBoniPerLevel,
+					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight, grower, vanillaMats,
+					canBePlantedDirectly);
 			result.add(growthConfig);
 		}
 		return result;
@@ -258,7 +261,8 @@ public class RBConfigManager extends CoreConfigManager {
 			return new BambooGrower(maxHeight);
 		case "column":
 			int maxHeight2 = section.getInt("max_height", 3);
-			return new ColumnPlantGrower(maxHeight2, material);
+			boolean instaBreakTouching = section.getBoolean("insta_break_toching", false);
+			return new ColumnPlantGrower(maxHeight2, material, instaBreakTouching);
 		case "fruit":
 			Material stemMat = MaterialAPI.getMaterial(section.getString("stem_type"));
 			if (stemMat == null) {
@@ -270,7 +274,7 @@ public class RBConfigManager extends CoreConfigManager {
 				logger.warning("No attached stem material specified at " + section.getCurrentPath());
 				return null;
 			}
-			return new FruitGrower(material, stemMat, attachedStemMat);
+			return new FruitGrower(material, attachedStemMat, stemMat);
 		case "ageable":
 			int maxStage = section.getInt("max_stage", 7);
 			int increment = section.getInt("increment", 1);

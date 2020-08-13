@@ -149,10 +149,10 @@ public class TreeGrower extends AgeableGrower {
 
 	@Override
 	public void setStage(Plant plant, int stage) {
-		Block block = plant.getLocation().getBlock();
 		if (stage < 1) {
 			return;
 		}
+		Block block = plant.getLocation().getBlock();
 		// Re-Read the block data to make sure it is up to date
 		if (!(block.getBlockData() instanceof Sapling)) {
 			return;
@@ -175,6 +175,11 @@ public class TreeGrower extends AgeableGrower {
 			//failed, so restore sapling, TODO restore 2x2
 			block.setType(mat);
 		}
+	}
+	
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return true;
 	}
 
 }

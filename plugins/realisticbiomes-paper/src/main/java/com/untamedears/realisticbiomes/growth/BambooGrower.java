@@ -5,18 +5,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bamboo;
 
+import com.untamedears.realisticbiomes.model.Plant;
+
 public class BambooGrower extends ColumnPlantGrower {
 	protected static final int LEAVES_AMOUNT = 3;
 	protected static final int LARGE_LEAVES_START_HEIGHT = 5;
 
 	public BambooGrower(int maxHeight) {
-		super(maxHeight, Material.BAMBOO);
+		super(maxHeight, Material.BAMBOO, false);
 	}
 
 	@Override
-	protected Block growOnTop(Block block, int howMany) {
+	protected Block growOnTop(Plant plant, Block block, int howMany) {
 		// Actual growth is here:
-		Block highestBlock = super.growOnTop(block, howMany);
+		Block highestBlock = super.growOnTop(plant, block, howMany);
 		handleProperLeafGrowth(block, highestBlock);
 
 		return highestBlock;

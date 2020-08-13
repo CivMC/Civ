@@ -150,7 +150,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		}
 		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
 			for (Plant plant : toUpdate) {
-				logicMan.initGrowthTime(plant, plant.getLocation().getBlock());
+				logicMan.updateGrowthTime(plant, plant.getLocation().getBlock());
 			}
 		});
 	}

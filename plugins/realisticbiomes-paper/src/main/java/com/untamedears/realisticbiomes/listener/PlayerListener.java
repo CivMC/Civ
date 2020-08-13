@@ -18,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import com.untamedears.realisticbiomes.AnimalConfigManager;
 import com.untamedears.realisticbiomes.GrowthConfigManager;
 import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -63,6 +64,7 @@ public class PlayerListener implements Listener {
 		if (plantConfig == null) {
 			return;
 		}
+		RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
 		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));
 		if (event.getPlayer().hasPermission("rb.op")) {
 			event.getPlayer().sendMessage(plant.toString());
