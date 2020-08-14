@@ -18,7 +18,7 @@ public class TeleportUtil {
 		//static only, no constructor
 	}
 	
-	private static boolean checkForTeleportSpace(Location loc) {
+	public static boolean checkForTeleportSpace(Location loc) {
 		final Block block = loc.getBlock();
 		final Material mat = block.getType();
 		if (mat.isSolid()) {

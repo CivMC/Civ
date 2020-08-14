@@ -534,4 +534,45 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		dead.sendMessage(ChatColor.RED + String.format("You were slain by %s at [%s %d, %d, %d]",
 				killer, loc.getWorld().getName(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()));
 	}
+	
+	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+	public void hitGoldBlock(PlayerInteractEvent event) {
+		if (event.getAction() != Action.LEFT_CLICK_BLOCK) {
+			return;
+		}
+		Block block = event.getClickedBlock();
+		if (block == null) {
+			return;
+		}
+		if (block.getType() != Material.GOLD_BLOCK) {
+			return;
+		}
+		for(int y = block.getY(); y <= 255; y++) {
+			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
+			if (target.getType() != Material.GOLD_BLOCK) {
+				continue;
+			}
+			if (!TeleportUtil.checkForTeleportSpace(target.getLocation())) {
+				continue;
+			}
+			Location adjustedLocation = block.getLocation().clone();
+			adjustedLocation.add(0.5, 0.02, 0.5);
+			event.getPlayer().teleport(adjustedLocation);
+			return;
+		}
+		for(int y = block.getY(); y > 0; y--) {
+			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
+			if (target.getType() != Material.GOLD_BLOCK) {
+				continue;
+			}
+			if (!TeleportUtil.checkForTeleportSpace(target.getLocation())) {
+				continue;
+			}
+			Location adjustedLocation = block.getLocation().clone();
+			adjustedLocation.add(0.5, 0.02, 0.5);
+			event.getPlayer().teleport(adjustedLocation);
+			return;
+		}
+		event.getPlayer().sendMessage(ChatColor.RED + "No suitable destination was found");
+	}
 }

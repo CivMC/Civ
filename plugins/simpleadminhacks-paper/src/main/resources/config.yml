@@ -41,6 +41,7 @@ hacks:
     minecartTeleport: true
     obsidianGenerators: true
     personalDeathMessages: true
+    goldBlockTeleport: false
   GameFixes:
     enabled: true
     # Does not fully work atm
