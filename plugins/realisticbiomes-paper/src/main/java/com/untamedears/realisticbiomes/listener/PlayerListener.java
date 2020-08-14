@@ -31,7 +31,8 @@ public class PlayerListener implements Listener {
 	private PlantManager plantManager;
 	private DecimalFormat decimalFormat = new DecimalFormat("0.####");
 
-	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager, PlantManager plantManager) {
+	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager,
+			PlantManager plantManager) {
 		this.growthConfigs = growthConfigs;
 		this.animalManager = animalManager;
 		this.plantManager = plantManager;
@@ -55,14 +56,35 @@ public class PlayerListener implements Listener {
 		}
 		Plant plant = plantManager.getPlant(block);
 		if (plant == null) {
-			return;
+			PlantGrowthConfig growthConfig = growthConfigs.getGrowthConfigFallback(block.getType());
+			if (growthConfig == null) {
+				return;
+			}
+			if (RBUtils.isFruit(block.getType())) {
+				return;
+			}
+			if (growthConfig.isPersistent()) {
+				// a plant should be here, but isn't
+				plant = new Plant(block.getLocation(), growthConfig);
+				plantManager.putPlant(plant);
+			} else {
+				return;
+			}
 		}
 		PlantGrowthConfig plantConfig = plant.getGrowthConfig();
 		if (plantConfig == null) {
-			growthConfigs.getPlantGrowthConfigFallback(plant);
-		}
-		if (plantConfig == null) {
-			return;
+			plantConfig = growthConfigs.getPlantGrowthConfigFallback(plant);
+			if (plantConfig == null) {
+				return;
+			}
+			if (plantConfig.isPersistent()) {
+				plant.setGrowthConfig(plantConfig);
+			} else {
+				// a plant with no growth config and no fallback for it could be determined, so
+				// deleted it
+				plantManager.deletePlant(plant);
+				return;
+			}
 		}
 		RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
 		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));

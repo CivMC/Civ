@@ -35,7 +35,6 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 			this.growthConfig = growthConfig;
 			setDirty();
 		}
-
 	}
 
 	@Override

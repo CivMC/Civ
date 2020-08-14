@@ -50,8 +50,8 @@ public class RBDAO extends TableStorageEngine<Plant> {
 	public void cleanupBatches() {
 		try (Connection conn = db.getConnection();
 				PreparedStatement insertPlant = conn.prepareStatement(
-						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time) "
-								+ "values(?,?,?, ?,?,?, ?);");) {
+						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time, type) "
+								+ "values(?,?,?, ?,?,?, ?,?);");) {
 			for (PlantTuple tuple : batches.get(0)) {
 				setInsertDataStatement(insertPlant, tuple.plant, tuple.coord);
 				insertPlant.addBatch();
@@ -61,7 +61,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
 		}
 		try (Connection conn = db.getConnection();
-				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? where "
+				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ?, type = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
 			for (PlantTuple tuple : batches.get(0)) {
 				setUpdateDataStatement(updatePlant, tuple.plant, tuple.coord);

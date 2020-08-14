@@ -1,8 +1,11 @@
 package com.untamedears.realisticbiomes.growth;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.model.Plant;
 
@@ -56,12 +59,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 		if (material != block.getType()) {
 			return -1;
 		}
-		if (getActualHeight(block) < maxHeight) {
-			// can grow more
-			return 0;
-		}
-		// fully grown
-		return 1;
+		return getActualHeight(block) - 1;
 	}
 
 	protected int getActualHeight(Block block) {
@@ -90,20 +88,22 @@ public class ColumnPlantGrower extends IArtificialGrower {
 			onTop = onTop.getRelative(BlockFace.UP);
 			Material topMaterial = onTop.getType();
 			if (topMaterial == Material.AIR) {
-				boolean dropped = false;
 				if (instaBreakTouching) {
 					for(BlockFace face : BlockAPI.PLANAR_SIDES) {
 						Block side = onTop.getRelative(face);
 						if (!MaterialAPI.isAir(side.getType())) {
-							DelayedItemDrop.dropAt(onTop, plant.getGrowthConfig().getItem().clone());
-							dropped = true;
-							break;
+							ItemStack toDrop = plant.getGrowthConfig().getItem().clone();
+							toDrop.setAmount(howMany);
+							Location loc = block.getLocation();
+							loc.add(0.5, 0.5, 0.5);
+							Item item = block.getWorld().dropItemNaturally(loc, toDrop);
+							item.setVelocity(item.getVelocity().multiply(1.2));
+							plant.resetCreationTime();
+							return onTop.getRelative(BlockFace.DOWN);
 						}
 					}
 				}
-				if (!dropped) {
-					onTop.setType(material, true);
-				}
+				onTop.setType(material, true);
 				howMany--;
 				continue;
 			}
@@ -122,7 +122,7 @@ public class ColumnPlantGrower extends IArtificialGrower {
 	@Override
 	public void setStage(Plant plant, int stage) {
 		int currentStage = getStage(plant);
-		if (currentStage <= stage) {
+		if (stage <= currentStage) {
 			return;
 		}
 		Block block = plant.getLocation().getBlock();

@@ -114,7 +114,7 @@ public class RealisticBiomes extends ACivMod {
 
 	private void registerListeners() {
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new PlantListener(this, plantManager), this);
+		pm.registerEvents(new PlantListener(this, plantManager, plantLogicManager), this);
 		pm.registerEvents(new AnimalListener(animalManager), this);
 		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
 		pm.registerEvents(new DropListener(blockDropManager), this);

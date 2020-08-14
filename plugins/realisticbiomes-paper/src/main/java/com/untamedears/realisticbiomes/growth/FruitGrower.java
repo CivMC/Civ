@@ -56,7 +56,7 @@ public class FruitGrower extends IArtificialGrower {
 			if (hasPlant(block)) {
 				return 1;
 			}
-			block.setType(nonAttachedStem); // doesn't have a fruit, but is attached type, so fix
+			setStage(plant, 0); // doesn't have a fruit, but is attached type, so fix
 			return 0;
 		}
 		if (block.getType() != nonAttachedStem) {
@@ -87,6 +87,7 @@ public class FruitGrower extends IArtificialGrower {
 			block.setType(attachedStem);
 			Directional stem = (Directional) block.getBlockData();
 			stem.setFacing(face);
+			block.setBlockData(stem);
 			return;
 		}
 	}
@@ -105,10 +106,12 @@ public class FruitGrower extends IArtificialGrower {
 		if (stage == 0) {
 			Block block = plant.getLocation().getBlock();
 			block.setType(nonAttachedStem, true);
-			if (block.getBlockData() instanceof Ageable) {
-				Ageable ageable = (Ageable) block.getBlockData();
+			BlockData data = block.getBlockData();
+			if (data instanceof Ageable) {
+				Ageable ageable = (Ageable) data;
 				ageable.setAge(ageable.getMaximumAge());
 			}
+			block.setBlockData(data);
 			return;
 		}
 		growFruit(plant.getLocation().getBlock());

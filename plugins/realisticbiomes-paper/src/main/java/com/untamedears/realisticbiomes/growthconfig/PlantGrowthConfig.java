@@ -227,7 +227,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	public String getPlantInfoString(Block block, Plant plant) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(ItemNames.getItemName(block.getType()));
+		sb.append(this.name);
 		if (plant == null) {
 			// non-persistent growth
 			double progress = grower.getProgressGrowthStage(new Plant(block.getLocation(), this));
@@ -245,7 +245,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			if (timeRemaining >= INFINITE_TIME) {
 				sb.append(" will never grow here");
 			} else {
-				sb.append(" will grow ");
+				sb.append(" will grow to full size ");
 				if (timeRemaining <= 0) {
 					sb.append("now");
 				} else {
@@ -362,6 +362,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 				RealisticBiomes.getInstance().getLogger().warning("Failed to update stage for " + block.toString());
 				//delete
 				plant.getOwningCache().remove(plant);
+				return Long.MAX_VALUE;
+			}
+			if (intendedState != grower.getStage(plant)) {
+				//setting the state failed due to some external condition, we assume this wont change any time soon
 				return Long.MAX_VALUE;
 			}
 		}

@@ -8,6 +8,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -21,25 +22,26 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
+import com.untamedears.realisticbiomes.PlantLogicManager;
 import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class PlantListener implements Listener {
 
 	private final RealisticBiomes plugin;
 	private PlantManager plantManager;
+	private PlantLogicManager plantLogicManager;
 
-
-	public PlantListener(RealisticBiomes plugin, PlantManager plantManager) {
+	public PlantListener(RealisticBiomes plugin, PlantManager plantManager, PlantLogicManager plantLogicManager) {
 		this.plugin = plugin;
 		this.plantManager = plantManager;
+		this.plantLogicManager = plantLogicManager;
 	}
-
-
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void on(BlockPistonExtendEvent event) {
@@ -65,10 +67,42 @@ public class PlantListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
-		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getBlock());
+		handleGrowEvent(event, event.getBlock(), event.getNewState().getType());
+	}
+
+	private void handleGrowEvent(Cancellable event, Block sourceBlock, Material material) {
+		Plant plant = plantManager.getPlant(sourceBlock);
+		PlantGrowthConfig growthConfig;
+		if (plant == null) {
+			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
+			if (growthConfig == null) {
+				// vanilla
+				return;
+			}
+			if (RBUtils.isFruit(material)) {
+				growthConfig.handleAttemptedGrowth(event, sourceBlock);
+				return;
+			}
+			if (growthConfig.isPersistent()) {
+				// a plant should be here, but isn't
+				plant = new Plant(sourceBlock.getLocation(), growthConfig);
+				plantManager.putPlant(plant);
+				plantLogicManager.updateGrowthTime(plant, sourceBlock);
+			}
+		} else {
+			growthConfig = plant.getGrowthConfig();
+			if (growthConfig == null) {
+				growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
+			}
+			if (growthConfig == null) {
+				plantManager.deletePlant(plant);
+				return;
+			} else {
+				plant.setGrowthConfig(growthConfig);
+			}
 		}
+		plantLogicManager.updateGrowthTime(plant, sourceBlock);
+		growthConfig.handleAttemptedGrowth(event, sourceBlock);
 	}
 
 	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
@@ -95,10 +129,8 @@ public class PlantListener implements Listener {
 			event.setCancelled(true);
 		}
 		// handle trees etc.
-		Plant plant = plugin.getPlantManager().getPlant(event.getLocation());
-		if (plant != null) {
-			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getLocation().getBlock());
-		}
+		Block block = event.getLocation().getBlock();
+		handleGrowEvent(event, block, block.getType());
 	}
 
 	/*

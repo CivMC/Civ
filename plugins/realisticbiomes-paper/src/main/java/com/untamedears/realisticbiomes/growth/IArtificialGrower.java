@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes.growth;
 
+import org.bukkit.block.Block;
+
 import com.untamedears.realisticbiomes.model.Plant;
 
 /**

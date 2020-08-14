@@ -103,6 +103,11 @@ public class PlantLogicManager {
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
+		if (growthConfig.getGrower() instanceof ColumnPlantGrower) {
+			if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
+				return;
+			}
+		}
 		Plant plant = new Plant(block.getLocation(), growthConfig);
 		plantManager.putPlant(plant);
 		updateGrowthTime(plant, block);
