@@ -150,6 +150,7 @@ public class PrintBookRecipe extends PrintingPressRecipe {
 	
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		return Arrays.asList("Something");
+		ItemStack is = new ItemStack(Material.WRITTEN_BOOK, outputAmount);
+		return formatLore(new ItemMap(is));
 	}
 }

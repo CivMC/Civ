@@ -1,7 +1,6 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -15,7 +14,6 @@ import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 import com.github.igotyou.FactoryMod.recipes.scaling.ProductionRecipeModifier;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
 /**
@@ -163,12 +161,6 @@ public class ProductionRecipe extends InputRecipe {
 	
 	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<String> result = new ArrayList<>();
-		for(Entry <ItemStack, Integer> entry : output.getEntrySet()) {
-			if (entry.getValue() > 0) {
-				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
-			}
-		}
-		return result;
+		return formatLore(output);
 	}
 }

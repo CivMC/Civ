@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.Inventory;
@@ -74,13 +75,7 @@ public abstract class InputRecipe implements IRecipe {
 	 * @return List of Strings each describing one component needed as input for this recipe
 	 */
 	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
-		List<String> result = new ArrayList<>();
-		for(Entry <ItemStack, Integer> entry : input.getEntrySet()) {
-			if (entry.getValue() > 0) {
-				result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
-			}
-		}
-		return result;
+		return formatLore(input);
 	}
 
 	/**
@@ -205,10 +200,8 @@ public abstract class InputRecipe implements IRecipe {
 				possibleRuns.addItemAmount(entry.getKey(), inventoryMap.getAmount(entry.getKey()) / entry.getValue());
 			} else {
 				possibleRuns.addItemAmount(entry.getKey(), 0);
-
 			}
 		}
-
 		for (ItemStack is : input.getItemStackRepresentation()) {
 			ItemAPI.addLore(is, ChatColor.GREEN + "Enough materials for " + String.valueOf(possibleRuns.getAmount(is))
 					+ " runs");
@@ -228,6 +221,24 @@ public abstract class InputRecipe implements IRecipe {
 	@Override
 	public int hashCode() {
 		return identifier.hashCode();
+	}
+
+	protected List<String> formatLore(ItemMap ingredients) {
+		List<String> result = new ArrayList<>();
+		for(Entry <ItemStack, Integer> entry : ingredients.getEntrySet()) {
+			if (entry.getValue() > 0) {
+				if (!entry.getKey().hasItemMeta()) {
+					result.add(entry.getValue() + " " + ItemNames.getItemName(entry.getKey()));
+				} else {
+					String lore = String.format("%s %s%s", entry.getValue(), ChatColor.ITALIC, ItemNames.getItemName(entry.getKey()));
+					if (entry.getKey().getItemMeta().hasDisplayName()) {
+						lore += String.format("%s [%s]", ChatColor.DARK_AQUA, StringUtils.abbreviate(entry.getKey().getItemMeta().getDisplayName(), 20));
+					}
+					result.add(lore);
+				}
+			}
+		}
+		return result;
 	}
 
 }
