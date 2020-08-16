@@ -98,6 +98,9 @@ hacks:
     #a list of materials players shouldn't be allowed to place at all
     noplace:
      - DRAGON_EGG
+    rainReduction:
+      emabled: false
+      rainOccurrenceChance: .5
   CTAnnounce:
     enabled: false
     delay: 10000

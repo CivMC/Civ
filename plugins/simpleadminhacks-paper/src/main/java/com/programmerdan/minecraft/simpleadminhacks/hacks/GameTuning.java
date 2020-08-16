@@ -35,6 +35,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerBedEnterEvent.BedEnterResult;
+import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.meta.SpawnEggMeta;
@@ -179,6 +180,13 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 			genStatus.append("  Bad Omen is ");
 			if (config.isBadOmenEnabled()) {
+				genStatus.append("enabled\n");
+			} else {
+				genStatus.append("disabled\n");
+			}
+
+			genStatus.append("  Rain reduction is ");
+			if (config.isRainReductionEnabled()) {
 				genStatus.append("enabled\n");
 			} else {
 				genStatus.append("disabled\n");
@@ -418,7 +426,6 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 	}
 
-
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent event) {
 		if(config.isEnabled() && config.isPreventFallingThroughBedrock() && event.getTo().getY() < 1
@@ -427,7 +434,6 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 	}
 
-
 	@EventHandler
 	public void onBadOmenEffect(EntityPotionEffectEvent event) {
 		if (!config.isEnabled() || config.isBadOmenEnabled()) {
@@ -435,6 +441,16 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 		}
 		PotionEffect effect = event.getNewEffect();
 		if (effect != null && effect.getType().equals(PotionEffectType.BAD_OMEN)) {
+			event.setCancelled(true);
+		}
+	}
+
+	@EventHandler
+	public void onRain(WeatherChangeEvent event) {
+		if (!config.isEnabled() || config.isRainReductionEnabled()) {
+			return;
+		}
+		if (event.toWeatherState() && Math.random() >= config.getRainOccurrenceChance()) {
 			event.setCancelled(true);
 		}
 	}
