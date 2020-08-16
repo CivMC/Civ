@@ -447,11 +447,12 @@ public class GameTuning extends SimpleHack<GameTuningConfig> implements Listener
 
 	@EventHandler
 	public void onRain(WeatherChangeEvent event) {
-		if (!config.isEnabled() || config.isRainReductionEnabled()) {
+		if (!config.isEnabled() || !config.isRainReductionEnabled()) {
 			return;
 		}
 		if (event.toWeatherState() && Math.random() >= config.getRainOccurrenceChance()) {
 			event.setCancelled(true);
+			plugin().getLogger().info("Rain event was cancelled");
 		}
 	}
 }
