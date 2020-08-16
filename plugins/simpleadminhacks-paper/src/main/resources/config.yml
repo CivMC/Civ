@@ -99,7 +99,7 @@ hacks:
     noplace:
      - DRAGON_EGG
     rainReduction:
-      emabled: false
+      enabled: false
       rainOccurrenceChance: .5
   CTAnnounce:
     enabled: false
