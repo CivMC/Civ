@@ -55,6 +55,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	private boolean badOmen;
 
+	private boolean rainReduction;
+	private double rainOccurrenceChance;
+
 	private Set<Material> noPlace;
 
 	public GameTuningConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
@@ -68,6 +71,9 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 		ConfigurationSection daytimeBed = config.getConfigurationSection("daytimeBed");
 		wireupDaytimeBed(daytimeBed);
+
+		ConfigurationSection rainReduction = config.getConfigurationSection("rainReduction");
+		wireupRainReduction(rainReduction);
 
 		this.oneToOneNether = config.getBoolean("oneToOneNether", false);
 		if (oneToOneNether) plugin().log("One to One Nether is enabled.");
@@ -194,6 +200,15 @@ public class GameTuningConfig extends SimpleHackConfig {
 				config.getString("spawnSetMessage", ChatColor.GRAY + "Your spawn has been set."));
 	}
 
+	private void wireupRainReduction(ConfigurationSection config) {
+		if (config == null) {
+			this.rainReduction = false;
+			return;
+		}
+		this.rainReduction = config.getBoolean("enabled", false);
+		this.rainOccurrenceChance = config.getDouble("rainOccurrenceChance");
+	}
+
 	/**
 	 * @return true / false if chunk limits are on
 	 */
@@ -308,6 +323,14 @@ public class GameTuningConfig extends SimpleHackConfig {
 
 	public boolean isBadOmenEnabled() {
 		return badOmen;
+	}
+
+	public boolean isRainReductionEnabled() {
+		return rainReduction;
+	}
+
+	public double getRainOccurrenceChance() {
+		return rainOccurrenceChance;
 	}
 
 	public boolean canPlace(Material mat) {
