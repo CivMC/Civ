@@ -37,6 +37,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.minecart.HopperMinecart;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -216,7 +217,9 @@ public class PlayerListener implements Listener, Configurable {
 	public void onInventoryPickupItem(InventoryPickupItemEvent e) {
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getItem().getItemStack());
 		if(pearl != null){
-			if (e.getInventory().getType() == InventoryType.HOPPER) {
+			if (e.getInventory().getHolder() instanceof HopperMinecart) {
+				e.setCancelled(true);
+			} else if (e.getInventory().getType() == InventoryType.HOPPER) {
 				pearl.setHolder(e.getInventory().getLocation().getBlock());
 			}
 		}
