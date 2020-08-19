@@ -1,6 +1,7 @@
 package com.untamedears.realisticbiomes.growthconfig;
 
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -9,7 +10,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
+import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
@@ -29,7 +33,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	private static final long INFINITE_TIME = TimeUnit.DAYS.toMillis(365L * 1000L);
 	private static final DecimalFormat decimalFormat = new DecimalFormat("0.00");
 
-	private Material material;
+	private ItemStack item;
+	private short id;
+
+	private List<Material> applicableVanillaPlants;
 
 	private Map<Material, Double> greenHouseRates;
 
@@ -42,20 +49,27 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	private BiomeGrowthConfig biomeGrowthConfig;
 	private IArtificialGrower grower;
+	private boolean canBePlantedDirectly;
+	private boolean needsToBeWaterlogged;
 
-	public PlantGrowthConfig(String name, Material material, Map<Material, Double> greenHouseRates,
+	public PlantGrowthConfig(String name, short id, ItemStack item, Map<Material, Double> greenHouseRates,
 			Map<Material, Double> soilBoniPerLevel, int maximumSoilLayers, double maximumSoilBonus,
-			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight) {
+			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight, IArtificialGrower grower,
+			List<Material> applicableVanillaPlants, boolean canBePlantedDirectly, boolean needsToBeWaterlogged) {
 		super(name);
-		this.material = RBUtils.getRemappedMaterial(material);
+		this.id = id;
+		this.item = item;
 		this.greenHouseRates = greenHouseRates;
 		this.soilBoniPerLevel = soilBoniPerLevel;
 		this.maximumSoilLayers = maximumSoilLayers;
 		this.maximumSoilBonus = maximumSoilBonus;
 		this.allowBoneMeal = allowBoneMeal;
 		this.biomeGrowthConfig = biomeGrowthConfig;
-		this.grower = IArtificialGrower.getAppropriateGrower(this.material);
+		this.grower = grower;
 		this.needsLight = needsLight;
+		this.canBePlantedDirectly = canBePlantedDirectly;
+		this.applicableVanillaPlants = applicableVanillaPlants;
+		this.needsToBeWaterlogged = needsToBeWaterlogged;
 	}
 
 	/**
@@ -70,7 +84,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		double lightMultiplier = getLightMultiplier(b);
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(ItemNames.getItemName(material));
+		sb.append(ItemNames.getItemName(item));
 		if (biomeGrowthConfig instanceof PersistentGrowthConfig) {
 			long time = getPersistentGrowthTime(b);
 			if (time == -1) {
@@ -100,6 +114,14 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			sb.append(ChatColor.GOLD + "Light multiplier: " + lightMultiplier);
 		}
 		return sb.toString();
+	}
+
+	public short getID() {
+		return id;
+	}
+
+	public List<Material> getApplicableVanillaPlants() {
+		return applicableVanillaPlants;
 	}
 
 	/**
@@ -132,10 +154,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	}
 
 	/**
-	 * @return Material/Plant for which this config applies
+	 * @return Item/Plant for which this config applies
 	 */
-	public Material getMaterial() {
-		return material;
+	public ItemStack getItem() {
+		return item;
 	}
 
 	public  Map<Material, Double> getGreenHouseRates() {
@@ -148,6 +170,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	public double getMaximumSoilBonus() {
 		return maximumSoilBonus;
+	}
+	
+	public boolean needsToBeWaterLogged() {
+		return needsToBeWaterlogged;
 	}
 
 	public Map<Material, Double> getSoilBoniPerLevel() {
@@ -164,6 +190,17 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	public BiomeGrowthConfig getBiomeGrowthConfig() {
 		return biomeGrowthConfig;
+	}
+	
+	public IArtificialGrower getGrower() {
+		return grower;
+	}
+	
+	/**
+	 * @return Whether a plant of this config can be created by placing its matching item down. Will be false for melons or pumpkins for example
+	 */
+	public boolean canBePlantedDirectly() {
+		return canBePlantedDirectly;
 	}
 
 	/**
@@ -198,16 +235,16 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	public String getPlantInfoString(Block block, Plant plant) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(ChatColor.GOLD);
-		sb.append(ItemNames.getItemName(block.getType()));
+		sb.append(this.name);
 		if (plant == null) {
 			// non-persistent growth
-			double progress = grower.getProgressGrowthStage(block);
+			double progress = grower.getProgressGrowthStage(new Plant(block.getLocation(), this));
 			sb.append(" is ");
 			sb.append(decimalFormat.format(progress * 100));
 			sb.append(" % grown");
 		} else {
-			if (isFullyGrown(block)) {
-				sb.append(" is fully grown");
+			if (isFullyGrown(plant)) {
+				sb.append(" is fully grown ");
 				return sb.toString();
 			}
 			long totalTime = getPersistentGrowthTime(block);
@@ -216,7 +253,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			if (timeRemaining >= INFINITE_TIME) {
 				sb.append(" will never grow here");
 			} else {
-				sb.append(" will grow ");
+				sb.append(" will grow to full size ");
 				if (timeRemaining <= 0) {
 					sb.append("now");
 				} else {
@@ -247,6 +284,21 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			}
 			totalRate += blockRate;
 			soilBlock = soilBlock.getRelative(BlockFace.DOWN);
+		}
+		if (needsToBeWaterlogged) {
+			boolean hasWater = false;
+			if (block.getType() == Material.WATER) {
+				hasWater = true;
+			}
+			else {
+				BlockData data = block.getBlockData();
+				if (data instanceof Waterlogged) {
+					hasWater = ((Waterlogged) data).isWaterlogged();
+				}
+			}
+			if (!hasWater) {
+				return 0.0;
+			}
 		}
 		return Math.min(totalRate, maximumSoilBonus);
 	}
@@ -282,8 +334,8 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * @return True if the plant has reached its maximum growth stage, false
 	 *         otherwise
 	 */
-	public boolean isFullyGrown(Block block) {
-		return grower.getMaxStage() == grower.getStage(block);
+	public boolean isFullyGrown(Plant plant) {
+		return grower.getMaxStage() == grower.getStage(plant);
 	}
 
 	public boolean isPersistent() {
@@ -303,10 +355,17 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	 * @param plant Plant to update
 	 * @param block Block the plant is at
 	 * @return UNIX time stamp at which the plant needs to be updated next if it is
-	 *         still growing or Long.MAX_VALUE if it will never grow or is already
-	 *         full grown
+	 *         still growing or Long.MAX_VALUE if it will never grow or if it is already
+	 *         fully grown
 	 */
 	public long updatePlant(Plant plant, Block block) {
+		if (plant.getGrowthConfig() == null) {
+			plant.setGrowthConfig(this);
+		}
+		if (plant.getGrowthConfig() != this) {
+			throw new IllegalStateException("Can not grow plant with different growth config, at " + plant.getLocation()
+					+ " with " + plant.getGrowthConfig().getName() + ", but this is " + getName());
+		}
 		if (!biomeGrowthConfig.canGrowIn(block.getBiome())) {
 			return Long.MAX_VALUE;
 		}
@@ -319,27 +378,32 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
 		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
-		if (intendedState != grower.getStage(block)) {
+		int currentStage = grower.getStage(plant);
+		if (currentStage < 0) {
+			plant.getOwningCache().remove(plant);
+			return Long.MAX_VALUE;
+		}
+		if (intendedState != currentStage) {
 			try {
-				grower.setStage(block, intendedState);
+				grower.setStage(plant, intendedState);
 			} catch (IllegalArgumentException e) {
 				RealisticBiomes.getInstance().getLogger().warning("Failed to update stage for " + block.toString());
 				//delete
 				plant.getOwningCache().remove(plant);
 				return Long.MAX_VALUE;
 			}
-		}
-		if (intendedState == grower.getMaxStage()) {
-			if (RBUtils.resetProgressOnGrowth(block.getType())) {
-				plant.resetCreationTime();
-				// a new different config may now be responsible, for example if we just grew a
-				// melon stem
-				PlantGrowthConfig newConfig = RealisticBiomes.getInstance().getGrowthConfigManager()
-						.getPlantGrowthConfig(block);
-				// this should not lead to recursion horror, assuming the grower behavior is bug
-				// free
-				return newConfig.updatePlant(plant, block);
+			if (intendedState != grower.getStage(plant)) {
+				//setting the state failed due to some external condition, we assume this wont change any time soon
+				return Long.MAX_VALUE;
 			}
+		}
+		if (plant.getGrowthConfig() != this) {
+			//happens for example when a stem fully grows
+			return plant.getGrowthConfig().updatePlant(plant, block);
+		}
+
+		if (intendedState == grower.getMaxStage() && grower.deleteOnFullGrowth()) {
+			plant.getOwningCache().remove(plant);
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();
@@ -347,6 +411,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		nextProgressStage = Math.min(nextProgressStage, 1.0);
 		long timeFromCreationTillNextStage = (long) (totalTime * nextProgressStage);
 		return creationTime + timeFromCreationTillNextStage;
+	}
+	
+	public String toString() {
+		return getName();
 	}
 
 }

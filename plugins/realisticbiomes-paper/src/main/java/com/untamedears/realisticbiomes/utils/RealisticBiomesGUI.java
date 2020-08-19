@@ -7,18 +7,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
-import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
-
 import org.apache.commons.lang.StringUtils;
-
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.BiomeGrowthConfig;
+import com.untamedears.realisticbiomes.growthconfig.inner.PersistentGrowthConfig;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
@@ -65,20 +64,20 @@ public class RealisticBiomesGUI {
 			int comparision = Double.compare(p2.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)
 					, p1.getBiomeGrowthConfig().getBiomeMultiplier(currentBiome)); //reverse order
 			if (comparision == 0) {
-				return p1.getMaterial().compareTo(p2.getMaterial());
+				return p1.getItem().getType().compareTo(p2.getItem().getType());
 			} else {
 				return comparision;
 			}
 		});
 		for (PlantGrowthConfig plant : plantConfigs) {
-			Material representation = plant.getMaterial();
+			Material representation = plant.getItem().getType();
 			if (representation == Material.COCOA) {
 				representation = Material.COCOA_BEANS;
 			} else if (!representation.isItem()) {
 				representation = Material.BARRIER;
 			}
 			ItemStack is = new ItemStack(representation);
-			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + ItemNames.getItemName(plant.getMaterial()));
+			ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + plant.getName());
 			List<String> lore = new ArrayList<>();
 			BiomeGrowthConfig config = plant.getBiomeGrowthConfig();
 			double biomeMultiplier = config.getBiomeMultiplier(currentBiome);
@@ -121,7 +120,7 @@ public class RealisticBiomesGUI {
 				lore.add(String.format("%sMax Soil Layers: %s%d", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilLayers()));
 			}
-			if (plant.getMaximumSoilBonus() != Integer.MAX_VALUE) {
+			if (plant.getMaximumSoilBonus() < Integer.MAX_VALUE) {
 				lore.add(String.format("%sMax Soil Bonus: %s%.2f", ChatColor.DARK_AQUA,
 						ChatColor.GRAY, plant.getMaximumSoilBonus()));
 			}

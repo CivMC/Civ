@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.realisticbiomes.listener.AnimalListener;
+import com.untamedears.realisticbiomes.listener.BonemealListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -11,6 +12,7 @@ import com.untamedears.realisticbiomes.model.RBChunkCache;
 import com.untamedears.realisticbiomes.model.RBDAO;
 
 import vg.civcraft.mc.civmodcore.ACivMod;
+import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.BlockBasedChunkMetaView;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.api.ChunkMetaAPI;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
@@ -68,6 +70,7 @@ public class RealisticBiomes extends ACivMod {
 
 	@Override
 	public void onEnable() {
+		this.useNewCommandHandler = true;
 		super.onEnable();
 		RealisticBiomes.plugin = this;
 		configManager = new RBConfigManager(this);
@@ -100,9 +103,10 @@ public class RealisticBiomes extends ACivMod {
 
 	private void registerListeners() {
 		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new PlantListener(this), this);
+		pm.registerEvents(new PlantListener(this, plantManager, plantLogicManager), this);
 		pm.registerEvents(new AnimalListener(animalManager), this);
-		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager), this);
+		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
+		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
 	}
 
 }

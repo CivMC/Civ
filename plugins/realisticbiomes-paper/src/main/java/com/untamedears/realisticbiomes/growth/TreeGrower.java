@@ -1,13 +1,14 @@
 package com.untamedears.realisticbiomes.growth;
 
-import com.untamedears.realisticbiomes.PlantManager;
-import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.model.Plant;
 import org.bukkit.Material;
 import org.bukkit.TreeType;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Sapling;
+
+import com.untamedears.realisticbiomes.PlantManager;
+import com.untamedears.realisticbiomes.RealisticBiomes;
+import com.untamedears.realisticbiomes.model.Plant;
 
 public class TreeGrower extends AgeableGrower {
 
@@ -130,24 +131,27 @@ public class TreeGrower extends AgeableGrower {
 			return null;
 		}
 	}
+	
 
-	public TreeGrower() {
-		super(1, 1);
+	public TreeGrower(Material saplingType) {
+		super(saplingType, 1, 1);
 	}
 
 	@Override
-	public int getStage(Block block) {
-		if (!(block.getBlockData() instanceof Sapling)) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		if (block.getType() != this.material) {
 			return -1;
 		}
 		return 0;
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
 		if (stage < 1) {
 			return;
 		}
+		Block block = plant.getLocation().getBlock();
 		// Re-Read the block data to make sure it is up to date
 		if (!(block.getBlockData() instanceof Sapling)) {
 			return;
@@ -166,7 +170,15 @@ public class TreeGrower extends AgeableGrower {
 		} else {
 			block.setType(Material.AIR);
 		}
-		block.getLocation().getWorld().generateTree(block.getLocation(), type);
+		if (!block.getLocation().getWorld().generateTree(block.getLocation(), type)) {
+			//failed, so restore sapling, TODO restore 2x2
+			block.setType(mat);
+		}
+	}
+	
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return true;
 	}
 
 }

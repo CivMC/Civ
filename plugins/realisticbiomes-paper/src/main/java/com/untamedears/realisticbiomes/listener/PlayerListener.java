@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.AnimalConfigManager;
 import com.untamedears.realisticbiomes.GrowthConfigManager;
+import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.AnimalMateConfig;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
@@ -27,11 +28,14 @@ public class PlayerListener implements Listener {
 
 	private GrowthConfigManager growthConfigs;
 	private AnimalConfigManager animalManager;
+	private PlantManager plantManager;
 	private DecimalFormat decimalFormat = new DecimalFormat("0.####");
 
-	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager) {
+	public PlayerListener(GrowthConfigManager growthConfigs, AnimalConfigManager animalManager,
+			PlantManager plantManager) {
 		this.growthConfigs = growthConfigs;
 		this.animalManager = animalManager;
+		this.plantManager = plantManager;
 	}
 
 	// show plant progress when right clicking it with stick
@@ -50,15 +54,43 @@ public class PlayerListener implements Listener {
 		if (RBUtils.isFruit(block.getType())) {
 			return;
 		}
-		PlantGrowthConfig plantConfig = growthConfigs.getPlantGrowthConfig(block);
+		Plant plant = plantManager.getPlant(block);
+		if (plant == null) {
+			PlantGrowthConfig growthConfig = growthConfigs.getGrowthConfigFallback(block.getType());
+			if (growthConfig == null) {
+				return;
+			}
+			if (RBUtils.isFruit(block.getType())) {
+				return;
+			}
+			if (growthConfig.isPersistent()) {
+				// a plant should be here, but isn't
+				plant = new Plant(block.getLocation(), growthConfig);
+				plantManager.putPlant(plant);
+			} else {
+				return;
+			}
+		}
+		PlantGrowthConfig plantConfig = plant.getGrowthConfig();
 		if (plantConfig == null) {
-			return;
+			plantConfig = growthConfigs.getPlantGrowthConfigFallback(plant);
+			if (plantConfig == null) {
+				return;
+			}
+			if (plantConfig.isPersistent()) {
+				plant.setGrowthConfig(plantConfig);
+			} else {
+				// a plant with no growth config and no fallback for it could be determined, so
+				// deleted it
+				plantManager.deletePlant(plant);
+				return;
+			}
 		}
-		Plant plant = null;
-		if (RealisticBiomes.getInstance().getPlantManager() != null) {
-			plant = RealisticBiomes.getInstance().getPlantManager().getPlant(block);
-		}
+		RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
 		event.getPlayer().sendMessage(plantConfig.getPlantInfoString(block, plant));
+		if (event.getPlayer().hasPermission("rb.op")) {
+			event.getPlayer().sendMessage(plant.toString());
+		}
 	}
 
 	// show animal rates when right clicking them with stick
@@ -92,14 +124,9 @@ public class PlayerListener implements Listener {
 		if (event.getItem() == null) {
 			return;
 		}
-		Material material = RBUtils.getRemappedMaterial(event.getItem().getType());
-		if (material == null) {
-			return;
-		}
-		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigStraight(material);
+		ItemStack item = event.getItem();
+		PlantGrowthConfig plantConfig = growthConfigs.getGrowthConfigByItem(item);
 		if (plantConfig == null) {
-			event.getPlayer().sendMessage(
-					ChatColor.GOLD + "Growth behavior for " + material.toString() + " is entirely vanilla");
 			return;
 		}
 		event.getPlayer()

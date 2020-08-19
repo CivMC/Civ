@@ -1,62 +1,68 @@
 package com.untamedears.realisticbiomes.growth;
 
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import com.untamedears.realisticbiomes.model.Plant;
 
+/**
+ * Parent class for any block specific growth logic. Growth of a block is
+ * subdivided into steps, where the initial state is 0 and the final (fully
+ * grown) state is a positive integer. Growth happens in increments by a static
+ * amount in between these numbers.
+ * 
+ * Growth stages may, but must not necessarily map to Ageable BlockStates, how
+ * exactly stages are interpreted is entirely up to the implementation
+ *
+ */
 public abstract class IArtificialGrower {
 
-	public static IArtificialGrower getAppropriateGrower(Material material) {
-		switch (material) {
-		case POTATO:
-		case CARROT:
-			return new AgeableGrower(7, 3);
-		case WHEAT:
-		case WHEAT_SEEDS:
-		case MELON_SEEDS:
-		case PUMPKIN_SEEDS:
-			return new AgeableGrower(7, 1);
-		case COCOA:
-			return new AgeableGrower(2, 1);
-		case OAK_SAPLING:
-		case BIRCH_SAPLING:
-		case ACACIA_SAPLING:
-		case CHORUS_FLOWER:
-		case DARK_OAK_SAPLING:
-		case JUNGLE_SAPLING:
-		case SPRUCE_SAPLING:
-			return new TreeGrower();
-		case NETHER_WART:
-		case BEETROOT_SEEDS:
-		case BEETROOTS:
-		case BEETROOT:
-			return new AgeableGrower(3, 1);
-		case PUMPKIN:
-		case MELON:
-			return new FruitGrower();
-		case CACTUS:
-		case SUGAR_CANE:
-			return new ColumnPlantGrower(3);
-		case BAMBOO:
-			return new BambooGrower(12);
-		default:
-			throw new IllegalArgumentException(material.name() + " can not be grown");
-		}
+	/**
+	 * Grows the given plant to its maximum growth stage possible
+	 * 
+	 * @param plant Plant to grow
+	 */
+	public void fullyGrow(Plant plant) {
+		setStage(plant, getMaxStage());
 	}
 
-	public void fullyGrow(Block block) {
-		setStage(block, getMaxStage());
-	}
-
+	/**
+	 * 
+	 * @return How many growth stages should be progressed at once
+	 */
 	public abstract int getIncrementPerStage();
 
+	/**
+	 * @return Maximum growth stage achievable
+	 */
 	public abstract int getMaxStage();
 
-	public double getProgressGrowthStage(Block block) {
-		return (double) getStage(block) / getMaxStage();
+	/**
+	 * How far the plant has grown as a fraction from 0 to 1
+	 * 
+	 * @param plant Plant to check growth for
+	 * @return Growth on a scale from 0 to 1
+	 */
+	public double getProgressGrowthStage(Plant plant) {
+		return (double) getStage(plant) / getMaxStage();
 	}
 
-	public abstract int getStage(Block block);
+	/**
+	 * Gets the current growth stage of the given plant
+	 * 
+	 * @param plant Plant to get growth stage for
+	 * @return Current growth stage of the plant between 0 and maxStage (inclusive). -1 if the plant is completely broken/gone
+	 */
+	public abstract int getStage(Plant plant);
 
-	public abstract void setStage(Block block, int stage);
+	/**
+	 * Sets the growth stage of the given plant to the given number
+	 * 
+	 * @param plant Plant to set growth stage for
+	 * @param stage Stage to set to
+	 */
+	public abstract void setStage(Plant plant, int stage);
+
+	/**
+	 * @return Should a plant instance be deleted entirely once fully grown
+	 */
+	public abstract boolean deleteOnFullGrowth();
 
 }

@@ -6,16 +6,38 @@ import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.Ageable;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Directional;
 
-import com.untamedears.realisticbiomes.utils.RBUtils;
+import com.untamedears.realisticbiomes.model.Plant;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class FruitGrower extends IArtificialGrower {
 
 	private List<Material> validSoil = Arrays.asList(Material.DIRT, Material.GRASS_BLOCK, Material.FARMLAND);
+	private Material attachedStem;
+	private Material nonAttachedStem;
+	private Material fruitMaterial;
+
+	public FruitGrower(Material fruitMaterial, Material attachedStem, Material nonAttachedStem) {
+		this.fruitMaterial = fruitMaterial;
+		this.attachedStem = attachedStem;
+		this.nonAttachedStem = nonAttachedStem;
+	}
+	
+	public Material getAttachedStemMaterial() {
+		return attachedStem;
+	}
+	
+	public Material getNonattachedStemMaterial() {
+		return nonAttachedStem;
+	}
+	
+	public Material getFruitMaterial() {
+		return fruitMaterial;
+	}
 
 	@Override
 	public int getIncrementPerStage() {
@@ -28,11 +50,27 @@ public class FruitGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
-		if (hasPlant(block)) {
-			return 1;
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		if (block.getType() == attachedStem) {
+			if (hasPlant(block)) {
+				return 1;
+			}
+			setStage(plant, 0); // doesn't have a fruit, but is attached type, so fix
+			return 0;
+		}
+		if (block.getType() != nonAttachedStem) {
+			return -1;
 		}
 		return 0;
+	}
+	
+	public BlockFace getTurnedDirection(Block block) {
+		if (!(block.getBlockData() instanceof Directional)) {
+			return null;
+		}
+		Directional data = (Directional) block.getBlockData();
+		return data.getFacing();
 	}
 
 	private void growFruit(Block block) {
@@ -45,32 +83,43 @@ public class FruitGrower extends IArtificialGrower {
 			if (!validSoil.contains(below.getType())) {
 				continue;
 			}
-			Material fruitMat = RBUtils.getFruit(block.getType());
-			if (fruitMat != null) {
-				// TODO attach stem?
-				fruitBlock.setType(fruitMat, true);
-				return;
-			}
+			fruitBlock.setType(fruitMaterial, true);
+			block.setType(attachedStem);
+			Directional stem = (Directional) block.getBlockData();
+			stem.setFacing(face);
+			block.setBlockData(stem);
+			return;
 		}
 	}
 
-	private static boolean hasPlant(Block block) {
+	private boolean hasPlant(Block block) {
 		BlockData data = block.getBlockData();
 		if (data instanceof Directional) {
 			Directional dir = (Directional) data;
-			return block.getRelative(dir.getFacing()).getType() == RBUtils.getFruit(block.getType());
+			return block.getRelative(dir.getFacing()).getType() == fruitMaterial;
 		}
 		return false;
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
 		if (stage == 0) {
-			// TODO We could remove the attached fruit if one exists, would that ever be
-			// desired behavior?
+			Block block = plant.getLocation().getBlock();
+			block.setType(nonAttachedStem, true);
+			BlockData data = block.getBlockData();
+			if (data instanceof Ageable) {
+				Ageable ageable = (Ageable) data;
+				ageable.setAge(ageable.getMaximumAge());
+			}
+			block.setBlockData(data);
 			return;
 		}
-		growFruit(block);
+		growFruit(plant.getLocation().getBlock());
+	}
+
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return false;
 	}
 
 }

@@ -1,9 +1,11 @@
 package com.untamedears.realisticbiomes.listener;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,15 +19,23 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 
+import com.untamedears.realisticbiomes.PlantLogicManager;
+import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
+import com.untamedears.realisticbiomes.model.Plant;
+import com.untamedears.realisticbiomes.utils.RBUtils;
 
 public class PlantListener implements Listener {
 
 	private final RealisticBiomes plugin;
+	private PlantManager plantManager;
+	private PlantLogicManager plantLogicManager;
 
-	public PlantListener(RealisticBiomes plugin) {
+	public PlantListener(RealisticBiomes plugin, PlantManager plantManager, PlantLogicManager plantLogicManager) {
 		this.plugin = plugin;
+		this.plantManager = plantManager;
+		this.plantLogicManager = plantLogicManager;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -44,7 +54,7 @@ public class PlantListener implements Listener {
 	public void onBlockBreak(BlockBreakEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
 	}
-	
+
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onExplosion(BlockExplodeEvent event) {
 		plugin.getPlantLogicManager().handleBlockDestruction(event.getBlock());
@@ -52,16 +62,59 @@ public class PlantListener implements Listener {
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockGrow(BlockGrowEvent event) {
-		Material newType = event.getNewState().getType();
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager().getGrowthConfigStraight(newType);
-		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getBlock());
+		handleGrowEvent(event, event.getBlock(), event.getNewState().getType());
+	}
+
+	private void handleGrowEvent(Cancellable event, Block sourceBlock, Material material) {
+		Plant plant = plantManager.getPlant(sourceBlock);
+		PlantGrowthConfig growthConfig;
+		if (plant == null) {
+			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
+			if (growthConfig == null) {
+				// vanilla
+				return;
+			}
+			if (RBUtils.isFruit(material)) {
+				growthConfig.handleAttemptedGrowth(event, sourceBlock);
+				return;
+			}
+			if (growthConfig.isPersistent()) {
+				// a plant should be here, but isn't
+				plant = new Plant(sourceBlock.getLocation(), growthConfig);
+				plantManager.putPlant(plant);
+				plantLogicManager.updateGrowthTime(plant, sourceBlock);
+			}
+		} else {
+			growthConfig = plant.getGrowthConfig();
+			if (growthConfig == null) {
+				growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(material);
+			}
+			if (growthConfig == null) {
+				plantManager.deletePlant(plant);
+				return;
+			} else {
+				plant.setGrowthConfig(growthConfig);
+			}
 		}
+		plantLogicManager.updateGrowthTime(plant, sourceBlock);
+		growthConfig.handleAttemptedGrowth(event, sourceBlock);
+	}
+
+	private PlantGrowthConfig getGrowthConfigFallback(Block block) {
+		Plant plant = plantManager.getPlant(block);
+		PlantGrowthConfig growthConfig = null;
+		if (plant != null) {
+			growthConfig = plant.getGrowthConfig();
+		}
+		if (growthConfig == null) {
+			growthConfig = plugin.getGrowthConfigManager().getGrowthConfigFallback(block.getType());
+		}
+		return growthConfig;
 	}
 
 	@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 	public void onBlockPlace(BlockPlaceEvent event) {
-		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock());
+		plugin.getPlantLogicManager().handlePlantCreation(event.getBlock(), event.getItemInHand());
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
@@ -71,34 +124,36 @@ public class PlantListener implements Listener {
 			event.setCancelled(true);
 		}
 		// handle trees etc.
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getLocation().getBlock());
-		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getLocation().getBlock());
-		}
+		Block block = event.getLocation().getBlock();
+		handleGrowEvent(event, block, block.getType());
 	}
 
 	/*
-	 * If Bamboo and Kelp stop answering to these events, this spigot bug might have been solved and should contain more
-	 * info on how to update accordingly:
-	 *   https://hub.spigotmc.org/jira/browse/SPIGOT-5312
+	 * If Bamboo and Kelp stop answering to these events, this spigot bug might have
+	 * been solved and should contain more info on how to update accordingly:
+	 * https://hub.spigotmc.org/jira/browse/SPIGOT-5312
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
-		PlantGrowthConfig growthConfig = plugin.getGrowthConfigManager()
-				.getPlantGrowthConfig(event.getSource());
+		Plant plant = plugin.getPlantManager().getPlant(event.getSource());
+		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
 		if (growthConfig != null) {
-			growthConfig.handleAttemptedGrowth(event, event.getSource());
+			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onChunkLoad(ChunkLoadEvent event) {
 		Chunk c = event.getChunk();
-		Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0 , c.getZ() << 4);
-		plugin.getPlantManager().applyForAllInChunk(loc, p ->  {
-			plugin.getPlantLogicManager().initGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15, 
-					p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
-		});
+		Bukkit.getScheduler().runTaskLater(RealisticBiomes.getInstance(), () -> {
+			if (!c.isLoaded()) {
+				return;
+			}
+			Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0, c.getZ() << 4);
+			plugin.getPlantManager().applyForAllInChunk(loc, p -> {
+				plugin.getPlantLogicManager().updateGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15,
+						p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
+			});
+		}, 1);
 	}
 }

@@ -1,19 +1,24 @@
 package com.untamedears.realisticbiomes.growth;
 
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+
+import com.untamedears.realisticbiomes.model.Plant;
 
 /**
  * Handles growing of anything implementing Ageable (Crops, Cocoa etc.)
  */
 public class AgeableGrower extends IArtificialGrower {
 
-	private int maxStage;
-	private int increment;
+	protected final int maxStage;
+	protected final int increment;
+	protected final Material material;
 
-	public AgeableGrower(int maxStage, int increment) {
+	public AgeableGrower(Material material, int maxStage, int increment) {
 		this.maxStage = maxStage;
 		this.increment = increment;
+		this.material = material;
 	}
 
 	@Override
@@ -27,7 +32,11 @@ public class AgeableGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public int getStage(Block block) {
+	public int getStage(Plant plant) {
+		Block block = plant.getLocation().getBlock();
+		if (block.getType() != material) {
+			return -1;
+		}
 		if (!(block.getBlockData() instanceof Ageable)) {
 			return -1;
 		}
@@ -35,13 +44,19 @@ public class AgeableGrower extends IArtificialGrower {
 	}
 
 	@Override
-	public void setStage(Block block, int stage) {
+	public void setStage(Plant plant, int stage) {
+		Block block = plant.getLocation().getBlock();
 		if (!(block.getBlockData() instanceof Ageable)) {
-			throw new IllegalArgumentException("Can not set age for non Ageable");
+			throw new IllegalArgumentException("Can not set age for non Ageable plant " + plant.getGrowthConfig());
 		}
 		Ageable ageable = ((Ageable) block.getBlockData());
 		ageable.setAge(stage);
 		block.setBlockData(ageable, true);
+	}
+
+	@Override
+	public boolean deleteOnFullGrowth() {
+		return false;
 	}
 
 }
