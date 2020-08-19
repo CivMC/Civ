@@ -5,6 +5,7 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -95,6 +96,12 @@ public interface ExilePearl {
 	 * @param item The new pearl item
 	 */
 	void setHolder(Item item);
+
+	/**
+	 * Sets the pearl holder to an entity
+	 * @param entity The new pearl entity
+	 */
+	void setHolder(Entity entity);
 
     /**
      * Gets the pearl health value

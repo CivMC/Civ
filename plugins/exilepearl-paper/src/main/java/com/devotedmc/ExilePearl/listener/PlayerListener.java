@@ -35,6 +35,7 @@ import org.bukkit.entity.EnderPearl;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Item;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
@@ -55,6 +56,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
+import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -64,6 +66,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.CraftingInventory;
+import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemFlag;
@@ -340,7 +343,7 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param holder The pearl holder
 	 * @param event The event
 	 */
-	private void updatePearlHolder(ExilePearl pearl, InventoryHolder holder, Cancellable event) {
+	private void  updatePearlHolder(ExilePearl pearl, InventoryHolder holder, Cancellable event) {
 
 		if (holder instanceof Chest) {
 			updatePearl(pearl, (Chest)holder);
@@ -360,7 +363,16 @@ public class PlayerListener implements Listener, Configurable {
 			updatePearl(pearl, (Barrel) holder);
 		} else if (holder instanceof Player) {
 			updatePearl(pearl, (Player) holder);
-		}else {
+		} else {
+			event.setCancelled(true);
+		}
+	}
+
+
+	private void updatePearlHolder(ExilePearl pearl, Entity entity, Cancellable event) {
+		if (entity instanceof ItemFrame) {
+			updatePearl(pearl, (ItemFrame) entity);
+		} else {
 			event.setCancelled(true);
 		}
 	}
@@ -373,6 +385,16 @@ public class PlayerListener implements Listener, Configurable {
 	 */
 	private <ItemBlock extends InventoryHolder & BlockState> void updatePearl(ExilePearl pearl, ItemBlock block) {
 		pearl.setHolder(block.getBlock());
+	}
+
+
+	/**
+	 * Updates the pearl status
+	 * @param pearl The prison pearl
+	 * @param e The entity holding the pearl
+	 */
+	private void updatePearl(ExilePearl pearl, Entity e) {
+		pearl.setHolder(e);
 	}
 
 
@@ -424,6 +446,20 @@ public class PlayerListener implements Listener, Configurable {
 		}
 	}
 
+	/**
+	 * Listen for pearl being moved to item frame
+	 * @param event
+	 */
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+		if (event.getRightClicked() instanceof ItemFrame) {
+			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getPlayer().getInventory().getItemInMainHand());
+			if (pearl != null) {
+				pearl.setHolder(event.getRightClicked());
+			}
+		}
+	}
+
 
 	/**
 	 * Track the location of a pearl
@@ -458,20 +494,25 @@ public class PlayerListener implements Listener, Configurable {
 
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
-
 				InventoryHolder holder = clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
 				if (holder != null) {
 					updatePearlHolder(pearl, holder, event);
 				}
 			}
 		}
-		else if(event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {			
+		else if(event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
 			ExilePearl pearl = pearlApi.getPearlFromItemStack(event.getCurrentItem());
 
 			if(pearl != null) {
 				boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
 
 				InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+
+				// ShiftClicking into a furnace will not move the pearl into the furnace so the pearlHolder should not be updated
+				if (event.getClick().isShiftClick() && holder != null && holder.getInventory() instanceof FurnaceInventory) {
+					return;
+				}
+
 				if(holder != null && holder.getInventory().firstEmpty() >= 0) {
 					updatePearlHolder(pearl, holder, event);
 				}

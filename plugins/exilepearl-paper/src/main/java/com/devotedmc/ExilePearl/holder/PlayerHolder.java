@@ -1,5 +1,6 @@
 package com.devotedmc.ExilePearl.holder;
 
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -31,7 +32,7 @@ public class PlayerHolder implements PearlHolder {
 
 	@Override
 	public String getName() {
-		return player.getName();
+		return ChatColor.AQUA + player.getName();
 	}
 
 	@Override
