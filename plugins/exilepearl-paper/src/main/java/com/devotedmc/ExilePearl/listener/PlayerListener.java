@@ -54,7 +54,10 @@ import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryPickupItemEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.inventory.PrepareItemCraftEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -203,6 +206,26 @@ public class PlayerListener implements Listener, Configurable {
 		}
 		Item item = (Item) e.getEntity();
 		ExilePearl pearl = pearlApi.getPearlFromItemStack(item.getItemStack());
+		if(pearl != null){
+			e.setCancelled(true);
+		}
+	}
+
+	// Listen for hoppers picking up pearls
+	@EventHandler
+	public void onInventoryPickupItem(InventoryPickupItemEvent e) {
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getItem().getItemStack());
+		if(pearl != null){
+			if (e.getInventory().getType() == InventoryType.HOPPER) {
+				pearl.setHolder(e.getInventory().getLocation().getBlock());
+			}
+		}
+	}
+
+	// prevent hoppers moving pearls
+	@EventHandler
+	public void onInventoryMoveItemEvent(InventoryMoveItemEvent e) {
+		ExilePearl pearl = pearlApi.getPearlFromItemStack(e.getItem());
 		if(pearl != null){
 			e.setCancelled(true);
 		}
