@@ -12,7 +12,6 @@ import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
-import com.untamedears.realisticbiomes.utils.RBUtils;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 

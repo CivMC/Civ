@@ -132,7 +132,6 @@ public class TreeGrower extends AgeableGrower {
 		}
 	}
 	
-	private Material saplingType;
 
 	public TreeGrower(Material saplingType) {
 		super(saplingType, 1, 1);
@@ -141,7 +140,7 @@ public class TreeGrower extends AgeableGrower {
 	@Override
 	public int getStage(Plant plant) {
 		Block block = plant.getLocation().getBlock();
-		if (block.getType() != saplingType) {
+		if (block.getType() != this.material) {
 			return -1;
 		}
 		return 0;

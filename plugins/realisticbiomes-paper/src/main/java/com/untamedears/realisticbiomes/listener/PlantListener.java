@@ -1,8 +1,5 @@
 package com.untamedears.realisticbiomes.listener;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -25,8 +22,6 @@ import org.bukkit.event.world.StructureGrowEvent;
 import com.untamedears.realisticbiomes.PlantLogicManager;
 import com.untamedears.realisticbiomes.PlantManager;
 import com.untamedears.realisticbiomes.RealisticBiomes;
-import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
-import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 import com.untamedears.realisticbiomes.utils.RBUtils;

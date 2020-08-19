@@ -10,6 +10,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
 import org.bukkit.inventory.ItemStack;
 
@@ -48,11 +50,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	private BiomeGrowthConfig biomeGrowthConfig;
 	private IArtificialGrower grower;
 	private boolean canBePlantedDirectly;
+	private boolean needsToBeWaterlogged;
 
 	public PlantGrowthConfig(String name, short id, ItemStack item, Map<Material, Double> greenHouseRates,
 			Map<Material, Double> soilBoniPerLevel, int maximumSoilLayers, double maximumSoilBonus,
 			boolean allowBoneMeal, BiomeGrowthConfig biomeGrowthConfig, boolean needsLight, IArtificialGrower grower,
-			List<Material> applicableVanillaPlants, boolean canBePlantedDirectly) {
+			List<Material> applicableVanillaPlants, boolean canBePlantedDirectly, boolean needsToBeWaterlogged) {
 		super(name);
 		this.id = id;
 		this.item = item;
@@ -66,6 +69,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		this.needsLight = needsLight;
 		this.canBePlantedDirectly = canBePlantedDirectly;
 		this.applicableVanillaPlants = applicableVanillaPlants;
+		this.needsToBeWaterlogged = needsToBeWaterlogged;
 	}
 
 	/**
@@ -166,6 +170,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 
 	public double getMaximumSoilBonus() {
 		return maximumSoilBonus;
+	}
+	
+	public boolean needsToBeWaterLogged() {
+		return needsToBeWaterlogged;
 	}
 
 	public Map<Material, Double> getSoilBoniPerLevel() {
@@ -277,6 +285,21 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			totalRate += blockRate;
 			soilBlock = soilBlock.getRelative(BlockFace.DOWN);
 		}
+		if (needsToBeWaterlogged) {
+			boolean hasWater = false;
+			if (block.getType() == Material.WATER) {
+				hasWater = true;
+			}
+			else {
+				BlockData data = block.getBlockData();
+				if (data instanceof Waterlogged) {
+					hasWater = ((Waterlogged) data).isWaterlogged();
+				}
+			}
+			if (!hasWater) {
+				return 0.0;
+			}
+		}
 		return Math.min(totalRate, maximumSoilBonus);
 	}
 
@@ -355,7 +378,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
 		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
-		if (intendedState != grower.getStage(plant)) {
+		int currentStage = grower.getStage(plant);
+		if (currentStage < 0) {
+			plant.getOwningCache().remove(plant);
+			return Long.MAX_VALUE;
+		}
+		if (intendedState != currentStage) {
 			try {
 				grower.setStage(plant, intendedState);
 			} catch (IllegalArgumentException e) {

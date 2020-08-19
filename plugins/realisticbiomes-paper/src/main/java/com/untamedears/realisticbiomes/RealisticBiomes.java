@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.realisticbiomes.listener.AnimalListener;
+import com.untamedears.realisticbiomes.listener.BonemealListener;
 import com.untamedears.realisticbiomes.listener.DropListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
@@ -118,6 +119,7 @@ public class RealisticBiomes extends ACivMod {
 		pm.registerEvents(new AnimalListener(animalManager), this);
 		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
 		pm.registerEvents(new DropListener(blockDropManager), this);
+		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
 	}
 
 }

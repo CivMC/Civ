@@ -25,6 +25,7 @@ import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
+import com.untamedears.realisticbiomes.growth.SeaPickleGrower;
 import com.untamedears.realisticbiomes.growth.StemGrower;
 import com.untamedears.realisticbiomes.growth.TreeGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
@@ -54,6 +55,8 @@ public class RBConfigManager extends CoreConfigManager {
 	private Set<PlantGrowthConfig> plantConfigs;
 	private Map<String, RBSchematic> schematics;
 	private List<LTree> lTrees;
+	
+	private List<Material> bonemealPreventedBlocks;
 
 	public RBConfigManager(ACivMod plugin) {
 		super(plugin);
@@ -121,6 +124,7 @@ public class RBConfigManager extends CoreConfigManager {
 		remapStemFruitConfigs();
 		List<LStepConfig> rawConfigs = parseRawLStepConfigs(config.getConfigurationSection("l_steps"));
 		lTrees = parseLTrees(config.getConfigurationSection("l_trees"), rawConfigs);
+		bonemealPreventedBlocks = parseMaterialList(config, "no_bonemeal_blocks");
 		return true;
 	}
 
@@ -226,6 +230,7 @@ public class RBConfigManager extends CoreConfigManager {
 			boolean allowBoneMeal = current.getBoolean("allow_bonemeal", false);
 			boolean needsLight = current.getBoolean("needs_sun_light", true);
 			boolean canBePlantedDirectly = current.getBoolean("can_be_planted", true);
+			boolean needsToBeWaterLogged = current.getBoolean("waterlog_required", false);
 			IArtificialGrower grower = parseGrower(current.getConfigurationSection("grower"), item);
 			if (grower == null) {
 				logger.warning("Failed to parse a grower at " + current.getCurrentPath() + ", skipped it");
@@ -233,7 +238,7 @@ public class RBConfigManager extends CoreConfigManager {
 			}
 			PlantGrowthConfig growthConfig = new PlantGrowthConfig(name, id, item, greenHouseRates, soilBoniPerLevel,
 					maximumSoilLayers, maximumSoilBonus, allowBoneMeal, biomeGrowth, needsLight, grower, vanillaMats,
-					canBePlantedDirectly);
+					canBePlantedDirectly, needsToBeWaterLogged);
 			result.add(growthConfig);
 		}
 		return result;
@@ -284,6 +289,8 @@ public class RBConfigManager extends CoreConfigManager {
 			return new StemGrower(material, fruitConfig);
 		case "tree":
 			return new TreeGrower(material);
+		case "seapickle":
+			return new SeaPickleGrower();
 		case "schematic":
 			String name = section.getString("schematic", "default");
 			RBSchematic schem = schematics.get(name.toLowerCase());
@@ -360,6 +367,10 @@ public class RBConfigManager extends CoreConfigManager {
 
 	public List<LTree> getLTrees() {
 		return lTrees;
+	}
+	
+	public List<Material> getBonemealPreventedBlocks() {
+		return bonemealPreventedBlocks;
 	}
 
 	public List<LStepConfig> parseRawLStepConfigs(ConfigurationSection config) {

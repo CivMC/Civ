@@ -16,9 +16,9 @@ public class BambooGrower extends ColumnPlantGrower {
 	}
 
 	@Override
-	protected Block growOnTop(Plant plant, Block block, int howMany) {
+	protected Block growVertically(Plant plant, Block block, int howMany) {
 		// Actual growth is here:
-		Block highestBlock = super.growOnTop(plant, block, howMany);
+		Block highestBlock = super.growVertically(plant, block, howMany);
 		handleProperLeafGrowth(block, highestBlock);
 
 		return highestBlock;

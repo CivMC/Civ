@@ -11,9 +11,9 @@ import com.untamedears.realisticbiomes.model.Plant;
  */
 public class AgeableGrower extends IArtificialGrower {
 
-	private int maxStage;
-	private int increment;
-	private Material material;
+	protected final int maxStage;
+	protected final int increment;
+	protected final Material material;
 
 	public AgeableGrower(Material material, int maxStage, int increment) {
 		this.maxStage = maxStage;
