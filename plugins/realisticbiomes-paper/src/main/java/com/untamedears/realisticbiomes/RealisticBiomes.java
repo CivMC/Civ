@@ -5,7 +5,6 @@ import org.bukkit.plugin.PluginManager;
 
 import com.untamedears.realisticbiomes.listener.AnimalListener;
 import com.untamedears.realisticbiomes.listener.BonemealListener;
-import com.untamedears.realisticbiomes.listener.DropListener;
 import com.untamedears.realisticbiomes.listener.PlantListener;
 import com.untamedears.realisticbiomes.listener.PlayerListener;
 import com.untamedears.realisticbiomes.model.Plant;
@@ -33,7 +32,6 @@ public class RealisticBiomes extends ACivMod {
 	private AnimalConfigManager animalManager;
 	private PlantLogicManager plantLogicManager;
 	private PlantProgressManager plantProgressManager;
-	private BlockDropManager blockDropManager;
 
 	private RBDAO dao;
 
@@ -60,10 +58,6 @@ public class RealisticBiomes extends ACivMod {
 	public PlantProgressManager getPlantProgressManager() {
 		return plantProgressManager;
 	}
-	
-	public BlockDropManager getBlockDropManager() {
-		return blockDropManager;
-	}
 
 	@Override
 	public void onDisable() {
@@ -72,7 +66,6 @@ public class RealisticBiomes extends ACivMod {
 			plantManager.shutDown();
 		}
 		dao.cleanupBatches();
-		blockDropManager.shutdown();
 	}
 
 	@Override
@@ -89,11 +82,6 @@ public class RealisticBiomes extends ACivMod {
 		if (configManager.hasPersistentGrowthConfigs()) {
 			this.dao = new RBDAO(getLogger(), configManager.getDatabase());
 			if (!dao.updateDatabase()) {
-				Bukkit.shutdown();
-				return;
-			}
-			blockDropManager = new BlockDropManager(CivModCorePlugin.getInstance().getDatabase());
-			if (!blockDropManager.setup()) {
 				Bukkit.shutdown();
 				return;
 			}
@@ -118,7 +106,6 @@ public class RealisticBiomes extends ACivMod {
 		pm.registerEvents(new PlantListener(this, plantManager, plantLogicManager), this);
 		pm.registerEvents(new AnimalListener(animalManager), this);
 		pm.registerEvents(new PlayerListener(growthConfigManager, animalManager, plantManager), this);
-		pm.registerEvents(new DropListener(blockDropManager), this);
 		pm.registerEvents(new BonemealListener(configManager.getBonemealPreventedBlocks()), this);
 	}
 
