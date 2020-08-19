@@ -3,10 +3,13 @@ package com.devotedmc.ExilePearl.holder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Nameable;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.block.Container;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -15,6 +18,7 @@ import org.bukkit.inventory.ItemStack;
 import com.devotedmc.ExilePearl.ExilePearl;
 
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
+import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.util.Guard;
 
 /**
@@ -38,36 +42,14 @@ public class BlockHolder implements PearlHolder {
 
 	@Override
 	public String getName() {
-		switch (block.getType()) {
-		case CHEST:
-		case TRAPPED_CHEST:
-		case ENDER_CHEST:
-			return "a chest";
-
-		case FURNACE:
-			return "a furnace";
-
-		case BREWING_STAND:
-			return "a brewing stand";
-
-		case DISPENSER:
-			return "a dispenser";
-
-		case ITEM_FRAME:
-			return "a wall frame";
-
-		case DROPPER:
-			return "a dropper";
-
-		case HOPPER:
-			return "a hopper";
-
-		case ENCHANTING_TABLE:
-			return "an enchantment table";
-
-		default:
-			return "a block";
+		String customNameString = "";
+		if (block.getState() instanceof Nameable) {
+			String customName = ((Container) block.getState()).getCustomName();
+			if (customName != null) {
+				customNameString = String.format(" %scalled %s", ChatColor.RESET, customName);
+			}
 		}
+		return String.format("a %s%s", ItemNames.getItemName(block.getType()), customNameString);
 	}
 
 	@Override

@@ -8,6 +8,7 @@ import java.util.UUID;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
 
+import com.devotedmc.ExilePearl.holder.EntityHolder;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.bukkit.Bukkit;
@@ -15,6 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -179,13 +181,17 @@ final class CoreExilePearl implements ExilePearl {
 		setHolderInternal(new BlockHolder(block));
 	}
 
+	@Override
+	public void setHolder(Entity entity) {
+		Guard.ArgumentNotNull(entity, "entity");
+		setHolderInternal(new EntityHolder(entity));
+	}
 
 	@Override
 	public void setHolder(Item item) {
 		Guard.ArgumentNotNull(item, "item");
 		setHolderInternal(new ItemHolder(item));
 	}
-
 
 	/**
 	 * Internal method for updating the holder

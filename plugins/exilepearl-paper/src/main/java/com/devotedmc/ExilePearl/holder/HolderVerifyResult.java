@@ -21,7 +21,8 @@ public enum HolderVerifyResult
 	IN_PLAYER_INVENTORY("in player inventory", true),
 	IN_PLAYER_INVENTORY_VIEW("in player inventory view", true),
 	IN_VIEWER_HAND("in viewer hand", true),
-	CREATVE_MODE("creative mode", true);
+	CREATIVE_MODE("creative mode", true),
+	IN_ITEM_FRAME("in item frame", true);
 
 	private final String text;
 	private final boolean isValid;
