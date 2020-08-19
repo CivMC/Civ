@@ -186,6 +186,11 @@ public class WordBankRecipe extends InputRecipe {
 	}
 
 	@Override
+	public List<String> getTextualInputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
+		return Arrays.asList("An item to be renamed and an item to be consumed as key");
+	}
+
+	@Override
 	public List<String> getTextualOutputRepresentation(Inventory i, FurnCraftChestFactory fccf) {
 		return Arrays.asList("The item input with a random colored name applied");
 	}
