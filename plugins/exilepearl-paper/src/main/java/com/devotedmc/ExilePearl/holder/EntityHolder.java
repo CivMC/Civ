@@ -43,7 +43,7 @@ public class EntityHolder implements PearlHolder {
 	public HolderVerifyResult validate(final ExilePearl pearl) {
 		if (entity instanceof ItemFrame) {
 			if (pearl.validateItemStack(((ItemFrame) entity).getItem())) {
-				return  HolderVerifyResult.IN_ITEM_FRAME;
+				return HolderVerifyResult.IN_ITEM_FRAME;
 			}
 		}
 		return HolderVerifyResult.DEFAULT;

@@ -343,7 +343,7 @@ public class PlayerListener implements Listener, Configurable {
 	 * @param holder The pearl holder
 	 * @param event The event
 	 */
-	private void  updatePearlHolder(ExilePearl pearl, InventoryHolder holder, Cancellable event) {
+	private void updatePearlHolder(ExilePearl pearl, InventoryHolder holder, Cancellable event) {
 
 		if (holder instanceof Chest) {
 			updatePearl(pearl, (Chest)holder);
@@ -510,6 +510,7 @@ public class PlayerListener implements Listener, Configurable {
 
 				// ShiftClicking into a furnace will not move the pearl into the furnace so the pearlHolder should not be updated
 				if (event.getClick().isShiftClick() && holder != null && holder.getInventory() instanceof FurnaceInventory) {
+					event.setCancelled(true);
 					return;
 				}
 
