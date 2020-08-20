@@ -79,10 +79,13 @@ public class PlantListener implements Listener {
 				return;
 			}
 			if (growthConfig.isPersistent()) {
+				if (plantLogicManager.isNonSourceOfColumn(sourceBlock, growthConfig)) {
+					growthConfig.handleAttemptedGrowth(event, sourceBlock);
+					return;
+				}
 				// a plant should be here, but isn't
 				plant = new Plant(sourceBlock.getLocation(), growthConfig);
 				plantManager.putPlant(plant);
-				plantLogicManager.updateGrowthTime(plant, sourceBlock);
 			}
 		} else {
 			growthConfig = plant.getGrowthConfig();

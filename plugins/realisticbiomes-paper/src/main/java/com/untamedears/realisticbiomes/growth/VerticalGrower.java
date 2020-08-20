@@ -48,6 +48,10 @@ public class VerticalGrower extends IArtificialGrower {
 	public int getIncrementPerStage() {
 		return 1;
 	}
+	
+	public BlockFace getPrimaryGrowthDirection() {
+		return primaryGrowthDirection;
+	}
 
 	@Override
 	public int getMaxStage() {

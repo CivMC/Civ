@@ -377,12 +377,12 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 		long now = System.currentTimeMillis();
 		long timeElapsed = now - creationTime;
 		double progress = (double) timeElapsed / (double) totalTime;
-		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
 		int currentStage = grower.getStage(plant);
 		if (currentStage < 0) {
 			plant.getOwningCache().remove(plant);
 			return Long.MAX_VALUE;
 		}
+		int intendedState = Math.min((int) (grower.getMaxStage() * progress), grower.getMaxStage());
 		if (intendedState != currentStage) {
 			try {
 				grower.setStage(plant, intendedState);

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
+import com.untamedears.realisticbiomes.growth.VerticalGrower;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 import com.untamedears.realisticbiomes.model.Plant;
 
@@ -102,14 +103,26 @@ public class PlantLogicManager {
 		if (growthConfig == null || !growthConfig.isPersistent()) {
 			return;
 		}
-		if (growthConfig.getGrower() instanceof ColumnPlantGrower) {
-			if (block.getRelative(BlockFace.DOWN).getType() == block.getType()) {
+		if (growthConfig.getGrower() instanceof VerticalGrower) {
+			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection();
+			if (block.getRelative(direction).getType() == block.getType()) {
 				return;
 			}
 		}
 		Plant plant = new Plant(block.getLocation(), growthConfig);
 		plantManager.putPlant(plant);
 		updateGrowthTime(plant, block);
+	}
+	
+	public boolean isNonSourceOfColumn(Block block, PlantGrowthConfig growthConfig) {
+		if (!columnBlocks.contains(block.getType())) {
+			return false;
+		}
+		if (growthConfig.getGrower() instanceof VerticalGrower) {
+			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection();
+			return block.getRelative(direction).getType() == block.getType();
+		}
+		return false;
 	}
 
 	public void updateGrowthTime(Plant plant, Block block) {

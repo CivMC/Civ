@@ -218,7 +218,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 			return;
 		}
 		try (Connection conn = db.getConnection();
-				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ? and type = ? where "
+				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ?, type = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
 			setUpdateDataStatement(updatePlant, data, coord);
 			updatePlant.execute();
