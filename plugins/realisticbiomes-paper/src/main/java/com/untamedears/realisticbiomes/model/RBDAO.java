@@ -23,6 +23,7 @@ import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.XZWCoord;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedBlockChunkMeta;
@@ -150,6 +151,9 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		}
 		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
 			for (Plant plant : toUpdate) {
+				if (plant.getCacheState() == CacheState.DELETED) {
+					continue;
+				}
 				logicMan.updateGrowthTime(plant, plant.getLocation().getBlock());
 			}
 		});
