@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.command.CivCommand;
 import vg.civcraft.mc.civmodcore.command.StandaloneCommand;
 
+import java.util.Arrays;
 import java.util.List;
 
 @CivCommand(id = "item")
@@ -39,16 +40,6 @@ public class ItemUseMenu extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
-		Material[] mats = Material.values();
-		List<String> completions = Lists.newArrayList();
-		if (args.length == 1) {
-			for (Material s : mats) {
-				if (s.name().toLowerCase().startsWith(args[0].toLowerCase())) {
-					completions.add(s.name());
-				}
-			}
-			return completions;
-		}
-		return null;
+		return doTabComplete(args[0], Arrays.asList(Material.values()), Material::name, false);
 	}
 }
