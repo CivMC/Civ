@@ -560,7 +560,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			event.getPlayer().teleport(adjustedLocation);
 			return;
 		}
-		for(int y = block.getY(); y > 0; y--) {
+		for(int y = 0; y < block.getY(); y++) {
 			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
 			if (target.getType() != Material.GOLD_BLOCK) {
 				continue;
