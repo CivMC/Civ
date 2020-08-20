@@ -14,7 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
@@ -49,6 +48,7 @@ public class ScoreboardHUD implements Listener {
 		Bukkit.getScheduler().runTaskTimer(Finale.getPlugin(), () -> {
 			for (Player p : Bukkit.getOnlinePlayers()) {
 				updateDurabilities(p);
+				updateCoordinates(p, settingsMan.getCoordsLocation());
 				if (settingsMan.showPotionEffects(p.getUniqueId())) {
 					updateAllPotionEffects(p);
 				}
@@ -147,20 +147,6 @@ public class ScoreboardHUD implements Listener {
 			updateGammaBright(e.getPlayer());
 		}
 		updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
-	}
-
-	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void onMove(PlayerMoveEvent e){
-		Location from = e.getFrom();
-		Location to = e.getTo();
-
-		// Replace with new function in CivModCore once made
-		if(to.getBlockX() == from.getBlockX() && to.getBlockY() == from.getBlockY() && to.getBlockZ() == from.getBlockZ()){
-			return;
-		}
-
-		DisplayLocationSetting setting = settingsMan.getCoordsLocation();
-		updateCoordinates(e.getPlayer(), setting);
 	}
 
 	private void updateAllPotionEffects(Player p) {
