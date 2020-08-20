@@ -64,6 +64,10 @@ public class VerticalGrower extends IArtificialGrower {
 		if (material != block.getType()) {
 			return -1;
 		}
+		Block bottom = getRelativeBlock(block, primaryGrowthDirection.getOppositeFace());
+		if (!bottom.getLocation().equals(block.getLocation())) {
+			return -1;
+		}
 		return getActualHeight(block) - 1;
 	}
 
