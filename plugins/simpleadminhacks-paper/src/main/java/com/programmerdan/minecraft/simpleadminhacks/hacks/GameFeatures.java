@@ -51,6 +51,8 @@ import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
 
 import net.md_5.bungee.api.ChatColor;
+import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.api.ToolAPI;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the
@@ -547,7 +549,14 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (block.getType() != Material.GOLD_BLOCK) {
 			return;
 		}
-		for(int y = block.getY(); y <= 255; y++) {
+		if (event.getPlayer().isSneaking()) {
+			return;
+		}
+		//require player to stand on block
+		if (!event.getPlayer().getLocation().getBlock().getLocation().equals(block.getRelative(BlockFace.UP).getLocation())) {
+			return;
+		}
+		for(int y = block.getY() + 1; y <= 255; y++) {
 			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
 			if (target.getType() != Material.GOLD_BLOCK) {
 				continue;
