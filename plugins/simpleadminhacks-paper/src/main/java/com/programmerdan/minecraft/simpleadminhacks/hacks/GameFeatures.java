@@ -552,7 +552,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			if (target.getType() != Material.GOLD_BLOCK) {
 				continue;
 			}
-			if (!TeleportUtil.checkForTeleportSpace(target.getLocation())) {
+			if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
 				continue;
 			}
 			Location adjustedLocation = block.getLocation().clone();
@@ -565,7 +565,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			if (target.getType() != Material.GOLD_BLOCK) {
 				continue;
 			}
-			if (!TeleportUtil.checkForTeleportSpace(target.getLocation())) {
+			if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
 				continue;
 			}
 			Location adjustedLocation = block.getLocation().clone();
