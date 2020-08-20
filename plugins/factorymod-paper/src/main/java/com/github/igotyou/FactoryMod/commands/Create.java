@@ -6,6 +6,9 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -49,6 +52,16 @@ public class Create extends StandaloneCommand {
 					sender.sendMessage(
 							ChatColor.RED + "The required block structure for this factory doesn't exist here");
 					return true;
+				}
+				BlockState chestBS = fccs.getChest().getState();
+				if (((Chest) chestBS).getCustomName() == null) {
+					((Chest) chestBS).setCustomName(fcce.getName());
+					chestBS.update(true);
+				}
+				BlockState furnaceBS = fccs.getFurnace().getState();
+				if (((Furnace) furnaceBS).getCustomName() == null) {
+					((Furnace) furnaceBS).setCustomName(fcce.getName());
+					furnaceBS.update(true);
 				}
 				manager.addFactory(fcce.hatch(fccs, (Player) sender));
 				sender.sendMessage(ChatColor.GREEN + "Created " + egg.getName());

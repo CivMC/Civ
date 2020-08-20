@@ -15,6 +15,8 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Furnace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -300,6 +302,16 @@ public class FileHandler {
 					}
 				}
 				fac.setAutoSelect(autoSelect);
+				Chest chestBlock = (Chest) (fac.getChest().getState());
+				if (chestBlock.getCustomName() == null) {
+					chestBlock.setCustomName(fac.getName());
+					chestBlock.update(true);
+				}
+				Furnace furnaceBlock = (Furnace) (fac.getFurnace().getState());
+				if (furnaceBlock.getCustomName() == null) {
+					furnaceBlock.setCustomName(fac.getName());
+					furnaceBlock.update(true);
+				}
 				manager.addFactory(fac);
 				counter++;
 				break;
