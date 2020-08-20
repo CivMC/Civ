@@ -556,7 +556,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				continue;
 			}
 			Location adjustedLocation = block.getLocation().clone();
-			adjustedLocation.add(0.5, 0.02, 0.5);
+			adjustedLocation.add(0.5, 1.02, 0.5);
 			event.getPlayer().teleport(adjustedLocation);
 			return;
 		}
@@ -569,7 +569,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 				continue;
 			}
 			Location adjustedLocation = block.getLocation().clone();
-			adjustedLocation.add(0.5, 0.02, 0.5);
+			adjustedLocation.add(0.5, 1.02, 0.5);
 			event.getPlayer().teleport(adjustedLocation);
 			return;
 		}
