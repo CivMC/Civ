@@ -15,6 +15,7 @@ public class CmdExilePearl extends PearlCommand {
 	public final PearlCommand cmdBcast;
 	public final PearlCommand cmdBcastConfirm;
 	public final PearlCommand cmdBcastSilence;
+	public final PearlCommand cmdDowngrade;
 
 	public CmdExilePearl(ExilePearlApi pearlApi) {
 		super(pearlApi);
@@ -28,6 +29,7 @@ public class CmdExilePearl extends PearlCommand {
 		cmdBcast = new CmdPearlBroadcast(plugin);
 		cmdBcastConfirm = new CmdPearlBroadcastAccept(plugin);
 		cmdBcastSilence = new CmdPearlBroadcastSilence(plugin);
+		cmdDowngrade = new CmdDowngrade(plugin);
 
 		addSubCommand(plugin.getAutoHelp());
 
@@ -36,9 +38,11 @@ public class CmdExilePearl extends PearlCommand {
 		addSubCommand(cmdBcast);
 		addSubCommand(cmdBcastConfirm);
 		addSubCommand(cmdBcastSilence);
+		addSubCommand(cmdDowngrade);
 		addSubCommand(new CmdSummon(plugin));
 		addSubCommand(new CmdReturn(plugin));
 		addSubCommand(new CmdSummonConfirm(plugin));
+		addSubCommand(new CmdUpgrade(plugin));
 
 		// Admin commands
 		addSubCommand(new CmdConfig(plugin));
