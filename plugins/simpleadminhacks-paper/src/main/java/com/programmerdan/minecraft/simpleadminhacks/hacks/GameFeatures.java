@@ -557,31 +557,31 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 			return;
 		}
 		for(int y = block.getY() + 1; y <= 255; y++) {
-			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
-			if (target.getType() != Material.GOLD_BLOCK) {
-				continue;
+			if (doTeleport(block, event.getPlayer(), y)) {
+				return;
 			}
-			if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
-				continue;
-			}
-			Location adjustedLocation = block.getLocation().clone();
-			adjustedLocation.add(0.5, 1.02, 0.5);
-			event.getPlayer().teleport(adjustedLocation);
-			return;
 		}
 		for(int y = 0; y < block.getY(); y++) {
-			Block target = block.getWorld().getBlockAt(block.getX(), y, block.getZ());
-			if (target.getType() != Material.GOLD_BLOCK) {
-				continue;
+			if (doTeleport(block, event.getPlayer(), y)) {
+				return;
 			}
-			if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
-				continue;
-			}
-			Location adjustedLocation = block.getLocation().clone();
-			adjustedLocation.add(0.5, 1.02, 0.5);
-			event.getPlayer().teleport(adjustedLocation);
-			return;
 		}
 		event.getPlayer().sendMessage(ChatColor.RED + "No suitable destination was found");
+	}
+	
+	private static boolean doTeleport(Block source, Player player, int y) {
+		Block target = source.getWorld().getBlockAt(source.getX(), y, source.getZ());
+		if (target.getType() != Material.GOLD_BLOCK) {
+			return false;
+		}
+		if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
+			return false;
+		}
+		Location adjustedLocation = source.getLocation().clone();
+		adjustedLocation.add(0.5, 1.02, 0.5);
+		adjustedLocation.setYaw(player.getLocation().getYaw());
+		adjustedLocation.setPitch(player.getLocation().getPitch());
+		player.teleport(adjustedLocation);
+		return true;
 	}
 }
