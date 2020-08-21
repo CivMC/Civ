@@ -14,6 +14,8 @@ Exile pearls can also be upgraded to prison pearls, which imprison the pearled p
     /ep help                      Displays plugin help
     /ep locate                    Locates your pearl location
     /ep free                      Frees a pearl in your hand
+    /ep upgrade                   Upgrades an Exile Pearl to a Prison Pearl
+    /ep downgrade                 Downgrades a Prison Pearl
     /ep summon                    Requests to summon the player in the pearl in your hand
     /ep confirm                   Confirms a summon request
     /ep broadcast                 Broadcasts your pearl's location to a group or player
