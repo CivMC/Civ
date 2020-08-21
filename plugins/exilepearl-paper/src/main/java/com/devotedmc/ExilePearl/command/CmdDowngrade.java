@@ -30,7 +30,6 @@ public class CmdDowngrade extends PearlCommand {
 			return;
 		}
 		downgradePearl(pearl);
-
 	}
 
 	public void downgradePearl(ExilePearl pearl) {
