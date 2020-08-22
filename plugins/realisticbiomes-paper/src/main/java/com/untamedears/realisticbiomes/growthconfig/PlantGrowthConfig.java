@@ -402,8 +402,10 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			return plant.getGrowthConfig().updatePlant(plant, block);
 		}
 
-		if (intendedState == grower.getMaxStage() && grower.deleteOnFullGrowth()) {
-			plant.getOwningCache().remove(plant);
+		if (intendedState == grower.getMaxStage()) {
+			if (grower.deleteOnFullGrowth()) {
+				plant.getOwningCache().remove(plant);
+			}
 			return Long.MAX_VALUE;
 		}
 		double incPerStage = grower.getIncrementPerStage();

@@ -5,6 +5,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -12,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockGrowEvent;
+import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.block.BlockPistonExtendEvent;
 import org.bukkit.event.block.BlockPistonRetractEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
@@ -138,7 +140,7 @@ public class PlantListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void onBlockSpread(BlockSpreadEvent event) {
-		Plant plant = plugin.getPlantManager().getPlant(event.getSource());
+		Plant plant = plantManager.getPlant(event.getSource());
 		PlantGrowthConfig growthConfig = getGrowthConfigFallback(event.getBlock());
 		if (growthConfig != null) {
 			plant.getGrowthConfig().handleAttemptedGrowth(event, event.getSource());
@@ -158,5 +160,28 @@ public class PlantListener implements Listener {
 						p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
 			});
 		}, 1);
+	}
+	
+	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
+	public void cactusBreak(BlockPhysicsEvent event) {
+		if (event.getBlock().getType() != Material.CACTUS) {
+			return;
+		}
+		if (event.getChangedType() != Material.AIR) {
+			return;
+		}
+		Plant plant = plantManager.getPlant(event.getBlock());
+		if (plant == null) {
+			//scan downwards
+			Block below = event.getBlock().getRelative(BlockFace.DOWN);
+			while (below.getType() == Material.CACTUS) {
+				below = below.getRelative(BlockFace.DOWN);
+			}
+			Block bottom = below.getRelative(BlockFace.UP);
+			plant = plantManager.getPlant(bottom);
+		}
+		if (plant != null) {
+			plant.resetCreationTime();
+		}
 	}
 }
