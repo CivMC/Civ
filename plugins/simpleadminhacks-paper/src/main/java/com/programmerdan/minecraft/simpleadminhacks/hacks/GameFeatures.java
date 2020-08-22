@@ -577,7 +577,7 @@ public class GameFeatures extends SimpleHack<GameFeaturesConfig> implements List
 		if (!TeleportUtil.checkForTeleportSpace(target.getRelative(BlockFace.UP).getLocation())) {
 			return false;
 		}
-		Location adjustedLocation = source.getLocation().clone();
+		Location adjustedLocation = target.getLocation().clone();
 		adjustedLocation.add(0.5, 1.02, 0.5);
 		adjustedLocation.setYaw(player.getLocation().getYaw());
 		adjustedLocation.setPitch(player.getLocation().getPitch());
