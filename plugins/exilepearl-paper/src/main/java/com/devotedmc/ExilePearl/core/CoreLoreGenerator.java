@@ -117,6 +117,9 @@ final class CoreLoreGenerator implements LoreProvider {
 			if (cmd != null) {
 				lore.add(parse("<l>Commands:"));
 				lore.add(parse(CmdExilePearl.instance().cmdFree.getUsageTemplate(true)));
+				if(pearl.getPearlType() == PearlType.PRISON) {
+					lore.add(parse(CmdExilePearl.instance().cmdDowngrade.getUsageTemplate(true)));
+				}
 			}
 		}
 		return lore;
