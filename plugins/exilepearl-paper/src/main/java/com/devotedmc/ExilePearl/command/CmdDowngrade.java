@@ -26,7 +26,7 @@ public class CmdDowngrade extends PearlCommand {
 			return;
 		}
 		if (pearl.getPearlType() != PearlType.PRISON) {
-			msg("<i>Y This type of pearl cannot be downgraded");
+			msg("<i>This type of pearl cannot be downgraded");
 			return;
 		}
 		downgradePearl(pearl);
