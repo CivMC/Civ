@@ -45,15 +45,12 @@ public class WorldBorderListener extends RuleListener {
 		if (!autoFree) {
 			return;
 		}
-		boolean clickedTop = e.getRawSlot() < e.getView().getTopInventory().getSize();
-		if (clickedTop) {
-			return;
-		}
-		if (pearlApi.getPearlFromItemStack(e.getCurrentItem()) != null) {
+		if (pearlApi.getPearlFromItemStack(e.getCurrentItem()) != null
+				|| pearlApi.getPearlFromItemStack(e.getCursor()) != null) {
 			Location loc = e.getView().getTopInventory().getLocation();
 			if (loc != null && !pearlApi.isLocationInsideBorder(loc)) {
-				e.getWhoClicked().sendMessage(ChatColor.RED + "Pearls placed outside of the world border will be freed");
-				e.setCancelled(true);
+				e.getWhoClicked().sendMessage(ChatColor.RED +
+						"This container is outside the world border, pearls left in it will automatically be freed");
 			}
 		}
 	}
