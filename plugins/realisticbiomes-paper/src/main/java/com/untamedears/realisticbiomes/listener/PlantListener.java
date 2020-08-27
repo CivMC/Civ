@@ -81,13 +81,14 @@ public class PlantListener implements Listener {
 				return;
 			}
 			if (growthConfig.isPersistent()) {
-				if (plantLogicManager.isNonSourceOfColumn(sourceBlock, growthConfig)) {
-					growthConfig.handleAttemptedGrowth(event, sourceBlock);
-					return;
+				growthConfig.handleAttemptedGrowth(event, sourceBlock);
+				sourceBlock = plantLogicManager.remapColumnBlock(sourceBlock, growthConfig, material);
+				plant = plantManager.getPlant(sourceBlock);
+				if (plant == null) {
+					// a plant should be here, but isn't
+					plant = new Plant(sourceBlock.getLocation(), growthConfig);
+					plantManager.putPlant(plant);
 				}
-				// a plant should be here, but isn't
-				plant = new Plant(sourceBlock.getLocation(), growthConfig);
-				plantManager.putPlant(plant);
 			}
 		} else {
 			growthConfig = plant.getGrowthConfig();
@@ -161,7 +162,7 @@ public class PlantListener implements Listener {
 			});
 		}, 1);
 	}
-	
+
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void cactusBreak(BlockPhysicsEvent event) {
 		if (event.getBlock().getType() != Material.CACTUS) {
@@ -172,7 +173,7 @@ public class PlantListener implements Listener {
 		}
 		Plant plant = plantManager.getPlant(event.getBlock());
 		if (plant == null) {
-			//scan downwards
+			// scan downwards
 			Block below = event.getBlock().getRelative(BlockFace.DOWN);
 			while (below.getType() == Material.CACTUS) {
 				below = below.getRelative(BlockFace.DOWN);

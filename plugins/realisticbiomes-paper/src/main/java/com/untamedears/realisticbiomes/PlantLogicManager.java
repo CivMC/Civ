@@ -114,15 +114,19 @@ public class PlantLogicManager {
 		updateGrowthTime(plant, block);
 	}
 	
-	public boolean isNonSourceOfColumn(Block block, PlantGrowthConfig growthConfig) {
+	public Block remapColumnBlock(Block block, PlantGrowthConfig growthConfig, Material material) {
 		if (!columnBlocks.contains(block.getType())) {
-			return false;
+			return block;
 		}
 		if (growthConfig.getGrower() instanceof VerticalGrower) {
 			BlockFace direction = ((VerticalGrower) growthConfig.getGrower()).getPrimaryGrowthDirection();
-			return block.getRelative(direction).getType() == block.getType();
+			Block below = block.getRelative(direction);
+			while (below.getType() == material) {
+				below = below.getRelative(direction);
+			}
+			return below.getRelative(direction.getOppositeFace());
 		}
-		return false;
+		return block;
 	}
 
 	public void updateGrowthTime(Plant plant, Block block) {
