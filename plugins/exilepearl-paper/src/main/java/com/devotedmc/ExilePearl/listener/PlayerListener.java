@@ -69,6 +69,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.ChunkUnloadEvent;
+import org.bukkit.inventory.BlockInventoryHolder;
 import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.Inventory;
@@ -805,13 +806,12 @@ public class PlayerListener implements Listener, Configurable {
 		if (pearl == null) {
 			return;
 		}
-
 		if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
 			Material m = e.getClickedBlock().getType();
-			if (m == Material.CHEST || m == Material.CRAFTING_TABLE
-					|| m == Material.FURNACE || m == Material.DISPENSER
-					|| m == Material.BREWING_STAND || m == Material.BARREL)
+			if (e.getClickedBlock().getState() instanceof BlockInventoryHolder ||
+				m == Material.CRAFTING_TABLE || m == Material.ANVIL || m == Material.ENCHANTING_TABLE || m == Material.BEACON) {
 				return;
+			}
 		} else if (e.getAction() != Action.RIGHT_CLICK_AIR) {
 			return;
 		}
