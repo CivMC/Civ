@@ -1,5 +1,7 @@
 package com.untamedears.realisticbiomes.growth;
 
+import java.util.Collection;
+import java.util.EnumSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -8,6 +10,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 
+import com.google.common.base.Preconditions;
+import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.model.Plant;
 
 public class HorizontalBlockSpreadGrower extends IArtificialGrower {
@@ -18,11 +22,17 @@ public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 	private final int maximumRange;
 	private Material material;
 	private Set<Material> validSoil;
+	private Set<Material> replaceableBlocks;
 
-	public HorizontalBlockSpreadGrower(Material material, int maximumInArea, int maximumRange, Set<Material> validSoil) {
+	public HorizontalBlockSpreadGrower(Material material, int maximumInArea, int maximumRange,
+			Collection<Material> replaceableBlocks, Collection<Material> validSoil) {
+		Preconditions.checkNotNull(material);
+		Preconditions.checkNotNull(replaceableBlocks);
+		Preconditions.checkNotNull(validSoil);
 		this.maximumInArea = maximumInArea;
 		this.maximumRange = maximumRange;
-		this.validSoil = validSoil;
+		this.validSoil = EnumSet.copyOf(validSoil);
+		this.replaceableBlocks = EnumSet.copyOf(replaceableBlocks);
 		this.material = material;
 	}
 
@@ -59,51 +69,60 @@ public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 
 	@Override
 	public void setStage(Plant plant, int stage) {
-		// pick a random spot in range, scan forward in lines from it, then scan
-		// backwards in lines from it
-		int xOffset = rng.nextInt(maximumRange * 2 + 1);
-		int zOffset = rng.nextInt(maximumRange * 2 + 1);
-		Location lowerCorner = plant.getLocation().clone();
-		lowerCorner.subtract(maximumRange, 0, maximumRange);
-		int upperXBound = plant.getLocation().getBlockX() + maximumRange;
-		int upperZBound = plant.getLocation().getBlockZ() + maximumRange;
-		// starting line forward
-		for (int z = zOffset + lowerCorner.getBlockZ(); z <= upperZBound; z++) {
-			if (growAtSpot(new Location(lowerCorner.getWorld(), lowerCorner.getBlockX() + xOffset, lowerCorner.getBlockY(),
-					z))) {
-				return;
-			}
-		}
-		//scan forward
-		for (int x = xOffset + lowerCorner.getBlockX() + 1; x <= upperXBound; x++) {
+		int currentAmount = getStage(plant);
+		int toAdd = stage - currentAmount;
+		outer:
+		for (int i = 0; i < toAdd; i++) {
+			// pick a random spot in range, scan forward in lines from it, then scan
+			// backwards in lines from it
+			int xOffset = rng.nextInt(maximumRange * 2 + 1);
+			int zOffset = rng.nextInt(maximumRange * 2 + 1);
+			Location lowerCorner = plant.getLocation().clone();
+			lowerCorner.subtract(maximumRange, 0, maximumRange);
+			int upperXBound = plant.getLocation().getBlockX() + maximumRange;
+			int upperZBound = plant.getLocation().getBlockZ() + maximumRange;
+			// starting line forward
 			for (int z = zOffset + lowerCorner.getBlockZ(); z <= upperZBound; z++) {
-				if (growAtSpot(new Location(lowerCorner.getWorld(), x, lowerCorner.getBlockY(),
-						z))) {
-					return;
+				if (growAtSpot(plant, new Location(lowerCorner.getWorld(), lowerCorner.getBlockX() + xOffset,
+						lowerCorner.getBlockY(), z))) {
+					continue outer;
 				}
 			}
-		}
-		//starting line backward
-		for (int z = zOffset + lowerCorner.getBlockZ() - 1; z >= lowerCorner.getBlockZ() ; z--) {
-			if (growAtSpot(new Location(lowerCorner.getWorld(), lowerCorner.getBlockX() + xOffset, lowerCorner.getBlockY(),
-					z))) {
-				return;
-			}
-		}
-		//scan backward
-		for (int x = xOffset + lowerCorner.getBlockX() - 1; x >= lowerCorner.getBlockX(); x--) {
-			for (int z = zOffset + lowerCorner.getBlockZ(); z >= lowerCorner.getBlockZ(); z--) {
-				if (growAtSpot(new Location(lowerCorner.getWorld(), x, lowerCorner.getBlockY(),
-						z))) {
-					return;
+			// scan forward
+			for (int x = xOffset + lowerCorner.getBlockX() + 1; x <= upperXBound; x++) {
+				for (int z = zOffset + lowerCorner.getBlockZ(); z <= upperZBound; z++) {
+					if (growAtSpot(plant, new Location(lowerCorner.getWorld(), x, lowerCorner.getBlockY(), z))) {
+						continue outer;
+					}
 				}
 			}
+			// starting line backward
+			for (int z = zOffset + lowerCorner.getBlockZ() - 1; z >= lowerCorner.getBlockZ(); z--) {
+				if (growAtSpot(plant, new Location(lowerCorner.getWorld(), lowerCorner.getBlockX() + xOffset,
+						lowerCorner.getBlockY(), z))) {
+					continue outer;
+				}
+			}
+			// scan backward
+			for (int x = xOffset + lowerCorner.getBlockX() - 1; x >= lowerCorner.getBlockX(); x--) {
+				for (int z = zOffset + lowerCorner.getBlockZ(); z >= lowerCorner.getBlockZ(); z--) {
+					if (growAtSpot(plant, new Location(lowerCorner.getWorld(), x, lowerCorner.getBlockY(), z))) {
+						continue outer;
+					}
+				}
+			}
+			break; // no valid growth spot available, cancel all further growth attempts
 		}
 
 	}
 
-	private boolean growAtSpot(Location loc) {
+	private boolean growAtSpot(Plant source, Location loc) {
 		Block block = loc.getBlock();
+		if (!replaceableBlocks.isEmpty()) {
+			if (!replaceableBlocks.contains(block.getType())) {
+				return false;
+			}
+		}
 		if (!validSoil.isEmpty()) {
 			Block below = block.getRelative(BlockFace.DOWN);
 			if (!validSoil.contains(below.getType())) {
@@ -111,6 +130,10 @@ public class HorizontalBlockSpreadGrower extends IArtificialGrower {
 			}
 		}
 		block.setType(material);
+		// create new plant at this location for further spread
+		Plant plant = new Plant(block.getLocation(), source.getGrowthConfig());
+		RealisticBiomes.getInstance().getPlantManager().putPlant(plant);
+		RealisticBiomes.getInstance().getPlantLogicManager().updateGrowthTime(plant, block);
 		return true;
 	}
 

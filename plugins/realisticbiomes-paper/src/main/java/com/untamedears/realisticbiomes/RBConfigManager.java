@@ -23,6 +23,7 @@ import com.untamedears.realisticbiomes.growth.AgeableGrower;
 import com.untamedears.realisticbiomes.growth.BambooGrower;
 import com.untamedears.realisticbiomes.growth.ColumnPlantGrower;
 import com.untamedears.realisticbiomes.growth.FruitGrower;
+import com.untamedears.realisticbiomes.growth.HorizontalBlockSpreadGrower;
 import com.untamedears.realisticbiomes.growth.IArtificialGrower;
 import com.untamedears.realisticbiomes.growth.SchematicGrower;
 import com.untamedears.realisticbiomes.growth.SeaPickleGrower;
@@ -289,6 +290,12 @@ public class RBConfigManager extends CoreConfigManager {
 			return new StemGrower(material, fruitConfig);
 		case "tree":
 			return new TreeGrower(material);
+		case "horizontalspread":
+			int maxAmount = section.getInt("max_amount");
+			int horRange = section.getInt("max_range");
+			List <Material> replaceableBlocks = parseMaterialList(section, "replaceable_blocks");
+			List<Material> validSoil = parseMaterialList(section, "valid_soil");
+			return new HorizontalBlockSpreadGrower(material, maxAmount, horRange, replaceableBlocks, validSoil);
 		case "seapickle":
 			return new SeaPickleGrower();
 		case "schematic":
