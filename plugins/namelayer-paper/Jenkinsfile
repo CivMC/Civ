@@ -7,7 +7,7 @@ pipeline {
         jdk 'Java 8'
     }
     environment {
-    	civ_dependent_plugins = "Citadel"
+    	civ_dependent_plugins = "Citadel BanStick"
     }
      stages {
         stage ('Build') {
