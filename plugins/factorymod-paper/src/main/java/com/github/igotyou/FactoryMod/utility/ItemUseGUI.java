@@ -23,6 +23,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ItemUseGUI {
 
@@ -51,6 +52,14 @@ public class ItemUseGUI {
 				continue;
 			}
 			FurnCraftChestEgg fccEgg = (FurnCraftChestEgg) egg;
+
+			ItemStack getItemAsSetup = getItemAsSetup(fccEgg, item);
+			if (getItemAsSetup != null) {
+				itemAsInput.add(new LClickable(getItemAsSetup, p -> {
+					gui.showForFactory(fccEgg);
+				}));
+			}
+
 			for (IRecipe recipe : fccEgg.getRecipes()) {
 				if (!(recipe instanceof InputRecipe)) {
 					continue;
@@ -102,6 +111,13 @@ public class ItemUseGUI {
 		return new LClickable(is, p -> { });
 	}
 
+	private ItemStack getItemAsSetup(FurnCraftChestEgg fccEgg, ItemStack item) {
+		if (fccEgg.getSetupCost() != null && fccEgg.getSetupCost().getAmount(item) != 0) {
+			return getItemSetupStack(fccEgg, item);
+		}
+		return null;
+	}
+
 	private ItemStack getItemAsInput(FurnCraftChestEgg fccEgg, InputRecipe recipe, ItemStack item) {
 		if (recipe.getInput().getAmount(item) != 0) {
 			return getItemRecipeStack(fccEgg, recipe, item);
@@ -137,6 +153,19 @@ public class ItemUseGUI {
 		lore.add(ChatColor.GOLD + "output:");
 		for (String output : recipe.getTextualOutputRepresentation(null, null)) {
 			lore.add(formatIngredient(output, item));
+		}
+		ItemAPI.addLore(is, lore);
+		return is;
+	}
+
+	private ItemStack getItemSetupStack(FurnCraftChestEgg fccEgg, ItemStack item) {
+		ItemStack is = new ItemStack(Material.CRAFTING_TABLE);
+		ItemAPI.setDisplayName(is, ChatColor.DARK_GREEN + fccEgg.getName());
+		List<String> lore = new ArrayList<>();
+		lore.add(ChatColor.GOLD + "Setup cost:");
+		for (Map.Entry<ItemStack, Integer> entry : fccEgg.getSetupCost().getEntrySet()) {
+			String recipeRepresentation = entry.getValue() + " "  + ItemNames.getItemName(entry.getKey());
+			lore.add(formatIngredient(recipeRepresentation, item));
 		}
 		ItemAPI.addLore(is, lore);
 		return is;
