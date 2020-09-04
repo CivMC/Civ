@@ -20,10 +20,6 @@ public class FactoryMenu extends StandaloneCommand {
 	@Override
 	public boolean execute(CommandSender sender, String[] args) {
 		Player p = (Player) sender;
-		if (p.isInsideVehicle()) {
-			p.sendMessage(ChatColor.RED + "You can't use this command in vehicles");
-			return true;
-		}
 		if (args.length == 0 || args[0].length() == 0) {
 			FactoryModGUI gui = new FactoryModGUI((Player) sender);
 			gui.showFactoryOverview(true);
