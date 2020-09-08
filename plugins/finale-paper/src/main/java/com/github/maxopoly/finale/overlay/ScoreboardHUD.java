@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.potion.PotionEffect;
@@ -147,6 +148,15 @@ public class ScoreboardHUD implements Listener {
 			updateGammaBright(e.getPlayer());
 		}
 		updateCoordinates(e.getPlayer(), settingsMan.getCoordsLocation());
+	}
+
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+	public void playerRespawn(PlayerRespawnEvent e) {
+		Bukkit.getScheduler().runTask(Finale.getPlugin(), () -> {
+			if (settingsMan.getGammaBrightSetting().getValue(e.getPlayer())) {
+				updateGammaBright(e.getPlayer());
+			}
+		});
 	}
 
 	private void updateAllPotionEffects(Player p) {
