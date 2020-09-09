@@ -1,9 +1,12 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.collect.BiMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Material;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 /**
  * Class of Map utilities.
@@ -104,6 +107,43 @@ public final class MapUtils {
 			}
 		}
 		return fallback;
+	}
+
+	// ------------------------------------------------------------
+	// Parsers
+	// ------------------------------------------------------------
+
+	/**
+	 * <p>Parses a list from a map.</p>
+	 *
+	 * <p>Use with {@link #attemptGet(Map, Function, Object, Object[])} as the parser.</p>
+	 *
+	 * @param value The value retrieved from the map.
+	 * @return Returns the value cast to a list, or null.
+	 */
+	public static List<?> parseList(Object value) {
+		if (value instanceof List) {
+			return (List<?>) value;
+		}
+		return null;
+	}
+
+	/**
+	 * <p>Parses a material from a map.</p>
+	 *
+	 * <p>Use with {@link #attemptGet(Map, Function, Object, Object[])} as the parser.</p>
+	 *
+	 * @param value The value retrieved from the map.
+	 * @return Returns the value as a material, or null.
+	 */
+	public static Material parseMaterial(Object value) {
+		if (value instanceof Material) {
+			return (Material) value;
+		}
+		if (value instanceof String) {
+			return MaterialAPI.getMaterial((String) value);
+		}
+		return null;
 	}
 
 }
