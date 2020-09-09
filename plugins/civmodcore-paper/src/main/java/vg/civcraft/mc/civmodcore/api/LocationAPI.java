@@ -60,6 +60,19 @@ public final class LocationAPI {
 	}
 
 	/**
+	 * Converts a location into a block's mid point.
+	 *
+	 * @param location The location to convert.
+	 * @return Returns a block's mid point, or null if the given location was null.
+	 */
+	public static Location getMidBlockLocation(Location location) {
+		if (location == null) {
+			return null;
+		}
+		return getBlockLocation(location).add(0.5d, 0.5d, 0.5d);
+	}
+
+	/**
 	 * Determines whether two locations share the same world.
 	 *
 	 * @param former The first location.
