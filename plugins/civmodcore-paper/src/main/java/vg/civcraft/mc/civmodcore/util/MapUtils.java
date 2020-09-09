@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.collect.BiMap;
 import java.util.Map;
 import java.util.function.Function;
 import org.apache.commons.lang.ArrayUtils;
@@ -22,6 +23,31 @@ public final class MapUtils {
 	 */
 	public static <K, V> boolean isNullOrEmpty(Map<K, V> map) {
 		return map == null || map.isEmpty();
+	}
+
+	/**
+	 * Retrieves a key from a map based on a given value. If two or more keys share a value,
+	 * the key that's returned is the first that matches during standard iteration.
+	 *
+	 * @param <K> The key type.
+	 * @param <V> The value type.
+	 * @param map The map to retrieve the key from.
+	 * @param value The value to based the search on.
+	 * @return Returns the key, or null.
+	 */
+	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value) {
+		if (isNullOrEmpty(map)) {
+			return null;
+		}
+		if (map instanceof BiMap) {
+			return ((BiMap<K, V>) map).inverse().get(value);
+		}
+		for (final Map.Entry<K, V> entry : map.entrySet()) {
+			if (NullCoalescing.equals(value, entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return null;
 	}
 
 	/**
