@@ -1,7 +1,10 @@
 package vg.civcraft.mc.civmodcore;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -11,6 +14,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
@@ -121,6 +125,35 @@ public abstract class ACivMod extends JavaPlugin {
 	public void saveDefaultResource(String path) {
 		if (!getResourceFile(path).exists()) {
 			saveResource(path, false);
+		}
+	}
+
+	/**
+	 * Saves a particular default resource to a particular location.
+	 *
+	 * @param defaultPath The path of the file within the plugin's jar.
+	 * @param dataPath The path the file should take within the plugin's data folder.
+	 */
+	public void saveDefaultResourceAs(String defaultPath, String dataPath) {
+		Preconditions.checkNotNull(defaultPath, "defaultPath cannot be null.");
+		Preconditions.checkNotNull(dataPath, "dataPath cannot be null.");
+		if (getResourceFile(defaultPath).exists()) {
+			return;
+		}
+		defaultPath = defaultPath.replace('\\', '/');
+		dataPath = dataPath.replace('\\', '/');
+		final InputStream data = getResource(defaultPath);
+		if (data == null) {
+			throw new IllegalArgumentException("The embedded resource '" + defaultPath +
+					"' cannot be found in " + getFile());
+		}
+		final File outFile = new File(getDataFolder(), dataPath);
+		try {
+			FileUtils.copyInputStreamToFile(data, outFile);
+		}
+		catch (IOException exception) {
+			severe("Could not save " + outFile.getName() + " to " + outFile);
+			exception.printStackTrace();
 		}
 	}
 
