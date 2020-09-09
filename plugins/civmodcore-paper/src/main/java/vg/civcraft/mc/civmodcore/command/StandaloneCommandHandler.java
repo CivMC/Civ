@@ -273,6 +273,10 @@ public class StandaloneCommandHandler {
 		return null;
 	}
 
+	public void reset() {
+		this.commands.clear();
+	}
+
 	// if only java generics allowed instanceof...
 
 	private Integer attemptInteger(Object o) {
@@ -288,4 +292,5 @@ public class StandaloneCommandHandler {
 		}
 		return null;
 	}
+
 }

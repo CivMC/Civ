@@ -57,6 +57,10 @@ public abstract class ACivMod extends JavaPlugin {
 	@Override
 	public void onDisable() {
 		this.useNewCommandHandler = true;
+		if (this.newCommandHandler != null) {
+			this.newCommandHandler.reset();
+			this.newCommandHandler = null;
+		}
 		Iteration.iterateThenClear(this.serializableClasses, NBTSerialization::unregisterNBTSerializable);
 		HandlerList.unregisterAll(this);
 		Bukkit.getMessenger().unregisterIncomingPluginChannel(this);
