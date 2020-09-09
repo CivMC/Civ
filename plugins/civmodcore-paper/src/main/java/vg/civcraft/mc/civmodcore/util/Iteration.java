@@ -234,4 +234,18 @@ public final class Iteration {
 		return collection;
 	}
 
+	/**
+	 * Removes the element at the end of the given list.
+	 *
+	 * @param <T> The type of the list's elements.
+	 * @param list The list to remove the last element from.
+	 * @return Returns the element removed.
+	 */
+	public static <T> T removeLastElement(List<T> list) {
+		if (isNullOrEmpty(list)) {
+			return null;
+		}
+		return list.remove(list.size() - 1);
+	}
+
 }
