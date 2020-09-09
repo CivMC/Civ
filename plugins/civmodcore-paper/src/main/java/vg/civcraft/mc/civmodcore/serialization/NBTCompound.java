@@ -43,6 +43,8 @@ public class NBTCompound implements Cloneable, Validation {
 
 	private static final String UUID_LEAST_SUFFIX = "Least";
 
+	private static final String UUID_KEY = "uuid";
+
 	private NBTTagCompound tag;
 
 	/**
@@ -334,10 +336,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public UUID getUUID(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
-		if (!this.tag.hasKeyOfType(key + UUID_MOST_SUFFIX, 4)) {
-			return null;
-		}
-		if (!this.tag.hasKeyOfType(key + UUID_LEAST_SUFFIX, 4)) {
+		if (!this.tag.b(key)) {
 			return null;
 		}
 		return this.tag.a(key);
@@ -367,6 +366,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 */
 	public void removeUUID(String key) {
 		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		this.tag.remove(key);
 		this.tag.remove(key + UUID_MOST_SUFFIX);
 		this.tag.remove(key + UUID_LEAST_SUFFIX);
 	}
@@ -685,6 +685,46 @@ public class NBTCompound implements Cloneable, Validation {
 			NBTTagList list = new NBTTagList();
 			for (double value : values) {
 				list.add(NBTTagDouble.a(value));
+			}
+			this.tag.set(key, list);
+		}
+	}
+
+	/**
+	 * Gets an array of UUIDs from a key.
+	 *
+	 * @param key The key to get the values of.
+	 * @return The values of the key, default: empty array
+	 */
+	public UUID[] getUUIDArray(String key) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		NBTCompound[] found = getCompoundArray(key);
+		UUID[] result = new UUID[found.length];
+		for (int i = 0; i < found.length; i++) {
+			result[i] = found[i].getUUID(UUID_KEY);
+		}
+		return result;
+	}
+
+	/**
+	 * Sets an array of UUIDs to a key.
+	 *
+	 * @param key The key to set to values to.
+	 * @param values The values to set to the key.
+	 */
+	public void setUUIDArray(String key, UUID[] values) {
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(key));
+		if (values == null) {
+			this.tag.remove(key);
+		}
+		else {
+			NBTTagList list = new NBTTagList();
+			for (UUID value : values) {
+				NBTCompound nbt = new NBTCompound();
+				if (value != null) {
+					nbt.setUUID(UUID_KEY, value);
+				}
+				list.add(nbt.tag);
 			}
 			this.tag.set(key, list);
 		}
