@@ -36,8 +36,8 @@ public final class NBTSerialization {
 		if (clazz == null) {
 			throw new IllegalArgumentException(cannotRegisterError + "the given class is null.");
 		}
-		if (!Modifier.isFinal(clazz.getModifiers())) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class is not final.");
+		if (clazz.isAnonymousClass()) {
+			throw new IllegalArgumentException(cannotRegisterError + "the given class is anonymous.");
 		}
 		boolean hasValidConstructor = false;
 		for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
