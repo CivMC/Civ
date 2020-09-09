@@ -226,12 +226,29 @@ public final class Iteration {
 		if (isNullOrEmpty(elements)) {
 			return collection;
 		}
-		for (T element : elements) {
+		addAll(collection, elements);
+		return collection;
+	}
+
+	/**
+	 * Use this to add arbitrary amounts of things to a collection that doesn't already exist as a collection,
+	 * which means you can avoid the dreaded {@code Arrays.asList(thing, thing2);}, thereby creating a new list
+	 * just to immediately discard it in the next operation execution.
+	 *
+	 * @param <T> The type of the elements of the collection and to add.
+	 * @param collection The collection to add the values to.
+	 * @param values The values to add to the collection.
+	 */
+	@SafeVarargs
+	public static <T> void addAll(Collection<T> collection, T... values) {
+		if (collection == null || ArrayUtils.isEmpty(values)) {
+			return;
+		}
+		for (T value : values) {
 			// Do not let this be simplified. There's no reason to create a new ArrayList
 			// as it would be immediately discarded and that's... bad
-			collection.add(element);
+			collection.add(value);
 		}
-		return collection;
 	}
 
 	/**
