@@ -96,6 +96,19 @@ public final class NBTSerialization {
 	}
 
 	/**
+	 * Returns the matching registered serializable class.
+	 *
+	 * @param clazz The class path.
+	 * @return Returns the serializable class, or null.
+	 */
+	public static Class<? extends NBTSerializable> getSerializableClass(final String clazz) {
+		if (Strings.isNullOrEmpty(clazz)) {
+			return null;
+		}
+		return REGISTERED_CLASSES.get(clazz);
+	}
+
+	/**
 	 * Unregisters all {@link NBTSerializable} classes.
 	 */
 	public static void clearAllRegistrations() {
