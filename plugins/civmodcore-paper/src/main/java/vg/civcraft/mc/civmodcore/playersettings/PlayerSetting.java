@@ -144,6 +144,20 @@ public abstract class PlayerSetting<T> {
 	public boolean canBeChangedByPlayer() {
 		return canBeChangedByPlayer;
 	}
+	
+	/**
+	 * @return Default value players have if they've never touched this setting
+	 */
+	public T getDefaultValue() {
+		return defaultValue;
+	}
+	
+	/**
+	 * @return ItemStack to use to visualize this setting in GUIs
+	 */
+	public ItemStack getVisualization() {
+		return visualization;
+	}
 
 	/**
 	 * Called when this setting is clicked in a menu to adjust its value
