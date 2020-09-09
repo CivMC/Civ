@@ -1,5 +1,6 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import java.util.List;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -17,7 +18,7 @@ public final class Iteration {
 		void accept(T former, boolean latter);
 	}
 
-    /**
+	/**
 	 * <p><b>DO NOT USE THIS!</b></p>
 	 *
 	 * <p>This method was originally created for developer ease of use, but instead has become a hot bed for
@@ -26,14 +27,14 @@ public final class Iteration {
 	 * inherit from {@link Collection}, such as {@link Map}, then it falls back to this version of the method,
 	 * giving the illusion that it's doing what you intended. But instead of checking whether the object you
 	 * gave is null or empty, it's instead only checking if it has any parameters.</p>
-     *
+	 *
 	 * @deprecated Use {@link ArrayUtils#isEmpty(Object[])} instead.
-     */
-    @SafeVarargs
+	 */
+	@SafeVarargs
 	@Deprecated
-    public static <T> boolean isNullOrEmpty(T... array) {
+	public static <T> boolean isNullOrEmpty(T... array) {
 		return ArrayUtils.isEmpty(array);
-    }
+	}
 
 	/**
 	 * <p>Determines whether a collection is null or empty.</p>
@@ -46,49 +47,49 @@ public final class Iteration {
 	 * @return Returns true if the collection exists and at least one item.
 	 */
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
-    	return collection == null || collection.isEmpty();
+		return collection == null || collection.isEmpty();
 	}
 
-    /**
-     * Returns the first matching item in the parameters, which is particularly useful when you need to match Materials
-     * without necessarily needing to create a new {@link vg.civcraft.mc.civmodcore.api.MaterialAPI MaterialAPI}.
-     *
-     * @param <T> The type of the object to match.
-     * @param base The object to match.
-     * @param values An array of items to match against.
-     * @return Returns true if the base is found within the values.
-     */
-    @SafeVarargs
+	/**
+	 * Returns the first matching item in the parameters, which is particularly useful when you need to match Materials
+	 * without necessarily needing to create a new {@link vg.civcraft.mc.civmodcore.api.MaterialAPI MaterialAPI}.
+	 *
+	 * @param <T> The type of the object to match.
+	 * @param base The object to match.
+	 * @param values An array of items to match against.
+	 * @return Returns true if the base is found within the values.
+	 */
+	@SafeVarargs
     public static <T> boolean contains(T base, T... values) {
-        if (isNullOrEmpty(values)) {
+		if (isNullOrEmpty(values)) {
 			return false;
-        }
+		}
         for (T value : values) {
-            if (Objects.equals(base, value)) {
-                return true;
-            }
-        }
-        return false;
-    }
+			if (Objects.equals(base, value)) {
+				return true;
+			}
+		}
+		return false;
+	}
 
-    /**
-     * Iterates through a collection before clearing it completely. Useful for wiping out data on plugin disable.
-     *
-     * @param <T> The generic type of the collection.
-     * @param collection The collection to iterate and clear.
-     * @param processor The iteration processor which will be called for each item in the collection.
-     */
+	/**
+	 * Iterates through a collection before clearing it completely. Useful for wiping out data on plugin disable.
+	 *
+	 * @param <T> The generic type of the collection.
+	 * @param collection The collection to iterate and clear.
+	 * @param processor The iteration processor which will be called for each item in the collection.
+	 */
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
-    	if (isNullOrEmpty(collection) || processor == null) {
-    		return;
+		if (isNullOrEmpty(collection) || processor == null) {
+			return;
 		}
         for (T element : collection) {
-            processor.accept(element);
-        }
-        collection.clear();
-    }
+			processor.accept(element);
+		}
+		collection.clear();
+	}
 
-    /**
+	/**
 	 * Iterates through a collection, whereby each element has knowledge of whether it's the last element.
 	 *
 	 * @param <T> The generic type of the collection.
@@ -105,7 +106,7 @@ public final class Iteration {
 		}
 	}
 
-    /**
+	/**
 	 * Fills an array with a particular value.
 	 *
 	 * @param <T> The type of the array.
@@ -114,20 +115,20 @@ public final class Iteration {
 	 * @return Returns the given array with the filled values.
 	 */
     public static <T> T[] fill(T[] array, T value) {
-    	if (isNullOrEmpty(array)) {
-    		return array;
+		if (isNullOrEmpty(array)) {
+			return array;
 		}
 		Arrays.fill(array, value);
-    	return array;
+		return array;
 	}
 
 	/** @deprecated Use {@link #anyMatch(Object[], Predicate)} instead. */
 	@Deprecated
 	public static <T> boolean some(T[] array, Predicate<T> predicate) {
 		return anyMatch(array, predicate);
-    }
+	}
 
-    /**
+	/**
 	 * <p>Tests whether there is at least one element in the given array that passes the criteria of the given
 	 * predicate.</p>
 	 *
@@ -140,18 +141,18 @@ public final class Iteration {
 	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
 	 */
 	public static <T> boolean anyMatch(T[] array, Predicate<T> predicate) {
-    	if (isNullOrEmpty(array)) {
-    		return false;
+		if (isNullOrEmpty(array)) {
+			return false;
 		}
-    	if (predicate == null) {
-    		return true;
+		if (predicate == null) {
+			return true;
 		}
-    	for (T element : array) {
-    		if (predicate.test(element)) {
-    			return true;
+		for (T element : array) {
+			if (predicate.test(element)) {
+				return true;
 			}
 		}
-    	return false;
+		return false;
 	}
 
 	/** @deprecated Use {@link #allMatch(Object[], Predicate)} instead. */
@@ -212,7 +213,7 @@ public final class Iteration {
 	 * @param constructor The constructor for the collection.
 	 * @param elements The elements to add to the collection.
 	 * @return Returns a new collection, or null if no constructor was given, or the constructor didn't produce a new
-	 *     collection.
+	 * collection.
 	 */
 	@SafeVarargs
 	public static <T, K extends Collection<T>> K collect(Supplier<K> constructor, T... elements) {

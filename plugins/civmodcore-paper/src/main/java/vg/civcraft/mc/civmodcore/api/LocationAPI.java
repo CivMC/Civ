@@ -44,7 +44,7 @@ public final class LocationAPI {
 	}
 
 	/**
-	 * Converts a location into a block location.
+	 * Converts a location into a block location. (Yaw and Pitch values are lost)
 	 *
 	 * @param location The location to convert.
 	 * @return Returns a block location, or null if the given location was null.
@@ -60,7 +60,7 @@ public final class LocationAPI {
 	}
 
 	/**
-	 * Converts a location into a block's mid point.
+	 * Converts a location into a block's mid point. (Yaw and Pitch values are lost)
 	 *
 	 * @param location The location to convert.
 	 * @return Returns a block's mid point, or null if the given location was null.
@@ -77,7 +77,7 @@ public final class LocationAPI {
 	 *
 	 * @param former The first location.
 	 * @param latter The second location.
-	 * @return Returns true if the two locations share the same world.
+	 * @return Returns true if the two locations are not null and share the same world.
 	 */
 	public static boolean areLocationsSameWorld(Location former, Location latter) {
 		if (former == null || latter == null) {
