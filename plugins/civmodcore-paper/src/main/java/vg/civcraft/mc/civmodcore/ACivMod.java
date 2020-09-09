@@ -69,7 +69,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param listener The listener class to register.
 	 */
-	protected void registerListener(Listener listener) {
+	public void registerListener(Listener listener) {
 		if (listener == null) {
 			throw new IllegalArgumentException("Cannot register a listener if it's null, you dummy");
 		}
@@ -156,7 +156,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param handler The legacy command handler to set. Null will cause de-registration.
 	 */
-	protected void setCommandHandler(CommandHandler handler) {
+	public void setCommandHandler(CommandHandler handler) {
 		this.handle = handler;
 	}
 
@@ -177,7 +177,7 @@ public abstract class ACivMod extends JavaPlugin {
 	 *
 	 * @param handler The standalone command handler to set. Null will cause de-registration.
 	 */
-	protected void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
+	public void setStandaloneCommandHandler(StandaloneCommandHandler handler) {
 		this.newCommandHandler = handler;
 	}
 
