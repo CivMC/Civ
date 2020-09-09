@@ -2,11 +2,27 @@ package vg.civcraft.mc.civmodcore.util;
 
 import java.util.Map;
 import java.util.function.Function;
+import org.apache.commons.lang.ArrayUtils;
 
 /**
  * Class of Map utilities.
  */
 public final class MapUtils {
+
+	/**
+	 * <p>Determines whether a map is null or empty.</p>
+	 *
+	 * <p>Note: This will not check the elements within the map. It only checks if the map itself exists and has
+	 * key-value pairs. If for example the map has 100 null keyed values, this function would still return true.</p>
+	 *
+	 * @param <K> The type of keys.
+	 * @param <V> The type of values.
+	 * @param map The map to check.
+	 * @return Returns true if the map exists and at least one key-value pair.
+	 */
+	public static <K, V> boolean isNullOrEmpty(Map<K, V> map) {
+		return map == null || map.isEmpty();
+	}
 
 	/**
 	 * Attempts to retrieve a value from a given map from a range of keys.
@@ -39,7 +55,7 @@ public final class MapUtils {
 	@SafeVarargs
 	@SuppressWarnings("unchecked")
 	public static <K, V, R> R attemptGet(Map<K, V> map, Function<V, R> parser, R fallback, K... keys) {
-		if (Iteration.isNullOrEmpty(map) || Iteration.isNullOrEmpty(keys)) {
+		if (isNullOrEmpty(map) || ArrayUtils.isEmpty(keys)) {
 			return fallback;
 		}
 		if (parser == null) {

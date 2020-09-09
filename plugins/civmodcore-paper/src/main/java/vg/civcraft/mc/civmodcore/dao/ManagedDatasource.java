@@ -564,7 +564,7 @@ public class ManagedDatasource implements ConfigurationSerializable {
 	}
 
 	public static ManagedDatasource deserialize(Map<String, Object> data) {
-		if (Iteration.isNullOrEmpty(data)) {
+		if (MapUtils.isNullOrEmpty(data)) {
 			LOGGER.info("Database not defined.");
 			return null;
 		}
