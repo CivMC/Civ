@@ -49,23 +49,31 @@ public class AikarCommandManager {
 	 * Creates a new command manager for Aikar based commands and tab completions.
 	 *
 	 * @param plugin The plugin to bind this manager to.
-	 * @param autoRegister If true will automatically register all commands and completions as defined within
+	 * @param autoInit If true will automatically initialise and register all commands and completions as defined within
 	 *     {@link AikarCommandManager#registerCommands()} and
 	 *     {@link AikarCommandManager#registerCompletions(CommandCompletions)}.
 	 */
-	public AikarCommandManager(ACivMod plugin, boolean autoRegister) {
+	public AikarCommandManager(ACivMod plugin, boolean autoInit) {
 		this.plugin = plugin;
-		if (autoRegister) {
-			register();
+		if (autoInit) {
+			init();
 		}
 	}
 
 	/**
-	 * Will register both commands and completions. You should only really use this if you've used
-	 * {@link AikarCommandManager#reset()} or both {@link AikarCommandManager#deregisterCommands()} and
+	 * @deprecated Use {@link #init()} instead as it's more indicative of what's happening.
+	 */
+	@Deprecated
+	public final void register() {
+		init();
+	}
+
+	/**
+	 * Will initialise the manager and register both commands and completions. You should only really use this if
+	 * you've used {@link AikarCommandManager#reset()} or both {@link AikarCommandManager#deregisterCommands()} and
 	 * {@link AikarCommandManager#deregisterCompletions()}, otherwise there may be issues.
 	 */
-    public final void register() {
+    public final void init() {
 		this.manager = new CustomBukkitManager(plugin);
 		registerCommands();
 		registerCompletions(this.manager.getCommandCompletions());
