@@ -77,7 +77,7 @@
 		</repository>
 		<repository>
 			<id>civ-jenkins</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
+			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
   </repositories>
 
