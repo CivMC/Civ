@@ -121,24 +121,10 @@ public final class Iteration {
     	return array;
 	}
 
-    /**
-     * Say you have three objects and you know two are the same but don't know which. This is useful when you're
-     * attempting to find the other block of a double chest or a bed or a door, etc.
-     *
-     * @param <T> The type of the object to find the other of.
-     * @param base The baseline object to check against, the known location.
-     * @param former The first of the two unknowns.
-     * @param latter The second of the two unknowns.
-     * @return Returns either the former or the latter parameter if either match, or null if neither do.
-     */
-    public static <T> T other(T base, T former, T latter) {
-        if (Objects.equals(base, former)) {
-            return latter;
-        }
-        if (Objects.equals(base, latter)) {
-            return former;
-        }
-        return null;
+	/** @deprecated Use {@link #anyMatch(Object[], Predicate)} instead. */
+	@Deprecated
+	public static <T> boolean some(T[] array, Predicate<T> predicate) {
+		return anyMatch(array, predicate);
     }
 
     /**
@@ -153,7 +139,7 @@ public final class Iteration {
 	 * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
 	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
 	 */
-    public static <T> boolean some(T[] array, Predicate<T> predicate) {
+	public static <T> boolean anyMatch(T[] array, Predicate<T> predicate) {
     	if (isNullOrEmpty(array)) {
     		return false;
 		}
@@ -168,6 +154,12 @@ public final class Iteration {
     	return false;
 	}
 
+	/** @deprecated Use {@link #allMatch(Object[], Predicate)} instead. */
+	@Deprecated
+	public static <T> boolean every(T[] array, Predicate<T> predicate) {
+		return allMatch(array, predicate);
+	}
+
 	/**
 	 * <p>Tests whether every element in an array passes the criteria of the given predicate.</p>
 	 *
@@ -179,7 +171,7 @@ public final class Iteration {
 	 * @return Returns true if no element fails the predicate test, or if the array fails the
 	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
 	 */
-	public static <T> boolean every(T[] array, Predicate<T> predicate) {
+	public static <T> boolean allMatch(T[] array, Predicate<T> predicate) {
 		if (isNullOrEmpty(array)) {
 			return true;
 		}
