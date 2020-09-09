@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Strings;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.MethodUtils;
 
 /**
@@ -27,7 +28,7 @@ public class EnumUtils {
 			values = (T[]) MethodUtils.invokeExactStaticMethod(clazz, "values", null);
 		}
 		catch (Exception ignored) { }
-		if (Iteration.isNullOrEmpty(values)) {
+		if (ArrayUtils.isEmpty(values)) {
 			return null;
 		}
 		for (T value : values) {

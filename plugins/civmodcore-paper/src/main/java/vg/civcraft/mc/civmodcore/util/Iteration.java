@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.apache.commons.lang.ArrayUtils;
 
 public final class Iteration {
 
@@ -17,18 +18,21 @@ public final class Iteration {
 	}
 
     /**
-     * <p>Determines whether an array is null or empty.</p>
+	 * <p><b>DO NOT USE THIS!</b></p>
 	 *
-	 * <p>Note: This will not check the elements within the array. It only checks if the array itself exists and has
-	 * elements. If for example the array has 100 null elements, this function would still return true.</p>
+	 * <p>This method was originally created for developer ease of use, but instead has become a hot bed for
+	 * hidden bugs. The reason for that being the varargs / rest spread. If you put in an object you expect
+	 * to be handled by {@link #isNullOrEmpty(Collection)} but don't realise the object doesn't actually
+	 * inherit from {@link Collection}, such as {@link Map}, then it falls back to this version of the method,
+	 * giving the illusion that it's doing what you intended. But instead of checking whether the object you
+	 * gave is null or empty, it's instead only checking if it has any parameters.</p>
      *
-     * @param <T> The type of the array.
-     * @param array The array to check.
-     * @return Returns true if the array exists and at least one item.
+	 * @deprecated Use {@link ArrayUtils#isEmpty(Object[])} instead.
      */
     @SafeVarargs
+	@Deprecated
     public static <T> boolean isNullOrEmpty(T... array) {
-        return array == null || array.length < 1;
+		return ArrayUtils.isEmpty(array);
     }
 
 	/**

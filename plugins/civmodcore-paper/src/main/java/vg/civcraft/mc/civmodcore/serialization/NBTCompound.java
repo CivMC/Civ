@@ -20,11 +20,11 @@ import net.minecraft.server.v1_16_R1.NBTTagList;
 import net.minecraft.server.v1_16_R1.NBTTagLong;
 import net.minecraft.server.v1_16_R1.NBTTagShort;
 import net.minecraft.server.v1_16_R1.NBTTagString;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.util.Validation;
 
@@ -920,7 +920,7 @@ public class NBTCompound implements Cloneable, Validation {
 	 * @return Returns an NBTCompound if the deserialization was successful, or otherwise null.
 	 */
 	public static NBTCompound fromBytes(byte[] bytes) {
-		if (Iteration.isNullOrEmpty(bytes)) {
+		if (ArrayUtils.isEmpty(bytes)) {
 			return null;
 		}
 		ByteArrayDataInput input = ByteStreams.newDataInput(bytes);

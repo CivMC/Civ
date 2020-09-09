@@ -11,6 +11,7 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -141,7 +142,7 @@ public final class InventoryAPI {
 	 */
 	public static boolean safelyAddItemsToInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
-		if (Iteration.isNullOrEmpty(items)) {
+		if (ArrayUtils.isEmpty(items)) {
 			return true;
 		}
 		Inventory clone = cloneInventory(inventory);
@@ -167,7 +168,7 @@ public final class InventoryAPI {
 	 */
 	public static boolean safelyRemoveItemsFromInventory(Inventory inventory, ItemStack[] items) {
 		Preconditions.checkArgument(isValidInventory(inventory));
-		if (Iteration.isNullOrEmpty(items)) {
+		if (ArrayUtils.isEmpty(items)) {
 			return true;
 		}
 		Inventory clone = cloneInventory(inventory);
@@ -192,7 +193,7 @@ public final class InventoryAPI {
 	public static boolean safelyTransactBetweenInventories(Inventory from, ItemStack[] items, Inventory to) {
 		Preconditions.checkArgument(isValidInventory(from));
 		Preconditions.checkArgument(isValidInventory(to));
-		if (Iteration.isNullOrEmpty(items)) {
+		if (ArrayUtils.isEmpty(items)) {
 			return true;
 		}
 		Inventory fromClone = cloneInventory(from);
