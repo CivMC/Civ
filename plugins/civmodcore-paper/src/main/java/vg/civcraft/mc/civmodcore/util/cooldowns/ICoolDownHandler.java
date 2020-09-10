@@ -52,4 +52,5 @@ public interface ICoolDownHandler<E> {
 	 *            Object to check
 	 */
 	void removeCooldown(E e);
+
 }

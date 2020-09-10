@@ -8,6 +8,7 @@ import vg.civcraft.mc.civmodcore.inventorygui.ClickableInventory;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
 public class ComponableInventory extends ComponableSection {
+
 	private ClickableInventory inv;
 	private Player player;
 

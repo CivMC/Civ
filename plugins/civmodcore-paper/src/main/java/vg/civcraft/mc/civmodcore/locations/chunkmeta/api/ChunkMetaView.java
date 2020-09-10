@@ -12,6 +12,7 @@ import vg.civcraft.mc.civmodcore.locations.chunkmeta.GlobalChunkMetaManager;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 public class ChunkMetaView<T extends ChunkMeta<?>> extends APIView {
+
 	protected GlobalChunkMetaManager globalManager;
 	protected boolean alwaysLoaded;
 

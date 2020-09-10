@@ -99,5 +99,6 @@ public class CivConfigAnnotationProcessor extends AbstractProcessor {
 		}
 		return true;
 	}
+
 }
 

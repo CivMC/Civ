@@ -101,4 +101,5 @@ public class GlobalLocationTracker<T extends LocationTrackable> {
 	public synchronized T remove(T trackable) {
 		return remove(trackable.getLocation());
 	}
+
 }

@@ -127,4 +127,5 @@ public class GlobalChunkMetaManager {
 		WorldChunkMetaManager manager = new WorldChunkMetaManager(world, id);
 		worldToManager.put(world.getUID(), manager);
 	}
+
 }

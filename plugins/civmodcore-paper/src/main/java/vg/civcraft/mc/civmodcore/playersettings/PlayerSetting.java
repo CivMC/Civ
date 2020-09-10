@@ -259,4 +259,5 @@ public abstract class PlayerSetting<T> {
 	 * @return GUI text
 	 */
 	public abstract String toText(T value);
+
 }

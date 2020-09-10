@@ -168,4 +168,5 @@ public abstract class PlayerCommand implements Command {
 	public String parse(String text, Object... args) {
 		return TextUtil.parse(text, args);
 	}
+
 }

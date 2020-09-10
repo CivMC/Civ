@@ -18,8 +18,6 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		this.modifiedEntries = new ArrayList<>();
 	}
 
-
-
 	public void reportChange(D data) {
 		modifiedEntries.add(data);
 	}

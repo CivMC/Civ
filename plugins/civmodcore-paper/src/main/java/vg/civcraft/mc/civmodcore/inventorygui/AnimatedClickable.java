@@ -58,4 +58,5 @@ public class AnimatedClickable extends IClickable {
 	public long getTiming() {
 		return timing;
 	}
+
 }

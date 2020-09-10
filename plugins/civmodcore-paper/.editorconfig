@@ -16,10 +16,9 @@ continuation_indent_size = 8
 indent_style = tab
 indent_size = 4
 
-[*.xml]
-indent_style = tab
-indent_size = 2
-
-[*.yml]
+[*.{xml, yml}]
 indent_style = space
 indent_size = 2
+
+[*.csv]
+insert_final_newline = false

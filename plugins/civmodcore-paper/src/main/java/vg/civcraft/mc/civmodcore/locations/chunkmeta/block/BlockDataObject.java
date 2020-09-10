@@ -41,4 +41,5 @@ public abstract class BlockDataObject<D extends BlockDataObject<D>> {
 	public void setOwningCache(BlockBasedChunkMeta<D, ? extends StorageEngine> owningCache) {
 		this.owningCache = owningCache;
 	}
+
 }

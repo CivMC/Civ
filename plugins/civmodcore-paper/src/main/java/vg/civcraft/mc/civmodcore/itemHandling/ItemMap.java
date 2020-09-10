@@ -627,4 +627,5 @@ public class ItemMap {
 	public static NBTTagList listToNBT(NBTTagList base, List<Object> list) {
 		return TagManager.listToNBT(base, list);
 	}
+
 }

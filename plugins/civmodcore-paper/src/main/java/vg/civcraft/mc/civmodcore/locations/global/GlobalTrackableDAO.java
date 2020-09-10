@@ -37,5 +37,4 @@ public abstract class GlobalTrackableDAO<T extends LocationTrackable> {
 	
 	public abstract void loadAll(Consumer<T> insertFunction);
 
-
 }

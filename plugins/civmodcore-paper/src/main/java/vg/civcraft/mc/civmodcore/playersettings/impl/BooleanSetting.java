@@ -89,4 +89,5 @@ public class BooleanSetting extends PlayerSetting<Boolean> {
 				return false;
 		}
 	}
+
 }
