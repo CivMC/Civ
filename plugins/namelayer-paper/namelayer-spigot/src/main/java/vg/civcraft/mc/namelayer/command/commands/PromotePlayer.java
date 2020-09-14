@@ -99,12 +99,34 @@ public class PromotePlayer extends PlayerCommandMiddle{
 		}
 		
 		if (!allowed){
-			p.sendMessage(ChatColor.RED + "You do not have permissions to modify this group.");
+			p.sendMessage(ChatColor.RED + "You do not have permissions to promote to this rank");
 			return true;
 		}
+		if (promoteecurrentType != null) {
+			switch (promoteecurrentType){ // depending on the type the executor wants to add the player to
+			case MEMBERS:
+				allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MEMBERS"));
+				break;
+			case MODS:
+				allowed = gm.hasAccess(group, executor, PermissionType.getPermission("MODS"));
+				break;
+			case ADMINS:
+				allowed = gm.hasAccess(group, executor, PermissionType.getPermission("ADMINS"));
+				break;
+			case OWNER:
+				allowed = gm.hasAccess(group, executor, PermissionType.getPermission("OWNER"));
+				break;
+			default:
+				allowed = false;
+				break;
+			}
+		}
+		else {
+			allowed = false;
+		}
 		
-		if (!group.isMember(promotee)){ //can't edit a player who isn't in the group
-			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group.");
+		if (!allowed || !group.isMember(promotee)){ //can't edit a player who isn't in the group
+			p.sendMessage(ChatColor.RED + NameAPI.getCurrentName(promotee) + " is not a member of this group or you do not have permission to edit their rank");
 			return true;
 		}
 		
