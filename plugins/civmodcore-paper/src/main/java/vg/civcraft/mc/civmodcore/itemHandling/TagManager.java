@@ -26,6 +26,7 @@ import net.minecraft.server.v1_16_R1.NBTTagString;
 
 @Deprecated
 public class TagManager {
+
 	private static final Logger log = Bukkit.getLogger();
 
 	private NBTTagCompound tag;
@@ -314,4 +315,5 @@ public class TagManager {
 		}
 		return base;
 	}
+
 }

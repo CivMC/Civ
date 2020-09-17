@@ -110,4 +110,5 @@ public abstract class StandaloneCommand {
 		}
 		return result;
 	}
+
 }

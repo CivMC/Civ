@@ -1,12 +1,57 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import com.google.common.collect.BiMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import org.apache.commons.lang.ArrayUtils;
+import org.bukkit.Material;
+import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 
 /**
  * Class of Map utilities.
  */
 public final class MapUtils {
+
+	/**
+	 * <p>Determines whether a map is null or empty.</p>
+	 *
+	 * <p>Note: This will not check the elements within the map. It only checks if the map itself exists and has
+	 * key-value pairs. If for example the map has 100 null keyed values, this function would still return true.</p>
+	 *
+	 * @param <K> The type of keys.
+	 * @param <V> The type of values.
+	 * @param map The map to check.
+	 * @return Returns true if the map exists and at least one key-value pair.
+	 */
+	public static <K, V> boolean isNullOrEmpty(Map<K, V> map) {
+		return map == null || map.isEmpty();
+	}
+
+	/**
+	 * Retrieves a key from a map based on a given value. If two or more keys share a value,
+	 * the key that's returned is the first that matches during standard iteration.
+	 *
+	 * @param <K> The key type.
+	 * @param <V> The value type.
+	 * @param map The map to retrieve the key from.
+	 * @param value The value to based the search on.
+	 * @return Returns the key, or null.
+	 */
+	public static <K, V> K getKeyFromValue(final Map<K, V> map, final V value) {
+		if (isNullOrEmpty(map)) {
+			return null;
+		}
+		if (map instanceof BiMap) {
+			return ((BiMap<K, V>) map).inverse().get(value);
+		}
+		for (final Map.Entry<K, V> entry : map.entrySet()) {
+			if (NullCoalescing.equals(value, entry.getValue())) {
+				return entry.getKey();
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * Attempts to retrieve a value from a given map from a range of keys.
@@ -39,7 +84,7 @@ public final class MapUtils {
 	@SafeVarargs
 	@SuppressWarnings("unchecked")
 	public static <K, V, R> R attemptGet(Map<K, V> map, Function<V, R> parser, R fallback, K... keys) {
-		if (Iteration.isNullOrEmpty(map) || Iteration.isNullOrEmpty(keys)) {
+		if (isNullOrEmpty(map) || ArrayUtils.isEmpty(keys)) {
 			return fallback;
 		}
 		if (parser == null) {
@@ -62,6 +107,43 @@ public final class MapUtils {
 			}
 		}
 		return fallback;
+	}
+
+	// ------------------------------------------------------------
+	// Parsers
+	// ------------------------------------------------------------
+
+	/**
+	 * <p>Parses a list from a map.</p>
+	 *
+	 * <p>Use with {@link #attemptGet(Map, Function, Object, Object[])} as the parser.</p>
+	 *
+	 * @param value The value retrieved from the map.
+	 * @return Returns the value cast to a list, or null.
+	 */
+	public static List<?> parseList(Object value) {
+		if (value instanceof List) {
+			return (List<?>) value;
+		}
+		return null;
+	}
+
+	/**
+	 * <p>Parses a material from a map.</p>
+	 *
+	 * <p>Use with {@link #attemptGet(Map, Function, Object, Object[])} as the parser.</p>
+	 *
+	 * @param value The value retrieved from the map.
+	 * @return Returns the value as a material, or null.
+	 */
+	public static Material parseMaterial(Object value) {
+		if (value instanceof Material) {
+			return (Material) value;
+		}
+		if (value instanceof String) {
+			return MaterialAPI.getMaterial((String) value);
+		}
+		return null;
 	}
 
 }

@@ -36,8 +36,8 @@ public final class NBTSerialization {
 		if (clazz == null) {
 			throw new IllegalArgumentException(cannotRegisterError + "the given class is null.");
 		}
-		if (!Modifier.isFinal(clazz.getModifiers())) {
-			throw new IllegalArgumentException(cannotRegisterError + "the given class is not final.");
+		if (clazz.isAnonymousClass()) {
+			throw new IllegalArgumentException(cannotRegisterError + "the given class is anonymous.");
 		}
 		boolean hasValidConstructor = false;
 		for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
@@ -93,6 +93,19 @@ public final class NBTSerialization {
 		}
 		LOGGER.info("NBTSerializable[" + clazz.getName() + "] unregistered.");
 		REGISTERED_CLASSES.values().remove(clazz);
+	}
+
+	/**
+	 * Returns the matching registered serializable class.
+	 *
+	 * @param clazz The class path.
+	 * @return Returns the serializable class, or null.
+	 */
+	public static Class<? extends NBTSerializable> getSerializableClass(final String clazz) {
+		if (Strings.isNullOrEmpty(clazz)) {
+			return null;
+		}
+		return REGISTERED_CLASSES.get(clazz);
 	}
 
 	/**

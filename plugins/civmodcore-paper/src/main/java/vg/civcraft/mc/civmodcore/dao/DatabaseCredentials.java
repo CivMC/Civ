@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.util.NumberConversions;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.MapUtils;
 
 /**
@@ -96,7 +95,7 @@ public class DatabaseCredentials implements ConfigurationSerializable {
 
 	// This must be kept compatible with ManagedDatasource's deserialization
 	public static DatabaseCredentials deserialize(Map<String, Object> data) {
-		if (Iteration.isNullOrEmpty(data)) {
+		if (MapUtils.isNullOrEmpty(data)) {
 			return null;
 		}
 		String user = MapUtils.attemptGet(data, "root", "username", "user");

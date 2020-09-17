@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -199,7 +200,7 @@ public final class ItemAPI {
 	 * @see ItemAPI#clearLore(ItemStack)
 	 */
 	public static void setLore(ItemStack item, String... lines) {
-		if (Iteration.isNullOrEmpty(lines)) {
+		if (ArrayUtils.isEmpty(lines)) {
 			clearLore(item);
 		}
 		else {

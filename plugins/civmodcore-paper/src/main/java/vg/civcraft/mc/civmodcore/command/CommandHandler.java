@@ -103,4 +103,9 @@ public abstract class CommandHandler {
 				.toString());
 		sender.sendMessage(new StringBuilder().append(ChatColor.RED + "Usage: ").append(command.getUsage()).toString());
 	}
+
+	public void reset() {
+		this.commands.clear();
+	}
+
 }

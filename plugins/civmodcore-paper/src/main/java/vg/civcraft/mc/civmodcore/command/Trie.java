@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class Trie {
+
 	private Map<Character, Trie> children;
 	private String word;
 	// instead of storing only the suffix and re-concatenating the original word for
@@ -88,4 +89,5 @@ public final class Trie {
 			}
 		}
 	}
+
 }

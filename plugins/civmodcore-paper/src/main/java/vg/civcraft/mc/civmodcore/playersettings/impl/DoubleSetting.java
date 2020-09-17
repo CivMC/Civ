@@ -51,4 +51,5 @@ public class DoubleSetting extends PlayerSetting<Double> {
 	public String toText(Double value) {
 		return formatter.format(value);
 	}
+
 }

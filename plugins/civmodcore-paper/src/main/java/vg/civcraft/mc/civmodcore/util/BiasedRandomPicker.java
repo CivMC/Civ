@@ -90,4 +90,5 @@ public class BiasedRandomPicker<E> {
 		}
 		return chance;
 	}
+
 }

@@ -1,9 +1,13 @@
 package vg.civcraft.mc.civmodcore.util;
 
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -347,6 +351,67 @@ public class TextUtil {
 			return false;
 		}
 		return container.toLowerCase().startsWith(contained.toLowerCase());
+	}
+
+	/**
+	 * <p>Determines whether a given base component is null or empty.</p>
+	 *
+	 * <p>This is determined by converting the component into plain text, so a non-null component filled with
+	 * nothing but colour codes and hover text will likely return true.</p>
+	 *
+	 * @param component The component to test if null or empty.
+	 * @return Returns true if the component is null or has no visible content.
+	 */
+	public static boolean isNullOrEmpty(BaseComponent component) {
+		if (component == null) {
+			return true;
+		}
+		return Strings.isNullOrEmpty(component.toPlainText());
+	}
+
+	/**
+	 * This is an easy way to create a text component when all you want to do is colour it.
+	 *
+	 * @param value The value of the text. (Objects will be stringified)
+	 * @param formats The colour formats.
+	 * @return Returns the created component, so you <i>can</i> do more stuff to it.
+	 */
+	public static TextComponent textComponent(final Object value, final net.md_5.bungee.api.ChatColor... formats) {
+		final TextComponent component = new TextComponent(value == null ? "<null>" : value.toString());
+		if (!ArrayUtils.isEmpty(formats)) {
+			for (final net.md_5.bungee.api.ChatColor format : formats) {
+				if (format == null) {
+					//continue;
+				}
+				else if (format.getColor() != null) {
+					component.setColor(format);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.RESET) {
+					component.setColor(format);
+					component.setBold(false);
+					component.setItalic(false);
+					component.setUnderlined(false);
+					component.setStrikethrough(false);
+					component.setObfuscated(false);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.BOLD) {
+					component.setBold(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.ITALIC) {
+					component.setItalic(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.UNDERLINE) {
+					component.setUnderlined(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.STRIKETHROUGH) {
+					component.setStrikethrough(true);
+				}
+				else if (format == net.md_5.bungee.api.ChatColor.MAGIC) {
+					component.setObfuscated(true);
+				}
+			}
+		}
+		return component;
 	}
 
 }

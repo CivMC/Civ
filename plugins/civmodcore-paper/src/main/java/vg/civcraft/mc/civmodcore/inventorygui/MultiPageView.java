@@ -146,4 +146,5 @@ public class MultiPageView {
 	public void setPage(int page) {
 		this.currentPage = page;
 	}
+
 }

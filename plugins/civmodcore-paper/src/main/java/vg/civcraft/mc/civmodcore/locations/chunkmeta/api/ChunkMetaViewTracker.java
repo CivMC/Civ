@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Consumer;
 
-;
-
 public final class ChunkMetaViewTracker {
 	
 	private static ChunkMetaViewTracker instance;

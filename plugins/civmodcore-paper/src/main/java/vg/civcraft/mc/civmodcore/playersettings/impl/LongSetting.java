@@ -40,4 +40,5 @@ public class LongSetting extends PlayerSetting<Long> {
 	public String toText(Long value) {
 		return String.valueOf(value);
 	}
+
 }
