@@ -50,19 +50,24 @@ public class AdminFunctionsGUI extends AbstractGroupGUI {
 		ItemStack mergeStack = new ItemStack(Material.SPONGE);
 		ItemAPI.setDisplayName(mergeStack, ChatColor.GOLD + "Merge group");
 		Clickable mergeClick;
-		if (gm.hasAccess(g, p.getUniqueId(),
-				PermissionType.getPermission("MERGE"))) {
-			mergeClick = new Clickable(mergeStack) {
-				@Override
-				public void clicked(Player p) {
-					showMergingMenu();
-				}
-			};
-		} else {
-			ItemAPI.addLore(mergeStack, ChatColor.RED
-					+ "You don't have permission to do this");
-			mergeClick = new DecorationStack(mergeStack);
-		}
+		
+		ItemAPI.addLore(mergeStack, ChatColor.RED
+									+ "Sorry, group merging is not a currently supported feature.");
+							mergeClick = new DecorationStack(mergeStack);
+		
+//		if (gm.hasAccess(g, p.getUniqueId(),
+//				PermissionType.getPermission("MERGE"))) {
+//			mergeClick = new Clickable(mergeStack) {
+//				@Override
+//				public void clicked(Player p) {
+//					showMergingMenu();
+//				}
+//			};
+//		} else {
+//			ItemAPI.addLore(mergeStack, ChatColor.RED
+//					+ "You don't have permission to do this");
+//			mergeClick = new DecorationStack(mergeStack);
+//		}
 		ci.setSlot(mergeClick, 12);
 		// transferring group
 		ItemStack transferStack = new ItemStack(Material.PACKED_ICE);
