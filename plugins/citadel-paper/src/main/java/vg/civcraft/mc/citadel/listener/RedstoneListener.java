@@ -100,7 +100,7 @@ public class RedstoneListener implements Listener {
 		Block attachedBlock;
 		// needs special handling because buttons attached to ceiling and ground can be
 		// turned in which case the facing direction indicates this direction
-		switch (button.getFace()) {
+		switch (button.getAttachedFace()) {
 		case CEILING:
 			attachedBlock = e.getClickedBlock().getRelative(BlockFace.UP);
 			break;
@@ -111,7 +111,7 @@ public class RedstoneListener implements Listener {
 			attachedBlock = e.getClickedBlock().getRelative(button.getFacing().getOppositeFace());
 			break;
 		default:
-			Citadel.getInstance().getLogger().warning("Could not handle button face " + button.getFace());
+			Citadel.getInstance().getLogger().warning("Could not handle button face " + button.getAttachedFace());
 			return;
 		}
 		// prepare all sides of button itself

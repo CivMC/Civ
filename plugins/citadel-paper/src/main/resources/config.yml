@@ -24,7 +24,7 @@ reinforcements:
       ==: org.bukkit.inventory.ItemStack
       type: STONE
     effect:
-      type: ENCHANTMENT_TABLE
+      type: ENCHANTING_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 5m
@@ -37,7 +37,7 @@ reinforcements:
       ==: org.bukkit.inventory.ItemStack
       type: IRON_INGOT
     effect:
-      type: ENCHANTMENT_TABLE
+      type: ENCHANTING_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 30m
@@ -50,7 +50,7 @@ reinforcements:
       ==: org.bukkit.inventory.ItemStack
       type: DIAMOND
     effect:
-      type: ENCHANTMENT_TABLE
+      type: ENCHANTING_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 4h
@@ -63,7 +63,7 @@ reinforcements:
       ==: org.bukkit.inventory.ItemStack
       type: BEDROCK
     effect:
-      type: ENCHANTMENT_TABLE
+      type: ENCHANTING_TABLE
       speed: 0.5
       particleCount: 50
     mature_time: 1s
@@ -122,15 +122,15 @@ hangers_inherit_reinforcement: false
 
 # reinforcement_damageMultiplier is m where BlockDamage = 2 ^ (n/m) where n is equal to the number of days the group has been inactive
 reinforcement_damageMultiplier: 365
-#database:
-#  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
-#  plugin: Citadel
-#  user: username
-#  password: squidLover69
-#  host: localhost
-#  port: 3306
-#  database: citadel
-#  poolsize: 5
-#  connection_timeout: 10000
-#  idle_timeout: 600000
-#  max_lifetime: 7200000  
+database:
+  ==: vg.civcraft.mc.civmodcore.dao.ManagedDatasource
+  plugin: Citadel
+  user: 'mc_namelayer'
+  password: 'minecraft'
+  host: localhost
+  port: 3306
+  database: namelayer
+  poolsize: 5
+  connection_timeout: 10000
+  idle_timeout: 600000
+  max_lifetime: 7200000  
