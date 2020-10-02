@@ -19,6 +19,7 @@ debug: true
 
 reinforcements:
   stone:
+    id: 1
     item:
       ==: org.bukkit.inventory.ItemStack
       type: STONE
@@ -31,6 +32,7 @@ reinforcements:
     name: Stone
     hit_points: 50
   iron:
+    id: 2
     item:
       ==: org.bukkit.inventory.ItemStack
       type: IRON_INGOT
@@ -43,6 +45,7 @@ reinforcements:
     name: Iron
     hit_points: 300
   diamond:
+    id: 3
     item:
       ==: org.bukkit.inventory.ItemStack
       type: DIAMOND
@@ -55,6 +58,7 @@ reinforcements:
     name: Diamond
     hit_points: 2000
   bedrock:
+    id: 4
     item:
       ==: org.bukkit.inventory.ItemStack
       type: BEDROCK
@@ -69,30 +73,46 @@ reinforcements:
     
 non_reinforceables:
  - BEDROCK
- - ENDER_PORTAL_FRAME
- - SAPLING
- - LONG_GRASS
+ - END_PORTAL_FRAME
+ - JUNGLE_SAPLING
+ - OAK_SAPLING
+ - SPRUCE_SAPLING
+ - BIRCH_SAPLING
+ - ACACIA_SAPLING
+ - DARK_OAK_SAPLING
+ - BAMBOO_SAPLING
+ - TALL_GRASS
  - DEAD_BUSH
- - PISTON_EXTENSION
- - PISTON_MOVING_PIECE
- - RED_ROSE
- - YELLOW_FLOWER
+ - PISTON_HEAD
+ - MOVING_PISTON
+ - POPPY
+ - DANDELION
  - BROWN_MUSHROOM
  - RED_MUSHROOM
  - TNT
- - CROPS
+ - WHEAT
+ - BEETROOT
+ - CARROTS
+ - POTATOES
+ - BAMBOO
+ - SUGAR_CANE
+ - SWEET_BERRIES
+ - BROWN_MUSHROOM
+ - RED_MUSHROOM
+ - KELP
+ - SEA_PICKLE
+ - NETHER_WART
+ - CHORUS_FRUIT
  - FIRE
  - SNOW
  - ICE
  - CACTUS
- - SUGAR_CANE_BLOCK
- - PORTAL
- - CAKE_BLOCK
+ - NETHER_PORTAL
+ - CAKE
  - PUMPKIN_STEM
  - MELON_STEM
  - VINE
- - NETHER_WARTS
- - ENDER_PORTAL
+ - END_PORTAL
  
 acidblock_material:
  - GOLD_BLOCK
