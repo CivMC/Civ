@@ -143,6 +143,7 @@ public final class ReinforcementLogic {
 	 * @param block Block to get responsible block for
 	 * @return Block which reinforcement would protect the given block
 	 */
+	
 	public static Block getResponsibleBlock(Block block) {
 		// Do not put [double] chests in here.
 		switch (block.getType()) {
