@@ -288,6 +288,20 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 			}
 		}
 
+		if (bookText.has("translate") && bookText.has("with")) {
+			JsonElement withElement = bookText.get("with");
+			if (withElement.isJsonArray()) {
+				for (JsonElement element : withElement.getAsJsonArray()) {
+					String result = checkForIllegalSections(element, iterCount + 1);
+					if (result != null) {
+						return result;
+					}
+				}
+			} else {
+				return "Tag-Level Syntax Error: with is not an array";
+			}
+		}
+
 		/*
 		 * List of explicitly allowed keys:
 		 *
