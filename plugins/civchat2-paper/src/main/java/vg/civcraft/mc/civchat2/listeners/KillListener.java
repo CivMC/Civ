@@ -54,7 +54,7 @@ public class KillListener implements Listener {
 			}
 		}
 		Location killLoc = victim.getLocation();
-		String msg = String.format("%s%s was killed by %s%s with %s", victim.getDisplayName(), ChatColor.GOLD, killer.getDisplayName(),
+		String msg = String.format("%s%s was killed by %s%s %s", victim.getDisplayName(), ChatColor.GOLD, killer.getDisplayName(),
 				ChatColor.GOLD, itemDescriptor);
 		for (Player p : Bukkit.getOnlinePlayers()) {
 			Location loc = p.getLocation();
