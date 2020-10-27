@@ -10,6 +10,7 @@ authors:
 - FeatherCrown
 - Lazersmoke
 - TealNerd
+- Scuwr
 depend:
 - NameLayer
 - CivModCore
@@ -132,4 +133,4 @@ commands:
 permissions:
   citadel.admin:
     default: op
-api-version: 1.14
+api-version: 1.16

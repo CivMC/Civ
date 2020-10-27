@@ -30,7 +30,6 @@ import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-import vg.civcraft.mc.civmodcore.api.ToolAPI;
 import vg.civcraft.mc.civmodcore.util.DoubleInteractFixer;
 
 public class BlockListener implements Listener {
@@ -254,7 +253,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!ToolAPI.isAxe(relevant.getType())) {
+		if (!MaterialAPI.isAxe(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
@@ -290,7 +289,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!ToolAPI.isShovel(relevant.getType())) {
+		if (!MaterialAPI.isShovel(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
@@ -328,7 +327,7 @@ public class BlockListener implements Listener {
 		} else {
 			relevant = p.getInventory().getItemInOffHand();
 		}
-		if (!ToolAPI.isHoe(relevant.getType())) {
+		if (!MaterialAPI.isHoe(relevant.getType())) {
 			return;
 		}
 		Reinforcement rein = Citadel.getInstance().getReinforcementManager().getReinforcement(block);
