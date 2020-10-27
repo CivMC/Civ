@@ -202,8 +202,9 @@ public class RedstoneListener implements Listener {
 			return;
 		}
 		Material mat = e.getClickedBlock().getType();
-		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE
-				&& mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE && !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
+		if (mat != Material.STONE_PRESSURE_PLATE && mat != Material.POLISHED_BLACKSTONE_PRESSURE_PLATE &&
+				mat != Material.LIGHT_WEIGHTED_PRESSURE_PLATE && mat != Material.HEAVY_WEIGHTED_PRESSURE_PLATE
+				&& !Tag.WOODEN_PRESSURE_PLATES.isTagged(mat)) {
 			return;
 		}
 		setupAdjacentDoors(e.getPlayer(), e.getClickedBlock(), BlockFace.EAST_SOUTH_EAST);
