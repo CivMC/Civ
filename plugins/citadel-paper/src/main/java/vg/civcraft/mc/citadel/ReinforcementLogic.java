@@ -164,6 +164,8 @@ public final class ReinforcementLogic {
 			case SPRUCE_SAPLING:
 			case WARPED_FUNGUS:
 			case CRIMSON_FUNGUS:
+			case BAMBOO_SAPLING:
+			case TWISTING_VINES:
 			case WHEAT:
 			case CARROTS:
 			case POTATOES:
@@ -180,18 +182,29 @@ public final class ReinforcementLogic {
 			case CORNFLOWER:
 			case SEA_PICKLE:
 			case FERN:
+			case KELP:
 			case GRASS:
 			case SEAGRASS:
 			case TUBE_CORAL:
+			case TUBE_CORAL_FAN:
 			case BRAIN_CORAL:
+			case BRAIN_CORAL_FAN:
 			case BUBBLE_CORAL:
+			case BUBBLE_CORAL_FAN:
 			case FIRE_CORAL:
+			case FIRE_CORAL_FAN:
 			case HORN_CORAL:
+			case HORN_CORAL_FAN:
 			case DEAD_TUBE_CORAL:
+			case DEAD_TUBE_CORAL_FAN:
 			case DEAD_BRAIN_CORAL:
+			case DEAD_BRAIN_CORAL_FAN:
 			case DEAD_BUBBLE_CORAL:
+			case DEAD_BUBBLE_CORAL_FAN:
 			case DEAD_FIRE_CORAL:
+			case DEAD_FIRE_CORAL_FAN:
 			case DEAD_HORN_CORAL:
+			case DEAD_HORN_CORAL_FAN:
 			case NETHER_WART_BLOCK: {
 				return block.getRelative(BlockFace.DOWN);
 			}
@@ -205,6 +218,7 @@ public final class ReinforcementLogic {
 			case TALL_GRASS:
 			case LARGE_FERN:
 			case TALL_SEAGRASS:
+			case KELP_PLANT:
 			case PEONY: {
 				// scan downwards for first different block
 				Block below = block.getRelative(BlockFace.DOWN);
@@ -248,17 +262,29 @@ public final class ReinforcementLogic {
 				}
 				return block;
 			}
-			case TUBE_CORAL_FAN:
-			case BRAIN_CORAL_FAN:
-			case BUBBLE_CORAL_FAN:
-			case FIRE_CORAL_FAN:
-			case HORN_CORAL_FAN:
-			case DEAD_TUBE_CORAL_FAN:
-			case DEAD_BRAIN_CORAL_FAN:
-			case DEAD_BUBBLE_CORAL_FAN:
-			case DEAD_FIRE_CORAL_FAN:
-			case DEAD_HORN_CORAL_FAN: {
-				return block.getRelative(block.getFace(block).getOppositeFace());
+			case TUBE_CORAL_WALL_FAN:
+			case BRAIN_CORAL_WALL_FAN:
+			case BUBBLE_CORAL_WALL_FAN:
+			case FIRE_CORAL_WALL_FAN:
+			case HORN_CORAL_WALL_FAN:
+			case DEAD_TUBE_CORAL_WALL_FAN:
+			case DEAD_BRAIN_CORAL_WALL_FAN:
+			case DEAD_BUBBLE_CORAL_WALL_FAN:
+			case DEAD_FIRE_CORAL_WALL_FAN:
+			case DEAD_HORN_CORAL_WALL_FAN: {
+				CoralWallFan cwf = (CoralWallFan) block.getBlockData();
+				return block.getRelative(cwf.getFacing().getOppositeFace());
+			}
+			case WEEPING_VINES: {
+				block.getRelative(BlockFace.UP);
+			}
+			case WEEPING_VINES_PLANT: {
+				// scan upwards
+				Block above = block.getRelative(BlockFace.UP);
+				while (above.getType() == block.getType()) {
+					above = above.getRelative(BlockFace.UP);
+				}
+				return above;
 			}
 			default: {
 				return block;
