@@ -147,83 +147,149 @@ public final class ReinforcementLogic {
 	public static Block getResponsibleBlock(Block block) {
 		// Do not put [double] chests in here.
 		switch (block.getType()) {
-		case DANDELION:
-		case POPPY:
-		case BLUE_ORCHID:
-		case ALLIUM:
-		case AZURE_BLUET:
-		case ORANGE_TULIP:
-		case RED_TULIP:
-		case PINK_TULIP:
-		case WHITE_TULIP:
-		case OXEYE_DAISY:
-		case ACACIA_SAPLING:
-		case BIRCH_SAPLING:
-		case DARK_OAK_SAPLING:
-		case JUNGLE_SAPLING:
-		case OAK_SAPLING:
-		case SPRUCE_SAPLING:
-		case WHEAT:
-		case CARROTS:
-		case POTATOES:
-		case BEETROOTS:
-		case MELON_STEM:
-		case PUMPKIN_STEM:
-		case ATTACHED_MELON_STEM:
-		case ATTACHED_PUMPKIN_STEM:
-		case NETHER_WART_BLOCK: {
-			return block.getRelative(BlockFace.DOWN);
-		}
-		case SUGAR_CANE:
-		case CACTUS:
-		case SUNFLOWER:
-		case LILAC:
-		case PEONY: {
-			// scan downwards for first different block
-			Block below = block.getRelative(BlockFace.DOWN);
-			while (below.getType() == block.getType()) {
-				below = below.getRelative(BlockFace.DOWN);
-			}
-			return below;
-		}
-		case ACACIA_DOOR:
-		case BIRCH_DOOR:
-		case DARK_OAK_DOOR:
-		case IRON_DOOR:
-		case SPRUCE_DOOR:
-		case JUNGLE_DOOR:
-		case OAK_DOOR: {
-			if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
-				// block is upper half of a door
+			case DANDELION:
+			case POPPY:
+			case BLUE_ORCHID:
+			case ALLIUM:
+			case AZURE_BLUET:
+			case ORANGE_TULIP:
+			case RED_TULIP:
+			case PINK_TULIP:
+			case WHITE_TULIP:
+			case OXEYE_DAISY:
+			case ACACIA_SAPLING:
+			case BIRCH_SAPLING:
+			case DARK_OAK_SAPLING:
+			case JUNGLE_SAPLING:
+			case OAK_SAPLING:
+			case SPRUCE_SAPLING:
+			case WARPED_FUNGUS:
+			case CRIMSON_FUNGUS:
+			case BAMBOO_SAPLING:
+			case TWISTING_VINES:
+			case WHEAT:
+			case CARROTS:
+			case POTATOES:
+			case BEETROOTS:
+			case MELON_STEM:
+			case PUMPKIN_STEM:
+			case ATTACHED_MELON_STEM:
+			case ATTACHED_PUMPKIN_STEM:
+			case WARPED_ROOTS:
+			case CRIMSON_ROOTS:
+			case NETHER_SPROUTS:
+			case WITHER_ROSE:
+			case LILY_OF_THE_VALLEY:
+			case CORNFLOWER:
+			case SEA_PICKLE:
+			case FERN:
+			case KELP:
+			case GRASS:
+			case SEAGRASS:
+			case TUBE_CORAL:
+			case TUBE_CORAL_FAN:
+			case BRAIN_CORAL:
+			case BRAIN_CORAL_FAN:
+			case BUBBLE_CORAL:
+			case BUBBLE_CORAL_FAN:
+			case FIRE_CORAL:
+			case FIRE_CORAL_FAN:
+			case HORN_CORAL:
+			case HORN_CORAL_FAN:
+			case DEAD_TUBE_CORAL:
+			case DEAD_TUBE_CORAL_FAN:
+			case DEAD_BRAIN_CORAL:
+			case DEAD_BRAIN_CORAL_FAN:
+			case DEAD_BUBBLE_CORAL:
+			case DEAD_BUBBLE_CORAL_FAN:
+			case DEAD_FIRE_CORAL:
+			case DEAD_FIRE_CORAL_FAN:
+			case DEAD_HORN_CORAL:
+			case DEAD_HORN_CORAL_FAN:
+			case NETHER_WART_BLOCK: {
 				return block.getRelative(BlockFace.DOWN);
 			}
-			return block;
-		}
-		case BLACK_BED:
-		case BLUE_BED:
-		case BROWN_BED:
-		case CYAN_BED:
-		case GRAY_BED:
-		case GREEN_BED:
-		case MAGENTA_BED:
-		case LIME_BED:
-		case ORANGE_BED:
-		case PURPLE_BED:
-		case PINK_BED:
-		case WHITE_BED:
-		case LIGHT_GRAY_BED:
-		case LIGHT_BLUE_BED:
-		case RED_BED:
-		case YELLOW_BED: {
-			Bed bed = (Bed) block.getBlockData();
-			if (bed.getPart() == Bed.Part.HEAD) {
-				return block.getRelative(bed.getFacing().getOppositeFace());
+			case SUGAR_CANE:
+			case BAMBOO:
+			case ROSE_BUSH:
+			case TWISTING_VINES_PLANT:
+			case CACTUS:
+			case SUNFLOWER:
+			case LILAC:
+			case TALL_GRASS:
+			case LARGE_FERN:
+			case TALL_SEAGRASS:
+			case KELP_PLANT:
+			case PEONY: {
+				// scan downwards for first different block
+				Block below = block.getRelative(BlockFace.DOWN);
+				while (below.getType() == block.getType()) {
+					below = below.getRelative(BlockFace.DOWN);
+				}
+				return below;
 			}
-			return block;
-		}
-		default: {
-			return block;
-		}
+			case ACACIA_DOOR:
+			case BIRCH_DOOR:
+			case DARK_OAK_DOOR:
+			case IRON_DOOR:
+			case SPRUCE_DOOR:
+			case JUNGLE_DOOR:
+			case OAK_DOOR: {
+				if (block.getRelative(BlockFace.UP).getType() != block.getType()) {
+					// block is upper half of a door
+					return block.getRelative(BlockFace.DOWN);
+				}
+				return block;
+			}
+			case BLACK_BED:
+			case BLUE_BED:
+			case BROWN_BED:
+			case CYAN_BED:
+			case GRAY_BED:
+			case GREEN_BED:
+			case MAGENTA_BED:
+			case LIME_BED:
+			case ORANGE_BED:
+			case PURPLE_BED:
+			case PINK_BED:
+			case WHITE_BED:
+			case LIGHT_GRAY_BED:
+			case LIGHT_BLUE_BED:
+			case RED_BED:
+			case YELLOW_BED: {
+				Bed bed = (Bed) block.getBlockData();
+				if (bed.getPart() == Bed.Part.HEAD) {
+					return block.getRelative(bed.getFacing().getOppositeFace());
+				}
+				return block;
+			}
+			case TUBE_CORAL_WALL_FAN:
+			case BRAIN_CORAL_WALL_FAN:
+			case BUBBLE_CORAL_WALL_FAN:
+			case FIRE_CORAL_WALL_FAN:
+			case HORN_CORAL_WALL_FAN:
+			case DEAD_TUBE_CORAL_WALL_FAN:
+			case DEAD_BRAIN_CORAL_WALL_FAN:
+			case DEAD_BUBBLE_CORAL_WALL_FAN:
+			case DEAD_FIRE_CORAL_WALL_FAN:
+			case DEAD_HORN_CORAL_WALL_FAN: {
+				CoralWallFan cwf = (CoralWallFan) block.getBlockData();
+				return block.getRelative(cwf.getFacing().getOppositeFace());
+			}
+			case WEEPING_VINES: {
+				block.getRelative(BlockFace.UP);
+			}
+			case WEEPING_VINES_PLANT: {
+				// scan upwards
+				Block above = block.getRelative(BlockFace.UP);
+				while (above.getType() == block.getType()) {
+					above = above.getRelative(BlockFace.UP);
+				}
+				return above;
+			}
+			default: {
+				return block;
+			}
 		}
 	}
 
