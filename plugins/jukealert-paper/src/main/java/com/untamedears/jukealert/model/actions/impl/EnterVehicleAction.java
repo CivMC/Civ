@@ -4,12 +4,14 @@ import java.util.UUID;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.jukealert.model.Snitch;
 import com.untamedears.jukealert.model.actions.abstr.LoggablePlayerVictimAction;
 
 import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.civmodcore.api.SpawnEggAPI;
 import vg.civcraft.mc.civmodcore.inventorygui.DecorationStack;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
 
@@ -32,7 +34,11 @@ public class EnterVehicleAction extends LoggablePlayerVictimAction {
 	 * @return Material of the entered vehicle
 	 */
 	public Material getVehicle() {
-		return Material.valueOf(victim);
+		try {
+			return Material.valueOf(victim);
+		} catch (IllegalArgumentException e) {
+			return SpawnEggAPI.getSpawnEgg(EntityType.valueOf(victim));
+		}
 	}
 
 	@Override
