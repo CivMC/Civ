@@ -1,12 +1,14 @@
 package vg.civcraft.mc.citadel;
 
 import java.util.Objects;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Chest;
+import org.bukkit.block.data.type.CoralWallFan;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.InventoryHolder;
@@ -25,7 +27,7 @@ public final class ReinforcementLogic {
 	/**
 	 * Inserts a new reinforcements into the cache, queues it for persistence and
 	 * plays particle effects for creation
-	 * 
+	 *
 	 * @param rein Reinforcement just created
 	 */
 	public static void createReinforcement(Reinforcement rein) {
@@ -36,7 +38,7 @@ public final class ReinforcementLogic {
 	}
 
 	public static Reinforcement callReinforcementCreationEvent(Player player, Block block, ReinforcementType type,
-			Group group) {
+															   Group group) {
 		Reinforcement rein = new Reinforcement(block.getLocation(), type, group);
 		ReinforcementCreationEvent event = new ReinforcementCreationEvent(player, rein);
 		Bukkit.getPluginManager().callEvent(event);
@@ -98,38 +100,38 @@ public final class ReinforcementLogic {
 			return reinforcement;
 		}
 		switch (block.getType()) {
-		// Chests are awkward since you can place both sides of a double chest
-		// independently, which isn't true for
-		// beds, plants, or doors, so this needs to be accounted for and
-		// "getResponsibleBlock()" isn't appropriate
-		// for the following logic: that both sides protect each other; that if either
-		// block is reinforced, then
-		// the chest as a whole remains protected.
-		case CHEST:
-		case TRAPPED_CHEST: {
-			Chest chest = (Chest) block.getBlockData();
-			BlockFace facing = chest.getFacing();
-			switch (chest.getType()) {
-			case LEFT: {
-				BlockFace face = BlockAPI.turnClockwise(facing);
-				return getReinforcementAt(block.getLocation().add(face.getDirection()));
-			}
-			case RIGHT: {
-				BlockFace face = BlockAPI.turnAntiClockwise(facing);
-				return getReinforcementAt(block.getLocation().add(face.getDirection()));
+			// Chests are awkward since you can place both sides of a double chest
+			// independently, which isn't true for
+			// beds, plants, or doors, so this needs to be accounted for and
+			// "getResponsibleBlock()" isn't appropriate
+			// for the following logic: that both sides protect each other; that if either
+			// block is reinforced, then
+			// the chest as a whole remains protected.
+			case CHEST:
+			case TRAPPED_CHEST: {
+				Chest chest = (Chest) block.getBlockData();
+				BlockFace facing = chest.getFacing();
+				switch (chest.getType()) {
+					case LEFT: {
+						BlockFace face = BlockAPI.turnClockwise(facing);
+						return getReinforcementAt(block.getLocation().add(face.getDirection()));
+					}
+					case RIGHT: {
+						BlockFace face = BlockAPI.turnAntiClockwise(facing);
+						return getReinforcementAt(block.getLocation().add(face.getDirection()));
+					}
+					default: {
+						return null;
+					}
+				}
 			}
 			default: {
-				return null;
+				Block responsible = getResponsibleBlock(block);
+				if (Objects.equals(block, responsible)) {
+					return null;
+				}
+				return getReinforcementAt(responsible.getLocation());
 			}
-			}
-		}
-		default: {
-			Block responsible = getResponsibleBlock(block);
-			if (Objects.equals(block, responsible)) {
-				return null;
-			}
-			return getReinforcementAt(responsible.getLocation());
-		}
 		}
 	}
 
@@ -143,7 +145,7 @@ public final class ReinforcementLogic {
 	 * @param block Block to get responsible block for
 	 * @return Block which reinforcement would protect the given block
 	 */
-	
+
 	public static Block getResponsibleBlock(Block block) {
 		// Do not put [double] chests in here.
 		switch (block.getType()) {
@@ -171,6 +173,7 @@ public final class ReinforcementLogic {
 			case CARROTS:
 			case POTATOES:
 			case BEETROOTS:
+			case SWEET_BERRY_BUSH:
 			case MELON_STEM:
 			case PUMPKIN_STEM:
 			case ATTACHED_MELON_STEM:
@@ -300,7 +303,7 @@ public final class ReinforcementLogic {
 	 * @param player the player attempting to access stuff
 	 * @param block  Block to check for
 	 * @return True if the player can not do something like placing an adjacent
-	 *         chest or comparator, false otherwise
+	 * chest or comparator, false otherwise
 	 */
 	public static boolean isPreventingBlockAccess(Player player, Block block) {
 		if (block == null) {
