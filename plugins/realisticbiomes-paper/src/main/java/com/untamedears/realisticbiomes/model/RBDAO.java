@@ -57,6 +57,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				setInsertDataStatement(insertPlant, tuple.plant, tuple.coord);
 				insertPlant.addBatch();
 			}
+			batches.get(0).clear();
 			insertPlant.executeBatch();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to insert plant into db: ", e);
@@ -64,10 +65,11 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		try (Connection conn = db.getConnection();
 				PreparedStatement updatePlant = conn.prepareStatement("update rb_plants set creation_time = ?, type = ? where "
 						+ "chunk_x = ? and chunk_z = ? and world_id = ? and x_offset = ? and y = ? and z_offset = ?;");) {
-			for (PlantTuple tuple : batches.get(0)) {
+			for (PlantTuple tuple : batches.get(1)) {
 				setUpdateDataStatement(updatePlant, tuple.plant, tuple.coord);
 				updatePlant.addBatch();
 			}
+			batches.get(1).clear();
 			updatePlant.executeBatch();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
@@ -80,6 +82,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
 				deletePlant.addBatch();
 			}
+			batches.get(2).clear();
 			deletePlant.executeBatch();
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
