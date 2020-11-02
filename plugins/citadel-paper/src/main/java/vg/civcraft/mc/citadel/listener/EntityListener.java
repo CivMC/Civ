@@ -26,6 +26,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntitySpawnEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -129,7 +130,7 @@ public class EntityListener implements Listener {
 	public void playerJoinEvent(PlayerJoinEvent event) {
 		Player p = event.getPlayer();
 		final UUID uuid = p.getUniqueId();
-		
+
 
 		new BukkitRunnable() {
 			@Override
@@ -224,6 +225,26 @@ public class EntityListener implements Listener {
 				player.sendMessage(ChatColor.RED + "The host block is protecting this.");
 				//break;
 			}
+		}
+		event.setCancelled(true);
+	}
+
+	@EventHandler(priority = EventPriority.HIGHEST)
+	public void HangingBreakEvent(HangingBreakEvent event) {
+		if (!Citadel.getInstance().getConfigManager().doHangersInheritReinforcements()) {
+			return;
+		}
+		if (event.getCause() != HangingBreakEvent.RemoveCause.EXPLOSION){
+			return;
+		}
+		Hanging entity = event.getEntity();
+		Block host = entity.getLocation().getBlock().getRelative(entity.getAttachedFace());
+		Reinforcement reinforcement = ReinforcementLogic.getReinforcementProtecting(host);
+		if (reinforcement == null) {
+			return;
+		}
+		if (reinforcement.isInsecure()) {
+			return;
 		}
 		event.setCancelled(true);
 	}
