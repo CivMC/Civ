@@ -16,6 +16,7 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
@@ -341,15 +342,14 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 		SimpleDateFormat dateFormator = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 		StringBuilder result = new StringBuilder(ChatColor.GOLD + "" + ChatColor.BOLD + "Bastion Info" + ChatColor.AQUA + "\n");
 
-		double matureTime = ((double) type.getWarmupTime()) / (60000);
-
 		result.append("Health: " + ChatColor.GOLD + "" + getStrengthText() + ChatColor.AQUA + "\n");
 		if (!isMature()) {
-			result.append("Mature in: " + ChatColor.GOLD + "" + formatter.format(matureTime) + " mins" + ChatColor.AQUA + "\n");
+			result.append("Mature in: " + ChatColor.GOLD + "" + TextUtil.formatDuration(type.getWarmupTime()) + ChatColor.AQUA + "\n");
 		} else {
 			result.append("Mature?: " + ChatColor.GOLD + "Yes" + ChatColor.AQUA + "\n");
 		}
-		result.append("Placed: " + ChatColor.GOLD + "" + dateFormator.format(new Date(placed)) + " YYYY/MM/DD" + ChatColor.AQUA + "\n");
+		result.append("Placed: " + ChatColor.GOLD + "" + dateFormator.format(new Date(placed)) + ChatColor.AQUA + "\n");
+		result.append("Group: " + ChatColor.GOLD + getGroupName() + ChatColor.AQUA + "\n");
 		result.append("Location: " + ChatColor.GOLD + "" + this.location.getBlockX() + " " + this.location.getBlockY() + " " + this.location.getBlockZ());
 		return result.toString();
 	}
