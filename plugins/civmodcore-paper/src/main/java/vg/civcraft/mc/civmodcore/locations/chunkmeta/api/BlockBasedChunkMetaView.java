@@ -184,7 +184,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		@SuppressWarnings("unchecked")
 		T chunk = (T) c;
 		for (D data : singleBlockTracker.getAllForChunkAndRemove(chunk.getChunkCoord())) {
-			chunk.put(data.getLocation().getBlockX(), data.getLocation().getBlockY(), data.getLocation().getBlockZ(),
+			chunk.put(BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()), data.getLocation().getBlockY(), BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()),
 					data, true);
 		}
 	}

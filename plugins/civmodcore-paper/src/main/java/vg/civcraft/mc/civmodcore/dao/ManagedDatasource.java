@@ -219,8 +219,8 @@ public class ManagedDatasource implements ConfigurationSerializable {
 		}
 		catch (SQLException ignored) {
 			LOGGER.severe("Failed to prepare migrations table or register this plugin to it.");
-			LOGGER.severe("Assuming you provided proper database credentials this is most likely happening, because " +
-					"your mysql install is outdated. We recommend using MariaDB or at least the latest mysql version");
+			LOGGER.log(Level.SEVERE, "Assuming you provided proper database credentials this is most likely happening, because " +
+					"your mysql install is outdated. We recommend using MariaDB or at least the latest mysql version", ignored);
 		}
 	}
 
