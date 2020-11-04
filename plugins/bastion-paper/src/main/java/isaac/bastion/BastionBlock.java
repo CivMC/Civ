@@ -1,5 +1,6 @@
 package isaac.bastion;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
@@ -15,14 +16,16 @@ import vg.civcraft.mc.citadel.CitadelPermissionHandler;
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
 import vg.civcraft.mc.civmodcore.locations.QTBox;
+import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.namelayer.GroupManager;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
-public class BastionBlock implements QTBox, Comparable<BastionBlock> {	
+public class BastionBlock implements QTBox, Comparable<BastionBlock> {
+	private static final DecimalFormat formatter = new DecimalFormat("#.##");
 
-	private Location location; 
+	private Location location;
 	private int id = -1;
 	private long placed; //time when the bastion block was created
 	private BastionType type;
@@ -335,34 +338,22 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 	}
 
 	@Override
-	public String toString(){
-		SimpleDateFormat dateFormator = new SimpleDateFormat("M/d/yy H:m:s");
-		StringBuilder result = new StringBuilder("Dev text: ");
+	public String toString() {
+		SimpleDateFormat dateFormator = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+		StringBuilder result = new StringBuilder(ChatColor.GOLD + "" + ChatColor.BOLD + "Bastion Info" + ChatColor.AQUA + "\n");
 
-		Reinforcement reinforcement = getReinforcement();
-
-		double scaleTime_as_hours=0;
-		if(type.getWarmupTime()==0){
-			result.append("Maturity timers are disabled \n");
-		} else{
-			scaleTime_as_hours = ((double) type.getWarmupTime())/(1000*60*60);
+		result.append("Health: " + ChatColor.GOLD + "" + getStrengthText() + ChatColor.AQUA + "\n");
+		if (!isMature()) {
+			result.append("Mature in: " + ChatColor.GOLD + "" + TextUtil.formatDuration(type.getWarmupTime()) + ChatColor.AQUA + "\n");
+		} else {
+			result.append("Mature?: " + ChatColor.GOLD + "Yes" + ChatColor.AQUA + "\n");
 		}
-
-		result.append("Current Bastion reinforcement: ")
-				.append(reinforcement.getHealth()).append('\n');
-
-		result.append("Maturity time is ")
-				.append(scaleTime_as_hours).append('\n');
-
-		result.append("Which means ").append(getErosionFromBlock())
-				.append(" will removed after every blocked placement\n");
-			
-		result.append("Placed on ").append(dateFormator.format(new Date(placed))).append('\n');
-		result.append("by group ").append(reinforcement.getGroup().getName()).append('\n');
-		result.append("At: ").append(location.toString());
+		result.append("Placed: " + ChatColor.GOLD + "" + dateFormator.format(new Date(placed)) + ChatColor.AQUA + "\n");
+		result.append("Group: " + ChatColor.GOLD + getGroupName() + ChatColor.AQUA + "\n");
+		result.append("Location: " + ChatColor.GOLD + "" + this.location.getBlockX() + " " + this.location.getBlockY() + " " + this.location.getBlockZ());
 		return result.toString();
 	}
-	
+
 	/**
 	 * Creates an info message, adds more info if dev is true
 	 * @param dev If the player is a dev
@@ -435,37 +426,15 @@ public class BastionBlock implements QTBox, Comparable<BastionBlock> {
 
 		return group != null ? group.getName() : "";
 	}
-	
+
 	public Group getGroup () {
 		return GroupManager.getGroup(this.listGroupId);
 	}
 
 	public String getStrengthText() {
-		double fractionOfMaturityTime = 0;
-
-		if (type.getWarmupTime() == 0) {
-			fractionOfMaturityTime = 1;
-		} else {
-			fractionOfMaturityTime = ((double) (System.currentTimeMillis() - placed)) / type.getWarmupTime();
-		}
-
-		if (fractionOfMaturityTime == 0) {
-			return "No strength";
-		} else if (fractionOfMaturityTime < 0.25) {
-			return "Some strength";
-		} else if (fractionOfMaturityTime < 0.5) {
-			return "Low strength";
-		} else if (fractionOfMaturityTime < 0.75) {
-			return "Moderate strength";
-		} else if (fractionOfMaturityTime < 1) {
-			return "High strength";
-		} else if (fractionOfMaturityTime >= 1) {
-			return "Full strength";
-		}
-
-		return null;
+		return formatter.format(getReinforcement().getHealth()) + "/" + formatter.format(getReinforcement().getType().getHealth());
 	}
-	
+
 	// TODO: Test world-aware comparison
 	@Override
 	public int compareTo(BastionBlock other) {
