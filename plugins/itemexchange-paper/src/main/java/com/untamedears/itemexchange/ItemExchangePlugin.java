@@ -40,7 +40,7 @@ public final class ItemExchangePlugin extends ACivMod implements AutoCloseable {
 		config = new ItemExchangeConfig(this);
 		config.parse();
 		commands = new CommandRegistrar(this);
-		commands.register();
+		commands.init();
 		modifiers = new ModifierRegistrar();
 		modifiers.registerModifier(CustomItemModifier.TEMPLATE); // 0
 		modifiers.registerModifier(DisplayNameModifier.TEMPLATE); // 100
