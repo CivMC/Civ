@@ -18,3 +18,5 @@ permissions:
     default: op
   cmc.configany:
     default: op
+  cmc.debug:
+    default: op

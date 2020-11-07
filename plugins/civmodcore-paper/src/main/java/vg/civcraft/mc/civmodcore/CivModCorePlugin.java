@@ -26,6 +26,9 @@ import vg.civcraft.mc.civmodcore.scoreboard.bottom.BottomLineAPI;
 import vg.civcraft.mc.civmodcore.scoreboard.side.ScoreBoardListener;
 import vg.civcraft.mc.civmodcore.serialization.NBTSerialization;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
+import vg.civcraft.mc.civmodcore.world.ChunkTracker;
+import vg.civcraft.mc.civmodcore.world.WorldTracker;
+import vg.civcraft.mc.civmodcore.world.operations.ChunkOperationManager;
 
 public final class CivModCorePlugin extends ACivMod {
 
@@ -75,11 +78,15 @@ public final class CivModCorePlugin extends ACivMod {
 		registerListener(new ChatListener());
 		registerListener(new ScoreBoardListener());
 		registerListener(new CustomEventMapper());
+		registerListener(new WorldTracker());
+		registerListener(new ChunkTracker());
+		registerListener(ChunkOperationManager.INSTANCE);
 		// Register commands
 		this.manager = new AikarCommandManager(this) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new ConfigCommand());
+				registerCommand(ChunkOperationManager.INSTANCE);
 			}
 		};
 		// Load APIs
@@ -110,6 +117,8 @@ public final class CivModCorePlugin extends ACivMod {
 			}
 			this.database = null;
 		}
+		ChunkTracker.reset();
+		WorldTracker.reset();
 		PlayerSettingAPI.saveAll();
 		ConfigurationSerialization.unregisterClass(ManagedDatasource.class);
 		NBTSerialization.clearAllRegistrations();
