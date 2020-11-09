@@ -54,15 +54,6 @@ public class ChunkCoord extends XZWCoord {
 		chunkMetas.put(chunkMeta.getPluginID(), chunkMeta);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (o instanceof ChunkCoord) {
-			ChunkCoord pair = (ChunkCoord) o;
-			return pair.x == x && pair.z == z && pair.worldID == worldID;
-		}
-		return false;
-	}
-
 	/**
 	 * Writes all data held by this instance to the database
 	 *

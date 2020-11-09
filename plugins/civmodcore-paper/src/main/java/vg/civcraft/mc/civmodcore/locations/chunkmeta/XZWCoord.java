@@ -7,28 +7,28 @@ import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.BlockBasedChunkMeta;
 
 public class XZWCoord implements Comparable<XZWCoord> {
-	
+
 	/**
 	 * Chunk x-coord
 	 */
 	protected int x;
-	
+
 	/**
 	 * Chunk z-coord
 	 */
 	protected int z;
-	
+
 	/**
 	 * Internal ID of the world the chunk is in
 	 */
 	protected short worldID;
-	
+
 	public XZWCoord(int x, int z, short worldID) {
 		this.x = x;
 		this.z = z;
 		this.worldID = worldID;
 	}
-	
+
 	/**
 	 * @return Internal ID of the world this chunk is in
 	 */
@@ -43,7 +43,11 @@ public class XZWCoord implements Comparable<XZWCoord> {
 	public int getZ() {
 		return z;
 	}
-	
+
+	public String toString() {
+		return String.format("(%d, %d):%d", x, z, worldID);
+	}
+
 	@Override
 	public int compareTo(XZWCoord o) {
 		int worldComp = Short.compare(this.worldID, o.getWorldID());
@@ -56,7 +60,7 @@ public class XZWCoord implements Comparable<XZWCoord> {
 		}
 		return Integer.compare(this.z, o.getZ());
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(x, z, worldID);

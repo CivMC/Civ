@@ -71,24 +71,25 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 	public D get(Location location) {
 		validateY(location.getBlockY());
 		short worldID = worldIdManager.getInternalWorldId(location.getWorld());
-		D data = singleBlockTracker.getBlock(location, worldID);
-		if (data == null) {
-			T chunk = super.getChunkMeta(location);
-			if (chunk == null) {
-				if (alwaysLoaded) {
-					return null;
-				}
-				if (!allowAccessUnloaded) {
-					throw new IllegalStateException("Can not load data for unloaded chunk");
-				}
-				data = storageEngine.getForLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
-						worldID, pluginID);
-				if (data != null) {
-					singleBlockTracker.putBlock(data, worldID);
-				}
-			} else {
-				return chunk.get(location);
+		T chunk = super.getChunkMeta(location);
+		D data;
+		if (chunk == null) {
+			if (alwaysLoaded) {
+				return null;
 			}
+			if (!allowAccessUnloaded) {
+				throw new IllegalStateException("Can not load data for unloaded chunk");
+			}
+			data = singleBlockTracker.getBlock(location, worldID);
+			if (data == null) {
+				data = storageEngine.getForLocation(location.getBlockX(), location.getBlockY(), location.getBlockZ(),
+					worldID, pluginID);
+			}
+			if (data != null) {
+				singleBlockTracker.putBlock(data, worldID);
+			}
+		} else {
+			return chunk.get(location);
 		}
 		return data;
 	}
@@ -184,8 +185,8 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		@SuppressWarnings("unchecked")
 		T chunk = (T) c;
 		for (D data : singleBlockTracker.getAllForChunkAndRemove(chunk.getChunkCoord())) {
-			chunk.put(BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()), data.getLocation().getBlockY(), BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()),
-					data, true);
+			chunk.put(BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()), data.getLocation().getBlockY(),
+					BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()), data, true);
 		}
 	}
 
