@@ -91,6 +91,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void delete(Plant data, XZWCoord coord) {
+		logger.info("Deleting " + data.toString());
 		if (batchMode) {
 			batches.get(2).add(new PlantTuple(data, coord));
 			return;
@@ -164,6 +165,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void insert(Plant data, XZWCoord coord) {
+		logger.info("Inserting " + data.toString());
 		if (batchMode) {
 			batches.get(0).add(new PlantTuple(data, coord));
 			return;
@@ -220,6 +222,7 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void update(Plant data, XZWCoord coord) {
+		logger.info("Updating " + data.toString());
 		if (batchMode) {
 			batches.get(1).add(new PlantTuple(data, coord));
 			return;

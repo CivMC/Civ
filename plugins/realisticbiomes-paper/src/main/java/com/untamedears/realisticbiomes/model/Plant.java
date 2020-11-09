@@ -6,6 +6,7 @@ import org.bukkit.block.Block;
 import com.untamedears.realisticbiomes.RealisticBiomes;
 import com.untamedears.realisticbiomes.growthconfig.PlantGrowthConfig;
 
+import vg.civcraft.mc.civmodcore.locations.chunkmeta.CacheState;
 import vg.civcraft.mc.civmodcore.locations.chunkmeta.block.table.TableBasedDataObject;
 import vg.civcraft.mc.civmodcore.util.BukkitComparators;
 import vg.civcraft.mc.civmodcore.util.progress.ProgressTrackable;
@@ -78,6 +79,10 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 
 	@Override
 	public void updateState() {
+		if (getCacheState() == CacheState.DELETED) {
+			nextUpdate = Long.MAX_VALUE;
+			return;
+		}
 		if (growthConfig != null) {
 			nextUpdate = growthConfig.updatePlant(this);
 		} else {
@@ -95,6 +100,6 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	}
 	
 	public String toString() {
-		return String.format("Created: %d, Next update in: %d, config: %s", creationTime, nextUpdate- System.currentTimeMillis(), growthConfig);
+		return String.format("Created: %d, , Loc: %s, Next update in: %d, config: %s", creationTime, getLocation().toString(), nextUpdate- System.currentTimeMillis(), growthConfig);
 	}
 }

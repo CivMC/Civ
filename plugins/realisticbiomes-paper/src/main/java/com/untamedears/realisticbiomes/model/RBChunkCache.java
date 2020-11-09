@@ -31,7 +31,7 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 	}
 
 	@Override
-	protected TableBasedDataObject remove(int x, int y, int z) {
+	protected Plant remove(int x, int y, int z) {
 		Plant data = (Plant) super.remove(x, y, z);
 		tracker.removeItem(data);
 		return data;

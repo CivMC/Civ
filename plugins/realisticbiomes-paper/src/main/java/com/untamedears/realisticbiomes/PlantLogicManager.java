@@ -42,7 +42,7 @@ public class PlantLogicManager {
 		// we need
 		// to update that if we just broke one of the upper blocks of a column plant
 		if (columnBlocks != null && columnBlocks.contains(block.getType())) {
-			Block sourceColumn = ColumnPlantGrower.getRelativeBlock(block, BlockFace.DOWN);
+			Block sourceColumn = VerticalGrower.getRelativeBlock(block, BlockFace.DOWN);
 			Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
 			if (bottomColumnPlant != null) {
 				bottomColumnPlant.resetCreationTime();
@@ -110,6 +110,10 @@ public class PlantLogicManager {
 			}
 		}
 		Plant plant = new Plant(block.getLocation(), growthConfig);
+		Plant existingPlant = plantManager.getPlant(block);
+		if (existingPlant != null) {
+			plantManager.deletePlant(existingPlant);
+		}
 		plantManager.putPlant(plant);
 		updateGrowthTime(plant, block);
 	}
