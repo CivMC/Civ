@@ -35,6 +35,8 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 
 import net.minecraft.server.v1_16_R1.IBlockData;
+import net.minecraft.server.v1_16_R1.Item;
+import net.minecraft.server.v1_16_R1.ItemTool;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
@@ -120,7 +122,7 @@ public class AntiFastBreak extends BasicHack {
 		Map<Location, Long> miningLocs = miningLocations.computeIfAbsent(player.getUniqueId(), p -> new HashMap<>());
 		miningLocs.putIfAbsent(loc, System.currentTimeMillis());
 	}
-	
+
 	private void reward(Player player) {
 		violationLimiter.addTokens(player.getUniqueId(), 1);
 	}
@@ -135,8 +137,7 @@ public class AntiFastBreak extends BasicHack {
 					plugin().getLogger().info(player.getName() + " tried to instabreak non-instabreakable block");
 				}
 				punish(player);
-			}
-			else {
+			} else {
 				reward(player);
 			}
 			return;
@@ -156,8 +157,7 @@ public class AntiFastBreak extends BasicHack {
 		}
 		if (timePassed * laggLenciency < msToBreak) {
 			punish(player);
-		}
-		else {
+		} else {
 			reward(player);
 		}
 	}
@@ -193,13 +193,10 @@ public class AntiFastBreak extends BasicHack {
 		// calling
 		// "getDestroySpeed(this,blockData)" in n.m.s.ItemStack
 		float damagePerTick = CraftItemStack.asNMSCopy(tool).a(blockData);
-		System.out.println("Base destroy speed of " + tool  + " for " + blockData + " is " + damagePerTick);
 		// above method does not include efficiency or haste, so we add it ourselves
 		int effLevel = tool.getEnchantmentLevel(Enchantment.DIG_SPEED);
 		int efficiencyBonus = 0;
-		if (effLevel > 0 && isProperTool(tool, mat)) 
-		{
-			System.out.println("applying eff");
+		if (effLevel > 0 && damagePerTick > 1.0) { //damage per tick greater than 1.0 signals proper tool
 			efficiencyBonus = effLevel * effLevel + 1;
 		}
 		damagePerTick += efficiencyBonus;
@@ -226,17 +223,6 @@ public class AntiFastBreak extends BasicHack {
 			return 0;
 		}
 		return (int) Math.ceil(damageToDeal / damagePerTick);
-	}
-
-	private static boolean isProperTool(ItemStack tool, Material block) {
-		net.minecraft.server.v1_16_R1.Block nmsBlock = org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers
-				.getBlock(block);
-		if (nmsBlock == null) {
-			return false;
-		}
-		net.minecraft.server.v1_16_R1.IBlockData data = nmsBlock.getBlockData();
-		return tool != null && tool.getType() != Material.AIR && org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers
-				.getItem(tool.getType()).canDestroySpecialBlock(data);
 	}
 
 	private static IBlockData getNMSBlockData(Material mat) {
