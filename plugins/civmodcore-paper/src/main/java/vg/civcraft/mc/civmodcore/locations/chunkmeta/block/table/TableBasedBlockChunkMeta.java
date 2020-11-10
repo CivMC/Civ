@@ -73,6 +73,7 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 			}
 			data.setCacheState(CacheState.NORMAL);
 		}
+		modifiedEntries.clear();
 	}
 
 	@SuppressWarnings("unchecked")

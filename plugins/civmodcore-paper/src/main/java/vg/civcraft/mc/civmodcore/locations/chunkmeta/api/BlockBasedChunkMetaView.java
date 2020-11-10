@@ -186,7 +186,7 @@ public class BlockBasedChunkMetaView<T extends BlockBasedChunkMeta<D, S>, D exte
 		T chunk = (T) c;
 		for (D data : singleBlockTracker.getAllForChunkAndRemove(chunk.getChunkCoord())) {
 			chunk.put(BlockBasedChunkMeta.modulo(data.getLocation().getBlockX()), data.getLocation().getBlockY(),
-					BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()), data, true);
+					BlockBasedChunkMeta.modulo(data.getLocation().getBlockZ()), data, true, false);
 		}
 	}
 

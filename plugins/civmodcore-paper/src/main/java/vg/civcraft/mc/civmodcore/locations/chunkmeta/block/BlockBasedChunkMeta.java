@@ -84,8 +84,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (location == null) {
 			throw new IllegalArgumentException("Location may not be null");
 		}
-		return get(modulo(location.getBlockX()), location.getBlockY(),
-				modulo(location.getBlockZ()));
+		return get(modulo(location.getBlockX()), location.getBlockY(), modulo(location.getBlockZ()));
 	}
 
 	/**
@@ -211,6 +210,23 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	 * @param blockData Data to insert, not null
 	 */
 	public void put(int x, int y, int z, D blockData, boolean isNew) {
+		put(x, y, z, blockData, isNew, true);
+	}
+
+	/**
+	 * Inserts data into the cache, overwriting any existing one
+	 * 
+	 * @param x                 Relative x offset in the chunk within [0,16), also
+	 *                          the total x-coordinate modulo 16
+	 * @param y                 Y-Level of the block
+	 * @param z                 Relative z offset in the chunk within [0,16), also
+	 *                          the total z-coordinate modulo 16
+	 * @param blockData         Data to insert, not null
+	 * @param deletePreexisting Should a preexisting entry at the location
+	 *                          explicitly be removed by calling the appropriate
+	 *                          method or just silently overwritten
+	 */
+	public void put(int x, int y, int z, D blockData, boolean isNew, boolean deletePreexisting) {
 		if (blockData == null) {
 			throw new IllegalArgumentException("Data may not be null");
 		}
@@ -218,7 +234,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 			setCacheState(CacheState.MODIFIED);
 		}
 		BlockDataObject<D>[] l4ZSection = getL4ZSubArrayAbsolute(x, y, true);
-		if (l4ZSection [z] != null) {
+		if (deletePreexisting && l4ZSection[z] != null) {
 			remove(x, y, z);
 		}
 		blockData.setOwningCache(this);
@@ -232,8 +248,7 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 	 * @param blockData Data to insert
 	 */
 	public final void put(Location location, D blockData) {
-		put(modulo(location.getBlockX()), location.getBlockY(), modulo(location.getBlockZ()),
-				blockData, true);
+		put(modulo(location.getBlockX()), location.getBlockY(), modulo(location.getBlockZ()), blockData, true);
 	}
 
 	/**
@@ -302,10 +317,9 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 		if (location == null) {
 			throw new IllegalArgumentException("Location to remove can not be null");
 		}
-		return remove(modulo(location.getBlockX()), location.getBlockY(),
-				modulo(location.getBlockZ()));
+		return remove(modulo(location.getBlockX()), location.getBlockY(), modulo(location.getBlockZ()));
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public void iterateAll(Consumer<D> functionToApply) {
 		for (int i = 0; i < data.length; i++) {
@@ -334,21 +348,21 @@ public abstract class BlockBasedChunkMeta<D extends BlockDataObject<D>, S extend
 			}
 		}
 	}
-	
+
 	public static int modulo(int a) {
-		//javas % operator can return negative numbers, which we do not want
+		// javas % operator can return negative numbers, which we do not want
 		int result = a % L4_Z_SECTION_LENGTH;
 		if (result < 0) {
 			result += L4_Z_SECTION_LENGTH;
 		}
 		return result;
 	}
-	
+
 	public static int toChunkCoord(int coord) {
 		if (coord < 0 && (coord % 16) != 0) {
-			return (coord / 16) -1;
+			return (coord / 16) - 1;
 		}
-		return coord/16;
+		return coord / 16;
 	}
 
 }
