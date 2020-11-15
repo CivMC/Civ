@@ -43,15 +43,11 @@ public abstract class TableBasedBlockChunkMeta<D extends TableBasedDataObject>
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected TableBasedDataObject remove(int x, int y, int z) {
 		TableBasedDataObject data = super.remove(x, y, z);
 		if (data != null) {
 			data.setCacheState(CacheState.DELETED);
-			if (data.getCacheState() != CacheState.NORMAL) {
-				modifiedEntries.add((D) data);
-			}
 		}
 		return data;
 	}
