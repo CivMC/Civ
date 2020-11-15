@@ -144,4 +144,7 @@ public class VerticalGrower extends IArtificialGrower {
 		return false;
 	}
 
+	public boolean ignoreGrowthFailure() {
+		return instaBreakTouching;
+	}
 }

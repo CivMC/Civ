@@ -392,9 +392,15 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 				plant.getOwningCache().remove(plant);
 				return Long.MAX_VALUE;
 			}
-			if (intendedState != grower.getStage(plant)) {
-				//setting the state failed due to some external condition, we assume this wont change any time soon
-				return Long.MAX_VALUE;
+			currentStage = grower.getStage(plant);
+			if (intendedState != currentStage) {
+				if (!grower.ignoreGrowthFailure()) {
+					//setting the state failed due to some external condition, we assume this wont change any time soon
+					return Long.MAX_VALUE;
+				}
+				if (creationTime != plant.getCreationTime() && plant.getGrowthConfig() != this) {
+					return updatePlant(plant, block);
+				}
 			}
 		}
 		if (plant.getGrowthConfig() != this) {
@@ -402,7 +408,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 			return plant.getGrowthConfig().updatePlant(plant, block);
 		}
 
-		if (intendedState == grower.getMaxStage()) {
+		if (currentStage == grower.getMaxStage()) {
 			if (grower.deleteOnFullGrowth()) {
 				plant.getOwningCache().remove(plant);
 			}

@@ -1,5 +1,8 @@
 package com.untamedears.realisticbiomes.model;
 
+import org.bukkit.Bukkit;
+import org.bukkit.event.world.ChunkUnloadEvent;
+
 import com.untamedears.realisticbiomes.RealisticBiomes;
 
 import vg.civcraft.mc.civmodcore.api.WorldAPI;
@@ -68,5 +71,21 @@ public class RBChunkCache extends TableBasedBlockChunkMeta<Plant> implements Pro
 			return;
 		}
 		this.nextUpdate = tracker.processItems();
+	}
+
+	@Override
+	public void handleChunkCacheReuse() {
+		// update all plants in the chunk and reinsert them into the growth updating
+		// cache
+		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> iterateAll(p -> RealisticBiomes.getInstance()
+				.getPlantLogicManager().updateGrowthTime((Plant) p, p.getLocation().getBlock())));
+	}
+
+	@Override
+	public void handleChunkUnload() {
+		Bukkit.getScheduler().runTask(RealisticBiomes.getInstance(), () -> {
+			RealisticBiomes.getInstance().getPlantProgressManager().removeChunk(this);
+			updateInternalProgressTime(Long.MAX_VALUE);
+		});
 	}
 }

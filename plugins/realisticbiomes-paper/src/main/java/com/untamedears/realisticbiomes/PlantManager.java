@@ -19,11 +19,6 @@ public class PlantManager {
 	PlantManager(BlockBasedChunkMetaView<RBChunkCache, TableBasedDataObject, TableStorageEngine<Plant>> chunkMetaData) {
 		this.chunkMetaData = chunkMetaData;
 	}
-	
-	public void applyForAllInChunk(Location location, Consumer<Plant> toApply) {
-		//need to wrap lambda due to generic inheritance complications
-		chunkMetaData.getChunkMeta(location).iterateAll(s -> toApply.accept((Plant) s));
-	}
 
 	public void deletePlant(Plant plant) {
 		chunkMetaData.remove(plant);

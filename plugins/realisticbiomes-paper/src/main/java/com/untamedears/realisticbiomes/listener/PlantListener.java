@@ -148,21 +148,6 @@ public class PlantListener implements Listener {
 		}
 	}
 
-	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onChunkLoad(ChunkLoadEvent event) {
-		Chunk c = event.getChunk();
-		Bukkit.getScheduler().runTaskLater(RealisticBiomes.getInstance(), () -> {
-			if (!c.isLoaded()) {
-				return;
-			}
-			Location loc = new Location(event.getChunk().getWorld(), c.getX() << 4, 0, c.getZ() << 4);
-			plugin.getPlantManager().applyForAllInChunk(loc, p -> {
-				plugin.getPlantLogicManager().updateGrowthTime(p, c.getBlock(p.getLocation().getBlockX() & 15,
-						p.getLocation().getBlockY(), p.getLocation().getBlockZ() & 15));
-			});
-		}, 1);
-	}
-
 	@EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
 	public void cactusBreak(BlockPhysicsEvent event) {
 		if (event.getBlock().getType() != Material.CACTUS) {

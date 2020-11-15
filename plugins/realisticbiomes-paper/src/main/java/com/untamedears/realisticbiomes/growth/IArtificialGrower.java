@@ -64,5 +64,13 @@ public abstract class IArtificialGrower {
 	 * @return Should a plant instance be deleted entirely once fully grown
 	 */
 	public abstract boolean deleteOnFullGrowth();
+	
+	/**
+	 * Usually we assume plants are permanently broken if a stage update fails and don't update them anymore. Settings this to true will ignore that
+	 * @return
+	 */
+	public boolean ignoreGrowthFailure() {
+		return false;
+	}
 
 }

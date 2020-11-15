@@ -50,6 +50,19 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	public void cleanupBatches() {
 		try (Connection conn = db.getConnection();
+				PreparedStatement deletePlant = conn.prepareStatement(
+						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
+								+ "x_offset = ? and y = ? and z_offset = ?;");) {
+			for (PlantTuple tuple : batches.get(2)) {
+				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
+				deletePlant.addBatch();
+			}
+			batches.get(2).clear();
+			deletePlant.executeBatch();
+		} catch (SQLException e) {
+			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
+		}
+		try (Connection conn = db.getConnection();
 				PreparedStatement insertPlant = conn.prepareStatement(
 						"insert ignore into rb_plants (chunk_x, chunk_z, world_id, x_offset, y, z_offset, creation_time, type) "
 								+ "values(?,?,?, ?,?,?, ?,?);");) {
@@ -74,24 +87,10 @@ public class RBDAO extends TableStorageEngine<Plant> {
 		} catch (SQLException e) {
 			logger.log(Level.SEVERE, "Failed to update plant in db: ", e);
 		}
-		try (Connection conn = db.getConnection();
-				PreparedStatement deletePlant = conn.prepareStatement(
-						"delete from rb_plants where chunk_x = ? and chunk_z = ? and world_id = ? and "
-								+ "x_offset = ? and y = ? and z_offset = ?;");) {
-			for (PlantTuple tuple : batches.get(2)) {
-				setDeleteDataStatement(deletePlant, tuple.plant, tuple.coord);
-				deletePlant.addBatch();
-			}
-			batches.get(2).clear();
-			deletePlant.executeBatch();
-		} catch (SQLException e) {
-			logger.log(Level.SEVERE, "Failed to delete plant from db: ", e);
-		}
 	}
 
 	@Override
 	public void delete(Plant data, XZWCoord coord) {
-		logger.info("Deleting " + data.toString());
 		if (batchMode) {
 			batches.get(2).add(new PlantTuple(data, coord));
 			return;
@@ -165,7 +164,6 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void insert(Plant data, XZWCoord coord) {
-		logger.info("Inserting " + data.toString());
 		if (batchMode) {
 			batches.get(0).add(new PlantTuple(data, coord));
 			return;
@@ -222,7 +220,6 @@ public class RBDAO extends TableStorageEngine<Plant> {
 
 	@Override
 	public void update(Plant data, XZWCoord coord) {
-		logger.info("Updating " + data.toString());
 		if (batchMode) {
 			batches.get(1).add(new PlantTuple(data, coord));
 			return;
