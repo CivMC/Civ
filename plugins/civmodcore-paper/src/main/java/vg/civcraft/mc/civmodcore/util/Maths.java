@@ -149,4 +149,34 @@ public class Maths {
 		return (max - min) * norm + min;
 	}
 
+	/**
+	 * <p>This function will round numbers <i>away</i> from zero.</p>
+	 *
+	 * <ul>
+	 *     <li>1.5 → 2</li>
+	 *     <li>-1.5 → -2</li>
+	 * </ul>
+	 *
+	 * @param value The value to round away from zero.
+	 * @return The rounded value.
+	 */
+	public static double roundOut(final double value) {
+		return value < 0 ? Math.floor(value) : Math.ceil(value);
+	}
+
+	/**
+	 * <p>This function will round numbers <i>towards</i> zero.</p>
+	 *
+	 * <ul>
+	 *     <li>1.5 → 1</li>
+	 *     <li>-1.5 → -1</li>
+	 * </ul>
+	 *
+	 * @param value The value to round towards zero.
+	 * @return The rounded value.
+	 */
+	public static double roundIn(final double value) {
+		return value < 0 ? Math.ceil(value) : Math.floor(value);
+	}
+
 }
