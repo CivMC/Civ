@@ -9,6 +9,7 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 public final class Iteration {
@@ -22,11 +23,11 @@ public final class Iteration {
 	 * <p><b>DO NOT USE THIS!</b></p>
 	 *
 	 * <p>This method was originally created for developer ease of use, but instead has become a hot bed for
-	 * hidden bugs. The reason for that being the varargs / rest spread. If you put in an object you expect
-	 * to be handled by {@link #isNullOrEmpty(Collection)} but don't realise the object doesn't actually
-	 * inherit from {@link Collection}, such as {@link Map}, then it falls back to this version of the method,
-	 * giving the illusion that it's doing what you intended. But instead of checking whether the object you
-	 * gave is null or empty, it's instead only checking if it has any parameters.</p>
+	 * hidden bugs. The reason for that being the varargs. If you pass in an object that you expect to be
+	 * handled by {@link #isNullOrEmpty(Collection)} but don't realise the object doesn't actually inherit
+	 * from {@link Collection}, like a {@link Map}, then it falls back to this version of the method, giving
+	 * the illusion that it's doing what you intended. But instead of checking whether the object you gave
+	 * is null or empty, it's instead only checking if the method itself has any parameters.</p>
 	 *
 	 * @deprecated Use {@link ArrayUtils#isEmpty(Object[])} instead.
 	 */
@@ -45,9 +46,12 @@ public final class Iteration {
 	 * @param <T> The type of collection.
 	 * @param collection The collection to check.
 	 * @return Returns true if the collection exists and at least one item.
+	 *
+	 * @deprecated Use {@link CollectionUtils#isEmpty(Collection)} instead.
 	 */
+	@Deprecated
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
-		return collection == null || collection.isEmpty();
+		return CollectionUtils.isEmpty(collection);
 	}
 
 	/**
@@ -61,7 +65,7 @@ public final class Iteration {
 	 */
 	@SafeVarargs
     public static <T> boolean contains(T base, T... values) {
-		if (isNullOrEmpty(values)) {
+		if (ArrayUtils.isEmpty(values)) {
 			return false;
 		}
         for (T value : values) {
@@ -80,7 +84,7 @@ public final class Iteration {
 	 * @param processor The iteration processor which will be called for each item in the collection.
 	 */
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
-		if (isNullOrEmpty(collection) || processor == null) {
+		if (CollectionUtils.isEmpty(collection) || processor == null) {
 			return;
 		}
         for (T element : collection) {
@@ -97,7 +101,7 @@ public final class Iteration {
 	 * @param processor The iteration processor which will be called for each item in the collection.
 	 */
     public static <T> void iterateHasNext(Collection<T> collection, ElementAndBoolConsumer<T> processor) {
-		if (isNullOrEmpty(collection) || processor == null) {
+		if (CollectionUtils.isEmpty(collection) || processor == null) {
 			return;
 		}
 		Iterator<T> iterator = collection.iterator();
@@ -115,7 +119,7 @@ public final class Iteration {
 	 * @return Returns the given array with the filled values.
 	 */
     public static <T> T[] fill(T[] array, T value) {
-		if (isNullOrEmpty(array)) {
+		if (ArrayUtils.isEmpty(array)) {
 			return array;
 		}
 		Arrays.fill(array, value);
@@ -138,10 +142,10 @@ public final class Iteration {
 	 * @param array The array to iterate.
 	 * @param predicate The element tester.
 	 * @return Returns true if at least one element passes the predicate test. Or false if the array fails the
-	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
+	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or true if the give predicate is null.
 	 */
 	public static <T> boolean anyMatch(T[] array, Predicate<T> predicate) {
-		if (isNullOrEmpty(array)) {
+		if (ArrayUtils.isEmpty(array)) {
 			return false;
 		}
 		if (predicate == null) {
@@ -170,10 +174,10 @@ public final class Iteration {
 	 * @param array The array to iterate.
 	 * @param predicate The element tester.
 	 * @return Returns true if no element fails the predicate test, or if the array fails the
-	 * {@link Iteration#isNullOrEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
+	 * {@link ArrayUtils#isEmpty(Object[]) isNullOrEmpty()} test, or if the give predicate is null.
 	 */
 	public static <T> boolean allMatch(T[] array, Predicate<T> predicate) {
-		if (isNullOrEmpty(array)) {
+		if (ArrayUtils.isEmpty(array)) {
 			return true;
 		}
 		if (predicate == null) {
@@ -224,7 +228,7 @@ public final class Iteration {
 		if (collection == null) {
 			return null;
 		}
-		if (isNullOrEmpty(elements)) {
+		if (ArrayUtils.isEmpty(elements)) {
 			return collection;
 		}
 		addAll(collection, elements);
@@ -260,7 +264,7 @@ public final class Iteration {
 	 * @return Returns the element removed.
 	 */
 	public static <T> T removeLastElement(List<T> list) {
-		if (isNullOrEmpty(list)) {
+		if (CollectionUtils.isEmpty(list)) {
 			return null;
 		}
 		return list.remove(list.size() - 1);
