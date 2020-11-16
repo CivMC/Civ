@@ -714,7 +714,7 @@ public final class MaterialAPI {
 		if (material == null) {
 			return false;
 		}
-		if (material == Material.AIR) {
+		if (material.isAir()) {
 			return false;
 		}
 		if (!material.isItem()) {
