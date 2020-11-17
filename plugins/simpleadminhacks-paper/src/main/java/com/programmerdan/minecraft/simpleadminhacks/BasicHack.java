@@ -19,7 +19,7 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 
 	@Override
 	public void registerListeners() {
-		SimpleAdminHacks.instance().registerListener(this);
+		plugin().registerListener(this);
 	}
 
 	@Override
@@ -35,7 +35,6 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 	@Override
 	public void unregisterListeners() {
 		HandlerList.unregisterAll(this);
-		
 	}
 
 	@Override
@@ -46,7 +45,6 @@ public abstract class BasicHack extends SimpleHack<BasicHackConfig> implements L
 	@Override
 	public void dataCleanup() {
 		//override in subclass if needed
-		
 	}
 
 	@Override

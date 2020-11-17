@@ -11,6 +11,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 
+import java.util.stream.Collectors;
 import org.bukkit.configuration.ConfigurationSection;
 
 import com.google.common.reflect.ClassPath;
@@ -169,6 +170,16 @@ public class HackManager {
 			Object value;
 			try {
 				value = config.getObject(identifier, clazz, null);
+				if (value == null) { }
+				else if (List.class.isAssignableFrom(clazz)) {
+					value = ((List<?>) value).stream()
+							.map(autoLoad.processor()::parse)
+							.collect(Collectors.toList());
+				}
+				// else if (Map.class.isAssignableFrom(clazz)) { }
+				else {
+					value = autoLoad.processor().parse(value);
+				}
 			} catch (Exception e) {
 				throw new IllegalArgumentException("Hack " + hackClass.getSimpleName() + " failed to read parameter "
 						+ identifier, e);
