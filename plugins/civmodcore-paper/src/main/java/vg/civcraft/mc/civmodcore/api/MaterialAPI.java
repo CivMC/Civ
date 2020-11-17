@@ -694,6 +694,18 @@ public final class MaterialAPI {
 	}
 
 	/**
+	 * Checks whether a material is without substance, think torches, signs, pressure plates.
+	 *
+	 * @param material The material to check.
+	 * @return Returns true if the material is without substance.
+	 */
+	public static boolean isWithoutSubstance(Material material) {
+		return material == null
+				|| !material.isBlock()
+				|| !material.isSolid();
+	}
+
+	/**
 	 * Gets a random material based on the given objects hashcode.
 	 *
 	 * @param object Object to base returned material on
