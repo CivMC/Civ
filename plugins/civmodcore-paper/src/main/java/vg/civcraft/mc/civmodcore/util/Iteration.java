@@ -9,7 +9,6 @@ import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 
 public final class Iteration {
@@ -46,12 +45,9 @@ public final class Iteration {
 	 * @param <T> The type of collection.
 	 * @param collection The collection to check.
 	 * @return Returns true if the collection exists and at least one item.
-	 *
-	 * @deprecated Use {@link CollectionUtils#isEmpty(Collection)} instead.
 	 */
-	@Deprecated
     public static <T> boolean isNullOrEmpty(Collection<T> collection) {
-		return CollectionUtils.isEmpty(collection);
+		return collection == null || collection.isEmpty();
 	}
 
 	/**
@@ -84,7 +80,7 @@ public final class Iteration {
 	 * @param processor The iteration processor which will be called for each item in the collection.
 	 */
     public static <T> void iterateThenClear(Collection<T> collection, Consumer<T> processor) {
-		if (CollectionUtils.isEmpty(collection) || processor == null) {
+		if (isNullOrEmpty(collection) || processor == null) {
 			return;
 		}
         for (T element : collection) {
@@ -101,7 +97,7 @@ public final class Iteration {
 	 * @param processor The iteration processor which will be called for each item in the collection.
 	 */
     public static <T> void iterateHasNext(Collection<T> collection, ElementAndBoolConsumer<T> processor) {
-		if (CollectionUtils.isEmpty(collection) || processor == null) {
+		if (isNullOrEmpty(collection) || processor == null) {
 			return;
 		}
 		Iterator<T> iterator = collection.iterator();
@@ -264,7 +260,7 @@ public final class Iteration {
 	 * @return Returns the element removed.
 	 */
 	public static <T> T removeLastElement(List<T> list) {
-		if (CollectionUtils.isEmpty(list)) {
+		if (isNullOrEmpty(list)) {
 			return null;
 		}
 		return list.remove(list.size() - 1);

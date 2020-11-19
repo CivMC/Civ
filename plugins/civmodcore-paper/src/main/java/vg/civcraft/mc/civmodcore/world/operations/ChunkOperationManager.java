@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.apache.commons.collections.CollectionUtils;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -21,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 import vg.civcraft.mc.civmodcore.world.ChunkTracker;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
@@ -38,7 +38,7 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		final World world = chunk.getWorld();
 		final WorldXZ wxz = new WorldXZ(world.getUID(), chunk.getX(), chunk.getZ());
 		final List<ChunkOperation> operations = STORAGE.get(wxz);
-		if (CollectionUtils.isEmpty(operations)) {
+		if (Iteration.isNullOrEmpty(operations)) {
 			return;
 		}
 		for (final ChunkOperation operation : operations) {

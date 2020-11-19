@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.enchantments.Enchantment;
@@ -262,7 +261,7 @@ public final class ItemAPI {
 	 * @param lines The lore to append to the item.
 	 */
 	public static void addLore(ItemStack item, boolean prepend, List<String> lines) {
-		if (CollectionUtils.isEmpty(lines)) {
+		if (Iteration.isNullOrEmpty(lines)) {
 			throw new IllegalArgumentException("Cannot add to the item's lore; the lore is null.");
 		}
 		ItemMeta meta = getItemMeta(item);
