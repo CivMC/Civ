@@ -135,5 +135,21 @@ public abstract class ChunkMeta<S extends StorageEngine> {
 	 * Updates the instances data in the storage
 	 */
 	public abstract void update();
+	
+	/**
+	 * Called when the minecraft chunk is loaded and existing cache data is reused.
+	 * This is not called when new data is loaded from the database, use the
+	 * appropriate methods in your storage engine to hook into that
+	 */
+	public void handleChunkCacheReuse() {
+		//NO OP by default
+	}
+	
+	/**
+	 * Called when the chunk this data is in is unloaded. No data has been written the to DB at this point
+	 */
+	public void handleChunkUnload() {
+		//NO OP by default
+	}
 
 }

@@ -184,7 +184,13 @@ public class ChunkCoord extends XZWCoord {
 	 * loaded
 	 */
 	void minecraftChunkLoaded() {
+		boolean hasBeenLoadedBefore = this.lastLoadingTime != -1;
 		this.lastLoadingTime = System.currentTimeMillis();
+		if (hasBeenLoadedBefore) {
+			for(ChunkMeta <?> meta : chunkMetas.values()) {
+				meta.handleChunkCacheReuse();
+			}
+		}
 	}
 
 	/**
@@ -193,6 +199,9 @@ public class ChunkCoord extends XZWCoord {
 	 */
 	void minecraftChunkUnloaded() {
 		this.lastUnloadingTime = System.currentTimeMillis();
+		for(ChunkMeta <?> meta : chunkMetas.values()) {
+			meta.handleChunkUnload();
+		}
 	}
 
 }
