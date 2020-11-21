@@ -127,7 +127,10 @@ public class PlantListener implements Listener {
 	public void onStructureGrow(StructureGrowEvent event) {
 		// disable bonemeal
 		if (event.isFromBonemeal()) {
-			event.setCancelled(true);
+			if (plugin.getConfigManager().getBonemealPreventedBlocks().contains(
+					event.getLocation().getBlock().getType())) {
+				event.setCancelled(true);
+			}
 		}
 		// handle trees etc.
 		Block block = event.getLocation().getBlock();
