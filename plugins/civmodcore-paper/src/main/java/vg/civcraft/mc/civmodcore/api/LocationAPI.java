@@ -110,4 +110,21 @@ public final class LocationAPI {
 		}
 	}
 
+	/**
+	 * Checks whether a location's Y coordinate is a valid block location.
+	 *
+	 * @param location The location to check.
+	 * @return Returns true if the Y coordinate is a valid block location. (False if given location is null!)
+	 */
+	public static boolean isWithinBounds(final Location location) {
+		if (location == null) {
+			return false;
+		}
+		final double y = location.getY();
+		if (y < 0 || y >= 256) {
+			return false;
+		}
+		return true;
+	}
+
 }
