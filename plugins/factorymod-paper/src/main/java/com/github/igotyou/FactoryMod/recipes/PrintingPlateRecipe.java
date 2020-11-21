@@ -6,14 +6,15 @@
 package com.github.igotyou.FactoryMod.recipes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -23,12 +24,11 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
-import vg.civcraft.mc.civmodcore.itemHandling.TagManager;
 
 public class PrintingPlateRecipe extends PrintingPressRecipe {
 	public static final String itemName = "Printing Plate";
 
-	private ItemMap output;
+	protected ItemMap output;
 
 	public ItemMap getOutput() {
 		return this.output;
@@ -60,7 +60,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 
 		if (toRemove.isContainedIn(i) && toRemove.removeSafelyFrom(i)) {
 			for(ItemStack is: toAdd.getItemStackRepresentation()) {
-				is = addTags(i, serialNumber, is);
+				is = addTags(i, serialNumber, is, CraftItemStack.asNMSCopy(book).getTag());
 
 				ItemAPI.setDisplayName(is, itemName);
 				ItemAPI.setLore(is,
@@ -79,18 +79,18 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return true;
 	}
 
-	private ItemStack addTags(Inventory i, String serialNumber, ItemStack is) {
-		ItemStack book = getBook(i);
-		TagManager bookTag = new TagManager(book);
-		TagManager isTag = new TagManager(is);
+	public static ItemStack addTags(Inventory i, String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
+		net.minecraft.server.v1_16_R1.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
+		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
 
-		isTag.setString("SN", serialNumber);
-		isTag.setCompound("Book", bookTag);
+		plateTag.setString("SN", serialNumber);
+		plateTag.set("Book", bookTag);
 
-		return isTag.enrichWithNBT(is);
+		nmsPlate.setTag(plateTag);
+		return CraftItemStack.asBukkitCopy(nmsPlate);
 	}
 
-	private static String getGenerationName(Generation gen) {
+	public static String getGenerationName(Generation gen) {
 		switch(gen) {
 		case ORIGINAL: return "Original";
 		case COPY_OF_ORIGINAL: return "Copy of Original";
@@ -146,7 +146,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 		return getPrintingPlateRepresentation(this.output, getName()).getType();
 	}
 
-	private ItemStack getBook(Inventory i) {
+	public ItemStack getBook(Inventory i) {
 		for (ItemStack is : i.getContents()) {
 			if (is != null && is.getType() == Material.WRITTEN_BOOK) {
 				return is;

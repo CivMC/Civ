@@ -44,6 +44,7 @@ import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.LoreEnchantRecipe;
 import com.github.igotyou.FactoryMod.recipes.PrintBookRecipe;
 import com.github.igotyou.FactoryMod.recipes.PrintNoteRecipe;
+import com.github.igotyou.FactoryMod.recipes.PrintingPlateJsonRecipe;
 import com.github.igotyou.FactoryMod.recipes.PrintingPlateRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
 import com.github.igotyou.FactoryMod.recipes.PylonRecipe;
@@ -256,7 +257,7 @@ public class ConfigParser {
 	 * Parses all factories
 	 * 
 	 * @param config        ConfigurationSection to parse the factories from
-	 * @param defaultUpdate default intervall in ticks how often factories update,
+	 * param defaultUpdate default intervall in ticks how often factories update,
 	 *                      each factory can choose to define an own value or to use
 	 *                      the default instead
 	 */
@@ -276,7 +277,7 @@ public class ConfigParser {
 	 * manager
 	 * 
 	 * @param config        ConfigurationSection to parse the factory from
-	 * @param defaultUpdate default intervall in ticks how often factories update,
+	 * param defaultUpdate default intervall in ticks how often factories update,
 	 *                      each factory can choose to define an own value or to use
 	 *                      the default instead
 	 */
@@ -817,6 +818,20 @@ public class ConfigParser {
 			}
 			result = new PrintingPlateRecipe(identifier, name, productionTime, input, printingPlateOutput);
 			break;
+			case "PRINTINGPLATEJSON":
+				ConfigurationSection printingPlateJsonOutputSection = config.getConfigurationSection("output");
+				ItemMap printingPlateJsonOutput;
+				if (printingPlateJsonOutputSection == null) {
+					if (!(parentRecipe instanceof PrintingPlateJsonRecipe)) {
+						printingPlateJsonOutput = new ItemMap();
+					} else {
+						printingPlateJsonOutput = ((PrintingPlateJsonRecipe) parentRecipe).getOutput();
+					}
+				} else {
+					printingPlateJsonOutput = parseItemMap(printingPlateJsonOutputSection);
+				}
+				result = new PrintingPlateJsonRecipe(identifier, name, productionTime, input, printingPlateJsonOutput);
+				break;
 		case "PRINTBOOK":
 			ItemMap printBookPlate = parseItemMap(config.getConfigurationSection("printingplate"));
 			int printBookOutputAmount = config.getInt("outputamount", 1);
