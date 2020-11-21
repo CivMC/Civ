@@ -2,10 +2,12 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
+import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Furnace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -16,12 +18,17 @@ import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.block.BlockRedstoneEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import com.github.igotyou.FactoryMod.FactoryModManager;
 import com.github.igotyou.FactoryMod.factories.Factory;
 import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
 
+import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.InventoryHolder;
+import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class FactoryModListener implements Listener {
@@ -142,6 +149,52 @@ public class FactoryModListener implements Listener {
 					c.getInteractionManager().leftClick(player, block, bf);
 				}
 
+			}
+		}
+	}
+
+	/**
+	 * Allow shift-clicking valid fuel into the smelting slot of a factories furnace
+	 * @param event
+	 */
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event) {
+		if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+			boolean clickedTop = event.getRawSlot() < event.getView().getTopInventory().getSize();
+			InventoryHolder holder = !clickedTop ? event.getView().getTopInventory().getHolder() : event.getView().getBottomInventory().getHolder();
+			if (holder instanceof Furnace) {
+				Block furnace = ((Furnace) holder).getBlock();
+				if (manager.isPossibleInteractionBlock(furnace.getType())) {
+					Factory factory = manager.getFactoryAt(furnace.getLocation());
+					if (factory == null) {
+						return;
+					}
+					ItemStack fuel = ((FurnacePowerManager) factory.getPowerManager()).getFuel();
+					if (fuel == null) {
+						return;
+					}
+					FurnaceInventory inv = (FurnaceInventory) holder.getInventory();
+					Player p = (Player) event.getWhoClicked();
+					ItemStack clicked = event.getCurrentItem();
+					moveFuelToSmeltingSlot(inv, p, fuel, clicked);
+				}
+			}
+		}
+	}
+
+	public void moveFuelToSmeltingSlot(FurnaceInventory inv, Player p, ItemStack fuel, ItemStack clicked) {
+		if (clicked != null && clicked.getType() == fuel.getType()) {
+			// Check (bottom) fuel slot is filled
+			if (inv.getFuel() != null && inv.getFuel().getAmount() == inv.getFuel().getMaxStackSize()) {
+				ItemStack smeltingSlot = inv.getSmelting();
+				// Check (top) smelting slot has space
+				if (smeltingSlot == null || (smeltingSlot.getType() == fuel.getType() && smeltingSlot.getAmount() < smeltingSlot.getMaxStackSize())) {
+					int oldSlotAmount = smeltingSlot == null ? 0 : smeltingSlot.getAmount();
+					int newSlotAmount = Math.min(oldSlotAmount + clicked.getAmount(), fuel.getMaxStackSize());
+					inv.setSmelting(new ItemStack(fuel.getType(), newSlotAmount));
+					clicked.setAmount(clicked.getAmount() + (oldSlotAmount - newSlotAmount));
+					p.updateInventory();
+				}
 			}
 		}
 	}
