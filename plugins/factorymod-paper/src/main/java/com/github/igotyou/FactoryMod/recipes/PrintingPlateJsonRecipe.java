@@ -60,15 +60,6 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 				factioryError(i, "JSON Syntax Error", e.toString());
 
 				return false;
-			} catch (StackOverflowError e) {
-				FactoryMod.getInstance().getLogger().warning("Found a stack overflow while checking book JSON " +
-				"text; possible exploitation/DOS attempt");
-				e.printStackTrace();
-
-				factioryError(i, "Stack Overflow Error",
-						"If you are trying to DOS the server using malformed JSON, this has been reported.",
-						"Otherwise, simplify your JSON to have less nested arrays and objects.");
-				return false;
 			}
 		}
 
@@ -134,7 +125,7 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 	 *
 	 * Very large because recursion is an important feature of JSON text.
 	 */
-	private final int MAX_ITER_COUNT = 100;
+	private final int MAX_ITER_COUNT = 15;
 
 	/**
 	 * Validates if the text to be put into a book is safe.
@@ -152,6 +143,10 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 	}
 
 	private String checkForIllegalSections(JsonElement bookText, int iterCount) {
+		if (iterCount > MAX_ITER_COUNT) {
+			return "maximum number of nested elements reached, please simplify the json structure: " + iterCount;
+		}
+
 		if (bookText == null) {
 			return "Book does not contain any text.";
 		}
@@ -174,7 +169,7 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 
 	private String checkForIllegalSections(JsonObject bookText, int iterCount) {
 		if (iterCount > MAX_ITER_COUNT) {
-			throw new StackOverflowError("max recurstion of book checking exceeded");
+			return "maximum number of nested elements reached, please simplify the json structure: " + iterCount;
 		}
 
 		if (bookText.has("extra")) {
