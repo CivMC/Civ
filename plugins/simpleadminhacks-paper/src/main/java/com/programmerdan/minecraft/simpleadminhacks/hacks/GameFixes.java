@@ -312,15 +312,19 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (event.getClickedBlock() == null) {
 			return;
 		}
+		if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
+			return;
+		}
 		if (!event.getClickedBlock().getType().equals(Material.RESPAWN_ANCHOR)) {
 			return;
 		}
-		RespawnAnchor anchor = (RespawnAnchor)event.getClickedBlock().getBlockData();
+		RespawnAnchor anchor = (RespawnAnchor) event.getClickedBlock().getBlockData();
 		if (!event.getMaterial().equals(Material.GLOWSTONE)) {
 			event.setCancelled(true);
 		} else if (anchor.getCharges() == anchor.getMaximumCharges()) {
 			event.setCancelled(true);
 		}
+		event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
