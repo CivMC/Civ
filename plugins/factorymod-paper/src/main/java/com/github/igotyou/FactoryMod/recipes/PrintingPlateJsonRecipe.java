@@ -45,7 +45,6 @@ public class PrintingPlateJsonRecipe extends PrintingPlateRecipe {
 		String[] pages = String.join("", ((BookMeta) getBook(i).getItemMeta()).getPages()).split("<<PAGE>>");
 
 		for (String page : pages) {
-			page = page.replace("\\", "\\\\");
 			try {
 				Gson gson = new Gson();
 				JsonElement element = gson.fromJson(page, JsonElement.class);
