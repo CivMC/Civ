@@ -5,13 +5,16 @@ import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
 import com.programmerdan.minecraft.simpleadminhacks.autoload.DataParser;
+import com.programmerdan.minecraft.simpleadminhacks.util.BetterToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
-import org.bukkit.Location;
+import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,19 +27,21 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.MaterialAPI;
+import vg.civcraft.mc.civmodcore.util.Iteration;
 
-public class ShipOutOfLuck extends BasicHack {
+public final class ShipOutOfLuck extends BasicHack {
 
 	@AutoLoad(processor = DataParser.MATERIAL)
-	private List<Material> boatBreakers = new ArrayList<>();
+	private List<Material> boatBreakers;
 
-	@AutoLoad
-	private boolean incongruousBoats;
-
-	public ShipOutOfLuck(SimpleAdminHacks plugin, BasicHackConfig config) {
+	public ShipOutOfLuck(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
+		// Just in case it's auto loaded to null.
+		if (this.boatBreakers == null) {
+			this.boatBreakers = new ArrayList<>();
+		}
 	}
 
 	@Override
@@ -72,7 +77,7 @@ public class ShipOutOfLuck extends BasicHack {
 		}
 		event.setCancelled(true);
 		plugin().debug("Prevented boat placement on [" + placedOn.getType().name() + "] by [" +
-				event.getPlayer().getName() + "] at [" + placedOn.getLocation() + "]");
+				event.getPlayer().getName() + "] at [" + BetterToString.location(placedOn.getLocation()) + "]");
 		//return;
 	}
 
@@ -86,34 +91,31 @@ public class ShipOutOfLuck extends BasicHack {
 		if (passengers.isEmpty()) {
 			return;
 		}
-		final Location destination = event.getTo();
-		if (vehicle.isOnGround()) {
-			// If the boat is on top of a block, then we need to look below the boat
-			destination.add(0, -1, 0);
-		}
-		if (destination.getY() < 0 || destination.getY() >= destination.getWorld().getMaxHeight()) {
+		if (ThreadLocalRandom.current().nextDouble() < 0.2d) { // Only check 20% of the time
 			return;
 		}
-		final Block currentBlock = destination.getBlock();
-		final Material currentMaterial = currentBlock.getType();
-		if (this.boatBreakers.contains(currentMaterial)) {
-			vehicle.eject();
-			plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
-					.collect(Collectors.joining(", ")) + "] from boat at [" + destination + "] because " +
-					"they sailed over [" + currentMaterial.name() + "]");
+		final World world = vehicle.getWorld();
+		final BoundingBox defaultBounds = vehicle.getBoundingBox();
+		final List<Material> illegalBlocks = BlockPosition.a(
+				(int) defaultBounds.getMinX(), (int) (defaultBounds.getMinY() - 0.06d), (int) defaultBounds.getMinZ(),
+				(int) defaultBounds.getMaxX(), (int) (defaultBounds.getMinY() - 0.06d), (int) defaultBounds.getMaxZ())
+				.filter(loc -> world.isChunkLoaded(loc.getX() >> 4, loc.getZ() >> 4))
+				.map(loc -> world.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).getType())
+				.filter(this.boatBreakers::contains)
+				.distinct()
+				.collect(Collectors.toCollection(ArrayList::new));
+		if (Iteration.isNullOrEmpty(illegalBlocks)) {
+			return;
 		}
-		else if (!this.incongruousBoats
-				&& vehicle.isOnGround()
-				&& MaterialAPI.isWithoutSubstance(currentMaterial)) {
-			vehicle.eject();
-			plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
-					.collect(Collectors.joining(", ")) + "] from boat at [" + destination + "] because " +
-					"the boat was grounded while sailing over [" + currentMaterial.name() + "]");
-		}
+		vehicle.eject();
+		plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
+				.collect(Collectors.joining(", ")) + "] from boat at [" + BetterToString.location(event.getTo())
+				+ "] because they sailed over [" + illegalBlocks.stream().map(Material::name)
+				.collect(Collectors.joining(", ")) + "]");
 		//return;
 	}
 
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
 

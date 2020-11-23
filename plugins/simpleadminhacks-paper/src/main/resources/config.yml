@@ -295,9 +295,6 @@ hacks:
       - SLOW_FALLING
   ShipOutOfLuck:
     enabled: true
-    # Should boats that are grounded but directly over air be allowed?
-    # Default: false
-    incongruousBoats: false
     # The list of Material's that boats cannot be placed on and will eject passengers
     boatBreakers:
       - ICE
