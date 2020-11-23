@@ -324,6 +324,7 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		} else if (anchor.getCharges() == anchor.getMaximumCharges()) {
 			event.setCancelled(true);
 		}
+		event.getPlayer().sendMessage(ChatColor.RED + "Respawn anchor bombing is disabled");
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
