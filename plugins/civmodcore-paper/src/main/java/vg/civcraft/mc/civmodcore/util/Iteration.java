@@ -1,21 +1,18 @@
 package vg.civcraft.mc.civmodcore.util;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import org.apache.commons.lang.ArrayUtils;
 
 public final class Iteration {
-
-	private static final Random RANDOM = new SecureRandom();
 
 	@FunctionalInterface
 	public interface ElementAndBoolConsumer<T> {
@@ -285,7 +282,7 @@ public final class Iteration {
 		if (array.length == 1) {
 			return array[0];
 		}
-		return array[RANDOM.nextInt(array.length)];
+		return array[ThreadLocalRandom.current().nextInt(array.length)];
 	}
 
 	/**
@@ -303,7 +300,7 @@ public final class Iteration {
 		if (size == 1) {
 			return list.get(0);
 		}
-		return list.get(RANDOM.nextInt(size));
+		return list.get(ThreadLocalRandom.current().nextInt(size));
 	}
 
 }
