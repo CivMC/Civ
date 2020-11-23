@@ -1,17 +1,21 @@
 package vg.civcraft.mc.civmodcore.util;
 
+import java.security.SecureRandom;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import org.apache.commons.lang.ArrayUtils;
 
 public final class Iteration {
+
+	private static final Random RANDOM = new SecureRandom();
 
 	@FunctionalInterface
 	public interface ElementAndBoolConsumer<T> {
@@ -264,6 +268,42 @@ public final class Iteration {
 			return null;
 		}
 		return list.remove(list.size() - 1);
+	}
+
+	/**
+	 * Retrieves a random element from an array of elements.
+	 *
+	 * @param <T> The type of element.
+	 * @param array The array to retrieve a value from.
+	 * @return Returns a random element, or null.
+	 */
+	@SafeVarargs
+	public static <T> T randomElement(final T... array) {
+		if (ArrayUtils.isEmpty(array)) {
+			return null;
+		}
+		if (array.length == 1) {
+			return array[0];
+		}
+		return array[RANDOM.nextInt(array.length)];
+	}
+
+	/**
+	 * Retrieves a random element from an list of elements.
+	 *
+	 * @param <T> The type of element.
+	 * @param list The list to retrieve a value from.
+	 * @return Returns a random element, or null.
+	 */
+	public static <T> T randomElement(final List<T> list) {
+		if (isNullOrEmpty(list)) {
+			return null;
+		}
+		final int size = list.size();
+		if (size == 1) {
+			return list.get(0);
+		}
+		return list.get(RANDOM.nextInt(size));
 	}
 
 }
