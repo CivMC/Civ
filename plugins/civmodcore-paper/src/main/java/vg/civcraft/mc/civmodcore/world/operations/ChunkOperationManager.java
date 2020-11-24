@@ -19,10 +19,10 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.plugin.Plugin;
 import vg.civcraft.mc.civmodcore.CivModCorePlugin;
 import vg.civcraft.mc.civmodcore.api.LocationAPI;
+import vg.civcraft.mc.civmodcore.api.WorldAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
-import vg.civcraft.mc.civmodcore.world.ChunkTracker;
 import vg.civcraft.mc.civmodcore.world.WorldTracker;
 import vg.civcraft.mc.civmodcore.world.WorldXZ;
 
@@ -109,7 +109,7 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		if (world == null) {
 			throw new IllegalArgumentException("Location's world must not be null!");
 		}
-		final Chunk chunk = ChunkTracker.getLoadedChunk(location);
+		final Chunk chunk = WorldAPI.getLoadedChunk(world, location.getBlockX(), location.getBlockZ());
 		if (chunk == null) {
 			final WorldXZ wxz = new WorldXZ(location);
 			STORAGE
