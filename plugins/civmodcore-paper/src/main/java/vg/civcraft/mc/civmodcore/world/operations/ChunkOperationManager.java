@@ -37,7 +37,7 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		final Chunk chunk = event.getChunk();
 		final World world = chunk.getWorld();
 		final WorldXZ wxz = new WorldXZ(world.getUID(), chunk.getX(), chunk.getZ());
-		final List<ChunkOperation> operations = STORAGE.get(wxz);
+		final List<ChunkOperation> operations = STORAGE.remove(wxz);
 		if (Iteration.isNullOrEmpty(operations)) {
 			return;
 		}
@@ -97,8 +97,9 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 	 *
 	 * @param location The location of the chunk to operate on. MUST NOT BE A BLOCK LOCATION!
 	 * @param operation The operation to perform.
+	 * @return Returns true if the operation was executed immediately.
 	 */
-	public static void stageOperation(final Location location, final ChunkOperation operation) {
+	public static boolean stageOperation(final Location location, final ChunkOperation operation) {
 		if (operation == null) {
 			throw new IllegalArgumentException("Operation cannot be null!");
 		}
@@ -112,12 +113,11 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 		final Chunk chunk = WorldAPI.getLoadedChunk(world, location.getBlockX(), location.getBlockZ());
 		if (chunk == null) {
 			final WorldXZ wxz = new WorldXZ(location);
-			STORAGE
-					.computeIfAbsent(wxz, l -> new ArrayList<>())
-					.add(operation);
-			return;
+			STORAGE.computeIfAbsent(wxz, l -> new ArrayList<>()).add(operation);
+			return false;
 		}
 		executeOperation(operation, chunk);
+		return true;
 	}
 
 	private static void executeOperation(final ChunkOperation operation, final Chunk chunk) {
