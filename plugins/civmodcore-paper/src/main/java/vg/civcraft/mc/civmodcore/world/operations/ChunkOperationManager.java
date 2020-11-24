@@ -125,8 +125,7 @@ public class ChunkOperationManager extends AikarCommand implements Listener {
 			operation.process(chunk);
 		}
 		catch (Exception exception) {
-			PLUGIN.warning("Chunk Operation [" + operation.getClass().getName() + "] has thrown an error:");
-			exception.printStackTrace();
+			PLUGIN.warning("Chunk Operation [" + operation.getClass().getName() + "] has thrown an error:", exception);
 		}
 	}
 
