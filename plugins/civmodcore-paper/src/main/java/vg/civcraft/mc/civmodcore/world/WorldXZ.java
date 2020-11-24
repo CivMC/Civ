@@ -17,8 +17,7 @@ public class WorldXZ {
 			throw new IllegalArgumentException("Location must not be valid!");
 		}
 		final World world = location.getWorld();
-		assert world != null; // Just to make the highlighter shut up
-		this.world = world.getUID();
+		this.world = world.getUID(); // Do not listen to the highlighter
 		this.x = location.getBlockX();
 		this.z = location.getBlockZ();
 	}
@@ -79,8 +78,7 @@ public class WorldXZ {
 		final World world = location.getWorld();
 		final int x = location.getBlockX();
 		final int z = location.getBlockZ();
-		assert world != null; // Just to make the highlighter shut up
-		return new WorldXZ(world.getUID(), x, z);
+		return new WorldXZ(world.getUID(), x, z); // Do not listen to the highlighter
 	}
 
 }
