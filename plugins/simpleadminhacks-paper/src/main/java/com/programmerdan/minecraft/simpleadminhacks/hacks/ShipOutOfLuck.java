@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BoundingBox;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.world.ChunkLoadedFilter;
 
 public final class ShipOutOfLuck extends BasicHack {
 
@@ -91,15 +93,12 @@ public final class ShipOutOfLuck extends BasicHack {
 		if (passengers.isEmpty()) {
 			return;
 		}
-		if (ThreadLocalRandom.current().nextDouble() < 0.2d) { // Only check 20% of the time
+		if (ThreadLocalRandom.current().nextDouble() < 0.1d) { // Only check 10% of the time
 			return;
 		}
 		final World world = vehicle.getWorld();
-		final BoundingBox defaultBounds = vehicle.getBoundingBox();
-		final List<Material> illegalBlocks = BlockPosition.a(
-				(int) defaultBounds.getMinX(), (int) (defaultBounds.getMinY() - 0.06d), (int) defaultBounds.getMinZ(),
-				(int) defaultBounds.getMaxX(), (int) (defaultBounds.getMinY() - 0.06d), (int) defaultBounds.getMaxZ())
-				.filter(loc -> world.isChunkLoaded(loc.getX() >> 4, loc.getZ() >> 4))
+		final List<Material> illegalBlocks = getCollidingBlocks(vehicle.getBoundingBox())
+				.filter(ChunkLoadedFilter.create(world))
 				.map(loc -> world.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).getType())
 				.filter(this.boatBreakers::contains)
 				.distinct()
@@ -113,6 +112,18 @@ public final class ShipOutOfLuck extends BasicHack {
 				+ "] because they sailed over [" + illegalBlocks.stream().map(Material::name)
 				.collect(Collectors.joining(", ")) + "]");
 		//return;
+	}
+
+	private static Stream<BlockPosition> getCollidingBlocks(final BoundingBox bounds) {
+		// This transform the bounds of the boat to be a flat rectangle roughly a carpet's thickness smaller on each
+		// side and placed the same distance below the boat, which should be enough to reliably detect what blocks
+		// are carrying the boat without false alarming with blocks beside the boat.
+		final int minX = (int) Math.floor(bounds.getMinX() + 0.06);
+		final int maxX = (int) Math.floor(bounds.getMaxX() - 0.06);
+		final int valY = (int) Math.floor(bounds.getMinY() - 0.06);
+		final int minZ = (int) Math.floor(bounds.getMinZ() + 0.06);
+		final int maxZ = (int) Math.floor(bounds.getMaxZ() - 0.06);
+		return BlockPosition.a(minX, valY, minZ, maxX, valY, maxZ);
 	}
 
 	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
