@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.simpleadminhacks.hacks;
+package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
@@ -45,25 +45,6 @@ public final class ShipOutOfLuck extends BasicHack {
 		if (this.boatBreakers == null) {
 			this.boatBreakers = new ArrayList<>();
 		}
-	}
-
-	@Override
-	public String status() {
-		final StringBuilder builder = new StringBuilder(getClass().getSimpleName())
-				.append(" is ")
-				.append(isEnabled() ? "enabled" : "disabled")
-				.append(".")
-				.append("\n");
-		if (this.boatBreakers.isEmpty()) {
-			builder.append("No boat breakers.");
-		}
-		else {
-			builder.append(" Boat breakers:\n");
-			builder.append(this.boatBreakers.stream()
-					.map(material -> "  • " + material.name())
-					.collect(Collectors.joining("\n")));
-		}
-		return builder.toString();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

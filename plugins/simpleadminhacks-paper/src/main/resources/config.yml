@@ -108,6 +108,14 @@ hacks:
     ghastChance: 0.07
     witherSkeletonChance: 0.05
     witherHeadDropChance: 0.04
+  ShipOutOfLuck:
+    enabled: true
+    # The list of Material's that boats cannot be placed on and will eject passengers
+    boatBreakers:
+      - ICE
+      - PACKED_ICE
+      - FROSTED_ICE
+      - BLUE_ICE
   TestConfigHack:
     enabled: true
     # Please do not change any of the values below, otherwise it will undermine the test.
@@ -322,14 +330,6 @@ hacks:
     trackPlace: true
     trackBreak: true
     belowYLevel: 7
-  ShipOutOfLuck:
-    enabled: true
-    # The list of Material's that boats cannot be placed on and will eject passengers
-    boatBreakers:
-      - ICE
-      - PACKED_ICE
-      - FROSTED_ICE
-      - BLUE_ICE
   TimingsHack:
     enabled: true
   ToggleLamp:
