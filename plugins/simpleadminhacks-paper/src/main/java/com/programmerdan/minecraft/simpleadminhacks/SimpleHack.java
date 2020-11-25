@@ -105,7 +105,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 	 * Convenience passthrough wrapper for config.isEnabled();
 	 */
 	public boolean isEnabled() {
-		return this.config == null ? false : this.config.isEnabled();
+		return this.config != null && this.config.isEnabled();
 	}
 
 	/**

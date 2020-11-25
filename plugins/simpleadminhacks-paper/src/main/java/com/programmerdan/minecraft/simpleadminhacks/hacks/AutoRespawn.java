@@ -7,6 +7,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -22,7 +23,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import vg.civcraft.mc.civmodcore.util.Iteration;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listener {
@@ -37,7 +37,7 @@ public class AutoRespawn extends SimpleHack<AutoRespawnConfig> implements Listen
 	private void autoRespawnPlayer(Player player) {
 		player.spigot().respawn();
 		String[] quotes = config.getRespawnQuotes();
-		if (!Iteration.isNullOrEmpty(quotes)) {
+		if (!ArrayUtils.isEmpty(quotes)) {
 			player.sendMessage(TextUtil.parse(quotes[quotes.length == 1 ? 0 : random.nextInt(quotes.length)]));
 		}
 	}

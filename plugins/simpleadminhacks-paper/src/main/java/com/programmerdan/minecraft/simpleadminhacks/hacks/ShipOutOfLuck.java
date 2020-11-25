@@ -1,15 +1,20 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.ShipOutOfLuckConfig;
+import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.autoload.DataParser;
+import com.programmerdan.minecraft.simpleadminhacks.util.BetterToString;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
-import org.bukkit.Location;
+import java.util.stream.Stream;
+import net.minecraft.server.v1_16_R1.BlockPosition;
 import org.bukkit.Material;
 import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -18,120 +23,113 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Vehicle;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.vehicle.VehicleMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.BoundingBox;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
+import vg.civcraft.mc.civmodcore.util.Iteration;
+import vg.civcraft.mc.civmodcore.world.ChunkLoadedFilter;
 
-public class ShipOutOfLuck extends SimpleHack<ShipOutOfLuckConfig> implements Listener {
+public final class ShipOutOfLuck extends BasicHack {
 
-	public ShipOutOfLuck(SimpleAdminHacks plugin, ShipOutOfLuckConfig config) {
+	@AutoLoad(processor = DataParser.MATERIAL)
+	private List<Material> boatBreakers;
+
+	private int ignoredBoatCounter = 0;
+
+	public ShipOutOfLuck(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
+		// Just in case it's auto loaded to null.
+		if (this.boatBreakers == null) {
+			this.boatBreakers = new ArrayList<>();
+		}
 	}
 
 	@Override
 	public String status() {
-		StringBuilder builder = new StringBuilder(getClass().getSimpleName());
-		builder.append(" is ").append(isEnabled() ? "enabled" : "disabled").append(".").append("\n");
-		Set<Material> scuttleList = this.config.getBoatBreakers();
-		if (scuttleList.isEmpty()) {
-			builder.append("No scuttle blocks.");
+		final StringBuilder builder = new StringBuilder(getClass().getSimpleName())
+				.append(" is ")
+				.append(isEnabled() ? "enabled" : "disabled")
+				.append(".")
+				.append("\n");
+		if (this.boatBreakers.isEmpty()) {
+			builder.append("No boat breakers.");
 		}
 		else {
-			builder.append(" Scuttle blocks:\n");
-			builder.append(scuttleList.stream()
-					.map(effect -> "  • " + effect.name())
+			builder.append(" Boat breakers:\n");
+			builder.append(this.boatBreakers.stream()
+					.map(material -> "  • " + material.name())
 					.collect(Collectors.joining("\n")));
 		}
 		return builder.toString();
 	}
 
-	// ------------------------------------------------------------
-	// Listeners
-	// ------------------------------------------------------------
-
-	@Override
-	public void registerListeners() {
-		this.plugin().registerListener(this);
-	}
-
-	@Override
-	public void unregisterListeners() {
-		HandlerList.unregisterAll(this);
-	}
-
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void preventBoatPlacements(PlayerInteractEvent event) {
+	public void preventBoatPlacements(final PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-		Block placedOn = Objects.requireNonNull(event.getClickedBlock());
-		ItemStack placed = event.getItem();
-		if (!this.config.isBoatBreaker(placedOn.getType())
+		final Block placedOn = Objects.requireNonNull(event.getClickedBlock());
+		final ItemStack placed = event.getItem();
+		if (!this.boatBreakers.contains(placedOn.getType())
 				|| !ItemAPI.isValidItem(placed)
 				|| !Tag.ITEMS_BOATS.isTagged(placed.getType())) {
 			return;
 		}
 		event.setCancelled(true);
 		plugin().debug("Prevented boat placement on [" + placedOn.getType().name() + "] by [" +
-				event.getPlayer().getName() + "] at [" + placedOn.getLocation() + "]");
+				event.getPlayer().getName() + "] at [" + BetterToString.location(placedOn.getLocation()) + "]");
 		//return;
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-	public void preventBoatUsage(VehicleMoveEvent event) {
-		Vehicle vehicle = event.getVehicle();
+	public void preventBoatUsage(final VehicleMoveEvent event) {
+		final Vehicle vehicle = event.getVehicle();
 		if (vehicle.getType() != EntityType.BOAT) {
 			return;
 		}
-		List<Entity> passengers = vehicle.getPassengers();
+		final List<Entity> passengers = vehicle.getPassengers();
 		if (passengers.isEmpty()) {
 			return;
 		}
-		Location destination = event.getTo();
-		if (event.getVehicle().isOnGround()) {
-			// If the boat is on top of a block, then we need to look below the boat
-			destination.add(0, -1, 0);
-		}
-		if (destination.getY() < 0 || destination.getY() >= destination.getWorld().getMaxHeight()) {
+		if (++this.ignoredBoatCounter < 40) {
 			return;
 		}
-		Block currentBlock = destination.getBlock();
-		if (!this.config.isBoatBreaker(currentBlock.getType())) {
+		this.ignoredBoatCounter = 0;
+		final World world = vehicle.getWorld();
+		final List<Material> illegalBlocks = getCollidingBlocks(vehicle.getBoundingBox())
+				.filter(ChunkLoadedFilter.create(world))
+				.map(loc -> world.getBlockAt(loc.getX(), loc.getY(), loc.getZ()).getType())
+				.filter(this.boatBreakers::contains)
+				.distinct()
+				.collect(Collectors.toCollection(ArrayList::new));
+		if (Iteration.isNullOrEmpty(illegalBlocks)) {
 			return;
 		}
-		event.getVehicle().eject();
+		vehicle.eject();
 		plugin().debug("Ejected [" + passengers.stream().map(CommandSender::getName)
-				.collect(Collectors.joining(", ")) + "] from boat at [" + destination + "] because they " +
-				"sailed over [" + currentBlock.getType().name() + "]");
+				.collect(Collectors.joining(", ")) + "] from boat at [" + BetterToString.location(event.getTo())
+				+ "] because they sailed over [" + illegalBlocks.stream().map(Material::name)
+				.collect(Collectors.joining(", ")) + "]");
 		//return;
 	}
 
-	// ------------------------------------------------------------
-	// Commands
-	// ------------------------------------------------------------
+	private static Stream<BlockPosition> getCollidingBlocks(final BoundingBox bounds) {
+		// This transform the bounds of the boat to be a flat rectangle roughly a carpet's thickness smaller on each
+		// side and placed the same distance below the boat, which should be enough to reliably detect what blocks
+		// are carrying the boat without false alarming with blocks beside the boat.
+		final int minX = (int) Math.floor(bounds.getMinX() + 0.06);
+		final int maxX = (int) Math.floor(bounds.getMaxX() - 0.06);
+		final int valY = (int) Math.floor(bounds.getMinY() - 0.06);
+		final int minZ = (int) Math.floor(bounds.getMinZ() + 0.06);
+		final int maxZ = (int) Math.floor(bounds.getMaxZ() - 0.06);
+		return BlockPosition.a(minX, valY, minZ, maxX, valY, maxZ);
+	}
 
-	@Override
-	public void registerCommands() { }
-
-	@Override
-	public void unregisterCommands() { }
-
-	// ------------------------------------------------------------
-	// Setup
-	// ------------------------------------------------------------
-
-	@Override
-	public void dataBootstrap() { }
-
-	@Override
-	public void dataCleanup() { }
-
-	public static ShipOutOfLuckConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new ShipOutOfLuckConfig(plugin, config);
+	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
 	}
 
 }

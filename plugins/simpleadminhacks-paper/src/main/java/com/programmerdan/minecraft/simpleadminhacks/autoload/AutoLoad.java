@@ -27,5 +27,12 @@ public @interface AutoLoad {
 	 * @return Whether this option is required
 	 */
 	boolean isRequired() default true;
+
+	/**
+	 * The type of parser used to process the data retrieved from the config.
+	 *
+	 * @return Returns what processor to use for retrieved config data.
+	 */
+	DataParser processor() default DataParser.DEFAULT;
 	
 }
