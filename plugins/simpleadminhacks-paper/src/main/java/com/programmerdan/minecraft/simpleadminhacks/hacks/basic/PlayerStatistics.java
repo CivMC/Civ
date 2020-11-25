@@ -86,9 +86,9 @@ public final class PlayerStatistics extends BasicHack {
 		}
 
 		@CommandAlias(StatsCommand.ALIAS)
-		@Description("Gets the statistic for a player.")
-		@Syntax("<player> <statistic>")
-		@CommandCompletion("@players @stats")
+		@Description("Sets the statistic for a player.")
+		@Syntax("<player> <statistic> <value>")
+		@CommandCompletion("@players @stats @nothing")
 		public void setPlayerStatistic(final CommandSender sender,
 									   final String playerName,
 									   final String statName,
