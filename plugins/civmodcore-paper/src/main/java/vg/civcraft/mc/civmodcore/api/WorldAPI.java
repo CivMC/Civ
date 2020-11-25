@@ -1,6 +1,7 @@
 package vg.civcraft.mc.civmodcore.api;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -38,6 +39,21 @@ public final class WorldAPI {
 			return false;
 		}
 		return world.isChunkLoaded(x, z);
+	}
+
+	/**
+	 * Retrieves a chunk only if it's loaded.
+	 *
+	 * @param world The world the target chunk is located within.
+	 * @param x The (CHUNK) X coordinate.
+	 * @param z The (CHUNK) Z coordinate.
+	 * @return Returns the loaded chunk, or null.
+	 */
+	public static Chunk getLoadedChunk(final World world, final int x, final int z) {
+		if (!isChunkLoaded(world, x, z)) {
+			return null;
+		}
+		return world.getChunkAt(x, z);
 	}
 
 	/**

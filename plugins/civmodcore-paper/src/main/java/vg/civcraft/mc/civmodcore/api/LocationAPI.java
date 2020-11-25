@@ -86,4 +86,45 @@ public final class LocationAPI {
 		return NullCoalescing.equalsNotNull(getLocationWorld(former), getLocationWorld(latter));
 	}
 
+	/**
+	 * Returns the largest axis distance.
+	 *
+	 * @param latter The first location.
+	 * @param former The second location.
+	 * @param consider2D Whether only the X and Z axis should be considered. (true if yes)
+	 * @return Returns the largest axis distance, or -1 if there's a problem,
+	 *     like the two locations being in two different worlds.
+	 */
+	public static int blockDistance(final Location former, final Location latter, final boolean consider2D) {
+		if (!LocationAPI.areLocationsSameWorld(former, latter)) {
+			return -1;
+		}
+		final int x = Math.abs(former.getBlockX() - latter.getBlockX());
+		final int z = Math.abs(former.getBlockZ() - latter.getBlockZ());
+		if (consider2D) {
+			return Math.max(x, z);
+		}
+		else {
+			final int y = Math.abs(former.getBlockY() - latter.getBlockY());
+			return Math.max(x, Math.max(y, z));
+		}
+	}
+
+	/**
+	 * Checks whether a location's Y coordinate is a valid block location.
+	 *
+	 * @param location The location to check.
+	 * @return Returns true if the Y coordinate is a valid block location. (False if given location is null!)
+	 */
+	public static boolean isWithinBounds(final Location location) {
+		if (location == null) {
+			return false;
+		}
+		final double y = location.getY();
+		if (y < 0 || y >= 256) {
+			return false;
+		}
+		return true;
+	}
+
 }

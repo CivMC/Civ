@@ -1,40 +1,60 @@
-CivModCore
-===========
+# CivModCore
 
-Versions:
+CivModCore is derived from Humbug.
 
-* 1.7.8 - Spigot 1.14.4 (No explicit support for 1.14 prior to 1.14.4)
+----
 
-* 1.7.0 - Spigot 1.13.2 (No explicit support for 1.13 or 1.13.1)
+## Versions
 
-* 1.6.1 - Spigot 1.12 (Mercury Removed -- incompatible with plugins that rely on Mercury hooks)
+* 1.8.0 - Spigot 1.16.1
 
-* 1.6.0 - Spigot 1.12
+* [1.7.9](https://github.com/CivClassic/CivModCore/tree/306b4f7268a3c5d3bd551fe66992f2a4335e86f7) - Spigot 1.14.4
 
-* 1.5.10 - Spigot 1.11 or higher.
+* [1.6.1](https://github.com/CivClassic/CivModCore/tree/8d1043b7ad4bcf3ffe30d87ee5e974f1dd111113) - Spigot 1.12.2 (Mercury Removed -- incompatible with plugins that rely on Mercury hooks)
 
-* 1.5.9 - Spigot 1.10 / 1.10.x
+* [1.5.11](https://github.com/CivClassic/CivModCore/tree/d88d6bbcf231616dc1c7bc08a3fabc0f57911613) - Spigot 1.11.x
 
-No explicit backwards support is offered.
+* [1.5.9](https://github.com/CivClassic/CivModCore/tree/a55880dd11bee3612f5aa842412119775b3bcb91) - Spigot 1.10.x
 
--------
+No explicit backwards support is offered to any previous version, whether it be major, minor, or patch.
 
-Common Plugin Core derived from Humbug
+----
 
-To use CivModCore, your Main Plugin class must extend ACivMod:
+## Usage
 
-    public class MyNewPlugin extends ACivMod
-    {
+To take full advantage of CivModCore, you should have your plugin class extend `ACivMod`, like such:
+
+    public class MyNewPlugin extends ACivMod {
+    
+        @Override
+        public void onEnable() {
+            // Always have this at the top of the function
+            super.onEnable();
+            
+            // Then do your stuff here that you need to do.
+        }
+    
+        @Override
+        public void onDisable() {
+            // Do whatever you need to do here
+        
+            // Try to keep this at the bottom of the function
+            super.onDisable();
+        }
     
     }
-    
-CivModCore implements onEnable/onLoad, and as such an extending plugin must Override and call super:
 
-https://github.com/DevotedMC/CivModCore/blob/master/src/main/java/vg/civcraft/mc/civmodcore/ACivMod.java#L34
+For more information, look through the [CivTemplate plugin](https://github.com/CivClassic/CivTemplate/blob/master/src/main/java/io/protonull/template/TemplatePlugin.java).
 
-    @Override
-    public void onEnable()
-    {
-        super.onEnable();
-        //Do your stuff here that you need to do.
-    }
+----
+
+## Dependency
+
+Include the following in your dependency list in your plugin's POM file:
+
+    <dependency>
+        <groupId>vg.civcraft.mc.civmodcore</groupId>
+        <artifactId>CivModCore</artifactId>
+        <version>1.8.0</version>
+        <scope>provided</scope>
+    </dependency>
