@@ -36,7 +36,7 @@ public class Acid extends StandaloneCommand {
 		boolean foundAny = false;
 		while (itr.hasNext()) {
 			Block block = itr.next();
-			if (MaterialAPI.isAir(block.getType()) || !(block.getType().isSolid())) {
+			if (MaterialAPI.isAir(block.getType()) || !(block.getType().isSolid()) || (!block.getType().isOccluding())) {
 				continue;
 			}
 			if (!acidMan.isPossibleAcidBlock(block)) {
