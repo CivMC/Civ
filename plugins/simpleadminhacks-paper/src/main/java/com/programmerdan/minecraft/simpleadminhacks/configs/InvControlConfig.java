@@ -1,9 +1,8 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Stub; this hack just turns on and off, and has some commands.

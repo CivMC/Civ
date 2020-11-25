@@ -1,21 +1,18 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BroadcastLevel;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
-
+import net.minelink.ctplus.event.PlayerCombatTagEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-
-import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
-
-import net.minelink.ctplus.event.PlayerCombatTagEvent;
 
 /**
  * Ties into CombatTagPlus, listens for {@link PlayerCombatTagEvent}

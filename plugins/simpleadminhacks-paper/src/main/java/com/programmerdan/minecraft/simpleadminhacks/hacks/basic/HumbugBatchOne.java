@@ -1,9 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,9 +28,9 @@ import org.bukkit.event.block.CauldronLevelChangeEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent;
-import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.SheepDyeWoolEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -37,11 +41,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffectType;
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 public class HumbugBatchOne extends BasicHack {
 
@@ -79,13 +78,13 @@ public class HumbugBatchOne extends BasicHack {
 
 	@AutoLoad
 	private boolean preventPearlGlitching;
-	
+
 	@AutoLoad
 	private boolean preventUsingEyeOfEnder;
 
 	@AutoLoad
 	private boolean disableEndGatewayTP;
-	
+
 	@AutoLoad
 	private boolean disablePiglins;
 
@@ -309,7 +308,7 @@ public class HumbugBatchOne extends BasicHack {
 		if (MaterialAPI.isWoodenFenceGate(belowMat) || Tag.FENCES.isTagged(belowMat) || Tag.WALLS.isTagged(belowMat)) {
 			height = 0.5;
 		}
-		
+
 		boolean upperBlockBypass = false;
 		if (height >= 0.5) {
 			Block aboveHeadBlock = aboveBlock.getRelative(BlockFace.UP);
@@ -337,7 +336,7 @@ public class HumbugBatchOne extends BasicHack {
 			}
 		}
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = false)
 	public void throwEyeOfEnder(PlayerInteractEvent pie) {
 		if (!preventUsingEyeOfEnder) {
@@ -393,7 +392,7 @@ public class HumbugBatchOne extends BasicHack {
 		}
 		return false;
 	}
-	
+
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void onBartering(EntitySpawnEvent event) {
 		if (disablePiglins && event.getEntityType() == EntityType.PIGLIN) {

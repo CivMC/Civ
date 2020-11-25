@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -7,15 +9,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 /**
  * Holds configurations for the GameTuning module.

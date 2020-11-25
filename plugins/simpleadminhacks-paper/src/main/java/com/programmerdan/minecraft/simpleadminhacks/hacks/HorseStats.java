@@ -1,23 +1,19 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.HorseStatsConfig;
-import com.programmerdan.minecraft.simpleadminhacks.configs.ToggleLampConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.AbstractHorse;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Horse;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import vg.civcraft.mc.citadel.Citadel;
 
 public class HorseStats extends SimpleHack<HorseStatsConfig> implements Listener {
 

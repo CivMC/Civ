@@ -1,19 +1,16 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.ArrayList;
 import java.util.List;
-
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
-
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * Simple Config wrapper for Introbook specification.

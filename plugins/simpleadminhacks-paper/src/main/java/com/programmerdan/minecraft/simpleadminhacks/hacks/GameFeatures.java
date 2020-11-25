@@ -1,9 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.TeleportUtil;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-
+import net.md_5.bungee.api.ChatColor;
 import org.apache.commons.lang.time.DateUtils;
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -44,15 +48,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.vehicle.VehicleDestroyEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.GameFeaturesConfig;
-import com.programmerdan.minecraft.simpleadminhacks.util.TeleportUtil;
-
-import net.md_5.bungee.api.ChatColor;
-import vg.civcraft.mc.civmodcore.api.ItemAPI;
-import vg.civcraft.mc.civmodcore.api.ToolAPI;
 
 /**
  * This is a grab-bag class to hold any _features_ related configurations that impact the

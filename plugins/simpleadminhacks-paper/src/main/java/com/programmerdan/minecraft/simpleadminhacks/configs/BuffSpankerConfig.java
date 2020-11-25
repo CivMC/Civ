@@ -2,7 +2,7 @@ package com.programmerdan.minecraft.simpleadminhacks.configs;
 
 import com.google.common.base.Strings;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;

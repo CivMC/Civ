@@ -1,8 +1,8 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.AutoRespawnConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;

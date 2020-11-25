@@ -1,5 +1,10 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.google.common.collect.ImmutableSet;
+import com.google.common.reflect.ClassPath;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.InsightConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -28,12 +32,6 @@ import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.RegisteredListener;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.google.common.collect.ImmutableSet;
-import com.google.common.reflect.ClassPath;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.InsightConfig;
 
 /**
  * Config example:
@@ -93,7 +91,7 @@ public class Insight extends SimpleHack<InsightConfig> implements CommandExecuto
 
 			if (config.getInsightOn() == null) {
 				plugin().log("No instrumentations defined, disabling.");
-				this.softDisable();
+				this.disable();
 				return;
 			}
 			try {

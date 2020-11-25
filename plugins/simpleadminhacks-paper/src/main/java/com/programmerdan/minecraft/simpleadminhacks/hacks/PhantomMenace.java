@@ -1,8 +1,8 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.PhantomMenaceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import org.bukkit.ChatColor;
 import org.bukkit.Statistic;
 import org.bukkit.World;

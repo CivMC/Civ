@@ -1,11 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.DataParser;
-import com.programmerdan.minecraft.simpleadminhacks.util.BetterToString;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.DataParser;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BetterToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

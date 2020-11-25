@@ -1,13 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 public class TimingsHackConfig extends SimpleHackConfig {
 

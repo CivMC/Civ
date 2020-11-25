@@ -1,14 +1,12 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.bukkit.Material;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 public class GameFixesConfig extends SimpleHackConfig {
 

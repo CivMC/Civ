@@ -1,10 +1,21 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.wrappers.BlockPosition;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-
+import net.minecraft.server.v1_16_R1.IBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -21,22 +32,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-
-import com.comphenix.protocol.PacketType;
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.BlockPosition;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-
-import net.minecraft.server.v1_16_R1.IBlockData;
-import net.minecraft.server.v1_16_R1.Item;
-import net.minecraft.server.v1_16_R1.ItemTool;
 import vg.civcraft.mc.civmodcore.api.MaterialAPI;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiter;
 import vg.civcraft.mc.civmodcore.ratelimiting.RateLimiting;
@@ -46,7 +41,6 @@ import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
 /**
  * Prevents "CivBreak" by denying continuos block break packages for
  * non-instabreaking
- *
  */
 public class AntiFastBreak extends BasicHack {
 
@@ -86,15 +80,15 @@ public class AntiFastBreak extends BasicHack {
 				BlockPosition pos = packet.getBlockPositionModifier().read(0);
 				Location loc = pos.toLocation(event.getPlayer().getWorld());
 				switch (packet.getPlayerDigTypes().read(0)) {
-				case START_DESTROY_BLOCK:
-					handleStartDigging(event.getPlayer(), loc);
-					return;
-				case STOP_DESTROY_BLOCK:
-					handleFinishingDigging(event.getPlayer(), loc);
-					return;
-				default:
-					// some other stuff we dont care about
-					return;
+					case START_DESTROY_BLOCK:
+						handleStartDigging(event.getPlayer(), loc);
+						return;
+					case STOP_DESTROY_BLOCK:
+						handleFinishingDigging(event.getPlayer(), loc);
+						return;
+					default:
+						// some other stuff we dont care about
+						return;
 				}
 			}
 		});

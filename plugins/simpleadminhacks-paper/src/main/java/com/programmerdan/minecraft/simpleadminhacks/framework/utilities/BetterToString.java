@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.simpleadminhacks.util;
+package com.programmerdan.minecraft.simpleadminhacks.framework.utilities;
 
 import org.bukkit.Location;
 import org.bukkit.World;

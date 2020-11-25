@@ -4,8 +4,8 @@ import static org.bukkit.event.entity.EntityPotionEffectEvent.Action;
 import static org.bukkit.event.entity.EntityPotionEffectEvent.Cause;
 
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.configs.BuffSpankerConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.bukkit.configuration.ConfigurationSection;

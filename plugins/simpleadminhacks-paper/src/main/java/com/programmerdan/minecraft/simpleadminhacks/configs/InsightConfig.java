@@ -1,11 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
-import java.util.List;
-
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
+import java.util.List;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Define an "into" list of Strings where the Strings are event classpaths.
