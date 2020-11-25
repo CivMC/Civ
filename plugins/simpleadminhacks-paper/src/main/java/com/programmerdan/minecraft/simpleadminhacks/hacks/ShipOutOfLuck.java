@@ -9,7 +9,6 @@ import com.programmerdan.minecraft.simpleadminhacks.util.BetterToString;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import net.minecraft.server.v1_16_R1.BlockPosition;
@@ -37,6 +36,8 @@ public final class ShipOutOfLuck extends BasicHack {
 
 	@AutoLoad(processor = DataParser.MATERIAL)
 	private List<Material> boatBreakers;
+
+	private int ignoredBoatCounter = 0;
 
 	public ShipOutOfLuck(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
@@ -93,9 +94,10 @@ public final class ShipOutOfLuck extends BasicHack {
 		if (passengers.isEmpty()) {
 			return;
 		}
-		if (ThreadLocalRandom.current().nextDouble() < 0.1d) { // Only check 10% of the time
+		if (++this.ignoredBoatCounter < 40) {
 			return;
 		}
+		this.ignoredBoatCounter = 0;
 		final World world = vehicle.getWorld();
 		final List<Material> illegalBlocks = getCollidingBlocks(vehicle.getBoundingBox())
 				.filter(ChunkLoadedFilter.create(world))

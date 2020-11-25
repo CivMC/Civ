@@ -11,12 +11,10 @@ public final class BetterToString {
 			return "<null>";
 		}
 		final World world = LocationAPI.getLocationWorld(location);
-		return (world == null ? "null" : world.getName()) + ":" +
-				"x=" + location.getX() + "," +
-				"y=" + location.getY() + "," +
-				"z=" + location.getZ() + ";" +
-				"pitch=" + location.getPitch() + "," +
-				"yaw=" + location.getYaw();
+		return String.format("%s:x=%s,y=%s,z=%s;pitch=%s,yaw=%s",
+				world == null ? "null" : world.getName(),
+				location.getX(), location.getY(), location.getZ(),
+				location.getPitch(), location.getYaw());
 	}
 
 }
