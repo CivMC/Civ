@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang.reflect.FieldUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.util.NumberConversions;
+import vg.civcraft.mc.civmodcore.util.NullCoalescing;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
 /**
@@ -181,7 +183,7 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 			final String identifier = Strings.isNullOrEmpty(autoLoad.id()) ? field.getName() : autoLoad.id();
 			// Value type
 			Class<?> clazz;
-			if (field.getType().getName().split("\\.").length == 1) {
+			if (field.getType().getName().split("\\.").length == 1) { // TODO: Is this really necessary?
 				clazz = Array.get(Array.newInstance(field.getType(), 1), 0).getClass(); // unwrap primitives
 			}
 			else {
@@ -190,7 +192,26 @@ public abstract class SimpleHack<T extends SimpleHackConfig> {
 			// Value itself
 			Object value;
 			try {
-				value = config.getObject(identifier, clazz, null);
+				// Handle primitives (ints, booleans, and doubles are handled just fine already)
+				if (byte.class.isAssignableFrom(clazz) || Byte.class.isAssignableFrom(clazz)) {
+					value = NumberConversions.toByte(config.getInt(identifier));
+				}
+				else if (short.class.isAssignableFrom(clazz) || Short.class.isAssignableFrom(clazz)) {
+					value = NumberConversions.toShort(config.getInt(identifier));
+				}
+				else if (long.class.isAssignableFrom(clazz) || Long.class.isAssignableFrom(clazz)) {
+					value = config.getLong(identifier);
+				}
+				else if (float.class.isAssignableFrom(clazz) || Float.class.isAssignableFrom(clazz)) {
+					value = NumberConversions.toFloat(config.getDouble(identifier));
+				}
+				else if (char.class.isAssignableFrom(clazz) || Character.class.isAssignableFrom(clazz)) {
+					final String temp = config.getString(identifier);
+					value = Strings.isNullOrEmpty(temp) ? 0 : temp.toCharArray()[0];
+				}
+				else {
+					value = config.getObject(identifier, clazz, null);
+				}
 				if (value == null) {
 					// do nothing
 				}
