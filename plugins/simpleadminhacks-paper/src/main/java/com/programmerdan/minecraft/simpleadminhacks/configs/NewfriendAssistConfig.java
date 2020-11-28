@@ -1,15 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BroadcastLevel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
-
-import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
 
 /**
  * Some simple new player related configuration options.

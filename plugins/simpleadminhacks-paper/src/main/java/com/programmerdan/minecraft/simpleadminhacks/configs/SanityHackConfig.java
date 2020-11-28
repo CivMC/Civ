@@ -1,11 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
-import java.util.logging.Level;
-
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
+import java.util.logging.Level;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class SanityHackConfig extends SimpleHackConfig {
 

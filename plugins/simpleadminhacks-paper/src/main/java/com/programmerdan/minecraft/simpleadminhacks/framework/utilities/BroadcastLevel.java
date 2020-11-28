@@ -1,4 +1,4 @@
-package com.programmerdan.minecraft.simpleadminhacks;
+package com.programmerdan.minecraft.simpleadminhacks.framework.utilities;
 
 /**
  * Various Broadcast targets
@@ -9,5 +9,5 @@ public enum BroadcastLevel {
 	OP,
 	PERM,
 	CONSOLE,
-	ALL;
+	ALL
 }

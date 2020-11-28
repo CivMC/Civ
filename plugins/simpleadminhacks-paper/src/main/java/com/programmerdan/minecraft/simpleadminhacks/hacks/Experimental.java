@@ -1,7 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.UUID;
-
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,10 +20,6 @@ import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.ExperimentalConfig;
 
 public class Experimental extends SimpleHack<ExperimentalConfig> implements Listener, CommandExecutor {
 

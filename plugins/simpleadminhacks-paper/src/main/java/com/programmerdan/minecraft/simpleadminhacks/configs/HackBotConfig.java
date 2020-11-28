@@ -1,9 +1,8 @@
 package com.programmerdan.minecraft.simpleadminhacks.configs;
 
-import org.bukkit.configuration.ConfigurationSection;
-
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHackConfig;
+import org.bukkit.configuration.ConfigurationSection;
 
 /**
  * Captures the configuration for the NPCs that HackBot hack can produce.

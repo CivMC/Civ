@@ -1,11 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -21,10 +23,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.IntrobookConfig;
 
 /**
  * Simple Hack that handles gifting introbooks if enabled. Handles respawns as well

@@ -1,9 +1,12 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BroadcastLevel;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -18,11 +21,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-
-import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.NewfriendAssistConfig;
 
 /**
  * A simple Newfriend tracker and assist module. Keeps track of newfriends so far.

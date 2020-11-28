@@ -1,9 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.ReinforcedChestBreakConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -13,11 +15,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.ReinforcedChestBreakConfig;
-
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.ReinforcementManager;
 

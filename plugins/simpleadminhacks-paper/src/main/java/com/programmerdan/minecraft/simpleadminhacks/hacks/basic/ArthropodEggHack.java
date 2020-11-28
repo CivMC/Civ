@@ -1,8 +1,11 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.List;
 import java.util.Map;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Ageable;
@@ -10,12 +13,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
-
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-
 import vg.civcraft.mc.civmodcore.api.SpawnEggAPI;
 
 public class ArthropodEggHack extends BasicHack {
@@ -25,17 +22,17 @@ public class ArthropodEggHack extends BasicHack {
 
 	@AutoLoad
 	private double lootingChance;
-	
+
 	@AutoLoad
 	private boolean removeDrops;
-	
+
 	@AutoLoad
 	private List<String> allowedTypes;
 
 	public ArthropodEggHack(SimpleAdminHacks plugin, BasicHackConfig config) {
 		super(plugin, config);
 	}
-	
+
 	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}

@@ -1,5 +1,9 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.google.common.collect.Sets;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.configs.TimingsHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
@@ -15,7 +19,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
@@ -29,7 +33,6 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.server.MapInitializeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.MapMeta;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapPalette;
@@ -37,13 +40,6 @@ import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.google.common.collect.Sets;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleHack;
-import com.programmerdan.minecraft.simpleadminhacks.configs.TimingsHackConfig;
-
-import net.md_5.bungee.api.ChatColor;
 
 /**
  * This crazy hack is focused on filling a gap left by /timings and warmroast and frankly, most
@@ -518,7 +514,6 @@ public class TimingsHack extends SimpleHack<TimingsHackConfig> implements Listen
 			tickErrors ++;
 			if (tickErrors > 10) {
 				stopHq();
-				this.softDisable();
 				this.disable();
 				plugin().log(Level.WARNING, "Too many errors encountered, Tick tracking shut down.");
 			}

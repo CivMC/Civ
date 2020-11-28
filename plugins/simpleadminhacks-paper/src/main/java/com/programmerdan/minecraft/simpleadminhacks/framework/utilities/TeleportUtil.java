@@ -1,7 +1,7 @@
-package com.programmerdan.minecraft.simpleadminhacks.util;
+package com.programmerdan.minecraft.simpleadminhacks.framework.utilities;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import java.util.LinkedList;
-
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,8 +9,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
-
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 
 public class TeleportUtil {
 	
@@ -94,4 +92,5 @@ public class TeleportUtil {
 		}
 		return false;
 	}
+
 }

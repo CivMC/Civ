@@ -6,6 +6,154 @@ debug: true
 broadcast_permission: simpleadmin.broadcast
 
 hacks:
+  ############################################################
+  ## Basic Hacks
+  ############################################################
+  AutoRespawn:
+    enabled: true
+    # Delay in MS
+    # Default: 300000 (five minutes)
+    respawnDelay: 300000
+    # The respawn delay (in MS) if someone logs in dead
+    # Default 0 (instant)
+    loginRespawnDelay: 0
+    # Jokey joke messages sent to the player if auto-respawned
+    # Deactivate by removing all the quotes below
+    respawnQuotes:
+      - <gold>Wait... how did I get here?
+      - <gold>Must've been a rough night o.o
+      - <gold>Why does my entire body ache?
+      - <gold>That <it>really<gold> hurt!
+  AntiFastBreak:
+    enabled: true
+    breakDenyDuration: 3000
+    laggLenciency: 1.2
+  ArthropodEggHack:
+    enabled: true
+    eggChance: 0.03
+    lootingChance: 0.02
+    removeDrops: true
+    allowedTypes:
+      - SHEEP
+      - PIG
+      - COW
+      - BAT
+      - CHICKEN
+      - WOLF
+      - SQUID
+      - MUSHROOM_COW
+      - RABBIT
+      - HORSE
+      - VILLAGER
+      - LLAMA
+      - OCELOT
+      - FOX
+      - COD
+      - TROPICAL_FISH
+      - SALMON
+      - TURTLE
+      - DOLPHIN
+  BuffSpanker:
+    enabled: true
+    # The list of PotionEffectType's that you do not wish players to receive.
+    naughty:
+      - DOLPHINS_GRACE
+      - BAD_OMEN
+      - SLOW_DIGGING
+      - SLOW_FALLING
+  DebugWand:
+    enabled: true
+  EventDebugHack:
+    enabled: true
+  EventHandlerList:
+    enabled: true
+  HumbugBatchOne:
+    enabled: true
+    allowSheepDying: true
+    allowUsingAnvils: true
+    allowUsingEnchantingTables: true
+    infiniteCauldrons: true
+    disableEnderDragon: true
+    disableIronFarms: true
+    disableEnderCrystalDamage: true
+    disableMiningFatigue: true
+    canEquipBanners: true
+    disableLavaCobbleMountains: true
+    disableWanderingTrader: true
+    preventPearlGlitching: true
+    preventUsingEyeOfEnder: true
+    disablePiglins: true
+  ItemMetaConverterHack:
+    enabled: true
+  PhantomMenace:
+    enabled: true
+    # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
+    # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
+    # cap to -1 will disable the cap. Default: 80k (10% chance per two minutes during the night and thunder storms.)
+    # Read more here: https://minecraft.gamepedia.com/Phantom#Java_Edition
+    timeSinceRestCap: 80000
+    # Determines whether phantoms are allowed to spawn during the night.
+    nightSpawn: true
+    # Determines whether phantoms are allowed to spawn during thunder storms.
+    stormSpawn: true
+    # Determines what the maximum light level is that phantoms can spawn to.
+    maximumLightSpawn: 7
+  PlayerRevive:
+    enabled: true
+  PlayerStatistics:
+    enabled: true
+  PortalSpawnModifier:
+    enabled: true
+    pigManChance: 0.5
+    ghastChance: 0.07
+    witherSkeletonChance: 0.05
+    witherHeadDropChance: 0.04
+  ShipOutOfLuck:
+    enabled: true
+    # The list of Material's that boats cannot be placed on and will eject passengers
+    boatBreakers:
+      - ICE
+      - PACKED_ICE
+      - FROSTED_ICE
+      - BLUE_ICE
+  TestConfigHack:
+    enabled: true
+    # Please do not change any of the values below, otherwise it will undermine the test.
+    boolValue: true
+    byteValue: 8
+    shortValue: 14646
+    intValue: 33822776
+    longValue: 2486941267899177
+    maybeLongValue: 6543
+    floatValue: 3847.1234
+    doubleValue: 345978623.178569873
+    charValue: 'c'
+  ############################################################
+  ## Simple Hacks
+  ############################################################
+  BadBoyWatch:
+    enabled: true
+    trackingDepth: 16
+    clearOnMatch: true
+    watchedMaterials:
+      - CHEST
+      - FURNACE
+      - DROPPER
+      - DISPENSER
+      - JUKEBOX
+      - NOTE_BLOCK
+      - BEACON
+      - ENDER_CHEST
+      - SPONGE
+      - HOPPER
+      - PISTON_BASE
+      - PISTON_STICKY_BASE
+      - OBSERVER
+  CTAnnounce:
+    enabled: false
+    delay: 10000
+    message: '%Victim% was combat tagged by %Attacker%'
+    broadcast: [OP, CONSOLE]
   Experimental:
     enabled: true
     combatspy: false
@@ -101,11 +249,46 @@ hacks:
     rainReduction:
       enabled: false
       rainOccurrenceChance: .5
-  CTAnnounce:
+  HorseStats:
     enabled: false
-    delay: 10000
-    message: '%Victim% was combat tagged by %Attacker%'
-    broadcast: [OP, CONSOLE]
+    wand: COMPASS
+  Insight:
+    enabled: false
+    into:
+      - org.bukkit.event.player
+      - org.bukkit.event.entity
+      - org.bukkit.event.block
+      - org.bukkit.event.inventory
+      - org.bukkit.event.enchantment
+      - org.bukkit.event.hanging
+      - org.bukkit.event.painting
+      - org.bukkit.event.vehicle
+      - org.bukkit.event.weather
+      - org.bukkit.event.world
+  Introbook:
+    enabled: true
+    follow: true
+    contents:
+      title: Welcome, ${player}
+      author: Bonkill
+      pages:
+        - "   &oWelcome to Devoted, ${player}!"
+        - "    &oWhat is Devoted?\n\"A new type of Minecraft server built towards providing a competitive, high stakes, immersive experience controlled by the players.\"&r\n-ShadedJon, server owner"
+        - "    &oWhat is Devoted?&r\n&lNOT just survival&r\nAdmins are hands-off and only handle glitches and hackers\n&lNOT just chaos&r\nPlugins allow players and towns to enforce their own rules\n&lNOT just roleplay&r\nNobody pretends -- conflict is genuine and heated"
+        - "    &oBasic Mechanics&r\n-The world is custom generated\n-Many custom biomes\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and custom ore spawning."
+        - "   &oDevoted Mods&r\n   &lCitadel&r:\n Reinforces things so it takes numerous breaks to destroy them. Locks some things too.\n&lMore Info:&r &oVisual Guide:&r imgur.com/BnlL2 &oWiki Page:&r tinyurl.com/citadelmod\n&oType \"/help citadel\" in chat to get commands"
+        - "   &lPrison Pearl&r:\n Ender Pearls trap players in the end. Others can steal back your pearl and free you -- you always know where it is so they cannot hide it\n&lMore Info:&r &oVisual Guide:&r imgur.com/XbhkK &oWiki Page:&r tinyurl.com/prisperl"
+        - "   &lJuke Alert&r:\n Creates 'Juke' blocks that record player activity in radius. If you steal, grief, or trespass -- people will know about it & put a bounty for you to be pearled.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/snitchblock"
+        - "   &lMythicMobs&r:\n Some custom mobs to increase the risk and thrill on specific islands and areas throughout Devoted.\n&lMore Info:&r &oBukkit Page:&r dev.bukkit.org/bukkit-plugins/mythicmobs"
+        - "   &lItem Exchange&r:\n It's a minecraft shop mod that enables different chests (and other inventory blocks) to perform an exchange of items with a player.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/itemxchng"
+        - "   &lHumbug&r:\n Disables some features of minecraft -- see wiki for short list. Please read it to ensure you don't waste resources on a useless block.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/humbugwiki"
+        - "   &lRealistic Biomes&r:\n Biomes are large, crops grow different in different biomes. Hit ground with seed to see growth rate. Farms need sunlight. Crops grow with nobody around.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/realbiome"
+        - "   &lArthropod Egg&r:\n Allows you to capture passive mobs into spawn eggs using Bane of Arthropod enchantment.\n&lMore Info:&r &oGithub Page:&r tinyurl.com/arthrop"
+        - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
+        - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
+        - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
+  InvControl:
+    enabled: true
   NewfriendAssist:
     enabled: true
     announce: '&f%Player% is brand new!'
@@ -116,6 +299,7 @@ hacks:
       enabled: true
       contents:
        - ==: org.bukkit.inventory.ItemStack
+         v: 1
          type: COOKIE
          amount: 32
          meta:
@@ -126,7 +310,8 @@ hacks:
             - "Gift from the Admins as you"
             - "begin your journey on Devotion."
        - ==: org.bukkit.inventory.ItemStack
-         type: BED
+         v: 1
+         type: RED_BED
          amount: 1
          meta:
            ==: ItemMeta
@@ -135,67 +320,6 @@ hacks:
             - "This world is unforgiving."
             - "Be sure to get a good night's"
             - "rest soon."
-  Introbook:
-    enabled: true
-    follow: true
-    contents:
-      title: Welcome, ${player}
-      author: Bonkill
-      pages:
-       - "   &oWelcome to Devoted, ${player}!"
-       - "    &oWhat is Devoted?\n\"A new type of Minecraft server built towards providing a competitive, high stakes, immersive experience controlled by the players.\"&r\n-ShadedJon, server owner"
-       - "    &oWhat is Devoted?&r\n&lNOT just survival&r\nAdmins are hands-off and only handle glitches and hackers\n&lNOT just chaos&r\nPlugins allow players and towns to enforce their own rules\n&lNOT just roleplay&r\nNobody pretends -- conflict is genuine and heated"
-       - "    &oBasic Mechanics&r\n-The world is custom generated\n-Many custom biomes\n-Limited chat range\n-Respawn in random area unless you sleep\n-Mobs spawn sparsely\n-Vanilla Nether\n-Ore veins and custom ore spawning."
-       - "   &oDevoted Mods&r\n   &lCitadel&r:\n Reinforces things so it takes numerous breaks to destroy them. Locks some things too.\n&lMore Info:&r &oVisual Guide:&r imgur.com/BnlL2 &oWiki Page:&r tinyurl.com/citadelmod\n&oType \"/help citadel\" in chat to get commands"
-       - "   &lPrison Pearl&r:\n Ender Pearls trap players in the end. Others can steal back your pearl and free you -- you always know where it is so they cannot hide it\n&lMore Info:&r &oVisual Guide:&r imgur.com/XbhkK &oWiki Page:&r tinyurl.com/prisperl"
-       - "   &lJuke Alert&r:\n Creates 'Juke' blocks that record player activity in radius. If you steal, grief, or trespass -- people will know about it & put a bounty for you to be pearled.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/snitchblock"
-       - "   &lMythicMobs&r:\n Some custom mobs to increase the risk and thrill on specific islands and areas throughout Devoted.\n&lMore Info:&r &oBukkit Page:&r dev.bukkit.org/bukkit-plugins/mythicmobs"
-       - "   &lItem Exchange&r:\n It's a minecraft shop mod that enables different chests (and other inventory blocks) to perform an exchange of items with a player.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/itemxchng"
-       - "   &lHumbug&r:\n Disables some features of minecraft -- see wiki for short list. Please read it to ensure you don't waste resources on a useless block.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/humbugwiki"
-       - "   &lRealistic Biomes&r:\n Biomes are large, crops grow different in different biomes. Hit ground with seed to see growth rate. Farms need sunlight. Crops grow with nobody around.\n&lMore Info:&r &oWiki Page:&r tinyurl.com/realbiome"
-       - "   &lArthropod Egg&r:\n Allows you to capture passive mobs into spawn eggs using Bane of Arthropod enchantment.\n&lMore Info:&r &oGithub Page:&r tinyurl.com/arthrop"
-       - "   &lBrewery&r:\n Custom brewing of booze and more.\n&lMore Info:&r &oBukkit Page:&r tinyurl.com/bukkitbrewp"
-       - "   &oFurther Info&r\nVisit our subreddit at: &oreddit.com/r/Devoted&r"
-       - "We extend our appreciation to the devs, admins, and players at: &oreddit.com/r/Civcraft"
-  HackBot:
-    enabled: false
-    bots:
-      Rando:
-        name: Rando4800xXx
-        skin: DeepCopy
-        spawnLocation:
-          ==: org.bukkit.Location
-          yaw: 0.0
-          pitch: 0.0
-          z: 50.0
-          y: 40.0
-          world: world
-          x: 50.0
-        alive: false
-        location:
-          ==: org.bukkit.Location
-          yaw: 0.0
-          pitch: 0.0
-          z: 50.0
-          y: 40.0
-          world: world
-          x: 50.0
-  InvControl:
-    enabled: true
-  InvisibleFixTwo:
-    enabled: false
-    # in ticks -- ticks to wait after teleport to force update
-    teleportDelay: 5
-    # in milliseconds -- min time between forced updates if active
-    minInterval: 100
-    ignoreOps: true
-    ignorePermission: sah.allowInvisible
-  InvisibleFix:
-    enabled: false
-    ignoreOps: true
-    ignorePermission: sah.allowInvisible
-    # in ticks
-    recheckInterval: 500
   ReinforcedChestBreak:
     enabled: true
     # in seconds
@@ -208,96 +332,6 @@ hacks:
     belowYLevel: 7
   TimingsHack:
     enabled: true
-  BadBoyWatch:
-    enabled: true
-    trackingDepth: 16
-    clearOnMatch: true
-    watchedMaterials:
-     - CHEST
-     - FURNACE
-     - DROPPER
-     - DISPENSER
-     - JUKEBOX
-     - NOTE_BLOCK
-     - BEACON
-     - ENDER_CHEST
-     - SPONGE
-     - HOPPER
-     - PISTON_BASE
-     - PISTON_STICKY_BASE
-     - OBSERVER
-  Insight:
-    enabled: false
-    into:
-    - org.bukkit.event.player
-    - org.bukkit.event.entity
-    - org.bukkit.event.block
-    - org.bukkit.event.inventory
-    - org.bukkit.event.enchantment
-    - org.bukkit.event.hanging
-    - org.bukkit.event.painting
-    - org.bukkit.event.vehicle
-    - org.bukkit.event.weather
-    - org.bukkit.event.world
   ToggleLamp:
     enabled: false
     cooldownTime: 100
-  HorseStats:
-    enabled: false
-    wand: COMPASS
-  AutoRespawn:
-    enabled: true
-    # Delay in MS
-    # Default: 300000 (five minutes)
-    respawnDelay: 300000
-    # The respawn delay (in MS) if someone logs in dead
-    # Default 0 (instant)
-    loginRespawnDelay: 0
-    # Jokey joke messages sent to the player if auto-respawned
-    # Deactivate by removing all the quotes below
-    respawnQuotes:
-    - <gold>Wait... how did I get here?
-    - <gold>Must've been a rough night o.o
-    - <gold>Why does my entire body ache?
-    - <gold>That <it>really<gold> hurt!
-  AntiFastBreak:
-    enabled: true
-    breakDenyDuration: 3000
-    laggLenciency: 1.2
-  PhantomMenace:
-    enabled: true
-    # Players have a statistic called TIME_SINCE_REST. If a player's value is above 72k (3 days minecraft time) then
-    # they will start spawning phantoms. Setting the cap to below 72k will effectively disable phantoms. Setting the
-    # cap to -1 will disable the cap. Default: 80k (10% chance per two minutes during the night and thunder storms.)
-    # Read more here: https://minecraft.gamepedia.com/Phantom#Java_Edition
-    timeSinceRestCap: 80000
-    # Determines whether phantoms are allowed to spawn during the night.
-    nightSpawn: true
-    # Determines whether phantoms are allowed to spawn during thunder storms.
-    stormSpawn: true
-  PlayerStatistics:
-    enabled: true
-  PlayerRevive:
-    enabled: true
-  EventDebugHack:
-    enabled: true
-  EventHandlerList:
-    enabled: true
-  DebugWand:
-    enabled: true
-  BuffSpanker:
-    enabled: true
-    # The list of PotionEffectType's that you do not wish players to receive.
-    naughty:
-      - DOLPHINS_GRACE
-      - BAD_OMEN
-      - SLOW_DIGGING
-      - SLOW_FALLING
-  ShipOutOfLuck:
-    enabled: true
-    # The list of Material's that boats cannot be placed on and will eject passengers
-    boatBreakers:
-      - ICE
-      - PACKED_ICE
-      - FROSTED_ICE
-      - BLUE_ICE

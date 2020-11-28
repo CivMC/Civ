@@ -4,7 +4,8 @@ author: ProgrammerDan
 authors: [ProgrammerDan, Maxopoly]
 version: ${project.version}
 depend: [CivModCore]
-softdepend: [CombatTagPlus, Citadel, ProtocolLib, NameLayer]
+softdepend: [CombatTagPlus, NameLayer, Citadel, ProtocolLib]
+api-version: 1.16
 commands:
   hacks:
     description: Shows the various hacks and fixes supported by this plugin and controls them
@@ -79,10 +80,10 @@ commands:
       /<command> list <event> - Shows all monitored events that match the passed param <event>
       /<command> periodic <time> - Shows a color differentiated summary of monitored events and counts that have changed, with <time> as ticks inbetween display
       /<command> periodic <event> <time> - Shows a color differentiated summary of monitored evenst that match the passed param <event>, with <time> as ticks inbetween display
-      /<command> - Just shows this description  
+      /<command> - Just shows this description
   debugevent:
-    description: Allows debugging of an event and its handlers 
-    usage: /<command> full.path.to.event   
+    description: Allows debugging of an event and its handlers
+    usage: /<command> full.path.to.event
     permission: simpleadmin.eventdebug
   stats: {} # Defined in (basic) PlayerStats
 permissions:
@@ -146,5 +147,3 @@ permissions:
     simpleadmin.debugwand:
       description: Gives the ability to create and use debug wands
       default: op
-
-api-version: 1.14

@@ -1,32 +1,33 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacksConfig;
+import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.BroadcastLevel;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-
-import junit.framework.Assert;
 import net.minelink.ctplus.event.PlayerCombatTagEvent;
-
 import org.bukkit.OfflinePlayer;
-import org.bukkit.Server;
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-
-import com.programmerdan.minecraft.simpleadminhacks.BroadcastLevel;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacksConfig;
-import com.programmerdan.minecraft.simpleadminhacks.configs.CTAnnounceConfig;
 
 public class CTAnnounceTest {
 
@@ -91,7 +92,7 @@ public class CTAnnounceTest {
 
 	/**
 	 * If I've done this right, should validate that all broadcast types (minus the general broadcast
-	 *   method -- I'm not testing that Bukkit works, here) function, that {@link CTAnnounce#cleanMessage()} 
+	 *   method -- I'm not testing that Bukkit works, here) function, that CTAnnounce.cleanMessage()
 	 *   works, and that throttling works.
 	 */
 	@SuppressWarnings("unchecked")

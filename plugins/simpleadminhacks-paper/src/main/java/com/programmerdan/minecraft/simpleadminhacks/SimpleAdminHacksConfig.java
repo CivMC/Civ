@@ -16,14 +16,14 @@ public class SimpleAdminHacksConfig extends CoreConfigManager {
 
 	private String broadcastPermission;
 
-	public SimpleAdminHacksConfig(SimpleAdminHacks plugin) {
+	public SimpleAdminHacksConfig(final SimpleAdminHacks plugin) {
 		super(plugin);
 		reset();
 	}
 
 	@Override
-	protected boolean parseInternal(ConfigurationSection config) {
-		int actual_config_level = config.getInt("configuration_file_version", -1);
+	protected boolean parseInternal(final ConfigurationSection config) {
+		final int actual_config_level = config.getInt("configuration_file_version", -1);
 		if (actual_config_level < 0 || actual_config_level > SimpleAdminHacksConfig.EXPECTED_CONFIG_LEVEL) {
 			this.plugin.severe("Invalid configuration version!");
 			return false;

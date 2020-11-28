@@ -1,8 +1,13 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks.basic;
 
+import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
 import java.util.ArrayList;
 import java.util.List;
-
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -10,14 +15,6 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
-import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
-import com.programmerdan.minecraft.simpleadminhacks.autoload.AutoLoad;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class ItemMetaConverterHack extends BasicHack {
 
@@ -71,7 +68,7 @@ public class ItemMetaConverterHack extends BasicHack {
 			item.setItemMeta(meta);
 		}
 	}
-	
+
 	private static void cleanseComponent(BaseComponent component) {
 		if (!(component instanceof TextComponent)) {
 			return;

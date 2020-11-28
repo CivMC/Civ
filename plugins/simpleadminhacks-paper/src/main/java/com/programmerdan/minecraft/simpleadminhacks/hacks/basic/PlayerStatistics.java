@@ -9,8 +9,8 @@ import co.aikar.commands.annotation.Description;
 import co.aikar.commands.annotation.Optional;
 import co.aikar.commands.annotation.Single;
 import co.aikar.commands.annotation.Syntax;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHack;
-import com.programmerdan.minecraft.simpleadminhacks.BasicHackConfig;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
+import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,17 +25,13 @@ import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
 import vg.civcraft.mc.civmodcore.util.EnumUtils;
 import vg.civcraft.mc.civmodcore.util.TextUtil;
 
-public class PlayerStatistics extends BasicHack {
+public final class PlayerStatistics extends BasicHack {
 
-	private AikarCommandManager commands;
+	private final AikarCommandManager commands;
 
-	public PlayerStatistics(SimpleAdminHacks plugin, BasicHackConfig config) {
+	public PlayerStatistics(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	@Override
-	public void registerCommands() {
-		this.commands = new AikarCommandManager(plugin()) {
+		this.commands = new AikarCommandManager(plugin(), false) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new StatsCommand());
@@ -44,16 +40,15 @@ public class PlayerStatistics extends BasicHack {
 	}
 
 	@Override
-	public void unregisterCommands() {
-		if (this.commands != null) {
-			this.commands.reset();
-			this.commands = null;
-		}
+	public void onEnable() {
+		super.onEnable();
+		this.commands.init();
 	}
 
 	@Override
-	public String status() {
-		return PlayerStatistics.class.getSimpleName() + " is " + (isEnabled() ? "enabled" : "disabled") + ".";
+	public void onDisable() {
+		this.commands.reset();
+		super.onDisable();
 	}
 
 	@CommandPermission("simpleadmin.stats")
@@ -63,7 +58,7 @@ public class PlayerStatistics extends BasicHack {
 
 		@CommandAlias(StatsCommand.ALIAS)
 		@Default
-		public void fallback(CommandSender sender, @Optional String playerName) {
+		public void fallback(final CommandSender sender, @Optional final String playerName) {
 			sender.sendMessage(ChatColor.RED + "Available statistics commands:");
 			sender.sendMessage(ChatColor.YELLOW + "get: " + ChatColor.WHITE + "/stats <player> <statistic>");
 			sender.sendMessage(ChatColor.YELLOW + "set: " + ChatColor.WHITE + "/stats <player> <statistic> <value>");
@@ -73,13 +68,15 @@ public class PlayerStatistics extends BasicHack {
 		@Description("Gets the statistic for a player.")
 		@Syntax("<player> <statistic>")
 		@CommandCompletion("@players @stats")
-		public void getPlayerStatistic(CommandSender sender, String playerName, @Single String statName) {
-			Player player = Bukkit.getPlayer(playerName);
+		public void getPlayerStatistic(final CommandSender sender,
+									   final String playerName,
+									   @Single final String statName) {
+			final Player player = Bukkit.getPlayer(playerName);
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that player.");
 				return;
 			}
-			Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
+			final Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
 			if (statistic == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that statistic.");
 				return;
@@ -89,16 +86,19 @@ public class PlayerStatistics extends BasicHack {
 		}
 
 		@CommandAlias(StatsCommand.ALIAS)
-		@Description("Gets the statistic for a player.")
-		@Syntax("<player> <statistic>")
-		@CommandCompletion("@players @stats")
-		public void setPlayerStatistic(CommandSender sender, String playerName, String statName, int value) {
-			Player player = Bukkit.getPlayer(playerName);
+		@Description("Sets the statistic for a player.")
+		@Syntax("<player> <statistic> <value>")
+		@CommandCompletion("@players @stats @nothing")
+		public void setPlayerStatistic(final CommandSender sender,
+									   final String playerName,
+									   final String statName,
+									   final int value) {
+			final Player player = Bukkit.getPlayer(playerName);
 			if (player == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that player.");
 				return;
 			}
-			Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
+			final Statistic statistic = EnumUtils.fromSlug(Statistic.class, statName, true);
 			if (statistic == null) {
 				sender.sendMessage(ChatColor.RED + "Could not find that statistic.");
 				return;
@@ -109,10 +109,10 @@ public class PlayerStatistics extends BasicHack {
 		}
 
 		@TabComplete("stats")
-		public List<String> tabCompleteStatistics(BukkitCommandCompletionContext context) {
-			List<String> results = new ArrayList<>();
-			for (Statistic statistic : Statistic.values()) {
-				String slug = statistic.name();
+		public List<String> tabCompleteStatistics(final BukkitCommandCompletionContext context) {
+			final List<String> results = new ArrayList<>();
+			for (final Statistic statistic : Statistic.values()) {
+				final String slug = statistic.name();
 				if (!TextUtil.startsWith(slug, context.getInput())) {
 					continue;
 				}
@@ -123,7 +123,7 @@ public class PlayerStatistics extends BasicHack {
 
 	}
 
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
 
