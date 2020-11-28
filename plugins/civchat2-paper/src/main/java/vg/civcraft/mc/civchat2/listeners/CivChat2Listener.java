@@ -16,6 +16,8 @@ import vg.civcraft.mc.civchat2.CivChat2;
 import vg.civcraft.mc.civchat2.CivChat2Manager;
 import vg.civcraft.mc.civchat2.event.GlobalChatEvent;
 import vg.civcraft.mc.civchat2.utility.CivChat2SettingsManager;
+import vg.civcraft.mc.namelayer.GroupManager;
+import vg.civcraft.mc.namelayer.GroupManager.PlayerType;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.group.Group;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
@@ -68,6 +70,14 @@ public class CivChat2Listener implements Listener {
 
 		if (CivChat2.getInstance().getPluginConfig().getChatRangeWarn() && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
 			localWarn.add(playerJoinEvent.getPlayer().getUniqueId());
+		}
+		String globalChat = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
+		if (globalChat != null) {
+			Group group = GroupManager.getGroup(globalChat);
+			if (group != null) {
+				group.addMember(playerJoinEvent.getPlayer().getUniqueId(), PlayerType.MEMBERS);
+				playerJoinEvent.getPlayer().sendMessage(ChatColor.GREEN + "You autojoined global chat, which is called '!'. Use it like this: '/g ! Hello'");
+			}
 		}
 	}
 
