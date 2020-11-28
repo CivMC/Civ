@@ -78,6 +78,15 @@ commands:
     min-args: 0
     max-args: 0
     player-only: true
+  globalmute:
+    aliases:
+    - muteglobally
+    usage: /globalmute <set|check|remove> <player> [time]
+    description: Applies, checks or removes a players global mute timer
+    min-args: 2
+    max-args: 3
+    permission: civchat2.globalmute
+    player-only: false
   whoami:
     aliases:
     - who
@@ -90,4 +99,7 @@ commands:
 permissions:
   CivChat2.*:
     description: Gives access to /sayall
+    default: op
+  civchat2.globalmute:
+    description: Gives access to the global mute command
     default: op

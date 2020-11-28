@@ -7,6 +7,7 @@ import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
 import vg.civcraft.mc.civmodcore.playersettings.gui.MenuSection;
 import vg.civcraft.mc.civmodcore.playersettings.impl.BooleanSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
+import vg.civcraft.mc.civmodcore.playersettings.impl.LongSetting;
 
 import java.util.UUID;
 
@@ -19,6 +20,7 @@ public class CivChat2SettingsManager {
 	private BooleanSetting receiveKillsFromIgnoredPlayers;
 	private BooleanSetting showChatGroup;
 	private DisplayLocationSetting chatGroupLocation;
+	private LongSetting chatUnmuteTimer;
 
 	public CivChat2SettingsManager() {
 		initSettings();
@@ -56,6 +58,13 @@ public class CivChat2SettingsManager {
 		chatGroupLocation = new DisplayLocationSetting(CivChat2.getInstance(), DisplayLocationSetting.DisplayLocation.SIDEBAR,
 				"Chat Group Location", "chatGroupLocation", new ItemStack(Material.ARROW), "the current chat group");
 		PlayerSettingAPI.registerSetting(chatGroupLocation, menu);
+		
+		chatUnmuteTimer = new LongSetting(CivChat2.getInstance(), 0L, "Global chat mute", "chatGlobalMuteTimer");
+		PlayerSettingAPI.registerSetting(chatUnmuteTimer, null);
+	}
+	
+	public LongSetting getGlobalChatMuteSetting() {
+		return chatUnmuteTimer;
 	}
 
 	public boolean getShowJoins(UUID uuid) {

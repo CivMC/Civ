@@ -186,6 +186,12 @@ public class CivChat2Manager {
 		if (event.isCancelled()) {
 			return;
 		}
+		
+		long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
+		if (mutedUntil > System.currentTimeMillis()) {
+			sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
+			return;
+		}
 
 		int range = config.getChatRange();
 		int height = config.getYInc();
@@ -340,7 +346,13 @@ public class CivChat2Manager {
 		if (event.isCancelled()) {
 			return;
 		}
-
+		if (group.getName().equals(config.getGlobalChatGroupName())) {
+			long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
+			if (mutedUntil > System.currentTimeMillis()) {
+				sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
+				return;
+			}
+		}
 		List<Player> members = new ArrayList<>();
 		List<UUID> membersUUID = group.getAllMembers();
 		for (UUID uuid : membersUUID) {

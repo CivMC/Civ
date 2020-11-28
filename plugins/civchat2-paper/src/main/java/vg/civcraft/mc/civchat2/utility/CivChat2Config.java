@@ -80,6 +80,10 @@ public class CivChat2Config {
 		return config.getString("mysql.dbname");
 	}
 	
+	public String getGlobalChatGroupName() {
+		return config.getString("chat.globalGroup", null);
+	}
+	
 	public boolean useDynamicRangeColoring() {
 		return config.getBoolean("chat.dynamicColoring");
 	}

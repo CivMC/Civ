@@ -51,4 +51,6 @@ public class ChatStrings {
 	public final static String chatPlayerAfk = ChatColor.AQUA + "That player is currently AFK.";
 
 	public final static String chatGroupMessage = ChatColor.GRAY + "[%s] %s: " + ChatColor.WHITE + "%s";
+	
+	public final static String globalMuted = ChatColor.RED + "You are muted from global chats for %s";
 }
