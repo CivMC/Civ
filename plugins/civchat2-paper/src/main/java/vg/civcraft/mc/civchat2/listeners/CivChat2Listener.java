@@ -72,7 +72,7 @@ public class CivChat2Listener implements Listener {
 			localWarn.add(playerJoinEvent.getPlayer().getUniqueId());
 		}
 		String globalChat = CivChat2.getInstance().getPluginConfig().getGlobalChatGroupName();
-		if (globalChat != null) {
+		if (globalChat != null && !playerJoinEvent.getPlayer().hasPlayedBefore()) {
 			Group group = GroupManager.getGroup(globalChat);
 			if (group != null) {
 				group.addMember(playerJoinEvent.getPlayer().getUniqueId(), PlayerType.MEMBERS);
