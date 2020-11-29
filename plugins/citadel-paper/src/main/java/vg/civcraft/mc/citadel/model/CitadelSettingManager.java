@@ -12,6 +12,7 @@ import org.bukkit.inventory.ItemStack;
 
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelUtility;
+import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.listener.ModeListener;
 import vg.civcraft.mc.citadel.reinforcementtypes.ReinforcementType;
 import vg.civcraft.mc.civmodcore.playersettings.PlayerSettingAPI;
@@ -22,6 +23,7 @@ import vg.civcraft.mc.civmodcore.playersettings.impl.CommandReplySetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DecimalFormatSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting;
 import vg.civcraft.mc.civmodcore.playersettings.impl.DisplayLocationSetting.DisplayLocation;
+import vg.civcraft.mc.civmodcore.playersettings.impl.StringSetting;
 
 public class CitadelSettingManager {
 
@@ -41,6 +43,8 @@ public class CitadelSettingManager {
 	// private CommandReplySetting modeSwitch;
 	private DecimalFormatSetting ctiPercentageHealth;
 	private DecimalFormatSetting ctiReinforcementHealth;
+	private DecimalFormatSetting ctiDecayMultiplier;
+	private StringSetting ctiDecay;
 	private DisplayLocationSetting ctbLocationSetting;
 	private DisplayLocationSetting modeLocationSetting;
 	private DisplayLocationSetting ctiLocationSetting;
@@ -165,9 +169,20 @@ public class CitadelSettingManager {
 				"Decimal format used for displaying a reinforcements health", 100.0 / 3);
 		PlayerSettingAPI.registerSetting(ctiReinforcementHealth, commandSection);
 
+		ctiDecayMultiplier = new DecimalFormatSetting(Citadel.getInstance(), new DecimalFormat("#.##"),
+				"Reinforcement Decay Multiplier Format", "citadel_cti_decay_multiplier",
+				new ItemStack(Material.KNOWLEDGE_BOOK),
+				"Decimal format used for displaying the decay multiplier of a reinforcement", 100.0 / 3);
+		PlayerSettingAPI.registerSetting(ctiDecayMultiplier, commandSection);
+
+		ctiDecay = new StringSetting(Citadel.getInstance(), " (Decayed x%%decay%%)",
+				"Reinforcement Decay Format", "citadel_cti_decay", new ItemStack(Material.KNOWLEDGE_BOOK),
+				"String format used for displaying the decay of a reinforcement");
+		PlayerSettingAPI.registerSetting(ctiDecay, commandSection);
+
 		ctiEnemy = new CommandReplySetting(Citadel.getInstance(),
 				ChatColor.RED + "Reinforced at %%health_color%%%%perc_health%%% (%%health%%/%%max_health%%)"
-						+ ChatColor.RED + " health with " + ChatColor.AQUA + "%%type%%",
+						+ ChatColor.RED + " health with " + ChatColor.AQUA + "%%type%%" + ChatColor.LIGHT_PURPLE + "%%decay_string%%",
 				"CTI Message Enemy", "citadel_cti_enemy", new ItemStack(Material.RED_TERRACOTTA),
 				"The message received when interacting with enemy reinforcements");
 		ctiEnemy.registerArgument("perc_health", "33.33", "the percentage health of the reinforcement");
@@ -176,6 +191,7 @@ public class CitadelSettingManager {
 		ctiEnemy.registerArgument("type", "Stone", "the type of the reinforcement");
 		ctiEnemy.registerArgument("health_color", ModeListener.getDamageColor(0.5).toString(),
 				"a color representing the reinforcement health");
+		ctiEnemy.registerArgument("decay_string", "", "the decay of the reinforcement");
 		PlayerSettingAPI.registerSetting(ctiEnemy, commandSection);
 	}
 
@@ -191,6 +207,13 @@ public class CitadelSettingManager {
 		args.put("type", type.getName());
 		args.put("health_color",
 				ModeListener.getDamageColor(reinforcement.getHealth() / type.getHealth()).toString());
+		if (ReinforcementLogic.getDecayDamage(reinforcement) != 1) {
+			String ctiDecayAmountFormat = ctiDecayMultiplier.getValue(player).format(ReinforcementLogic.getDecayDamage(reinforcement));
+			String ctiDecayFormat = ctiDecay.getValue(player).replaceAll("%%decay%%", ctiDecayAmountFormat);
+			args.put("decay_string", ctiDecayFormat);
+		} else {
+			args.put("decay_string","");
+		}
 		CitadelUtility.sendAndLog(player, ChatColor.RESET, ctiEnemy.formatReply(player.getUniqueId(), args));
 	}
 }
