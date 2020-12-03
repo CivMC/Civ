@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.bukkit.World;
+
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
@@ -108,18 +110,21 @@ public class BSShares {
 		return returns;
 	}
 	
-	private void fill() {
+	private synchronized void fill() {
+		if (shareList != null) {
+			return;
+		}
 		try (Connection connection = BanStickDatabaseHandler.getinstanceData().getConnection();
 				PreparedStatement getIDs = connection.prepareStatement( // Get all ids only, order by create time.
 					"SELECT sid, first_pid, second_pid, pardon FROM bs_share WHERE first_pid = ? OR second_pid = ? ORDER BY create_time;");) {
 			getIDs.setLong(1, forPlayer.getId());
 			getIDs.setLong(2, forPlayer.getId());
 			try (ResultSet rs = getIDs.executeQuery()) {
-				shareList = new ArrayList<>();
+				List <Long> localShareList = new ArrayList<>();
 				overlaps = new HashSet<>();
 				unpardonedList = new HashSet<>();
 				while (rs.next()) {
-					shareList.add(rs.getLong(1));
+					localShareList.add(rs.getLong(1));
 					long fpid = rs.getLong(2);
 					long spid = rs.getLong(3);
 					boolean pardon = rs.getBoolean(4);
@@ -132,9 +137,10 @@ public class BSShares {
 						unpardonedList.add(rs.getLong(1));
 					}
 				}
-				if (shareList.isEmpty()) {
+				if (localShareList.isEmpty()) {
 					BanStick.getPlugin().info("No Shares for {0}", forPlayer.getName());
 				}
+				shareList = localShareList;
 			}
 		} catch (SQLException se) {
 			BanStick.getPlugin().severe("Failed to get list of Share ids", se);
