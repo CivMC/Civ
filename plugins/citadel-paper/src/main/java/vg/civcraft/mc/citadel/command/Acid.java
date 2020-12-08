@@ -6,6 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -99,7 +100,7 @@ public class Acid extends StandaloneCommand {
 			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			p.getWorld().dropItemNaturally(reinforcement.getLocation(), reinforcement.getType().getItem());
-			if (!isChestBeingAcidBlocked(topFace)) {
+			if (!canDropChestContents(topFace)) {
 				topFace.breakNaturally();
 			}
 		}
@@ -111,13 +112,19 @@ public class Acid extends StandaloneCommand {
 		return new ArrayList<>();
 	}
 
-	public boolean isChestBeingAcidBlocked (Block block) {
-		if (block.getType() != Material.CHEST || block.getType() != Material.TRAPPED_CHEST) {
+	/**
+	 * Checks if a chests contents can be dropped
+	 * @param  block  an absolute URL giving the base location of the image
+	 * @return true if contents have been successfully dropped
+	 */
+
+	public boolean canDropChestContents(Block block) {
+		if (!(block instanceof Container)) {
 			return false;
 		}
-		Chest chest = (Chest) block.getBlockData();
-		ItemStack[] items =  chest.getBlockInventory().getStorageContents();
-		chest.getBlockInventory().clear();
+		Container container = (Container) block.getBlockData();
+		ItemStack[] items = container.getInventory().getContents();
+		container.getInventory().clear();
 		for (ItemStack item : items) {
 			block.getWorld().dropItemNaturally(block.getLocation(), item);
 		}
