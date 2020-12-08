@@ -100,7 +100,7 @@ public class Acid extends StandaloneCommand {
 			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			p.getWorld().dropItemNaturally(reinforcement.getLocation(), reinforcement.getType().getItem());
-			if (!canDropChestContents(topFace)) {
+			if (!canDropContents(topFace)) {
 				topFace.breakNaturally();
 			}
 		}
@@ -118,7 +118,7 @@ public class Acid extends StandaloneCommand {
 	 * @return true if contents have been successfully dropped
 	 */
 
-	public boolean canDropChestContents(Block block) {
+	public boolean canDropContents(Block block) {
 		if (!(block instanceof Container)) {
 			return false;
 		}
