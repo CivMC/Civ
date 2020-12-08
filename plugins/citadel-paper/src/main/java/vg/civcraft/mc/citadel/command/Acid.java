@@ -2,10 +2,13 @@ package vg.civcraft.mc.citadel.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
@@ -96,7 +99,9 @@ public class Acid extends StandaloneCommand {
 			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			p.getWorld().dropItemNaturally(reinforcement.getLocation(), reinforcement.getType().getItem());
-			topFace.breakNaturally();
+			if (!isChestBeingAcidBlocked(topFace)) {
+				topFace.breakNaturally();
+			}
 		}
 		return true;
 	}
@@ -104,5 +109,18 @@ public class Acid extends StandaloneCommand {
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<>();
+	}
+
+	public boolean isChestBeingAcidBlocked (Block block) {
+		if (block.getType() != Material.CHEST || block.getType() != Material.TRAPPED_CHEST) {
+			return false;
+		}
+		Chest chest = (Chest) block.getBlockData();
+		ItemStack[] items =  chest.getBlockInventory().getStorageContents();
+		chest.getBlockInventory().clear();
+		for (ItemStack item : items) {
+			block.getWorld().dropItemNaturally(block.getLocation(), item);
+		}
+		return true;
 	}
 }
