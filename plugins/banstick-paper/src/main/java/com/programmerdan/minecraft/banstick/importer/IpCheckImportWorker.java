@@ -1,5 +1,12 @@
 package com.programmerdan.minecraft.banstick.importer;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.handler.ImportWorker;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,19 +14,9 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
-import com.programmerdan.minecraft.banstick.handler.ImportWorker;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.NameAPI;
 

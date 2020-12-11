@@ -28,7 +28,6 @@ import org.bukkit.event.player.PlayerKickEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scheduler.BukkitRunnable;
-
 import vg.civcraft.mc.civmodcore.playersettings.AltRequestEvent;
 import vg.civcraft.mc.namelayer.NameAPI;
 

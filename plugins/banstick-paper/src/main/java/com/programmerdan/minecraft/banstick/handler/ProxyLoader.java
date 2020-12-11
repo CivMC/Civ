@@ -1,9 +1,8 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.programmerdan.minecraft.banstick.BanStick;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.programmerdan.minecraft.banstick.BanStick;
 
 /**
  * Lightweight wrapper. Put implementations into banstick.proxy classpath for autoloading.

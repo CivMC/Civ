@@ -1,18 +1,5 @@
 package com.programmerdan.minecraft.banstick.commands;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSBan;
 import com.programmerdan.minecraft.banstick.data.BSIP;
@@ -20,15 +7,24 @@ import com.programmerdan.minecraft.banstick.data.BSIPData;
 import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.data.BSShare;
-
 import inet.ipaddr.IPAddress;
 import inet.ipaddr.IPAddressString;
 import inet.ipaddr.IPAddressStringException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class LoveTapCommand  implements CommandExecutor {

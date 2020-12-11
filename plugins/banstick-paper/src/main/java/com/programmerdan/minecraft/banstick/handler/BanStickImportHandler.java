@@ -1,16 +1,14 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.google.common.reflect.ClassPath;
+import com.programmerdan.minecraft.banstick.BanStick;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitTask;
-
-import com.google.common.reflect.ClassPath;
-import com.programmerdan.minecraft.banstick.BanStick;
 
 /**
  * Many folks might be migrating from an existing ban management system to BanStick; this is meant

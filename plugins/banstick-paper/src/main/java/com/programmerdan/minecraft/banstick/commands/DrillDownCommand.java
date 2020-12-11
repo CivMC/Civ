@@ -1,5 +1,11 @@
 package com.programmerdan.minecraft.banstick.commands;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSSession;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -11,24 +17,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
-import com.programmerdan.minecraft.banstick.data.BSSession;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.TextComponent;
 
 public class DrillDownCommand  implements CommandExecutor {
 

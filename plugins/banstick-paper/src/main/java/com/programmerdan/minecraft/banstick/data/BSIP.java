@@ -1,5 +1,11 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
+import inet.ipaddr.ipv4.IPv4Address;
+import inet.ipaddr.ipv6.IPv6Address;
 import java.net.InetAddress;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,14 +20,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
-import inet.ipaddr.ipv4.IPv4Address;
-import inet.ipaddr.ipv6.IPv6Address;
 
 public class BSIP {
 	private static Map<IPAddress, BSIP> allIPNA = new HashMap<>();

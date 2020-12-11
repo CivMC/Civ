@@ -1,16 +1,14 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
  * TODO: Make accessors

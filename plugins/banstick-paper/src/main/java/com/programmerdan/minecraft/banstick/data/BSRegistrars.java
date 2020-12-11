@@ -1,18 +1,16 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanHandler;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanHandler;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 
 /**
  * Represents a set of banned registrars
