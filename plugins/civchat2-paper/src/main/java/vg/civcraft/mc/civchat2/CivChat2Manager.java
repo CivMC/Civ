@@ -340,18 +340,18 @@ public class CivChat2Manager {
 		Guard.ArgumentNotNull(group, "group");
 		Guard.ArgumentNotNullOrEmpty(message, "message");
 
-		GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
-		Bukkit.getPluginManager().callEvent(event);
-
-		if (event.isCancelled()) {
-			return;
-		}
 		if (group.getName().equals(config.getGlobalChatGroupName())) {
 			long mutedUntil = instance.getCivChat2SettingsManager().getGlobalChatMuteSetting().getValue(sender);
 			if (mutedUntil > System.currentTimeMillis()) {
 				sender.sendMessage(String.format(ChatStrings.globalMuted, TextUtil.formatDuration(mutedUntil - System.currentTimeMillis())));
 				return;
 			}
+		}
+		GroupChatEvent event = new GroupChatEvent(sender, group.getName(), message);
+		Bukkit.getPluginManager().callEvent(event);
+
+		if (event.isCancelled()) {
+			return;
 		}
 		List<Player> members = new ArrayList<>();
 		List<UUID> membersUUID = group.getAllMembers();
