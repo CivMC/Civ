@@ -1,5 +1,13 @@
 package com.programmerdan.minecraft.banstick.proxy;
 
+import com.google.common.math.BigIntegerMath;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.handler.ProxyLoader;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,19 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-import com.programmerdan.minecraft.banstick.handler.ProxyLoader;
-
-import com.google.common.math.BigIntegerMath;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
 
 public final class Cloud9ProxyLoader extends ProxyLoader {
 

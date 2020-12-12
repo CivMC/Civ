@@ -1,10 +1,9 @@
 package com.programmerdan.minecraft.banstick.commands;
 
+import com.programmerdan.minecraft.banstick.BanStick;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-
-import com.programmerdan.minecraft.banstick.BanStick;
 
 public class BanSaveCommand  implements CommandExecutor{
 

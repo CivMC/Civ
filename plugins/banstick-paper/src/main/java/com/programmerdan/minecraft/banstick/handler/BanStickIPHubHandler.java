@@ -1,5 +1,12 @@
 package com.programmerdan.minecraft.banstick.handler;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import inet.ipaddr.IPAddress;
+import inet.ipaddr.IPAddressString;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
@@ -7,21 +14,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scheduler.BukkitRunnable;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
-
-import inet.ipaddr.IPAddress;
-import inet.ipaddr.IPAddressString;
+import org.bukkit.scheduler.BukkitTask;
 
 /**
  * This class deals with scheduling a constrained lookup / update of data from IP proxy data key-locked services.

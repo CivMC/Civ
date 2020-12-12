@@ -1,5 +1,7 @@
 package com.programmerdan.minecraft.banstick.data;
 
+import com.programmerdan.minecraft.banstick.BanStick;
+import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
 import java.lang.ref.WeakReference;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,10 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
-import com.programmerdan.minecraft.banstick.BanStick;
-import com.programmerdan.minecraft.banstick.handler.BanStickDatabaseHandler;
-
 import org.bukkit.ChatColor;
 
 public class BSShare {

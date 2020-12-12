@@ -1,16 +1,14 @@
 package com.programmerdan.minecraft.banstick.containers;
 
+import com.programmerdan.minecraft.banstick.data.BSBan;
+import com.programmerdan.minecraft.banstick.data.BSIP;
+import com.programmerdan.minecraft.banstick.data.BSIPData;
+import com.programmerdan.minecraft.banstick.data.BSPlayer;
+import com.programmerdan.minecraft.banstick.data.BSShare;
 import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bukkit.command.CommandSender;
-
-import com.programmerdan.minecraft.banstick.data.BSBan;
-import com.programmerdan.minecraft.banstick.data.BSIP;
-import com.programmerdan.minecraft.banstick.data.BSPlayer;
-import com.programmerdan.minecraft.banstick.data.BSShare;
-import com.programmerdan.minecraft.banstick.data.BSIPData;
 
 /**
  * Used to store bans issued and then transmit the results to various parties.

@@ -1,13 +1,5 @@
 package com.programmerdan.minecraft.banstick.commands;
 
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-
 import com.programmerdan.minecraft.banstick.BanStick;
 import com.programmerdan.minecraft.banstick.data.BSIP;
 import com.programmerdan.minecraft.banstick.data.BSIPData;
@@ -15,7 +7,12 @@ import com.programmerdan.minecraft.banstick.data.BSPlayer;
 import com.programmerdan.minecraft.banstick.data.BSRegistrars;
 import com.programmerdan.minecraft.banstick.data.BSSession;
 import com.programmerdan.minecraft.banstick.handler.BanHandler;
-
+import java.util.List;
+import java.util.UUID;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import vg.civcraft.mc.namelayer.NameAPI;
 
 public class BanRegistrarCommand implements CommandExecutor {

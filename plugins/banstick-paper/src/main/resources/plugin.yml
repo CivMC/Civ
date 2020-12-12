@@ -5,6 +5,8 @@ depend: [CivModCore]
 softdepend: [IP-Check, NameLayer]
 main: com.programmerdan.minecraft.banstick.BanStick
 description: A plugin focused on better IP / VPN / CIDR tracking and justice delivery
+website: ${project.url}
+api-version: 1.16
 commands:
  banstick:
   description: Swing that banstick, send nerds flying.
@@ -143,4 +145,3 @@ permissions:
    banstick.forgive: true
    banstick.ips: true
    banstick.alts: true
-api-version: 1.14
