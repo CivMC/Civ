@@ -9,7 +9,6 @@ import com.untamedears.itemexchange.ItemExchangeConfig;
 import com.untamedears.itemexchange.ItemExchangePlugin;
 import com.untamedears.itemexchange.rules.interfaces.ExchangeData;
 import com.untamedears.itemexchange.rules.interfaces.ModifierData;
-import com.untamedears.itemexchange.rules.modifiers.CustomItemModifier;
 import com.untamedears.itemexchange.rules.modifiers.DisplayNameModifier;
 import com.untamedears.itemexchange.rules.modifiers.LoreModifier;
 import com.untamedears.itemexchange.utility.ModifierStorage;
@@ -293,10 +292,6 @@ public final class ExchangeRule implements ExchangeData {
 	private String getDisplayName() {
 		DisplayNameModifier displayNameModifier = this.modifiers.get(DisplayNameModifier.class);
 		if (displayNameModifier == null) {
-			return null;
-		}
-		CustomItemModifier customItemModifier = this.modifiers.get(CustomItemModifier.class);
-		if (Validation.checkValidity(customItemModifier)) {
 			return null;
 		}
 		return displayNameModifier.getDisplayName();
