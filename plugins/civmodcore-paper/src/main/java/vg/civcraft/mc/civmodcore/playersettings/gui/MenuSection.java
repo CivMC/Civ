@@ -49,6 +49,12 @@ public class MenuSection extends MenuItem {
 		return section;
 	}
 
+	public MenuSection createMenuSection(String name, String description, ItemStack itemRepresentation) {
+		MenuSection section = new MenuSection(name, description, this, itemRepresentation);
+		addItem(section);
+		return section;
+	}
+
 	@Override
 	public IClickable getMenuRepresentation(Player player) {
 		return new Clickable(itemRepresentation) {
