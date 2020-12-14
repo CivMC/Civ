@@ -34,7 +34,7 @@ public class FinaleSettingManager {
 	public void initSettings() {
 		Finale plugin = Finale.getPlugin();
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Combat",
-				"Combat and Finale related settings");
+				"Combat and Finale related settings", new ItemStack(Material.DIAMOND_SWORD));
 
 		permanentNightVision = new BooleanSetting(plugin, false, "Enable GammaBright",
 				"finaleGammaBright",
