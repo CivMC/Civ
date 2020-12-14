@@ -44,7 +44,11 @@ public class MenuSection extends MenuItem {
 	}
 	
 	public MenuSection createMenuSection(String name, String description) {
-		MenuSection section = new MenuSection(name, description, this);
+		return createMenuSection(name, description, new ItemStack(Material.BOOK));
+	}
+
+	public MenuSection createMenuSection(String name, String description, ItemStack itemRepresentation) {
+		MenuSection section = new MenuSection(name, description, this, itemRepresentation);
 		addItem(section);
 		return section;
 	}
