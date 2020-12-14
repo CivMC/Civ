@@ -31,7 +31,7 @@ public class JASettingsManager {
 
 	private void initSettings() {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("JukeAlert",
-				"JukeAlert and snitch related settings");
+				"JukeAlert and snitch related settings", new ItemStack(Material.JUKEBOX));
 		
 		jaInfoSize = new BoundedIntegerSetting(JukeAlert.getInstance(), 8, "/jainfo items per page", "jaInfoListSize",
 				new ItemStack(Material.JUKEBOX), "How many entries should shown per page of /jainfo", true, 1, 50);
