@@ -28,7 +28,7 @@ public class CivChat2SettingsManager {
 
 	private void initSettings() {
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("CivChat",
-				"All options related to CivChat.");
+				"All options related to CivChat.", new ItemStack(Material.OAK_SIGN));
 
 		showJoins = new BooleanSetting(CivChat2.getInstance(), true, "Show Player Joins", "showJoins",
 				"Should player join messages be shown?");
