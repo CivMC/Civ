@@ -329,7 +329,7 @@ saving_intervall: 15m
 #   fuel_consumption_intervall: 5s
 #   transfer_time_multiplier: 1s
 #   transferamount: 16
-#   glass_color: 1
+#   glass_type: ORANGE_STAINED_GLASS
 #   maximum_length: 32
 
 #type for all pipes must be PIPE and name a unique identifer, standard stuff
@@ -350,8 +350,8 @@ saving_intervall: 15m
 
 #transferamount is the total amount of items transferred per batch. 
 
-#glass_color is the durability value of the glass this pipe is supposed to have. For a full list see:
-#http://minecraft.gamepedia.com/Stained_Glass#Block_data
+#glass_type is the block of glass this pipe is supposed to have. For a full list see:
+#http://minecraft.gamepedia.com/Stained_Glass
 
 #maximum_length defines how long this type of pipe may be at maximum. Length only counts the glass part here and this value
 #may not be bigger than 512. Be aware that allowing many very long pipes might cause performance problems
