@@ -28,11 +28,11 @@ public class PipeEgg implements IFactoryEgg {
 	private int transferAmount;
 	private double returnRate;
 	private int maximumLength;
-	private Material glassType;
+	private Material pipeType;
 
 	public PipeEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, List<Material> allowedMaterials,
-			int transferTimeMultiplier, int transferAmount, double returnRate, int maximumLength, Material glassType) {
+			int transferTimeMultiplier, int transferAmount, double returnRate, int maximumLength, Material pipeType) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
@@ -42,7 +42,7 @@ public class PipeEgg implements IFactoryEgg {
 		this.allowedMaterials = allowedMaterials;
 		this.returnRate = returnRate;
 		this.maximumLength = maximumLength;
-		this.glassType = glassType;
+		this.pipeType = pipeType;
 	}
 
 	public String getName() {
@@ -81,8 +81,8 @@ public class PipeEgg implements IFactoryEgg {
 		return maximumLength;
 	}
 
-	public Material getGlassType() {
-		return glassType;
+	public Material getPipeType() {
+		return pipeType;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
@@ -108,7 +108,7 @@ public class PipeEgg implements IFactoryEgg {
 				fuelConsumptionIntervall);
 		Pipe pipe = new Pipe(im, rm, pm, ps, updateTime, name,
 				transferTimeMultiplier, transferAmount);
-		((PipeStructure) ps).setGlassType(glassType);
+		((PipeStructure) ps).setPipeType(pipeType);
 		((PipeInteractionManager) im).setPipe(pipe);
 		((NoRepairDestroyOnBreakManager)rm).setFactory(pipe);
 		pipe.setAllowedMaterials(allowedMaterials);

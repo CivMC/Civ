@@ -153,11 +153,11 @@ public class PipeStructure extends MultiBlockStructure {
 		return furnace.getBlock();
 	}
 
-	public Material getGlassType() {
+	public Material getPipeType() {
 		return pipeMaterial;
 	}
 
-	public void setGlassType(Material glassType) {
-		pipeMaterial = glassType;
+	public void setPipeType(Material pipeType) {
+		pipeMaterial = pipeType;
 	}
 }

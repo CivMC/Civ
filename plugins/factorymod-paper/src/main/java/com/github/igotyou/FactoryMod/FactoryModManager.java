@@ -275,8 +275,8 @@ public class FactoryModManager {
 							}
 						}
 						if (egg != null) {
-							if (ps.getGlassType() != ((PipeEgg) egg).getGlassType()) {
-								p.sendMessage(ChatColor.RED + "You dont have the right color of glass for this pipe");
+							if (ps.getPipeType() != ((PipeEgg) egg).getPipeType()) {
+								p.sendMessage(ChatColor.RED + "You dont have the right block for this pipe");
 								return;
 							}
 							if (ps.getLength() > ((PipeEgg) egg).getMaximumLength()) {
