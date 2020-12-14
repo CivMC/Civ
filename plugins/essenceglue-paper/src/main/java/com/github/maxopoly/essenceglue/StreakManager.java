@@ -51,7 +51,7 @@ public class StreakManager {
 		receiveRewards = new BooleanSetting(plugin, true, "Receive essence", "essenceGlueReceiveEssence",
 				"Whether you will receive essence on this account");
 		MenuSection menu = PlayerSettingAPI.getMainMenu().createMenuSection("Essence",
-				"Essence and voting related settings");
+				"Essence and voting related settings", new ItemStack(Material.ENDER_EYE));
 		PlayerSettingAPI.registerSetting(receiveRewards, menu);
 		Bukkit.getScheduler().runTaskTimer(plugin, this::updateAll, 20 * 60L, 20 * 60L);
 		this.streakDelay = streakDelay;
