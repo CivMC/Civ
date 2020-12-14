@@ -2,10 +2,14 @@ package vg.civcraft.mc.citadel.command;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Chest;
+import org.bukkit.block.Container;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 import vg.civcraft.mc.citadel.Citadel;
 import vg.civcraft.mc.citadel.CitadelPermissionHandler;
@@ -96,7 +100,9 @@ public class Acid extends StandaloneCommand {
 			ReinforcementLogic.damageReinforcement(topRein, topRein.getHealth() + 1, p);
 			block.breakNaturally();
 			p.getWorld().dropItemNaturally(reinforcement.getLocation(), reinforcement.getType().getItem());
-			topFace.breakNaturally();
+			if (!acidContainerBlock(topFace)) {
+				topFace.breakNaturally();
+			}
 		}
 		return true;
 	}
@@ -104,5 +110,24 @@ public class Acid extends StandaloneCommand {
 	@Override
 	public List<String> tabComplete(CommandSender sender, String[] args) {
 		return new ArrayList<>();
+	}
+
+	/**
+	 * Checks if a containers contents can be dropped
+	 * @param  block  Container being acid blocked
+	 * @return true if contents have been successfully dropped
+	 */
+
+	public boolean acidContainerBlock(Block block) {
+		if (!(block instanceof Container)) {
+			return false;
+		}
+		Container container = (Container) block.getBlockData();
+		ItemStack[] items = container.getInventory().getContents();
+		container.getInventory().clear();
+		for (ItemStack item : items) {
+			block.getWorld().dropItemNaturally(block.getLocation(), item);
+		}
+		return true;
 	}
 }
