@@ -404,10 +404,10 @@ public class ConfigParser {
 		}
 		int transferTimeMultiplier = parseTimeAsTicks(config.getString("transfer_time_multiplier"));
 		int transferAmount = config.getInt("transfer_amount");
-		byte color = (byte) config.getInt("glass_color");
+		Material glass = Material.getMaterial(config.getString("glass_type"));
 		int maxLength = config.getInt("maximum_length");
-		return new PipeEgg(name, update, fuel, fuelIntervall, null, transferTimeMultiplier, transferAmount, color,
-				returnRate, maxLength);
+		return new PipeEgg(name, update, fuel, fuelIntervall, null, transferTimeMultiplier, transferAmount,
+				returnRate, maxLength, glass);
 	}
 
 	public IFactoryEgg parseFCCFactory(ConfigurationSection config) {

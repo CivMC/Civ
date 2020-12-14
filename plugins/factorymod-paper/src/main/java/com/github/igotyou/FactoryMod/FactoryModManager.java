@@ -275,7 +275,7 @@ public class FactoryModManager {
 							}
 						}
 						if (egg != null) {
-							if (ps.getGlassColor() != ((PipeEgg) egg).getColor()) {
+							if (ps.getGlassType() != ((PipeEgg) egg).getGlassType()) {
 								p.sendMessage(ChatColor.RED + "You dont have the right color of glass for this pipe");
 								return;
 							}

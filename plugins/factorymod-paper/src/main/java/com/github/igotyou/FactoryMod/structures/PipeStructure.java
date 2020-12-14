@@ -20,8 +20,7 @@ public class PipeStructure extends MultiBlockStructure {
 	private Location end;
 	private int length;
 	private List<Location> glassPipe;
-	private byte glassColor;
-	private static Material pipeMaterial = Material.BLACK_STAINED_GLASS;
+	private Material pipeMaterial;
 	private boolean complete;
 
 	@SuppressWarnings("deprecation")
@@ -41,13 +40,9 @@ public class PipeStructure extends MultiBlockStructure {
 		glassPipe = new LinkedList<>();
 		Dispenser disp = (Dispenser) startBlock.getBlockData();
 		Block currentBlock = startBlock.getRelative(disp.getFacing());
+		pipeMaterial = currentBlock.getType();
 
 		Block previousBlock = null;
-		if (currentBlock.getType() != pipeMaterial) {
-			return;
-		}
-
-		glassColor = currentBlock.getData();
 
 		glassPipe.add(currentBlock.getLocation());
 		int length = 1;
@@ -64,7 +59,6 @@ public class PipeStructure extends MultiBlockStructure {
 					foundEnd = true;
 					break;
 				} else if (b.getType() == pipeMaterial
-						&& b.getData() == glassColor
 						&& !b.equals(previousBlock)) {
 					glassPipe.add(b.getLocation());
 					previousBlock = currentBlock;
@@ -131,7 +125,7 @@ public class PipeStructure extends MultiBlockStructure {
 		}
 		for (Location loc : glassPipe) {
 			Block b = loc.getBlock();
-			if (b.getType() != pipeMaterial || b.getData() != glassColor) {
+			if (b.getType() != pipeMaterial) {
 				complete = false;
 				return;
 			}
@@ -141,14 +135,6 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public boolean isComplete() {
 		return complete;
-	}
-
-	public byte getGlassColor() {
-		return glassColor;
-	}
-
-	public void setGlassColor(byte data) {
-		this.glassColor = data;
 	}
 
 	public int getLength() {
@@ -165,5 +151,13 @@ public class PipeStructure extends MultiBlockStructure {
 
 	public Block getFurnace() {
 		return furnace.getBlock();
+	}
+
+	public Material getGlassType() {
+		return pipeMaterial;
+	}
+
+	public void setGlassType(Material glassType) {
+		pipeMaterial = glassType;
 	}
 }

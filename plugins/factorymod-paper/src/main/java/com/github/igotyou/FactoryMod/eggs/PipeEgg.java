@@ -26,13 +26,13 @@ public class PipeEgg implements IFactoryEgg {
 	private List<Material> allowedMaterials;
 	private int transferTimeMultiplier;
 	private int transferAmount;
-	private byte color;
 	private double returnRate;
 	private int maximumLength;
+	private Material glassType;
 
 	public PipeEgg(String name, int updateTime, ItemStack fuel,
 			int fuelConsumptionIntervall, List<Material> allowedMaterials,
-			int transferTimeMultiplier, int transferAmount, byte color, double returnRate, int maximumLength) {
+			int transferTimeMultiplier, int transferAmount, double returnRate, int maximumLength, Material glassType) {
 		this.name = name;
 		this.fuel = fuel;
 		this.updateTime = updateTime;
@@ -40,9 +40,9 @@ public class PipeEgg implements IFactoryEgg {
 		this.transferTimeMultiplier = transferTimeMultiplier;
 		this.transferAmount = transferAmount;
 		this.allowedMaterials = allowedMaterials;
-		this.color = color;
 		this.returnRate = returnRate;
 		this.maximumLength = maximumLength;
+		this.glassType = glassType;
 	}
 
 	public String getName() {
@@ -77,12 +77,12 @@ public class PipeEgg implements IFactoryEgg {
 		return transferTimeMultiplier;
 	}
 
-	public byte getColor() {
-		return color;
-	}
-
 	public int getMaximumLength() {
 		return maximumLength;
+	}
+
+	public Material getGlassType() {
+		return glassType;
 	}
 
 	public Factory hatch(MultiBlockStructure mbs, Player p) {
@@ -108,7 +108,7 @@ public class PipeEgg implements IFactoryEgg {
 				fuelConsumptionIntervall);
 		Pipe pipe = new Pipe(im, rm, pm, ps, updateTime, name,
 				transferTimeMultiplier, transferAmount);
-		((PipeStructure) ps).setGlassColor(color);
+		((PipeStructure) ps).setGlassType(glassType);
 		((PipeInteractionManager) im).setPipe(pipe);
 		((NoRepairDestroyOnBreakManager)rm).setFactory(pipe);
 		pipe.setAllowedMaterials(allowedMaterials);
