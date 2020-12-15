@@ -236,6 +236,10 @@ public class ModeListener implements Listener {
 				sb.append(ChatColor.AQUA);
 				sb.append("(Insecure)");
 			}
+			if (ReinforcementLogic.getDecayDamage(rein) != 1) {
+				String ctiDecayAmountFormat = commaFormat.format(ReinforcementLogic.getDecayDamage(rein));
+				sb.append(String.format("%s (Decayed x%s)", ChatColor.LIGHT_PURPLE, ctiDecayAmountFormat));
+			}
 			AcidManager acidMan = Citadel.getInstance().getAcidManager();
 			if (acidMan.isPossibleAcidBlock(e.getClickedBlock())) {
 				sb.append(ChatColor.GOLD);
