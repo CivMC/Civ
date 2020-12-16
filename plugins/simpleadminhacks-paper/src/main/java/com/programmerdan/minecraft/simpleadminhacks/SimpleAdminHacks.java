@@ -1,5 +1,6 @@
 package com.programmerdan.minecraft.simpleadminhacks;
 
+import com.comphenix.protocol.ProtocolLibrary;
 import com.programmerdan.minecraft.simpleadminhacks.framework.HackManager;
 import com.programmerdan.minecraft.simpleadminhacks.framework.commands.CommandRegistrar;
 import java.util.logging.Level;
@@ -45,6 +46,9 @@ public class SimpleAdminHacks extends ACivMod {
 	@Override
 	public void onDisable() {
 		this.commands.reset();
+		if (Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+			ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+		}
 		this.manager.disableAllHacks();
 		this.config.reset();
 		super.onDisable();
