@@ -6,12 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-
 import vg.civcraft.mc.civmodcore.ACivMod;
 import vg.civcraft.mc.civmodcore.dao.ManagedDatasource;
 import vg.civcraft.mc.namelayer.command.CommandHandler;
@@ -26,8 +24,8 @@ import vg.civcraft.mc.namelayer.misc.ClassHandler;
 import vg.civcraft.mc.namelayer.misc.NameCleanser;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
+public class NameLayerPlugin extends ACivMod {
 
-public class NameLayerPlugin extends ACivMod{
 	private static AssociationList associations;
 	private static BlackList blackList;
 	private static GroupManagerDao groupManagerDao;
@@ -55,6 +53,7 @@ public class NameLayerPlugin extends ACivMod{
 	    ClassHandler.Initialize(Bukkit.getServer());
 		new NameAPI(new GroupManager(), associations);
 		NameCleanser.load(config.getConfigurationSection("name_cleanser"));
+		MojangNames.init(this);
 		registerListeners();
 		if (loadGroups){
 			PermissionType.initialize();
@@ -68,8 +67,8 @@ public class NameLayerPlugin extends ACivMod{
 	}
 	
 	public void registerListeners(){
-		getServer().getPluginManager().registerEvents(new AssociationListener(), this);
-		getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+		registerListener(new AssociationListener());
+		registerListener(new PlayerListener());
 	}
 	
 	@Override
@@ -88,6 +87,8 @@ public class NameLayerPlugin extends ACivMod{
 
 	@Override
 	public void onDisable() {
+		MojangNames.reset(this);
+		super.onDisable();
 	}
 	
 	public static NameLayerPlugin getInstance(){
@@ -229,4 +230,5 @@ public class NameLayerPlugin extends ACivMod{
 	public static DefaultGroupHandler getDefaultGroupHandler() {
 		return defaultGroupHandler;
 	}
+
 }
