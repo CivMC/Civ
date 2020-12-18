@@ -63,7 +63,7 @@ public final class MojangNames {
 
 	private static void save(final NameLayerPlugin plugin, final Path file) {
 		final NBTCompound nbt = new NBTCompound();
-		PROFILES.forEach(nbt::setUUID);
+		PROFILES.forEach((name, uuid) -> nbt.setUUID(name, uuid)); // Ignore highlighter
 		final byte[] data = NBTCompound.toBytes(nbt);
 		try {
 			Files.write(file, data,
