@@ -1,6 +1,7 @@
 package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
@@ -112,89 +113,90 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<Clickable> clicks = new ArrayList<>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
-		PermissionType.getAllPermissions().stream()
-				.sorted(Comparator.comparing(PermissionType::getName))
-				.forEachOrdered(perm -> {
-					ItemStack is = null;
-					Clickable c;
-					final boolean hasPerm = gp.hasPermission(pType, perm);
-					boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
-							PermissionType.getPermission("PERMS"));
 
-					if (hasPerm) {
-						is = yesStack();
-						ItemAPI.addLore(
-								is,
-								ChatColor.DARK_AQUA
-										+ PlayerType.getNiceRankName(pType)
-										+ "s currently have", ChatColor.DARK_AQUA
-										+ "this permission");
-					} else {
-						is = noStack();
-						ItemAPI.addLore(
-								is,
-								ChatColor.DARK_AQUA
-										+ PlayerType.getNiceRankName(pType)
-										+ "s currently don't have", ChatColor.DARK_AQUA
-										+ "this permission");
+		final PermissionType[] permissions = PermissionType.getAllPermissions().toArray(new PermissionType[0]);
+		Arrays.sort(permissions, Comparator.comparing(PermissionType::getName));
+		for (final PermissionType perm : permissions) {
+			ItemStack is = null;
+			Clickable c;
+			final boolean hasPerm = gp.hasPermission(pType, perm);
+			boolean canEdit = gm.hasAccess(g, p.getUniqueId(),
+					PermissionType.getPermission("PERMS"));
+
+			if (hasPerm) {
+				is = yesStack();
+				ItemAPI.addLore(
+						is,
+						ChatColor.DARK_AQUA
+								+ PlayerType.getNiceRankName(pType)
+								+ "s currently have", ChatColor.DARK_AQUA
+								+ "this permission");
+			} else {
+				is = noStack();
+				ItemAPI.addLore(
+						is,
+						ChatColor.DARK_AQUA
+								+ PlayerType.getNiceRankName(pType)
+								+ "s currently don't have", ChatColor.DARK_AQUA
+								+ "this permission");
+			}
+			ItemAPI.setDisplayName(is, perm.getName());
+			String desc = perm.getDescription();
+			if (desc != null) {
+				final int MAX_CHARS = 35;
+				String[] words = desc.split(" ");
+				StringBuilder line = new StringBuilder();
+				for  (int i = 0; i < words.length; i++) {
+					line.append(words[i]).append(" ");
+					if (line.length() >= MAX_CHARS || i == words.length - 1){
+						ItemAPI.addLore(is, ChatColor.GREEN + line.toString().trim());
+						line = new StringBuilder();
 					}
-					ItemAPI.setDisplayName(is, perm.getName());
-					String desc = perm.getDescription();
-					if (desc != null) {
-						final int MAX_CHARS = 35;
-						String[] words = desc.split(" ");
-						StringBuilder line = new StringBuilder();
-						for  (int i = 0; i < words.length; i++) {
-							line.append(words[i]).append(" ");
-							if (line.length() >= MAX_CHARS || i == words.length - 1){
-								ItemAPI.addLore(is, ChatColor.GREEN + line.toString().trim());
-								line = new StringBuilder();
-							}
-						}
-					}
-					if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
-						canEdit = false;
+				}
+			}
+			if (pType == PlayerType.NOT_BLACKLISTED && !perm.getCanBeBlacklisted()) {
+				canEdit = false;
 
-						ItemAPI.addLore(
-								is,
-								ChatColor.AQUA
-										+ "This permission cannot be toggled for "
-										+ PlayerType.getNiceRankName(pType)
-						);
-					}
+				ItemAPI.addLore(
+						is,
+						ChatColor.AQUA
+								+ "This permission cannot be toggled for "
+								+ PlayerType.getNiceRankName(pType)
+				);
+			}
 
-					if (canEdit) {
-						ItemAPI.addLore(is, ChatColor.AQUA + "Click to toggle");
-						c = new Clickable(is) {
+			if (canEdit) {
+				ItemAPI.addLore(is, ChatColor.AQUA + "Click to toggle");
+				c = new Clickable(is) {
 
-							@Override
-							public void clicked(Player arg0) {
-								if (hasPerm == gp.hasPermission(pType, perm)) { // recheck
-									if (gm.hasAccess(g, p.getUniqueId(),
-											PermissionType.getPermission("PERMS"))) {
-										NameLayerPlugin.log(Level.INFO, p.getName()
-												+ (hasPerm ? " removed " : " added ")
-												+ "the permission " + perm.getName()
-												+ "for player type " + pType.toString()
-												+ " for " + g.getName() + " via the gui");
-										if (hasPerm) {
-											gp.removePermission(pType, perm);
-										} else {
-											gp.addPermission(pType, perm);
-										}
-									}
+					@Override
+					public void clicked(Player arg0) {
+						if (hasPerm == gp.hasPermission(pType, perm)) { // recheck
+							if (gm.hasAccess(g, p.getUniqueId(),
+									PermissionType.getPermission("PERMS"))) {
+								NameLayerPlugin.log(Level.INFO, p.getName()
+										+ (hasPerm ? " removed " : " added ")
+										+ "the permission " + perm.getName()
+										+ "for player type " + pType.toString()
+										+ " for " + g.getName() + " via the gui");
+								if (hasPerm) {
+									gp.removePermission(pType, perm);
 								} else {
-									p.sendMessage(ChatColor.RED
-											+ "Something changed while you were modifying permissions, so cancelled the process");
+									gp.addPermission(pType, perm);
 								}
-								showPermissionEditing(pType);
 							}
-						};
-					} else {
-						c = new DecorationStack(is);
+						} else {
+							p.sendMessage(ChatColor.RED
+									+ "Something changed while you were modifying permissions, so cancelled the process");
+						}
+						showPermissionEditing(pType);
 					}
-					clicks.add(c);
-				});
+				};
+			} else {
+				c = new DecorationStack(is);
+			}
+			clicks.add(c);
+		}
 
 		for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < clicks.size(); i++) {
 			ci.setSlot(clicks.get(i), i - (45 * currentPage));
