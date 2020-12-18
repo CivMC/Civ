@@ -2,7 +2,6 @@ package vg.civcraft.mc.namelayer;
 
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
-import io.civrepo.commons.holders.MoreMapUtils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -16,6 +15,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
+import vg.civcraft.mc.civmodcore.util.MapUtils;
 import vg.civcraft.mc.namelayer.listeners.AssociationListener;
 
 public final class MojangNames {
@@ -103,7 +103,7 @@ public final class MojangNames {
 		if (uuid == null) {
 			return null;
 		}
-		return MoreMapUtils.getKeyFromValue(PROFILES, uuid);
+		return MapUtils.getKeyFromValue(PROFILES, uuid);
 	}
 
 	/**
