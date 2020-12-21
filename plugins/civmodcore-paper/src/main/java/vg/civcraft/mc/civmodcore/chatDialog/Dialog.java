@@ -25,7 +25,7 @@ public abstract class Dialog {
 		DialogManager.registerDialog(player, this);
 		this.player = player;
 
-		Bukkit.getScheduler().runTask(plugin, player::closeInventory);
+		Bukkit.getScheduler().runTask(plugin, (Runnable) player::closeInventory);
 
 		convo = new ConversationFactory(plugin).withModality(false).withLocalEcho(false)
 				.withFirstPrompt(new StringPrompt() {
