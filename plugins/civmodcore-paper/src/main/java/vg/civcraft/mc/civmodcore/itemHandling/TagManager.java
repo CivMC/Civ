@@ -8,21 +8,21 @@ import java.util.logging.Logger;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.MemorySection;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 
-import net.minecraft.server.v1_16_R1.NBTBase;
-import net.minecraft.server.v1_16_R1.NBTTagByte;
-import net.minecraft.server.v1_16_R1.NBTTagByteArray;
-import net.minecraft.server.v1_16_R1.NBTTagCompound;
-import net.minecraft.server.v1_16_R1.NBTTagDouble;
-import net.minecraft.server.v1_16_R1.NBTTagFloat;
-import net.minecraft.server.v1_16_R1.NBTTagInt;
-import net.minecraft.server.v1_16_R1.NBTTagIntArray;
-import net.minecraft.server.v1_16_R1.NBTTagList;
-import net.minecraft.server.v1_16_R1.NBTTagLong;
-import net.minecraft.server.v1_16_R1.NBTTagShort;
-import net.minecraft.server.v1_16_R1.NBTTagString;
+import net.minecraft.server.v1_16_R3.NBTBase;
+import net.minecraft.server.v1_16_R3.NBTTagByte;
+import net.minecraft.server.v1_16_R3.NBTTagByteArray;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagDouble;
+import net.minecraft.server.v1_16_R3.NBTTagFloat;
+import net.minecraft.server.v1_16_R3.NBTTagInt;
+import net.minecraft.server.v1_16_R3.NBTTagIntArray;
+import net.minecraft.server.v1_16_R3.NBTTagList;
+import net.minecraft.server.v1_16_R3.NBTTagLong;
+import net.minecraft.server.v1_16_R3.NBTTagShort;
+import net.minecraft.server.v1_16_R3.NBTTagString;
 
 @Deprecated
 public class TagManager {
@@ -40,7 +40,7 @@ public class TagManager {
 			throw new IllegalArgumentException("Expected item stack parameter but NULL passed.");
 		}
 
-		net.minecraft.server.v1_16_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_16_R3.ItemStack s = CraftItemStack.asNMSCopy(is);
 		this.tag = s.getTag();
 
 		if (this.tag == null) {
@@ -183,7 +183,7 @@ public class TagManager {
 
 	public ItemStack enrichWithNBT(ItemStack is) {
 
-		net.minecraft.server.v1_16_R1.ItemStack s = CraftItemStack.asNMSCopy(is);
+		net.minecraft.server.v1_16_R3.ItemStack s = CraftItemStack.asNMSCopy(is);
 
 		if (s == null) {
 			log.severe("Failed to create enriched copy of " + is.toString());

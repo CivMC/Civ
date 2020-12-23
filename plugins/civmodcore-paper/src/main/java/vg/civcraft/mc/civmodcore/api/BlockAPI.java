@@ -4,8 +4,8 @@ import static vg.civcraft.mc.civmodcore.util.NullCoalescing.chain;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.server.v1_16_R1.BlockProperties;
-import net.minecraft.server.v1_16_R1.IBlockState;
+import net.minecraft.server.v1_16_R3.BlockProperties;
+import net.minecraft.server.v1_16_R3.IBlockState;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,8 +22,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.Chest;
 import org.bukkit.block.data.type.Switch;
-import org.bukkit.craftbukkit.v1_16_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_16_R1.block.CraftBlock;
+import org.bukkit.craftbukkit.v1_16_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_16_R3.block.CraftBlock;
 import org.bukkit.util.BlockIterator;
 
 /**

@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import net.minecraft.server.v1_16_R1.BlockPosition;
+import net.minecraft.server.v1_16_R3.BlockPosition;
 import org.bukkit.World;
 import vg.civcraft.mc.civmodcore.api.WorldAPI;
 
