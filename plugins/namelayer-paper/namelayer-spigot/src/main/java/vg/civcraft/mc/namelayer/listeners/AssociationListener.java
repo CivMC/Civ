@@ -1,15 +1,15 @@
 package vg.civcraft.mc.namelayer.listeners;
 
 import java.util.UUID;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
-
+import vg.civcraft.mc.namelayer.MojangNames;
 import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.NameLayerPlugin;
 import vg.civcraft.mc.namelayer.database.AssociationList;
@@ -62,14 +62,16 @@ public class AssociationListener implements Listener {
 
 	@EventHandler(priority = EventPriority.LOWEST)
 	public void OnPlayerLogin(PlayerLoginEvent event) {
-		String name = associations.getCurrentName(event.getPlayer().getUniqueId());
+		final Player player = event.getPlayer();
+		MojangNames.declareMojangName(player.getUniqueId(), player.getName());
+		String name = associations.getCurrentName(player.getUniqueId());
 		if (name == null)
 		{
-			associations.addPlayer(event.getPlayer().getName(), event.getPlayer().getUniqueId());
-			name = associations.getCurrentName(event.getPlayer().getUniqueId());
+			associations.addPlayer(player.getName(), player.getUniqueId());
+			name = associations.getCurrentName(player.getUniqueId());
 		}
 
 		if (game != null)
-			game.setPlayerProfle(event.getPlayer(), name);
+			game.setPlayerProfle(player, name);
 	}
 }

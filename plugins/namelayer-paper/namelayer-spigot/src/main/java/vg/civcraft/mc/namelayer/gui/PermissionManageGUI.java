@@ -1,6 +1,8 @@
 package vg.civcraft.mc.namelayer.gui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -111,7 +113,10 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 		ClickableInventory ci = new ClickableInventory(54, g.getName());
 		final List<Clickable> clicks = new ArrayList<>();
 		final GroupPermission gp = gm.getPermissionforGroup(g);
-		for (final PermissionType perm : PermissionType.getAllPermissions()) {
+
+		final PermissionType[] permissions = PermissionType.getAllPermissions().toArray(new PermissionType[0]);
+		Arrays.sort(permissions, Comparator.comparing(PermissionType::getName));
+		for (final PermissionType perm : permissions) {
 			ItemStack is = null;
 			Clickable c;
 			final boolean hasPerm = gp.hasPermission(pType, perm);
@@ -192,8 +197,8 @@ public class PermissionManageGUI extends AbstractGroupGUI {
 			}
 			clicks.add(c);
 		}
-		for (int i = 45 * currentPage; i < 45 * (currentPage + 1)
-				&& i < clicks.size(); i++) {
+
+		for (int i = 45 * currentPage; i < 45 * (currentPage + 1) && i < clicks.size(); i++) {
 			ci.setSlot(clicks.get(i), i - (45 * currentPage));
 		}
 
