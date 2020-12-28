@@ -49,7 +49,6 @@ public class PlantLogicManager {
 						|| !(bottomColumnPlant.getGrowthConfig().getGrower() instanceof ColumnPlantGrower)) {
 					// Fallback behaviour
 					bottomColumnPlant.resetCreationTime();
-					updateGrowthTime(bottomColumnPlant, sourceColumn);
 				} else {
 					ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
 
@@ -67,8 +66,8 @@ public class PlantLogicManager {
 						bottomColumnPlant.setCreationTime(
 								(long) (create + (growthTime * (blocksBroken / (double) grower.getMaxStage()))));
 					}
-					updateGrowthTime(bottomColumnPlant, sourceColumn);
 				}
+				updateGrowthTime(bottomColumnPlant, sourceColumn);
 			}
 		}
 		if (fruitBlocks != null && fruitBlocks.contains(block.getType())) {
