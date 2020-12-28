@@ -40,7 +40,7 @@ public class PlantLogicManager {
 		}
 		// column plants will always hold the plant object in the bottom most block, so
 		// we need
-		// to update that if we just broke one of the upper blocks of a column plantx
+		// to update that if we just broke one of the upper blocks of a column plant
 		if (columnBlocks != null && columnBlocks.contains(block.getType())) {
 			Block sourceColumn = VerticalGrower.getRelativeBlock(block, BlockFace.DOWN);
 			Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
