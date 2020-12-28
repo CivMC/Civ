@@ -38,6 +38,6 @@ public class FactoryMenu extends StandaloneCommand {
 
 	@Override
 	public List<String> tabComplete(CommandSender arg0, String[] args) {
-		return FactoryTabCompleters.completeFactory(String.join(" ", args));
+		return FactoryTabCompleters.completeFactory(args);
 	}
 }

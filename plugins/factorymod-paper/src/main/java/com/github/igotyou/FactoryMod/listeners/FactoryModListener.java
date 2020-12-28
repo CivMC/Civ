@@ -2,7 +2,6 @@ package com.github.igotyou.FactoryMod.listeners;
 
 import java.util.List;
 
-import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,14 +20,15 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-
-import com.github.igotyou.FactoryMod.FactoryModManager;
-import com.github.igotyou.FactoryMod.factories.Factory;
-import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
-
 import org.bukkit.inventory.FurnaceInventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
+
+import com.github.igotyou.FactoryMod.FactoryModManager;
+import com.github.igotyou.FactoryMod.factories.Factory;
+import com.github.igotyou.FactoryMod.powerManager.FurnacePowerManager;
+import com.github.igotyou.FactoryMod.structures.MultiBlockStructure;
+
 import vg.civcraft.mc.civmodcore.api.BlockAPI;
 
 public class FactoryModListener implements Listener {

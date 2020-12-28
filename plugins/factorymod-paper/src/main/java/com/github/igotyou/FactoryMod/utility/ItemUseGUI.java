@@ -1,5 +1,14 @@
 package com.github.igotyou.FactoryMod.utility;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
 import com.github.igotyou.FactoryMod.FactoryMod;
 import com.github.igotyou.FactoryMod.eggs.FurnCraftChestEgg;
 import com.github.igotyou.FactoryMod.eggs.IFactoryEgg;
@@ -7,10 +16,7 @@ import com.github.igotyou.FactoryMod.recipes.CompactingRecipe;
 import com.github.igotyou.FactoryMod.recipes.IRecipe;
 import com.github.igotyou.FactoryMod.recipes.InputRecipe;
 import com.github.igotyou.FactoryMod.recipes.ProductionRecipe;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
 import vg.civcraft.mc.civmodcore.inventorygui.IClickable;
@@ -20,10 +26,6 @@ import vg.civcraft.mc.civmodcore.inventorygui.components.ContentAligners;
 import vg.civcraft.mc.civmodcore.inventorygui.components.Scrollbar;
 import vg.civcraft.mc.civmodcore.inventorygui.components.SlotPredicates;
 import vg.civcraft.mc.civmodcore.inventorygui.components.StaticDisplaySection;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class ItemUseGUI {
 

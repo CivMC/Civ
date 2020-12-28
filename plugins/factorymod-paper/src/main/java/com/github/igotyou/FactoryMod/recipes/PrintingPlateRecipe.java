@@ -10,8 +10,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 
-import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
-import net.minecraft.server.v1_16_R1.NBTTagCompound;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
@@ -22,6 +20,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.BookMeta.Generation;
 
+import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
+
+import net.minecraft.server.v1_16_R1.NBTTagCompound;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 

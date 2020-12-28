@@ -37,8 +37,8 @@ import com.github.igotyou.FactoryMod.utility.LoggingUtils;
 
 import vg.civcraft.mc.citadel.ReinforcementLogic;
 import vg.civcraft.mc.citadel.model.Reinforcement;
-import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.civmodcore.api.ItemNames;
+import vg.civcraft.mc.namelayer.NameAPI;
 import vg.civcraft.mc.namelayer.permission.PermissionType;
 
 /**
