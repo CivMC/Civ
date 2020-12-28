@@ -20,7 +20,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import vg.civcraft.mc.civmodcore.api.WorldAPI;
-import vg.civcraft.mc.civmodcore.util.Maths;
 
 public final class PhantomMenace extends BasicHack {
 
@@ -39,7 +38,7 @@ public final class PhantomMenace extends BasicHack {
 	public PhantomMenace(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
 		this.timeSinceRestCap = Math.max(-1, this.timeSinceRestCap);
-		this.maximumLightSpawn = Maths.clamp(this.maximumLightSpawn, 0, 15);
+		this.maximumLightSpawn = Math.min(Math.max(this.maximumLightSpawn, 0), 15);
 	}
 
 	@EventHandler
@@ -81,8 +80,7 @@ public final class PhantomMenace extends BasicHack {
 			if (target != null) {
 				final Location targetLocation = target.getLocation();
 				if (WorldAPI.isBlockLoaded(targetLocation)) {
-					final Block targetBlock = !target.isOnGround() ? targetLocation.getBlock() :
-							targetLocation.clone().add(0, -1, 0).getBlock();
+					final Block targetBlock = targetLocation.getBlock();
 					final int lightLevel = targetBlock.getLightLevel();
 					if (lightLevel > this.maximumLightSpawn) {
 						event.setCancelled(true);
