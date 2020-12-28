@@ -13,6 +13,7 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Waterlogged;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
 import org.bukkit.inventory.ItemStack;
 
 import com.untamedears.realisticbiomes.RealisticBiomes;
@@ -206,21 +207,36 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	/**
 	 * Looks at all surrounding factors to calculate how long a plant would take to
 	 * grow at the given block with persistent growth
-	 * 
+	 *
+	 * @see PlantGrowthConfig#getPersistentGrowthTime(Block, boolean)
 	 * @param block Block to check growth condition for
 	 * @return Total milli seconds needed to fully grow a plant
 	 */
 	public long getPersistentGrowthTime(Block block) {
+		return getPersistentGrowthTime(block, false);
+	}
+
+	/**
+	 * Looks at all surrounding factors to calculate how long a plant would take to
+	 * grow at the given block with persistent growth
+	 *
+	 * @param block Block to check growth condition for
+	 * @param ignoreLight Whether to ignore light, if true will assume there is full light
+	 * @return Total milli seconds needed to fully grow a plant
+	 */
+	public long getPersistentGrowthTime(Block block, boolean ignoreLight) {
 		if (!biomeGrowthConfig.canGrowIn(block.getBiome())) {
 			return -1;
 		}
 		double baseTime = ((PersistentGrowthConfig) biomeGrowthConfig).getTotalGrowthTimeNeeded(block.getBiome());
 		baseTime /= (1.0 + getSoilBonus(block));
-		double lightMultiplier = getLightMultiplier(block);
-		if (lightMultiplier == 0.0) {
-			baseTime = INFINITE_TIME;
-		} else {
-			baseTime /= lightMultiplier;
+		if (!ignoreLight) {
+			double lightMultiplier = getLightMultiplier(block);
+			if (lightMultiplier == 0.0) {
+				baseTime = INFINITE_TIME;
+			} else {
+				baseTime /= lightMultiplier;
+			}
 		}
 		return (long) baseTime;
 	}
@@ -330,7 +346,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	/**
 	 * Checks whether the given plant is fully grown
 	 * 
-	 * @param block Block of the plant
+	 * @param plant the plant
 	 * @return True if the plant has reached its maximum growth stage, false
 	 *         otherwise
 	 */

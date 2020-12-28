@@ -56,7 +56,11 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 	}
 
 	public void resetCreationTime() {
-		creationTime = System.currentTimeMillis();
+		setCreationTime(System.currentTimeMillis());
+	}
+
+	public void setCreationTime(long creationTime) {
+		this.creationTime = creationTime;
 		setDirty();
 	}
 
