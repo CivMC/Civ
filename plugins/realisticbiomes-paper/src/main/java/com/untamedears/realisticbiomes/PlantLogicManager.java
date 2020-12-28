@@ -53,8 +53,6 @@ public class PlantLogicManager {
 				updateGrowthTime(bottomColumnPlant, sourceColumn);
 				return;
 			}
-			// If only part of the block is broken, then we should not reset growth time to 0.
-			// Instead, we change the growth time proportionally based on how much of the block was broken.
 			ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
 
 			Block topColumn = VerticalGrower.getRelativeBlock(block, BlockFace.UP);
