@@ -44,33 +44,32 @@ public class PlantLogicManager {
 		if (columnBlocks != null && columnBlocks.contains(block.getType())) {
 			Block sourceColumn = VerticalGrower.getRelativeBlock(block, BlockFace.DOWN);
 			Plant bottomColumnPlant = plantManager.getPlant(sourceColumn);
-			if (bottomColumnPlant == null) {
-				return;
-			} else if (bottomColumnPlant.getGrowthConfig() == null
-					|| !(bottomColumnPlant.getGrowthConfig().getGrower() instanceof ColumnPlantGrower)) {
-				// Fallback behaviour
-				bottomColumnPlant.resetCreationTime();
-				updateGrowthTime(bottomColumnPlant, sourceColumn);
-				return;
-			}
-			ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
+			if (bottomColumnPlant != null) {
+				if (bottomColumnPlant.getGrowthConfig() == null
+						|| !(bottomColumnPlant.getGrowthConfig().getGrower() instanceof ColumnPlantGrower)) {
+					// Fallback behaviour
+					bottomColumnPlant.resetCreationTime();
+					updateGrowthTime(bottomColumnPlant, sourceColumn);
+				} else {
+					ColumnPlantGrower grower = (ColumnPlantGrower) bottomColumnPlant.getGrowthConfig().getGrower();
 
-			Block topColumn = VerticalGrower.getRelativeBlock(block, BlockFace.UP);
-			int blocksBroken = topColumn.getY() - block.getY() + 1;
-			long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
-			int stage = grower.getStage(bottomColumnPlant);
-			if (stage == grower.getMaxStage()) {
-				// If broken at max growth, set growth time offset from now based on amount of stages/blocks broken
-				int stagesLeft = stage - blocksBroken;
-				bottomColumnPlant.setCreationTime(System.currentTimeMillis() - (growthTime * stagesLeft) / stage);
-				updateGrowthTime(bottomColumnPlant, sourceColumn);
-				return;
+					Block topColumn = VerticalGrower.getRelativeBlock(block, BlockFace.UP);
+					int blocksBroken = topColumn.getY() - block.getY() + 1;
+					long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
+					int stage = grower.getStage(bottomColumnPlant);
+					if (stage == grower.getMaxStage()) {
+						// If broken at max growth, set growth time offset from now based on amount of stages/blocks broken
+						int stagesLeft = stage - blocksBroken;
+						bottomColumnPlant.setCreationTime(System.currentTimeMillis() - (growthTime * stagesLeft) / stage);
+					} else {
+						// If not broken at max growth, increase creation time based on number of blocks broken
+						long create = bottomColumnPlant.getCreationTime();
+						bottomColumnPlant.setCreationTime(
+								(long) (create + (growthTime * (blocksBroken / (double) grower.getMaxStage()))));
+					}
+					updateGrowthTime(bottomColumnPlant, sourceColumn);
+				}
 			}
-
-			// If not broken at max growth, increase creation time based on number of blocks broken
-			long create = bottomColumnPlant.getCreationTime();
-			bottomColumnPlant.setCreationTime((long) (create + (growthTime * (blocksBroken / (double) grower.getMaxStage()))));
-			updateGrowthTime(bottomColumnPlant, sourceColumn);
 		}
 		if (fruitBlocks != null && fruitBlocks.contains(block.getType())) {
 			for(BlockFace face : BlockAPI.PLANAR_SIDES) {
