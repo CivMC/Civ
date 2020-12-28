@@ -396,6 +396,11 @@ public final class InventoryAPI {
 		}
 
 		@Override
+		public boolean isEmpty() {
+			return this.inventory.isEmpty();
+		}
+
+		@Override
 		public void remove(Material material) throws IllegalArgumentException {
 			this.inventory.remove(material);
 		}

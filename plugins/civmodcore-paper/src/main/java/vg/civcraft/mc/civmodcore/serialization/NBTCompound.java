@@ -10,19 +10,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
-import net.minecraft.server.v1_16_R1.NBTBase;
-import net.minecraft.server.v1_16_R1.NBTCompressedStreamTools;
-import net.minecraft.server.v1_16_R1.NBTReadLimiter;
-import net.minecraft.server.v1_16_R1.NBTTagCompound;
-import net.minecraft.server.v1_16_R1.NBTTagDouble;
-import net.minecraft.server.v1_16_R1.NBTTagFloat;
-import net.minecraft.server.v1_16_R1.NBTTagList;
-import net.minecraft.server.v1_16_R1.NBTTagLong;
-import net.minecraft.server.v1_16_R1.NBTTagShort;
-import net.minecraft.server.v1_16_R1.NBTTagString;
+import net.minecraft.server.v1_16_R3.NBTBase;
+import net.minecraft.server.v1_16_R3.NBTCompressedStreamTools;
+import net.minecraft.server.v1_16_R3.NBTReadLimiter;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagDouble;
+import net.minecraft.server.v1_16_R3.NBTTagFloat;
+import net.minecraft.server.v1_16_R3.NBTTagList;
+import net.minecraft.server.v1_16_R3.NBTTagLong;
+import net.minecraft.server.v1_16_R3.NBTTagShort;
+import net.minecraft.server.v1_16_R3.NBTTagString;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.reflect.FieldUtils;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.util.NullCoalescing;
@@ -907,7 +907,7 @@ public class NBTCompound implements Cloneable, Validation {
 		if (item == null) {
 			return null;
 		}
-		net.minecraft.server.v1_16_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_16_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {
 			return null;
 		}
@@ -938,7 +938,7 @@ public class NBTCompound implements Cloneable, Validation {
 	public static ItemStack processItem(ItemStack item, Consumer<NBTCompound> processor) {
 		Preconditions.checkArgument(ItemAPI.isValidItem(item));
 		Preconditions.checkArgument(processor != null);
-		net.minecraft.server.v1_16_R1.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
+		net.minecraft.server.v1_16_R3.ItemStack craftItem = CraftItemStack.asNMSCopy(item);
 		if (craftItem == null) {
 			return null;
 		}
