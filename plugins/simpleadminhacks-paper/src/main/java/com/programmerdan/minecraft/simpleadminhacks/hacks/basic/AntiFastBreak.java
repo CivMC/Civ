@@ -11,6 +11,7 @@ import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.autoload.AutoLoad;
+import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -27,6 +28,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -43,6 +45,8 @@ import vg.civcraft.mc.civmodcore.util.cooldowns.MilliSecCoolDownHandler;
  * non-instabreaking
  */
 public class AntiFastBreak extends BasicHack {
+
+	private final PacketManager protocol = new PacketManager();
 
 	@AutoLoad
 	private boolean debug = false;
@@ -61,30 +65,25 @@ public class AntiFastBreak extends BasicHack {
 		super(plugin, config);
 		miningLocations = new TreeMap<>();
 		violationLimiter = RateLimiting.createRateLimiter("antiCivBreak", 10, 10, 1, 2000L);
-		if (config.isEnabled()) {
-			registerPacketListener();
-			Bukkit.getPluginManager().registerEvents(this, plugin);
-		}
 	}
 
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
-		return new BasicHackConfig(plugin, config);
-	}
-
-	private void registerPacketListener() {
-		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
-		manager.addPacketListener(new PacketAdapter(SimpleAdminHacks.instance(), PacketType.Play.Client.BLOCK_DIG) {
+	@Override
+	public void onEnable() {
+		super.onEnable();
+		this.plugin.registerListener(this);
+		this.protocol.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_DIG) {
 			@Override
-			public void onPacketReceiving(PacketEvent event) {
-				PacketContainer packet = event.getPacket();
-				BlockPosition pos = packet.getBlockPositionModifier().read(0);
-				Location loc = pos.toLocation(event.getPlayer().getWorld());
+			public void onPacketReceiving(final PacketEvent event) {
+				final PacketContainer packet = event.getPacket();
+				final Player player = event.getPlayer();
+				final BlockPosition position = packet.getBlockPositionModifier().read(0);
+				final Location location = position.toLocation(player.getWorld());
 				switch (packet.getPlayerDigTypes().read(0)) {
 					case START_DESTROY_BLOCK:
-						handleStartDigging(event.getPlayer(), loc);
+						handleStartDigging(player, location);
 						return;
 					case STOP_DESTROY_BLOCK:
-						handleFinishingDigging(event.getPlayer(), loc);
+						handleFinishingDigging(player, location);
 						return;
 					default:
 						// some other stuff we dont care about
@@ -92,6 +91,17 @@ public class AntiFastBreak extends BasicHack {
 				}
 			}
 		});
+	}
+
+	@Override
+	public void onDisable() {
+		this.protocol.removeAllAdapters();
+		HandlerList.unregisterAll(this);
+		super.onDisable();
+	}
+
+	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+		return new BasicHackConfig(plugin, config);
 	}
 
 	@EventHandler
