@@ -330,7 +330,7 @@ public class PlantGrowthConfig extends AbstractGrowthConfig {
 	/**
 	 * Checks whether the given plant is fully grown
 	 * 
-	 * @param block Block of the plant
+	 * @param plant the plant
 	 * @return True if the plant has reached its maximum growth stage, false
 	 *         otherwise
 	 */

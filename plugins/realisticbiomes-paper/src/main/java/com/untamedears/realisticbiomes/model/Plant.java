@@ -60,6 +60,11 @@ public class Plant extends TableBasedDataObject implements ProgressTrackable {
 		setDirty();
 	}
 
+	public void setCreationTime(long creationTime) {
+		this.creationTime = creationTime;
+		setDirty();
+	}
+
 	/**
 	 * Use this method to set the next update, not setNextUpdate()
 	 * 
