@@ -30,6 +30,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 	private int signLengthLimit;
 	private boolean preventLongSignsAbsolute;
 	private boolean cancelLongSignEvent;
+	private boolean hardLimitBookPageSize;
 
 	public GameFixesConfig(SimpleAdminHacks plugin, ConfigurationSection base) {
 		super(plugin, base);
@@ -72,6 +73,7 @@ public class GameFixesConfig extends SimpleHackConfig {
 		signLengthLimit = config.getInt("signLengthLimit", 100);
 		preventLongSignsAbsolute = config.getBoolean("preventLongSignsAbsolute", true);
 		cancelLongSignEvent = config.getBoolean("cancelLongSignEvent", false);
+		hardLimitBookPageSize = config.getBoolean("hardLimitBookPageCount", true);
 	}
 
 	private void wireUpArrays() {
@@ -159,6 +161,10 @@ public class GameFixesConfig extends SimpleHackConfig {
 
 	public boolean stopTreeWraparound() {
 		return preventTreeWrap;
+	}
+	
+	public boolean hardLimitBookPageSize() {
+		return hardLimitBookPageSize;
 	}
 
 	public boolean maintainFlatBedrock() {

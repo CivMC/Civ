@@ -1,8 +1,17 @@
 package com.programmerdan.minecraft.simpleadminhacks.hacks;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.ProtocolManager;
+import com.comphenix.protocol.events.PacketAdapter;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.events.PacketEvent;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
+
+import net.minecraft.server.v1_16_R1.NBTTagList;
+
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,6 +27,7 @@ import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Hopper;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,6 +62,9 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (config != null && config.isEnabled()) {
 			plugin().log("Registering GameFixes listeners");
 			plugin().registerListener(this);
+			if (config.hardLimitBookPageSize()) {
+				registerBookEditListener();
+			}
 		}
 	}
 
@@ -556,6 +569,29 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 				}
 			}
 		}
+	}
+	
+	private void registerBookEditListener() {
+		ProtocolManager manager = ProtocolLibrary.getProtocolManager();
+		manager.addPacketListener(new PacketAdapter(SimpleAdminHacks.instance(), PacketType.Play.Client.B_EDIT) {
+			@Override
+			public void onPacketReceiving(PacketEvent event) {
+				PacketContainer packet = event.getPacket();
+				CraftItemStack is = (CraftItemStack) packet.getItemModifier().read(0);
+				if (is == null) {
+					return;
+				}
+				net.minecraft.server.v1_16_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(is);
+				if (nmsIs.isEmpty() || nmsIs.getTag() == null) {
+					return;
+				}
+				NBTTagList pageList = nmsIs.getTag().getList("pages", 8);
+				if (pageList.size() > 100) {
+					plugin().getLogger().warning("  DUPE ALERT for " + event.getPlayer().getName() + ". Tried to send oversized book packet");
+					event.setCancelled(true);
+				}
+			}
+		});
 	}
 
 	public static GameFixesConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
