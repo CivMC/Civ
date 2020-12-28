@@ -57,7 +57,7 @@ public class PlantLogicManager {
 
 			Block topColumn = VerticalGrower.getRelativeBlock(block, BlockFace.UP);
 			int blocksBroken = topColumn.getY() - block.getY() + 1;
-			long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn);
+			long growthTime = bottomColumnPlant.getGrowthConfig().getPersistentGrowthTime(sourceColumn, true);
 			int stage = grower.getStage(bottomColumnPlant);
 			if (stage == grower.getMaxStage()) {
 				// If broken at max growth, set growth time offset from now based on amount of stages/blocks broken
