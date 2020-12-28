@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.bukkit.craftbukkit.libs.org.apache.commons.lang3.StringUtils;
+
 public final class Trie {
 
 	private Map<Character, Trie> children;
@@ -54,6 +56,21 @@ public final class Trie {
 		List<String> result = new ArrayList<>();
 		matchWord(prefix, result);
 		return result;
+	}
+	
+	public List<String> complete(String [] args) {
+		String full = String.join(" ", args);
+		List<String> matches = match(full);
+		if (args.length < 2) {
+			return matches;
+		}
+		int elementsToRemove = args.length - 1;
+		for (int i = 0; i < args.length; i++) {
+			String mod = matches.get(i);
+			int startingSpot = StringUtils.ordinalIndexOf(mod, " ", elementsToRemove) + 1;
+			matches.set(i, mod.substring(startingSpot));
+		}
+		return matches;
 	}
 
 	private void matchWord(String wordToMatch, List<String> result) {
