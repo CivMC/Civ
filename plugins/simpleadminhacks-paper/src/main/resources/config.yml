@@ -38,6 +38,14 @@ hacks:
       - SALMON
       - TURTLE
       - DOLPHIN
+  AttrHider:
+    enabled: true
+    # Hide item data like enchantments, firework effects, book data, potion, etc..
+    hideItemMeta: true
+    # Hide potion effects on entities, except for particles
+    hideEffects: true
+    # Hide the health of entities
+    hideHealth: true
   AutoRespawn:
     enabled: true
     # Delay in MS
