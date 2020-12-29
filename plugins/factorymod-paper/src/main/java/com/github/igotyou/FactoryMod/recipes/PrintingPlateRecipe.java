@@ -12,7 +12,7 @@ import java.util.UUID;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemFlag;
@@ -22,7 +22,7 @@ import org.bukkit.inventory.meta.BookMeta.Generation;
 
 import com.github.igotyou.FactoryMod.factories.FurnCraftChestFactory;
 
-import net.minecraft.server.v1_16_R1.NBTTagCompound;
+import net.minecraft.server.v1_16_R3.NBTTagCompound;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.itemHandling.ItemMap;
 
@@ -81,7 +81,7 @@ public class PrintingPlateRecipe extends PrintingPressRecipe {
 	}
 
 	public static ItemStack addTags(Inventory i, String serialNumber, ItemStack plate, NBTTagCompound bookTag) {
-		net.minecraft.server.v1_16_R1.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
+		net.minecraft.server.v1_16_R3.ItemStack nmsPlate = CraftItemStack.asNMSCopy(plate);
 		NBTTagCompound plateTag = nmsPlate.getOrCreateTag();
 
 		plateTag.setString("SN", serialNumber);
