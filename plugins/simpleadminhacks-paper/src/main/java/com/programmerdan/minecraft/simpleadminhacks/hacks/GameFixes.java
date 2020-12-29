@@ -4,12 +4,15 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.destroystokyo.paper.PaperConfig;
 import com.programmerdan.minecraft.simpleadminhacks.SimpleAdminHacks;
 import com.programmerdan.minecraft.simpleadminhacks.configs.GameFixesConfig;
 import com.programmerdan.minecraft.simpleadminhacks.framework.SimpleHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.utilities.PacketManager;
+import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
-import net.minecraft.server.v1_16_R1.NBTTagList;
+import net.minecraft.server.v1_16_R1.ItemStack;
+import net.minecraft.server.v1_16_R1.PacketPlayInBEdit;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -24,7 +27,6 @@ import org.bukkit.block.data.type.Dispenser;
 import org.bukkit.block.data.type.Hopper;
 import org.bukkit.block.data.type.RespawnAnchor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,6 +49,7 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.InventoryHolder;
+import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
 public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 
@@ -65,20 +68,30 @@ public class GameFixes extends SimpleHack<GameFixesConfig> implements Listener {
 		if (this.config.hardLimitBookPageSize()) {
 			this.protocol.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Client.B_EDIT) {
 				@Override
-				public void onPacketReceiving(PacketEvent event) {
-					PacketContainer packet = event.getPacket();
-					CraftItemStack is = (CraftItemStack) packet.getItemModifier().read(0);
-					if (is == null) {
-						return;
-					}
-					net.minecraft.server.v1_16_R1.ItemStack nmsIs = CraftItemStack.asNMSCopy(is);
-					if (nmsIs.isEmpty() || nmsIs.getTag() == null) {
-						return;
-					}
-					NBTTagList pageList = nmsIs.getTag().getList("pages", 8);
-					if (pageList.size() > 100) {
-						plugin().warning("  DUPE ALERT for " + event.getPlayer().getName() + ". Tried to send oversized book packet");
+				public void onPacketReceiving(final PacketEvent event) {
+					final PacketContainer packet = event.getPacket();
+					final Player player = event.getPlayer();
+					final String errorMessage = "DUPE ALERT! " + player.getName() + " sent an over sized book packet!";
+					final int maxBookPageSize = PaperConfig.maxBookPageSize;
+					final int maxBookPageLength = 256 * 4;
+					// NMS ItemStack, not Bukkit
+					final ItemStack item = ((PacketPlayInBEdit) packet.getHandle()).b();
+					final NBTCompound nbt = new NBTCompound(item.getTag());
+					final String[] pages = nbt.getStringArray("pages");
+					if (pages.length > maxBookPageSize) {
+						plugin().warning(errorMessage);
+						plugin().warning("- Too many pages! [" + pages.length + "/" + maxBookPageSize + "]");
 						event.setCancelled(true);
+						return;
+					}
+					for (final String page : pages) {
+						final byte[] raw = page.getBytes(StandardCharsets.UTF_8);
+						if (raw.length > maxBookPageLength) {
+							plugin().warning(errorMessage);
+							plugin().warning("- Page too long! [" + raw.length + "/" + maxBookPageLength + "]");
+							event.setCancelled(true);
+							return;
+						}
 					}
 				}
 			});
