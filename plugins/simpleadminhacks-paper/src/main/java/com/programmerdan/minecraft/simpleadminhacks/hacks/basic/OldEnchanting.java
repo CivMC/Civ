@@ -220,6 +220,7 @@ public final class OldEnchanting extends BasicHack {
 							case 5:
 							case 6:
 								packet.getIntegers().write(2, -1);
+								break;
 						}
 					}
 				}
@@ -380,12 +381,6 @@ public final class OldEnchanting extends BasicHack {
 			default:
 				return;
 		}
-		final Block clicked = event.getClickedBlock();
-		if (clicked != null
-				&& clicked.getType().isInteractable()) {
-			event.setCancelled(true); // Don't give levels if trying to open a chest for example
-			return;
-		}
 		final Player player = event.getPlayer();
 		final PlayerInventory inventory = player.getInventory();
 		final EquipmentSlot slot = Objects.requireNonNull(event.getHand());
@@ -393,6 +388,13 @@ public final class OldEnchanting extends BasicHack {
 		if (!ItemAPI.isValidItem(held)
 				|| !ItemAPI.areItemsSimilar(held, EMERALD_ITEM)) {
 			return;
+		}
+		if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+			final Block clicked = Objects.requireNonNull(event.getClickedBlock());
+			if (clicked.getType().isInteractable()) {
+				event.setCancelled(true); // Don't give levels if trying to open a chest for example
+				return;
+			}
 		}
 		final int amount = held.getAmount();
 		if (amount <= 0) {
