@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.bukkit.Chunk;
 import org.bukkit.DyeColor;
 import org.bukkit.Effect;
 import org.bukkit.EntityEffect;
@@ -34,23 +35,31 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.PistonMoveReaction;
+import org.bukkit.block.Sign;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.conversations.Conversation;
 import org.bukkit.conversations.ConversationAbandonedEvent;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityCategory;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.memory.MemoryKey;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent.Reason;
 import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.player.PlayerResourcePackStatusEvent.Status;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import org.bukkit.inventory.EntityEquipment;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.InventoryView.Property;
 import org.bukkit.inventory.ItemStack;
@@ -71,7 +80,15 @@ import org.bukkit.util.BoundingBox;
 import org.bukkit.util.RayTraceResult;
 import org.bukkit.util.Vector;
 
-@SuppressWarnings("deprecation")
+import com.destroystokyo.paper.ClientOption;
+import com.destroystokyo.paper.Title;
+import com.destroystokyo.paper.block.TargetBlockInfo;
+import com.destroystokyo.paper.block.TargetBlockInfo.FluidMode;
+import com.destroystokyo.paper.entity.TargetEntityInfo;
+import com.destroystokyo.paper.profile.PlayerProfile;
+
+import net.md_5.bungee.api.chat.BaseComponent;
+
 public class FakePlayer implements Player {
 	private final ItemStack inHand;
 	private final Location location;
@@ -322,11 +339,6 @@ public class FakePlayer implements Player {
 			public void setHeldItemSlot(int slot) {
 			}
 
-			/*@Override
-			public int clear(int id, int data) {
-				return 0;
-			}*/
-
 			@Override
 			public HumanEntity getHolder() {
 				return null;
@@ -334,13 +346,25 @@ public class FakePlayer implements Player {
 
 			@Override
 			public void setItem(EquipmentSlot slot, ItemStack item) {
-				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public ItemStack getItem(EquipmentSlot slot) {
-				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public InventoryHolder getHolder(boolean arg0) {
+				return null;
+			}
+
+			@Override
+			public boolean isEmpty() {
+				return true;
+			}
+
+			@Override
+			public HashMap<Integer, ItemStack> removeItemAnySlot(ItemStack... arg0) throws IllegalArgumentException {
 				return null;
 			}
 		};
@@ -2163,6 +2187,546 @@ public class FakePlayer implements Player {
 
 	@Override
 	public void sendExperienceChange(float progress, int level) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void closeInventory(Reason arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean dropItem(boolean arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Location getPotentialBedLocation() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openAnvil(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openCartographyTable(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openGrindstone(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openLoom(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void openSign(Sign arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public InventoryView openSmithingTable(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public InventoryView openStonecutter(Location arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Entity releaseLeftShoulderEntity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Entity releaseRightShoulderEntity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearActiveItem() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public ItemStack getActiveItem() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getArrowCooldown() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getArrowsInBody() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getArrowsStuck() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public EntityCategory getCategory() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getHandRaisedTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getHurtDirection() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getItemUseRemainingTime() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getShieldBlockingDelay() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Block getTargetBlock(int arg0, FluidMode arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public BlockFace getTargetBlockFace(int arg0, FluidMode arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TargetBlockInfo getTargetBlockInfo(int arg0, FluidMode arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Entity getTargetEntity(int arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public TargetEntityInfo getTargetEntityInfo(int arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInvisible() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isJumping() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void playPickupItemAnimation(Item arg0, int arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setArrowCooldown(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setArrowsInBody(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setArrowsStuck(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setHurtDirection(float arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setInvisible(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setJumping(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setKiller(Player arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setShieldBlockingDelay(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean fromMobSpawner() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Chunk getChunk() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public SpawnReason getEntitySpawnReason() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Location getOrigin() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean isInBubbleColumn() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInLava() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInRain() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInWater() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInWaterOrBubbleColumn() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInWaterOrRain() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isInWaterOrRainOrBubbleColumn() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean isTicking() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void sendMessage(UUID arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendMessage(UUID arg0, String[] arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendRawMessage(UUID arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public long getLastLogin() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public long getLastSeen() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public int getProtocolVersion() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public InetSocketAddress getVirtualHost() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int applyMending(int arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public Firework boostElytra(ItemStack arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean getAffectsSpawning() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public String getClientBrandName() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <T> T getClientOption(ClientOption<T> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public float getCooldownPeriod() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public float getCooledAttackStrength(float arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public PlayerProfile getPlayerProfile() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public String getResourcePackHash() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Status getResourcePackStatus() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getViewDistance() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void giveExp(int arg0, boolean arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean hasResourcePack() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void hideTitle() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void resetCooldown() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendActionBar(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendActionBar(BaseComponent... arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendActionBar(char arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void sendTitle(Title arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setAffectsSpawning(boolean arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPlayerListHeaderFooter(BaseComponent[] arg0, BaseComponent[] arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPlayerListHeaderFooter(BaseComponent arg0, BaseComponent arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setPlayerProfile(PlayerProfile arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setResourcePack(String arg0, String arg1) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSubtitle(BaseComponent[] arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setSubtitle(BaseComponent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setTitleTimes(int arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setViewDistance(int arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showTitle(BaseComponent[] arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showTitle(BaseComponent arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showTitle(BaseComponent[] arg0, BaseComponent[] arg1, int arg2, int arg3, int arg4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void showTitle(BaseComponent arg0, BaseComponent arg1, int arg2, int arg3, int arg4) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void updateTitle(Title arg0) {
 		// TODO Auto-generated method stub
 		
 	}
