@@ -13,25 +13,20 @@
 
   <modules>
     <module>nms/interface</module>
-    <module>nms/v1_16_R1</module>
+    <module>nms/v1_16_R3</module>
     <module>namelayer-spigot</module>
     <module>namelayer-bungee</module>
     <module>namelayer-all</module>
   </modules>
   
   <properties>
-    <releaseVersion>2.14.0</releaseVersion>
+    <releaseVersion>2.14.1</releaseVersion>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
   <repositories>
-    <repository>
-      <id>civclassic-repo</id>
-      <url>https://repo.civclassic.com/repository/internal/</url>
-    </repository>
-
     <repository>
       <id>codecrafter47-repo</id>
       <url>http://nexus.codecrafter47.dyndns.eu/content/repositories/public/</url>
@@ -54,10 +49,10 @@
       <id>bungeecord-repo</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
-		<repository>
-			<id>civ-jenkins</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
-		</repository>
+    <repository>
+      <id>civ-jenkins</id>
+      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
+    </repository>
   </repositories>
 
   <profiles>
@@ -81,6 +76,7 @@
 	<!-- <module>nms/v1_13_R1</module> -->
         <module>nms/v1_13_R2</module>
         <module>nms/v1_14_R1</module>
+        <module>nms/v1_16_R1</module>
       </modules>
     </profile>
   </profiles>
@@ -88,7 +84,7 @@
     <distributionManagement>
     <repository>
       <id>civ-jenkins</id>
-      <url>https://repo.civclassic.com/repository/internal/</url>
+      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
     </repository>
   </distributionManagement>
 </project>

@@ -11,27 +11,24 @@
   </parent>
 
   <artifactId>namelayer-spigot</artifactId>
-  <version>1.0.0</version>
   <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
       <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>namelayer-nms-v1_16_R1</artifactId>
+      <artifactId>namelayer-nms-v1_16_R3</artifactId>
       <version>1.0.1</version>
     </dependency>
-
-    <!-- Spigot -->
     <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.16.1-R0.1-SNAPSHOT</version>
+      <groupId>com.destroystokyo.paper</groupId>
+      <artifactId>paper</artifactId>
+      <version>1.16.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>vg.civcraft.mc.civmodcore</groupId>
       <artifactId>CivModCore</artifactId>
-      <version>1.8.0</version>
+      <version>1.8.1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -134,6 +131,11 @@
         <dependency>
           <groupId>vg.civcraft.mc.namelayer</groupId>
           <artifactId>namelayer-nms-v1_16_R1</artifactId>
+          <version>1.0.1</version>
+        </dependency>
+        <dependency>
+          <groupId>vg.civcraft.mc.namelayer</groupId>
+          <artifactId>namelayer-nms-v1_16_R3</artifactId>
           <version>1.0.1</version>
         </dependency>
       </dependencies>
