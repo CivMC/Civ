@@ -12,33 +12,33 @@
 	<groupId>sh.okx.railswitch</groupId>
 	<artifactId>RailSwitch</artifactId>
 	<packaging>jar</packaging>
-	<version>1.5.0</version>
+	<version>1.5.1</version>
 	<name>RailSwitch</name>
 	<url>https://github.com/civclassic/railswitch</url>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.namelayer</groupId>
 			<artifactId>NameLayer</artifactId>
-			<version>2.14.0</version>
+			<version>2.14.1</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.citadel</groupId>
 			<artifactId>Citadel</artifactId>
-			<version>4.1.0</version>
+			<version>4.1.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
@@ -46,7 +46,7 @@
 	<repositories>
 		<repository>
 			<id>civ-jenkins</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
+			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
 		</repository>
 	</repositories>
 </project>
