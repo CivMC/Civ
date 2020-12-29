@@ -1,60 +1,60 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
+	<modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.github.civclassic</groupId>
-    <artifactId>civclassic-parent</artifactId>
-    <version>1.0.0</version>
-  </parent>
+	<parent>
+		<groupId>com.github.civclassic</groupId>
+		<artifactId>civclassic-parent</artifactId>
+		<version>1.0.0</version>
+	</parent>
 
-  <groupId>com.programmerdan.minecraft</groupId>
-  <artifactId>banstick</artifactId>
-  <version>1.2.0</version>
-  <packaging>jar</packaging>
-  <name>BanStick</name>
-  <url>https://github.com/Civclassic/BanStick</url>
-  <description>A simple plugin to swing your banstick harder</description>
+	<groupId>com.programmerdan.minecraft</groupId>
+	<artifactId>banstick</artifactId>
+	<version>1.2.1</version>
+	<packaging>jar</packaging>
+	<name>BanStick</name>
+	<url>https://github.com/Civclassic/BanStick</url>
+	<description>A simple plugin to swing your banstick harder</description>
 
-  <dependencies>
-    <dependency>
-      <groupId>org.spigotmc</groupId>
-      <artifactId>spigot-api</artifactId>
-      <version>1.16.1-R0.1-SNAPSHOT</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>vg.civcraft.mc.civmodcore</groupId>
-      <artifactId>CivModCore</artifactId>
-      <version>1.8.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>vg.civcraft.mc.namelayer</groupId>
-      <artifactId>NameLayer</artifactId>
-      <version>2.14.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.github.seancfoley</groupId>
-      <artifactId>ipaddress</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <!-- jsoup HTML parser library @ http://jsoup.org/ -->
-      <groupId>org.jsoup</groupId>
-      <artifactId>jsoup</artifactId>
-      <version>1.10.2</version>
-    </dependency>
-  </dependencies>
+	<dependencies>
+		<dependency>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.4-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.civmodcore</groupId>
+			<artifactId>CivModCore</artifactId>
+			<version>1.8.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>vg.civcraft.mc.namelayer</groupId>
+			<artifactId>NameLayer</artifactId>
+			<version>2.14.1</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.github.seancfoley</groupId>
+			<artifactId>ipaddress</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		<dependency>
+			<!-- jsoup HTML parser library @ http://jsoup.org/ -->
+			<groupId>org.jsoup</groupId>
+			<artifactId>jsoup</artifactId>
+			<version>1.10.2</version>
+		</dependency>
+	</dependencies>
 
-  <repositories>
-    <repository>
-      <id>devoted-jenkins</id>
-      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
-    </repository>
-  </repositories>
+	<repositories>
+		<repository>
+			<id>devoted-jenkins</id>
+			<url>https://build.devotedmc.com/plugin/repository/everything/</url>
+		</repository>
+	</repositories>
 
 </project>
