@@ -117,25 +117,25 @@ public final class AttrHider extends BasicHack {
 					if (player.hasPermission(BYPASS_PERMISSION)) {
 						return;
 					}
-					if (packet.getMeta("special").isPresent()) {
-						return;
-					}
 					final Entity entity = packet.getEntityModifier(event).read(0);
-					if (entity == null
+					if (!(entity instanceof LivingEntity)
 							|| player.getEntityId() == entity.getEntityId()
-							|| !(entity instanceof LivingEntity)
 							|| entity.getPassengers().contains(player)) {
 						return;
 					}
-					for (final WrappedWatchableObject object : packet.getWatchableCollectionModifier().read(0)) {
+					final PacketContainer cloned = packet.deepClone();
+					for (final WrappedWatchableObject object : cloned.getWatchableCollectionModifier().read(0)) {
 						// Read the 8th field as a float as that's the living entity's health
 						// https://wiki.vg/Entity_metadata#Living_Entity
 						if (object.getIndex() == 8) {
 							if ((float) object.getValue() > 0) {
-								object.setValue(1f);
+								object.setValue(1f); // Half a heart
 							}
 						}
 					}
+					// The packet data is shared between events, but the event
+					// instance is exclusive to THIS sending of the packet
+					event.setPacket(cloned);
 				}
 			});
 		}
