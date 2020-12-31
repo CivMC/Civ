@@ -8,10 +8,14 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import com.google.common.base.Preconditions;
+
 public class ScoreBoardAPI {
 	
 	private static Map<UUID, Integer> openScores = new TreeMap<>();
 	private static Map<String, CivScoreBoard> boards = new HashMap<>();
+	private static final Map<UUID, String> HEADERS = new HashMap<>();
+	private static String DEFAULT_HEADER = "  Info  ";
 	
 	public static CivScoreBoard createBoard(String key) {
 		CivScoreBoard board = new CivScoreBoard(key);
@@ -26,6 +30,30 @@ public class ScoreBoardAPI {
 	public static void deleteBoard(CivScoreBoard board) {
 		boards.remove(board.getName());
 		board.tearDown();
+	}
+	
+	public static void setScoreBoardHeader(Player player, String header) {
+		if (header == null) {
+			setScoreBoardHeader(player, DEFAULT_HEADER);
+			return;
+		}
+		HEADERS.put(player.getUniqueId(), header);
+		updateAllBoards(player);
+	}
+	
+	public static void setDefaultHeader(String header) {
+		Preconditions.checkNotNull(header);
+		DEFAULT_HEADER = header;
+	}
+	
+	static String getBoardHeader(UUID uuid) {
+		return HEADERS.getOrDefault(uuid, DEFAULT_HEADER);
+	}
+	
+	static void updateAllBoards(Player p) {
+		for(CivScoreBoard board : boards.values()) {
+			board.set(p, board.get(p));
+		}
 	}
 	
 	static void purge(Player p) {

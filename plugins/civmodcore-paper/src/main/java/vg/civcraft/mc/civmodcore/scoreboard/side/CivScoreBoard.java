@@ -21,7 +21,6 @@ public class CivScoreBoard {
 
 	private String scoreName;
 	private Map<UUID, String> currentScoreText;
-	private static final String TITLE = "  Info  ";
 	private BukkitRunnable updater;
 
 	CivScoreBoard(String scoreName) {
@@ -121,11 +120,12 @@ public class CivScoreBoard {
 
 	private static Objective getObjective(Player p) {
 		Scoreboard scb = p.getScoreboard();
-		Objective objective = scb.getObjective(TITLE);
+		String title = ScoreBoardAPI.getBoardHeader(p.getUniqueId());
+		Objective objective = scb.getObjective(title);
 		if (objective == null) {
 			scb.getObjectives().forEach(Objective::unregister);
 			scb.clearSlot(DisplaySlot.SIDEBAR);
-			objective = scb.registerNewObjective(TITLE, "dummy", TITLE);
+			objective = scb.registerNewObjective(title, title, title);
 			objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 		}
 		return objective;
