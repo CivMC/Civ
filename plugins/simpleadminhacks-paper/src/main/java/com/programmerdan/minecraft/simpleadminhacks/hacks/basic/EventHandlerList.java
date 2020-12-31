@@ -55,7 +55,7 @@ public final class EventHandlerList extends BasicHack {
 	public void onEnable() {
 		super.onEnable();
 		this.commands.init();
-		plugin().registerListener(this.handlers);
+		this.plugin.registerListener(this.handlers);
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public final class EventHandlerList extends BasicHack {
 	}
 
 	// ------------------------------------------------------------
-	// HandlersList
+	// Handlers Command
 	// ------------------------------------------------------------
 
 	@CommandPermission("simpleadmin.eventdebug")
@@ -122,7 +122,7 @@ public final class EventHandlerList extends BasicHack {
 	}
 
 	// ------------------------------------------------------------
-	// HandlersList
+	// Handlers List
 	// ------------------------------------------------------------
 
 	private static final class HandlersList implements Listener {

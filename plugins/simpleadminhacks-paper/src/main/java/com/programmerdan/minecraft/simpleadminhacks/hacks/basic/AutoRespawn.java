@@ -41,6 +41,11 @@ public final class AutoRespawn extends BasicHack {
 	
 	public AutoRespawn(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
+	}
+
+	@Override
+	public void onEnable() {
+		super.onEnable();
 		this.respawnDelay = Math.max(0L, this.respawnDelay);
 		this.loginRespawnDelay = Math.max(0L, this.loginRespawnDelay);
 		if (this.respawnQuotes == null) {
@@ -61,7 +66,7 @@ public final class AutoRespawn extends BasicHack {
 		if (this.respawnDelay <= 0) {
 			plugin().info("Player [" + player.getName() + "] died, respawning.");
 			// This is necessary as respawning the player IMMEDIATELY means also not allowing the
-			// death process to occur (such as dropping items) to occur prior to the repsawn.
+			// death process to occur (such as dropping items) to occur prior to the respawn.
 			Bukkit.getScheduler().runTask(this.plugin, () -> autoRespawnPlayer(player));
 		}
 		else {
@@ -82,7 +87,7 @@ public final class AutoRespawn extends BasicHack {
 		if (this.loginRespawnDelay <= 0) {
 			plugin().info("Player [" + player.getName() + "] logged in while dead, respawning.");
 			// This is necessary as respawning the player IMMEDIATELY means also not allowing the
-			// death process to occur (such as dropping items) to occur prior to the repsawn.
+			// death process to occur (such as dropping items) to occur prior to the respawn.
 			Bukkit.getScheduler().runTask(this.plugin, () -> autoRespawnPlayer(player));
 		}
 		else {

@@ -24,10 +24,20 @@ public final class BuffSpanker extends BasicHack {
 
 	public BuffSpanker(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-		// Just in case it's auto loaded to null.
+	}
+
+	@Override
+	public void onEnable() {
+		super.onEnable();
 		if (this.naughtyEffects == null) {
 			this.naughtyEffects = new ArrayList<>();
 		}
+	}
+
+	@Override
+	public void onDisable() {
+		this.naughtyEffects.clear();
+		super.onDisable();
 	}
 
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)

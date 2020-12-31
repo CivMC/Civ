@@ -25,14 +25,14 @@ public class SimpleAdminHacks extends ACivMod {
 
 	public SimpleAdminHacks() {
 		plugin = this;
-		config = new SimpleAdminHacksConfig(this);
-		manager = new HackManager(this);
-		commands = new CommandRegistrar(this);
+		this.config = new SimpleAdminHacksConfig(this);
+		this.manager = new HackManager(this);
+		this.commands = new CommandRegistrar(this);
 	}
 
 	@Override
 	public void onEnable() {
-		useNewCommandHandler = false;
+		this.useNewCommandHandler = false;
 		super.onEnable();
 		if (!this.config.parse()) {
 			setEnabled(false);
@@ -84,7 +84,7 @@ public class SimpleAdminHacks extends ACivMod {
 	}
 
 	/**
-	 * @return Returns the psuedo-singleton instance of this plugin.
+	 * @return Returns the pseudo-singleton instance of this plugin.
 	 */
 	public static SimpleAdminHacks instance() {
 		return plugin;

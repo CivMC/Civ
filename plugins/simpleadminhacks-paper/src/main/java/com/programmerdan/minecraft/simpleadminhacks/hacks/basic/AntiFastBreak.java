@@ -69,6 +69,7 @@ public class AntiFastBreak extends BasicHack {
 			this.breakDenyDuration = 3000;
 			this.plugin.warning("Invalid break deny duration, defaulting.");
 		}
+		this.punishCooldown = new MilliSecCoolDownHandler<>(this.breakDenyDuration);
 		this.packets.addAdapter(new PacketAdapter(this.plugin, PacketType.Play.Client.BLOCK_DIG) {
 			@Override
 			public void onPacketReceiving(final PacketEvent event) {
@@ -89,7 +90,6 @@ public class AntiFastBreak extends BasicHack {
 				}
 			}
 		});
-		this.punishCooldown = new MilliSecCoolDownHandler<>(this.breakDenyDuration);
 	}
 
 	@Override
@@ -212,7 +212,7 @@ public class AntiFastBreak extends BasicHack {
 	}
 
 	private static IBlockData getNMSBlockData(final Material material) {
-		net.minecraft.server.v1_16_R1.Block nmsBlock = CraftMagicNumbers.getBlock(material);
+		final net.minecraft.server.v1_16_R1.Block nmsBlock = CraftMagicNumbers.getBlock(material);
 		if (nmsBlock == null) {
 			return null;
 		}

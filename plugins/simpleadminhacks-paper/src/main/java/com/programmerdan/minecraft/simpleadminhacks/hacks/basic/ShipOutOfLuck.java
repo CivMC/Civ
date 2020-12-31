@@ -52,6 +52,12 @@ public final class ShipOutOfLuck extends BasicHack {
 		}
 	}
 
+	@Override
+	public void onDisable() {
+		this.boatBreakers.clear();
+		super.onDisable();
+	}
+
 	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
 	public void preventBoatPlacements(final PlayerInteractEvent event) {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
