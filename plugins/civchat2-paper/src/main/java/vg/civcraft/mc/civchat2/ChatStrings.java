@@ -16,7 +16,7 @@ public class ChatStrings {
 
 	public final static String chatNowChattingWith = ChatColor.GREEN + "You are now chatting with %s.";
 
-	public final static String chatMovedToGlobal = ChatColor.YELLOW + "You are now in global chat.";
+	public final static String chatMovedToGlobal = ChatColor.YELLOW + "You are now in local chat."; //previously global chat, changed to prevent confusing with global ! chat group
 
 	public final static String chatGroupNotFound = ChatColor.RED + "There is no group with that name.";
 
