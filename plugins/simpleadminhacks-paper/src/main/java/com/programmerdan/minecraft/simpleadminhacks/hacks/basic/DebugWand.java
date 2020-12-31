@@ -8,8 +8,8 @@ import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHack;
 import com.programmerdan.minecraft.simpleadminhacks.framework.BasicHackConfig;
 import java.util.Objects;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,43 +24,22 @@ import org.bukkit.inventory.ItemStack;
 import vg.civcraft.mc.civmodcore.api.ItemAPI;
 import vg.civcraft.mc.civmodcore.command.AikarCommand;
 import vg.civcraft.mc.civmodcore.command.AikarCommandManager;
-import vg.civcraft.mc.civmodcore.custom.items.CustomItems;
-import vg.civcraft.mc.civmodcore.custom.items.NBTCriteria;
 import vg.civcraft.mc.civmodcore.serialization.NBTCompound;
 
-public class DebugWand extends BasicHack {
+public final class DebugWand extends BasicHack {
 
 	private static final String PERMISSION = "simpleadmin.debugwand";
-
-	private static final NamespacedKey CUSTOM_ITEM_KEY;
-	private static final NBTCriteria CUSTOM_ITEM_CRITERIA;
-	private static final ItemStack CUSTOM_ITEM_TEMPLATE;
+	private static final ItemStack WAND = new ItemStack(Material.BLAZE_ROD);
 
 	static {
-		CUSTOM_ITEM_KEY = new NamespacedKey(SimpleAdminHacks.instance(), "db_wand");
-		CUSTOM_ITEM_CRITERIA = new NBTCriteria(CUSTOM_ITEM_KEY, ChatColor.GOLD + "Block Wand");
-		CUSTOM_ITEM_TEMPLATE = CUSTOM_ITEM_CRITERIA.applyToItem(new ItemStack(Material.BLAZE_ROD));
+		ItemAPI.setDisplayName(WAND, ChatColor.GOLD + "Block Wand");
 	}
 
-	private AikarCommandManager commands;
+	private final AikarCommandManager commands;
 
-	public DebugWand(SimpleAdminHacks plugin, BasicHackConfig config) {
+	public DebugWand(final SimpleAdminHacks plugin, final BasicHackConfig config) {
 		super(plugin, config);
-	}
-
-	@Override
-	public void dataBootstrap() {
-		CustomItems.register(CUSTOM_ITEM_CRITERIA);
-	}
-
-	@Override
-	public void dataCleanup() {
-		CustomItems.deregister(CUSTOM_ITEM_KEY);
-	}
-
-	@Override
-	public void registerCommands() {
-		this.commands = new AikarCommandManager(plugin()) {
+		this.commands = new AikarCommandManager(plugin, false) {
 			@Override
 			public void registerCommands() {
 				registerCommand(new WandCommand());
@@ -69,53 +48,49 @@ public class DebugWand extends BasicHack {
 	}
 
 	@Override
-	public void unregisterCommands() {
-		if (this.commands != null) {
-			this.commands.reset();
-			this.commands = null;
-		}
+	public void onEnable() {
+		super.onEnable();
+		this.commands.init();
 	}
 
 	@Override
-	public String status() {
-		return DebugWand.class.getSimpleName() + " is " + (isEnabled() ? "enabled" : "disabled") + ".";
+	public void onDisable() {
+		this.commands.reset();
+		super.onDisable();
 	}
 
 	@CommandPermission(PERMISSION)
 	public static class WandCommand extends AikarCommand {
-
-		@CommandAlias("dbwand")
+		@CommandAlias("debugwand|dbwand")
 		@Description("Creates a wand for debugging")
-		public void giveWand(Player sender) {
-			sender.getInventory().addItem(CUSTOM_ITEM_TEMPLATE.clone());
+		public void giveWand(final Player sender) {
+			sender.getInventory().addItem(WAND.clone());
 			sender.sendMessage(ChatColor.GREEN + "Wand created.");
 		}
-
 	}
 
 	@EventHandler
-	public void onWandUsageOnBlock(PlayerInteractEvent event) {
-		Player player = event.getPlayer();
+	public void onWandUsageOnBlock(final PlayerInteractEvent event) {
+		final Player player = event.getPlayer();
 		if (!player.hasPermission(PERMISSION)) {
 			return;
 		}
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) {
 			return;
 		}
-		ItemStack held = event.getItem();
-		if (!ItemAPI.isValidItem(held)
-				|| !ItemAPI.areItemsSimilar(held, CUSTOM_ITEM_TEMPLATE)
-				|| !CUSTOM_ITEM_CRITERIA.matches(held)) {
+		final ItemStack held = event.getItem();
+		if (!ItemAPI.isValidItem(held) || !ItemAPI.areItemsSimilar(held, WAND)) {
 			return;
 		}
-		Block block = Objects.requireNonNull(event.getClickedBlock());
+		final Block block = Objects.requireNonNull(event.getClickedBlock());
+		final Location blockLocation = block.getLocation();
 		player.sendMessage(ChatColor.GREEN + "Debug start.");
 		player.sendMessage(ChatColor.AQUA + "Material: " + ChatColor.WHITE + block.getType().name());
 		player.sendMessage(ChatColor.AQUA + "Location: "
-				+ ChatColor.RED + "x:" + block.getLocation().getBlockX() + ChatColor.WHITE + ", "
-				+ ChatColor.GREEN + "y:" + block.getLocation().getBlockY() + ChatColor.WHITE + ", "
-				+ ChatColor.BLUE + "z:" + block.getLocation().getBlockZ());
-		BlockData data = block.getBlockData();
+				+ ChatColor.RED + "x:" + blockLocation.getBlockX() + ChatColor.WHITE + ", "
+				+ ChatColor.GREEN + "y:" + blockLocation.getBlockY() + ChatColor.WHITE + ", "
+				+ ChatColor.BLUE + "z:" + blockLocation.getBlockZ());
+		final BlockData data = block.getBlockData();
 		player.sendMessage(ChatColor.AQUA + "Block Data: " + ChatColor.YELLOW + data.getClass().getName());
 		player.sendMessage(data.toString());
 		player.sendMessage(ChatColor.RED + "Data end.");
@@ -123,38 +98,27 @@ public class DebugWand extends BasicHack {
 	}
 
 	@EventHandler
-	public void onWandUsageOnEntity(PlayerInteractEntityEvent event) {
-		Player player = event.getPlayer();
+	public void onWandUsageOnEntity(final PlayerInteractEntityEvent event) {
+		final Player player = event.getPlayer();
 		if (!player.hasPermission(PERMISSION)) {
 			return;
 		}
-		ItemStack held = null;
-		switch (event.getHand()) {
-			case HAND: {
-				held = player.getInventory().getItemInMainHand();
-				break;
-			}
-			case OFF_HAND: {
-				held = player.getInventory().getItemInOffHand();
-				break;
-			}
-		}
-		if (!ItemAPI.isValidItem(held)
-				|| !ItemAPI.areItemsSimilar(held, CUSTOM_ITEM_TEMPLATE)
-				|| !CUSTOM_ITEM_CRITERIA.matches(held)) {
+		final ItemStack held = player.getInventory().getItem(event.getHand());
+		if (!ItemAPI.isValidItem(held) || !ItemAPI.areItemsSimilar(held, WAND)) {
 			return;
 		}
-		Entity entity = event.getRightClicked();
+		final Entity entity = event.getRightClicked();
+		final Location entityLocation = entity.getLocation();
 		player.sendMessage(ChatColor.GREEN + "Debug start.");
 		player.sendMessage(ChatColor.AQUA + "Entity: " + ChatColor.WHITE + entity.getType().name());
 		player.sendMessage(ChatColor.AQUA + "Location: "
-				+ ChatColor.RED + "x:" + entity.getLocation().getX() + ChatColor.WHITE + ", "
-				+ ChatColor.GREEN + "y:" + entity.getLocation().getY() + ChatColor.WHITE + ", "
-				+ ChatColor.BLUE + "z:" + entity.getLocation().getZ());
+				+ ChatColor.RED + "x:" + entityLocation.getX() + ChatColor.WHITE + ", "
+				+ ChatColor.GREEN + "y:" + entityLocation.getY() + ChatColor.WHITE + ", "
+				+ ChatColor.BLUE + "z:" + entityLocation.getZ());
 		player.sendMessage(ChatColor.AQUA + "Rotation: "
-				+ ChatColor.YELLOW + "p:" + entity.getLocation().getPitch() + ", "
-				+ ChatColor.GOLD + "y:" + entity.getLocation().getYaw());
-		NBTCompound nbt = new NBTCompound();
+				+ ChatColor.YELLOW + "p:" + entityLocation.getPitch() + ", "
+				+ ChatColor.GOLD + "y:" + entityLocation.getYaw());
+		final NBTCompound nbt = new NBTCompound();
 		((CraftEntity) entity).getHandle().save(nbt.getRAW());
 		nbt.remove("Pos"); // Remove redundant position
 		nbt.remove("Rotation"); // Remove redundant rotation
@@ -163,7 +127,7 @@ public class DebugWand extends BasicHack {
 		event.setCancelled(true);
 	}
 
-	public static BasicHackConfig generate(SimpleAdminHacks plugin, ConfigurationSection config) {
+	public static BasicHackConfig generate(final SimpleAdminHacks plugin, final ConfigurationSection config) {
 		return new BasicHackConfig(plugin, config);
 	}
 
