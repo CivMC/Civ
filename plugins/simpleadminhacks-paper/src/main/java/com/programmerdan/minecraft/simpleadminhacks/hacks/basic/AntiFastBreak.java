@@ -14,15 +14,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
-import net.minecraft.server.v1_16_R1.IBlockData;
+import net.minecraft.server.v1_16_R3.IBlockData;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.craftbukkit.v1_16_R1.inventory.CraftItemStack;
-import org.bukkit.craftbukkit.v1_16_R1.util.CraftMagicNumbers;
+import org.bukkit.craftbukkit.v1_16_R3.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_16_R3.util.CraftMagicNumbers;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -212,7 +212,7 @@ public class AntiFastBreak extends BasicHack {
 	}
 
 	private static IBlockData getNMSBlockData(final Material material) {
-		final net.minecraft.server.v1_16_R1.Block nmsBlock = CraftMagicNumbers.getBlock(material);
+		final net.minecraft.server.v1_16_R3.Block nmsBlock = CraftMagicNumbers.getBlock(material);
 		if (nmsBlock == null) {
 			return null;
 		}

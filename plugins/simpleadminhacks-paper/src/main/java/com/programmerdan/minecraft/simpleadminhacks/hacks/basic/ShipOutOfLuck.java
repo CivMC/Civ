@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import net.minecraft.server.v1_16_R1.BlockPosition;
+import net.minecraft.server.v1_16_R3.BlockPosition;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.World;
