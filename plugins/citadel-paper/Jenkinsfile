@@ -7,7 +7,7 @@ pipeline {
         jdk 'Java 8'
     }
     environment {
-	civ_dependent_plugins = "FactoryMod JukeAlert RailSwitch SimpleAdminHacks Bastion Brewery"
+	civ_dependent_plugins = "FactoryMod JukeAlert RailSwitch SimpleAdminHacks Bastion"
     }
      stages {
         stage ('Build') {
