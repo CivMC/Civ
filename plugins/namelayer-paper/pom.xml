@@ -50,8 +50,8 @@
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </repository>
     <repository>
-      <id>civ-jenkins</id>
-      <url>https://build.devotedmc.com/plugin/repository/everything/</url>
+      <id>civ-github-repo</id>
+      <url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
     </repository>
   </repositories>
 
