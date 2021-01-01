@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>me.josvth.randomspawn.randomspawn</groupId>
 	<artifactId>RandomSpawn</artifactId>
-	<version>2.9.0</version>
+	<version>2.9.1</version>
 	<name>RandomSpawn</name>
 	<url>https://github.com/Civclassic/random-spawn</url>
 
@@ -16,43 +16,43 @@
 
 	<repositories>
 		<repository>
-			<id>civ-jenkins</id>
-			<url>https://repo.civclassic.com/repository/internal/</url>
+			<id>civ-github-repo</id>
+			<url>https://raw.githubusercontent.com/CivClassic/artifacts/master/</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot</artifactId>
-			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<groupId>com.destroystokyo.paper</groupId>
+			<artifactId>paper-api</artifactId>
+			<version>1.16.4-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wimbli.WorldBorder</groupId>
 			<artifactId>WorldBorder</artifactId>
-			<version>1.10.0</version>
+			<version>1.10.1</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>isaac</groupId>
 			<artifactId>Bastion</artifactId>
-			<version>2.4.0</version>
+			<version>2.4.1</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.programmerdan.minecraft</groupId>
 			<artifactId>banstick</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.1</version>
 			<type>jar</type>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>vg.civcraft.mc.civmodcore</groupId>
 			<artifactId>CivModCore</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.1</version>
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
